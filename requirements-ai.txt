@@ -1,0 +1,14 @@
+# Optional runtime dependencies for the full asis closet / stylist experience.
+# Keep these outside requirements.txt so the base CV/color MVP remains light.
+
+# Multi-category closet segmentation:
+torch>=2.2.0
+transformers>=4.44.0
+accelerate>=0.33.0
+
+# Transparent PNG edge refinement:
+rembg>=2.0.59
+onnxruntime>=1.18.0
+
+# Agent/runtime helpers used by local readiness scripts:
+requests>=2.32.0

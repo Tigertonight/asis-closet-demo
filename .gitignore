@@ -1,0 +1,40 @@
+.DS_Store
+
+# Local environment and secrets
+.env
+.env.*
+!.env.example
+.venv/
+venv/
+env/
+
+# Python caches and test caches
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+tests/results/
+
+# Runtime uploads and generated artifacts
+uploads/
+outputs/
+red_square_test.png
+openclaw-workspace-state.json
+
+# Agent/runtime generated dependencies and local state
+asis-agent-runtime/vendor/
+asis-agent-runtime/.openclaw/
+asis-agent-runtime/config/*.local.json
+asis-agent-runtime/*workspace-state*.json
+
+# Logs and process files
+*.log
+*.pid
+
+# OS/editor noise
+.idea/
+.vscode/
+*.swp

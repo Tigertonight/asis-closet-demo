@@ -1,0 +1,11 @@
+fastapi==0.116.1
+uvicorn[standard]==0.35.0
+python-multipart==0.0.20
+python-dotenv>=1.0.1
+Pillow>=12.1.0,<13.0.0
+numpy>=2.4.0,<2.5.0
+opencv-contrib-python==4.13.0.92
+mediapipe==0.10.35
+colour-checker-detection==0.2.3
+httpx>=0.28.1
+openai>=1.93.0

@@ -1,0 +1,28 @@
+{
+  "mcpServers": {
+    "xiaohongshu": {
+      "transport": "streamable-http",
+      "url": "${ASIS_XHS_MCP_URL:-http://127.0.0.1:18060/mcp}",
+      "description": "Read-only Xiaohongshu MCP sidecar for asis stylist research.",
+      "allowedTools": [
+        "check_login_status",
+        "search_feeds",
+        "get_feed_detail",
+        "list_feeds"
+      ],
+      "blockedTools": [
+        "post_comment_to_feed",
+        "reply_comment_in_feed",
+        "like_feed",
+        "favorite_feed",
+        "publish_content",
+        "publish_with_video"
+      ]
+    }
+  },
+  "notes": [
+    "Run xiaohongshu-mcp as a separate sidecar. Do not store cookies in the FastAPI project.",
+    "The stylist agent should use MCP results as evidence only; do not copy full notes into user-facing replies.",
+    "V1 is read-only. Publishing, liking, commenting, and favoriting are intentionally blocked."
+  ]
+}

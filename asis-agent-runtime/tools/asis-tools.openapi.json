@@ -1,0 +1,55 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "asis Stylist Tools",
+    "version": "0.1.0"
+  },
+  "servers": [
+    {
+      "url": "http://127.0.0.1:8002"
+    }
+  ],
+  "paths": {
+    "/stylist/tools/{tool_name}": {
+      "post": {
+        "operationId": "asis_tool",
+        "parameters": [
+          {
+            "name": "tool_name",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "asis_closet_search",
+                "asis_get_item",
+                "asis_compose_outfit",
+                "asis_save_outfit",
+                "asis_tryon_from_outfit",
+                "asis_xhs_search",
+                "asis_xhs_fetch_note",
+                "asis_style_kb_search"
+              ]
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": true
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Tool result"
+          }
+        }
+      }
+    }
+  }
+}

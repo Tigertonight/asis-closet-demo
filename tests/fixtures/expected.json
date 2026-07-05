@@ -1,0 +1,5439 @@
+{
+  "suite": "AI 色彩测试 MVP 验证集",
+  "cases": [
+    {
+      "id": "input_low_resolution",
+      "name": "低分辨率",
+      "group": "input_quality",
+      "image": "tests/fixtures/images/input_low_resolution.jpg",
+      "expected_status": "needs_retake",
+      "expected_stage_status": {
+        "input_quality": "fail"
+      },
+      "must_issue": [
+        "image.resolution"
+      ],
+      "stages": {},
+      "notes": "基础质量异常，由本地规则直接阻断。"
+    },
+    {
+      "id": "input_too_wide",
+      "name": "超宽比例",
+      "group": "input_quality",
+      "image": "tests/fixtures/images/input_too_wide.jpg",
+      "expected_status": "needs_retake",
+      "expected_stage_status": {
+        "input_quality": "fail"
+      },
+      "must_issue": [
+        "image.aspect_ratio"
+      ],
+      "stages": {},
+      "notes": "基础质量异常，由本地规则直接阻断。"
+    },
+    {
+      "id": "input_too_tall",
+      "name": "超长比例",
+      "group": "input_quality",
+      "image": "tests/fixtures/images/input_too_tall.jpg",
+      "expected_status": "needs_retake",
+      "expected_stage_status": {
+        "input_quality": "fail"
+      },
+      "must_issue": [
+        "image.aspect_ratio"
+      ],
+      "stages": {},
+      "notes": "基础质量异常，由本地规则直接阻断。"
+    },
+    {
+      "id": "input_overexposed",
+      "name": "过曝",
+      "group": "input_quality",
+      "image": "tests/fixtures/images/input_overexposed.png",
+      "expected_status": "needs_retake",
+      "expected_stage_status": {
+        "input_quality": "fail"
+      },
+      "must_issue": [
+        "lighting.exposure"
+      ],
+      "stages": {},
+      "notes": "基础质量异常，由本地规则直接阻断。"
+    },
+    {
+      "id": "input_too_dark",
+      "name": "欠曝",
+      "group": "input_quality",
+      "image": "tests/fixtures/images/input_too_dark.jpg",
+      "expected_status": "needs_retake",
+      "expected_stage_status": {
+        "input_quality": "fail"
+      },
+      "must_issue": [
+        "lighting.exposure"
+      ],
+      "stages": {},
+      "notes": "基础质量异常，由本地规则直接阻断。"
+    },
+    {
+      "id": "input_strong_blur",
+      "name": "强模糊",
+      "group": "input_quality",
+      "image": "tests/fixtures/images/input_strong_blur.jpg",
+      "expected_status": "needs_retake",
+      "expected_stage_status": {
+        "input_quality": "fail"
+      },
+      "must_issue": [
+        "image.sharpness"
+      ],
+      "stages": {},
+      "notes": "基础质量异常，由本地规则直接阻断。"
+    },
+    {
+      "id": "input_heavy_compression",
+      "name": "压缩严重",
+      "group": "input_quality",
+      "image": "tests/fixtures/images/input_heavy_compression.jpg",
+      "expected_status": "analyzed",
+      "expected_stage_status": {
+        "input_quality": "warn",
+        "face_cv": "warn",
+        "color_card_cv": "pass",
+        "vl_review": "pass",
+        "color_correction": "pass",
+        "skin_tone": "pass",
+        "feature_contrast": "pass",
+        "seasonal_result": "pass"
+      },
+      "must_issue": [
+        "image.sharpness",
+        "face.blurry"
+      ],
+      "stages": {
+        "vl_review": {
+          "status": "pass",
+          "confidence": 0.88,
+          "evidence": {
+            "is_real_person": true,
+            "makeup_risk": "low",
+            "filter_risk": "low",
+            "occlusion_risk": "low"
+          },
+          "issues": [],
+          "suggestions": []
+        }
+      },
+      "notes": "消费级压缩图可继续分析，但需要软标降低可信度。",
+      "expected_seasonal": {
+        "season_4": "spring",
+        "season_12": "bright_spring"
+      }
+    },
+    {
+      "id": "input_low_contrast",
+      "name": "低对比且偏糊",
+      "group": "input_quality",
+      "image": "tests/fixtures/images/input_low_contrast.jpg",
+      "expected_status": "needs_retake",
+      "expected_stage_status": {
+        "input_quality": "fail"
+      },
+      "must_issue": [
+        "image.sharpness"
+      ],
+      "stages": {},
+      "notes": "基础质量异常，由本地规则直接阻断。"
+    },
+    {
+      "id": "real_wide_auto_crop",
+      "name": "超宽截图自动裁剪",
+      "group": "real_upload",
+      "image": "tests/fixtures/images/real_wide_auto_crop.jpg",
+      "expected_status": "analyzed",
+      "expected_stage_status": {
+        "input_quality": "warn",
+        "face_cv": "warn",
+        "color_card_cv": "warn",
+        "vl_review": "pass",
+        "color_correction": "warn",
+        "skin_tone": "pass",
+        "feature_contrast": "pass",
+        "seasonal_result": "pass"
+      },
+      "expected_seasonal": {
+        "season_4": "spring",
+        "season_12": "bright_spring"
+      },
+      "must_issue": [
+        "image.auto_cropped",
+        "face.auto_cropped"
+      ],
+      "stages": {
+        "face_cv": {
+          "status": "pass",
+          "confidence": 0.92,
+          "evidence": {
+            "face_count": 1,
+            "face_size_ratio": 0.32,
+            "pose": "front",
+            "cropped": false
+          },
+          "issues": [],
+          "suggestions": []
+        },
+        "color_card_cv": {
+          "status": "pass",
+          "confidence": 0.9,
+          "evidence": {
+            "detected": true,
+            "card_type": "colorchecker_24",
+            "patch_count": 24,
+            "same_lighting_as_face": true
+          },
+          "issues": [],
+          "suggestions": []
+        },
+        "vl_review": {
+          "status": "pass",
+          "confidence": 0.88,
+          "evidence": {
+            "is_real_person": true,
+            "makeup_risk": "low",
+            "filter_risk": "low",
+            "occlusion_risk": "low"
+          },
+          "issues": [],
+          "suggestions": []
+        },
+        "color_correction": {
+          "status": "pass",
+          "confidence": 0.86,
+          "evidence": {
+            "method": "color_checker_24_ccm",
+            "delta_e_before": 12.4,
+            "delta_e_after": 3.1
+          },
+          "issues": [],
+          "suggestions": []
+        },
+        "skin_tone": {
+          "status": "pass",
+          "confidence": 0.84,
+          "evidence": {
+            "color_values": {
+              "rgb": [
+                214,
+                176,
+                150
+              ],
+              "lab": [
+                72.0,
+                12.0,
+                18.0
+              ],
+              "hsv": [
+                22,
+                30,
+                84
+              ]
+            },
+            "dimensions": {
+              "temperature": "warm",
+              "brightness": "light",
+              "chroma": "bright",
+              "undertone": "warm"
+            }
+          },
+          "issues": [],
+          "suggestions": []
+        },
+        "feature_contrast": {
+          "status": "pass",
+          "confidence": 0.82,
+          "evidence": {
+            "eye_color": "dark_brown",
+            "hair_color": "dark_brown",
+            "overall_contrast": "medium"
+          },
+          "issues": [],
+          "suggestions": []
+        },
+        "seasonal_result": {
+          "status": "pass",
+          "confidence": 0.81,
+          "evidence": {
+            "season_4": "spring",
+            "season_12": "bright_spring",
+            "season_24": "bright_spring_light_bright_medium",
+            "confidence": 0.81,
+            "ambiguous_between": [],
+            "why": [
+              "肤色温度为 warm",
+              "明度为 light",
+              "彩度为 bright",
+              "整体对比度为 medium"
+            ],
+            "suitable_colors": [
+              "ivory",
+              "coral",
+              "teal"
+            ],
+            "avoid_colors": [
+              "muddy_gray",
+              "neon_purple"
+            ]
+          },
+          "issues": [],
+          "suggestions": []
+        }
+      },
+      "notes": "真实用户上传截图/长图时，优先自动裁脸继续分析，并降低可信度。"
+    },
+    {
+      "id": "real_tall_auto_crop",
+      "name": "超长截图自动裁剪",
+      "group": "real_upload",
+      "image": "tests/fixtures/images/real_tall_auto_crop.jpg",
+      "expected_status": "analyzed",
+      "expected_stage_status": {
+        "input_quality": "warn",
+        "face_cv": "warn",
+        "color_card_cv": "warn",
+        "vl_review": "pass",
+        "color_correction": "warn",
+        "skin_tone": "pass",
+        "feature_contrast": "pass",
+        "seasonal_result": "pass"
+      },
+      "expected_seasonal": {
+        "season_4": "spring",
+        "season_12": "bright_spring"
+      },
+      "must_issue": [
+        "image.auto_cropped",
+        "face.auto_cropped"
+      ],
+      "stages": {
+        "face_cv": {
+          "status": "pass",
+          "confidence": 0.92,
+          "evidence": {
+            "face_count": 1,
+            "face_size_ratio": 0.32,
+            "pose": "front",
+            "cropped": false
+          },
+          "issues": [],
+          "suggestions": []
+        },
+        "color_card_cv": {
+          "status": "pass",
+          "confidence": 0.9,
+          "evidence": {
+            "detected": true,
+            "card_type": "colorchecker_24",
+            "patch_count": 24,
+            "same_lighting_as_face": true
+          },
+          "issues": [],
+          "suggestions": []
+        },
+        "vl_review": {
+          "status": "pass",
+          "confidence": 0.88,
+          "evidence": {
+            "is_real_person": true,
+            "makeup_risk": "low",
+            "filter_risk": "low",
+            "occlusion_risk": "low"
+          },
+          "issues": [],
+          "suggestions": []
+        },
+        "color_correction": {
+          "status": "pass",
+          "confidence": 0.86,
+          "evidence": {
+            "method": "color_checker_24_ccm",
+            "delta_e_before": 12.4,
+            "delta_e_after": 3.1
+          },
+          "issues": [],
+          "suggestions": []
+        },
+        "skin_tone": {
+          "status": "pass",
+          "confidence": 0.84,
+          "evidence": {
+            "color_values": {
+              "rgb": [
+                214,
+                176,
+                150
+              ],
+              "lab": [
+                72.0,
+                12.0,
+                18.0
+              ],
+              "hsv": [
+                22,
+                30,
+                84
+              ]
+            },
+            "dimensions": {
+              "temperature": "warm",
+              "brightness": "light",
+              "chroma": "bright",
+              "undertone": "warm"
+            }
+          },
+          "issues": [],
+          "suggestions": []
+        },
+        "feature_contrast": {
+          "status": "pass",
+          "confidence": 0.82,
+          "evidence": {
+            "eye_color": "dark_brown",
+            "hair_color": "dark_brown",
+            "overall_contrast": "medium"
+          },
+          "issues": [],
+          "suggestions": []
+        },
+        "seasonal_result": {
+          "status": "pass",
+          "confidence": 0.81,
+          "evidence": {
+            "season_4": "spring",
+            "season_12": "bright_spring",
+            "season_24": "bright_spring_light_bright_medium",
+            "confidence": 0.81,
+            "ambiguous_between": [],
+            "why": [
+              "肤色温度为 warm",
+              "明度为 light",
+              "彩度为 bright",
+              "整体对比度为 medium"
+            ],
+            "suitable_colors": [
+              "ivory",
+              "coral",
+              "teal"
+            ],
+            "avoid_colors": [
+              "muddy_gray",
+              "neon_purple"
+            ]
+          },
+          "issues": [],
+          "suggestions": []
+        }
+      },
+      "notes": "真实用户上传截图/长图时，优先自动裁脸继续分析，并降低可信度。"
+    },
+    {
+      "id": "real_social_screenshot_auto_crop",
+      "name": "App截图自动裁脸",
+      "group": "real_upload",
+      "image": "tests/fixtures/images/real_social_screenshot_auto_crop.jpg",
+      "expected_status": "analyzed",
+      "expected_stage_status": {
+        "input_quality": "pass",
+        "face_cv": "warn",
+        "color_card_cv": "pass",
+        "vl_review": "pass",
+        "color_correction": "pass",
+        "skin_tone": "pass",
+        "feature_contrast": "pass",
+        "seasonal_result": "pass"
+      },
+      "expected_seasonal": {
+        "season_4": "spring",
+        "season_12": "bright_spring"
+      },
+      "must_issue": [
+        "face.auto_cropped"
+      ],
+      "stages": {
+        "face_cv": {
+          "status": "pass",
+          "confidence": 0.92,
+          "evidence": {
+            "face_count": 1,
+            "face_size_ratio": 0.32,
+            "pose": "front",
+            "cropped": false
+          },
+          "issues": [],
+          "suggestions": []
+        },
+        "color_card_cv": {
+          "status": "pass",
+          "confidence": 0.9,
+          "evidence": {
+            "detected": true,
+            "card_type": "colorchecker_24",
+            "patch_count": 24,
+            "same_lighting_as_face": true
+          },
+          "issues": [],
+          "suggestions": []
+        },
+        "vl_review": {
+          "status": "pass",
+          "confidence": 0.88,
+          "evidence": {
+            "is_real_person": true,
+            "makeup_risk": "low",
+            "filter_risk": "low",
+            "occlusion_risk": "low"
+          },
+          "issues": [],
+          "suggestions": []
+        },
+        "color_correction": {
+          "status": "pass",
+          "confidence": 0.86,
+          "evidence": {
+            "method": "color_checker_24_ccm",
+            "delta_e_before": 12.4,
+            "delta_e_after": 3.1
+          },
+          "issues": [],
+          "suggestions": []
+        },
+        "skin_tone": {
+          "status": "pass",
+          "confidence": 0.84,
+          "evidence": {
+            "color_values": {
+              "rgb": [
+                214,
+                176,
+                150
+              ],
+              "lab": [
+                72.0,
+                12.0,
+                18.0
+              ],
+              "hsv": [
+                22,
+                30,
+                84
+              ]
+            },
+            "dimensions": {
+              "temperature": "warm",
+              "brightness": "light",
+              "chroma": "bright",
+              "undertone": "warm"
+            }
+          },
+          "issues": [],
+          "suggestions": []
+        },
+        "feature_contrast": {
+          "status": "pass",
+          "confidence": 0.82,
+          "evidence": {
+            "eye_color": "dark_brown",
+            "hair_color": "dark_brown",
+            "overall_contrast": "medium"
+          },
+          "issues": [],
+          "suggestions": []
+        },
+        "seasonal_result": {
+          "status": "pass",
+          "confidence": 0.81,
+          "evidence": {
+            "season_4": "spring",
+            "season_12": "bright_spring",
+            "season_24": "bright_spring_light_bright_medium",
+            "confidence": 0.81,
+            "ambiguous_between": [],
+            "why": [
+              "肤色温度为 warm",
+              "明度为 light",
+              "彩度为 bright",
+              "整体对比度为 medium"
+            ],
+            "suitable_colors": [
+              "ivory",
+              "coral",
+              "teal"
+            ],
+            "avoid_colors": [
+              "muddy_gray",
+              "neon_purple"
+            ]
+          },
+          "issues": [],
+          "suggestions": []
+        }
+      },
+      "notes": "真实 App 截图中人脸偏小但可定位时，优先自动裁脸继续分析，不要求用户重新上传。"
+    },
+    {
+      "id": "real_colorful_clothes_no_card",
+      "name": "彩色衣服无色卡",
+      "group": "real_upload",
+      "image": "tests/fixtures/images/real_colorful_clothes_no_card.jpg",
+      "expected_status": "analyzed",
+      "expected_stage_status": {
+        "input_quality": "pass",
+        "face_cv": "pass",
+        "color_card_cv": "warn",
+        "vl_review": "pass",
+        "color_correction": "warn",
+        "skin_tone": "pass",
+        "feature_contrast": "pass",
+        "seasonal_result": "pass"
+      },
+      "expected_seasonal": {
+        "season_4": "spring",
+        "season_12": "bright_spring"
+      },
+      "must_issue": [
+        "card.missing"
+      ],
+      "stages": {
+        "face_cv": {
+          "status": "pass",
+          "confidence": 0.92,
+          "evidence": {
+            "face_count": 1,
+            "face_size_ratio": 0.32,
+            "pose": "front",
+            "cropped": false
+          },
+          "issues": [],
+          "suggestions": []
+        },
+        "color_card_cv": {
+          "status": "warn",
+          "confidence": 0.72,
+          "evidence": {},
+          "issues": [
+            {
+              "code": "card.missing",
+              "message": "色卡有轻微风险但完整可用",
+              "suggestion": "未检测到色卡，本次可先用原图推理；建议下次加入标准色卡提升准确度。"
+            }
+          ],
+          "suggestions": [
+            "未检测到色卡，本次可先用原图推理；建议下次加入标准色卡提升准确度。"
+          ]
+        },
+        "vl_review": {
+          "status": "pass",
+          "confidence": 0.88,
+          "evidence": {
+            "is_real_person": true,
+            "makeup_risk": "low",
+            "filter_risk": "low",
+            "occlusion_risk": "low"
+          },
+          "issues": [],
+          "suggestions": []
+        },
+        "color_correction": {
+          "status": "warn",
+          "confidence": 0.72,
+          "evidence": {},
+          "issues": [
+            {
+              "code": "correction.no_card_fallback",
+              "message": "缺少色卡校正，使用原图继续推理",
+              "suggestion": "缺少色卡校正，本次结果会降低置信度；后续可引导用户补拍带色卡照片。"
+            }
+          ],
+          "suggestions": [
+            "缺少色卡校正，本次结果会降低置信度；后续可引导用户补拍带色卡照片。"
+          ]
+        },
+        "skin_tone": {
+          "status": "pass",
+          "confidence": 0.84,
+          "evidence": {
+            "color_values": {
+              "rgb": [
+                214,
+                176,
+                150
+              ],
+              "lab": [
+                72.0,
+                12.0,
+                18.0
+              ],
+              "hsv": [
+                22,
+                30,
+                84
+              ]
+            },
+            "dimensions": {
+              "temperature": "warm",
+              "brightness": "light",
+              "chroma": "bright",
+              "undertone": "warm"
+            }
+          },
+          "issues": [],
+          "suggestions": []
+        },
+        "feature_contrast": {
+          "status": "pass",
+          "confidence": 0.82,
+          "evidence": {
+            "eye_color": "dark_brown",
+            "hair_color": "dark_brown",
+            "overall_contrast": "medium"
+          },
+          "issues": [],
+          "suggestions": []
+        },
+        "seasonal_result": {
+          "status": "pass",
+          "confidence": 0.81,
+          "evidence": {
+            "season_4": "spring",
+            "season_12": "bright_spring",
+            "season_24": "bright_spring_light_bright_medium",
+            "confidence": 0.81,
+            "ambiguous_between": [],
+            "why": [
+              "肤色温度为 warm",
+              "明度为 light",
+              "彩度为 bright",
+              "整体对比度为 medium"
+            ],
+            "suitable_colors": [
+              "ivory",
+              "coral",
+              "teal"
+            ],
+            "avoid_colors": [
+              "muddy_gray",
+              "neon_purple"
+            ]
+          },
+          "issues": [],
+          "suggestions": []
+        }
+      },
+      "notes": "轻微风险只做后端标记和建议，不要求用户重新提交。"
+    },
+    {
+      "id": "real_colorful_poster_no_card",
+      "name": "彩色背景无色卡",
+      "group": "real_upload",
+      "image": "tests/fixtures/images/real_colorful_poster_no_card.jpg",
+      "expected_status": "analyzed",
+      "expected_stage_status": {
+        "input_quality": "pass",
+        "face_cv": "pass",
+        "color_card_cv": "warn",
+        "vl_review": "pass",
+        "color_correction": "warn",
+        "skin_tone": "pass",
+        "feature_contrast": "pass",
+        "seasonal_result": "pass"
+      },
+      "expected_seasonal": {
+        "season_4": "spring",
+        "season_12": "bright_spring"
+      },
+      "must_issue": [
+        "card.missing"
+      ],
+      "stages": {
+        "face_cv": {
+          "status": "pass",
+          "confidence": 0.92,
+          "evidence": {
+            "face_count": 1,
+            "face_size_ratio": 0.32,
+            "pose": "front",
+            "cropped": false
+          },
+          "issues": [],
+          "suggestions": []
+        },
+        "color_card_cv": {
+          "status": "warn",
+          "confidence": 0.72,
+          "evidence": {},
+          "issues": [
+            {
+              "code": "card.missing",
+              "message": "色卡有轻微风险但完整可用",
+              "suggestion": "未检测到色卡，本次可先用原图推理；建议下次加入标准色卡提升准确度。"
+            }
+          ],
+          "suggestions": [
+            "未检测到色卡，本次可先用原图推理；建议下次加入标准色卡提升准确度。"
+          ]
+        },
+        "vl_review": {
+          "status": "pass",
+          "confidence": 0.88,
+          "evidence": {
+            "is_real_person": true,
+            "makeup_risk": "low",
+            "filter_risk": "low",
+            "occlusion_risk": "low"
+          },
+          "issues": [],
+          "suggestions": []
+        },
+        "color_correction": {
+          "status": "warn",
+          "confidence": 0.72,
+          "evidence": {},
+          "issues": [
+            {
+              "code": "correction.no_card_fallback",
+              "message": "缺少色卡校正，使用原图继续推理",
+              "suggestion": "缺少色卡校正，本次结果会降低置信度；后续可引导用户补拍带色卡照片。"
+            }
+          ],
+          "suggestions": [
+            "缺少色卡校正，本次结果会降低置信度；后续可引导用户补拍带色卡照片。"
+          ]
+        },
+        "skin_tone": {
+          "status": "pass",
+          "confidence": 0.84,
+          "evidence": {
+            "color_values": {
+              "rgb": [
+                214,
+                176,
+                150
+              ],
+              "lab": [
+                72.0,
+                12.0,
+                18.0
+              ],
+              "hsv": [
+                22,
+                30,
+                84
+              ]
+            },
+            "dimensions": {
+              "temperature": "warm",
+              "brightness": "light",
+              "chroma": "bright",
+              "undertone": "warm"
+            }
+          },
+          "issues": [],
+          "suggestions": []
+        },
+        "feature_contrast": {
+          "status": "pass",
+          "confidence": 0.82,
+          "evidence": {
+            "eye_color": "dark_brown",
+            "hair_color": "dark_brown",
+            "overall_contrast": "medium"
+          },
+          "issues": [],
+          "suggestions": []
+        },
+        "seasonal_result": {
+          "status": "pass",
+          "confidence": 0.81,
+          "evidence": {
+            "season_4": "spring",
+            "season_12": "bright_spring",
+            "season_24": "bright_spring_light_bright_medium",
+            "confidence": 0.81,
+            "ambiguous_between": [],
+            "why": [
+              "肤色温度为 warm",
+              "明度为 light",
+              "彩度为 bright",
+              "整体对比度为 medium"
+            ],
+            "suitable_colors": [
+              "ivory",
+              "coral",
+              "teal"
+            ],
+            "avoid_colors": [
+              "muddy_gray",
+              "neon_purple"
+            ]
+          },
+          "issues": [],
+          "suggestions": []
+        }
+      },
+      "notes": "轻微风险只做后端标记和建议，不要求用户重新提交。"
+    },
+    {
+      "id": "real_busy_poster_wall_no_card",
+      "name": "海报墙自拍无色卡",
+      "group": "real_upload",
+      "image": "tests/fixtures/images/real_busy_poster_wall_no_card.jpg",
+      "expected_status": "analyzed",
+      "expected_stage_status": {
+        "input_quality": "pass",
+        "face_cv": "pass",
+        "color_card_cv": "warn",
+        "vl_review": "pass",
+        "color_correction": "warn",
+        "skin_tone": "pass",
+        "feature_contrast": "pass",
+        "seasonal_result": "pass"
+      },
+      "expected_seasonal": {
+        "season_4": "spring",
+        "season_12": "bright_spring"
+      },
+      "must_issue": [
+        "card.missing"
+      ],
+      "stages": {
+        "face_cv": {
+          "status": "pass",
+          "confidence": 0.92,
+          "evidence": {
+            "face_count": 1,
+            "face_size_ratio": 0.32,
+            "pose": "front",
+            "cropped": false
+          },
+          "issues": [],
+          "suggestions": []
+        },
+        "color_card_cv": {
+          "status": "warn",
+          "confidence": 0.72,
+          "evidence": {},
+          "issues": [
+            {
+              "code": "card.missing",
+              "message": "色卡有轻微风险但完整可用",
+              "suggestion": "未检测到色卡，本次可先用原图推理；建议下次加入标准色卡提升准确度。"
+            }
+          ],
+          "suggestions": [
+            "未检测到色卡，本次可先用原图推理；建议下次加入标准色卡提升准确度。"
+          ]
+        },
+        "vl_review": {
+          "status": "pass",
+          "confidence": 0.88,
+          "evidence": {
+            "is_real_person": true,
+            "makeup_risk": "low",
+            "filter_risk": "low",
+            "occlusion_risk": "low"
+          },
+          "issues": [],
+          "suggestions": []
+        },
+        "color_correction": {
+          "status": "warn",
+          "confidence": 0.72,
+          "evidence": {},
+          "issues": [
+            {
+              "code": "correction.no_card_fallback",
+              "message": "缺少色卡校正，使用原图继续推理",
+              "suggestion": "缺少色卡校正，本次结果会降低置信度；后续可引导用户补拍带色卡照片。"
+            }
+          ],
+          "suggestions": [
+            "缺少色卡校正，本次结果会降低置信度；后续可引导用户补拍带色卡照片。"
+          ]
+        },
+        "skin_tone": {
+          "status": "pass",
+          "confidence": 0.84,
+          "evidence": {
+            "color_values": {
+              "rgb": [
+                214,
+                176,
+                150
+              ],
+              "lab": [
+                72.0,
+                12.0,
+                18.0
+              ],
+              "hsv": [
+                22,
+                30,
+                84
+              ]
+            },
+            "dimensions": {
+              "temperature": "warm",
+              "brightness": "light",
+              "chroma": "bright",
+              "undertone": "warm"
+            }
+          },
+          "issues": [],
+          "suggestions": []
+        },
+        "feature_contrast": {
+          "status": "pass",
+          "confidence": 0.82,
+          "evidence": {
+            "eye_color": "dark_brown",
+            "hair_color": "dark_brown",
+            "overall_contrast": "medium"
+          },
+          "issues": [],
+          "suggestions": []
+        },
+        "seasonal_result": {
+          "status": "pass",
+          "confidence": 0.81,
+          "evidence": {
+            "season_4": "spring",
+            "season_12": "bright_spring",
+            "season_24": "bright_spring_light_bright_medium",
+            "confidence": 0.81,
+            "ambiguous_between": [],
+            "why": [
+              "肤色温度为 warm",
+              "明度为 light",
+              "彩度为 bright",
+              "整体对比度为 medium"
+            ],
+            "suitable_colors": [
+              "ivory",
+              "coral",
+              "teal"
+            ],
+            "avoid_colors": [
+              "muddy_gray",
+              "neon_purple"
+            ]
+          },
+          "issues": [],
+          "suggestions": []
+        }
+      },
+      "notes": "轻微风险只做后端标记和建议，不要求用户重新提交。"
+    },
+    {
+      "id": "real_warm_indoor_light_no_card",
+      "name": "室内暖光自拍",
+      "group": "real_upload",
+      "image": "tests/fixtures/images/real_warm_indoor_light_no_card.jpg",
+      "expected_status": "analyzed",
+      "expected_stage_status": {
+        "input_quality": "pass",
+        "face_cv": "pass",
+        "color_card_cv": "warn",
+        "vl_review": "warn",
+        "color_correction": "warn",
+        "skin_tone": "pass",
+        "feature_contrast": "pass",
+        "seasonal_result": "pass"
+      },
+      "expected_seasonal": {
+        "season_4": "spring",
+        "season_12": "bright_spring"
+      },
+      "must_issue": [
+        "vl.color_filter"
+      ],
+      "stages": {
+        "face_cv": {
+          "status": "pass",
+          "confidence": 0.92,
+          "evidence": {
+            "face_count": 1,
+            "face_size_ratio": 0.32,
+            "pose": "front",
+            "cropped": false
+          },
+          "issues": [],
+          "suggestions": []
+        },
+        "color_card_cv": {
+          "status": "warn",
+          "confidence": 0.72,
+          "evidence": {},
+          "issues": [
+            {
+              "code": "card.missing",
+              "message": "色卡有轻微风险但完整可用",
+              "suggestion": "未检测到色卡，本次可先用原图推理；建议下次加入标准色卡提升准确度。"
+            }
+          ],
+          "suggestions": [
+            "未检测到色卡，本次可先用原图推理；建议下次加入标准色卡提升准确度。"
+          ]
+        },
+        "vl_review": {
+          "status": "warn",
+          "confidence": 0.72,
+          "evidence": {},
+          "issues": [
+            {
+              "code": "vl.color_filter",
+              "message": "Codex VL 标注为轻微语义风险",
+              "suggestion": "疑似轻微滤镜偏色，本次依赖色卡校正继续分析。"
+            }
+          ],
+          "suggestions": [
+            "疑似轻微滤镜偏色，本次依赖色卡校正继续分析。"
+          ]
+        },
+        "color_correction": {
+          "status": "warn",
+          "confidence": 0.72,
+          "evidence": {},
+          "issues": [
+            {
+              "code": "correction.no_card_fallback",
+              "message": "缺少色卡校正，使用原图继续推理",
+              "suggestion": "缺少色卡校正，本次结果会降低置信度；后续可引导用户补拍带色卡照片。"
+            }
+          ],
+          "suggestions": [
+            "缺少色卡校正，本次结果会降低置信度；后续可引导用户补拍带色卡照片。"
+          ]
+        },
+        "skin_tone": {
+          "status": "pass",
+          "confidence": 0.84,
+          "evidence": {
+            "color_values": {
+              "rgb": [
+                214,
+                176,
+                150
+              ],
+              "lab": [
+                72.0,
+                12.0,
+                18.0
+              ],
+              "hsv": [
+                22,
+                30,
+                84
+              ]
+            },
+            "dimensions": {
+              "temperature": "warm",
+              "brightness": "light",
+              "chroma": "bright",
+              "undertone": "warm"
+            }
+          },
+          "issues": [],
+          "suggestions": []
+        },
+        "feature_contrast": {
+          "status": "pass",
+          "confidence": 0.82,
+          "evidence": {
+            "eye_color": "dark_brown",
+            "hair_color": "dark_brown",
+            "overall_contrast": "medium"
+          },
+          "issues": [],
+          "suggestions": []
+        },
+        "seasonal_result": {
+          "status": "pass",
+          "confidence": 0.81,
+          "evidence": {
+            "season_4": "spring",
+            "season_12": "bright_spring",
+            "season_24": "bright_spring_light_bright_medium",
+            "confidence": 0.81,
+            "ambiguous_between": [],
+            "why": [
+              "肤色温度为 warm",
+              "明度为 light",
+              "彩度为 bright",
+              "整体对比度为 medium"
+            ],
+            "suitable_colors": [
+              "ivory",
+              "coral",
+              "teal"
+            ],
+            "avoid_colors": [
+              "muddy_gray",
+              "neon_purple"
+            ]
+          },
+          "issues": [],
+          "suggestions": []
+        }
+      },
+      "notes": "轻微风险只做后端标记和建议，不要求用户重新提交。"
+    },
+    {
+      "id": "real_screen_cool_light_no_card",
+      "name": "屏幕冷光自拍",
+      "group": "real_upload",
+      "image": "tests/fixtures/images/real_screen_cool_light_no_card.jpg",
+      "expected_status": "analyzed",
+      "expected_stage_status": {
+        "input_quality": "pass",
+        "face_cv": "pass",
+        "color_card_cv": "warn",
+        "vl_review": "warn",
+        "color_correction": "warn",
+        "skin_tone": "pass",
+        "feature_contrast": "pass",
+        "seasonal_result": "pass"
+      },
+      "expected_seasonal": {
+        "season_4": "spring",
+        "season_12": "bright_spring"
+      },
+      "must_issue": [
+        "vl.color_filter"
+      ],
+      "stages": {
+        "face_cv": {
+          "status": "pass",
+          "confidence": 0.92,
+          "evidence": {
+            "face_count": 1,
+            "face_size_ratio": 0.32,
+            "pose": "front",
+            "cropped": false
+          },
+          "issues": [],
+          "suggestions": []
+        },
+        "color_card_cv": {
+          "status": "warn",
+          "confidence": 0.72,
+          "evidence": {},
+          "issues": [
+            {
+              "code": "card.missing",
+              "message": "色卡有轻微风险但完整可用",
+              "suggestion": "未检测到色卡，本次可先用原图推理；建议下次加入标准色卡提升准确度。"
+            }
+          ],
+          "suggestions": [
+            "未检测到色卡，本次可先用原图推理；建议下次加入标准色卡提升准确度。"
+          ]
+        },
+        "vl_review": {
+          "status": "warn",
+          "confidence": 0.72,
+          "evidence": {},
+          "issues": [
+            {
+              "code": "vl.color_filter",
+              "message": "Codex VL 标注为轻微语义风险",
+              "suggestion": "疑似轻微滤镜偏色，本次依赖色卡校正继续分析。"
+            }
+          ],
+          "suggestions": [
+            "疑似轻微滤镜偏色，本次依赖色卡校正继续分析。"
+          ]
+        },
+        "color_correction": {
+          "status": "warn",
+          "confidence": 0.72,
+          "evidence": {},
+          "issues": [
+            {
+              "code": "correction.no_card_fallback",
+              "message": "缺少色卡校正，使用原图继续推理",
+              "suggestion": "缺少色卡校正，本次结果会降低置信度；后续可引导用户补拍带色卡照片。"
+            }
+          ],
+          "suggestions": [
+            "缺少色卡校正，本次结果会降低置信度；后续可引导用户补拍带色卡照片。"
+          ]
+        },
+        "skin_tone": {
+          "status": "pass",
+          "confidence": 0.84,
+          "evidence": {
+            "color_values": {
+              "rgb": [
+                214,
+                176,
+                150
+              ],
+              "lab": [
+                72.0,
+                12.0,
+                18.0
+              ],
+              "hsv": [
+                22,
+                30,
+                84
+              ]
+            },
+            "dimensions": {
+              "temperature": "warm",
+              "brightness": "light",
+              "chroma": "bright",
+              "undertone": "warm"
+            }
+          },
+          "issues": [],
+          "suggestions": []
+        },
+        "feature_contrast": {
+          "status": "pass",
+          "confidence": 0.82,
+          "evidence": {
+            "eye_color": "dark_brown",
+            "hair_color": "dark_brown",
+            "overall_contrast": "medium"
+          },
+          "issues": [],
+          "suggestions": []
+        },
+        "seasonal_result": {
+          "status": "pass",
+          "confidence": 0.81,
+          "evidence": {
+            "season_4": "spring",
+            "season_12": "bright_spring",
+            "season_24": "bright_spring_light_bright_medium",
+            "confidence": 0.81,
+            "ambiguous_between": [],
+            "why": [
+              "肤色温度为 warm",
+              "明度为 light",
+              "彩度为 bright",
+              "整体对比度为 medium"
+            ],
+            "suitable_colors": [
+              "ivory",
+              "coral",
+              "teal"
+            ],
+            "avoid_colors": [
+              "muddy_gray",
+              "neon_purple"
+            ]
+          },
+          "issues": [],
+          "suggestions": []
+        }
+      },
+      "notes": "轻微风险只做后端标记和建议，不要求用户重新提交。"
+    },
+    {
+      "id": "real_clear_glasses",
+      "name": "普通透明眼镜",
+      "group": "real_upload",
+      "image": "tests/fixtures/images/real_clear_glasses.jpg",
+      "expected_status": "analyzed",
+      "expected_stage_status": {
+        "input_quality": "pass",
+        "face_cv": "pass",
+        "color_card_cv": "pass",
+        "vl_review": "pass",
+        "color_correction": "pass",
+        "skin_tone": "pass",
+        "feature_contrast": "pass",
+        "seasonal_result": "pass"
+      },
+      "expected_seasonal": {
+        "season_4": "spring",
+        "season_12": "bright_spring"
+      },
+      "stages": {
+        "face_cv": {
+          "status": "pass",
+          "confidence": 0.92,
+          "evidence": {
+            "face_count": 1,
+            "face_size_ratio": 0.32,
+            "pose": "front",
+            "cropped": false
+          },
+          "issues": [],
+          "suggestions": []
+        },
+        "color_card_cv": {
+          "status": "pass",
+          "confidence": 0.9,
+          "evidence": {
+            "detected": true,
+            "card_type": "colorchecker_24",
+            "patch_count": 24,
+            "same_lighting_as_face": true
+          },
+          "issues": [],
+          "suggestions": []
+        },
+        "vl_review": {
+          "status": "pass",
+          "confidence": 0.88,
+          "evidence": {
+            "is_real_person": true,
+            "makeup_risk": "low",
+            "filter_risk": "low",
+            "occlusion_risk": "low"
+          },
+          "issues": [],
+          "suggestions": []
+        },
+        "color_correction": {
+          "status": "pass",
+          "confidence": 0.86,
+          "evidence": {
+            "method": "color_checker_24_ccm",
+            "delta_e_before": 12.4,
+            "delta_e_after": 3.1
+          },
+          "issues": [],
+          "suggestions": []
+        },
+        "skin_tone": {
+          "status": "pass",
+          "confidence": 0.84,
+          "evidence": {
+            "color_values": {
+              "rgb": [
+                214,
+                176,
+                150
+              ],
+              "lab": [
+                72.0,
+                12.0,
+                18.0
+              ],
+              "hsv": [
+                22,
+                30,
+                84
+              ]
+            },
+            "dimensions": {
+              "temperature": "warm",
+              "brightness": "light",
+              "chroma": "bright",
+              "undertone": "warm"
+            }
+          },
+          "issues": [],
+          "suggestions": []
+        },
+        "feature_contrast": {
+          "status": "pass",
+          "confidence": 0.82,
+          "evidence": {
+            "eye_color": "dark_brown",
+            "hair_color": "dark_brown",
+            "overall_contrast": "medium"
+          },
+          "issues": [],
+          "suggestions": []
+        },
+        "seasonal_result": {
+          "status": "pass",
+          "confidence": 0.81,
+          "evidence": {
+            "season_4": "spring",
+            "season_12": "bright_spring",
+            "season_24": "bright_spring_light_bright_medium",
+            "confidence": 0.81,
+            "ambiguous_between": [],
+            "why": [
+              "肤色温度为 warm",
+              "明度为 light",
+              "彩度为 bright",
+              "整体对比度为 medium"
+            ],
+            "suitable_colors": [
+              "ivory",
+              "coral",
+              "teal"
+            ],
+            "avoid_colors": [
+              "muddy_gray",
+              "neon_purple"
+            ]
+          },
+          "issues": [],
+          "suggestions": []
+        }
+      },
+      "notes": "合成色彩金标样本，用于验证完整分析出参和季节型映射。"
+    },
+    {
+      "id": "real_glasses_glare",
+      "name": "透明眼镜轻微反光",
+      "group": "real_upload",
+      "image": "tests/fixtures/images/real_glasses_glare.jpg",
+      "expected_status": "analyzed",
+      "expected_stage_status": {
+        "input_quality": "pass",
+        "face_cv": "pass",
+        "color_card_cv": "pass",
+        "vl_review": "warn",
+        "color_correction": "pass",
+        "skin_tone": "pass",
+        "feature_contrast": "pass",
+        "seasonal_result": "pass"
+      },
+      "expected_seasonal": {
+        "season_4": "spring",
+        "season_12": "bright_spring"
+      },
+      "must_issue": [
+        "vl.glasses_glare"
+      ],
+      "stages": {
+        "face_cv": {
+          "status": "pass",
+          "confidence": 0.92,
+          "evidence": {
+            "face_count": 1,
+            "face_size_ratio": 0.32,
+            "pose": "front",
+            "cropped": false
+          },
+          "issues": [],
+          "suggestions": []
+        },
+        "color_card_cv": {
+          "status": "pass",
+          "confidence": 0.9,
+          "evidence": {
+            "detected": true,
+            "card_type": "colorchecker_24",
+            "patch_count": 24,
+            "same_lighting_as_face": true
+          },
+          "issues": [],
+          "suggestions": []
+        },
+        "vl_review": {
+          "status": "warn",
+          "confidence": 0.72,
+          "evidence": {},
+          "issues": [
+            {
+              "code": "vl.glasses_glare",
+              "message": "Codex VL 标注为轻微语义风险",
+              "suggestion": "眼镜有轻微反光，本次会降低眼部对比度判断权重。"
+            }
+          ],
+          "suggestions": [
+            "眼镜有轻微反光，本次会降低眼部对比度判断权重。"
+          ]
+        },
+        "color_correction": {
+          "status": "pass",
+          "confidence": 0.86,
+          "evidence": {
+            "method": "color_checker_24_ccm",
+            "delta_e_before": 12.4,
+            "delta_e_after": 3.1
+          },
+          "issues": [],
+          "suggestions": []
+        },
+        "skin_tone": {
+          "status": "pass",
+          "confidence": 0.84,
+          "evidence": {
+            "color_values": {
+              "rgb": [
+                214,
+                176,
+                150
+              ],
+              "lab": [
+                72.0,
+                12.0,
+                18.0
+              ],
+              "hsv": [
+                22,
+                30,
+                84
+              ]
+            },
+            "dimensions": {
+              "temperature": "warm",
+              "brightness": "light",
+              "chroma": "bright",
+              "undertone": "warm"
+            }
+          },
+          "issues": [],
+          "suggestions": []
+        },
+        "feature_contrast": {
+          "status": "pass",
+          "confidence": 0.82,
+          "evidence": {
+            "eye_color": "dark_brown",
+            "hair_color": "dark_brown",
+            "overall_contrast": "medium"
+          },
+          "issues": [],
+          "suggestions": []
+        },
+        "seasonal_result": {
+          "status": "pass",
+          "confidence": 0.81,
+          "evidence": {
+            "season_4": "spring",
+            "season_12": "bright_spring",
+            "season_24": "bright_spring_light_bright_medium",
+            "confidence": 0.81,
+            "ambiguous_between": [],
+            "why": [
+              "肤色温度为 warm",
+              "明度为 light",
+              "彩度为 bright",
+              "整体对比度为 medium"
+            ],
+            "suitable_colors": [
+              "ivory",
+              "coral",
+              "teal"
+            ],
+            "avoid_colors": [
+              "muddy_gray",
+              "neon_purple"
+            ]
+          },
+          "issues": [],
+          "suggestions": []
+        }
+      },
+      "notes": "轻微风险只做后端标记和建议，不要求用户重新提交。"
+    },
+    {
+      "id": "real_bangs_forehead",
+      "name": "刘海遮额头",
+      "group": "real_upload",
+      "image": "tests/fixtures/images/real_bangs_forehead.jpg",
+      "expected_status": "analyzed",
+      "expected_stage_status": {
+        "input_quality": "pass",
+        "face_cv": "pass",
+        "color_card_cv": "pass",
+        "vl_review": "warn",
+        "color_correction": "pass",
+        "skin_tone": "pass",
+        "feature_contrast": "pass",
+        "seasonal_result": "pass"
+      },
+      "expected_seasonal": {
+        "season_4": "spring",
+        "season_12": "bright_spring"
+      },
+      "must_issue": [
+        "vl.hat_bangs"
+      ],
+      "stages": {
+        "face_cv": {
+          "status": "pass",
+          "confidence": 0.92,
+          "evidence": {
+            "face_count": 1,
+            "face_size_ratio": 0.32,
+            "pose": "front",
+            "cropped": false
+          },
+          "issues": [],
+          "suggestions": []
+        },
+        "color_card_cv": {
+          "status": "pass",
+          "confidence": 0.9,
+          "evidence": {
+            "detected": true,
+            "card_type": "colorchecker_24",
+            "patch_count": 24,
+            "same_lighting_as_face": true
+          },
+          "issues": [],
+          "suggestions": []
+        },
+        "vl_review": {
+          "status": "warn",
+          "confidence": 0.72,
+          "evidence": {},
+          "issues": [
+            {
+              "code": "vl.hat_bangs",
+              "message": "Codex VL 标注为轻微语义风险",
+              "suggestion": "存在轻微风险，本次继续分析并在结果中标记。"
+            }
+          ],
+          "suggestions": [
+            "存在轻微风险，本次继续分析并在结果中标记。"
+          ]
+        },
+        "color_correction": {
+          "status": "pass",
+          "confidence": 0.86,
+          "evidence": {
+            "method": "color_checker_24_ccm",
+            "delta_e_before": 12.4,
+            "delta_e_after": 3.1
+          },
+          "issues": [],
+          "suggestions": []
+        },
+        "skin_tone": {
+          "status": "pass",
+          "confidence": 0.84,
+          "evidence": {
+            "color_values": {
+              "rgb": [
+                214,
+                176,
+                150
+              ],
+              "lab": [
+                72.0,
+                12.0,
+                18.0
+              ],
+              "hsv": [
+                22,
+                30,
+                84
+              ]
+            },
+            "dimensions": {
+              "temperature": "warm",
+              "brightness": "light",
+              "chroma": "bright",
+              "undertone": "warm"
+            }
+          },
+          "issues": [],
+          "suggestions": []
+        },
+        "feature_contrast": {
+          "status": "pass",
+          "confidence": 0.82,
+          "evidence": {
+            "eye_color": "dark_brown",
+            "hair_color": "dark_brown",
+            "overall_contrast": "medium"
+          },
+          "issues": [],
+          "suggestions": []
+        },
+        "seasonal_result": {
+          "status": "pass",
+          "confidence": 0.81,
+          "evidence": {
+            "season_4": "spring",
+            "season_12": "bright_spring",
+            "season_24": "bright_spring_light_bright_medium",
+            "confidence": 0.81,
+            "ambiguous_between": [],
+            "why": [
+              "肤色温度为 warm",
+              "明度为 light",
+              "彩度为 bright",
+              "整体对比度为 medium"
+            ],
+            "suitable_colors": [
+              "ivory",
+              "coral",
+              "teal"
+            ],
+            "avoid_colors": [
+              "muddy_gray",
+              "neon_purple"
+            ]
+          },
+          "issues": [],
+          "suggestions": []
+        }
+      },
+      "notes": "轻微风险只做后端标记和建议，不要求用户重新提交。"
+    },
+    {
+      "id": "real_hat_shadow",
+      "name": "帽檐轻微阴影",
+      "group": "real_upload",
+      "image": "tests/fixtures/images/real_hat_shadow.jpg",
+      "expected_status": "analyzed",
+      "expected_stage_status": {
+        "input_quality": "pass",
+        "face_cv": "pass",
+        "color_card_cv": "pass",
+        "vl_review": "warn",
+        "color_correction": "pass",
+        "skin_tone": "pass",
+        "feature_contrast": "pass",
+        "seasonal_result": "pass"
+      },
+      "expected_seasonal": {
+        "season_4": "spring",
+        "season_12": "bright_spring"
+      },
+      "must_issue": [
+        "vl.hat_bangs"
+      ],
+      "stages": {
+        "face_cv": {
+          "status": "pass",
+          "confidence": 0.92,
+          "evidence": {
+            "face_count": 1,
+            "face_size_ratio": 0.32,
+            "pose": "front",
+            "cropped": false
+          },
+          "issues": [],
+          "suggestions": []
+        },
+        "color_card_cv": {
+          "status": "pass",
+          "confidence": 0.9,
+          "evidence": {
+            "detected": true,
+            "card_type": "colorchecker_24",
+            "patch_count": 24,
+            "same_lighting_as_face": true
+          },
+          "issues": [],
+          "suggestions": []
+        },
+        "vl_review": {
+          "status": "warn",
+          "confidence": 0.72,
+          "evidence": {},
+          "issues": [
+            {
+              "code": "vl.hat_bangs",
+              "message": "Codex VL 标注为轻微语义风险",
+              "suggestion": "存在轻微风险，本次继续分析并在结果中标记。"
+            }
+          ],
+          "suggestions": [
+            "存在轻微风险，本次继续分析并在结果中标记。"
+          ]
+        },
+        "color_correction": {
+          "status": "pass",
+          "confidence": 0.86,
+          "evidence": {
+            "method": "color_checker_24_ccm",
+            "delta_e_before": 12.4,
+            "delta_e_after": 3.1
+          },
+          "issues": [],
+          "suggestions": []
+        },
+        "skin_tone": {
+          "status": "pass",
+          "confidence": 0.84,
+          "evidence": {
+            "color_values": {
+              "rgb": [
+                214,
+                176,
+                150
+              ],
+              "lab": [
+                72.0,
+                12.0,
+                18.0
+              ],
+              "hsv": [
+                22,
+                30,
+                84
+              ]
+            },
+            "dimensions": {
+              "temperature": "warm",
+              "brightness": "light",
+              "chroma": "bright",
+              "undertone": "warm"
+            }
+          },
+          "issues": [],
+          "suggestions": []
+        },
+        "feature_contrast": {
+          "status": "pass",
+          "confidence": 0.82,
+          "evidence": {
+            "eye_color": "dark_brown",
+            "hair_color": "dark_brown",
+            "overall_contrast": "medium"
+          },
+          "issues": [],
+          "suggestions": []
+        },
+        "seasonal_result": {
+          "status": "pass",
+          "confidence": 0.81,
+          "evidence": {
+            "season_4": "spring",
+            "season_12": "bright_spring",
+            "season_24": "bright_spring_light_bright_medium",
+            "confidence": 0.81,
+            "ambiguous_between": [],
+            "why": [
+              "肤色温度为 warm",
+              "明度为 light",
+              "彩度为 bright",
+              "整体对比度为 medium"
+            ],
+            "suitable_colors": [
+              "ivory",
+              "coral",
+              "teal"
+            ],
+            "avoid_colors": [
+              "muddy_gray",
+              "neon_purple"
+            ]
+          },
+          "issues": [],
+          "suggestions": []
+        }
+      },
+      "notes": "轻微风险只做后端标记和建议，不要求用户重新提交。"
+    },
+    {
+      "id": "real_hand_near_face",
+      "name": "手托脸自拍",
+      "group": "real_upload",
+      "image": "tests/fixtures/images/real_hand_near_face.jpg",
+      "expected_status": "analyzed",
+      "expected_stage_status": {
+        "input_quality": "pass",
+        "face_cv": "pass",
+        "color_card_cv": "pass",
+        "vl_review": "warn",
+        "color_correction": "pass",
+        "skin_tone": "pass",
+        "feature_contrast": "pass",
+        "seasonal_result": "pass"
+      },
+      "expected_seasonal": {
+        "season_4": "spring",
+        "season_12": "bright_spring"
+      },
+      "must_issue": [
+        "vl.hand_near_face"
+      ],
+      "stages": {
+        "face_cv": {
+          "status": "pass",
+          "confidence": 0.92,
+          "evidence": {
+            "face_count": 1,
+            "face_size_ratio": 0.32,
+            "pose": "front",
+            "cropped": false
+          },
+          "issues": [],
+          "suggestions": []
+        },
+        "color_card_cv": {
+          "status": "pass",
+          "confidence": 0.9,
+          "evidence": {
+            "detected": true,
+            "card_type": "colorchecker_24",
+            "patch_count": 24,
+            "same_lighting_as_face": true
+          },
+          "issues": [],
+          "suggestions": []
+        },
+        "vl_review": {
+          "status": "warn",
+          "confidence": 0.72,
+          "evidence": {},
+          "issues": [
+            {
+              "code": "vl.hand_near_face",
+              "message": "Codex VL 标注为轻微语义风险",
+              "suggestion": "手部靠近脸颊或下巴，本次会避开受影响区域继续分析。"
+            }
+          ],
+          "suggestions": [
+            "手部靠近脸颊或下巴，本次会避开受影响区域继续分析。"
+          ]
+        },
+        "color_correction": {
+          "status": "pass",
+          "confidence": 0.86,
+          "evidence": {
+            "method": "color_checker_24_ccm",
+            "delta_e_before": 12.4,
+            "delta_e_after": 3.1
+          },
+          "issues": [],
+          "suggestions": []
+        },
+        "skin_tone": {
+          "status": "pass",
+          "confidence": 0.84,
+          "evidence": {
+            "color_values": {
+              "rgb": [
+                214,
+                176,
+                150
+              ],
+              "lab": [
+                72.0,
+                12.0,
+                18.0
+              ],
+              "hsv": [
+                22,
+                30,
+                84
+              ]
+            },
+            "dimensions": {
+              "temperature": "warm",
+              "brightness": "light",
+              "chroma": "bright",
+              "undertone": "warm"
+            }
+          },
+          "issues": [],
+          "suggestions": []
+        },
+        "feature_contrast": {
+          "status": "pass",
+          "confidence": 0.82,
+          "evidence": {
+            "eye_color": "dark_brown",
+            "hair_color": "dark_brown",
+            "overall_contrast": "medium"
+          },
+          "issues": [],
+          "suggestions": []
+        },
+        "seasonal_result": {
+          "status": "pass",
+          "confidence": 0.81,
+          "evidence": {
+            "season_4": "spring",
+            "season_12": "bright_spring",
+            "season_24": "bright_spring_light_bright_medium",
+            "confidence": 0.81,
+            "ambiguous_between": [],
+            "why": [
+              "肤色温度为 warm",
+              "明度为 light",
+              "彩度为 bright",
+              "整体对比度为 medium"
+            ],
+            "suitable_colors": [
+              "ivory",
+              "coral",
+              "teal"
+            ],
+            "avoid_colors": [
+              "muddy_gray",
+              "neon_purple"
+            ]
+          },
+          "issues": [],
+          "suggestions": []
+        }
+      },
+      "notes": "轻微风险只做后端标记和建议，不要求用户重新提交。"
+    },
+    {
+      "id": "portrait_non_person",
+      "name": "非人像",
+      "group": "portrait",
+      "image": "tests/fixtures/images/portrait_non_person.png",
+      "expected_status": "needs_retake",
+      "expected_stage_status": {
+        "input_quality": "pass",
+        "face_cv": "fail"
+      },
+      "must_issue": [
+        "face.no_face"
+      ],
+      "stages": {
+        "face_cv": {
+          "status": "fail",
+          "confidence": 0.9,
+          "evidence": {},
+          "issues": [
+            {
+              "code": "face.too_small",
+              "message": "人脸检测不满足测试要求",
+              "suggestion": "请重新拍摄正脸单人照，保持脸部完整无遮挡。"
+            }
+          ],
+          "suggestions": [
+            "请重新拍摄正脸单人照，保持脸部完整无遮挡。"
+          ]
+        },
+        "color_card_cv": {
+          "status": "pass",
+          "confidence": 0.9,
+          "evidence": {
+            "detected": true,
+            "card_type": "colorchecker_24",
+            "patch_count": 24,
+            "same_lighting_as_face": true
+          },
+          "issues": [],
+          "suggestions": []
+        },
+        "vl_review": {
+          "status": "pass",
+          "confidence": 0.88,
+          "evidence": {
+            "is_real_person": true,
+            "makeup_risk": "low",
+            "filter_risk": "low",
+            "occlusion_risk": "low"
+          },
+          "issues": [],
+          "suggestions": []
+        }
+      },
+      "notes": "验证期由 Codex 辅助视觉判断沉淀为 fixture mock。"
+    },
+    {
+      "id": "portrait_multi_face",
+      "name": "多人脸",
+      "group": "portrait",
+      "image": "tests/fixtures/images/portrait_multi_face.jpg",
+      "expected_status": "needs_retake",
+      "expected_stage_status": {
+        "input_quality": "pass",
+        "face_cv": "fail"
+      },
+      "must_issue": [
+        "face.multiple_faces"
+      ],
+      "stages": {
+        "face_cv": {
+          "status": "fail",
+          "confidence": 0.9,
+          "evidence": {},
+          "issues": [
+            {
+              "code": "face.multiple_faces",
+              "message": "人脸检测不满足测试要求",
+              "suggestion": "请重新拍摄正脸单人照，保持脸部完整无遮挡。"
+            }
+          ],
+          "suggestions": [
+            "请重新拍摄正脸单人照，保持脸部完整无遮挡。"
+          ]
+        },
+        "color_card_cv": {
+          "status": "pass",
+          "confidence": 0.9,
+          "evidence": {
+            "detected": true,
+            "card_type": "colorchecker_24",
+            "patch_count": 24,
+            "same_lighting_as_face": true
+          },
+          "issues": [],
+          "suggestions": []
+        },
+        "vl_review": {
+          "status": "pass",
+          "confidence": 0.88,
+          "evidence": {
+            "is_real_person": true,
+            "makeup_risk": "low",
+            "filter_risk": "low",
+            "occlusion_risk": "low"
+          },
+          "issues": [],
+          "suggestions": []
+        }
+      },
+      "notes": "验证期由 Codex 辅助视觉判断沉淀为 fixture mock。"
+    },
+    {
+      "id": "portrait_face_too_small",
+      "name": "脸部过小自动裁剪",
+      "group": "portrait",
+      "image": "tests/fixtures/images/portrait_face_too_small.jpg",
+      "expected_status": "analyzed",
+      "expected_stage_status": {
+        "input_quality": "pass",
+        "face_cv": "warn",
+        "color_card_cv": "warn",
+        "vl_review": "pass",
+        "color_correction": "warn",
+        "skin_tone": "pass",
+        "feature_contrast": "pass",
+        "seasonal_result": "pass"
+      },
+      "expected_seasonal": {
+        "season_4": "spring",
+        "season_12": "bright_spring"
+      },
+      "must_issue": [
+        "face.auto_cropped"
+      ],
+      "stages": {
+        "face_cv": {
+          "status": "warn",
+          "confidence": 0.72,
+          "evidence": {},
+          "issues": [
+            {
+              "code": "face.auto_cropped",
+              "message": "人脸姿态有轻微风险但仍可分析",
+              "suggestion": "检测到脸部偏小，已自动裁剪到更适合分析的范围。"
+            }
+          ],
+          "suggestions": [
+            "检测到脸部偏小，已自动裁剪到更适合分析的范围。"
+          ]
+        },
+        "color_card_cv": {
+          "status": "warn",
+          "confidence": 0.72,
+          "evidence": {},
+          "issues": [
+            {
+              "code": "card.missing",
+              "message": "色卡有轻微风险但完整可用",
+              "suggestion": "未检测到色卡，本次可先用原图推理；建议下次加入标准色卡提升准确度。"
+            }
+          ],
+          "suggestions": [
+            "未检测到色卡，本次可先用原图推理；建议下次加入标准色卡提升准确度。"
+          ]
+        },
+        "vl_review": {
+          "status": "pass",
+          "confidence": 0.88,
+          "evidence": {
+            "is_real_person": true,
+            "makeup_risk": "low",
+            "filter_risk": "low",
+            "occlusion_risk": "low"
+          },
+          "issues": [],
+          "suggestions": []
+        },
+        "color_correction": {
+          "status": "warn",
+          "confidence": 0.72,
+          "evidence": {},
+          "issues": [
+            {
+              "code": "correction.no_card_fallback",
+              "message": "缺少色卡校正，使用原图继续推理",
+              "suggestion": "缺少色卡校正，本次结果会降低置信度；后续可引导用户补拍带色卡照片。"
+            }
+          ],
+          "suggestions": [
+            "缺少色卡校正，本次结果会降低置信度；后续可引导用户补拍带色卡照片。"
+          ]
+        },
+        "skin_tone": {
+          "status": "pass",
+          "confidence": 0.84,
+          "evidence": {
+            "color_values": {
+              "rgb": [
+                214,
+                176,
+                150
+              ],
+              "lab": [
+                72.0,
+                12.0,
+                18.0
+              ],
+              "hsv": [
+                22,
+                30,
+                84
+              ]
+            },
+            "dimensions": {
+              "temperature": "warm",
+              "brightness": "light",
+              "chroma": "bright",
+              "undertone": "warm"
+            }
+          },
+          "issues": [],
+          "suggestions": []
+        },
+        "feature_contrast": {
+          "status": "pass",
+          "confidence": 0.82,
+          "evidence": {
+            "eye_color": "dark_brown",
+            "hair_color": "dark_brown",
+            "overall_contrast": "medium"
+          },
+          "issues": [],
+          "suggestions": []
+        },
+        "seasonal_result": {
+          "status": "pass",
+          "confidence": 0.81,
+          "evidence": {
+            "season_4": "spring",
+            "season_12": "bright_spring",
+            "season_24": "bright_spring_light_bright_medium",
+            "confidence": 0.81,
+            "ambiguous_between": [],
+            "why": [
+              "肤色温度为 warm",
+              "明度为 light",
+              "彩度为 bright",
+              "整体对比度为 medium"
+            ],
+            "suitable_colors": [
+              "ivory",
+              "coral",
+              "teal"
+            ],
+            "avoid_colors": [
+              "muddy_gray",
+              "neon_purple"
+            ]
+          },
+          "issues": [],
+          "suggestions": []
+        }
+      },
+      "notes": "轻微风险只做后端标记和建议，不要求用户重新提交。"
+    },
+    {
+      "id": "portrait_half_face",
+      "name": "半张脸裁切",
+      "group": "portrait",
+      "image": "tests/fixtures/images/portrait_half_face.jpg",
+      "expected_status": "needs_retake",
+      "expected_stage_status": {
+        "input_quality": "pass",
+        "face_cv": "fail"
+      },
+      "must_issue": [
+        "face.cropped"
+      ],
+      "stages": {
+        "face_cv": {
+          "status": "fail",
+          "confidence": 0.9,
+          "evidence": {},
+          "issues": [
+            {
+              "code": "face.no_face",
+              "message": "人脸检测不满足测试要求",
+              "suggestion": "请重新拍摄正脸单人照，保持脸部完整无遮挡。"
+            }
+          ],
+          "suggestions": [
+            "请重新拍摄正脸单人照，保持脸部完整无遮挡。"
+          ]
+        },
+        "color_card_cv": {
+          "status": "pass",
+          "confidence": 0.9,
+          "evidence": {
+            "detected": true,
+            "card_type": "colorchecker_24",
+            "patch_count": 24,
+            "same_lighting_as_face": true
+          },
+          "issues": [],
+          "suggestions": []
+        },
+        "vl_review": {
+          "status": "pass",
+          "confidence": 0.88,
+          "evidence": {
+            "is_real_person": true,
+            "makeup_risk": "low",
+            "filter_risk": "low",
+            "occlusion_risk": "low"
+          },
+          "issues": [],
+          "suggestions": []
+        }
+      },
+      "notes": "验证期由 Codex 辅助视觉判断沉淀为 fixture mock。"
+    },
+    {
+      "id": "portrait_side_pose",
+      "name": "大角度侧脸",
+      "group": "portrait",
+      "image": "tests/fixtures/images/portrait_side_pose.jpg",
+      "expected_status": "analyzed",
+      "expected_stage_status": {
+        "input_quality": "pass",
+        "face_cv": "pass",
+        "color_card_cv": "warn",
+        "vl_review": "warn",
+        "color_correction": "pass",
+        "skin_tone": "pass",
+        "feature_contrast": "pass",
+        "seasonal_result": "pass"
+      },
+      "expected_seasonal": {
+        "season_4": "spring",
+        "season_12": "bright_spring"
+      },
+      "must_issue": [
+        "vl.pose_side"
+      ],
+      "stages": {
+        "face_cv": {
+          "status": "pass",
+          "confidence": 0.92,
+          "evidence": {
+            "face_count": 1,
+            "face_size_ratio": 0.32,
+            "pose": "front",
+            "cropped": false
+          },
+          "issues": [],
+          "suggestions": []
+        },
+        "color_card_cv": {
+          "status": "warn",
+          "confidence": 0.72,
+          "evidence": {},
+          "issues": [
+            {
+              "code": "card.occluded",
+              "message": "色卡有轻微风险但完整可用",
+              "suggestion": "存在轻微风险，本次继续分析并在结果中标记。"
+            }
+          ],
+          "suggestions": [
+            "存在轻微风险，本次继续分析并在结果中标记。"
+          ]
+        },
+        "vl_review": {
+          "status": "warn",
+          "confidence": 0.72,
+          "evidence": {},
+          "issues": [
+            {
+              "code": "vl.pose_side",
+              "message": "Codex VL 标注为轻微语义风险",
+              "suggestion": "姿态有轻微偏差，本次继续分析；下次建议正对镜头。"
+            }
+          ],
+          "suggestions": [
+            "姿态有轻微偏差，本次继续分析；下次建议正对镜头。"
+          ]
+        },
+        "color_correction": {
+          "status": "pass",
+          "confidence": 0.86,
+          "evidence": {
+            "method": "color_checker_24_ccm",
+            "delta_e_before": 12.4,
+            "delta_e_after": 3.1
+          },
+          "issues": [],
+          "suggestions": []
+        },
+        "skin_tone": {
+          "status": "pass",
+          "confidence": 0.84,
+          "evidence": {
+            "color_values": {
+              "rgb": [
+                214,
+                176,
+                150
+              ],
+              "lab": [
+                72.0,
+                12.0,
+                18.0
+              ],
+              "hsv": [
+                22,
+                30,
+                84
+              ]
+            },
+            "dimensions": {
+              "temperature": "warm",
+              "brightness": "light",
+              "chroma": "bright",
+              "undertone": "warm"
+            }
+          },
+          "issues": [],
+          "suggestions": []
+        },
+        "feature_contrast": {
+          "status": "pass",
+          "confidence": 0.82,
+          "evidence": {
+            "eye_color": "dark_brown",
+            "hair_color": "dark_brown",
+            "overall_contrast": "medium"
+          },
+          "issues": [],
+          "suggestions": []
+        },
+        "seasonal_result": {
+          "status": "pass",
+          "confidence": 0.81,
+          "evidence": {
+            "season_4": "spring",
+            "season_12": "bright_spring",
+            "season_24": "bright_spring_light_bright_medium",
+            "confidence": 0.81,
+            "ambiguous_between": [],
+            "why": [
+              "肤色温度为 warm",
+              "明度为 light",
+              "彩度为 bright",
+              "整体对比度为 medium"
+            ],
+            "suitable_colors": [
+              "ivory",
+              "coral",
+              "teal"
+            ],
+            "avoid_colors": [
+              "muddy_gray",
+              "neon_purple"
+            ]
+          },
+          "issues": [],
+          "suggestions": []
+        }
+      },
+      "notes": "轻微风险只做后端标记和建议，不要求用户重新提交。"
+    },
+    {
+      "id": "portrait_head_tilt",
+      "name": "头部姿态异常",
+      "group": "portrait",
+      "image": "tests/fixtures/images/portrait_head_tilt.jpg",
+      "expected_status": "analyzed",
+      "expected_stage_status": {
+        "input_quality": "pass",
+        "face_cv": "pass",
+        "color_card_cv": "warn",
+        "vl_review": "warn",
+        "color_correction": "pass",
+        "skin_tone": "pass",
+        "feature_contrast": "pass",
+        "seasonal_result": "pass"
+      },
+      "expected_seasonal": {
+        "season_4": "spring",
+        "season_12": "bright_spring"
+      },
+      "must_issue": [
+        "vl.pose_tilted"
+      ],
+      "stages": {
+        "face_cv": {
+          "status": "pass",
+          "confidence": 0.92,
+          "evidence": {
+            "face_count": 1,
+            "face_size_ratio": 0.32,
+            "pose": "front",
+            "cropped": false
+          },
+          "issues": [],
+          "suggestions": []
+        },
+        "color_card_cv": {
+          "status": "warn",
+          "confidence": 0.72,
+          "evidence": {},
+          "issues": [
+            {
+              "code": "card.wrong_lighting",
+              "message": "色卡有轻微风险但完整可用",
+              "suggestion": "存在轻微风险，本次继续分析并在结果中标记。"
+            }
+          ],
+          "suggestions": [
+            "存在轻微风险，本次继续分析并在结果中标记。"
+          ]
+        },
+        "vl_review": {
+          "status": "warn",
+          "confidence": 0.72,
+          "evidence": {},
+          "issues": [
+            {
+              "code": "vl.pose_tilted",
+              "message": "Codex VL 标注为轻微语义风险",
+              "suggestion": "姿态有轻微偏差，本次继续分析；下次建议正对镜头。"
+            }
+          ],
+          "suggestions": [
+            "姿态有轻微偏差，本次继续分析；下次建议正对镜头。"
+          ]
+        },
+        "color_correction": {
+          "status": "pass",
+          "confidence": 0.86,
+          "evidence": {
+            "method": "color_checker_24_ccm",
+            "delta_e_before": 12.4,
+            "delta_e_after": 3.1
+          },
+          "issues": [],
+          "suggestions": []
+        },
+        "skin_tone": {
+          "status": "pass",
+          "confidence": 0.84,
+          "evidence": {
+            "color_values": {
+              "rgb": [
+                214,
+                176,
+                150
+              ],
+              "lab": [
+                72.0,
+                12.0,
+                18.0
+              ],
+              "hsv": [
+                22,
+                30,
+                84
+              ]
+            },
+            "dimensions": {
+              "temperature": "warm",
+              "brightness": "light",
+              "chroma": "bright",
+              "undertone": "warm"
+            }
+          },
+          "issues": [],
+          "suggestions": []
+        },
+        "feature_contrast": {
+          "status": "pass",
+          "confidence": 0.82,
+          "evidence": {
+            "eye_color": "dark_brown",
+            "hair_color": "dark_brown",
+            "overall_contrast": "medium"
+          },
+          "issues": [],
+          "suggestions": []
+        },
+        "seasonal_result": {
+          "status": "pass",
+          "confidence": 0.81,
+          "evidence": {
+            "season_4": "spring",
+            "season_12": "bright_spring",
+            "season_24": "bright_spring_light_bright_medium",
+            "confidence": 0.81,
+            "ambiguous_between": [],
+            "why": [
+              "肤色温度为 warm",
+              "明度为 light",
+              "彩度为 bright",
+              "整体对比度为 medium"
+            ],
+            "suitable_colors": [
+              "ivory",
+              "coral",
+              "teal"
+            ],
+            "avoid_colors": [
+              "muddy_gray",
+              "neon_purple"
+            ]
+          },
+          "issues": [],
+          "suggestions": []
+        }
+      },
+      "notes": "轻微风险只做后端标记和建议，不要求用户重新提交。"
+    },
+    {
+      "id": "portrait_mask_occlusion",
+      "name": "口罩遮挡",
+      "group": "portrait",
+      "image": "tests/fixtures/images/portrait_mask_occlusion.jpg",
+      "expected_status": "needs_retake",
+      "expected_stage_status": {
+        "input_quality": "pass",
+        "face_cv": "fail",
+        "vl_review": "fail"
+      },
+      "must_issue": [
+        "face.lower_occluded",
+        "vl.face_occluded"
+      ],
+      "stages": {
+        "face_cv": {
+          "status": "fail",
+          "confidence": 0.78,
+          "evidence": {
+            "face_count": 1,
+            "face_size_ratio": 0.32,
+            "pose": "front",
+            "cropped": false
+          },
+          "issues": [
+            {
+              "code": "face.lower_occluded",
+              "message": "下半脸有明显遮挡",
+              "suggestion": "请摘下口罩，并保证脸颊、下巴区域清晰可见。"
+            }
+          ],
+          "suggestions": [
+            "请摘下口罩，并保证脸颊、下巴区域清晰可见。"
+          ]
+        },
+        "color_card_cv": {
+          "status": "pass",
+          "confidence": 0.9,
+          "evidence": {
+            "detected": true,
+            "card_type": "colorchecker_24",
+            "patch_count": 24,
+            "same_lighting_as_face": true
+          },
+          "issues": [],
+          "suggestions": []
+        },
+        "vl_review": {
+          "status": "fail",
+          "confidence": 0.9,
+          "evidence": {},
+          "issues": [
+            {
+              "code": "vl.face_occluded",
+              "message": "Codex VL 标注为语义风险",
+              "suggestion": "请素颜、无遮挡、关闭滤镜后重新拍摄。"
+            }
+          ],
+          "suggestions": [
+            "请素颜、无遮挡、关闭滤镜后重新拍摄。"
+          ]
+        }
+      },
+      "notes": "验证期由 Codex 辅助视觉判断沉淀为 fixture mock。"
+    },
+    {
+      "id": "portrait_sunglasses",
+      "name": "墨镜遮挡",
+      "group": "portrait",
+      "image": "tests/fixtures/images/portrait_sunglasses.jpg",
+      "expected_status": "needs_retake",
+      "expected_stage_status": {
+        "input_quality": "pass",
+        "face_cv": "fail",
+        "vl_review": "fail"
+      },
+      "must_issue": [
+        "face.eye_occluded",
+        "vl.eye_occluded"
+      ],
+      "stages": {
+        "face_cv": {
+          "status": "fail",
+          "confidence": 0.78,
+          "evidence": {
+            "face_count": 1,
+            "face_size_ratio": 0.32,
+            "pose": "front",
+            "cropped": false
+          },
+          "issues": [
+            {
+              "code": "face.eye_occluded",
+              "message": "眼部有明显遮挡",
+              "suggestion": "请摘下墨镜或避免眼部大面积遮挡后再拍。"
+            }
+          ],
+          "suggestions": [
+            "请摘下墨镜或避免眼部大面积遮挡后再拍。"
+          ]
+        },
+        "color_card_cv": {
+          "status": "pass",
+          "confidence": 0.9,
+          "evidence": {
+            "detected": true,
+            "card_type": "colorchecker_24",
+            "patch_count": 24,
+            "same_lighting_as_face": true
+          },
+          "issues": [],
+          "suggestions": []
+        },
+        "vl_review": {
+          "status": "fail",
+          "confidence": 0.9,
+          "evidence": {},
+          "issues": [
+            {
+              "code": "vl.eye_occluded",
+              "message": "Codex VL 标注为语义风险",
+              "suggestion": "请素颜、无遮挡、关闭滤镜后重新拍摄。"
+            }
+          ],
+          "suggestions": [
+            "请素颜、无遮挡、关闭滤镜后重新拍摄。"
+          ]
+        }
+      },
+      "notes": "验证期由 Codex 辅助视觉判断沉淀为 fixture mock。"
+    },
+    {
+      "id": "card_missing",
+      "name": "无色卡",
+      "group": "color_card",
+      "image": "tests/fixtures/images/card_missing.jpg",
+      "expected_status": "analyzed",
+      "expected_stage_status": {
+        "input_quality": "pass",
+        "face_cv": "pass",
+        "color_card_cv": "warn",
+        "vl_review": "pass",
+        "color_correction": "warn",
+        "skin_tone": "pass",
+        "feature_contrast": "pass",
+        "seasonal_result": "pass"
+      },
+      "expected_seasonal": {
+        "season_4": "spring",
+        "season_12": "bright_spring"
+      },
+      "must_issue": [
+        "card.missing"
+      ],
+      "stages": {
+        "face_cv": {
+          "status": "pass",
+          "confidence": 0.92,
+          "evidence": {
+            "face_count": 1,
+            "face_size_ratio": 0.32,
+            "pose": "front",
+            "cropped": false
+          },
+          "issues": [],
+          "suggestions": []
+        },
+        "color_card_cv": {
+          "status": "warn",
+          "confidence": 0.72,
+          "evidence": {},
+          "issues": [
+            {
+              "code": "card.missing",
+              "message": "色卡有轻微风险但完整可用",
+              "suggestion": "未检测到色卡，本次可先用原图推理；建议下次加入标准色卡提升准确度。"
+            }
+          ],
+          "suggestions": [
+            "未检测到色卡，本次可先用原图推理；建议下次加入标准色卡提升准确度。"
+          ]
+        },
+        "vl_review": {
+          "status": "pass",
+          "confidence": 0.88,
+          "evidence": {
+            "is_real_person": true,
+            "makeup_risk": "low",
+            "filter_risk": "low",
+            "occlusion_risk": "low"
+          },
+          "issues": [],
+          "suggestions": []
+        },
+        "color_correction": {
+          "status": "warn",
+          "confidence": 0.72,
+          "evidence": {},
+          "issues": [
+            {
+              "code": "correction.no_card_fallback",
+              "message": "缺少色卡校正，使用原图继续推理",
+              "suggestion": "缺少色卡校正，本次结果会降低置信度；后续可引导用户补拍带色卡照片。"
+            }
+          ],
+          "suggestions": [
+            "缺少色卡校正，本次结果会降低置信度；后续可引导用户补拍带色卡照片。"
+          ]
+        },
+        "skin_tone": {
+          "status": "pass",
+          "confidence": 0.84,
+          "evidence": {
+            "color_values": {
+              "rgb": [
+                214,
+                176,
+                150
+              ],
+              "lab": [
+                72.0,
+                12.0,
+                18.0
+              ],
+              "hsv": [
+                22,
+                30,
+                84
+              ]
+            },
+            "dimensions": {
+              "temperature": "warm",
+              "brightness": "light",
+              "chroma": "bright",
+              "undertone": "warm"
+            }
+          },
+          "issues": [],
+          "suggestions": []
+        },
+        "feature_contrast": {
+          "status": "pass",
+          "confidence": 0.82,
+          "evidence": {
+            "eye_color": "dark_brown",
+            "hair_color": "dark_brown",
+            "overall_contrast": "medium"
+          },
+          "issues": [],
+          "suggestions": []
+        },
+        "seasonal_result": {
+          "status": "pass",
+          "confidence": 0.81,
+          "evidence": {
+            "season_4": "spring",
+            "season_12": "bright_spring",
+            "season_24": "bright_spring_light_bright_medium",
+            "confidence": 0.81,
+            "ambiguous_between": [],
+            "why": [
+              "肤色温度为 warm",
+              "明度为 light",
+              "彩度为 bright",
+              "整体对比度为 medium"
+            ],
+            "suitable_colors": [
+              "ivory",
+              "coral",
+              "teal"
+            ],
+            "avoid_colors": [
+              "muddy_gray",
+              "neon_purple"
+            ]
+          },
+          "issues": [],
+          "suggestions": []
+        }
+      },
+      "notes": "轻微风险只做后端标记和建议，不要求用户重新提交。"
+    },
+    {
+      "id": "card_cropped",
+      "name": "色卡被裁切",
+      "group": "color_card",
+      "image": "tests/fixtures/images/card_cropped.jpg",
+      "expected_status": "analyzed",
+      "expected_stage_status": {
+        "input_quality": "pass",
+        "face_cv": "pass",
+        "color_card_cv": "warn",
+        "vl_review": "pass",
+        "color_correction": "warn",
+        "skin_tone": "pass",
+        "feature_contrast": "pass",
+        "seasonal_result": "pass"
+      },
+      "must_issue": [
+        "card.cropped",
+        "correction.no_card_fallback"
+      ],
+      "stages": {
+        "face_cv": {
+          "status": "pass",
+          "confidence": 0.92,
+          "evidence": {
+            "face_count": 1,
+            "face_size_ratio": 0.32,
+            "pose": "front",
+            "cropped": false
+          },
+          "issues": [],
+          "suggestions": []
+        },
+        "color_card_cv": {
+          "status": "fail",
+          "confidence": 0.9,
+          "evidence": {},
+          "issues": [
+            {
+              "code": "card.cropped",
+              "message": "色卡检测不满足测试要求",
+              "suggestion": "请把标准 24 色卡完整放在下巴附近，并确保和脸处于同一光照。"
+            }
+          ],
+          "suggestions": [
+            "请把标准 24 色卡完整放在下巴附近，并确保和脸处于同一光照。"
+          ]
+        },
+        "vl_review": {
+          "status": "pass",
+          "confidence": 0.88,
+          "evidence": {
+            "is_real_person": true,
+            "makeup_risk": "low",
+            "filter_risk": "low",
+            "occlusion_risk": "low"
+          },
+          "issues": [],
+          "suggestions": []
+        }
+      },
+      "notes": "色卡异常不阻断用户，改为不用色卡校正并降低可信度。",
+      "expected_seasonal": {
+        "season_4": "spring",
+        "season_12": "bright_spring"
+      }
+    },
+    {
+      "id": "card_too_far",
+      "name": "色卡太远",
+      "group": "color_card",
+      "image": "tests/fixtures/images/card_too_far.jpg",
+      "expected_status": "analyzed",
+      "expected_stage_status": {
+        "input_quality": "pass",
+        "face_cv": "pass",
+        "color_card_cv": "warn",
+        "vl_review": "pass",
+        "color_correction": "warn",
+        "skin_tone": "pass",
+        "feature_contrast": "pass",
+        "seasonal_result": "warn"
+      },
+      "must_issue": [
+        "card.missing",
+        "correction.no_card_fallback"
+      ],
+      "stages": {
+        "face_cv": {
+          "status": "pass",
+          "confidence": 0.92,
+          "evidence": {
+            "face_count": 1,
+            "face_size_ratio": 0.32,
+            "pose": "front",
+            "cropped": false
+          },
+          "issues": [],
+          "suggestions": []
+        },
+        "color_card_cv": {
+          "status": "fail",
+          "confidence": 0.9,
+          "evidence": {},
+          "issues": [
+            {
+              "code": "card.too_far",
+              "message": "色卡检测不满足测试要求",
+              "suggestion": "请把标准 24 色卡完整放在下巴附近，并确保和脸处于同一光照。"
+            }
+          ],
+          "suggestions": [
+            "请把标准 24 色卡完整放在下巴附近，并确保和脸处于同一光照。"
+          ]
+        },
+        "vl_review": {
+          "status": "pass",
+          "confidence": 0.88,
+          "evidence": {
+            "is_real_person": true,
+            "makeup_risk": "low",
+            "filter_risk": "low",
+            "occlusion_risk": "low"
+          },
+          "issues": [],
+          "suggestions": []
+        }
+      },
+      "notes": "色卡异常不阻断用户，改为不用色卡校正并降低可信度。",
+      "expected_seasonal": {
+        "season_4": "spring",
+        "season_12": "bright_spring"
+      }
+    },
+    {
+      "id": "card_glare",
+      "name": "色卡反光",
+      "group": "color_card",
+      "image": "tests/fixtures/images/card_glare.jpg",
+      "expected_status": "analyzed",
+      "expected_stage_status": {
+        "input_quality": "pass",
+        "face_cv": "pass",
+        "color_card_cv": "warn",
+        "vl_review": "pass",
+        "color_correction": "warn",
+        "skin_tone": "pass",
+        "feature_contrast": "pass",
+        "seasonal_result": "pass"
+      },
+      "must_issue": [
+        "card.glare",
+        "correction.no_card_fallback"
+      ],
+      "stages": {
+        "face_cv": {
+          "status": "pass",
+          "confidence": 0.92,
+          "evidence": {
+            "face_count": 1,
+            "face_size_ratio": 0.32,
+            "pose": "front",
+            "cropped": false
+          },
+          "issues": [],
+          "suggestions": []
+        },
+        "color_card_cv": {
+          "status": "fail",
+          "confidence": 0.9,
+          "evidence": {},
+          "issues": [
+            {
+              "code": "card.glare",
+              "message": "色卡检测不满足测试要求",
+              "suggestion": "请把标准 24 色卡完整放在下巴附近，并确保和脸处于同一光照。"
+            }
+          ],
+          "suggestions": [
+            "请把标准 24 色卡完整放在下巴附近，并确保和脸处于同一光照。"
+          ]
+        },
+        "vl_review": {
+          "status": "pass",
+          "confidence": 0.88,
+          "evidence": {
+            "is_real_person": true,
+            "makeup_risk": "low",
+            "filter_risk": "low",
+            "occlusion_risk": "low"
+          },
+          "issues": [],
+          "suggestions": []
+        }
+      },
+      "notes": "色卡异常不阻断用户，改为不用色卡校正并降低可信度。",
+      "expected_seasonal": {
+        "season_4": "spring",
+        "season_12": "bright_spring"
+      }
+    },
+    {
+      "id": "card_wrong_light",
+      "name": "色卡与脸不同光照",
+      "group": "color_card",
+      "image": "tests/fixtures/images/card_wrong_light.jpg",
+      "expected_status": "analyzed",
+      "expected_stage_status": {
+        "input_quality": "pass",
+        "face_cv": "pass",
+        "color_card_cv": "warn",
+        "vl_review": "pass",
+        "color_correction": "warn",
+        "skin_tone": "pass",
+        "feature_contrast": "pass",
+        "seasonal_result": "pass"
+      },
+      "must_issue": [
+        "card.missing",
+        "correction.no_card_fallback"
+      ],
+      "stages": {
+        "face_cv": {
+          "status": "pass",
+          "confidence": 0.92,
+          "evidence": {
+            "face_count": 1,
+            "face_size_ratio": 0.32,
+            "pose": "front",
+            "cropped": false
+          },
+          "issues": [],
+          "suggestions": []
+        },
+        "color_card_cv": {
+          "status": "fail",
+          "confidence": 0.9,
+          "evidence": {},
+          "issues": [
+            {
+              "code": "card.wrong_lighting",
+              "message": "色卡检测不满足测试要求",
+              "suggestion": "请把标准 24 色卡完整放在下巴附近，并确保和脸处于同一光照。"
+            }
+          ],
+          "suggestions": [
+            "请把标准 24 色卡完整放在下巴附近，并确保和脸处于同一光照。"
+          ]
+        },
+        "vl_review": {
+          "status": "pass",
+          "confidence": 0.88,
+          "evidence": {
+            "is_real_person": true,
+            "makeup_risk": "low",
+            "filter_risk": "low",
+            "occlusion_risk": "low"
+          },
+          "issues": [],
+          "suggestions": []
+        }
+      },
+      "notes": "色卡异常不阻断用户，改为不用色卡校正并降低可信度。",
+      "expected_seasonal": {
+        "season_4": "spring",
+        "season_12": "bright_spring"
+      }
+    },
+    {
+      "id": "card_fake_grid",
+      "name": "伪色卡",
+      "group": "color_card",
+      "image": "tests/fixtures/images/card_fake_grid.jpg",
+      "expected_status": "analyzed",
+      "expected_stage_status": {
+        "input_quality": "pass",
+        "face_cv": "pass",
+        "color_card_cv": "warn",
+        "vl_review": "pass",
+        "color_correction": "warn",
+        "skin_tone": "pass",
+        "feature_contrast": "pass",
+        "seasonal_result": "pass"
+      },
+      "must_issue": [
+        "card.fake",
+        "correction.no_card_fallback"
+      ],
+      "stages": {
+        "face_cv": {
+          "status": "pass",
+          "confidence": 0.92,
+          "evidence": {
+            "face_count": 1,
+            "face_size_ratio": 0.32,
+            "pose": "front",
+            "cropped": false
+          },
+          "issues": [],
+          "suggestions": []
+        },
+        "color_card_cv": {
+          "status": "fail",
+          "confidence": 0.9,
+          "evidence": {},
+          "issues": [
+            {
+              "code": "card.fake",
+              "message": "色卡检测不满足测试要求",
+              "suggestion": "请把标准 24 色卡完整放在下巴附近，并确保和脸处于同一光照。"
+            }
+          ],
+          "suggestions": [
+            "请把标准 24 色卡完整放在下巴附近，并确保和脸处于同一光照。"
+          ]
+        },
+        "vl_review": {
+          "status": "pass",
+          "confidence": 0.88,
+          "evidence": {
+            "is_real_person": true,
+            "makeup_risk": "low",
+            "filter_risk": "low",
+            "occlusion_risk": "low"
+          },
+          "issues": [],
+          "suggestions": []
+        }
+      },
+      "notes": "色卡异常不阻断用户，改为不用色卡校正并降低可信度。",
+      "expected_seasonal": {
+        "season_4": "spring",
+        "season_12": "bright_spring"
+      }
+    },
+    {
+      "id": "card_occluded",
+      "name": "色卡被手指遮挡",
+      "group": "color_card",
+      "image": "tests/fixtures/images/card_occluded.jpg",
+      "expected_status": "analyzed",
+      "expected_stage_status": {
+        "input_quality": "pass",
+        "face_cv": "pass",
+        "color_card_cv": "warn",
+        "vl_review": "pass",
+        "color_correction": "warn",
+        "skin_tone": "pass",
+        "feature_contrast": "pass",
+        "seasonal_result": "pass"
+      },
+      "must_issue": [
+        "card.occluded",
+        "correction.no_card_fallback"
+      ],
+      "stages": {
+        "face_cv": {
+          "status": "pass",
+          "confidence": 0.92,
+          "evidence": {
+            "face_count": 1,
+            "face_size_ratio": 0.32,
+            "pose": "front",
+            "cropped": false
+          },
+          "issues": [],
+          "suggestions": []
+        },
+        "color_card_cv": {
+          "status": "fail",
+          "confidence": 0.9,
+          "evidence": {},
+          "issues": [
+            {
+              "code": "card.occluded",
+              "message": "色卡检测不满足测试要求",
+              "suggestion": "请把标准 24 色卡完整放在下巴附近，并确保和脸处于同一光照。"
+            }
+          ],
+          "suggestions": [
+            "请把标准 24 色卡完整放在下巴附近，并确保和脸处于同一光照。"
+          ]
+        },
+        "vl_review": {
+          "status": "pass",
+          "confidence": 0.88,
+          "evidence": {
+            "is_real_person": true,
+            "makeup_risk": "low",
+            "filter_risk": "low",
+            "occlusion_risk": "low"
+          },
+          "issues": [],
+          "suggestions": []
+        }
+      },
+      "notes": "色卡异常不阻断用户，改为不用色卡校正并降低可信度。",
+      "expected_seasonal": {
+        "season_4": "spring",
+        "season_12": "bright_spring"
+      }
+    },
+    {
+      "id": "card_tilted",
+      "name": "色卡倾斜但完整",
+      "group": "color_card",
+      "image": "tests/fixtures/images/card_tilted.jpg",
+      "expected_status": "analyzed",
+      "expected_stage_status": {
+        "input_quality": "pass",
+        "face_cv": "pass",
+        "color_card_cv": "warn",
+        "vl_review": "pass",
+        "color_correction": "pass",
+        "skin_tone": "pass",
+        "feature_contrast": "pass",
+        "seasonal_result": "pass"
+      },
+      "expected_seasonal": {
+        "season_4": "spring",
+        "season_12": "bright_spring"
+      },
+      "must_issue": [
+        "card.tilted"
+      ],
+      "stages": {
+        "face_cv": {
+          "status": "pass",
+          "confidence": 0.92,
+          "evidence": {
+            "face_count": 1,
+            "face_size_ratio": 0.32,
+            "pose": "front",
+            "cropped": false
+          },
+          "issues": [],
+          "suggestions": []
+        },
+        "color_card_cv": {
+          "status": "warn",
+          "confidence": 0.72,
+          "evidence": {},
+          "issues": [
+            {
+              "code": "card.tilted",
+              "message": "色卡有轻微风险但完整可用",
+              "suggestion": "色卡完整可用，本次继续分析；下次可尽量摆正以提高稳定性。"
+            }
+          ],
+          "suggestions": [
+            "色卡完整可用，本次继续分析；下次可尽量摆正以提高稳定性。"
+          ]
+        },
+        "vl_review": {
+          "status": "pass",
+          "confidence": 0.88,
+          "evidence": {
+            "is_real_person": true,
+            "makeup_risk": "low",
+            "filter_risk": "low",
+            "occlusion_risk": "low"
+          },
+          "issues": [],
+          "suggestions": []
+        },
+        "color_correction": {
+          "status": "pass",
+          "confidence": 0.86,
+          "evidence": {
+            "method": "color_checker_24_ccm",
+            "delta_e_before": 12.4,
+            "delta_e_after": 3.1
+          },
+          "issues": [],
+          "suggestions": []
+        },
+        "skin_tone": {
+          "status": "pass",
+          "confidence": 0.84,
+          "evidence": {
+            "color_values": {
+              "rgb": [
+                214,
+                176,
+                150
+              ],
+              "lab": [
+                72.0,
+                12.0,
+                18.0
+              ],
+              "hsv": [
+                22,
+                30,
+                84
+              ]
+            },
+            "dimensions": {
+              "temperature": "warm",
+              "brightness": "light",
+              "chroma": "bright",
+              "undertone": "warm"
+            }
+          },
+          "issues": [],
+          "suggestions": []
+        },
+        "feature_contrast": {
+          "status": "pass",
+          "confidence": 0.82,
+          "evidence": {
+            "eye_color": "dark_brown",
+            "hair_color": "dark_brown",
+            "overall_contrast": "medium"
+          },
+          "issues": [],
+          "suggestions": []
+        },
+        "seasonal_result": {
+          "status": "pass",
+          "confidence": 0.81,
+          "evidence": {
+            "season_4": "spring",
+            "season_12": "bright_spring",
+            "season_24": "bright_spring_light_bright_medium",
+            "confidence": 0.81,
+            "ambiguous_between": [],
+            "why": [
+              "肤色温度为 warm",
+              "明度为 light",
+              "彩度为 bright",
+              "整体对比度为 medium"
+            ],
+            "suitable_colors": [
+              "ivory",
+              "coral",
+              "teal"
+            ],
+            "avoid_colors": [
+              "muddy_gray",
+              "neon_purple"
+            ]
+          },
+          "issues": [],
+          "suggestions": []
+        }
+      },
+      "notes": "轻微风险只做后端标记和建议，不要求用户重新提交。"
+    },
+    {
+      "id": "vl_heavy_makeup",
+      "name": "浓妆",
+      "group": "vl_risk",
+      "image": "tests/fixtures/images/vl_heavy_makeup.jpg",
+      "expected_status": "analyzed",
+      "expected_stage_status": {
+        "input_quality": "pass",
+        "face_cv": "pass",
+        "color_card_cv": "pass",
+        "vl_review": "warn",
+        "color_correction": "pass",
+        "skin_tone": "pass",
+        "feature_contrast": "pass",
+        "seasonal_result": "pass"
+      },
+      "must_issue": [
+        "vl.heavy_makeup"
+      ],
+      "stages": {
+        "face_cv": {
+          "status": "pass",
+          "confidence": 0.92,
+          "evidence": {
+            "face_count": 1,
+            "face_size_ratio": 0.32,
+            "pose": "front",
+            "cropped": false
+          },
+          "issues": [],
+          "suggestions": []
+        },
+        "color_card_cv": {
+          "status": "pass",
+          "confidence": 0.9,
+          "evidence": {
+            "detected": true,
+            "card_type": "colorchecker_24",
+            "patch_count": 24,
+            "same_lighting_as_face": true
+          },
+          "issues": [],
+          "suggestions": []
+        },
+        "vl_review": {
+          "status": "fail",
+          "confidence": 0.9,
+          "evidence": {},
+          "issues": [
+            {
+              "code": "vl.heavy_makeup",
+              "message": "Codex VL 标注为语义风险",
+              "suggestion": "请素颜、无遮挡、关闭滤镜后重新拍摄。"
+            }
+          ],
+          "suggestions": [
+            "请素颜、无遮挡、关闭滤镜后重新拍摄。"
+          ]
+        }
+      },
+      "notes": "妆容/滤镜/轻遮挡只做后端标记和建议，不要求用户重新提交。",
+      "expected_seasonal": {
+        "season_4": "spring",
+        "season_12": "bright_spring"
+      }
+    },
+    {
+      "id": "vl_foundation",
+      "name": "明显粉底",
+      "group": "vl_risk",
+      "image": "tests/fixtures/images/vl_foundation.jpg",
+      "expected_status": "analyzed",
+      "expected_stage_status": {
+        "input_quality": "pass",
+        "face_cv": "pass",
+        "color_card_cv": "pass",
+        "vl_review": "warn",
+        "color_correction": "pass",
+        "skin_tone": "pass",
+        "feature_contrast": "pass",
+        "seasonal_result": "pass"
+      },
+      "must_issue": [
+        "vl.foundation"
+      ],
+      "stages": {
+        "face_cv": {
+          "status": "pass",
+          "confidence": 0.92,
+          "evidence": {
+            "face_count": 1,
+            "face_size_ratio": 0.32,
+            "pose": "front",
+            "cropped": false
+          },
+          "issues": [],
+          "suggestions": []
+        },
+        "color_card_cv": {
+          "status": "pass",
+          "confidence": 0.9,
+          "evidence": {
+            "detected": true,
+            "card_type": "colorchecker_24",
+            "patch_count": 24,
+            "same_lighting_as_face": true
+          },
+          "issues": [],
+          "suggestions": []
+        },
+        "vl_review": {
+          "status": "fail",
+          "confidence": 0.9,
+          "evidence": {},
+          "issues": [
+            {
+              "code": "vl.foundation",
+              "message": "Codex VL 标注为语义风险",
+              "suggestion": "请素颜、无遮挡、关闭滤镜后重新拍摄。"
+            }
+          ],
+          "suggestions": [
+            "请素颜、无遮挡、关闭滤镜后重新拍摄。"
+          ]
+        }
+      },
+      "notes": "妆容/滤镜/轻遮挡只做后端标记和建议，不要求用户重新提交。",
+      "expected_seasonal": {
+        "season_4": "spring",
+        "season_12": "bright_spring"
+      }
+    },
+    {
+      "id": "vl_red_lipstick",
+      "name": "口红明显",
+      "group": "vl_risk",
+      "image": "tests/fixtures/images/vl_red_lipstick.jpg",
+      "expected_status": "analyzed",
+      "expected_stage_status": {
+        "input_quality": "pass",
+        "face_cv": "pass",
+        "color_card_cv": "warn",
+        "vl_review": "warn",
+        "color_correction": "pass",
+        "skin_tone": "pass",
+        "feature_contrast": "pass",
+        "seasonal_result": "pass"
+      },
+      "expected_seasonal": {
+        "season_4": "spring",
+        "season_12": "bright_spring"
+      },
+      "must_issue": [
+        "vl.lipstick"
+      ],
+      "stages": {
+        "face_cv": {
+          "status": "pass",
+          "confidence": 0.92,
+          "evidence": {
+            "face_count": 1,
+            "face_size_ratio": 0.32,
+            "pose": "front",
+            "cropped": false
+          },
+          "issues": [],
+          "suggestions": []
+        },
+        "color_card_cv": {
+          "status": "warn",
+          "confidence": 0.72,
+          "evidence": {},
+          "issues": [
+            {
+              "code": "card.wrong_lighting",
+              "message": "色卡有轻微风险但完整可用",
+              "suggestion": "存在轻微风险，本次继续分析并在结果中标记。"
+            }
+          ],
+          "suggestions": [
+            "存在轻微风险，本次继续分析并在结果中标记。"
+          ]
+        },
+        "vl_review": {
+          "status": "warn",
+          "confidence": 0.72,
+          "evidence": {},
+          "issues": [
+            {
+              "code": "vl.lipstick",
+              "message": "Codex VL 标注为轻微语义风险",
+              "suggestion": "口红主要影响唇色，本次继续分析肤色；后续眼唇建议会标记风险。"
+            }
+          ],
+          "suggestions": [
+            "口红主要影响唇色，本次继续分析肤色；后续眼唇建议会标记风险。"
+          ]
+        },
+        "color_correction": {
+          "status": "pass",
+          "confidence": 0.86,
+          "evidence": {
+            "method": "color_checker_24_ccm",
+            "delta_e_before": 12.4,
+            "delta_e_after": 3.1
+          },
+          "issues": [],
+          "suggestions": []
+        },
+        "skin_tone": {
+          "status": "pass",
+          "confidence": 0.84,
+          "evidence": {
+            "color_values": {
+              "rgb": [
+                214,
+                176,
+                150
+              ],
+              "lab": [
+                72.0,
+                12.0,
+                18.0
+              ],
+              "hsv": [
+                22,
+                30,
+                84
+              ]
+            },
+            "dimensions": {
+              "temperature": "warm",
+              "brightness": "light",
+              "chroma": "bright",
+              "undertone": "warm"
+            }
+          },
+          "issues": [],
+          "suggestions": []
+        },
+        "feature_contrast": {
+          "status": "pass",
+          "confidence": 0.82,
+          "evidence": {
+            "eye_color": "dark_brown",
+            "hair_color": "dark_brown",
+            "overall_contrast": "medium"
+          },
+          "issues": [],
+          "suggestions": []
+        },
+        "seasonal_result": {
+          "status": "pass",
+          "confidence": 0.81,
+          "evidence": {
+            "season_4": "spring",
+            "season_12": "bright_spring",
+            "season_24": "bright_spring_light_bright_medium",
+            "confidence": 0.81,
+            "ambiguous_between": [],
+            "why": [
+              "肤色温度为 warm",
+              "明度为 light",
+              "彩度为 bright",
+              "整体对比度为 medium"
+            ],
+            "suitable_colors": [
+              "ivory",
+              "coral",
+              "teal"
+            ],
+            "avoid_colors": [
+              "muddy_gray",
+              "neon_purple"
+            ]
+          },
+          "issues": [],
+          "suggestions": []
+        }
+      },
+      "notes": "轻微风险只做后端标记和建议，不要求用户重新提交。"
+    },
+    {
+      "id": "vl_blush",
+      "name": "腮红明显",
+      "group": "vl_risk",
+      "image": "tests/fixtures/images/vl_blush.jpg",
+      "expected_status": "analyzed",
+      "expected_stage_status": {
+        "input_quality": "pass",
+        "face_cv": "pass",
+        "color_card_cv": "pass",
+        "vl_review": "warn",
+        "color_correction": "pass",
+        "skin_tone": "pass",
+        "feature_contrast": "pass",
+        "seasonal_result": "pass"
+      },
+      "must_issue": [
+        "vl.blush"
+      ],
+      "stages": {
+        "face_cv": {
+          "status": "pass",
+          "confidence": 0.92,
+          "evidence": {
+            "face_count": 1,
+            "face_size_ratio": 0.32,
+            "pose": "front",
+            "cropped": false
+          },
+          "issues": [],
+          "suggestions": []
+        },
+        "color_card_cv": {
+          "status": "pass",
+          "confidence": 0.9,
+          "evidence": {
+            "detected": true,
+            "card_type": "colorchecker_24",
+            "patch_count": 24,
+            "same_lighting_as_face": true
+          },
+          "issues": [],
+          "suggestions": []
+        },
+        "vl_review": {
+          "status": "fail",
+          "confidence": 0.9,
+          "evidence": {},
+          "issues": [
+            {
+              "code": "vl.blush",
+              "message": "Codex VL 标注为语义风险",
+              "suggestion": "请素颜、无遮挡、关闭滤镜后重新拍摄。"
+            }
+          ],
+          "suggestions": [
+            "请素颜、无遮挡、关闭滤镜后重新拍摄。"
+          ]
+        }
+      },
+      "notes": "妆容/滤镜/轻遮挡只做后端标记和建议，不要求用户重新提交。",
+      "expected_seasonal": {
+        "season_4": "spring",
+        "season_12": "bright_spring"
+      }
+    },
+    {
+      "id": "vl_colored_contacts",
+      "name": "彩瞳",
+      "group": "vl_risk",
+      "image": "tests/fixtures/images/vl_colored_contacts.jpg",
+      "expected_status": "analyzed",
+      "expected_stage_status": {
+        "input_quality": "pass",
+        "face_cv": "pass",
+        "color_card_cv": "pass",
+        "vl_review": "warn",
+        "color_correction": "pass",
+        "skin_tone": "pass",
+        "feature_contrast": "pass",
+        "seasonal_result": "pass"
+      },
+      "must_issue": [
+        "vl.colored_contacts"
+      ],
+      "stages": {
+        "face_cv": {
+          "status": "pass",
+          "confidence": 0.92,
+          "evidence": {
+            "face_count": 1,
+            "face_size_ratio": 0.32,
+            "pose": "front",
+            "cropped": false
+          },
+          "issues": [],
+          "suggestions": []
+        },
+        "color_card_cv": {
+          "status": "pass",
+          "confidence": 0.9,
+          "evidence": {
+            "detected": true,
+            "card_type": "colorchecker_24",
+            "patch_count": 24,
+            "same_lighting_as_face": true
+          },
+          "issues": [],
+          "suggestions": []
+        },
+        "vl_review": {
+          "status": "fail",
+          "confidence": 0.9,
+          "evidence": {},
+          "issues": [
+            {
+              "code": "vl.colored_contacts",
+              "message": "Codex VL 标注为语义风险",
+              "suggestion": "请素颜、无遮挡、关闭滤镜后重新拍摄。"
+            }
+          ],
+          "suggestions": [
+            "请素颜、无遮挡、关闭滤镜后重新拍摄。"
+          ]
+        }
+      },
+      "notes": "妆容/滤镜/轻遮挡只做后端标记和建议，不要求用户重新提交。",
+      "expected_seasonal": {
+        "season_4": "spring",
+        "season_12": "bright_spring"
+      }
+    },
+    {
+      "id": "vl_beauty_filter",
+      "name": "美颜磨皮",
+      "group": "vl_risk",
+      "image": "tests/fixtures/images/vl_beauty_filter.jpg",
+      "expected_status": "analyzed",
+      "expected_stage_status": {
+        "input_quality": "pass",
+        "face_cv": "warn",
+        "color_card_cv": "warn",
+        "vl_review": "warn",
+        "color_correction": "pass",
+        "skin_tone": "pass",
+        "feature_contrast": "pass",
+        "seasonal_result": "pass"
+      },
+      "expected_seasonal": {
+        "season_4": "spring",
+        "season_12": "bright_spring"
+      },
+      "must_issue": [
+        "vl.beauty_filter"
+      ],
+      "stages": {
+        "face_cv": {
+          "status": "warn",
+          "confidence": 0.72,
+          "evidence": {},
+          "issues": [
+            {
+              "code": "face.blurry",
+              "message": "人脸姿态有轻微风险但仍可分析",
+              "suggestion": "存在轻微风险，本次继续分析并在结果中标记。"
+            }
+          ],
+          "suggestions": [
+            "存在轻微风险，本次继续分析并在结果中标记。"
+          ]
+        },
+        "color_card_cv": {
+          "status": "warn",
+          "confidence": 0.72,
+          "evidence": {},
+          "issues": [
+            {
+              "code": "card.wrong_lighting",
+              "message": "色卡有轻微风险但完整可用",
+              "suggestion": "存在轻微风险，本次继续分析并在结果中标记。"
+            }
+          ],
+          "suggestions": [
+            "存在轻微风险，本次继续分析并在结果中标记。"
+          ]
+        },
+        "vl_review": {
+          "status": "warn",
+          "confidence": 0.72,
+          "evidence": {},
+          "issues": [
+            {
+              "code": "vl.beauty_filter",
+              "message": "Codex VL 标注为轻微语义风险",
+              "suggestion": "疑似轻微美颜磨皮，本次继续分析；结果会降低一点置信度。"
+            }
+          ],
+          "suggestions": [
+            "疑似轻微美颜磨皮，本次继续分析；结果会降低一点置信度。"
+          ]
+        },
+        "color_correction": {
+          "status": "pass",
+          "confidence": 0.86,
+          "evidence": {
+            "method": "color_checker_24_ccm",
+            "delta_e_before": 12.4,
+            "delta_e_after": 3.1
+          },
+          "issues": [],
+          "suggestions": []
+        },
+        "skin_tone": {
+          "status": "pass",
+          "confidence": 0.84,
+          "evidence": {
+            "color_values": {
+              "rgb": [
+                214,
+                176,
+                150
+              ],
+              "lab": [
+                72.0,
+                12.0,
+                18.0
+              ],
+              "hsv": [
+                22,
+                30,
+                84
+              ]
+            },
+            "dimensions": {
+              "temperature": "warm",
+              "brightness": "light",
+              "chroma": "bright",
+              "undertone": "warm"
+            }
+          },
+          "issues": [],
+          "suggestions": []
+        },
+        "feature_contrast": {
+          "status": "pass",
+          "confidence": 0.82,
+          "evidence": {
+            "eye_color": "dark_brown",
+            "hair_color": "dark_brown",
+            "overall_contrast": "medium"
+          },
+          "issues": [],
+          "suggestions": []
+        },
+        "seasonal_result": {
+          "status": "pass",
+          "confidence": 0.81,
+          "evidence": {
+            "season_4": "spring",
+            "season_12": "bright_spring",
+            "season_24": "bright_spring_light_bright_medium",
+            "confidence": 0.81,
+            "ambiguous_between": [],
+            "why": [
+              "肤色温度为 warm",
+              "明度为 light",
+              "彩度为 bright",
+              "整体对比度为 medium"
+            ],
+            "suitable_colors": [
+              "ivory",
+              "coral",
+              "teal"
+            ],
+            "avoid_colors": [
+              "muddy_gray",
+              "neon_purple"
+            ]
+          },
+          "issues": [],
+          "suggestions": []
+        }
+      },
+      "notes": "轻微风险只做后端标记和建议，不要求用户重新提交。"
+    },
+    {
+      "id": "vl_color_filter",
+      "name": "滤镜偏色",
+      "group": "vl_risk",
+      "image": "tests/fixtures/images/vl_color_filter.jpg",
+      "expected_status": "analyzed",
+      "expected_stage_status": {
+        "input_quality": "pass",
+        "face_cv": "pass",
+        "color_card_cv": "warn",
+        "vl_review": "warn",
+        "color_correction": "pass",
+        "skin_tone": "pass",
+        "feature_contrast": "pass",
+        "seasonal_result": "pass"
+      },
+      "expected_seasonal": {
+        "season_4": "spring",
+        "season_12": "bright_spring"
+      },
+      "must_issue": [
+        "vl.color_filter"
+      ],
+      "stages": {
+        "face_cv": {
+          "status": "pass",
+          "confidence": 0.92,
+          "evidence": {
+            "face_count": 1,
+            "face_size_ratio": 0.32,
+            "pose": "front",
+            "cropped": false
+          },
+          "issues": [],
+          "suggestions": []
+        },
+        "color_card_cv": {
+          "status": "warn",
+          "confidence": 0.72,
+          "evidence": {},
+          "issues": [
+            {
+              "code": "card.wrong_lighting",
+              "message": "色卡有轻微风险但完整可用",
+              "suggestion": "存在轻微风险，本次继续分析并在结果中标记。"
+            }
+          ],
+          "suggestions": [
+            "存在轻微风险，本次继续分析并在结果中标记。"
+          ]
+        },
+        "vl_review": {
+          "status": "warn",
+          "confidence": 0.72,
+          "evidence": {},
+          "issues": [
+            {
+              "code": "vl.color_filter",
+              "message": "Codex VL 标注为轻微语义风险",
+              "suggestion": "疑似轻微滤镜偏色，本次依赖色卡校正继续分析。"
+            }
+          ],
+          "suggestions": [
+            "疑似轻微滤镜偏色，本次依赖色卡校正继续分析。"
+          ]
+        },
+        "color_correction": {
+          "status": "pass",
+          "confidence": 0.86,
+          "evidence": {
+            "method": "color_checker_24_ccm",
+            "delta_e_before": 12.4,
+            "delta_e_after": 3.1
+          },
+          "issues": [],
+          "suggestions": []
+        },
+        "skin_tone": {
+          "status": "pass",
+          "confidence": 0.84,
+          "evidence": {
+            "color_values": {
+              "rgb": [
+                214,
+                176,
+                150
+              ],
+              "lab": [
+                72.0,
+                12.0,
+                18.0
+              ],
+              "hsv": [
+                22,
+                30,
+                84
+              ]
+            },
+            "dimensions": {
+              "temperature": "warm",
+              "brightness": "light",
+              "chroma": "bright",
+              "undertone": "warm"
+            }
+          },
+          "issues": [],
+          "suggestions": []
+        },
+        "feature_contrast": {
+          "status": "pass",
+          "confidence": 0.82,
+          "evidence": {
+            "eye_color": "dark_brown",
+            "hair_color": "dark_brown",
+            "overall_contrast": "medium"
+          },
+          "issues": [],
+          "suggestions": []
+        },
+        "seasonal_result": {
+          "status": "pass",
+          "confidence": 0.81,
+          "evidence": {
+            "season_4": "spring",
+            "season_12": "bright_spring",
+            "season_24": "bright_spring_light_bright_medium",
+            "confidence": 0.81,
+            "ambiguous_between": [],
+            "why": [
+              "肤色温度为 warm",
+              "明度为 light",
+              "彩度为 bright",
+              "整体对比度为 medium"
+            ],
+            "suitable_colors": [
+              "ivory",
+              "coral",
+              "teal"
+            ],
+            "avoid_colors": [
+              "muddy_gray",
+              "neon_purple"
+            ]
+          },
+          "issues": [],
+          "suggestions": []
+        }
+      },
+      "notes": "轻微风险只做后端标记和建议，不要求用户重新提交。"
+    },
+    {
+      "id": "vl_hat_bangs",
+      "name": "帽子刘海遮挡",
+      "group": "vl_risk",
+      "image": "tests/fixtures/images/vl_hat_bangs.jpg",
+      "expected_status": "analyzed",
+      "expected_stage_status": {
+        "input_quality": "pass",
+        "face_cv": "pass",
+        "color_card_cv": "pass",
+        "vl_review": "warn",
+        "color_correction": "pass",
+        "skin_tone": "pass",
+        "feature_contrast": "pass",
+        "seasonal_result": "pass"
+      },
+      "must_issue": [
+        "vl.hat_bangs"
+      ],
+      "stages": {
+        "face_cv": {
+          "status": "pass",
+          "confidence": 0.92,
+          "evidence": {
+            "face_count": 1,
+            "face_size_ratio": 0.32,
+            "pose": "front",
+            "cropped": false
+          },
+          "issues": [],
+          "suggestions": []
+        },
+        "color_card_cv": {
+          "status": "pass",
+          "confidence": 0.9,
+          "evidence": {
+            "detected": true,
+            "card_type": "colorchecker_24",
+            "patch_count": 24,
+            "same_lighting_as_face": true
+          },
+          "issues": [],
+          "suggestions": []
+        },
+        "vl_review": {
+          "status": "fail",
+          "confidence": 0.9,
+          "evidence": {},
+          "issues": [
+            {
+              "code": "vl.hat_bangs",
+              "message": "Codex VL 标注为语义风险",
+              "suggestion": "请素颜、无遮挡、关闭滤镜后重新拍摄。"
+            }
+          ],
+          "suggestions": [
+            "请素颜、无遮挡、关闭滤镜后重新拍摄。"
+          ]
+        }
+      },
+      "notes": "妆容/滤镜/轻遮挡只做后端标记和建议，不要求用户重新提交。",
+      "expected_seasonal": {
+        "season_4": "spring",
+        "season_12": "bright_spring"
+      }
+    },
+    {
+      "id": "season_spring_bright",
+      "name": "明亮春季型",
+      "group": "seasonal_gold",
+      "image": "tests/fixtures/images/season_spring_bright.jpg",
+      "expected_status": "analyzed",
+      "expected_stage_status": {
+        "input_quality": "pass",
+        "face_cv": "pass",
+        "color_card_cv": "pass",
+        "vl_review": "pass",
+        "color_correction": "pass",
+        "skin_tone": "pass",
+        "feature_contrast": "pass",
+        "seasonal_result": "pass"
+      },
+      "expected_seasonal": {
+        "season_4": "spring",
+        "season_12": "bright_spring"
+      },
+      "stages": {
+        "face_cv": {
+          "status": "pass",
+          "confidence": 0.92,
+          "evidence": {
+            "face_count": 1,
+            "face_size_ratio": 0.32,
+            "pose": "front",
+            "cropped": false
+          },
+          "issues": [],
+          "suggestions": []
+        },
+        "color_card_cv": {
+          "status": "pass",
+          "confidence": 0.9,
+          "evidence": {
+            "detected": true,
+            "card_type": "colorchecker_24",
+            "patch_count": 24,
+            "same_lighting_as_face": true
+          },
+          "issues": [],
+          "suggestions": []
+        },
+        "vl_review": {
+          "status": "pass",
+          "confidence": 0.88,
+          "evidence": {
+            "is_real_person": true,
+            "makeup_risk": "low",
+            "filter_risk": "low",
+            "occlusion_risk": "low"
+          },
+          "issues": [],
+          "suggestions": []
+        },
+        "color_correction": {
+          "status": "pass",
+          "confidence": 0.86,
+          "evidence": {
+            "method": "color_checker_24_ccm",
+            "delta_e_before": 12.4,
+            "delta_e_after": 3.1
+          },
+          "issues": [],
+          "suggestions": []
+        },
+        "skin_tone": {
+          "status": "pass",
+          "confidence": 0.84,
+          "evidence": {
+            "color_values": {
+              "rgb": [
+                214,
+                176,
+                150
+              ],
+              "lab": [
+                72.0,
+                12.0,
+                18.0
+              ],
+              "hsv": [
+                22,
+                30,
+                84
+              ]
+            },
+            "dimensions": {
+              "temperature": "warm",
+              "brightness": "light",
+              "chroma": "bright",
+              "undertone": "warm"
+            }
+          },
+          "issues": [],
+          "suggestions": []
+        },
+        "feature_contrast": {
+          "status": "pass",
+          "confidence": 0.82,
+          "evidence": {
+            "eye_color": "dark_brown",
+            "hair_color": "dark_brown",
+            "overall_contrast": "medium"
+          },
+          "issues": [],
+          "suggestions": []
+        },
+        "seasonal_result": {
+          "status": "pass",
+          "confidence": 0.81,
+          "evidence": {
+            "season_4": "spring",
+            "season_12": "bright_spring",
+            "season_24": "bright_spring_light_bright_medium",
+            "confidence": 0.81,
+            "ambiguous_between": [],
+            "why": [
+              "肤色温度为 warm",
+              "明度为 light",
+              "彩度为 bright",
+              "整体对比度为 medium"
+            ],
+            "suitable_colors": [
+              "ivory",
+              "coral",
+              "teal"
+            ],
+            "avoid_colors": [
+              "muddy_gray",
+              "neon_purple"
+            ]
+          },
+          "issues": [],
+          "suggestions": []
+        }
+      },
+      "notes": "合成色彩金标样本，用于验证完整分析出参和季节型映射。"
+    },
+    {
+      "id": "season_spring_light",
+      "name": "浅春季型",
+      "group": "seasonal_gold",
+      "image": "tests/fixtures/images/season_spring_light.jpg",
+      "expected_status": "analyzed",
+      "expected_stage_status": {
+        "input_quality": "pass",
+        "face_cv": "pass",
+        "color_card_cv": "pass",
+        "vl_review": "pass",
+        "color_correction": "pass",
+        "skin_tone": "pass",
+        "feature_contrast": "pass",
+        "seasonal_result": "pass"
+      },
+      "expected_seasonal": {
+        "season_4": "spring",
+        "season_12": "light_spring"
+      },
+      "stages": {
+        "face_cv": {
+          "status": "pass",
+          "confidence": 0.92,
+          "evidence": {
+            "face_count": 1,
+            "face_size_ratio": 0.32,
+            "pose": "front",
+            "cropped": false
+          },
+          "issues": [],
+          "suggestions": []
+        },
+        "color_card_cv": {
+          "status": "pass",
+          "confidence": 0.9,
+          "evidence": {
+            "detected": true,
+            "card_type": "colorchecker_24",
+            "patch_count": 24,
+            "same_lighting_as_face": true
+          },
+          "issues": [],
+          "suggestions": []
+        },
+        "vl_review": {
+          "status": "pass",
+          "confidence": 0.88,
+          "evidence": {
+            "is_real_person": true,
+            "makeup_risk": "low",
+            "filter_risk": "low",
+            "occlusion_risk": "low"
+          },
+          "issues": [],
+          "suggestions": []
+        },
+        "color_correction": {
+          "status": "pass",
+          "confidence": 0.86,
+          "evidence": {
+            "method": "color_checker_24_ccm",
+            "delta_e_before": 12.4,
+            "delta_e_after": 3.1
+          },
+          "issues": [],
+          "suggestions": []
+        },
+        "skin_tone": {
+          "status": "pass",
+          "confidence": 0.84,
+          "evidence": {
+            "color_values": {
+              "rgb": [
+                214,
+                176,
+                150
+              ],
+              "lab": [
+                72.0,
+                12.0,
+                18.0
+              ],
+              "hsv": [
+                22,
+                30,
+                84
+              ]
+            },
+            "dimensions": {
+              "temperature": "warm",
+              "brightness": "light",
+              "chroma": "medium",
+              "undertone": "warm"
+            }
+          },
+          "issues": [],
+          "suggestions": []
+        },
+        "feature_contrast": {
+          "status": "pass",
+          "confidence": 0.82,
+          "evidence": {
+            "eye_color": "dark_brown",
+            "hair_color": "dark_brown",
+            "overall_contrast": "low"
+          },
+          "issues": [],
+          "suggestions": []
+        },
+        "seasonal_result": {
+          "status": "pass",
+          "confidence": 0.81,
+          "evidence": {
+            "season_4": "spring",
+            "season_12": "light_spring",
+            "season_24": "light_spring_light_medium_low",
+            "confidence": 0.81,
+            "ambiguous_between": [],
+            "why": [
+              "肤色温度为 warm",
+              "明度为 light",
+              "彩度为 medium",
+              "整体对比度为 low"
+            ],
+            "suitable_colors": [
+              "ivory",
+              "coral",
+              "teal"
+            ],
+            "avoid_colors": [
+              "muddy_gray",
+              "neon_purple"
+            ]
+          },
+          "issues": [],
+          "suggestions": []
+        }
+      },
+      "notes": "合成色彩金标样本，用于验证完整分析出参和季节型映射。"
+    },
+    {
+      "id": "season_summer_light",
+      "name": "浅夏季型",
+      "group": "seasonal_gold",
+      "image": "tests/fixtures/images/season_summer_light.jpg",
+      "expected_status": "analyzed",
+      "expected_stage_status": {
+        "input_quality": "pass",
+        "face_cv": "pass",
+        "color_card_cv": "pass",
+        "vl_review": "pass",
+        "color_correction": "pass",
+        "skin_tone": "pass",
+        "feature_contrast": "pass",
+        "seasonal_result": "pass"
+      },
+      "expected_seasonal": {
+        "season_4": "summer",
+        "season_12": "light_summer"
+      },
+      "stages": {
+        "face_cv": {
+          "status": "pass",
+          "confidence": 0.92,
+          "evidence": {
+            "face_count": 1,
+            "face_size_ratio": 0.32,
+            "pose": "front",
+            "cropped": false
+          },
+          "issues": [],
+          "suggestions": []
+        },
+        "color_card_cv": {
+          "status": "pass",
+          "confidence": 0.9,
+          "evidence": {
+            "detected": true,
+            "card_type": "colorchecker_24",
+            "patch_count": 24,
+            "same_lighting_as_face": true
+          },
+          "issues": [],
+          "suggestions": []
+        },
+        "vl_review": {
+          "status": "pass",
+          "confidence": 0.88,
+          "evidence": {
+            "is_real_person": true,
+            "makeup_risk": "low",
+            "filter_risk": "low",
+            "occlusion_risk": "low"
+          },
+          "issues": [],
+          "suggestions": []
+        },
+        "color_correction": {
+          "status": "pass",
+          "confidence": 0.86,
+          "evidence": {
+            "method": "color_checker_24_ccm",
+            "delta_e_before": 12.4,
+            "delta_e_after": 3.1
+          },
+          "issues": [],
+          "suggestions": []
+        },
+        "skin_tone": {
+          "status": "pass",
+          "confidence": 0.84,
+          "evidence": {
+            "color_values": {
+              "rgb": [
+                214,
+                176,
+                150
+              ],
+              "lab": [
+                72.0,
+                12.0,
+                18.0
+              ],
+              "hsv": [
+                22,
+                30,
+                84
+              ]
+            },
+            "dimensions": {
+              "temperature": "cool",
+              "brightness": "light",
+              "chroma": "muted",
+              "undertone": "cool"
+            }
+          },
+          "issues": [],
+          "suggestions": []
+        },
+        "feature_contrast": {
+          "status": "pass",
+          "confidence": 0.82,
+          "evidence": {
+            "eye_color": "dark_brown",
+            "hair_color": "dark_brown",
+            "overall_contrast": "low"
+          },
+          "issues": [],
+          "suggestions": []
+        },
+        "seasonal_result": {
+          "status": "pass",
+          "confidence": 0.81,
+          "evidence": {
+            "season_4": "summer",
+            "season_12": "light_summer",
+            "season_24": "light_summer_light_muted_low",
+            "confidence": 0.81,
+            "ambiguous_between": [],
+            "why": [
+              "肤色温度为 cool",
+              "明度为 light",
+              "彩度为 muted",
+              "整体对比度为 low"
+            ],
+            "suitable_colors": [
+              "ivory",
+              "coral",
+              "teal"
+            ],
+            "avoid_colors": [
+              "muddy_gray",
+              "neon_purple"
+            ]
+          },
+          "issues": [],
+          "suggestions": []
+        }
+      },
+      "notes": "合成色彩金标样本，用于验证完整分析出参和季节型映射。"
+    },
+    {
+      "id": "season_summer_soft",
+      "name": "柔夏季型",
+      "group": "seasonal_gold",
+      "image": "tests/fixtures/images/season_summer_soft.jpg",
+      "expected_status": "analyzed",
+      "expected_stage_status": {
+        "input_quality": "pass",
+        "face_cv": "pass",
+        "color_card_cv": "pass",
+        "vl_review": "pass",
+        "color_correction": "pass",
+        "skin_tone": "pass",
+        "feature_contrast": "pass",
+        "seasonal_result": "pass"
+      },
+      "expected_seasonal": {
+        "season_4": "summer",
+        "season_12": "soft_summer"
+      },
+      "stages": {
+        "face_cv": {
+          "status": "pass",
+          "confidence": 0.92,
+          "evidence": {
+            "face_count": 1,
+            "face_size_ratio": 0.32,
+            "pose": "front",
+            "cropped": false
+          },
+          "issues": [],
+          "suggestions": []
+        },
+        "color_card_cv": {
+          "status": "pass",
+          "confidence": 0.9,
+          "evidence": {
+            "detected": true,
+            "card_type": "colorchecker_24",
+            "patch_count": 24,
+            "same_lighting_as_face": true
+          },
+          "issues": [],
+          "suggestions": []
+        },
+        "vl_review": {
+          "status": "pass",
+          "confidence": 0.88,
+          "evidence": {
+            "is_real_person": true,
+            "makeup_risk": "low",
+            "filter_risk": "low",
+            "occlusion_risk": "low"
+          },
+          "issues": [],
+          "suggestions": []
+        },
+        "color_correction": {
+          "status": "pass",
+          "confidence": 0.86,
+          "evidence": {
+            "method": "color_checker_24_ccm",
+            "delta_e_before": 12.4,
+            "delta_e_after": 3.1
+          },
+          "issues": [],
+          "suggestions": []
+        },
+        "skin_tone": {
+          "status": "pass",
+          "confidence": 0.84,
+          "evidence": {
+            "color_values": {
+              "rgb": [
+                214,
+                176,
+                150
+              ],
+              "lab": [
+                72.0,
+                12.0,
+                18.0
+              ],
+              "hsv": [
+                22,
+                30,
+                84
+              ]
+            },
+            "dimensions": {
+              "temperature": "cool",
+              "brightness": "medium",
+              "chroma": "muted",
+              "undertone": "cool"
+            }
+          },
+          "issues": [],
+          "suggestions": []
+        },
+        "feature_contrast": {
+          "status": "pass",
+          "confidence": 0.82,
+          "evidence": {
+            "eye_color": "dark_brown",
+            "hair_color": "dark_brown",
+            "overall_contrast": "low"
+          },
+          "issues": [],
+          "suggestions": []
+        },
+        "seasonal_result": {
+          "status": "pass",
+          "confidence": 0.81,
+          "evidence": {
+            "season_4": "summer",
+            "season_12": "soft_summer",
+            "season_24": "soft_summer_medium_muted_low",
+            "confidence": 0.81,
+            "ambiguous_between": [],
+            "why": [
+              "肤色温度为 cool",
+              "明度为 medium",
+              "彩度为 muted",
+              "整体对比度为 low"
+            ],
+            "suitable_colors": [
+              "ivory",
+              "coral",
+              "teal"
+            ],
+            "avoid_colors": [
+              "muddy_gray",
+              "neon_purple"
+            ]
+          },
+          "issues": [],
+          "suggestions": []
+        }
+      },
+      "notes": "合成色彩金标样本，用于验证完整分析出参和季节型映射。"
+    },
+    {
+      "id": "season_autumn_soft",
+      "name": "柔秋季型",
+      "group": "seasonal_gold",
+      "image": "tests/fixtures/images/season_autumn_soft.jpg",
+      "expected_status": "analyzed",
+      "expected_stage_status": {
+        "input_quality": "pass",
+        "face_cv": "pass",
+        "color_card_cv": "pass",
+        "vl_review": "pass",
+        "color_correction": "pass",
+        "skin_tone": "pass",
+        "feature_contrast": "pass",
+        "seasonal_result": "pass"
+      },
+      "expected_seasonal": {
+        "season_4": "autumn",
+        "season_12": "soft_autumn"
+      },
+      "stages": {
+        "face_cv": {
+          "status": "pass",
+          "confidence": 0.92,
+          "evidence": {
+            "face_count": 1,
+            "face_size_ratio": 0.32,
+            "pose": "front",
+            "cropped": false
+          },
+          "issues": [],
+          "suggestions": []
+        },
+        "color_card_cv": {
+          "status": "pass",
+          "confidence": 0.9,
+          "evidence": {
+            "detected": true,
+            "card_type": "colorchecker_24",
+            "patch_count": 24,
+            "same_lighting_as_face": true
+          },
+          "issues": [],
+          "suggestions": []
+        },
+        "vl_review": {
+          "status": "pass",
+          "confidence": 0.88,
+          "evidence": {
+            "is_real_person": true,
+            "makeup_risk": "low",
+            "filter_risk": "low",
+            "occlusion_risk": "low"
+          },
+          "issues": [],
+          "suggestions": []
+        },
+        "color_correction": {
+          "status": "pass",
+          "confidence": 0.86,
+          "evidence": {
+            "method": "color_checker_24_ccm",
+            "delta_e_before": 12.4,
+            "delta_e_after": 3.1
+          },
+          "issues": [],
+          "suggestions": []
+        },
+        "skin_tone": {
+          "status": "pass",
+          "confidence": 0.84,
+          "evidence": {
+            "color_values": {
+              "rgb": [
+                214,
+                176,
+                150
+              ],
+              "lab": [
+                72.0,
+                12.0,
+                18.0
+              ],
+              "hsv": [
+                22,
+                30,
+                84
+              ]
+            },
+            "dimensions": {
+              "temperature": "warm",
+              "brightness": "medium",
+              "chroma": "muted",
+              "undertone": "warm"
+            }
+          },
+          "issues": [],
+          "suggestions": []
+        },
+        "feature_contrast": {
+          "status": "pass",
+          "confidence": 0.82,
+          "evidence": {
+            "eye_color": "dark_brown",
+            "hair_color": "dark_brown",
+            "overall_contrast": "low"
+          },
+          "issues": [],
+          "suggestions": []
+        },
+        "seasonal_result": {
+          "status": "pass",
+          "confidence": 0.81,
+          "evidence": {
+            "season_4": "autumn",
+            "season_12": "soft_autumn",
+            "season_24": "soft_autumn_medium_muted_low",
+            "confidence": 0.81,
+            "ambiguous_between": [],
+            "why": [
+              "肤色温度为 warm",
+              "明度为 medium",
+              "彩度为 muted",
+              "整体对比度为 low"
+            ],
+            "suitable_colors": [
+              "ivory",
+              "coral",
+              "teal"
+            ],
+            "avoid_colors": [
+              "muddy_gray",
+              "neon_purple"
+            ]
+          },
+          "issues": [],
+          "suggestions": []
+        }
+      },
+      "notes": "合成色彩金标样本，用于验证完整分析出参和季节型映射。"
+    },
+    {
+      "id": "season_autumn_deep",
+      "name": "深秋季型",
+      "group": "seasonal_gold",
+      "image": "tests/fixtures/images/season_autumn_deep.jpg",
+      "expected_status": "analyzed",
+      "expected_stage_status": {
+        "input_quality": "pass",
+        "face_cv": "pass",
+        "color_card_cv": "pass",
+        "vl_review": "pass",
+        "color_correction": "pass",
+        "skin_tone": "pass",
+        "feature_contrast": "pass",
+        "seasonal_result": "pass"
+      },
+      "expected_seasonal": {
+        "season_4": "autumn",
+        "season_12": "deep_autumn"
+      },
+      "stages": {
+        "face_cv": {
+          "status": "pass",
+          "confidence": 0.92,
+          "evidence": {
+            "face_count": 1,
+            "face_size_ratio": 0.32,
+            "pose": "front",
+            "cropped": false
+          },
+          "issues": [],
+          "suggestions": []
+        },
+        "color_card_cv": {
+          "status": "pass",
+          "confidence": 0.9,
+          "evidence": {
+            "detected": true,
+            "card_type": "colorchecker_24",
+            "patch_count": 24,
+            "same_lighting_as_face": true
+          },
+          "issues": [],
+          "suggestions": []
+        },
+        "vl_review": {
+          "status": "pass",
+          "confidence": 0.88,
+          "evidence": {
+            "is_real_person": true,
+            "makeup_risk": "low",
+            "filter_risk": "low",
+            "occlusion_risk": "low"
+          },
+          "issues": [],
+          "suggestions": []
+        },
+        "color_correction": {
+          "status": "pass",
+          "confidence": 0.86,
+          "evidence": {
+            "method": "color_checker_24_ccm",
+            "delta_e_before": 12.4,
+            "delta_e_after": 3.1
+          },
+          "issues": [],
+          "suggestions": []
+        },
+        "skin_tone": {
+          "status": "pass",
+          "confidence": 0.84,
+          "evidence": {
+            "color_values": {
+              "rgb": [
+                214,
+                176,
+                150
+              ],
+              "lab": [
+                72.0,
+                12.0,
+                18.0
+              ],
+              "hsv": [
+                22,
+                30,
+                84
+              ]
+            },
+            "dimensions": {
+              "temperature": "warm",
+              "brightness": "deep",
+              "chroma": "medium",
+              "undertone": "warm"
+            }
+          },
+          "issues": [],
+          "suggestions": []
+        },
+        "feature_contrast": {
+          "status": "pass",
+          "confidence": 0.82,
+          "evidence": {
+            "eye_color": "dark_brown",
+            "hair_color": "dark_brown",
+            "overall_contrast": "high"
+          },
+          "issues": [],
+          "suggestions": []
+        },
+        "seasonal_result": {
+          "status": "pass",
+          "confidence": 0.81,
+          "evidence": {
+            "season_4": "autumn",
+            "season_12": "deep_autumn",
+            "season_24": "deep_autumn_deep_medium_high",
+            "confidence": 0.81,
+            "ambiguous_between": [],
+            "why": [
+              "肤色温度为 warm",
+              "明度为 deep",
+              "彩度为 medium",
+              "整体对比度为 high"
+            ],
+            "suitable_colors": [
+              "ivory",
+              "coral",
+              "teal"
+            ],
+            "avoid_colors": [
+              "muddy_gray",
+              "neon_purple"
+            ]
+          },
+          "issues": [],
+          "suggestions": []
+        }
+      },
+      "notes": "合成色彩金标样本，用于验证完整分析出参和季节型映射。"
+    },
+    {
+      "id": "season_winter_clear",
+      "name": "清冬季型",
+      "group": "seasonal_gold",
+      "image": "tests/fixtures/images/season_winter_clear.jpg",
+      "expected_status": "analyzed",
+      "expected_stage_status": {
+        "input_quality": "pass",
+        "face_cv": "pass",
+        "color_card_cv": "pass",
+        "vl_review": "pass",
+        "color_correction": "pass",
+        "skin_tone": "pass",
+        "feature_contrast": "pass",
+        "seasonal_result": "pass"
+      },
+      "expected_seasonal": {
+        "season_4": "winter",
+        "season_12": "clear_winter"
+      },
+      "stages": {
+        "face_cv": {
+          "status": "pass",
+          "confidence": 0.92,
+          "evidence": {
+            "face_count": 1,
+            "face_size_ratio": 0.32,
+            "pose": "front",
+            "cropped": false
+          },
+          "issues": [],
+          "suggestions": []
+        },
+        "color_card_cv": {
+          "status": "pass",
+          "confidence": 0.9,
+          "evidence": {
+            "detected": true,
+            "card_type": "colorchecker_24",
+            "patch_count": 24,
+            "same_lighting_as_face": true
+          },
+          "issues": [],
+          "suggestions": []
+        },
+        "vl_review": {
+          "status": "pass",
+          "confidence": 0.88,
+          "evidence": {
+            "is_real_person": true,
+            "makeup_risk": "low",
+            "filter_risk": "low",
+            "occlusion_risk": "low"
+          },
+          "issues": [],
+          "suggestions": []
+        },
+        "color_correction": {
+          "status": "pass",
+          "confidence": 0.86,
+          "evidence": {
+            "method": "color_checker_24_ccm",
+            "delta_e_before": 12.4,
+            "delta_e_after": 3.1
+          },
+          "issues": [],
+          "suggestions": []
+        },
+        "skin_tone": {
+          "status": "pass",
+          "confidence": 0.84,
+          "evidence": {
+            "color_values": {
+              "rgb": [
+                214,
+                176,
+                150
+              ],
+              "lab": [
+                72.0,
+                12.0,
+                18.0
+              ],
+              "hsv": [
+                22,
+                30,
+                84
+              ]
+            },
+            "dimensions": {
+              "temperature": "cool",
+              "brightness": "medium",
+              "chroma": "bright",
+              "undertone": "cool"
+            }
+          },
+          "issues": [],
+          "suggestions": []
+        },
+        "feature_contrast": {
+          "status": "pass",
+          "confidence": 0.82,
+          "evidence": {
+            "eye_color": "dark_brown",
+            "hair_color": "dark_brown",
+            "overall_contrast": "high"
+          },
+          "issues": [],
+          "suggestions": []
+        },
+        "seasonal_result": {
+          "status": "pass",
+          "confidence": 0.81,
+          "evidence": {
+            "season_4": "winter",
+            "season_12": "clear_winter",
+            "season_24": "clear_winter_medium_bright_high",
+            "confidence": 0.81,
+            "ambiguous_between": [],
+            "why": [
+              "肤色温度为 cool",
+              "明度为 medium",
+              "彩度为 bright",
+              "整体对比度为 high"
+            ],
+            "suitable_colors": [
+              "ivory",
+              "coral",
+              "teal"
+            ],
+            "avoid_colors": [
+              "muddy_gray",
+              "neon_purple"
+            ]
+          },
+          "issues": [],
+          "suggestions": []
+        }
+      },
+      "notes": "合成色彩金标样本，用于验证完整分析出参和季节型映射。"
+    },
+    {
+      "id": "season_winter_deep",
+      "name": "深冬季型",
+      "group": "seasonal_gold",
+      "image": "tests/fixtures/images/season_winter_deep.jpg",
+      "expected_status": "analyzed",
+      "expected_stage_status": {
+        "input_quality": "pass",
+        "face_cv": "pass",
+        "color_card_cv": "pass",
+        "vl_review": "pass",
+        "color_correction": "pass",
+        "skin_tone": "pass",
+        "feature_contrast": "pass",
+        "seasonal_result": "pass"
+      },
+      "expected_seasonal": {
+        "season_4": "winter",
+        "season_12": "deep_winter"
+      },
+      "stages": {
+        "face_cv": {
+          "status": "pass",
+          "confidence": 0.92,
+          "evidence": {
+            "face_count": 1,
+            "face_size_ratio": 0.32,
+            "pose": "front",
+            "cropped": false
+          },
+          "issues": [],
+          "suggestions": []
+        },
+        "color_card_cv": {
+          "status": "pass",
+          "confidence": 0.9,
+          "evidence": {
+            "detected": true,
+            "card_type": "colorchecker_24",
+            "patch_count": 24,
+            "same_lighting_as_face": true
+          },
+          "issues": [],
+          "suggestions": []
+        },
+        "vl_review": {
+          "status": "pass",
+          "confidence": 0.88,
+          "evidence": {
+            "is_real_person": true,
+            "makeup_risk": "low",
+            "filter_risk": "low",
+            "occlusion_risk": "low"
+          },
+          "issues": [],
+          "suggestions": []
+        },
+        "color_correction": {
+          "status": "pass",
+          "confidence": 0.86,
+          "evidence": {
+            "method": "color_checker_24_ccm",
+            "delta_e_before": 12.4,
+            "delta_e_after": 3.1
+          },
+          "issues": [],
+          "suggestions": []
+        },
+        "skin_tone": {
+          "status": "pass",
+          "confidence": 0.84,
+          "evidence": {
+            "color_values": {
+              "rgb": [
+                214,
+                176,
+                150
+              ],
+              "lab": [
+                72.0,
+                12.0,
+                18.0
+              ],
+              "hsv": [
+                22,
+                30,
+                84
+              ]
+            },
+            "dimensions": {
+              "temperature": "cool",
+              "brightness": "deep",
+              "chroma": "bright",
+              "undertone": "cool"
+            }
+          },
+          "issues": [],
+          "suggestions": []
+        },
+        "feature_contrast": {
+          "status": "pass",
+          "confidence": 0.82,
+          "evidence": {
+            "eye_color": "dark_brown",
+            "hair_color": "dark_brown",
+            "overall_contrast": "high"
+          },
+          "issues": [],
+          "suggestions": []
+        },
+        "seasonal_result": {
+          "status": "pass",
+          "confidence": 0.81,
+          "evidence": {
+            "season_4": "winter",
+            "season_12": "deep_winter",
+            "season_24": "deep_winter_deep_bright_high",
+            "confidence": 0.81,
+            "ambiguous_between": [],
+            "why": [
+              "肤色温度为 cool",
+              "明度为 deep",
+              "彩度为 bright",
+              "整体对比度为 high"
+            ],
+            "suitable_colors": [
+              "ivory",
+              "coral",
+              "teal"
+            ],
+            "avoid_colors": [
+              "muddy_gray",
+              "neon_purple"
+            ]
+          },
+          "issues": [],
+          "suggestions": []
+        }
+      },
+      "notes": "合成色彩金标样本，用于验证完整分析出参和季节型映射。"
+    }
+  ]
+}
