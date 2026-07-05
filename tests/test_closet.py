@@ -98,6 +98,10 @@ def test_closet_upload_import_creates_manifest_item(monkeypatch, tmp_path: Path)
     item = data["items"][0]
     assert item["category"] == "top"
     assert item["assets"]["cutout_path"].startswith("/user-assets/closet/")
+    assert item["assets"]["preview_path"].startswith("/user-assets/closet/")
+    preview_path = closet._closet_disk_path(item["assets"]["preview_path"])
+    assert preview_path is not None
+    assert Image.open(preview_path).size == (900, 900)
     assert (tmp_path / "closet_manifest.json").exists()
 
 

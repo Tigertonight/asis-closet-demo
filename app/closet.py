@@ -5459,9 +5459,6 @@ def _closet_item_from_segmentation_mask(
     mask = alpha.crop(box)
     crop_rgb = image.crop(box).convert("RGB")
     cutout, matting_status = RembgMattingProvider().refine(crop_rgb, mask)
-    preview = Image.new("RGBA", cutout.size, (255, 255, 255, 255))
-    preview.alpha_composite(cutout)
-
     raw_id = f"{source['image_id']}:{category}:{box}:{mask_area}:{provider_name}"
     item_id = hashlib.sha256(raw_id.encode("utf-8")).hexdigest()[:16]
     item_dir = _closet_item_dir() / item_id
@@ -5471,7 +5468,7 @@ def _closet_item_from_segmentation_mask(
     preview_path = item_dir / "preview.png"
     cutout.save(cutout_path)
     mask.save(mask_path)
-    preview.convert("RGB").save(preview_path)
+    _build_closet_item_preview(cutout_path, preview_path)
 
     confidence = min(0.94, max(0.56, mask_area / image_area * 7.5))
     return {
@@ -5524,8 +5521,9 @@ def _closet_item_from_fashion_item(item: dict[str, Any], source: dict[str, Any])
     raw_id = f"{source['image_id']}:{item.get('item_id')}:{category}"
     item_id = hashlib.sha256(raw_id.encode("utf-8")).hexdigest()[:16]
     cutout = _copy_asset_to_closet(item.get("cutout_path"), item_id, "cutout")
-    clean = _copy_asset_to_closet(item.get("clean_reference_path") or item.get("cutout_path"), item_id, "preview")
+    clean = _copy_asset_to_closet(item.get("clean_reference_path") or item.get("cutout_path"), item_id, "clean_reference")
     mask = _copy_asset_to_closet(item.get("mask_path"), item_id, "mask")
+    preview = _build_closet_item_preview(clean or cutout, _closet_item_dir() / item_id / "preview.png")
     return {
         "item_id": item_id,
         "category": category,
@@ -5537,7 +5535,8 @@ def _closet_item_from_fashion_item(item: dict[str, Any], source: dict[str, Any])
         "assets": {
             "cutout_path": _public_closet_path(cutout),
             "mask_path": _public_closet_path(mask),
-            "preview_path": _public_closet_path(clean or cutout),
+            "preview_path": _public_closet_path(preview or clean or cutout),
+            "clean_reference_path": _public_closet_path(clean),
         },
         "attributes": item.get("attributes") or {},
         "quality": item.get("quality") or {"status": "review", "score": 0.42, "reasons": ["fallback_quality_unknown"]},
@@ -5557,11 +5556,81 @@ def _copy_asset_to_closet(public_path: str | None, item_id: str, kind: str) -> P
     source_path = _closet_disk_path(public_path)
     if source_path is None or not source_path.exists():
         return None
-    suffix = ".png" if kind in {"cutout", "mask", "preview"} else source_path.suffix
+    suffix = ".png" if kind in {"cutout", "mask", "preview", "clean_reference"} else source_path.suffix
     target = _closet_item_dir() / item_id / f"{kind}{suffix}"
     target.parent.mkdir(parents=True, exist_ok=True)
     shutil.copyfile(source_path, target)
     return target
+
+
+def _build_closet_item_preview(source_path: Path | None, target_path: Path, canvas_size: int = 900) -> Path | None:
+    if source_path is None or not source_path.exists():
+        return None
+    try:
+        image = Image.open(source_path).convert("RGBA")
+    except Exception:
+        return None
+
+    item = _trim_closet_preview_image(image)
+    if item.width < 8 or item.height < 8:
+        return None
+
+    canvas = Image.new("RGBA", (canvas_size, canvas_size), "#fffafa")
+    draw = ImageDraw.Draw(canvas)
+    draw.rounded_rectangle(
+        (24, 24, canvas_size - 24, canvas_size - 24),
+        radius=42,
+        fill="#ffffff",
+        outline="#f1e6eb",
+        width=2,
+    )
+
+    max_side = int(canvas_size * 0.78)
+    item.thumbnail((max_side, max_side), Image.Resampling.LANCZOS)
+    x = (canvas_size - item.width) // 2
+    y = (canvas_size - item.height) // 2
+    canvas.alpha_composite(_closet_preview_shadow(item), (x + 5, y + 10))
+    canvas.alpha_composite(item, (x, y))
+
+    target_path.parent.mkdir(parents=True, exist_ok=True)
+    canvas.convert("RGB").save(target_path, "PNG")
+    return target_path
+
+
+def _trim_closet_preview_image(image: Image.Image) -> Image.Image:
+    rgba = image.convert("RGBA")
+    alpha_bbox = rgba.getchannel("A").getbbox()
+    if alpha_bbox and alpha_bbox != (0, 0, rgba.width, rgba.height):
+        return rgba.crop(alpha_bbox)
+
+    pixels = rgba.load()
+    xs: list[int] = []
+    ys: list[int] = []
+    for y in range(rgba.height):
+        for x in range(rgba.width):
+            r, g, b, a = pixels[x, y]
+            if a > 20 and not (r > 238 and g > 238 and b > 238):
+                xs.append(x)
+                ys.append(y)
+    if not xs:
+        return rgba
+    pad_x = max(8, int((max(xs) - min(xs) + 1) * 0.04))
+    pad_y = max(8, int((max(ys) - min(ys) + 1) * 0.04))
+    return rgba.crop(
+        (
+            max(0, min(xs) - pad_x),
+            max(0, min(ys) - pad_y),
+            min(rgba.width, max(xs) + pad_x),
+            min(rgba.height, max(ys) + pad_y),
+        )
+    )
+
+
+def _closet_preview_shadow(image: Image.Image) -> Image.Image:
+    alpha = image.getchannel("A").filter(ImageFilter.GaussianBlur(10))
+    shadow = Image.new("RGBA", image.size, (96, 72, 82, 0))
+    shadow.putalpha(alpha.point(lambda value: min(64, int(value * 0.2))))
+    return shadow
 
 
 def _import_message(created: int, review: int, used_fallback: bool) -> str:
