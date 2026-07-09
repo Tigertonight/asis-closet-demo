@@ -1,5 +1,8 @@
 from __future__ import annotations
 
+import hashlib
+import json
+import mimetypes
 from pathlib import Path
 from typing import Any
 from urllib.parse import unquote, urlparse
@@ -21,6 +24,7 @@ from app.auth import (
     start_phone_login,
     verify_phone_login,
 )
+from app.ops import deployment_guard_report, request_guard_middleware
 from app.analyzer import (
     analyze_contract,
     explain_fixture_case,
@@ -109,7 +113,10 @@ from scripts.check_runtime_readiness import readiness as runtime_readiness
 load_dotenv(Path(__file__).resolve().parents[1] / ".env", override=True)
 
 app = FastAPI(title="Color Test MVP POC", version="0.2.0")
+app.middleware("http")(request_guard_middleware)
 TRYON_OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+XHS_IMAGE_CACHE_DIR = Path("outputs/xhs_images")
+XHS_IMAGE_CACHE_DIR.mkdir(parents=True, exist_ok=True)
 app.mount("/fixture-images", StaticFiles(directory="tests/fixtures/images"), name="fixture-images")
 app.mount("/qa-artifacts", StaticFiles(directory="tests/results"), name="qa-artifacts")
 app.mount("/demo-assets", StaticFiles(directory="outputs/demo_assets"), name="demo-assets")
@@ -126,11 +133,70 @@ def _is_allowed_xhs_image_url(url: str) -> bool:
     return parsed.scheme in {"http", "https"} and (host == "xhscdn.com" or host.endswith(".xhscdn.com"))
 
 
+def _xhs_image_cache_key(url: str) -> str:
+    return hashlib.sha256(url.encode("utf-8")).hexdigest()[:32]
+
+
+def _xhs_image_cache_meta_path(cache_key: str) -> Path:
+    return XHS_IMAGE_CACHE_DIR / f"{cache_key}.json"
+
+
+def _xhs_image_cache_file_path(cache_key: str, media_type: str = "image/jpeg") -> Path:
+    extension = mimetypes.guess_extension(media_type.split(";")[0].strip()) or ".jpg"
+    if extension == ".jpe":
+        extension = ".jpg"
+    return XHS_IMAGE_CACHE_DIR / f"{cache_key}{extension}"
+
+
+def _cached_xhs_image_response(source_url: str) -> FileResponse | None:
+    cache_key = _xhs_image_cache_key(source_url)
+    meta_path = _xhs_image_cache_meta_path(cache_key)
+    if not meta_path.exists():
+        return None
+    try:
+        metadata = json.loads(meta_path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError:
+        return None
+    media_type = str(metadata.get("media_type") or "image/jpeg")
+    image_path = XHS_IMAGE_CACHE_DIR / str(metadata.get("filename") or _xhs_image_cache_file_path(cache_key, media_type).name)
+    if not image_path.exists() or not image_path.is_file():
+        return None
+    return FileResponse(
+        image_path,
+        media_type=media_type,
+        headers={"Cache-Control": "public, max-age=31536000, immutable"},
+    )
+
+
+def _write_xhs_image_cache(source_url: str, content: bytes, media_type: str) -> FileResponse:
+    cache_key = _xhs_image_cache_key(source_url)
+    image_path = _xhs_image_cache_file_path(cache_key, media_type)
+    tmp_path = image_path.with_suffix(f"{image_path.suffix}.tmp")
+    tmp_path.write_bytes(content)
+    tmp_path.replace(image_path)
+    metadata = {
+        "source_url": source_url,
+        "filename": image_path.name,
+        "media_type": media_type,
+    }
+    meta_tmp = _xhs_image_cache_meta_path(cache_key).with_suffix(".json.tmp")
+    meta_tmp.write_text(json.dumps(metadata, ensure_ascii=False, indent=2), encoding="utf-8")
+    meta_tmp.replace(_xhs_image_cache_meta_path(cache_key))
+    return FileResponse(
+        image_path,
+        media_type=media_type,
+        headers={"Cache-Control": "public, max-age=31536000, immutable"},
+    )
+
+
 @app.get("/xhs-image")
 async def proxy_xhs_image(url: str) -> Response:
     source_url = unquote(str(url or "").strip())
     if not _is_allowed_xhs_image_url(source_url):
         return PlainTextResponse("unsupported image url", status_code=400)
+    cached = _cached_xhs_image_response(source_url)
+    if cached is not None:
+        return cached
     headers = {
         "User-Agent": "Mozilla/5.0 AppleWebKit/537.36 Chrome/126 Safari/537.36",
         "Referer": "https://www.xiaohongshu.com/",
@@ -144,11 +210,10 @@ async def proxy_xhs_image(url: str) -> Response:
     content_type = upstream.headers.get("content-type", "")
     if upstream.status_code >= 400 or not content_type.startswith("image/"):
         return PlainTextResponse("image unavailable", status_code=502)
-    return Response(
-        content=upstream.content,
-        media_type=content_type.split(";")[0],
-        headers={"Cache-Control": "public, max-age=86400"},
-    )
+    if len(upstream.content) > 12 * 1024 * 1024:
+        return PlainTextResponse("image too large", status_code=502)
+    media_type = content_type.split(";")[0]
+    return _write_xhs_image_cache(source_url, upstream.content, media_type)
 
 
 def _friendly_error(code: str, message: str, suggestion: str, status_code: int) -> JSONResponse:
@@ -213,6 +278,18 @@ async def http_exception_handler(request: Request, exc: StarletteHTTPException) 
 @app.get("/health")
 def health() -> dict[str, str]:
     return {"status": "ok"}
+
+
+@app.get("/health/dependencies")
+def health_dependencies() -> dict[str, Any]:
+    report = runtime_readiness()
+    return {
+        "status": report["status"],
+        "ready": report["ready"],
+        "endpoints": report["endpoints"],
+        "deployment": deployment_guard_report(),
+        "missing_actions": report["missing_actions"],
+    }
 
 
 @app.post("/auth/phone/start")
@@ -605,6 +682,51 @@ def stylist_session_delete(session_id: str, current_user: dict[str, Any] = Depen
         return delete_stylist_session(session_id)
 
 
+def _compact_text(value: Any, limit: int = 180) -> str:
+    text = " ".join(str(value or "").split())
+    return text[:limit]
+
+
+def _stylist_conversation_context(conversation: list[dict[str, Any]], current_query: str) -> dict[str, Any]:
+    user_queries = [
+        _compact_text(item.get("content"), 140)
+        for item in conversation
+        if isinstance(item, dict) and item.get("role") == "user" and str(item.get("content") or "").strip()
+    ]
+    if current_query and (not user_queries or user_queries[-1] != current_query):
+        user_queries.append(_compact_text(current_query, 140))
+
+    previous_assistant = next(
+        (
+            item
+            for item in reversed(conversation)
+            if isinstance(item, dict) and item.get("role") == "assistant" and str(item.get("content") or "").strip()
+        ),
+        None,
+    )
+    previous_sources: list[dict[str, Any]] = []
+    if isinstance(previous_assistant, dict) and isinstance(previous_assistant.get("metadata"), dict):
+        metadata = previous_assistant["metadata"]
+        notes = metadata.get("xhs_notes") if isinstance(metadata.get("xhs_notes"), list) else []
+        sources = metadata.get("evidence_sources") if isinstance(metadata.get("evidence_sources"), list) else []
+        previous_sources = [
+            {"title": _compact_text(note.get("title"), 48), "source": note.get("source_label") or "小红书"}
+            for note in notes[:4]
+            if isinstance(note, dict) and note.get("title")
+        ]
+        previous_sources.extend([source for source in sources[:2] if isinstance(source, dict)])
+
+    return {
+        "current_query": current_query,
+        "recent_user_queries": user_queries[-5:],
+        "previous_query": user_queries[-2] if len(user_queries) >= 2 else "",
+        "previous_assistant_summary": _compact_text(previous_assistant.get("content") if isinstance(previous_assistant, dict) else "", 220),
+        "previous_xhs_sources": previous_sources[:6],
+        "conversation_turn_count": len(conversation),
+        "must_answer_current_query": True,
+    }
+
+
 @app.post("/stylist/chat")
 async def stylist_chat(request: Request, current_user: dict[str, Any] = Depends(get_current_user)) -> JSONResponse:
     try:
@@ -617,8 +739,11 @@ async def stylist_chat(request: Request, current_user: dict[str, Any] = Depends(
             stored_conversation = recent_conversation(session["session_id"], 8)
             incoming_conversation = context.get("conversation") if isinstance(context.get("conversation"), list) else []
             context["conversation"] = (stored_conversation or incoming_conversation)[-8:]
-            payload["context"] = context
             user_message = str(payload.get("message") or "").strip()
+            context["conversation_context"] = _stylist_conversation_context(context["conversation"], user_message)
+            context["current_query"] = user_message
+            context["recent_user_queries"] = context["conversation_context"]["recent_user_queries"]
+            payload["context"] = context
             if user_message:
                 append_stylist_message(session["session_id"], "user", user_message, {"source": "asis_inspiration"})
             result, status_code = await run_stylist_chat(payload)
@@ -645,8 +770,12 @@ async def stylist_chat(request: Request, current_user: dict[str, Any] = Depends(
             content={
                 "status": "failed",
                 "mode": "error",
-                "assistant_message": "灵感暂时不可用，请稍后再试。",
-                "error": {"code": "stylist_internal_error", "message": "灵感服务暂时不可用。"},
+                "assistant_message": "暂时灵感耗尽，正在努力充能～",
+                "error": {
+                    "code": "stylist_internal_error",
+                    "message": "暂时灵感耗尽，正在努力充能～",
+                    "technical_message": "灵感服务暂时不可用。",
+                },
                 "recommended_items": [],
                 "recommended_outfits": [],
                 "rationale": [],

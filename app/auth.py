@@ -13,6 +13,7 @@ from typing import Any
 from fastapi import Depends, HTTPException, Request
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 
+from app.ops import env_flag, is_public_demo_mode
 from app.storage import LOCAL_USER_ID, ROOT_DIR, hydrate_user_from_demo_data, sanitize_user_id
 
 
@@ -53,6 +54,8 @@ def _normalize_phone(phone: str) -> str:
 
 def _hash_secret(secret: str) -> str:
     salt = os.getenv("ASIS_AUTH_SECRET", "asis-local-auth-secret")
+    if is_public_demo_mode() and salt == "asis-local-auth-secret":
+        raise HTTPException(status_code=500, detail="认证密钥未配置，请联系 demo 管理员。")
     return hmac.new(salt.encode("utf-8"), secret.encode("utf-8"), hashlib.sha256).hexdigest()
 
 
@@ -121,7 +124,7 @@ def start_phone_login(phone: str) -> dict[str, Any]:
         "code_id": code_id,
         "expires_in_seconds": CODE_TTL_MINUTES * 60,
     }
-    if os.getenv("ASIS_AUTH_RETURN_DEV_CODE", "1") == "1":
+    if env_flag("ASIS_AUTH_RETURN_DEV_CODE", not is_public_demo_mode()):
         response["dev_code"] = code
     return response
 
@@ -145,7 +148,9 @@ def verify_phone_login(phone: str, code: str) -> dict[str, Any]:
         raise HTTPException(status_code=400, detail="验证码已过期")
     if int(login_code.get("attempt_count") or 0) >= MAX_CODE_ATTEMPTS:
         raise HTTPException(status_code=400, detail="验证码尝试次数过多")
-    mock_codes = {item.strip() for item in os.getenv("ASIS_AUTH_MOCK_CODES", "0000,0001").split(",") if item.strip()}
+    mock_codes = set()
+    if env_flag("ASIS_AUTH_ALLOW_MOCK_CODES", not is_public_demo_mode()):
+        mock_codes = {item.strip() for item in os.getenv("ASIS_AUTH_MOCK_CODES", "0000,0001").split(",") if item.strip()}
     code_matches = submitted_code in mock_codes or hmac.compare_digest(str(login_code.get("code_hash") or ""), _hash_secret(submitted_code))
     if not code_matches:
         login_code["attempt_count"] = int(login_code.get("attempt_count") or 0) + 1

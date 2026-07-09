@@ -29,6 +29,7 @@ from app.tryon import (
     _extract_xhs_note_image_urls,
     _extract_xhs_note_payload,
     _fashion_category_label,
+    _detect_person,
     _normalize_xhs_url,
     _public_output_path,
     _read_upload_image,
@@ -715,7 +716,7 @@ def _outfit_item_wearing_instruction(slot: str, item: dict[str, Any]) -> str:
         "skirt": f"{label}穿在下半身，保留裙长、腰线和廓形。",
         "dress": f"{label}作为连衣装穿着，保留整体廓形、腰线和裙长。",
         "shoes": f"{label}穿在双脚，保留鞋型、颜色和鞋底比例。",
-        "bag": f"{label}作为包袋搭配在手部或肩侧。",
+        "bag": f"{label}作为包袋搭配在可见手臂、手部或肩侧；手提包需要手握或挂在前臂，肩背包需要贴合肩线，不能悬空。",
     }.get(slot, f"{label}作为配饰自然搭配。")
 
 
@@ -758,10 +759,11 @@ def get_user_preferences() -> dict[str, Any]:
             if isinstance(data, dict):
                 data.setdefault("version", 1)
                 data.setdefault("current_model_id", "female_medium_1")
+                data.setdefault("current_stylist_session_id", "")
                 return data
         except json.JSONDecodeError:
             pass
-    return {"version": 1, "current_model_id": "female_medium_1"}
+    return {"version": 1, "current_model_id": "female_medium_1", "current_stylist_session_id": ""}
 
 
 def update_user_preferences(payload: dict[str, Any]) -> dict[str, Any]:
@@ -770,6 +772,9 @@ def update_user_preferences(payload: dict[str, Any]) -> dict[str, Any]:
         model_id = str(payload.get("current_model_id") or "").strip()
         if model_id:
             data["current_model_id"] = model_id[:80]
+    if "current_stylist_session_id" in payload:
+        session_id = str(payload.get("current_stylist_session_id") or "").strip()
+        data["current_stylist_session_id"] = session_id[:80]
     data["updated_at"] = _now_iso()
     path = _user_preferences_path()
     path.parent.mkdir(parents=True, exist_ok=True)
@@ -791,7 +796,7 @@ def delete_tryon_record(record_id: str) -> dict[str, Any]:
 
 
 def record_asis_tryon_result(outfit_id: str, tryon_result: dict[str, Any]) -> dict[str, Any] | None:
-    if tryon_result.get("status") != "generated":
+    if tryon_result.get("status") not in {"generated", "review"}:
         return None
     image_path = tryon_result.get("result", {}).get("image_path")
     if not image_path:
@@ -803,7 +808,7 @@ def record_asis_tryon_result(outfit_id: str, tryon_result: dict[str, Any]) -> di
         "record_id": record_id,
         "user_id": storage_context().user_id,
         "mode": "asis_from_outfit_plan",
-        "status": "generated",
+        "status": tryon_result.get("status") or "generated",
         "outfit_id": outfit_id,
         "outfit_title": outfit.get("title") or "我的搭配",
         "image_path": image_path,
@@ -811,10 +816,11 @@ def record_asis_tryon_result(outfit_id: str, tryon_result: dict[str, Any]) -> di
         "scene_tags": outfit.get("scene_tags", []),
         "photo_mode": tryon_result.get("photo_mode"),
         "generation_strategy": tryon_result.get("generation_strategy"),
+        "quality_review": tryon_result.get("pipeline", {}).get("quality_review") if isinstance(tryon_result.get("pipeline"), dict) else None,
         "created_at": now,
         "updated_at": now,
         "deleted": False,
-        "note": "AS IS 真实试穿链路生成结果。",
+        "note": "AS IS 真实试穿链路生成结果。" if tryon_result.get("status") == "generated" else "试穿图已生成，建议复核后使用。",
     }
     data = _ensure_tryon_records_manifest()
     data.setdefault("records", []).append(record)
@@ -1595,7 +1601,7 @@ def render_closet_demo_page() -> str:
         const res = await fetch("/closet/import/upload", { method: "POST", body });
         const data = await res.json();
         setDebug(data);
-        setStatus(`已找到 ${data.summary.created} 件单品，有 ${data.summary.review} 件需要确认。`);
+        setStatus(data.message || `已找到 ${data.summary.created} 件单品，有 ${data.summary.review} 件需要确认。`);
         await loadItems();
       } catch (error) {
         setStatus(error.message || "导入失败，请换一张清晰图片。");
@@ -1791,6 +1797,17 @@ def render_asis_demo_page() -> str:
     .today-card p { color: rgba(255,255,255,.72); line-height: 1.42; font-size: 13px; max-width: 15em; }
     .today-art { position: relative; min-width: 0; min-height: 142px; margin: -8px -8px -8px 0; }
     .today-art img { position: absolute; object-fit: contain; filter: drop-shadow(0 14px 24px rgba(0,0,0,.36)); }
+    .image-preview-button {
+      appearance: none;
+      border: 0;
+      background: transparent;
+      color: inherit;
+      font: inherit;
+      padding: 0;
+      text-align: inherit;
+      cursor: zoom-in;
+    }
+    .today-art.image-preview-button { width: 100%; height: calc(100% + 16px); }
     .today-art .slot-top { width: 100%; height: 64%; left: 1%; top: -8%; }
     .today-art .slot-bottom, .today-art .slot-skirt { width: 96%; height: 72%; left: -12%; top: 34%; }
     .today-art .slot-dress { width: 108%; height: 108%; left: -14%; top: -4%; }
@@ -1862,7 +1879,7 @@ def render_asis_demo_page() -> str:
     .widget-card.ai {
       --widget-bg:
         linear-gradient(180deg, rgba(255,255,255,.02), rgba(20,12,18,.18)),
-        var(--widget-image, url("/tryon-models/female_slim_1.png?v=fullbody-20260704")),
+        var(--widget-image, url("/tryon-models/female_slim_1.webp?v=fullbody-20260705")),
         radial-gradient(circle at 20% 22%, rgba(255,255,255,.96) 0 11%, transparent 12%),
         radial-gradient(circle at 72% 28%, rgba(255,255,255,.92) 0 12%, transparent 13%),
         linear-gradient(145deg, rgba(255,246,241,.96), rgba(239,249,255,.98) 58%, rgba(255,239,247,.94));
@@ -1928,6 +1945,7 @@ def render_asis_demo_page() -> str:
       overflow: hidden;
     }
     .outfit-canvas img, .closet-img img { width: 100%; height: 100%; object-fit: contain; display: block; }
+    .outfit-canvas[data-preview-image], .closet-img[data-preview-image], .detail-hero[data-preview-image], .tryon-hero[data-preview-image], .item-tile[data-preview-image], .record-card[data-preview-image], .model-chip[data-preview-image], .self-upload-zone[data-preview-image] { cursor: zoom-in; }
     .outfit-meta, .closet-meta { min-height: 54px; display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 11px 12px; }
     .favorite-btn { border: 0; background: transparent; display: inline-flex; align-items: center; justify-content: center; padding: 0; color: #050505; width: 40px; height: 40px; min-height: 38px; font-size: 24px; font-weight: 950; line-height: 1; }
     .favorite-btn.active { color: var(--rose); }
@@ -2101,19 +2119,28 @@ def render_asis_demo_page() -> str:
       align-items: center;
       justify-content: flex-end;
       gap: 10px;
-      margin: 10px 0 14px;
+      margin: 0;
+      position: fixed;
+      top: max(34px, calc(env(safe-area-inset-top) + 24px));
+      right: max(18px, calc((100vw - var(--screen-w)) / 2 + 18px));
+      z-index: 34;
+      pointer-events: none;
     }
     .ai-session-toggle {
+      pointer-events: auto;
       border: 0;
       width: 42px;
       height: 42px;
       border-radius: 15px;
-      background: rgba(255,255,255,.86);
+      background: rgba(255,255,255,.92);
       color: #73767d;
       display: grid;
       place-items: center;
-      box-shadow: 0 10px 24px rgba(82, 42, 61, .06);
+      box-shadow: 0 14px 32px rgba(82, 42, 61, .12);
+      backdrop-filter: blur(16px);
+      transition: transform .18s ease, color .18s ease, background .18s ease, box-shadow .18s ease;
     }
+    .ai-session-toggle:active { transform: scale(.96); }
     .ai-session-toggle svg {
       width: 24px;
       height: 24px;
@@ -2159,7 +2186,9 @@ def render_asis_demo_page() -> str:
     .ai-thread { display: grid; gap: 18px; }
     .ai-thread.has-messages { animation: aiThreadLift .36s cubic-bezier(.2,.8,.2,1); }
     .ai-thread.is-streaming,
-    .ai-thread.is-streaming .ai-bubble.user { animation: none; }
+    .ai-thread.is-streaming .ai-bubble.user,
+    .ai-thread.is-generating,
+    .ai-thread.is-generating .ai-bubble.user { animation: none; }
     .ai-bubble {
       border-radius: 20px;
       padding: 14px 16px;
@@ -2186,15 +2215,60 @@ def render_asis_demo_page() -> str:
       color: var(--ink);
       font-size: 15px;
       line-height: 1.72;
+      overflow-anchor: none;
     }
     .ai-assistant-copy {
       display: grid;
-      gap: 10px;
+      gap: 12px;
     }
     .ai-assistant-copy p {
       color: var(--ink);
       font-size: 15px;
-      line-height: 1.72;
+      line-height: 1.76;
+      margin: 0;
+    }
+    .ai-assistant-copy strong {
+      color: #1c1b20;
+      font-weight: 850;
+    }
+    .ai-md-heading {
+      color: #1c1b20;
+      font-size: 15px;
+      font-weight: 850;
+      line-height: 1.48;
+      margin-top: 2px;
+    }
+    .ai-md-list {
+      display: grid;
+      gap: 8px;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+    .ai-md-list li {
+      color: #2f2b31;
+      font-size: 15px;
+      line-height: 1.68;
+      padding-left: 18px;
+      position: relative;
+    }
+    .ai-md-list li::before {
+      content: "";
+      width: 6px;
+      height: 6px;
+      border-radius: var(--pill);
+      background: var(--rose);
+      opacity: .7;
+      position: absolute;
+      left: 2px;
+      top: .76em;
+    }
+    .ai-assistant-copy code {
+      background: #fff1f6;
+      border-radius: 7px;
+      color: var(--rose-deep);
+      font-size: .94em;
+      padding: 1px 5px;
     }
     .ai-status-label {
       display: inline-flex;
@@ -2245,6 +2319,18 @@ def render_asis_demo_page() -> str:
       font-weight: 800;
       padding-left: 2px;
     }
+    .ai-tool-history {
+      width: fit-content;
+      max-width: 100%;
+    }
+    .ai-tool-history > summary {
+      list-style: none;
+      cursor: pointer;
+      width: fit-content;
+      border-radius: var(--pill);
+    }
+    .ai-tool-history > summary::-webkit-details-marker { display: none; }
+    .ai-tool-history[open] > summary { margin-bottom: 8px; }
     .ai-tool-summary::before {
       content: "✓";
       color: #b5b7bb;
@@ -2286,33 +2372,30 @@ def render_asis_demo_page() -> str:
       border-radius: 50%;
       display: grid;
       place-items: center;
-      background: transparent;
-      color: #b5b7bb;
-      font-size: 15px;
+      background: #f4f1f3;
+      color: #999ba1;
+      font-size: 11px;
       font-weight: 900;
       margin-top: 1px;
     }
-    .ai-tool-step.done .ai-tool-dot { background: transparent; color: #b5b7bb; }
+    .ai-tool-step.done .ai-tool-dot { background: #f7f4f6; color: #b5b7bb; }
     .ai-tool-step.running .ai-tool-dot {
-      background: transparent;
-      color: transparent;
-    }
-    .ai-tool-step.running .ai-tool-dot::before {
-      content: "";
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: var(--rose);
+      background: #fff1f6;
+      color: var(--rose-deep);
       box-shadow: 0 0 0 0 rgba(255,79,134,.3);
       animation: aiBreathingLight 1.45s ease-in-out infinite;
     }
-    .ai-tool-step.failed .ai-tool-dot { background: transparent; color: #a84f64; }
+    .ai-tool-step.failed .ai-tool-dot { background: #fff1f6; color: #a84f64; }
     .ai-tool-main { display: grid; gap: 2px; }
+    .ai-tool-title-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
     .ai-tool-title { font-size: 15px; font-weight: 850; color: #73757a; }
+    .ai-tool-status { color: #a4a0a5; font-size: 12px; font-weight: 800; white-space: nowrap; }
+    .ai-tool-step.running .ai-tool-title { color: #4f454c; }
+    .ai-tool-step.running .ai-tool-status { color: var(--rose-deep); }
     .ai-tool-detail { font-size: 14px; line-height: 1.55; color: #85878d; }
     @keyframes aiBreathingLight {
-      0%, 100% { transform: scale(.82); opacity: .72; box-shadow: 0 0 0 0 rgba(255,79,134,.3); }
-      50% { transform: scale(1.08); opacity: 1; box-shadow: 0 0 0 8px rgba(255,79,134,0); }
+      0%, 100% { transform: scale(.96); opacity: .82; box-shadow: 0 0 0 0 rgba(255,79,134,.28); }
+      50% { transform: scale(1.04); opacity: 1; box-shadow: 0 0 0 8px rgba(255,79,134,0); }
     }
     .xhs-note-strip {
       display: flex;
@@ -2392,10 +2475,39 @@ def render_asis_demo_page() -> str:
       height: 58px;
       border-radius: var(--pill);
       padding: 2px;
-      background: linear-gradient(90deg, var(--mint), #e9ecff, var(--rose));
+      background: #fff;
       z-index: 9;
+      overflow: hidden;
+      box-shadow: 0 14px 38px rgba(64, 33, 48, .10);
+      isolation: isolate;
+    }
+    .ai-input::before {
+      content: "";
+      position: absolute;
+      inset: -120px;
+      z-index: -2;
+      background:
+        conic-gradient(from 0deg,
+          rgba(105, 234, 214, .95),
+          rgba(255, 255, 255, .25) 16%,
+          rgba(255, 79, 134, .92) 32%,
+          rgba(235, 236, 255, .96) 52%,
+          rgba(105, 234, 214, .95) 72%,
+          rgba(255, 79, 134, .82));
+      animation: aiInputBorderFlow 5.6s linear infinite;
+    }
+    .ai-input::after {
+      content: "";
+      position: absolute;
+      inset: 2px;
+      z-index: -1;
+      border-radius: var(--pill);
+      background: #fff;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.72);
     }
     .ai-input-inner {
+      position: relative;
+      z-index: 1;
       height: 100%;
       border-radius: var(--pill);
       background: #fff;
@@ -2405,6 +2517,19 @@ def render_asis_demo_page() -> str:
       padding: 0 8px 0 24px;
       color: #aaa;
       font-size: 16px;
+    }
+    .ai-input-inner::after {
+      content: "";
+      position: absolute;
+      inset: 1px auto 1px -36%;
+      width: 34%;
+      border-radius: inherit;
+      pointer-events: none;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,.92), transparent);
+      mix-blend-mode: screen;
+      opacity: .52;
+      transform: skewX(-18deg);
+      animation: aiInputSheen 3.8s ease-in-out infinite;
     }
     .ai-input-inner textarea {
       width: 100%;
@@ -2421,6 +2546,20 @@ def render_asis_demo_page() -> str:
     }
     .ai-input-inner textarea::placeholder { color: #aaa; }
     .circle-icon { width: 42px; height: 42px; border-radius: 50%; border: 0; background: #eff0f2; display: grid; place-items: center; font-size: 23px; font-weight: 800; }
+    .circle-icon.is-stopping {
+      background: #1c1b20;
+      color: #fff;
+      font-size: 18px;
+      box-shadow: 0 10px 24px rgba(28, 27, 32, .18);
+    }
+    @keyframes aiInputBorderFlow {
+      to { transform: rotate(1turn); }
+    }
+    @keyframes aiInputSheen {
+      0%, 38% { transform: translateX(0) skewX(-18deg); opacity: 0; }
+      52% { opacity: .58; }
+      74%, 100% { transform: translateX(440%) skewX(-18deg); opacity: 0; }
+    }
     .session-list {
       display: grid;
       gap: 6px;
@@ -2721,6 +2860,7 @@ def render_asis_demo_page() -> str:
     .record-card { border: 0; padding: 0; position: relative; border-radius: 16px; background: #ddd; aspect-ratio: 3 / 4; overflow: hidden; }
     .record-card img { width: 100%; height: 100%; object-fit: cover; }
     .record-card.work-item img { object-fit: contain; background: #fff; padding: 10px; }
+    .record-card .record-badge { position: absolute; left: 8px; bottom: 8px; z-index: 1; padding: 5px 8px; border-radius: 999px; background: rgba(255,255,255,.9); color: #2b2a2f; font-size: 11px; font-weight: 900; box-shadow: 0 6px 16px rgba(0,0,0,.14); }
     .record-card.editing::after { content: ""; position: absolute; inset: 0; background: rgba(17,17,20,.18); }
     .record-card .check { position: absolute; right: 8px; top: 8px; z-index: 1; width: 24px; height: 24px; border-radius: 50%; display: grid; place-items: center; background: rgba(255,255,255,.9); color: transparent; font-size: 15px; font-weight: 950; box-shadow: 0 6px 16px rgba(0,0,0,.16); }
     .record-card.selected { outline: 3px solid var(--rose); outline-offset: -3px; }
@@ -2892,13 +3032,17 @@ def render_asis_demo_page() -> str:
       gap: 12px;
       scroll-snap-align: center;
       color: var(--ink);
-      opacity: .56;
-      transform: scale(.92);
-      transition: opacity .2s ease, transform .2s ease;
+      opacity: .86;
+      transform: scale(.96);
+      transition: opacity .1s ease, transform .1s ease;
+      cursor: pointer;
     }
     .model-option.active {
       opacity: 1;
       transform: scale(1);
+    }
+    .model-option.active .model-figure {
+      box-shadow: 0 0 0 3px rgba(255, 79, 134, .72), 0 20px 44px rgba(82, 42, 61, .12);
     }
     .model-figure {
       width: 100%;
@@ -2909,13 +3053,15 @@ def render_asis_demo_page() -> str:
       background: linear-gradient(180deg, #f9fafc, #f1f2f5);
       border-radius: 28px;
       overflow: hidden;
+      transition: box-shadow .1s ease;
     }
     .model-figure img {
-      width: 92%;
+      width: 98%;
       height: 100%;
       object-fit: contain;
       object-position: bottom center;
-      filter: drop-shadow(0 18px 24px rgba(0,0,0,.08));
+      filter: none;
+      image-rendering: auto;
     }
     .model-tags {
       width: 100%;
@@ -2971,6 +3117,108 @@ def render_asis_demo_page() -> str:
       max-height: 100%;
       object-fit: contain;
       border-radius: 20px;
+    }
+    .image-lightbox {
+      position: fixed;
+      inset: 0;
+      left: 50%;
+      width: min(100%, var(--screen-w));
+      transform: translateX(-50%);
+      z-index: 90;
+      display: none;
+      grid-template-rows: auto minmax(0, 1fr) auto;
+      gap: 12px;
+      padding: max(18px, env(safe-area-inset-top)) 14px max(18px, env(safe-area-inset-bottom));
+      background: rgba(18, 17, 20, .86);
+      backdrop-filter: blur(14px);
+    }
+    .image-lightbox.open { display: grid; }
+    .image-lightbox-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      color: #fff;
+      min-height: 44px;
+    }
+    .image-lightbox-title {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      font-size: 15px;
+      font-weight: 850;
+    }
+    .image-lightbox-actions {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      flex: 0 0 auto;
+    }
+    .image-lightbox-zoom {
+      display: none;
+      border: 0;
+      min-height: 38px;
+      border-radius: var(--pill);
+      background: rgba(255,255,255,.14);
+      color: #fff;
+      padding: 0 13px;
+      font-size: 13px;
+      font-weight: 850;
+    }
+    .image-lightbox-close {
+      border: 0;
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: rgba(255,255,255,.14);
+      color: #fff;
+      font-size: 24px;
+      display: grid;
+      place-items: center;
+      flex: 0 0 auto;
+    }
+    .image-lightbox-stage {
+      min-height: 0;
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+      border-radius: 24px;
+      background: rgba(255,255,255,.96);
+    }
+    .image-lightbox-stage img {
+      width: 100%;
+      height: 100%;
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+      display: block;
+      cursor: default;
+    }
+    .image-lightbox.actual .image-lightbox-stage {
+      place-items: start center;
+      background:
+        linear-gradient(45deg, #f6f7f9 25%, transparent 25%),
+        linear-gradient(-45deg, #f6f7f9 25%, transparent 25%),
+        linear-gradient(45deg, transparent 75%, #f6f7f9 75%),
+        linear-gradient(-45deg, transparent 75%, #f6f7f9 75%),
+        #fff;
+      background-size: 24px 24px;
+      background-position: 0 0, 0 12px, 12px -12px, -12px 0;
+    }
+    .image-lightbox.actual .image-lightbox-stage img {
+      width: 100%;
+      height: 100%;
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+      cursor: default;
+    }
+    .image-lightbox-tip {
+      color: rgba(255,255,255,.72);
+      text-align: center;
+      font-size: 13px;
+      line-height: 1.45;
     }
     .toast { position: fixed; left: 50%; bottom: 96px; transform: translateX(-50%); background: #050505; color: #fff; border-radius: var(--pill); padding: 12px 18px; font-size: 14px; font-weight: 800; z-index: 40; opacity: 0; pointer-events: none; transition: opacity .2s ease; max-width: 360px; text-align: center; }
     .toast.show { opacity: 1; }
@@ -3237,6 +3485,8 @@ def render_asis_demo_page() -> str:
     @media (prefers-reduced-motion: reduce) {
       .login-hero, .login-form, .login-logo-lockup, .login-closet-item, .login-gift-box { animation: none; }
       .login-closet-item { transform: translate3d(calc(-50% + var(--x)), calc(-50% + var(--y)), 0) scale(var(--s)) rotate(var(--r)); }
+      .ai-input::before,
+      .ai-input-inner::after { animation: none; }
     }
     .profile-line { color: var(--muted); font-size: 13px; line-height: 1.45; margin-top: 4px; }
     .switch-user { border: 0; background: transparent; color: var(--rose-deep); font-weight: 850; padding: 0; }
@@ -3246,6 +3496,7 @@ def render_asis_demo_page() -> str:
       .login-screen { top: 24px; bottom: 24px; border-radius: 34px; }
       .bottom-nav { bottom: 24px; border-radius: 0 0 34px 34px; }
       .ai-input { bottom: 116px; }
+      .ai-session-bar { top: 58px; }
       .sheet { bottom: 24px; border-radius: 28px 28px 34px 34px; }
     }
   </style>
@@ -3511,6 +3762,19 @@ def render_asis_demo_page() -> str:
     </div>
     <button id="confirmModelBtn" class="model-confirm" type="button">确认</button>
   </aside>
+  <div id="imageLightbox" class="image-lightbox" aria-hidden="true">
+    <div class="image-lightbox-head">
+      <div id="imageLightboxTitle" class="image-lightbox-title">查看图片</div>
+      <div class="image-lightbox-actions">
+        <button id="imageLightboxZoom" class="image-lightbox-zoom" type="button">适应屏幕</button>
+        <button id="imageLightboxClose" class="image-lightbox-close" type="button" aria-label="关闭">×</button>
+      </div>
+    </div>
+    <div class="image-lightbox-stage">
+      <img id="imageLightboxImg" alt="放大预览" />
+    </div>
+    <div id="imageLightboxTip" class="image-lightbox-tip">已按图片比例完整展示，点空白处或按 Esc 关闭</div>
+  </div>
   <div id="toast" class="toast"></div>
 
   <script src="/static/vendor/lottie.min.js"></script>
@@ -3537,6 +3801,7 @@ def render_asis_demo_page() -> str:
       aiStreamTimer: null,
       aiToolsExpanded: false,
       aiToolTimer: null,
+      aiAbortController: null,
       aiVisibleToolCount: 0,
       aiLoadingSteps: [],
       aiSessions: [],
@@ -3613,12 +3878,12 @@ def render_asis_demo_page() -> str:
     const categoryOrder = ["all", "top", "bottom", "skirt", "dress", "shoes", "bag", "accessory"];
     const aiScenes = ["旅行计划", "OOTD服饰拆解", "参加重要面试", "参加婚礼", "户外运动", "朋友的生日派对", "二人世界"];
     const modelOptions = [
-      { id: "female_medium_1", src: "/tryon-models/female_medium_1.png?v=fullbody-20260704", name: "沙漏型", tags: ["沙漏型", "匀称"] },
-      { id: "female_slim_1", src: "/tryon-models/female_slim_1.png?v=fullbody-20260704", name: "纤细型", tags: ["纤细型", "直筒"] },
-      { id: "female_plus_1", src: "/tryon-models/female_plus_1.png?v=fullbody-20260704", name: "丰满型", tags: ["丰满型", "柔和"] },
-      { id: "male_medium_1", src: "/tryon-models/male_medium_1.png?v=fullbody-20260704", name: "男中等", tags: ["男生", "匀称"] },
-      { id: "male_slim_1", src: "/tryon-models/male_slim_1.png?v=fullbody-20260704", name: "男纤细", tags: ["男生", "纤细"] },
-      { id: "male_plus_1", src: "/tryon-models/male_plus_1.png?v=fullbody-20260704", name: "男宽松", tags: ["男生", "宽松"] },
+      { id: "female_slim_1", src: "/tryon-models/female_slim_1.webp?v=female-v4-20260705", name: "纤细型", tags: ["纤细型", "直筒"] },
+      { id: "female_medium_1", src: "/tryon-models/female_medium_1.webp?v=female-v4-20260705", name: "沙漏型", tags: ["沙漏型", "匀称"] },
+      { id: "female_plus_1", src: "/tryon-models/female_plus_1.webp?v=female-v4-20260705", name: "丰满型", tags: ["丰满型", "柔和"] },
+      { id: "male_slim_1", src: "/tryon-models/male_slim_1.webp?v=fullbody-20260705", name: "男纤细", tags: ["男生", "纤细"] },
+      { id: "male_medium_1", src: "/tryon-models/male_medium_1.webp?v=fullbody-20260705", name: "男匀称", tags: ["男生", "匀称"] },
+      { id: "male_plus_1", src: "/tryon-models/male_plus_1.webp?v=fullbody-20260705", name: "男宽松", tags: ["男生", "宽松"] },
     ];
 
     function $(selector) { return document.querySelector(selector); }
@@ -3628,6 +3893,51 @@ def render_asis_demo_page() -> str:
       el.textContent = text;
       el.classList.add("show");
       window.setTimeout(() => el.classList.remove("show"), 2200);
+    }
+    function openImagePreview(src, title = "查看图片") {
+      if (!src) return;
+      const box = $("#imageLightbox");
+      $("#imageLightboxImg").src = assetURL(src);
+      $("#imageLightboxTitle").textContent = title || "查看图片";
+      setImagePreviewZoom(false);
+      box.classList.add("open");
+      box.setAttribute("aria-hidden", "false");
+    }
+    function closeImagePreview() {
+      const box = $("#imageLightbox");
+      box.classList.remove("open");
+      box.setAttribute("aria-hidden", "true");
+      setImagePreviewZoom(false);
+      $("#imageLightboxImg").removeAttribute("src");
+    }
+    function setImagePreviewZoom(actual) {
+      const box = $("#imageLightbox");
+      const stage = box?.querySelector(".image-lightbox-stage");
+      box?.classList.remove("actual");
+      const zoomBtn = $("#imageLightboxZoom");
+      if (zoomBtn) zoomBtn.textContent = "适应屏幕";
+      const tip = $("#imageLightboxTip");
+      if (tip) tip.textContent = "已按图片比例完整展示，点空白处或按 Esc 关闭";
+      if (stage) {
+        stage.scrollLeft = 0;
+        stage.scrollTop = 0;
+      }
+    }
+    function toggleImagePreviewZoom() {
+      setImagePreviewZoom(false);
+    }
+    function bindImagePreviews(root = document) {
+      root.querySelectorAll("[data-preview-image]").forEach(node => {
+        if (node.dataset.previewBound === "1") return;
+        node.dataset.previewBound = "1";
+        node.addEventListener("click", event => {
+          const src = node.dataset.previewImage || "";
+          if (!src || state.recordEditing) return;
+          event.preventDefault();
+          event.stopPropagation();
+          openImagePreview(src, node.dataset.previewTitle || node.querySelector("img")?.alt || "查看图片");
+        });
+      });
     }
     function withVersion(path, entity) {
       if (!path) return "";
@@ -3730,20 +4040,61 @@ def render_asis_demo_page() -> str:
       openSheet("modelSheet");
       window.setTimeout(() => {
         const active = $("#modelCarousel .model-option.active");
-        if (active) $("#modelCarousel").scrollLeft = active.offsetLeft - ($("#modelCarousel").clientWidth - active.clientWidth) / 2;
+        if (active) {
+          $("#modelCarousel").scrollLeft = active.offsetLeft - ($("#modelCarousel").clientWidth - active.clientWidth) / 2;
+          syncPendingModelFromScroll();
+        }
       }, 60);
+    }
+    function markPendingModel(id) {
+      if (!id || state.pendingModelId === id) return;
+      state.pendingModelId = id;
+      $all("#modelCarousel .model-option").forEach(option => {
+        const active = option.dataset.modelId === id;
+        option.classList.toggle("active", active);
+        option.setAttribute("aria-pressed", active ? "true" : "false");
+      });
+    }
+    function syncPendingModelFromScroll() {
+      const carousel = $("#modelCarousel");
+      if (!carousel) return;
+      const options = $all("#modelCarousel .model-option");
+      if (!options.length) return;
+      const center = carousel.scrollLeft + carousel.clientWidth / 2;
+      let closest = options[0];
+      let closestDistance = Infinity;
+      options.forEach(option => {
+        const optionCenter = option.offsetLeft + option.offsetWidth / 2;
+        const distance = Math.abs(optionCenter - center);
+        if (distance < closestDistance) {
+          closestDistance = distance;
+          closest = option;
+        }
+      });
+      markPendingModel(closest.dataset.modelId);
     }
     function renderModelPicker() {
       $("#modelCarousel").innerHTML = modelOptions.map(model => `
-        <button class="model-option ${model.id === state.pendingModelId ? "active" : ""}" type="button" data-model-id="${model.id}">
+        <button class="model-option ${model.id === state.pendingModelId ? "active" : ""}" type="button" data-model-id="${model.id}" aria-pressed="${model.id === state.pendingModelId ? "true" : "false"}">
           <div class="model-figure"><img src="${model.src}" alt="${model.name}"></div>
           <div class="model-tags">${model.tags.map(tag => `<span>${tag}</span>`).join("")}</div>
         </button>
       `).join("");
       $all("[data-model-id]").forEach(btn => btn.addEventListener("click", () => {
-        state.pendingModelId = btn.dataset.modelId;
-        renderModelPicker();
+        btn.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
+        markPendingModel(btn.dataset.modelId);
       }));
+      const carousel = $("#modelCarousel");
+      if (carousel) {
+        let scrollFrame = 0;
+        carousel.addEventListener("scroll", () => {
+          if (scrollFrame) return;
+          scrollFrame = window.requestAnimationFrame(() => {
+            scrollFrame = 0;
+            syncPendingModelFromScroll();
+          });
+        }, { passive: true });
+      }
     }
     function setModelMode(mode) {
       $("#modelSheet").dataset.mode = mode;
@@ -3789,6 +4140,7 @@ def render_asis_demo_page() -> str:
     }
     const authStoreKey = "asis_demo_mock_access_token";
     const personaStoreKey = "asis_demo_mock_persona";
+    const stylistSessionStoreKey = "asis_demo_current_stylist_session";
     let authTokenPromise = null;
     const memoryStore = {};
     function readStore(key) {
@@ -3915,6 +4267,7 @@ def render_asis_demo_page() -> str:
     }
     function logoutMockUser() {
       removeStore(authStoreKey);
+      removeStore(stylistSessionStoreKey);
       state.user = null;
       state.isAuthenticated = false;
       authTokenPromise = null;
@@ -3923,6 +4276,7 @@ def render_asis_demo_page() -> str:
     }
     function assetURL(path) {
       if (!path || !path.startsWith("/user-assets/")) return path || "";
+      if (path.includes("access_token=")) return path;
       const token = readStore(authStoreKey);
       return token ? `${path}${path.includes("?") ? "&" : "?"}access_token=${encodeURIComponent(token)}` : path;
     }
@@ -3965,7 +4319,7 @@ def render_asis_demo_page() -> str:
         try {
           data = JSON.parse(raw);
         } catch (error) {
-          data = { error: { message: res.ok ? "服务返回格式暂时不可用。" : "服务暂时不可用，请稍后再试。" }, raw_text: raw.slice(0, 200) };
+          data = { error: { message: "暂时灵感耗尽，正在努力充能～" }, raw_text: raw.slice(0, 200) };
         }
       }
       if (!res.ok) throw new Error(data.detail || data.error?.message || "请求失败");
@@ -4047,9 +4401,12 @@ def render_asis_demo_page() -> str:
         });
         state.aiSessions = [created];
       }
+      const savedSessionId = readStore(stylistSessionStoreKey);
       const nextId = state.currentSessionId && state.aiSessions.some(session => session.session_id === state.currentSessionId)
         ? state.currentSessionId
-        : state.aiSessions[0]?.session_id;
+        : savedSessionId && state.aiSessions.some(session => session.session_id === savedSessionId)
+          ? savedSessionId
+          : state.aiSessions[0]?.session_id;
       if (nextId) await selectStylistSession(nextId, { silent: true, clearUnread: false });
       updateSessionTitle();
     }
@@ -4057,6 +4414,14 @@ def render_asis_demo_page() -> str:
       if (!sessionId) return;
       const session = await fetchJSON(`/stylist/sessions/${encodeURIComponent(sessionId)}`);
       state.currentSessionId = session.session_id;
+      writeStore(stylistSessionStoreKey, session.session_id);
+      if (!options.skipPreferenceSave) {
+        fetchJSON("/closet/preferences", {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ current_stylist_session_id: session.session_id })
+        }).catch(() => {});
+      }
       const summary = state.aiSessions.find(item => item.session_id === session.session_id);
       if (summary?.metadata?.unread_completion && options.clearUnread !== false) {
         summary.metadata.unread_completion = false;
@@ -4093,6 +4458,7 @@ def render_asis_demo_page() -> str:
       await fetchJSON(`/stylist/sessions/${encodeURIComponent(sessionId)}`, { method: "DELETE" });
       state.aiSessions = state.aiSessions.filter(session => session.session_id !== sessionId);
       if (!state.aiSessions.length) {
+        removeStore(stylistSessionStoreKey);
         await createNewStylistSession();
       } else if (state.currentSessionId === sessionId) {
         await selectStylistSession(state.aiSessions[0].session_id, { silent: true });
@@ -4148,6 +4514,9 @@ def render_asis_demo_page() -> str:
       const savedModelId = preferencesData.current_model_id;
       if (savedModelId && (savedModelId === "self" || modelOptions.some(model => model.id === savedModelId))) {
         state.currentModelId = savedModelId === "self" && !state.selfModelUrl ? modelOptions[0].id : savedModelId;
+      }
+      if (preferencesData.current_stylist_session_id) {
+        state.currentSessionId = preferencesData.current_stylist_session_id;
       }
       updateCurrentModelUI();
       await loadStylistSessions();
@@ -4214,6 +4583,7 @@ def render_asis_demo_page() -> str:
       state.todayIndex = Math.max(0, Math.min(state.todayIndex, carousel.length - 1));
       track.innerHTML = carousel.map((card, index) => todayCardHTML(card, index)).join("");
       dots.innerHTML = todayDots(carousel);
+      bindImagePreviews(track);
       window.requestAnimationFrame(() => {
         track.scrollLeft = state.todayIndex * Math.max(1, track.clientWidth);
       });
@@ -4243,9 +4613,10 @@ def render_asis_demo_page() -> str:
     }
     function todayCardHTML(card, index) {
       const copy = todayRecommendationCopy(card, index);
+      const cover = withVersion(card.layout_snapshot_path || card.cover_path || card.cover || "", card);
       return `<article class="today-card" role="button" tabindex="0" data-today-outfit="${card.outfit_id}" aria-label="${escapeHTML(card.title || "今日推荐")}">
         <div class="today-copy"><span class="tag">${copy.tag}</span><h1>${escapeHTML(copy.title)}</h1><p>${copy.reason}</p></div>
-        <div class="today-art">${todayOutfitArt(card)}</div>
+        <button class="today-art image-preview-button" type="button" data-preview-image="${cover}" data-preview-title="${escapeHTML(card.title || copy.title)}" aria-label="放大查看${escapeHTML(card.title || copy.title)}">${todayOutfitArt(card)}</button>
       </article>`;
     }
     function todayRecommendationCopy(card, index) {
@@ -4337,7 +4708,7 @@ def render_asis_demo_page() -> str:
       const img = cover ? `<img src="${cover}" alt="${card.title || "搭配"}">` : `<div class="empty" style="min-height:100%;border-radius:0;">这套搭配正在生成封面</div>`;
       const heart = card.favorite ? "♥" : "♡";
       return `<article class="outfit-card" data-open-outfit="${card.outfit_id || ""}">
-        <div class="outfit-canvas">${img}</div>
+        <div class="outfit-canvas" data-preview-image="${cover}" data-preview-title="${escapeHTML(card.title || "搭配")}">${img}</div>
         <div class="outfit-meta"><button class="favorite-btn ${card.favorite ? "active" : ""}" data-favorite-outfit="${card.outfit_id || ""}" aria-label="收藏搭配">${heart}</button><button class="try-btn" data-home-outfit="${card.outfit_id || ""}">试穿</button></div>
       </article>`;
     }
@@ -4383,30 +4754,75 @@ def render_asis_demo_page() -> str:
       });
     }
     function shouldUseXHSSkill(message = "") {
-      return /小红书|红书|xhs|rednote|笔记|同款|平替|趋势|流行|博主|种草|参考|灵感|穿搭|搭配|怎么穿|穿什么|怎么配|ootd|outfit|look|style|衣服|上衣|下装|裤|裙|鞋|包|外套|大衣|衬衫|针织|卫衣|西装|连衣裙|半身裙|通勤|上班|面试|约会|聚餐|看展|旅行|上课|校园|拍照|对镜|挡脸|场景拍|显瘦|显高|显白|配色|色彩|风格|氛围感|松弛|韩系|法式|日系|美式/i.test(String(message || ""));
+      const text = String(message || "");
+      if (/不用小红书|不要小红书|别用小红书|不看小红书|只看衣橱|只用衣橱|只用我的衣橱|不要外部参考|不用外部参考/i.test(text)) return false;
+      if (/小红书|红书|xhs|rednote|笔记|同款|平替|趋势|流行|博主|种草|参考|灵感/i.test(text)) return true;
+      const outfitTopic = /穿|搭|上班|通勤|面试|客户|会议|约会|聚餐|看展|旅行|上课|校园|生日|派对|演唱会|音乐节|婚礼|宴会|运动|户外|居家|鞋|包|帽|裙|裤|衬衫|针织|西装|外套|配饰|显瘦|显白|出片|拍照|ootd|氛围感|风格|颜色|身材|体型|雨|冷|热|降温|升温|天气|防水|防滑/i.test(text);
+      return outfitTopic;
     }
     function shouldUseCapsuleSkill(message = "") {
       return /胶囊|capsule|一衣多穿|少买|基础款|通勤衣橱|衣橱规划|万能衣橱/i.test(String(message || ""));
     }
-    function defaultAIToolSteps(message = "") {
-      const steps = [
-        { id: "understand", title: "理解穿搭需求", status: "running", detail: "识别场景、约束和上一轮对话" },
+    function inferAIIntent(message = "") {
+      const text = String(message || "");
+      return {
+        useXHS: shouldUseXHSSkill(text),
+        useCapsule: shouldUseCapsuleSkill(text),
+        isFollowup: /继续|刚才|上一|前面|这个|那|如果|还是|换成|调整|不要|不想|下雨|显瘦/i.test(text) && state.aiMessages.some(item => item.role === "assistant"),
+        hasWeather: /雨|冷|热|降温|升温|天气|防水|防滑/i.test(text),
+        hasOccasion: /上班|通勤|面试|客户|会议|约会|聚餐|看展|旅行|上课|校园|生日|派对|演唱会/i.test(text),
+      };
+    }
+    function recentUserQueries(nextMessage = "") {
+      const queries = state.aiMessages.filter(item => item.role === "user").map(item => String(item.content || "").trim()).filter(Boolean);
+      const current = String(nextMessage || "").trim();
+      if (current && queries[queries.length - 1] !== current) queries.push(current);
+      return queries.slice(-5);
+    }
+    function buildAIConversationContext(message = "") {
+      const queries = recentUserQueries(message);
+      const lastAssistant = [...state.aiMessages].reverse().find(item => item.role === "assistant");
+      const lastSources = [
+        ...(Array.isArray(lastAssistant?.xhs_notes) ? lastAssistant.xhs_notes.slice(0, 4).map(note => ({ title: note.title || "", source: note.source_label || "小红书" })) : []),
+        ...(Array.isArray(lastAssistant?.evidence_sources) ? lastAssistant.evidence_sources.slice(0, 2) : []),
       ];
-      if (shouldUseCapsuleSkill(message)) {
-        steps.push({ id: "capsule", title: "调用胶囊衣橱 skill", status: "pending", detail: "按少量核心单品组织多场景搭配" });
+      return {
+        current_query: String(message || "").trim(),
+        recent_user_queries: queries,
+        previous_query: queries.length >= 2 ? queries[queries.length - 2] : "",
+        previous_assistant_summary: String(lastAssistant?.content || "").replace(/\s+/g, " ").slice(0, 220),
+        previous_xhs_sources: lastSources.filter(item => item && (item.title || item.label)).slice(0, 6),
+        conversation_turn_count: state.aiMessages.length,
+        must_answer_current_query: true,
+      };
+    }
+    function defaultAIToolSteps(message = "") {
+      const intent = inferAIIntent(message);
+      const steps = [
+        {
+          id: "understand",
+          title: intent.isFollowup ? "接上文理解问题" : "理解这次问题",
+          status: "running",
+          detail: intent.isFollowup ? "先保留前面的场景，再聚焦你这句新约束" : "识别场景、预算、天气和风格偏好",
+        },
+      ];
+      if (intent.useCapsule) {
+        steps.push({ id: "capsule", title: "整理胶囊衣橱思路", status: "pending", detail: "用少量核心单品覆盖更多场景" });
       }
-      if (shouldUseXHSSkill(message)) {
-        steps.push({ id: "xhs", title: "调用小红书灵感 skill", status: "pending", detail: "按本轮场景检索小红书穿搭笔记" });
-        steps.push({ id: "filter", title: "筛选相关性", status: "pending", detail: "只保留和场景高度相关的穿搭笔记" });
+      if (intent.useXHS) {
+        steps.push({ id: "xhs", title: "找小红书参考", status: "pending", detail: "只在你需要笔记/同款/趋势时检索" });
+        steps.push({ id: "filter", title: "过滤不相关笔记", status: "pending", detail: "留下和本轮场景真正贴近的卡片" });
       }
-      steps.push({ id: "style", title: "整理穿搭建议", status: "pending", detail: "把可用信号转成具体衣服、鞋包和颜色建议" });
+      steps.push({ id: "style", title: "组织成可执行建议", status: "pending", detail: "把信息收成衣服、鞋包、颜色和取舍" });
       return steps;
     }
     function visibleLoadingToolSteps() {
       const source = state.aiLoadingSteps.length ? state.aiLoadingSteps : defaultAIToolSteps(state.aiBrief);
       const visibleCount = Math.max(1, Math.min(state.aiVisibleToolCount || 1, source.length));
       return source.slice(0, visibleCount).map((step, index) => {
-        const status = index < visibleCount - 1 ? "done" : "running";
+        const id = String(step.id || "");
+        const isExternalEvidence = ["xhs", "filter", "read"].includes(id);
+        const status = index < visibleCount - 1 && !isExternalEvidence ? "done" : index === visibleCount - 1 ? "running" : "pending";
         return { ...step, status };
       });
     }
@@ -4428,24 +4844,118 @@ def render_asis_demo_page() -> str:
     }
     function renderAIToolchain(steps = []) {
       const list = (steps.length ? steps : defaultAIToolSteps(state.aiBrief)).slice(0, 6);
-      return `<div class="ai-toolchain" aria-label="灵感检索过程">${list.map(step => {
-        const status = ["done", "running", "failed", "pending"].includes(step.status) ? step.status : "pending";
-        const icon = status === "done" ? "✓" : status === "failed" ? "!" : status === "running" ? "•" : "·";
-        return `<div class="ai-tool-step ${status}"><span class="ai-tool-dot">${icon}</span><span class="ai-tool-main"><span class="ai-tool-title">${escapeHTML(step.title || "处理灵感")}</span><span class="ai-tool-detail">${escapeHTML(step.detail || "")}</span></span></div>`;
+      return `<div class="ai-toolchain" aria-label="灵感处理进度">${list.map((step, index) => {
+        const status = ["done", "running", "failed", "pending", "complete", "active"].includes(step.status) ? step.status : "pending";
+        const normalized = status === "complete" ? "done" : status === "active" ? "running" : status;
+        const label = normalized === "done" ? "已完成" : normalized === "running" ? "进行中" : normalized === "failed" ? "未完成" : "稍后";
+        return `<div class="ai-tool-step ${normalized}"><span class="ai-tool-dot">${index + 1}</span><span class="ai-tool-main"><span class="ai-tool-title-row"><span class="ai-tool-title">${escapeHTML(step.title || "处理灵感")}</span><span class="ai-tool-status">${label}</span></span><span class="ai-tool-detail">${escapeHTML(step.detail || "")}</span></span></div>`;
       }).join("")}</div>`;
     }
+    function renderAIToolSummary(steps = []) {
+      const hasFailed = steps.some(step => step.status === "failed" || step.status === "error");
+      const usedXHS = steps.some(step => /小红书|笔记|参考|xhs/i.test(`${step.title || ""}${step.detail || ""}`));
+      const text = hasFailed ? "有参考源不可用，已换成可执行建议" : usedXHS ? "已看过上下文和小红书参考" : "已看过上下文";
+      return `<div class="ai-tool-summary">${escapeHTML(text)}</div>`;
+    }
+    function renderInlineMarkdown(text = "") {
+      return escapeHTML(text)
+        .replace(/`([^`]+)`/g, "<code>$1</code>")
+        .replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
+    }
+    function renderAssistantMarkdown(text = "", options = {}) {
+      const lines = String(text || "").split(/\\n+/).map(line => line.trim()).filter(Boolean);
+      const blocks = [];
+      let listItems = [];
+      const flushList = () => {
+        if (!listItems.length) return;
+        blocks.push(`<ul class="ai-md-list">${listItems.map(line => `<li>${renderInlineMarkdown(line)}</li>`).join("")}</ul>`);
+        listItems = [];
+      };
+      lines.forEach(line => {
+        const bullet = line.match(/^[-•]\\s+(.+)$/);
+        if (bullet) {
+          listItems.push(bullet[1]);
+          return;
+        }
+        flushList();
+        const heading = line.match(/^#{1,3}\\s+(.+)$/);
+        if (heading) {
+          blocks.push(`<div class="ai-md-heading">${renderInlineMarkdown(heading[1])}</div>`);
+          return;
+        }
+        const boldHeading = line.match(/^\\*\\*([^*：:]{2,20}[：:]?)\\*\\*$/);
+        if (boldHeading) {
+          blocks.push(`<div class="ai-md-heading">${renderInlineMarkdown(line)}</div>`);
+          return;
+        }
+        blocks.push(`<p>${renderInlineMarkdown(line)}</p>`);
+      });
+      flushList();
+      const streamingClass = options.streaming ? " ai-streaming-cursor" : "";
+      if (!blocks.length && options.streaming) return `<div class="ai-assistant-copy"><p class="ai-streaming-cursor"></p></div>`;
+      return blocks.length ? `<div class="ai-assistant-copy${streamingClass}">${blocks.join("")}</div>` : "";
+    }
     function renderAssistantCopy(text = "") {
-      const paragraphs = String(text || "").split(/\\n{2,}|\\n/).map(line => line.trim()).filter(Boolean);
-      return paragraphs.length ? `<div class="ai-assistant-copy">${paragraphs.map(line => `<p>${escapeHTML(line)}</p>`).join("")}</div>` : "";
+      return renderAssistantMarkdown(text);
     }
     function renderAssistantStream(text = "") {
-      const paragraphs = String(text || "").split(/\\n{2,}|\\n/).map(line => line.trim()).filter(Boolean);
-      if (!paragraphs.length) return `<div class="ai-assistant-copy"><p class="ai-streaming-cursor"></p></div>`;
-      return `<div class="ai-assistant-copy ai-streaming-cursor">${paragraphs.map(line => `<p>${escapeHTML(line)}</p>`).join("")}</div>`;
+      return renderAssistantMarkdown(text, { streaming: true });
+    }
+    function normalizeAIInputText(text = "") {
+      return String(text || "")
+        .replace(/\\r\\n?/g, "\\n")
+        .split("\\n")
+        .map(line => line.trim())
+        .filter(Boolean)
+        .join(" ")
+        .replace(/\s{2,}/g, " ")
+        .trim();
+    }
+    function insertNormalizedPromptText(textarea, text = "") {
+      const normalized = normalizeAIInputText(text);
+      if (!normalized) return;
+      const start = textarea.selectionStart ?? textarea.value.length;
+      const end = textarea.selectionEnd ?? textarea.value.length;
+      const before = textarea.value.slice(0, start);
+      const after = textarea.value.slice(end);
+      const needsLead = before && !/\s$/.test(before) ? " " : "";
+      const needsTrail = after && !/^\s/.test(after) ? " " : "";
+      textarea.value = `${before}${needsLead}${normalized}${needsTrail}${after}`.replace(/\s{2,}/g, " ");
+      const cursor = (before + needsLead + normalized).length;
+      textarea.setSelectionRange(cursor, cursor);
     }
     function stopAITextStream() {
       if (state.aiStreamTimer) window.clearInterval(state.aiStreamTimer);
       state.aiStreamTimer = null;
+    }
+    function isAIResponding() {
+      return !!(state.aiAbortController || state.aiResult?.status === "loading" || (state.aiStreamingText !== null && !state.aiStreamingDone));
+    }
+    function updateAISendButton() {
+      const button = $("#aiSendBtn");
+      if (!button) return;
+      const stopping = isAIResponding();
+      button.classList.toggle("is-stopping", stopping);
+      button.textContent = stopping ? "■" : "↑";
+      button.setAttribute("aria-label", stopping ? "停止输出" : "发送");
+      button.setAttribute("title", stopping ? "停止输出" : "发送");
+    }
+    function stopAIResponse() {
+      if (state.aiAbortController) {
+        state.aiAbortController.abort();
+        state.aiAbortController = null;
+      }
+      stopAITextStream();
+      stopAIToolProgress();
+      if (state.aiResult?.status === "loading") {
+        state.aiToolsExpanded = false;
+        state.aiResult = { status: "stopped", assistant_message: "已停止输出。你可以调整问题后重新发送。", tool_steps: [] };
+      } else if (state.aiStreamingText !== null && !state.aiStreamingDone) {
+        state.aiStreamingDone = true;
+      }
+      renderAIResult();
+      updateAISendButton();
+      toast("已停止输出。");
     }
     function startAITextStream(fullText = "") {
       stopAITextStream();
@@ -4461,7 +4971,7 @@ def render_asis_demo_page() -> str:
       }
       let index = 0;
       state.aiStreamTimer = window.setInterval(() => {
-        const step = target.length > 180 ? 5 : 3;
+        const step = target.length > 180 ? 10 : 6;
         index = Math.min(target.length, index + step);
         state.aiStreamingText = target.slice(0, index);
         if (index >= target.length) {
@@ -4469,11 +4979,13 @@ def render_asis_demo_page() -> str:
           state.aiStreamingDone = true;
         }
         renderAIResult();
-      }, 24);
+      }, 48);
     }
     function renderXHSNotes(notes = []) {
       const cards = notes.slice(0, 6).map(note => {
-        const cover = note.cover_url ? `<img src="${escapeHTML(note.cover_url)}" alt="${escapeHTML(note.title || "小红书笔记")}">` : "暂无封面";
+        const cover = note.cover_url
+          ? `<img src="${escapeHTML(note.cover_url)}" alt="${escapeHTML(note.title || "小红书笔记")}" loading="lazy" onerror="this.replaceWith(document.createTextNode('封面缓存中'))">`
+          : "暂无封面";
         const stats = [note.liked_count ? `赞 ${note.liked_count}` : "", note.collected_count ? `藏 ${note.collected_count}` : ""].filter(Boolean).join(" · ");
         const content = `<div class="xhs-note-cover">${cover}</div><div class="xhs-note-body"><div class="xhs-note-title">${escapeHTML(note.title || "小红书笔记")}</div><div class="xhs-note-meta"><span>${escapeHTML(note.author_name || "小红书用户")}</span><span>${escapeHTML(stats || note.source_label || "推荐")}</span></div></div>`;
         return note.url ? `<a class="xhs-note-card" href="${escapeHTML(note.url)}" target="_blank" rel="noopener noreferrer">${content}</a>` : `<article class="xhs-note-card">${content}</article>`;
@@ -4488,15 +5000,15 @@ def render_asis_demo_page() -> str:
       }).join("");
     }
     function renderStoredAssistantMessage(item) {
-      const toolchain = Array.isArray(item.tool_steps) && item.tool_steps.length ? renderAIToolchain(item.tool_steps) : "";
+      const toolchain = Array.isArray(item.tool_steps) && item.tool_steps.length
+        ? `<details class="ai-tool-history"><summary>${renderAIToolSummary(item.tool_steps)}</summary>${renderAIToolchain(item.tool_steps)}</details>`
+        : "";
       const notes = renderXHSNotes(item.xhs_notes || []);
-      const reasons = (item.rationale || []).slice(0, 3).map(line => `<li>${escapeHTML(line)}</li>`).join("");
       const sources = renderAISources(item.evidence_sources || []);
       return `<div class="ai-assistant-turn">
         ${toolchain}
         ${renderAssistantCopy(item.content)}
         ${notes}
-        ${reasons ? `<ul>${reasons}</ul>` : ""}
         ${sources ? `<div class="ai-sources">${sources}</div>` : ""}
       </div>`;
     }
@@ -4537,6 +5049,7 @@ def render_asis_demo_page() -> str:
     }
     function renderAIResult() {
       const panel = $("#aiResult");
+      updateAISendButton();
       $(".ai-hero").classList.toggle("is-dismissed", state.aiMessages.length > 0 || !!state.aiResult);
       if (!state.aiResult) {
         if (!state.aiMessages.length) {
@@ -4562,17 +5075,16 @@ def render_asis_demo_page() -> str:
         if (item.role === "assistant") return renderStoredAssistantMessage(item);
         return `<div class="ai-bubble user">${escapeHTML(item.content)}</div>`;
       }).join("");
-      const reasons = (result.rationale || []).slice(0, 3).map(line => `<li>${escapeHTML(line)}</li>`).join("");
       const toolSteps = result.status === "loading" ? visibleLoadingToolSteps() : Array.isArray(result.tool_steps) ? result.tool_steps : [];
       const isFinal = result.status !== "loading";
       const finalText = result.assistant_message || (result.status === "loading" ? "正在理解你的场景和衣橱..." : "我已经理解你的需求。");
       const isStreaming = isFinal && state.aiStreamingText !== null && !state.aiStreamingDone;
       const visibleText = isFinal && state.aiStreamingText !== null ? state.aiStreamingText : finalText;
-      const toolsCollapsed = isFinal && toolSteps.length && !state.aiToolsExpanded;
+      const toolsCollapsed = toolSteps.length && !state.aiToolsExpanded;
       const toolchain = result.status === "loading"
-        ? renderAIToolchain(toolSteps)
+        ? (toolsCollapsed ? renderAIToolSummary(toolSteps) : renderAIToolchain(toolSteps))
         : toolsCollapsed
-          ? `<div class="ai-tool-summary">工具调用已完成</div>`
+          ? renderAIToolSummary(toolSteps)
           : toolSteps.length ? renderAIToolchain(toolSteps) : "";
       const xhsNotes = renderXHSNotes(result.xhs_notes || []);
       const sources = renderAISources(result.evidence_sources || []);
@@ -4582,7 +5094,7 @@ def render_asis_demo_page() -> str:
         return type ? `<button data-ai-action="${type}">${escapeHTML(action.label || "继续")}</button>` : "";
       }).join("");
       const actions = outfits || nextActions || `<button data-ai-action="closet">去衣橱选择</button>`;
-      const statusLabel = result.status === "loading" ? "进行中" : result.status === "failed" ? "未完成" : "已完成";
+      const statusLabel = result.status === "loading" ? "进行中" : result.status === "failed" ? "未完成" : result.status === "stopped" ? "已停止" : "已完成";
       const assistantText = isStreaming ? renderAssistantStream(visibleText) : renderAssistantCopy(visibleText);
       const showPostContent = result.status === "loading" || state.aiStreamingDone || state.aiStreamingText === null;
       const richAssistant = `<div class="ai-assistant-turn">
@@ -4590,13 +5102,13 @@ def render_asis_demo_page() -> str:
         ${toolchain}
         ${assistantText}
         ${showPostContent ? xhsNotes : ""}
-        ${showPostContent && reasons ? `<ul>${reasons}</ul>` : ""}
         ${showPostContent && sources ? `<div class="ai-sources">${sources}</div>` : ""}
         ${showPostContent ? `<div class="ai-actions">${actions}</div>` : ""}
       </div>`;
-      panel.innerHTML = `<div class="ai-thread ${state.aiMessages.length ? "has-messages" : ""} ${isStreaming ? "is-streaming" : ""}">${thread}${richAssistant}</div>`;
+      const isGenerating = result.status === "loading" || isStreaming;
+      panel.innerHTML = `<div class="ai-thread ${state.aiMessages.length ? "has-messages" : ""} ${isStreaming ? "is-streaming" : ""} ${isGenerating ? "is-generating" : ""}">${thread}${richAssistant}</div>`;
+      updateAISendButton();
       $all("[data-ai-toggle-tools]").forEach(btn => btn.addEventListener("click", () => {
-        if (state.aiResult?.status === "loading") return;
         state.aiToolsExpanded = !state.aiToolsExpanded;
         renderAIResult();
       }));
@@ -4631,9 +5143,10 @@ def render_asis_demo_page() -> str:
       const items = state.category === "all" ? cleanItems : cleanItems.filter(item => item.category === state.category);
       $("#closetGrid").className = "item-grid";
       $("#closetGrid").innerHTML = items.length ? items.map(item => `<article class="closet-card">
-        <div class="closet-img"><img src="${publicCutoutImg(item)}" alt="${item.category_label}"></div>
+        <div class="closet-img" data-preview-image="${publicCutoutImg(item)}" data-preview-title="${escapeHTML(item.category_label || "单品")}"><img src="${publicCutoutImg(item)}" alt="${item.category_label}"></div>
         <div class="closet-meta"><button class="item-favorite ${item.favorite ? "active" : ""}" data-favorite-item="${item.item_id}" aria-label="收藏单品">${item.favorite ? "♥" : "♡"}</button><button class="match-btn" data-match="${item.item_id}">去搭配</button></div>
       </article>`).join("") : `<div class="empty">这个分类还没有衣物。点底部 + 上传一张试试。</div>`;
+      bindImagePreviews();
       $all("[data-match]").forEach(btn => btn.addEventListener("click", () => openBuilder([btn.dataset.match])));
       $all("[data-favorite-item]").forEach(btn => btn.addEventListener("click", event => {
         event.preventDefault();
@@ -4719,14 +5232,15 @@ def render_asis_demo_page() -> str:
       $("#recordSelectText").textContent = selectedCount ? `已选择 ${selectedCount} ${isWorks ? "个作品" : "条记录"}` : isWorks ? "选择要删除的作品" : "选择要删除的记录";
       $("#recordDeleteBtn").disabled = !selectedCount;
       if (state.profileView === "favorites") {
-        $("#recordGrid").innerHTML = favorites.length ? favorites.slice(0, 18).map(item => `<button class="record-card" type="button" data-favorite-open="${item.type}:${item.id}"><img src="${item.image_path}" alt="${escapeHTML(item.label)}"></button>`).join("") : `<div class="empty" style="grid-column:1/-1;">收藏单品和套装会出现在这里。</div>`;
+        $("#recordGrid").innerHTML = favorites.length ? favorites.slice(0, 18).map(item => `<button class="record-card" type="button" data-favorite-open="${item.type}:${item.id}" data-preview-image="${item.image_path}" data-preview-title="${escapeHTML(item.label)}"><img src="${item.image_path}" alt="${escapeHTML(item.label)}"></button>`).join("") : `<div class="empty" style="grid-column:1/-1;">收藏单品和套装会出现在这里。</div>`;
+        bindImagePreviews();
         return;
       }
       if (isWorks) {
         const emptyCopy = state.profileWorkView === "items" ? "你上传或从链接导入的单品会出现在这里。" : "自由搭配保存的套装会出现在这里。";
         $("#recordGrid").innerHTML = currentWorks.length ? currentWorks.slice(0, 36).map(item => {
           const selected = state.selectedWorkIds.has(item.id);
-          return `<button class="record-card ${item.card_class} ${state.recordEditing ? "editing" : ""} ${selected ? "selected" : ""}" type="button" data-work-id="${item.id}"><img src="${item.image_path}" alt="${escapeHTML(item.label)}">${state.recordEditing ? `<span class="check">✓</span>` : ""}</button>`;
+          return `<button class="record-card ${item.card_class} ${state.recordEditing ? "editing" : ""} ${selected ? "selected" : ""}" type="button" data-work-id="${item.id}" data-preview-image="${item.image_path}" data-preview-title="${escapeHTML(item.label)}"><img src="${item.image_path}" alt="${escapeHTML(item.label)}">${state.recordEditing ? `<span class="check">✓</span>` : ""}</button>`;
         }).join("") : `<div class="empty" style="grid-column:1/-1;">${emptyCopy}</div>`;
         $all("[data-work-id]").forEach(card => card.addEventListener("click", () => {
           const id = card.dataset.workId;
@@ -4741,11 +5255,13 @@ def render_asis_demo_page() -> str:
           else state.selectedWorkIds.add(id);
           renderProfile();
         }));
+        bindImagePreviews();
         return;
       }
       $("#recordGrid").innerHTML = records.length ? records.slice(0, 18).map(record => {
         const selected = state.selectedRecordIds.has(record.record_id);
-        return `<button class="record-card ${state.recordEditing ? "editing" : ""} ${selected ? "selected" : ""}" type="button" data-record-id="${record.record_id || ""}"><img src="${assetURL(record.image_path)}" alt="试穿记录">${state.recordEditing ? `<span class="check">✓</span>` : ""}</button>`;
+        const badge = record.status === "review" ? `<span class="record-badge">需复核</span>` : "";
+        return `<button class="record-card ${state.recordEditing ? "editing" : ""} ${selected ? "selected" : ""}" type="button" data-record-id="${record.record_id || ""}" data-preview-image="${assetURL(record.image_path)}" data-preview-title="试穿记录"><img src="${assetURL(record.image_path)}" alt="试穿记录">${badge}${state.recordEditing ? `<span class="check">✓</span>` : ""}</button>`;
       }).join("") : `<div class="empty" style="grid-column:1/-1;">试穿记录会出现在这里。</div>`;
       $all("[data-record-id]").forEach(card => card.addEventListener("click", () => {
         if (!state.recordEditing) return;
@@ -4755,6 +5271,7 @@ def render_asis_demo_page() -> str:
         else state.selectedRecordIds.add(id);
         renderProfile();
       }));
+      bindImagePreviews();
     }
     function toggleRecordEditing() {
       const workCount = state.profileWorkView === "items" ? visibleItems().filter(isUserCreatedItem).length : visibleOutfits().filter(isUserCreatedOutfit).length;
@@ -4825,8 +5342,11 @@ def render_asis_demo_page() -> str:
       $("#detailTitle").textContent = outfit.title || "穿搭详情";
       const cover = withVersion(outfit.layout_snapshot_path || outfit.cover_path || "", outfit);
       const model = currentModel();
-      $("#detailHero").innerHTML = `${cover ? `<img src="${cover}" alt="${escapeHTML(outfit.title || "穿搭")}">` : `<div class="empty">这套搭配正在生成封面</div>`}<div class="model-chip"><img src="${model.src}" alt="${escapeHTML(model.name || "当前模特")}"></div>`;
-      $("#detailItems").innerHTML = visibleItems(outfit.items || []).map(item => `<button class="item-tile" data-detail-item="${item.item_id}"><img src="${publicCutoutImg(item)}" alt="${escapeHTML(item.category_label || "单品")}"><span>${escapeHTML(item.category_label || "单品")}</span></button>`).join("") || `<div class="empty" style="min-width:100%;">这套搭配还没有单品。</div>`;
+      $("#detailHero").dataset.previewImage = cover;
+      $("#detailHero").dataset.previewTitle = outfit.title || "穿搭";
+      $("#detailHero").innerHTML = `${cover ? `<img src="${cover}" alt="${escapeHTML(outfit.title || "穿搭")}">` : `<div class="empty">这套搭配正在生成封面</div>`}<div class="model-chip" data-preview-image="${model.src}" data-preview-title="${escapeHTML(model.name || "当前模特")}"><img src="${model.src}" alt="${escapeHTML(model.name || "当前模特")}"></div>`;
+      $("#detailItems").innerHTML = visibleItems(outfit.items || []).map(item => `<button class="item-tile" data-detail-item="${item.item_id}" data-preview-image="${publicCutoutImg(item)}" data-preview-title="${escapeHTML(item.category_label || "单品")}"><img src="${publicCutoutImg(item)}" alt="${escapeHTML(item.category_label || "单品")}"><span>${escapeHTML(item.category_label || "单品")}</span></button>`).join("") || `<div class="empty" style="min-width:100%;">这套搭配还没有单品。</div>`;
+      bindImagePreviews();
     }
     function editorItemFromClosetItem(item, index) {
       const slot = itemSlot(item);
@@ -4962,8 +5482,11 @@ def render_asis_demo_page() -> str:
       const imageId = `tryonResultImage_${Date.now()}`;
       const hero = $("#tryonHero");
       hero.classList.remove("is-generating");
+      hero.dataset.previewImage = imagePath ? assetURL(imagePath) : "";
+      hero.dataset.previewTitle = imagePath ? "试穿结果" : "";
       hero.innerHTML = `${imagePath ? `<img id="${imageId}" class="image-loading" alt="试穿结果">` : `<div class="empty">选择一套搭配后，就能在这里查看试穿效果。</div>`}<div id="generatingLayer" class="generating-layer">${generatingLayerHTML()}</div>`;
       if (imagePath) loadImageInto(`#${imageId}`, imagePath);
+      bindImagePreviews();
       $("#cancelGenerate")?.addEventListener("click", () => {
         $("#generatingLayer").classList.remove("active");
         hero.classList.remove("is-generating");
@@ -5061,13 +5584,18 @@ def render_asis_demo_page() -> str:
     }
     async function askStylist(prefillMessage = "") {
       const input = $("#aiPromptInput");
-      const message = prefillMessage || input.value.trim() || state.aiBrief || "帮我从衣橱推荐一套穿搭";
-      if (!message) return;
+      if (isAIResponding()) return stopAIResponse();
+      const message = normalizeAIInputText(prefillMessage || input.value);
+      if (!message) return toast("先输入想问的穿搭问题。");
       if (!state.currentSessionId) await createNewStylistSession();
       preserveCurrentAIArtifactsOnLastMessage();
       stopAITextStream();
       stopAIToolProgress();
-      const useXHSSkill = shouldUseXHSSkill(message);
+      const abortController = new AbortController();
+      state.aiAbortController = abortController;
+      const intent = inferAIIntent(message);
+      const useXHSSkill = intent.useXHS;
+      const conversationContext = buildAIConversationContext(message);
       state.aiBrief = message;
       state.aiMessages.push({ role: "user", content: message });
       input.value = "";
@@ -5076,13 +5604,14 @@ def render_asis_demo_page() -> str:
       state.aiToolsExpanded = true;
       state.aiLoadingSteps = defaultAIToolSteps(message);
       state.aiVisibleToolCount = 1;
-      state.aiResult = { status: "loading", assistant_message: useXHSSkill ? "正在按需调用小红书灵感 skill..." : "正在整理你的穿搭需求...", tool_steps: state.aiLoadingSteps };
+      state.aiResult = { status: "loading", assistant_message: useXHSSkill ? "正在找和你这句相关的参考..." : "正在整理你的穿搭需求...", tool_steps: state.aiLoadingSteps };
       renderAIResult();
       startAIToolProgress();
       try {
         const data = await fetchJSON("/stylist/chat", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
+          signal: abortController.signal,
           body: JSON.stringify({
             message,
             session_id: state.currentSessionId || "asis-inspiration",
@@ -5091,6 +5620,10 @@ def render_asis_demo_page() -> str:
               item_count: state.items.length,
               outfit_count: state.outfits.length,
               conversation: state.aiMessages.slice(-8),
+              current_query: message,
+              recent_user_queries: conversationContext.recent_user_queries,
+              conversation_context: conversationContext,
+              user_intent: intent,
               mock_profile: {
                 type: state.profile.key,
                 role: state.profile.role,
@@ -5099,15 +5632,20 @@ def render_asis_demo_page() -> str:
               },
               xiaohongshu_preferred: useXHSSkill,
               requested_skills: [
-                ...(shouldUseCapsuleSkill(message) ? ["capsule-wardrobe"] : []),
+                ...(intent.useCapsule ? ["capsule-wardrobe"] : []),
                 ...(useXHSSkill ? ["xhs-trend-research"] : []),
               ],
             }
           })
         });
+        if (abortController.signal.aborted) return;
         stopAIToolProgress();
+        state.aiAbortController = null;
         state.aiResult = data;
-        if (data.session_id) state.currentSessionId = data.session_id;
+        if (data.session_id) {
+          state.currentSessionId = data.session_id;
+          writeStore(stylistSessionStoreKey, data.session_id);
+        }
         const assistantMessage = data.assistant_message || "我已经理解你的需求。";
         state.aiStreamingText = "";
         state.aiStreamingDone = false;
@@ -5115,6 +5653,7 @@ def render_asis_demo_page() -> str:
         state.aiMessages.push({
           role: "assistant",
           content: assistantMessage,
+          tool_steps: Array.isArray(data.tool_steps) ? data.tool_steps : [],
           xhs_notes: Array.isArray(data.xhs_notes) ? data.xhs_notes : [],
           evidence_sources: Array.isArray(data.evidence_sources) ? data.evidence_sources : [],
           rationale: Array.isArray(data.rationale) ? data.rationale : [],
@@ -5125,19 +5664,34 @@ def render_asis_demo_page() -> str:
         startAITextStream(assistantMessage);
         toast(data.mode === "demo" ? "当前是演示建议。" : "已生成穿搭建议。");
       } catch (error) {
+        if (abortController.signal.aborted || error.name === "AbortError") {
+          state.aiAbortController = null;
+          if (state.aiResult?.status !== "stopped") stopAIResponse();
+          else updateAISendButton();
+          return;
+        }
         stopAITextStream();
         stopAIToolProgress();
-        const content = error.message || "灵感暂时不可用。";
+        state.aiAbortController = null;
+        const content = error.message || "暂时灵感耗尽，正在努力充能～";
         state.aiMessages.push({ role: "assistant", content });
         state.aiStreamingText = null;
         state.aiStreamingDone = true;
         state.aiToolsExpanded = false;
         state.aiResult = { status: "failed", assistant_message: content, error: { message: content } };
         renderAIResult();
-        toast(error.message || "灵感暂时不可用。");
+        toast(error.message || "暂时灵感耗尽，正在努力充能～");
       }
     }
+    function handleAISend() {
+      if (isAIResponding()) {
+        stopAIResponse();
+        return;
+      }
+      askStylist();
+    }
     function bindOutfitActions() {
+      bindImagePreviews();
       $all("[data-open-outfit]").forEach(card => card.addEventListener("click", () => openOutfitDetail(card.dataset.openOutfit)));
       $all("[data-home-outfit]").forEach(btn => btn.addEventListener("click", event => {
         event.stopPropagation();
@@ -5264,8 +5818,12 @@ def render_asis_demo_page() -> str:
       const file = event.target.files?.[0];
       if (!file) return;
       state.selfModelUrl = URL.createObjectURL(file);
+      $("#selfUploadZone").dataset.previewImage = state.selfModelUrl;
+      $("#selfUploadZone").dataset.previewTitle = "我的模特照片";
+      delete $("#selfUploadZone").dataset.previewBound;
       $("#selfUploadZone").innerHTML = `<img src="${state.selfModelUrl}" alt="我的模特照片">`;
       $("#confirmSelfModel").disabled = false;
+      bindImagePreviews($("#selfUploadZone"));
     });
     $("#confirmSelfModel").addEventListener("click", () => {
       if (!state.selfModelUrl) return toast("请先上传一张照片。");
@@ -5309,13 +5867,35 @@ def render_asis_demo_page() -> str:
       if (first) await tryOutfit(first.outfit_id);
     });
     $("#aiSendBtn").addEventListener("click", () => {
-      askStylist();
+      handleAISend();
+    });
+    $("#imageLightboxImg").addEventListener("click", event => {
+      event.preventDefault();
+      event.stopPropagation();
+    });
+    $("#imageLightboxZoom").addEventListener("click", event => {
+      event.preventDefault();
+      event.stopPropagation();
+      toggleImagePreviewZoom();
+    });
+    $("#imageLightboxClose").addEventListener("click", closeImagePreview);
+    $("#imageLightbox").addEventListener("click", event => {
+      if (event.target.id === "imageLightbox" || event.target.classList.contains("image-lightbox-stage")) closeImagePreview();
+    });
+    window.addEventListener("keydown", event => {
+      if (event.key === "Escape" && $("#imageLightbox").classList.contains("open")) closeImagePreview();
     });
     $("#aiPromptInput").addEventListener("keydown", event => {
       if (event.key === "Enter" && !event.shiftKey) {
         event.preventDefault();
-        askStylist();
+        handleAISend();
       }
+    });
+    $("#aiPromptInput").addEventListener("paste", event => {
+      const text = event.clipboardData?.getData("text/plain") || "";
+      if (!text) return;
+      event.preventDefault();
+      insertNormalizedPromptText(event.currentTarget, text);
     });
     $("#cancelGenerate")?.addEventListener("click", () => {
       $("#generatingLayer").classList.remove("active");
@@ -5366,6 +5946,7 @@ def _import_sources(sources: list[dict[str, Any]], import_type: str, source_url:
 
     review = sum(1 for item in new_items if item.get("quality", {}).get("status") == "review")
     usable = sum(1 for item in new_items if item.get("quality", {}).get("status") == "usable")
+    rejected_items = sum(1 for item in new_items if item.get("quality", {}).get("status") == "rejected")
     status = "imported" if new_items and not used_fallback else "partial" if new_items else "no_items_found"
     return {
         "status": status,
@@ -5380,7 +5961,7 @@ def _import_sources(sources: list[dict[str, Any]], import_type: str, source_url:
             "created": len(new_items),
             "usable": usable,
             "review": review,
-            "rejected": rejected,
+            "rejected": rejected + rejected_items,
             "fallback_used": used_fallback,
         },
         "message": _import_message(len(new_items), review, used_fallback),
@@ -5471,6 +6052,12 @@ def _closet_item_from_segmentation_mask(
     _build_closet_item_preview(cutout_path, preview_path)
 
     confidence = min(0.94, max(0.56, mask_area / image_area * 7.5))
+    quality = _closet_cutout_quality(
+        category=category,
+        cutout_path=cutout_path,
+        base_score=confidence,
+        base_reasons=["semantic_segmentation_mask"],
+    )
     return {
         "item_id": item_id,
         "category": category,
@@ -5495,10 +6082,8 @@ def _closet_item_from_segmentation_mask(
             "slot": _category_to_layout_slot(category),
         },
         "quality": {
-            "status": "usable" if confidence >= 0.62 else "review",
-            "score": round(confidence, 3),
+            **quality,
             "confidence": round(confidence, 3),
-            "reasons": ["semantic_segmentation_mask"],
         },
         "pipeline": {
             "segmentation": {
@@ -5631,6 +6216,46 @@ def _closet_preview_shadow(image: Image.Image) -> Image.Image:
     shadow = Image.new("RGBA", image.size, (96, 72, 82, 0))
     shadow.putalpha(alpha.point(lambda value: min(64, int(value * 0.2))))
     return shadow
+
+
+def _closet_cutout_quality(
+    category: str,
+    cutout_path: Path,
+    base_score: float,
+    base_reasons: list[str] | None = None,
+) -> dict[str, Any]:
+    reasons = list(base_reasons or [])
+    score = float(base_score)
+    try:
+        image = Image.open(cutout_path).convert("RGBA")
+        width, height = image.size
+        alpha = image.getchannel("A")
+        alpha_histogram = alpha.resize((96, 96)).histogram()
+        visible_ratio = sum(alpha_histogram[19:]) / max(1, sum(alpha_histogram))
+        aspect_ratio = width / max(1, height)
+        face_stage = _detect_person(image.convert("RGB"))
+    except Exception:
+        return {"status": "review", "score": 0.32, "reasons": [*reasons, "reference_unreadable"]}
+
+    if width < 160 or height < 160:
+        score -= 0.22
+        reasons.append("reference_too_small")
+    if visible_ratio < 0.08:
+        score -= 0.25
+        reasons.append("foreground_too_sparse")
+    if visible_ratio > 0.86:
+        score -= 0.18
+        reasons.append("person_or_background_contamination")
+    if category == "top" and not (0.35 <= aspect_ratio <= 2.4):
+        score -= 0.12
+        reasons.append("top_aspect_unusual")
+    if face_stage["status"] in {"pass", "warn"}:
+        score -= 0.28
+        reasons.append("contains_person_face")
+
+    score = round(max(0.0, min(1.0, score)), 3)
+    status = "usable" if score >= 0.62 else "review" if score >= 0.42 else "rejected"
+    return {"status": status, "score": score, "reasons": reasons}
 
 
 def _import_message(created: int, review: int, used_fallback: bool) -> str:

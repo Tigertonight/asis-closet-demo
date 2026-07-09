@@ -17,12 +17,13 @@ load_dotenv() {
     export "$assignment"
   done < <("$PYTHON_BIN" - "$env_file" <<'PY'
 from pathlib import Path
+import os
 import sys
 from dotenv import dotenv_values
 
 env_file = Path(sys.argv[1])
 for key, value in dotenv_values(env_file).items():
-    if key and value is not None:
+    if key and value is not None and key not in os.environ:
         print(f"{key}={value}", end="\0")
 PY
   )

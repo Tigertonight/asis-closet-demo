@@ -1,0 +1,2004 @@
+{
+  "name": "AS IS closet cutout imagegen test set",
+  "version": "2026-07-07-expanded-v2",
+  "purpose": "Generate synthetic but realistic images to test garment detection, semantic category assignment, mask quality, cutout quality, and review/rejected routing. Expanded with long-tail user-upload, source-platform, demographic, cultural, accessory, framing, duplicate, and hard-negative cases.",
+  "image_generation_defaults": {
+    "style": "photorealistic product or lifestyle photo",
+    "aspect_ratio": "4:5 or 3:4 vertical unless the case says top-down flatlay",
+    "avoid": "brand logos, watermarks, celebrity faces, extra unrelated garments unless requested by the case"
+  },
+  "groups": [
+    {
+      "group_id": "A",
+      "name": "standard_single_item_catalog",
+      "goal": "Clean baseline product images that should be easy to cut out.",
+      "cases": [
+        {
+          "id": "A01",
+          "seed": true,
+          "title": "white background short sleeve t-shirt",
+          "expected_items": [
+            {
+              "slot": "top",
+              "count": 1
+            }
+          ],
+          "difficulty_tags": [
+            "baseline",
+            "white_background",
+            "single_item"
+          ],
+          "acceptance": "One top item, clean outline, no background residue.",
+          "imagegen_prompt": "Use case: photorealistic-natural. Asset type: closet cutout test image. Primary request: a single plain short sleeve t-shirt laid flat on a pure white studio background. Subject: cotton t-shirt, front view, sleeves naturally spread, no model, no hanger. Composition/framing: centered product catalog shot with generous padding, full garment visible. Lighting/mood: soft even studio lighting, minimal shadow. Constraints: no logo, no text, no watermark, no other objects."
+        },
+        {
+          "id": "A02",
+          "seed": false,
+          "title": "striped long sleeve shirt",
+          "expected_items": [
+            {
+              "slot": "top",
+              "count": 1
+            }
+          ],
+          "difficulty_tags": [
+            "baseline",
+            "pattern",
+            "sleeve_edges"
+          ],
+          "acceptance": "One top item, cuffs and collar preserved.",
+          "imagegen_prompt": "Use case: photorealistic-natural. Asset type: closet cutout test image. Primary request: a blue and white striped long sleeve button-up shirt laid flat on a pure white studio background. Subject: front-facing shirt with collar, buttons, cuffs, and long sleeves fully visible. Composition/framing: centered catalog product photo, generous padding. Lighting/mood: soft even lighting. Constraints: no model, no hanger, no logo, no text, no watermark."
+        },
+        {
+          "id": "A03",
+          "seed": false,
+          "title": "light wash wide-leg jeans",
+          "expected_items": [
+            {
+              "slot": "bottom",
+              "count": 1
+            }
+          ],
+          "difficulty_tags": [
+            "baseline",
+            "light_color",
+            "long_pants"
+          ],
+          "acceptance": "One bottom item, both legs complete, waistline preserved.",
+          "imagegen_prompt": "Use case: photorealistic-natural. Asset type: closet cutout test image. Primary request: a pair of light wash wide-leg jeans laid flat on a pure white studio background. Subject: front view, waistband, pockets, seams, and both pant legs fully visible. Composition/framing: centered vertical catalog shot with padding around all edges. Lighting/mood: soft even studio lighting. Constraints: no person, no text, no watermark, no other clothes."
+        },
+        {
+          "id": "A04",
+          "seed": false,
+          "title": "black slingback heels",
+          "expected_items": [
+            {
+              "slot": "shoes",
+              "count": 1
+            }
+          ],
+          "difficulty_tags": [
+            "baseline",
+            "thin_edges",
+            "pair_of_shoes"
+          ],
+          "acceptance": "One shoes item, both heels and thin straps preserved.",
+          "imagegen_prompt": "Use case: photorealistic-natural. Asset type: closet cutout test image. Primary request: a pair of glossy black slingback high heels on a pure white studio background. Subject: both shoes visible as a pair, pointed toes, thin straps, slim heels. Composition/framing: centered product catalog shot, full shoes visible, generous padding. Lighting/mood: soft studio light with controlled highlights. Constraints: no foot, no model, no logo, no text, no watermark."
+        },
+        {
+          "id": "A05",
+          "seed": false,
+          "title": "yellow handbag with thin handle",
+          "expected_items": [
+            {
+              "slot": "bag",
+              "count": 1
+            }
+          ],
+          "difficulty_tags": [
+            "baseline",
+            "thin_handle",
+            "bag"
+          ],
+          "acceptance": "One bag item, handle loop not broken.",
+          "imagegen_prompt": "Use case: photorealistic-natural. Asset type: closet cutout test image. Primary request: a pale yellow structured handbag with a thin rounded handle on a pure white studio background. Subject: front-facing handbag, handle fully visible, smooth leather texture. Composition/framing: centered product catalog shot with padding around handle and base. Lighting/mood: soft even studio lighting. Constraints: no model, no hand, no logo, no text, no watermark."
+        }
+      ]
+    },
+    {
+      "group_id": "B",
+      "name": "ecommerce_model_images",
+      "goal": "Product photos with people, hangers, and commerce-like layouts.",
+      "cases": [
+        {
+          "id": "B01",
+          "seed": true,
+          "title": "model wearing white shirt",
+          "expected_items": [
+            {
+              "slot": "top",
+              "count": 1
+            }
+          ],
+          "difficulty_tags": [
+            "person",
+            "skin_occlusion",
+            "white_garment"
+          ],
+          "acceptance": "Extract shirt as top; face and hands should not dominate the cutout.",
+          "imagegen_prompt": "Use case: photorealistic-natural. Asset type: closet cutout test image. Primary request: a fashion ecommerce photo of a model wearing a crisp white button-up shirt against a light gray studio background. Subject: upper body visible from neck to hips, shirt front clear, sleeves visible, hands relaxed near sides. Composition/framing: centered ecommerce product photo. Lighting/mood: clean soft studio lighting. Constraints: no brand logo, no text, no watermark, no extra clothes."
+        },
+        {
+          "id": "B02",
+          "seed": false,
+          "title": "full body blazer skirt shoes",
+          "expected_items": [
+            {
+              "slot": "top",
+              "count": 1
+            },
+            {
+              "slot": "skirt",
+              "count": 1
+            },
+            {
+              "slot": "shoes",
+              "count": 1
+            }
+          ],
+          "difficulty_tags": [
+            "person",
+            "multi_item",
+            "full_body"
+          ],
+          "acceptance": "Find main clothing pieces; human body may force review but should not create many false items.",
+          "imagegen_prompt": "Use case: photorealistic-natural. Asset type: closet cutout test image. Primary request: full body ecommerce model wearing a black blazer, cream midi skirt, and black loafers on a plain light gray studio background. Subject: standing model, clothing clearly visible, simple pose. Composition/framing: full outfit centered, full shoes visible. Lighting/mood: soft catalog lighting. Constraints: no logo, no text, no watermark, no bag."
+        },
+        {
+          "id": "B03",
+          "seed": false,
+          "title": "hanger blouse",
+          "expected_items": [
+            {
+              "slot": "top",
+              "count": 1
+            }
+          ],
+          "difficulty_tags": [
+            "hanger",
+            "non_garment_attachment"
+          ],
+          "acceptance": "Top extracted; hanger should be excluded or minimal.",
+          "imagegen_prompt": "Use case: photorealistic-natural. Asset type: closet cutout test image. Primary request: a silky beige blouse hanging from a simple wooden hanger against a plain white wall. Subject: blouse front visible, sleeves hanging naturally, collar and hem clear. Composition/framing: centered vertical product photo. Lighting/mood: natural soft daylight. Constraints: no person, no logo, no text, no watermark, only one hanger."
+        },
+        {
+          "id": "B04",
+          "seed": false,
+          "title": "model holding overlapping bag",
+          "expected_items": [
+            {
+              "slot": "bag",
+              "count": 1
+            },
+            {
+              "slot": "top",
+              "count": 1
+            }
+          ],
+          "difficulty_tags": [
+            "overlap",
+            "hand_occlusion",
+            "bag"
+          ],
+          "acceptance": "Bag should be found or marked review; top should not merge with bag.",
+          "imagegen_prompt": "Use case: photorealistic-natural. Asset type: closet cutout test image. Primary request: ecommerce model wearing a cream cardigan and holding a tan handbag partly overlapping the cardigan. Subject: torso crop, bag in front of body, handle visible, cardigan buttons visible. Composition/framing: centered, plain warm white background. Lighting/mood: soft studio lighting. Constraints: no logo, no text, no watermark."
+        },
+        {
+          "id": "B05",
+          "seed": false,
+          "title": "dark coat on dark background",
+          "expected_items": [
+            {
+              "slot": "top",
+              "count": 1
+            }
+          ],
+          "difficulty_tags": [
+            "dark_on_dark",
+            "low_contrast",
+            "coat"
+          ],
+          "acceptance": "Coat outline should be usable or review, not rejected if visible.",
+          "imagegen_prompt": "Use case: photorealistic-natural. Asset type: closet cutout test image. Primary request: a black wool long coat worn by a model against a charcoal gray studio background. Subject: coat front visible from shoulders to knees, sleeves and lapels clear, model face not emphasized. Composition/framing: centered vertical ecommerce photo. Lighting/mood: soft directional light that reveals black fabric edges. Constraints: no logo, no text, no watermark, no other garments emphasized."
+        }
+      ]
+    },
+    {
+      "group_id": "C",
+      "name": "multi_item_flatlay_outfits",
+      "goal": "One image containing several closet items that should be split into multiple items.",
+      "cases": [
+        {
+          "id": "C01",
+          "seed": true,
+          "title": "shirt jeans sneakers flatlay",
+          "expected_items": [
+            {
+              "slot": "top",
+              "count": 1
+            },
+            {
+              "slot": "bottom",
+              "count": 1
+            },
+            {
+              "slot": "shoes",
+              "count": 1
+            }
+          ],
+          "difficulty_tags": [
+            "flatlay",
+            "multi_item",
+            "outfit"
+          ],
+          "acceptance": "Create three items without merging shirt, jeans, and shoes.",
+          "imagegen_prompt": "Use case: photorealistic-natural. Asset type: closet cutout test image. Primary request: top-down flatlay outfit on a clean white background: a blue striped shirt at the top, light blue jeans below it, and one pair of white sneakers near the bottom. Subject: three separate garments with small gaps between them, no overlap. Composition/framing: organized outfit flatlay, all items fully visible. Lighting/mood: soft even daylight. Constraints: no body, no text, no watermark, no extra accessories."
+        },
+        {
+          "id": "C02",
+          "seed": false,
+          "title": "cardigan skirt heels bag flatlay",
+          "expected_items": [
+            {
+              "slot": "top",
+              "count": 1
+            },
+            {
+              "slot": "skirt",
+              "count": 1
+            },
+            {
+              "slot": "shoes",
+              "count": 1
+            },
+            {
+              "slot": "bag",
+              "count": 1
+            }
+          ],
+          "difficulty_tags": [
+            "flatlay",
+            "multi_item",
+            "bag_side"
+          ],
+          "acceptance": "Four items, no duplicate shoes or merged bag.",
+          "imagegen_prompt": "Use case: photorealistic-natural. Asset type: closet cutout test image. Primary request: top-down fashion flatlay on a clean white background: pale yellow cropped cardigan, navy pleated midi skirt, black heels, and a pale yellow handbag placed on the right side. Subject: each item separate with clear white gaps. Composition/framing: balanced outfit layout, all items fully visible. Lighting/mood: soft studio light. Constraints: no model, no text, no watermark."
+        },
+        {
+          "id": "C03",
+          "seed": false,
+          "title": "dress bag shoes flatlay",
+          "expected_items": [
+            {
+              "slot": "dress",
+              "count": 1
+            },
+            {
+              "slot": "bag",
+              "count": 1
+            },
+            {
+              "slot": "shoes",
+              "count": 1
+            }
+          ],
+          "difficulty_tags": [
+            "flatlay",
+            "dress_not_top_skirt"
+          ],
+          "acceptance": "Dress should remain dress, not split into top and skirt.",
+          "imagegen_prompt": "Use case: photorealistic-natural. Asset type: closet cutout test image. Primary request: top-down flatlay on a white background: one ivory sleeveless midi dress in the center, a small beige handbag on the right, and black slingback heels near the bottom. Subject: three separate items, full dress silhouette visible. Composition/framing: clean fashion outfit layout. Lighting/mood: soft even studio light. Constraints: no model, no text, no watermark, no extra garments."
+        },
+        {
+          "id": "C04",
+          "seed": false,
+          "title": "light overlap outfit flatlay",
+          "expected_items": [
+            {
+              "slot": "top",
+              "count": 1
+            },
+            {
+              "slot": "bottom",
+              "count": 1
+            },
+            {
+              "slot": "shoes",
+              "count": 1
+            },
+            {
+              "slot": "bag",
+              "count": 1
+            }
+          ],
+          "difficulty_tags": [
+            "flatlay",
+            "slight_overlap"
+          ],
+          "acceptance": "Main items should be separated; overlap area may be review.",
+          "imagegen_prompt": "Use case: photorealistic-natural. Asset type: closet cutout test image. Primary request: top-down flatlay on a warm white background: a cream sweater slightly overlapping the waistband of black trousers, white sneakers below, and a brown crossbody bag partly overlapping one sleeve. Subject: four fashion items, light natural overlap but every item mostly visible. Composition/framing: full outfit visible. Lighting/mood: soft daylight. Constraints: no person, no text, no watermark."
+        },
+        {
+          "id": "C05",
+          "seed": false,
+          "title": "many item busy flatlay",
+          "expected_items": [
+            {
+              "slot": "top",
+              "count": 2
+            },
+            {
+              "slot": "bottom",
+              "count": 1
+            },
+            {
+              "slot": "shoes",
+              "count": 2
+            },
+            {
+              "slot": "bag",
+              "count": 1
+            },
+            {
+              "slot": "accessory",
+              "count": 2
+            }
+          ],
+          "difficulty_tags": [
+            "flatlay",
+            "many_items",
+            "dedupe_pressure"
+          ],
+          "acceptance": "Find major clothing items; duplicates are acceptable as separate closet items but later outfit rules should dedupe.",
+          "imagegen_prompt": "Use case: photorealistic-natural. Asset type: closet cutout stress test image. Primary request: top-down busy closet flatlay on a white floor with eight separate items: two tops, one pair of trousers, two pairs of shoes, one handbag, one scarf, and one cap. Subject: all items visible with small gaps, no body. Composition/framing: organized but dense, all items inside frame. Lighting/mood: soft room light. Constraints: no text, no watermark, no brand logos."
+        }
+      ]
+    },
+    {
+      "group_id": "D",
+      "name": "complex_edges_and_materials",
+      "goal": "Stress masks around thin, fuzzy, transparent, shiny, and perforated edges.",
+      "cases": [
+        {
+          "id": "D01",
+          "seed": true,
+          "title": "lace blouse",
+          "expected_items": [
+            {
+              "slot": "top",
+              "count": 1
+            }
+          ],
+          "difficulty_tags": [
+            "lace",
+            "holes",
+            "thin_edges"
+          ],
+          "acceptance": "Lace outline should not become a solid blob; review is acceptable if holes are hard.",
+          "imagegen_prompt": "Use case: photorealistic-natural. Asset type: closet cutout test image. Primary request: a white lace long sleeve blouse laid flat on a muted gray studio background. Subject: delicate lace texture, visible scalloped edges, sleeves spread, collar and hem clear. Composition/framing: centered catalog shot with padding. Lighting/mood: soft even light. Constraints: no model, no hanger, no text, no watermark."
+        },
+        {
+          "id": "D02",
+          "seed": false,
+          "title": "fuzzy knit sweater",
+          "expected_items": [
+            {
+              "slot": "top",
+              "count": 1
+            }
+          ],
+          "difficulty_tags": [
+            "fuzzy_edge",
+            "knit"
+          ],
+          "acceptance": "Sweater edges should look natural without heavy background halo.",
+          "imagegen_prompt": "Use case: photorealistic-natural. Asset type: closet cutout test image. Primary request: a fuzzy mohair knit sweater laid flat on a clean white background. Subject: soft hair-like fibers visible along edges, long sleeves, ribbed hem and cuffs. Composition/framing: centered product photo, full sweater visible. Lighting/mood: soft studio lighting. Constraints: no model, no text, no watermark."
+        },
+        {
+          "id": "D03",
+          "seed": false,
+          "title": "tulle skirt",
+          "expected_items": [
+            {
+              "slot": "skirt",
+              "count": 1
+            }
+          ],
+          "difficulty_tags": [
+            "translucent",
+            "tulle",
+            "soft_edge"
+          ],
+          "acceptance": "Skirt should be detected; translucent hem can be review.",
+          "imagegen_prompt": "Use case: photorealistic-natural. Asset type: closet cutout test image. Primary request: a pale blue tulle midi skirt laid flat on a very light gray background. Subject: translucent layered tulle, soft airy hem, waistband visible. Composition/framing: centered product photo, full skirt visible. Lighting/mood: soft diffuse light. Constraints: no model, no text, no watermark, no other garments."
+        },
+        {
+          "id": "D04",
+          "seed": false,
+          "title": "chain strap bag",
+          "expected_items": [
+            {
+              "slot": "bag",
+              "count": 1
+            }
+          ],
+          "difficulty_tags": [
+            "thin_chain",
+            "metal",
+            "bag"
+          ],
+          "acceptance": "Bag body and chain strap should remain connected or review.",
+          "imagegen_prompt": "Use case: photorealistic-natural. Asset type: closet cutout test image. Primary request: a small black leather shoulder bag with a thin gold chain strap on a pure white background. Subject: chain strap fully visible, bag front facing, leather texture and metal links clear. Composition/framing: centered catalog shot with generous padding around the chain. Lighting/mood: soft studio light with controlled metal highlights. Constraints: no model, no hand, no text, no watermark."
+        },
+        {
+          "id": "D05",
+          "seed": false,
+          "title": "running shoes with laces",
+          "expected_items": [
+            {
+              "slot": "shoes",
+              "count": 1
+            }
+          ],
+          "difficulty_tags": [
+            "shoe_laces",
+            "fine_detail"
+          ],
+          "acceptance": "Shoe pair preserved, laces not completely removed.",
+          "imagegen_prompt": "Use case: photorealistic-natural. Asset type: closet cutout test image. Primary request: a pair of white running shoes with visible loose laces on a pure white studio background. Subject: both shoes visible, laces crossing and looping, textured sole. Composition/framing: centered product photo, full pair visible. Lighting/mood: soft even studio lighting. Constraints: no foot, no logo, no text, no watermark."
+        }
+      ]
+    },
+    {
+      "group_id": "E",
+      "name": "color_background_interference",
+      "goal": "Low contrast, same-color background, patterns, and exposure stress cases.",
+      "cases": [
+        {
+          "id": "E01",
+          "seed": true,
+          "title": "white shirt on white bed",
+          "expected_items": [
+            {
+              "slot": "top",
+              "count": 1
+            }
+          ],
+          "difficulty_tags": [
+            "white_on_white",
+            "low_contrast",
+            "wrinkles"
+          ],
+          "acceptance": "Top should be found; edge may be review but not fully lost.",
+          "imagegen_prompt": "Use case: photorealistic-natural. Asset type: closet cutout test image. Primary request: a white cotton shirt casually placed on a white bed sheet. Subject: shirt visible with collar, sleeves, and hem; white fabric against white bedding with subtle wrinkles. Composition/framing: top-down phone photo, full shirt visible. Lighting/mood: soft natural window light. Constraints: no person, no text, no watermark, no other clothing."
+        },
+        {
+          "id": "E02",
+          "seed": false,
+          "title": "black jacket on black chair",
+          "expected_items": [
+            {
+              "slot": "top",
+              "count": 1
+            }
+          ],
+          "difficulty_tags": [
+            "black_on_black",
+            "low_contrast"
+          ],
+          "acceptance": "Jacket should be review if edges are uncertain, not hallucinate extra objects.",
+          "imagegen_prompt": "Use case: photorealistic-natural. Asset type: closet cutout test image. Primary request: a black bomber jacket draped over a black chair in a simple room. Subject: jacket zipper, sleeves, collar, and hem visible but dark against dark chair. Composition/framing: casual phone photo, jacket mostly centered. Lighting/mood: soft side light revealing edges. Constraints: no person, no text, no watermark."
+        },
+        {
+          "id": "E03",
+          "seed": false,
+          "title": "floral blouse on floral background",
+          "expected_items": [
+            {
+              "slot": "top",
+              "count": 1
+            }
+          ],
+          "difficulty_tags": [
+            "busy_background",
+            "pattern"
+          ],
+          "acceptance": "Blouse should be separated from floral background; heavy residue is bad.",
+          "imagegen_prompt": "Use case: photorealistic-natural. Asset type: closet cutout test image. Primary request: a colorful floral blouse laid flat on a floral patterned fabric background. Subject: blouse has a distinct collar and sleeves but similar floral colors to the background. Composition/framing: top-down photo, full blouse visible. Lighting/mood: soft daylight. Constraints: no person, no text, no watermark, no other clothes."
+        },
+        {
+          "id": "E04",
+          "seed": false,
+          "title": "overexposed yellow skirt",
+          "expected_items": [
+            {
+              "slot": "skirt",
+              "count": 1
+            }
+          ],
+          "difficulty_tags": [
+            "overexposure",
+            "bright_color"
+          ],
+          "acceptance": "Skirt shape should remain visible; overexposed edge can be review.",
+          "imagegen_prompt": "Use case: photorealistic-natural. Asset type: closet cutout test image. Primary request: a bright yellow mini skirt on a white background photographed with slightly overexposed sunlight. Subject: skirt waistband and hem visible, bright fabric with some blown highlights. Composition/framing: centered product-like photo, full skirt visible. Lighting/mood: strong sunny window light, high exposure. Constraints: no person, no text, no watermark."
+        },
+        {
+          "id": "E05",
+          "seed": false,
+          "title": "red bag on red wall",
+          "expected_items": [
+            {
+              "slot": "bag",
+              "count": 1
+            }
+          ],
+          "difficulty_tags": [
+            "same_color_background",
+            "bag"
+          ],
+          "acceptance": "Bag body should be detected; handle may be review.",
+          "imagegen_prompt": "Use case: photorealistic-natural. Asset type: closet cutout test image. Primary request: a red handbag placed in front of a matte red wall, with the bag slightly darker than the wall. Subject: handbag front and handles visible, same-color background challenge. Composition/framing: centered product photo, full bag visible. Lighting/mood: soft side light for subtle edge definition. Constraints: no person, no text, no watermark."
+        }
+      ]
+    },
+    {
+      "group_id": "F",
+      "name": "capture_quality_problems",
+      "goal": "Real user upload defects: blur, low resolution, dark, crop, and occlusion.",
+      "cases": [
+        {
+          "id": "F01",
+          "seed": true,
+          "title": "casual phone photo wrinkled shirt on bed",
+          "expected_items": [
+            {
+              "slot": "top",
+              "count": 1
+            }
+          ],
+          "difficulty_tags": [
+            "phone_photo",
+            "wrinkles",
+            "bed_background"
+          ],
+          "acceptance": "Top can be usable or review, but should not fail if clear enough.",
+          "imagegen_prompt": "Use case: photorealistic-natural. Asset type: closet cutout test image. Primary request: casual smartphone photo of a wrinkled blue shirt lying on a beige bedspread. Subject: shirt fully visible but not perfectly arranged, sleeves slightly folded. Composition/framing: handheld top-down photo with mild perspective distortion. Lighting/mood: indoor daylight, natural shadows. Constraints: no person, no text, no watermark, no other clothing."
+        },
+        {
+          "id": "F02",
+          "seed": false,
+          "title": "motion blurred hoodie",
+          "expected_items": [
+            {
+              "slot": "top",
+              "count": 1
+            }
+          ],
+          "difficulty_tags": [
+            "blur",
+            "review_expected"
+          ],
+          "acceptance": "Should route to review or rejected if too blurry; no false high confidence.",
+          "imagegen_prompt": "Use case: photorealistic-natural. Asset type: closet cutout test image. Primary request: a slightly motion-blurred smartphone photo of a gray hoodie on a wooden floor. Subject: hoodie shape still visible, hood and sleeves discernible, image blur noticeable. Composition/framing: top-down casual photo, full hoodie inside frame. Lighting/mood: indoor warm light. Constraints: no person, no text, no watermark, no other clothes."
+        },
+        {
+          "id": "F03",
+          "seed": false,
+          "title": "dark photo trousers",
+          "expected_items": [
+            {
+              "slot": "bottom",
+              "count": 1
+            }
+          ],
+          "difficulty_tags": [
+            "low_light",
+            "noise"
+          ],
+          "acceptance": "Likely review; should not invent additional items.",
+          "imagegen_prompt": "Use case: photorealistic-natural. Asset type: closet cutout test image. Primary request: low-light noisy smartphone photo of black trousers lying on a dark gray carpet. Subject: trousers mostly visible, waistband and both legs discernible but dim. Composition/framing: casual top-down photo. Lighting/mood: underexposed room light, mild image noise. Constraints: no person, no text, no watermark, no other clothes."
+        },
+        {
+          "id": "F04",
+          "seed": false,
+          "title": "cropped shoes",
+          "expected_items": [
+            {
+              "slot": "shoes",
+              "count": 1
+            }
+          ],
+          "difficulty_tags": [
+            "cropped_subject",
+            "partial_item"
+          ],
+          "acceptance": "Shoes should be review due to missing parts.",
+          "imagegen_prompt": "Use case: photorealistic-natural. Asset type: closet cutout test image. Primary request: casual smartphone photo of a pair of sneakers where one shoe is partly cropped by the image edge. Subject: pair of white sneakers on a tiled floor, one toe and one heel cut off by the frame. Composition/framing: imperfect user upload, close crop. Lighting/mood: indoor light. Constraints: no foot, no person, no text, no watermark."
+        },
+        {
+          "id": "F05",
+          "seed": false,
+          "title": "hand occluded bag",
+          "expected_items": [
+            {
+              "slot": "bag",
+              "count": 1
+            }
+          ],
+          "difficulty_tags": [
+            "occlusion",
+            "hand",
+            "review_expected"
+          ],
+          "acceptance": "Bag may be review; hand should not be saved as garment.",
+          "imagegen_prompt": "Use case: photorealistic-natural. Asset type: closet cutout test image. Primary request: smartphone photo of a beige handbag partly covered by a person's hand while holding it up. Subject: bag body visible but one side and handle partly occluded by hand, neutral wall background. Composition/framing: casual close shot. Lighting/mood: soft indoor daylight. Constraints: no face, no logo, no text, no watermark."
+        }
+      ]
+    },
+    {
+      "group_id": "G",
+      "name": "negative_and_false_positive",
+      "goal": "Images that should not create usable closet items.",
+      "cases": [
+        {
+          "id": "G01",
+          "seed": true,
+          "title": "landscape no garments",
+          "expected_items": [],
+          "difficulty_tags": [
+            "negative",
+            "no_item"
+          ],
+          "acceptance": "No closet item should be created.",
+          "imagegen_prompt": "Use case: photorealistic-natural. Asset type: closet cutout negative test image. Primary request: a peaceful outdoor landscape photo with trees, grass, and sky, no people and no clothing items. Composition/framing: natural scenic photo. Lighting/mood: soft daylight. Constraints: no garments, no bags, no shoes, no text, no watermark."
+        },
+        {
+          "id": "G02",
+          "seed": false,
+          "title": "table objects no garments",
+          "expected_items": [],
+          "difficulty_tags": [
+            "negative",
+            "household_objects"
+          ],
+          "acceptance": "No closet item should be created from cups/books.",
+          "imagegen_prompt": "Use case: photorealistic-natural. Asset type: closet cutout negative test image. Primary request: a tabletop still life with a coffee cup, notebook, pen, and phone on a wooden desk. Subject: household objects only. Composition/framing: top-down desk photo. Lighting/mood: soft indoor daylight. Constraints: no clothing, no shoes, no bags, no textile scarf, no text labels, no watermark."
+        },
+        {
+          "id": "G03",
+          "seed": false,
+          "title": "shoe box no shoes",
+          "expected_items": [],
+          "difficulty_tags": [
+            "negative",
+            "box_like_shoe"
+          ],
+          "acceptance": "No shoes item should be created from shoe box.",
+          "imagegen_prompt": "Use case: photorealistic-natural. Asset type: closet cutout negative test image. Primary request: a plain cardboard shoe box on a white floor, closed, with no shoes visible. Subject: simple rectangular box only. Composition/framing: centered product-like photo. Lighting/mood: soft studio light. Constraints: no shoes, no clothing, no logo, no readable text, no watermark."
+        },
+        {
+          "id": "G04",
+          "seed": false,
+          "title": "UI screenshot no clear product",
+          "expected_items": [],
+          "difficulty_tags": [
+            "negative",
+            "screenshot",
+            "low_product_clarity"
+          ],
+          "acceptance": "Should ask for clear image or return no usable items.",
+          "imagegen_prompt": "Use case: ui-mockup. Asset type: closet cutout negative test image. Primary request: a realistic smartphone screenshot of a shopping app feed with many tiny fashion thumbnails and interface buttons, but no single clear large clothing product. Composition/framing: full phone screenshot style, dense UI. Lighting/mood: flat digital screenshot. Text: use small unreadable placeholder text only. Constraints: no brand names, no readable logos, no watermark."
+        },
+        {
+          "id": "G05",
+          "seed": false,
+          "title": "pet wearing tiny costume",
+          "expected_items": [],
+          "difficulty_tags": [
+            "negative",
+            "pet",
+            "non_human_garment"
+          ],
+          "acceptance": "Should be review or rejected, not usable human closet item.",
+          "imagegen_prompt": "Use case: photorealistic-natural. Asset type: closet cutout negative test image. Primary request: a small dog wearing a tiny costume vest in a living room. Subject: pet is the main subject, costume is small and fitted to pet. Composition/framing: casual indoor photo. Lighting/mood: soft natural light. Constraints: no human clothing laid flat, no shoes, no bag, no text, no watermark."
+        }
+      ]
+    },
+    {
+      "group_id": "H",
+      "name": "category_boundary_cases",
+      "goal": "Ambiguous fashion items that expose taxonomy gaps.",
+      "cases": [
+        {
+          "id": "H01",
+          "seed": true,
+          "title": "shirt dress",
+          "expected_items": [
+            {
+              "slot": "dress",
+              "count": 1
+            }
+          ],
+          "difficulty_tags": [
+            "ambiguous",
+            "dress_vs_top"
+          ],
+          "acceptance": "Prefer dress; top review is acceptable but should not split into top and bottom.",
+          "imagegen_prompt": "Use case: photorealistic-natural. Asset type: closet cutout test image. Primary request: a long white shirt dress laid flat on a clean light gray background. Subject: button-up collar, long sleeves, dress-length hem reaching mid-thigh, single continuous garment. Composition/framing: centered full garment product photo. Lighting/mood: soft even studio lighting. Constraints: no model, no hanger, no belt, no text, no watermark."
+        },
+        {
+          "id": "H02",
+          "seed": false,
+          "title": "jumpsuit",
+          "expected_items": [
+            {
+              "slot": "dress",
+              "count": 1
+            }
+          ],
+          "difficulty_tags": [
+            "ambiguous",
+            "jumpsuit",
+            "taxonomy_gap"
+          ],
+          "acceptance": "May map to dress or review; should not create separate top and pants unless pipeline is intentionally splitting.",
+          "imagegen_prompt": "Use case: photorealistic-natural. Asset type: closet cutout test image. Primary request: a sleeveless black jumpsuit laid flat on a pure white background. Subject: one-piece garment with top connected to wide-leg pants, waist seam visible. Composition/framing: centered full garment product photo. Lighting/mood: soft studio light. Constraints: no model, no hanger, no text, no watermark."
+        },
+        {
+          "id": "H03",
+          "seed": false,
+          "title": "skort",
+          "expected_items": [
+            {
+              "slot": "skirt",
+              "count": 1
+            }
+          ],
+          "difficulty_tags": [
+            "ambiguous",
+            "skirt_vs_shorts"
+          ],
+          "acceptance": "Skirt or bottom review acceptable; should remain one item.",
+          "imagegen_prompt": "Use case: photorealistic-natural. Asset type: closet cutout test image. Primary request: a beige skort laid flat on a white studio background, looking like a wrap mini skirt in front with hidden shorts structure visible slightly underneath. Subject: waistband and asymmetric wrap panel clear. Composition/framing: centered catalog shot. Lighting/mood: soft even light. Constraints: no model, no text, no watermark."
+        },
+        {
+          "id": "H04",
+          "seed": false,
+          "title": "knee high boots",
+          "expected_items": [
+            {
+              "slot": "shoes",
+              "count": 1
+            }
+          ],
+          "difficulty_tags": [
+            "ambiguous",
+            "boots_tall_shape"
+          ],
+          "acceptance": "Classify as shoes, not pants.",
+          "imagegen_prompt": "Use case: photorealistic-natural. Asset type: closet cutout test image. Primary request: a pair of dark brown knee-high leather boots on a pure white studio background. Subject: tall boot shafts, pointed toes, both boots visible as a pair. Composition/framing: centered vertical product shot with full boots visible. Lighting/mood: soft studio light. Constraints: no legs, no model, no text, no watermark."
+        },
+        {
+          "id": "H05",
+          "seed": false,
+          "title": "scarf hat socks accessories flatlay",
+          "expected_items": [
+            {
+              "slot": "accessory",
+              "count": 3
+            }
+          ],
+          "difficulty_tags": [
+            "accessory_slots",
+            "hat",
+            "scarf",
+            "socks"
+          ],
+          "acceptance": "Accessories may map to accessory; future slot inference should identify hat/scarf/socks.",
+          "imagegen_prompt": "Use case: photorealistic-natural. Asset type: closet cutout test image. Primary request: top-down flatlay on a white background with three separate accessories: a knitted beanie hat, a folded scarf, and a pair of ribbed socks. Subject: each accessory separate, fully visible, no other garments. Composition/framing: clean product flatlay with gaps between items. Lighting/mood: soft studio light. Constraints: no text, no watermark, no model."
+        }
+      ]
+    },
+    {
+      "group_id": "I",
+      "name": "human_pose_and_occlusion",
+      "goal": "Human poses that partially hide garments and often confuse masks with skin, hair, or hands.",
+      "cases": [
+        {
+          "id": "I01",
+          "seed": true,
+          "title": "crossed arms blazer",
+          "expected_items": [
+            {
+              "slot": "top",
+              "count": 1
+            }
+          ],
+          "difficulty_tags": [
+            "pose",
+            "arm_occlusion",
+            "person"
+          ],
+          "acceptance": "Blazer should be found; crossed arms should not become part of garment.",
+          "imagegen_prompt": "Use case: photorealistic-natural. Asset type: closet cutout test image. Primary request: a fashion ecommerce model wearing a camel blazer with arms crossed in front of the body against a plain light gray background, torso visible, blazer lapels and sleeves clear, no logo, no text, no watermark. Composition/framing: keep the relevant garment or object fully visible unless the case explicitly asks for crop. Lighting/mood: realistic natural or studio lighting. Constraints: avoid brand logos, readable text, watermarks, and unrelated extra garments unless requested."
+        },
+        {
+          "id": "I02",
+          "seed": false,
+          "title": "hands in hoodie pocket",
+          "expected_items": [
+            {
+              "slot": "top",
+              "count": 1
+            }
+          ],
+          "difficulty_tags": [
+            "pose",
+            "hand_occlusion",
+            "hoodie"
+          ],
+          "acceptance": "Hoodie remains one top; hands inside pocket should not create holes.",
+          "imagegen_prompt": "Use case: photorealistic-natural. Asset type: closet cutout test image. Primary request: a model wearing an oversized navy hoodie with both hands inside the front pocket, plain studio background, full hoodie visible from hood to hem, no logo, no text, no watermark. Composition/framing: keep the relevant garment or object fully visible unless the case explicitly asks for crop. Lighting/mood: realistic natural or studio lighting. Constraints: avoid brand logos, readable text, watermarks, and unrelated extra garments unless requested."
+        },
+        {
+          "id": "I03",
+          "seed": false,
+          "title": "seated trousers bent knees",
+          "expected_items": [
+            {
+              "slot": "bottom",
+              "count": 1
+            }
+          ],
+          "difficulty_tags": [
+            "pose",
+            "seated",
+            "bent_pants"
+          ],
+          "acceptance": "Trousers should be review if legs are folded, not split into two items.",
+          "imagegen_prompt": "Use case: photorealistic-natural. Asset type: closet cutout test image. Primary request: a seated model wearing beige trousers, knees bent, simple studio chair, trousers clearly visible but folded by pose, plain background, no logo, no text, no watermark. Composition/framing: keep the relevant garment or object fully visible unless the case explicitly asks for crop. Lighting/mood: realistic natural or studio lighting. Constraints: avoid brand logos, readable text, watermarks, and unrelated extra garments unless requested."
+        },
+        {
+          "id": "I04",
+          "seed": false,
+          "title": "hair covering scarf and coat",
+          "expected_items": [
+            {
+              "slot": "top",
+              "count": 1
+            },
+            {
+              "slot": "accessory",
+              "count": 1
+            }
+          ],
+          "difficulty_tags": [
+            "hair_occlusion",
+            "scarf",
+            "coat"
+          ],
+          "acceptance": "Coat/scarf can be review; hair should not be saved as accessory.",
+          "imagegen_prompt": "Use case: photorealistic-natural. Asset type: closet cutout test image. Primary request: a model with long dark hair wearing a wool coat and a scarf, hair partially covering the scarf edges, plain winter ecommerce background, no text, no watermark. Composition/framing: keep the relevant garment or object fully visible unless the case explicitly asks for crop. Lighting/mood: realistic natural or studio lighting. Constraints: avoid brand logos, readable text, watermarks, and unrelated extra garments unless requested."
+        },
+        {
+          "id": "I05",
+          "seed": false,
+          "title": "walking pose skirt motion",
+          "expected_items": [
+            {
+              "slot": "skirt",
+              "count": 1
+            },
+            {
+              "slot": "shoes",
+              "count": 1
+            }
+          ],
+          "difficulty_tags": [
+            "motion_pose",
+            "skirt",
+            "full_body"
+          ],
+          "acceptance": "Skirt should be detected despite asymmetric walking shape.",
+          "imagegen_prompt": "Use case: photorealistic-natural. Asset type: closet cutout test image. Primary request: full body fashion photo of a model walking, wearing a pleated midi skirt and loafers, skirt slightly moving, clean street-style neutral wall background, no logo, no watermark. Composition/framing: keep the relevant garment or object fully visible unless the case explicitly asks for crop. Lighting/mood: realistic natural or studio lighting. Constraints: avoid brand logos, readable text, watermarks, and unrelated extra garments unless requested."
+        }
+      ]
+    },
+    {
+      "group_id": "J",
+      "name": "layering_and_nested_garments",
+      "goal": "Layered outfits where visible garments overlap and should not be merged incorrectly.",
+      "cases": [
+        {
+          "id": "J01",
+          "seed": true,
+          "title": "shirt under vest",
+          "expected_items": [
+            {
+              "slot": "top",
+              "count": 2
+            }
+          ],
+          "difficulty_tags": [
+            "layering",
+            "vest",
+            "shirt"
+          ],
+          "acceptance": "Vest and shirt may become two tops or one review item; no false bottom.",
+          "imagegen_prompt": "Use case: photorealistic-natural. Asset type: closet cutout test image. Primary request: top-down flatlay on white background with a white button-up shirt under a black sleeveless knit vest, both garments visible as layered outfit, no body, no text, no watermark. Composition/framing: keep the relevant garment or object fully visible unless the case explicitly asks for crop. Lighting/mood: realistic natural or studio lighting. Constraints: avoid brand logos, readable text, watermarks, and unrelated extra garments unless requested."
+        },
+        {
+          "id": "J02",
+          "seed": false,
+          "title": "coat over dress on model",
+          "expected_items": [
+            {
+              "slot": "top",
+              "count": 1
+            },
+            {
+              "slot": "dress",
+              "count": 1
+            }
+          ],
+          "difficulty_tags": [
+            "layering",
+            "coat",
+            "dress",
+            "person"
+          ],
+          "acceptance": "Detect coat/dress or mark review; should not create many fragments.",
+          "imagegen_prompt": "Use case: photorealistic-natural. Asset type: closet cutout test image. Primary request: full body ecommerce model wearing a beige trench coat open over a floral midi dress, plain studio background, full outfit and shoes visible, no text, no watermark. Composition/framing: keep the relevant garment or object fully visible unless the case explicitly asks for crop. Lighting/mood: realistic natural or studio lighting. Constraints: avoid brand logos, readable text, watermarks, and unrelated extra garments unless requested."
+        },
+        {
+          "id": "J03",
+          "seed": false,
+          "title": "scarf on sweater flatlay",
+          "expected_items": [
+            {
+              "slot": "top",
+              "count": 1
+            },
+            {
+              "slot": "accessory",
+              "count": 1
+            }
+          ],
+          "difficulty_tags": [
+            "layering",
+            "scarf",
+            "overlap"
+          ],
+          "acceptance": "Scarf should not merge fully into sweater.",
+          "imagegen_prompt": "Use case: photorealistic-natural. Asset type: closet cutout test image. Primary request: top-down flatlay on white background with a gray sweater and a red scarf draped across the neckline, sweater mostly visible, no person, no text, no watermark. Composition/framing: keep the relevant garment or object fully visible unless the case explicitly asks for crop. Lighting/mood: realistic natural or studio lighting. Constraints: avoid brand logos, readable text, watermarks, and unrelated extra garments unless requested."
+        },
+        {
+          "id": "J04",
+          "seed": false,
+          "title": "open cardigan over camisole",
+          "expected_items": [
+            {
+              "slot": "top",
+              "count": 2
+            }
+          ],
+          "difficulty_tags": [
+            "layering",
+            "thin_straps",
+            "cardigan"
+          ],
+          "acceptance": "Camisole straps and cardigan edges are a challenge; review acceptable.",
+          "imagegen_prompt": "Use case: photorealistic-natural. Asset type: closet cutout test image. Primary request: ecommerce torso photo of a model wearing an open cream cardigan over a black camisole with thin straps, plain light background, no logo, no text. Composition/framing: keep the relevant garment or object fully visible unless the case explicitly asks for crop. Lighting/mood: realistic natural or studio lighting. Constraints: avoid brand logos, readable text, watermarks, and unrelated extra garments unless requested."
+        },
+        {
+          "id": "J05",
+          "seed": false,
+          "title": "belt over blazer dress",
+          "expected_items": [
+            {
+              "slot": "dress",
+              "count": 1
+            },
+            {
+              "slot": "accessory",
+              "count": 1
+            }
+          ],
+          "difficulty_tags": [
+            "layering",
+            "belt",
+            "dress"
+          ],
+          "acceptance": "Main garment should remain one dress; belt can be accessory or ignored.",
+          "imagegen_prompt": "Use case: photorealistic-natural. Asset type: closet cutout test image. Primary request: studio product photo of a black blazer dress on a mannequin with a thin belt around the waist, plain white background, no logo, no text. Composition/framing: keep the relevant garment or object fully visible unless the case explicitly asks for crop. Lighting/mood: realistic natural or studio lighting. Constraints: avoid brand logos, readable text, watermarks, and unrelated extra garments unless requested."
+        }
+      ]
+    },
+    {
+      "group_id": "K",
+      "name": "mirror_selfie_and_real_scenes",
+      "goal": "User-generated mirror photos and messy real rooms.",
+      "cases": [
+        {
+          "id": "K01",
+          "seed": true,
+          "title": "mirror selfie full outfit",
+          "expected_items": [
+            {
+              "slot": "top",
+              "count": 1
+            },
+            {
+              "slot": "bottom",
+              "count": 1
+            },
+            {
+              "slot": "shoes",
+              "count": 1
+            }
+          ],
+          "difficulty_tags": [
+            "mirror_selfie",
+            "phone_occlusion",
+            "real_room"
+          ],
+          "acceptance": "Phone/face should not be extracted; outfit may be review.",
+          "imagegen_prompt": "Use case: photorealistic-natural. Asset type: closet cutout test image. Primary request: realistic mirror selfie in a bedroom, person wearing a black t-shirt, blue jeans, and white sneakers, phone covers part of face, cluttered room but outfit visible, no readable text. Composition/framing: keep the relevant garment or object fully visible unless the case explicitly asks for crop. Lighting/mood: realistic natural or studio lighting. Constraints: avoid brand logos, readable text, watermarks, and unrelated extra garments unless requested."
+        },
+        {
+          "id": "K02",
+          "seed": false,
+          "title": "closet door reflection dress",
+          "expected_items": [
+            {
+              "slot": "dress",
+              "count": 1
+            }
+          ],
+          "difficulty_tags": [
+            "mirror",
+            "reflection",
+            "dress"
+          ],
+          "acceptance": "Dress found despite reflection and background clutter.",
+          "imagegen_prompt": "Use case: photorealistic-natural. Asset type: closet cutout test image. Primary request: mirror selfie in front of a closet door, person wearing a green dress, reflection visible, room background with shelves, no text, no watermark. Composition/framing: keep the relevant garment or object fully visible unless the case explicitly asks for crop. Lighting/mood: realistic natural or studio lighting. Constraints: avoid brand logos, readable text, watermarks, and unrelated extra garments unless requested."
+        },
+        {
+          "id": "K03",
+          "seed": false,
+          "title": "bathroom mirror coat",
+          "expected_items": [
+            {
+              "slot": "top",
+              "count": 1
+            }
+          ],
+          "difficulty_tags": [
+            "mirror_selfie",
+            "lighting",
+            "coat"
+          ],
+          "acceptance": "Coat should be detected or review, phone should not be item.",
+          "imagegen_prompt": "Use case: photorealistic-natural. Asset type: closet cutout test image. Primary request: bathroom mirror selfie of a person wearing a long black coat, bright overhead light, phone in hand, tiled background, no text. Composition/framing: keep the relevant garment or object fully visible unless the case explicitly asks for crop. Lighting/mood: realistic natural or studio lighting. Constraints: avoid brand logos, readable text, watermarks, and unrelated extra garments unless requested."
+        },
+        {
+          "id": "K04",
+          "seed": false,
+          "title": "outdoor street candid outfit",
+          "expected_items": [
+            {
+              "slot": "top",
+              "count": 1
+            },
+            {
+              "slot": "bottom",
+              "count": 1
+            }
+          ],
+          "difficulty_tags": [
+            "street_photo",
+            "busy_background",
+            "person"
+          ],
+          "acceptance": "Main garments found with busy outdoor background.",
+          "imagegen_prompt": "Use case: photorealistic-natural. Asset type: closet cutout test image. Primary request: street style photo of a person walking past storefronts wearing a red sweater and khaki trousers, background moderately busy, no readable signs, no watermark. Composition/framing: keep the relevant garment or object fully visible unless the case explicitly asks for crop. Lighting/mood: realistic natural or studio lighting. Constraints: avoid brand logos, readable text, watermarks, and unrelated extra garments unless requested."
+        },
+        {
+          "id": "K05",
+          "seed": false,
+          "title": "laundry pile with visible shirt",
+          "expected_items": [
+            {
+              "slot": "top",
+              "count": 1
+            }
+          ],
+          "difficulty_tags": [
+            "messy_scene",
+            "occlusion",
+            "laundry"
+          ],
+          "acceptance": "Only clear shirt should be review; no many false items.",
+          "imagegen_prompt": "Use case: photorealistic-natural. Asset type: closet cutout test image. Primary request: casual photo of a laundry pile on a bed with one blue shirt clearly visible on top, other fabrics partly visible, indoor light, no person, no text. Composition/framing: keep the relevant garment or object fully visible unless the case explicitly asks for crop. Lighting/mood: realistic natural or studio lighting. Constraints: avoid brand logos, readable text, watermarks, and unrelated extra garments unless requested."
+        }
+      ]
+    },
+    {
+      "group_id": "L",
+      "name": "source_platform_and_screenshot_artifacts",
+      "goal": "Images copied from social feeds, screenshots, posters, and collages.",
+      "cases": [
+        {
+          "id": "L01",
+          "seed": true,
+          "title": "xhs style note cover collage",
+          "expected_items": [
+            {
+              "slot": "top",
+              "count": 1
+            },
+            {
+              "slot": "bottom",
+              "count": 1
+            }
+          ],
+          "difficulty_tags": [
+            "screenshot",
+            "collage",
+            "text_noise"
+          ],
+          "acceptance": "Main clothing should be found if large enough; UI text ignored.",
+          "imagegen_prompt": "Use case: ui-mockup. Asset type: closet cutout test image. Primary request: a realistic social media note cover collage showing one large outfit flatlay with a sweater and jeans, small decorative stickers and unreadable UI text around edges, no brand names. Composition/framing: keep the relevant garment or object fully visible unless the case explicitly asks for crop. Lighting/mood: realistic natural or studio lighting. Constraints: avoid brand logos, readable text, watermarks, and unrelated extra garments unless requested."
+        },
+        {
+          "id": "L02",
+          "seed": false,
+          "title": "shopping product grid screenshot",
+          "expected_items": [],
+          "difficulty_tags": [
+            "screenshot",
+            "tiny_products",
+            "negative"
+          ],
+          "acceptance": "Should not create usable items from tiny thumbnails.",
+          "imagegen_prompt": "Use case: ui-mockup. Asset type: closet cutout negative test image. Primary request: smartphone shopping app screenshot with a grid of many tiny clothing product thumbnails, interface bars and unreadable placeholder text, no single large item, no brand names. Composition/framing: keep the relevant garment or object fully visible unless the case explicitly asks for crop. Lighting/mood: realistic natural or studio lighting. Constraints: avoid brand logos, readable text, watermarks, and unrelated extra garments unless requested."
+        },
+        {
+          "id": "L03",
+          "seed": false,
+          "title": "poster model with big typography",
+          "expected_items": [
+            {
+              "slot": "dress",
+              "count": 1
+            }
+          ],
+          "difficulty_tags": [
+            "poster",
+            "text_occlusion",
+            "person"
+          ],
+          "acceptance": "Dress extracted or review; typography ignored.",
+          "imagegen_prompt": "Use case: photorealistic-natural. Asset type: closet cutout test image. Primary request: fashion poster style image with a model wearing a red dress and large abstract typography shapes in the background, text unreadable, model full body, no brand logo. Composition/framing: keep the relevant garment or object fully visible unless the case explicitly asks for crop. Lighting/mood: realistic natural or studio lighting. Constraints: avoid brand logos, readable text, watermarks, and unrelated extra garments unless requested."
+        },
+        {
+          "id": "L04",
+          "seed": false,
+          "title": "watermarked ecommerce image",
+          "expected_items": [
+            {
+              "slot": "bag",
+              "count": 1
+            }
+          ],
+          "difficulty_tags": [
+            "watermark",
+            "commerce",
+            "bag"
+          ],
+          "acceptance": "Bag should be item; watermark not saved.",
+          "imagegen_prompt": "Use case: photorealistic-natural. Asset type: closet cutout test image. Primary request: ecommerce product image of a white handbag on a plain background with faint diagonal generic watermark pattern, no readable brand, bag centered. Composition/framing: keep the relevant garment or object fully visible unless the case explicitly asks for crop. Lighting/mood: realistic natural or studio lighting. Constraints: avoid brand logos, readable text, watermarks, and unrelated extra garments unless requested."
+        },
+        {
+          "id": "L05",
+          "seed": false,
+          "title": "video cover with play icon",
+          "expected_items": [
+            {
+              "slot": "top",
+              "count": 1
+            }
+          ],
+          "difficulty_tags": [
+            "video_cover",
+            "overlay_icon"
+          ],
+          "acceptance": "Overlay icon should not be mask foreground.",
+          "imagegen_prompt": "Use case: photorealistic-natural. Asset type: closet cutout test image. Primary request: social video cover image of a person wearing a denim jacket, with a translucent play button overlay in the center and small unreadable UI elements, no watermark. Composition/framing: keep the relevant garment or object fully visible unless the case explicitly asks for crop. Lighting/mood: realistic natural or studio lighting. Constraints: avoid brand logos, readable text, watermarks, and unrelated extra garments unless requested."
+        }
+      ]
+    },
+    {
+      "group_id": "M",
+      "name": "demographic_and_body_diversity",
+      "goal": "Ensure garment extraction works across genders, ages, sizes, and body proportions.",
+      "cases": [
+        {
+          "id": "M01",
+          "seed": true,
+          "title": "mens suit full body",
+          "expected_items": [
+            {
+              "slot": "top",
+              "count": 1
+            },
+            {
+              "slot": "bottom",
+              "count": 1
+            },
+            {
+              "slot": "shoes",
+              "count": 1
+            }
+          ],
+          "difficulty_tags": [
+            "menswear",
+            "suit",
+            "full_body"
+          ],
+          "acceptance": "Suit jacket and trousers classified sensibly; no person-heavy usable item.",
+          "imagegen_prompt": "Use case: photorealistic-natural. Asset type: closet cutout test image. Primary request: full body ecommerce photo of an adult man wearing a navy suit, white shirt, and black dress shoes, plain gray studio background, no tie logo, no text. Composition/framing: keep the relevant garment or object fully visible unless the case explicitly asks for crop. Lighting/mood: realistic natural or studio lighting. Constraints: avoid brand logos, readable text, watermarks, and unrelated extra garments unless requested."
+        },
+        {
+          "id": "M02",
+          "seed": false,
+          "title": "plus size dress model",
+          "expected_items": [
+            {
+              "slot": "dress",
+              "count": 1
+            }
+          ],
+          "difficulty_tags": [
+            "plus_size",
+            "dress",
+            "person"
+          ],
+          "acceptance": "Dress detected without penalizing body shape.",
+          "imagegen_prompt": "Use case: photorealistic-natural. Asset type: closet cutout test image. Primary request: full body ecommerce photo of a plus-size woman wearing a black wrap dress, plain light studio background, full dress visible, no text, no watermark. Composition/framing: keep the relevant garment or object fully visible unless the case explicitly asks for crop. Lighting/mood: realistic natural or studio lighting. Constraints: avoid brand logos, readable text, watermarks, and unrelated extra garments unless requested."
+        },
+        {
+          "id": "M03",
+          "seed": false,
+          "title": "elderly model cardigan trousers",
+          "expected_items": [
+            {
+              "slot": "top",
+              "count": 1
+            },
+            {
+              "slot": "bottom",
+              "count": 1
+            }
+          ],
+          "difficulty_tags": [
+            "older_adult",
+            "cardigan",
+            "trousers"
+          ],
+          "acceptance": "Garments detected across age styling.",
+          "imagegen_prompt": "Use case: photorealistic-natural. Asset type: closet cutout test image. Primary request: studio photo of an older adult wearing a beige cardigan and brown trousers, full body visible, simple neutral background, no text. Composition/framing: keep the relevant garment or object fully visible unless the case explicitly asks for crop. Lighting/mood: realistic natural or studio lighting. Constraints: avoid brand logos, readable text, watermarks, and unrelated extra garments unless requested."
+        },
+        {
+          "id": "M04",
+          "seed": false,
+          "title": "child jacket negative review",
+          "expected_items": [
+            {
+              "slot": "top",
+              "count": 1
+            }
+          ],
+          "difficulty_tags": [
+            "child_clothing",
+            "size_edge"
+          ],
+          "acceptance": "Can be review; product may not be adult closet item.",
+          "imagegen_prompt": "Use case: photorealistic-natural. Asset type: closet cutout test image. Primary request: catalog photo of a child-size puffer jacket laid flat on white background, small proportions, no person, no logo, no text. Composition/framing: keep the relevant garment or object fully visible unless the case explicitly asks for crop. Lighting/mood: realistic natural or studio lighting. Constraints: avoid brand logos, readable text, watermarks, and unrelated extra garments unless requested."
+        },
+        {
+          "id": "M05",
+          "seed": false,
+          "title": "maternity dress",
+          "expected_items": [
+            {
+              "slot": "dress",
+              "count": 1
+            }
+          ],
+          "difficulty_tags": [
+            "maternity",
+            "dress",
+            "person"
+          ],
+          "acceptance": "Dress detected despite non-standard silhouette.",
+          "imagegen_prompt": "Use case: photorealistic-natural. Asset type: closet cutout test image. Primary request: ecommerce photo of a pregnant model wearing a soft blue maternity dress, full body, plain light background, no text, no watermark. Composition/framing: keep the relevant garment or object fully visible unless the case explicitly asks for crop. Lighting/mood: realistic natural or studio lighting. Constraints: avoid brand logos, readable text, watermarks, and unrelated extra garments unless requested."
+        }
+      ]
+    },
+    {
+      "group_id": "N",
+      "name": "cultural_and_special_occasion_garments",
+      "goal": "Garments with silhouettes outside everyday western tops/bottoms.",
+      "cases": [
+        {
+          "id": "N01",
+          "seed": true,
+          "title": "qipao dress",
+          "expected_items": [
+            {
+              "slot": "dress",
+              "count": 1
+            }
+          ],
+          "difficulty_tags": [
+            "cultural",
+            "dress",
+            "side_slit"
+          ],
+          "acceptance": "Qipao should map to dress.",
+          "imagegen_prompt": "Use case: photorealistic-natural. Asset type: closet cutout test image. Primary request: studio product photo of a red qipao cheongsam dress laid flat on a light gray background, high collar and side slit visible, no model, no text. Composition/framing: keep the relevant garment or object fully visible unless the case explicitly asks for crop. Lighting/mood: realistic natural or studio lighting. Constraints: avoid brand logos, readable text, watermarks, and unrelated extra garments unless requested."
+        },
+        {
+          "id": "N02",
+          "seed": false,
+          "title": "sari drape",
+          "expected_items": [
+            {
+              "slot": "dress",
+              "count": 1
+            }
+          ],
+          "difficulty_tags": [
+            "cultural",
+            "draped_fabric",
+            "taxonomy_gap"
+          ],
+          "acceptance": "May map to dress/review; should not create many fragments.",
+          "imagegen_prompt": "Use case: photorealistic-natural. Asset type: closet cutout test image. Primary request: fashion photo of a model wearing a colorful sari drape, full body, plain studio background, fabric folds visible, no text, no watermark. Composition/framing: keep the relevant garment or object fully visible unless the case explicitly asks for crop. Lighting/mood: realistic natural or studio lighting. Constraints: avoid brand logos, readable text, watermarks, and unrelated extra garments unless requested."
+        },
+        {
+          "id": "N03",
+          "seed": false,
+          "title": "hanfu layered outfit",
+          "expected_items": [
+            {
+              "slot": "dress",
+              "count": 1
+            }
+          ],
+          "difficulty_tags": [
+            "cultural",
+            "layered",
+            "wide_sleeves"
+          ],
+          "acceptance": "Wide sleeves and layers should remain coherent.",
+          "imagegen_prompt": "Use case: photorealistic-natural. Asset type: closet cutout test image. Primary request: studio photo of a traditional hanfu outfit laid flat with wide sleeves and long skirt-like lower part, light background, no text. Composition/framing: keep the relevant garment or object fully visible unless the case explicitly asks for crop. Lighting/mood: realistic natural or studio lighting. Constraints: avoid brand logos, readable text, watermarks, and unrelated extra garments unless requested."
+        },
+        {
+          "id": "N04",
+          "seed": false,
+          "title": "wedding gown",
+          "expected_items": [
+            {
+              "slot": "dress",
+              "count": 1
+            }
+          ],
+          "difficulty_tags": [
+            "wedding",
+            "white_on_light",
+            "lace"
+          ],
+          "acceptance": "White gown detected; train edges may review.",
+          "imagegen_prompt": "Use case: photorealistic-natural. Asset type: closet cutout test image. Primary request: catalog photo of a white wedding gown with lace bodice and long train on a pale gray background, full garment visible, no model, no text. Composition/framing: keep the relevant garment or object fully visible unless the case explicitly asks for crop. Lighting/mood: realistic natural or studio lighting. Constraints: avoid brand logos, readable text, watermarks, and unrelated extra garments unless requested."
+        },
+        {
+          "id": "N05",
+          "seed": false,
+          "title": "formal tuxedo on hanger",
+          "expected_items": [
+            {
+              "slot": "top",
+              "count": 1
+            },
+            {
+              "slot": "bottom",
+              "count": 1
+            }
+          ],
+          "difficulty_tags": [
+            "formalwear",
+            "hanger",
+            "black_on_black"
+          ],
+          "acceptance": "Tuxedo pieces detected or review; hanger minimized.",
+          "imagegen_prompt": "Use case: photorealistic-natural. Asset type: closet cutout test image. Primary request: black tuxedo jacket and trousers hanging on a simple hanger against a charcoal background, formalwear product photo, no logo, no text. Composition/framing: keep the relevant garment or object fully visible unless the case explicitly asks for crop. Lighting/mood: realistic natural or studio lighting. Constraints: avoid brand logos, readable text, watermarks, and unrelated extra garments unless requested."
+        }
+      ]
+    },
+    {
+      "group_id": "O",
+      "name": "small_accessories_and_jewelry",
+      "goal": "Small non-core items that may be saved as accessory or rejected.",
+      "cases": [
+        {
+          "id": "O01",
+          "seed": true,
+          "title": "sunglasses white background",
+          "expected_items": [
+            {
+              "slot": "accessory",
+              "count": 1
+            }
+          ],
+          "difficulty_tags": [
+            "small_item",
+            "sunglasses",
+            "thin_frame"
+          ],
+          "acceptance": "Accessory detected; thin frame preserved.",
+          "imagegen_prompt": "Use case: photorealistic-natural. Asset type: closet cutout test image. Primary request: product catalog photo of black sunglasses on a pure white background, centered, full frame visible, no text, no watermark. Composition/framing: keep the relevant garment or object fully visible unless the case explicitly asks for crop. Lighting/mood: realistic natural or studio lighting. Constraints: avoid brand logos, readable text, watermarks, and unrelated extra garments unless requested."
+        },
+        {
+          "id": "O02",
+          "seed": false,
+          "title": "necklace chain",
+          "expected_items": [
+            {
+              "slot": "accessory",
+              "count": 1
+            }
+          ],
+          "difficulty_tags": [
+            "jewelry",
+            "thin_chain",
+            "tiny"
+          ],
+          "acceptance": "Likely review; chain should not vanish entirely.",
+          "imagegen_prompt": "Use case: photorealistic-natural. Asset type: closet cutout test image. Primary request: product photo of a delicate gold necklace chain arranged in a circle on white background, tiny clasp visible, no text. Composition/framing: keep the relevant garment or object fully visible unless the case explicitly asks for crop. Lighting/mood: realistic natural or studio lighting. Constraints: avoid brand logos, readable text, watermarks, and unrelated extra garments unless requested."
+        },
+        {
+          "id": "O03",
+          "seed": false,
+          "title": "belt flatlay",
+          "expected_items": [
+            {
+              "slot": "accessory",
+              "count": 1
+            }
+          ],
+          "difficulty_tags": [
+            "belt",
+            "long_thin_item"
+          ],
+          "acceptance": "Belt saved as accessory or review.",
+          "imagegen_prompt": "Use case: photorealistic-natural. Asset type: closet cutout test image. Primary request: black leather belt laid in a loose oval on a white studio background, silver buckle visible, no logo, no text. Composition/framing: keep the relevant garment or object fully visible unless the case explicitly asks for crop. Lighting/mood: realistic natural or studio lighting. Constraints: avoid brand logos, readable text, watermarks, and unrelated extra garments unless requested."
+        },
+        {
+          "id": "O04",
+          "seed": false,
+          "title": "watch and bracelet",
+          "expected_items": [
+            {
+              "slot": "accessory",
+              "count": 2
+            }
+          ],
+          "difficulty_tags": [
+            "small_items",
+            "metal",
+            "false_positive"
+          ],
+          "acceptance": "May create accessories, but should not affect garment metrics.",
+          "imagegen_prompt": "Use case: photorealistic-natural. Asset type: closet cutout test image. Primary request: top-down product photo of a wristwatch and a bracelet on a white surface, separated, no clothing, no text. Composition/framing: keep the relevant garment or object fully visible unless the case explicitly asks for crop. Lighting/mood: realistic natural or studio lighting. Constraints: avoid brand logos, readable text, watermarks, and unrelated extra garments unless requested."
+        },
+        {
+          "id": "O05",
+          "seed": false,
+          "title": "hair clip accessory",
+          "expected_items": [
+            {
+              "slot": "accessory",
+              "count": 1
+            }
+          ],
+          "difficulty_tags": [
+            "small_item",
+            "hair_accessory"
+          ],
+          "acceptance": "Accessory or rejected acceptable depending product scope.",
+          "imagegen_prompt": "Use case: photorealistic-natural. Asset type: closet cutout test image. Primary request: product photo of a pearl hair clip on a pale pink background, centered, no text, no watermark. Composition/framing: keep the relevant garment or object fully visible unless the case explicitly asks for crop. Lighting/mood: realistic natural or studio lighting. Constraints: avoid brand logos, readable text, watermarks, and unrelated extra garments unless requested."
+        }
+      ]
+    },
+    {
+      "group_id": "P",
+      "name": "intimates_swimwear_and_sensitive_boundaries",
+      "goal": "Allowed clothing categories that need product-safe handling and clear taxonomy.",
+      "cases": [
+        {
+          "id": "P01",
+          "seed": true,
+          "title": "one piece swimsuit",
+          "expected_items": [
+            {
+              "slot": "dress",
+              "count": 1
+            }
+          ],
+          "difficulty_tags": [
+            "swimwear",
+            "taxonomy_gap"
+          ],
+          "acceptance": "May map to dress/accessory/review; should be one item.",
+          "imagegen_prompt": "Use case: photorealistic-natural. Asset type: closet cutout test image. Primary request: catalog product photo of a black one-piece swimsuit laid flat on a pure white background, full swimsuit visible, no model, no text. Composition/framing: keep the relevant garment or object fully visible unless the case explicitly asks for crop. Lighting/mood: realistic natural or studio lighting. Constraints: avoid brand logos, readable text, watermarks, and unrelated extra garments unless requested."
+        },
+        {
+          "id": "P02",
+          "seed": false,
+          "title": "bikini set flatlay",
+          "expected_items": [
+            {
+              "slot": "top",
+              "count": 1
+            },
+            {
+              "slot": "bottom",
+              "count": 1
+            }
+          ],
+          "difficulty_tags": [
+            "swimwear",
+            "two_piece",
+            "small_items"
+          ],
+          "acceptance": "Two pieces detected or review.",
+          "imagegen_prompt": "Use case: photorealistic-natural. Asset type: closet cutout test image. Primary request: top-down product photo of a simple blue bikini set laid flat on white background, top and bottom separated with clear gap, no model, no text. Composition/framing: keep the relevant garment or object fully visible unless the case explicitly asks for crop. Lighting/mood: realistic natural or studio lighting. Constraints: avoid brand logos, readable text, watermarks, and unrelated extra garments unless requested."
+        },
+        {
+          "id": "P03",
+          "seed": false,
+          "title": "sports bra",
+          "expected_items": [
+            {
+              "slot": "top",
+              "count": 1
+            }
+          ],
+          "difficulty_tags": [
+            "activewear",
+            "small_top"
+          ],
+          "acceptance": "Classify as top or review.",
+          "imagegen_prompt": "Use case: photorealistic-natural. Asset type: closet cutout test image. Primary request: catalog product photo of a black sports bra laid flat on white background, front view, no model, no text. Composition/framing: keep the relevant garment or object fully visible unless the case explicitly asks for crop. Lighting/mood: realistic natural or studio lighting. Constraints: avoid brand logos, readable text, watermarks, and unrelated extra garments unless requested."
+        },
+        {
+          "id": "P04",
+          "seed": false,
+          "title": "thermal leggings",
+          "expected_items": [
+            {
+              "slot": "bottom",
+              "count": 1
+            }
+          ],
+          "difficulty_tags": [
+            "leggings",
+            "tight_shape"
+          ],
+          "acceptance": "Classify as bottom, not accessory.",
+          "imagegen_prompt": "Use case: photorealistic-natural. Asset type: closet cutout test image. Primary request: product photo of black thermal leggings laid flat on white background, waistband and leg openings visible, no model, no text. Composition/framing: keep the relevant garment or object fully visible unless the case explicitly asks for crop. Lighting/mood: realistic natural or studio lighting. Constraints: avoid brand logos, readable text, watermarks, and unrelated extra garments unless requested."
+        },
+        {
+          "id": "P05",
+          "seed": false,
+          "title": "pajama set",
+          "expected_items": [
+            {
+              "slot": "top",
+              "count": 1
+            },
+            {
+              "slot": "bottom",
+              "count": 1
+            }
+          ],
+          "difficulty_tags": [
+            "sleepwear",
+            "set",
+            "pattern"
+          ],
+          "acceptance": "Two items or one review set acceptable; no false accessories.",
+          "imagegen_prompt": "Use case: photorealistic-natural. Asset type: closet cutout test image. Primary request: top-down flatlay of a matching striped pajama shirt and pajama pants on white bedding, both pieces visible, no person, no text. Composition/framing: keep the relevant garment or object fully visible unless the case explicitly asks for crop. Lighting/mood: realistic natural or studio lighting. Constraints: avoid brand logos, readable text, watermarks, and unrelated extra garments unless requested."
+        }
+      ]
+    },
+    {
+      "group_id": "Q",
+      "name": "extreme_composition_and_framing",
+      "goal": "Unusual crop, perspective, rotation, scale, and object placement.",
+      "cases": [
+        {
+          "id": "Q01",
+          "seed": true,
+          "title": "tiny centered shirt lots of empty space",
+          "expected_items": [
+            {
+              "slot": "top",
+              "count": 1
+            }
+          ],
+          "difficulty_tags": [
+            "tiny_subject",
+            "scale"
+          ],
+          "acceptance": "Should find item or reject for too small, but not hallucinate.",
+          "imagegen_prompt": "Use case: photorealistic-natural. Asset type: closet cutout test image. Primary request: a very small red t-shirt centered in a large white image with lots of empty space around it, product photo, no text. Composition/framing: keep the relevant garment or object fully visible unless the case explicitly asks for crop. Lighting/mood: realistic natural or studio lighting. Constraints: avoid brand logos, readable text, watermarks, and unrelated extra garments unless requested."
+        },
+        {
+          "id": "Q02",
+          "seed": false,
+          "title": "garment at image edge",
+          "expected_items": [
+            {
+              "slot": "top",
+              "count": 1
+            }
+          ],
+          "difficulty_tags": [
+            "edge_crop",
+            "partial"
+          ],
+          "acceptance": "Review due to edge crop.",
+          "imagegen_prompt": "Use case: photorealistic-natural. Asset type: closet cutout test image. Primary request: a green sweater partly cut off by the left edge of the image on a white background, only 80 percent visible, no text. Composition/framing: keep the relevant garment or object fully visible unless the case explicitly asks for crop. Lighting/mood: realistic natural or studio lighting. Constraints: avoid brand logos, readable text, watermarks, and unrelated extra garments unless requested."
+        },
+        {
+          "id": "Q03",
+          "seed": false,
+          "title": "rotated pants diagonal",
+          "expected_items": [
+            {
+              "slot": "bottom",
+              "count": 1
+            }
+          ],
+          "difficulty_tags": [
+            "rotation",
+            "diagonal"
+          ],
+          "acceptance": "Pants detected despite diagonal orientation.",
+          "imagegen_prompt": "Use case: photorealistic-natural. Asset type: closet cutout test image. Primary request: product photo of blue jeans laid diagonally at a 35 degree angle on a white background, full jeans visible, no text. Composition/framing: keep the relevant garment or object fully visible unless the case explicitly asks for crop. Lighting/mood: realistic natural or studio lighting. Constraints: avoid brand logos, readable text, watermarks, and unrelated extra garments unless requested."
+        },
+        {
+          "id": "Q04",
+          "seed": false,
+          "title": "perspective shoes closeup",
+          "expected_items": [
+            {
+              "slot": "shoes",
+              "count": 1
+            }
+          ],
+          "difficulty_tags": [
+            "perspective",
+            "closeup",
+            "shoes"
+          ],
+          "acceptance": "Shoes review if too cropped; not merge with floor.",
+          "imagegen_prompt": "Use case: photorealistic-natural. Asset type: closet cutout test image. Primary request: close perspective smartphone photo of sneakers on the floor, shoes very large in foreground, full pair mostly visible, no feet, no text. Composition/framing: keep the relevant garment or object fully visible unless the case explicitly asks for crop. Lighting/mood: realistic natural or studio lighting. Constraints: avoid brand logos, readable text, watermarks, and unrelated extra garments unless requested."
+        },
+        {
+          "id": "Q05",
+          "seed": false,
+          "title": "wide panorama clothing rack",
+          "expected_items": [
+            {
+              "slot": "top",
+              "count": 3
+            }
+          ],
+          "difficulty_tags": [
+            "wide_image",
+            "rack",
+            "multi_item"
+          ],
+          "acceptance": "Should handle aspect ratio or review; not crash.",
+          "imagegen_prompt": "Use case: photorealistic-natural. Asset type: closet cutout test image. Primary request: wide horizontal photo of a clothing rack with three shirts hanging separately against a plain wall, full shirts visible, no text. Composition/framing: keep the relevant garment or object fully visible unless the case explicitly asks for crop. Lighting/mood: realistic natural or studio lighting. Constraints: avoid brand logos, readable text, watermarks, and unrelated extra garments unless requested."
+        }
+      ]
+    },
+    {
+      "group_id": "R",
+      "name": "background_surfaces_and_shadows",
+      "goal": "Different surfaces and shadows that can leak into masks.",
+      "cases": [
+        {
+          "id": "R01",
+          "seed": true,
+          "title": "shirt on wooden floor shadow",
+          "expected_items": [
+            {
+              "slot": "top",
+              "count": 1
+            }
+          ],
+          "difficulty_tags": [
+            "wood_floor",
+            "shadow"
+          ],
+          "acceptance": "Shadow should not become part of cutout.",
+          "imagegen_prompt": "Use case: photorealistic-natural. Asset type: closet cutout test image. Primary request: top-down photo of a white shirt on a warm wooden floor with a soft natural cast shadow, full shirt visible, no person, no text. Composition/framing: keep the relevant garment or object fully visible unless the case explicitly asks for crop. Lighting/mood: realistic natural or studio lighting. Constraints: avoid brand logos, readable text, watermarks, and unrelated extra garments unless requested."
+        },
+        {
+          "id": "R02",
+          "seed": false,
+          "title": "dress on grass",
+          "expected_items": [
+            {
+              "slot": "dress",
+              "count": 1
+            }
+          ],
+          "difficulty_tags": [
+            "grass_background",
+            "texture"
+          ],
+          "acceptance": "Grass should not leak heavily into dress mask.",
+          "imagegen_prompt": "Use case: photorealistic-natural. Asset type: closet cutout test image. Primary request: casual photo of a blue summer dress laid flat on green grass, full dress visible, outdoor daylight, no person, no text. Composition/framing: keep the relevant garment or object fully visible unless the case explicitly asks for crop. Lighting/mood: realistic natural or studio lighting. Constraints: avoid brand logos, readable text, watermarks, and unrelated extra garments unless requested."
+        },
+        {
+          "id": "R03",
+          "seed": false,
+          "title": "black boots on concrete",
+          "expected_items": [
+            {
+              "slot": "shoes",
+              "count": 1
+            }
+          ],
+          "difficulty_tags": [
+            "concrete",
+            "shadow",
+            "dark_item"
+          ],
+          "acceptance": "Boot outline clean enough or review.",
+          "imagegen_prompt": "Use case: photorealistic-natural. Asset type: closet cutout test image. Primary request: product-like photo of black ankle boots on gray concrete with visible shadow, both boots full frame, no legs, no text. Composition/framing: keep the relevant garment or object fully visible unless the case explicitly asks for crop. Lighting/mood: realistic natural or studio lighting. Constraints: avoid brand logos, readable text, watermarks, and unrelated extra garments unless requested."
+        },
+        {
+          "id": "R04",
+          "seed": false,
+          "title": "bag on reflective table",
+          "expected_items": [
+            {
+              "slot": "bag",
+              "count": 1
+            }
+          ],
+          "difficulty_tags": [
+            "reflection",
+            "bag"
+          ],
+          "acceptance": "Reflection should not be included as bag body.",
+          "imagegen_prompt": "Use case: photorealistic-natural. Asset type: closet cutout test image. Primary request: a red handbag standing on a glossy reflective table, plain background, reflection visible below, no text, no logo. Composition/framing: keep the relevant garment or object fully visible unless the case explicitly asks for crop. Lighting/mood: realistic natural or studio lighting. Constraints: avoid brand logos, readable text, watermarks, and unrelated extra garments unless requested."
+        },
+        {
+          "id": "R05",
+          "seed": false,
+          "title": "transparent hanger shadow",
+          "expected_items": [
+            {
+              "slot": "top",
+              "count": 1
+            }
+          ],
+          "difficulty_tags": [
+            "hanger_shadow",
+            "shadow"
+          ],
+          "acceptance": "Garment extracted; hanger/shadow minimized.",
+          "imagegen_prompt": "Use case: photorealistic-natural. Asset type: closet cutout test image. Primary request: white blouse on a clear plastic hanger against a white wall, soft hanger shadow visible, no person, no text. Composition/framing: keep the relevant garment or object fully visible unless the case explicitly asks for crop. Lighting/mood: realistic natural or studio lighting. Constraints: avoid brand logos, readable text, watermarks, and unrelated extra garments unless requested."
+        }
+      ]
+    },
+    {
+      "group_id": "S",
+      "name": "duplicates_and_near_duplicates",
+      "goal": "Test duplicate detection and outfit dedupe logic using similar items.",
+      "cases": [
+        {
+          "id": "S01",
+          "seed": true,
+          "title": "two similar white sneakers",
+          "expected_items": [
+            {
+              "slot": "shoes",
+              "count": 2
+            }
+          ],
+          "difficulty_tags": [
+            "duplicate_category",
+            "similarity",
+            "shoes"
+          ],
+          "acceptance": "Closet may save two shoe items; outfit builder should later dedupe.",
+          "imagegen_prompt": "Use case: photorealistic-natural. Asset type: closet cutout test image. Primary request: top-down product photo with two separate pairs of white sneakers side by side on white background, subtle differences, no feet, no text. Composition/framing: keep the relevant garment or object fully visible unless the case explicitly asks for crop. Lighting/mood: realistic natural or studio lighting. Constraints: avoid brand logos, readable text, watermarks, and unrelated extra garments unless requested."
+        },
+        {
+          "id": "S02",
+          "seed": false,
+          "title": "two black trousers",
+          "expected_items": [
+            {
+              "slot": "bottom",
+              "count": 2
+            }
+          ],
+          "difficulty_tags": [
+            "duplicate_category",
+            "bottom"
+          ],
+          "acceptance": "Two bottoms as separate closet items; outfit cover should not use both.",
+          "imagegen_prompt": "Use case: photorealistic-natural. Asset type: closet cutout test image. Primary request: top-down flatlay of two pairs of black trousers side by side on a light gray background, both full visible, no text. Composition/framing: keep the relevant garment or object fully visible unless the case explicitly asks for crop. Lighting/mood: realistic natural or studio lighting. Constraints: avoid brand logos, readable text, watermarks, and unrelated extra garments unless requested."
+        },
+        {
+          "id": "S03",
+          "seed": false,
+          "title": "same shirt front and back",
+          "expected_items": [
+            {
+              "slot": "top",
+              "count": 2
+            }
+          ],
+          "difficulty_tags": [
+            "duplicate_view",
+            "top"
+          ],
+          "acceptance": "May save two top views; should be flagged by similarity later.",
+          "imagegen_prompt": "Use case: photorealistic-natural. Asset type: closet cutout test image. Primary request: catalog image showing the same blue shirt front view and back view side by side on white background, two separate views, no text. Composition/framing: keep the relevant garment or object fully visible unless the case explicitly asks for crop. Lighting/mood: realistic natural or studio lighting. Constraints: avoid brand logos, readable text, watermarks, and unrelated extra garments unless requested."
+        },
+        {
+          "id": "S04",
+          "seed": false,
+          "title": "shoe plus shoe reflection",
+          "expected_items": [
+            {
+              "slot": "shoes",
+              "count": 1
+            }
+          ],
+          "difficulty_tags": [
+            "reflection_duplicate",
+            "shoes"
+          ],
+          "acceptance": "Reflection should not become second shoes item.",
+          "imagegen_prompt": "Use case: photorealistic-natural. Asset type: closet cutout test image. Primary request: single pair of black loafers on a glossy surface with strong reflection below, plain background, no text. Composition/framing: keep the relevant garment or object fully visible unless the case explicitly asks for crop. Lighting/mood: realistic natural or studio lighting. Constraints: avoid brand logos, readable text, watermarks, and unrelated extra garments unless requested."
+        },
+        {
+          "id": "S05",
+          "seed": false,
+          "title": "outfit with extra duplicate bag",
+          "expected_items": [
+            {
+              "slot": "top",
+              "count": 1
+            },
+            {
+              "slot": "bottom",
+              "count": 1
+            },
+            {
+              "slot": "bag",
+              "count": 2
+            }
+          ],
+          "difficulty_tags": [
+            "duplicate_bag",
+            "outfit"
+          ],
+          "acceptance": "Closet can detect two bags; outfit card should show one.",
+          "imagegen_prompt": "Use case: photorealistic-natural. Asset type: closet cutout test image. Primary request: top-down flatlay outfit with one sweater, one skirt, and two similar small handbags on the side, white background, no text. Composition/framing: keep the relevant garment or object fully visible unless the case explicitly asks for crop. Lighting/mood: realistic natural or studio lighting. Constraints: avoid brand logos, readable text, watermarks, and unrelated extra garments unless requested."
+        }
+      ]
+    },
+    {
+      "group_id": "T",
+      "name": "hard_negatives_textiles_and_decoys",
+      "goal": "Textile-like objects that should not become closet garments.",
+      "cases": [
+        {
+          "id": "T01",
+          "seed": true,
+          "title": "folded towel decoy",
+          "expected_items": [],
+          "difficulty_tags": [
+            "negative",
+            "textile_decoy"
+          ],
+          "acceptance": "No usable closet item should be created.",
+          "imagegen_prompt": "Use case: photorealistic-natural. Asset type: closet cutout negative test image. Primary request: product-like photo of a folded white bath towel on a white shelf, textile texture but clearly a towel, no clothing, no text. Composition/framing: keep the relevant garment or object fully visible unless the case explicitly asks for crop. Lighting/mood: realistic natural or studio lighting. Constraints: avoid brand logos, readable text, watermarks, and unrelated extra garments unless requested."
+        },
+        {
+          "id": "T02",
+          "seed": false,
+          "title": "curtain fabric decoy",
+          "expected_items": [],
+          "difficulty_tags": [
+            "negative",
+            "fabric"
+          ],
+          "acceptance": "Curtain should not become dress or skirt.",
+          "imagegen_prompt": "Use case: photorealistic-natural. Asset type: closet cutout negative test image. Primary request: photo of beige curtains hanging by a window, fabric folds visible, no clothing items, no people, no text. Composition/framing: keep the relevant garment or object fully visible unless the case explicitly asks for crop. Lighting/mood: realistic natural or studio lighting. Constraints: avoid brand logos, readable text, watermarks, and unrelated extra garments unless requested."
+        },
+        {
+          "id": "T03",
+          "seed": false,
+          "title": "blanket on bed decoy",
+          "expected_items": [],
+          "difficulty_tags": [
+            "negative",
+            "blanket"
+          ],
+          "acceptance": "Blanket should not be saved as clothing.",
+          "imagegen_prompt": "Use case: photorealistic-natural. Asset type: closet cutout negative test image. Primary request: casual photo of a patterned blanket spread on a bed, no garments, no shoes, no bags, no text. Composition/framing: keep the relevant garment or object fully visible unless the case explicitly asks for crop. Lighting/mood: realistic natural or studio lighting. Constraints: avoid brand logos, readable text, watermarks, and unrelated extra garments unless requested."
+        },
+        {
+          "id": "T04",
+          "seed": false,
+          "title": "apron kitchen item",
+          "expected_items": [
+            {
+              "slot": "accessory",
+              "count": 1
+            }
+          ],
+          "difficulty_tags": [
+            "apron",
+            "edge_taxonomy"
+          ],
+          "acceptance": "Apron can be review/accessory, not top usable.",
+          "imagegen_prompt": "Use case: photorealistic-natural. Asset type: closet cutout test image. Primary request: photo of a kitchen apron hanging on a hook against a plain wall, full apron visible, no person, no text. Composition/framing: keep the relevant garment or object fully visible unless the case explicitly asks for crop. Lighting/mood: realistic natural or studio lighting. Constraints: avoid brand logos, readable text, watermarks, and unrelated extra garments unless requested."
+        },
+        {
+          "id": "T05",
+          "seed": false,
+          "title": "fabric shopping tote vs handbag",
+          "expected_items": [
+            {
+              "slot": "bag",
+              "count": 1
+            }
+          ],
+          "difficulty_tags": [
+            "bag_boundary",
+            "tote"
+          ],
+          "acceptance": "Tote bag should map to bag if clear.",
+          "imagegen_prompt": "Use case: photorealistic-natural. Asset type: closet cutout test image. Primary request: product photo of a plain canvas tote bag hanging on a white wall, handles visible, no logo, no text. Composition/framing: keep the relevant garment or object fully visible unless the case explicitly asks for crop. Lighting/mood: realistic natural or studio lighting. Constraints: avoid brand logos, readable text, watermarks, and unrelated extra garments unless requested."
+        }
+      ]
+    }
+  ]
+}

@@ -51,7 +51,7 @@ For failures:
   "status": "failed",
   "error": {
     "code": "ai_unavailable",
-    "message": "AI 穿搭师暂时不可用，请检查模型配置。"
+    "message": "暂时灵感耗尽，正在努力充能～"
   }
 }
 ```

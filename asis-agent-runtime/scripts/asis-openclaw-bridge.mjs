@@ -16,6 +16,11 @@ const memoryPath = process.env.ASIS_OPENCLAW_MEMORY_PATH || resolve(runtimeRoot,
 const openclawHome = process.env.OPENCLAW_HOME || resolve(runtimeRoot, ".openclaw-home");
 const openclawStateDir = process.env.OPENCLAW_STATE_DIR || resolve(runtimeRoot, ".openclaw");
 const openclawConfigPath = process.env.OPENCLAW_CONFIG_PATH || resolve(runtimeRoot, "config/openclaw.local.json");
+const friendlyStylistErrorMessage = "暂时灵感耗尽，正在努力充能～";
+
+function logBridge(event, details = {}) {
+  console.error(JSON.stringify({ event, ts: new Date().toISOString(), ...details }));
+}
 
 process.on("uncaughtException", (error) => {
   console.error("asis bridge uncaught exception:", error);
@@ -126,9 +131,10 @@ function classifyRuntimeError(stderr, stdout, code) {
       status: "failed",
       error: {
         code: "ai_unavailable",
-        message: "AI 穿搭师暂时不可用，请检查模型配置。",
+        message: friendlyStylistErrorMessage,
+        technical_message: "AI 穿搭师暂时不可用，请检查模型配置。",
       },
-      assistant_message: "AI 穿搭师暂时不可用，请检查模型配置。",
+      assistant_message: friendlyStylistErrorMessage,
       evidence: { exit_code: code, stderr: String(stderr || "").slice(-2000) },
     };
   }
@@ -136,15 +142,25 @@ function classifyRuntimeError(stderr, stdout, code) {
     status: "failed",
     error: {
       code: "agent_runtime_unavailable",
-      message: "OpenClaw 穿搭师运行时暂时不可用。",
+      message: friendlyStylistErrorMessage,
+      technical_message: "OpenClaw 穿搭师运行时暂时不可用。",
     },
-    assistant_message: "OpenClaw 穿搭师运行时暂时不可用。",
+    assistant_message: friendlyStylistErrorMessage,
     evidence: { exit_code: code, stderr: String(stderr || "").slice(-2000) },
   };
 }
 
 function buildAgentMessage(payload, message) {
   const context = payload && typeof payload.context === "object" && payload.context !== null ? payload.context : {};
+  const closetOnly = Boolean(context.closet_only);
+  const trimGroupObject = (groups, groupLimit = 8, itemLimit = 3) => {
+    if (!groups || typeof groups !== "object") return {};
+    return Object.fromEntries(
+      Object.entries(groups)
+        .slice(0, groupLimit)
+        .map(([key, value]) => [key, Array.isArray(value) ? value.slice(0, itemLimit) : value]),
+    );
+  };
   const lines = [
     "User message:",
     message,
@@ -157,7 +173,37 @@ function buildAgentMessage(payload, message) {
         source: context.source || "",
         item_count: context.item_count ?? null,
         outfit_count: context.outfit_count ?? null,
+        closet_items: Array.isArray(context.closet_items)
+          ? context.closet_items.slice(0, closetOnly ? 14 : 24).map((item) => ({
+              item_id: item.item_id || "",
+              category: item.category || "",
+              subcategory: item.subcategory || "",
+              slot: item.slot || "",
+              label: item.label || "",
+              colors: Array.isArray(item.colors) ? item.colors.slice(0, 4) : [],
+              material: Array.isArray(item.material) ? item.material.slice(0, 3) : [],
+              fit: item.fit || "",
+              pattern: item.pattern || "",
+              style_tags: Array.isArray(item.style_tags) ? item.style_tags.slice(0, 6) : [],
+              type_tags: Array.isArray(item.type_tags) ? item.type_tags.slice(0, 8) : [],
+              favorite: Boolean(item.favorite),
+              quality_status: item.quality_status || "",
+            }))
+          : [],
+        closet_item_groups: trimGroupObject(context.closet_item_groups, closetOnly ? 5 : 6, 2),
+        closet_outfits: Array.isArray(context.closet_outfits)
+          ? context.closet_outfits.slice(0, closetOnly ? 5 : 8).map((outfit) => ({
+              outfit_id: outfit.outfit_id || "",
+              title: outfit.title || "",
+              scene_tags: Array.isArray(outfit.scene_tags) ? outfit.scene_tags.slice(0, 6) : [],
+              favorite_count: outfit.favorite_count ?? 0,
+              item_ids: Array.isArray(outfit.item_ids) ? outfit.item_ids.slice(0, 8) : [],
+              items: Array.isArray(outfit.items) ? outfit.items.slice(0, 6) : [],
+            }))
+          : [],
+        closet_outfit_groups: trimGroupObject(context.closet_outfit_groups, closetOnly ? 4 : 6, 2),
         xiaohongshu_preferred: Boolean(context.xiaohongshu_preferred),
+        closet_only: Boolean(context.closet_only),
         xhs_query: context.xhs_query || "",
         xhs_notes: Array.isArray(context.xhs_notes)
           ? context.xhs_notes.slice(0, 6).map((note) => ({
@@ -166,6 +212,8 @@ function buildAgentMessage(payload, message) {
               author_name: note.author_name || "",
               liked_count: note.liked_count || "",
               collected_count: note.collected_count || "",
+              detail_summary: String(note.detail_summary || "").slice(0, 240),
+              detail_text: String(note.detail_text || note.desc || "").slice(0, 900),
               source_label: note.source_label || "小红书推荐",
             }))
           : [],
@@ -175,6 +223,12 @@ function buildAgentMessage(payload, message) {
       2,
     ),
     "",
+    "Use closet_outfits by scene_tags first when they match the latest User message. Use closet_items by category/slot/subcategory/style_tags/type_tags to compose alternatives across top, bottom/skirt/dress, shoes, bag, and accessory.",
+    "When closet_only is true, keep the answer concise and base it on wardrobe evidence only. Do not ask for or wait for Xiaohongshu evidence. Return at most one preferred outfit and one backup, with no more than 5 short bullets in assistant_message.",
+    "If no suitable closet_outfits or closet_items match, do not fail and do not invent item_id/outfit_id values. Summarize Xiaohongshu/style evidence and give actionable styling advice with empty recommended_items/recommended_outfits if needed.",
+    "Default target audience is women's styling unless the latest User message explicitly asks for male, men's, menswear, or non-female styling. Treat male/menswear Xiaohongshu notes as irrelevant by default.",
+    "Use xhs_notes.detail_summary/detail_text as Xiaohongshu note body evidence when present. Ignore any note whose title or body conflicts with the latest User message scene or target gender.",
+    "Keep assistant_message user-facing: do not mention internal field names such as xhs_notes, closet_items, closet_item_groups, tool_steps, context, schema, JSON, API, or raw item/outfit IDs.",
     "Return only JSON compatible with asis_stylist_recommendation_v1. Include evidence_sources and quality_checks. Do not invent Xiaohongshu evidence.",
   ];
   return lines.join("\n");
@@ -182,6 +236,8 @@ function buildAgentMessage(payload, message) {
 
 async function runOpenClawAgent(payload) {
   const message = String(payload.message || "").trim();
+  const requestId = `${Date.now().toString(36)}-${Math.random().toString(16).slice(2, 8)}`;
+  const startedAt = Date.now();
   if (!message) {
     return {
       statusCode: 400,
@@ -194,7 +250,8 @@ async function runOpenClawAgent(payload) {
   }
   const tempDir = await mkdtemp(join(tmpdir(), "asis-openclaw-"));
   const messagePath = join(tempDir, "message.txt");
-  await writeFile(messagePath, buildAgentMessage(payload, message), "utf8");
+  const agentMessage = buildAgentMessage(payload, message);
+  await writeFile(messagePath, agentMessage, "utf8");
   const args = [
     openclawCli,
     "agent",
@@ -210,7 +267,15 @@ async function runOpenClawAgent(payload) {
   if (process.env.STYLIST_OPENCLAW_MODEL) {
     args.push("--model", process.env.STYLIST_OPENCLAW_MODEL);
   }
-  const timeoutMs = Number(process.env.STYLIST_OPENCLAW_TIMEOUT_MS || "600000");
+  const timeoutMs = Number(process.env.STYLIST_OPENCLAW_TIMEOUT_MS || "240000");
+  logBridge("openclaw_start", {
+    request_id: requestId,
+    session_id: payload.session_id || "default",
+    session_key: payload.session_key || "",
+    message_chars: message.length,
+    prompt_chars: agentMessage.length,
+    timeout_ms: timeoutMs,
+  });
   const result = await new Promise((resolvePromise) => {
     const child = spawn(nodeBin, args, {
       cwd: runtimeRoot,
@@ -224,6 +289,11 @@ async function runOpenClawAgent(payload) {
       stdio: ["ignore", "pipe", "pipe"],
     });
     const timer = setTimeout(() => {
+      logBridge("openclaw_timeout", {
+        request_id: requestId,
+        session_id: payload.session_id || "default",
+        elapsed_ms: Date.now() - startedAt,
+      });
       child.kill("SIGTERM");
     }, timeoutMs);
     let stdout = "";
@@ -245,12 +315,34 @@ async function runOpenClawAgent(payload) {
   });
   await rm(tempDir, { recursive: true, force: true });
   if (result.code !== 0) {
+    logBridge("openclaw_failed", {
+      request_id: requestId,
+      session_id: payload.session_id || "default",
+      code: result.code,
+      elapsed_ms: Date.now() - startedAt,
+      stdout_chars: String(result.stdout || "").length,
+      stderr_tail: String(result.stderr || "").slice(-500),
+    });
     return { statusCode: 503, data: classifyRuntimeError(result.stderr, result.stdout, result.code) };
   }
   try {
     const parsed = JSON.parse(result.stdout);
+    logBridge("openclaw_done", {
+      request_id: requestId,
+      session_id: payload.session_id || "default",
+      elapsed_ms: Date.now() - startedAt,
+      stdout_chars: String(result.stdout || "").length,
+      status: parsed?.status || "unknown",
+    });
     return { statusCode: 200, data: parsed };
   } catch {
+    logBridge("openclaw_parse_fallback", {
+      request_id: requestId,
+      session_id: payload.session_id || "default",
+      elapsed_ms: Date.now() - startedAt,
+      stdout_chars: String(result.stdout || "").length,
+      stderr_tail: String(result.stderr || "").slice(-500),
+    });
     return {
       statusCode: 200,
       data: {

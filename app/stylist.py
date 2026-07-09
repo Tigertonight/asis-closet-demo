@@ -3,11 +3,13 @@ from __future__ import annotations
 import asyncio
 import html as html_lib
 import json
+import logging
 import os
 import re
 import shutil
 import subprocess
 import tempfile
+import time
 from pathlib import Path
 from typing import Any, AsyncIterator
 from urllib.parse import parse_qs, quote, unquote, urlencode, urlparse
@@ -25,6 +27,13 @@ from app.closet import (
 from app.tryon import extract_xhs_link
 
 
+LOGGER = logging.getLogger("asis.stylist")
+if not LOGGER.handlers:
+    _handler = logging.StreamHandler()
+    _handler.setFormatter(logging.Formatter("%(levelname)s:%(name)s:%(message)s"))
+    LOGGER.addHandler(_handler)
+LOGGER.setLevel(logging.INFO)
+LOGGER.propagate = False
 ROOT_DIR = Path(__file__).resolve().parents[1]
 STYLIST_RUNTIME_DIR = ROOT_DIR / "asis-agent-runtime"
 STYLIST_AGENT_ID = "asis-stylist"
@@ -48,6 +57,13 @@ STYLIST_TOOLS = [
     "asis_style_kb_search",
 ]
 DEFAULT_STYLIST_MODEL = "openai/gpt-5.5"
+STYLIST_FRIENDLY_ERROR_MESSAGE = "暂时灵感耗尽，正在努力充能～"
+CONTEXT_ITEM_LIMIT = 24
+CONTEXT_ITEMS_PER_SLOT = 4
+CONTEXT_OUTFIT_LIMIT = 8
+CONTEXT_OUTFITS_PER_SCENE = 3
+CLOSET_ONLY_ITEM_LIMIT = 14
+CLOSET_ONLY_OUTFIT_LIMIT = 5
 STYLIST_MODEL_KEY_ENV_BY_PROVIDER = {
     "openai": ["OPENAI_API_KEY", "STYLIST_OPENCLAW_API_KEY"],
     "anthropic": ["ANTHROPIC_API_KEY"],
@@ -138,50 +154,62 @@ def stylist_capabilities() -> dict[str, Any]:
 
 
 async def run_stylist_chat(payload: dict[str, Any]) -> tuple[dict[str, Any], int]:
+    started_at = time.perf_counter()
     message = str(payload.get("message") or "").strip()
     if not message:
         return _failed("invalid_request", "请先告诉 AI 穿搭师你的场景或问题。", 400)
 
     request = _normalize_chat_payload(payload, message)
+    _attach_closet_context(request)
+    LOGGER.info(
+        "stylist_chat_start session=%s source=%s xhs_pref=%s closet_only=%s message=%s",
+        request.get("session_id"),
+        request.get("context", {}).get("source"),
+        request.get("context", {}).get("xiaohongshu_preferred"),
+        request.get("context", {}).get("closet_only"),
+        message[:80],
+    )
     await _attach_xhs_inspiration(request)
     if _demo_mode():
-        return _demo_chat_response(request), 200
+        result = _demo_chat_response(request)
+        LOGGER.info("stylist_chat_done session=%s mode=demo status=200 elapsed=%.2fs", request.get("session_id"), time.perf_counter() - started_at)
+        return result, 200
+
+    if _should_use_light_closet_ai(request):
+        light_result = await _run_light_closet_ai(request)
+        if light_result is not None:
+            LOGGER.info("stylist_chat_done session=%s mode=light_closet_ai status=200 elapsed=%.2fs", request.get("session_id"), time.perf_counter() - started_at)
+            return light_result, 200
 
     chat_url = _openclaw_chat_url()
     if chat_url:
         if not _stylist_model_key_report()["matching_key_present"]:
-            degraded = _degraded_inspiration_result_if_needed(
-                {"status": "failed", "error": {"code": "ai_unavailable", "message": "AI 穿搭师暂时不可用，请检查模型配置。"}},
-                request,
-            )
-            if degraded is not None:
-                return degraded, 200
             return _failed("ai_unavailable", "AI 穿搭师暂时不可用，请检查模型配置。", 503)
-        return await _post_openclaw_http(chat_url, request)
+        result, status = await _post_openclaw_http(chat_url, request)
+        LOGGER.info(
+            "stylist_chat_done session=%s mode=%s status=%s elapsed=%.2fs",
+            request.get("session_id"),
+            result.get("mode"),
+            status,
+            time.perf_counter() - started_at,
+        )
+        return result, status
 
     if _env_flag("STYLIST_ENABLE_OPENCLAW_CLI"):
         if not _stylist_model_key_report()["matching_key_present"]:
-            degraded = _degraded_inspiration_result_if_needed(
-                {"status": "failed", "error": {"code": "ai_unavailable", "message": "AI 穿搭师暂时不可用，请检查模型配置。"}},
-                request,
-            )
-            if degraded is not None:
-                return degraded, 200
             return _failed("ai_unavailable", "AI 穿搭师暂时不可用，请检查模型配置。", 503)
-        return await _run_openclaw_cli(request)
+        result, status = await _run_openclaw_cli(request)
+        LOGGER.info("stylist_chat_done session=%s mode=%s status=%s elapsed=%.2fs", request.get("session_id"), result.get("mode"), status, time.perf_counter() - started_at)
+        return result, status
 
-    degraded = _degraded_inspiration_result_if_needed(
-        {"status": "failed", "error": {"code": "ai_unavailable", "message": "AI 穿搭师暂时不可用，请检查模型配置。"}},
-        request,
-    )
-    if degraded is not None:
-        return degraded, 200
-    return _failed(
+    result = _failed(
         "agent_runtime_unavailable",
         "OpenClaw 穿搭师运行时还没有配置，无法启动 AI 对话。",
         503,
         suggestion="请先启动 asis-agent-runtime，或配置 STYLIST_OPENCLAW_CHAT_URL。不要在正式模式下使用假回复。",
     )
+    LOGGER.info("stylist_chat_done session=%s mode=unavailable status=503 elapsed=%.2fs", request.get("session_id"), time.perf_counter() - started_at)
+    return result
 
 
 async def stream_stylist_chat(payload: dict[str, Any]) -> AsyncIterator[str]:
@@ -247,17 +275,242 @@ def _normalize_chat_payload(payload: dict[str, Any], message: str) -> dict[str, 
     }
 
 
+def _attach_closet_context(request: dict[str, Any]) -> None:
+    context = request.get("context") if isinstance(request.get("context"), dict) else {}
+    message = str(request.get("message") or context.get("current_query") or "").strip()
+    try:
+        items = list_closet_items().get("items", [])
+    except Exception:
+        items = []
+    try:
+        outfits = list_outfits().get("outfits", [])
+    except Exception:
+        outfits = []
+    context["item_count"] = len(items)
+    context["outfit_count"] = len(outfits)
+    closet_only = _message_explicitly_disables_xhs(message) or context.get("xiaohongshu_preferred") is False
+    item_limit = CLOSET_ONLY_ITEM_LIMIT if closet_only else CONTEXT_ITEM_LIMIT
+    outfit_limit = CLOSET_ONLY_OUTFIT_LIMIT if closet_only else CONTEXT_OUTFIT_LIMIT
+    ranked_items = _rank_context_items(items, message)
+    selected_items = _balanced_context_items(ranked_items, limit=item_limit, per_slot=CONTEXT_ITEMS_PER_SLOT)
+    ranked_outfits = _rank_context_outfits(outfits, message)[:outfit_limit]
+    context["closet_only"] = closet_only
+    context["closet_items"] = [_summarize_closet_item(item) for item in selected_items]
+    context["closet_item_groups"] = _closet_item_groups(selected_items)
+    context["closet_outfits"] = [_summarize_closet_outfit(outfit) for outfit in ranked_outfits]
+    context["closet_outfit_groups"] = _closet_outfit_groups(ranked_outfits)
+    request["context"] = context
+
+
+def _rank_context_items(items: list[dict[str, Any]], message: str) -> list[dict[str, Any]]:
+    terms = _context_terms(message)
+
+    def score(item: dict[str, Any]) -> tuple[int, float, str]:
+        text = _closet_item_search_text(item)
+        overlap = sum(1 for term in terms if term and term in text)
+        favorite = 3 if item.get("favorite") else 0
+        usable = 2 if str(item.get("quality", {}).get("status") or "") in {"usable", "pass", "ok"} else 0
+        quality = float(item.get("quality", {}).get("score") or 0)
+        return (overlap + favorite + usable, quality, str(item.get("updated_at") or ""))
+
+    return sorted([item for item in items if isinstance(item, dict) and not item.get("deleted")], key=score, reverse=True)
+
+
+def _balanced_context_items(items: list[dict[str, Any]], limit: int, per_slot: int) -> list[dict[str, Any]]:
+    selected: list[dict[str, Any]] = []
+    selected_ids: set[str] = set()
+    slot_counts: dict[str, int] = {}
+    for item in items:
+        item_id = str(item.get("item_id") or "")
+        slot = _closet_item_group_key(item)
+        if item_id in selected_ids or slot_counts.get(slot, 0) >= per_slot:
+            continue
+        selected.append(item)
+        selected_ids.add(item_id)
+        slot_counts[slot] = slot_counts.get(slot, 0) + 1
+        if len(selected) >= limit:
+            return selected
+    for item in items:
+        item_id = str(item.get("item_id") or "")
+        if item_id in selected_ids:
+            continue
+        selected.append(item)
+        selected_ids.add(item_id)
+        if len(selected) >= limit:
+            break
+    return selected
+
+
+def _closet_item_group_key(item: dict[str, Any]) -> str:
+    return str(item.get("slot") or item.get("category") or item.get("subcategory") or "other").strip() or "other"
+
+
+def _closet_item_groups(items: list[dict[str, Any]]) -> dict[str, list[dict[str, Any]]]:
+    groups: dict[str, list[dict[str, Any]]] = {}
+    for item in items:
+        key = _closet_item_group_key(item)
+        groups.setdefault(key, [])
+        if len(groups[key]) >= CONTEXT_ITEMS_PER_SLOT:
+            continue
+        groups[key].append(_summarize_closet_group_item(item))
+    return groups
+
+
+def _closet_outfit_groups(outfits: list[dict[str, Any]]) -> dict[str, list[dict[str, Any]]]:
+    groups: dict[str, list[dict[str, Any]]] = {}
+    for outfit in outfits:
+        scene_tags = [str(tag) for tag in outfit.get("scene_tags") or [] if str(tag).strip()] or ["通用"]
+        summary = _summarize_closet_group_outfit(outfit)
+        for tag in scene_tags[:4]:
+            groups.setdefault(tag, [])
+            if len(groups[tag]) < CONTEXT_OUTFITS_PER_SCENE:
+                groups[tag].append(summary)
+    return groups
+
+
+def _rank_context_outfits(outfits: list[dict[str, Any]], message: str) -> list[dict[str, Any]]:
+    terms = _context_terms(message)
+
+    def score(outfit: dict[str, Any]) -> tuple[int, int, str]:
+        text = " ".join(
+            str(value or "")
+            for value in [
+                outfit.get("title"),
+                " ".join(str(tag) for tag in outfit.get("scene_tags") or []),
+                " ".join(str(item.get("category_label") or "") for item in outfit.get("items") or [] if isinstance(item, dict)),
+            ]
+        )
+        overlap = sum(1 for term in terms if term and term in text)
+        favorite_count = int(outfit.get("favorite_count") or 0)
+        return (overlap, favorite_count, str(outfit.get("updated_at") or ""))
+
+    return sorted([outfit for outfit in outfits if isinstance(outfit, dict) and not outfit.get("deleted")], key=score, reverse=True)
+
+
+def _context_terms(message: str) -> list[str]:
+    text = str(message or "")
+    terms = [term for term in re.split(r"[\s,，。:：；;、]+", text) if term]
+    seeds = [
+        "生日", "派对", "约会", "聚会", "演唱会", "音乐节", "通勤", "面试", "看展", "旅行", "婚礼",
+        "显白", "显瘦", "出片", "温柔", "甜酷", "辣妹", "正式", "休闲", "雨", "小红书",
+    ]
+    terms.extend(seed for seed in seeds if seed in text)
+    return list(dict.fromkeys(terms))
+
+
+def _closet_item_search_text(item: dict[str, Any]) -> str:
+    attributes = item.get("attributes") if isinstance(item.get("attributes"), dict) else {}
+    values: list[str] = [
+        str(item.get("item_id") or ""),
+        str(item.get("category") or ""),
+        str(item.get("category_label") or ""),
+        str(item.get("subcategory") or ""),
+        str(item.get("slot") or ""),
+    ]
+    for value in attributes.values():
+        if isinstance(value, list):
+            values.extend(str(next_value) for next_value in value)
+        else:
+            values.append(str(value or ""))
+    return " ".join(values)
+
+
+def _summarize_closet_item(item: dict[str, Any]) -> dict[str, Any]:
+    attributes = item.get("attributes") if isinstance(item.get("attributes"), dict) else {}
+    slot = item.get("slot") or item.get("category")
+    subcategory = item.get("subcategory") or attributes.get("subcategory") or ""
+    style_tags = attributes.get("style_tags") or []
+    type_tags = [item.get("category"), slot, subcategory, *style_tags]
+    return {
+        "item_id": item.get("item_id"),
+        "category": item.get("category"),
+        "subcategory": subcategory,
+        "slot": slot,
+        "label": item.get("category_label"),
+        "colors": attributes.get("colors") or [],
+        "material": attributes.get("material") or [],
+        "fit": attributes.get("fit") or "",
+        "pattern": attributes.get("pattern") or "",
+        "style_tags": style_tags,
+        "type_tags": [str(tag) for tag in type_tags if tag],
+        "favorite": bool(item.get("favorite")),
+        "quality_status": (item.get("quality") or {}).get("status"),
+        "preview_path": (item.get("assets") or {}).get("preview_path"),
+    }
+
+
+def _summarize_closet_group_item(item: dict[str, Any]) -> dict[str, Any]:
+    summary = _summarize_closet_item(item)
+    return {
+        "item_id": summary["item_id"],
+        "category": summary["category"],
+        "subcategory": summary["subcategory"],
+        "slot": summary["slot"],
+        "label": summary["label"],
+        "colors": summary["colors"][:4] if isinstance(summary["colors"], list) else [],
+        "style_tags": summary["style_tags"][:6] if isinstance(summary["style_tags"], list) else [],
+        "type_tags": summary["type_tags"][:8] if isinstance(summary["type_tags"], list) else [],
+        "quality_status": summary["quality_status"],
+    }
+
+
+def _summarize_closet_outfit(outfit: dict[str, Any]) -> dict[str, Any]:
+    return {
+        "outfit_id": outfit.get("outfit_id"),
+        "title": outfit.get("title"),
+        "scene_tags": outfit.get("scene_tags") or [],
+        "favorite_count": outfit.get("favorite_count") or 0,
+        "item_ids": outfit.get("item_ids") or [],
+        "items": [
+            {
+                "item_id": item.get("item_id"),
+                "category": item.get("category"),
+                "label": item.get("category_label"),
+            }
+            for item in (outfit.get("items") or [])[:6]
+            if isinstance(item, dict)
+        ],
+        "cover_path": outfit.get("layout_snapshot_path") or outfit.get("cover_path"),
+    }
+
+
+def _summarize_closet_group_outfit(outfit: dict[str, Any]) -> dict[str, Any]:
+    return {
+        "outfit_id": outfit.get("outfit_id"),
+        "title": outfit.get("title"),
+        "scene_tags": outfit.get("scene_tags") or [],
+        "favorite_count": outfit.get("favorite_count") or 0,
+        "item_ids": outfit.get("item_ids") or [],
+    }
+
+
 async def _post_openclaw_http(chat_url: str, request: dict[str, Any]) -> tuple[dict[str, Any], int]:
+    started_at = time.perf_counter()
+    context = request.get("context") if isinstance(request.get("context"), dict) else {}
+    LOGGER.info(
+        "openclaw_http_start session=%s url=%s timeout=%ss xhs_notes=%s",
+        request.get("session_id"),
+        chat_url,
+        _openclaw_timeout_for_request(request),
+        len(context.get("xhs_notes", [])) if isinstance(context.get("xhs_notes"), list) else 0,
+    )
     async with httpx.AsyncClient(timeout=_openclaw_timeout_for_request(request)) as client:
         try:
             response = await client.post(chat_url, json=request)
         except httpx.HTTPError as exc:
-            degraded = _degraded_inspiration_result_if_needed(
-                {"status": "failed", "error": {"code": "ai_unavailable", "message": "OpenClaw 穿搭师服务暂时不可用。"}},
-                request,
+            LOGGER.warning(
+                "openclaw_http_error session=%s error_type=%s elapsed=%.2fs",
+                request.get("session_id"),
+                exc.__class__.__name__,
+                time.perf_counter() - started_at,
             )
-            if degraded is not None:
-                return degraded, 200
+            if isinstance(exc, httpx.TimeoutException):
+                return _failed(
+                    "agent_timeout",
+                    "AI 穿搭师生成时间过长，请稍后重试。",
+                    504,
+                    evidence={"transport": "http", "error_type": exc.__class__.__name__, "error": str(exc)},
+                )
             return _failed(
                 "agent_runtime_unavailable",
                 "OpenClaw 穿搭师服务暂时不可用。",
@@ -270,24 +523,28 @@ async def _post_openclaw_http(chat_url: str, request: dict[str, Any]) -> tuple[d
         data = {"raw_text": response.text}
     if response.status_code >= 400:
         code = _runtime_error_code(response.status_code, data)
-        degraded = _degraded_inspiration_result_if_needed(
-            {"status": "failed", "error": {"code": "ai_unavailable", "message": _runtime_error_message(code)}},
-            request,
+        LOGGER.warning(
+            "openclaw_http_failed session=%s http_status=%s code=%s elapsed=%.2fs",
+            request.get("session_id"),
+            response.status_code,
+            code,
+            time.perf_counter() - started_at,
         )
-        if degraded is not None:
-            return degraded, 200
         return _failed(code, _runtime_error_message(code), _status_for_error_code(code), evidence={"transport": "http", "response": data})
     result = _normalize_agent_result(data, "openclaw_http", request)
-    degraded = _degraded_inspiration_result_if_needed(result, request)
-    if degraded is not None:
-        return degraded, 200
+    LOGGER.info(
+        "openclaw_http_done session=%s result_status=%s elapsed=%.2fs",
+        request.get("session_id"),
+        result.get("status"),
+        time.perf_counter() - started_at,
+    )
     return result, _status_for_error_code(result.get("error", {}).get("code", "")) if result.get("status") == "failed" else 200
 
 
 def _openclaw_timeout_for_request(request: dict[str, Any]) -> float:
     context = request.get("context") if isinstance(request.get("context"), dict) else {}
     if context.get("source") == "inspiration_tab":
-        return float(os.environ.get("STYLIST_INSPIRATION_OPENCLAW_TIMEOUT", "12"))
+        return float(os.environ.get("STYLIST_INSPIRATION_OPENCLAW_TIMEOUT", "240"))
     return float(os.environ.get("STYLIST_OPENCLAW_TIMEOUT", "45"))
 
 
@@ -342,11 +599,16 @@ def _normalize_agent_result(data: dict[str, Any], transport: str, request: dict[
     if "status" in data and "assistant_message" in data:
         result = dict(data)
     elif data.get("status") == "failed" and isinstance(data.get("error"), dict):
+        friendly_message = _friendly_stylist_error_message(str(data["error"].get("code") or ""))
         result = {
             "status": "failed",
             "mode": "error",
-            "assistant_message": str(data["error"].get("message") or "AI 穿搭师暂时不可用。"),
-            "error": data["error"],
+            "assistant_message": friendly_message,
+            "error": {
+                **data["error"],
+                "message": friendly_message,
+                "technical_message": str(data["error"].get("message") or ""),
+            },
             "recommended_items": [],
             "recommended_outfits": [],
             "rationale": [],
@@ -381,55 +643,223 @@ def _normalize_agent_result(data: dict[str, Any], transport: str, request: dict[
     result.setdefault("rationale", [])
     result.setdefault("evidence_sources", [])
     result.setdefault("next_actions", [])
+    result["assistant_message"] = _sanitize_assistant_message(result.get("assistant_message") or "")
     _merge_xhs_artifacts(result, request)
     result["quality_checks"] = _stylist_quality_checks(result, request)
     result["runtime"] = {"transport": transport, "agent_id": os.environ.get("STYLIST_OPENCLAW_AGENT_ID", STYLIST_AGENT_ID)}
     return result
 
 
+def _should_use_light_closet_ai(request: dict[str, Any]) -> bool:
+    if not _env_flag("ASIS_ENABLE_LIGHT_CLOSET_AI"):
+        return False
+    context = request.get("context") if isinstance(request.get("context"), dict) else {}
+    if not context.get("closet_only"):
+        return False
+    model_ref = _stylist_model_ref()
+    provider = _stylist_model_provider(model_ref)
+    if provider not in {"minimax", "minimax-portal", "minimax-cn", "minimax-portal-cn"}:
+        return False
+    return bool(_minimax_stylist_key(provider))
+
+
+async def _run_light_closet_ai(request: dict[str, Any]) -> dict[str, Any] | None:
+    context = request.get("context") if isinstance(request.get("context"), dict) else {}
+    provider = _stylist_model_provider(_stylist_model_ref())
+    key = _minimax_stylist_key(provider)
+    if not key:
+        return None
+    endpoint = _minimax_anthropic_messages_url(provider)
+    prompt = _light_closet_ai_prompt(request)
+    payload = {
+        "model": _minimax_model_id(_stylist_model_ref()),
+        "max_tokens": int(os.environ.get("ASIS_LIGHT_CLOSET_MAX_TOKENS", "900")),
+        "system": (
+            "你是 asis 的轻量衣橱穿搭师。只根据用户衣橱证据回答。"
+            "不要使用小红书、外部趋势或不存在的单品。只输出合法 JSON。"
+        ),
+        "messages": [{"role": "user", "content": prompt}],
+    }
+    headers = {
+        "Authorization": f"Bearer {key}",
+        "Content-Type": "application/json",
+        "anthropic-version": "2023-06-01",
+    }
+    try:
+        async with httpx.AsyncClient(timeout=float(os.environ.get("ASIS_LIGHT_CLOSET_TIMEOUT", "18"))) as client:
+            response = await client.post(endpoint, json=payload, headers=headers)
+            if response.status_code >= 400:
+                return None
+            data = response.json()
+    except (httpx.HTTPError, ValueError):
+        return None
+    text = _anthropic_message_text(data)
+    parsed = _parse_json_object(text)
+    if not parsed:
+        parsed = {
+            "status": "ok",
+            "mode": "light_closet_ai",
+            "assistant_message": text,
+            "recommended_items": [],
+            "recommended_outfits": [],
+            "rationale": [],
+            "evidence_sources": [],
+            "next_actions": [],
+        }
+    parsed.setdefault("status", "ok")
+    parsed.setdefault("mode", "light_closet_ai")
+    result = _normalize_agent_result(parsed, "light_closet_ai", request)
+    result["mode"] = "light_closet_ai"
+    return result
+
+
+def _light_closet_ai_prompt(request: dict[str, Any]) -> str:
+    context = request.get("context") if isinstance(request.get("context"), dict) else {}
+    data = {
+        "user_message": request.get("message") or "",
+        "closet_items": context.get("closet_items", [])[:16] if isinstance(context.get("closet_items"), list) else [],
+        "closet_outfits": context.get("closet_outfits", [])[:6] if isinstance(context.get("closet_outfits"), list) else [],
+        "closet_item_groups": _trim_context_groups(context.get("closet_item_groups"), 6, 2),
+        "closet_outfit_groups": _trim_context_groups(context.get("closet_outfit_groups"), 5, 2),
+    }
+    return (
+        "根据以下衣橱数据回答用户。要求：\n"
+        "1. assistant_message 用中文，最多 5 个短要点，给 1 套首选和最多 1 套备选。\n"
+        "2. assistant_message 不要出现 item_id/outfit_id/raw id/JSON/字段名。\n"
+        "3. recommended_items/recommended_outfits 可以填写真实 id；没有真实证据就留空。\n"
+        "4. 不要提小红书或外部参考。\n"
+        "5. 返回 JSON：status, mode, assistant_message, recommended_items, recommended_outfits, rationale, evidence_sources, next_actions, quality_checks。\n"
+        f"衣橱上下文：{json.dumps(data, ensure_ascii=False)}"
+    )
+
+
+def _trim_context_groups(value: Any, group_limit: int, item_limit: int) -> dict[str, Any]:
+    if not isinstance(value, dict):
+        return {}
+    groups: dict[str, Any] = {}
+    for index, (key, group_value) in enumerate(value.items()):
+        if index >= group_limit:
+            break
+        groups[str(key)] = group_value[:item_limit] if isinstance(group_value, list) else group_value
+    return groups
+
+
+def _trim_context_for_fast_style_answer(context: dict[str, Any]) -> None:
+    if isinstance(context.get("closet_items"), list):
+        context["closet_items"] = context["closet_items"][:CLOSET_ONLY_ITEM_LIMIT]
+    if isinstance(context.get("closet_outfits"), list):
+        context["closet_outfits"] = context["closet_outfits"][:CLOSET_ONLY_OUTFIT_LIMIT]
+    context["closet_item_groups"] = _trim_context_groups(context.get("closet_item_groups"), 5, 2)
+    context["closet_outfit_groups"] = _trim_context_groups(context.get("closet_outfit_groups"), 4, 2)
+
+
+def _minimax_stylist_key(provider: str) -> str | None:
+    if provider in {"minimax-portal", "minimax-portal-cn"}:
+        return (os.environ.get("MINIMAX_OAUTH_TOKEN") or os.environ.get("MINIMAX_API_KEY") or "").strip() or None
+    return (os.environ.get("MINIMAX_API_KEY") or os.environ.get("MINIMAX_OAUTH_TOKEN") or "").strip() or None
+
+
+def _minimax_anthropic_messages_url(provider: str) -> str:
+    host = "https://api.minimax.io" if provider in {"minimax", "minimax-cn"} else "https://api.minimaxi.com"
+    return os.environ.get("ASIS_LIGHT_CLOSET_MODEL_URL", f"{host}/anthropic/v1/messages")
+
+
+def _minimax_model_id(model_ref: str) -> str:
+    return (model_ref.rsplit("/", 1)[-1] if model_ref else "MiniMax-M3").strip() or "MiniMax-M3"
+
+
+def _anthropic_message_text(data: dict[str, Any]) -> str:
+    content = data.get("content") if isinstance(data, dict) else None
+    if not isinstance(content, list):
+        return ""
+    parts = [str(item.get("text") or "") for item in content if isinstance(item, dict) and item.get("type") == "text"]
+    return "\n".join(part for part in parts if part).strip()
+
+
+def _sanitize_assistant_message(text: str) -> str:
+    value = str(text or "")
+    value = re.sub(r"\s*[（(]\s*(?:w|item|outfit)_[A-Za-z0-9_:-]+(?:\s*[,，、][^）)]{0,18})?\s*[）)]", "", value)
+    value = re.sub(r"\b(?:w|item|outfit)_[A-Za-z0-9_:-]+\b", "这套已保存搭配", value)
+    value = re.sub(r"[ \t]{2,}", " ", value)
+    return value.strip()
+
+
 async def _attach_xhs_inspiration(request: dict[str, Any]) -> None:
     context = request.get("context") if isinstance(request.get("context"), dict) else {}
-    if context.get("source") != "inspiration_tab" or not _should_invoke_xhs_skill(request):
+    should_invoke = _should_invoke_xhs_skill(request)
+    if context.get("source") != "inspiration_tab" or not should_invoke:
+        LOGGER.info(
+            "xhs_skip session=%s source=%s should_invoke=%s",
+            request.get("session_id"),
+            context.get("source"),
+            should_invoke,
+        )
         return
+    started_at = time.perf_counter()
     message = _effective_user_message(request)
+    LOGGER.info("xhs_start session=%s message=%s", request.get("session_id"), message[:120])
     try:
-        artifacts = await asyncio.wait_for(_fetch_xhs_inspiration(message), timeout=float(os.environ.get("ASIS_XHS_TOTAL_TIMEOUT", "45")))
+        artifacts = await asyncio.wait_for(_fetch_xhs_inspiration(message), timeout=float(os.environ.get("ASIS_XHS_TOTAL_TIMEOUT", "10")))
     except asyncio.TimeoutError:
         query = _xhs_query_from_message(message)
         artifacts = {
             "query": query,
             "notes": [],
             "tool_steps": [
-                _xhs_tool_step("xhs", "调用小红书灵感 skill", "failed", "小红书推荐暂时超时，先给你可执行建议"),
-                _xhs_tool_step("read", "读取笔记卡片", "failed", "这次没有拿到可用笔记卡片"),
-                _xhs_tool_step("filter", "筛选相关性", "failed", "没有可筛选的笔记"),
-                _xhs_tool_step("style", "整理穿搭建议", "done", "已改用通用穿搭逻辑"),
+                _xhs_tool_step("xhs", "找小红书参考", "failed", "小红书推荐暂时超时"),
+                _xhs_tool_step("read", "读取参考卡片", "failed", "这次没有拿到可用笔记卡片"),
+                _xhs_tool_step("filter", "过滤不相关内容", "failed", "没有可筛选的笔记"),
+                _xhs_tool_step("agent", "交给 AI 穿搭师", "pending", "由 AI 根据当前问题和已有上下文回答"),
             ],
             "evidence_sources": [],
             "unavailable_reason": "xhs_timeout",
             "unavailable_detail": "小红书检索超时，暂时没有拿到可用笔记卡片",
         }
+        LOGGER.warning(
+            "xhs_timeout session=%s query=%s elapsed=%.2fs",
+            request.get("session_id"),
+            query,
+            time.perf_counter() - started_at,
+        )
+    notes = artifacts.get("notes") if isinstance(artifacts.get("notes"), list) else []
+    aligned_notes = _scene_aligned_xhs_notes(notes, message) if notes else []
     context["xhs_query"] = artifacts["query"]
-    context["xhs_notes"] = artifacts["notes"]
+    context["xhs_notes"] = aligned_notes
     context["xhs_tool_steps"] = artifacts["tool_steps"]
-    context["xhs_evidence_sources"] = artifacts["evidence_sources"]
+    context["xhs_evidence_sources"] = (
+        [{"type": "xiaohongshu", "label": artifacts["evidence_sources"][0]["label"], "count": len(aligned_notes)}]
+        if aligned_notes and isinstance(artifacts.get("evidence_sources"), list) and artifacts["evidence_sources"]
+        else []
+    )
     context["xhs_unavailable_reason"] = artifacts.get("unavailable_reason")
     context["xhs_unavailable_detail"] = artifacts.get("unavailable_detail")
+    if not aligned_notes:
+        _trim_context_for_fast_style_answer(context)
     request["context"] = context
+    LOGGER.info(
+        "xhs_done session=%s query=%s notes=%s aligned_notes=%s reason=%s elapsed=%.2fs",
+        request.get("session_id"),
+        artifacts.get("query"),
+        len(notes),
+        len(aligned_notes),
+        artifacts.get("unavailable_reason"),
+        time.perf_counter() - started_at,
+    )
 
 
 async def _fetch_xhs_inspiration(message: str) -> dict[str, Any]:
-    query = _xhs_query_from_message(message)
-    strategy = _xhs_search_strategy_summary(message)
+    plan = await _xhs_search_plan(message)
+    query = plan["queries"][0]
+    strategy = _xhs_search_strategy_summary(message, plan)
     steps = [
-        _xhs_tool_step("xhs", "调用小红书灵感 skill", "running", f"{strategy}；首轮关键词：{query}"),
-        _xhs_tool_step("read", "读取笔记卡片", "pending", "提取标题、封面、作者和互动数"),
-        _xhs_tool_step("filter", "筛选相关性", "pending", "多轮检索后只保留和场景高度相关的穿搭笔记"),
-        _xhs_tool_step("style", "整理穿搭建议", "pending", "把笔记信号转成可执行搭配"),
+        _xhs_tool_step("xhs", "找小红书参考", "running", f"{strategy}；首轮关键词：{query}"),
+        _xhs_tool_step("read", "读取参考卡片", "pending", "提取标题、封面、作者和互动数"),
+        _xhs_tool_step("filter", "过滤不相关内容", "pending", "多轮检索后只保留和场景高度相关的穿搭笔记"),
+        _xhs_tool_step("agent", "交给 AI 穿搭师", "pending", "把参考信号交给 AI 生成回答"),
     ]
     base_url = _xhs_api_base_url()
     if not base_url:
-        steps[0] = _xhs_tool_step("xhs", "调用小红书灵感 skill", "failed", f"{strategy}；小红书 API 还没有配置")
+        steps[0] = _xhs_tool_step("xhs", "找小红书参考", "failed", f"{strategy}；小红书 API 还没有配置")
         return {
             "query": query,
             "notes": [],
@@ -439,22 +869,22 @@ async def _fetch_xhs_inspiration(message: str) -> dict[str, Any]:
             "unavailable_detail": "小红书 API 还没有配置",
         }
 
-    timeout = httpx.Timeout(float(os.environ.get("ASIS_XHS_TIMEOUT", "30")))
-    search_timeout = float(os.environ.get("ASIS_XHS_SEARCH_TIMEOUT", "24"))
+    timeout = httpx.Timeout(float(os.environ.get("ASIS_XHS_TIMEOUT", "9")))
+    search_timeout = float(os.environ.get("ASIS_XHS_SEARCH_TIMEOUT", "6"))
     async with httpx.AsyncClient(base_url=base_url, timeout=timeout) as client:
         login_status: dict[str, Any] | None = None
         try:
-            login_response = await client.get("/api/v1/login/status", timeout=float(os.environ.get("ASIS_XHS_LOGIN_TIMEOUT", "8")))
+            login_response = await client.get("/api/v1/login/status", timeout=float(os.environ.get("ASIS_XHS_LOGIN_TIMEOUT", "4")))
             login_status = login_response.json() if login_response.headers.get("content-type", "").startswith("application/json") else None
         except (httpx.HTTPError, ValueError):
             login_status = None
         login_data = login_status.get("data") if isinstance(login_status, dict) else None
         if isinstance(login_data, dict) and login_data.get("is_logged_in") is False:
             unavailable_detail = _xhs_unavailable_detail(login_status, "小红书侧边服务未登录，请先扫码登录后重试")
-            steps[0] = _xhs_tool_step("xhs", "调用小红书灵感 skill", "failed", f"{strategy}；{unavailable_detail}")
-            steps[1] = _xhs_tool_step("read", "读取笔记卡片", "failed", "账号态未登录，没有读取笔记卡片")
-            steps[2] = _xhs_tool_step("filter", "筛选相关性", "failed", "没有可筛选的笔记")
-            steps[3] = _xhs_tool_step("style", "整理穿搭建议", "done", "已改用通用穿搭逻辑")
+            steps[0] = _xhs_tool_step("xhs", "找小红书参考", "failed", f"{strategy}；{unavailable_detail}")
+            steps[1] = _xhs_tool_step("read", "读取参考卡片", "failed", "账号态未登录，没有读取参考卡片")
+            steps[2] = _xhs_tool_step("filter", "过滤不相关内容", "failed", "没有可筛选的笔记")
+            steps[3] = _xhs_tool_step("agent", "交给 AI 穿搭师", "pending", "由 AI 根据当前问题和已有上下文回答")
             artifacts = {
                 "query": query,
                 "notes": [],
@@ -464,14 +894,21 @@ async def _fetch_xhs_inspiration(message: str) -> dict[str, Any]:
                 "unavailable_detail": unavailable_detail,
             }
             return await _attach_public_xhs_fallback(message, artifacts)
-        notes, search_meta, search_error = await _search_xhs_notes_until_enough(client, message, search_timeout)
+        notes, search_meta, search_error = await _search_xhs_notes_until_enough(client, message, search_timeout, plan)
+        if notes:
+            detail_timeout = float(os.environ.get("ASIS_XHS_DETAIL_TOTAL_TIMEOUT", "3"))
+            detail_timed_out = False
+            try:
+                notes = await asyncio.wait_for(_enrich_xhs_notes_with_details(client, notes), timeout=detail_timeout)
+            except asyncio.TimeoutError:
+                detail_timed_out = True
         source_label = "小红书搜索"
         if search_error and not search_meta:
             unavailable_detail = _xhs_unavailable_detail(login_status, search_error or "推荐/搜索请求失败")
-            steps[0] = _xhs_tool_step("xhs", "调用小红书灵感 skill", "failed", f"{strategy}；{unavailable_detail}")
-            steps[1] = _xhs_tool_step("read", "读取笔记卡片", "failed", "搜索未完成，没有读取到可靠笔记")
-            steps[2] = _xhs_tool_step("filter", "筛选相关性", "failed", "搜索未完成，无法筛选可靠笔记")
-            steps[3] = _xhs_tool_step("style", "整理穿搭建议", "done", "已改用通用穿搭逻辑")
+            steps[0] = _xhs_tool_step("xhs", "找小红书参考", "failed", f"{strategy}；{unavailable_detail}")
+            steps[1] = _xhs_tool_step("read", "读取参考卡片", "failed", "搜索未完成，没有读取到可靠笔记")
+            steps[2] = _xhs_tool_step("filter", "过滤不相关内容", "failed", "搜索未完成，无法筛选可靠笔记")
+            steps[3] = _xhs_tool_step("agent", "交给 AI 穿搭师", "pending", "由 AI 根据当前问题和已有上下文回答")
             artifacts = {
                 "query": query,
                 "notes": [],
@@ -483,9 +920,9 @@ async def _fetch_xhs_inspiration(message: str) -> dict[str, Any]:
             return await _attach_public_xhs_fallback(message, artifacts)
     if not notes:
         unavailable_detail = _xhs_unavailable_detail(login_status, "多轮检索后，没有拿到足够相关的可用穿搭笔记")
-        steps[0] = _xhs_tool_step("xhs", "调用小红书灵感 skill", "failed", _xhs_search_step_detail(message, search_meta) if search_meta else f"{strategy}；{unavailable_detail}")
-        steps[1] = _xhs_tool_step("read", "读取笔记卡片", "failed", "没有可展示的笔记卡片")
-        steps[2] = _xhs_tool_step("filter", "筛选相关性", "failed", "多轮搜索结果不足，不把低相关笔记作为依据")
+        steps[0] = _xhs_tool_step("xhs", "找小红书参考", "failed", _xhs_search_step_detail(message, search_meta, plan) if search_meta else f"{strategy}；{unavailable_detail}")
+        steps[1] = _xhs_tool_step("read", "读取参考卡片", "failed", "没有可展示的笔记卡片")
+        steps[2] = _xhs_tool_step("filter", "过滤不相关内容", "failed", "多轮搜索结果不足，不把低相关笔记作为依据")
         artifacts = {
             "query": query,
             "notes": [],
@@ -497,20 +934,23 @@ async def _fetch_xhs_inspiration(message: str) -> dict[str, Any]:
         return await _attach_public_xhs_fallback(message, artifacts)
 
     steps = [
-        _xhs_tool_step("xhs", "调用小红书灵感 skill", "done", _xhs_search_step_detail(message, search_meta)),
-        _xhs_tool_step("read", "读取笔记卡片", "done", "已提取封面、标题、作者和互动数据"),
-        _xhs_tool_step("filter", "筛选相关性", "done", _xhs_filter_step_detail(notes, message)),
-        _xhs_tool_step("style", "整理穿搭建议", "done", "已作为回答依据"),
+        _xhs_tool_step("xhs", "找小红书参考", "done", _xhs_search_step_detail(message, search_meta, plan)),
+        _xhs_tool_step("read", "读取参考卡片", "done", "已提取封面、标题、作者和互动数据；正文详情较慢时不阻塞推荐" if locals().get("detail_timed_out") else "已提取封面、标题、作者和互动数据"),
+        _xhs_tool_step("filter", "过滤不相关内容", "done", _xhs_filter_step_detail(notes, message)),
+        _xhs_tool_step("agent", "交给 AI 穿搭师", "done", "已作为 AI 回答上下文"),
     ]
     used_queries = [item["query"] for item in search_meta if item.get("accepted_count")]
     evidence = [{"type": "xiaohongshu", "label": f"{source_label}：{' / '.join(used_queries[:3]) or query}", "count": len(notes)}]
     return {"query": query, "queries": search_meta, "notes": notes, "tool_steps": steps, "evidence_sources": evidence, "unavailable_reason": None, "unavailable_detail": None}
 
 
-async def _search_xhs_notes_until_enough(client: httpx.AsyncClient, message: str, search_timeout: float) -> tuple[list[dict[str, Any]], list[dict[str, Any]], str | None]:
-    max_rounds = max(1, int(os.environ.get("ASIS_XHS_SEARCH_ROUNDS", "4")))
-    max_candidates = max(12, int(os.environ.get("ASIS_XHS_MAX_CANDIDATES", "36")))
-    queries = _xhs_query_candidates(message)[:max_rounds]
+async def _search_xhs_notes_until_enough(
+    client: httpx.AsyncClient, message: str, search_timeout: float, plan: dict[str, Any] | None = None
+) -> tuple[list[dict[str, Any]], list[dict[str, Any]], str | None]:
+    max_rounds = max(1, int(os.environ.get("ASIS_XHS_SEARCH_ROUNDS", "2")))
+    max_candidates = max(8, int(os.environ.get("ASIS_XHS_MAX_CANDIDATES", "24")))
+    search_plan = plan or _fallback_xhs_search_plan(message)
+    queries = [str(query or "").strip() for query in search_plan.get("queries", []) if str(query or "").strip()][:max_rounds]
     all_notes: dict[str, dict[str, Any]] = {}
     search_meta: list[dict[str, Any]] = []
     last_error: str | None = None
@@ -536,11 +976,13 @@ async def _search_xhs_notes_until_enough(client: httpx.AsyncClient, message: str
     ranked = _rank_xhs_notes_for_answer(list(all_notes.values()), message)
     if _xhs_has_enough_answer_evidence(ranked, message):
         return ranked[:6], search_meta, None
+    if ranked:
+        return ranked[:6], search_meta, None
     return [], search_meta, last_error
 
 
 async def _attach_public_xhs_fallback(message: str, artifacts: dict[str, Any]) -> dict[str, Any]:
-    if _env_flag("ASIS_XHS_DISABLE_PUBLIC_FALLBACK"):
+    if not _env_flag("ASIS_XHS_ENABLE_PUBLIC_FALLBACK"):
         return artifacts
     query = str(artifacts.get("query") or _xhs_query_from_message(message))
     try:
@@ -669,6 +1111,8 @@ def _xhs_tool_step(step_id: str, title: str, status: str, detail: str) -> dict[s
 def _effective_user_message(request: dict[str, Any]) -> str:
     current = str(request.get("message") or "").strip()
     context = request.get("context") if isinstance(request.get("context"), dict) else {}
+    if not _message_needs_conversation_context(current):
+        return current
     conversation = context.get("conversation") if isinstance(context.get("conversation"), list) else []
     user_turns: list[str] = []
     for item in conversation[-6:]:
@@ -679,21 +1123,47 @@ def _effective_user_message(request: dict[str, Any]) -> str:
             user_turns.append(content)
     if current and current not in user_turns:
         user_turns.append(current)
-    return "；".join(user_turns[-3:]) or current
+    return "；".join(user_turns[-2:]) or current
+
+
+def _message_needs_conversation_context(message: str) -> bool:
+    text = str(message or "").strip()
+    if not text:
+        return False
+    explicit_followup_markers = ["继续", "刚才", "上一", "前面", "这个", "那", "它", "这套", "那套", "还有", "另外"]
+    if any(marker in text for marker in explicit_followup_markers):
+        return True
+    if _message_has_primary_scene(text):
+        return False
+    followup_markers = [
+        "如果", "换成", "调整", "改成", "还是", "下雨", "不想", "不要", "显瘦", "显白",
+    ]
+    if any(marker in text for marker in followup_markers):
+        return True
+    return len(text) <= 12 and any(token in text for token in ["呢", "吗", "怎么", "可以"])
+
+
+def _message_has_primary_scene(message: str) -> bool:
+    text = str(message or "")
+    scenes = [
+        "上班", "通勤", "面试", "客户", "汇报", "会议", "约会", "聚餐", "看展", "旅行", "上课", "校园",
+        "生日", "派对", "演唱会", "音乐节", "婚礼", "宴会", "运动", "户外", "居家", "返校",
+    ]
+    return any(scene in text for scene in scenes)
 
 
 def _should_invoke_xhs_skill(request: dict[str, Any]) -> bool:
     context = request.get("context") if isinstance(request.get("context"), dict) else {}
     requested = context.get("requested_skills") if isinstance(context.get("requested_skills"), list) else []
-    if "xhs-trend-research" in {str(skill) for skill in requested}:
-        return True
-    message = _effective_user_message(request)
+    message = str(request.get("message") or context.get("current_query") or "").strip()
     if _message_explicitly_disables_xhs(message):
         return False
-    if _message_matches_xhs_intent(message):
+    if "xhs-trend-research" in {str(skill) for skill in requested}:
         return True
     if context.get("xiaohongshu_preferred") is False:
         return False
+    if _message_matches_xhs_intent(message):
+        return True
     return False
 
 
@@ -705,58 +1175,16 @@ def _message_explicitly_disables_xhs(message: str) -> bool:
 def _message_matches_xhs_intent(message: str) -> bool:
     normalized = message.lower()
     xhs_terms = ["小红书", "红书", "xhs", "rednote", "笔记", "同款", "平替", "趋势", "流行", "博主", "种草", "参考", "灵感"]
-    fashion_terms = [
-        "穿搭",
-        "搭配",
-        "怎么穿",
-        "穿什么",
-        "怎么配",
-        "ootd",
-        "outfit",
-        "look",
-        "style",
-        "衣服",
-        "上衣",
-        "下装",
-        "裤",
-        "裙",
-        "鞋",
-        "包",
-        "外套",
-        "大衣",
-        "衬衫",
-        "针织",
-        "卫衣",
-        "西装",
-        "连衣裙",
-        "半身裙",
-        "通勤",
-        "上班",
-        "面试",
-        "约会",
-        "聚餐",
-        "看展",
-        "旅行",
-        "上课",
-        "校园",
-        "拍照",
-        "对镜",
-        "挡脸",
-        "场景拍",
-        "显瘦",
-        "显高",
-        "显白",
-        "配色",
-        "色彩",
-        "风格",
-        "氛围感",
-        "松弛",
-        "韩系",
-        "法式",
-        "日系",
-        "美式",
+    if any(token in normalized for token in xhs_terms):
+        return True
+    outfit_terms = [
+        "穿", "搭", "上班", "通勤", "面试", "客户", "会议", "约会", "聚餐", "看展", "旅行", "上课", "校园",
+        "生日", "派对", "party", "演唱会", "音乐节", "婚礼", "宴会", "运动", "户外", "居家",
+        "鞋", "包", "帽", "裙", "裤", "衬衫", "针织", "西装", "外套", "配饰",
+        "显瘦", "显白", "出片", "拍照", "ootd", "氛围感", "风格", "颜色", "身材", "体型",
+        "雨", "冷", "热", "降温", "升温", "天气", "防水", "防滑",
     ]
-    return any(token in normalized for token in [*xhs_terms, *fashion_terms])
+    return any(token in normalized for token in outfit_terms)
 
 
 def _xhs_query_from_message(message: str) -> str:
@@ -782,8 +1210,16 @@ def _xhs_query_from_message(message: str) -> str:
         seeds.append("校园")
     if any(token in cleaned for token in ["旅行", "旅游", "出游"]):
         seeds.append("旅行")
+    if any(token in cleaned for token in ["生日", "派对", "party", "Party"]):
+        seeds.append("生日派对")
+    if any(token in cleaned for token in ["婚礼", "宴会", "年会"]):
+        seeds.append("宴会")
+    if any(token in cleaned for token in ["演唱会", "音乐节", "live", "Live", "蹦迪"]):
+        seeds.append("演唱会")
     if any(token in cleaned for token in ["拍照", "对镜", "挡脸", "场景拍"]):
         seeds.append("拍照")
+    if "出片" in cleaned:
+        seeds.append("出片")
     if "下雨" in cleaned or "雨" in cleaned:
         seeds.append("雨天")
     if "显瘦" in cleaned:
@@ -794,7 +1230,10 @@ def _xhs_query_from_message(message: str) -> str:
         seeds.append("显白")
     if "上海" in cleaned:
         seeds.append("上海")
-    style_keywords = ["韩系", "法式", "日系", "美式", "松弛", "平替", "小个子", "梨形", "通勤风", "学院风"]
+    budget_match = re.search(r"(?:预算)?\s*(\d{2,5})\s*(?:以内|内|以下|元)?", cleaned)
+    if "预算" in cleaned and budget_match:
+        seeds.append(f"预算{budget_match.group(1)}")
+    style_keywords = ["韩系", "法式", "日系", "美式", "松弛", "平替", "小个子", "梨形", "通勤风", "学院风", "甜辣", "辣妹", "摇滚"]
     seeds.extend([token for token in style_keywords if token in cleaned])
     seeds.append("穿搭")
     return " ".join(dict.fromkeys(seeds))[:80]
@@ -819,8 +1258,19 @@ def _xhs_broad_query_from_message(message: str) -> str:
         seeds.append("校园")
     if any(token in cleaned for token in ["旅行", "旅游", "出游"]):
         seeds.append("旅行")
+    if any(token in cleaned for token in ["生日", "派对", "party", "Party"]):
+        seeds.append("生日派对")
+    if any(token in cleaned for token in ["婚礼", "宴会", "年会"]):
+        seeds.append("宴会")
+    if any(token in cleaned for token in ["演唱会", "音乐节", "live", "Live", "蹦迪"]):
+        seeds.append("演唱会")
     if any(token in cleaned for token in ["拍照", "对镜", "挡脸", "场景拍"]):
         seeds.append("拍照")
+    if "出片" in cleaned:
+        seeds.append("出片")
+    budget_match = re.search(r"(?:预算)?\s*(\d{2,5})\s*(?:以内|内|以下|元)?", cleaned)
+    if "预算" in cleaned and budget_match:
+        seeds.append(f"预算{budget_match.group(1)}")
     if any(token in cleaned for token in ["雨", "下雨", "小雨"]):
         seeds.append("雨天")
     if len(seeds) == 1:
@@ -829,32 +1279,261 @@ def _xhs_broad_query_from_message(message: str) -> str:
 
 
 def _xhs_query_candidates(message: str) -> list[str]:
-    cleaned = " ".join(str(message or "").replace("\n", " ").split())
-    primary = _xhs_query_from_message(cleaned)
-    broad = _xhs_broad_query_from_message(cleaned)
-    candidates = [primary, broad]
-    scenario_terms: list[str] = []
-    if any(token in cleaned for token in ["客户", "会面", "会议", "商务", "正式", "稳"]):
-        scenario_terms.extend(["客户会面 通勤 穿搭", "商务通勤 穿搭", "职场正式 不老气 穿搭"])
-    if "面试" in cleaned:
-        scenario_terms.extend(["面试 通勤 穿搭", "正式 不老气 穿搭"])
-    if any(token in cleaned for token in ["聚餐", "饭局", "下班"]):
-        scenario_terms.extend(["通勤转聚餐 穿搭", "下班聚餐 穿搭"])
-    if any(token in cleaned for token in ["约会", "见面"]):
-        scenario_terms.extend(["约会 显气质 穿搭", "温柔 约会 穿搭"])
-    if any(token in cleaned for token in ["雨", "下雨", "小雨"]):
-        scenario_terms.extend(["雨天 通勤 穿搭", "雨天 防滑 穿搭"])
-    if any(token in cleaned for token in ["看展", "美术馆", "拍照", "对镜", "挡脸"]):
-        scenario_terms.extend(["拍照 出片 穿搭", "看展 拍照 穿搭"])
-    candidates.extend(scenario_terms)
-    candidates.append("通勤 ootd 穿搭")
-    return [query for query in dict.fromkeys(query.strip() for query in candidates) if query]
+    return [str(query) for query in _fallback_xhs_search_plan(message)["queries"]]
 
 
-def _xhs_search_strategy_summary(message: str) -> str:
+async def _xhs_search_plan(message: str) -> dict[str, Any]:
+    fallback = _fallback_xhs_search_plan(message)
+    ai_plan = await _ai_xhs_search_plan(message)
+    if not ai_plan:
+        return fallback
+    queries = _sanitize_xhs_queries(ai_plan.get("queries"), fallback["queries"], message)
+    if not queries:
+        return fallback
+    plan = {**fallback, **{key: value for key, value in ai_plan.items() if value not in (None, "", [])}}
+    plan["queries"] = queries
+    plan["planner"] = "ai"
+    return plan
+
+
+async def _ai_xhs_search_plan(message: str) -> dict[str, Any] | None:
+    if _env_flag("ASIS_XHS_DISABLE_AI_PLANNER"):
+        return None
+    base_url = _openai_compatible_base_url()
+    api_key = _openai_compatible_api_key(base_url)
+    if not base_url or not api_key:
+        return None
+    prompt = (
+        "你是小红书穿搭搜索规划器。只返回 JSON，不要解释。\n"
+        "目标：根据当前用户问题和必要的历史上下文，决定是否需要小红书检索，并生成 0-4 条完整、具体、互补的中文搜索词。\n"
+        "规则：\n"
+        "1. 搜索词必须围绕最后一轮用户真实需求；如果最后一轮是追问，才合并历史场景。\n"
+        "2. 不要把 query 拆成孤立关键词分别搜索；每条 query 都要能独立表达场景、目标和关键约束。\n"
+        "3. 保留预算、天气、出片、显白、显瘦、正式度、地点、对象等约束。\n"
+        "4. 如果问题不需要外部灵感，返回 {\"queries\": []}。\n"
+        "JSON 字段：queries, intent, scenario, goals, constraints, negative_signals。\n"
+        f"用户问题：{message}"
+    )
+    payload = {
+        "model": os.environ.get("ASIS_XHS_PLANNER_MODEL") or "gpt-4o-mini",
+        "messages": [
+            {"role": "system", "content": "你只输出合法 JSON。"},
+            {"role": "user", "content": prompt},
+        ],
+        "temperature": 0.1,
+        "max_tokens": 420,
+    }
+    headers = {"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"}
+    try:
+        async with httpx.AsyncClient(timeout=float(os.environ.get("ASIS_XHS_AI_PLANNER_TIMEOUT", "5"))) as client:
+            response = await client.post(f"{base_url.rstrip('/')}/chat/completions", json=payload, headers=headers)
+            if response.status_code >= 400:
+                return None
+            data = response.json()
+    except (httpx.HTTPError, ValueError):
+        return None
+    content = ""
+    try:
+        content = str(data["choices"][0]["message"]["content"] or "")
+    except (KeyError, IndexError, TypeError):
+        return None
+    parsed = _parse_json_object(content)
+    return parsed if isinstance(parsed, dict) else None
+
+
+def _fallback_xhs_search_plan(message: str) -> dict[str, Any]:
+    cleaned = _normalize_search_text(message)
+    facets = _extract_xhs_search_facets(cleaned)
+    base = _compact_xhs_search_query(cleaned)
+    canonical = _xhs_query_from_message(cleaned)
+    primary_parts = [base]
+    if "穿搭" not in base and not any(token in base.lower() for token in ["ootd", "look"]):
+        primary_parts.append("穿搭")
+    primary = _clean_xhs_search_query(" ".join(primary_parts))
+    scenario = " ".join(facets["scenario"][:2])
+    goals = " ".join(facets["goals"][:3])
+    constraints = " ".join(facets["constraints"][:3])
+    styles = " ".join(facets["styles"][:2])
+    candidates = [
+        primary,
+        canonical,
+        _clean_xhs_search_query(" ".join(part for part in [scenario, goals, constraints, "穿搭"] if part)),
+        _clean_xhs_search_query(" ".join(part for part in [scenario, styles, goals, "ootd 穿搭"] if part)),
+        _xhs_broad_query_from_message(cleaned),
+    ]
+    queries = _sanitize_xhs_queries(candidates, [_xhs_query_from_message(cleaned)], cleaned)
+    return {
+        "planner": "fallback",
+        "intent": "fashion_inspiration",
+        "scenario": facets["scenario"],
+        "goals": facets["goals"],
+        "constraints": facets["constraints"],
+        "styles": facets["styles"],
+        "negative_signals": facets["negative_signals"],
+        "queries": queries,
+    }
+
+
+def _normalize_search_text(message: str) -> str:
+    text = " ".join(str(message or "").replace("\n", " ").split())
+    text = re.sub(r"(帮我|请|推荐|建议|看看小红书上怎么说|看小红书上怎么说|小红书|红书|笔记参考|参考)", " ", text)
+    text = _strip_negative_scene_phrases(text)
+    return " ".join(text.split()).strip(" ：:，,。.?？")
+
+
+def _strip_negative_scene_phrases(text: str) -> str:
+    value = str(text or "")
+    scene_words = "演唱会|音乐节|派对|生日|面试|通勤|约会|男装|男生|女装|女生|婚礼|宴会|旅行|看展"
+    return re.sub(rf"(?:不要|不用|不看|不想|别用|别|不是|非)[\u4e00-\u9fffA-Za-z0-9]{{0,10}}(?:{scene_words})[\u4e00-\u9fffA-Za-z0-9]{{0,8}}", " ", value)
+
+
+def _compact_xhs_search_query(text: str) -> str:
+    cleaned = re.sub(r"(怎么穿|穿什么|怎么搭|如何搭|可以吗|是什么关系|关系是什么)", " ", text)
+    cleaned = re.sub(r"\s+", " ", cleaned).strip(" ：:，,。.?？")
+    return cleaned[:42] or _xhs_query_from_message(text)
+
+
+def _clean_xhs_search_query(query: str) -> str:
+    value = " ".join(str(query or "").replace("：", " ").replace("，", " ").replace(",", " ").split())
+    return value[:80]
+
+
+def _sanitize_xhs_queries(raw_queries: Any, fallback: list[str], message: str = "") -> list[str]:
+    values = raw_queries if isinstance(raw_queries, list) else []
+    queries: list[str] = []
+    for item in values:
+        query = _clean_xhs_search_query(str(item or ""))
+        if len(query) < 2:
+            continue
+        if _xhs_query_too_generic(query, message):
+            continue
+        if query not in queries:
+            queries.append(query)
+    if not queries:
+        queries = [_clean_xhs_search_query(query) for query in fallback if _clean_xhs_search_query(query)]
+    return _apply_xhs_gender_guard(list(dict.fromkeys(queries))[:4], message)
+
+
+def _xhs_query_too_generic(query: str, message: str) -> bool:
+    value = _clean_xhs_search_query(query).lower()
+    generic = {"穿搭", "ootd", "ootd 穿搭", "女生穿搭", "女装穿搭", "穿搭 女生穿搭"}
+    if value not in generic:
+        return False
+    return _message_has_primary_scene(message) or any(token in str(message or "") for token in ["显白", "显瘦", "出片", "预算"])
+
+
+def _apply_xhs_gender_guard(queries: list[str], message: str) -> list[str]:
+    profile = _xhs_gender_profile(message)
+    guarded: list[str] = []
+    for query in queries:
+        value = _clean_xhs_search_query(query)
+        if not value:
+            continue
+        if profile["target"] == "female" and not _contains_any(value.lower(), profile["female_tokens"]):
+            value = _clean_xhs_search_query(f"{value} 女生穿搭")
+        elif profile["target"] == "male" and not _contains_any(value.lower(), profile["male_tokens"]):
+            value = _clean_xhs_search_query(f"{value} 男生穿搭")
+        if value not in guarded:
+            guarded.append(value)
+    return guarded[:4]
+
+
+def _extract_xhs_search_facets(text: str) -> dict[str, list[str]]:
+    value = str(text or "")
+    fashion_stop = {
+        "穿搭",
+        "搭配",
+        "推荐",
+        "帮我",
+        "怎么穿",
+        "怎么搭",
+        "参考",
+        "小红书",
+        "红书",
+        "笔记",
+        "目前",
+        "这个",
+        "关系",
+    }
+    scenario: list[str] = []
+    goals: list[str] = []
+    constraints: list[str] = []
+    styles: list[str] = []
+    negative_signals: list[str] = []
+    for match in re.finditer(r"预算\s*\d{2,5}\s*(?:以内|内|以下|元)?|\d{2,5}\s*(?:以内|内|以下|元)", value):
+        constraints.append("".join(match.group(0).split()))
+    for token in re.split(r"[\s：:，,。.!！?？、/]+", value):
+        token = token.strip()
+        if not token or token in fashion_stop:
+            continue
+        if len(token) > 14:
+            for sub in re.findall(r"[\u4e00-\u9fffA-Za-z0-9]{2,8}", token):
+                if sub not in fashion_stop:
+                    scenario.append(sub)
+            continue
+        if any(key in token for key in ["显白", "显瘦", "显高", "出片", "拍照", "氛围", "气质", "松弛", "稳", "年轻"]):
+            goals.append(token)
+        elif any(key in token for key in ["预算", "以内", "下雨", "小雨", "雨天", "防水", "不想", "不要", "低跟", "平底"]):
+            constraints.append(token)
+        elif any(key in token for key in ["韩系", "法式", "日系", "美式", "甜辣", "辣妹", "学院", "通勤风", "摇滚", "温柔"]):
+            styles.append(token)
+        elif any(key in token for key in ["宝宝", "喂养", "家常菜", "美甲", "卷发", "彩妆"]):
+            negative_signals.append(token)
+        else:
+            scenario.append(token)
+    return {
+        "scenario": list(dict.fromkeys(scenario))[:4],
+        "goals": list(dict.fromkeys(goals))[:4],
+        "constraints": list(dict.fromkeys(constraints))[:4],
+        "styles": list(dict.fromkeys(styles))[:4],
+        "negative_signals": list(dict.fromkeys(negative_signals))[:4],
+    }
+
+
+def _openai_compatible_base_url() -> str | None:
+    value = (
+        os.environ.get("ASIS_XHS_PLANNER_BASE_URL")
+        or os.environ.get("STYLIST_OPENAI_BASE_URL")
+        or os.environ.get("OPENAI_BASE_URL")
+        or os.environ.get("OPENAI_API_BASE")
+        or os.environ.get("LOCAL_OPENAI_BASE_URL")
+    )
+    if value and value.strip():
+        return value.rstrip("/")
+    if os.environ.get("ASIS_XHS_PLANNER_API_KEY") or os.environ.get("OPENAI_API_KEY"):
+        return "https://api.openai.com/v1"
+    return None
+
+
+def _openai_compatible_api_key(base_url: str | None) -> str | None:
+    key = os.environ.get("ASIS_XHS_PLANNER_API_KEY") or os.environ.get("OPENAI_API_KEY") or os.environ.get("STYLIST_OPENCLAW_API_KEY")
+    if key and key.strip():
+        return key.strip()
+    return "local-codex-proxy" if base_url else None
+
+
+def _parse_json_object(text: str) -> dict[str, Any] | None:
+    value = str(text or "").strip()
+    if value.startswith("```"):
+        value = value.strip("`").strip()
+        if value.lower().startswith("json"):
+            value = value[4:].strip()
+    start = value.find("{")
+    end = value.rfind("}")
+    if start >= 0 and end > start:
+        value = value[start : end + 1]
+    try:
+        parsed = json.loads(value)
+    except ValueError:
+        return None
+    return parsed if isinstance(parsed, dict) else None
+
+
+def _xhs_search_strategy_summary(message: str, plan: dict[str, Any] | None = None) -> str:
+    search_plan = plan or _fallback_xhs_search_plan(message)
     profile = _xhs_relevance_profile(message)
-    scenes = list(profile["scene_groups"].keys())
-    styles = profile["style_tokens"]
+    scenes = list(profile["scene_groups"].keys()) or [str(item) for item in search_plan.get("scenario", []) if str(item)]
+    styles = [str(item) for item in [*profile["style_tokens"], *search_plan.get("goals", []), *search_plan.get("constraints", [])] if str(item)]
     parts: list[str] = []
     if scenes:
         parts.append(f"从问题中提取场景：{'、'.join(scenes[:3])}")
@@ -862,11 +1541,13 @@ def _xhs_search_strategy_summary(message: str) -> str:
         parts.append(f"约束：{'、'.join(styles[:3])}")
     if not parts:
         parts.append("识别为泛穿搭灵感需求")
+    if search_plan.get("planner") == "ai":
+        parts.append("AI 已生成搜索计划")
     return "；".join(parts)
 
 
-def _xhs_search_step_detail(message: str, search_meta: list[dict[str, Any]]) -> str:
-    strategy = _xhs_search_strategy_summary(message)
+def _xhs_search_step_detail(message: str, search_meta: list[dict[str, Any]], plan: dict[str, Any] | None = None) -> str:
+    strategy = _xhs_search_strategy_summary(message, plan)
     used_queries = [str(item.get("query") or "").strip() for item in search_meta if item.get("query")]
     raw_count = sum(int(item.get("raw_count") or 0) for item in search_meta)
     query_preview = " / ".join(used_queries[:3])
@@ -998,7 +1679,7 @@ def _is_xhs_fashion_note(note: dict[str, Any]) -> bool:
         "slingback",
         "衣",
     ]
-    negative_keywords = ["宝宝", "喂养", "咖啡", "医生", "英语", "说唱", "彩妆", "卷发", "美甲", "育儿", "睡衣"]
+    negative_keywords = ["宝宝", "喂养", "咖啡", "医生", "英语", "彩妆", "卷发", "美甲", "育儿", "睡衣"]
     if any(keyword in text for keyword in negative_keywords):
         return False
     return any(keyword in text for keyword in positive_keywords)
@@ -1010,13 +1691,7 @@ def _xhs_relevance_threshold(message: str) -> float:
 
 
 def _rank_xhs_notes_for_answer(notes: list[dict[str, Any]], message: str) -> list[dict[str, Any]]:
-    profile = _xhs_relevance_profile(message)
-    threshold = _xhs_relevance_threshold(message)
-    ranked = [
-        note
-        for note in notes
-        if float(note.get("relevance_score") or 0) >= threshold and _xhs_note_has_scene_evidence(note, profile)
-    ]
+    ranked = _scene_aligned_xhs_notes(notes, message)
     ranked.sort(key=lambda item: float(item.get("relevance_score") or 0), reverse=True)
     return ranked
 
@@ -1029,9 +1704,9 @@ def _xhs_has_enough_answer_evidence(notes: list[dict[str, Any]], message: str) -
         return len(notes) >= int(os.environ.get("ASIS_XHS_MIN_GENERIC_NOTES", "3"))
     min_notes = int(os.environ.get("ASIS_XHS_MIN_SCENE_NOTES", "4"))
     threshold = _xhs_relevance_threshold(message)
-    strong_notes = [note for note in notes if float(note.get("relevance_score") or 0) >= threshold + 0.5]
     scene_matched = [note for note in notes if _xhs_note_has_scene_evidence(note, profile)]
-    return len(notes) >= min_notes and len(strong_notes) >= max(2, min_notes // 2) and len(scene_matched) >= min_notes
+    scored_scene_notes = [note for note in scene_matched if float(note.get("relevance_score") or 0) >= threshold]
+    return len(scored_scene_notes) >= min_notes
 
 
 def _xhs_note_has_scene_evidence(note: dict[str, Any], profile: dict[str, Any]) -> bool:
@@ -1041,11 +1716,41 @@ def _xhs_note_has_scene_evidence(note: dict[str, Any], profile: dict[str, Any]) 
     return any(_contains_any(text, tokens) for tokens in profile["scene_groups"].values())
 
 
+def _scene_aligned_xhs_notes(notes: list[dict[str, Any]], message: str) -> list[dict[str, Any]]:
+    profile = _xhs_relevance_profile(message)
+    threshold = _xhs_relevance_threshold(message)
+    aligned: list[dict[str, Any]] = []
+    for note in notes:
+        if not isinstance(note, dict):
+            continue
+        score = float(note.get("relevance_score") or 0)
+        if not score:
+            score, reasons = _xhs_note_relevance(note, message)
+            note = {**note, "relevance_score": score, "relevance_reasons": reasons}
+        if score >= threshold and _xhs_note_has_scene_evidence(note, profile):
+            aligned.append(note)
+    return aligned
+
+
+def _scene_relevant_note_titles(message: str, notes: list[dict[str, Any]]) -> list[str]:
+    return [
+        str(note.get("title") or "").strip()
+        for note in _scene_aligned_xhs_notes(notes, message)
+        if isinstance(note, dict) and str(note.get("title") or "").strip()
+    ]
+
+
 def _xhs_note_relevance(note: dict[str, Any], message: str) -> tuple[float, list[str]]:
     profile = _xhs_relevance_profile(message)
     text = _xhs_note_text(note)
     score = 0.0
     reasons: list[str] = []
+    if _xhs_note_gender_conflicts(text, profile):
+        score -= 4.0
+        reasons.append("排除:性别不符")
+    elif _contains_any(text, profile["gender_positive_tokens"]):
+        score += 0.45
+        reasons.append(profile["target_gender"])
     if _contains_any(text, profile["fashion_tokens"]):
         score += 1.2
         reasons.append("穿搭")
@@ -1071,24 +1776,28 @@ def _xhs_note_relevance(note: dict[str, Any], message: str) -> tuple[float, list
 
 def _xhs_relevance_profile(message: str) -> dict[str, Any]:
     text = str(message or "").lower()
+    gender = _xhs_gender_profile(text)
     scene_groups: dict[str, list[str]] = {}
-    if any(token in text for token in ["聚餐", "饭局", "约饭", "下班"]):
+    if _contains_positive_scene(text, ["聚餐", "饭局", "约饭", "下班"]):
         scene_groups["聚餐"] = ["聚餐", "饭局", "约饭", "约会", "晚餐", "下班", "小酌", "约会"]
-    if any(token in text for token in ["约会", "见面", "date"]):
+    if _contains_positive_scene(text, ["约会", "见面", "date"]):
         scene_groups["约会"] = ["约会", "date", "见面", "晚餐", "电影", "咖啡约"]
-    if any(token in text for token in ["上班", "通勤", "工作", "职场", "会议", "面试"]):
+    interview_scene = _contains_positive_scene(text, ["面试", "offer", "求职"])
+    if interview_scene:
+        scene_groups["面试"] = ["面试", "面试穿搭", "求职", "offer", "职场", "正式", "得体", "西装", "衬衫"]
+    elif _contains_positive_scene(text, ["上班", "通勤", "工作", "职场", "会议"]):
         scene_groups["通勤"] = ["通勤", "上班", "职场", "工作", "办公室", "会议", "面试", "班味"]
-    if any(token in text for token in ["客户", "会面", "商务", "正式", "稳"]):
+    if _contains_positive_scene(text, ["客户", "会面", "商务", "正式", "稳"]):
         scene_groups["客户会面"] = ["客户", "会面", "商务", "正式", "稳重", "得体", "职场", "会议", "通勤"]
-    if any(token in text for token in ["看展", "展", "美术馆", "拍照"]):
+    if _contains_positive_scene(text, ["看展", "展", "美术馆", "拍照"]):
         scene_groups["看展"] = ["看展", "展览", "美术馆", "博物馆", "拍照", "出片"]
-    if any(token in text for token in ["生日", "派对", "party"]):
+    if _contains_positive_scene(text, ["生日", "派对", "party"]):
         scene_groups["派对"] = ["生日", "派对", "party", "聚会", "宴会"]
-    if any(token in text for token in ["社团", "校园", "学生"]):
+    if _contains_positive_scene(text, ["社团", "校园", "学生"]):
         scene_groups["校园"] = ["社团", "校园", "学生", "学院", "拍照"]
-    if any(token in text for token in ["雨", "下雨", "小雨", "防水"]):
+    if _contains_positive_scene(text, ["雨", "下雨", "小雨", "防水"]):
         scene_groups["雨天"] = ["雨天", "下雨", "小雨", "防水", "防滑", "雨靴"]
-    if any(token in text for token in ["演唱会", "音乐节"]):
+    if _contains_positive_scene(text, ["演唱会", "音乐节"]):
         scene_groups["演出"] = ["演唱会", "音乐节", "live", "出片", "蹦迪"]
     style_tokens = [
         token
@@ -1096,12 +1805,54 @@ def _xhs_relevance_profile(message: str) -> dict[str, Any]:
         if token in text
     ]
     return {
+        "target_gender": gender["target"],
+        "gender_positive_tokens": gender["positive_tokens"],
+        "gender_negative_tokens": gender["negative_tokens"],
         "fashion_tokens": ["穿搭", "搭配", "ootd", "look", "西装", "衬衫", "针织", "半裙", "裤", "裙", "牛仔", "外套", "乐福", "短靴", "鞋", "包"],
         "scene_groups": scene_groups,
         "scene_tokens": [token for tokens in scene_groups.values() for token in tokens],
         "style_tokens": style_tokens,
-        "negative_tokens": ["宝宝", "喂养", "咖啡", "医生", "英语", "说唱", "彩妆", "卷发", "美甲", "育儿", "睡衣", "家常菜", "旅行攻略"],
+        "negative_tokens": [
+            "宝宝", "喂养", "咖啡", "医生", "英语", "彩妆", "卷发", "美甲", "育儿", "睡衣", "家常菜", "旅行攻略",
+            *(["演唱会", "音乐节", "派对", "party", "生日", "拍照", "出片", "ootd", "蹦迪"] if interview_scene else []),
+        ],
     }
+
+
+def _xhs_gender_profile(message: str) -> dict[str, Any]:
+    text = str(message or "").lower()
+    male_tokens = ["男生", "男士", "男装", "男款", "男性", "男模", "男友", "男朋友", "boyfriend", "menswear", "men's", "men "]
+    female_tokens = ["女生", "女装", "女款", "女性", "女人", "女士", "姐妹", "小姐姐", "girl", "girls", "women", "women's", "女"]
+    target = "male" if _contains_any(text, male_tokens) and not _contains_any(text, female_tokens) else "female"
+    return {
+        "target": target,
+        "male_tokens": male_tokens,
+        "female_tokens": female_tokens,
+        "positive_tokens": male_tokens if target == "male" else female_tokens,
+        "negative_tokens": female_tokens if target == "male" else male_tokens,
+    }
+
+
+def _contains_positive_scene(text: str, tokens: list[str]) -> bool:
+    value = str(text or "").lower()
+    for token in tokens:
+        token_value = str(token or "").lower()
+        if not token_value:
+            continue
+        start = 0
+        while True:
+            index = value.find(token_value, start)
+            if index < 0:
+                break
+            prefix = value[max(0, index - 8):index]
+            if not re.search(r"(不要|不用|不看|不想|别用|别|不是|非)\s*$", prefix):
+                return True
+            start = index + len(token_value)
+    return False
+
+
+def _xhs_note_gender_conflicts(text: str, profile: dict[str, Any]) -> bool:
+    return _contains_any(text, profile.get("gender_negative_tokens") or profile.get("negative_tokens") or [])
 
 
 def _xhs_note_text(note: dict[str, Any]) -> str:
@@ -1109,6 +1860,8 @@ def _xhs_note_text(note: dict[str, Any]) -> str:
         note.get("title"),
         note.get("author_name"),
         note.get("desc"),
+        note.get("detail_summary"),
+        note.get("detail_text"),
         note.get("source_label"),
     ]
     return " ".join(str(part or "") for part in parts).lower()
@@ -1149,7 +1902,134 @@ def _normalize_xhs_feed(feed: dict[str, Any], query: str = "", source_label: str
         "source_label": source_label,
         "query": query,
         "url": url,
+        "xsec_token": xsec_token,
     }
+
+
+async def _enrich_xhs_notes_with_details(client: httpx.AsyncClient, notes: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    if not notes or _env_flag("ASIS_XHS_DISABLE_DETAIL_FETCH"):
+        return notes
+    limit = max(0, min(len(notes), int(os.environ.get("ASIS_XHS_DETAIL_LIMIT", "1"))))
+    if limit <= 0:
+        return notes
+    headers = await _xhs_mcp_session_headers(client)
+    if not headers:
+        return notes
+    semaphore = asyncio.Semaphore(max(1, int(os.environ.get("ASIS_XHS_DETAIL_CONCURRENCY", "2"))))
+
+    async def enrich_one(note: dict[str, Any]) -> dict[str, Any]:
+        async with semaphore:
+            return await _enrich_xhs_note_with_detail(client, note, headers)
+
+    detail_notes = await asyncio.gather(*(enrich_one(note) for note in notes[:limit]), return_exceptions=True)
+    enriched: list[dict[str, Any]] = []
+    for original, maybe_note in zip(notes[:limit], detail_notes):
+        enriched.append(maybe_note if isinstance(maybe_note, dict) else original)
+    enriched.extend(notes[limit:])
+    return enriched
+
+
+async def _xhs_mcp_session_headers(client: httpx.AsyncClient) -> dict[str, str] | None:
+    headers = {"Content-Type": "application/json", "Accept": "application/json, text/event-stream"}
+    payload = {
+        "jsonrpc": "2.0",
+        "id": 1,
+        "method": "initialize",
+        "params": {
+            "protocolVersion": "2024-11-05",
+            "capabilities": {},
+            "clientInfo": {"name": "asis-stylist", "version": "0.1"},
+        },
+    }
+    try:
+        response = await client.post("/mcp", json=payload, headers=headers, timeout=float(os.environ.get("ASIS_XHS_MCP_INIT_TIMEOUT", "4")))
+        session_id = response.headers.get("mcp-session-id") or response.headers.get("Mcp-Session-Id")
+        if not session_id:
+            return None
+        session_headers = {**headers, "Mcp-Session-Id": session_id}
+        await client.post(
+            "/mcp",
+            json={"jsonrpc": "2.0", "method": "notifications/initialized", "params": {}},
+            headers=session_headers,
+            timeout=float(os.environ.get("ASIS_XHS_MCP_INIT_TIMEOUT", "4")),
+        )
+        return session_headers
+    except (httpx.HTTPError, ValueError):
+        return None
+
+
+async def _enrich_xhs_note_with_detail(client: httpx.AsyncClient, note: dict[str, Any], headers: dict[str, str]) -> dict[str, Any]:
+    feed_id = str(note.get("note_id") or "").strip()
+    xsec_token = str(note.get("xsec_token") or "").strip()
+    if not feed_id or not xsec_token:
+        return note
+    payload = {
+        "jsonrpc": "2.0",
+        "id": feed_id[:12],
+        "method": "tools/call",
+        "params": {
+            "name": "get_feed_detail",
+            "arguments": {"feed_id": feed_id, "xsec_token": xsec_token, "load_all_comments": False},
+        },
+    }
+    try:
+        response = await client.post("/mcp", json=payload, headers=headers, timeout=float(os.environ.get("ASIS_XHS_DETAIL_TIMEOUT", "3")))
+        data = response.json()
+    except (httpx.HTTPError, ValueError):
+        return note
+    detail_note = _extract_xhs_detail_note(data)
+    if not detail_note:
+        return note
+    enriched = dict(note)
+    title = str(detail_note.get("title") or "").strip()
+    desc = _clean_xhs_detail_text(detail_note.get("desc") or "")
+    if title:
+        enriched["title"] = title[:80]
+    if desc:
+        enriched["detail_text"] = desc[:900]
+        enriched["desc"] = desc[:520]
+        enriched["detail_summary"] = _xhs_note_detail_summary(desc)
+    image_list = detail_note.get("imageList") if isinstance(detail_note.get("imageList"), list) else []
+    image_urls = [_xhs_cover_url(item) for item in image_list if isinstance(item, dict)]
+    image_urls = [url for url in image_urls if url]
+    if image_urls:
+        enriched["image_urls"] = [_xhs_image_proxy_url(url) for url in image_urls[:6]]
+        enriched["cover_source_url"] = image_urls[0]
+        enriched["cover_url"] = _xhs_image_proxy_url(image_urls[0])
+    return enriched
+
+
+def _extract_xhs_detail_note(data: Any) -> dict[str, Any] | None:
+    if not isinstance(data, dict):
+        return None
+    result = data.get("result") if isinstance(data.get("result"), dict) else {}
+    content = result.get("content") if isinstance(result.get("content"), list) else []
+    for item in content:
+        if not isinstance(item, dict) or item.get("type") != "text":
+            continue
+        try:
+            parsed = json.loads(str(item.get("text") or ""))
+        except json.JSONDecodeError:
+            continue
+        payload = parsed.get("data") if isinstance(parsed, dict) else None
+        note = payload.get("note") if isinstance(payload, dict) and isinstance(payload.get("note"), dict) else None
+        if note:
+            return note
+    return None
+
+
+def _clean_xhs_detail_text(value: Any) -> str:
+    text = str(value or "")
+    text = re.sub(r"#([^#\\[]+?)\\[话题\\]#", r"#\1", text)
+    text = re.sub(r"@[\\w\\-\u4e00-\u9fff·&]+", "", text)
+    text = re.sub(r"[\\t\\r]+", " ", text)
+    return " ".join(line.strip() for line in text.splitlines() if line.strip())
+
+
+def _xhs_note_detail_summary(desc: str) -> str:
+    text = _clean_xhs_detail_text(desc)
+    text = re.sub(r"#[^#\\s]+", "", text)
+    return " ".join(text.split())[:180]
 
 
 def _xhs_cover_url(cover: dict[str, Any]) -> str:
@@ -1232,117 +2112,6 @@ def _extract_embedded_json_result(data: dict[str, Any]) -> dict[str, Any] | None
         if isinstance(parsed, dict) and parsed.get("status") in {"ok", "failed"}:
             return parsed
     return None
-
-
-def _degraded_inspiration_result_if_needed(result: dict[str, Any], request: dict[str, Any]) -> dict[str, Any] | None:
-    context = request.get("context") if isinstance(request.get("context"), dict) else {}
-    if context.get("source") != "inspiration_tab" or result.get("status") != "failed":
-        return None
-    error = result.get("error") if isinstance(result.get("error"), dict) else {}
-    if error.get("code") != "ai_unavailable":
-        return None
-    message = _effective_user_message(request).strip()
-    if not message:
-        return None
-    conversation = context.get("conversation") if isinstance(context.get("conversation"), list) else []
-    rainy = any(token in message for token in ["雨", "下雨", "小雨", "防水"])
-    slim = any(token in message for token in ["显瘦", "修身", "比例"])
-    no_high_heels = any(token in message for token in ["不想穿高跟", "不穿高跟", "不要高跟", "不想高跟", "平底", "低跟", "乐福鞋"])
-    exhibition = any(token in message for token in ["看展", "展", "美术馆"])
-    commute_dinner = any(token in message for token in ["聚餐", "饭局", "下班", "接聚餐"]) and any(token in message for token in ["上班", "通勤", "周五", "工作"])
-    xhs_notes = context.get("xhs_notes") if isinstance(context.get("xhs_notes"), list) else []
-    note_titles = [str(note.get("title") or "").strip() for note in xhs_notes if isinstance(note, dict) and note.get("title")]
-    xhs_requested = _should_invoke_xhs_skill(request)
-    public_fallback_used = any(isinstance(note, dict) and note.get("is_public_fallback") for note in xhs_notes)
-    if xhs_notes and public_fallback_used:
-        xhs_failure = _xhs_user_facing_unavailable_detail(context)
-        xhs_note = f"我已经调用小红书灵感 skill，但{xhs_failure}；同时用公开网页搜索补到 {len(xhs_notes)} 条小红书公开链接，只作为弱参考，不当作原生推荐流。"
-    elif xhs_notes:
-        xhs_note = f"我先参考到 {len(xhs_notes)} 张小红书笔记卡片，重点看标题、封面和互动热度，再给你一版可执行建议。"
-    elif xhs_requested:
-        xhs_failure = _xhs_user_facing_unavailable_detail(context)
-        public_fallback_note = "，公开网页搜索也没有找到可引用的小红书链接" if _xhs_public_fallback_failed(context) else ""
-        xhs_note = f"我已经调用小红书灵感 skill，但{xhs_failure}{public_fallback_note}；这版先不给你硬塞低相关笔记，改用通用穿搭逻辑给一版可执行建议。"
-    else:
-        xhs_note = "我先按你这次的场景和衣橱目标，给你一版可直接执行的搭配建议。"
-    if rainy and no_high_heels:
-        assistant = (
-            f"{xhs_note}\n\n延续周五上班接聚餐的场景，雨天又不想穿高跟，核心是“防滑、利落、晚上不显随便”："
-            "鞋子优先光面乐福鞋、厚底德训鞋、短筒切尔西靴或防水短靴，鞋头选微尖或窄圆头，避开帆布、麂皮和太厚重的雨靴。"
-            "下装用九分直筒西裤、微喇裤或过膝直筒裙，露出一点脚踝或靴筒边缘，会比拖地裤更清爽也不容易溅湿。"
-            "上身保持垂感衬衫、薄针织或短西装，外面加一件防泼水风衣/短外套；颜色可以用黑、米白、灰、酒红做组合。"
-            "聚餐前只要把通勤托特换成小肩包，再补耳环和口红，就能从上班切到晚间。"
-        )
-        rationale = [
-            "雨天不穿高跟时，鞋底防滑和鞋面易清洁比高度更重要。",
-            "九分直筒、微喇和短靴能保持腿部线条，避免雨天裤脚拖沓。",
-            "小肩包、耳环和口红负责聚餐氛围，不需要靠高跟鞋撑场。",
-        ]
-    elif rainy and slim:
-        assistant = (
-            f"{xhs_note}\n\n延续刚才的场景，下雨又想显瘦，重点放在鞋包和线条：鞋子选光面皮、厚底乐福鞋或微尖头短靴，避开帆布和麂皮；"
-            "鞋裤尽量同色，比如黑裤配黑乐福、燕麦裤配米色鞋，腿部线条会更顺。包选有结构的中号腋下包或短肩带托特，包底落在腰线上方，"
-            "不要垂到胯部，这样不会横向截断比例。颜色控制在三种以内，雨伞也选透明、米白或浅卡其，会比黑伞更轻。"
-        )
-        rationale = [
-            "雨天优先光面、防泼水材质，减少脏污和变形风险。",
-            "鞋裤同色和短肩带包能减少视觉截断，更容易显高显瘦。",
-            "结构感包型比软塌大包更利落，适合看展和通勤之间的场景。",
-        ]
-    elif exhibition:
-        assistant = (
-            f"{xhs_note}\n\n上海周末看展可以走“松弛通勤感”：上身选宽松白衬衫、薄针织或浅色短外套，下身配直筒卡其裤、米白阔腿裤或深色微喇裤；"
-            "鞋子用乐福鞋、德训鞋或干净小白鞋，保证走路舒服；包选奶油色托特、浅棕腋下包或小号邮差包。整体用米白、燕麦、浅卡其、雾蓝这类低饱和颜色，"
-            "再用细项链或丝巾做一点精致感。展厅冷气强，可以带一件薄外套。"
-        )
-        rationale = [
-            "低饱和浅色和有结构的宽松版型更接近松弛通勤感。",
-            "看展需要长时间走动，鞋子和包要先保证舒适与轻便。",
-            "薄外套能处理上海湿热与展厅冷气的温差。",
-        ]
-    elif commute_dinner:
-        assistant = (
-            f"{xhs_note}\n\n周五上班接聚餐，建议走“白天得体、晚上有一点亮点”的路线：上身选垂感衬衫、薄针织或合身小西装，"
-            "下身配直筒西裤、微喇裤或开衩半裙；颜色用黑、米白、燕麦、酒红或深牛仔做底，避免太休闲的卫衣和运动裤。"
-            "鞋子选乐福鞋、低跟 slingback 或干净短靴，白天不累、晚上也不塌。包可以从通勤大包换成小肩包，"
-            "再加耳环、细项链或一支更有气色的口红，聚餐感就出来了。"
-        )
-        rationale = [
-            "通勤转聚餐的关键是保留办公室得体度，同时用鞋包和配饰做夜晚氛围。",
-            "直筒或微喇下装能兼顾久坐、通勤和显腿直。",
-            "小包、低跟鞋和金属配饰比大面积露肤更稳，也更适合下班直接赴约。",
-        ]
-    else:
-        assistant = (
-            f"{xhs_note}\n\n我建议先用一件有结构的基础上装确定风格，再配直筒或阔腿下装，鞋包保持同色系。"
-            "如果想更通勤，就用衬衫、西装马甲、乐福鞋；如果想更松弛，就换成薄针织、德训鞋和软托特。"
-        )
-        rationale = [
-            "先确定上装和下装主轴，整体更容易稳定。",
-            "鞋包同色系能减少杂乱感，让搭配更完整。",
-        ]
-    return {
-        "status": "ok",
-        "mode": "degraded_openclaw",
-        "assistant_message": assistant + (f"\n\n这次参考的笔记关键词包括：{'、'.join(note_titles[:3])}。" if note_titles else ""),
-        "recommended_items": [],
-        "recommended_outfits": [],
-        "rationale": rationale,
-        "evidence_sources": context.get("xhs_evidence_sources") if xhs_notes else [],
-        "xhs_notes": xhs_notes,
-        "tool_steps": context.get("xhs_tool_steps") if isinstance(context.get("xhs_tool_steps"), list) else [],
-        "next_actions": [
-            {"type": "open_closet", "label": "去衣橱选择单品"},
-            *([{"type": "retry_xhs", "label": "稍后重试小红书灵感"}] if xhs_requested else []),
-        ],
-        "quality_checks": {
-            "used_xiaohongshu_recommendations": bool(xhs_notes and not public_fallback_used),
-            "used_public_xhs_fallback": bool(public_fallback_used),
-            "xiaohongshu_preferred": bool(context.get("xiaohongshu_preferred")),
-            "continued_conversation": len(conversation) >= 2,
-        },
-        "degraded_reason": "stylist_tools_unavailable",
-    }
 
 
 def _stylist_quality_checks(result: dict[str, Any], request: dict[str, Any] | None) -> dict[str, bool]:
@@ -1538,9 +2307,13 @@ def _runtime_error_code(status_code: int | None, data: dict[str, Any]) -> str:
 
 
 def _runtime_error_message(code: str) -> str:
-    if code == "ai_unavailable":
-        return "AI 穿搭师暂时不可用，请检查模型配置。"
-    return "OpenClaw 穿搭师运行时暂时不可用。"
+    return _friendly_stylist_error_message(code)
+
+
+def _friendly_stylist_error_message(code: str | None = None) -> str:
+    if code == "agent_timeout":
+        return "灵感加载有点慢，正在努力充能～"
+    return STYLIST_FRIENDLY_ERROR_MESSAGE
 
 
 def _status_for_error_code(code: str) -> int:
@@ -1548,15 +2321,18 @@ def _status_for_error_code(code: str) -> int:
 
 
 def _failed(code: str, message: str, status_code: int, suggestion: str | None = None, evidence: dict[str, Any] | None = None) -> tuple[dict[str, Any], int]:
+    friendly_message = _friendly_stylist_error_message(code)
     return {
         "status": "failed",
         "mode": "error",
         "error": {
             "code": code,
-            "message": message,
-            "suggestion": suggestion or message,
+            "message": friendly_message,
+            "suggestion": friendly_message,
+            "technical_message": message,
+            "technical_suggestion": suggestion or message,
         },
-        "assistant_message": message,
+        "assistant_message": friendly_message,
         "recommended_items": [],
         "recommended_outfits": [],
         "rationale": [],

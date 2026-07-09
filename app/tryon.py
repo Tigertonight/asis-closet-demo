@@ -38,6 +38,7 @@ TRYON_PIPELINE_STAGES = [
     "person_detection",
     "garment_analysis",
     "upper_body_mask",
+    "edit_contract",
     "image_edit",
     "quality_review",
 ]
@@ -440,6 +441,7 @@ def run_try_on(person: dict[str, Any], garment: dict[str, Any], provider: "TryOn
         "person_detection": person_detection,
         "garment_analysis": garment_analysis,
         "upper_body_mask": mask_stage,
+        "edit_contract": _lightweight_tryon_edit_contract(mask_stage, mode="upper_body"),
         "image_edit": _stage("unknown", 0.0, {"skipped": True}, []),
         "quality_review": _stage("unknown", 0.0, {"skipped": True}, []),
     }
@@ -551,6 +553,7 @@ def run_try_on_from_inspiration(
         "person_detection": person_detection,
         "garment_analysis": inspiration_analysis,
         "upper_body_mask": mask_stage,
+        "edit_contract": _lightweight_tryon_edit_contract(mask_stage, mode="upper_body_inspiration"),
         "image_edit": _stage("unknown", 0.0, {"skipped": True}, []),
         "quality_review": _stage("unknown", 0.0, {"skipped": True}, []),
     }
@@ -637,6 +640,7 @@ def run_try_on_from_outfit_plan(
     reference_board = Image.open(reference_board_path).convert("RGB")
     raw_input_quality = _input_quality_stage(person["image"], reference_board)
     person_detection = _detect_person(person["image"])
+    person_detection = _relax_outfit_person_detection_for_ai_tryon(person["image"], person_detection, raw_input_quality)
     input_quality = _relax_preset_model_blur_for_outfit_tryon(person, raw_input_quality, person_detection)
     plan_stage = _outfit_plan_stage(normalized_plan)
     mask_stage = (
@@ -650,6 +654,7 @@ def run_try_on_from_outfit_plan(
         "person_detection": person_detection,
         "outfit_plan": plan_stage,
         "outfit_body_mask": mask_stage,
+        "edit_contract": _lightweight_tryon_edit_contract(mask_stage, mode="outfit_body"),
         "image_edit": _stage("unknown", 0.0, {"skipped": True}, []),
         "quality_review": _stage("unknown", 0.0, {"skipped": True}, []),
     }
@@ -687,6 +692,9 @@ def run_try_on_from_outfit_plan(
             if pipeline["image_edit"]["status"] == "pass" and pipeline["quality_review"]["status"] in {"pass", "warn"}:
                 status = "generated"
                 user_message = "已生成整套穿搭试穿图，建议重点观察单品是否完整、比例和整体氛围。"
+            elif pipeline["image_edit"]["status"] == "pass" and result_image_path:
+                status = "review"
+                user_message = "试穿图已生成，但有些细节建议复核；你可以先查看，也可以重新生成一版。"
             else:
                 status = "failed"
                 user_message = "这次整套试穿图质量没有达标，暂不建议展示给用户。"
@@ -1051,15 +1059,133 @@ def _path_to_runway_inline_data(path: Path) -> dict[str, Any]:
     }
 
 
-def _build_runway_google_tryon_payload(person_image: Path, garment_image: Path, prompt: str) -> dict[str, Any]:
+def _runway_output_size_instruction(person_image: Path) -> str:
+    try:
+        with Image.open(person_image) as image:
+            width, height = image.size
+    except Exception:
+        return "Output size/framing: keep the same portrait orientation, aspect ratio, and full-body framing as Image A."
+    aspect = width / max(1, height)
+    orientation = "portrait" if height >= width else "landscape"
+    return (
+        f"Output size/framing: Image A is {width}x{height}px, aspect ratio {aspect:.4f}, {orientation}. "
+        "Return the final image with exactly the same canvas aspect ratio, crop, camera distance, and visual framing as Image A. "
+        "Image A is the framing authority, not Image B. Do not zoom out, widen the canvas, rotate to landscape, add margins, or create a collage layout. "
+        "Only change garments/accessories that are already visible in Image A. If shoes, feet, a bag, or lower-body details are not visible or are cropped in Image A, do not invent them, do not complete them, and do not change the camera framing to show them."
+    )
+
+
+def _image_size_evidence(path: Path) -> dict[str, Any]:
+    try:
+        with Image.open(path) as image:
+            width, height = image.size
+    except Exception:
+        return {}
+    return {
+        "width": width,
+        "height": height,
+        "aspect_ratio": round(width / max(1, height), 4),
+    }
+
+
+def _fit_image_to_reference_canvas(image: Image.Image, reference_path: Path) -> tuple[Image.Image, dict[str, Any]]:
+    try:
+        with Image.open(reference_path) as reference:
+            target_size = reference.size
+    except Exception:
+        return image, {"normalized": False, "reason": "reference_unavailable"}
+    source_size = image.size
+    if source_size == target_size:
+        return image, {"normalized": False, "source_size": {"width": source_size[0], "height": source_size[1]}, "target_size": {"width": target_size[0], "height": target_size[1]}}
+    src_aspect = source_size[0] / max(1, source_size[1])
+    target_aspect = target_size[0] / max(1, target_size[1])
+    if src_aspect > target_aspect:
+        crop_width = int(source_size[1] * target_aspect)
+        left = max(0, (source_size[0] - crop_width) // 2)
+        crop_box = (left, 0, left + crop_width, source_size[1])
+    else:
+        crop_height = int(source_size[0] / target_aspect)
+        top = max(0, (source_size[1] - crop_height) // 2)
+        crop_box = (0, top, source_size[0], top + crop_height)
+    normalized = image.crop(crop_box).resize(target_size, Image.Resampling.LANCZOS)
+    return normalized, {
+        "normalized": True,
+        "source_size": {"width": source_size[0], "height": source_size[1]},
+        "target_size": {"width": target_size[0], "height": target_size[1]},
+        "crop_box": crop_box,
+        "rule": "center_crop_to_image_a_canvas",
+    }
+
+
+def _mask_editing_contract() -> str:
+    return (
+        "Mask contract: Image C is the edit mask for Image A. Transparent/black/dark mask pixels mark the clothing area that may be edited. "
+        "White/opaque/light mask pixels are protected areas and must remain unchanged. "
+        "Do not alter protected face, hair, hands, skin, body shape, pose, background, lighting, camera angle, or canvas framing outside the editable mask."
+    )
+
+
+def _build_provider_prompt_with_mask_contract(prompt: str) -> str:
+    return f"{_mask_editing_contract()}\n\n{prompt}"
+
+
+def _lightweight_tryon_edit_contract(mask_stage: dict[str, Any], mode: str) -> dict[str, Any]:
+    evidence = mask_stage.get("evidence", {}) if isinstance(mask_stage, dict) else {}
+    return _stage("pass", 0.86, {
+        "strategy": "strong_image_editor_with_lightweight_mask",
+        "model_profile": "nano_banana_compatible",
+        "mode": mode,
+        "preprocessing": {
+            "level": "lightweight",
+            "reason": "backend image editor is expected to understand person, garment, and mask inputs without heavy VTON preprocessing",
+            "no_heavy_human_parsing_required": True,
+        },
+        "inputs": [
+            {"id": "image_a", "role": "identity_pose_background_anchor", "meaning": "user/person photo; preserve identity, pose, background, camera, and canvas"},
+            {"id": "image_b", "role": "garment_or_outfit_reference", "meaning": "clothing visual reference; use for color, material, fit, pattern, and details"},
+            {"id": "image_c_or_mask", "role": "editable_region_mask", "meaning": "same-size mask for Image A; guides where edits are allowed"},
+        ],
+        "mask": {
+            "path": evidence.get("mask_path"),
+            "rule": evidence.get("rule"),
+            "editable_ratio": evidence.get("editable_ratio"),
+            "editable": "transparent_or_black_alpha_lt_128",
+            "protected": "opaque_or_white_alpha_gte_220",
+            "soft_boundary": True,
+        },
+        "preserve": [
+            "face",
+            "hair",
+            "skin_tone",
+            "hands",
+            "body_shape",
+            "pose",
+            "background",
+            "lighting",
+            "camera_angle",
+            "canvas_framing",
+        ],
+        "post_quality_checks": [
+            "same_canvas_size_or_normalized_to_image_a",
+            "face_region_difference",
+            "protected_region_difference",
+            "mask_editable_ratio",
+        ],
+    }, [])
+
+
+def _build_runway_google_tryon_payload(person_image: Path, garment_image: Path, mask_image: Path, prompt: str) -> dict[str, Any]:
+    output_instruction = _runway_output_size_instruction(person_image)
     tryon_prompt = (
         "请生成一张真实自然的虚拟试穿结果图。"
-        "图A是要保留身份和姿态的模特/用户照片，图B是目标服饰或穿搭参考。"
+        "图A是要保留身份和姿态的模特/用户照片，图B是目标服饰或穿搭参考，图C是图A的可编辑衣服区域 mask。"
         "请根据补充约束让图A中的人物穿上图B中的目标服饰。"
         "必须保留图A的人脸、发型、肤色、体型、姿势、手臂、背景、光线、相机角度和整体照片风格。"
         "如果补充约束要求上衣，只替换上衣；如果要求整套穿搭，则替换对应服饰区域。"
         "不要改变脸、身体轮廓、背景，不要添加文字、水印或 UI。"
         "目标服饰要尽量还原图B的颜色、材质、版型、穿法、图案和细节。"
+        f"{_mask_editing_contract()}"
+        f"{output_instruction}"
         f"\n\n补充约束：{prompt}"
     )
     return {
@@ -1069,6 +1195,7 @@ def _build_runway_google_tryon_payload(person_image: Path, garment_image: Path, 
                 "parts": [
                     _path_to_runway_inline_data(person_image),
                     _path_to_runway_inline_data(garment_image),
+                    _path_to_runway_inline_data(mask_image),
                     {"text": tryon_prompt},
                 ],
             }
@@ -1195,7 +1322,7 @@ class OpenAIImageEditTryOnProvider(TryOnProvider):
                     model=self.model,
                     image=[person_file, garment_file],
                     mask=mask_file,
-                    prompt=prompt,
+                    prompt=_build_provider_prompt_with_mask_contract(prompt),
                     size="auto",
                     quality="auto",
                     input_fidelity="high",
@@ -1239,7 +1366,7 @@ class RunwayGoogleTryOnProvider(TryOnProvider):
                 "image_path": None,
             }
         try:
-            payload = _build_runway_google_tryon_payload(person_image, garment_image, prompt)
+            payload = _build_runway_google_tryon_payload(person_image, garment_image, mask_image, prompt)
             response = httpx.post(
                 self.url,
                 headers={"api-key": self.api_key, "Content-Type": "application/json"},
@@ -1273,6 +1400,7 @@ class RunwayGoogleTryOnProvider(TryOnProvider):
             raw = base64.b64decode(b64_data)
             image = Image.open(io.BytesIO(raw)).convert("RGB")
             image.load()
+            image, canvas_normalization = _fit_image_to_reference_canvas(image, person_image)
             output_path = output_dir / "result_runway_google.png"
             _save_png_atomically(image, output_path)
             return {
@@ -1281,6 +1409,9 @@ class RunwayGoogleTryOnProvider(TryOnProvider):
                     "url": self.url,
                     "result_path": str(output_path),
                     "mime_type": mime_type,
+                    "target_size": _image_size_evidence(person_image),
+                    "result_size": _image_size_evidence(output_path),
+                    "canvas_normalization": canvas_normalization,
                     "response_shape": _response_shape(data),
                 }, []),
                 "image_path": output_path,
@@ -2692,6 +2823,47 @@ def _clean_center_portrait_fallback(image: Image.Image) -> dict[str, Any] | None
     return {"box": {"x": x, "y": y, "width": fw, "height": fh}, "area_ratio": round((fw * fh) / (w * h), 4)}
 
 
+def _relax_outfit_person_detection_for_ai_tryon(
+    image: Image.Image,
+    person_detection: dict[str, Any],
+    input_quality: dict[str, Any],
+) -> dict[str, Any]:
+    if person_detection.get("status") != "fail":
+        return person_detection
+    issue_codes = {issue.get("code") for issue in person_detection.get("issues", [])}
+    if "person.multiple_faces" in issue_codes:
+        return person_detection
+    if input_quality.get("status") == "fail":
+        return person_detection
+    width, height = image.size
+    if min(width, height) < MIN_PERSON_EDGE:
+        return person_detection
+    face_width = max(96, int(width * 0.14))
+    face_height = max(96, int(height * 0.10))
+    fallback_face = {
+        "box": {
+            "x": int((width - face_width) / 2),
+            "y": int(height * 0.34),
+            "width": face_width,
+            "height": face_height,
+        },
+        "area_ratio": round((face_width * face_height) / (width * height), 4),
+    }
+    return _stage("warn", 0.52, {
+        **person_detection.get("evidence", {}),
+        "face_count": person_detection.get("evidence", {}).get("face_count", 0),
+        "primary_face": fallback_face,
+        "fallback": "ai_tryon_identity_preserve",
+        "reason": "local_face_detector_missed_real_world_photo",
+    }, [
+        _issue(
+            "person.face_detector_relaxed_for_ai_tryon",
+            "本地人脸检测未命中，已交给 AI 继续判断",
+            "真实生活照可能无法被本地检测器稳定识别，已继续生成试穿。",
+        )
+    ])
+
+
 def _generate_upper_body_mask(image: Image.Image, person_stage: dict[str, Any], output_path: Path) -> dict[str, Any]:
     box = person_stage["evidence"]["primary_face"]["box"]
     width, height = image.size
@@ -2715,15 +2887,24 @@ def _generate_upper_body_mask(image: Image.Image, person_stage: dict[str, Any], 
     mask.putalpha(alpha)
     output_path.parent.mkdir(parents=True, exist_ok=True)
     _save_png_atomically(mask, output_path)
-    editable_ratio = float(np.mean(np.array(alpha) < 128))
+    alpha_array = np.array(alpha)
+    editable_pixels = int(np.sum(alpha_array < 128))
+    protected_pixels = int(alpha_array.size - editable_pixels)
+    editable_ratio = editable_pixels / max(1, alpha_array.size)
     status = "pass" if 0.06 <= editable_ratio <= 0.46 else "warn"
     issues = [] if status == "pass" else [_issue("mask.ratio_unusual", "上衣 mask 面积不稳定", "建议使用肩膀和胸口完整入镜的照片。")]
     return _stage(status, 0.78 if status == "pass" else 0.55, {
         "mask_path": str(output_path),
         "width": width,
         "height": height,
+        "editable_pixels": editable_pixels,
+        "protected_pixels": protected_pixels,
         "editable_ratio": round(editable_ratio, 4),
         "rule": "face_box_torso_trapezoid",
+        "mask_semantics": {
+            "editable": "transparent_or_black_alpha_lt_128",
+            "protected": "opaque_or_white_alpha_gte_220",
+        },
     }, issues)
 
 
@@ -2750,8 +2931,11 @@ def _review_tryon_quality(original: Image.Image, result_path: Path | None, perso
     if result.size == original.size:
         face_diff = _face_region_difference(original, result, person_stage)
         background_diff = _protected_region_difference(original, result, mask_path)
+        editable_ratio = _mask_editable_ratio(mask_path)
         evidence["face_diff"] = face_diff
         evidence["protected_region_diff"] = background_diff
+        evidence["mask_editable_ratio"] = editable_ratio
+        evidence["mask_contract"] = "fail_if_protected_face_or_background_changes"
         if face_diff > 28:
             issues.append(_issue("quality.face_changed", "人脸区域变化过大", "请重新生成，避免改变用户本人特征。"))
         if background_diff > 18:
@@ -2778,7 +2962,7 @@ def _pi_agent_code_worker_enabled() -> bool:
 
 def create_codex_bridge_job(person_image: Path, garment_image: Path, mask_image: Path, prompt: str, output_dir: Path) -> dict[str, Any]:
     _codex_bridge_dir().mkdir(parents=True, exist_ok=True)
-    provider_version = "pi_agent_worker:v3_clean_two_image_prompt"
+    provider_version = "pi_agent_worker:v4_mask_guided_identity_preserve"
     job_id = hashlib.sha256(f"{provider_version}:{person_image}:{garment_image}:{mask_image}:{prompt}".encode("utf-8")).hexdigest()[:16]
     result_path = output_dir / "result_codex_imagegen.png"
     job_path = _codex_bridge_dir() / f"{job_id}.json"
@@ -2802,8 +2986,9 @@ def create_codex_bridge_job(person_image: Path, garment_image: Path, mask_image:
         },
         "instructions": [
             "The local Pi/Diga Agent worker consumes this job.",
-            "Pass person_image_path and garment_image_path as two separate image inputs.",
-            "Make the person in image A wear the upper-body garment from image B.",
+            "Pass person_image_path, garment_image_path, and mask_image_path as separate image inputs.",
+            "Use mask_image_path as the editable clothing area guide for image A.",
+            "Make the person in image A wear the upper-body garment from image B while preserving protected regions.",
             "Save the final image to result.target_path and mark this JSON completed.",
         ],
     }
@@ -2841,6 +3026,7 @@ def _build_codex_imagegen_prompt(prompt: str, person_image: Path, garment_image:
         "Asset type: AI virtual try-on result for a local web demo\n"
         "Primary request: Put the target upper garment onto the model/person image.\n"
         f"Input images: person target={person_image}; garment reference={garment_image}; upper-body mask guide={mask_image}\n"
+        f"{_mask_editing_contract()}\n"
         "Style/medium: realistic consumer fashion app photo result\n"
         "Composition/framing: preserve the original portrait framing and camera angle\n"
         "Constraints: preserve the person's face, hair, skin tone, body shape, pose, arms, hands, background, lighting, camera angle, and image style. "
@@ -3063,6 +3249,19 @@ def _wear_region_for_slot(slot: str) -> str:
     }.get(slot, "matching_accessory")
 
 
+def _placement_rule_for_slot(slot: str) -> str:
+    return {
+        "top": "align with shoulders, neck, chest, waist, and arm openings; preserve natural folds and occlusion by hair or arms.",
+        "outer": "place as the outermost upper-body layer; align shoulders, sleeves, opening, and hem over the inner garment.",
+        "bottom": "align with visible waist, hips, legs, and original crop; do not invent feet or extend the body.",
+        "skirt": "align with visible waist and legs; keep the original body crop and do not extend the frame.",
+        "dress": "align with visible shoulders, waist, hips, and legs; keep the original body crop and camera distance.",
+        "shoes": "apply only when feet are visible in Image A; if feet are cropped or hidden, omit shoes instead of zooming out or inventing feet.",
+        "bag": "must have a believable contact point: handbag held by a visible hand or hanging from the forearm, shoulder bag resting on the shoulder, crossbody strap crossing the torso. Never let the bag float, hover, or sit detached from the arm/body.",
+        "accessory": "place only where it naturally attaches to the visible body or clothing; do not float or cover the face unless Image A already does.",
+    }.get(slot, "place naturally on the visible body or clothing without floating.")
+
+
 def _default_wearing_instruction(slot: str) -> str:
     return {
         "top": "穿在模特上半身，保留领口、袖长、衣长和主要图案。",
@@ -3071,7 +3270,7 @@ def _default_wearing_instruction(slot: str) -> str:
         "skirt": "穿在模特下半身，保留裙长、廓形和腰线。",
         "dress": "作为连衣装覆盖上半身和下半身，保留裙长、腰线和整体廓形。",
         "shoes": "穿在模特双脚，保留鞋型、颜色和鞋底比例。",
-        "bag": "作为包袋搭配在手部或肩侧，不遮挡主体服装。",
+        "bag": "作为包袋搭配在可见手臂、手部或肩侧；手提包需要手握或挂在前臂，肩背包需要贴合肩线，不能悬空。",
         "accessory": "作为配饰自然搭配，不改变模特身份和脸部。",
     }.get(slot, "作为配饰自然搭配。")
 
@@ -3232,6 +3431,7 @@ def _build_outfit_prompt_context(plan: dict[str, Any]) -> dict[str, Any]:
                 "category_label": item.get("category_label"),
                 "wear_region": item.get("wear_region"),
                 "wearing_instruction": item.get("wearing_instruction"),
+                "placement_rule": _placement_rule_for_slot(str(item.get("slot") or item.get("category") or "accessory")),
                 "attributes": item.get("attributes") or {},
                 "note": item.get("note") or "",
             }
@@ -3252,8 +3452,10 @@ def _build_outfit_tryon_prompt(prompt_context: dict[str, Any]) -> str:
         "Full outfit virtual try-on. Image A is the target model/person. Image B is a labeled outfit reference board with an overall styling image and separate item references. "
         "Make the person in Image A wear the complete outfit described by Image B and the structured context below. "
         "Do not copy any person, face, pose, background, watermark, text, or collage layout from Image B. "
+        "Keep Image A as the absolute authority for canvas, crop, camera distance, pose, background, and visible body range. Do not zoom out or complete missing body parts just to show shoes, a bag, or other references from Image B. "
         f"Structured outfit context: {json.dumps(prompt_context, ensure_ascii=False)}\n"
-        "For each item, put it on the specified body region: upper items on upper body, lower items on lower body, dress on full body, shoes on both feet, bag/accessories naturally placed. "
+        "For each item, put it on the specified body region only when that region is visible in Image A: upper items on upper body, lower items on visible lower body, dress on visible body, shoes only if feet are visible, bag/accessories only if naturally compatible with the original crop. "
+        "Accessory logic: bags must physically attach to the person. A handbag should be held by a visible hand or hang from the forearm; a shoulder bag should rest on the shoulder; a crossbody bag should have a strap crossing the torso. Do not render floating, detached, pasted-on, or impossible bags. If Image A has no visible hand/arm/shoulder contact point, omit or minimize the bag rather than placing it illogically. "
         "Use the overall outfit reference only for styling relationship, layering, proportions, color harmony, and wearing method. "
         "Priority order: preserve Image A identity, body shape, pose, skin tone, hair, face visibility, camera angle, lighting, and background first; then preserve individual item details; then follow wearing instructions; then harmonize overall style. "
         f"Photo mode constraints: {_photo_mode_prompt_clause(str(prompt_context.get('photo_mode') or 'standard'), str(prompt_context.get('scene_label') or ''))} "
@@ -3304,15 +3506,24 @@ def _generate_outfit_body_mask(image: Image.Image, person_stage: dict[str, Any],
     mask.putalpha(alpha)
     output_path.parent.mkdir(parents=True, exist_ok=True)
     _save_png_atomically(mask, output_path)
-    editable_ratio = float(np.mean(np.array(alpha) < 128))
+    alpha_array = np.array(alpha)
+    editable_pixels = int(np.sum(alpha_array < 128))
+    protected_pixels = int(alpha_array.size - editable_pixels)
+    editable_ratio = editable_pixels / max(1, alpha_array.size)
     status = "pass" if 0.14 <= editable_ratio <= 0.72 else "warn"
     issues = [] if status == "pass" else [_issue("mask.full_body_ratio_unusual", "全身服饰区域面积不稳定", "建议使用站姿完整、衣服鞋子入镜的照片。")]
     return _stage(status, 0.78 if status == "pass" else 0.56, {
         "mask_path": str(output_path),
         "width": width,
         "height": height,
+        "editable_pixels": editable_pixels,
+        "protected_pixels": protected_pixels,
         "editable_ratio": round(editable_ratio, 4),
         "rule": "face_box_full_body_clothing_polygon",
+        "mask_semantics": {
+            "editable": "transparent_or_black_alpha_lt_128",
+            "protected": "opaque_or_white_alpha_gte_220",
+        },
     }, issues)
 
 
@@ -4423,6 +4634,15 @@ def _protected_region_difference(original: Image.Image, result: Image.Image, mas
     if not np.any(protected):
         return 255.0
     return round(float(np.mean(np.abs(a[protected] - b[protected]))), 2)
+
+
+def _mask_editable_ratio(mask_path: Path) -> float:
+    try:
+        mask = Image.open(mask_path).convert("RGBA")
+    except Exception:
+        return 0.0
+    alpha = np.array(mask.getchannel("A"))
+    return round(float(np.mean(alpha < 128)), 4)
 
 
 def _sharpness(image: Image.Image) -> float:

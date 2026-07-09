@@ -18,11 +18,15 @@ from app.tryon import (
     StaticGarmentAnalysisProvider,
     get_codex_bridge_job,
     _build_runway_google_tryon_payload,
+    _detect_person,
     _extract_image_urls_from_html,
     _extract_runway_google_image,
     _extract_xhs_note_image_urls,
     _extract_xhs_note_payload,
     _extract_top_from_note_image,
+    _fit_image_to_reference_canvas,
+    _generate_upper_body_mask,
+    _review_tryon_quality,
     _build_inspiration_style_context,
     _build_inspiration_tryon_prompt,
     _build_inspiration_reference_sheet,
@@ -72,6 +76,12 @@ def test_tryon_mock_pipeline_generates_result_and_mask() -> None:
     assert result["status"] == "generated"
     assert result["garment"]["category"] == "top"
     assert result["pipeline"]["image_edit"]["evidence"]["provider"] == "local_mock"
+    edit_contract = result["pipeline"]["edit_contract"]["evidence"]
+    assert edit_contract["strategy"] == "strong_image_editor_with_lightweight_mask"
+    assert edit_contract["model_profile"] == "nano_banana_compatible"
+    assert edit_contract["preprocessing"]["level"] == "lightweight"
+    assert edit_contract["mask"]["editable"] == "transparent_or_black_alpha_lt_128"
+    assert "protected_region_difference" in edit_contract["post_quality_checks"]
     assert result["model_plan"]["validation"]
     assert result["model_plan"]["production"]
     assert result["result"]["image_path"].startswith("/user-assets/tryon/")
@@ -97,6 +107,7 @@ def test_tryon_from_inspiration_skips_local_garment_gate() -> None:
 
     assert result["mode"] == "from_inspiration"
     assert result["pipeline"]["garment_analysis"]["status"] == "pass"
+    assert result["pipeline"]["edit_contract"]["evidence"]["mode"] == "upper_body_inspiration"
     assert result["pipeline"]["garment_analysis"]["evidence"]["skipped_local_garment_gate"] is True
     assert not any(issue["code"] == "garment.no_top" for issue in result["decision"]["blocking_errors"])
     assert result["pipeline"]["image_edit"]["evidence"]["provider"] == "local_mock"
@@ -159,6 +170,7 @@ def test_outfit_reference_board_and_prompt_cover_multi_item_context() -> None:
             {"slot": "top", "category": "top", "image_path": str(top["saved_path"]), "wearing_instruction": "穿在上半身"},
             {"slot": "bottom", "category": "bottom", "image_path": str(bottom["saved_path"]), "wearing_instruction": "穿在下半身"},
             {"slot": "shoes", "category": "shoes", "image_path": str(shoes["saved_path"]), "wearing_instruction": "穿在双脚"},
+            {"slot": "bag", "category": "bag", "image_path": str(shoes["saved_path"]), "wearing_instruction": "手提包挂在前臂"},
         ],
     }
 
@@ -175,6 +187,10 @@ def test_outfit_reference_board_and_prompt_cover_multi_item_context() -> None:
     assert "labeled outfit reference board" in prompt
     assert "mirror selfie perspective" in prompt
     assert "upper items on upper body" in prompt
+    assert "shoes only if feet are visible" in prompt
+    assert "Do not zoom out or complete missing body parts" in prompt
+    assert "handbag should be held by a visible hand or hang from the forearm" in prompt
+    assert "Do not render floating, detached, pasted-on, or impossible bags" in prompt
 
 
 def test_run_tryon_from_outfit_plan_missing_slots_are_non_blocking() -> None:
@@ -193,6 +209,8 @@ def test_run_tryon_from_outfit_plan_missing_slots_are_non_blocking() -> None:
 
     assert result["mode"] == "from_outfit_plan"
     assert result["status"] == "generated"
+    assert result["pipeline"]["edit_contract"]["evidence"]["mode"] == "outfit_body"
+    assert result["pipeline"]["edit_contract"]["evidence"]["preprocessing"]["no_heavy_human_parsing_required"] is True
     assert "下装/裙装" in result["missing_slots"]
     assert "鞋子" in result["missing_slots"]
     assert result["pipeline"]["outfit_plan"]["status"] == "warn"
@@ -218,6 +236,28 @@ def test_run_tryon_from_outfit_plan_top_and_shoes_only_reports_lower_missing() -
     assert result["status"] == "generated"
     assert result["missing_slots"] == ["下装/裙装"]
     assert result["pipeline"]["outfit_plan"]["status"] == "warn"
+
+
+def test_run_tryon_from_outfit_plan_relaxes_missed_face_for_ai_provider() -> None:
+    rng = np.random.default_rng(123)
+    scenic = Image.fromarray(rng.integers(80, 220, size=(1100, 800, 3), dtype=np.uint8), "RGB")
+    person = _read_upload_image(_png_bytes(scenic), "scenic_no_local_face.png", "person_test")
+    top = _load_upload(FIXTURE_DIR / "card_missing.jpg", "top_test")
+    plan = {
+        "title": "生活照试穿",
+        "model_photo_mode": "standard",
+        "style_reference": {"image_id": "style", "image_path": str(top["saved_path"])},
+        "items": [
+            {"slot": "top", "category": "top", "image_path": str(top["saved_path"])},
+        ],
+    }
+
+    result = run_try_on_from_outfit_plan(person, plan, MockTryOnProvider())
+
+    assert result["status"] == "generated"
+    assert result["pipeline"]["person_detection"]["status"] == "warn"
+    assert result["pipeline"]["person_detection"]["evidence"]["fallback"] == "ai_tryon_identity_preserve"
+    assert not any(issue["code"] == "person.no_face" for issue in result["decision"]["blocking_errors"])
 
 
 def test_run_tryon_from_outfit_plan_generates_with_mock_provider() -> None:
@@ -322,6 +362,33 @@ def test_tryon_mask_uses_transparent_area_for_upper_body_editing() -> None:
     assert mask.size == person["image"].size
     assert np.any(alpha == 0)
     assert np.any(alpha == 255)
+    assert result["pipeline"]["upper_body_mask"]["evidence"]["editable_pixels"] > 0
+    assert result["pipeline"]["upper_body_mask"]["evidence"]["protected_pixels"] > 0
+    assert result["pipeline"]["upper_body_mask"]["evidence"]["mask_semantics"]["protected"] == "opaque_or_white_alpha_gte_220"
+
+
+def test_tryon_quality_fails_when_mask_protected_region_changes() -> None:
+    person = _load_upload(FIXTURE_DIR / "season_spring_bright.jpg", "person_test")
+    person_stage = _detect_person(person["image"])
+    work_dir = TRYON_OUTPUT_DIR / "test_mask_protected_region"
+    work_dir.mkdir(parents=True, exist_ok=True)
+    mask_stage = _generate_upper_body_mask(
+        person["image"],
+        person_stage,
+        work_dir / "mask.png",
+    )
+    mask_alpha = np.array(Image.open(mask_stage["evidence"]["mask_path"]).convert("RGBA").getchannel("A"))
+    result_pixels = np.array(person["image"].convert("RGB"))
+    result_pixels[mask_alpha > 220] = (0, 0, 0)
+    result = Image.fromarray(result_pixels, "RGB")
+    result_path = work_dir / "bad_result.png"
+    result.save(result_path)
+
+    review = _review_tryon_quality(person["image"], result_path, person_stage, Path(mask_stage["evidence"]["mask_path"]))
+
+    assert review["status"] == "fail"
+    assert review["evidence"]["mask_contract"] == "fail_if_protected_face_or_background_changes"
+    assert any(issue["code"] == "quality.background_changed" for issue in review["issues"])
 
 
 def test_tryon_blocks_when_person_image_has_no_face() -> None:
@@ -529,20 +596,44 @@ def test_tryon_capabilities_reports_image_edit_pending(monkeypatch: pytest.Monke
     assert capabilities["checks"]["openai_compatible_images_edit"] is False
 
 
-def test_runway_google_payload_uses_two_inline_images() -> None:
+def test_runway_google_payload_uses_person_garment_and_mask_images() -> None:
     person = TRYON_MODEL_FIXTURE_DIR / "male_medium_1.png"
     garment = FIXTURE_DIR / "card_missing.jpg"
 
-    payload = _build_runway_google_tryon_payload(person, garment, "只替换上衣。")
+    mask = TRYON_OUTPUT_DIR / "test_runway_payload_mask.png"
+    Image.new("RGBA", (100, 100), (255, 255, 255, 255)).save(mask)
+
+    payload = _build_runway_google_tryon_payload(person, garment, mask, "只替换上衣。")
     parts = payload["contents"][0]["parts"]
 
     assert payload["generationConfig"]["responseModalities"] == ["TEXT", "IMAGE"]
     assert payload["generationConfig"]["maxOutputTokens"] == 32768
     assert payload["safetySettings"]
-    assert sum(1 for part in parts if "inlineData" in part) == 2
+    assert sum(1 for part in parts if "inlineData" in part) == 3
     assert parts[0]["inlineData"]["mimeType"].startswith("image/")
     assert parts[1]["inlineData"]["data"]
-    assert "试穿" in parts[2]["text"]
+    assert parts[2]["inlineData"]["data"]
+    assert "试穿" in parts[3]["text"]
+    assert "Image C is the edit mask" in parts[3]["text"]
+    assert "protected areas and must remain unchanged" in parts[3]["text"]
+    with Image.open(person) as image:
+        width, height = image.size
+    assert f"Image A is {width}x{height}px" in parts[3]["text"]
+    assert "same canvas aspect ratio" in parts[3]["text"]
+    assert "Image A is the framing authority" in parts[3]["text"]
+    assert "do not invent them" in parts[3]["text"]
+
+
+def test_fit_image_to_reference_canvas_preserves_model_size() -> None:
+    reference = TRYON_MODEL_FIXTURE_DIR / "female_medium_1.png"
+    generated = Image.new("RGB", (1195, 896), "white")
+
+    normalized, evidence = _fit_image_to_reference_canvas(generated, reference)
+
+    with Image.open(reference) as image:
+        assert normalized.size == image.size
+    assert evidence["normalized"] is True
+    assert evidence["rule"] == "center_crop_to_image_a_canvas"
 
 
 def test_runway_google_extracts_inline_image() -> None:

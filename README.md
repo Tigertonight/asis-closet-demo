@@ -63,6 +63,39 @@ python scripts/check_runtime_readiness.py --strict
 python scripts/asis_runtime_smoke.py http://127.0.0.1:8002
 ```
 
+## 内测上线 Demo
+
+给外部同学体验时，不要直接使用本地开发默认值。推荐使用 Docker/Compose 或服务器守护进程运行 `scripts/deploy_demo.sh`：
+
+```bash
+cp .env.demo.example .env.demo
+# 填写 .env.demo 中的 ASIS_AUTH_SECRET、模型 key 和 sidecar 配置
+docker compose -f docker-compose.demo.yml up --build -d
+```
+
+非 Docker 服务器也可以在配置好 `.env` / 环境变量后运行：
+
+```bash
+ASIS_ENV=demo ASIS_PUBLIC_DEMO=1 ./scripts/deploy_demo.sh
+```
+
+公开 demo 必须满足：
+
+- `ASIS_AUTH_SECRET` 为强随机值，不能使用默认值。
+- `ASIS_AUTH_RETURN_DEV_CODE=0`，避免把验证码返回给前端。
+- `ASIS_AUTH_ALLOW_MOCK_CODES=0`，避免公网接受固定验证码。
+- `ASIS_MAX_REQUEST_BODY_MB`、`ASIS_UPLOAD_RATE_LIMIT`、`ASIS_AI_RATE_LIMIT` 已设置。
+- `scripts/cleanup_user_outputs.py` 定期清理 `outputs/users` 下的过期体验数据。
+- `scripts/wait_for_demo_readiness.py --require-sidecars` 通过后再放量。
+
+部署后检查：
+
+```bash
+curl http://127.0.0.1:8002/health
+curl http://127.0.0.1:8002/health/dependencies
+python scripts/check_runtime_readiness.py --strict
+```
+
 也可以让脚本自动拉起全栈并验收，结束后自动清理进程：
 
 ```bash

@@ -4,6 +4,7 @@
 .env
 .env.*
 !.env.example
+!.env.demo.example
 .venv/
 venv/
 env/
@@ -17,6 +18,8 @@ __pycache__/
 .coverage
 htmlcov/
 tests/results/
+tests/fixtures/tryon_models/_backup_*/
+tests/fixtures/tryon_models/female_models_triptych_*.png
 
 # Runtime uploads and generated artifacts
 uploads/

@@ -7,6 +7,7 @@ from fastapi.testclient import TestClient
 from PIL import Image
 
 import app.auth as auth
+import app.main as main_module
 import app.storage as storage
 from app.main import app
 
@@ -68,6 +69,64 @@ def test_phone_code_rejects_wrong_and_reused_code(monkeypatch, tmp_path: Path) -
     assert wrong.status_code == 400
     assert ok.status_code == 200
     assert reused.status_code == 400
+
+
+def test_public_demo_does_not_return_dev_code(monkeypatch, tmp_path: Path) -> None:
+    _use_tmp_runtime(monkeypatch, tmp_path)
+    monkeypatch.setenv("ASIS_ENV", "demo")
+    monkeypatch.setenv("ASIS_AUTH_SECRET", "test-public-secret-that-is-not-default")
+    monkeypatch.delenv("ASIS_AUTH_RETURN_DEV_CODE", raising=False)
+    client = TestClient(app)
+
+    start = client.post("/auth/phone/start", json={"phone": "13800000021"}).json()
+
+    assert start["status"] == "sent"
+    assert "dev_code" not in start
+
+
+def test_public_demo_rejects_default_auth_secret(monkeypatch, tmp_path: Path) -> None:
+    _use_tmp_runtime(monkeypatch, tmp_path)
+    monkeypatch.setenv("ASIS_ENV", "demo")
+    monkeypatch.delenv("ASIS_AUTH_SECRET", raising=False)
+    client = TestClient(app)
+
+    response = client.post("/auth/phone/start", json={"phone": "13800000022"})
+
+    assert response.status_code == 500
+    assert response.json()["error"]["code"] == "request.failed"
+
+
+def test_auth_rate_limit_is_enforced(monkeypatch, tmp_path: Path) -> None:
+    _use_tmp_runtime(monkeypatch, tmp_path)
+    monkeypatch.setenv("ASIS_DISABLE_RATE_LIMIT", "0")
+    monkeypatch.setenv("ASIS_AUTH_RATE_LIMIT", "1")
+    monkeypatch.setenv("ASIS_AUTH_RATE_WINDOW_SECONDS", "3600")
+    client = TestClient(app)
+    headers = {"x-forwarded-for": "203.0.113.77"}
+
+    first = client.post("/auth/phone/start", json={"phone": "13800000023"}, headers=headers)
+    second = client.post("/auth/phone/start", json={"phone": "13800000024"}, headers=headers)
+
+    assert first.status_code == 200
+    assert second.status_code == 429
+    assert second.json()["error"]["code"] == "request.rate_limited"
+
+
+def test_xhs_image_proxy_uses_disk_cache(monkeypatch, tmp_path: Path) -> None:
+    cache_dir = tmp_path / "xhs_images"
+    cache_dir.mkdir(parents=True)
+    monkeypatch.setattr(main_module, "XHS_IMAGE_CACHE_DIR", cache_dir)
+    source_url = "https://sns-webpic-qc.xhscdn.com/path/to/cover!nc_n_webp_mw_1"
+    image_bytes = _png_bytes(Image.new("RGB", (12, 12), "#ff4f86"))
+
+    written = main_module._write_xhs_image_cache(source_url, image_bytes, "image/png")
+    cached = main_module._cached_xhs_image_response(source_url)
+
+    assert written.status_code == 200
+    assert cached is not None
+    assert cached.status_code == 200
+    assert any(path.suffix == ".png" for path in cache_dir.iterdir())
+    assert any(path.suffix == ".json" for path in cache_dir.iterdir())
 
 
 def test_closet_requires_login_and_isolates_user_data(monkeypatch, tmp_path: Path) -> None:

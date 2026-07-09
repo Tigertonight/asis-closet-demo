@@ -22,12 +22,13 @@ load_dotenv() {
     export "$assignment"
   done < <("$PYTHON_BIN" - "$env_file" <<'PY'
 from pathlib import Path
+import os
 import sys
 from dotenv import dotenv_values
 
 env_file = Path(sys.argv[1])
 for key, value in dotenv_values(env_file).items():
-    if key and value is not None:
+    if key and value is not None and key not in os.environ:
         print(f"{key}={value}", end="\0")
 PY
   )
@@ -38,6 +39,8 @@ load_dotenv
 APP_HOST="${APP_HOST:-127.0.0.1}"
 APP_PORT="${APP_PORT:-8002}"
 ASIS_XHS_HEADLESS="${ASIS_XHS_HEADLESS:-true}"
+ASIS_OPENCLAW_BRIDGE_HOST="${ASIS_OPENCLAW_BRIDGE_HOST:-127.0.0.1}"
+ASIS_OPENCLAW_BRIDGE_PORT="${ASIS_OPENCLAW_BRIDGE_PORT:-18789}"
 
 export STYLIST_OPENCLAW_CHAT_URL="${STYLIST_OPENCLAW_CHAT_URL:-http://127.0.0.1:18789/api/asis/chat}"
 export STYLIST_OPENCLAW_MEMORY_URL="${STYLIST_OPENCLAW_MEMORY_URL:-http://127.0.0.1:18789/api/asis/memory}"
@@ -46,8 +49,8 @@ export ASIS_TOOL_BASE_URL="${ASIS_TOOL_BASE_URL:-http://${APP_HOST}:${APP_PORT}}
 export ASIS_XHS_MCP_URL="${ASIS_XHS_MCP_URL:-http://127.0.0.1:18060/mcp}"
 export ASIS_XHS_MCP_MODE="${ASIS_XHS_MCP_MODE:-streamable-http}"
 export ASIS_XHS_ALLOWED_TOOLS="${ASIS_XHS_ALLOWED_TOOLS:-check_login_status,search_feeds,get_feed_detail,list_feeds}"
-export ASIS_OPENCLAW_BRIDGE_HOST="${ASIS_OPENCLAW_BRIDGE_HOST:-127.0.0.1}"
-export ASIS_OPENCLAW_BRIDGE_PORT="${ASIS_OPENCLAW_BRIDGE_PORT:-18789}"
+export ASIS_OPENCLAW_BRIDGE_HOST
+export ASIS_OPENCLAW_BRIDGE_PORT
 export OPENCLAW_HOME="${OPENCLAW_HOME:-$ROOT_DIR/asis-agent-runtime/.openclaw-home}"
 export OPENCLAW_STATE_DIR="${OPENCLAW_STATE_DIR:-$ROOT_DIR/asis-agent-runtime/.openclaw}"
 export OPENCLAW_CONFIG_PATH="${OPENCLAW_CONFIG_PATH:-$ROOT_DIR/asis-agent-runtime/config/openclaw.local.json}"
@@ -74,6 +77,29 @@ require_file "$PYTHON_BIN"
 require_file "$UVICORN_BIN"
 require_file "$ROOT_DIR/asis-agent-runtime/scripts/start-asis-openclaw-bridge.sh"
 require_file "$ROOT_DIR/asis-agent-runtime/scripts/start-xhs-mcp-go.sh"
+
+kill_listener_on_port() {
+  local port="$1"
+  local pids
+  pids="$(lsof -tiTCP:"$port" -sTCP:LISTEN -n -P 2>/dev/null || true)"
+  if [ -n "$pids" ]; then
+    echo "Stopping stale listener(s) on port $port: $pids"
+    # shellcheck disable=SC2086
+    kill $pids >/dev/null 2>&1 || true
+    sleep 1
+    pids="$(lsof -tiTCP:"$port" -sTCP:LISTEN -n -P 2>/dev/null || true)"
+    if [ -n "$pids" ]; then
+      # shellcheck disable=SC2086
+      kill -9 $pids >/dev/null 2>&1 || true
+    fi
+  fi
+}
+
+if [ "${ASIS_SKIP_PORT_CLEANUP:-false}" != "true" ]; then
+  kill_listener_on_port "$APP_PORT"
+  kill_listener_on_port "$ASIS_OPENCLAW_BRIDGE_PORT"
+  kill_listener_on_port "18060"
+fi
 
 echo "Starting asis OpenClaw bridge..."
 (

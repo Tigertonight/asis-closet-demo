@@ -182,7 +182,7 @@ def append_stylist_message(session_id: str, role: str, content: str, metadata: d
     return _write_session(session)
 
 
-def recent_conversation(session_id: str, limit: int = 8) -> list[dict[str, str]]:
+def recent_conversation(session_id: str, limit: int = 8) -> list[dict[str, Any]]:
     try:
         session = get_stylist_session(session_id)
     except HTTPException:
@@ -192,5 +192,8 @@ def recent_conversation(session_id: str, limit: int = 8) -> list[dict[str, str]]
         role = message.get("role")
         content = str(message.get("content") or "").strip()
         if role in {"user", "assistant"} and content:
-            conversation.append({"role": role, "content": content})
+            item: dict[str, Any] = {"role": role, "content": content}
+            if isinstance(message.get("metadata"), dict) and message["metadata"]:
+                item["metadata"] = message["metadata"]
+            conversation.append(item)
     return conversation

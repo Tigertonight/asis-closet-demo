@@ -95,21 +95,11 @@ def process_job(path: Path, job: dict[str, Any], provider: str, model: str, time
     target_path.parent.mkdir(parents=True, exist_ok=True)
     person_path = Path(job["input"]["person_image_path"])
     garment_path = Path(job["input"]["garment_image_path"])
+    mask_path = Path(job["input"]["mask_image_path"])
     prompt = build_worker_prompt(job, target_path.name)
     start_time = time.time()
 
-    cmd = [
-        "pi",
-        "--provider",
-        provider,
-        "--model",
-        model,
-        "--no-session",
-        "-p",
-        f"@{person_path}",
-        f"@{garment_path}",
-        prompt,
-    ]
+    cmd = build_pi_command(provider, model, person_path, garment_path, mask_path, prompt)
     returncode, command_output = run_pi_command_until_image(cmd, target_path.parent, target_path, start_time, timeout)
     job.setdefault("worker", {})["command_output"] = command_output[-4000:]
     if returncode != 0 and not target_path.exists():
@@ -173,7 +163,23 @@ def run_pi_command_until_image(cmd: list[str], cwd: Path, target_path: Path, sta
         output.flush()
         output.seek(0)
         command_output = output.read()
-        return process.returncode if process.returncode is not None else 0, command_output
+    return process.returncode if process.returncode is not None else 0, command_output
+
+
+def build_pi_command(provider: str, model: str, person_path: Path, garment_path: Path, mask_path: Path, prompt: str) -> list[str]:
+    return [
+        "pi",
+        "--provider",
+        provider,
+        "--model",
+        model,
+        "--no-session",
+        "-p",
+        f"@{person_path}",
+        f"@{garment_path}",
+        f"@{mask_path}",
+        prompt,
+    ]
 
 
 def image_ready(path: Path, started_at: float) -> bool:
@@ -190,8 +196,11 @@ def image_ready(path: Path, started_at: float) -> bool:
 
 
 def build_worker_prompt(job: dict[str, Any], target_filename: str) -> str:
+    job_prompt = str(job.get("prompt") or "").strip()
+    extra_prompt = f"\nAdditional job prompt:\n{job_prompt}" if job_prompt else ""
     return (
-        "You are given two images. Image A is the target person/model photo. Image B is the clothing reference photo. "
+        "You are given three inputs. Image A is the target person/model photo. Image B is the clothing reference photo. Image C is the edit mask for Image A. "
+        "Mask contract: black or transparent pixels in Image C are the editable clothing region; white or opaque pixels are protected and must remain unchanged. "
         "Generate one realistic virtual try-on image: make the person in Image A wear the upper-body garment from Image B. "
         "Use Image A as the base image. Preserve the person's face, hair, skin tone, body shape, arms, pose, camera angle, lighting, and background. "
         "Only replace the upper-body clothing. Match Image B's garment color, material, neckline, sleeve length, structure, logo/print, and visible details as closely as possible. "
@@ -199,6 +208,7 @@ def build_worker_prompt(job: dict[str, Any], target_filename: str) -> str:
         "Do not leave the original shirt visible under the replaced garment unless it would naturally be visible at the collar or hem. "
         "Do not output a comparison, collage, reference board, labels, UI, watermark, or extra objects. "
         f"Save the final generated image in the current working directory as `{target_filename}` if possible."
+        f"{extra_prompt}"
     )
 
 

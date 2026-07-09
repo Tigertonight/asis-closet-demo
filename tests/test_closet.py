@@ -105,6 +105,20 @@ def test_closet_upload_import_creates_manifest_item(monkeypatch, tmp_path: Path)
     assert (tmp_path / "closet_manifest.json").exists()
 
 
+def test_closet_cutout_quality_flags_sparse_reference(tmp_path: Path) -> None:
+    cutout = Image.new("RGBA", (320, 320), (255, 255, 255, 0))
+    for y in range(150, 170):
+        for x in range(150, 170):
+            cutout.putpixel((x, y), (220, 60, 105, 255))
+    cutout_path = tmp_path / "sparse_cutout.png"
+    cutout.save(cutout_path)
+
+    quality = closet._closet_cutout_quality("top", cutout_path, 0.78, ["semantic_segmentation_mask"])
+
+    assert quality["status"] in {"review", "rejected"}
+    assert "foreground_too_sparse" in quality["reasons"]
+
+
 def test_closet_upload_rejects_empty_image(monkeypatch, tmp_path: Path) -> None:
     _use_tmp_closet(monkeypatch, tmp_path)
     client = _auth_client()
@@ -146,11 +160,14 @@ def test_closet_preferences_persist_current_model(monkeypatch, tmp_path: Path) -
     _use_tmp_closet(monkeypatch, tmp_path)
     client = _auth_client()
 
-    updated = client.patch("/closet/preferences", json={"current_model_id": "male_slim_1"})
+    updated = client.patch("/closet/preferences", json={"current_model_id": "male_slim_1", "current_stylist_session_id": "session_123"})
 
     assert updated.status_code == 200
     assert updated.json()["current_model_id"] == "male_slim_1"
-    assert client.get("/closet/preferences").json()["current_model_id"] == "male_slim_1"
+    assert updated.json()["current_stylist_session_id"] == "session_123"
+    preferences = client.get("/closet/preferences").json()
+    assert preferences["current_model_id"] == "male_slim_1"
+    assert preferences["current_stylist_session_id"] == "session_123"
 
 
 def test_webpage_image_url_extraction() -> None:
@@ -189,7 +206,7 @@ def test_closet_top_item_can_enter_tryon(monkeypatch, tmp_path: Path) -> None:
     assert response.status_code == 200
     data = response.json()
     assert data["input"]["garment_image_id"]
-    assert data["status"] in {"failed", "pending", "generated", "needs_retake"}
+    assert data["status"] in {"failed", "pending", "generated", "review", "needs_retake"}
     if data["status"] == "failed":
         assert data["decision"]["user_message"]
 
@@ -447,7 +464,49 @@ def test_asis_tryon_allows_soft_preset_female_model(monkeypatch, tmp_path: Path)
     data = response.json()
     assert data["status"] == "generated"
     assert data["pipeline"]["input_quality"]["status"] == "warn"
-    assert data["pipeline"]["input_quality"]["evidence"]["relaxed_for_preset_model"] is True
+    assert not data["decision"]["blocking_errors"]
+
+
+def test_asis_tryon_review_result_is_saved_to_records(monkeypatch, tmp_path: Path) -> None:
+    class BackgroundChangedProvider(tryon.TryOnProvider):
+        mode = "background_changed_test"
+
+        def edit(self, person_image: Path, garment_image: Path, mask_image: Path, prompt: str, output_dir: Path) -> dict:
+            person = Image.open(person_image).convert("RGB")
+            output_path = output_dir / "result_background_changed.png"
+            Image.new("RGB", person.size, "#050505").save(output_path, "PNG")
+            return {
+                "stage": tryon._stage("pass", 0.5, {"provider": self.mode, "result_path": str(output_path)}, []),
+                "image_path": output_path,
+            }
+
+    _use_tmp_closet(monkeypatch, tmp_path)
+    monkeypatch.setattr(tryon, "_default_provider", lambda: BackgroundChangedProvider())
+    client = _auth_client()
+    top = _create_closet_item(client, "top.png", "top", (220, 60, 105))
+    bottom = _create_closet_item(client, "bottom.png", "bottom", (40, 60, 90))
+    shoes = _create_closet_item(client, "shoes.png", "shoes", (20, 20, 20))
+    outfit = client.post(
+        "/closet/outfits",
+        json={"item_ids": [top["item_id"], bottom["item_id"], shoes["item_id"]], "title": "需复核试穿"},
+    ).json()
+    person = (Path(__file__).resolve().parent / "fixtures" / "tryon_models" / "female_medium_1.png").read_bytes()
+
+    response = client.post(
+        "/asis/try-on/from-outfit",
+        data={"outfit_id": outfit["outfit_id"]},
+        files={"person_image": ("female_medium_1.png", person, "image/png")},
+    )
+
+    assert response.status_code == 200
+    data = response.json()
+    assert data["status"] == "review"
+    assert data["record"]["status"] == "review"
+    assert data["record"]["image_path"] == data["result"]["image_path"]
+    assert data["record"]["quality_review"]["status"] == "fail"
+    listed = client.get("/closet/tryon-records").json()
+    assert listed["total"] == 1
+    assert listed["records"][0]["record_id"] == data["record"]["record_id"]
 
 
 def test_mock_tryon_from_outfit_creates_local_record(monkeypatch, tmp_path: Path) -> None:
@@ -518,6 +577,9 @@ def test_asis_demo_page_is_available(monkeypatch, tmp_path: Path) -> None:
     assert "怎么穿" in response.text
     assert "requested_skills" in response.text
     assert 'session_id: state.currentSessionId || "asis-inspiration"' in response.text
+    assert 'stylistSessionStoreKey = "asis_demo_current_stylist_session"' in response.text
+    assert "writeStore(stylistSessionStoreKey, session.session_id)" in response.text
+    assert "current_stylist_session_id" in response.text
     assert 'id="sessionPickerBtn"' in response.text
     assert 'id="sessionSheetNew"' in response.text
     assert 'class="session-sidebar"' in response.text
@@ -526,9 +588,17 @@ def test_asis_demo_page_is_available(monkeypatch, tmp_path: Path) -> None:
     assert 'id="sessionConfirmDeleteBtn"' in response.text
     assert 'id="newSessionBtn"' not in response.text
     assert 'id="aiPromptText"' not in response.text
-    assert "调用小红书灵感 skill" in response.text
+    assert "找小红书参考" in response.text
     assert "xhs-note-card" in response.text
     assert "ai-toolchain" in response.text
+    assert "ai-tool-history" in response.text
+    assert "data-ai-toggle-tools" in response.text
+    assert "function renderAssistantMarkdown" in response.text
+    assert "ai-md-list" in response.text
+    assert "function normalizeAIInputText" in response.text
+    assert "insertNormalizedPromptText" in response.text
+    assert "is-generating" in response.text
+    assert '.replace(/\\r\\n?/g, "\\n")' in response.text
 
 
 def test_wearwow_demo_route_keeps_asis_compatibility(monkeypatch, tmp_path: Path) -> None:
