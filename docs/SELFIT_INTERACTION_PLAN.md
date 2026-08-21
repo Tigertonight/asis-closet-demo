@@ -1,8 +1,8 @@
-# AS IS / 适我 Product Interaction Plan
+# selfit / selfit Product Interaction Plan
 
 ## 1. Product Frame
 
-`AS IS` is the unified product name. Use `适我` only when a Chinese product name is needed.
+`selfit` is the unified product name. Use `selfit` only when a Chinese product name is needed.
 
 The main product should combine three existing or planned atomic abilities:
 
@@ -18,7 +18,7 @@ The first screen must be useful immediately. It should answer: "What can I wear 
 
 Content:
 
-- Left: `AS IS`.
+- Left: `selfit`.
 - Right: current city, temperature range, weather icon or short weather text.
 
 Interaction:
@@ -224,7 +224,7 @@ Entry:
 Landing behavior:
 
 - Enter directly at upload step.
-- Use the AS IS warm light visual system.
+- Use the selfit warm light visual system.
 - Do not show algorithm/debug content in the primary flow.
 
 Upload step:
@@ -296,7 +296,7 @@ Inspiration feed:
 
 Do now:
 
-- Rename visible product name to `AS IS` / `适我`.
+- Rename visible product name to `selfit` / `selfit`.
 - Home: top bar, today recommendation, activity row, inspiration feed.
 - Wire color test widget directly to upload.
 - Outfit detail page from home/inspiration cards.

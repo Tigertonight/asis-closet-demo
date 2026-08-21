@@ -1,4 +1,4 @@
-# asis Demo 主数据表设计
+# selfit Demo 主数据表设计
 
 本项目 V1 使用本地 JSON manifest 和文件目录实现，字段按未来数据库表设计。后续迁移到 SQLite / Postgres 时，可把 manifest 中的对象一一映射为下列表。
 

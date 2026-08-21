@@ -26,10 +26,10 @@ pip install -r requirements-ai.txt
 cp .env.example .env
 ```
 
-如果 `.env` 已经存在，可以只补 asis 的非敏感运行默认项，不覆盖已有 key：
+如果 `.env` 已经存在，可以只补 selfit 的非敏感运行默认项，不覆盖已有 key：
 
 ```bash
-python scripts/sync_asis_env.py
+python scripts/sync_selfit_env.py
 ```
 
 配置完成后检查真实能力是否齐全：
@@ -44,23 +44,23 @@ python scripts/check_runtime_readiness.py
 python scripts/check_runtime_readiness.py --strict
 ```
 
-本地完整试用可以一键启动 FastAPI、asis OpenClaw bridge 和小红书 MCP：
+本地完整试用可以一键启动 FastAPI、selfit OpenClaw bridge 和小红书 MCP：
 
 ```bash
-./scripts/start_asis_full_stack.sh
+./scripts/start_selfit_full_stack.sh
 ```
 
 默认地址：
 
-- asis 页面：`http://127.0.0.1:8002/asis/demo`
-- 运行检查：`http://127.0.0.1:8002/asis/runtime-readiness`
-- OpenClaw bridge：`http://127.0.0.1:18789/api/asis/chat`
+- selfit 页面：`http://127.0.0.1:8002/selfit/demo`
+- 运行检查：`http://127.0.0.1:8002/selfit/runtime-readiness`
+- OpenClaw bridge：`http://127.0.0.1:18789/api/selfit/chat`
 - 小红书 MCP：`http://127.0.0.1:18060/mcp`
 
 启动后可运行轻量运行态检查：
 
 ```bash
-python scripts/asis_runtime_smoke.py http://127.0.0.1:8002
+python scripts/selfit_runtime_smoke.py http://127.0.0.1:8002
 ```
 
 ## 内测上线 Demo
@@ -69,22 +69,22 @@ python scripts/asis_runtime_smoke.py http://127.0.0.1:8002
 
 ```bash
 cp .env.demo.example .env.demo
-# 填写 .env.demo 中的 ASIS_AUTH_SECRET、模型 key 和 sidecar 配置
+# 填写 .env.demo 中的 SELFIT_AUTH_SECRET、模型 key 和 sidecar 配置
 docker compose -f docker-compose.demo.yml up --build -d
 ```
 
 非 Docker 服务器也可以在配置好 `.env` / 环境变量后运行：
 
 ```bash
-ASIS_ENV=demo ASIS_PUBLIC_DEMO=1 ./scripts/deploy_demo.sh
+SELFIT_ENV=demo SELFIT_PUBLIC_DEMO=1 ./scripts/deploy_demo.sh
 ```
 
 公开 demo 必须满足：
 
-- `ASIS_AUTH_SECRET` 为强随机值，不能使用默认值。
-- `ASIS_AUTH_RETURN_DEV_CODE=0`，避免把验证码返回给前端。
-- `ASIS_AUTH_ALLOW_MOCK_CODES=0`，避免公网接受固定验证码。
-- `ASIS_MAX_REQUEST_BODY_MB`、`ASIS_UPLOAD_RATE_LIMIT`、`ASIS_AI_RATE_LIMIT` 已设置。
+- `SELFIT_AUTH_SECRET` 为强随机值，不能使用默认值。
+- `SELFIT_AUTH_RETURN_DEV_CODE=0`，避免把验证码返回给前端。
+- `SELFIT_AUTH_ALLOW_MOCK_CODES=0`，避免公网接受固定验证码。
+- `SELFIT_MAX_REQUEST_BODY_MB`、`SELFIT_UPLOAD_RATE_LIMIT`、`SELFIT_AI_RATE_LIMIT` 已设置。
 - `scripts/cleanup_user_outputs.py` 定期清理 `outputs/users` 下的过期体验数据。
 - `scripts/wait_for_demo_readiness.py --require-sidecars` 通过后再放量。
 
@@ -99,13 +99,13 @@ python scripts/check_runtime_readiness.py --strict
 也可以让脚本自动拉起全栈并验收，结束后自动清理进程：
 
 ```bash
-python scripts/asis_full_stack_acceptance.py
+python scripts/selfit_full_stack_acceptance.py
 ```
 
 当 `.env` 已经配置好模型 key，并希望严格要求所有真实能力就绪时：
 
 ```bash
-python scripts/asis_full_stack_acceptance.py --strict
+python scripts/selfit_full_stack_acceptance.py --strict
 ```
 
 严格模式会实际调用一次 `/stylist/chat`，因此模型 key 无效、额度不足、provider 不通都会让验收失败，而不是只检查变量是否存在。
@@ -114,11 +114,12 @@ python scripts/asis_full_stack_acceptance.py --strict
 
 完整用户试用能力对应关系：
 
-- 多品类自动入柜：`requirements-ai.txt` 中的 `torch`、`transformers`，默认模型为 `mattmdjaga/segformer_b2_clothes`。
-- 透明 PNG 边缘精修：`requirements-ai.txt` 中的 `rembg`、`onnxruntime`，可用 `ASIS_REMBG_ENABLED=0` 关闭。
+- AI 单品提取与抠图：配置现有的 `TRYON_OPENAI_BASE_URL` + `TRYON_OPENAI_API_KEY`（或同等 OpenAI 兼容配置）后，入柜时会优先要求图片编辑模型生成保留原面料细节的透明 PNG。它与 AI 试穿共用 `TRYON_IMAGE_MODEL`，默认模型为 `nano-banana`；可用 `SELFIT_GARMENT_AI_ENABLED=0` 关闭该路径。
+- 多品类本地兜底：当 AI 未配置、返回不透明背景、质量不足或调用失败时，会自动回退到 `requirements-ai.txt` 中的 `torch`、`transformers`（默认 `mattmdjaga/segformer_b2_clothes`），再回退到原有上衣检测器。
+- 透明 PNG 边缘精修：本地兜底链路会使用 `requirements-ai.txt` 中的 `rembg`、`onnxruntime`，可用 `SELFIT_REMBG_ENABLED=0` 关闭。
 - 真实试穿图生成：配置 `TRYON_OPENAI_BASE_URL` + `TRYON_OPENAI_API_KEY`，或配置 `TRYON_RUNWAY_GOOGLE_URL` + `TRYON_RUNWAY_GOOGLE_API_KEY`。
-- AI 穿搭师：启动独立 OpenClaw / asis sidecar，并配置 `STYLIST_OPENCLAW_CHAT_URL`、`STYLIST_OPENCLAW_MEMORY_URL`。
-- 小红书搜索依据：启动小红书 MCP sidecar，并配置 `ASIS_XHS_MCP_URL`。
+- AI 穿搭师：启动独立 OpenClaw / selfit sidecar，并配置 `STYLIST_OPENCLAW_CHAT_URL`、`STYLIST_OPENCLAW_MEMORY_URL`。
+- 小红书搜索依据：启动小红书 MCP sidecar，并配置 `SELFIT_XHS_MCP_URL`。
 
 ## 上传分析
 

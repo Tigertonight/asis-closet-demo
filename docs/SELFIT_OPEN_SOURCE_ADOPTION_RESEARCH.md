@@ -1,11 +1,11 @@
-# asis 开源方案采用调研
+# selfit 开源方案采用调研
 
 ## 结论
 
 优先把下一阶段拆成三条可落地链路：
 
 1. **衣物分割 / 抠图**：先接 `mattmdjaga/segformer_b2_clothes` 或 FASHN Human Parser 做多品类 semantic mask，再用 `rembg` 或 BiRefNet 做边缘透明化精修。
-2. **AI 穿搭师 Agent**：继续使用独立 `asis-agent-runtime` + 最新 OpenClaw fork 的 sidecar 方案，不把 Agent runtime 直接耦合进 FastAPI。
+2. **AI 穿搭师 Agent**：继续使用独立 `selfit-agent-runtime` + 最新 OpenClaw fork 的 sidecar 方案，不把 Agent runtime 直接耦合进 FastAPI。
 3. **小红书搜索 / 图文依据**：主服务只保留 provider interface。真实搜索优先接 MCP / Playwright sidecar，避免把登录态、反检测和抓取风险放进产品主进程。
 
 ## 衣物分割与抠图
@@ -53,7 +53,7 @@
 
 ### 采用判断
 
-- 当前 asis 试穿先保持上衣链路和 mock 组合试穿。
+- 当前 selfit 试穿先保持上衣链路和 mock 组合试穿。
 - 下一阶段如果要本地开源试穿，优先试 CatVTON；如果只是验证效果，可并行试 IDM-VTON，但注意许可证。
 - 试穿模型建议继续 provider 化，不与衣橱/Agent 强耦合。
 
@@ -61,18 +61,18 @@
 
 ### 推荐方案
 
-继续使用 `asis-agent-runtime` 独立 sidecar，并基于最新版 OpenClaw fork 落地：
+继续使用 `selfit-agent-runtime` 独立 sidecar，并基于最新版 OpenClaw fork 落地：
 
 - OpenClaw 负责 session、memory、skills、tools、multi-agent routing。
-- FastAPI 只暴露 asis tools：
-  - `asis_closet_search`
-  - `asis_get_item`
-  - `asis_compose_outfit`
-  - `asis_save_outfit`
-  - `asis_tryon_from_outfit`
-  - `asis_xhs_search`
-  - `asis_xhs_fetch_note`
-  - `asis_style_kb_search`
+- FastAPI 只暴露 selfit tools：
+  - `selfit_closet_search`
+  - `selfit_get_item`
+  - `selfit_compose_outfit`
+  - `selfit_save_outfit`
+  - `selfit_tryon_from_outfit`
+  - `selfit_xhs_search`
+  - `selfit_xhs_fetch_note`
+  - `selfit_style_kb_search`
 - FastAPI 不 import OpenClaw 内部代码。
 - 模型 key 失效必须返回 `ai_unavailable`，不走假兜底。
 
@@ -89,12 +89,12 @@
 
 ### 2026-07-04 可用 MCP 调研结论
 
-当前小红书 / RedNote 方向已有多种开源 MCP server，可以直接作为 asis 穿搭师的搜索依据来源接入：
+当前小红书 / RedNote 方向已有多种开源 MCP server，可以直接作为 selfit 穿搭师的搜索依据来源接入：
 
 - `xpzouying/xiaohongshu-mcp`：优先候选。面向中国站 `xiaohongshu.com`，文档提供 HTTP MCP endpoint，推荐配置为 `http://localhost:18060/mcp` + `streamableHttp`。项目文档也说明 OpenClaw 当前不原生直连 MCP，推荐通过 MCPorter 桥接。
 - `iFurySt/RedNote-MCP`：Node/npm 方案，支持登录初始化、Cookie 持久化、关键词搜索、URL 读取，适合作为轻量备选；主要以 stdio MCP client 配置为主。
 - `MilesCool/rednote-mcp`：TypeScript + Playwright，偏“搜索并提取内容”的 MCP server，数据结构包含标题、正文、作者、互动数据、图片和标签，适合做趋势与证据摘要。
-- `zhjiang22/openclaw-xhs`：面向 OpenClaw 的小红书技能包/工具包，基于 `xiaohongshu-mcp` 和 XHS-Downloader，提供搜索、趋势跟踪和个人记忆库导出思路，可作为 asis-agent-runtime skill 设计参考。
+- `zhjiang22/openclaw-xhs`：面向 OpenClaw 的小红书技能包/工具包，基于 `xiaohongshu-mcp` 和 XHS-Downloader，提供搜索、趋势跟踪和个人记忆库导出思路，可作为 selfit-agent-runtime skill 设计参考。
 
 因此本项目不需要从 0 写小红书搜索。V1 采用 `xpzouying/xiaohongshu-mcp` 作为首选 sidecar，同时保留 RedNote MCP 的 stdio/Node 备选；FastAPI 继续只做能力状态和业务工具边界。
 
@@ -102,7 +102,7 @@
 
 | 方案 | 用途 | 采用建议 |
 |---|---|---|
-| `xpzouying/xiaohongshu-mcp` | 中国站 `xiaohongshu.com` 的 MCP 服务，支持搜索、笔记详情、发布等 | asis 优先接入候选；以 HTTP MCP sidecar 方式运行 |
+| `xpzouying/xiaohongshu-mcp` | 中国站 `xiaohongshu.com` 的 MCP 服务，支持搜索、笔记详情、发布等 | selfit 优先接入候选；以 HTTP MCP sidecar 方式运行 |
 | `@sykuang/rednote-mcp` | Node/TypeScript + Playwright，偏海外 `rednote.com`，支持 npx、HTTP、MCP Streamable HTTP | 可作为跨平台快速验证方案，但目标站点与中国站不同 |
 | `iFurySt/RedNote-MCP` | npm 安装，登录 cookie 管理，搜索 notes、URL 内容读取 | 可作为轻量验证备选 |
 | MediaCrawler | 多平台公开信息采集，含小红书 | 适合研究，不建议直接嵌主服务 |
@@ -113,7 +113,7 @@
 ### 采用判断
 
 - 主项目现在已有公开链接提取能力，适合继续保留。
-- 关键词搜索不要写进 FastAPI 主进程，应做成 `asis_xhs_search` provider，并由 asis Agent runtime 通过 MCP 调用。
+- 关键词搜索不要写进 FastAPI 主进程，应做成 `selfit_xhs_search` provider，并由 selfit Agent runtime 通过 MCP 调用。
 - 如果要接 Agent，优先选 MCP/HTTP sidecar：OpenClaw 调 MCP，FastAPI 只看结构化结果。
 - 需要在产品文案上明确：不承诺绕过登录、反爬或私域内容。
 
@@ -177,34 +177,34 @@ npx mcporter config add xiaohongshu-mcp http://localhost:18060/mcp
 npx mcporter list xiaohongshu-mcp
 ```
 
-OpenClaw agent 侧仍只看 `asis_xhs_search` / `asis_xhs_fetch_note` 两类语义工具，底层到底是 MCPorter、streamable HTTP，还是 stdio bridge，由 `asis-agent-runtime` 的工具适配层处理。
+OpenClaw agent 侧仍只看 `selfit_xhs_search` / `selfit_xhs_fetch_note` 两类语义工具，底层到底是 MCPorter、streamable HTTP，还是 stdio bridge，由 `selfit-agent-runtime` 的工具适配层处理。
 
-### asis 集成设计
+### selfit 集成设计
 
-在 asis 中不要让 FastAPI 直接依赖 MCP SDK。推荐链路：
+在 selfit 中不要让 FastAPI 直接依赖 MCP SDK。推荐链路：
 
 ```text
-asis Web
+selfit Web
   -> FastAPI /stylist/chat
-  -> asis-agent-runtime / OpenClaw
+  -> selfit-agent-runtime / OpenClaw
   -> xiaohongshu-mcp sidecar
   -> search_feeds / get_feed_detail
   -> Agent 汇总趋势与图文依据
   -> FastAPI 返回结构化推荐
 ```
 
-FastAPI 当前的 `asis_xhs_search` 保持 provider interface：
+FastAPI 当前的 `selfit_xhs_search` 保持 provider interface：
 
-- 如果 `ASIS_XHS_MCP_URL` 和 `STYLIST_XHS_SEARCH_URL` 都未配置，返回 `not_configured`。
-- 如果 `ASIS_XHS_MCP_URL` 已配置，`/stylist/capabilities` 和 `asis_xhs_search` 会显示 `mcp_sidecar_configured`，但真实搜索仍由 Agent runtime 直接调 MCP，不经过 FastAPI。
+- 如果 `SELFIT_XHS_MCP_URL` 和 `STYLIST_XHS_SEARCH_URL` 都未配置，返回 `not_configured`。
+- 如果 `SELFIT_XHS_MCP_URL` 已配置，`/stylist/capabilities` 和 `selfit_xhs_search` 会显示 `mcp_sidecar_configured`，但真实搜索仍由 Agent runtime 直接调 MCP，不经过 FastAPI。
 - 如果要把 MCP 结果回传 FastAPI，可让 Agent 只提交结构化字段：`title`、`url`、`cover_url`、`image_urls`、`summary`、`style_tags`、`engagement`。
 
 建议新增环境变量：
 
 ```bash
-ASIS_XHS_MCP_URL=http://127.0.0.1:18060/mcp
-ASIS_XHS_MCP_MODE=streamable-http
-ASIS_XHS_ALLOWED_TOOLS=search_feeds,get_feed_detail
+SELFIT_XHS_MCP_URL=http://127.0.0.1:18060/mcp
+SELFIT_XHS_MCP_MODE=streamable-http
+SELFIT_XHS_ALLOWED_TOOLS=search_feeds,get_feed_detail
 ```
 
 只允许 read-only 工具进入穿搭师链路：
@@ -223,7 +223,7 @@ ASIS_XHS_ALLOWED_TOOLS=search_feeds,get_feed_detail
 - `publish_content`
 - `publish_with_video`
 
-原因：asis 当前诉求是“给穿搭建议提供依据”，不是自动运营账号。写操作会引入账号安全、内容合规和误操作风险。
+原因：selfit 当前诉求是“给穿搭建议提供依据”，不是自动运营账号。写操作会引入账号安全、内容合规和误操作风险。
 
 ### 安全与合规边界
 
@@ -239,7 +239,7 @@ ASIS_XHS_ALLOWED_TOOLS=search_feeds,get_feed_detail
 1. 接入 `SegFormerB2Provider`，让多品类自动入柜真实可用。
 2. 接入 `rembg`，先把透明 PNG 边缘体验做稳。
 3. 评估 FASHN Human Parser 和 BiRefNet，作为更高质量 provider。
-4. 启动最新 OpenClaw fork，跑通 `asis-stylist` 的 HTTP chat。
+4. 启动最新 OpenClaw fork，跑通 `selfit-stylist` 的 HTTP chat。
 5. 把 memory 真实接入 OpenClaw namespace。
 6. 接 `xiaohongshu-mcp` / RedNote MCP provider，不进入 FastAPI 主进程。
 7. 试 CatVTON 本地试穿 sidecar，仍只作为 provider。
