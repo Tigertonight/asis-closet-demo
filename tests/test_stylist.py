@@ -65,20 +65,20 @@ def _clear_stylist_env(monkeypatch) -> None:
     for key in [
         "STYLIST_DEMO_MODE",
         "STYLIST_OPENCLAW_CHAT_URL",
-        "OPENCLAW_ASIS_CHAT_URL",
+        "OPENCLAW_SELFIT_CHAT_URL",
         "STYLIST_ENABLE_OPENCLAW_CLI",
         "STYLIST_OPENCLAW_MEMORY_URL",
         "STYLIST_OPENCLAW_MODEL",
-        "ASIS_XHS_MCP_URL",
-        "ASIS_XHS_API_URL",
-        "ASIS_XHS_MCP_MODE",
-        "ASIS_XHS_ALLOWED_TOOLS",
+        "SELFIT_XHS_MCP_URL",
+        "SELFIT_XHS_API_URL",
+        "SELFIT_XHS_MCP_MODE",
+        "SELFIT_XHS_ALLOWED_TOOLS",
         "STYLIST_XHS_SEARCH_URL",
         "STYLIST_XHS_MCP_URL",
         "STYLIST_XHS_API_URL",
         "STYLIST_XHS_MCP_MODE",
         "STYLIST_XHS_ALLOWED_TOOLS",
-        "ASIS_ENABLE_LIGHT_CLOSET_AI",
+        "SELFIT_ENABLE_LIGHT_CLOSET_AI",
         "OPENAI_API_KEY",
         "ANTHROPIC_API_KEY",
         "GOOGLE_API_KEY",
@@ -111,7 +111,7 @@ def test_stylist_chat_fails_closed_without_runtime(monkeypatch) -> None:
 
 def test_stylist_inspiration_fails_closed_when_ai_key_missing(monkeypatch) -> None:
     _clear_stylist_env(monkeypatch)
-    monkeypatch.setenv("STYLIST_OPENCLAW_CHAT_URL", "http://127.0.0.1:18789/api/asis/chat")
+    monkeypatch.setenv("STYLIST_OPENCLAW_CHAT_URL", "http://127.0.0.1:18789/api/selfit/chat")
 
     result, status = asyncio.run(
         stylist.run_stylist_chat(
@@ -342,12 +342,12 @@ def test_stylist_chat_legacy_session_id_still_works(monkeypatch, tmp_path: Path)
     monkeypatch.setenv("STYLIST_DEMO_MODE", "1")
     client = _auth_client()
 
-    response = client.post("/stylist/chat", json={"session_id": "asis-inspiration", "message": "小雨通勤怎么穿"})
+    response = client.post("/stylist/chat", json={"session_id": "selfit-inspiration", "message": "小雨通勤怎么穿"})
 
     assert response.status_code == 200
     data = response.json()
-    assert data["session_id"] == "asis-inspiration"
-    detail = client.get("/stylist/sessions/asis-inspiration").json()
+    assert data["session_id"] == "selfit-inspiration"
+    detail = client.get("/stylist/sessions/selfit-inspiration").json()
     assert detail["message_count"] == 2
 
 
@@ -402,7 +402,7 @@ def test_stylist_demo_quality_checks_track_inspiration_context(monkeypatch, tmp_
         "/stylist/chat",
         json={
             "message": "延续刚才看展场景，下雨怎么调整？",
-            "session_id": "asis-inspiration",
+            "session_id": "selfit-inspiration",
             "context": {
                 "source": "inspiration_tab",
                 "xiaohongshu_preferred": True,
@@ -1017,7 +1017,7 @@ def test_stylist_removes_xhs_evidence_when_relevance_filter_empty() -> None:
 
 
 def test_openclaw_bridge_passes_xhs_note_body_to_model_context() -> None:
-    bridge = Path(__file__).resolve().parents[1] / "asis-agent-runtime" / "scripts" / "asis-openclaw-bridge.mjs"
+    bridge = Path(__file__).resolve().parents[1] / "selfit-agent-runtime" / "scripts" / "selfit-openclaw-bridge.mjs"
     text = bridge.read_text(encoding="utf-8")
 
     assert "detail_summary" in text
@@ -1026,7 +1026,7 @@ def test_openclaw_bridge_passes_xhs_note_body_to_model_context() -> None:
 
 
 def test_openclaw_bridge_passes_closet_context_to_model() -> None:
-    bridge = Path(__file__).resolve().parents[1] / "asis-agent-runtime" / "scripts" / "asis-openclaw-bridge.mjs"
+    bridge = Path(__file__).resolve().parents[1] / "selfit-agent-runtime" / "scripts" / "selfit-openclaw-bridge.mjs"
     text = bridge.read_text(encoding="utf-8")
 
     assert "closet_items" in text
@@ -1048,7 +1048,7 @@ def test_stylist_light_closet_ai_is_opt_in(monkeypatch) -> None:
 
     assert stylist._should_use_light_closet_ai(request) is False
 
-    monkeypatch.setenv("ASIS_ENABLE_LIGHT_CLOSET_AI", "1")
+    monkeypatch.setenv("SELFIT_ENABLE_LIGHT_CLOSET_AI", "1")
     assert stylist._should_use_light_closet_ai(request) is True
 
 
@@ -1060,7 +1060,7 @@ def test_stylist_default_female_profile_rejects_menswear_notes() -> None:
 
 
 def test_stylist_agent_rules_default_to_womenswear() -> None:
-    agent = Path(__file__).resolve().parents[1] / "asis-agent-runtime" / "agents" / "asis-stylist" / "agent.md"
+    agent = Path(__file__).resolve().parents[1] / "selfit-agent-runtime" / "agents" / "selfit-stylist" / "agent.md"
     text = agent.read_text(encoding="utf-8")
 
     assert "Default to women's styling" in text
@@ -1082,15 +1082,15 @@ def test_stylist_capabilities_exposes_decoupled_runtime(monkeypatch) -> None:
     assert data["model"]["key_matches_provider"] is False
     assert data["model"]["provider"] == "openai"
     assert data["error_policy"]["model_key_invalid"] == "ai_unavailable"
-    assert "asis_closet_search" in data["tools"]
+    assert "selfit_closet_search" in data["tools"]
     assert data["xiaohongshu"]["search"]["owner"] == "openclaw_sidecar"
     assert data["xiaohongshu"]["search"]["mcp_configured"] is False
 
 
 def test_stylist_capabilities_exposes_xhs_mcp_sidecar(monkeypatch) -> None:
     _clear_stylist_env(monkeypatch)
-    monkeypatch.setenv("ASIS_XHS_MCP_URL", "http://127.0.0.1:18060/mcp")
-    monkeypatch.setenv("ASIS_XHS_ALLOWED_TOOLS", "search_feeds,get_feed_detail")
+    monkeypatch.setenv("SELFIT_XHS_MCP_URL", "http://127.0.0.1:18060/mcp")
+    monkeypatch.setenv("SELFIT_XHS_ALLOWED_TOOLS", "search_feeds,get_feed_detail")
     client = _auth_client()
 
     data = client.get("/stylist/capabilities").json()
@@ -1104,7 +1104,7 @@ def test_stylist_capabilities_exposes_xhs_mcp_sidecar(monkeypatch) -> None:
 
 def test_stylist_capabilities_reports_ai_unavailable_when_runtime_has_no_model_key(monkeypatch) -> None:
     _clear_stylist_env(monkeypatch)
-    monkeypatch.setenv("STYLIST_OPENCLAW_CHAT_URL", "http://127.0.0.1:18789/api/asis/chat")
+    monkeypatch.setenv("STYLIST_OPENCLAW_CHAT_URL", "http://127.0.0.1:18789/api/selfit/chat")
     client = _auth_client()
 
     data = client.get("/stylist/capabilities").json()
@@ -1115,7 +1115,7 @@ def test_stylist_capabilities_reports_ai_unavailable_when_runtime_has_no_model_k
 
 def test_stylist_chat_fails_fast_when_runtime_has_no_model_key(monkeypatch) -> None:
     _clear_stylist_env(monkeypatch)
-    monkeypatch.setenv("STYLIST_OPENCLAW_CHAT_URL", "http://127.0.0.1:18789/api/asis/chat")
+    monkeypatch.setenv("STYLIST_OPENCLAW_CHAT_URL", "http://127.0.0.1:18789/api/selfit/chat")
     client = _auth_client()
 
     response = client.post("/stylist/chat", json={"message": "通勤怎么穿"})
@@ -1127,7 +1127,7 @@ def test_stylist_chat_fails_fast_when_runtime_has_no_model_key(monkeypatch) -> N
 
 def test_stylist_capabilities_require_key_matching_model_provider(monkeypatch) -> None:
     _clear_stylist_env(monkeypatch)
-    monkeypatch.setenv("STYLIST_OPENCLAW_CHAT_URL", "http://127.0.0.1:18789/api/asis/chat")
+    monkeypatch.setenv("STYLIST_OPENCLAW_CHAT_URL", "http://127.0.0.1:18789/api/selfit/chat")
     monkeypatch.setenv("GOOGLE_API_KEY", "test-key")
     client = _auth_client()
 
@@ -1141,7 +1141,7 @@ def test_stylist_capabilities_require_key_matching_model_provider(monkeypatch) -
 
 def test_stylist_capabilities_accept_matching_google_model_key(monkeypatch) -> None:
     _clear_stylist_env(monkeypatch)
-    monkeypatch.setenv("STYLIST_OPENCLAW_CHAT_URL", "http://127.0.0.1:18789/api/asis/chat")
+    monkeypatch.setenv("STYLIST_OPENCLAW_CHAT_URL", "http://127.0.0.1:18789/api/selfit/chat")
     monkeypatch.setenv("STYLIST_OPENCLAW_MODEL", "google/gemini-2.5-flash")
     monkeypatch.setenv("GOOGLE_API_KEY", "test-key")
     client = _auth_client()
@@ -1155,7 +1155,7 @@ def test_stylist_capabilities_accept_matching_google_model_key(monkeypatch) -> N
 
 def test_stylist_capabilities_accept_matching_minimax_key(monkeypatch) -> None:
     _clear_stylist_env(monkeypatch)
-    monkeypatch.setenv("STYLIST_OPENCLAW_CHAT_URL", "http://127.0.0.1:18789/api/asis/chat")
+    monkeypatch.setenv("STYLIST_OPENCLAW_CHAT_URL", "http://127.0.0.1:18789/api/selfit/chat")
     monkeypatch.setenv("STYLIST_OPENCLAW_MODEL", "minimax/MiniMax-M3")
     monkeypatch.setenv("MINIMAX_API_KEY", "test-key")
     client = _auth_client()
@@ -1170,7 +1170,7 @@ def test_stylist_capabilities_accept_matching_minimax_key(monkeypatch) -> None:
 
 def test_stylist_capabilities_accept_matching_minimax_portal_token(monkeypatch) -> None:
     _clear_stylist_env(monkeypatch)
-    monkeypatch.setenv("STYLIST_OPENCLAW_CHAT_URL", "http://127.0.0.1:18789/api/asis/chat")
+    monkeypatch.setenv("STYLIST_OPENCLAW_CHAT_URL", "http://127.0.0.1:18789/api/selfit/chat")
     monkeypatch.setenv("STYLIST_OPENCLAW_MODEL", "minimax-portal/MiniMax-M3")
     monkeypatch.setenv("MINIMAX_OAUTH_TOKEN", "test-token")
     client = _auth_client()
@@ -1183,7 +1183,7 @@ def test_stylist_capabilities_accept_matching_minimax_portal_token(monkeypatch) 
     assert data["model"]["key_matches_provider"] is True
 
 
-def test_asis_tool_closet_search_reads_fastapi_closet(monkeypatch, tmp_path: Path) -> None:
+def test_selfit_tool_closet_search_reads_fastapi_closet(monkeypatch, tmp_path: Path) -> None:
     _clear_stylist_env(monkeypatch)
     _use_tmp_closet(monkeypatch, tmp_path)
     client = _auth_client()
@@ -1192,7 +1192,7 @@ def test_asis_tool_closet_search_reads_fastapi_closet(monkeypatch, tmp_path: Pat
         files=[("images", ("top.png", _png_bytes(_synthetic_top_image()), "image/png"))],
     ).json()["items"][0]
 
-    response = client.post("/stylist/tools/asis_closet_search", json={"category": "top"})
+    response = client.post("/stylist/tools/selfit_closet_search", json={"category": "top"})
 
     assert response.status_code == 200
     data = response.json()
@@ -1200,12 +1200,12 @@ def test_asis_tool_closet_search_reads_fastapi_closet(monkeypatch, tmp_path: Pat
     assert data["items"][0]["item_id"] == created["item_id"]
 
 
-def test_asis_xhs_search_reports_mcp_sidecar(monkeypatch) -> None:
+def test_selfit_xhs_search_reports_mcp_sidecar(monkeypatch) -> None:
     _clear_stylist_env(monkeypatch)
-    monkeypatch.setenv("ASIS_XHS_MCP_URL", "http://127.0.0.1:18060/mcp")
+    monkeypatch.setenv("SELFIT_XHS_MCP_URL", "http://127.0.0.1:18060/mcp")
     client = _auth_client()
 
-    response = client.post("/stylist/tools/asis_xhs_search", json={"query": "夏天通勤穿搭"})
+    response = client.post("/stylist/tools/selfit_xhs_search", json={"query": "夏天通勤穿搭"})
 
     assert response.status_code == 200
     data = response.json()

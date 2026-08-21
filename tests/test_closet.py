@@ -69,6 +69,8 @@ def _create_closet_item(client: TestClient, name: str, category: str, color: tup
 
 
 def _use_tmp_closet(monkeypatch, tmp_path: Path) -> None:
+    monkeypatch.setenv("SELFIT_GARMENT_AI_ENABLED", "0")
+    monkeypatch.setattr(closet.AIGarmentCutoutProvider, "_availability_cache", {})
     monkeypatch.setattr(storage, "ROOT_DIR", tmp_path)
     monkeypatch.setattr(auth, "AUTH_DIR", tmp_path / "outputs" / "auth")
     monkeypatch.setattr(auth, "AUTH_STORE_PATH", tmp_path / "outputs" / "auth" / "auth_store.json")
@@ -103,6 +105,75 @@ def test_closet_upload_import_creates_manifest_item(monkeypatch, tmp_path: Path)
     assert preview_path is not None
     assert Image.open(preview_path).size == (900, 900)
     assert (tmp_path / "closet_manifest.json").exists()
+
+
+def test_closet_prefers_ai_garment_cutout_before_local_fallback(monkeypatch, tmp_path: Path) -> None:
+    _use_tmp_closet(monkeypatch, tmp_path)
+    client = _auth_client()
+    calls: list[str] = []
+
+    def fake_extract(self, source, work_dir):
+        calls.append("ai")
+        return [{
+            "item_id": "ai-cutout-item",
+            "category": "top",
+            "category_label": "上衣",
+            "source": source["source"],
+            "assets": {"cutout_path": "/user-assets/closet/items/ai/cutout.png", "preview_path": "/user-assets/closet/items/ai/preview.png"},
+            "attributes": {"slot": "top"},
+            "quality": {"status": "usable", "score": 0.88, "reasons": ["ai_garment_extraction"]},
+            "pipeline": {"ai_cutout": {"provider": "runway_google_generate_content", "status": "ok"}},
+        }]
+
+    monkeypatch.setattr(closet.AIGarmentCutoutProvider, "extract", fake_extract)
+    monkeypatch.setattr(closet.SegFormerClothesAdapter, "extract", lambda *_: (_ for _ in ()).throw(AssertionError("should not reach SegFormer")))
+    monkeypatch.setattr(closet, "_extract_with_top_fallback", lambda *_: (_ for _ in ()).throw(AssertionError("should not reach legacy fallback")))
+
+    response = client.post(
+        "/closet/import/upload",
+        files=[("images", ("top.png", _png_bytes(_synthetic_top_image()), "image/png"))],
+    )
+
+    assert response.status_code == 200
+    data = response.json()
+    assert calls == ["ai"]
+    assert data["status"] == "imported"
+    assert data["summary"]["fallback_used"] is False
+    assert data["items"][0]["pipeline"]["ai_cutout"]["provider"] == "runway_google_generate_content"
+
+
+def test_ai_cutout_requires_a_transparent_result() -> None:
+    opaque = Image.new("RGBA", (120, 120), (255, 255, 255, 255))
+    transparent = Image.new("RGBA", (120, 120), (255, 255, 255, 0))
+    for y in range(20, 100):
+        for x in range(35, 85):
+            transparent.putpixel((x, y), (200, 65, 108, 255))
+
+    assert closet._has_meaningful_transparency(opaque) is False
+    assert closet._has_meaningful_transparency(transparent) is True
+
+
+def test_garment_cutout_and_tryon_share_nano_banana_model_config(monkeypatch) -> None:
+    monkeypatch.delenv("TRYON_IMAGE_MODEL", raising=False)
+    assert closet.AIGarmentCutoutProvider().model == "nano-banana"
+    assert tryon.OpenAIImageEditTryOnProvider().model == "nano-banana"
+
+    monkeypatch.setenv("TRYON_IMAGE_MODEL", "nano-banana-2")
+    assert closet.AIGarmentCutoutProvider().model == "nano-banana-2"
+    assert tryon.OpenAIImageEditTryOnProvider().model == "nano-banana-2"
+
+
+def test_garment_cutout_prefers_the_existing_runway_tryon_service(monkeypatch) -> None:
+    monkeypatch.setattr(closet.AIGarmentCutoutProvider, "_availability_cache", {})
+    monkeypatch.setattr(closet, "_has_runway_google_provider", lambda: True)
+    monkeypatch.setattr(closet, "_has_openai_compatible_provider", lambda: False)
+    monkeypatch.setattr(closet, "_has_openai_image_edit_provider", lambda: False)
+
+    provider = closet.AIGarmentCutoutProvider()
+
+    assert provider.available() is True
+    assert provider._provider_kind() == "runway_google_generate_content"
+    assert provider.status() == "available_via_runway"
 
 
 def test_closet_cutout_quality_flags_sparse_reference(tmp_path: Path) -> None:
@@ -410,7 +481,7 @@ def test_tryon_from_outfit_plan_upload_endpoint(monkeypatch, tmp_path: Path) -> 
     assert data["reference_board_path"].startswith("/user-assets/tryon/")
 
 
-def test_asis_tryon_from_outfit_uses_real_outfit_plan_and_records(monkeypatch, tmp_path: Path) -> None:
+def test_selfit_tryon_from_outfit_uses_real_outfit_plan_and_records(monkeypatch, tmp_path: Path) -> None:
     _use_tmp_closet(monkeypatch, tmp_path)
     monkeypatch.setattr(tryon, "_default_provider", lambda: tryon.MockTryOnProvider())
     client = _auth_client()
@@ -419,12 +490,12 @@ def test_asis_tryon_from_outfit_uses_real_outfit_plan_and_records(monkeypatch, t
     shoes = _create_closet_item(client, "shoes.png", "shoes", (20, 20, 20))
     outfit = client.post(
         "/closet/outfits",
-        json={"item_ids": [top["item_id"], bottom["item_id"], shoes["item_id"]], "title": "ASIS 试穿"},
+        json={"item_ids": [top["item_id"], bottom["item_id"], shoes["item_id"]], "title": "SELFIT 试穿"},
     ).json()
     person = (Path(__file__).resolve().parent / "fixtures" / "tryon_models" / "male_medium_1.png").read_bytes()
 
     response = client.post(
-        "/asis/try-on/from-outfit",
+        "/selfit/try-on/from-outfit",
         data={"outfit_id": outfit["outfit_id"], "photo_mode": "standard"},
         files={"person_image": ("person.png", person, "image/png")},
     )
@@ -432,16 +503,16 @@ def test_asis_tryon_from_outfit_uses_real_outfit_plan_and_records(monkeypatch, t
     assert response.status_code == 200
     data = response.json()
     assert data["status"] == "generated"
-    assert data["asis_mode"] == "product_tryon"
+    assert data["selfit_mode"] == "product_tryon"
     assert data["mode"] == "from_outfit_plan"
-    assert data["record"]["mode"] == "asis_from_outfit_plan"
+    assert data["record"]["mode"] == "selfit_from_outfit_plan"
     assert data["record"]["image_path"] == data["result"]["image_path"]
     listed = client.get("/closet/tryon-records").json()
     assert listed["total"] == 1
     assert listed["records"][0]["outfit_id"] == outfit["outfit_id"]
 
 
-def test_asis_tryon_allows_soft_preset_female_model(monkeypatch, tmp_path: Path) -> None:
+def test_selfit_tryon_allows_soft_preset_female_model(monkeypatch, tmp_path: Path) -> None:
     _use_tmp_closet(monkeypatch, tmp_path)
     monkeypatch.setattr(tryon, "_default_provider", lambda: tryon.MockTryOnProvider())
     client = _auth_client()
@@ -455,7 +526,7 @@ def test_asis_tryon_allows_soft_preset_female_model(monkeypatch, tmp_path: Path)
     person = (Path(__file__).resolve().parent / "fixtures" / "tryon_models" / "female_medium_1.png").read_bytes()
 
     response = client.post(
-        "/asis/try-on/from-outfit",
+        "/selfit/try-on/from-outfit",
         data={"outfit_id": outfit["outfit_id"]},
         files={"person_image": ("female_medium_1.png", person, "image/png")},
     )
@@ -467,7 +538,7 @@ def test_asis_tryon_allows_soft_preset_female_model(monkeypatch, tmp_path: Path)
     assert not data["decision"]["blocking_errors"]
 
 
-def test_asis_tryon_review_result_is_saved_to_records(monkeypatch, tmp_path: Path) -> None:
+def test_selfit_tryon_review_result_is_saved_to_records(monkeypatch, tmp_path: Path) -> None:
     class BackgroundChangedProvider(tryon.TryOnProvider):
         mode = "background_changed_test"
 
@@ -493,7 +564,7 @@ def test_asis_tryon_review_result_is_saved_to_records(monkeypatch, tmp_path: Pat
     person = (Path(__file__).resolve().parent / "fixtures" / "tryon_models" / "female_medium_1.png").read_bytes()
 
     response = client.post(
-        "/asis/try-on/from-outfit",
+        "/selfit/try-on/from-outfit",
         data={"outfit_id": outfit["outfit_id"]},
         files={"person_image": ("female_medium_1.png", person, "image/png")},
     )
@@ -548,66 +619,79 @@ def test_delete_tryon_record_hides_it_from_records(monkeypatch, tmp_path: Path) 
     assert listed["total"] == 0
 
 
-def test_asis_demo_page_is_available(monkeypatch, tmp_path: Path) -> None:
+def test_selfit_demo_page_is_available(monkeypatch, tmp_path: Path) -> None:
     _use_tmp_closet(monkeypatch, tmp_path)
     client = _auth_client()
 
-    response = client.get("/asis/demo")
+    response = client.get("/selfit/demo")
 
     assert response.status_code == 200
-    assert "asis" in response.text
-    assert "灵感" in response.text
-    assert 'window.location.href = "/demo?source=asis"' in response.text
-    assert 'id="modelCell"' in response.text
-    assert 'id="modelSheet"' in response.text
-    assert "预设模特" in response.text
-    assert "我的照片" in response.text
-    assert "female_medium_1" in response.text
-    assert 'id="aiPromptInput"' in response.text
-    assert 'data-profile-view="works"' in response.text
-    assert 'data-work-view="outfits"' in response.text
-    assert 'data-work-view="items"' in response.text
-    assert "我的作品" in response.text
-    assert "isUserCreatedItem" in response.text
-    assert "isUserCreatedOutfit" in response.text
-    assert "deleteSelectedWorks" in response.text
-    assert 'placeholder="向灵感发送消息"' in response.text
-    assert "xiaohongshu_preferred: useXHSSkill" in response.text
-    assert "面试" in response.text
-    assert "怎么穿" in response.text
-    assert "requested_skills" in response.text
-    assert 'session_id: state.currentSessionId || "asis-inspiration"' in response.text
-    assert 'stylistSessionStoreKey = "asis_demo_current_stylist_session"' in response.text
-    assert "writeStore(stylistSessionStoreKey, session.session_id)" in response.text
-    assert "current_stylist_session_id" in response.text
-    assert 'id="sessionPickerBtn"' in response.text
-    assert 'id="sessionSheetNew"' in response.text
-    assert 'class="session-sidebar"' in response.text
-    assert 'id="sessionBackdrop"' in response.text
-    assert 'id="sessionActionPopover"' in response.text
-    assert 'id="sessionConfirmDeleteBtn"' in response.text
-    assert 'id="newSessionBtn"' not in response.text
-    assert 'id="aiPromptText"' not in response.text
-    assert "找小红书参考" in response.text
-    assert "xhs-note-card" in response.text
-    assert "ai-toolchain" in response.text
-    assert "ai-tool-history" in response.text
-    assert "data-ai-toggle-tools" in response.text
-    assert "function renderAssistantMarkdown" in response.text
-    assert "ai-md-list" in response.text
-    assert "function normalizeAIInputText" in response.text
-    assert "insertNormalizedPromptText" in response.text
-    assert "is-generating" in response.text
-    assert '.replace(/\\r\\n?/g, "\\n")' in response.text
+    assert "selfit" in response.text
+    assert "先认识自己，再决定怎么穿" in response.text
+    assert "个人风格DNA" in response.text
+    assert "suit 你适合的" in response.text
+    assert "like 你喜欢的" in response.text
+    assert "vibe 你表达的" in response.text
+    assert 'data-screen="splash"' in response.text
+    assert 'id="splashEnter"' in response.text
+    assert "/static/selfit/assets/selfit-wordmark.svg" in response.text
+    assert "/static/selfit/assets/selfit-wordmark@2x.png" not in response.text
+    assert "/static/selfit/assets/suit-word@2x.png" in response.text
+    assert "/static/selfit/assets/like-word@2x.png" in response.text
+    assert "/static/selfit/assets/vibe-word@2x.png" in response.text
+    assert "/static/selfit/assets/face-upload-guide@4x.png" in response.text
+    assert "/static/selfit/assets/body-upload-guide@4x.png" in response.text
+    assert 'data-screen="intro"' in response.text
+    assert 'data-screen="suit-manual"' in response.text
+    assert 'data-screen="loading"' in response.text
+    assert 'data-screen="report"' in response.text
+    assert "选择你更喜欢的风格和颜色" in response.text
+    assert "几个问题，了解你想表达的" in response.text
+    assert "生成风格报告" in response.text
+    assert "保存并分享" in response.text
+    assert 'data-next="suit"' in response.text
+    assert "去认识自己" in response.text
+    assert "流程约1分钟，无需注册" in response.text
 
 
-def test_wearwow_demo_route_keeps_asis_compatibility(monkeypatch, tmp_path: Path) -> None:
+def test_selfit_route_uses_the_same_onboarding(monkeypatch, tmp_path: Path) -> None:
+    _use_tmp_closet(monkeypatch, tmp_path)
+    client = _auth_client()
+
+    response = client.get("/selfit")
+
+    assert response.status_code == 200
+    assert "selfit" in response.text
+    assert 'data-screen="splash"' in response.text
+    assert "适我" in response.text
+    assert "先认识自己，再决定怎么穿" in response.text
+
+
+def test_selfit_mirror_route_exposes_the_complete_kiosk_flow(monkeypatch, tmp_path: Path) -> None:
+    _use_tmp_closet(monkeypatch, tmp_path)
+    client = _auth_client()
+
+    response = client.get("/selfit/mirror")
+
+    assert response.status_code == 200
+    assert 'data-screen="home"' in response.text
+    assert 'data-screen="countdown"' in response.text
+    assert 'data-screen="confirm"' in response.text
+    assert 'data-screen="processing"' in response.text
+    assert 'data-screen="result"' in response.text
+    assert "拍照做测试" in response.text
+    assert "扫码查看" in response.text
+    assert "mirror-report-qr.png" in response.text
+    assert "/static/selfit/mirror.js" in response.text
+
+
+def test_wearwow_demo_route_keeps_selfit_compatibility(monkeypatch, tmp_path: Path) -> None:
     _use_tmp_closet(monkeypatch, tmp_path)
     client = _auth_client()
 
     response = client.get("/wearwow/demo")
 
     assert response.status_code == 200
-    assert "AS IS" in response.text
+    assert "selfit" in response.text
     assert "灵感" in response.text
     assert "AI穿搭师" not in response.text

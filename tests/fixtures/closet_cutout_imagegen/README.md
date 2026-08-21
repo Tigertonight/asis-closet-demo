@@ -1,6 +1,6 @@
 # Closet Cutout Imagegen Test Set
 
-This fixture directory defines a synthetic image-generation test set for the AS IS electronic closet cutout pipeline.
+This fixture directory defines a synthetic image-generation test set for the selfit electronic closet cutout pipeline.
 
 Use it to generate controlled images, import them through `/closet/import/upload`, and evaluate whether the system correctly finds garments, classifies them, creates masks/cutouts, and assigns `usable/review/rejected`.
 

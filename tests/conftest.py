@@ -13,4 +13,4 @@ if str(ROOT) not in sys.path:
 
 @pytest.fixture(autouse=True)
 def _disable_rate_limit_by_default(monkeypatch: pytest.MonkeyPatch) -> None:
-    monkeypatch.setenv("ASIS_DISABLE_RATE_LIMIT", "1")
+    monkeypatch.setenv("SELFIT_DISABLE_RATE_LIMIT", "1")

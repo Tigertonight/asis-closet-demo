@@ -73,9 +73,9 @@ def test_phone_code_rejects_wrong_and_reused_code(monkeypatch, tmp_path: Path) -
 
 def test_public_demo_does_not_return_dev_code(monkeypatch, tmp_path: Path) -> None:
     _use_tmp_runtime(monkeypatch, tmp_path)
-    monkeypatch.setenv("ASIS_ENV", "demo")
-    monkeypatch.setenv("ASIS_AUTH_SECRET", "test-public-secret-that-is-not-default")
-    monkeypatch.delenv("ASIS_AUTH_RETURN_DEV_CODE", raising=False)
+    monkeypatch.setenv("SELFIT_ENV", "demo")
+    monkeypatch.setenv("SELFIT_AUTH_SECRET", "test-public-secret-that-is-not-default")
+    monkeypatch.delenv("SELFIT_AUTH_RETURN_DEV_CODE", raising=False)
     client = TestClient(app)
 
     start = client.post("/auth/phone/start", json={"phone": "13800000021"}).json()
@@ -86,8 +86,8 @@ def test_public_demo_does_not_return_dev_code(monkeypatch, tmp_path: Path) -> No
 
 def test_public_demo_rejects_default_auth_secret(monkeypatch, tmp_path: Path) -> None:
     _use_tmp_runtime(monkeypatch, tmp_path)
-    monkeypatch.setenv("ASIS_ENV", "demo")
-    monkeypatch.delenv("ASIS_AUTH_SECRET", raising=False)
+    monkeypatch.setenv("SELFIT_ENV", "demo")
+    monkeypatch.delenv("SELFIT_AUTH_SECRET", raising=False)
     client = TestClient(app)
 
     response = client.post("/auth/phone/start", json={"phone": "13800000022"})
@@ -98,9 +98,9 @@ def test_public_demo_rejects_default_auth_secret(monkeypatch, tmp_path: Path) ->
 
 def test_auth_rate_limit_is_enforced(monkeypatch, tmp_path: Path) -> None:
     _use_tmp_runtime(monkeypatch, tmp_path)
-    monkeypatch.setenv("ASIS_DISABLE_RATE_LIMIT", "0")
-    monkeypatch.setenv("ASIS_AUTH_RATE_LIMIT", "1")
-    monkeypatch.setenv("ASIS_AUTH_RATE_WINDOW_SECONDS", "3600")
+    monkeypatch.setenv("SELFIT_DISABLE_RATE_LIMIT", "0")
+    monkeypatch.setenv("SELFIT_AUTH_RATE_LIMIT", "1")
+    monkeypatch.setenv("SELFIT_AUTH_RATE_WINDOW_SECONDS", "3600")
     client = TestClient(app)
     headers = {"x-forwarded-for": "203.0.113.77"}
 

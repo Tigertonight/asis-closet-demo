@@ -1,0 +1,52 @@
+{
+  "schema_version": "1.0",
+  "dataset_id": "color_blindset_img2_pilot",
+  "generator": "GPT Image 2 via built-in imagegen",
+  "purpose": [
+    "same_identity_capture_stability",
+    "independent_blind_evaluation"
+  ],
+  "limitations": [
+    "Synthetic portraits are suitable for robustness and regression testing, not for estimating real-world diagnostic accuracy.",
+    "Season labels must not be inferred from prompts or filenames.",
+    "The blind label file must remain separate from algorithm inputs and threshold tuning."
+  ],
+  "identities": [
+    {
+      "identity_id": "A",
+      "split": "stability_pilot",
+      "demographic_description": "fictional East Asian woman, approximately 28",
+      "canonical_case_id": "A01",
+      "cases": [
+        {
+          "case_id": "A01",
+          "image": "images/A01_neutral_daylight.png",
+          "capture_condition": "neutral_daylight_5500k",
+          "expected_quality": "analyzable",
+          "is_canonical": true
+        },
+        {
+          "case_id": "A02",
+          "image": "images/A02_warm_indoor.png",
+          "capture_condition": "warm_indoor_led_3200k",
+          "expected_quality": "analyzable_low_confidence",
+          "is_canonical": false
+        },
+        {
+          "case_id": "A03",
+          "image": "images/A03_cool_screen.png",
+          "capture_condition": "cool_screen_light_7000k",
+          "expected_quality": "analyzable_low_confidence",
+          "is_canonical": false
+        }
+      ]
+    }
+  ],
+  "stability_metrics": {
+    "status_retention_target": 1.0,
+    "season_4_agreement_target": 0.8,
+    "season_12_top2_overlap_target": 0.6,
+    "dimension_flip_rate_target_max": 0.25,
+    "confidence_spread_target_max": 0.2
+  }
+}

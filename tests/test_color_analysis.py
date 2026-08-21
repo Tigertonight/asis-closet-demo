@@ -1160,7 +1160,7 @@ def test_demo_page_compresses_mobile_uploads_before_cloudflare_request() -> None
 def test_demo_page_uses_capture_summary_for_result_copy() -> None:
     html = render_demo_page()
 
-    assert "我的适我色彩结果" in html
+    assert "我的selfit色彩结果" in html
     assert "结果口径：" not in html
     assert "主倾向概率：" not in html
     assert "照片可信度：" not in html
@@ -1170,9 +1170,9 @@ def test_demo_page_uses_capture_summary_for_result_copy() -> None:
     assert "actionPanel" in html
     assert "renderNextActions([])" in html
     assert "function toast(text)" in html
-    assert 'new URLSearchParams(window.location.search).get("source") === "asis"' in html
+    assert 'new URLSearchParams(window.location.search).get("source") === "selfit"' in html
     assert 'id="homeBackBtn"' in html
-    assert 'window.location.href = "/asis/demo"' in html
+    assert 'window.location.href = "/selfit/demo"' in html
 
 
 def test_demo_page_starts_on_upload_without_sample_gallery() -> None:
