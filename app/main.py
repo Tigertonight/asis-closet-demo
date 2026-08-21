@@ -114,6 +114,7 @@ load_dotenv(Path(__file__).resolve().parents[1] / ".env", override=True)
 
 app = FastAPI(title="Color Test MVP POC", version="0.2.0")
 app.middleware("http")(request_guard_middleware)
+SELFIT_INDEX_PATH = Path(__file__).resolve().parent / "static" / "selfit" / "index.html"
 TRYON_OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 XHS_IMAGE_CACHE_DIR = Path("outputs/xhs_images")
 XHS_IMAGE_CACHE_DIR.mkdir(parents=True, exist_ok=True)
@@ -608,6 +609,20 @@ def closet_tryon_record_delete(record_id: str, current_user: dict[str, Any] = De
 @app.get("/closet/demo", response_class=HTMLResponse)
 def closet_demo_page() -> HTMLResponse:
     return HTMLResponse(render_closet_demo_page())
+
+
+@app.get("/selfit", response_class=FileResponse)
+@app.get("/selfit/", response_class=FileResponse)
+@app.get("/selfit/demo", response_class=FileResponse)
+def selfit_onboarding_page() -> FileResponse:
+    return FileResponse(
+        SELFIT_INDEX_PATH,
+        media_type="text/html",
+        headers={
+            "Cache-Control": "no-store, no-cache, must-revalidate, max-age=0",
+            "Pragma": "no-cache",
+        },
+    )
 
 
 @app.get("/asis/demo", response_class=HTMLResponse)
