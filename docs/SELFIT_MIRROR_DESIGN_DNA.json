@@ -1,0 +1,64 @@
+{
+  "meta": {
+    "name": "selfit 智能镜子交互",
+    "description": "Figma 镜子区块的线下竖屏拍照、分析和扫码体验设计 DNA。",
+    "source_references": ["Figma 7WvSROZhohAyvpEMfxZ3Dd node 450:15057", "DESIGN.md", "Figma CSS export pasted-text.txt"],
+    "created_at": "2026-08-21"
+  },
+  "design_system": {
+    "color": {
+      "palette_type": "analogous",
+      "primary": {"hex": "#8A011B", "role": "primary action and brand"},
+      "secondary": {"hex": "#792A28", "role": "textile identity and processing surface"},
+      "accent": {"hex": "#6CC1FC", "role": "limited processing artwork accent"},
+      "neutral": {"scale": ["#FFFFFF", "#F5F5F5", "#E7E7E7", "#797979", "#353535"], "usage": "text, controls, camera fallback and installation surround"},
+      "semantic": {"success": "#4F8061", "warning": "#A66A18", "error": "#A51D35", "info": "#6CC1FC"},
+      "surface": {"background": "#797979", "card": "#FFFFFF", "elevated": "rgba(255,255,255,0.94)"},
+      "contrast_strategy": "high contrast white-on-wine and white-on-dark camera imagery"
+    },
+    "typography": {
+      "type_scale": {
+        "display": {"size": "80px", "weight": "400", "line_height": "96px", "tracking": "0"},
+        "heading_1": {"size": "24px", "weight": "500", "line_height": "30px", "tracking": "0"},
+        "heading_2": {"size": "18px", "weight": "600", "line_height": "26px", "tracking": "0"},
+        "heading_3": {"size": "16px", "weight": "500", "line_height": "24px", "tracking": "0"},
+        "body": {"size": "14px", "weight": "400", "line_height": "26px", "tracking": "0"},
+        "body_small": {"size": "14px", "weight": "400", "line_height": "20px", "tracking": "0"},
+        "caption": {"size": "10px", "weight": "400", "line_height": "14px", "tracking": "0"},
+        "overline": {"size": "14px", "weight": "500", "line_height": "20px", "tracking": "0.02em"}
+      },
+      "font_families": {"heading": "PingFang SC, system sans-serif", "body": "PingFang SC, system sans-serif", "mono": "ui-monospace, SFMono-Regular, monospace"},
+      "font_style_notes": "restrained Chinese system sans with a serif countdown/result accent and exported selfit wordmark"
+    },
+    "spacing": {"base_unit": "4px", "scale": ["4px", "8px", "12px", "16px", "20px", "32px", "40px"], "content_density": "spacious", "section_rhythm": "large centered pauses with a fixed bottom action zone"},
+    "layout": {"grid_system": "393 × 698 fixed-ratio portrait canvas", "max_content_width": "393px", "columns": "single column", "gutter": "32px copy / 40px actions", "breakpoints": ["393px logical canvas", "portrait screen fit", "landscape letterbox"], "alignment_tendency": "centered"},
+    "shape": {"border_radius": {"small": "8px", "medium": "12px", "large": "18px", "pill": "999px"}, "border_usage": "subtle 1px on secondary controls", "divider_style": "thin translucent progress line"},
+    "elevation": {"shadow_style": "soft diffused", "levels": {"low": "0 5px 24px rgba(0,0,0,0.06)", "medium": "0 12px 36px rgba(0,0,0,0.16)", "high": "0 18px 55px rgba(0,0,0,0.28)"}, "depth_cues": "full-bleed photography, scrims, blur and color intensity"},
+    "iconography": {"style": "simple filled functional glyphs", "stroke_weight": "1.5–2px equivalent", "size_scale": ["20px", "24px"], "preferred_set": "inline product-specific SVG"},
+    "motion": {"easing": "ease-out", "duration_scale": {"micro": "120ms", "normal": "240ms", "macro": "850ms"}, "entrance_pattern": "short fade with nearly imperceptible scale", "exit_pattern": "direct state replacement", "philosophy": "minimal functional with explicit countdown pacing"},
+    "components": {"button_style": "44px high, 18px radius, wine primary or white secondary", "input_style": "camera is captured invisibly during the restrained countdown state", "card_style": "gray mirror canvas with one small lace-framed photo result", "navigation_pattern": "linear kiosk state machine", "modal_style": "compact warm-white status toast", "list_style": "not used", "component_notes": "action targets stay large and centered; no dashboard chrome or added result summary"}
+  },
+  "design_style": {
+    "aesthetic": {"mood": ["introspective", "editorial", "warm", "ceremonial"], "visual_metaphor": "a textile-covered personal fitting ritual", "era_influence": "contemporary fashion editorial with vintage craft motifs", "genre": "consumer beauty and fashion kiosk", "personality_traits": ["calm", "personal", "assured"], "adjectives": ["tactile", "restrained", "photographic", "romantic"]},
+    "visual_language": {"complexity": "moderate", "ornamentation": "decorative only during identity and processing", "whitespace_usage": "large centered breathing space", "visual_weight_distribution": "single dominant camera/photo plane", "focal_strategy": "progressive reveal", "contrast_level": "high", "texture_usage": "wine textile plus embroidered collage assets"},
+    "composition": {"hierarchy_method": "scale contrast and spatial isolation", "balance_type": "symmetric", "flow_direction": "center to bottom action", "grouping_strategy": "one task per state", "negative_space_role": "reduces hesitation in a public kiosk context"},
+    "imagery": {"photo_treatment": "full-bleed portrait crop, lightly brightened and softened", "illustration_style": "embroidered lace and paper collage", "graphic_elements": "wordmark, textile, blue hand-drawn stroke and color swatches", "pattern_usage": "textile only on brand and processing states", "image_shape": "full-bleed portrait with small square QR"},
+    "interaction_feel": {"feedback_style": "immediate state change and plain-language status", "hover_behavior": "none; touch-first", "transition_personality": "fade-subtle", "loading_style": "narrative staged recognition instead of a spinner", "microinteraction_density": "low"},
+    "brand_voice_in_ui": {"tone": "warm, reflective and reassuring", "formality": "conversational", "cta_style": "friendly direct imperative", "empty_state_approach": "invite one clear next action", "error_tone": "recoverable and action-oriented without technical terms"}
+  },
+  "visual_effects": {
+    "overview": {"effect_intensity": "subtle-accent", "performance_tier": "lightweight", "fallback_strategy": "reduce motion and show static demo camera image", "primary_technology": "CSS plus native browser media APIs"},
+    "background_effects": {"type": "static-texture", "description": "full-frame wine textile on identity states", "technology": "CSS background image", "params": {"color_palette": ["#792A28", "#8A011B"], "speed": "0", "density": "full frame", "opacity": "1", "blend_mode": "normal"}},
+    "particle_systems": {"enabled": false, "type": "none", "description": "not used", "technology": "none", "params": {"count": 0, "shape": "none", "size_range": "none", "movement_pattern": "none", "color_behavior": "none", "interaction": "none", "spawn_area": "none"}},
+    "3d_elements": {"enabled": false, "type": "none", "description": "not used", "technology": "none", "params": {"renderer": "none", "lighting": "none", "camera": "none", "materials": [], "geometry": [], "post_processing": [], "interaction_model": "none"}},
+    "shader_effects": {"enabled": false, "type": "none", "description": "not used", "technology": "none", "params": {"uniforms": {}, "vertex_manipulation": "none", "fragment_output": "none", "noise_type": "none", "distortion": "none"}},
+    "scroll_effects": {"parallax": {"enabled": false, "layers": 0, "depth_range": "none", "speed_curve": "none"}, "scroll_triggered_animations": {"enabled": false, "trigger_points": [], "animation_type": "none", "scrub_behavior": "none"}, "scroll_morphing": {"enabled": false, "description": "fixed kiosk screens do not scroll"}},
+    "text_effects": {"type": "numeric-swap", "description": "3-2-1 countdown swaps at a steady pace", "technology": "DOM text updates", "params": {"split_strategy": "whole value", "animation_per_unit": "state swap", "stagger": "850ms", "effect_style": "minimal"}},
+    "cursor_effects": {"enabled": false, "type": "none", "description": "touch-first kiosk", "params": {"shape": "system", "size": "system", "blend_mode": "normal", "trail": "none", "interaction_zone": "none"}},
+    "image_effects": {"type": "light-retouch", "description": "subtle brightness and saturation normalization for the demo capture", "technology": "Canvas 2D and CSS filters", "params": {"filter_pipeline": ["brightness", "saturation"], "hover_transform": "none", "reveal_animation": "240ms fade", "distortion_type": "none"}},
+    "glassmorphism_neumorphism": {"enabled": true, "style": "frosted-layers", "params": {"blur_radius": "2px", "transparency": "low", "border_treatment": "none", "shadow_type": "soft", "light_source_angle": "top"}},
+    "canvas_drawings": {"enabled": true, "type": "camera-capture", "description": "captures and mirrors the webcam frame before JPEG encoding", "technology": "Canvas 2D", "params": {"draw_method": "drawImage with center crop", "animation_loop": "none", "color_scheme": "source photo", "responsiveness": "fixed 786 × 1396 backing canvas", "interaction": "capture after countdown"}},
+    "svg_animations": {"enabled": false, "type": "none", "description": "static exported wordmark and inline camera icon", "params": {"animation_method": "none", "path_morphing": false, "stroke_animation": false, "filter_effects": "white logo filter on wine surfaces"}},
+    "composite_notes": "The visual hero is always the camera or captured portrait. Textile and embroidered collage imagery appears only at entry and processing. No WebGL or heavy animation is required; prefers-reduced-motion collapses transitions and shortens the countdown."
+  }
+}

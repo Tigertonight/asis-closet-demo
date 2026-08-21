@@ -28,3 +28,27 @@ def test_selfit_onboarding_uses_high_resolution_production_assets() -> None:
         response = client.get(asset_path)
         assert response.status_code == 200, asset_path
         assert response.headers["content-type"].startswith("image/"), asset_path
+
+
+def test_selfit_mirror_route_serves_the_capture_flow() -> None:
+    response = client.get("/selfit/mirror")
+
+    assert response.status_code == 200
+    assert response.headers["content-type"].startswith("text/html")
+    assert "selfit 智能镜子" in response.text
+    assert 'id="startCapture"' in response.text
+    assert 'data-screen="countdown"' in response.text
+    assert 'data-screen="confirm"' in response.text
+    assert 'data-screen="processing"' in response.text
+    assert 'data-screen="result"' in response.text
+
+
+def test_selfit_mirror_assets_are_available() -> None:
+    for asset_path in (
+        "/static/selfit/assets/mirror-demo-full-body.webp",
+        "/static/selfit/assets/mirror-loading-ornament@2x.png",
+        "/static/selfit/assets/mirror-report-qr.png",
+    ):
+        response = client.get(asset_path)
+        assert response.status_code == 200, asset_path
+        assert response.headers["content-type"].startswith("image/"), asset_path
