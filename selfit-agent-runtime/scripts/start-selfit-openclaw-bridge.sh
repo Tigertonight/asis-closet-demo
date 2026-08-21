@@ -41,13 +41,13 @@ if [ ! -f "$ROOT_DIR/vendor/openclaw/dist/entry.mjs" ] && [ ! -f "$ROOT_DIR/vend
   exit 1
 fi
 
-export ASIS_OPENCLAW_BRIDGE_HOST="${ASIS_OPENCLAW_BRIDGE_HOST:-127.0.0.1}"
-export ASIS_OPENCLAW_BRIDGE_PORT="${ASIS_OPENCLAW_BRIDGE_PORT:-18789}"
-export ASIS_TOOL_BASE_URL="${ASIS_TOOL_BASE_URL:-http://127.0.0.1:8002}"
+export SELFIT_OPENCLAW_BRIDGE_HOST="${SELFIT_OPENCLAW_BRIDGE_HOST:-127.0.0.1}"
+export SELFIT_OPENCLAW_BRIDGE_PORT="${SELFIT_OPENCLAW_BRIDGE_PORT:-18789}"
+export SELFIT_TOOL_BASE_URL="${SELFIT_TOOL_BASE_URL:-http://127.0.0.1:8002}"
 export OPENCLAW_HOME="${OPENCLAW_HOME:-$ROOT_DIR/.openclaw-home}"
 export OPENCLAW_STATE_DIR="${OPENCLAW_STATE_DIR:-$ROOT_DIR/.openclaw}"
 export OPENCLAW_CONFIG_PATH="${OPENCLAW_CONFIG_PATH:-$ROOT_DIR/config/openclaw.local.json}"
 
 mkdir -p "$OPENCLAW_HOME" "$OPENCLAW_STATE_DIR"
 
-exec "$NODE_BIN" "$ROOT_DIR/scripts/asis-openclaw-bridge.mjs"
+exec "$NODE_BIN" "$ROOT_DIR/scripts/selfit-openclaw-bridge.mjs"

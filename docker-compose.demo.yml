@@ -1,23 +1,23 @@
 services:
-  asis-demo:
+  selfit-demo:
     build: .
     ports:
       - "${APP_PORT:-8002}:8002"
     env_file:
       - .env.demo
     environment:
-      ASIS_ENV: demo
-      ASIS_PUBLIC_DEMO: "1"
-      ASIS_AUTH_RETURN_DEV_CODE: "0"
-      ASIS_AUTH_ALLOW_MOCK_CODES: "0"
+      SELFIT_ENV: demo
+      SELFIT_PUBLIC_DEMO: "1"
+      SELFIT_AUTH_RETURN_DEV_CODE: "0"
+      SELFIT_AUTH_ALLOW_MOCK_CODES: "0"
       APP_HOST: 0.0.0.0
       APP_PORT: 8002
       REQUIRE_SIDECARS: "${REQUIRE_SIDECARS:-1}"
     volumes:
       - ./outputs:/app/outputs
       - ./uploads:/app/uploads
-      - ./asis-agent-runtime/.openclaw:/app/asis-agent-runtime/.openclaw
-      - ./asis-agent-runtime/.openclaw-home:/app/asis-agent-runtime/.openclaw-home
+      - ./selfit-agent-runtime/.openclaw:/app/selfit-agent-runtime/.openclaw
+      - ./selfit-agent-runtime/.openclaw-home:/app/selfit-agent-runtime/.openclaw-home
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "curl", "-fsS", "http://127.0.0.1:8002/health"]

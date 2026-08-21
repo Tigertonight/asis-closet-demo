@@ -1,7 +1,7 @@
 {
   "openapi": "3.1.0",
   "info": {
-    "title": "asis Stylist Tools",
+    "title": "selfit Stylist Tools",
     "version": "0.1.0"
   },
   "servers": [
@@ -12,7 +12,7 @@
   "paths": {
     "/stylist/tools/{tool_name}": {
       "post": {
-        "operationId": "asis_tool",
+        "operationId": "selfit_tool",
         "parameters": [
           {
             "name": "tool_name",
@@ -21,14 +21,14 @@
             "schema": {
               "type": "string",
               "enum": [
-                "asis_closet_search",
-                "asis_get_item",
-                "asis_compose_outfit",
-                "asis_save_outfit",
-                "asis_tryon_from_outfit",
-                "asis_xhs_search",
-                "asis_xhs_fetch_note",
-                "asis_style_kb_search"
+                "selfit_closet_search",
+                "selfit_get_item",
+                "selfit_compose_outfit",
+                "selfit_save_outfit",
+                "selfit_tryon_from_outfit",
+                "selfit_xhs_search",
+                "selfit_xhs_fetch_note",
+                "selfit_style_kb_search"
               ]
             }
           }

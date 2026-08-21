@@ -13,7 +13,7 @@ from dotenv import load_dotenv
 
 
 ROOT = Path(__file__).resolve().parents[1]
-ASIS_RUNTIME_ROOT = ROOT / "asis-agent-runtime"
+SELFIT_RUNTIME_ROOT = ROOT / "selfit-agent-runtime"
 DEFAULT_STYLIST_MODEL = "openai/gpt-5.5"
 STYLIST_MODEL_KEY_ENV_BY_PROVIDER = {
     "openai": ["OPENAI_API_KEY", "STYLIST_OPENCLAW_API_KEY"],
@@ -89,7 +89,7 @@ def _http_probe(url: str | None, timeout: float = 2.0) -> dict[str, object]:
 def _bridge_health_url(chat_url: str | None) -> str | None:
     if not chat_url:
         return None
-    for suffix in ["/api/asis/chat", "/api/chat", "/chat"]:
+    for suffix in ["/api/selfit/chat", "/api/chat", "/chat"]:
         if chat_url.endswith(suffix):
             return chat_url[: -len(suffix)] + "/health"
     return chat_url.rstrip("/") + "/health"
@@ -124,7 +124,7 @@ def readiness(env_path: Path | None = None) -> dict[str, object]:
             "runway_google_api_key": _env_present("TRYON_RUNWAY_GOOGLE_API_KEY") or _env_present("RUNWAY_GOOGLE_API_KEY") or _env_present("REDNOTE_RUNWAY_API_KEY"),
         },
         "stylist": {
-            "chat_url": _env_present("STYLIST_OPENCLAW_CHAT_URL") or _env_present("OPENCLAW_ASIS_CHAT_URL"),
+            "chat_url": _env_present("STYLIST_OPENCLAW_CHAT_URL") or _env_present("OPENCLAW_SELFIT_CHAT_URL"),
             "memory_url": _env_present("STYLIST_OPENCLAW_MEMORY_URL"),
             "model": stylist_key["model"],
             "model_provider": stylist_key["provider"],
@@ -134,16 +134,16 @@ def readiness(env_path: Path | None = None) -> dict[str, object]:
             "demo_mode": os.environ.get("STYLIST_DEMO_MODE", "").strip() in {"1", "true", "yes", "on"},
         },
         "xiaohongshu": {
-            "mcp_url": _env_present("ASIS_XHS_MCP_URL") or _env_present("STYLIST_XHS_MCP_URL"),
-            "allowed_tools": os.environ.get("ASIS_XHS_ALLOWED_TOOLS") or os.environ.get("STYLIST_XHS_ALLOWED_TOOLS") or "",
+            "mcp_url": _env_present("SELFIT_XHS_MCP_URL") or _env_present("STYLIST_XHS_MCP_URL"),
+            "allowed_tools": os.environ.get("SELFIT_XHS_ALLOWED_TOOLS") or os.environ.get("STYLIST_XHS_ALLOWED_TOOLS") or "",
         },
         "birefnet": {
-            "endpoint": _env_present("ASIS_BIREFNET_ENDPOINT"),
-            "model": _env_present("ASIS_BIREFNET_MODEL"),
+            "endpoint": _env_present("SELFIT_BIREFNET_ENDPOINT"),
+            "model": _env_present("SELFIT_BIREFNET_MODEL"),
         },
     }
-    stylist_chat_url = os.environ.get("STYLIST_OPENCLAW_CHAT_URL") or os.environ.get("OPENCLAW_ASIS_CHAT_URL")
-    xhs_mcp_url = os.environ.get("ASIS_XHS_MCP_URL") or os.environ.get("STYLIST_XHS_MCP_URL")
+    stylist_chat_url = os.environ.get("STYLIST_OPENCLAW_CHAT_URL") or os.environ.get("OPENCLAW_SELFIT_CHAT_URL")
+    xhs_mcp_url = os.environ.get("SELFIT_XHS_MCP_URL") or os.environ.get("STYLIST_XHS_MCP_URL")
     endpoints = {
         "stylist_bridge_health": _http_probe(_bridge_health_url(stylist_chat_url)),
         "stylist_chat": {"configured": bool(stylist_chat_url), "reachable": bool(stylist_chat_url), "method": "POST"},
@@ -153,27 +153,27 @@ def readiness(env_path: Path | None = None) -> dict[str, object]:
     }
     sidecars = {
         "openclaw": {
-            "source_present": (ASIS_RUNTIME_ROOT / "vendor" / "openclaw").exists(),
-            "built": (ASIS_RUNTIME_ROOT / "vendor" / "openclaw" / "dist" / "entry.mjs").exists()
-            or (ASIS_RUNTIME_ROOT / "vendor" / "openclaw" / "dist" / "entry.js").exists(),
-            "lock_present": (ASIS_RUNTIME_ROOT / "openclaw.lock.json").exists(),
-            "bridge_script_present": (ASIS_RUNTIME_ROOT / "scripts" / "asis-openclaw-bridge.mjs").exists(),
-            "config_present": (ASIS_RUNTIME_ROOT / "config" / "openclaw.local.json").exists(),
-            "workspace_identity_present": (ASIS_RUNTIME_ROOT / "AGENTS.md").exists(),
-            "workspace_tools_present": (ASIS_RUNTIME_ROOT / "TOOLS.md").exists(),
-            "workspace_personality_present": (ASIS_RUNTIME_ROOT / "SOUL.md").exists(),
-            "tool_spec_present": (ASIS_RUNTIME_ROOT / "tools" / "asis-tools.openapi.json").exists(),
-            "agent_prompt_present": (ASIS_RUNTIME_ROOT / "agents" / "asis-stylist" / "agent.md").exists(),
+            "source_present": (SELFIT_RUNTIME_ROOT / "vendor" / "openclaw").exists(),
+            "built": (SELFIT_RUNTIME_ROOT / "vendor" / "openclaw" / "dist" / "entry.mjs").exists()
+            or (SELFIT_RUNTIME_ROOT / "vendor" / "openclaw" / "dist" / "entry.js").exists(),
+            "lock_present": (SELFIT_RUNTIME_ROOT / "openclaw.lock.json").exists(),
+            "bridge_script_present": (SELFIT_RUNTIME_ROOT / "scripts" / "selfit-openclaw-bridge.mjs").exists(),
+            "config_present": (SELFIT_RUNTIME_ROOT / "config" / "openclaw.local.json").exists(),
+            "workspace_identity_present": (SELFIT_RUNTIME_ROOT / "AGENTS.md").exists(),
+            "workspace_tools_present": (SELFIT_RUNTIME_ROOT / "TOOLS.md").exists(),
+            "workspace_personality_present": (SELFIT_RUNTIME_ROOT / "SOUL.md").exists(),
+            "tool_spec_present": (SELFIT_RUNTIME_ROOT / "tools" / "selfit-tools.openapi.json").exists(),
+            "agent_prompt_present": (SELFIT_RUNTIME_ROOT / "agents" / "selfit-stylist" / "agent.md").exists(),
         },
         "xiaohongshu_mcp": {
-            "source_present": (ASIS_RUNTIME_ROOT / "vendor" / "xiaohongshu-mcp").exists(),
-            "lock_present": (ASIS_RUNTIME_ROOT / "xiaohongshu-mcp.lock.json").exists(),
+            "source_present": (SELFIT_RUNTIME_ROOT / "vendor" / "xiaohongshu-mcp").exists(),
+            "lock_present": (SELFIT_RUNTIME_ROOT / "xiaohongshu-mcp.lock.json").exists(),
             "docker_available": shutil.which("docker") is not None,
             "go_available": shutil.which("go") is not None,
-            "vendored_go_available": (ASIS_RUNTIME_ROOT / "vendor" / "toolchains" / "go" / "bin" / "go").exists(),
-            "go_runtime_lock_present": (ASIS_RUNTIME_ROOT / "go-runtime.lock.json").exists(),
-            "docker_compose_present": (ASIS_RUNTIME_ROOT / "vendor" / "xiaohongshu-mcp" / "docker" / "docker-compose.yml").exists(),
-            "go_start_script_present": (ASIS_RUNTIME_ROOT / "scripts" / "start-xhs-mcp-go.sh").exists(),
+            "vendored_go_available": (SELFIT_RUNTIME_ROOT / "vendor" / "toolchains" / "go" / "bin" / "go").exists(),
+            "go_runtime_lock_present": (SELFIT_RUNTIME_ROOT / "go-runtime.lock.json").exists(),
+            "docker_compose_present": (SELFIT_RUNTIME_ROOT / "vendor" / "xiaohongshu-mcp" / "docker" / "docker-compose.yml").exists(),
+            "go_start_script_present": (SELFIT_RUNTIME_ROOT / "scripts" / "start-xhs-mcp-go.sh").exists(),
         },
     }
     openclaw_static_ready = all(
@@ -218,11 +218,11 @@ def readiness(env_path: Path | None = None) -> dict[str, object]:
     if not ready["edge_refine"]:
         missing_actions.append("Install requirements-ai.txt to enable rembg + onnxruntime for cleaner transparent PNG edges.")
     if not sidecars["openclaw"]["built"]:
-        missing_actions.append("Build OpenClaw with asis-agent-runtime/scripts/build-openclaw.sh.")
+        missing_actions.append("Build OpenClaw with selfit-agent-runtime/scripts/build-openclaw.sh.")
     if not sidecars["openclaw"]["config_present"]:
-        missing_actions.append("Create asis-agent-runtime/config/openclaw.local.json for the asis-stylist OpenClaw workspace.")
+        missing_actions.append("Create selfit-agent-runtime/config/openclaw.local.json for the selfit-stylist OpenClaw workspace.")
     if not (sidecars["openclaw"]["workspace_identity_present"] and sidecars["openclaw"]["workspace_tools_present"] and sidecars["openclaw"]["tool_spec_present"]):
-        missing_actions.append("Add asis OpenClaw workspace files AGENTS.md, TOOLS.md, and tools/asis-tools.openapi.json.")
+        missing_actions.append("Add selfit OpenClaw workspace files AGENTS.md, TOOLS.md, and tools/selfit-tools.openapi.json.")
     if not (
         env["stylist"]["chat_url"]
         and env["stylist"]["memory_url"]
@@ -241,15 +241,15 @@ def readiness(env_path: Path | None = None) -> dict[str, object]:
             f"STYLIST_OPENCLAW_MODEL is {env['stylist']['model']}; add one of {accepted}, or change STYLIST_OPENCLAW_MODEL to match the configured provider key."
         )
     if not sidecars["xiaohongshu_mcp"]["source_present"]:
-        missing_actions.append("Bootstrap Xiaohongshu MCP with asis-agent-runtime/scripts/bootstrap-xhs-mcp.sh.")
+        missing_actions.append("Bootstrap Xiaohongshu MCP with selfit-agent-runtime/scripts/bootstrap-xhs-mcp.sh.")
     if not (
         sidecars["xiaohongshu_mcp"]["docker_available"]
         or sidecars["xiaohongshu_mcp"]["go_available"]
         or sidecars["xiaohongshu_mcp"]["vendored_go_available"]
     ):
-        missing_actions.append("Install Docker/Go or run asis-agent-runtime/scripts/bootstrap-go-runtime.py for the Xiaohongshu MCP sidecar.")
+        missing_actions.append("Install Docker/Go or run selfit-agent-runtime/scripts/bootstrap-go-runtime.py for the Xiaohongshu MCP sidecar.")
     if not ready["xhs_search"]:
-        missing_actions.append("Start Xiaohongshu MCP sidecar and set ASIS_XHS_MCP_URL.")
+        missing_actions.append("Start Xiaohongshu MCP sidecar and set SELFIT_XHS_MCP_URL.")
     if not ready["real_tryon"]:
         missing_actions.append("Fill try-on image generation provider keys in .env.")
 

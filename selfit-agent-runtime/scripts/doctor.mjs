@@ -4,10 +4,12 @@ import { fileURLToPath } from "node:url";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const required = [
-  "agents/asis-stylist/agent.md",
-  "tools/asis-tools.openapi.json",
+  "agents/selfit-stylist/agent.md",
+  "tools/selfit-tools.openapi.json",
   "config/openclaw.example.json",
+  "config/search-mcp.example.json",
   "config/xiaohongshu-mcp.example.json",
+  "skills/multi-source-search/SKILL.md",
   "openclaw.lock.json",
   "xiaohongshu-mcp.lock.json",
 ];

@@ -17,13 +17,13 @@ def _get_json(path: str, timeout: float = 60.0) -> dict:
 
 def main() -> int:
     checks = []
-    for path in ["/asis/runtime-readiness", "/closet/capabilities", "/stylist/capabilities"]:
+    for path in ["/selfit/runtime-readiness", "/closet/capabilities", "/stylist/capabilities"]:
         try:
             data = _get_json(path)
             checks.append({"path": path, "passed": True, "status": data.get("status") or data.get("mode") or "ok"})
         except (URLError, TimeoutError, OSError, json.JSONDecodeError) as exc:
             checks.append({"path": path, "passed": False, "error": str(exc)})
-    readiness = next((check for check in checks if check["path"] == "/asis/runtime-readiness"), {})
+    readiness = next((check for check in checks if check["path"] == "/selfit/runtime-readiness"), {})
     result = {
         "status": "passed" if all(check["passed"] for check in checks) else "failed",
         "base_url": BASE_URL,

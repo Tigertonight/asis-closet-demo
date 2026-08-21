@@ -2,8 +2,8 @@
   "mcpServers": {
     "xiaohongshu": {
       "transport": "streamable-http",
-      "url": "${ASIS_XHS_MCP_URL:-http://127.0.0.1:18060/mcp}",
-      "description": "Read-only Xiaohongshu MCP sidecar for asis stylist research.",
+      "url": "${SELFIT_XHS_MCP_URL:-http://127.0.0.1:18060/mcp}",
+      "description": "Read-only Xiaohongshu MCP sidecar for selfit stylist research.",
       "allowedTools": [
         "check_login_status",
         "search_feeds",

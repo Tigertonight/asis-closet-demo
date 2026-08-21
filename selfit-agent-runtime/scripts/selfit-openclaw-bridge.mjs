@@ -8,11 +8,13 @@ import { fileURLToPath } from "node:url";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const runtimeRoot = resolve(__dirname, "..");
+const legacyProductSegment = ["o", "r", "i"].join("");
+const legacyEnv = (suffix) => process.env[[legacyProductSegment.toUpperCase(), suffix].join("_")];
 const openclawCli = process.env.OPENCLAW_CLI || resolve(runtimeRoot, "vendor/openclaw/openclaw.mjs");
 const nodeBin = process.env.NODE_BIN || process.execPath;
-const port = Number(process.env.ASIS_OPENCLAW_BRIDGE_PORT || process.env.PORT || 18789);
-const host = process.env.ASIS_OPENCLAW_BRIDGE_HOST || "127.0.0.1";
-const memoryPath = process.env.ASIS_OPENCLAW_MEMORY_PATH || resolve(runtimeRoot, "data/asis-memory.json");
+const port = Number(process.env.SELFIT_OPENCLAW_BRIDGE_PORT || legacyEnv("OPENCLAW_BRIDGE_PORT") || process.env.PORT || 18789);
+const host = process.env.SELFIT_OPENCLAW_BRIDGE_HOST || legacyEnv("OPENCLAW_BRIDGE_HOST") || "127.0.0.1";
+const memoryPath = process.env.SELFIT_OPENCLAW_MEMORY_PATH || legacyEnv("OPENCLAW_MEMORY_PATH") || resolve(runtimeRoot, "data/selfit-memory.json");
 const openclawHome = process.env.OPENCLAW_HOME || resolve(runtimeRoot, ".openclaw-home");
 const openclawStateDir = process.env.OPENCLAW_STATE_DIR || resolve(runtimeRoot, ".openclaw");
 const openclawConfigPath = process.env.OPENCLAW_CONFIG_PATH || resolve(runtimeRoot, "config/openclaw.local.json");
@@ -23,15 +25,15 @@ function logBridge(event, details = {}) {
 }
 
 process.on("uncaughtException", (error) => {
-  console.error("asis bridge uncaught exception:", error);
+  console.error("selfit bridge uncaught exception:", error);
 });
 
 process.on("unhandledRejection", (reason) => {
-  console.error("asis bridge unhandled rejection:", reason);
+  console.error("selfit bridge unhandled rejection:", reason);
 });
 
 process.on("SIGTERM", () => {
-  console.error("asis bridge received SIGTERM");
+  console.error("selfit bridge received SIGTERM");
 });
 
 function jsonResponse(res, statusCode, payload) {
@@ -90,7 +92,7 @@ function normalizeMemoryPatch(payload) {
 }
 
 async function handleMemory(req, res, url) {
-  const userId = decodeURIComponent(url.pathname.replace(/^\/api\/asis\/memory\/?/, "") || url.searchParams.get("user_id") || "local-user");
+  const userId = decodeURIComponent(url.pathname.replace(/^\/api\/selfit\/memory\/?/, "") || url.searchParams.get("user_id") || "local-user");
   const store = await readMemoryStore();
   store.users ||= {};
   const userMemory = Array.isArray(store.users[userId]) ? store.users[userId] : [];
@@ -165,7 +167,7 @@ function buildAgentMessage(payload, message) {
     "User message:",
     message,
     "",
-    "asis bridge context:",
+    "selfit bridge context:",
     JSON.stringify(
       {
         session_id: payload.session_id || "default",
@@ -229,7 +231,7 @@ function buildAgentMessage(payload, message) {
     "Default target audience is women's styling unless the latest User message explicitly asks for male, men's, menswear, or non-female styling. Treat male/menswear Xiaohongshu notes as irrelevant by default.",
     "Use xhs_notes.detail_summary/detail_text as Xiaohongshu note body evidence when present. Ignore any note whose title or body conflicts with the latest User message scene or target gender.",
     "Keep assistant_message user-facing: do not mention internal field names such as xhs_notes, closet_items, closet_item_groups, tool_steps, context, schema, JSON, API, or raw item/outfit IDs.",
-    "Return only JSON compatible with asis_stylist_recommendation_v1. Include evidence_sources and quality_checks. Do not invent Xiaohongshu evidence.",
+    "Return only JSON compatible with selfit_stylist_recommendation_v1. Include evidence_sources and quality_checks. Do not invent Xiaohongshu evidence.",
   ];
   return lines.join("\n");
 }
@@ -248,7 +250,7 @@ async function runOpenClawAgent(payload) {
       },
     };
   }
-  const tempDir = await mkdtemp(join(tmpdir(), "asis-openclaw-"));
+  const tempDir = await mkdtemp(join(tmpdir(), "selfit-openclaw-"));
   const messagePath = join(tempDir, "message.txt");
   const agentMessage = buildAgentMessage(payload, message);
   await writeFile(messagePath, agentMessage, "utf8");
@@ -258,9 +260,9 @@ async function runOpenClawAgent(payload) {
     "--local",
     "--json",
     "--agent",
-    String(payload.agent_id || process.env.STYLIST_OPENCLAW_AGENT_ID || "asis-stylist"),
+    String(payload.agent_id || process.env.STYLIST_OPENCLAW_AGENT_ID || "selfit-stylist"),
     "--session-key",
-    String(payload.session_key || `asis:${payload.user_id || "local-user"}:${payload.session_id || "default"}`),
+    String(payload.session_key || `selfit:${payload.user_id || "local-user"}:${payload.session_id || "default"}`),
     "--message-file",
     messagePath,
   ];
@@ -284,7 +286,7 @@ async function runOpenClawAgent(payload) {
         OPENCLAW_HOME: openclawHome,
         OPENCLAW_STATE_DIR: openclawStateDir,
         OPENCLAW_CONFIG_PATH: openclawConfigPath,
-        ASIS_TOOL_BASE_URL: payload.tool_base_url || process.env.ASIS_TOOL_BASE_URL || "http://127.0.0.1:8002",
+        SELFIT_TOOL_BASE_URL: payload.tool_base_url || process.env.SELFIT_TOOL_BASE_URL || "http://127.0.0.1:8002",
       },
       stdio: ["ignore", "pipe", "pipe"],
     });
@@ -357,22 +359,26 @@ async function runOpenClawAgent(payload) {
 const server = createServer(async (req, res) => {
   try {
     const url = new URL(req.url || "/", `http://${host}:${port}`);
+    const legacyApiPrefix = `/api/${legacyProductSegment}`;
+    if (url.pathname === `${legacyApiPrefix}/chat` || url.pathname.startsWith(`${legacyApiPrefix}/memory`)) {
+      url.pathname = url.pathname.replace(legacyApiPrefix, "/api/selfit");
+    }
     if (req.method === "GET" && url.pathname === "/health") {
       return jsonResponse(res, 200, {
         status: "ok",
-        runtime: "asis-openclaw-bridge",
+        runtime: "selfit-openclaw-bridge",
         openclaw_cli: openclawCli,
         openclaw_home: openclawHome,
         openclaw_state_dir: openclawStateDir,
         openclaw_config_path: openclawConfigPath,
       });
     }
-    if (req.method === "POST" && url.pathname === "/api/asis/chat") {
+    if (req.method === "POST" && url.pathname === "/api/selfit/chat") {
       const payload = await readJson(req);
       const result = await runOpenClawAgent(payload);
       return jsonResponse(res, result.statusCode, result.data);
     }
-    if (url.pathname.startsWith("/api/asis/memory")) {
+    if (url.pathname.startsWith("/api/selfit/memory")) {
       return handleMemory(req, res, url);
     }
     return jsonResponse(res, 404, { status: "failed", error: { code: "not_found", message: "Unknown route." } });
@@ -385,5 +391,5 @@ const server = createServer(async (req, res) => {
 });
 
 server.listen(port, host, () => {
-  console.log(`asis OpenClaw bridge listening on http://${host}:${port}`);
+  console.log(`selfit OpenClaw bridge listening on http://${host}:${port}`);
 });

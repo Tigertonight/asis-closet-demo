@@ -60,7 +60,7 @@ def _wait_for_readiness(base_url: str, deadline: float, strict: bool = False) ->
     last_readiness: dict | None = None
     while time.time() < deadline:
         try:
-            last_readiness = _get_json(f"{base_url.rstrip('/')}/asis/runtime-readiness")
+            last_readiness = _get_json(f"{base_url.rstrip('/')}/selfit/runtime-readiness")
             if strict:
                 if last_readiness.get("status") == "ready_for_full_user_trial":
                     return last_readiness
@@ -76,7 +76,7 @@ def _wait_for_readiness(base_url: str, deadline: float, strict: bool = False) ->
 
 def _run_smoke(base_url: str) -> dict:
     proc = subprocess.run(
-        [str(ROOT / ".venv/bin/python"), str(ROOT / "scripts/asis_runtime_smoke.py"), base_url],
+        [str(ROOT / ".venv/bin/python"), str(ROOT / "scripts/selfit_runtime_smoke.py"), base_url],
         cwd=ROOT,
         capture_output=True,
         text=True,
@@ -125,7 +125,7 @@ def _probe_ai_chat(base_url: str) -> dict:
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Start and verify the asis full local stack.")
+    parser = argparse.ArgumentParser(description="Start and verify the selfit full local stack.")
     parser.add_argument("--base-url", default=DEFAULT_BASE_URL)
     parser.add_argument("--strict", action="store_true", help="Require ready_for_full_user_trial.")
     parser.add_argument("--timeout", type=int, default=90)
@@ -135,7 +135,7 @@ def main() -> int:
     env = os.environ.copy()
     env.setdefault("APP_PORT", args.base_url.rsplit(":", 1)[-1] if ":" in args.base_url else "8002")
     proc = subprocess.Popen(
-        [str(ROOT / "scripts/start_asis_full_stack.sh")],
+        [str(ROOT / "scripts/start_selfit_full_stack.sh")],
         cwd=ROOT,
         env=env,
         stdout=subprocess.PIPE,

@@ -26,7 +26,7 @@ RUN pip install --upgrade pip \
 COPY . .
 
 RUN mkdir -p outputs/runtime outputs/users uploads/users \
-    && chmod +x scripts/start_asis_full_stack.sh scripts/deploy_demo.sh asis-agent-runtime/scripts/*.sh
+    && chmod +x scripts/start_selfit_full_stack.sh scripts/deploy_demo.sh selfit-agent-runtime/scripts/*.sh
 
 EXPOSE 8002
 

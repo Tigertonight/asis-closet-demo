@@ -1,17 +1,18 @@
 {
-  "name": "asis-agent-runtime",
+  "name": "selfit-agent-runtime",
   "version": "0.1.0",
   "private": true,
-  "description": "asis-specific OpenClaw fork workspace and sidecar contract.",
+  "description": "selfit-specific OpenClaw fork workspace and sidecar contract.",
   "scripts": {
     "bootstrap:openclaw": "bash scripts/bootstrap-openclaw.sh",
     "build:openclaw": "bash scripts/build-openclaw.sh",
     "bootstrap:xhs-mcp": "bash scripts/bootstrap-xhs-mcp.sh",
     "bootstrap:go": "python3 scripts/bootstrap-go-runtime.py",
-    "start:asis-bridge": "bash scripts/start-asis-openclaw-bridge.sh",
+    "start:selfit-bridge": "bash scripts/start-selfit-openclaw-bridge.sh",
     "start:xhs-mcp": "bash scripts/start-xhs-mcp-docker.sh",
     "start:xhs-mcp:go": "bash scripts/start-xhs-mcp-go.sh",
-    "doctor": "node scripts/doctor.mjs"
+    "doctor": "node scripts/doctor.mjs",
+    "doctor:search": "node scripts/probe-search-mcp.mjs"
   },
   "engines": {
     "node": ">=22.19.0"

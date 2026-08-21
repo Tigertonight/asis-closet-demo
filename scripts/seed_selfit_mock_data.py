@@ -296,7 +296,7 @@ def _prepare_item_assets(sheet: Image.Image, seed_dir: Path) -> list[dict[str, A
                 "quality": {"status": "usable", "score": 0.92, "reasons": ["mock_seed"]},
                 "pipeline": {"detector": {"provider": "mock_seed", "status": "generated"}},
                 "favorite": False,
-                "note": "asis 风格 demo 基础物料",
+                "note": "selfit 风格 demo 基础物料",
                 "created_at": now,
                 "updated_at": now,
                 "user_edits": {},
@@ -314,7 +314,7 @@ def _upsert_items(items: list[dict[str, Any]]) -> None:
         if existing_item.get("item_id") not in seed_ids and existing_item.get("source", {}).get("type") in {"reprocess", "upload"}:
             existing_item["deleted"] = True
             existing_item["updated_at"] = now
-            existing_item["note"] = "隐藏测试生成的占位单品，避免污染 asis demo"
+            existing_item["note"] = "隐藏测试生成的占位单品，避免污染 selfit demo"
     existing = {item.get("item_id"): index for index, item in enumerate(manifest.setdefault("items", []))}
     for item in items:
         index = existing.get(item["item_id"])
@@ -421,7 +421,7 @@ def seed() -> dict[str, Any]:
         "outfits": len(outfits),
         "tryon_records": min(3, len(outfits)),
         "contact_sheet": str(seed_dir / "source_contact_sheet.png"),
-        "schema": str(closet.ROOT_DIR / "docs" / "ASIS_DATA_SCHEMA.md"),
+        "schema": str(closet.ROOT_DIR / "docs" / "SELFIT_DATA_SCHEMA.md"),
         "fingerprint": hashlib.sha256(json.dumps([item["item_id"] for item in items]).encode("utf-8")).hexdigest()[:12],
     }
 

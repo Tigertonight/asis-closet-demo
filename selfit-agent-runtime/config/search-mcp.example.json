@@ -1,0 +1,44 @@
+{
+  "mcp": {
+    "sessionIdleTtlMs": 600000,
+    "servers": {
+      "exa": {
+        "url": "https://mcp.exa.ai/mcp",
+        "transport": "streamable-http",
+        "connectTimeout": 8,
+        "timeout": 30,
+        "supportsParallelToolCalls": true,
+        "toolFilter": {
+          "include": ["web_search_exa", "web_fetch_exa"]
+        }
+      },
+      "parallel-search": {
+        "url": "https://search.parallel.ai/mcp",
+        "transport": "streamable-http",
+        "connectTimeout": 8,
+        "timeout": 30,
+        "supportsParallelToolCalls": true,
+        "toolFilter": {
+          "include": ["web_search", "web_fetch"]
+        }
+      },
+      "searxng": {
+        "enabled": false,
+        "url": "http://127.0.0.1:8080/mcp",
+        "transport": "streamable-http",
+        "connectTimeout": 5,
+        "timeout": 20,
+        "supportsParallelToolCalls": true,
+        "toolFilter": {
+          "include": ["search", "web_search"]
+        }
+      }
+    }
+  },
+  "notes": [
+    "Exa is the anonymous primary web-search provider.",
+    "Parallel Search is the anonymous fallback provider; add a bearer key only when higher rate limits are needed.",
+    "SearXNG is disabled until a self-hosted MCP adapter is available at the configured URL.",
+    "Do not send user secrets, private closet data, or session memory in public-web search queries."
+  ]
+}

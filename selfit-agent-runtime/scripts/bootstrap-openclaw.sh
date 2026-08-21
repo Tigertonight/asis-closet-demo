@@ -26,7 +26,7 @@ data = {
     "upstream": upstream,
     "resolved_commit": commit,
     "resolved_at": datetime.now(timezone.utc).isoformat(),
-    "notes": "Locked by scripts/bootstrap-openclaw.sh. asis layer remains outside vendor/openclaw.",
+    "notes": "Locked by scripts/bootstrap-openclaw.sh. selfit layer remains outside vendor/openclaw.",
 }
 with open(path, "w", encoding="utf-8") as handle:
     json.dump(data, handle, ensure_ascii=False, indent=2)

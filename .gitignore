@@ -26,12 +26,15 @@ uploads/
 outputs/
 red_square_test.png
 openclaw-workspace-state.json
+.cowork-deploy/
+.evidence-reconstruction/
+cowork-login.command
 
 # Agent/runtime generated dependencies and local state
-asis-agent-runtime/vendor/
-asis-agent-runtime/.openclaw/
-asis-agent-runtime/config/*.local.json
-asis-agent-runtime/*workspace-state*.json
+selfit-agent-runtime/vendor/
+selfit-agent-runtime/.openclaw/
+selfit-agent-runtime/config/*.local.json
+selfit-agent-runtime/*workspace-state*.json
 
 # Logs and process files
 *.log
