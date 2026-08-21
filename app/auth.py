@@ -53,8 +53,8 @@ def _normalize_phone(phone: str) -> str:
 
 
 def _hash_secret(secret: str) -> str:
-    salt = os.getenv("ASIS_AUTH_SECRET", "asis-local-auth-secret")
-    if is_public_demo_mode() and salt == "asis-local-auth-secret":
+    salt = os.getenv("SELFIT_AUTH_SECRET", "selfit-local-auth-secret")
+    if is_public_demo_mode() and salt == "selfit-local-auth-secret":
         raise HTTPException(status_code=500, detail="认证密钥未配置，请联系 demo 管理员。")
     return hmac.new(salt.encode("utf-8"), secret.encode("utf-8"), hashlib.sha256).hexdigest()
 
@@ -102,7 +102,7 @@ def ensure_local_user() -> dict[str, Any]:
 
 def start_phone_login(phone: str) -> dict[str, Any]:
     phone_e164 = _normalize_phone(phone)
-    code = os.getenv("ASIS_AUTH_DEV_CODE", "0000")
+    code = os.getenv("SELFIT_AUTH_DEV_CODE", "0000")
     now = datetime.now(timezone.utc)
     code_id = secrets.token_urlsafe(12)
     data = _load_store()
@@ -124,7 +124,7 @@ def start_phone_login(phone: str) -> dict[str, Any]:
         "code_id": code_id,
         "expires_in_seconds": CODE_TTL_MINUTES * 60,
     }
-    if env_flag("ASIS_AUTH_RETURN_DEV_CODE", not is_public_demo_mode()):
+    if env_flag("SELFIT_AUTH_RETURN_DEV_CODE", not is_public_demo_mode()):
         response["dev_code"] = code
     return response
 
@@ -149,8 +149,8 @@ def verify_phone_login(phone: str, code: str) -> dict[str, Any]:
     if int(login_code.get("attempt_count") or 0) >= MAX_CODE_ATTEMPTS:
         raise HTTPException(status_code=400, detail="验证码尝试次数过多")
     mock_codes = set()
-    if env_flag("ASIS_AUTH_ALLOW_MOCK_CODES", not is_public_demo_mode()):
-        mock_codes = {item.strip() for item in os.getenv("ASIS_AUTH_MOCK_CODES", "0000,0001").split(",") if item.strip()}
+    if env_flag("SELFIT_AUTH_ALLOW_MOCK_CODES", not is_public_demo_mode()):
+        mock_codes = {item.strip() for item in os.getenv("SELFIT_AUTH_MOCK_CODES", "0000,0001").split(",") if item.strip()}
     code_matches = submitted_code in mock_codes or hmac.compare_digest(str(login_code.get("code_hash") or ""), _hash_secret(submitted_code))
     if not code_matches:
         login_code["attempt_count"] = int(login_code.get("attempt_count") or 0) + 1

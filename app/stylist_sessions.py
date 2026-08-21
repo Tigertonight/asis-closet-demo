@@ -11,7 +11,7 @@ from fastapi import HTTPException
 from app.storage import storage_context
 
 
-LEGACY_SESSION_ID = "asis-inspiration"
+LEGACY_SESSION_ID = "selfit-inspiration"
 DEFAULT_SESSION_TITLE = "新的穿搭灵感"
 
 
@@ -122,7 +122,7 @@ def create_stylist_session(payload: dict[str, Any] | None = None) -> dict[str, A
         "message_count": 0,
         "messages": [],
         "metadata": {
-            "source": "asis_inspiration",
+            "source": "selfit_inspiration",
             **(payload.get("metadata") if isinstance(payload.get("metadata"), dict) else {}),
         },
     }

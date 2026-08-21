@@ -3218,7 +3218,7 @@ def render_demo_page() -> str:
     </section>
 
     <section id="uploadPanel" class="panel">
-      <div class="topbar upload-topbar"><button class="home-return" id="homeBackBtn" type="button" aria-label="返回 AS IS 首页">‹</button><div class="step">01 上传照片</div></div>
+      <div class="topbar upload-topbar"><button class="home-return" id="homeBackBtn" type="button" aria-label="返回 selfit 首页">‹</button><div class="step">01 上传照片</div></div>
       <h2 class="section-title">上传你的照片</h2>
       <p class="section-subtitle">尽量使用自然光正脸照；不强制使用色卡，有色卡时会额外校正。</p>
       <div class="shooting-rules">
@@ -3329,7 +3329,7 @@ def render_demo_page() -> str:
     const $ = (id) => document.getElementById(id);
     const esc = (value) => String(value ?? "").replace(/[&<>"']/g, s => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[s]));
     const panels = ["home", "uploadPanel", "analysisPanel", "resultPanel"];
-    const isFormalExperience = new URLSearchParams(window.location.search).get("source") === "asis";
+    const isFormalExperience = new URLSearchParams(window.location.search).get("source") === "selfit";
     document.querySelector(".shell").classList.toggle("formal", isFormalExperience);
     const stageNames = {
       input_quality: "照片质量",
@@ -3776,7 +3776,7 @@ def render_demo_page() -> str:
       const avoid = (summary.avoid_colors || []).map(item => item.name).join("、") || "暂无";
       const why = (summary.why || []).slice(0, 2).map(item => `- ${item}`).join("\\n");
       return [
-        "我的适我色彩结果",
+        "我的selfit色彩结果",
         `季节型：${season.season_24_name || summary.title || season.season_12_name || season.season_4_name || "待判断"}`,
         `色彩维度：冷暖${dimensions.temperature_name || "-"} / 明度${dimensions.brightness_name || "-"} / 彩度${dimensions.chroma_name || "-"} / 对比度${dimensions.contrast_name || "-"}`,
         `推荐尝试：${suitable}`,
@@ -4155,7 +4155,7 @@ def render_demo_page() -> str:
 
     $("copySummaryBtn").addEventListener("click", copySummary);
     $("homeBackBtn").addEventListener("click", () => {
-      window.location.href = "/asis/demo";
+      window.location.href = "/selfit/demo";
     });
     $("againBtn").addEventListener("click", () => showPanel("uploadPanel"));
     document.querySelectorAll(".back").forEach(btn => btn.addEventListener("click", () => showPanel(btn.dataset.target)));

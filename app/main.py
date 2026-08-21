@@ -11,7 +11,7 @@ import httpx
 from dotenv import load_dotenv
 from fastapi import Depends, FastAPI, File, Form, Request, UploadFile
 from fastapi.exceptions import RequestValidationError
-from fastapi.responses import FileResponse, HTMLResponse, JSONResponse, PlainTextResponse, Response, StreamingResponse
+from fastapi.responses import FileResponse, HTMLResponse, JSONResponse, PlainTextResponse, RedirectResponse, Response, StreamingResponse
 from fastapi.staticfiles import StaticFiles
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
@@ -62,9 +62,9 @@ from app.closet import (
     list_outfits,
     list_tryon_records,
     mock_tryon_from_outfit,
-    record_asis_tryon_result,
+    record_selfit_tryon_result,
     render_closet_demo_page,
-    render_asis_demo_page,
+    render_selfit_demo_page,
     reprocess_closet_item,
     update_closet_item,
     update_outfit,
@@ -91,7 +91,7 @@ from app.stylist import (
     get_stylist_memory,
     patch_stylist_memory,
     run_stylist_chat,
-    run_asis_tool,
+    run_selfit_tool,
     stream_stylist_chat,
     stylist_capabilities,
 )
@@ -112,7 +112,7 @@ from scripts.check_runtime_readiness import readiness as runtime_readiness
 
 load_dotenv(Path(__file__).resolve().parents[1] / ".env", override=True)
 
-app = FastAPI(title="Color Test MVP POC", version="0.2.0")
+app = FastAPI(title="selfit", version="0.2.0")
 app.middleware("http")(request_guard_middleware)
 SELFIT_INDEX_PATH = Path(__file__).resolve().parent / "static" / "selfit" / "index.html"
 SELFIT_MIRROR_INDEX_PATH = Path(__file__).resolve().parent / "static" / "selfit" / "mirror.html"
@@ -626,6 +626,11 @@ def selfit_onboarding_page() -> FileResponse:
     )
 
 
+@app.get("/ori/demo", include_in_schema=False)
+def legacy_ori_demo_page() -> RedirectResponse:
+    return RedirectResponse(url="/selfit/demo", status_code=308)
+
+
 @app.get("/selfit/mirror", response_class=FileResponse)
 @app.get("/selfit/mirror/", response_class=FileResponse)
 def selfit_mirror_page() -> FileResponse:
@@ -639,23 +644,20 @@ def selfit_mirror_page() -> FileResponse:
     )
 
 
-@app.get("/asis/demo", response_class=HTMLResponse)
-def asis_demo_page() -> HTMLResponse:
-    return HTMLResponse(render_asis_demo_page())
-
-
 @app.get("/wearwow/demo", response_class=HTMLResponse)
 def wearwow_demo_compat_page() -> HTMLResponse:
-    return HTMLResponse(render_asis_demo_page())
+    return HTMLResponse(render_selfit_demo_page())
 
 
-@app.get("/asis/runtime-readiness")
-def asis_runtime_readiness() -> dict[str, Any]:
+@app.get("/ori/runtime-readiness", include_in_schema=False)
+@app.get("/selfit/runtime-readiness")
+def selfit_runtime_readiness() -> dict[str, Any]:
     return runtime_readiness()
 
 
-@app.post("/asis/try-on/from-outfit")
-async def asis_try_on_from_outfit(
+@app.post("/ori/try-on/from-outfit", include_in_schema=False)
+@app.post("/selfit/try-on/from-outfit")
+async def selfit_try_on_from_outfit(
     person_image: UploadFile = File(...),
     outfit_id: str = Form(...),
     photo_mode: str | None = Form(None),
@@ -664,8 +666,8 @@ async def asis_try_on_from_outfit(
 ) -> dict[str, Any]:
     with user_storage(current_user["user_id"]):
         result = await run_try_on_from_outfit_upload(person_image, outfit_id, photo_mode, scene_label)
-        result["asis_mode"] = "product_tryon"
-        record = record_asis_tryon_result(outfit_id, result)
+        result["selfit_mode"] = "product_tryon"
+        record = record_selfit_tryon_result(outfit_id, result)
         if record:
             result["record"] = record
         return result
@@ -762,7 +764,7 @@ async def stylist_chat(request: Request, current_user: dict[str, Any] = Depends(
         payload = await request.json()
         payload["user_id"] = current_user["user_id"]
         with user_storage(current_user["user_id"]):
-            session = ensure_stylist_session(payload.get("session_id") or "asis-inspiration", {"metadata": {"source": "asis_inspiration"}})
+            session = ensure_stylist_session(payload.get("session_id") or "selfit-inspiration", {"metadata": {"source": "selfit_inspiration"}})
             payload["session_id"] = session["session_id"]
             context = payload.get("context") if isinstance(payload.get("context"), dict) else {}
             stored_conversation = recent_conversation(session["session_id"], 8)
@@ -774,7 +776,7 @@ async def stylist_chat(request: Request, current_user: dict[str, Any] = Depends(
             context["recent_user_queries"] = context["conversation_context"]["recent_user_queries"]
             payload["context"] = context
             if user_message:
-                append_stylist_message(session["session_id"], "user", user_message, {"source": "asis_inspiration"})
+                append_stylist_message(session["session_id"], "user", user_message, {"source": "selfit_inspiration"})
             result, status_code = await run_stylist_chat(payload)
             assistant_message = str(result.get("assistant_message") or result.get("error", {}).get("message") or "").strip()
             if assistant_message:
@@ -827,7 +829,7 @@ async def stylist_tool(tool_name: str, request: Request, current_user: dict[str,
     payload = await request.json()
     payload["user_id"] = current_user["user_id"]
     with user_storage(current_user["user_id"]):
-        result, status_code = await run_asis_tool(tool_name, payload)
+        result, status_code = await run_selfit_tool(tool_name, payload)
     return JSONResponse(status_code=status_code, content=result)
 
 

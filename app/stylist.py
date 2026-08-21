@@ -27,7 +27,7 @@ from app.closet import (
 from app.tryon import extract_xhs_link
 
 
-LOGGER = logging.getLogger("asis.stylist")
+LOGGER = logging.getLogger("selfit.stylist")
 if not LOGGER.handlers:
     _handler = logging.StreamHandler()
     _handler.setFormatter(logging.Formatter("%(levelname)s:%(name)s:%(message)s"))
@@ -35,8 +35,8 @@ if not LOGGER.handlers:
 LOGGER.setLevel(logging.INFO)
 LOGGER.propagate = False
 ROOT_DIR = Path(__file__).resolve().parents[1]
-STYLIST_RUNTIME_DIR = ROOT_DIR / "asis-agent-runtime"
-STYLIST_AGENT_ID = "asis-stylist"
+STYLIST_RUNTIME_DIR = ROOT_DIR / "selfit-agent-runtime"
+STYLIST_AGENT_ID = "selfit-stylist"
 STYLIST_SKILLS = [
     "travel-outfit",
     "interview-outfit",
@@ -47,14 +47,14 @@ STYLIST_SKILLS = [
     "xhs-trend-research",
 ]
 STYLIST_TOOLS = [
-    "asis_closet_search",
-    "asis_get_item",
-    "asis_compose_outfit",
-    "asis_save_outfit",
-    "asis_tryon_from_outfit",
-    "asis_xhs_search",
-    "asis_xhs_fetch_note",
-    "asis_style_kb_search",
+    "selfit_closet_search",
+    "selfit_get_item",
+    "selfit_compose_outfit",
+    "selfit_save_outfit",
+    "selfit_tryon_from_outfit",
+    "selfit_xhs_search",
+    "selfit_xhs_fetch_note",
+    "selfit_style_kb_search",
 ]
 DEFAULT_STYLIST_MODEL = "openai/gpt-5.5"
 STYLIST_FRIENDLY_ERROR_MESSAGE = "暂时灵感耗尽，正在努力充能～"
@@ -206,7 +206,7 @@ async def run_stylist_chat(payload: dict[str, Any]) -> tuple[dict[str, Any], int
         "agent_runtime_unavailable",
         "OpenClaw 穿搭师运行时还没有配置，无法启动 AI 对话。",
         503,
-        suggestion="请先启动 asis-agent-runtime，或配置 STYLIST_OPENCLAW_CHAT_URL。不要在正式模式下使用假回复。",
+        suggestion="请先启动 selfit-agent-runtime，或配置 STYLIST_OPENCLAW_CHAT_URL。不要在正式模式下使用假回复。",
     )
     LOGGER.info("stylist_chat_done session=%s mode=unavailable status=503 elapsed=%.2fs", request.get("session_id"), time.perf_counter() - started_at)
     return result
@@ -219,33 +219,33 @@ async def stream_stylist_chat(payload: dict[str, Any]) -> AsyncIterator[str]:
     yield f"data: {json.dumps(result, ensure_ascii=False)}\n\n"
 
 
-async def run_asis_tool(tool_name: str, payload: dict[str, Any]) -> tuple[dict[str, Any], int]:
+async def run_selfit_tool(tool_name: str, payload: dict[str, Any]) -> tuple[dict[str, Any], int]:
     try:
-        if tool_name == "asis_closet_search":
+        if tool_name == "selfit_closet_search":
             return _tool_closet_search(payload), 200
-        if tool_name == "asis_get_item":
+        if tool_name == "selfit_get_item":
             item_id = str(payload.get("item_id") or "").strip()
             return {"status": "ok", "item": get_closet_item(item_id)}, 200
-        if tool_name == "asis_compose_outfit":
+        if tool_name == "selfit_compose_outfit":
             return _tool_compose_outfit(payload), 200
-        if tool_name == "asis_save_outfit":
+        if tool_name == "selfit_save_outfit":
             return {"status": "ok", "outfit": create_outfit(payload)}, 200
-        if tool_name == "asis_tryon_from_outfit":
+        if tool_name == "selfit_tryon_from_outfit":
             outfit_id = str(payload.get("outfit_id") or "").strip()
             return {"status": "ok", "tryon": mock_tryon_from_outfit(outfit_id)}, 200
-        if tool_name == "asis_xhs_fetch_note":
+        if tool_name == "selfit_xhs_fetch_note":
             url = str(payload.get("url") or "").strip()
             return {"status": "ok", "note": await extract_xhs_link(url)}, 200
-        if tool_name == "asis_xhs_search":
+        if tool_name == "selfit_xhs_search":
             return _tool_xhs_search(payload), 200
-        if tool_name == "asis_style_kb_search":
+        if tool_name == "selfit_style_kb_search":
             return _tool_style_kb_search(payload), 200
-        if tool_name == "asis_import_link":
+        if tool_name == "selfit_import_link":
             url = str(payload.get("url") or "").strip()
             return {"status": "ok", "import_result": await import_link(url)}, 200
     except Exception as exc:
         return _failed("tool_failed", str(exc) or "工具调用失败。", 500)
-    return _failed("unknown_tool", f"未知 asis 工具：{tool_name}", 404)
+    return _failed("unknown_tool", f"未知 selfit 工具：{tool_name}", 404)
 
 
 async def get_stylist_memory(user_id: str) -> tuple[dict[str, Any], int]:
@@ -266,12 +266,12 @@ def _normalize_chat_payload(payload: dict[str, Any], message: str) -> dict[str, 
     return {
         "agent_id": os.environ.get("STYLIST_OPENCLAW_AGENT_ID", STYLIST_AGENT_ID),
         "session_id": session_id,
-        "session_key": f"asis:{user_id}:{session_id}",
+        "session_key": f"selfit:{user_id}:{session_id}",
         "user_id": user_id,
         "message": message,
         "context": payload.get("context") if isinstance(payload.get("context"), dict) else {},
-        "required_output": "asis_stylist_recommendation_v1",
-        "tool_base_url": os.environ.get("STYLIST_ASIS_TOOL_BASE_URL", "http://127.0.0.1:8002"),
+        "required_output": "selfit_stylist_recommendation_v1",
+        "tool_base_url": os.environ.get("STYLIST_SELFIT_TOOL_BASE_URL", "http://127.0.0.1:8002"),
     }
 
 
@@ -651,7 +651,7 @@ def _normalize_agent_result(data: dict[str, Any], transport: str, request: dict[
 
 
 def _should_use_light_closet_ai(request: dict[str, Any]) -> bool:
-    if not _env_flag("ASIS_ENABLE_LIGHT_CLOSET_AI"):
+    if not _env_flag("SELFIT_ENABLE_LIGHT_CLOSET_AI"):
         return False
     context = request.get("context") if isinstance(request.get("context"), dict) else {}
     if not context.get("closet_only"):
@@ -673,9 +673,9 @@ async def _run_light_closet_ai(request: dict[str, Any]) -> dict[str, Any] | None
     prompt = _light_closet_ai_prompt(request)
     payload = {
         "model": _minimax_model_id(_stylist_model_ref()),
-        "max_tokens": int(os.environ.get("ASIS_LIGHT_CLOSET_MAX_TOKENS", "900")),
+        "max_tokens": int(os.environ.get("SELFIT_LIGHT_CLOSET_MAX_TOKENS", "900")),
         "system": (
-            "你是 asis 的轻量衣橱穿搭师。只根据用户衣橱证据回答。"
+            "你是 selfit 的轻量衣橱穿搭师。只根据用户衣橱证据回答。"
             "不要使用小红书、外部趋势或不存在的单品。只输出合法 JSON。"
         ),
         "messages": [{"role": "user", "content": prompt}],
@@ -686,7 +686,7 @@ async def _run_light_closet_ai(request: dict[str, Any]) -> dict[str, Any] | None
         "anthropic-version": "2023-06-01",
     }
     try:
-        async with httpx.AsyncClient(timeout=float(os.environ.get("ASIS_LIGHT_CLOSET_TIMEOUT", "18"))) as client:
+        async with httpx.AsyncClient(timeout=float(os.environ.get("SELFIT_LIGHT_CLOSET_TIMEOUT", "18"))) as client:
             response = await client.post(endpoint, json=payload, headers=headers)
             if response.status_code >= 400:
                 return None
@@ -761,7 +761,7 @@ def _minimax_stylist_key(provider: str) -> str | None:
 
 def _minimax_anthropic_messages_url(provider: str) -> str:
     host = "https://api.minimax.io" if provider in {"minimax", "minimax-cn"} else "https://api.minimaxi.com"
-    return os.environ.get("ASIS_LIGHT_CLOSET_MODEL_URL", f"{host}/anthropic/v1/messages")
+    return os.environ.get("SELFIT_LIGHT_CLOSET_MODEL_URL", f"{host}/anthropic/v1/messages")
 
 
 def _minimax_model_id(model_ref: str) -> str:
@@ -799,7 +799,7 @@ async def _attach_xhs_inspiration(request: dict[str, Any]) -> None:
     message = _effective_user_message(request)
     LOGGER.info("xhs_start session=%s message=%s", request.get("session_id"), message[:120])
     try:
-        artifacts = await asyncio.wait_for(_fetch_xhs_inspiration(message), timeout=float(os.environ.get("ASIS_XHS_TOTAL_TIMEOUT", "10")))
+        artifacts = await asyncio.wait_for(_fetch_xhs_inspiration(message), timeout=float(os.environ.get("SELFIT_XHS_TOTAL_TIMEOUT", "10")))
     except asyncio.TimeoutError:
         query = _xhs_query_from_message(message)
         artifacts = {
@@ -869,12 +869,12 @@ async def _fetch_xhs_inspiration(message: str) -> dict[str, Any]:
             "unavailable_detail": "小红书 API 还没有配置",
         }
 
-    timeout = httpx.Timeout(float(os.environ.get("ASIS_XHS_TIMEOUT", "9")))
-    search_timeout = float(os.environ.get("ASIS_XHS_SEARCH_TIMEOUT", "6"))
+    timeout = httpx.Timeout(float(os.environ.get("SELFIT_XHS_TIMEOUT", "9")))
+    search_timeout = float(os.environ.get("SELFIT_XHS_SEARCH_TIMEOUT", "6"))
     async with httpx.AsyncClient(base_url=base_url, timeout=timeout) as client:
         login_status: dict[str, Any] | None = None
         try:
-            login_response = await client.get("/api/v1/login/status", timeout=float(os.environ.get("ASIS_XHS_LOGIN_TIMEOUT", "4")))
+            login_response = await client.get("/api/v1/login/status", timeout=float(os.environ.get("SELFIT_XHS_LOGIN_TIMEOUT", "4")))
             login_status = login_response.json() if login_response.headers.get("content-type", "").startswith("application/json") else None
         except (httpx.HTTPError, ValueError):
             login_status = None
@@ -896,7 +896,7 @@ async def _fetch_xhs_inspiration(message: str) -> dict[str, Any]:
             return await _attach_public_xhs_fallback(message, artifacts)
         notes, search_meta, search_error = await _search_xhs_notes_until_enough(client, message, search_timeout, plan)
         if notes:
-            detail_timeout = float(os.environ.get("ASIS_XHS_DETAIL_TOTAL_TIMEOUT", "3"))
+            detail_timeout = float(os.environ.get("SELFIT_XHS_DETAIL_TOTAL_TIMEOUT", "3"))
             detail_timed_out = False
             try:
                 notes = await asyncio.wait_for(_enrich_xhs_notes_with_details(client, notes), timeout=detail_timeout)
@@ -947,8 +947,8 @@ async def _fetch_xhs_inspiration(message: str) -> dict[str, Any]:
 async def _search_xhs_notes_until_enough(
     client: httpx.AsyncClient, message: str, search_timeout: float, plan: dict[str, Any] | None = None
 ) -> tuple[list[dict[str, Any]], list[dict[str, Any]], str | None]:
-    max_rounds = max(1, int(os.environ.get("ASIS_XHS_SEARCH_ROUNDS", "2")))
-    max_candidates = max(8, int(os.environ.get("ASIS_XHS_MAX_CANDIDATES", "24")))
+    max_rounds = max(1, int(os.environ.get("SELFIT_XHS_SEARCH_ROUNDS", "2")))
+    max_candidates = max(8, int(os.environ.get("SELFIT_XHS_MAX_CANDIDATES", "24")))
     search_plan = plan or _fallback_xhs_search_plan(message)
     queries = [str(query or "").strip() for query in search_plan.get("queries", []) if str(query or "").strip()][:max_rounds]
     all_notes: dict[str, dict[str, Any]] = {}
@@ -982,7 +982,7 @@ async def _search_xhs_notes_until_enough(
 
 
 async def _attach_public_xhs_fallback(message: str, artifacts: dict[str, Any]) -> dict[str, Any]:
-    if not _env_flag("ASIS_XHS_ENABLE_PUBLIC_FALLBACK"):
+    if not _env_flag("SELFIT_XHS_ENABLE_PUBLIC_FALLBACK"):
         return artifacts
     query = str(artifacts.get("query") or _xhs_query_from_message(message))
     try:
@@ -1007,8 +1007,8 @@ async def _attach_public_xhs_fallback(message: str, artifacts: dict[str, Any]) -
 
 async def _fetch_public_xhs_references(message: str) -> list[dict[str, Any]]:
     search_query = f"site:xiaohongshu.com/explore {_xhs_broad_query_from_message(message)}"
-    search_url = os.environ.get("ASIS_XHS_PUBLIC_SEARCH_URL", "https://www.bing.com/search")
-    timeout = float(os.environ.get("ASIS_XHS_PUBLIC_SEARCH_TIMEOUT", "4"))
+    search_url = os.environ.get("SELFIT_XHS_PUBLIC_SEARCH_URL", "https://www.bing.com/search")
+    timeout = float(os.environ.get("SELFIT_XHS_PUBLIC_SEARCH_TIMEOUT", "4"))
     headers = {
         "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126 Safari/537.36",
         "Accept-Language": "zh-CN,zh;q=0.9,en;q=0.6",
@@ -1297,7 +1297,7 @@ async def _xhs_search_plan(message: str) -> dict[str, Any]:
 
 
 async def _ai_xhs_search_plan(message: str) -> dict[str, Any] | None:
-    if _env_flag("ASIS_XHS_DISABLE_AI_PLANNER"):
+    if _env_flag("SELFIT_XHS_DISABLE_AI_PLANNER"):
         return None
     base_url = _openai_compatible_base_url()
     api_key = _openai_compatible_api_key(base_url)
@@ -1315,7 +1315,7 @@ async def _ai_xhs_search_plan(message: str) -> dict[str, Any] | None:
         f"用户问题：{message}"
     )
     payload = {
-        "model": os.environ.get("ASIS_XHS_PLANNER_MODEL") or "gpt-4o-mini",
+        "model": os.environ.get("SELFIT_XHS_PLANNER_MODEL") or "gpt-4o-mini",
         "messages": [
             {"role": "system", "content": "你只输出合法 JSON。"},
             {"role": "user", "content": prompt},
@@ -1325,7 +1325,7 @@ async def _ai_xhs_search_plan(message: str) -> dict[str, Any] | None:
     }
     headers = {"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"}
     try:
-        async with httpx.AsyncClient(timeout=float(os.environ.get("ASIS_XHS_AI_PLANNER_TIMEOUT", "5"))) as client:
+        async with httpx.AsyncClient(timeout=float(os.environ.get("SELFIT_XHS_AI_PLANNER_TIMEOUT", "5"))) as client:
             response = await client.post(f"{base_url.rstrip('/')}/chat/completions", json=payload, headers=headers)
             if response.status_code >= 400:
                 return None
@@ -1492,7 +1492,7 @@ def _extract_xhs_search_facets(text: str) -> dict[str, list[str]]:
 
 def _openai_compatible_base_url() -> str | None:
     value = (
-        os.environ.get("ASIS_XHS_PLANNER_BASE_URL")
+        os.environ.get("SELFIT_XHS_PLANNER_BASE_URL")
         or os.environ.get("STYLIST_OPENAI_BASE_URL")
         or os.environ.get("OPENAI_BASE_URL")
         or os.environ.get("OPENAI_API_BASE")
@@ -1500,13 +1500,13 @@ def _openai_compatible_base_url() -> str | None:
     )
     if value and value.strip():
         return value.rstrip("/")
-    if os.environ.get("ASIS_XHS_PLANNER_API_KEY") or os.environ.get("OPENAI_API_KEY"):
+    if os.environ.get("SELFIT_XHS_PLANNER_API_KEY") or os.environ.get("OPENAI_API_KEY"):
         return "https://api.openai.com/v1"
     return None
 
 
 def _openai_compatible_api_key(base_url: str | None) -> str | None:
-    key = os.environ.get("ASIS_XHS_PLANNER_API_KEY") or os.environ.get("OPENAI_API_KEY") or os.environ.get("STYLIST_OPENCLAW_API_KEY")
+    key = os.environ.get("SELFIT_XHS_PLANNER_API_KEY") or os.environ.get("OPENAI_API_KEY") or os.environ.get("STYLIST_OPENCLAW_API_KEY")
     if key and key.strip():
         return key.strip()
     return "local-codex-proxy" if base_url else None
@@ -1571,7 +1571,7 @@ def _xhs_filter_step_detail(notes: list[dict[str, Any]], message: str) -> str:
 
 
 def _xhs_api_base_url() -> str | None:
-    explicit = os.environ.get("ASIS_XHS_API_URL") or os.environ.get("STYLIST_XHS_API_URL") or os.environ.get("STYLIST_XHS_SEARCH_URL")
+    explicit = os.environ.get("SELFIT_XHS_API_URL") or os.environ.get("STYLIST_XHS_API_URL") or os.environ.get("STYLIST_XHS_SEARCH_URL")
     if explicit and explicit.strip():
         return explicit.strip().rstrip("/")
     mcp_url = _xhs_mcp_config().get("url")
@@ -1701,8 +1701,8 @@ def _xhs_has_enough_answer_evidence(notes: list[dict[str, Any]], message: str) -
     if not notes:
         return False
     if not profile["scene_tokens"]:
-        return len(notes) >= int(os.environ.get("ASIS_XHS_MIN_GENERIC_NOTES", "3"))
-    min_notes = int(os.environ.get("ASIS_XHS_MIN_SCENE_NOTES", "4"))
+        return len(notes) >= int(os.environ.get("SELFIT_XHS_MIN_GENERIC_NOTES", "3"))
+    min_notes = int(os.environ.get("SELFIT_XHS_MIN_SCENE_NOTES", "4"))
     threshold = _xhs_relevance_threshold(message)
     scene_matched = [note for note in notes if _xhs_note_has_scene_evidence(note, profile)]
     scored_scene_notes = [note for note in scene_matched if float(note.get("relevance_score") or 0) >= threshold]
@@ -1907,15 +1907,15 @@ def _normalize_xhs_feed(feed: dict[str, Any], query: str = "", source_label: str
 
 
 async def _enrich_xhs_notes_with_details(client: httpx.AsyncClient, notes: list[dict[str, Any]]) -> list[dict[str, Any]]:
-    if not notes or _env_flag("ASIS_XHS_DISABLE_DETAIL_FETCH"):
+    if not notes or _env_flag("SELFIT_XHS_DISABLE_DETAIL_FETCH"):
         return notes
-    limit = max(0, min(len(notes), int(os.environ.get("ASIS_XHS_DETAIL_LIMIT", "1"))))
+    limit = max(0, min(len(notes), int(os.environ.get("SELFIT_XHS_DETAIL_LIMIT", "1"))))
     if limit <= 0:
         return notes
     headers = await _xhs_mcp_session_headers(client)
     if not headers:
         return notes
-    semaphore = asyncio.Semaphore(max(1, int(os.environ.get("ASIS_XHS_DETAIL_CONCURRENCY", "2"))))
+    semaphore = asyncio.Semaphore(max(1, int(os.environ.get("SELFIT_XHS_DETAIL_CONCURRENCY", "2"))))
 
     async def enrich_one(note: dict[str, Any]) -> dict[str, Any]:
         async with semaphore:
@@ -1938,11 +1938,11 @@ async def _xhs_mcp_session_headers(client: httpx.AsyncClient) -> dict[str, str] 
         "params": {
             "protocolVersion": "2024-11-05",
             "capabilities": {},
-            "clientInfo": {"name": "asis-stylist", "version": "0.1"},
+            "clientInfo": {"name": "selfit-stylist", "version": "0.1"},
         },
     }
     try:
-        response = await client.post("/mcp", json=payload, headers=headers, timeout=float(os.environ.get("ASIS_XHS_MCP_INIT_TIMEOUT", "4")))
+        response = await client.post("/mcp", json=payload, headers=headers, timeout=float(os.environ.get("SELFIT_XHS_MCP_INIT_TIMEOUT", "4")))
         session_id = response.headers.get("mcp-session-id") or response.headers.get("Mcp-Session-Id")
         if not session_id:
             return None
@@ -1951,7 +1951,7 @@ async def _xhs_mcp_session_headers(client: httpx.AsyncClient) -> dict[str, str] 
             "/mcp",
             json={"jsonrpc": "2.0", "method": "notifications/initialized", "params": {}},
             headers=session_headers,
-            timeout=float(os.environ.get("ASIS_XHS_MCP_INIT_TIMEOUT", "4")),
+            timeout=float(os.environ.get("SELFIT_XHS_MCP_INIT_TIMEOUT", "4")),
         )
         return session_headers
     except (httpx.HTTPError, ValueError):
@@ -1973,7 +1973,7 @@ async def _enrich_xhs_note_with_detail(client: httpx.AsyncClient, note: dict[str
         },
     }
     try:
-        response = await client.post("/mcp", json=payload, headers=headers, timeout=float(os.environ.get("ASIS_XHS_DETAIL_TIMEOUT", "3")))
+        response = await client.post("/mcp", json=payload, headers=headers, timeout=float(os.environ.get("SELFIT_XHS_DETAIL_TIMEOUT", "3")))
         data = response.json()
     except (httpx.HTTPError, ValueError):
         return note
@@ -2280,7 +2280,7 @@ async def _proxy_memory(method: str, user_id: str, payload: dict[str, Any] | Non
             "agent_runtime_unavailable",
             "用户记忆由独立 OpenClaw runtime 管理，但当前没有配置记忆服务。",
             503,
-            suggestion="请配置 STYLIST_OPENCLAW_MEMORY_URL，或启动 asis-agent-runtime。",
+            suggestion="请配置 STYLIST_OPENCLAW_MEMORY_URL，或启动 selfit-agent-runtime。",
         )
     async with httpx.AsyncClient(timeout=20) as client:
         url = f"{memory_url.rstrip('/')}/{user_id}"
@@ -2343,7 +2343,7 @@ def _failed(code: str, message: str, status_code: int, suggestion: str | None = 
 
 
 def _openclaw_chat_url() -> str | None:
-    value = os.environ.get("STYLIST_OPENCLAW_CHAT_URL") or os.environ.get("OPENCLAW_ASIS_CHAT_URL")
+    value = os.environ.get("STYLIST_OPENCLAW_CHAT_URL") or os.environ.get("OPENCLAW_SELFIT_CHAT_URL")
     return value.strip() if value and value.strip() else None
 
 
@@ -2379,9 +2379,9 @@ def _stylist_model_key_report() -> dict[str, Any]:
 
 
 def _xhs_mcp_config() -> dict[str, Any]:
-    url = os.environ.get("ASIS_XHS_MCP_URL") or os.environ.get("STYLIST_XHS_MCP_URL")
-    mode = os.environ.get("ASIS_XHS_MCP_MODE") or os.environ.get("STYLIST_XHS_MCP_MODE") or "streamable-http"
-    raw_tools = os.environ.get("ASIS_XHS_ALLOWED_TOOLS") or os.environ.get("STYLIST_XHS_ALLOWED_TOOLS") or ""
+    url = os.environ.get("SELFIT_XHS_MCP_URL") or os.environ.get("STYLIST_XHS_MCP_URL")
+    mode = os.environ.get("SELFIT_XHS_MCP_MODE") or os.environ.get("STYLIST_XHS_MCP_MODE") or "streamable-http"
+    raw_tools = os.environ.get("SELFIT_XHS_ALLOWED_TOOLS") or os.environ.get("STYLIST_XHS_ALLOWED_TOOLS") or ""
     allowed_tools = [tool.strip() for tool in raw_tools.split(",") if tool.strip()] or ["check_login_status", "search_feeds", "get_feed_detail", "list_feeds"]
     return {
         "url": url.strip() if url and url.strip() else None,

@@ -18,11 +18,11 @@ def env_flag(name: str, default: bool = False) -> bool:
 
 
 def deployment_mode() -> str:
-    return (os.getenv("ASIS_ENV") or os.getenv("APP_ENV") or "local").strip().lower()
+    return (os.getenv("SELFIT_ENV") or os.getenv("APP_ENV") or "local").strip().lower()
 
 
 def is_public_demo_mode() -> bool:
-    return deployment_mode() in {"production", "prod", "demo", "staging"} or env_flag("ASIS_PUBLIC_DEMO", False)
+    return deployment_mode() in {"production", "prod", "demo", "staging"} or env_flag("SELFIT_PUBLIC_DEMO", False)
 
 
 def env_int(name: str, default: int) -> int:
@@ -75,20 +75,20 @@ def _rate_rules() -> list[LimitRule]:
         LimitRule(
             "auth",
             ("/auth/phone/start", "/auth/phone/verify"),
-            env_int("ASIS_AUTH_RATE_LIMIT", 20),
-            env_int("ASIS_AUTH_RATE_WINDOW_SECONDS", 3600),
+            env_int("SELFIT_AUTH_RATE_LIMIT", 20),
+            env_int("SELFIT_AUTH_RATE_WINDOW_SECONDS", 3600),
         ),
         LimitRule(
             "upload",
-            ("/analyze", "/demo/analyze", "/closet/import/upload", "/try-on", "/try-on/", "/asis/try-on/"),
-            env_int("ASIS_UPLOAD_RATE_LIMIT", 60),
-            env_int("ASIS_UPLOAD_RATE_WINDOW_SECONDS", 3600),
+            ("/analyze", "/demo/analyze", "/closet/import/upload", "/try-on", "/try-on/", "/selfit/try-on/"),
+            env_int("SELFIT_UPLOAD_RATE_LIMIT", 60),
+            env_int("SELFIT_UPLOAD_RATE_WINDOW_SECONDS", 3600),
         ),
         LimitRule(
             "ai",
-            ("/stylist/chat", "/try-on/from-", "/asis/try-on/from-"),
-            env_int("ASIS_AI_RATE_LIMIT", 30),
-            env_int("ASIS_AI_RATE_WINDOW_SECONDS", 3600),
+            ("/stylist/chat", "/try-on/from-", "/selfit/try-on/from-"),
+            env_int("SELFIT_AI_RATE_LIMIT", 30),
+            env_int("SELFIT_AI_RATE_WINDOW_SECONDS", 3600),
         ),
     ]
 
@@ -110,7 +110,7 @@ def _json_error(status_code: int, code: str, message: str, headers: dict[str, st
 
 
 async def request_guard_middleware(request: Request, call_next: Callable[[Request], Any]) -> Response:
-    max_body_mb = env_int("ASIS_MAX_REQUEST_BODY_MB", 36)
+    max_body_mb = env_int("SELFIT_MAX_REQUEST_BODY_MB", 36)
     content_length = request.headers.get("content-length")
     if content_length:
         try:
@@ -124,7 +124,7 @@ async def request_guard_middleware(request: Request, call_next: Callable[[Reques
             pass
 
     rule = _matching_rule(request.url.path)
-    if rule and not env_flag("ASIS_DISABLE_RATE_LIMIT", False):
+    if rule and not env_flag("SELFIT_DISABLE_RATE_LIMIT", False):
         allowed, retry_after = _limiter.check(_client_id(request), rule)
         if not allowed:
             return _json_error(
@@ -139,20 +139,20 @@ async def request_guard_middleware(request: Request, call_next: Callable[[Reques
 
 
 def deployment_guard_report() -> dict[str, Any]:
-    auth_secret = os.getenv("ASIS_AUTH_SECRET", "")
+    auth_secret = os.getenv("SELFIT_AUTH_SECRET", "")
     return {
         "mode": deployment_mode(),
         "public_demo": is_public_demo_mode(),
         "limits": {
-            "max_request_body_mb": env_int("ASIS_MAX_REQUEST_BODY_MB", 36),
-            "auth_per_window": env_int("ASIS_AUTH_RATE_LIMIT", 20),
-            "upload_per_window": env_int("ASIS_UPLOAD_RATE_LIMIT", 60),
-            "ai_per_window": env_int("ASIS_AI_RATE_LIMIT", 30),
+            "max_request_body_mb": env_int("SELFIT_MAX_REQUEST_BODY_MB", 36),
+            "auth_per_window": env_int("SELFIT_AUTH_RATE_LIMIT", 20),
+            "upload_per_window": env_int("SELFIT_UPLOAD_RATE_LIMIT", 60),
+            "ai_per_window": env_int("SELFIT_AI_RATE_LIMIT", 30),
         },
         "auth": {
             "secret_configured": bool(auth_secret),
-            "secret_is_default": auth_secret in {"", "asis-local-auth-secret"},
-            "returns_dev_code": env_flag("ASIS_AUTH_RETURN_DEV_CODE", not is_public_demo_mode()),
-            "mock_codes_allowed": env_flag("ASIS_AUTH_ALLOW_MOCK_CODES", not is_public_demo_mode()),
+            "secret_is_default": auth_secret in {"", "selfit-local-auth-secret"},
+            "returns_dev_code": env_flag("SELFIT_AUTH_RETURN_DEV_CODE", not is_public_demo_mode()),
+            "mock_codes_allowed": env_flag("SELFIT_AUTH_ALLOW_MOCK_CODES", not is_public_demo_mode()),
         },
     }

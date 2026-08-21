@@ -209,6 +209,11 @@ def _default_tryon_vision_model() -> str:
     return TRYON_VISION_MODEL
 
 
+def image_edit_model() -> str:
+    """The single model selection point for try-on and garment cutout."""
+    return os.getenv("TRYON_IMAGE_MODEL") or "nano-banana"
+
+
 async def analyze_garment_upload(image: UploadFile) -> dict[str, Any]:
     garment = _read_upload_image(await image.read(), image.filename, "garment")
     analysis = GarmentAnalyzer().analyze(garment["image"])
@@ -1301,7 +1306,7 @@ class OpenAIImageEditTryOnProvider(TryOnProvider):
     mode = "openai_image_edit"
 
     def __init__(self, model: str | None = None) -> None:
-        self.model = model or os.getenv("TRYON_IMAGE_MODEL", "gpt-image-1.5")
+        self.model = model or image_edit_model()
 
     def edit(self, person_image: Path, garment_image: Path, mask_image: Path, prompt: str, output_dir: Path) -> dict[str, Any]:
         try:

@@ -7,6 +7,7 @@ import json
 import os
 import re
 import shutil
+import base64
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
@@ -34,6 +35,19 @@ from app.tryon import (
     _public_output_path,
     _read_upload_image,
     _string_list,
+    _has_openai_compatible_provider,
+    _has_openai_image_edit_provider,
+    _has_runway_google_provider,
+    _openai_base_url,
+    _openai_compatible_client,
+    _default_garment_analysis_provider,
+    _extract_runway_google_image,
+    _path_to_runway_inline_data,
+    _response_shape,
+    _runway_google_api_key,
+    _runway_google_error_summary,
+    _runway_google_url,
+    image_edit_model,
 )
 
 
@@ -48,7 +62,7 @@ TRYON_RECORD_DIR = CLOSET_OUTPUT_DIR / "tryon_records"
 TRYON_RECORDS_MANIFEST_PATH = CLOSET_OUTPUT_DIR / "tryon_records_manifest.json"
 CLOSET_SUPPORTED_CATEGORIES = {"top", "bottom", "skirt", "dress", "shoes", "bag", "accessory"}
 MAX_LINK_IMAGES = 12
-OUTFIT_LAYOUT_VERSION = "asis_flatlay_v1_card_safe"
+OUTFIT_LAYOUT_VERSION = "selfit_flatlay_v1_card_safe"
 SEGFORMER_CLOTHES_MODEL_ID = "mattmdjaga/segformer_b2_clothes"
 SEGFORMER_LABEL_CATEGORY_HINTS = {
     "top": ("upper", "shirt", "blouse", "coat", "jacket", "sweater", "hoodie", "cardigan", "vest", "t-shirt", "top"),
@@ -230,6 +244,7 @@ def _save_source_image(raw: bytes, filename: str | None, source_type: str, index
 
 
 def closet_capabilities() -> dict[str, Any]:
+    ai_cutout = AIGarmentCutoutProvider()
     segmenter = SegFormerClothesAdapter()
     rembg = RembgMattingProvider()
     birefnet = BiRefNetMattingProvider()
@@ -254,18 +269,18 @@ def closet_capabilities() -> dict[str, Any]:
         },
         "models": {
             "primary": {
-                "name": segmenter.model_id,
-                "provider": "segformer_b2_clothes",
-                "available": model_available,
-                "status": segmenter.status(),
+                "name": ai_cutout.model,
+                "provider": ai_cutout._provider_kind() or ai_cutout.mode,
+                "available": ai_cutout.available(),
+                "status": ai_cutout.status(),
                 "categories": sorted(CLOSET_SUPPORTED_CATEGORIES),
             },
             "alternatives": [
                 {
-                    "name": "FASHN Human Parser",
-                    "provider": "fashn_human_parser",
-                    "available": False,
-                    "status": "reserved_provider_adapter",
+                    "name": segmenter.model_id,
+                    "provider": "segformer_b2_clothes",
+                    "available": model_available,
+                    "status": segmenter.status(),
                 }
             ],
             "matting": {
@@ -279,7 +294,7 @@ def closet_capabilities() -> dict[str, Any]:
                 },
             },
             "fallback": {
-                "name": "existing_top_detector",
+                "name": "segformer_then_existing_top_detector",
                 "available": True,
                 "status": "enabled",
             },
@@ -297,13 +312,209 @@ def closet_capabilities() -> dict[str, Any]:
             "enabled": True,
             "tryon_mode": "top_item_with_outfit_style_context",
         },
-        "mode": "local_open_source_first" if model_available else "partial_top_fallback",
+        "mode": "ai_garment_first" if ai_cutout.available() else "local_open_source_fallback",
     }
+
+
+class AIGarmentCutoutProvider:
+    """Uses the same image service as try-on for the product-facing garment cutout.
+
+    The local segmentation pipeline remains deliberately separate: an AI image result
+    has to preserve transparency and pass our quality checks before it can replace it.
+    """
+
+    mode = "ai_garment_cutout"
+    _availability_cache: dict[tuple[str | None, ...], str | None] = {}
+
+    def __init__(self, model: str | None = None) -> None:
+        self.model = model or image_edit_model()
+        self.last_attempt: dict[str, Any] = {}
+
+    def available(self) -> bool:
+        return self._provider_kind() is not None
+
+    def _provider_kind(self) -> str | None:
+        enabled = os.environ.get("SELFIT_GARMENT_AI_ENABLED", "1").strip().lower()
+        if enabled in {"0", "false", "no", "off"}:
+            return None
+        config_signature = (
+            enabled,
+            os.environ.get("TRYON_RUNWAY_GOOGLE_URL"),
+            os.environ.get("RUNWAY_GOOGLE_URL"),
+            os.environ.get("TRYON_RUNWAY_GOOGLE_API_KEY"),
+            os.environ.get("RUNWAY_GOOGLE_API_KEY"),
+            os.environ.get("REDNOTE_RUNWAY_API_KEY"),
+            os.environ.get("TRYON_OPENAI_BASE_URL"),
+            os.environ.get("OPENAI_BASE_URL"),
+            os.environ.get("OPENAI_API_BASE"),
+            os.environ.get("LOCAL_OPENAI_BASE_URL"),
+            os.environ.get("TRYON_OPENAI_API_KEY"),
+            os.environ.get("OPENAI_API_KEY"),
+            os.environ.get("LOCAL_OPENAI_API_KEY"),
+        )
+        if config_signature in self._availability_cache:
+            return self._availability_cache[config_signature]
+        if _has_runway_google_provider():
+            provider = "runway_google_generate_content"
+        elif _has_openai_compatible_provider() and _has_openai_image_edit_provider():
+            provider = "openai_image_edit"
+        else:
+            provider = None
+        self._availability_cache[config_signature] = provider
+        return provider
+
+    def status(self) -> str:
+        if os.environ.get("SELFIT_GARMENT_AI_ENABLED", "1").strip().lower() in {"0", "false", "no", "off"}:
+            return "disabled_by_env"
+        provider = self._provider_kind()
+        return "available_via_runway" if provider == "runway_google_generate_content" else "available_via_openai" if provider else "provider_not_configured"
+
+    def _uses_runway(self) -> bool:
+        return self._provider_kind() == "runway_google_generate_content"
+
+    def _uses_openai(self) -> bool:
+        return self._provider_kind() == "openai_image_edit"
+
+    def extract(self, source: dict[str, Any], work_dir: Path) -> list[dict[str, Any]]:
+        provider = self._provider_kind()
+        self.last_attempt = {"provider": provider or "none", "model": self.model, "status": "not_started"}
+        if provider is None:
+            self.last_attempt.update({"status": "skipped", "reason": "provider_not_configured"})
+            return []
+        try:
+            analysis = _default_garment_analysis_provider().analyze(source["image"])
+            evidence = analysis.get("evidence") or {}
+            garment = evidence.get("garment") or {}
+            category = str(garment.get("category") or "").strip().lower()
+            confidence = float(analysis.get("confidence") or 0)
+            if analysis.get("status") not in {"pass", "warn"} or category not in CLOSET_SUPPORTED_CATEGORIES or confidence < 0.68:
+                self.last_attempt.update({"status": "skipped", "reason": "garment_analysis_not_confident", "analysis_status": analysis.get("status"), "analysis_score": round(confidence, 3)})
+                return []
+
+            cutout = self._generate_cutout(source["saved_path"])
+            if cutout is None:
+                self.last_attempt.setdefault("reason", "image_provider_did_not_return_an_image")
+                self.last_attempt["status"] = "failed"
+                return []
+            raw_output_path = work_dir / "ai_cutout_raw.png"
+            raw_output_path.parent.mkdir(parents=True, exist_ok=True)
+            cutout.save(raw_output_path)
+            self.last_attempt["raw_output_path"] = _public_closet_path(raw_output_path)
+            if not _has_meaningful_transparency(cutout):
+                self.last_attempt.update({"status": "rejected", "reason": "image_provider_result_is_not_transparent"})
+                return []
+            item = _closet_item_from_ai_cutout(
+                category=category,
+                cutout=cutout,
+                source=source,
+                provider_name=self._provider_kind() or self.mode,
+                model=self.model,
+                analysis=analysis,
+            )
+            self.last_attempt.update({"status": "ok", "category": category, "analysis_score": round(confidence, 3)})
+            return [item] if item else []
+        except Exception as exc:
+            self.last_attempt.update({"status": "failed", "reason": "adapter_exception", "error": str(exc)[:300]})
+            return []
+
+    def _generate_cutout(self, source_path: Path) -> Image.Image | None:
+        if self._uses_runway():
+            return self._generate_runway_cutout(source_path)
+        if self._uses_openai():
+            return self._generate_openai_cutout(source_path)
+        return None
+
+    def _generate_runway_cutout(self, source_path: Path) -> Image.Image | None:
+        api_key = _runway_google_api_key()
+        if not api_key:
+            return None
+        prompt = (
+            "请从输入图片中提取唯一的主服饰/鞋/包单品，生成忠实的商品抠图。"
+            "完整保留原始单品的轮廓、颜色、面料纹理、蕾丝、纽扣、印花、鞋带、背带和边缘。"
+            "必须去除人物、皮肤、手、衣架、背景、地面、阴影、文字、水印和其他物体。"
+            "最终只输出一件居中的单品 PNG，背景必须完全透明（alpha），不要白底、不要阴影、不要重新设计，不能裁掉单品任何部分。"
+            f"使用与试穿一致的图片模型配置：{self.model}。"
+        )
+        payload = {
+            "contents": [{"role": "user", "parts": [_path_to_runway_inline_data(source_path), {"text": prompt}]}],
+            "generationConfig": {
+                "temperature": float(os.getenv("TRYON_RUNWAY_TEMPERATURE", "1")),
+                "maxOutputTokens": int(os.getenv("TRYON_RUNWAY_MAX_OUTPUT_TOKENS", "32768")),
+                "responseModalities": ["TEXT", "IMAGE"],
+                "topP": float(os.getenv("TRYON_RUNWAY_TOP_P", "0.95")),
+            },
+            "safetySettings": [
+                {"category": "HARM_CATEGORY_HATE_SPEECH", "threshold": "OFF"},
+                {"category": "HARM_CATEGORY_DANGEROUS_CONTENT", "threshold": "OFF"},
+                {"category": "HARM_CATEGORY_SEXUALLY_EXPLICIT", "threshold": "OFF"},
+                {"category": "HARM_CATEGORY_HARASSMENT", "threshold": "OFF"},
+            ],
+        }
+        try:
+            response = httpx.post(
+                _runway_google_url(),
+                headers={"api-key": api_key, "Content-Type": "application/json"},
+                json=payload,
+                timeout=180,
+            )
+            response.raise_for_status()
+            data = response.json()
+            provider_error = _runway_google_error_summary(data)
+            if provider_error:
+                self.last_attempt.update({"status": "failed", "reason": "runway_provider_error", "provider_error": provider_error})
+                return None
+            image_payload = _extract_runway_google_image(data)
+            if not image_payload:
+                self.last_attempt.update({"status": "failed", "reason": "runway_response_has_no_image", "response_shape": _response_shape(data)})
+                return None
+            _, encoded = image_payload
+            image = Image.open(io.BytesIO(base64.b64decode(encoded))).convert("RGBA")
+            image.load()
+            return image
+        except Exception as exc:
+            self.last_attempt.update({"status": "failed", "reason": "runway_request_failed", "error": str(exc)[:300]})
+            return None
+
+    def _generate_openai_cutout(self, source_path: Path) -> Image.Image | None:
+        try:
+            from openai import OpenAI
+
+            client = _openai_compatible_client(OpenAI)
+            prompt = (
+                "Extract the single main fashion item from this image as a faithful product cutout. "
+                "Preserve the exact garment silhouette, color, fabric texture, trims, print, buttons, straps and edges. "
+                "Remove every person, mannequin, skin, hanger, hand, text, logo overlay, floor and background. "
+                "Return one centered item only as a PNG with a fully transparent background. Do not redesign, restyle, "
+                "add a shadow, add a studio background, crop off any part of the item, or create a collage."
+            )
+            with source_path.open("rb") as image_file:
+                try:
+                    response = client.images.edit(
+                        model=self.model,
+                        image=image_file,
+                        prompt=prompt,
+                        size="auto",
+                        background="transparent",
+                        output_format="png",
+                        input_fidelity="high",
+                    )
+                except Exception:
+                    image_file.seek(0)
+                    response = client.images.edit(model=self.model, image=image_file, prompt=prompt, size="auto")
+            encoded = getattr(response.data[0], "b64_json", None)
+            if not encoded:
+                return None
+            image = Image.open(io.BytesIO(base64.b64decode(encoded))).convert("RGBA")
+            image.load()
+            return image
+        except Exception as exc:
+            self.last_attempt.update({"status": "failed", "reason": "openai_request_failed", "error": str(exc)[:300]})
+            return None
 
 
 class SegFormerClothesAdapter:
     def __init__(self, model_id: str | None = None) -> None:
-        self.model_id = model_id or os.environ.get("ASIS_SEGFORMER_MODEL", SEGFORMER_CLOTHES_MODEL_ID)
+        self.model_id = model_id or os.environ.get("SELFIT_SEGFORMER_MODEL", SEGFORMER_CLOTHES_MODEL_ID)
         self._processor: Any | None = None
         self._model: Any | None = None
 
@@ -346,7 +557,7 @@ class SegFormerClothesAdapter:
         self._processor = AutoImageProcessor.from_pretrained(self.model_id)
         self._model = AutoModelForSemanticSegmentation.from_pretrained(self.model_id)
         self._model.eval()
-        self._device = "cuda" if torch.cuda.is_available() and os.environ.get("ASIS_SEGFORMER_DEVICE", "auto") != "cpu" else "cpu"
+        self._device = "cuda" if torch.cuda.is_available() and os.environ.get("SELFIT_SEGFORMER_DEVICE", "auto") != "cpu" else "cpu"
         self._model.to(self._device)
 
     def _segment(self, image: Image.Image) -> Any:
@@ -370,7 +581,7 @@ class SegFormerClothesAdapter:
 
 class RembgMattingProvider:
     def available(self) -> bool:
-        if os.environ.get("ASIS_REMBG_ENABLED", "1").strip().lower() in {"0", "false", "no", "off"}:
+        if os.environ.get("SELFIT_REMBG_ENABLED", "1").strip().lower() in {"0", "false", "no", "off"}:
             return False
         try:
             import rembg  # noqa: F401
@@ -379,7 +590,7 @@ class RembgMattingProvider:
         return True
 
     def status(self) -> str:
-        if os.environ.get("ASIS_REMBG_ENABLED", "1").strip().lower() in {"0", "false", "no", "off"}:
+        if os.environ.get("SELFIT_REMBG_ENABLED", "1").strip().lower() in {"0", "false", "no", "off"}:
             return "disabled_by_env"
         if not self.available():
             return "optional_dependency_missing"
@@ -409,7 +620,7 @@ class RembgMattingProvider:
 
 class BiRefNetMattingProvider:
     def available(self) -> bool:
-        return bool(os.environ.get("ASIS_BIREFNET_ENDPOINT") or os.environ.get("ASIS_BIREFNET_MODEL"))
+        return bool(os.environ.get("SELFIT_BIREFNET_ENDPOINT") or os.environ.get("SELFIT_BIREFNET_MODEL"))
 
     def status(self) -> str:
         return "configured" if self.available() else "reserved_provider_adapter"
@@ -795,7 +1006,7 @@ def delete_tryon_record(record_id: str) -> dict[str, Any]:
     raise HTTPException(status_code=404, detail="没有找到这条试穿记录")
 
 
-def record_asis_tryon_result(outfit_id: str, tryon_result: dict[str, Any]) -> dict[str, Any] | None:
+def record_selfit_tryon_result(outfit_id: str, tryon_result: dict[str, Any]) -> dict[str, Any] | None:
     if tryon_result.get("status") not in {"generated", "review"}:
         return None
     image_path = tryon_result.get("result", {}).get("image_path")
@@ -803,11 +1014,11 @@ def record_asis_tryon_result(outfit_id: str, tryon_result: dict[str, Any]) -> di
         return None
     outfit = get_outfit(outfit_id)
     now = _now_iso()
-    record_id = hashlib.sha256(f"asis-tryon:{outfit_id}:{image_path}:{now}".encode("utf-8")).hexdigest()[:16]
+    record_id = hashlib.sha256(f"selfit-tryon:{outfit_id}:{image_path}:{now}".encode("utf-8")).hexdigest()[:16]
     record = {
         "record_id": record_id,
         "user_id": storage_context().user_id,
-        "mode": "asis_from_outfit_plan",
+        "mode": "selfit_from_outfit_plan",
         "status": tryon_result.get("status") or "generated",
         "outfit_id": outfit_id,
         "outfit_title": outfit.get("title") or "我的搭配",
@@ -820,7 +1031,7 @@ def record_asis_tryon_result(outfit_id: str, tryon_result: dict[str, Any]) -> di
         "created_at": now,
         "updated_at": now,
         "deleted": False,
-        "note": "AS IS 真实试穿链路生成结果。" if tryon_result.get("status") == "generated" else "试穿图已生成，建议复核后使用。",
+        "note": "selfit 真实试穿链路生成结果。" if tryon_result.get("status") == "generated" else "试穿图已生成，建议复核后使用。",
     }
     data = _ensure_tryon_records_manifest()
     data.setdefault("records", []).append(record)
@@ -1681,14 +1892,14 @@ def render_closet_demo_page() -> str:
 """
 
 
-def render_asis_demo_page() -> str:
+def render_selfit_demo_page() -> str:
     return """
 <!doctype html>
 <html lang="zh-CN">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>AS IS Demo</title>
+  <title>selfit Demo</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='16' fill='%23050505'/%3E%3Cpath d='M9 13l4-4h6l4 4v11H9V13z' fill='white'/%3E%3C/svg%3E" />
   <style>
     :root {
@@ -3277,25 +3488,28 @@ def render_asis_demo_page() -> str:
     .login-copy {
       display: grid;
       justify-items: center;
-      gap: 7px;
+      gap: 8px;
       color: var(--soft-ink);
-      line-height: 1.24;
+      line-height: 1.18;
       max-width: 300px;
       text-wrap: pretty;
     }
     .login-copy-main {
       color: var(--ink);
       font-family: "Songti SC", "STSong", "Noto Serif CJK SC", "PingFang SC", serif;
-      font-size: clamp(27px, 7.4vw, 34px);
-      font-weight: 700;
-      letter-spacing: 0;
+      font-size: clamp(25px, 6.8vw, 31px);
+      font-weight: 600;
+      letter-spacing: .06em;
+      padding-left: .06em;
     }
     .login-copy-en {
       font-family: Didot, "Bodoni 72", "Times New Roman", serif;
-      color: rgba(232,61,115,.72);
-      font-size: clamp(17px, 4.9vw, 22px);
+      color: rgba(189, 74, 111, .78);
+      font-size: clamp(16px, 4.35vw, 20px);
       font-style: italic;
-      line-height: 1;
+      font-weight: 400;
+      letter-spacing: .015em;
+      line-height: 1.05;
     }
     .login-stage {
       align-self: stretch;
@@ -3328,23 +3542,46 @@ def render_asis_demo_page() -> str:
       z-index: 1;
       display: grid;
       justify-items: center;
-      gap: 3px;
+      gap: 11px;
       animation: loginRise .7s cubic-bezier(.2,.8,.2,1) both;
     }
     .login-logo-en {
       color: var(--ink);
-      font-size: clamp(44px, 15vw, 64px);
-      line-height: .92;
-      font-weight: 500;
-      letter-spacing: 0;
+      font-size: clamp(50px, 15.4vw, 66px);
+      line-height: .78;
+      font-weight: 400;
+      letter-spacing: -.065em;
       font-family: Didot, "Bodoni 72", "Times New Roman", serif;
+      padding-right: .065em;
+      text-rendering: geometricPrecision;
+    }
+    .login-brand-signature {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+      width: 100%;
+      color: rgba(43, 36, 38, .72);
+    }
+    .login-brand-signature::before,
+    .login-brand-signature::after {
+      content: "";
+      width: 26px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(236, 75, 127, .5));
+    }
+    .login-brand-signature::after {
+      transform: scaleX(-1);
     }
     .login-wordmark-cn {
-      color: var(--rose-deep);
+      color: inherit;
       font-family: "Songti SC", "STSong", "Noto Serif CJK SC", "PingFang SC", serif;
-      font-size: 24px;
+      font-size: 14px;
       line-height: 1;
-      font-weight: 700;
+      font-weight: 500;
+      letter-spacing: .22em;
+      padding-left: .22em;
+      white-space: nowrap;
     }
     .login-closet-cloud {
       position: relative;
@@ -3434,7 +3671,10 @@ def render_asis_demo_page() -> str:
       border: 1px solid var(--line);
       background: rgba(255,255,255,.78);
       padding: 0 16px;
-      font-weight: 800;
+      font-family: "PingFang SC", "Helvetica Neue", sans-serif;
+      font-size: 17px;
+      font-weight: 600;
+      letter-spacing: .015em;
       color: var(--ink);
       outline: none;
       box-shadow: 0 10px 24px rgba(82, 42, 61, .06);
@@ -3445,6 +3685,10 @@ def render_asis_demo_page() -> str:
       position: relative;
       overflow: hidden;
       color: #fff;
+      font-family: "PingFang SC", "Helvetica Neue", sans-serif;
+      font-size: 17px;
+      font-weight: 650;
+      letter-spacing: .025em;
       background:
         linear-gradient(135deg, rgba(255,255,255,.26), rgba(255,255,255,.06) 34%, rgba(255,79,134,.34)),
         linear-gradient(180deg, rgba(255,79,134,.92), rgba(232,61,115,.88));
@@ -3507,8 +3751,8 @@ def render_asis_demo_page() -> str:
       <div class="login-shell">
         <div class="login-stage" aria-hidden="true">
           <div class="login-logo-lockup">
-            <div class="login-logo-en">AS IS</div>
-            <div class="login-wordmark-cn">适我</div>
+            <div class="login-logo-en">selfit</div>
+            <div class="login-brand-signature"><span class="login-wordmark-cn">适我</span></div>
           </div>
           <div class="login-closet-cloud">
             <span class="login-closet-item"><img src="/static/login-closet/boots.webp" alt="" /></span>
@@ -3524,7 +3768,7 @@ def render_asis_demo_page() -> str:
             <img class="login-gift-box" src="/static/login-gift/gift-box.webp" alt="" />
           </div>
           <div class="login-hero">
-            <h1 class="login-brand">AS IS <span>适我</span></h1>
+            <h1 class="login-brand">selfit <span>selfit</span></h1>
             <div class="login-copy">
               <span class="login-copy-main">遇见自己</span>
               <span class="login-copy-en">meet yourself</span>
@@ -3534,14 +3778,14 @@ def render_asis_demo_page() -> str:
         <div class="login-form">
           <input id="loginPhone" inputmode="numeric" maxlength="11" placeholder="手机号" />
           <input id="loginCode" inputmode="numeric" maxlength="4" placeholder="验证码" />
-          <button id="loginBtn" class="primary-btn" type="button">进入AS IS</button>
+          <button id="loginBtn" class="primary-btn" type="button">进入selfit</button>
           <div id="loginNote" class="login-note" aria-live="polite"></div>
         </div>
       </div>
     </section>
     <section id="page-home" class="page active">
       <div class="top-row">
-        <div class="brand">AS IS</div>
+        <div class="brand">selfit</div>
         <div class="weather"><b id="weatherTemp">24~29°C</b><span id="weatherText">上海市 小雨</span></div>
       </div>
       <div class="today-carousel" aria-label="今日推荐">
@@ -3688,7 +3932,7 @@ def render_asis_demo_page() -> str:
       <div><div class="profile-name" id="profileName">本地用户</div><div class="profile-line" id="profileLine">Mock 身份</div></div>
         <button class="circle-icon" id="logoutBtn">↺</button>
       </div>
-      <div class="pro-card"><b>asis PRO</b><span>解锁无限穿搭灵感</span><span>无限智能搭配 · 无限试衣 · 无限上传优化</span></div>
+      <div class="pro-card"><b>selfit PRO</b><span>解锁无限穿搭灵感</span><span>无限智能搭配 · 无限试衣 · 无限上传优化</span></div>
       <div class="profile-grid">
         <button class="profile-cell" id="modelCell" type="button">我的模特 <span id="currentModelName">沙漏型</span></button>
         <button class="profile-cell" id="profileColorCell" type="button">色彩测试 <span style="width:34px;height:34px;border-radius:9px;background:linear-gradient(135deg,#ffe8aa,#b4f5e9);"></span></button>
@@ -4138,9 +4382,9 @@ def render_asis_demo_page() -> str:
       setPage(`page-${tab}`);
       $all(".nav-btn").forEach(btn => btn.classList.toggle("active", btn.dataset.tab === tab));
     }
-    const authStoreKey = "asis_demo_mock_access_token";
-    const personaStoreKey = "asis_demo_mock_persona";
-    const stylistSessionStoreKey = "asis_demo_current_stylist_session";
+    const authStoreKey = "selfit_demo_mock_access_token";
+    const personaStoreKey = "selfit_demo_mock_persona";
+    const stylistSessionStoreKey = "selfit_demo_current_stylist_session";
     let authTokenPromise = null;
     const memoryStore = {};
     function readStore(key) {
@@ -4228,7 +4472,7 @@ def render_asis_demo_page() -> str:
         note.textContent = verifyData.detail || startData.detail || "登录失败，请重新输入。";
         note.classList.add("error");
         $("#loginBtn").disabled = false;
-        $("#loginBtn").textContent = "进入AS IS";
+        $("#loginBtn").textContent = "进入selfit";
         return;
       }
       writeStore(authStoreKey, verifyData.access_token);
@@ -4237,7 +4481,7 @@ def render_asis_demo_page() -> str:
       authTokenPromise = null;
       $("#loginScreen").classList.remove("active");
       $("#loginBtn").disabled = false;
-      $("#loginBtn").textContent = "进入AS IS";
+      $("#loginBtn").textContent = "进入selfit";
       await loadData();
       toast(`已进入${state.profile.role}身份。`);
     }
@@ -4397,7 +4641,7 @@ def render_asis_demo_page() -> str:
         const created = await fetchJSON("/stylist/sessions", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ metadata: { source: "asis_inspiration", profile_key: state.profileKey } })
+          body: JSON.stringify({ metadata: { source: "selfit_inspiration", profile_key: state.profileKey } })
         });
         state.aiSessions = [created];
       }
@@ -4446,7 +4690,7 @@ def render_asis_demo_page() -> str:
       const created = await fetchJSON("/stylist/sessions", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ metadata: { source: "asis_inspiration", profile_key: state.profileKey } })
+        body: JSON.stringify({ metadata: { source: "selfit_inspiration", profile_key: state.profileKey } })
       });
       state.aiSessions = [created, ...state.aiSessions.filter(session => session.session_id !== created.session_id)];
       await selectStylistSession(created.session_id, { silent: true });
@@ -5540,7 +5784,7 @@ def render_asis_demo_page() -> str:
       body.append("photo_mode", state.currentModelId === "self" ? "standard" : "standard");
       body.append("person_image", await currentModelFile());
       try {
-        const data = await fetchJSON("/asis/try-on/from-outfit", { method: "POST", body });
+        const data = await fetchJSON("/selfit/try-on/from-outfit", { method: "POST", body });
         state.tryonResult = data;
         renderTryonResult(data.result?.image_path || "");
         if (data.record?.image_path) state.records.unshift(data.record);
@@ -5614,7 +5858,7 @@ def render_asis_demo_page() -> str:
           signal: abortController.signal,
           body: JSON.stringify({
             message,
-            session_id: state.currentSessionId || "asis-inspiration",
+            session_id: state.currentSessionId || "selfit-inspiration",
             context: {
               source: "inspiration_tab",
               item_count: state.items.length,
@@ -5715,7 +5959,7 @@ def render_asis_demo_page() -> str:
       await loadData();
     }
     function openColorUpload() {
-      window.location.href = "/demo?source=asis";
+      window.location.href = "/demo?source=selfit";
     }
     function previewColorFile(file) {
       state.colorFile = file || null;
@@ -5739,7 +5983,7 @@ def render_asis_demo_page() -> str:
         const result = data.result || data.seasonal_result || data;
         const season = result.season || result.primary_season || data.consumer_result?.title || "已完成初步分析";
         $("#colorResult").style.display = "block";
-        $("#colorResult").innerHTML = `<b>${escapeHTML(season)}</b><br>结果已记录为适我风格参考，后续推荐会优先考虑更适合你的颜色方向。`;
+        $("#colorResult").innerHTML = `<b>${escapeHTML(season)}</b><br>结果已记录为selfit风格参考，后续推荐会优先考虑更适合你的颜色方向。`;
         toast("色彩测试完成。");
       } catch (error) {
         $("#colorResult").style.display = "block";
@@ -5774,7 +6018,7 @@ def render_asis_demo_page() -> str:
       $("#loginNote").textContent = error.message || "登录失败，请重试。";
       $("#loginNote").classList.add("error");
       $("#loginBtn").disabled = false;
-      $("#loginBtn").textContent = "进入AS IS";
+      $("#loginBtn").textContent = "进入selfit";
     }));
     $("#logoutBtn").addEventListener("click", logoutMockUser);
     $all("[data-tab-shortcut]").forEach(btn => btn.addEventListener("click", () => setTab(btn.dataset.tabShortcut)));
@@ -5915,14 +6159,19 @@ def _import_sources(sources: list[dict[str, Any]], import_type: str, source_url:
     all_items: list[dict[str, Any]] = []
     rejected = 0
     used_fallback = False
+    ai_attempts: list[dict[str, Any]] = []
+    ai_cutout = AIGarmentCutoutProvider()
     segmenter = SegFormerClothesAdapter()
 
     for index, source in enumerate(sources):
         work_dir = _closet_item_dir() / source["image_id"]
         work_dir.mkdir(parents=True, exist_ok=True)
-        extracted = segmenter.extract(source, work_dir) if segmenter.available() else []
+        extracted = ai_cutout.extract(source, work_dir)
+        ai_attempts.append({"image_id": source["image_id"], **ai_cutout.last_attempt})
         if not extracted:
             used_fallback = True
+            extracted = segmenter.extract(source, work_dir) if segmenter.available() else []
+        if not extracted:
             extracted = _extract_with_top_fallback(source, index, work_dir)
         if not extracted:
             rejected += 1
@@ -5963,6 +6212,7 @@ def _import_sources(sources: list[dict[str, Any]], import_type: str, source_url:
             "review": review,
             "rejected": rejected + rejected_items,
             "fallback_used": used_fallback,
+            "ai_attempts": ai_attempts,
         },
         "message": _import_message(len(new_items), review, used_fallback),
     }
@@ -6097,6 +6347,88 @@ def _closet_item_from_segmentation_mask(
                 "provider": "rembg" if matting_status == "rembg_refined" else "mask_alpha",
                 "status": matting_status,
             },
+        },
+    }
+
+
+def _has_meaningful_transparency(image: Image.Image) -> bool:
+    """Reject AI image-edit results that quietly return an opaque background."""
+    alpha = image.convert("RGBA").getchannel("A")
+    histogram = alpha.resize((192, 192)).histogram()
+    total = max(1, sum(histogram))
+    transparent_ratio = sum(histogram[:245]) / total
+    visible_ratio = sum(histogram[20:]) / total
+    return transparent_ratio >= 0.025 and visible_ratio >= 0.06
+
+
+def _closet_item_from_ai_cutout(
+    category: str,
+    cutout: Image.Image,
+    source: dict[str, Any],
+    provider_name: str,
+    model: str,
+    analysis: dict[str, Any],
+) -> dict[str, Any] | None:
+    if category not in CLOSET_SUPPORTED_CATEGORIES or not _has_meaningful_transparency(cutout):
+        return None
+    evidence = analysis.get("evidence") or {}
+    garment = evidence.get("garment") or {}
+    confidence = max(0.0, min(1.0, float(analysis.get("score") or 0.72)))
+    raw_id = f"{source['image_id']}:{category}:{provider_name}:{model}"
+    item_id = hashlib.sha256(raw_id.encode("utf-8")).hexdigest()[:16]
+    item_dir = _closet_item_dir() / item_id
+    item_dir.mkdir(parents=True, exist_ok=True)
+    cutout_path = item_dir / "cutout.png"
+    mask_path = item_dir / "mask.png"
+    preview_path = item_dir / "preview.png"
+    normalized = cutout.convert("RGBA")
+    normalized.save(cutout_path)
+    normalized.getchannel("A").save(mask_path)
+    _build_closet_item_preview(cutout_path, preview_path)
+    quality = _closet_cutout_quality(
+        category=category,
+        cutout_path=cutout_path,
+        base_score=min(0.94, max(0.7, confidence)),
+        base_reasons=["ai_garment_extraction", "transparent_background_verified"],
+    )
+    if quality["status"] == "rejected":
+        return None
+    attributes = {
+        "colors": _string_list(garment.get("colors")),
+        "material": ", ".join(_string_list(garment.get("material"))) or None,
+        "fit": garment.get("fit"),
+        "sleeve": garment.get("sleeve"),
+        "neckline": garment.get("neckline"),
+        "pattern": garment.get("pattern"),
+        "style_tags": _string_list(garment.get("style_tags")),
+        "slot": _category_to_layout_slot(category),
+    }
+    return {
+        "item_id": item_id,
+        "category": category,
+        "category_label": _fashion_category_label(category),
+        "source": {
+            **source.get("source", {}),
+            "crop_box": garment.get("bbox"),
+        },
+        "assets": {
+            "cutout_path": _public_closet_path(cutout_path),
+            "mask_path": _public_closet_path(mask_path),
+            "preview_path": _public_closet_path(preview_path),
+        },
+        "attributes": attributes,
+        "quality": {**quality, "confidence": round(confidence, 3)},
+        "pipeline": {
+            "ai_cutout": {
+                "provider": provider_name,
+                "model": model,
+                "status": "ok",
+                "background": "transparent",
+                "analysis_provider": evidence.get("provider"),
+                "analysis_confidence": round(confidence, 3),
+            },
+            "segmentation": {"provider": "ai_generated_alpha", "status": "ok"},
+            "matting": {"provider": "ai_image_edit", "status": "transparent_png_verified"},
         },
     }
 

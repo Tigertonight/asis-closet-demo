@@ -12,7 +12,7 @@ from typing import Iterator
 ROOT_DIR = Path(__file__).resolve().parents[1]
 LOCAL_USER_ID = "local_user"
 
-_current_user_id: ContextVar[str] = ContextVar("asis_current_user_id", default=LOCAL_USER_ID)
+_current_user_id: ContextVar[str] = ContextVar("selfit_current_user_id", default=LOCAL_USER_ID)
 
 
 @dataclass(frozen=True)
