@@ -8,6 +8,7 @@ from PIL import Image
 
 import app.selfit_onboarding as selfit_onboarding
 import app.selfit_photo as selfit_photo
+import app.selfit_report as selfit_report
 from app.main import app
 
 API = "/api/v1/selfit"
@@ -330,3 +331,129 @@ def test_photo_upload_idempotent_replay(monkeypatch, tmp_path: Path) -> None:
     assert second.json()["revision"] == first.json()["revision"] == 2
     assets = list((tmp_path / "outputs" / "selfit_onboarding" / "assets" / session_id).glob("asset_face_*"))
     assert len(assets) == 1
+
+
+def _create_report_job(client: TestClient, session_id: str, **kwargs) -> dict:
+    response = client.post(f"{API}/sessions/{session_id}/report-jobs", json={}, **kwargs)
+    assert response.status_code == 202
+    return response.json()
+
+
+def test_report_job_lifecycle_completes_with_report(monkeypatch, tmp_path: Path) -> None:
+    _use_tmp_store(monkeypatch, tmp_path)
+    monkeypatch.setattr(selfit_onboarding, "REPORT_TOTAL_MS", -1)
+    monkeypatch.setattr(
+        selfit_report,
+        "_builder",
+        lambda session: {"title": "中性利落派", "traits": ["冷调柔和"]},
+    )
+    client = TestClient(app)
+    session_id = _create_session(client)["session"]["sessionId"]
+
+    created = _create_report_job(client, session_id)
+    job = created["job"]
+    assert created["requestId"].startswith("req_")
+    assert job["status"] == "queued"
+    assert job["progress"] == 0
+    assert job["pollAfterMs"] == 800
+
+    polled = client.get(f"{API}/report-jobs/{job['jobId']}")
+    assert polled.status_code == 200
+    finished = polled.json()["job"]
+    assert finished["status"] == "completed"
+    assert finished["progress"] == 100
+    assert finished["stage"] == "finalizing"
+    assert finished["reportId"].startswith("rep_")
+    assert finished["report"]["title"] == "中性利落派"
+
+    fetched = client.get(f"{API}/reports/{finished['reportId']}")
+    assert fetched.status_code == 200
+    assert fetched.json()["report"]["traits"] == ["冷调柔和"]
+
+
+def test_report_job_processing_state(monkeypatch, tmp_path: Path) -> None:
+    _use_tmp_store(monkeypatch, tmp_path)
+    monkeypatch.setattr(selfit_onboarding, "REPORT_TOTAL_MS", 60000)
+    client = TestClient(app)
+    session_id = _create_session(client)["session"]["sessionId"]
+
+    job = _create_report_job(client, session_id)["job"]
+    polled = client.get(f"{API}/report-jobs/{job['jobId']}").json()["job"]
+    assert polled["status"] == "processing"
+    assert polled["stage"] == "profile"
+    assert polled["progress"] == 25
+    assert polled["pollAfterMs"] == 800
+    assert "reportId" not in polled
+
+
+def test_report_job_idempotent_creation(monkeypatch, tmp_path: Path) -> None:
+    _use_tmp_store(monkeypatch, tmp_path)
+    client = TestClient(app)
+    session_id = _create_session(client)["session"]["sessionId"]
+
+    headers = {"X-Idempotency-Key": "report_1"}
+    first = _create_report_job(client, session_id, headers=headers)
+    second = _create_report_job(client, session_id, headers=headers)
+    assert second["job"]["jobId"] == first["job"]["jobId"]
+
+
+def test_report_job_not_found(monkeypatch, tmp_path: Path) -> None:
+    _use_tmp_store(monkeypatch, tmp_path)
+    client = TestClient(app)
+
+    response = client.get(f"{API}/report-jobs/job_missing")
+    assert response.status_code == 404
+    assert response.json()["error"]["code"] == "report.job_not_found"
+
+    report = client.get(f"{API}/reports/rep_missing")
+    assert report.status_code == 404
+    assert report.json()["error"]["code"] == "report.not_found"
+
+
+def test_report_job_requires_active_session(monkeypatch, tmp_path: Path) -> None:
+    _use_tmp_store(monkeypatch, tmp_path)
+    client = TestClient(app)
+
+    response = client.post(f"{API}/sessions/ses_missing/report-jobs", json={})
+    assert response.status_code == 404
+    assert response.json()["error"]["code"] == "session.expired"
+
+
+def test_report_job_builder_failure_marks_failed(monkeypatch, tmp_path: Path) -> None:
+    _use_tmp_store(monkeypatch, tmp_path)
+    monkeypatch.setattr(selfit_onboarding, "REPORT_TOTAL_MS", -1)
+
+    def broken_builder(session: dict) -> dict:
+        raise RuntimeError("style engine down")
+
+    monkeypatch.setattr(selfit_report, "_builder", broken_builder)
+    client = TestClient(app)
+    session_id = _create_session(client)["session"]["sessionId"]
+
+    job = _create_report_job(client, session_id)["job"]
+    finished = client.get(f"{API}/report-jobs/{job['jobId']}").json()["job"]
+    assert finished["status"] == "failed"
+    assert finished["error"]["code"] == "report.generation_failed"
+    assert finished["error"]["retryable"] is True
+
+
+def test_report_builder_receives_session_profile(monkeypatch, tmp_path: Path) -> None:
+    _use_tmp_store(monkeypatch, tmp_path)
+    monkeypatch.setattr(selfit_onboarding, "REPORT_TOTAL_MS", -1)
+    captured: list[dict] = []
+
+    def spy_builder(session: dict) -> dict:
+        captured.append(session)
+        return {}
+
+    monkeypatch.setattr(selfit_report, "_builder", spy_builder)
+    client = TestClient(app)
+    session_id = _create_session(client)["session"]["sessionId"]
+    client.patch(f"{API}/sessions/{session_id}/profile", json={"manual": {"skin": "自然白", "bodyShape": "梨型"}})
+    client.patch(f"{API}/sessions/{session_id}/vibe", json={"answers": {"occasion": "A"}})
+
+    job = _create_report_job(client, session_id)["job"]
+    client.get(f"{API}/report-jobs/{job['jobId']}")
+    assert len(captured) == 1
+    assert captured[0]["manual"] == {"skin": "自然白", "bodyShape": "梨型"}
+    assert captured[0]["vibe"] == {"occasion": "A"}

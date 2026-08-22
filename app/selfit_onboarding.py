@@ -12,7 +12,7 @@ from fastapi import APIRouter, Depends, Request
 from fastapi.responses import JSONResponse
 from PIL import Image, UnidentifiedImageError
 
-from app import selfit_photo
+from app import selfit_photo, selfit_report
 from app.auth import get_optional_user
 from app.ops import env_int
 from app.storage import ROOT_DIR
@@ -24,6 +24,16 @@ SELFIT_ONBOARDING_ASSET_DIR = SELFIT_ONBOARDING_DIR / "assets"
 SCHEMA_VERSION = "selfit-onboarding-v1"
 PHOTO_MAX_BYTES = 12 * 1024 * 1024
 PHOTO_SUPPORTED_FORMATS = {"JPEG": ".jpg", "PNG": ".png", "WEBP": ".webp"}
+
+# 报告任务的演示节奏：按创建后的耗时映射阶段与进度，前端轮询读取。
+REPORT_STAGE_SCHEDULE_MS = (
+    (0, "profile", 25),
+    (800, "inspiration", 50),
+    (1600, "composition", 75),
+    (2400, "finalizing", 100),
+)
+REPORT_TOTAL_MS = 3200
+REPORT_POLL_AFTER_MS = 800
 
 SKIN_OPTIONS = {"白皙色", "自然白", "自然色", "健康色", "小麦色", "蜜糖色"}
 FACE_SHAPE_OPTIONS = {"椭圆脸", "圆脸", "方脸", "心形脸", "长脸"}
@@ -86,19 +96,22 @@ def _error_response(
     )
 
 
+_STORE_KEYS = ("sessions", "idempotency", "report_jobs", "reports")
+
+
 def _load_store() -> dict[str, Any]:
     if not SELFIT_ONBOARDING_STORE_PATH.exists():
-        return {"version": 1, "sessions": [], "idempotency": []}
+        return {"version": 1, **{key: [] for key in _STORE_KEYS}}
     try:
         data = json.loads(SELFIT_ONBOARDING_STORE_PATH.read_text(encoding="utf-8"))
         if isinstance(data, dict):
             data.setdefault("version", 1)
-            data.setdefault("sessions", [])
-            data.setdefault("idempotency", [])
+            for key in _STORE_KEYS:
+                data.setdefault(key, [])
             return data
     except json.JSONDecodeError:
         pass
-    return {"version": 1, "sessions": [], "idempotency": []}
+    return {"version": 1, **{key: [] for key in _STORE_KEYS}}
 
 
 def _write_store(data: dict[str, Any]) -> None:
@@ -120,6 +133,13 @@ def _prune_store(data: dict[str, Any]) -> dict[str, Any]:
     horizon = _iso(now - timedelta(hours=max(_session_ttl_hours(), 1)))
     data["idempotency"] = [
         entry for entry in data["idempotency"] if str(entry.get("created_at") or "") >= horizon
+    ]
+    live_session_ids = {record.get("session_id") for record in sessions}
+    data["report_jobs"] = [
+        job for job in data["report_jobs"] if job.get("session_id") in live_session_ids
+    ]
+    data["reports"] = [
+        report for report in data["reports"] if report.get("session_id") in live_session_ids
     ]
     return data
 
@@ -622,3 +642,167 @@ async def upload_session_photo(
     _idempotency_store(data, scope, idempotency_key, 200, body)
     _write_store(data)
     return JSONResponse(status_code=200, content=body)
+
+
+def _find_report_job(data: dict[str, Any], job_id: str) -> dict[str, Any] | None:
+    return next(
+        (job for job in data["report_jobs"] if job.get("job_id") == job_id),
+        None,
+    )
+
+
+def _find_report(data: dict[str, Any], report_id: str) -> dict[str, Any] | None:
+    return next(
+        (report for report in data["reports"] if report.get("report_id") == report_id),
+        None,
+    )
+
+
+def _job_progress(elapsed_ms: float) -> tuple[str, int]:
+    stage, progress = REPORT_STAGE_SCHEDULE_MS[0][1], REPORT_STAGE_SCHEDULE_MS[0][2]
+    for threshold, candidate_stage, candidate_progress in REPORT_STAGE_SCHEDULE_MS:
+        if elapsed_ms >= threshold:
+            stage, progress = candidate_stage, candidate_progress
+    return stage, progress
+
+
+def _public_job(job: dict[str, Any], report: dict[str, Any] | None = None) -> dict[str, Any]:
+    payload: dict[str, Any] = {
+        "jobId": job["job_id"],
+        "status": job["status"],
+        "progress": int(job.get("progress") or 0),
+        "pollAfterMs": REPORT_POLL_AFTER_MS,
+    }
+    if job.get("stage"):
+        payload["stage"] = job["stage"]
+    if job["status"] == "completed" and job.get("report_id"):
+        payload["reportId"] = job["report_id"]
+        if report is not None:
+            payload["report"] = report.get("data") or {}
+    if job["status"] == "failed" and job.get("error"):
+        payload["error"] = job["error"]
+    return payload
+
+
+def _finalize_report_job(data: dict[str, Any], job: dict[str, Any]) -> None:
+    """到达演示时长的任务在这里真正调用报告生成算法。"""
+
+    session = _find_session(data, str(job.get("session_id") or ""))
+    try:
+        if session is None:
+            raise ValueError("session missing")
+        report_data = selfit_report.build_report(session)
+    except Exception:
+        job["status"] = "failed"
+        job["error"] = {
+            "code": "report.generation_failed",
+            "message": "报告生成失败，请返回问卷页重试。",
+            "retryable": True,
+            "details": {},
+        }
+        return
+    report = {
+        "report_id": "rep_" + secrets.token_urlsafe(12),
+        "session_id": session["session_id"],
+        "user_id": session.get("user_id"),
+        "created_at": _iso(_now()),
+        "data": report_data,
+    }
+    data["reports"].append(report)
+    job["status"] = "completed"
+    job["progress"] = 100
+    job["stage"] = "finalizing"
+    job["report_id"] = report["report_id"]
+
+
+def _refresh_report_job(data: dict[str, Any], job: dict[str, Any]) -> bool:
+    """按耗时推进任务状态；返回是否有状态变化需要落盘。"""
+
+    if job["status"] in {"completed", "failed"}:
+        return False
+    created_at = _parse_iso(job.get("created_at")) or _now()
+    elapsed_ms = (_now() - created_at).total_seconds() * 1000
+    if elapsed_ms >= REPORT_TOTAL_MS:
+        _finalize_report_job(data, job)
+        return True
+    stage, progress = _job_progress(elapsed_ms)
+    changed = job.get("stage") != stage or job.get("progress") != progress or job.get("status") != "processing"
+    job["status"] = "processing"
+    job["stage"] = stage
+    job["progress"] = progress
+    return changed
+
+
+@router.post("/sessions/{session_id}/report-jobs", status_code=202)
+async def create_report_job(
+    session_id: str,
+    request: Request,
+    user: dict[str, Any] | None = Depends(get_optional_user),
+) -> JSONResponse:
+    data = _prune_store(_load_store())
+    scope = _idempotency_scope(request, user)
+    idempotency_key = request.headers.get("x-idempotency-key")
+    replay = _idempotency_replay(data, scope, idempotency_key)
+    if replay is not None:
+        status_code, body = replay
+        return JSONResponse(status_code=status_code, content=body)
+
+    record = _load_active_session(data, session_id, user)
+    if isinstance(record, JSONResponse):
+        return record
+
+    job = {
+        "job_id": "job_" + secrets.token_urlsafe(12),
+        "session_id": record["session_id"],
+        "user_id": record.get("user_id"),
+        "status": "queued",
+        "progress": 0,
+        "stage": None,
+        "report_id": None,
+        "error": None,
+        "created_at": _iso(_now()),
+    }
+    data["report_jobs"].append(job)
+    status_code, body = 202, {"requestId": _request_id(), "job": _public_job(job)}
+    _idempotency_store(data, scope, idempotency_key, status_code, body)
+    _write_store(data)
+    return JSONResponse(status_code=status_code, content=body)
+
+
+@router.get("/report-jobs/{job_id}")
+async def get_report_job(
+    job_id: str,
+    user: dict[str, Any] | None = Depends(get_optional_user),
+) -> JSONResponse:
+    data = _load_store()
+    job = _find_report_job(data, job_id)
+    if job is not None and not _session_visible_to(job, user):
+        job = None
+    if job is None:
+        return _error_response(404, "report.job_not_found", "没有找到报告任务。")
+
+    if _refresh_report_job(data, job):
+        _write_store(data)
+
+    report = _find_report(data, str(job.get("report_id") or "")) if job.get("report_id") else None
+    return JSONResponse(
+        status_code=200,
+        content={"requestId": _request_id(), "job": _public_job(job, report)},
+    )
+
+
+@router.get("/reports/{report_id}")
+async def get_report(
+    report_id: str,
+    user: dict[str, Any] | None = Depends(get_optional_user),
+) -> JSONResponse:
+    data = _load_store()
+    report = _find_report(data, report_id)
+    if report is not None and not _session_visible_to(report, user):
+        report = None
+    if report is None:
+        return _error_response(404, "report.not_found", "没有找到这份报告。")
+    return JSONResponse(
+        status_code=200,
+        content={"requestId": _request_id(), "report": report.get("data") or {}},
+    )
