@@ -9,10 +9,10 @@ from pathlib import Path
 from typing import Any
 
 from fastapi import APIRouter, Depends, Request
-from fastapi.responses import JSONResponse
+from fastapi.responses import FileResponse, JSONResponse
 from PIL import Image, UnidentifiedImageError
 
-from app import selfit_photo, selfit_report
+from app import selfit_photo, selfit_report, selfit_share
 from app.auth import get_optional_user
 from app.ops import env_int
 from app.storage import ROOT_DIR
@@ -96,7 +96,7 @@ def _error_response(
     )
 
 
-_STORE_KEYS = ("sessions", "idempotency", "report_jobs", "reports")
+_STORE_KEYS = ("sessions", "idempotency", "report_jobs", "reports", "outfit_requests", "share_assets")
 
 
 def _load_store() -> dict[str, Any]:
@@ -140,6 +140,12 @@ def _prune_store(data: dict[str, Any]) -> dict[str, Any]:
     ]
     data["reports"] = [
         report for report in data["reports"] if report.get("session_id") in live_session_ids
+    ]
+    data["outfit_requests"] = [
+        item for item in data["outfit_requests"] if item.get("session_id") in live_session_ids
+    ]
+    data["share_assets"] = [
+        item for item in data["share_assets"] if item.get("session_id") in live_session_ids
     ]
     return data
 
@@ -806,3 +812,173 @@ async def get_report(
         status_code=200,
         content={"requestId": _request_id(), "report": report.get("data") or {}},
     )
+
+
+def _load_visible_report(
+    data: dict[str, Any], report_id: str, user: dict[str, Any] | None
+) -> dict[str, Any] | JSONResponse:
+    report = _find_report(data, report_id)
+    if report is None or not _session_visible_to(report, user):
+        return _error_response(404, "report.not_found", "没有找到这份报告。")
+    return report
+
+
+@router.post("/reports/{report_id}/outfit-requests", status_code=202)
+async def create_outfit_request(
+    report_id: str,
+    request: Request,
+    user: dict[str, Any] | None = Depends(get_optional_user),
+) -> JSONResponse:
+    payload = await _read_json_object(request)
+    if isinstance(payload, JSONResponse):
+        return payload
+    data = _prune_store(_load_store())
+    scope = _idempotency_scope(request, user)
+    idempotency_key = request.headers.get("x-idempotency-key")
+    replay = _idempotency_replay(data, scope, idempotency_key)
+    if replay is not None:
+        status_code, body = replay
+        return JSONResponse(status_code=status_code, content=body)
+
+    report = _load_visible_report(data, report_id, user)
+    if isinstance(report, JSONResponse):
+        return report
+
+    outfit_request = {
+        "request_id": "outfit_" + secrets.token_urlsafe(12),
+        "report_id": report["report_id"],
+        "session_id": report.get("session_id"),
+        "user_id": report.get("user_id"),
+        "status": "queued",
+        "source": str(payload.get("source") or "report"),
+        "intent": str(payload.get("intent") or "complete_look"),
+        "created_at": _iso(_now()),
+    }
+    data["outfit_requests"].append(outfit_request)
+    status_code, body = 202, {
+        "requestId": _request_id(),
+        "request": {"requestId": outfit_request["request_id"], "status": "queued"},
+    }
+    _idempotency_store(data, scope, idempotency_key, status_code, body)
+    _write_store(data)
+    return JSONResponse(status_code=status_code, content=body)
+
+
+def _validate_share_payload(payload: dict[str, Any]) -> tuple[int, str, str] | JSONResponse:
+    slide_index = payload.get("slideIndex", 0)
+    if isinstance(slide_index, bool) or not isinstance(slide_index, int) or not 0 <= slide_index < selfit_share.SHARE_SLIDE_COUNT:
+        return _error_response(
+            422,
+            "validation.invalid_value",
+            "分享页序号不正确。",
+            details={"field": "slideIndex", "value": slide_index},
+        )
+    channel = payload.get("channel", "保存单张")
+    if not isinstance(channel, str) or channel not in selfit_share.SHARE_CHANNELS:
+        return _error_response(
+            422,
+            "validation.invalid_enum",
+            "分享渠道不在支持范围内。",
+            details={"field": "channel", "value": channel},
+        )
+    image_format = payload.get("format", "png")
+    if not isinstance(image_format, str) or image_format not in selfit_share.SHARE_FORMATS:
+        return _error_response(
+            422,
+            "validation.invalid_enum",
+            "分享图格式不在支持范围内。",
+            details={"field": "format", "value": image_format},
+        )
+    return slide_index, channel, image_format
+
+
+def _share_asset_expiry(data: dict[str, Any], report: dict[str, Any]) -> str:
+    session = _find_session(data, str(report.get("session_id") or ""))
+    if session is not None and session.get("expires_at"):
+        return str(session["expires_at"])
+    return _iso(_now() + timedelta(hours=_session_ttl_hours()))
+
+
+@router.post("/reports/{report_id}/share-assets")
+async def create_share_asset(
+    report_id: str,
+    request: Request,
+    user: dict[str, Any] | None = Depends(get_optional_user),
+) -> JSONResponse:
+    payload = await _read_json_object(request)
+    if isinstance(payload, JSONResponse):
+        return payload
+    data = _prune_store(_load_store())
+    scope = _idempotency_scope(request, user)
+    idempotency_key = request.headers.get("x-idempotency-key")
+    replay = _idempotency_replay(data, scope, idempotency_key)
+    if replay is not None:
+        status_code, body = replay
+        return JSONResponse(status_code=status_code, content=body)
+
+    report = _load_visible_report(data, report_id, user)
+    if isinstance(report, JSONResponse):
+        return report
+    validated = _validate_share_payload(payload)
+    if isinstance(validated, JSONResponse):
+        return validated
+    slide_index, channel, image_format = validated
+
+    try:
+        content = selfit_share.render_share_image(report.get("data") or {}, slide_index, channel, image_format)
+    except Exception:
+        return _error_response(500, "share.render_failed", "分享图生成失败，请稍后重试。", retryable=True)
+
+    asset_id = "share_" + secrets.token_urlsafe(12)
+    filename = f"{asset_id}.{image_format}"
+    target_dir = SELFIT_ONBOARDING_ASSET_DIR / "shared"
+    target_dir.mkdir(parents=True, exist_ok=True)
+    tmp_path = target_dir / f"{filename}.{secrets.token_urlsafe(4)}.tmp"
+    tmp_path.write_bytes(content)
+    tmp_path.replace(target_dir / filename)
+
+    data["share_assets"].append(
+        {
+            "asset_id": asset_id,
+            "report_id": report["report_id"],
+            "session_id": report.get("session_id"),
+            "user_id": report.get("user_id"),
+            "slide_index": slide_index,
+            "channel": channel,
+            "format": image_format,
+            "filename": filename,
+            "created_at": _iso(_now()),
+        }
+    )
+    body = {
+        "requestId": _request_id(),
+        "asset": {
+            "assetId": asset_id,
+            "status": "ready",
+            "slideIndex": slide_index,
+            "channel": channel,
+            "downloadUrl": f"/api/v1/selfit/share-assets/{asset_id}/download",
+            "expiresAt": _share_asset_expiry(data, report),
+        },
+    }
+    _idempotency_store(data, scope, idempotency_key, 200, body)
+    _write_store(data)
+    return JSONResponse(status_code=200, content=body)
+
+
+@router.get("/share-assets/{asset_id}/download", response_model=None)
+async def download_share_asset(
+    asset_id: str,
+    user: dict[str, Any] | None = Depends(get_optional_user),
+) -> FileResponse | JSONResponse:
+    data = _load_store()
+    asset = next(
+        (item for item in data["share_assets"] if item.get("asset_id") == asset_id),
+        None,
+    )
+    if asset is None or not _session_visible_to(asset, user):
+        return _error_response(404, "share.asset_not_found", "没有找到这份分享素材。")
+    path = SELFIT_ONBOARDING_ASSET_DIR / "shared" / str(asset.get("filename") or "")
+    if not path.is_file():
+        return _error_response(404, "share.asset_not_found", "没有找到这份分享素材。")
+    return FileResponse(path, media_type=f"image/{asset.get('format') or 'png'}")

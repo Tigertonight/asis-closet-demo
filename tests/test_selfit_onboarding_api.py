@@ -457,3 +457,153 @@ def test_report_builder_receives_session_profile(monkeypatch, tmp_path: Path) ->
     assert len(captured) == 1
     assert captured[0]["manual"] == {"skin": "自然白", "bodyShape": "梨型"}
     assert captured[0]["vibe"] == {"occasion": "A"}
+
+
+def _create_report(client: TestClient, monkeypatch, report_data: dict | None = None) -> str:
+    monkeypatch.setattr(selfit_onboarding, "REPORT_TOTAL_MS", -1)
+    monkeypatch.setattr(
+        selfit_report,
+        "_builder",
+        lambda session: report_data if report_data is not None else {},
+    )
+    session_id = _create_session(client)["session"]["sessionId"]
+    job = _create_report_job(client, session_id)["job"]
+    finished = client.get(f"{API}/report-jobs/{job['jobId']}").json()["job"]
+    assert finished["status"] == "completed"
+    return finished["reportId"]
+
+
+def test_outfit_request_created_and_idempotent(monkeypatch, tmp_path: Path) -> None:
+    _use_tmp_store(monkeypatch, tmp_path)
+    client = TestClient(app)
+    report_id = _create_report(client, monkeypatch)
+
+    response = client.post(
+        f"{API}/reports/{report_id}/outfit-requests",
+        json={"source": "report", "intent": "complete_look"},
+    )
+    assert response.status_code == 202
+    outfit = response.json()["request"]
+    assert outfit["requestId"].startswith("outfit_")
+    assert outfit["status"] == "queued"
+
+    headers = {"X-Idempotency-Key": "outfit_1"}
+    first = client.post(f"{API}/reports/{report_id}/outfit-requests", json={}, headers=headers)
+    second = client.post(f"{API}/reports/{report_id}/outfit-requests", json={}, headers=headers)
+    assert second.json()["request"]["requestId"] == first.json()["request"]["requestId"]
+
+    missing = client.post(f"{API}/reports/rep_missing/outfit-requests", json={})
+    assert missing.status_code == 404
+    assert missing.json()["error"]["code"] == "report.not_found"
+
+
+def test_share_asset_ready_and_downloadable(monkeypatch, tmp_path: Path) -> None:
+    _use_tmp_store(monkeypatch, tmp_path)
+    client = TestClient(app)
+    report_id = _create_report(
+        client,
+        monkeypatch,
+        report_data={
+            "eyebrow": "SOFT COOL",
+            "title": "中性利落派",
+            "traits": ["冷调柔和", "高质感"],
+            "colors": [{"name": "橄榄绿", "value": "#c8c487"}],
+        },
+    )
+
+    response = client.post(
+        f"{API}/reports/{report_id}/share-assets",
+        json={"slideIndex": 1, "channel": "保存单张", "format": "png"},
+    )
+    assert response.status_code == 200
+    asset = response.json()["asset"]
+    assert asset["assetId"].startswith("share_")
+    assert asset["status"] == "ready"
+    assert asset["slideIndex"] == 1
+    assert asset["channel"] == "保存单张"
+    assert asset["expiresAt"].endswith("Z")
+
+    download = client.get(asset["downloadUrl"])
+    assert download.status_code == 200
+    assert download.headers["content-type"] == "image/png"
+    assert len(download.content) > 1000
+
+    for slide_index in (0, 2):
+        slid = client.post(
+            f"{API}/reports/{report_id}/share-assets",
+            json={"slideIndex": slide_index, "channel": "发笔记", "format": "png"},
+        )
+        assert slid.status_code == 200
+        assert slid.json()["asset"]["slideIndex"] == slide_index
+
+
+def test_share_asset_idempotent(monkeypatch, tmp_path: Path) -> None:
+    _use_tmp_store(monkeypatch, tmp_path)
+    client = TestClient(app)
+    report_id = _create_report(client, monkeypatch)
+
+    headers = {"X-Idempotency-Key": "share_1"}
+    body = {"slideIndex": 0, "channel": "微信好友", "format": "png"}
+    first = client.post(f"{API}/reports/{report_id}/share-assets", json=body, headers=headers)
+    second = client.post(f"{API}/reports/{report_id}/share-assets", json=body, headers=headers)
+    assert second.json()["asset"]["assetId"] == first.json()["asset"]["assetId"]
+    shared_dir = tmp_path / "outputs" / "selfit_onboarding" / "assets" / "shared"
+    assert len(list(shared_dir.glob("share_*"))) == 1
+
+
+def test_share_asset_validation_errors(monkeypatch, tmp_path: Path) -> None:
+    _use_tmp_store(monkeypatch, tmp_path)
+    client = TestClient(app)
+    report_id = _create_report(client, monkeypatch)
+
+    bad_slide = client.post(
+        f"{API}/reports/{report_id}/share-assets",
+        json={"slideIndex": 5, "channel": "保存单张"},
+    )
+    assert bad_slide.status_code == 422
+    assert bad_slide.json()["error"]["code"] == "validation.invalid_value"
+
+    bad_channel = client.post(
+        f"{API}/reports/{report_id}/share-assets",
+        json={"slideIndex": 0, "channel": "发微博"},
+    )
+    assert bad_channel.status_code == 422
+    assert bad_channel.json()["error"]["code"] == "validation.invalid_enum"
+
+    bad_format = client.post(
+        f"{API}/reports/{report_id}/share-assets",
+        json={"slideIndex": 0, "channel": "保存单张", "format": "webp"},
+    )
+    assert bad_format.status_code == 422
+    assert bad_format.json()["error"]["code"] == "validation.invalid_enum"
+
+    missing = client.post(
+        f"{API}/reports/rep_missing/share-assets",
+        json={"slideIndex": 0, "channel": "保存单张"},
+    )
+    assert missing.status_code == 404
+    assert missing.json()["error"]["code"] == "report.not_found"
+
+    download = client.get(f"{API}/share-assets/share_missing/download")
+    assert download.status_code == 404
+    assert download.json()["error"]["code"] == "share.asset_not_found"
+
+
+def test_share_asset_renderer_failure(monkeypatch, tmp_path: Path) -> None:
+    _use_tmp_store(monkeypatch, tmp_path)
+    client = TestClient(app)
+    report_id = _create_report(client, monkeypatch)
+
+    def broken_renderer(report, slide_index, channel, image_format):
+        raise RuntimeError("render down")
+
+    import app.selfit_share as selfit_share
+
+    monkeypatch.setattr(selfit_share, "_renderer", broken_renderer)
+    response = client.post(
+        f"{API}/reports/{report_id}/share-assets",
+        json={"slideIndex": 0, "channel": "保存单张"},
+    )
+    assert response.status_code == 500
+    assert response.json()["error"]["code"] == "share.render_failed"
+    assert response.json()["error"]["retryable"] is True
