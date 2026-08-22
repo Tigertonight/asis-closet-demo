@@ -5,6 +5,7 @@ import io
 import json
 import os
 import secrets
+from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any
@@ -12,6 +13,7 @@ from typing import Any
 from fastapi import APIRouter, Depends, Request
 from fastapi.responses import FileResponse, JSONResponse
 from PIL import Image, UnidentifiedImageError
+from starlette.concurrency import run_in_threadpool
 
 from app import selfit_onboarding_store as _store_module
 from app import selfit_photo, selfit_report, selfit_share
@@ -34,15 +36,15 @@ SCHEMA_VERSION = "selfit-onboarding-v1"
 PHOTO_MAX_BYTES = 12 * 1024 * 1024
 PHOTO_SUPPORTED_FORMATS = {"JPEG": ".jpg", "PNG": ".png", "WEBP": ".webp"}
 
-# 报告任务的演示节奏：按创建后的耗时映射阶段与进度，前端轮询读取。
-REPORT_STAGE_SCHEDULE_MS = (
-    (0, "profile", 25),
-    (800, "inspiration", 50),
-    (1600, "composition", 75),
-    (2400, "finalizing", 100),
-)
-REPORT_TOTAL_MS = 3200
+# 报告任务：POST 创建后由后台线程真实执行 builder 并写入状态迁移；
+# GET 只读取，处理中的 stage/progress 为响应层估算（不落库，避免与 worker 写竞争）。
 REPORT_POLL_AFTER_MS = 800
+REPORT_ESTIMATED_STAGES = (
+    (0.0, "profile", 25),
+    (1.0, "inspiration", 50),
+    (2.0, "composition", 75),
+    (3.0, "finalizing", 95),
+)
 
 SKIN_OPTIONS = {"白皙色", "自然白", "自然色", "健康色", "小麦色"}
 FACE_SHAPE_OPTIONS = {"椭圆脸", "圆脸", "方脸", "心形脸", "菱形脸"}
@@ -624,7 +626,8 @@ async def upload_session_photo(
     if pil_image.format not in PHOTO_SUPPORTED_FORMATS:
         return _error_response(415, "photo.unsupported_type", "仅支持 JPG、PNG、WebP 格式的照片。")
 
-    inspection = selfit_photo.inspect_photo(pil_image.convert("RGB"), kind)
+    # 照片检测为 CPU 密集的同步 CV 计算，丢线程池执行，避免阻塞事件循环。
+    inspection = await run_in_threadpool(selfit_photo.inspect_photo, pil_image.convert("RGB"), kind)
     issues = selfit_photo.sanitize_issues(list(inspection.issues))
     accepted = bool(inspection.accepted) and not issues
 
@@ -688,10 +691,23 @@ def _find_report(data: dict[str, Any], report_id: str) -> dict[str, Any] | None:
     )
 
 
-def _job_progress(elapsed_ms: float) -> tuple[str, int]:
-    stage, progress = REPORT_STAGE_SCHEDULE_MS[0][1], REPORT_STAGE_SCHEDULE_MS[0][2]
-    for threshold, candidate_stage, candidate_progress in REPORT_STAGE_SCHEDULE_MS:
-        if elapsed_ms >= threshold:
+_REPORT_EXECUTOR = ThreadPoolExecutor(
+    max_workers=env_int("SELFIT_REPORT_JOB_WORKERS", 2),
+    thread_name_prefix="selfit-report",
+)
+
+_REPORT_JOB_FAILED_ERROR = {
+    "code": "report.generation_failed",
+    "message": "报告生成失败，请返回问卷页重试。",
+    "retryable": True,
+    "details": {},
+}
+
+
+def _estimated_stage_progress(elapsed_seconds: float) -> tuple[str, int]:
+    stage, progress = REPORT_ESTIMATED_STAGES[0][1], REPORT_ESTIMATED_STAGES[0][2]
+    for threshold, candidate_stage, candidate_progress in REPORT_ESTIMATED_STAGES:
+        if elapsed_seconds >= threshold:
             stage, progress = candidate_stage, candidate_progress
     return stage, progress
 
@@ -705,6 +721,13 @@ def _public_job(job: dict[str, Any], report: dict[str, Any] | None = None) -> di
     }
     if job.get("stage"):
         payload["stage"] = job["stage"]
+    if job["status"] == "processing":
+        # 处理中的进度为估算投影：builder 真实耗时不可预知，完成只由 worker 写入。
+        started = _parse_iso(job.get("started_at")) or _parse_iso(job.get("created_at"))
+        elapsed = (_now() - started).total_seconds() if started else 0.0
+        stage, progress = _estimated_stage_progress(elapsed)
+        payload["stage"] = stage
+        payload["progress"] = max(payload["progress"], progress)
     if job["status"] == "completed" and job.get("report_id"):
         payload["reportId"] = job["report_id"]
         if report is not None:
@@ -714,8 +737,18 @@ def _public_job(job: dict[str, Any], report: dict[str, Any] | None = None) -> di
     return payload
 
 
-def _finalize_report_job(data: dict[str, Any], job: dict[str, Any]) -> None:
-    """到达演示时长的任务在这里真正调用报告生成算法。"""
+def _run_report_job(job_id: str) -> None:
+    """后台 worker：真实执行报告生成算法并落库状态迁移。"""
+
+    data = _prune_store(_load_store())
+    job = _find_report_job(data, job_id)
+    if job is None or job.get("status") != "queued":
+        return
+    job["status"] = "processing"
+    job["stage"] = "profile"
+    job["progress"] = 10
+    job["started_at"] = _iso(_now())
+    _write_store(data)
 
     session = _find_session(data, str(job.get("session_id") or ""))
     try:
@@ -723,13 +756,17 @@ def _finalize_report_job(data: dict[str, Any], job: dict[str, Any]) -> None:
             raise ValueError("session missing")
         report_data = selfit_report.build_report(session)
     except Exception:
-        job["status"] = "failed"
-        job["error"] = {
-            "code": "report.generation_failed",
-            "message": "报告生成失败，请返回问卷页重试。",
-            "retryable": True,
-            "details": {},
-        }
+        data = _load_store()
+        job = _find_report_job(data, job_id)
+        if job is not None and job.get("status") == "processing":
+            job["status"] = "failed"
+            job["error"] = dict(_REPORT_JOB_FAILED_ERROR)
+            _write_store(data)
+        return
+
+    data = _load_store()
+    job = _find_report_job(data, job_id)
+    if job is None or job.get("status") != "processing":
         return
     report = {
         "report_id": "rep_" + secrets.token_urlsafe(12),
@@ -743,24 +780,31 @@ def _finalize_report_job(data: dict[str, Any], job: dict[str, Any]) -> None:
     job["progress"] = 100
     job["stage"] = "finalizing"
     job["report_id"] = report["report_id"]
+    _write_store(data)
 
 
-def _refresh_report_job(data: dict[str, Any], job: dict[str, Any]) -> bool:
-    """按耗时推进任务状态；返回是否有状态变化需要落盘。"""
+def _resubmit_stale_queued_job(job: dict[str, Any]) -> None:
+    """服务重启后 queued 任务的兜底重投（worker 已随进程消失）。"""
 
-    if job["status"] in {"completed", "failed"}:
-        return False
+    if job.get("status") != "queued":
+        return
     created_at = _parse_iso(job.get("created_at")) or _now()
-    elapsed_ms = (_now() - created_at).total_seconds() * 1000
-    if elapsed_ms >= REPORT_TOTAL_MS:
-        _finalize_report_job(data, job)
-        return True
-    stage, progress = _job_progress(elapsed_ms)
-    changed = job.get("stage") != stage or job.get("progress") != progress or job.get("status") != "processing"
-    job["status"] = "processing"
-    job["stage"] = stage
-    job["progress"] = progress
-    return changed
+    if (_now() - created_at).total_seconds() < 30:
+        return
+    _REPORT_EXECUTOR.submit(_run_report_job, str(job["job_id"]))
+
+
+def _expire_processing_job(data: dict[str, Any], job: dict[str, Any]) -> bool:
+    """processing 超时熔断（对齐前端 120s 总等待上限）；返回是否有落盘。"""
+
+    if job.get("status") != "processing":
+        return False
+    started = _parse_iso(job.get("started_at")) or _parse_iso(job.get("created_at")) or _now()
+    if (_now() - started).total_seconds() <= env_int("SELFIT_REPORT_JOB_TIMEOUT_SECONDS", 110):
+        return False
+    job["status"] = "failed"
+    job["error"] = dict(_REPORT_JOB_FAILED_ERROR)
+    return True
 
 
 @router.post("/sessions/{session_id}/report-jobs", status_code=202)
@@ -796,6 +840,7 @@ async def create_report_job(
     status_code, body = 202, {"requestId": _request_id(), "job": _public_job(job)}
     _idempotency_store(data, scope, idempotency_key, status_code, body)
     _write_store(data)
+    _REPORT_EXECUTOR.submit(_run_report_job, job["job_id"])
     return JSONResponse(status_code=status_code, content=body)
 
 
@@ -811,7 +856,8 @@ async def get_report_job(
     if job is None:
         return _error_response(404, "report.job_not_found", "没有找到报告任务。")
 
-    if _refresh_report_job(data, job):
+    _resubmit_stale_queued_job(job)
+    if _expire_processing_job(data, job):
         _write_store(data)
 
     report = _find_report(data, str(job.get("report_id") or "")) if job.get("report_id") else None

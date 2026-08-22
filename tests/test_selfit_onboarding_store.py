@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import io
+import time
 from pathlib import Path
 
 from fastapi.testclient import TestClient
@@ -71,7 +72,6 @@ def test_sqlite_backend_full_api_flow(monkeypatch, tmp_path: Path) -> None:
     store_dir = _use_sqlite_store(monkeypatch, tmp_path)
     # 存储平价测试不依赖真实照片算法，stub 为全放行。
     monkeypatch.setattr(selfit_photo, "_inspector", selfit_photo.accept_all_inspector)
-    monkeypatch.setattr(selfit_onboarding, "REPORT_TOTAL_MS", -1)
     monkeypatch.setattr(selfit_report, "_builder", lambda session: {"title": "中性利落派"})
     client = TestClient(app)
 
@@ -89,7 +89,11 @@ def test_sqlite_backend_full_api_flow(monkeypatch, tmp_path: Path) -> None:
     assert photo.json()["photo"]["status"] == "accepted"
 
     job = client.post(f"{API}/sessions/{session_id}/report-jobs", json={}).json()["job"]
+    deadline = time.monotonic() + 10
     finished = client.get(f"{API}/report-jobs/{job['jobId']}").json()["job"]
+    while finished["status"] not in {"completed", "failed"} and time.monotonic() < deadline:
+        time.sleep(0.05)
+        finished = client.get(f"{API}/report-jobs/{job['jobId']}").json()["job"]
     assert finished["status"] == "completed"
     report = client.get(f"{API}/reports/{finished['reportId']}").json()["report"]
     assert report["title"] == "中性利落派"
