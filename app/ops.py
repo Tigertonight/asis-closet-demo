@@ -63,6 +63,19 @@ _limiter = InMemoryRateLimiter()
 
 
 def _client_id(request: Request) -> str:
+    # 登录用户按 user_id 计数，避免办公室/出口 NAT 下多同事共用 IP 被误伤；
+    # 匿名流量仍按 IP 计数。惰性 import 避免与 app.auth 的循环依赖。
+    try:
+        from app.auth import current_token_from_request, resolve_token
+
+        token = current_token_from_request(request)
+        if token:
+            user = resolve_token(token)
+            user_id = str(user.get("user_id") or "").strip()
+            if user_id:
+                return f"user:{user_id}"
+    except Exception:
+        pass
     forwarded = request.headers.get("x-forwarded-for", "")
     if forwarded:
         return forwarded.split(",", 1)[0].strip()

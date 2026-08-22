@@ -6,9 +6,11 @@ from pathlib import Path
 from fastapi.testclient import TestClient
 from PIL import Image
 
+import app.auth as auth
 import app.selfit_onboarding as selfit_onboarding
 import app.selfit_photo as selfit_photo
 import app.selfit_report as selfit_report
+import app.storage as storage
 from app.main import app
 
 API = "/api/v1/selfit"
@@ -627,3 +629,28 @@ def test_selfit_api_rate_limit_uses_contract_shape(monkeypatch, tmp_path: Path) 
     assert payload["error"]["details"]["retryAfterSeconds"] >= 1
     assert payload["requestId"].startswith("req_")
     assert third.headers["Retry-After"]
+
+
+def test_rate_limit_counts_authenticated_users_separately(monkeypatch, tmp_path: Path) -> None:
+    _use_tmp_store(monkeypatch, tmp_path)
+    monkeypatch.setattr(storage, "ROOT_DIR", tmp_path)
+    monkeypatch.setattr(auth, "AUTH_DIR", tmp_path / "outputs" / "auth")
+    monkeypatch.setattr(auth, "AUTH_STORE_PATH", tmp_path / "outputs" / "auth" / "auth_store.json")
+    monkeypatch.setenv("SELFIT_DISABLE_RATE_LIMIT", "0")
+    monkeypatch.setenv("SELFIT_API_RATE_LIMIT", "2")
+    client = TestClient(app)
+
+    def login(phone: str) -> dict[str, str]:
+        start = client.post("/auth/phone/start", json={"phone": phone}).json()
+        verified = client.post("/auth/phone/verify", json={"phone": phone, "code": start["dev_code"]}).json()
+        return {"Authorization": f"Bearer {verified['access_token']}"}
+
+    user_a = login("13800000001")
+    user_b = login("13800000002")
+
+    for headers in (user_a, user_b):
+        assert client.post(f"{API}/sessions", json={}, headers=headers).status_code == 201
+        assert client.post(f"{API}/sessions", json={}, headers=headers).status_code == 201
+        limited = client.post(f"{API}/sessions", json={}, headers=headers)
+        assert limited.status_code == 429
+        assert limited.json()["error"]["code"] == "rate_limited"
