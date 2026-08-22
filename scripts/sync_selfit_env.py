@@ -23,6 +23,7 @@ DEFAULTS = {
     "SELFIT_SEGFORMER_MODEL": "mattmdjaga/segformer_b2_clothes",
     "SELFIT_SEGFORMER_DEVICE": "auto",
     "SELFIT_REMBG_ENABLED": "1",
+    "SELFIT_ONBOARDING_SESSION_TTL_HOURS": "24",
     "MINIMAX_API_KEY": "",
     "MINIMAX_OAUTH_TOKEN": "",
 }

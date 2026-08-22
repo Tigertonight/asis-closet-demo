@@ -105,6 +105,7 @@ from app.stylist_sessions import (
     recent_conversation,
     update_stylist_session,
 )
+from app.selfit_onboarding import router as selfit_onboarding_router
 from app.storage import storage_context, user_storage
 from scripts.generate_qa_artifacts import generate_qa_artifacts
 from scripts.check_runtime_readiness import readiness as runtime_readiness
@@ -114,6 +115,7 @@ load_dotenv(Path(__file__).resolve().parents[1] / ".env", override=True)
 
 app = FastAPI(title="selfit", version="0.2.0")
 app.middleware("http")(request_guard_middleware)
+app.include_router(selfit_onboarding_router)
 SELFIT_INDEX_PATH = Path(__file__).resolve().parent / "static" / "selfit" / "index.html"
 SELFIT_MIRROR_INDEX_PATH = Path(__file__).resolve().parent / "static" / "selfit" / "mirror.html"
 TRYON_OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
