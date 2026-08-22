@@ -44,3 +44,6 @@ selfit-agent-runtime/*workspace-state*.json
 .idea/
 .vscode/
 *.swp
+
+# QA 目检素材的分析缓存（可由页面重新生成）
+qa_photos/_results.json
