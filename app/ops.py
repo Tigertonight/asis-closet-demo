@@ -1,9 +1,10 @@
 from __future__ import annotations
 
 import os
+import secrets
 import time
 from collections import defaultdict, deque
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Any, Callable
 
 from fastapi import Request
@@ -38,6 +39,7 @@ class LimitRule:
     paths: tuple[str, ...]
     max_requests: int
     window_seconds: int
+    contains: tuple[str, ...] = field(default_factory=tuple)
 
 
 class InMemoryRateLimiter:
@@ -73,6 +75,19 @@ def _client_id(request: Request) -> str:
 def _rate_rules() -> list[LimitRule]:
     return [
         LimitRule(
+            "selfit_upload",
+            ("/api/v1/selfit/sessions",),
+            env_int("SELFIT_UPLOAD_RATE_LIMIT", 60),
+            env_int("SELFIT_UPLOAD_RATE_WINDOW_SECONDS", 3600),
+            contains=("/photos/",),
+        ),
+        LimitRule(
+            "selfit_api",
+            ("/api/v1/selfit",),
+            env_int("SELFIT_API_RATE_LIMIT", 240),
+            env_int("SELFIT_API_RATE_WINDOW_SECONDS", 3600),
+        ),
+        LimitRule(
             "auth",
             ("/auth/phone/start", "/auth/phone/verify"),
             env_int("SELFIT_AUTH_RATE_LIMIT", 20),
@@ -95,8 +110,11 @@ def _rate_rules() -> list[LimitRule]:
 
 def _matching_rule(path: str) -> LimitRule | None:
     for rule in _rate_rules():
-        if any(path == prefix or path.startswith(prefix) for prefix in rule.paths):
-            return rule
+        if rule.paths and not any(path == prefix or path.startswith(prefix) for prefix in rule.paths):
+            continue
+        if any(fragment not in path for fragment in rule.contains):
+            continue
+        return rule
     return None
 
 
@@ -109,12 +127,36 @@ def _json_error(status_code: int, code: str, message: str, headers: dict[str, st
     return JSONResponse(status_code=status_code, content=payload, headers=headers)
 
 
+def _is_selfit_contract_path(path: str) -> bool:
+    return path.startswith("/api/v1/selfit")
+
+
+def _contract_error(status_code: int, code: str, message: str, *, retryable: bool, details: dict[str, Any], headers: dict[str, str] | None = None) -> JSONResponse:
+    return JSONResponse(
+        status_code=status_code,
+        content={
+            "requestId": "req_" + secrets.token_urlsafe(12),
+            "error": {"code": code, "message": message, "retryable": retryable, "details": details},
+        },
+        headers=headers,
+    )
+
+
 async def request_guard_middleware(request: Request, call_next: Callable[[Request], Any]) -> Response:
+    path = request.url.path
     max_body_mb = env_int("SELFIT_MAX_REQUEST_BODY_MB", 36)
     content_length = request.headers.get("content-length")
     if content_length:
         try:
             if int(content_length) > max_body_mb * 1024 * 1024:
+                if _is_selfit_contract_path(path):
+                    return _contract_error(
+                        413,
+                        "request.too_large",
+                        f"单次上传暂时不能超过 {max_body_mb}MB，请减少图片数量或压缩后再试。",
+                        retryable=False,
+                        details={},
+                    )
                 return _json_error(
                     413,
                     "request.too_large",
@@ -123,10 +165,19 @@ async def request_guard_middleware(request: Request, call_next: Callable[[Reques
         except ValueError:
             pass
 
-    rule = _matching_rule(request.url.path)
+    rule = _matching_rule(path)
     if rule and not env_flag("SELFIT_DISABLE_RATE_LIMIT", False):
         allowed, retry_after = _limiter.check(_client_id(request), rule)
         if not allowed:
+            if _is_selfit_contract_path(path):
+                return _contract_error(
+                    429,
+                    "rate_limited",
+                    "访问太频繁了，请稍后再试。",
+                    retryable=True,
+                    details={"retryAfterSeconds": retry_after},
+                    headers={"Retry-After": str(retry_after)},
+                )
             return _json_error(
                 429,
                 "request.rate_limited",

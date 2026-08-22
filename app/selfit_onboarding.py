@@ -17,6 +17,9 @@ from app.auth import get_optional_user
 from app.ops import env_int
 from app.storage import ROOT_DIR
 
+# 注意：SELFIT_ONBOARDING_ASSET_DIR 下的用户原图与分享图是初始数据资产，需要精心保留。
+# 会话过期只清理索引记录（sessions.json / 任务 / 报告），资产文件一律不删。
+# 后续迁移对象存储时以该目录为同步源，禁止加入任何定期清理任务。
 SELFIT_ONBOARDING_DIR = ROOT_DIR / "outputs" / "selfit_onboarding"
 SELFIT_ONBOARDING_STORE_PATH = SELFIT_ONBOARDING_DIR / "sessions.json"
 SELFIT_ONBOARDING_ASSET_DIR = SELFIT_ONBOARDING_DIR / "assets"

@@ -121,6 +121,8 @@ SELFIT_MIRROR_INDEX_PATH = Path(__file__).resolve().parent / "static" / "selfit"
 TRYON_OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 XHS_IMAGE_CACHE_DIR = Path("outputs/xhs_images")
 XHS_IMAGE_CACHE_DIR.mkdir(parents=True, exist_ok=True)
+for _mounted_dir in (Path("tests/fixtures/images"), Path("tests/results"), Path("outputs/demo_assets")):
+    _mounted_dir.mkdir(parents=True, exist_ok=True)
 app.mount("/fixture-images", StaticFiles(directory="tests/fixtures/images"), name="fixture-images")
 app.mount("/qa-artifacts", StaticFiles(directory="tests/results"), name="qa-artifacts")
 app.mount("/demo-assets", StaticFiles(directory="outputs/demo_assets"), name="demo-assets")

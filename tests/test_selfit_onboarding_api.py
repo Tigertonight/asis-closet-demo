@@ -607,3 +607,23 @@ def test_share_asset_renderer_failure(monkeypatch, tmp_path: Path) -> None:
     assert response.status_code == 500
     assert response.json()["error"]["code"] == "share.render_failed"
     assert response.json()["error"]["retryable"] is True
+
+
+def test_selfit_api_rate_limit_uses_contract_shape(monkeypatch, tmp_path: Path) -> None:
+    _use_tmp_store(monkeypatch, tmp_path)
+    monkeypatch.setenv("SELFIT_DISABLE_RATE_LIMIT", "0")
+    monkeypatch.setenv("SELFIT_API_RATE_LIMIT", "2")
+    client = TestClient(app)
+
+    first = client.post(f"{API}/sessions", json={})
+    second = client.post(f"{API}/sessions", json={})
+    third = client.post(f"{API}/sessions", json={})
+    assert first.status_code == 201
+    assert second.status_code == 201
+    assert third.status_code == 429
+    payload = third.json()
+    assert payload["error"]["code"] == "rate_limited"
+    assert payload["error"]["retryable"] is True
+    assert payload["error"]["details"]["retryAfterSeconds"] >= 1
+    assert payload["requestId"].startswith("req_")
+    assert third.headers["Retry-After"]
