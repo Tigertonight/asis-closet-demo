@@ -215,6 +215,8 @@ def _jpeg_bytes(color: tuple[int, int, int] = (200, 180, 170)) -> bytes:
 
 def test_photo_upload_accepted_and_saves_asset(monkeypatch, tmp_path: Path) -> None:
     _use_tmp_store(monkeypatch, tmp_path)
+    # 契约测试只关心接受后的存储行为，照片检测 stub 为全放行。
+    monkeypatch.setattr(selfit_photo, "_inspector", selfit_photo.accept_all_inspector)
     client = TestClient(app)
     session_id = _create_session(client)["session"]["sessionId"]
 
@@ -318,6 +320,8 @@ def test_photo_upload_requires_active_session(monkeypatch, tmp_path: Path) -> No
 
 def test_photo_upload_idempotent_replay(monkeypatch, tmp_path: Path) -> None:
     _use_tmp_store(monkeypatch, tmp_path)
+    # 契约测试只关心幂等回放，照片检测 stub 为全放行。
+    monkeypatch.setattr(selfit_photo, "_inspector", selfit_photo.accept_all_inspector)
     client = TestClient(app)
     session_id = _create_session(client)["session"]["sessionId"]
 

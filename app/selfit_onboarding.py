@@ -3,6 +3,7 @@ from __future__ import annotations
 import hashlib
 import io
 import json
+import os
 import secrets
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
@@ -16,6 +17,10 @@ from app import selfit_photo
 from app.auth import get_optional_user
 from app.ops import env_int
 from app.storage import ROOT_DIR
+
+# 接入真实照片检测与属性识别算法；联调时可设 SELFIT_PHOTO_INSPECTOR=accept_all 退回全放行。
+if os.getenv("SELFIT_PHOTO_INSPECTOR", "attribute") != "accept_all":
+    selfit_photo.register_photo_inspector(selfit_photo.attribute_inspector)
 
 SELFIT_ONBOARDING_DIR = ROOT_DIR / "outputs" / "selfit_onboarding"
 SELFIT_ONBOARDING_STORE_PATH = SELFIT_ONBOARDING_DIR / "sessions.json"
@@ -591,6 +596,8 @@ async def upload_session_photo(
             "format": pil_image.format,
             "width": pil_image.width,
             "height": pil_image.height,
+            # 算法推断的肤色/脸型/身型标签，供报告任务与「手动纠正优先」合并消费。
+            "attributes": dict(inspection.attributes),
         }
         label = selfit_photo.KIND_LABELS[kind]
         body = _photo_response(

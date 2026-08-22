@@ -23,7 +23,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Callable
+from typing import Any, Callable
 
 from PIL import Image
 
@@ -34,6 +34,11 @@ ISSUE_FACE_NOT_FOUND = "face_not_found"
 ISSUE_MULTIPLE_PEOPLE = "multiple_people"
 ISSUE_BODY_NOT_COMPLETE = "body_not_complete"
 ISSUE_UNSUPPORTED_CONTENT = "unsupported_content"
+# 算法接入后新增的枚举（message 必须可行动，引导用户重拍）。
+ISSUE_OVEREXPOSED = "overexposed"
+ISSUE_BANGS_FOREHEAD = "bangs_forehead"
+ISSUE_SIDE_POSE = "side_pose"
+ISSUE_BODY_UNCLEAR = "body_unclear"
 
 PHOTO_ISSUES = frozenset(
     {
@@ -43,16 +48,24 @@ PHOTO_ISSUES = frozenset(
         ISSUE_MULTIPLE_PEOPLE,
         ISSUE_BODY_NOT_COMPLETE,
         ISSUE_UNSUPPORTED_CONTENT,
+        ISSUE_OVEREXPOSED,
+        ISSUE_BANGS_FOREHEAD,
+        ISSUE_SIDE_POSE,
+        ISSUE_BODY_UNCLEAR,
     }
 )
 
 # 主问题码优先级：先照片质量（光线/清晰度），再内容合规。
 ISSUE_PRIORITY = (
     ISSUE_INSUFFICIENT_LIGHT,
+    ISSUE_OVEREXPOSED,
     ISSUE_BLURRED,
     ISSUE_MULTIPLE_PEOPLE,
     ISSUE_FACE_NOT_FOUND,
+    ISSUE_BANGS_FOREHEAD,
+    ISSUE_SIDE_POSE,
     ISSUE_BODY_NOT_COMPLETE,
+    ISSUE_BODY_UNCLEAR,
     ISSUE_UNSUPPORTED_CONTENT,
 )
 
@@ -67,15 +80,25 @@ ISSUE_MESSAGES = {
     ISSUE_MULTIPLE_PEOPLE: "照片里有多个人，请只保留本人。",
     ISSUE_BODY_NOT_COMPLETE: "没有检测到完整全身，请上传头到脚都入镜的全身照。",
     ISSUE_UNSUPPORTED_CONTENT: "{label}无法用于分析，请更换一张照片。",
+    ISSUE_OVEREXPOSED: "{label}过曝了，请避开强光直射重拍。",
+    ISSUE_BANGS_FOREHEAD: "刘海遮住了额头，把刘海拨开、露出额头后重拍。",
+    ISSUE_SIDE_POSE: "照片角度偏侧，请正对镜头重新拍一张。",
+    ISSUE_BODY_UNCLEAR: "身形轮廓提取不稳定，请换背景简洁、正面修身、手臂微张的全身照。",
 }
 
 
 @dataclass(frozen=True)
 class PhotoInspection:
-    """算法检测结果。accepted=True 时 issues 必须为空。"""
+    """算法检测结果。accepted=True 时 issues 必须为空。
+
+    attributes 为算法识别出的属性标签（如肤色/脸型/身型），键为属性名、
+    值为 {"label", "confidence"}；仅在 accepted=True 时有意义，接口层把它
+    存进会话记录供报告任务消费，不回传给前端契约。
+    """
 
     accepted: bool
     issues: list[str] = field(default_factory=list)
+    attributes: dict = field(default_factory=dict)
 
 
 PhotoInspector = Callable[[Image.Image, str], PhotoInspection]
@@ -121,3 +144,70 @@ def primary_issue(issues: list[str]) -> str:
 def issue_message(issue: str, kind: str) -> str:
     template = ISSUE_MESSAGES.get(issue, ISSUE_MESSAGES[ISSUE_UNSUPPORTED_CONTENT])
     return template.format(label=KIND_LABELS.get(kind, "照片"))
+
+
+# ---------------------------------------------------------------------------
+# 真实算法接入：app/attribute_pipeline → PhotoInspector
+# ---------------------------------------------------------------------------
+
+# attribute_pipeline 的 issue code → 契约枚举。
+# 值为 None 表示 warn 级提示（不拦截上传，只进属性置信度）。
+_ISSUE_CODE_TO_ENUM: dict[str, str | None] = {
+    # 大头照门禁（app/cv_pipeline.run_face_cv 与 attribute_pipeline 共用 code）
+    "photo.insufficient_light": ISSUE_INSUFFICIENT_LIGHT,
+    "photo.overexposed": ISSUE_OVEREXPOSED,
+    "photo.color_cast": None,
+    "photo.face_crop_empty": ISSUE_UNSUPPORTED_CONTENT,
+    "face.no_face": ISSUE_FACE_NOT_FOUND,
+    "face.too_small": ISSUE_FACE_NOT_FOUND,
+    "face.cropped": ISSUE_FACE_NOT_FOUND,
+    "face.eye_occluded": ISSUE_FACE_NOT_FOUND,
+    "face.lower_occluded": ISSUE_FACE_NOT_FOUND,
+    "face.landmark_missing": ISSUE_FACE_NOT_FOUND,
+    "face.multiple_faces": ISSUE_MULTIPLE_PEOPLE,
+    "face.blurry": ISSUE_BLURRED,
+    "face.soft_detail": None,
+    "face.edge_close": None,
+    "face.bangs_forehead": ISSUE_BANGS_FOREHEAD,
+    "face.side_pose": ISSUE_SIDE_POSE,
+    "face.shape_close": None,
+    "skin.sample_failed": ISSUE_UNSUPPORTED_CONTENT,
+    # 全身照
+    "body.no_person": ISSUE_BODY_NOT_COMPLETE,
+    "body.upper_incomplete": ISSUE_BODY_NOT_COMPLETE,
+    "body.not_full_body": ISSUE_BODY_NOT_COMPLETE,
+    "body.side_pose": ISSUE_SIDE_POSE,
+    "body.silhouette_unclear": ISSUE_BODY_UNCLEAR,
+    "body.shape_ambiguous": ISSUE_BODY_UNCLEAR,
+    "body.loose_clothing": None,
+    "body.arms_attached": None,
+}
+
+
+def attribute_inspector(image: Image.Image, kind: str) -> PhotoInspection:
+    """真实照片检测 + 属性识别。
+
+    - 任一「重拍级」问题（见映射表）都会拒绝并返回对应枚举；
+    - warn 级提示（偏色/轮廓接近/衣物宽松等）不拦截，只降低属性置信度；
+    - accepted 时把识别出的属性标签放进 PhotoInspection.attributes。
+    """
+    from app.attribute_pipeline import analyze_body_photo, analyze_face_photo
+
+    analysis = analyze_face_photo(image) if kind == "face" else analyze_body_photo(image)
+    issues: list[str] = []
+    for issue in analysis.get("issues", []):
+        mapped = _ISSUE_CODE_TO_ENUM.get(str(issue.get("code", "")))
+        if mapped and mapped not in issues:
+            issues.append(mapped)
+    if analysis.get("status") == "fail" and not issues:
+        issues = [ISSUE_UNSUPPORTED_CONTENT]
+
+    attributes: dict[str, dict[str, Any]] = {}
+    if not issues:
+        for name, attribute in analysis.get("attributes", {}).items():
+            if attribute.get("status") in {"pass", "warn"} and attribute.get("label"):
+                attributes[name] = {
+                    "label": attribute["label"],
+                    "confidence": attribute.get("confidence", 0.0),
+                }
+    return PhotoInspection(accepted=not issues, issues=issues, attributes=attributes)
