@@ -25,10 +25,6 @@
     state.screen = name;
     themeColor?.setAttribute('content', ['splash', 'loading'].includes(name) ? '#8a011b' : '#fafafa');
     next.scrollTop = 0;
-    if (name === 'report') {
-      next.querySelector('[data-report-hero]')?.classList.remove('is-compact');
-      next.classList.remove('has-compact-hero');
-    }
   };
 
   let splashTimer = 0;
@@ -415,7 +411,6 @@
   if (shell.dataset.reportEndpoint) loadReport(shell.dataset.reportEndpoint).catch((error) => toast(error.message));
   const reportScreen = document.querySelector('[data-screen="report"]');
   const reportActions = document.querySelector('.report-actions');
-  const reportHero = document.querySelector('[data-report-hero]');
   const outfitList = document.querySelector('.outfit-list');
   let reportScrollFrame = 0;
   const syncReportActions = () => {
@@ -425,9 +420,6 @@
     const shouldDock = reportScreen.classList.contains('is-active')
       && reportScreen.scrollTop > 0
       && outfitRect.top <= reportRect.bottom - 112;
-    const shouldCompactHero = reportScreen.scrollTop >= 56;
-    reportHero.classList.toggle('is-compact', shouldCompactHero);
-    reportScreen.classList.toggle('has-compact-hero', shouldCompactHero);
     reportActions.classList.toggle('is-docked', shouldDock);
     reportActions.toggleAttribute('inert', !shouldDock);
     reportActions.setAttribute('aria-hidden', shouldDock ? 'false' : 'true');
