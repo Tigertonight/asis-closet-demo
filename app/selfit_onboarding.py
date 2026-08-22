@@ -10,12 +10,12 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any
 
-from fastapi import APIRouter, Depends, Request
-from fastapi.responses import FileResponse, JSONResponse
+from fastapi import APIRouter, Depends, Request, Response
+from fastapi.responses import FileResponse, JSONResponse, RedirectResponse
 from PIL import Image, UnidentifiedImageError
 from starlette.concurrency import run_in_threadpool
 
-from app import selfit_onboarding_store as _store_module
+from app import selfit_assets, selfit_onboarding_store as _store_module
 from app import selfit_photo, selfit_report, selfit_share
 from app.auth import get_optional_user
 from app.ops import env_int
@@ -570,14 +570,15 @@ def _photo_response(
     }
 
 
+def _asset_store() -> selfit_assets.AssetStore:
+    return selfit_assets.asset_store_from_env(SELFIT_ONBOARDING_ASSET_DIR)
+
+
 def _save_photo_asset(session_id: str, kind: str, raw: bytes, image_format: str) -> str:
     asset_id = f"asset_{kind}_{hashlib.sha256(raw).hexdigest()[:12]}"
     suffix = PHOTO_SUPPORTED_FORMATS[image_format]
-    target_dir = SELFIT_ONBOARDING_ASSET_DIR / session_id
-    target_dir.mkdir(parents=True, exist_ok=True)
-    tmp_path = target_dir / f"{asset_id}{suffix}.{secrets.token_urlsafe(4)}.tmp"
-    tmp_path.write_bytes(raw)
-    tmp_path.replace(target_dir / f"{asset_id}{suffix}")
+    content_type = {"JPEG": "image/jpeg", "PNG": "image/png", "WEBP": "image/webp"}[image_format]
+    _asset_store().save(f"{session_id}/{asset_id}{suffix}", raw, content_type)
     return asset_id
 
 
@@ -1001,11 +1002,7 @@ async def create_share_asset(
 
     asset_id = "share_" + secrets.token_urlsafe(12)
     filename = f"{asset_id}.{image_format}"
-    target_dir = SELFIT_ONBOARDING_ASSET_DIR / "shared"
-    target_dir.mkdir(parents=True, exist_ok=True)
-    tmp_path = target_dir / f"{filename}.{secrets.token_urlsafe(4)}.tmp"
-    tmp_path.write_bytes(content)
-    tmp_path.replace(target_dir / filename)
+    _asset_store().save(f"shared/{filename}", content, f"image/{image_format}")
 
     data["share_assets"].append(
         {
@@ -1040,7 +1037,7 @@ async def create_share_asset(
 async def download_share_asset(
     asset_id: str,
     user: dict[str, Any] | None = Depends(get_optional_user),
-) -> FileResponse | JSONResponse:
+) -> Response:
     data = _load_store()
     asset = next(
         (item for item in data["share_assets"] if item.get("asset_id") == asset_id),
@@ -1048,7 +1045,12 @@ async def download_share_asset(
     )
     if asset is None or not _session_visible_to(asset, user):
         return _error_response(404, "share.asset_not_found", "没有找到这份分享素材。")
-    path = SELFIT_ONBOARDING_ASSET_DIR / "shared" / str(asset.get("filename") or "")
-    if not path.is_file():
+    key = f"shared/{asset.get('filename') or ''}"
+    store = _asset_store()
+    public_url = store.public_url(key)
+    if public_url:
+        return RedirectResponse(public_url, status_code=302)
+    path = store.local_path(key)
+    if path is None:
         return _error_response(404, "share.asset_not_found", "没有找到这份分享素材。")
     return FileResponse(path, media_type=f"image/{asset.get('format') or 'png'}")
