@@ -106,6 +106,7 @@ from app.stylist_sessions import (
     update_stylist_session,
 )
 from app.selfit_onboarding import router as selfit_onboarding_router
+from app.qa_onboarding import QA_PHOTO_DIR, router as qa_onboarding_router
 from app.storage import storage_context, user_storage
 from scripts.generate_qa_artifacts import generate_qa_artifacts
 from scripts.check_runtime_readiness import readiness as runtime_readiness
@@ -116,6 +117,7 @@ load_dotenv(Path(__file__).resolve().parents[1] / ".env", override=True)
 app = FastAPI(title="selfit", version="0.2.0")
 app.middleware("http")(request_guard_middleware)
 app.include_router(selfit_onboarding_router)
+app.include_router(qa_onboarding_router)
 SELFIT_INDEX_PATH = Path(__file__).resolve().parent / "static" / "selfit" / "index.html"
 SELFIT_MIRROR_INDEX_PATH = Path(__file__).resolve().parent / "static" / "selfit" / "mirror.html"
 TRYON_OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
@@ -131,6 +133,8 @@ app.mount("/tryon-outputs", StaticFiles(directory="outputs/tryon"), name="tryon-
 app.mount("/tryon-models", StaticFiles(directory=TRYON_MODEL_FIXTURE_DIR), name="tryon-models")
 CLOSET_OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 app.mount("/closet-outputs", StaticFiles(directory="outputs/closet"), name="closet-outputs")
+QA_PHOTO_DIR.mkdir(parents=True, exist_ok=True)
+app.mount("/qa-photos", StaticFiles(directory=str(QA_PHOTO_DIR)), name="qa-photos")
 
 
 def _is_allowed_xhs_image_url(url: str) -> bool:

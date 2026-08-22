@@ -22,6 +22,10 @@ from app.storage import ROOT_DIR
 # 注意：SELFIT_ONBOARDING_ASSET_DIR 下的用户原图与分享图是初始数据资产，需要精心保留。
 # 会话过期只清理索引记录（sessions.json / 任务 / 报告），资产文件一律不删。
 # 后续迁移对象存储时以该目录为同步源，禁止加入任何定期清理任务。
+# 接入真实照片检测与属性识别算法；联调时可设 SELFIT_PHOTO_INSPECTOR=accept_all 退回全放行。
+if os.getenv("SELFIT_PHOTO_INSPECTOR", "attribute") != "accept_all":
+    selfit_photo.register_photo_inspector(selfit_photo.attribute_inspector)
+
 SELFIT_ONBOARDING_DIR = ROOT_DIR / "outputs" / "selfit_onboarding"
 SELFIT_ONBOARDING_STORE_PATH = SELFIT_ONBOARDING_DIR / "sessions.json"
 SELFIT_ONBOARDING_ASSET_DIR = SELFIT_ONBOARDING_DIR / "assets"
@@ -40,8 +44,8 @@ REPORT_STAGE_SCHEDULE_MS = (
 REPORT_TOTAL_MS = 3200
 REPORT_POLL_AFTER_MS = 800
 
-SKIN_OPTIONS = {"白皙色", "自然白", "自然色", "健康色", "小麦色", "蜜糖色"}
-FACE_SHAPE_OPTIONS = {"椭圆脸", "圆脸", "方脸", "心形脸", "长脸"}
+SKIN_OPTIONS = {"白皙色", "自然白", "自然色", "健康色", "小麦色"}
+FACE_SHAPE_OPTIONS = {"椭圆脸", "圆脸", "方脸", "心形脸", "菱形脸"}
 BODY_SHAPE_OPTIONS = {"梨型", "倒三角型", "沙漏型", "矩型", "苹果型"}
 MANUAL_FIELDS = {"skin": SKIN_OPTIONS, "faceShape": FACE_SHAPE_OPTIONS, "bodyShape": BODY_SHAPE_OPTIONS}
 
@@ -635,6 +639,8 @@ async def upload_session_photo(
             "format": pil_image.format,
             "width": pil_image.width,
             "height": pil_image.height,
+            # 算法推断的肤色/脸型/身型标签，供报告任务与「手动纠正优先」合并消费。
+            "attributes": dict(inspection.attributes),
         }
         label = selfit_photo.KIND_LABELS[kind]
         body = _photo_response(

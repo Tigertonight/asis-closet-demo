@@ -8,6 +8,7 @@ from PIL import Image
 
 import app.selfit_onboarding as selfit_onboarding
 import app.selfit_onboarding_store as store_module
+import app.selfit_photo as selfit_photo
 import app.selfit_report as selfit_report
 from app.main import app
 
@@ -68,6 +69,8 @@ def _jpeg_bytes() -> bytes:
 
 def test_sqlite_backend_full_api_flow(monkeypatch, tmp_path: Path) -> None:
     store_dir = _use_sqlite_store(monkeypatch, tmp_path)
+    # 存储平价测试不依赖真实照片算法，stub 为全放行。
+    monkeypatch.setattr(selfit_photo, "_inspector", selfit_photo.accept_all_inspector)
     monkeypatch.setattr(selfit_onboarding, "REPORT_TOTAL_MS", -1)
     monkeypatch.setattr(selfit_report, "_builder", lambda session: {"title": "中性利落派"})
     client = TestClient(app)
