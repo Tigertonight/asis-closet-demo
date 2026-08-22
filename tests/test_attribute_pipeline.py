@@ -50,7 +50,7 @@ def _fake_frontal_pose(img_w: int = 1000, img_h: int = 2000) -> list[_FakePoseLa
         (63.0, "自然色"),
         (59.0, "健康色"),
         (55.0, "小麦色"),
-        (50.0, "蜜糖色"),
+        (50.0, "小麦色"),
     ],
 )
 def test_classify_skin_tone_labels(l_star: float, expected: str) -> None:
@@ -86,6 +86,7 @@ def _face_features(r: float, jr: float, fr: float, jaw_angle: float, chin_angle:
         (_face_features(1.08, 0.86, 0.90, 160, 165), "圆脸"),
         (_face_features(1.30, 0.95, 0.88, 115, 160), "方脸"),
         (_face_features(1.35, 0.62, 0.95, 150, 120), "心形脸"),
+        (_face_features(1.42, 0.68, 0.72, 150, 126), "菱形脸"),
     ],
 )
 def test_face_shape_rules_pick_expected_label(features: dict[str, float], expected: str) -> None:

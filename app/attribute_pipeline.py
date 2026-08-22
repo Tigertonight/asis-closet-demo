@@ -21,9 +21,9 @@
     "evidence": {...},   # 门禁证据，供 QA / 调试
 }
 
-脸型当前只输出已确认的 4 类（椭圆脸/圆脸/方脸/心形脸）；第 5 类
-（菱形脸 vs 长脸）待产品口径确认后扩展：评分表是数据驱动的，加一类只需
-在 FACE_SHAPE_RULES 里补一条。长宽比、颧骨独宽等区分特征已输出到 evidence。
+脸型输出已确认为 5 类：椭圆脸/圆脸/方脸/心形脸/菱形脸（长脸并入椭圆脸——
+两者在特征空间只差长宽比一个维度）。长宽比 r 超过 FACE_ELONGATED_RATIO 时，
+脸型属性额外输出 sub_label="偏修长"，供报告层补充建议，不改变主标签。
 """
 
 from __future__ import annotations
@@ -64,11 +64,13 @@ _MP_POSE_LANDMARKER: Any | None = None
 _MP_SELFIE_SEGMENTER: Any | None = None
 
 # ---------------------------------------------------------------------------
-# 肤色 6 档（明度阶）
+# 肤色 5 档（明度阶）
+# 口径：自然色居中、左右各两档；最深的蜜糖色已并入小麦色
+# （深色段过细对用户不友好，且深肤色用户不愿意选很黑的色号）。
 # TODO(calibration): 阈值为文献先验初始值，需用内部标注集回归标定。
-SKIN_TONE_LABELS = ["白皙色", "自然白", "自然色", "健康色", "小麦色", "蜜糖色"]
+SKIN_TONE_LABELS = ["白皙色", "自然白", "自然色", "健康色", "小麦色"]
 # L*(D65/2°) 下界：L* >= 下界[i] → SKIN_TONE_LABELS[i]，否则落入下一档。
-SKIN_TONE_L_STAR_BOUNDS = [68.0, 65.0, 61.5, 57.5, 53.5]
+SKIN_TONE_L_STAR_BOUNDS = [68.0, 65.0, 61.5, 57.5]
 
 # 脸部光照门禁（HSV V 通道 0-100 口径）
 FACE_TOO_DARK_V = 45.0
@@ -80,7 +82,8 @@ FACE_STRONG_CAST = 42.0
 # TODO(calibration): 全部阈值待真实自拍标注集回归标定。
 FACE_YAW_REJECT = 0.22          # 鼻部到左右外眼角距离差 / 脸宽，超过则判侧脸
 BANGS_SKIN_RATIO_REJECT = 0.55  # 刘海检测：额区皮肤占比低于该值则判遮挡（无遮挡样本 ≥0.9，刘海样本 ≈0.33）
-FACE_SHAPE_LABELS = ["椭圆脸", "圆脸", "方脸", "心形脸"]
+FACE_SHAPE_LABELS = ["椭圆脸", "圆脸", "方脸", "心形脸", "菱形脸"]
+FACE_ELONGATED_RATIO = 1.48     # 长宽比超过该值时脸型附注「偏修长」（长脸并入椭圆脸后的子标签）
 
 
 def _face_shape_rules(features: dict[str, float]) -> dict[str, float]:
@@ -105,12 +108,24 @@ def _face_shape_rules(features: dict[str, float]) -> dict[str, float]:
         + 0.35 * _ramp(0.74 - jr, 0.0, 0.12)
         + 0.25 * _ramp(142.0 - chin_angle, 0.0, 25.0)
     )
+    # 菱形 = 颧骨独宽：额与下颌同时窄于颧骨，下巴偏尖。与心形互补——心形要求额宽。
+    diamond = (
+        0.45 * _ramp(0.84 - fr, 0.0, 0.16)
+        + 0.35 * _ramp(0.78 - jr, 0.0, 0.12)
+        + 0.20 * _ramp(148.0 - chin_angle, 0.0, 28.0)
+    )
     oval = (
         0.45 * (1.0 - _ramp(abs(r - 1.36), 0.04, 0.22))
         + 0.30 * (1.0 - _ramp(abs(jr - 0.79), 0.03, 0.12))
         + 0.25 * (1.0 - _ramp(abs(fr - 0.80), 0.04, 0.14))
     )
-    return {"椭圆脸": _clamp01(oval), "圆脸": _clamp01(round_), "方脸": _clamp01(square), "心形脸": _clamp01(heart)}
+    return {
+        "椭圆脸": _clamp01(oval),
+        "圆脸": _clamp01(round_),
+        "方脸": _clamp01(square),
+        "心形脸": _clamp01(heart),
+        "菱形脸": _clamp01(diamond),
+    }
 
 
 # ---------------------------------------------------------------------------
@@ -173,7 +188,7 @@ def _classify_body_shape(measurements: dict[str, float]) -> dict[str, Any]:
 # ---------------------------------------------------------------------------
 
 def analyze_face_photo(image: Image.Image) -> dict[str, Any]:
-    """大头照 → 肤色 6 档 + 脸型 4 类。任何问题都通过 issues 显式返回。"""
+    """大头照 → 肤色 5 档 + 脸型 5 类。任何问题都通过 issues 显式返回。"""
     gate = run_face_cv(image)
     if gate["status"] == "fail":
         skipped = {
@@ -331,7 +346,7 @@ def _skin_tone_attribute(rgb: np.ndarray, face: dict[str, Any], points: dict[int
 
 
 def _classify_skin_tone(l_star: float) -> tuple[str, float]:
-    """L* → 6 档标签 + 到最近分界的距离（距离越大置信越高）。"""
+    """L* → 5 档标签 + 到最近分界的距离（距离越大置信越高）。"""
     for index, bound in enumerate(SKIN_TONE_L_STAR_BOUNDS):
         if l_star >= bound:
             gap = l_star - bound if index == 0 else min(l_star - bound, SKIN_TONE_L_STAR_BOUNDS[index - 1] - l_star)
@@ -409,7 +424,12 @@ def _face_shape_attribute(rgb: np.ndarray, face: dict[str, Any], points: dict[in
         "scores": {key: round(value, 3) for key, value in scores.items()},
         "margin": round(margin, 3),
     }
-    return _attribute(status, round(_clamp(confidence, 0.4, 0.86), 2), label, issues, evidence, candidates=candidates)
+    result = _attribute(status, round(_clamp(confidence, 0.4, 0.86), 2), label, issues, evidence, candidates=candidates)
+    # 长脸并入椭圆脸：长宽比超阈值时保留「偏修长」子标签，供报告层补充建议。
+    if features["length_width_ratio"] >= FACE_ELONGATED_RATIO:
+        evidence["elongated"] = True
+        result["sub_label"] = "偏修长"
+    return result
 
 
 def _face_yaw_ratio(points: dict[int, tuple[int, int]]) -> float:
