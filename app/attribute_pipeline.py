@@ -603,20 +603,25 @@ def _person_mask(rgb: np.ndarray, pose: list[Any]) -> np.ndarray | None:
     return mask
 
 
-def _torso_run_width(mask_row: np.ndarray, spine_x: int) -> int:
-    """mask_row 中 spine_x 所在的连续人体段宽度（手臂已被调用方预先挖除）。"""
+def _torso_run_bounds(mask_row: np.ndarray, spine_x: int) -> tuple[int, int] | None:
+    """mask_row 中 spine_x 所在的连续人体段 [left, right]；spine 不在人体上时返回 None。"""
     if mask_row.shape[0] == 0:
-        return 0
+        return None
     spine_x = int(min(max(spine_x, 0), mask_row.shape[0] - 1))
     if not mask_row[spine_x]:
-        return 0
+        return None
     left = spine_x
     while left > 0 and mask_row[left - 1]:
         left -= 1
     right = spine_x
     while right < mask_row.shape[0] - 1 and mask_row[right + 1]:
         right += 1
-    return right - left + 1
+    return left, right
+
+
+def _torso_run_width(mask_row: np.ndarray, spine_x: int) -> int:
+    bounds = _torso_run_bounds(mask_row, spine_x)
+    return bounds[1] - bounds[0] + 1 if bounds else 0
 
 
 def _arm_zones_at_row(pose: list[Any], img_w: int, img_h: int, y_px: float) -> list[tuple[float, float]]:
@@ -639,11 +644,12 @@ def _arm_zones_at_row(pose: list[Any], img_w: int, img_h: int, y_px: float) -> l
     return zones
 
 
-def _measure_body_widths(mask: np.ndarray | None, pose: list[Any], img_w: int, img_h: int) -> tuple[dict[str, float] | None, dict[str, Any]]:
+def _measure_body_widths(mask: np.ndarray | None, pose: list[Any], img_w: int, img_h: int, collect_rows: bool = False) -> tuple[dict[str, float] | None, dict[str, Any]]:
     """轮廓量肩/腰/髋三宽；手臂骨骼折线先挖除，避免垂臂污染宽度。
 
     手臂区间与骨骼躯干区间重叠的行（手臂贴身）记为不可靠：
     肩/髋可靠行不足时分别退回骨骼估计/失败，腰不可靠时只影响沙漏/矩型/苹果的分辨。
+    collect_rows=True 时把每一量测行的位置/宽度/可靠性记入 meta["rows"]（QA 叠加层用）。
     """
     shoulder_l = (pose[11].x * img_w, pose[11].y * img_h)
     shoulder_r = (pose[12].x * img_w, pose[12].y * img_h)
@@ -688,7 +694,13 @@ def _measure_body_widths(mask: np.ndarray | None, pose: list[Any], img_w: int, i
             if x0 < torso_hi and x1 > torso_lo:
                 reliable = False  # 手臂与躯干骨骼区间重叠，挖除会误伤躯干
             row[max(0, int(x0)) : min(img_w, int(x1) + 1)] = False
-        return _torso_run_width(row, spine_x_at(y)), reliable
+        width = _torso_run_width(row, spine_x_at(y))
+        if collect_rows:
+            bounds = _torso_run_bounds(row, spine_x_at(y))
+            rows.append({"y": y_int, "width": width, "reliable": reliable, "x0": bounds[0] if bounds else None, "x1": bounds[1] if bounds else None})
+        return width, reliable
+
+    rows: list[dict[str, Any]] = []
 
     armpit_y = shoulder_y + 0.14 * torso_h
     bust_y = shoulder_y + 0.28 * torso_h
@@ -741,6 +753,9 @@ def _measure_body_widths(mask: np.ndarray | None, pose: list[Any], img_w: int, i
     meta["waist_reliable_row_ratio"] = round(waist_ratio_reliable, 3) if waist_widths else 0.0
     meta["hip_reliable_row_ratio"] = round(hip_ratio_reliable, 3)
     meta["loose_clothing_suspect"] = hip_w > bone_hip * BODY_LOOSE_HIP_FACTOR
+    if collect_rows:
+        meta["rows"] = rows
+        meta["band_ys"] = {"armpit_y": int(armpit_y), "bust_y": int(bust_y), "waist_top": int(waist_top), "waist_bottom": int(waist_bottom), "hip_top": int(hip_top), "hip_bottom": int(hip_bottom)}
     measurements = {
         "shoulder_width": float(shoulder_w),
         "hip_width": hip_w,
@@ -808,9 +823,95 @@ def _angle_deg(a: tuple[float, float], vertex: tuple[float, float], b: tuple[flo
     return math.degrees(math.acos(cosine))
 
 
+# ---------------------------------------------------------------------------
+# QA 叠加层用的调试几何输出
+# ---------------------------------------------------------------------------
+
+def debug_face_geometry(image: Image.Image) -> dict[str, Any] | None:
+    """大头照的量测几何：量测线、肤色采样区、刘海检测带、关键点。供 QA 叠加层绘制。"""
+    rgb = np.array(image.convert("RGB"))
+    img_h, img_w = rgb.shape[:2]
+    gate = run_face_cv(image)
+    face = _primary_face(gate, image.size)
+    if face is None:
+        return None
+    points = _landmark_pixel_points(_detect_face_landmarks(rgb), img_w, img_h)
+    layout = _face_landmark_region_layout(rgb, face) if points else None
+    geometry: dict[str, Any] = {
+        "face_box": face["box"],
+        "skin_regions": [
+            {"name": name, "box": [x0, y0, x1, y1]}
+            for name, (x0, y0, x1, y1) in (layout["skin_regions"] if layout else {}).items()
+        ],
+        "points": {},
+        "lines": [],
+        "bangs_band": None,
+    }
+    named_points = {"发际": 10, "下巴": 152, "颧骨左": 234, "颧骨右": 454, "下颌左": 172, "下颌右": 397}
+    geometry["points"] = {name: list(points[idx]) for name, idx in named_points.items() if idx in points}
+
+    def add_line(name: str, a: int | tuple[int, int], b: int | tuple[int, int]) -> None:
+        pa = points.get(a) if isinstance(a, int) else a
+        pb = points.get(b) if isinstance(b, int) else b
+        if pa and pb:
+            geometry["lines"].append({"name": name, "from": list(pa), "to": list(pb), "width": round(_dist(pa, pb), 1)})
+
+    add_line("脸长", 10, 152)
+    add_line("颧骨宽", 234, 454)
+    forehead_pair = max(((a, b) for a, b in _FOREHEAD_PAIRS if a in points and b in points), key=lambda pair: _dist(points[pair[0]], points[pair[1]]), default=None)
+    if forehead_pair:
+        add_line("额宽", *forehead_pair)
+    add_line("下颌宽", 172, 397)
+    if all(idx in points for idx in (10, 105, 334)) and points[334][1] - points[10][1] >= 8:
+        x0, y0, x1, y1 = _clip_box(min(points[105][0], points[334][0]), points[10][1] + 2, max(points[105][0], points[334][0]), min(points[105][1], points[334][1]) - 2, img_w, img_h)
+        geometry["bangs_band"] = [x0, y0, x1, y1]
+    return geometry
+
+
+def debug_body_geometry(image: Image.Image) -> dict[str, Any] | None:
+    """全身照的量测几何：骨骼点、量测行、手臂挖除区、人形轮廓。供 QA 叠加层绘制。"""
+    rgb = np.array(image.convert("RGB"))
+    img_h, img_w = rgb.shape[:2]
+    pose = _detect_body_pose(rgb)
+    if pose is None:
+        return None
+    mask = _person_mask(rgb, pose)
+    measurements, meta = _measure_body_widths(mask, pose, img_w, img_h, collect_rows=True)
+
+    named = {"鼻": 0, "肩左": 11, "肩右": 12, "肘左": 13, "肘右": 14, "腕左": 15, "腕右": 16, "髋左": 23, "髋右": 24, "踝左": 27, "踝右": 28}
+    points = {name: [round(pose[idx].x * img_w, 1), round(pose[idx].y * img_h, 1)] for name, idx in named.items()}
+    arms = []
+    for shoulder_i, elbow_i, wrist_i in [(11, 13, 15), (12, 14, 16)]:
+        shoulder = (pose[shoulder_i].x * img_w, pose[shoulder_i].y * img_h)
+        elbow = (pose[elbow_i].x * img_w, pose[elbow_i].y * img_h)
+        wrist = (pose[wrist_i].x * img_w, pose[wrist_i].y * img_h)
+        hand_end = (wrist[0] + (wrist[0] - elbow[0]) * 0.45, wrist[1] + (wrist[1] - elbow[1]) * 0.45)
+        arms.append([[round(v, 1) for v in point] for point in [shoulder, elbow, wrist, hand_end]])
+
+    contour: list[list[int]] = []
+    if mask is not None:
+        contours, _ = cv2.findContours(mask.astype(np.uint8), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+        if contours:
+            largest = max(contours, key=cv2.contourArea)
+            step = max(1, len(largest) // 240)
+            contour = [[int(p[0][0]), int(p[0][1])] for p in largest[::step]]
+
+    return {
+        "points": points,
+        "arms": arms,
+        "rows": meta.get("rows", []),
+        "band_ys": meta.get("band_ys", {}),
+        "contour": contour,
+        "measurements": measurements,
+        "meta": {key: value for key, value in meta.items() if key != "rows"},
+    }
+
+
 __all__ = [
     "analyze_face_photo",
     "analyze_body_photo",
+    "debug_face_geometry",
+    "debug_body_geometry",
     "SKIN_TONE_LABELS",
     "FACE_SHAPE_LABELS",
     "BODY_SHAPE_LABELS",

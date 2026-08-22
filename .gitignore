@@ -47,3 +47,5 @@ selfit-agent-runtime/*workspace-state*.json
 
 # QA 目检素材的分析缓存（可由页面重新生成）
 qa_photos/_results.json
+qa_photos/_overlays/
+qa_photos/_annotations.json
