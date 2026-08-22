@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import hashlib
+import io
 import json
 import secrets
 from datetime import datetime, timedelta, timezone
@@ -8,15 +10,20 @@ from typing import Any
 
 from fastapi import APIRouter, Depends, Request
 from fastapi.responses import JSONResponse
+from PIL import Image, UnidentifiedImageError
 
+from app import selfit_photo
 from app.auth import get_optional_user
 from app.ops import env_int
 from app.storage import ROOT_DIR
 
 SELFIT_ONBOARDING_DIR = ROOT_DIR / "outputs" / "selfit_onboarding"
 SELFIT_ONBOARDING_STORE_PATH = SELFIT_ONBOARDING_DIR / "sessions.json"
+SELFIT_ONBOARDING_ASSET_DIR = SELFIT_ONBOARDING_DIR / "assets"
 
 SCHEMA_VERSION = "selfit-onboarding-v1"
+PHOTO_MAX_BYTES = 12 * 1024 * 1024
+PHOTO_SUPPORTED_FORMATS = {"JPEG": ".jpg", "PNG": ".png", "WEBP": ".webp"}
 
 SKIN_OPTIONS = {"白皙色", "自然白", "自然色", "健康色", "小麦色", "蜜糖色"}
 FACE_SHAPE_OPTIONS = {"椭圆脸", "圆脸", "方脸", "心形脸", "长脸"}
@@ -486,3 +493,132 @@ async def patch_session_vibe(
         return record
 
     return await _patch_session(request, session_id, user, apply)
+
+
+def _photo_response(
+    request_id: str,
+    revision: int,
+    kind: str,
+    *,
+    asset_id: str | None,
+    status: str,
+    code: str,
+    message: str,
+    issues: list[str],
+) -> dict[str, Any]:
+    return {
+        "requestId": request_id,
+        "revision": revision,
+        "photo": {
+            "kind": kind,
+            "assetId": asset_id,
+            "status": status,
+            "code": code,
+            "message": message,
+            "issues": issues,
+        },
+    }
+
+
+def _save_photo_asset(session_id: str, kind: str, raw: bytes, image_format: str) -> str:
+    asset_id = f"asset_{kind}_{hashlib.sha256(raw).hexdigest()[:12]}"
+    suffix = PHOTO_SUPPORTED_FORMATS[image_format]
+    target_dir = SELFIT_ONBOARDING_ASSET_DIR / session_id
+    target_dir.mkdir(parents=True, exist_ok=True)
+    tmp_path = target_dir / f"{asset_id}{suffix}.{secrets.token_urlsafe(4)}.tmp"
+    tmp_path.write_bytes(raw)
+    tmp_path.replace(target_dir / f"{asset_id}{suffix}")
+    return asset_id
+
+
+@router.post("/sessions/{session_id}/photos/{kind}")
+async def upload_session_photo(
+    session_id: str,
+    kind: str,
+    request: Request,
+    user: dict[str, Any] | None = Depends(get_optional_user),
+) -> JSONResponse:
+    if kind not in selfit_photo.PHOTO_KINDS:
+        return _error_response(
+            422,
+            "validation.invalid_enum",
+            "照片类型不正确。",
+            details={"field": "kind", "value": kind},
+        )
+
+    data = _prune_store(_load_store())
+    scope = _idempotency_scope(request, user)
+    idempotency_key = request.headers.get("x-idempotency-key")
+    replay = _idempotency_replay(data, scope, idempotency_key)
+    if replay is not None:
+        status_code, body = replay
+        return JSONResponse(status_code=status_code, content=body)
+
+    record = _load_active_session(data, session_id, user)
+    if isinstance(record, JSONResponse):
+        return record
+
+    form = await request.form()
+    upload = form.get("image")
+    if upload is None or not hasattr(upload, "read"):
+        return _error_response(400, "photo.image_missing", "请选择要上传的照片。")
+    raw = await upload.read()
+    if not raw:
+        return _error_response(400, "photo.image_missing", "请选择要上传的照片。")
+    if len(raw) > PHOTO_MAX_BYTES:
+        return _error_response(413, "photo.too_large", "照片超过 12MB，请压缩后再试。")
+
+    try:
+        pil_image = Image.open(io.BytesIO(raw))
+        pil_image.load()
+    except (UnidentifiedImageError, OSError):
+        return _error_response(400, "photo.invalid_image", "无法识别照片内容，请更换一张照片。")
+    if pil_image.format not in PHOTO_SUPPORTED_FORMATS:
+        return _error_response(415, "photo.unsupported_type", "仅支持 JPG、PNG、WebP 格式的照片。")
+
+    inspection = selfit_photo.inspect_photo(pil_image.convert("RGB"), kind)
+    issues = selfit_photo.sanitize_issues(list(inspection.issues))
+    accepted = bool(inspection.accepted) and not issues
+
+    record["revision"] = int(record.get("revision") or 1) + 1
+    photos = record.setdefault("photos", {})
+    request_id = _request_id()
+    if accepted:
+        asset_id = _save_photo_asset(session_id, kind, raw, str(pil_image.format))
+        photos[kind] = {
+            "asset_id": asset_id,
+            "status": "accepted",
+            "format": pil_image.format,
+            "width": pil_image.width,
+            "height": pil_image.height,
+        }
+        label = selfit_photo.KIND_LABELS[kind]
+        body = _photo_response(
+            request_id,
+            record["revision"],
+            kind,
+            asset_id=asset_id,
+            status="accepted",
+            code="photo.accepted",
+            message=f"{label}可用",
+            issues=[],
+        )
+    else:
+        if not issues:
+            issues = [selfit_photo.ISSUE_UNSUPPORTED_CONTENT]
+        primary = selfit_photo.primary_issue(issues)
+        photos[kind] = {"asset_id": None, "status": "rejected", "code": f"photo.{primary}"}
+        body = _photo_response(
+            request_id,
+            record["revision"],
+            kind,
+            asset_id=None,
+            status="rejected",
+            code=f"photo.{primary}",
+            message=selfit_photo.issue_message(primary, kind),
+            issues=issues,
+        )
+
+    _idempotency_store(data, scope, idempotency_key, 200, body)
+    _write_store(data)
+    return JSONResponse(status_code=200, content=body)
