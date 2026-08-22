@@ -3,6 +3,7 @@ from __future__ import annotations
 import hashlib
 import io
 import json
+import os
 import secrets
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
@@ -12,6 +13,7 @@ from fastapi import APIRouter, Depends, Request
 from fastapi.responses import FileResponse, JSONResponse
 from PIL import Image, UnidentifiedImageError
 
+from app import selfit_onboarding_store as _store_module
 from app import selfit_photo, selfit_report, selfit_share
 from app.auth import get_optional_user
 from app.ops import env_int
@@ -99,12 +101,22 @@ def _error_response(
     )
 
 
-_STORE_KEYS = ("sessions", "idempotency", "report_jobs", "reports", "outfit_requests", "share_assets")
+_STORE_KEYS = tuple(_store_module.COLLECTIONS)
+
+
+def _store_backend() -> str:
+    return os.getenv("SELFIT_ONBOARDING_STORE_BACKEND", "json").strip().lower()
+
+
+def _sqlite_store() -> _store_module.SqliteOnboardingStore:
+    return _store_module.SqliteOnboardingStore(SELFIT_ONBOARDING_DIR / "sessions.sqlite3")
 
 
 def _load_store() -> dict[str, Any]:
+    if _store_backend() == "sqlite":
+        return _sqlite_store().load()
     if not SELFIT_ONBOARDING_STORE_PATH.exists():
-        return {"version": 1, **{key: [] for key in _STORE_KEYS}}
+        return _store_module.empty_store()
     try:
         data = json.loads(SELFIT_ONBOARDING_STORE_PATH.read_text(encoding="utf-8"))
         if isinstance(data, dict):
@@ -114,10 +126,13 @@ def _load_store() -> dict[str, Any]:
             return data
     except json.JSONDecodeError:
         pass
-    return {"version": 1, **{key: [] for key in _STORE_KEYS}}
+    return _store_module.empty_store()
 
 
 def _write_store(data: dict[str, Any]) -> None:
+    if _store_backend() == "sqlite":
+        _sqlite_store().save(data)
+        return
     SELFIT_ONBOARDING_DIR.mkdir(parents=True, exist_ok=True)
     tmp_path = SELFIT_ONBOARDING_STORE_PATH.with_name(f"{SELFIT_ONBOARDING_STORE_PATH.name}.{secrets.token_urlsafe(8)}.tmp")
     tmp_path.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
