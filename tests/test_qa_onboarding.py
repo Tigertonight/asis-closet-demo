@@ -138,3 +138,64 @@ def test_diff_filter_shows_only_mismatch(monkeypatch: pytest.MonkeyPatch, tmp_pa
     assert "face/face_01.jpg" in diff_page.text
     assert "body/body_01.jpg" not in diff_page.text
 
+
+# ---------------------------------------------------------------------------
+# 数据分布与上传
+# ---------------------------------------------------------------------------
+
+def test_dataset_tab_renders_distribution(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr(qa_onboarding, "_analyze_all", lambda refresh=False: [_fake_entry("face"), _fake_entry("body")])
+    monkeypatch.setattr(qa_onboarding, "_ensure_overlays", lambda entries, refresh=False: {})
+    monkeypatch.setattr(qa_onboarding, "QA_ANNOTATIONS_PATH", Path("/tmp/nonexistent_annotations.json"))
+    client = TestClient(app)
+    response = client.get("/qa/onboarding-attributes?tab=dataset")
+    assert response.status_code == 200
+    text = response.text
+    assert "数据分布" in text
+    assert "肤色" in text and "脸型" in text and "身型" in text
+    assert "最紧缺" in text
+    assert "/qa/photos/upload" in text
+    assert "自然色" in text and "梨型" in text
+
+
+def test_upload_photo_adds_to_manifest(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
+    photo_dir = tmp_path / "qa_photos"
+    (photo_dir / "face").mkdir(parents=True)
+    monkeypatch.setattr(qa_onboarding, "QA_PHOTO_DIR", photo_dir)
+    monkeypatch.setattr(qa_onboarding, "QA_RESULTS_CACHE", photo_dir / "_results.json")
+    client = TestClient(app)
+
+    import io as _io
+
+    from PIL import Image as _Image
+
+    buffer = _io.BytesIO()
+    _Image.new("RGB", (600, 800), (200, 180, 170)).save(buffer, "JPEG")
+    response = client.post(
+        "/qa/photos/upload",
+        data={"kind": "face"},
+        files={"image": ("test.jpg", buffer.getvalue(), "image/jpeg")},
+        follow_redirects=False,
+    )
+    assert response.status_code == 303
+    assert "uploaded=" in response.headers["location"]
+
+    manifest = json.loads((photo_dir / "manifest.json").read_text(encoding="utf-8"))
+    assert len(manifest) == 1
+    assert manifest[0]["kind"] == "face"
+    assert manifest[0]["file"].startswith("face/upload_face_")
+    assert (photo_dir / manifest[0]["file"]).exists()
+    cache = json.loads((photo_dir / "_results.json").read_text(encoding="utf-8"))
+    assert manifest[0]["file"] in cache  # 上传时已跑过算法
+
+    # 重复上传同一内容 → 去重跳过
+    dup = client.post(
+        "/qa/photos/upload",
+        data={"kind": "face"},
+        files={"image": ("test.jpg", buffer.getvalue(), "image/jpeg")},
+        follow_redirects=False,
+    )
+    assert "upload_dup=" in dup.headers["location"]
+    manifest = json.loads((photo_dir / "manifest.json").read_text(encoding="utf-8"))
+    assert len(manifest) == 1
+

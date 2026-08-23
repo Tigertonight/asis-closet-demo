@@ -10,7 +10,9 @@ scripts/collect_onboarding_qa_photos.py）。
 
 from __future__ import annotations
 
+import hashlib
 import html
+import io
 import json
 import secrets
 from datetime import datetime, timezone
@@ -37,6 +39,8 @@ QA_RESULTS_CACHE = QA_PHOTO_DIR / "_results.json"
 QA_OVERLAY_DIR = QA_PHOTO_DIR / "_overlays"
 QA_ANNOTATIONS_PATH = QA_PHOTO_DIR / "_annotations.json"
 OVERLAY_VERSION = "v1"  # 叠加层绘制逻辑变更时递增，触发重画
+UPLOAD_MAX_BYTES = 12 * 1024 * 1024
+UPLOAD_MAX_SIDE = 1600
 
 router = APIRouter(tags=["qa-onboarding"])
 
@@ -49,6 +53,11 @@ def _load_manifest() -> list[dict[str, Any]]:
     if not path.exists():
         return []
     return json.loads(path.read_text(encoding="utf-8"))
+
+
+def _save_manifest(items: list[dict[str, Any]]) -> None:
+    QA_PHOTO_DIR.mkdir(parents=True, exist_ok=True)
+    (QA_PHOTO_DIR / "manifest.json").write_text(json.dumps(items, ensure_ascii=False, indent=2), encoding="utf-8")
 
 
 def _load_cache() -> dict[str, Any]:
@@ -550,6 +559,108 @@ def _summary(entries: list[dict[str, Any]]) -> str:
     return status_html + "".join(parts)
 
 
+# ---------------------------------------------------------------------------
+# 数据分布：各属性标签的数量/占比 + 紧缺提示 + 上传扩充
+# ---------------------------------------------------------------------------
+
+def _all_annotations_union() -> dict[str, dict[str, str]]:
+    """合并全部任务的标注（同一文件同一属性以较新的任务为准）。"""
+    union: dict[str, dict[str, str]] = {}
+    for task in _load_annotations().get("tasks", []):
+        for file, attrs in (task.get("annotations") or {}).items():
+            union.setdefault(file, {}).update(attrs)
+    return union
+
+
+def _distribution_section(entries: list[dict[str, Any]], annotated: dict[str, dict[str, str]], attr_name: str, attr_label: str, labels: list[str], kind: str) -> str:
+    kind_entries = [e for e in entries if e["item"]["kind"] == kind]
+    total = len(kind_entries)
+    algo_counts = {label: 0 for label in labels}
+    unidentified = 0
+    for entry in kind_entries:
+        label = ((entry["result"].get("attributes") or {}).get(attr_name) or {}).get("label")
+        if label in algo_counts:
+            algo_counts[label] += 1
+        else:
+            unidentified += 1
+    anno_counts = {label: 0 for label in labels}
+    for entry in kind_entries:
+        value = (annotated.get(entry["item"]["file"]) or {}).get(attr_name)
+        if value in anno_counts:
+            anno_counts[value] += 1
+    anno_total = sum(anno_counts.values())
+
+    max_count = max([*algo_counts.values(), 1])
+    scarce = min(labels, key=lambda label: algo_counts[label]) if total else None
+    rows = []
+    for label in labels:
+        algo_n = algo_counts[label]
+        anno_n = anno_counts[label]
+        pct = round(algo_n / total * 100) if total else 0
+        scarce_badge = '<span class="scarce">最紧缺</span>' if label == scarce and total else ""
+        rows.append(
+            f"""
+            <tr>
+              <td class="dist-label">{_esc(label)}{scarce_badge}</td>
+              <td class="dist-bar-cell"><div class="dist-bar dist-bar--algo" style="width:{max(2, round(algo_n / max_count * 100))}%"></div></td>
+              <td class="dist-num">{algo_n}（{pct}%）</td>
+              <td class="dist-num dist-num--anno">{anno_n}</td>
+            </tr>"""
+        )
+    if unidentified:
+        pct = round(unidentified / total * 100) if total else 0
+        rows.append(
+            f"""
+            <tr>
+              <td class="dist-label dist-label--unknown">未识别</td>
+              <td class="dist-bar-cell"><div class="dist-bar dist-bar--unknown" style="width:{max(2, round(unidentified / max_count * 100))}%"></div></td>
+              <td class="dist-num">{unidentified}（{pct}%）</td>
+              <td class="dist-num dist-num--anno">—</td>
+            </tr>"""
+        )
+    return f"""
+    <section class="dist-section">
+      <h2>{_esc(attr_label)}<small>（{_esc("大头照" if kind == "face" else "全身照")}，共 {total} 张）</small></h2>
+      <table class="dist-table">
+        <thead><tr><th>标签</th><th>分布</th><th>算法预测</th><th>人工确认</th></tr></thead>
+        <tbody>{"".join(rows)}</tbody>
+      </table>
+      <p class="dist-note">人工确认 {anno_total} 条（合并所有标注任务）。</p>
+    </section>"""
+
+
+def _dataset_content(entries: list[dict[str, Any]], uploaded: str, upload_error: str, upload_dup: str) -> str:
+    annotated = _all_annotations_union()
+    notice = ""
+    if uploaded:
+        notice = f'<p class="upload-notice upload-notice--ok">已上传 { _esc(uploaded) }，算法已自动识别，可在「实验结果」查看。</p>'
+    elif upload_error:
+        notice = f'<p class="upload-notice upload-notice--err">上传失败：{_esc(upload_error)}</p>'
+    elif upload_dup:
+        notice = f'<p class="upload-notice">这张照片之前传过了（{_esc(upload_dup)}），已跳过。</p>'
+    sections = "".join(
+        [
+            _distribution_section(entries, annotated, "skin_tone", "肤色", SKIN_TONE_LABELS, "face"),
+            _distribution_section(entries, annotated, "face_shape", "脸型", FACE_SHAPE_LABELS, "face"),
+            _distribution_section(entries, annotated, "body_shape", "身型", BODY_SHAPE_LABELS, "body"),
+        ]
+    )
+    return f"""
+    <h1>数据分布</h1>
+    <p class="sub">看哪类数据最紧缺，定向补图。标红「最紧缺」的类别优先找；上传后算法会自动识别并入分布。</p>
+    <form class="upload-card" method="post" action="/qa/photos/upload" enctype="multipart/form-data">
+      <b>上传照片扩充数据集</b>
+      <div class="upload-row">
+        <select name="kind"><option value="face">大头照</option><option value="body">全身照</option></select>
+        <input type="file" name="image" accept="image/jpeg,image/png,image/webp" required />
+        <button type="submit">上传</button>
+      </div>
+      <small>要求：大头照正脸清晰、露出额头；全身照正面站立、头顶到脚踝完整入镜。JPG/PNG/WebP，≤12MB。</small>
+    </form>
+    {notice}
+    {sections}"""
+
+
 def _results_content(entries: list[dict[str, Any]], overlays: dict[str, str]) -> str:
     face_entries = [e for e in entries if e["item"]["kind"] == "face"]
     body_entries = [e for e in entries if e["item"]["kind"] == "body"]
@@ -645,6 +756,30 @@ def render_qa_page(content: str, active_tab: str) -> str:
     .save-bar {{ position: fixed; left: 50%; transform: translateX(-50%); bottom: 22px; z-index: 30; display: flex; gap: 14px; align-items: center; background: #191719; color: #fff; border-radius: 999px; padding: 10px 18px; box-shadow: 0 14px 34px rgba(25,23,25,.28); font-size: 13px; }}
     .save-bar button {{ background: #ff4f86; color: #fff; border: 0; border-radius: 999px; padding: 9px 20px; font-size: 13px; font-weight: 800; cursor: pointer; }}
     a.pill {{ text-decoration: none; color: inherit; }}
+    .upload-card {{ background: #fff; border: 1px dashed #f0b9cd; border-radius: 16px; padding: 16px 18px; margin: 10px 0 20px; }}
+    .upload-card b {{ font-size: 14px; }}
+    .upload-row {{ display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin: 10px 0 8px; }}
+    .upload-row select, .upload-row input {{ border: 1px solid #e7ded9; border-radius: 10px; padding: 8px 10px; font-size: 13px; background: #fff; }}
+    .upload-row button {{ background: #ff4f86; color: #fff; border: 0; border-radius: 999px; padding: 9px 22px; font-size: 13px; font-weight: 800; cursor: pointer; }}
+    .upload-card small {{ color: #8a807d; }}
+    .upload-notice {{ border-radius: 12px; padding: 10px 14px; font-size: 13px; background: #fff4d8; }}
+    .upload-notice--ok {{ background: #e7f5ea; }}
+    .upload-notice--err {{ background: #fde8e8; }}
+    .dist-section {{ margin-bottom: 26px; }}
+    .dist-section h2 small {{ color: #8a807d; font-weight: 600; }}
+    .dist-table {{ width: 100%; border-collapse: collapse; background: #fff; border: 1px solid #e7ded9; border-radius: 16px; overflow: hidden; }}
+    .dist-table th, .dist-table td {{ text-align: left; padding: 10px 14px; border-top: 1px solid #f3ede8; font-size: 13px; }}
+    .dist-table th {{ border-top: 0; background: #faf6f3; font-size: 12px; color: #8a807d; }}
+    .dist-label {{ width: 110px; font-weight: 800; }}
+    .dist-label--unknown {{ color: #b0a6a2; }}
+    .dist-bar-cell {{ width: 46%; }}
+    .dist-bar {{ height: 14px; border-radius: 999px; }}
+    .dist-bar--algo {{ background: #ff4f86; }}
+    .dist-bar--unknown {{ background: #d8d0cc; }}
+    .dist-num {{ width: 110px; color: #4c4441; }}
+    .dist-num--anno {{ color: #166534; font-weight: 800; }}
+    .scarce {{ margin-left: 6px; background: #fde8e8; color: #b91c1c; border-radius: 8px; padding: 2px 7px; font-size: 11px; }}
+    .dist-note {{ color: #8a807d; font-size: 12px; margin: 8px 0 0; }}
     @media (max-width: 760px) {{ .layout {{ flex-direction: column; }} .sidebar {{ width: 100%; height: auto; position: static; display: flex; gap: 8px; align-items: center; }} .tab {{ margin-bottom: 0; }} }}
   </style>
 </head>
@@ -654,6 +789,7 @@ def render_qa_page(content: str, active_tab: str) -> str:
       <div class="logo">onboarding QA</div>
       {tab("results", "实验结果")}
       {tab("annotate", "数据标注")}
+      {tab("dataset", "数据分布")}
     </aside>
     <main>{content}</main>
   </div>
@@ -662,7 +798,15 @@ def render_qa_page(content: str, active_tab: str) -> str:
 
 
 @router.get("/qa/onboarding-attributes", response_class=HTMLResponse)
-def qa_onboarding_attributes(tab: str = "results", task: str | None = None, diff: int = 0, refresh: int = 0) -> str:
+def qa_onboarding_attributes(
+    tab: str = "results",
+    task: str | None = None,
+    diff: int = 0,
+    refresh: int = 0,
+    uploaded: str = "",
+    upload_error: str = "",
+    upload_dup: str = "",
+) -> str:
     entries = _analyze_all(refresh=bool(refresh))
     overlays = _ensure_overlays(entries, refresh=bool(refresh))
     if tab == "annotate":
@@ -670,7 +814,72 @@ def qa_onboarding_attributes(tab: str = "results", task: str | None = None, diff
         if selected is None:
             return render_qa_page(_annotate_list_content(entries), "annotate")
         return render_qa_page(_annotate_detail_content(entries, overlays, selected, bool(diff)), "annotate")
+    if tab == "dataset":
+        return render_qa_page(_dataset_content(entries, uploaded, upload_error, upload_dup), "dataset")
     return render_qa_page(_results_content(entries, overlays), "results")
+
+
+@router.post("/qa/photos/upload")
+async def qa_upload_photo(request: Request) -> RedirectResponse:
+    """同事上传照片扩充数据集：校验 → 去重 → 落盘 → 立即跑算法并入缓存。"""
+    base = "/qa/onboarding-attributes?tab=dataset"
+
+    def back(query: str) -> RedirectResponse:
+        return RedirectResponse(url=f"{base}{query}", status_code=303)
+
+    form = await request.form()
+    kind = str(form.get("kind") or "")
+    upload = form.get("image")
+    if kind not in {"face", "body"}:
+        return back("&upload_error=照片类型不正确")
+    if upload is None or not hasattr(upload, "read"):
+        return back("&upload_error=请选择要上传的照片")
+    raw = await upload.read()
+    if not raw:
+        return back("&upload_error=请选择要上传的照片")
+    if len(raw) > UPLOAD_MAX_BYTES:
+        return back("&upload_error=照片超过 12MB，请压缩后再传")
+    try:
+        image = Image.open(io.BytesIO(raw))
+        image.load()
+    except Exception:
+        return back("&upload_error=无法识别照片内容")
+    image = image.convert("RGB")
+    if min(image.size) < 300:
+        return back("&upload_error=照片分辨率太低，请换更清晰的")
+
+    digest = hashlib.sha256(raw).hexdigest()[:12]
+    filename = f"upload_{kind}_{digest}.jpg"
+    rel = f"{kind}/{filename}"
+    manifest = _load_manifest()
+    if any(item["file"] == rel for item in manifest):
+        return back(f"&upload_dup={filename}")
+
+    if max(image.size) > UPLOAD_MAX_SIDE:
+        ratio = UPLOAD_MAX_SIDE / max(image.size)
+        image = image.resize((round(image.width * ratio), round(image.height * ratio)))
+    target = QA_PHOTO_DIR / rel
+    target.parent.mkdir(parents=True, exist_ok=True)
+    image.save(target, "JPEG", quality=88)
+
+    manifest.append(
+        {
+            "file": rel,
+            "kind": kind,
+            "source_url": "",
+            "author": "同事上传",
+            "query": "手动上传",
+            "alt": getattr(upload, "filename", "") or "",
+            "uploaded_at": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
+        }
+    )
+    _save_manifest(manifest)
+
+    result = analyze_face_photo(image) if kind == "face" else analyze_body_photo(image)
+    cache = _load_cache()
+    cache[rel] = {"mtime": target.stat().st_mtime, "result": result}
+    QA_RESULTS_CACHE.write_text(json.dumps(cache, ensure_ascii=False), encoding="utf-8")
+    return back(f"&uploaded={filename}")
 
 
 @router.post("/qa/annotations/tasks")
