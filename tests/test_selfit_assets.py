@@ -65,6 +65,49 @@ def test_oss_asset_store_dual_write(tmp_path: Path) -> None:
     assert with_cdn.public_url("ses_1/x.png") == "https://cdn.example.com/selfit/selfit/onboarding/ses_1/x.png"
 
 
+class FakeS3Client:
+    def __init__(self) -> None:
+        self.objects: dict[tuple[str, str], bytes] = {}
+        self.content_types: dict[tuple[str, str], str] = {}
+
+    def put_object(self, Bucket: str, Key: str, Body: bytes, ContentType: str) -> None:
+        self.objects[(Bucket, Key)] = Body
+        self.content_types[(Bucket, Key)] = ContentType
+
+
+def test_s3_asset_store_dual_write(tmp_path: Path) -> None:
+    client = FakeS3Client()
+    store = selfit_assets.S3AssetStore(
+        tmp_path / "cache", client, "selfit-assets", prefix="selfit/onboarding", public_base_url="https://cdn.example.com"
+    )
+    store.save("ses_1/asset_face_x.jpg", b"img", "image/jpeg")
+
+    assert (tmp_path / "cache" / "ses_1" / "asset_face_x.jpg").read_bytes() == b"img"
+    assert client.objects[("selfit-assets", "selfit/onboarding/ses_1/asset_face_x.jpg")] == b"img"
+    assert client.content_types[("selfit-assets", "selfit/onboarding/ses_1/asset_face_x.jpg")] == "image/jpeg"
+    assert store.public_url("ses_1/asset_face_x.jpg") == "https://cdn.example.com/selfit/onboarding/ses_1/asset_face_x.jpg"
+
+
+def test_photo_upload_with_s3_backend(monkeypatch, tmp_path: Path) -> None:
+    asset_dir = _use_tmp_assets(monkeypatch, tmp_path)
+    monkeypatch.setattr(selfit_photo, "_inspector", selfit_photo.accept_all_inspector)
+    monkeypatch.setenv("SELFIT_ASSET_STORE", "s3")
+    monkeypatch.setenv("SELFIT_S3_BUCKET", "selfit-assets")
+    monkeypatch.setenv("SELFIT_S3_PREFIX", "selfit/test")
+    client = FakeS3Client()
+    monkeypatch.setattr(selfit_assets, "_s3_client_from_env", lambda: (client, "selfit-assets"))
+
+    http = TestClient(app)
+    session_id = http.post(f"{API}/sessions", json={}).json()["session"]["sessionId"]
+    photo = http.post(f"{API}/sessions/{session_id}/photos/face", files={"image": ("a.jpg", _jpeg_bytes())}).json()["photo"]
+    assert photo["status"] == "accepted"
+
+    cached = list((asset_dir / session_id).glob("asset_face_*"))
+    assert len(cached) == 1
+    expected_key = f"selfit/test/{session_id}/{cached[0].name}"
+    assert client.objects[("selfit-assets", expected_key)] == cached[0].read_bytes()
+
+
 def test_photo_upload_with_oss_backend(monkeypatch, tmp_path: Path) -> None:
     asset_dir = _use_tmp_assets(monkeypatch, tmp_path)
     monkeypatch.setattr(selfit_photo, "_inspector", selfit_photo.accept_all_inspector)
