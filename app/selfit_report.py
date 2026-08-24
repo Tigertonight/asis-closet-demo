@@ -25,7 +25,26 @@ docs/SELFIT_BACKEND_INTEGRATION.md 4.6 / 4.7 节。
 
 from __future__ import annotations
 
+import os
 from typing import Any, Callable
+
+
+def content_url(path: str) -> str:
+    """把内容池相对路径解析为 CDN 完整 URL。
+
+    报告 builder 中的图片字段（makeup/hair/outfits 的 imageUrl 等）建议返回
+    内容池相对路径（如 "report/v1/makeup-01.webp"），经本函数转换：
+    配置了 SELFIT_CONTENT_CDN_BASE_URL 时返回 CDN 完整地址，前端直连 CDN；
+    未配置时原样返回（兼容本站静态路径或完整 URL）。
+    """
+
+    text = str(path or "")
+    if not text or text.startswith(("http://", "https://", "/")):
+        return text
+    base = os.getenv("SELFIT_CONTENT_CDN_BASE_URL", "").rstrip("/")
+    if not base:
+        return text
+    return f"{base}/{text.lstrip('/')}"
 
 ReportBuilder = Callable[[dict[str, Any]], dict[str, Any]]
 
