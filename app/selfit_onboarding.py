@@ -30,7 +30,7 @@ SCHEMA_VERSION = "selfit-onboarding-v1"
 PHOTO_MAX_BYTES = 12 * 1024 * 1024
 PHOTO_SUPPORTED_FORMATS = {"JPEG": ".jpg", "PNG": ".png", "WEBP": ".webp"}
 
-SKIN_OPTIONS = {"白皙色", "自然白", "自然色", "健康色", "小麦色"}
+SKIN_OPTIONS = {"冷白肤", "暖白肤", "中性自然肤", "暖黄肤", "橄榄肤", "小麦色"}
 FACE_SHAPE_OPTIONS = {"椭圆脸", "圆脸", "方脸", "心形脸", "菱形脸"}
 BODY_SHAPE_OPTIONS = {"梨型", "倒三角型", "沙漏型", "矩型", "苹果型"}
 MANUAL_FIELDS = {"skin": SKIN_OPTIONS, "faceShape": FACE_SHAPE_OPTIONS, "bodyShape": BODY_SHAPE_OPTIONS}

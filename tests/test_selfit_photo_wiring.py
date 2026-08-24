@@ -58,7 +58,7 @@ def test_inspector_accepts_clear_face_with_attributes() -> None:
     inspection = selfit_photo.attribute_inspector(image, "face")
     assert inspection.accepted is True
     assert inspection.issues == []
-    assert inspection.attributes["skin_tone"]["label"] in {"白皙色", "自然白", "自然色", "健康色", "小麦色"}
+    assert inspection.attributes["skin_tone"]["label"] in {"冷白肤", "暖白肤", "中性自然肤", "暖黄肤", "橄榄肤", "小麦色"}
     assert inspection.attributes["face_shape"]["label"] in {"椭圆脸", "圆脸", "方脸", "心形脸", "菱形脸"}
 
 

@@ -64,13 +64,29 @@ _MP_POSE_LANDMARKER: Any | None = None
 _MP_SELFIE_SEGMENTER: Any | None = None
 
 # ---------------------------------------------------------------------------
-# 肤色 5 档（明度阶）
-# 口径：自然色居中、左右各两档；最深的蜜糖色已并入小麦色
-# （深色段过细对用户不友好，且深肤色用户不愿意选很黑的色号）。
-# TODO(calibration): 阈值为文献先验初始值，需用内部标注集回归标定。
-SKIN_TONE_LABELS = ["白皙色", "自然白", "自然色", "健康色", "小麦色"]
-# L*(D65/2°) 下界：L* >= 下界[i] → SKIN_TONE_LABELS[i]，否则落入下一档。
-SKIN_TONE_L_STAR_BOUNDS = [68.0, 65.0, 61.5, 57.5]
+# 肤色 6 类（明度 × 底调）
+# 口径与 selfit onboarding 定版一致（见用户特征×穿搭妆发标签映射方案「统一口径」）：
+# 前端 6 选枚举即本列表；后台拆成 skin_lightness（白皙/自然中等/深肤）与
+# skin_undertone（冷调/暖调/中性/橄榄调/未判断）两个派生字段。
+# TODO(calibration): 全部阈值为文献先验初始值，需用内部标注集回归标定。
+SKIN_TONE_LABELS = ["冷白肤", "暖白肤", "中性自然肤", "暖黄肤", "橄榄肤", "小麦色"]
+# 明度档阈值（L* D65/2°）
+SKIN_LIGHTNESS_FAIR_L = 66.0    # L* >= 66 → 白皙
+SKIN_LIGHTNESS_DEEP_L = 52.0    # L* < 52 → 深肤；介于两者之间 → 自然中等
+# 底调阈值（Lab a*/b*；底调只在白皙 / 自然中等档内细分，深肤不强判）
+SKIN_UNDERTONE_COLD_B_MAX = 13.0   # 白皙档内 b* ≤ 13 偏冷 → 冷白肤，否则暖白肤
+SKIN_UNDERTONE_WARM_B_MIN = 18.0   # 自然中等档内 b* ≥ 18 偏暖 → 暖黄肤
+SKIN_UNDERTONE_OLIVE_A_MAX = 8.0   # a* ≤ 8 且 b* ≤ 14 偏青灰 → 橄榄肤
+SKIN_UNDERTONE_OLIVE_B_MAX = 14.0
+# (skin_lightness, skin_undertone) → 前端肤色选项
+_SKIN_TONE_BY_DERIVED = {
+    ("白皙", "冷调"): "冷白肤",
+    ("白皙", "暖调"): "暖白肤",
+    ("自然中等", "中性"): "中性自然肤",
+    ("自然中等", "暖调"): "暖黄肤",
+    ("自然中等", "橄榄调"): "橄榄肤",
+    ("深肤", "未判断"): "小麦色",
+}
 
 # 脸部光照门禁（HSV V 通道 0-100 口径）
 FACE_TOO_DARK_V = 45.0
@@ -322,7 +338,7 @@ def _skin_tone_attribute(rgb: np.ndarray, face: dict[str, Any], points: dict[int
     lab = _srgb_to_lab(median_rgb)
     l_star = float(lab[0])
     ita = math.degrees(math.atan2(l_star - 50.0, max(float(lab[2]), 1e-6)))
-    label, boundary_gap = _classify_skin_tone(l_star)
+    label, boundary_gap, skin_lightness, skin_undertone = _classify_skin_tone(l_star, float(lab[1]), float(lab[2]))
 
     issues: list[dict[str, str]] = []
     status = "pass"
@@ -337,6 +353,8 @@ def _skin_tone_attribute(rgb: np.ndarray, face: dict[str, Any], points: dict[int
         "lab_d65": [round(float(v), 2) for v in lab.tolist()],
         "l_star": round(l_star, 2),
         "ita_deg": round(ita, 1),
+        "skin_lightness": skin_lightness,
+        "skin_undertone": skin_undertone,
         "boundary_gap": round(boundary_gap, 2),
         "face_mean_value": round(mean_v, 1),
         "color_cast": cast,
@@ -345,13 +363,49 @@ def _skin_tone_attribute(rgb: np.ndarray, face: dict[str, Any], points: dict[int
     return _attribute(status, round(_clamp(confidence, 0.4, 0.86), 2), label, issues, evidence)
 
 
-def _classify_skin_tone(l_star: float) -> tuple[str, float]:
-    """L* → 5 档标签 + 到最近分界的距离（距离越大置信越高）。"""
-    for index, bound in enumerate(SKIN_TONE_L_STAR_BOUNDS):
-        if l_star >= bound:
-            gap = l_star - bound if index == 0 else min(l_star - bound, SKIN_TONE_L_STAR_BOUNDS[index - 1] - l_star)
-            return SKIN_TONE_LABELS[index], float(gap)
-    return SKIN_TONE_LABELS[-1], float(SKIN_TONE_L_STAR_BOUNDS[-1] - l_star)
+def _classify_skin_tone(l_star: float, a_star: float, b_star: float) -> tuple[str, float, str, str]:
+    """L* 明度分档 × a*/b* 底调细分 → 6 类肤色。
+
+    返回 (label, boundary_gap, skin_lightness, skin_undertone)：
+    - skin_lightness：白皙 / 自然中等 / 深肤
+    - skin_undertone：冷调 / 暖调 / 中性 / 橄榄调 / 未判断（深肤不强判）
+    - boundary_gap：到最近决策边界的归一化距离（越大越稳，供置信度）
+    """
+    # 明度档
+    if l_star >= SKIN_LIGHTNESS_FAIR_L:
+        lightness = "白皙"
+    elif l_star >= SKIN_LIGHTNESS_DEEP_L:
+        lightness = "自然中等"
+    else:
+        lightness = "深肤"
+
+    # 底调（仅白皙 / 自然中等细分）
+    if lightness == "白皙":
+        undertone = "冷调" if b_star <= SKIN_UNDERTONE_COLD_B_MAX else "暖调"
+    elif lightness == "自然中等":
+        if a_star <= SKIN_UNDERTONE_OLIVE_A_MAX and b_star <= SKIN_UNDERTONE_OLIVE_B_MAX:
+            undertone = "橄榄调"
+        elif b_star >= SKIN_UNDERTONE_WARM_B_MIN:
+            undertone = "暖调"
+        else:
+            undertone = "中性"
+    else:
+        undertone = "未判断"
+
+    label = _SKIN_TONE_BY_DERIVED[(lightness, undertone)]
+
+    # 到最近决策边界的距离（跨档用明度界，档内用底调界）
+    gaps: list[float] = []
+    if lightness == "白皙":
+        gaps.append(l_star - SKIN_LIGHTNESS_FAIR_L)
+        gaps.append(abs(b_star - SKIN_UNDERTONE_COLD_B_MAX))
+    elif lightness == "自然中等":
+        gaps.append(min(l_star - SKIN_LIGHTNESS_DEEP_L, SKIN_LIGHTNESS_FAIR_L - l_star))
+        gaps.append(abs(b_star - SKIN_UNDERTONE_WARM_B_MIN))
+    else:  # 深肤
+        gaps.append(SKIN_LIGHTNESS_DEEP_L - l_star)
+    boundary_gap = max(0.0, min(gaps)) if gaps else 0.0
+    return label, float(boundary_gap), lightness, undertone
 
 
 def _srgb_to_lab(rgb: np.ndarray) -> np.ndarray:

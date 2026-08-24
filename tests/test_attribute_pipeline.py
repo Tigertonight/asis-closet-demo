@@ -38,31 +38,53 @@ def _fake_frontal_pose(img_w: int = 1000, img_h: int = 2000) -> list[_FakePoseLa
 
 
 # ---------------------------------------------------------------------------
-# 肤色 6 档
+# 肤色 6 类（明度 × 底调）
 # ---------------------------------------------------------------------------
 
 @pytest.mark.parametrize(
-    "l_star,expected",
+    "l_star,a_star,b_star,expected,exp_lightness,exp_undertone",
     [
-        (72.0, "白皙色"),
-        (68.0, "白皙色"),
-        (66.5, "自然白"),
-        (63.0, "自然色"),
-        (59.0, "健康色"),
-        (55.0, "小麦色"),
-        (50.0, "小麦色"),
+        # 白皙档：底调分冷白 / 暖白
+        (72.0, 5.0, 10.0, "冷白肤", "白皙", "冷调"),
+        (70.0, 10.0, 25.0, "暖白肤", "白皙", "暖调"),
+        (66.5, 8.0, 13.0, "冷白肤", "白皙", "冷调"),   # 白皙下限 + 冷/暖边界
+        (66.5, 8.0, 14.0, "暖白肤", "白皙", "暖调"),
+        # 自然中等档：底调分中性 / 暖黄 / 橄榄
+        (64.0, 15.0, -1.0, "中性自然肤", "自然中等", "中性"),
+        (63.0, 14.0, 13.0, "中性自然肤", "自然中等", "中性"),
+        (58.0, 20.0, 23.0, "暖黄肤", "自然中等", "暖调"),
+        (56.0, 16.0, 26.0, "暖黄肤", "自然中等", "暖调"),
+        (60.0, 6.0, 10.0, "橄榄肤", "自然中等", "橄榄调"),  # a*低+b*低 → 偏青灰
+        # 深肤档：不强判底调
+        (50.0, 13.0, 12.0, "小麦色", "深肤", "未判断"),
+        (32.0, 13.0, 12.0, "小麦色", "深肤", "未判断"),
     ],
 )
-def test_classify_skin_tone_labels(l_star: float, expected: str) -> None:
-    label, gap = ap._classify_skin_tone(l_star)
+def test_classify_skin_tone_labels(
+    l_star: float, a_star: float, b_star: float, expected: str, exp_lightness: str, exp_undertone: str
+) -> None:
+    label, gap, lightness, undertone = ap._classify_skin_tone(l_star, a_star, b_star)
     assert label == expected
+    assert lightness == exp_lightness
+    assert undertone == exp_undertone
     assert gap >= 0
 
 
-def test_classify_skin_tone_boundary_gap_is_symmetric() -> None:
-    _, below_gap = ap._classify_skin_tone(65.0 - 0.5)
-    _, above_gap = ap._classify_skin_tone(65.0 + 0.5)
-    assert below_gap == pytest.approx(above_gap, abs=1e-6)
+def test_classify_skin_tone_labels_cover_six() -> None:
+    """6 类枚举都被分类函数覆盖到（无死枚举）。"""
+    reachable = set()
+    for l_star in (70.0, 60.0, 45.0):
+        for a_star in (5.0, 15.0):
+            for b_star in (-2.0, 11.0, 16.0, 25.0):
+                reachable.add(ap._classify_skin_tone(l_star, a_star, b_star)[0])
+    assert reachable == set(ap.SKIN_TONE_LABELS)
+
+
+def test_classify_skin_tone_boundary_gap_nonnegative() -> None:
+    """边界两侧 gap 均非负（gap 语义为到最近决策边界距离）。"""
+    for l_star in (52.0 - 0.5, 52.0 + 0.5, 66.0 - 0.5, 66.0 + 0.5):
+        _, gap, _, _ = ap._classify_skin_tone(l_star, 12.0, 15.0)
+        assert gap >= 0
 
 
 # ---------------------------------------------------------------------------

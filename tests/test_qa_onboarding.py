@@ -18,7 +18,7 @@ from app.main import app
 def _fake_entry(kind: str = "face") -> dict:
     attribute = {
         "status": "pass",
-        "label": "自然色" if kind == "face" else "梨型",
+        "label": "中性自然肤" if kind == "face" else "梨型",
         "confidence": 0.72,
         "issues": [],
         "evidence": {"l_star": 63.2, "ita_deg": 44.1} if kind == "face" else {"measurements": {"shoulder_width": 200.0, "hip_width": 240.0, "waist_width": 180.0}, "classification": {"ratios": {"hip_over_shoulder": 1.2, "waist_over_hip": 0.75}}},
@@ -37,7 +37,7 @@ def test_qa_page_renders_entries(monkeypatch: pytest.MonkeyPatch) -> None:
     assert response.status_code == 200
     text = response.text
     assert "onboarding 属性识别 QA" in text
-    assert "自然色" in text and "椭圆脸" in text and "梨型" in text
+    assert "中性自然肤" in text and "椭圆脸" in text and "梨型" in text
     assert "photo.color_cast" in text
     assert "重新分析" in text
 
@@ -99,7 +99,7 @@ def test_batch_save_and_clear_annotations(monkeypatch: pytest.MonkeyPatch, tmp_p
 
     ok = client.post(
         f"/qa/annotations/{task_id}/batch",
-        json={"annotations": {"face/face_01.jpg": {"skin_tone": "自然色", "face_shape": "椭圆脸"}, "body/body_01.jpg": {"body_shape": "梨型"}}},
+        json={"annotations": {"face/face_01.jpg": {"skin_tone": "冷白肤", "face_shape": "椭圆脸"}, "body/body_01.jpg": {"body_shape": "梨型"}}},
     )
     assert ok.status_code == 200 and ok.json()["ok"] is True
     stored = json.loads((tmp_path / "annotations.json").read_text(encoding="utf-8"))
@@ -107,16 +107,16 @@ def test_batch_save_and_clear_annotations(monkeypatch: pytest.MonkeyPatch, tmp_p
 
     bad_value = client.post(f"/qa/annotations/{task_id}/batch", json={"annotations": {"face/face_01.jpg": {"skin_tone": "蜜糖色"}}})
     assert bad_value.status_code == 422
-    bad_attr = client.post(f"/qa/annotations/{task_id}/batch", json={"annotations": {"body/body_01.jpg": {"skin_tone": "自然色"}}})
+    bad_attr = client.post(f"/qa/annotations/{task_id}/batch", json={"annotations": {"body/body_01.jpg": {"skin_tone": "冷白肤"}}})
     assert bad_attr.status_code == 422
-    missing_file = client.post(f"/qa/annotations/{task_id}/batch", json={"annotations": {"face/none.jpg": {"skin_tone": "自然色"}}})
+    missing_file = client.post(f"/qa/annotations/{task_id}/batch", json={"annotations": {"face/none.jpg": {"skin_tone": "冷白肤"}}})
     assert missing_file.status_code == 404
 
     # 整体替换语义：再次提交只含一条，其余视为清除
-    cleared = client.post(f"/qa/annotations/{task_id}/batch", json={"annotations": {"face/face_01.jpg": {"skin_tone": "自然白"}}})
+    cleared = client.post(f"/qa/annotations/{task_id}/batch", json={"annotations": {"face/face_01.jpg": {"skin_tone": "暖白肤"}}})
     assert cleared.status_code == 200
     stored = json.loads((tmp_path / "annotations.json").read_text(encoding="utf-8"))
-    assert stored["tasks"][0]["annotations"] == {"face/face_01.jpg": {"skin_tone": "自然白"}}
+    assert stored["tasks"][0]["annotations"] == {"face/face_01.jpg": {"skin_tone": "暖白肤"}}
 
 
 def test_diff_filter_shows_only_mismatch(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
@@ -124,10 +124,10 @@ def test_diff_filter_shows_only_mismatch(monkeypatch: pytest.MonkeyPatch, tmp_pa
     client = TestClient(app)
     task_id = _create_task(client)
 
-    # face_01 算法识别为 自然色/椭圆脸：标对一个、标错一个；body_01 标对
+    # face_01 算法识别为 中性自然肤/椭圆脸：标对一个、标错一个；body_01 标对
     client.post(
         f"/qa/annotations/{task_id}/batch",
-        json={"annotations": {"face/face_01.jpg": {"skin_tone": "自然色", "face_shape": "方脸"}, "body/body_01.jpg": {"body_shape": "梨型"}}},
+        json={"annotations": {"face/face_01.jpg": {"skin_tone": "中性自然肤", "face_shape": "方脸"}, "body/body_01.jpg": {"body_shape": "梨型"}}},
     )
 
     all_page = client.get(f"/qa/onboarding-attributes?tab=annotate&task={task_id}")
@@ -155,7 +155,7 @@ def test_dataset_tab_renders_distribution(monkeypatch: pytest.MonkeyPatch) -> No
     assert "肤色" in text and "脸型" in text and "身型" in text
     assert "最紧缺" in text
     assert "/qa/photos/upload" in text
-    assert "自然色" in text and "梨型" in text
+    assert "中性自然肤" in text and "梨型" in text
 
 
 def test_upload_photo_adds_to_manifest(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:

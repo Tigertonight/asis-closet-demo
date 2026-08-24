@@ -64,7 +64,7 @@ def test_patch_flow_bumps_revision_monotonically(monkeypatch, tmp_path: Path) ->
 
     profile = client.patch(
         f"{API}/sessions/{session_id}/profile",
-        json={"manual": {"skin": "自然白", "faceShape": "椭圆脸", "bodyShape": "梨型"}},
+        json={"manual": {"skin": "暖白肤", "faceShape": "椭圆脸", "bodyShape": "梨型"}},
     )
     assert profile.status_code == 200
     assert profile.json()["session"]["revision"] == 2
