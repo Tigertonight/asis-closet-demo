@@ -5,19 +5,25 @@ import io
 import json
 import os
 import secrets
+from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any
 
-from fastapi import APIRouter, Depends, Request
-from fastapi.responses import JSONResponse
+from fastapi import APIRouter, Depends, Request, Response
+from fastapi.responses import FileResponse, JSONResponse, RedirectResponse
 from PIL import Image, UnidentifiedImageError
+from starlette.concurrency import run_in_threadpool
 
-from app import selfit_photo
+from app import selfit_assets, selfit_onboarding_store as _store_module
+from app import selfit_photo, selfit_report, selfit_share
 from app.auth import get_optional_user
 from app.ops import env_int
 from app.storage import ROOT_DIR
 
+# 注意：SELFIT_ONBOARDING_ASSET_DIR 下的用户原图与分享图是初始数据资产，需要精心保留。
+# 会话过期只清理索引记录（sessions.json / 任务 / 报告），资产文件一律不删。
+# 后续迁移对象存储时以该目录为同步源，禁止加入任何定期清理任务。
 # 接入真实照片检测与属性识别算法；联调时可设 SELFIT_PHOTO_INSPECTOR=accept_all 退回全放行。
 if os.getenv("SELFIT_PHOTO_INSPECTOR", "attribute") != "accept_all":
     selfit_photo.register_photo_inspector(selfit_photo.attribute_inspector)
@@ -29,6 +35,16 @@ SELFIT_ONBOARDING_ASSET_DIR = SELFIT_ONBOARDING_DIR / "assets"
 SCHEMA_VERSION = "selfit-onboarding-v1"
 PHOTO_MAX_BYTES = 12 * 1024 * 1024
 PHOTO_SUPPORTED_FORMATS = {"JPEG": ".jpg", "PNG": ".png", "WEBP": ".webp"}
+
+# 报告任务：POST 创建后由后台线程真实执行 builder 并写入状态迁移；
+# GET 只读取，处理中的 stage/progress 为响应层估算（不落库，避免与 worker 写竞争）。
+REPORT_POLL_AFTER_MS = 800
+REPORT_ESTIMATED_STAGES = (
+    (0.0, "profile", 25),
+    (1.0, "inspiration", 50),
+    (2.0, "composition", 75),
+    (3.0, "finalizing", 95),
+)
 
 SKIN_OPTIONS = {"冷白肤", "暖白肤", "中性自然肤", "暖黄肤", "橄榄肤", "小麦色"}
 FACE_SHAPE_OPTIONS = {"椭圆脸", "圆脸", "方脸", "心形脸", "菱形脸"}
@@ -91,22 +107,38 @@ def _error_response(
     )
 
 
+_STORE_KEYS = tuple(_store_module.COLLECTIONS)
+
+
+def _store_backend() -> str:
+    return os.getenv("SELFIT_ONBOARDING_STORE_BACKEND", "json").strip().lower()
+
+
+def _sqlite_store() -> _store_module.SqliteOnboardingStore:
+    return _store_module.SqliteOnboardingStore(SELFIT_ONBOARDING_DIR / "sessions.sqlite3")
+
+
 def _load_store() -> dict[str, Any]:
+    if _store_backend() == "sqlite":
+        return _sqlite_store().load()
     if not SELFIT_ONBOARDING_STORE_PATH.exists():
-        return {"version": 1, "sessions": [], "idempotency": []}
+        return _store_module.empty_store()
     try:
         data = json.loads(SELFIT_ONBOARDING_STORE_PATH.read_text(encoding="utf-8"))
         if isinstance(data, dict):
             data.setdefault("version", 1)
-            data.setdefault("sessions", [])
-            data.setdefault("idempotency", [])
+            for key in _STORE_KEYS:
+                data.setdefault(key, [])
             return data
     except json.JSONDecodeError:
         pass
-    return {"version": 1, "sessions": [], "idempotency": []}
+    return _store_module.empty_store()
 
 
 def _write_store(data: dict[str, Any]) -> None:
+    if _store_backend() == "sqlite":
+        _sqlite_store().save(data)
+        return
     SELFIT_ONBOARDING_DIR.mkdir(parents=True, exist_ok=True)
     tmp_path = SELFIT_ONBOARDING_STORE_PATH.with_name(f"{SELFIT_ONBOARDING_STORE_PATH.name}.{secrets.token_urlsafe(8)}.tmp")
     tmp_path.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
@@ -125,6 +157,19 @@ def _prune_store(data: dict[str, Any]) -> dict[str, Any]:
     horizon = _iso(now - timedelta(hours=max(_session_ttl_hours(), 1)))
     data["idempotency"] = [
         entry for entry in data["idempotency"] if str(entry.get("created_at") or "") >= horizon
+    ]
+    live_session_ids = {record.get("session_id") for record in sessions}
+    data["report_jobs"] = [
+        job for job in data["report_jobs"] if job.get("session_id") in live_session_ids
+    ]
+    data["reports"] = [
+        report for report in data["reports"] if report.get("session_id") in live_session_ids
+    ]
+    data["outfit_requests"] = [
+        item for item in data["outfit_requests"] if item.get("session_id") in live_session_ids
+    ]
+    data["share_assets"] = [
+        item for item in data["share_assets"] if item.get("session_id") in live_session_ids
     ]
     return data
 
@@ -394,6 +439,30 @@ async def create_session(
     return JSONResponse(status_code=status_code, content=body)
 
 
+def _session_linkage(data: dict[str, Any], session_id: str) -> dict[str, Any]:
+    """会话恢复关联：最新报告任务与已生成报告，供前端刷新/重入后续接。
+
+    契约允许在 session 响应上补充字段，前端不依赖时可安全忽略。
+    """
+
+    linkage: dict[str, Any] = {}
+    jobs = [job for job in data["report_jobs"] if job.get("session_id") == session_id]
+    latest_job = max(jobs, key=lambda job: str(job.get("created_at") or ""), default=None)
+    if latest_job is not None:
+        _resubmit_stale_queued_job(latest_job)
+        if _expire_processing_job(data, latest_job):
+            _write_store(data)
+        linkage["latestReportJob"] = _public_job(latest_job)
+    reports = [item for item in data["reports"] if item.get("session_id") == session_id]
+    latest_report = max(reports, key=lambda item: str(item.get("created_at") or ""), default=None)
+    if latest_report is not None:
+        linkage["latestReport"] = {
+            "reportId": latest_report["report_id"],
+            "createdAt": latest_report.get("created_at"),
+        }
+    return linkage
+
+
 @router.get("/sessions/{session_id}")
 async def get_session(
     session_id: str,
@@ -404,7 +473,47 @@ async def get_session(
     if isinstance(record, JSONResponse):
         return record
     status_code, body = _session_response(record)
+    body["session"].update(_session_linkage(data, session_id))
     return JSONResponse(status_code=status_code, content=body)
+
+
+@router.delete("/sessions/{session_id}")
+async def delete_session(
+    session_id: str,
+    user: dict[str, Any] | None = Depends(get_optional_user),
+) -> JSONResponse:
+    """用户主动删除：级联清除会话、任务、报告、穿搭请求与分享素材记录，并删除资产文件。
+
+    这是资产"只增不删"策略的唯一例外（隐私契约要求的用户删除机制）。
+    """
+
+    data = _load_store()
+    record = _load_active_session(data, session_id, user)
+    if isinstance(record, JSONResponse):
+        return record
+
+    store = _asset_store()
+    photos = record.get("photos") or {}
+    for kind, photo in photos.items():
+        asset_id = (photo or {}).get("asset_id")
+        image_format = (photo or {}).get("format")
+        suffix = PHOTO_SUPPORTED_FORMATS.get(str(image_format or ""), "")
+        if asset_id and suffix:
+            store.delete(f"{session_id}/{asset_id}{suffix}")
+    for item in data["share_assets"]:
+        if item.get("session_id") == session_id and item.get("filename"):
+            store.delete(f"shared/{item['filename']}")
+
+    data["sessions"] = [item for item in data["sessions"] if item.get("session_id") != session_id]
+    data["report_jobs"] = [item for item in data["report_jobs"] if item.get("session_id") != session_id]
+    data["reports"] = [item for item in data["reports"] if item.get("session_id") != session_id]
+    data["outfit_requests"] = [item for item in data["outfit_requests"] if item.get("session_id") != session_id]
+    data["share_assets"] = [item for item in data["share_assets"] if item.get("session_id") != session_id]
+    _write_store(data)
+    return JSONResponse(
+        status_code=200,
+        content={"requestId": _request_id(), "session": {"sessionId": session_id, "status": "deleted"}},
+    )
 
 
 async def _patch_session(
@@ -525,14 +634,15 @@ def _photo_response(
     }
 
 
+def _asset_store() -> selfit_assets.AssetStore:
+    return selfit_assets.asset_store_from_env(SELFIT_ONBOARDING_ASSET_DIR)
+
+
 def _save_photo_asset(session_id: str, kind: str, raw: bytes, image_format: str) -> str:
     asset_id = f"asset_{kind}_{hashlib.sha256(raw).hexdigest()[:12]}"
     suffix = PHOTO_SUPPORTED_FORMATS[image_format]
-    target_dir = SELFIT_ONBOARDING_ASSET_DIR / session_id
-    target_dir.mkdir(parents=True, exist_ok=True)
-    tmp_path = target_dir / f"{asset_id}{suffix}.{secrets.token_urlsafe(4)}.tmp"
-    tmp_path.write_bytes(raw)
-    tmp_path.replace(target_dir / f"{asset_id}{suffix}")
+    content_type = {"JPEG": "image/jpeg", "PNG": "image/png", "WEBP": "image/webp"}[image_format]
+    _asset_store().save(f"{session_id}/{asset_id}{suffix}", raw, content_type)
     return asset_id
 
 
@@ -581,7 +691,8 @@ async def upload_session_photo(
     if pil_image.format not in PHOTO_SUPPORTED_FORMATS:
         return _error_response(415, "photo.unsupported_type", "仅支持 JPG、PNG、WebP 格式的照片。")
 
-    inspection = selfit_photo.inspect_photo(pil_image.convert("RGB"), kind)
+    # 照片检测为 CPU 密集的同步 CV 计算，丢线程池执行，避免阻塞事件循环。
+    inspection = await run_in_threadpool(selfit_photo.inspect_photo, pil_image.convert("RGB"), kind)
     issues = selfit_photo.sanitize_issues(list(inspection.issues))
     accepted = bool(inspection.accepted) and not issues
 
@@ -629,3 +740,406 @@ async def upload_session_photo(
     _idempotency_store(data, scope, idempotency_key, 200, body)
     _write_store(data)
     return JSONResponse(status_code=200, content=body)
+
+
+def _find_report_job(data: dict[str, Any], job_id: str) -> dict[str, Any] | None:
+    return next(
+        (job for job in data["report_jobs"] if job.get("job_id") == job_id),
+        None,
+    )
+
+
+def _find_report(data: dict[str, Any], report_id: str) -> dict[str, Any] | None:
+    return next(
+        (report for report in data["reports"] if report.get("report_id") == report_id),
+        None,
+    )
+
+
+_REPORT_EXECUTOR = ThreadPoolExecutor(
+    max_workers=env_int("SELFIT_REPORT_JOB_WORKERS", 2),
+    thread_name_prefix="selfit-report",
+)
+
+_REPORT_JOB_FAILED_ERROR = {
+    "code": "report.generation_failed",
+    "message": "报告生成失败，请返回问卷页重试。",
+    "retryable": True,
+    "details": {},
+}
+
+
+def _estimated_stage_progress(elapsed_seconds: float) -> tuple[str, int]:
+    stage, progress = REPORT_ESTIMATED_STAGES[0][1], REPORT_ESTIMATED_STAGES[0][2]
+    for threshold, candidate_stage, candidate_progress in REPORT_ESTIMATED_STAGES:
+        if elapsed_seconds >= threshold:
+            stage, progress = candidate_stage, candidate_progress
+    return stage, progress
+
+
+def _public_job(job: dict[str, Any], report: dict[str, Any] | None = None) -> dict[str, Any]:
+    payload: dict[str, Any] = {
+        "jobId": job["job_id"],
+        "status": job["status"],
+        "progress": int(job.get("progress") or 0),
+        "pollAfterMs": REPORT_POLL_AFTER_MS,
+    }
+    if job.get("stage"):
+        payload["stage"] = job["stage"]
+    if job["status"] == "processing":
+        # 处理中的进度为估算投影：builder 真实耗时不可预知，完成只由 worker 写入。
+        started = _parse_iso(job.get("started_at")) or _parse_iso(job.get("created_at"))
+        elapsed = (_now() - started).total_seconds() if started else 0.0
+        stage, progress = _estimated_stage_progress(elapsed)
+        payload["stage"] = stage
+        payload["progress"] = max(payload["progress"], progress)
+    if job["status"] == "completed" and job.get("report_id"):
+        payload["reportId"] = job["report_id"]
+        if report is not None:
+            payload["report"] = report.get("data") or {}
+    if job["status"] == "failed" and job.get("error"):
+        payload["error"] = job["error"]
+    return payload
+
+
+def _run_report_job(job_id: str) -> None:
+    """后台 worker：真实执行报告生成算法并落库状态迁移。"""
+
+    data = _prune_store(_load_store())
+    job = _find_report_job(data, job_id)
+    if job is None or job.get("status") != "queued":
+        return
+    job["status"] = "processing"
+    job["stage"] = "profile"
+    job["progress"] = 10
+    job["started_at"] = _iso(_now())
+    _write_store(data)
+
+    session = _find_session(data, str(job.get("session_id") or ""))
+    try:
+        if session is None:
+            raise ValueError("session missing")
+        report_data = selfit_report.build_report(session)
+    except Exception:
+        data = _load_store()
+        job = _find_report_job(data, job_id)
+        if job is not None and job.get("status") == "processing":
+            job["status"] = "failed"
+            job["error"] = dict(_REPORT_JOB_FAILED_ERROR)
+            _write_store(data)
+        return
+
+    data = _load_store()
+    job = _find_report_job(data, job_id)
+    if job is None or job.get("status") != "processing":
+        return
+    report = {
+        "report_id": "rep_" + secrets.token_urlsafe(12),
+        "session_id": session["session_id"],
+        "user_id": session.get("user_id"),
+        "created_at": _iso(_now()),
+        "data": report_data,
+    }
+    data["reports"].append(report)
+    job["status"] = "completed"
+    job["progress"] = 100
+    job["stage"] = "finalizing"
+    job["report_id"] = report["report_id"]
+    _write_store(data)
+
+
+def _resubmit_stale_queued_job(job: dict[str, Any]) -> None:
+    """服务重启后 queued 任务的兜底重投（worker 已随进程消失）。"""
+
+    if job.get("status") != "queued":
+        return
+    created_at = _parse_iso(job.get("created_at")) or _now()
+    if (_now() - created_at).total_seconds() < 30:
+        return
+    _REPORT_EXECUTOR.submit(_run_report_job, str(job["job_id"]))
+
+
+def _expire_processing_job(data: dict[str, Any], job: dict[str, Any]) -> bool:
+    """processing 超时熔断（对齐前端 120s 总等待上限）；返回是否有落盘。"""
+
+    if job.get("status") != "processing":
+        return False
+    started = _parse_iso(job.get("started_at")) or _parse_iso(job.get("created_at")) or _now()
+    if (_now() - started).total_seconds() <= env_int("SELFIT_REPORT_JOB_TIMEOUT_SECONDS", 110):
+        return False
+    job["status"] = "failed"
+    job["error"] = dict(_REPORT_JOB_FAILED_ERROR)
+    return True
+
+
+@router.post("/sessions/{session_id}/report-jobs", status_code=202)
+async def create_report_job(
+    session_id: str,
+    request: Request,
+    user: dict[str, Any] | None = Depends(get_optional_user),
+) -> JSONResponse:
+    data = _prune_store(_load_store())
+    scope = _idempotency_scope(request, user)
+    idempotency_key = request.headers.get("x-idempotency-key")
+    replay = _idempotency_replay(data, scope, idempotency_key)
+    if replay is not None:
+        status_code, body = replay
+        return JSONResponse(status_code=status_code, content=body)
+
+    record = _load_active_session(data, session_id, user)
+    if isinstance(record, JSONResponse):
+        return record
+
+    job = {
+        "job_id": "job_" + secrets.token_urlsafe(12),
+        "session_id": record["session_id"],
+        "user_id": record.get("user_id"),
+        "status": "queued",
+        "progress": 0,
+        "stage": None,
+        "report_id": None,
+        "error": None,
+        "created_at": _iso(_now()),
+    }
+    data["report_jobs"].append(job)
+    status_code, body = 202, {"requestId": _request_id(), "job": _public_job(job)}
+    _idempotency_store(data, scope, idempotency_key, status_code, body)
+    _write_store(data)
+    _REPORT_EXECUTOR.submit(_run_report_job, job["job_id"])
+    return JSONResponse(status_code=status_code, content=body)
+
+
+@router.get("/report-jobs/{job_id}")
+async def get_report_job(
+    job_id: str,
+    user: dict[str, Any] | None = Depends(get_optional_user),
+) -> JSONResponse:
+    data = _load_store()
+    job = _find_report_job(data, job_id)
+    if job is not None and not _session_visible_to(job, user):
+        job = None
+    if job is None:
+        return _error_response(404, "report.job_not_found", "没有找到报告任务。")
+
+    _resubmit_stale_queued_job(job)
+    if _expire_processing_job(data, job):
+        _write_store(data)
+
+    report = _find_report(data, str(job.get("report_id") or "")) if job.get("report_id") else None
+    return JSONResponse(
+        status_code=200,
+        content={"requestId": _request_id(), "job": _public_job(job, report)},
+    )
+
+
+@router.get("/reports/{report_id}")
+async def get_report(
+    report_id: str,
+    user: dict[str, Any] | None = Depends(get_optional_user),
+) -> JSONResponse:
+    data = _load_store()
+    report = _find_report(data, report_id)
+    if report is not None and not _session_visible_to(report, user):
+        report = None
+    if report is None:
+        return _error_response(404, "report.not_found", "没有找到这份报告。")
+    return JSONResponse(
+        status_code=200,
+        content={"requestId": _request_id(), "report": report.get("data") or {}},
+    )
+
+
+def _load_visible_report(
+    data: dict[str, Any], report_id: str, user: dict[str, Any] | None
+) -> dict[str, Any] | JSONResponse:
+    report = _find_report(data, report_id)
+    if report is None or not _session_visible_to(report, user):
+        return _error_response(404, "report.not_found", "没有找到这份报告。")
+    return report
+
+
+@router.post("/reports/{report_id}/outfit-requests", status_code=202)
+async def create_outfit_request(
+    report_id: str,
+    request: Request,
+    user: dict[str, Any] | None = Depends(get_optional_user),
+) -> JSONResponse:
+    payload = await _read_json_object(request)
+    if isinstance(payload, JSONResponse):
+        return payload
+    data = _prune_store(_load_store())
+    scope = _idempotency_scope(request, user)
+    idempotency_key = request.headers.get("x-idempotency-key")
+    replay = _idempotency_replay(data, scope, idempotency_key)
+    if replay is not None:
+        status_code, body = replay
+        return JSONResponse(status_code=status_code, content=body)
+
+    report = _load_visible_report(data, report_id, user)
+    if isinstance(report, JSONResponse):
+        return report
+
+    outfit_request = {
+        "request_id": "outfit_" + secrets.token_urlsafe(12),
+        "report_id": report["report_id"],
+        "session_id": report.get("session_id"),
+        "user_id": report.get("user_id"),
+        "status": "queued",
+        "source": str(payload.get("source") or "report"),
+        "intent": str(payload.get("intent") or "complete_look"),
+        "created_at": _iso(_now()),
+    }
+    data["outfit_requests"].append(outfit_request)
+    status_code, body = 202, {
+        "requestId": _request_id(),
+        "request": {"requestId": outfit_request["request_id"], "status": "queued"},
+    }
+    _idempotency_store(data, scope, idempotency_key, status_code, body)
+    _write_store(data)
+    return JSONResponse(status_code=status_code, content=body)
+
+
+@router.get("/outfit-requests/{request_id}")
+async def get_outfit_request(
+    request_id: str,
+    user: dict[str, Any] | None = Depends(get_optional_user),
+) -> JSONResponse:
+    data = _load_store()
+    outfit_request = next(
+        (item for item in data["outfit_requests"] if item.get("request_id") == request_id),
+        None,
+    )
+    if outfit_request is None or not _session_visible_to(outfit_request, user):
+        return _error_response(404, "outfit.request_not_found", "没有找到这个穿搭请求。")
+    return JSONResponse(
+        status_code=200,
+        content={
+            "requestId": _request_id(),
+            "request": {
+                "requestId": outfit_request["request_id"],
+                "reportId": outfit_request.get("report_id"),
+                "status": outfit_request.get("status") or "queued",
+            },
+        },
+    )
+
+
+def _validate_share_payload(payload: dict[str, Any]) -> tuple[int, str, str] | JSONResponse:
+    slide_index = payload.get("slideIndex", 0)
+    if isinstance(slide_index, bool) or not isinstance(slide_index, int) or not 0 <= slide_index < selfit_share.SHARE_SLIDE_COUNT:
+        return _error_response(
+            422,
+            "validation.invalid_value",
+            "分享页序号不正确。",
+            details={"field": "slideIndex", "value": slide_index},
+        )
+    channel = payload.get("channel", "保存单张")
+    if not isinstance(channel, str) or channel not in selfit_share.SHARE_CHANNELS:
+        return _error_response(
+            422,
+            "validation.invalid_enum",
+            "分享渠道不在支持范围内。",
+            details={"field": "channel", "value": channel},
+        )
+    image_format = payload.get("format", "png")
+    if not isinstance(image_format, str) or image_format not in selfit_share.SHARE_FORMATS:
+        return _error_response(
+            422,
+            "validation.invalid_enum",
+            "分享图格式不在支持范围内。",
+            details={"field": "format", "value": image_format},
+        )
+    return slide_index, channel, image_format
+
+
+def _share_asset_expiry(data: dict[str, Any], report: dict[str, Any]) -> str:
+    session = _find_session(data, str(report.get("session_id") or ""))
+    if session is not None and session.get("expires_at"):
+        return str(session["expires_at"])
+    return _iso(_now() + timedelta(hours=_session_ttl_hours()))
+
+
+@router.post("/reports/{report_id}/share-assets")
+async def create_share_asset(
+    report_id: str,
+    request: Request,
+    user: dict[str, Any] | None = Depends(get_optional_user),
+) -> JSONResponse:
+    payload = await _read_json_object(request)
+    if isinstance(payload, JSONResponse):
+        return payload
+    data = _prune_store(_load_store())
+    scope = _idempotency_scope(request, user)
+    idempotency_key = request.headers.get("x-idempotency-key")
+    replay = _idempotency_replay(data, scope, idempotency_key)
+    if replay is not None:
+        status_code, body = replay
+        return JSONResponse(status_code=status_code, content=body)
+
+    report = _load_visible_report(data, report_id, user)
+    if isinstance(report, JSONResponse):
+        return report
+    validated = _validate_share_payload(payload)
+    if isinstance(validated, JSONResponse):
+        return validated
+    slide_index, channel, image_format = validated
+
+    try:
+        content = selfit_share.render_share_image(report.get("data") or {}, slide_index, channel, image_format)
+    except Exception:
+        return _error_response(500, "share.render_failed", "分享图生成失败，请稍后重试。", retryable=True)
+
+    asset_id = "share_" + secrets.token_urlsafe(12)
+    filename = f"{asset_id}.{image_format}"
+    _asset_store().save(f"shared/{filename}", content, f"image/{image_format}")
+
+    data["share_assets"].append(
+        {
+            "asset_id": asset_id,
+            "report_id": report["report_id"],
+            "session_id": report.get("session_id"),
+            "user_id": report.get("user_id"),
+            "slide_index": slide_index,
+            "channel": channel,
+            "format": image_format,
+            "filename": filename,
+            "created_at": _iso(_now()),
+        }
+    )
+    body = {
+        "requestId": _request_id(),
+        "asset": {
+            "assetId": asset_id,
+            "status": "ready",
+            "slideIndex": slide_index,
+            "channel": channel,
+            "downloadUrl": f"/api/v1/selfit/share-assets/{asset_id}/download",
+            "expiresAt": _share_asset_expiry(data, report),
+        },
+    }
+    _idempotency_store(data, scope, idempotency_key, 200, body)
+    _write_store(data)
+    return JSONResponse(status_code=200, content=body)
+
+
+@router.get("/share-assets/{asset_id}/download", response_model=None)
+async def download_share_asset(
+    asset_id: str,
+    user: dict[str, Any] | None = Depends(get_optional_user),
+) -> Response:
+    data = _load_store()
+    asset = next(
+        (item for item in data["share_assets"] if item.get("asset_id") == asset_id),
+        None,
+    )
+    if asset is None or not _session_visible_to(asset, user):
+        return _error_response(404, "share.asset_not_found", "没有找到这份分享素材。")
+    key = f"shared/{asset.get('filename') or ''}"
+    store = _asset_store()
+    public_url = store.public_url(key)
+    if public_url:
+        return RedirectResponse(public_url, status_code=302)
+    path = store.local_path(key)
+    if path is None:
+        return _error_response(404, "share.asset_not_found", "没有找到这份分享素材。")
+    return FileResponse(path, media_type=f"image/{asset.get('format') or 'png'}")

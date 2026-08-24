@@ -3,6 +3,7 @@ from __future__ import annotations
 import hashlib
 import json
 import mimetypes
+import os
 from pathlib import Path
 from typing import Any
 from urllib.parse import unquote, urlparse
@@ -123,6 +124,8 @@ SELFIT_MIRROR_INDEX_PATH = Path(__file__).resolve().parent / "static" / "selfit"
 TRYON_OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 XHS_IMAGE_CACHE_DIR = Path("outputs/xhs_images")
 XHS_IMAGE_CACHE_DIR.mkdir(parents=True, exist_ok=True)
+for _mounted_dir in (Path("tests/fixtures/images"), Path("tests/results"), Path("outputs/demo_assets")):
+    _mounted_dir.mkdir(parents=True, exist_ok=True)
 app.mount("/fixture-images", StaticFiles(directory="tests/fixtures/images"), name="fixture-images")
 app.mount("/qa-artifacts", StaticFiles(directory="tests/results"), name="qa-artifacts")
 app.mount("/demo-assets", StaticFiles(directory="outputs/demo_assets"), name="demo-assets")
@@ -618,13 +621,28 @@ def closet_demo_page() -> HTMLResponse:
     return HTMLResponse(render_closet_demo_page())
 
 
-@app.get("/selfit", response_class=FileResponse)
-@app.get("/selfit/", response_class=FileResponse)
-@app.get("/selfit/demo", response_class=FileResponse)
-def selfit_onboarding_page() -> FileResponse:
-    return FileResponse(
-        SELFIT_INDEX_PATH,
-        media_type="text/html",
+def _selfit_index_html() -> str:
+    """服务端注入运行配置：正式环境不再依赖 ?apiMode=live 查询参数。"""
+
+    html = SELFIT_INDEX_PATH.read_text(encoding="utf-8")
+    config = {
+        "apiMode": os.getenv("SELFIT_ONBOARDING_API_MODE", "mock"),
+        "apiBase": "/api/v1/selfit",
+        "timeoutMs": 15000,
+    }
+    tag = "<script>window.__SELFIT_CONFIG__ = " + json.dumps(config, ensure_ascii=False) + ";</script>"
+    marker = '<script src="/static/selfit/selfit-api.js'
+    if marker in html:
+        html = html.replace(marker, tag + marker, 1)
+    return html
+
+
+@app.get("/selfit", response_class=HTMLResponse)
+@app.get("/selfit/", response_class=HTMLResponse)
+@app.get("/selfit/demo", response_class=HTMLResponse)
+def selfit_onboarding_page() -> HTMLResponse:
+    return HTMLResponse(
+        _selfit_index_html(),
         headers={
             "Cache-Control": "no-store, no-cache, must-revalidate, max-age=0",
             "Pragma": "no-cache",
