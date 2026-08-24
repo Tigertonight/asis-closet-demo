@@ -43,6 +43,10 @@ class AssetStore(Protocol):
     def public_url(self, key: str) -> str | None:
         """可直接跳转的外部 URL（CDN/公开桶）；未配置时返回 None。"""
 
+    def delete(self, key: str) -> None:
+        """删除资产。资产默认只增不删，唯一的例外是用户主动删除自己的数据
+        （隐私契约要求）；不得用于任何定期清理任务。"""
+
 
 class LocalAssetStore:
     def __init__(self, root: Path) -> None:
@@ -65,6 +69,12 @@ class LocalAssetStore:
     def public_url(self, key: str) -> str | None:
         return None
 
+    def delete(self, key: str) -> None:
+        (self._path(key)).unlink(missing_ok=True)
+        parent = self._path(key).parent
+        if parent != self._root and parent.is_dir() and not any(parent.iterdir()):
+            parent.rmdir()
+
 
 _OSS_CONTENT_TYPES = {".jpg": "image/jpeg", ".png": "image/png", ".webp": "image/webp"}
 
@@ -84,7 +94,7 @@ def _oss_bucket_from_env() -> Any:
 
 
 class OssAssetStore:
-    """本地缓存 + OSS 主存双写。删除能力刻意不提供（资产只增不删）。"""
+    """本地缓存 + OSS 主存双写。delete 仅用于用户主动删除（隐私契约），不做任何定期清理。"""
 
     def __init__(self, cache_dir: Path, bucket: Any, prefix: str = "", public_base_url: str = "") -> None:
         self._cache = LocalAssetStore(cache_dir)
@@ -109,6 +119,10 @@ class OssAssetStore:
             return None
         return f"{self._public_base_url}/{self._object_key(key)}"
 
+    def delete(self, key: str) -> None:
+        self._cache.delete(key)
+        self._bucket.delete_object(self._object_key(key))
+
 
 def _s3_client_from_env() -> tuple[Any, str]:
     """构造 S3 兼容客户端，返回 (client, bucket)。
@@ -131,7 +145,7 @@ def _s3_client_from_env() -> tuple[Any, str]:
 
 
 class S3AssetStore:
-    """本地缓存 + S3 兼容对象存储双写。删除能力刻意不提供（资产只增不删）。"""
+    """本地缓存 + S3 兼容对象存储双写。delete 仅用于用户主动删除（隐私契约）。"""
 
     def __init__(self, cache_dir: Path, client: Any, bucket: str, prefix: str = "", public_base_url: str = "") -> None:
         self._cache = LocalAssetStore(cache_dir)
@@ -160,6 +174,10 @@ class S3AssetStore:
         if not self._public_base_url:
             return None
         return f"{self._public_base_url}/{self._object_key(key)}"
+
+    def delete(self, key: str) -> None:
+        self._cache.delete(key)
+        self._client.delete_object(Bucket=self._bucket, Key=self._object_key(key))
 
 
 def asset_store_from_env(cache_dir: Path | None = None) -> AssetStore:

@@ -452,6 +452,45 @@ async def get_session(
     return JSONResponse(status_code=status_code, content=body)
 
 
+@router.delete("/sessions/{session_id}")
+async def delete_session(
+    session_id: str,
+    user: dict[str, Any] | None = Depends(get_optional_user),
+) -> JSONResponse:
+    """用户主动删除：级联清除会话、任务、报告、穿搭请求与分享素材记录，并删除资产文件。
+
+    这是资产"只增不删"策略的唯一例外（隐私契约要求的用户删除机制）。
+    """
+
+    data = _load_store()
+    record = _load_active_session(data, session_id, user)
+    if isinstance(record, JSONResponse):
+        return record
+
+    store = _asset_store()
+    photos = record.get("photos") or {}
+    for kind, photo in photos.items():
+        asset_id = (photo or {}).get("asset_id")
+        image_format = (photo or {}).get("format")
+        suffix = PHOTO_SUPPORTED_FORMATS.get(str(image_format or ""), "")
+        if asset_id and suffix:
+            store.delete(f"{session_id}/{asset_id}{suffix}")
+    for item in data["share_assets"]:
+        if item.get("session_id") == session_id and item.get("filename"):
+            store.delete(f"shared/{item['filename']}")
+
+    data["sessions"] = [item for item in data["sessions"] if item.get("session_id") != session_id]
+    data["report_jobs"] = [item for item in data["report_jobs"] if item.get("session_id") != session_id]
+    data["reports"] = [item for item in data["reports"] if item.get("session_id") != session_id]
+    data["outfit_requests"] = [item for item in data["outfit_requests"] if item.get("session_id") != session_id]
+    data["share_assets"] = [item for item in data["share_assets"] if item.get("session_id") != session_id]
+    _write_store(data)
+    return JSONResponse(
+        status_code=200,
+        content={"requestId": _request_id(), "session": {"sessionId": session_id, "status": "deleted"}},
+    )
+
+
 async def _patch_session(
     request: Request,
     session_id: str,

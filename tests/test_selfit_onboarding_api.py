@@ -678,3 +678,55 @@ def test_rate_limit_counts_authenticated_users_separately(monkeypatch, tmp_path:
         limited = client.post(f"{API}/sessions", json={}, headers=headers)
         assert limited.status_code == 429
         assert limited.json()["error"]["code"] == "rate_limited"
+
+
+def test_selfit_page_injects_server_config(monkeypatch) -> None:
+    client = TestClient(app)
+
+    monkeypatch.setenv("SELFIT_ONBOARDING_API_MODE", "live")
+    page = client.get("/selfit")
+    assert page.status_code == 200
+    assert "window.__SELFIT_CONFIG__" in page.text
+    assert '"apiMode": "live"' in page.text
+    assert page.text.index("window.__SELFIT_CONFIG__") < page.text.index("selfit-api.js")
+
+    monkeypatch.setenv("SELFIT_ONBOARDING_API_MODE", "mock")
+    page = client.get("/selfit/demo")
+    assert '"apiMode": "mock"' in page.text
+
+
+def test_delete_session_cascades_records_and_assets(monkeypatch, tmp_path: Path) -> None:
+    _use_tmp_store(monkeypatch, tmp_path)
+    monkeypatch.setattr(selfit_photo, "_inspector", selfit_photo.accept_all_inspector)
+    client = TestClient(app)
+    session_id = _create_session(client)["session"]["sessionId"]
+
+    photo = client.post(
+        f"{API}/sessions/{session_id}/photos/face", files={"image": ("a.jpg", _jpeg_bytes())}
+    ).json()["photo"]
+    assert photo["status"] == "accepted"
+    monkeypatch.setattr(selfit_report, "_builder", lambda session: {"title": "中性利落派"})
+    job = _create_report_job(client, session_id)["job"]
+    report_id = _wait_for_job(client, job["jobId"])["reportId"]
+    share = client.post(
+        f"{API}/reports/{report_id}/share-assets",
+        json={"slideIndex": 0, "channel": "保存单张", "format": "png"},
+    ).json()["asset"]
+
+    asset_dir = tmp_path / "outputs" / "selfit_onboarding" / "assets"
+    assert list(asset_dir.glob(f"{session_id}/asset_face_*"))
+    assert list(asset_dir.glob("shared/share_*"))
+
+    deleted = client.delete(f"{API}/sessions/{session_id}")
+    assert deleted.status_code == 200
+    assert deleted.json()["session"]["status"] == "deleted"
+
+    assert client.get(f"{API}/sessions/{session_id}").status_code == 404
+    assert client.get(f"{API}/reports/{report_id}").status_code == 404
+    assert client.get(share["downloadUrl"]).status_code == 404
+    assert not list(asset_dir.glob(f"{session_id}/asset_face_*"))
+    assert not list(asset_dir.glob("shared/share_*"))
+
+    again = client.delete(f"{API}/sessions/{session_id}")
+    assert again.status_code == 404
+    assert again.json()["error"]["code"] == "session.expired"
