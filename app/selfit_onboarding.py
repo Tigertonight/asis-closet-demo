@@ -439,6 +439,30 @@ async def create_session(
     return JSONResponse(status_code=status_code, content=body)
 
 
+def _session_linkage(data: dict[str, Any], session_id: str) -> dict[str, Any]:
+    """会话恢复关联：最新报告任务与已生成报告，供前端刷新/重入后续接。
+
+    契约允许在 session 响应上补充字段，前端不依赖时可安全忽略。
+    """
+
+    linkage: dict[str, Any] = {}
+    jobs = [job for job in data["report_jobs"] if job.get("session_id") == session_id]
+    latest_job = max(jobs, key=lambda job: str(job.get("created_at") or ""), default=None)
+    if latest_job is not None:
+        _resubmit_stale_queued_job(latest_job)
+        if _expire_processing_job(data, latest_job):
+            _write_store(data)
+        linkage["latestReportJob"] = _public_job(latest_job)
+    reports = [item for item in data["reports"] if item.get("session_id") == session_id]
+    latest_report = max(reports, key=lambda item: str(item.get("created_at") or ""), default=None)
+    if latest_report is not None:
+        linkage["latestReport"] = {
+            "reportId": latest_report["report_id"],
+            "createdAt": latest_report.get("created_at"),
+        }
+    return linkage
+
+
 @router.get("/sessions/{session_id}")
 async def get_session(
     session_id: str,
@@ -449,6 +473,7 @@ async def get_session(
     if isinstance(record, JSONResponse):
         return record
     status_code, body = _session_response(record)
+    body["session"].update(_session_linkage(data, session_id))
     return JSONResponse(status_code=status_code, content=body)
 
 
@@ -972,6 +997,31 @@ async def create_outfit_request(
     _idempotency_store(data, scope, idempotency_key, status_code, body)
     _write_store(data)
     return JSONResponse(status_code=status_code, content=body)
+
+
+@router.get("/outfit-requests/{request_id}")
+async def get_outfit_request(
+    request_id: str,
+    user: dict[str, Any] | None = Depends(get_optional_user),
+) -> JSONResponse:
+    data = _load_store()
+    outfit_request = next(
+        (item for item in data["outfit_requests"] if item.get("request_id") == request_id),
+        None,
+    )
+    if outfit_request is None or not _session_visible_to(outfit_request, user):
+        return _error_response(404, "outfit.request_not_found", "没有找到这个穿搭请求。")
+    return JSONResponse(
+        status_code=200,
+        content={
+            "requestId": _request_id(),
+            "request": {
+                "requestId": outfit_request["request_id"],
+                "reportId": outfit_request.get("report_id"),
+                "status": outfit_request.get("status") or "queued",
+            },
+        },
+    )
 
 
 def _validate_share_payload(payload: dict[str, Any]) -> tuple[int, str, str] | JSONResponse:

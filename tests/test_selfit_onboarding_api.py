@@ -730,3 +730,45 @@ def test_delete_session_cascades_records_and_assets(monkeypatch, tmp_path: Path)
     again = client.delete(f"{API}/sessions/{session_id}")
     assert again.status_code == 404
     assert again.json()["error"]["code"] == "session.expired"
+
+
+def test_session_resume_linkage(monkeypatch, tmp_path: Path) -> None:
+    _use_tmp_store(monkeypatch, tmp_path)
+    monkeypatch.setattr(selfit_report, "_builder", lambda session: {"title": "中性利落派"})
+    client = TestClient(app)
+
+    fresh = client.get(f"{API}/sessions/{_create_session(client)['session']['sessionId']}").json()["session"]
+    assert "latestReportJob" not in fresh
+    assert "latestReport" not in fresh
+
+    session_id = _create_session(client)["session"]["sessionId"]
+    job = _create_report_job(client, session_id)["job"]
+    finished = _wait_for_job(client, job["jobId"])
+    assert finished["status"] == "completed"
+
+    resumed = client.get(f"{API}/sessions/{session_id}").json()["session"]
+    assert resumed["latestReportJob"]["jobId"] == job["jobId"]
+    assert resumed["latestReportJob"]["status"] == "completed"
+    assert resumed["latestReportJob"]["reportId"] == finished["reportId"]
+    assert resumed["latestReport"]["reportId"] == finished["reportId"]
+
+
+def test_get_outfit_request(monkeypatch, tmp_path: Path) -> None:
+    _use_tmp_store(monkeypatch, tmp_path)
+    client = TestClient(app)
+    report_id = _create_report(client, monkeypatch)
+
+    created = client.post(
+        f"{API}/reports/{report_id}/outfit-requests",
+        json={"source": "report", "intent": "complete_look"},
+    ).json()["request"]
+
+    fetched = client.get(f"{API}/outfit-requests/{created['requestId']}")
+    assert fetched.status_code == 200
+    assert fetched.json()["request"]["requestId"] == created["requestId"]
+    assert fetched.json()["request"]["reportId"] == report_id
+    assert fetched.json()["request"]["status"] == "queued"
+
+    missing = client.get(f"{API}/outfit-requests/outfit_missing")
+    assert missing.status_code == 404
+    assert missing.json()["error"]["code"] == "outfit.request_not_found"
