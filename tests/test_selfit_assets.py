@@ -139,6 +139,15 @@ def test_share_download_redirects_to_public_url(monkeypatch, tmp_path: Path) -> 
 
     client = TestClient(app)
     session_id = client.post(f"{API}/sessions", json={}).json()["session"]["sessionId"]
+    # 真实 builder 要求问卷核心输入（缺输入会 report.generation_failed）。
+    client.patch(
+        f"{API}/sessions/{session_id}/preferences",
+        json={"axes": {"shape": 25, "energy": 10, "trend": 40}, "palette": "mono"},
+    )
+    client.patch(
+        f"{API}/sessions/{session_id}/vibe",
+        json={"answers": {"occasion": "C", "wardrobe": "A", "expression": "A"}},
+    )
     job = client.post(f"{API}/sessions/{session_id}/report-jobs", json={}).json()["job"]
     deadline = time.monotonic() + 10
     finished = client.get(f"{API}/report-jobs/{job['jobId']}").json()["job"]
