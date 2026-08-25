@@ -10,5 +10,9 @@ accelerate>=0.33.0
 rembg>=2.0.59
 onnxruntime>=1.18.0
 
+# Onboarding asset persistence (SELFIT_ASSET_STORE=oss / s3):
+oss2>=2.18.0
+boto3>=1.34.0
+
 # Agent/runtime helpers used by local readiness scripts:
 requests>=2.32.0

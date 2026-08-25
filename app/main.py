@@ -3,6 +3,7 @@ from __future__ import annotations
 import hashlib
 import json
 import mimetypes
+import os
 from pathlib import Path
 from typing import Any
 from urllib.parse import unquote, urlparse
@@ -105,6 +106,8 @@ from app.stylist_sessions import (
     recent_conversation,
     update_stylist_session,
 )
+from app.selfit_onboarding import router as selfit_onboarding_router
+from app.qa_onboarding import QA_PHOTO_DIR, router as qa_onboarding_router
 from app.storage import storage_context, user_storage
 from scripts.generate_qa_artifacts import generate_qa_artifacts
 from scripts.check_runtime_readiness import readiness as runtime_readiness
@@ -114,11 +117,15 @@ load_dotenv(Path(__file__).resolve().parents[1] / ".env", override=True)
 
 app = FastAPI(title="selfit", version="0.2.0")
 app.middleware("http")(request_guard_middleware)
+app.include_router(selfit_onboarding_router)
+app.include_router(qa_onboarding_router)
 SELFIT_INDEX_PATH = Path(__file__).resolve().parent / "static" / "selfit" / "index.html"
 SELFIT_MIRROR_INDEX_PATH = Path(__file__).resolve().parent / "static" / "selfit" / "mirror.html"
 TRYON_OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 XHS_IMAGE_CACHE_DIR = Path("outputs/xhs_images")
 XHS_IMAGE_CACHE_DIR.mkdir(parents=True, exist_ok=True)
+for _mounted_dir in (Path("tests/fixtures/images"), Path("tests/results"), Path("outputs/demo_assets")):
+    _mounted_dir.mkdir(parents=True, exist_ok=True)
 app.mount("/fixture-images", StaticFiles(directory="tests/fixtures/images"), name="fixture-images")
 app.mount("/qa-artifacts", StaticFiles(directory="tests/results"), name="qa-artifacts")
 app.mount("/demo-assets", StaticFiles(directory="outputs/demo_assets"), name="demo-assets")
@@ -127,6 +134,8 @@ app.mount("/tryon-outputs", StaticFiles(directory="outputs/tryon"), name="tryon-
 app.mount("/tryon-models", StaticFiles(directory=TRYON_MODEL_FIXTURE_DIR), name="tryon-models")
 CLOSET_OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 app.mount("/closet-outputs", StaticFiles(directory="outputs/closet"), name="closet-outputs")
+QA_PHOTO_DIR.mkdir(parents=True, exist_ok=True)
+app.mount("/qa-photos", StaticFiles(directory=str(QA_PHOTO_DIR)), name="qa-photos")
 
 
 def _is_allowed_xhs_image_url(url: str) -> bool:
@@ -612,13 +621,28 @@ def closet_demo_page() -> HTMLResponse:
     return HTMLResponse(render_closet_demo_page())
 
 
-@app.get("/selfit", response_class=FileResponse)
-@app.get("/selfit/", response_class=FileResponse)
-@app.get("/selfit/demo", response_class=FileResponse)
-def selfit_onboarding_page() -> FileResponse:
-    return FileResponse(
-        SELFIT_INDEX_PATH,
-        media_type="text/html",
+def _selfit_index_html() -> str:
+    """服务端注入运行配置：正式环境不再依赖 ?apiMode=live 查询参数。"""
+
+    html = SELFIT_INDEX_PATH.read_text(encoding="utf-8")
+    config = {
+        "apiMode": os.getenv("SELFIT_ONBOARDING_API_MODE", "mock"),
+        "apiBase": "/api/v1/selfit",
+        "timeoutMs": 15000,
+    }
+    tag = "<script>window.__SELFIT_CONFIG__ = " + json.dumps(config, ensure_ascii=False) + ";</script>"
+    marker = '<script src="/static/selfit/selfit-api.js'
+    if marker in html:
+        html = html.replace(marker, tag + marker, 1)
+    return html
+
+
+@app.get("/selfit", response_class=HTMLResponse)
+@app.get("/selfit/", response_class=HTMLResponse)
+@app.get("/selfit/demo", response_class=HTMLResponse)
+def selfit_onboarding_page() -> HTMLResponse:
+    return HTMLResponse(
+        _selfit_index_html(),
         headers={
             "Cache-Control": "no-store, no-cache, must-revalidate, max-age=0",
             "Pragma": "no-cache",
