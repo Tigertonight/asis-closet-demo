@@ -4,6 +4,31 @@
   const splash = document.querySelector('[data-screen="splash"]');
   const intro = document.querySelector('[data-screen="intro"]');
   const themeColor = document.querySelector('meta[name="theme-color"]');
+  const onboardingNav = document.querySelector('[data-onboarding-nav]');
+  const onboardingBack = document.querySelector('[data-onboarding-back]');
+  const onboardingStepper = document.querySelector('[data-onboarding-stepper]');
+  const onboardingSteps = onboardingStepper ? [...onboardingStepper.querySelectorAll('[data-step]')] : [];
+  // Persistent nav config per onboarding screen: where "back" goes, which step
+  // is current, and how far the progress fill should reach.
+  const ONBOARDING_NAV = {
+    suit: { back: 'intro', progress: 'suit', current: 'suit', done: [] },
+    'suit-manual': { back: 'suit', progress: 'suit', current: 'suit', done: [] },
+    like: { back: 'suit', progress: 'like', current: 'like', done: ['suit'] },
+    vibe: { back: 'like', progress: 'vibe', current: 'vibe', done: ['suit', 'like'] },
+  };
+  const updateOnboardingNav = (name) => {
+    if (!onboardingNav) return;
+    const config = ONBOARDING_NAV[name];
+    onboardingNav.hidden = !config;
+    if (!config) return;
+    onboardingBack?.setAttribute('data-back', config.back);
+    onboardingStepper?.setAttribute('data-progress', config.progress);
+    onboardingSteps.forEach((step) => {
+      const key = step.dataset.step;
+      step.classList.toggle('is-current', key === config.current);
+      step.classList.toggle('is-done', config.done.includes(key));
+    });
+  };
   const SESSION_STORAGE_KEY = 'selfit.onboarding.session.v1';
   let api;
   let auth;
@@ -26,6 +51,7 @@
       screen.setAttribute('aria-hidden', screen === next ? 'false' : 'true');
     });
     state.screen = name;
+    updateOnboardingNav(name);
     themeColor?.setAttribute('content', ['splash', 'loading'].includes(name) ? '#8a011b' : '#fafafa');
     next.scrollTop = 0;
   };
@@ -579,7 +605,15 @@
     reportNodes.adviceIntro.hidden = !data.adviceIntro;
     reportNodes.advice.replaceChildren(...data.advice.map((copy) => {
       const point = Object.assign(document.createElement('div'), { className: 'report-advice-point' });
-      point.innerHTML = renderReportMarkdown(copy);
+      const text = String(copy ?? '');
+      const colonIndex = text.indexOf('：');
+      if (colonIndex >= 0) {
+        const lead = text.slice(0, colonIndex);
+        const rest = text.slice(colonIndex + 1);
+        point.innerHTML = `<p><span class="advice-lead">${renderReportInlineMarkdown(lead)}：</span>${renderReportInlineMarkdown(rest)}</p>`;
+      } else {
+        point.innerHTML = renderReportMarkdown(copy);
+      }
       return point;
     }));
     document.querySelector('#reportAdvice').hidden = !(data.adviceIntro || data.advice.length);
