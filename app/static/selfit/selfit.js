@@ -458,6 +458,7 @@
       source: { ...base.source, ...(payload.source || {}), ...(personalization.source || {}) },
     };
   };
+  const cleanAdviceCopy = (value) => String(value || '').replace(/^\s*建议\s*[：:]\s*/, '').trim();
   const normalizeReport = (payload = {}) => {
     payload = resolvePersonalityPayload(payload);
     const hasPayload = Boolean(payload && Object.keys(payload).length);
@@ -489,7 +490,7 @@
         name: item.name || item.title || '',
         byline: item.byline || (item.author ? `@${String(item.author).replace(/^@/, '')}` : ''),
       })),
-      advice: list('advice'),
+      advice: list('advice').map(cleanAdviceCopy).filter(Boolean),
       illustration,
       source: {
         ...source,

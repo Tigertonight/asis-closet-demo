@@ -22,6 +22,7 @@ ROOT = Path(__file__).resolve().parents[1]
 MASTER_PATH = ROOT / "app/static/report-builder/data/16-personality-templates.json"
 SEED_JS_PATH = ROOT / "app/static/report-builder/seed-templates.js"
 LIBRARY_PATH = ROOT / "app/static/report-builder/data/personality-content-library.v2.json"
+HAIR_DISPLAY_NAMES_PATH = ROOT / "app/static/report-builder/data/hair-display-names.v1.json"
 ASSET_ROOT = ROOT / "app/static/selfit/assets/personality"
 KIND_CONFIG = {
     "makeup": {"folder": "16人格妆容", "name": "妆容名称", "limit": 2},
@@ -80,6 +81,23 @@ def _byline(value: Any) -> str:
     return f"@{text.lstrip('@')}" if text else ""
 
 
+def _hair_display_names(path: Path = HAIR_DISPLAY_NAMES_PATH) -> dict[str, str]:
+    """读取人工校对的发型名称，避免把小红书笔记标题当成发型类型。"""
+    value = _read(path)
+    names: dict[str, str] = {}
+    for item in value.get("items") or []:
+        name = _text(item.get("name"))
+        if not name:
+            continue
+        source_item_id = _text(item.get("sourceItemId"))
+        file_name = _text(item.get("fileName"))
+        if source_item_id:
+            names[f"item:{source_item_id}"] = name
+        if file_name:
+            names[f"file:{file_name}"] = name
+    return names
+
+
 def _split(value: Any) -> list[str]:
     return [item.strip() for item in _text(value).split("|") if item.strip()]
 
@@ -93,20 +111,34 @@ def _asset_path_from_web(web_path: str) -> Path:
     return ASSET_ROOT / relative
 
 
-def _common_item(row: dict[str, Any], *, type_id: str, kind: str) -> dict[str, Any]:
+def _common_item(
+    row: dict[str, Any],
+    *,
+    type_id: str,
+    kind: str,
+    hair_names: dict[str, str] | None = None,
+) -> dict[str, Any]:
     position = _number(row.get("展示位次"))
     name_key = str(KIND_CONFIG[kind]["name"])
-    name = _text(row.get(name_key)) or _text(row.get("笔记标题")) or f"{kind}-{position:02d}"
+    source_item_id = _text(row.get("笔记ItemID"))
+    file_name = _text(row.get("文件名"))
+    if kind == "hair":
+        calibrated_name = (hair_names or {}).get(f"item:{source_item_id}") or (hair_names or {}).get(f"file:{file_name}")
+        # 发型卡首行只允许使用“发型名称”。笔记标题独立保存在 sourceTitle，
+        # 即使名称缺失也不再静默回退为笔记标题。
+        name = calibrated_name or _text(row.get(name_key)) or f"待补充发型名称 {position:02d}"
+    else:
+        name = _text(row.get(name_key)) or _text(row.get("笔记标题")) or f"{kind}-{position:02d}"
     item = {
         "position": position,
         "name": name,
         "byline": _byline(row.get("博主")),
         "image": _web_path(type_id, kind, position),
         "assetPath": _text(row.get("导出相对路径")),
-        "fileName": _text(row.get("文件名")),
+        "fileName": file_name,
         "sourceTitle": _text(row.get("笔记标题")),
         "sourceUrl": _text(row.get("笔记链接")),
-        "sourceItemId": _text(row.get("笔记ItemID")),
+        "sourceItemId": source_item_id,
         "width": _number(row.get("宽")),
         "height": _number(row.get("高")),
     }
@@ -172,6 +204,7 @@ def main() -> int:
     }
     missing: list[str] = []
     converted = 0
+    hair_names = _hair_display_names()
 
     for kind, config in KIND_CONFIG.items():
         rows = sorted(_preview(snapshot, kind), key=lambda row: (_number(row.get("人格序号")), _number(row.get("展示位次"))))
@@ -180,7 +213,7 @@ def main() -> int:
             type_id = type_id_by_code.get(code)
             if not type_id:
                 raise ValueError(f"主模板缺少人格 code: {code}")
-            item = _common_item(row, type_id=type_id, kind=kind)
+            item = _common_item(row, type_id=type_id, kind=kind, hair_names=hair_names)
             source = args.source_root / str(config["folder"]) / item["assetPath"]
             if not source.is_file():
                 missing.append(str(source))

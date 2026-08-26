@@ -351,6 +351,7 @@ def test_default_report_builder_end_to_end(tmp_path: Path, monkeypatch: pytest.M
     assert len(report["outfits"]) == 10
     assert all(item["author"] for item in report["outfits"])
     assert 1 <= len(report["advice"]) <= 3
+    assert all(not item.lstrip().startswith(("建议：", "建议:")) for item in report["advice"])
     selfit_recommend.reset_content_pool_cache()
 
 

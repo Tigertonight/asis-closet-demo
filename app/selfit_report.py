@@ -58,16 +58,16 @@ PALETTE_ACCENTS: dict[str, tuple[str, str]] = {
 
 # 体型建议文案（体型×穿搭结构映射翻译为用户语言）。
 BODY_ADVICE = {
-    "梨型": "建议：视觉重心放上身，高腰线拉比例，下装保持利落纵向线条",
-    "倒三角型": "建议：视觉重心移到下半身，自然腰线平衡肩部量感",
-    "沙漏型": "建议：贴身合体剪裁放大腰臀比优势，突出自然腰线",
-    "矩型": "建议：用腰线与廓形制造曲线或保持利落直线条，两者都好看",
-    "苹果型": "建议：胸下腰线与纵向线条拉长身形，腹部保持舒适空间",
+    "梨型": "视觉重心放上身，高腰线拉比例，下装保持利落纵向线条",
+    "倒三角型": "视觉重心移到下半身，自然腰线平衡肩部量感",
+    "沙漏型": "贴身合体剪裁放大腰臀比优势，突出自然腰线",
+    "矩型": "用腰线与廓形制造曲线或保持利落直线条，两者都好看",
+    "苹果型": "胸下腰线与纵向线条拉长身形，腹部保持舒适空间",
 }
 
 DEFAULT_ADVICE = [
-    "建议：先穿对适合色，再用偏好色小面积点缀",
-    "建议：围绕主人格建立核心衣橱，次人格风格用来做变化",
+    "先穿对适合色，再用偏好色小面积点缀",
+    "围绕主人格建立核心衣橱，次人格风格用来做变化",
 ]
 
 SOURCE_BLOCK = {
@@ -125,11 +125,11 @@ def _advice_block(body_shape: str | None, palette: Any, skin: str | None,
     if body_shape == "矩型":
         branch = selfit_persona.rectangle_body_branch(vector)
         if branch == "soft_curve":
-            advice.append("建议：你的风格偏柔和，矩型身材适合高腰收腰剪裁，自然营造曲线")
+            advice.append("你的风格偏柔和，矩型身材适合高腰收腰剪裁，自然营造曲线")
         else:
-            advice.append("建议：你的风格偏利落，矩型身材适合直筒宽松剪裁，弱化腰线更高级")
+            advice.append("你的风格偏利落，矩型身材适合直筒宽松剪裁，弱化腰线更高级")
     if palette and skin and str(palette) in PALETTE_ACCENTS:
-        advice.append("建议：大面积穿适合色，再用偏好色做 1~2 处点缀")
+        advice.append("大面积穿适合色，再用偏好色做 1~2 处点缀")
     if not advice:
         advice = list(DEFAULT_ADVICE)
     advice.append(f"你的核心风格是「{persona.signature}」，优先围绕它建立穿搭主线")
