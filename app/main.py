@@ -121,6 +121,7 @@ app.include_router(selfit_onboarding_router)
 app.include_router(qa_onboarding_router)
 SELFIT_INDEX_PATH = Path(__file__).resolve().parent / "static" / "selfit" / "index.html"
 SELFIT_MIRROR_INDEX_PATH = Path(__file__).resolve().parent / "static" / "selfit" / "mirror.html"
+REPORT_BUILDER_INDEX_PATH = Path(__file__).resolve().parent / "static" / "report-builder" / "index.html"
 TRYON_OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 XHS_IMAGE_CACHE_DIR = Path("outputs/xhs_images")
 XHS_IMAGE_CACHE_DIR.mkdir(parents=True, exist_ok=True)
@@ -626,8 +627,10 @@ def _selfit_index_html() -> str:
 
     html = SELFIT_INDEX_PATH.read_text(encoding="utf-8")
     config = {
-        "apiMode": os.getenv("SELFIT_ONBOARDING_API_MODE", "mock"),
+        "apiMode": os.getenv("SELFIT_ONBOARDING_API_MODE", "live"),
         "apiBase": "/api/v1/selfit",
+        "authMode": os.getenv("SELFIT_AUTH_FRONTEND_MODE") or os.getenv("SELFIT_ONBOARDING_API_MODE", "live"),
+        "authBase": "/auth",
         "timeoutMs": 15000,
     }
     tag = "<script>window.__SELFIT_CONFIG__ = " + json.dumps(config, ensure_ascii=False) + ";</script>"
@@ -648,6 +651,12 @@ def selfit_onboarding_page() -> HTMLResponse:
             "Pragma": "no-cache",
         },
     )
+
+
+@app.get("/report-builder", response_class=FileResponse, include_in_schema=False)
+@app.get("/report-builder/", response_class=FileResponse, include_in_schema=False)
+def report_builder_page() -> FileResponse:
+    return FileResponse(REPORT_BUILDER_INDEX_PATH, media_type="text/html")
 
 
 @app.get("/ori/demo", include_in_schema=False)

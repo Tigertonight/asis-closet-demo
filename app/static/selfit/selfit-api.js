@@ -15,11 +15,12 @@
   }
 
   class SelfitApiClient {
-    constructor({ mode = 'mock', baseUrl = '/api/v1/selfit', timeoutMs = 15000, buildMockReport } = {}) {
+    constructor({ mode = 'mock', baseUrl = '/api/v1/selfit', timeoutMs = 15000, buildMockReport, getAccessToken } = {}) {
       this.mode = mode === 'live' ? 'live' : 'mock';
       this.baseUrl = baseUrl.replace(/\/$/, '');
       this.timeoutMs = timeoutMs;
       this.buildMockReport = buildMockReport;
+      this.getAccessToken = typeof getAccessToken === 'function' ? getAccessToken : () => null;
       this.mockSessions = new Map();
       this.mockJobs = new Map();
       this.mockReports = new Map();
@@ -31,6 +32,8 @@
       if (signal) signal.addEventListener('abort', () => controller.abort(signal.reason), { once: true });
       const headers = formData ? { Accept: 'application/json' } : { ...jsonHeaders };
       if (idempotencyKey) headers['X-Idempotency-Key'] = idempotencyKey;
+      const accessToken = this.getAccessToken();
+      if (accessToken) headers.Authorization = `Bearer ${accessToken}`;
       try {
         const response = await fetch(`${this.baseUrl}${path}`, {
           method, credentials: 'include', headers, signal: controller.signal,

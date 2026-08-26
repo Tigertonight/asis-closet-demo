@@ -70,7 +70,14 @@ DEFAULT_ADVICE = [
     "建议：围绕主人格建立核心衣橱，次人格风格用来做变化",
 ]
 
-SOURCE_BLOCK = {"name": "小红书", "copy": "已为你筛选真实用户笔记"}
+SOURCE_BLOCK = {
+    "name": "小红书",
+    "copy": "已为你筛选真实用户笔记",
+    "avatars": {
+        "imageUrl": "/static/selfit/assets/report-user-avatar-stack@4x.png",
+        "alt": "3 位真实用户头像",
+    },
+}
 
 
 def content_url(path: str) -> str:
@@ -105,8 +112,9 @@ def _colors_block(skin: str | None, palette: Any) -> list[dict[str, str]]:
     swatches = list(SKIN_COLOR_SWATCHES.get(skin or "", SKIN_COLOR_SWATCHES["中性自然肤"]))
     accent = PALETTE_ACCENTS.get(str(palette)) if palette else None
     if accent is not None:
-        swatches.append(accent)
-    return [{"name": name, "value": value} for name, value in swatches]
+        # 报告固定展示 5 个槽位：4 个肤色适合色 + 1 个用户偏好点缀色。
+        swatches = swatches[:4] + [accent]
+    return [{"name": name, "value": value} for name, value in swatches[:5]]
 
 
 def _advice_block(body_shape: str | None, palette: Any, skin: str | None,
@@ -157,44 +165,56 @@ def default_report_builder(session: dict[str, Any]) -> dict[str, Any]:
         skin=suit["skin"],
     )
 
+    makeup = [
+        {
+            "name": str(item.get("name") or "妆容参考"),
+            "byline": str(item.get("byline") or ""),
+            "imageUrl": content_url(str(item.get("imageUrl") or "")),
+            "alt": str(item.get("alt") or item.get("name") or "妆容参考"),
+        }
+        for item in selfit_recommend.static_entries(pool, "makeup", makeup_key)
+    ]
+    hair = [
+        {
+            "name": str(item.get("name") or "发型参考"),
+            "byline": str(item.get("byline") or ""),
+            "imageUrl": content_url(str(item.get("imageUrl") or "")),
+            "alt": str(item.get("alt") or item.get("name") or "发型参考"),
+        }
+        for item in selfit_recommend.static_entries(pool, "hair", hair_key)
+    ]
+    outfit_cards = [
+        {
+            "badge": str(item.get("badge") or "精选"),
+            "title": str(item.get("title") or "穿搭参考"),
+            "description": str(item.get("description") or ""),
+            "imageUrl": content_url(str(item.get("imageUrl") or "")),
+            "alt": str(item.get("alt") or item.get("title") or "穿搭参考"),
+            "author": str(item.get("author") or ""),
+            "sourceUrl": str(item.get("sourceUrl") or ""),
+        }
+        for item in outfits
+    ]
+
     report: dict[str, Any] = {
+        # 前端以 typeId 加载完整人格兜底模板；SUIT 只覆盖本次真实算出的非空字段。
+        "typeId": persona.code.lower(),
+        "templateVersion": "2026.08.assets-v1",
         "eyebrow": persona.code,
         "title": persona.name,
         "traits": list(persona.traits),
         "colors": _colors_block(suit["skin"], (session.get("preferences") or {}).get("palette")),
-        "makeup": [
-            {
-                "name": str(item.get("name") or "妆容参考"),
-                "byline": str(item.get("byline") or ""),
-                "imageUrl": content_url(str(item.get("imageUrl") or "")),
-                "alt": str(item.get("alt") or item.get("name") or "妆容参考"),
-            }
-            for item in selfit_recommend.static_entries(pool, "makeup", makeup_key)
-        ],
-        "hair": [
-            {
-                "name": str(item.get("name") or "发型参考"),
-                "byline": str(item.get("byline") or ""),
-                "imageUrl": content_url(str(item.get("imageUrl") or "")),
-                "alt": str(item.get("alt") or item.get("name") or "发型参考"),
-            }
-            for item in selfit_recommend.static_entries(pool, "hair", hair_key)
-        ],
-        "source": dict(SOURCE_BLOCK),
-        "outfits": [
-            {
-                "badge": str(item.get("badge") or "精选"),
-                "title": str(item.get("title") or "穿搭参考"),
-                "description": str(item.get("description") or ""),
-                "imageUrl": content_url(str(item.get("imageUrl") or "")),
-                "alt": str(item.get("alt") or item.get("title") or "穿搭参考"),
-                "author": str(item.get("author") or ""),
-            }
-            for item in outfits
-        ],
         "advice": _advice_block(suit["body_shape"], (session.get("preferences") or {}).get("palette"),
                                 suit["skin"], persona, vector),
     }
+    # 空数组不能覆盖 TYPE 模板。拿到真实 SUIT 数据后才覆盖对应版块。
+    if makeup:
+        report["makeup"] = makeup
+    if hair:
+        report["hair"] = hair
+    if outfit_cards:
+        report["source"] = dict(SOURCE_BLOCK)
+        report["outfits"] = outfit_cards
     return report
 
 

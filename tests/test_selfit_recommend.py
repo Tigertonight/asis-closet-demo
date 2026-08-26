@@ -7,6 +7,7 @@ import pytest
 
 import app.selfit_recommend as selfit_recommend
 from app.selfit_recommend import (
+    BUNDLED_CONTENT_POOL_PATH,
     ContentPool,
     hair_static_key,
     makeup_static_key,
@@ -49,6 +50,14 @@ def _outfit(**overrides):
     }
     item.update(overrides)
     return item
+
+
+def test_bundled_real_content_pool_is_complete() -> None:
+    pool = ContentPool(BUNDLED_CONTENT_POOL_PATH)
+    assert len(pool.outfits) == 156
+    assert all(item.get("imageUrl") for item in pool.outfits)
+    assert sum(bool(item.get("body_types")) for item in pool.outfits) == 116
+    assert sum(bool(item.get("regional_styles")) for item in pool.outfits) == 148
 
 
 # ---------------------------------------------------------------------------
@@ -235,6 +244,32 @@ def test_recommend_outfits_degradation_chain(tmp_path: Path, monkeypatch: pytest
     assert len(result) == 4
 
 
+def test_recommend_outfits_prefers_multi_then_single_then_stable_random(tmp_path: Path) -> None:
+    pool = ContentPool(_write_pool(tmp_path, {"outfits": [
+        # 人格 + 地域：多标签层。
+        _outfit(id="multi", primary_persona="MUTE", secondary_personas=[], regional_style="日系"),
+        # 只命中人格：单标签层。
+        _outfit(id="single_persona", primary_persona="MUTE", secondary_personas=[], regional_style="欧美系"),
+        # 只命中地域：单标签层，Suit 低于人格单标签。
+        _outfit(id="single_region", primary_persona="JADE", secondary_personas=[], regional_style="日系"),
+        # 所有可用标签均未命中：随机补齐层。
+        _outfit(id="fallback", primary_persona="JADE", secondary_personas=[], regional_style="欧美系"),
+    ]}))
+    options = dict(
+        primary="MUTE", secondary=None, regional_style="日系",
+        primary_region="无倾向", compatible_regions=(), body_shape=None,
+        rectangle_branch=None, skin=None, top_n=4,
+    )
+
+    first = recommend_outfits(pool, **options)
+    second = recommend_outfits(pool, **options)
+
+    assert [item["id"] for item in first] == [
+        "multi", "single_persona", "single_region", "fallback",
+    ]
+    assert [item["id"] for item in second] == [item["id"] for item in first]
+
+
 def test_recommend_outfits_ranks_by_suit(tmp_path: Path) -> None:
     pool_data = {
         "outfits": [
@@ -303,9 +338,12 @@ def test_default_report_builder_end_to_end(tmp_path: Path, monkeypatch: pytest.M
     report = selfit_report.build_report(session)
 
     assert report["eyebrow"] == "MUTE"
+    assert report["typeId"] == "mute"
+    assert report["templateVersion"] == "2026.08.assets-v1"
     assert report["title"] == "静音时髦"
     assert report["traits"] == ["硬朗利落", "极简克制", "低饱和"]
     assert report["colors"][0]["name"] == "雾霭蓝"
+    assert len(report["colors"]) == 5
     assert report["colors"][-1]["value"] == "#141414"  # mono 偏好点缀
     assert len(report["makeup"]) == 2
     assert report["makeup"][0]["imageUrl"].endswith("makeup-a.webp")
@@ -314,6 +352,38 @@ def test_default_report_builder_end_to_end(tmp_path: Path, monkeypatch: pytest.M
     assert all(item["author"] for item in report["outfits"])
     assert 1 <= len(report["advice"]) <= 3
     selfit_recommend.reset_content_pool_cache()
+
+
+def test_default_report_builder_keeps_type_fallback_when_pool_is_empty(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    from app import selfit_report
+
+    monkeypatch.setenv("SELFIT_CONTENT_POOL_PATH", str(tmp_path / "missing-pool.json"))
+    selfit_recommend.reset_content_pool_cache()
+    report = selfit_report.build_report({
+        "preferences": {"axes": {"shape": 25, "energy": 10, "trend": 40}, "palette": "mono"},
+        "vibe": {"occasion": "C", "wardrobe": "A", "expression": "A"},
+        "manual": {"skin": "冷白肤", "faceShape": "椭圆脸", "bodyShape": "梨型"},
+        "photos": {},
+    })
+
+    assert report["typeId"] == "mute"
+    assert "makeup" not in report
+    assert "hair" not in report
+    assert "outfits" not in report
+    selfit_recommend.reset_content_pool_cache()
+
+
+def test_direct_body_and_multi_region_labels_are_scored() -> None:
+    outfit = _outfit(
+        structure={},
+        body_types=["梨型", "矩型"],
+        regional_style="韩系|日系",
+    )
+    assert body_structure_score(outfit, "梨型", None) == 100
+    assert body_structure_score(outfit, "苹果型", None) == 20
+    assert region_match_score(outfit, "日系", "无倾向", ()) == 100
 
 
 def test_default_report_builder_fails_without_inputs() -> None:

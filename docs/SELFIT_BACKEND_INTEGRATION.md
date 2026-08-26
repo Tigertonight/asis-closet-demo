@@ -10,6 +10,7 @@ API 基路径：`/api/v1/selfit`
 
 | 环节 | 前端负责 | 后端负责（可信结果） | 接口 |
 |---|---|---|---|
+| 登录 | 手机号/邀请码格式校验、验证码倒计时、短期保存 Token | 验证码发送与校验、邀请码核销、用户与 Token 生命周期 | `/auth/phone/*`、`/auth/invite/verify`、`/auth/me` |
 | 会话 | 保存不透明的 `sessionId` 和过期时间、恢复流程 | 会话生命周期、步骤数据、版本号 | `POST/GET /sessions` |
 | 照片 | MIME、12MB 上限预检与本地预览 | 光线、清晰度、构图、单人/全身等质量判断，保存资产 | `POST /sessions/{id}/photos/{kind}` |
 | 手动信息 | 单选交互、完整性检查 | 枚举校验和标准化 | `PATCH /sessions/{id}/profile` |
@@ -31,6 +32,8 @@ API 基路径：`/api/v1/selfit`
 window.__SELFIT_CONFIG__ = {
   apiMode: 'live',
   apiBase: '/api/v1/selfit',
+  authMode: 'live',
+  authBase: '/auth',
   timeoutMs: 15000
 };
 </script>
@@ -41,7 +44,7 @@ window.__SELFIT_CONFIG__ = {
 ## 3. 通用约定
 
 - JSON 使用 UTF-8、`camelCase`；时间使用 ISO 8601 UTC。
-- 认证沿用同源安全 Cookie；跨域部署时必须配置明确的 CORS 与凭据策略。
+- 当前认证接口返回 Bearer Token；前端仅在 `sessionStorage` 保存登录会话，并在 live onboarding 请求中发送 `Authorization: Bearer {token}`。生产环境如切换为同源 HttpOnly Cookie，需同步调整认证适配层与 CSRF 策略。
 - 创建、上传、修改、生成类请求携带 `X-Idempotency-Key`。同一用户和 key 必须返回同一业务结果。
 - 每个成功响应建议带 `requestId`；错误必须使用统一结构。
 - 会话写操作返回递增 `revision`。若后端支持乐观锁，可增加 `If-Match: {revision}`，冲突返回 `409 session.revision_conflict`。
@@ -64,6 +67,37 @@ window.__SELFIT_CONFIG__ = {
 ```
 
 ## 4. 接口定义
+
+### 4.0 登录
+
+已存在的手机号登录：
+
+- `POST /auth/phone/start`：`{ "phone": "13800000000" }`
+- `POST /auth/phone/verify`：`{ "phone": "13800000000", "code": "0000" }`
+- `GET /auth/me`：携带 Bearer Token 恢复登录态
+- `POST /auth/logout`：携带 Bearer Token 注销
+
+手机号验证成功响应沿用现有字段：
+
+```json
+{
+  "status": "ok",
+  "access_token": "opaque-token",
+  "token_type": "bearer",
+  "expires_in_seconds": 86400,
+  "user": { "user_id": "u_01", "phone_e164": "+8613800000000", "status": "active" }
+}
+```
+
+新版 Figma 同时需要邀请码登录。前端已经预留：
+
+`POST /auth/invite/verify`
+
+```json
+{ "invite_code": "SELFIT2026" }
+```
+
+成功响应必须与手机号验证响应保持相同结构。该接口当前尚未在后端实现；`mock` 模式允许任意不少于 4 个字符的邀请码走通演示，`live` 模式不会伪造登录成功。
 
 ### 4.1 创建与恢复会话
 

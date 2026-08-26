@@ -959,16 +959,11 @@ def test_mvp_pilot_guide_head_endpoint() -> None:
     assert response.headers["content-type"].startswith("text/markdown")
 
 
-def test_readme_summary_example_matches_standard_tier() -> None:
+def test_readme_points_to_the_stable_color_analysis_contract() -> None:
     readme = (Path(__file__).resolve().parents[1] / "README.md").read_text(encoding="utf-8")
-    example_section = readme.split('"result_summary": {', 1)[1].split('"pipeline": {', 1)[0]
-
-    assert '"title": "明亮春型"' in example_section
-    assert '"quality_level": "standard"' in example_section
-    assert '"result_tier": "standard"' in example_section
-    assert '"result_tier_label": "标准可用"' in example_section
-    assert '"risk_codes": []' in example_section
-    assert '"copy_summary"' in example_section
+    assert "`result_summary` 中返回用户可消费的结果" in readme
+    assert "`pipeline` 中保留 QA 和调试证据" in readme
+    assert "curl http://127.0.0.1:8000/analyze/contract" in readme
 
 
 def test_smoke_mvp_evaluators_cover_status_and_demo_cases() -> None:

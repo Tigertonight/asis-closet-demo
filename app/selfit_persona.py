@@ -206,12 +206,12 @@ PERSONAS: dict[str, Persona] = {
                  ("time_orientation", "temperature", "completion"),
                  "柔和、复古、暖调、生活感", ("复古胶片", "暖调生活感", "柔和氛围"),
                  "复古", ("自然",)),
-        _persona("JADE", "东方玉骨", "中式", ("日系",),
+        _persona("JADE", "东方玉骨", "中式", (),
                  (70, 40, 15, 30, 50, 80, 35),
                  ("silhouette", "time_orientation", "saturation"),
                  "硬朗、经典、东方秩序、中低饱和", ("东方秩序", "经典骨相", "克制雅致"),
                  "复古", ("清冷",)),
-        _persona("LOOP", "无限重启", "无倾向", ("日系", "韩系", "欧美系", "中式", "法式", "轻亚"),
+        _persona("LOOP", "无限重启", "无倾向", (),
                  (50, 50, 50, 50, 50, 95, 60),
                  ("completion", "individuality"),
                  "高完成度、反复调整、视觉方向不限", ("高完成度", "反复打磨", "方向探索"),
@@ -221,7 +221,7 @@ PERSONAS: dict[str, Persona] = {
                  ("saturation", "temperature", "silhouette"),
                  "极低饱和、冷调、硬朗、深色执念", ("暗黑极简", "冷调深色", "硬朗肃杀"),
                  "清冷", ("个性",)),
-        _persona("VOID", "人间失格", "无倾向", ("日系", "韩系", "欧美系", "中式", "法式", "轻亚"),
+        _persona("VOID", "人间失格", "无倾向", (),
                  (50, 30, 50, 20, 50, 10, 95),
                  ("completion", "individuality"),
                  "低完成度、高游移、方向不稳定", ("松弛游移", "低完成度", "混搭冲突"),
@@ -338,14 +338,18 @@ def _region_penalty(persona: Persona, regional: str | None) -> float | None:
 
 
 def _persona_distance(persona: Persona, vector: dict[str, Any]) -> tuple[float, float]:
-    """加权欧氏距离 + 地域加减分；返回 (数值距离, 总距离)。"""
+    """加权绝对距离 + 地域加减分；返回 (数值距离, 总距离)。
 
-    weighted_sq = 0.0
+    工程规格定义的数值距离为 ``Σ wᵢ · |userᵢ - centerᵢ|``。
+    不对差值平方，避免单个问卷维度的较大偏差被额外放大。
+    """
+
+    weighted_distance = 0.0
     for dimension in DIMENSIONS:
         weight = CORE_DIMENSION_WEIGHT if dimension in persona.core_dimensions else BASE_DIMENSION_WEIGHT
         delta = float(vector.get(dimension) or 0) - float(persona.center[dimension])
-        weighted_sq += weight * delta * delta
-    numeric_distance = weighted_sq ** 0.5
+        weighted_distance += weight * abs(delta)
+    numeric_distance = weighted_distance
     penalty = _region_penalty(persona, vector.get("regional_style"))
     total = numeric_distance if penalty is None else numeric_distance + penalty
     return numeric_distance, total

@@ -77,6 +77,28 @@ def test_light_asian_derivation() -> None:
     assert derive_regional_style(french) == "法式"
 
 
+def test_persona_region_mapping_matches_engineering_spec() -> None:
+    expected = {
+        "日系": ({"WABI"}, {"MUTE", "MELT", "FILM"}),
+        "韩系": ({"ICED", "MELT"}, {"MUTE", "EASE", "EDGE"}),
+        "欧美系": ({"HEIR", "NEON"}, {"EDGE", "BOLT", "NOIR", "OOPS"}),
+        "中式": ({"JADE"}, {"WABI", "FLOU"}),
+        "法式": ({"EASE", "FLOU", "BOLT", "FILM"}, {"HEIR"}),
+        "轻亚": ({"EDGE"}, {"ICED", "NEON", "NOIR", "OOPS"}),
+    }
+
+    for region, (primary_codes, compatible_codes) in expected.items():
+        assert {
+            code for code, persona in PERSONAS.items() if persona.primary_region == region
+        } == primary_codes
+        assert {
+            code for code, persona in PERSONAS.items() if region in persona.compatible_regions
+        } == compatible_codes
+    assert {
+        code for code, persona in PERSONAS.items() if persona.primary_region == "无倾向"
+    } == {"MUTE", "LOOP", "NOIR", "VOID", "OOPS"}
+
+
 def test_classify_exact_center_hits_persona() -> None:
     # 构造与 MUTE 中心点一致的输入（shape 反向换算：silhouette 75 → shape 25）。
     session = _session(
@@ -110,6 +132,22 @@ def _rank_distances(vector: dict) -> dict[str, float]:
     return {code: _persona_distance(persona, vector)[1] for code, persona in PERSONAS.items()}
 
 
+def test_persona_distance_uses_documented_weighted_absolute_distance() -> None:
+    from app.selfit_persona import _persona_distance
+
+    persona = PERSONAS["MUTE"]
+    vector = dict(persona.center)
+    # MUTE 的 silhouette 是核心维度（权重 1.5），complexity 也是核心维度。
+    vector["silhouette"] += 10
+    vector["complexity"] += 4
+    vector["regional_style"] = "无倾向"
+
+    numeric, total = _persona_distance(persona, vector)
+
+    assert numeric == 10 * 1.5 + 4 * 1.5
+    assert total == numeric
+
+
 def test_neutral_regional_user_gets_no_region_penalty() -> None:
     vector = {
         "silhouette": 50, "complexity": 30, "time_orientation": 50,
@@ -121,9 +159,20 @@ def test_neutral_regional_user_gets_no_region_penalty() -> None:
 
 
 def test_confidence_tiers() -> None:
-    vector = {dimension: 50 for dimension in DIMENSIONS}
-    vector["regional_style"] = None
+    # 该向量在加权绝对距离下的前两名距离为 192.5 / 205，
+    # confidence = (205 - 192.5) / 205 ≈ 0.061，应落入低置信度。
+    vector = {
+        "silhouette": 60,
+        "complexity": 65,
+        "time_orientation": 95,
+        "saturation": 0,
+        "temperature": 70,
+        "completion": 40,
+        "individuality": 35,
+        "regional_style": None,
+    }
     result = classify_persona(vector)
+    assert result["persona_confidence"] == 0.061
     assert result["confidence_tier"] == "low"
 
 

@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#faf8f7" />
+  <title>selfit · 风格报告配置后台</title>
+  <link rel="icon" href="data:," />
+  <link rel="stylesheet" href="/static/report-builder/builder.css?v=20260826-1" />
+</head>
+<body>
+  <header class="workspace-header">
+    <div class="brand-lockup"><img src="/static/selfit/assets/selfit-wordmark.svg" width="55" height="20" alt="selfit" /><span>风格报告配置后台</span></div>
+    <div class="header-actions" data-library-actions><span class="selection-state" id="selectionState">未选择模板</span><button class="button button--quiet" id="libraryImportButton" type="button">导入模板</button><button class="button button--quiet" id="batchExportButton" type="button" disabled>批量导出</button><button class="button button--primary" id="createButton" type="button">新建模板</button></div>
+    <div class="header-actions" data-editor-actions hidden><span class="save-state" id="saveState" role="status" data-state="editing">编辑中 · 尚未修改</span><button class="button button--quiet" id="backButton" type="button">返回模板库</button><button class="button button--quiet" id="importButton" type="button">导入配置</button><button class="button button--quiet" id="exportButton" type="button">导出配置</button><button class="button button--primary" id="saveButton" type="button" disabled>保存修改</button></div>
+    <input id="importInput" type="file" accept="application/json,.json" hidden /><input id="libraryImportInput" type="file" accept="application/json,.json" multiple hidden />
+  </header>
+  <main class="library-view" id="libraryView">
+    <section class="library-shell" aria-labelledby="libraryTitle">
+      <div class="library-heading"><div><p class="eyebrow">REPORT LIBRARY</p><h1 id="libraryTitle">模板数据管理</h1><p>集中管理所有风格报告模板，进入模板后编辑内容与预览效果。</p></div><div class="library-summary" aria-label="模板统计"><span><b id="templateCount">0</b> 个模板</span><span><b id="completeCount">0</b> 个配置完整</span></div></div>
+      <div class="library-toolbar"><label class="search-field"><span aria-hidden="true">⌕</span><input id="templateSearch" type="search" placeholder="搜索人格名称或英文代号" aria-label="搜索模板" /></label><label class="select-all"><input id="selectAll" type="checkbox" /> 选择当前结果</label></div>
+      <div class="template-list" id="templateList" aria-live="polite"></div>
+      <div class="library-empty" id="libraryEmpty" hidden><strong>还没有匹配的模板</strong><p>可以清除搜索，或新建一个风格报告模板。</p><button class="button button--primary" id="emptyCreateButton" type="button">新建模板</button></div>
+    </section>
+  </main>
+  <main class="workspace" id="editorView" hidden>
+    <section class="editor-pane" aria-label="模板配置表单">
+      <div class="editor-intro"><div><p class="eyebrow">REPORT TEMPLATE</p><h1>编辑风格报告</h1><p>修改会实时同步到右侧预览；确认无误后点击“保存修改”才会生效。</p></div><button class="button button--quiet" id="resetButton" type="button">恢复主数据</button></div>
+      <nav class="section-nav" aria-label="配置分组">
+        <button class="is-active" type="button" data-jump="identity">基础信息 <span>6</span></button><button type="button" data-jump="colors">推荐色 <span>5</span></button><button type="button" data-jump="beauty">妆发 <span>4</span></button><button type="button" data-jump="outfits">穿搭 <span>5</span></button><button type="button" data-jump="conclusion">总结 <span>4</span></button>
+      </nav>
+      <form id="builderForm" novalidate>
+        <section class="form-section" id="identity" data-form-section>
+          <div class="section-heading"><span>01</span><div><h2>基础信息</h2><p>定义人格的第一印象与核心表达。</p></div></div>
+          <div class="field-grid field-grid--2"><label class="field"><span>人格名称 <b>必填</b></span><input name="name" maxlength="12" required /></label><label class="field"><span>英文代号 <b>必填</b></span><input name="code" maxlength="12" required /></label></div>
+          <div class="field"><span>头部插画 <b>1 张</b></span><div class="image-field" data-image-field="hero"><input type="file" accept="image/png,image/jpeg,image/webp" /><div class="image-thumb"><img alt="头部插画预览" /></div><div><strong>替换头部插画</strong><small>建议 1484 × 1072px，PNG / JPG / WebP</small></div><button type="button" data-clear-image>移除</button></div></div>
+          <fieldset class="repeater"><legend>Keyword <b>3 个 · 每个最多 4 字</b></legend><div class="field-grid field-grid--3" id="keywordFields"></div></fieldset>
+          <label class="field"><span>人格概述 <b>1 段 · 建议约 3 行</b></span><textarea name="summary" rows="4" maxlength="120"></textarea><small class="markdown-help">直接描述人格特点，建议 45–70 字；按完整句子换行，避免加入“一句话结论”等小标题。</small><small class="counter" data-counter="summary"></small></label>
+        </section>
+        <section class="form-section" id="colors" data-form-section>
+          <div class="section-heading"><span>02</span><div><h2>推荐色</h2><p>固定展示 5 个颜色，可同时编辑色值和名称。</p></div></div><div class="color-editor" id="colorFields"></div>
+        </section>
+        <section class="form-section" id="beauty" data-form-section>
+          <div class="section-heading"><span>03</span><div><h2>妆容与发型</h2><p>每项包含图片、标题与选填的来源署名。</p></div></div>
+          <fieldset class="repeater"><legend>妆容 <b>2 组</b></legend><div class="media-editor" id="makeupFields"></div></fieldset><fieldset class="repeater"><legend>发型 <b>2 组</b></legend><div class="media-editor" id="hairFields"></div></fieldset>
+        </section>
+        <section class="form-section" id="outfits" data-form-section>
+          <div class="section-heading"><span>04</span><div><h2>穿搭</h2><p>先说明整体方向，再提供 4 组视觉参考。</p></div></div>
+          <label class="field"><span>穿搭综述 <b>1 段 · 建议约 4 行</b></span><textarea name="outfitSummary" rows="5" maxlength="160"></textarea><small class="markdown-help">直接给出穿搭方向，建议 60–90 字；按完整句子换行，避免重复“穿搭建议”标题。</small><small class="counter" data-counter="outfitSummary"></small></label><p class="master-data-note" id="outfitLibraryCount"></p><fieldset class="repeater"><legend>穿搭参考 <b>4 组</b></legend><div class="media-editor" id="outfitFields"></div></fieldset>
+        </section>
+        <section class="form-section" id="conclusion" data-form-section>
+          <div class="section-heading"><span>05</span><div><h2>结尾总结</h2><p>用一段概括和 3 个行动建议收束报告。</p></div></div>
+          <label class="field"><span>结尾概括 <b>1 段 · 建议约 3 行</b></span><textarea name="conclusion" rows="4" maxlength="120"></textarea><small class="markdown-help">用自然语气解释人格，建议 45–70 字；避免重复“风格主张”标题。</small><small class="counter" data-counter="conclusion"></small></label><fieldset class="repeater"><legend>建议点 <b>3 条 · 每条 1–2 行</b></legend><div class="advice-editor" id="adviceFields"></div></fieldset>
+        </section>
+      </form>
+    </section>
+    <aside class="preview-pane" aria-label="报告实时预览">
+      <div class="preview-toolbar"><div><strong>实时预览</strong><span><i></i> 已同步</span></div><button id="previewTop" type="button">回到顶部</button></div>
+      <div class="phone-stage"><iframe class="report-preview-frame" id="reportPreview" src="/static/report-builder/preview.html?v=20260825-5" title="风格报告模板实时预览"></iframe></div>
+    </aside>
+  </main>
+  <dialog class="confirm-dialog" id="deleteDialog"><form method="dialog"><p class="eyebrow">DELETE TEMPLATE</p><h2>删除这个模板？</h2><p id="deleteDialogCopy">删除后无法恢复，请先确认已导出需要保留的配置。</p><div><button class="button button--quiet" value="cancel">取消</button><button class="button button--danger" id="confirmDeleteButton" value="confirm">删除模板</button></div></form></dialog>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div><script src="/static/report-builder/seed-templates.js?v=20260826-db-v3" defer></script><script src="/static/report-builder/builder.js?v=20260826-1" defer></script>
+</body>
+</html>

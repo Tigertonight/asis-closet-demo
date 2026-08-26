@@ -7,8 +7,8 @@
 
 内容池
 ------
-内容池是 JSON 清单（默认 outputs/selfit_content_pool/pool.json，可用
-SELFIT_CONTENT_POOL_PATH 覆盖），图片走公开 CDN（builder 里 content_url
+内容池是 JSON 清单（优先使用随应用发布的 bundled 数据，兼容
+outputs/selfit_content_pool/pool.json，也可用 SELFIT_CONTENT_POOL_PATH 覆盖），图片走公开 CDN（builder 里 content_url
 解析相对路径）。数据资产到位前由 scripts/seed_selfit_content_pool.py
 生成 mock 条目跑通链路。条目 schema 见 seed 脚本头部注释。
 
@@ -19,11 +19,12 @@ SELFIT_CONTENT_POOL_PATH 覆盖），图片走公开 CDN（builder 里 content_u
 - 穿搭：先定人格取池 → Suit 重排取 top10。
   Suit = 人格与地域风格 50% + 体型结构 30% + 肤色色彩 20%；
   任何标签「不可判断」从分母剔除、权重按比例归一化；
-  降级链：主人格池 → 并入次人格池 → 全池重排 → 全部返回。
+  降级链：多标签命中 → 单标签命中 → 稳定随机补齐。
 """
 
 from __future__ import annotations
 
+import hashlib
 import json
 import os
 import threading
@@ -33,6 +34,7 @@ from typing import Any
 from app.storage import ROOT_DIR
 
 DEFAULT_CONTENT_POOL_PATH = ROOT_DIR / "outputs" / "selfit_content_pool" / "pool.json"
+BUNDLED_CONTENT_POOL_PATH = ROOT_DIR / "app" / "static" / "selfit" / "data" / "content-pool.v1.json"
 
 # 穿搭重排权重（用户特征×穿搭妆发标签映射方案「六、推荐计算」）。
 WEIGHT_PERSONA_REGION = 0.5
@@ -156,7 +158,14 @@ _POOL_SINGLETONS: dict[str, ContentPool] = {}
 
 
 def content_pool() -> ContentPool:
-    path = os.getenv("SELFIT_CONTENT_POOL_PATH", "").strip() or str(DEFAULT_CONTENT_POOL_PATH)
+    configured = os.getenv("SELFIT_CONTENT_POOL_PATH", "").strip()
+    if configured:
+        path = configured
+    elif BUNDLED_CONTENT_POOL_PATH.exists():
+        # 正式导入数据随应用发布；outputs 路径继续兼容 seed/mock 与旧环境。
+        path = str(BUNDLED_CONTENT_POOL_PATH)
+    else:
+        path = str(DEFAULT_CONTENT_POOL_PATH)
     pool = _POOL_SINGLETONS.get(path)
     if pool is None:
         pool = ContentPool(Path(path))
@@ -273,6 +282,12 @@ def body_structure_score(outfit: dict[str, Any], body_shape: str | None,
         total += mapping.get(str(label), STRUCTURE_MISS_SCORE)
         count += 1
     if count == 0:
+        # 人工内容库已有直接体型标签时优先复用；结构四标签补齐后会自然走上面的细粒度评分。
+        body_types = outfit.get("body_types") or []
+        if isinstance(body_types, str):
+            body_types = [item.strip() for item in body_types.split("|") if item.strip()]
+        if body_shape and isinstance(body_types, list) and body_types:
+            return 100.0 if body_shape in body_types else STRUCTURE_MISS_SCORE
         return None
     return total / count
 
@@ -368,12 +383,16 @@ def region_match_score(outfit: dict[str, Any], regional_style: str | None,
                        primary_region: str, compatible_regions: tuple[str, ...]) -> float | None:
     """地域匹配分：命中笔记主地域 100 / 兼容 70 / 不匹配 0；笔记无地域标签剔除。"""
 
-    outfit_region = outfit.get("regional_style")
-    if not outfit_region:
+    outfit_regions = outfit.get("regional_styles") or outfit.get("regional_style")
+    if isinstance(outfit_regions, str):
+        outfit_regions = [item.strip() for item in outfit_regions.split("|") if item.strip()]
+    if not isinstance(outfit_regions, list):
+        outfit_regions = [str(outfit_regions)] if outfit_regions else []
+    if not outfit_regions:
         return None
-    if regional_style and str(outfit_region) == regional_style:
+    if regional_style and regional_style in outfit_regions:
         return 100.0
-    if str(outfit_region) == primary_region or str(outfit_region) in compatible_regions:
+    if primary_region in outfit_regions or any(item in compatible_regions for item in outfit_regions):
         return 70.0
     return 0.0
 
@@ -434,52 +453,62 @@ def recommend_outfits(
     skin: str | None,
     top_n: int = OUTFIT_TOP_N,
 ) -> list[dict[str, Any]]:
-    """人格池 → Suit 重排 → top10；降级链：主池 → 并入次池 → 全池。"""
+    """人格池 → Suit 重排 → top10。
+
+    严格按工程规格降级：多标签命中 → 单标签命中 → 随机补齐。
+    为避免用户重新打开报告时内容跳动，随机层使用人格与内容 ID
+    生成稳定乱序键。
+    """
 
     outfits = pool.outfits
     if not outfits:
         return []
 
-    def in_primary_pool(outfit: dict[str, Any]) -> bool:
-        return persona_match_score(outfit, primary, secondary) >= 80.0 and (
-            str(outfit.get("primary_persona") or "") == primary
-            or primary in (outfit.get("secondary_personas") or [])
-        )
-
-    def in_secondary_pool(outfit: dict[str, Any]) -> bool:
-        if str(outfit.get("primary_persona") or "") == (secondary or ""):
-            return True
-        return bool(secondary) and secondary in (outfit.get("secondary_personas") or [])
-
-    primary_pool = [item for item in outfits if in_primary_pool(item)]
-    candidates = primary_pool
-    if len(candidates) < top_n and secondary:
-        candidates = candidates + [
-            item for item in outfits if item not in primary_pool and in_secondary_pool(item)
-        ]
-    if len(candidates) < top_n:
-        known = set(id(item) for item in candidates)
-        candidates = candidates + [item for item in outfits if id(item) not in known]
-    if len(candidates) < top_n:
-        return candidates
-
-    scored = [
-        (
-            suit_score(
-                item,
-                primary=primary,
-                secondary=secondary,
-                regional_style=regional_style,
-                primary_region=primary_region,
-                compatible_regions=compatible_regions,
-                body_shape=body_shape,
-                rectangle_branch=rectangle_branch,
-                skin=skin,
-            ),
-            index,
+    def score(item: dict[str, Any]) -> float:
+        return suit_score(
             item,
+            primary=primary,
+            secondary=secondary,
+            regional_style=regional_style,
+            primary_region=primary_region,
+            compatible_regions=compatible_regions,
+            body_shape=body_shape,
+            rectangle_branch=rectangle_branch,
+            skin=skin,
         )
-        for index, item in enumerate(candidates)
-    ]
-    scored.sort(key=lambda triple: (-triple[0], triple[1]))
-    return [item for _, _, item in scored[:top_n]]
+
+    def match_count(item: dict[str, Any]) -> int:
+        """统计可判定且命中的人格/地域/体型/肤色标签类别数。"""
+
+        matches = 0
+        if persona_match_score(item, primary, secondary) > 0:
+            matches += 1
+        region = region_match_score(item, regional_style, primary_region, compatible_regions)
+        if region is not None and region > 0:
+            matches += 1
+        body = body_structure_score(item, body_shape, rectangle_branch)
+        if body is not None and body > STRUCTURE_MISS_SCORE:
+            matches += 1
+        color = skin_color_score(item, skin)
+        if color is not None and color > COLOR_MISS_SCORE:
+            matches += 1
+        return matches
+
+    indexed = [(index, item, match_count(item)) for index, item in enumerate(outfits)]
+    multi = [(index, item) for index, item, count in indexed if count >= 2]
+    single = [(index, item) for index, item, count in indexed if count == 1]
+    fallback = [(index, item) for index, item, count in indexed if count == 0]
+
+    def ranked(items: list[tuple[int, dict[str, Any]]]) -> list[dict[str, Any]]:
+        scored = [(score(item), index, item) for index, item in items]
+        scored.sort(key=lambda triple: (-triple[0], triple[1]))
+        return [item for _, _, item in scored]
+
+    # 文档要求最后一层随机补齐；稳定哈希同时保证可复现与不依赖源数据顺序。
+    fallback.sort(
+        key=lambda pair: hashlib.sha256(
+            f"{primary}|{secondary or ''}|{pair[1].get('id') or pair[0]}".encode("utf-8")
+        ).digest()
+    )
+    ordered = ranked(multi) + ranked(single) + [item for _, item in fallback]
+    return ordered[:top_n]

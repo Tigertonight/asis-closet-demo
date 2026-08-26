@@ -16,9 +16,17 @@
   let busy = false;
   let countdownRun = 0;
   let analysisRun = 0;
+  const processingTitle = document.querySelector('#processingTitle');
+  const processingHint = document.querySelector('#processingHint');
+  const processingArt = document.querySelector('#processingArt');
+  const processingStages = [
+    { delay: 0, percent: 25, line: '看见你本来的样子', art: '25' },
+    { delay: 1100, percent: 50, line: '你不需要成为谁', art: '50' },
+    { delay: 2200, percent: 75, line: '只需要更准确地做自己', art: '75' },
+  ];
 
   const fitCanvas = () => {
-    const scale = Math.min(window.innerWidth / 393, window.innerHeight / 698);
+    const scale = Math.min(window.innerWidth / 393, window.innerHeight / 746);
     app.style.setProperty('--mirror-scale', String(scale));
   };
   fitCanvas();
@@ -39,6 +47,22 @@
     });
     app.dataset.state = name;
     document.querySelector('meta[name="theme-color"]')?.setAttribute('content', ['home', 'processing'].includes(name) ? '#792a28' : '#797979');
+  };
+  const renderProcessingStage = (stage, animate = true) => {
+    app.dataset.processingStage = String(stage.percent);
+    processingTitle.textContent = stage.line;
+    processingHint.textContent = `${stage.percent}%`;
+    processingArt.src = `/static/selfit/assets/mirror-loading-stage-${stage.art}@2x.png`;
+    processingArt.dataset.stage = String(stage.percent);
+    if (!animate) return;
+    processingTitle.animate?.([
+      { opacity: 0, transform: 'translateY(5px)' },
+      { opacity: 1, transform: 'translateY(0)' },
+    ], { duration: 360, easing: 'ease-out' });
+    processingArt.animate?.([
+      { opacity: 0, transform: 'translateX(-50%) translateY(5px) scale(.98)' },
+      { opacity: 1, transform: 'translateX(-50%) translateY(0) scale(1)' },
+    ], { duration: 440, easing: 'cubic-bezier(.22,.61,.36,1)' });
   };
   const notify = (message, duration = 2600) => {
     toast.textContent = message; toast.hidden = false;
@@ -123,16 +147,12 @@
     if (busy) return;
     busy = true; clearTimers(); show('processing');
     const runId = ++analysisRun;
-    const title = document.querySelector('#processingTitle');
-    const hint = document.querySelector('#processingHint');
-    const stages = [
-      [0, '25%'],
-      [650, '50%'],
-      [1300, '75%'],
-      [1950, '100%'],
-    ];
-    title.textContent = '正在分析中';
-    stages.forEach(([delay, percent]) => later(() => { hint.textContent = percent; }, delay));
+    const renderStage = (stage) => {
+      if (runId !== analysisRun) return;
+      renderProcessingStage(stage);
+    };
+    renderStage(processingStages[0]);
+    processingStages.slice(1).forEach((stage) => later(() => renderStage(stage), stage.delay));
     let responseData = null;
     if (config.analysisEndpoint && photoUrl) {
       try {
@@ -149,9 +169,9 @@
       const qrImage = document.querySelector('#reportQrImage');
       const qrUrl = responseData?.qrImageUrl || config.qrImageUrl;
       if (qrUrl) { qrImage.src = qrUrl; qrImage.hidden = false; document.querySelector('#reportCode').textContent = '微信扫码查看'; }
-      show('result'); busy = false;
+      show('result'); busy = false; delete app.dataset.processingStage;
       later(reset, Number(config.idleTimeoutMs) || 60000);
-    }, Math.max(2600, config.minimumAnalysisMs || 0));
+    }, Math.max(3500, config.minimumAnalysisMs || 0));
   };
   const reset = () => {
     countdownRun += 1;
@@ -159,6 +179,7 @@
     clearTimers();
     stopCamera();
     busy = false;
+    delete app.dataset.processingStage;
     startCapture.disabled = false;
     startCapture.removeAttribute('aria-disabled');
     toast.hidden = true;
@@ -171,4 +192,12 @@
   document.querySelector('#returnHome').addEventListener('click', reset);
   document.addEventListener('visibilitychange', () => { if (document.hidden) reset(); });
   window.addEventListener('beforeunload', stopCamera);
+
+  const previewParams = new URLSearchParams(window.location.search);
+  if (previewParams.get('preview') === 'processing') {
+    const previewPercent = Number(previewParams.get('stage')) || 25;
+    const previewStage = processingStages.find((stage) => stage.percent === previewPercent) || processingStages[0];
+    show('processing');
+    renderProcessingStage(previewStage, false);
+  }
 })();

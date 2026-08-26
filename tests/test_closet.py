@@ -644,14 +644,26 @@ def test_selfit_demo_page_is_available(monkeypatch, tmp_path: Path) -> None:
     assert 'data-screen="intro"' in response.text
     assert 'data-screen="suit-manual"' in response.text
     assert 'data-screen="loading"' in response.text
+    assert "先看见真实的你" in response.text
+    assert "/static/selfit/assets/loading-stage-25@2x.png" in response.text
+    assert "/static/selfit/assets/splash-signature@2x.png" in response.text
+    assert "Know yourself first." not in response.text
     assert 'data-screen="report"' in response.text
+    assert 'data-report-summary' in response.text
+    assert "/static/selfit/assets/figma-report/report-hero-reference.png" in response.text
+    assert 'data-report-outfit-summary' in response.text
+    assert 'data-report-advice-intro' in response.text
+    assert 'class="report-signoff"' in response.text
+    assert 'class="report-image-grid"' in response.text
+    assert 'data-share-summary' in response.text
     assert "选择你更喜欢的风格和颜色" in response.text
     assert "几个问题，了解你想表达的" in response.text
     assert "生成风格报告" in response.text
     assert "保存并分享" in response.text
     assert 'data-next="suit"' in response.text
     assert "去认识自己" in response.text
-    assert "流程约1分钟，无需注册" in response.text
+    assert "手机号登录" in response.text
+    assert "邀请码登录" in response.text
 
 
 def test_selfit_route_uses_the_same_onboarding(monkeypatch, tmp_path: Path) -> None:
@@ -679,7 +691,11 @@ def test_selfit_mirror_route_exposes_the_complete_kiosk_flow(monkeypatch, tmp_pa
     assert 'data-screen="confirm"' in response.text
     assert 'data-screen="processing"' in response.text
     assert 'data-screen="result"' in response.text
-    assert "拍照做测试" in response.text
+    assert "适我，不适众" in response.text
+    assert "1 分钟，找到真正衬你的颜色与穿搭风格" in response.text
+    assert "开始风格测试" in response.text
+    assert "everyone has a code." in response.text
+    assert "/static/selfit/assets/icon-camera.svg" in response.text
     assert "扫码查看" in response.text
     assert "mirror-report-qr.png" in response.text
     assert "/static/selfit/mirror.js" in response.text

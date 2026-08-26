@@ -6,7 +6,10 @@
   <meta name="theme-color" content="#792a28" />
   <title>selfit 智能镜子</title>
   <link rel="icon" href="data:," />
-  <link rel="stylesheet" href="/static/selfit/mirror.css?v=20260821-10" />
+  <link rel="preload" as="image" href="/static/selfit/assets/mirror-loading-stage-25@2x.png" />
+  <link rel="preload" as="image" href="/static/selfit/assets/mirror-loading-stage-50@2x.png" />
+  <link rel="preload" as="image" href="/static/selfit/assets/mirror-loading-stage-75@2x.png" />
+  <link rel="stylesheet" href="/static/selfit/mirror.css?v=20260824-5" />
 </head>
 <body>
   <main class="mirror-shell" id="mirrorApp" data-state="home" aria-live="polite">
@@ -22,14 +25,14 @@
         <i class="home-star home-star--13">★</i><i class="home-star home-star--14">★</i>
       </span>
       <div class="home-copy">
-        <h1 id="mirrorTitle">先认识自己，再决定怎么穿</h1>
-        <p>一分钟，获取你的色彩测试报告</p>
+        <h1 id="mirrorTitle">适我，不适众</h1>
+        <p>1 分钟，找到真正衬你的颜色与穿搭风格</p>
       </div>
       <button class="mirror-button mirror-button--light home-action" id="startCapture" type="button">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8.4 5.5 9.6 4h4.8l1.2 1.5H19A2.5 2.5 0 0 1 21.5 8v8.5A2.5 2.5 0 0 1 19 19H5a2.5 2.5 0 0 1-2.5-2.5V8A2.5 2.5 0 0 1 5 5.5h3.4ZM12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8Zm0 1.8a2.2 2.2 0 1 1 0 4.4 2.2 2.2 0 0 1 0-4.4Z"/></svg>
-        拍照做测试
+        <img src="/static/selfit/assets/icon-camera.svg" width="30" height="30" alt="" aria-hidden="true" />
+        开始风格测试
       </button>
-      <p class="home-cn">适我</p>
+      <div class="home-manifesto" role="img" aria-label="everyone has a code."><img class="home-manifesto-art" src="/static/selfit/assets/mirror-home-manifesto@2x.png" width="452" height="340" alt="" /></div>
     </section>
 
     <section class="mirror-screen camera-screen" data-screen="countdown" aria-label="拍照倒计时">
@@ -60,11 +63,12 @@
 
     <section class="mirror-screen textile-screen processing-screen" data-screen="processing" aria-label="AI 分析中">
       <img class="mirror-wordmark mirror-wordmark--light" src="/static/selfit/assets/selfit-wordmark.svg" width="55" height="20" alt="selfit" />
-      <img class="processing-ornament" src="/static/selfit/assets/mirror-loading-ornament@2x.png" width="195" height="221" alt="" aria-hidden="true" />
-      <div class="processing-copy">
-        <p id="processingTitle">正在分析中</p>
+      <div class="processing-copy" role="status" aria-live="polite">
+        <p id="processingTitle">看见你本来的样子</p>
         <small id="processingHint">25%</small>
       </div>
+      <img class="processing-art" id="processingArt" src="/static/selfit/assets/mirror-loading-stage-25@2x.png" width="369" height="114" alt="" aria-hidden="true" data-stage="25" />
+      <img class="processing-signature" src="/static/selfit/assets/mirror-signature-know-yourself@2x.png" width="452" height="140" alt="Know yourself first." />
     </section>
 
     <section class="mirror-screen result-screen" data-screen="result" aria-label="分析完成">
@@ -86,6 +90,6 @@
     <div class="permission-toast" id="permissionToast" role="status" hidden></div>
     <canvas id="captureCanvas" width="786" height="1396" hidden></canvas>
   </main>
-  <script src="/static/selfit/mirror.js?v=20260821-6" defer></script>
+  <script src="/static/selfit/mirror.js?v=20260824-3" defer></script>
 </body>
 </html>

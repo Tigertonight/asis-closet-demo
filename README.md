@@ -21,7 +21,7 @@ selfit 是一个面向个人风格认知、色彩分析和穿搭决策的 MVP。
 
 ## 体验边界
 
-- `/selfit` 默认为 `mock` 模式，便于完整演示 onboarding 和报告。`?apiMode=live` 会请求 `/api/v1/selfit` 契约，对应业务后端需另行接入，见 `docs/SELFIT_BACKEND_INTEGRATION.md`。
+- `/selfit` 默认使用 `live` 模式，请求项目内的 `/api/v1/selfit` 报告链路并按后端 `typeId` 加载 16 人格模板。需要纯前端演示时可临时使用 `?apiMode=mock`。
 - `/selfit/mirror` 已可使用真实摄像头；未授权或设备不支持时会进入演示模式。默认展示示例报告，正式分析端点可通过 `window.__SELFIT_MIRROR_CONFIG__` 接入。
 - `/demo` 和 `POST /analyze` 运行仓库中的真实本地 CV / 规则链路，不依赖 Codex 内部看图能力。
 - 试穿的 fixture / mock provider 只用于验证接口和管线；正式生成结果必须通过外部图片编辑 provider。

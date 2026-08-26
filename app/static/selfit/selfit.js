@@ -6,14 +6,17 @@
   const themeColor = document.querySelector('meta[name="theme-color"]');
   const SESSION_STORAGE_KEY = 'selfit.onboarding.session.v1';
   let api;
+  let auth;
+  let authReady = Promise.resolve(null);
   const state = {
     screen: 'splash', facePhoto: null, bodyPhoto: null,
     photoStatus: { face: 'empty', body: 'empty' },
     photoAssets: { face: null, body: null },
     manual: { skin: null, faceShape: null, bodyShape: null },
     axes: { shape: 42, energy: 64, trend: 42 },
-    palette: null, answers: {}, sessionId: null, revision: 0, reportJobId: null, reportId: null,
+    palette: null, answers: {}, sessionId: null, revision: 0, reportJobId: null, reportId: null, authUser: null,
   };
+  const personalityCatalog = window.__SELFIT_PERSONALITY_TEMPLATES__ || { types: {}, renderRules: {} };
 
   const showScreen = (name) => {
     const next = screens.find((screen) => screen.dataset.screen === name);
@@ -45,7 +48,14 @@
   const enterOnboarding = () => {
     if (splashTransitioning || state.screen !== 'splash') return;
     splashTransitioning = true; clearTimeout(splashTimer); splash.classList.add('is-leaving');
-    setTimeout(() => { showScreen('intro'); splash.classList.remove('is-leaving'); splashTransitioning = false; playIntro(); }, matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 420);
+    setTimeout(async () => {
+      await authReady;
+      const destination = state.authUser ? 'intro' : 'login';
+      showScreen(destination);
+      splash.classList.remove('is-leaving');
+      splashTransitioning = false;
+      if (destination === 'intro') playIntro();
+    }, matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 420);
   };
   document.querySelector('#splashEnter').addEventListener('click', enterOnboarding);
 
@@ -54,6 +64,116 @@
     const back = event.target.closest('[data-back]');
     if (next) { if (next.dataset.next !== 'intro') clearIntroMotion(); showScreen(next.dataset.next); }
     if (back) { showScreen(back.dataset.back); if (back.dataset.back === 'intro') playIntro(); }
+  });
+
+  const authNodes = {
+    phoneForm: document.querySelector('#phoneLoginForm'),
+    phone: document.querySelector('#loginPhone'),
+    code: document.querySelector('#loginCode'),
+    clearPhone: document.querySelector('#clearLoginPhone'),
+    sendCode: document.querySelector('#sendLoginCode'),
+    phoneSubmit: document.querySelector('#phoneLoginSubmit'),
+    phoneMessage: document.querySelector('#phoneLoginMessage'),
+    inviteForm: document.querySelector('#inviteLoginForm'),
+    invite: document.querySelector('#inviteCode'),
+    inviteSubmit: document.querySelector('#inviteLoginSubmit'),
+    inviteMessage: document.querySelector('#inviteLoginMessage'),
+  };
+  let codeCountdownTimer = 0;
+  let codeCountdown = 0;
+  const setAuthMessage = (node, copy = '', stateName = '') => {
+    node.textContent = copy;
+    if (stateName) node.dataset.state = stateName;
+    else delete node.dataset.state;
+  };
+  const normalizedPhone = () => authNodes.phone.value.replace(/\D/g, '').slice(0, 11);
+  const syncPhoneLogin = () => {
+    const phone = normalizedPhone();
+    if (authNodes.phone.value !== phone) authNodes.phone.value = phone;
+    const phoneValid = /^1\d{10}$/.test(phone);
+    const codeValid = /^\d{4,6}$/.test(authNodes.code.value);
+    authNodes.clearPhone.hidden = !phone;
+    authNodes.sendCode.disabled = !phoneValid || codeCountdown > 0 || authNodes.sendCode.getAttribute('aria-busy') === 'true';
+    authNodes.phoneSubmit.disabled = !(phoneValid && codeValid) || authNodes.phoneSubmit.getAttribute('aria-busy') === 'true';
+  };
+  const syncInviteLogin = () => {
+    authNodes.inviteSubmit.disabled = authNodes.invite.value.trim().length < 4 || authNodes.inviteSubmit.getAttribute('aria-busy') === 'true';
+  };
+  const completeAuth = (session) => {
+    state.authUser = session?.user || auth.user || null;
+    state.sessionId = null;
+    state.revision = 0;
+    localStorage.removeItem(SESSION_STORAGE_KEY);
+    showScreen('intro');
+    playIntro();
+  };
+  const setAuthBusy = (button, busy) => {
+    button.toggleAttribute('aria-busy', busy);
+    button.disabled = busy;
+  };
+  authNodes.phone.addEventListener('input', () => { setAuthMessage(authNodes.phoneMessage); syncPhoneLogin(); });
+  authNodes.code.addEventListener('input', () => {
+    authNodes.code.value = authNodes.code.value.replace(/\D/g, '').slice(0, 6);
+    setAuthMessage(authNodes.phoneMessage);
+    syncPhoneLogin();
+  });
+  authNodes.clearPhone.addEventListener('click', () => {
+    authNodes.phone.value = '';
+    authNodes.phone.focus();
+    setAuthMessage(authNodes.phoneMessage);
+    syncPhoneLogin();
+  });
+  authNodes.sendCode.addEventListener('click', async () => {
+    setAuthBusy(authNodes.sendCode, true);
+    setAuthMessage(authNodes.phoneMessage, '正在发送验证码…');
+    try {
+      const result = await auth.startPhone(normalizedPhone());
+      codeCountdown = 60;
+      const devHint = result.dev_code ? `，本地测试码 ${result.dev_code}` : '';
+      setAuthMessage(authNodes.phoneMessage, `验证码已发送${devHint}`, 'success');
+      clearInterval(codeCountdownTimer);
+      codeCountdownTimer = setInterval(() => {
+        codeCountdown -= 1;
+        authNodes.sendCode.textContent = codeCountdown > 0 ? `${codeCountdown}s 后重发` : '重新发送';
+        if (codeCountdown <= 0) clearInterval(codeCountdownTimer);
+        syncPhoneLogin();
+      }, 1000);
+    } catch (error) {
+      setAuthMessage(authNodes.phoneMessage, error.message || '验证码发送失败，请重试。', 'error');
+    } finally {
+      setAuthBusy(authNodes.sendCode, false);
+      syncPhoneLogin();
+    }
+  });
+  authNodes.phoneForm.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    if (authNodes.phoneSubmit.disabled) return;
+    setAuthBusy(authNodes.phoneSubmit, true);
+    setAuthMessage(authNodes.phoneMessage, '正在登录…');
+    try {
+      completeAuth(await auth.verifyPhone(normalizedPhone(), authNodes.code.value));
+    } catch (error) {
+      setAuthMessage(authNodes.phoneMessage, error.message || '登录失败，请重试。', 'error');
+    } finally {
+      setAuthBusy(authNodes.phoneSubmit, false);
+      syncPhoneLogin();
+    }
+  });
+  authNodes.invite.addEventListener('input', () => { setAuthMessage(authNodes.inviteMessage); syncInviteLogin(); });
+  authNodes.inviteForm.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    if (authNodes.inviteSubmit.disabled) return;
+    setAuthBusy(authNodes.inviteSubmit, true);
+    setAuthMessage(authNodes.inviteMessage, '正在登录…');
+    try {
+      completeAuth(await auth.verifyInvite(authNodes.invite.value.trim()));
+    } catch (error) {
+      const copy = error.status === 404 ? '邀请码登录接口尚未接入，请先使用手机号登录。' : (error.message || '邀请码登录失败，请重试。');
+      setAuthMessage(authNodes.inviteMessage, copy, 'error');
+    } finally {
+      setAuthBusy(authNodes.inviteSubmit, false);
+      syncInviteLogin();
+    }
   });
 
   const validatePhoto = (file) => {
@@ -148,85 +268,77 @@
   });
 
   const loadingStages = [
-    { percent: 25, line: '先看见真实的你', art: '25' },
-    { percent: 50, line: '寻找你同频的灵感', art: '50' },
-    { percent: 75, line: '拼出更像你的样子', art: '75' },
-    { percent: 100, line: '我们认识你了', art: '100' },
+    { percent: 25, line: '先看见真实的你', src: '/static/selfit/assets/loading-stage-25@2x.png?v=20260826' },
+    { percent: 50, line: '寻找你同频的灵感', src: '/static/selfit/assets/loading-stage-50@2x.png?v=20260826' },
+    { percent: 75, line: '拼出更像你的样子', src: '/static/selfit/assets/loading-stage-75@2x.png?v=20260826' },
+    { percent: 100, line: '我们认识你了...', src: '/static/selfit/assets/loading-stage-100@2x.png?v=20260826' },
   ];
+  loadingStages.forEach(({ src }) => { const image = new Image(); image.src = src; });
   const setLoadingProgress = (progress) => {
     const stage = [...loadingStages].reverse().find((item) => progress >= item.percent) || loadingStages[0];
-    document.querySelector('#loadingArt').src = `/static/selfit/assets/loading-stage-${stage.art}@4x.png`;
-    document.querySelector('#loadingLine').textContent = stage.line;
-    document.querySelector('#loadingPercent').textContent = `${stage.percent}%`;
+    const art = document.querySelector('#loadingArt');
+    const line = document.querySelector('#loadingLine');
+    const percent = document.querySelector('#loadingPercent');
+    const stageChanged = art.dataset.stage !== String(stage.percent);
+    if (stageChanged) {
+      [art, line, percent].forEach((element) => element.classList.add('is-changing'));
+      window.setTimeout(() => {
+        art.src = stage.src;
+        art.dataset.stage = String(stage.percent);
+        line.textContent = stage.line;
+        percent.textContent = `${stage.percent}%`;
+        requestAnimationFrame(() => requestAnimationFrame(() => {
+          [art, line, percent].forEach((element) => element.classList.remove('is-changing'));
+        }));
+      }, window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 150);
+      return;
+    }
+    art.dataset.stage = String(stage.percent);
+    line.textContent = stage.line;
+    percent.textContent = `${stage.percent}%`;
   };
   document.querySelector('#vibeNext').addEventListener('click', () => generateReport());
 
   const DEFAULT_REPORT_DATA = Object.freeze({
-    eyebrow: 'SOFT COOL',
-    title: '中性利落派',
-    traits: ['冷调柔和', '高质感', '清晰感'],
-    illustration: { imageUrl: '/static/selfit/assets/report-style-soft-cool@4x.png', alt: '中性利落派垂柳刺绣插图' },
-    colors: [
-      { name: '橄榄绿', value: '#c8c487' },
-      { name: '冷淡灰', value: '#d8d0c8' },
-      { name: '海军蓝', value: '#8ca9c8' },
-      { name: '奶咖', value: '#b48666' },
-      { name: '豆沙红', value: '#d77b81' },
-    ],
-    makeup: [
-      { name: '纯净小鹿', byline: '@板牙', imageUrl: '/static/selfit/assets/figma-report/makeup-01@4x.png', alt: '纯净自然妆容参考' },
-      { name: '纯净小鹿', byline: '@板牙', imageUrl: '/static/selfit/assets/figma-report/makeup-02@4x.png', alt: '柔雾红唇妆容参考' },
-      { name: '纯净小鹿', byline: '@板牙', imageUrl: '/static/selfit/assets/figma-report/makeup-03@4x.png', alt: '清透冷调妆容参考' },
-      { name: '纯净小鹿', byline: '@板牙', imageUrl: '/static/selfit/assets/figma-report/makeup-04@4x.png', alt: '利落暖调妆容参考' },
-    ],
-    hair: [
-      { name: '纯净小鹿', byline: '@板牙', imageUrl: '/static/selfit/assets/figma-report/hair-01@4x.png', alt: '暖棕层次长发参考' },
-      { name: '纯净小鹿', byline: '@板牙', imageUrl: '/static/selfit/assets/figma-report/hair-02@4x.png', alt: '自然直发参考' },
-      { name: '纯净小鹿', byline: '@板牙', imageUrl: '/static/selfit/assets/figma-report/hair-03@4x.png', alt: '轻盈层次发型参考' },
-      { name: '纯净小鹿', byline: '@板牙', imageUrl: '/static/selfit/assets/figma-report/hair-04@4x.png', alt: '柔和卷发参考' },
-    ],
-    source: {
-      name: '小红书', copy: '已为你筛选真实用户笔记',
-      avatars: { imageUrl: '/static/selfit/assets/report-user-avatar-stack@4x.png', alt: '3 位真实用户头像' },
-    },
-    outfits: [
-      { badge: '活动', title: '中式辣感', description: '主打国风线条与柔和材质的融合，利落又有层次。', imageUrl: '/static/selfit/assets/figma-report/outfit-01@4x.png', alt: '中式辣感穿搭参考', author: '索贝' },
-      { badge: '活动', title: '新中式穿搭', description: '简洁轮廓搭配东方细节，松弛又清醒。', imageUrl: '/static/selfit/assets/figma-report/outfit-02@4x.png', alt: '新中式穿搭参考', author: '索贝' },
-      { badge: '活动', title: '古镇穿搭', description: '柔和色调与轻盈材质，更衬你的安静质感。', imageUrl: '/static/selfit/assets/figma-report/outfit-03@4x.png', alt: '古镇穿搭参考', author: '索贝' },
-    ],
-    advice: ['建议：直线为主，局部加入柔和弧线', '建议：重质感与清晰配色，装饰保持克制'],
+    eyebrow: '', title: '', heroImage: {}, traits: [], summary: '', illustration: {}, colors: [],
+    makeup: [], hair: [], source: {}, outfitSummary: '', outfits: [], adviceIntro: '', advice: [],
   });
 
   const buildMockReport = (session) => {
     const palette = session.preferences?.palette || 'mono';
-    const titleByPalette = {
-      mono: '中性利落派', earth: '自然松弛派', ocean: '冷感知性派', jewel: '清醒复古派', bright: '灵动撞色派', pastel: '柔和浪漫派',
+    const typeByPalette = {
+      mono: 'mute', earth: 'ease', ocean: 'iced', jewel: 'heir', bright: 'neon', pastel: 'melt',
     };
-    const eyebrowByPalette = {
-      mono: 'SOFT COOL', earth: 'NATURAL EASE', ocean: 'COOL POISE', jewel: 'CLEAR RETRO', bright: 'VIVID PLAY', pastel: 'SOFT ROMANCE',
-    };
-    const axes = session.preferences?.axes || state.axes;
-    const traits = palette === 'mono'
-      ? DEFAULT_REPORT_DATA.traits
-      : [axes.shape > 50 ? '柔和轮廓' : '利落线条', axes.energy > 50 ? '精致细节' : '简约克制', axes.trend > 50 ? '时髦先锋' : '经典耐看'];
-    return { ...DEFAULT_REPORT_DATA, eyebrow: eyebrowByPalette[palette] || DEFAULT_REPORT_DATA.eyebrow, title: titleByPalette[palette] || DEFAULT_REPORT_DATA.title, traits };
+    return { typeId: typeByPalette[palette] || 'mute' };
   };
   const runtimeConfig = window.__SELFIT_CONFIG__ || {};
   const queryMode = new URLSearchParams(location.search).get('apiMode');
+  const runtimeMode = queryMode || runtimeConfig.apiMode || shell.dataset.apiMode || 'mock';
+  auth = window.SelfitAuth.createClient({
+    mode: runtimeConfig.authMode || runtimeMode,
+    baseUrl: runtimeConfig.authBase || '/auth',
+    timeoutMs: runtimeConfig.timeoutMs || 15000,
+  });
+  authReady = auth.restore().then((session) => {
+    state.authUser = session?.user || null;
+    return session;
+  }).catch(() => null);
   api = window.SelfitApi.createClient({
-    mode: queryMode || runtimeConfig.apiMode || shell.dataset.apiMode || 'mock',
+    mode: runtimeMode,
     baseUrl: runtimeConfig.apiBase || shell.dataset.apiBase || '/api/v1/selfit',
     timeoutMs: runtimeConfig.timeoutMs || 15000,
     buildMockReport,
+    getAccessToken: () => auth.accessToken,
   });
   let sessionPromise = null;
   const persistSession = (session) => {
-    localStorage.setItem(SESSION_STORAGE_KEY, JSON.stringify({ sessionId: session.sessionId, expiresAt: session.expiresAt }));
+    localStorage.setItem(SESSION_STORAGE_KEY, JSON.stringify({ sessionId: session.sessionId, expiresAt: session.expiresAt, userId: state.authUser?.user_id || null }));
   };
   const readPersistedSession = () => {
     try {
       const stored = JSON.parse(localStorage.getItem(SESSION_STORAGE_KEY) || 'null');
-      return stored?.sessionId && (!stored.expiresAt || Date.parse(stored.expiresAt) > Date.now()) ? stored : null;
+      const sameUser = stored?.userId && state.authUser?.user_id && stored.userId === state.authUser.user_id;
+      return stored?.sessionId && sameUser && (!stored.expiresAt || Date.parse(stored.expiresAt) > Date.now()) ? stored : null;
     } catch { return null; }
   };
   const ensureSession = async () => {
@@ -252,38 +364,141 @@
   };
 
   const reportNodes = {
+    hero: document.querySelector('[data-report-hero]'),
+    heroImage: document.querySelector('[data-report-hero-image]'),
     eyebrow: document.querySelector('[data-report-eyebrow]'),
     title: document.querySelector('[data-report-title]'),
     traits: document.querySelector('#reportTraits'),
     illustration: document.querySelector('[data-report-illustration]'),
+    summary: document.querySelector('[data-report-summary]'),
     colors: document.querySelector('#reportColors'),
     makeup: document.querySelector('#reportMakeup'),
     hair: document.querySelector('#reportHair'),
-    source: document.querySelector('[data-report-source]'),
+    sourceLogo: document.querySelector('[data-report-source-logo]'),
     sourceCopy: document.querySelector('[data-report-source-copy]'),
     sourceAvatars: document.querySelector('[data-report-source-avatars]'),
+    outfitSummary: document.querySelector('[data-report-outfit-summary]'),
     outfits: document.querySelector('#reportOutfits'),
     advice: document.querySelector('[data-report-advice-list]'),
+    adviceIntro: document.querySelector('[data-report-advice-intro]'),
   };
-  const arrayOrDefault = (value, fallback) => Array.isArray(value) ? value : fallback;
-  const normalizeReport = (payload = {}) => ({
-    ...DEFAULT_REPORT_DATA,
-    ...payload,
-    traits: arrayOrDefault(payload.traits, DEFAULT_REPORT_DATA.traits),
-    colors: arrayOrDefault(payload.colors, DEFAULT_REPORT_DATA.colors),
-    makeup: arrayOrDefault(payload.makeup, DEFAULT_REPORT_DATA.makeup),
-    hair: arrayOrDefault(payload.hair, DEFAULT_REPORT_DATA.hair),
-    outfits: arrayOrDefault(payload.outfits, DEFAULT_REPORT_DATA.outfits),
-    advice: arrayOrDefault(payload.advice, DEFAULT_REPORT_DATA.advice),
-    illustration: { ...DEFAULT_REPORT_DATA.illustration, ...(payload.illustration || {}) },
-    source: {
-      ...DEFAULT_REPORT_DATA.source,
-      ...(payload.source || {}),
-      avatars: { ...DEFAULT_REPORT_DATA.source.avatars, ...(payload.source?.avatars || {}) },
-    },
+  const hasOwn = (object, key) => Object.prototype.hasOwnProperty.call(object, key);
+  const escapeReportMarkdown = (value) => String(value ?? '').replace(/[&<>'"]/g, (character) => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;',
+  })[character]);
+  const renderReportInlineMarkdown = (value) => escapeReportMarkdown(value)
+    .replace(/`([^`]+)`/g, '<code>$1</code>')
+    .replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>')
+    .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
+    .replace(/~~([^~]+)~~/g, '<s>$1</s>')
+    .replace(/(^|[^*])\*([^*]+)\*/g, '$1<em>$2</em>');
+  const renderReportMarkdown = (value) => {
+    const lines = String(value ?? '').replace(/\r\n?/g, '\n').split('\n');
+    let html = '';
+    let listType = '';
+    const closeList = () => { if (listType) { html += `</${listType}>`; listType = ''; } };
+    lines.forEach((line) => {
+      const bullet = line.match(/^\s*[-*]\s+(.+)$/);
+      const ordered = line.match(/^\s*\d+[.)]\s+(.+)$/);
+      const heading = line.match(/^\s*#{1,3}\s+(.+)$/);
+      if (bullet || ordered) {
+        const type = bullet ? 'ul' : 'ol';
+        if (listType !== type) { closeList(); html += `<${type}>`; listType = type; }
+        html += `<li>${renderReportInlineMarkdown((bullet || ordered)[1])}</li>`;
+        return;
+      }
+      closeList();
+      if (!line.trim()) { html += '<span class="report-markdown-space"></span>'; return; }
+      if (heading) { html += `<strong class="report-markdown-heading">${renderReportInlineMarkdown(heading[1])}</strong>`; return; }
+      html += `<p>${renderReportInlineMarkdown(line)}</p>`;
+    });
+    closeList();
+    return html;
+  };
+  const templateCardToReportCard = (item = {}) => ({
+    id: item.id || '',
+    name: item.name || '',
+    byline: item.byline || '',
+    sourceUrl: item.sourceUrl || '',
+    imageUrl: item.image?.src || '',
+    alt: item.image?.alt || item.name || '',
   });
+  const templateToReportData = (template) => {
+    if (!template) return null;
+    const outfits = template.recommendations?.outfits || {};
+    return {
+      typeId: template.typeId,
+      title: template.metadata?.name || '',
+      eyebrow: template.metadata?.code || '',
+      traits: (template.keywords || []).map((keyword) => typeof keyword === 'string' ? keyword : keyword.label).filter(Boolean),
+      summary: template.summary || '',
+      heroImage: template.hero?.image || {},
+      illustration: {},
+      colors: (template.colors?.items || []).slice(0, template.colors?.renderLimit || personalityCatalog.renderRules?.colors?.limit || 5),
+      makeup: (template.recommendations?.makeup || []).map(templateCardToReportCard),
+      hair: (template.recommendations?.hair || []).map(templateCardToReportCard),
+      source: outfits.source || {},
+      outfitSummary: outfits.summary || '',
+      outfits: (outfits.items || []).map(templateCardToReportCard),
+      adviceIntro: template.conclusion?.intro || '',
+      advice: (template.conclusion?.points || []).map((point) => typeof point === 'string' ? point : [point.title, point.description].filter(Boolean).join('：')),
+    };
+  };
+  const resolvePersonalityPayload = (payload = {}) => {
+    if (!payload?.typeId) return payload;
+    const template = personalityCatalog.types?.[String(payload.typeId).toLowerCase()];
+    if (!template) return payload;
+    const base = templateToReportData(template);
+    const personalization = payload.personalization && typeof payload.personalization === 'object' ? payload.personalization : {};
+    return {
+      ...base,
+      ...payload,
+      ...personalization,
+      heroImage: personalization.heroImage || payload.heroImage || base.heroImage,
+      source: { ...base.source, ...(payload.source || {}), ...(personalization.source || {}) },
+    };
+  };
+  const normalizeReport = (payload = {}) => {
+    payload = resolvePersonalityPayload(payload);
+    const hasPayload = Boolean(payload && Object.keys(payload).length);
+    const list = (key) => {
+      if (!hasPayload) return DEFAULT_REPORT_DATA[key];
+      return hasOwn(payload, key) && Array.isArray(payload[key]) ? payload[key] : [];
+    };
+    const illustration = hasPayload
+      ? (payload.illustration && typeof payload.illustration === 'object' ? payload.illustration : {})
+      : DEFAULT_REPORT_DATA.illustration;
+    const source = hasPayload
+      ? (payload.source && typeof payload.source === 'object' ? payload.source : {})
+      : DEFAULT_REPORT_DATA.source;
+    return {
+      ...DEFAULT_REPORT_DATA,
+      ...payload,
+      heroImage: hasPayload
+        ? (payload.heroImage && typeof payload.heroImage === 'object' ? payload.heroImage : {})
+        : DEFAULT_REPORT_DATA.heroImage,
+      summary: hasPayload ? (payload.summary || '') : DEFAULT_REPORT_DATA.summary,
+      outfitSummary: hasPayload ? (payload.outfitSummary || '') : DEFAULT_REPORT_DATA.outfitSummary,
+      adviceIntro: hasPayload ? (payload.adviceIntro || '') : DEFAULT_REPORT_DATA.adviceIntro,
+      traits: list('traits'),
+      colors: list('colors'),
+      makeup: list('makeup'),
+      hair: list('hair'),
+      outfits: list('outfits').map((item) => ({
+        ...item,
+        name: item.name || item.title || '',
+        byline: item.byline || (item.author ? `@${String(item.author).replace(/^@/, '')}` : ''),
+      })),
+      advice: list('advice'),
+      illustration,
+      source: {
+        ...source,
+        avatars: source.avatars && typeof source.avatars === 'object' ? source.avatars : {},
+      },
+    };
+  };
   const appendImageCards = (container, items) => {
-    const cards = items.map((item) => {
+    const cards = items.filter((item) => item && item.imageUrl).map((item) => {
       const figure = document.createElement('figure');
       const image = Object.assign(document.createElement('img'), {
         src: item.imageUrl || '', alt: item.alt || item.name || '', loading: 'lazy', decoding: 'async',
@@ -295,9 +510,19 @@
       return figure;
     });
     container.replaceChildren(...cards);
+    return cards.length;
+  };
+  const toggleReportSection = (name, visible) => {
+    document.querySelector(`[data-report-section="${name}"]`)?.toggleAttribute('hidden', !visible);
   };
   const renderReport = (payload = {}) => {
     const data = normalizeReport(payload);
+    const fullHero = Boolean(data.heroImage?.src);
+    reportNodes.hero.classList.toggle('report-hero--full', fullHero);
+    reportNodes.hero.classList.remove('report-hero--reference');
+    reportNodes.heroImage.src = fullHero ? data.heroImage.src : '';
+    reportNodes.heroImage.alt = fullHero ? (data.heroImage.alt || `${data.title} ${data.eyebrow} 人格封面`) : '';
+    reportNodes.heroImage.hidden = !fullHero;
     reportNodes.eyebrow.textContent = data.eyebrow;
     reportNodes.title.textContent = data.title;
     reportNodes.traits.replaceChildren(...data.traits.map((trait) => {
@@ -308,40 +533,66 @@
       card.append(lace, Object.assign(document.createElement('b'), { textContent: trait }));
       return card;
     }));
+    reportNodes.traits.hidden = data.traits.length === 0;
     reportNodes.illustration.src = data.illustration.imageUrl || '';
     reportNodes.illustration.alt = data.illustration.alt || '';
-    reportNodes.colors.replaceChildren(...data.colors.map((color) => {
+    reportNodes.illustration.closest('figure').hidden = fullHero || !data.illustration.imageUrl;
+    reportNodes.summary.innerHTML = renderReportMarkdown(data.summary);
+    reportNodes.summary.hidden = !data.summary;
+    const visibleColors = data.colors.slice(0, personalityCatalog.renderRules?.colors?.limit || 5);
+    reportNodes.colors.replaceChildren(...visibleColors.map((color) => {
       const swatch = Object.assign(document.createElement('span'), { textContent: color.name || '' });
       swatch.style.setProperty('--c', color.value || 'transparent');
       return swatch;
     }));
-    appendImageCards(reportNodes.makeup, data.makeup);
-    appendImageCards(reportNodes.hair, data.hair);
-    reportNodes.source.textContent = data.source.name;
-    reportNodes.sourceCopy.textContent = data.source.copy;
-    reportNodes.sourceAvatars.src = data.source.avatars.imageUrl || '';
-    reportNodes.sourceAvatars.alt = data.source.avatars.alt || '';
-    reportNodes.sourceAvatars.hidden = !data.source.avatars.imageUrl;
-    reportNodes.outfits.replaceChildren(...data.outfits.map((item) => {
-      const article = document.createElement('article');
+    toggleReportSection('colors', visibleColors.length > 0);
+    toggleReportSection('makeup', appendImageCards(reportNodes.makeup, data.makeup) > 0);
+    toggleReportSection('hair', appendImageCards(reportNodes.hair, data.hair) > 0);
+    const proof = reportNodes.sourceLogo.closest('.report-proof');
+    const hasSource = Boolean(data.source.name || data.source.copy || data.source.avatars.imageUrl);
+    reportNodes.sourceLogo.alt = data.source.name || '小红书';
+    reportNodes.sourceLogo.hidden = !hasSource;
+    reportNodes.sourceCopy.textContent = data.source.copy || '';
+    reportNodes.sourceAvatars.src = data.source.avatars.imageUrl || '/static/selfit/assets/report-user-avatar-stack@4x.png';
+    reportNodes.sourceAvatars.alt = data.source.avatars.alt || '3 位真实用户头像';
+    reportNodes.sourceAvatars.hidden = !hasSource;
+    proof.hidden = !hasSource;
+    reportNodes.outfitSummary.innerHTML = renderReportMarkdown(data.outfitSummary);
+    reportNodes.outfitSummary.hidden = !data.outfitSummary;
+    const visibleOutfits = data.outfits
+      .filter((item) => item && item.imageUrl)
+      .slice(0, personalityCatalog.renderRules?.outfits?.limit || 4);
+    const outfitCards = visibleOutfits.map((item) => {
+      const figure = document.createElement('figure');
       const image = Object.assign(document.createElement('img'), {
-        src: item.imageUrl || '', alt: item.alt || item.title || '', loading: 'lazy', decoding: 'async',
+        src: item.imageUrl, alt: item.alt || item.name || '', loading: 'lazy', decoding: 'async',
       });
-      const content = document.createElement('div');
-      const badge = Object.assign(document.createElement('b'), { textContent: item.badge || '' });
-      const title = Object.assign(document.createElement('h3'), { textContent: item.title || '' });
-      const description = Object.assign(document.createElement('p'), { textContent: item.description || '' });
-      content.append(badge, title, description);
-      if (item.author) content.append(Object.assign(document.createElement('small'), { className: 'outfit-author', textContent: `@ ${item.author}` }));
-      article.append(image, content);
-      return article;
+      const caption = document.createElement('figcaption');
+      caption.append(document.createTextNode(item.name || ''));
+      if (item.byline) caption.append(Object.assign(document.createElement('small'), { textContent: item.byline }));
+      figure.append(image, caption);
+      return figure;
+    });
+    reportNodes.outfits.replaceChildren(...outfitCards);
+    toggleReportSection('outfits', Boolean(outfitCards.length || data.outfitSummary));
+    reportNodes.adviceIntro.innerHTML = renderReportMarkdown(data.adviceIntro);
+    reportNodes.adviceIntro.hidden = !data.adviceIntro;
+    reportNodes.advice.replaceChildren(...data.advice.map((copy) => {
+      const point = Object.assign(document.createElement('div'), { className: 'report-advice-point' });
+      point.innerHTML = renderReportMarkdown(copy);
+      return point;
     }));
-    reportNodes.advice.replaceChildren(...data.advice.map((copy) => Object.assign(document.createElement('p'), { textContent: copy })));
+    document.querySelector('#reportAdvice').hidden = !(data.adviceIntro || data.advice.length);
     document.querySelector('[data-share-title]').textContent = data.title;
-    document.querySelector('[data-share-traits]').textContent = data.traits.join(' · ');
+    document.querySelector('[data-share-eyebrow]').textContent = data.eyebrow || '';
+    document.querySelector('[data-share-summary]').textContent = data.summary || data.traits.join(' · ') || data.title;
+    const shareIllustration = document.querySelector('[data-share-illustration]');
+    shareIllustration.src = data.illustration.imageUrl || '';
+    shareIllustration.alt = data.illustration.alt || '';
+    shareIllustration.hidden = !data.illustration.imageUrl;
     document.querySelector('[data-share-color-title]').textContent = data.title;
     document.querySelector('[data-share-inspiration-title]').textContent = data.title;
-    document.querySelector('#shareCardColors').replaceChildren(...data.colors.map((color) => {
+    document.querySelector('#shareCardColors').replaceChildren(...visibleColors.map((color) => {
       const swatch = document.createElement('i');
       swatch.style.setProperty('--c', color.value || 'transparent');
       swatch.setAttribute('aria-label', color.name || '推荐色');
@@ -384,7 +635,7 @@
       const report = completedJob.report || (await api.getReport(state.reportId)).report;
       setLoadingProgress(100);
       renderReport(report);
-      await new Promise((resolve) => setTimeout(resolve, 260));
+      await new Promise((resolve) => setTimeout(resolve, 900));
       showScreen('report');
     } catch (error) {
       showScreen('vibe');
@@ -394,9 +645,25 @@
       button.disabled = Object.keys(state.answers).length !== 3;
     }
   };
-  window.selfitReport = Object.freeze({ render: renderReport, load: loadReport, defaults: DEFAULT_REPORT_DATA });
+  window.selfitPersonalityReports = Object.freeze({
+    catalogVersion: personalityCatalog.templateVersion || '',
+    list: () => Object.values(personalityCatalog.types || {}).map((template) => ({
+      typeId: template.typeId,
+      name: template.metadata?.name || '',
+      code: template.metadata?.code || '',
+    })),
+    get: (typeId) => personalityCatalog.types?.[String(typeId || '').toLowerCase()] || null,
+    resolve: (typeId, personalization = {}) => normalizeReport({ typeId, personalization }),
+    render: (typeId, personalization = {}) => renderReport({ typeId, personalization }),
+  });
+  window.selfitReport = Object.freeze({
+    render: renderReport,
+    load: loadReport,
+    defaults: DEFAULT_REPORT_DATA,
+    personalities: window.selfitPersonalityReports,
+  });
   window.addEventListener('selfit:report-data', (event) => renderReport(event.detail || {}));
-  renderReport(window.__SELFIT_REPORT__ || DEFAULT_REPORT_DATA);
+  renderReport(window.__SELFIT_REPORT__ || { typeId: 'mute' });
 
   const toast = (copy) => {
     const node = document.querySelector('#toast'); node.textContent = copy; node.classList.add('is-visible'); setTimeout(() => node.classList.remove('is-visible'), 1800);
@@ -574,6 +841,11 @@
   const shareSlideOffset = (slide) => slide.offsetLeft - ((shareTrack.clientWidth - slide.offsetWidth) / 2);
   const syncShareSlide = (index) => {
     shareSlideIndex = Math.max(0, Math.min(index, shareSlides.length - 1));
+    shareSlides.forEach((slide, slideIndex) => {
+      const isCurrent = slideIndex === shareSlideIndex;
+      slide.classList.toggle('is-current', isCurrent);
+      slide.setAttribute('aria-current', String(isCurrent));
+    });
     shareDots.forEach((dot, dotIndex) => dot.setAttribute('aria-current', String(dotIndex === shareSlideIndex)));
     shareSlideStatus.textContent = `第 ${shareSlideIndex + 1} 张，共 ${shareSlides.length} 张`;
   };
@@ -608,12 +880,7 @@
     requestAnimationFrame(() => goToShareSlide(0, false));
   });
   const currentReportId = () => state.reportId || window.__SELFIT_REPORT_ID__ || null;
-  document.querySelector('#retakeBtn').addEventListener('click', (event) => runButtonAction(event.currentTarget, async () => {
-    const reportId = currentReportId();
-    if (!reportId) throw new window.SelfitApi.SelfitApiError('报告仍在准备中，请稍后再试。', { code: 'report.not_ready' });
-    await api.requestOutfit(reportId, { source: 'report', intent: 'complete_look' });
-    toast('已收到需求，正在根据你的风格整理一套穿搭');
-  }));
+  document.querySelector('#retakeBtn').addEventListener('click', () => showScreen('vibe'));
   document.querySelectorAll('[data-share]').forEach((button) => button.addEventListener('click', () => runButtonAction(button, async () => {
     if (button.dataset.share === '保存单张') {
       await downloadShareCard(shareSlides[shareSlideIndex], shareSlideIndex);
@@ -628,9 +895,11 @@
 
   window.selfitIntegration = Object.freeze({
     mode: api.mode,
+    authMode: auth.mode,
     ensureSession,
     getState: () => ({
       screen: state.screen,
+      authUser: state.authUser ? { ...state.authUser } : null,
       sessionId: state.sessionId,
       revision: state.revision,
       photoStatus: { ...state.photoStatus },
@@ -643,6 +912,29 @@
       reportId: state.reportId,
     }),
   });
+
+  const previewParams = new URLSearchParams(window.location.search);
+  const previewScreen = previewParams.get('preview');
+  if (['splash', 'login', 'phone-login', 'invite-login', 'intro', 'suit', 'suit-manual', 'like', 'vibe'].includes(previewScreen)) {
+    showScreen(previewScreen);
+    if (previewScreen === 'intro') playIntro();
+    shell.classList.add('is-ready');
+    return;
+  }
+  if (previewScreen === 'report') {
+    const requestedType = previewParams.get('type') || 'mute';
+    renderReport({ typeId: requestedType });
+    showScreen('report');
+    shell.classList.add('is-ready');
+    return;
+  }
+  if (previewScreen === 'loading') {
+    const previewProgress = Number(previewParams.get('stage')) || 25;
+    showScreen('loading');
+    setLoadingProgress(previewProgress);
+    shell.classList.add('is-ready');
+    return;
+  }
 
   splashTimer = setTimeout(enterOnboarding, matchMedia('(prefers-reduced-motion: reduce)').matches ? 900 : 1800);
   shell.classList.add('is-ready');
