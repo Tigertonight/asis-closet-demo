@@ -187,6 +187,8 @@ button {
 .auth-header .icon-button { display: grid; width: 44px; height: 44px; margin: -7px 0 0 -10px; padding: 0; border: 0; place-items: center; color: rgba(0,0,0,.32); background: transparent; font-size: 28px; cursor: pointer; }
 .auth-form { position: relative; height: calc(100% - 88px); padding: 69px 32px 0; }
 .auth-form h1 { margin: 0 0 32px; font-size: 18px; font-weight: 600; line-height: 26px; }
+.handoff-context { margin: -16px 0 24px; padding: 12px 14px; border-radius: 12px; color: rgba(0,0,0,.62); background: #f7efef; font-size: 14px; line-height: 22px; text-wrap: pretty; }
+.handoff-context[data-state="error"] { color: #8a011b; background: #f8e9ec; }
 .auth-phone-row { display: grid; grid-template-columns: 60px auto minmax(0,1fr); column-gap: 8px; align-items: center; }
 .auth-country-code, .auth-phone-dash { color: rgba(0,0,0,.62); font-size: 15px; line-height: 22px; text-align: center; }
 .auth-country-code { display: flex; align-items: center; justify-content: center; width: 60px; height: 60px; border: 0.5px solid rgba(0,0,0,.08); border-radius: 16px; background: #FFFFFF; }

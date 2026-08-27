@@ -88,6 +88,12 @@ def _client_id(request: Request) -> str:
 def _rate_rules() -> list[LimitRule]:
     return [
         LimitRule(
+            "mirror_upload",
+            ("/api/v1/selfit/mirror/analyze",),
+            env_int("SELFIT_UPLOAD_RATE_LIMIT", 60),
+            env_int("SELFIT_UPLOAD_RATE_WINDOW_SECONDS", 3600),
+        ),
+        LimitRule(
             "selfit_upload",
             ("/api/v1/selfit/sessions",),
             env_int("SELFIT_UPLOAD_RATE_LIMIT", 60),

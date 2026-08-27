@@ -191,7 +191,9 @@ def _session_visible_to(record: dict[str, Any], user: dict[str, Any] | None) -> 
 def _completed_steps(record: dict[str, Any]) -> list[str]:
     steps: list[str] = []
     photos = record.get("photos") or {}
-    if all((photos.get(kind) or {}).get("status") == "accepted" for kind in ("face", "body")):
+    if record.get("suit_completed_at") or all(
+        (photos.get(kind) or {}).get("status") == "accepted" for kind in ("face", "body")
+    ):
         steps.append("photos")
     if record.get("manual"):
         steps.append("profile")
@@ -210,6 +212,52 @@ def _public_session(record: dict[str, Any]) -> dict[str, Any]:
         "expiresAt": record["expires_at"],
         "completedSteps": _completed_steps(record),
     }
+
+
+def create_session_from_mirror_handoff(
+    handoff: dict[str, Any], user: dict[str, Any]
+) -> dict[str, Any]:
+    """Create the authenticated continuation session after a one-time mirror claim."""
+
+    data = _prune_store(_load_store())
+    handoff_id = str(handoff.get("handoff_id") or "")
+    existing = next(
+        (
+            record
+            for record in data["sessions"]
+            if record.get("mirror_handoff_id") == handoff_id
+            and record.get("user_id") == user.get("user_id")
+        ),
+        None,
+    )
+    if existing is not None:
+        return _public_session(existing)
+    now = _now()
+    record = {
+        "session_id": "ses_" + secrets.token_urlsafe(12),
+        "user_id": user.get("user_id"),
+        "status": "draft",
+        "revision": 1,
+        "schema_version": SCHEMA_VERSION,
+        "locale": "zh-CN",
+        "created_at": _iso(now),
+        "expires_at": _iso(now + timedelta(hours=_session_ttl_hours())),
+        "source": "mirror_handoff",
+        "mirror_handoff_id": handoff_id,
+        "suit_completed_at": _iso(now),
+        "mirror_analysis": dict(handoff.get("analysis") or {}),
+        "mirror_asset_path": handoff.get("asset_path"),
+        "mirror_assets": dict(handoff.get("assets") or {}),
+        "suit_input_asset_id": handoff.get("suit_asset_id"),
+        "mirror_preview_asset_id": handoff.get("mirror_preview_asset_id"),
+        "photos": {},
+        "manual": {},
+        "preferences": {},
+        "vibe": {},
+    }
+    data["sessions"].append(record)
+    _write_store(data)
+    return _public_session(record)
 
 
 def _session_response(record: dict[str, Any], *, status_code: int = 200) -> tuple[int, dict[str, Any]]:

@@ -1,7 +1,7 @@
 {
   "schemaVersion": "2.0",
   "locale": "zh-CN",
-  "templateVersion": "2026.08.personality-db-v4",
+  "templateVersion": "2026.08.personality-db-v5",
   "renderRules": {
     "colors": {
       "limit": 5
@@ -27,7 +27,7 @@
       },
       "hero": {
         "image": {
-          "src": "/static/selfit/assets/personality/mute/hero.png?v=20260825-final",
+          "src": "/static/selfit/assets/personality/mute/hero.png?v=20260827-config-v1",
           "alt": "静音时髦 MUTE 人格封面",
           "width": 1484,
           "height": 1072,
@@ -37,11 +37,11 @@
       "keywords": [
         "低表达",
         "低装饰",
-        "同调秩序"
+        "秩序感"
       ],
       "summary": "你偏爱低装饰、清晰线条和安静配色。\n比起醒目的流行单品，你更在意比例与材质，\n也在意一件衣服能否自然进入日常。",
       "colors": {
-        "tagline": "低表达 · 低装饰 · 同调秩序",
+        "tagline": "低表达 · 低装饰 · 秩序感",
         "renderLimit": 5,
         "sourceCard": {
           "src": "../../static/selfit/assets/personality/mute/color-card.png",
@@ -122,8 +122,8 @@
             "image": {
               "src": "/static/selfit/assets/personality/mute/makeup-01.webp?v=20260826-db-v3",
               "alt": "静音时髦 · 裸玫瑰淡妆",
-              "width": 900,
-              "height": 1125
+              "width": 1080,
+              "height": 1350
             }
           },
           {
@@ -134,8 +134,8 @@
             "image": {
               "src": "/static/selfit/assets/personality/mute/makeup-02.webp?v=20260826-db-v3",
               "alt": "静音时髦 · 妈生裸粉妆",
-              "width": 900,
-              "height": 1200
+              "width": 1080,
+              "height": 1440
             }
           }
         ],
@@ -148,20 +148,20 @@
             "image": {
               "src": "/static/selfit/assets/personality/mute/hair-01.webp?v=20260826-db-v3",
               "alt": "静音时髦 · 外翘初恋发",
-              "width": 900,
-              "height": 1158
+              "width": 1080,
+              "height": 1389
             }
           },
           {
             "id": "hair-02",
-            "name": "八字显脸小发",
+            "name": "八字遮脸发",
             "byline": "@宁波发型设计tony伟",
             "sourceUrl": "https://www.xiaohongshu.com/explore/6a2907d6000000002202a673",
             "image": {
               "src": "/static/selfit/assets/personality/mute/hair-02.webp?v=20260826-db-v3",
-              "alt": "静音时髦 · 八字显脸小发",
-              "width": 805,
-              "height": 1200
+              "alt": "静音时髦 · 八字遮脸发",
+              "width": 1080,
+              "height": 1610
             }
           }
         ],
@@ -184,8 +184,8 @@
               "image": {
                 "src": "/static/selfit/assets/personality/mute/outfits-01.webp?v=20260826-db-v3",
                 "alt": "静音时髦 · 罗纹套装风",
-                "width": 800,
-                "height": 1200
+                "width": 1000,
+                "height": 1500
               }
             },
             {
@@ -196,8 +196,8 @@
               "image": {
                 "src": "/static/selfit/assets/personality/mute/outfits-02.webp?v=20260826-db-v3",
                 "alt": "静音时髦 · 系带长裙风",
-                "width": 800,
-                "height": 1200
+                "width": 1000,
+                "height": 1500
               }
             },
             {
@@ -208,8 +208,8 @@
               "image": {
                 "src": "/static/selfit/assets/personality/mute/outfits-03.webp?v=20260826-db-v3",
                 "alt": "静音时髦 · 黑高领裙风",
-                "width": 900,
-                "height": 1200
+                "width": 1080,
+                "height": 1440
               }
             },
             {
@@ -220,8 +220,8 @@
               "image": {
                 "src": "/static/selfit/assets/personality/mute/outfits-04.webp?v=20260826-db-v3",
                 "alt": "静音时髦 · 紧身牛仔风",
-                "width": 900,
-                "height": 1200
+                "width": 1080,
+                "height": 1440
               }
             }
           ]
@@ -246,7 +246,7 @@
       },
       "hero": {
         "image": {
-          "src": "/static/selfit/assets/personality/iced/hero.png?v=20260825-final",
+          "src": "/static/selfit/assets/personality/iced/hero.png?v=20260827-config-v1",
           "alt": "冷感冰面 ICED 人格封面",
           "width": 1484,
           "height": 1072,
@@ -341,8 +341,8 @@
             "image": {
               "src": "/static/selfit/assets/personality/iced/makeup-01.webp?v=20260826-db-v3",
               "alt": "冷感冰面 · 水光玫粉妆",
-              "width": 900,
-              "height": 1200
+              "width": 1080,
+              "height": 1440
             }
           },
           {
@@ -353,8 +353,8 @@
             "image": {
               "src": "/static/selfit/assets/personality/iced/makeup-02.webp?v=20260826-db-v3",
               "alt": "冷感冰面 · 银蓝珠光妆",
-              "width": 900,
-              "height": 1200
+              "width": 1080,
+              "height": 1440
             }
           }
         ],
@@ -365,10 +365,10 @@
             "byline": "@泡泡paoao",
             "sourceUrl": "https://www.xiaohongshu.com/explore/69cb68c1000000001a02df4d",
             "image": {
-              "src": "/static/selfit/assets/personality/iced/hair-01.webp?v=20260826-db-v3",
+              "src": "/static/selfit/assets/personality/iced/hair-01.webp?v=20260827-config-v1",
               "alt": "冷感冰面 · 法式慵懒盘",
-              "width": 900,
-              "height": 1200
+              "width": 1080,
+              "height": 1440
             }
           },
           {
@@ -377,15 +377,15 @@
             "byline": "@Ins_韩风松弛集",
             "sourceUrl": "https://www.xiaohongshu.com/explore/6a7049130000000021020df7",
             "image": {
-              "src": "/static/selfit/assets/personality/iced/hair-02.webp?v=20260826-db-v3",
+              "src": "/static/selfit/assets/personality/iced/hair-02.webp?v=20260827-config-v1",
               "alt": "冷感冰面 · 空气温柔卷",
-              "width": 900,
-              "height": 1083
+              "width": 960,
+              "height": 1280
             }
           }
         ],
         "outfits": {
-          "summary": "选择冰色系、灰调中性色和轻薄层叠，用缎面、薄纱、蕾丝或细针织增加光泽差异。\n控制整体对比度，通过局部黑色或银色配件稳定轮廓。",
+          "summary": "选择冷色系、灰调中性色和轻薄层叠，用缎面、薄纱、蕾丝或细针织增加光泽差异。\n控制整体对比度，通过局部黑色或银色配件稳定轮廓。",
           "source": {
             "name": "小红书",
             "copy": "已整理 10 条穿搭素材",
@@ -403,8 +403,8 @@
               "image": {
                 "src": "/static/selfit/assets/personality/iced/outfits-01.webp?v=20260826-db-v3",
                 "alt": "冷感冰面 · 飘带伞裙风",
-                "width": 900,
-                "height": 1200
+                "width": 1080,
+                "height": 1440
               }
             },
             {
@@ -415,8 +415,8 @@
               "image": {
                 "src": "/static/selfit/assets/personality/iced/outfits-02.webp?v=20260826-db-v3",
                 "alt": "冷感冰面 · 蕾丝蓬裙风",
-                "width": 900,
-                "height": 1200
+                "width": 1080,
+                "height": 1440
               }
             },
             {
@@ -427,8 +427,8 @@
               "image": {
                 "src": "/static/selfit/assets/personality/iced/outfits-03.webp?v=20260826-db-v3",
                 "alt": "冷感冰面 · 灰紫叠裙风",
-                "width": 900,
-                "height": 1198
+                "width": 1080,
+                "height": 1438
               }
             },
             {
@@ -439,8 +439,8 @@
               "image": {
                 "src": "/static/selfit/assets/personality/iced/outfits-04.webp?v=20260826-db-v3",
                 "alt": "冷感冰面 · 缎面百褶风",
-                "width": 900,
-                "height": 1200
+                "width": 1080,
+                "height": 1440
               }
             }
           ]
@@ -465,7 +465,7 @@
       },
       "hero": {
         "image": {
-          "src": "/static/selfit/assets/personality/heir/hero.png?v=20260825-final",
+          "src": "/static/selfit/assets/personality/heir/hero.png?v=20260827-config-v1",
           "alt": "老钱新穿 HEIR 人格封面",
           "width": 1484,
           "height": 1072,
@@ -570,8 +570,8 @@
             "image": {
               "src": "/static/selfit/assets/personality/heir/makeup-01.webp?v=20260826-db-v3",
               "alt": "老钱新穿 · 奶杏红茶妆",
-              "width": 898,
-              "height": 1200
+              "width": 1080,
+              "height": 1443
             }
           },
           {
@@ -582,8 +582,8 @@
             "image": {
               "src": "/static/selfit/assets/personality/heir/makeup-02.webp?v=20260826-db-v3",
               "alt": "老钱新穿 · 奶油睫毛妆",
-              "width": 900,
-              "height": 1200
+              "width": 938,
+              "height": 1251
             }
           }
         ],
@@ -596,8 +596,8 @@
             "image": {
               "src": "/static/selfit/assets/personality/heir/hair-01.webp?v=20260826-db-v3",
               "alt": "老钱新穿 · 龙须优雅扎发",
-              "width": 900,
-              "height": 1200
+              "width": 1080,
+              "height": 1440
             }
           },
           {
@@ -608,8 +608,8 @@
             "image": {
               "src": "/static/selfit/assets/personality/heir/hair-02.webp?v=20260826-db-v3",
               "alt": "老钱新穿 · 丝带元气丸子头",
-              "width": 900,
-              "height": 1125
+              "width": 1080,
+              "height": 1350
             }
           }
         ],
@@ -626,50 +626,50 @@
           "items": [
             {
               "id": "outfits-01",
-              "name": "亚麻吊带风",
+              "name": "亚麻吊带",
               "byline": "@欧阳娜娜Nana",
               "sourceUrl": "https://www.xiaohongshu.com/explore/6a2fc7ef000000001101105c",
               "image": {
                 "src": "/static/selfit/assets/personality/heir/outfits-01.webp?v=20260826-db-v3",
-                "alt": "老钱新穿 · 亚麻吊带风",
-                "width": 900,
-                "height": 1200
+                "alt": "老钱新穿 · 亚麻吊带",
+                "width": 1080,
+                "height": 1440
               }
             },
             {
               "id": "outfits-02",
-              "name": "学院百褶风",
+              "name": "学院百褶",
               "byline": "@赵今麦",
               "sourceUrl": "https://www.xiaohongshu.com/explore/69c09a7d000000002101052b",
               "image": {
                 "src": "/static/selfit/assets/personality/heir/outfits-02.webp?v=20260826-db-v3",
-                "alt": "老钱新穿 · 学院百褶风",
-                "width": 900,
-                "height": 1200
+                "alt": "老钱新穿 · 学院百褶",
+                "width": 1080,
+                "height": 1440
               }
             },
             {
               "id": "outfits-03",
-              "name": "丝绒裹身风",
+              "name": "丝绒裹身",
               "byline": "@少音",
               "sourceUrl": "https://www.xiaohongshu.com/discovery/item/69476d00000000001e022f80",
               "image": {
                 "src": "/static/selfit/assets/personality/heir/outfits-03.webp?v=20260826-db-v3",
-                "alt": "老钱新穿 · 丝绒裹身风",
-                "width": 900,
-                "height": 1200
+                "alt": "老钱新穿 · 丝绒裹身",
+                "width": 1080,
+                "height": 1440
               }
             },
             {
               "id": "outfits-04",
-              "name": "花呢马甲风",
+              "name": "花呢马甲",
               "byline": "@欧阳娜娜Nana",
               "sourceUrl": "https://www.xiaohongshu.com/explore/6a57494a000000000f0284da",
               "image": {
                 "src": "/static/selfit/assets/personality/heir/outfits-04.webp?v=20260826-db-v3",
-                "alt": "老钱新穿 · 花呢马甲风",
-                "width": 892,
-                "height": 1200
+                "alt": "老钱新穿 · 花呢马甲",
+                "width": 1080,
+                "height": 1453
               }
             }
           ]
@@ -694,7 +694,7 @@
       },
       "hero": {
         "image": {
-          "src": "/static/selfit/assets/personality/ease/hero.png?v=20260825-final",
+          "src": "/static/selfit/assets/personality/ease/hero.png?v=20260827-config-v1",
           "alt": "松弛讲究 EASE 人格封面",
           "width": 1484,
           "height": 1072,
@@ -702,13 +702,13 @@
         }
       },
       "keywords": [
-        "松弛层次",
+        "不费力",
         "自然垂坠",
-        "松弛精致"
+        "分寸感"
       ],
       "summary": "你喜欢宽松、垂坠和可以自由呼吸的衣服，\n也在意腰线与长度是否恰到好处。\n看似不费力，其实处处都有分寸。",
       "colors": {
-        "tagline": "松弛层次 · 自然垂坠 · 松弛精致",
+        "tagline": "不费力 · 自然垂坠 · 分寸感",
         "renderLimit": 5,
         "sourceCard": {
           "src": "../../static/selfit/assets/personality/ease/color-card.png",
@@ -799,8 +799,8 @@
             "image": {
               "src": "/static/selfit/assets/personality/ease/makeup-01.webp?v=20260826-db-v3",
               "alt": "松弛讲究 · 豆沙光泽妆",
-              "width": 878,
-              "height": 1200
+              "width": 1080,
+              "height": 1476
             }
           },
           {
@@ -811,8 +811,8 @@
             "image": {
               "src": "/static/selfit/assets/personality/ease/makeup-02.webp?v=20260826-db-v3",
               "alt": "松弛讲究 · 水晶蜜桃妆",
-              "width": 900,
-              "height": 1200
+              "width": 1080,
+              "height": 1440
             }
           }
         ],
@@ -825,8 +825,8 @@
             "image": {
               "src": "/static/selfit/assets/personality/ease/hair-01.webp?v=20260826-db-v3",
               "alt": "松弛讲究 · S型慵懒盘发",
-              "width": 900,
-              "height": 1125
+              "width": 1080,
+              "height": 1350
             }
           },
           {
@@ -837,13 +837,13 @@
             "image": {
               "src": "/static/selfit/assets/personality/ease/hair-02.webp?v=20260826-db-v3",
               "alt": "松弛讲究 · 复古羊毛卷",
-              "width": 900,
-              "height": 1200
+              "width": 1080,
+              "height": 1440
             }
           }
         ],
         "outfits": {
-          "summary": "以宽松衬衫、阔腿裤、针织和长外套建立舒展轮廓，再用腰带、露腕、挽袖或结构感包鞋收紧局部。\n全身宽松时至少保留一个清晰比例点。",
+          "summary": "以宽松衬衫、阔腿裤、针织和长外套建立舒展轮廓，再用腰带、露腕、挽袖或结构感包裹，收紧局部。\n全身宽松时至少保留一个清晰比例点。",
           "source": {
             "name": "小红书",
             "copy": "已整理 10 条穿搭素材",
@@ -855,50 +855,50 @@
           "items": [
             {
               "id": "outfits-01",
-              "name": "度假阔腿风",
+              "name": "度假阔腿",
               "byline": "@TIM VISION",
               "sourceUrl": "https://www.xiaohongshu.com/explore/6a140e1b00000000350211f7",
               "image": {
                 "src": "/static/selfit/assets/personality/ease/outfits-01.webp?v=20260826-db-v3",
-                "alt": "松弛讲究 · 度假阔腿风",
-                "width": 800,
-                "height": 1200
+                "alt": "松弛讲究 · 度假阔腿",
+                "width": 1080,
+                "height": 1620
               }
             },
             {
               "id": "outfits-02",
-              "name": "风衣叠穿风",
+              "name": "风衣叠穿",
               "byline": "@五指风",
               "sourceUrl": "https://www.xiaohongshu.com/explore/69cf3b19000000001a02fa14",
               "image": {
                 "src": "/static/selfit/assets/personality/ease/outfits-02.webp?v=20260826-db-v3",
-                "alt": "松弛讲究 · 风衣叠穿风",
+                "alt": "松弛讲究 · 风衣叠穿",
                 "width": 828,
                 "height": 1098
               }
             },
             {
               "id": "outfits-03",
-              "name": "宽腰带裙风",
+              "name": "宽腰带裙",
               "byline": "@TIM VISION",
               "sourceUrl": "https://www.xiaohongshu.com/explore/6a140e1b00000000350211f7",
               "image": {
                 "src": "/static/selfit/assets/personality/ease/outfits-03.webp?v=20260826-db-v3",
-                "alt": "松弛讲究 · 宽腰带裙风",
-                "width": 800,
-                "height": 1200
+                "alt": "松弛讲究 · 宽腰带裙",
+                "width": 1080,
+                "height": 1620
               }
             },
             {
               "id": "outfits-04",
-              "name": "针织系带风",
+              "name": "针织系带",
               "byline": "@十一袁",
               "sourceUrl": "https://www.xiaohongshu.com/discovery/item/6a802bf2000000002402ca95",
               "image": {
                 "src": "/static/selfit/assets/personality/ease/outfits-04.webp?v=20260826-db-v3",
-                "alt": "松弛讲究 · 针织系带风",
-                "width": 900,
-                "height": 1200
+                "alt": "松弛讲究 · 针织系带",
+                "width": 1080,
+                "height": 1440
               }
             }
           ]
@@ -918,13 +918,13 @@
       "index": 5,
       "status": "assets-ready",
       "metadata": {
-        "name": "甜感治愈",
+        "name": "奶油治愈",
         "code": "MELT"
       },
       "hero": {
         "image": {
-          "src": "/static/selfit/assets/personality/melt/hero.png?v=20260825-final",
-          "alt": "甜感治愈 MELT 人格封面",
+          "src": "/static/selfit/assets/personality/melt/hero.png?v=20260827-config-v1",
+          "alt": "奶油治愈 MELT 人格封面",
           "width": 1484,
           "height": 1072,
           "placeholder": false
@@ -941,7 +941,7 @@
         "renderLimit": 5,
         "sourceCard": {
           "src": "../../static/selfit/assets/personality/melt/color-card.png",
-          "alt": "甜感治愈推荐色色卡",
+          "alt": "奶油治愈推荐色色卡",
           "width": 1800,
           "height": 520
         },
@@ -1037,9 +1037,9 @@
             "sourceUrl": "https://www.xiaohongshu.com/explore/6a82cd41000000000502886e",
             "image": {
               "src": "/static/selfit/assets/personality/melt/makeup-01.webp?v=20260826-db-v3",
-              "alt": "甜感治愈 · 狐系猫眼妆",
-              "width": 900,
-              "height": 1200
+              "alt": "奶油治愈 · 狐系猫眼妆",
+              "width": 1080,
+              "height": 1440
             }
           },
           {
@@ -1049,9 +1049,9 @@
             "sourceUrl": "https://www.xiaohongshu.com/explore/6a49f347000000001502486d",
             "image": {
               "src": "/static/selfit/assets/personality/melt/makeup-02.webp?v=20260826-db-v3",
-              "alt": "甜感治愈 · 无花果暖棕妆",
-              "width": 900,
-              "height": 1200
+              "alt": "奶油治愈 · 无花果暖棕妆",
+              "width": 1080,
+              "height": 1440
             }
           }
         ],
@@ -1063,9 +1063,9 @@
             "sourceUrl": "https://www.xiaohongshu.com/explore/6a4d00ac000000001101c833",
             "image": {
               "src": "/static/selfit/assets/personality/melt/hair-01.webp?v=20260826-db-v3",
-              "alt": "甜感治愈 · 蝴蝶结甜美盘",
-              "width": 900,
-              "height": 1200
+              "alt": "奶油治愈 · 蝴蝶结甜美盘",
+              "width": 1080,
+              "height": 1440
             }
           },
           {
@@ -1075,9 +1075,9 @@
             "sourceUrl": "https://www.xiaohongshu.com/explore/6a37e1c9000000000f032a9b",
             "image": {
               "src": "/static/selfit/assets/personality/melt/hair-02.webp?v=20260826-db-v3",
-              "alt": "甜感治愈 · 外翻温柔发",
-              "width": 900,
-              "height": 1200
+              "alt": "奶油治愈 · 外翻温柔发",
+              "width": 1080,
+              "height": 1440
             }
           }
         ],
@@ -1094,50 +1094,50 @@
           "items": [
             {
               "id": "outfits-01",
-              "name": "泡泡背带风",
+              "name": "泡泡背带",
               "byline": "@欧阳娜娜Nana",
               "sourceUrl": "https://www.xiaohongshu.com/explore/6a3409fd000000001102f6ba",
               "image": {
                 "src": "/static/selfit/assets/personality/melt/outfits-01.webp?v=20260826-db-v3",
-                "alt": "甜感治愈 · 泡泡背带风",
-                "width": 900,
-                "height": 1200
+                "alt": "奶油治愈 · 泡泡背带",
+                "width": 1080,
+                "height": 1440
               }
             },
             {
               "id": "outfits-02",
-              "name": "波点短裙风",
+              "name": "波点短裙",
               "byline": "@Kitty鹅",
               "sourceUrl": "https://www.xiaohongshu.com/discovery/item/69a0320b0000000022030fb6",
               "image": {
                 "src": "/static/selfit/assets/personality/melt/outfits-02.webp?v=20260826-db-v3",
-                "alt": "甜感治愈 · 波点短裙风",
-                "width": 900,
-                "height": 1200
+                "alt": "奶油治愈 · 波点短裙",
+                "width": 1080,
+                "height": 1440
               }
             },
             {
               "id": "outfits-03",
-              "name": "格纹蕾丝风",
+              "name": "格纹蕾丝",
               "byline": "@水里转圈圈",
               "sourceUrl": "https://www.xiaohongshu.com/explore/6a7e83410000000033034ce8",
               "image": {
                 "src": "/static/selfit/assets/personality/melt/outfits-03.webp?v=20260826-db-v3",
-                "alt": "甜感治愈 · 格纹蕾丝风",
-                "width": 900,
-                "height": 1200
+                "alt": "奶油治愈 · 格纹蕾丝",
+                "width": 1080,
+                "height": 1440
               }
             },
             {
               "id": "outfits-04",
-              "name": "吊带叠穿风",
+              "name": "吊带叠穿",
               "byline": "@Miki _yuanjz",
               "sourceUrl": "https://www.xiaohongshu.com/explore/6a3252ef000000001c0253f9",
               "image": {
                 "src": "/static/selfit/assets/personality/melt/outfits-04.webp?v=20260826-db-v3",
-                "alt": "甜感治愈 · 吊带叠穿风",
-                "width": 900,
-                "height": 1200
+                "alt": "奶油治愈 · 吊带叠穿",
+                "width": 1080,
+                "height": 1440
               }
             }
           ]
@@ -1162,7 +1162,7 @@
       },
       "hero": {
         "image": {
-          "src": "/static/selfit/assets/personality/wabi/hero.png?v=20260825-final",
+          "src": "/static/selfit/assets/personality/wabi/hero.png?v=20260827-config-v1",
           "alt": "手作侘寂 WABI 人格封面",
           "width": 1484,
           "height": 1072,
@@ -1257,8 +1257,8 @@
             "image": {
               "src": "/static/selfit/assets/personality/wabi/makeup-01.webp?v=20260826-db-v3",
               "alt": "手作侘寂 · 雾面蜜桃妆",
-              "width": 898,
-              "height": 1200
+              "width": 1080,
+              "height": 1443
             }
           },
           {
@@ -1269,8 +1269,8 @@
             "image": {
               "src": "/static/selfit/assets/personality/wabi/makeup-02.webp?v=20260826-db-v3",
               "alt": "手作侘寂 · 葡萄紫闪妆",
-              "width": 900,
-              "height": 1200
+              "width": 1080,
+              "height": 1440
             }
           }
         ],
@@ -1283,8 +1283,8 @@
             "image": {
               "src": "/static/selfit/assets/personality/wabi/hair-01.webp?v=20260826-db-v3",
               "alt": "手作侘寂 · 齐刘海安静发",
-              "width": 900,
-              "height": 1200
+              "width": 1080,
+              "height": 1440
             }
           },
           {
@@ -1295,8 +1295,8 @@
             "image": {
               "src": "/static/selfit/assets/personality/wabi/hair-02.webp?v=20260826-db-v3",
               "alt": "手作侘寂 · 侧分垂顺发",
-              "width": 900,
-              "height": 1200
+              "width": 1080,
+              "height": 1440
             }
           }
         ],
@@ -1313,50 +1313,50 @@
           "items": [
             {
               "id": "outfits-01",
-              "name": "军绿工装风",
+              "name": "军绿工装",
               "byline": "@欧阳娜娜Nana",
               "sourceUrl": "https://www.xiaohongshu.com/explore/6a09a3050000000035030fe6",
               "image": {
                 "src": "/static/selfit/assets/personality/wabi/outfits-01.webp?v=20260826-db-v3",
-                "alt": "手作侘寂 · 军绿工装风",
-                "width": 900,
-                "height": 1200
+                "alt": "手作侘寂 · 军绿工装",
+                "width": 1080,
+                "height": 1440
               }
             },
             {
               "id": "outfits-02",
-              "name": "单肩百褶风",
+              "name": "单肩百褶",
               "byline": "@阿卡酱",
               "sourceUrl": "https://www.xiaohongshu.com/discovery/item/68372796000000002001d0d5",
               "image": {
                 "src": "/static/selfit/assets/personality/wabi/outfits-02.webp?v=20260826-db-v3",
-                "alt": "手作侘寂 · 单肩百褶风",
-                "width": 893,
-                "height": 1200
+                "alt": "手作侘寂 · 单肩百褶",
+                "width": 1080,
+                "height": 1451
               }
             },
             {
               "id": "outfits-03",
-              "name": "做旧针织风",
+              "name": "做旧针织",
               "byline": "@我不是煎饼果子",
               "sourceUrl": "https://www.xiaohongshu.com/discovery/item/68d536fa000000000e020193",
               "image": {
                 "src": "/static/selfit/assets/personality/wabi/outfits-03.webp?v=20260826-db-v3",
-                "alt": "手作侘寂 · 做旧针织风",
-                "width": 900,
-                "height": 1200
+                "alt": "手作侘寂 · 做旧针织",
+                "width": 1080,
+                "height": 1440
               }
             },
             {
               "id": "outfits-04",
-              "name": "亚麻长袍风",
+              "name": "亚麻长袍",
               "byline": "@一个枫子",
               "sourceUrl": "https://www.xiaohongshu.com/discovery/item/69fc0e4700000000350256f9",
               "image": {
                 "src": "/static/selfit/assets/personality/wabi/outfits-04.webp?v=20260826-db-v3",
-                "alt": "手作侘寂 · 亚麻长袍风",
-                "width": 900,
-                "height": 1198
+                "alt": "手作侘寂 · 亚麻长袍",
+                "width": 1080,
+                "height": 1438
               }
             }
           ]
@@ -1381,7 +1381,7 @@
       },
       "hero": {
         "image": {
-          "src": "/static/selfit/assets/personality/flou/hero.png?v=20260825-final",
+          "src": "/static/selfit/assets/personality/flou/hero.png?v=20260827-config-v1",
           "alt": "造梦浪漫 FLOU 人格封面",
           "width": 1484,
           "height": 1072,
@@ -1486,8 +1486,8 @@
             "image": {
               "src": "/static/selfit/assets/personality/flou/makeup-01.webp?v=20260826-db-v3",
               "alt": "造梦浪漫 · 玫瑰烤奶妆",
-              "width": 900,
-              "height": 1184
+              "width": 1080,
+              "height": 1421
             }
           },
           {
@@ -1498,8 +1498,8 @@
             "image": {
               "src": "/static/selfit/assets/personality/flou/makeup-02.webp?v=20260826-db-v3",
               "alt": "造梦浪漫 · 薰衣草紫妆",
-              "width": 900,
-              "height": 1200
+              "width": 1080,
+              "height": 1440
             }
           }
         ],
@@ -1512,8 +1512,8 @@
             "image": {
               "src": "/static/selfit/assets/personality/flou/hair-01.webp?v=20260826-db-v3",
               "alt": "造梦浪漫 · 橘色梦幻卷",
-              "width": 900,
-              "height": 1200
+              "width": 1080,
+              "height": 1440
             }
           },
           {
@@ -1524,8 +1524,8 @@
             "image": {
               "src": "/static/selfit/assets/personality/flou/hair-02.webp?v=20260826-db-v3",
               "alt": "造梦浪漫 · 层次温柔发",
-              "width": 786,
-              "height": 1200
+              "width": 1024,
+              "height": 1563
             }
           }
         ],
@@ -1542,50 +1542,50 @@
           "items": [
             {
               "id": "outfits-01",
-              "name": "薄荷工装风",
+              "name": "薄荷绑带",
               "byline": "@羅蛋皮",
               "sourceUrl": "https://www.xiaohongshu.com/discovery/item/6a856bbc0000000032031355",
               "image": {
                 "src": "/static/selfit/assets/personality/flou/outfits-01.webp?v=20260826-db-v3",
-                "alt": "造梦浪漫 · 薄荷工装风",
-                "width": 900,
-                "height": 1200
+                "alt": "造梦浪漫 · 薄荷绑带",
+                "width": 1080,
+                "height": 1440
               }
             },
             {
               "id": "outfits-02",
-              "name": "红纱叠裙风",
+              "name": "撞色叠纱",
               "byline": "@羅蛋皮",
               "sourceUrl": "https://www.xiaohongshu.com/discovery/item/6a4a605d0000000011014a39",
               "image": {
                 "src": "/static/selfit/assets/personality/flou/outfits-02.webp?v=20260826-db-v3",
-                "alt": "造梦浪漫 · 红纱叠裙风",
-                "width": 900,
-                "height": 1199
+                "alt": "造梦浪漫 · 撞色叠纱",
+                "width": 1080,
+                "height": 1439
               }
             },
             {
               "id": "outfits-03",
-              "name": "亮片透视风",
+              "name": "亮片透视",
               "byline": "@易梦玲",
               "sourceUrl": "https://www.xiaohongshu.com/explore/6a4e23d60000000017028966",
               "image": {
                 "src": "/static/selfit/assets/personality/flou/outfits-03.webp?v=20260826-db-v3",
-                "alt": "造梦浪漫 · 亮片透视风",
-                "width": 900,
-                "height": 1200
+                "alt": "造梦浪漫 · 亮片透视",
+                "width": 1080,
+                "height": 1440
               }
             },
             {
               "id": "outfits-04",
-              "name": "波点吊带风",
+              "name": "波点吊带",
               "byline": "@李兰迪",
               "sourceUrl": "https://www.xiaohongshu.com/explore/69b24ba7000000000c009ad8",
               "image": {
                 "src": "/static/selfit/assets/personality/flou/outfits-04.webp?v=20260826-db-v3",
-                "alt": "造梦浪漫 · 波点吊带风",
-                "width": 800,
-                "height": 1200
+                "alt": "造梦浪漫 · 波点吊带",
+                "width": 1080,
+                "height": 1620
               }
             }
           ]
@@ -1610,7 +1610,7 @@
       },
       "hero": {
         "image": {
-          "src": "/static/selfit/assets/personality/neon/hero.png?v=20260825-final",
+          "src": "/static/selfit/assets/personality/neon/hero.png?v=20260827-config-v1",
           "alt": "灵动吸睛 NEON 人格封面",
           "width": 1484,
           "height": 1072,
@@ -1725,8 +1725,8 @@
             "image": {
               "src": "/static/selfit/assets/personality/neon/makeup-01.webp?v=20260826-db-v3",
               "alt": "灵动吸睛 · 薄荷绿眼妆",
-              "width": 898,
-              "height": 1200
+              "width": 1080,
+              "height": 1443
             }
           },
           {
@@ -1737,8 +1737,8 @@
             "image": {
               "src": "/static/selfit/assets/personality/neon/makeup-02.webp?v=20260826-db-v3",
               "alt": "灵动吸睛 · 焦糖莓果妆",
-              "width": 900,
-              "height": 1200
+              "width": 1080,
+              "height": 1440
             }
           }
         ],
@@ -1751,8 +1751,8 @@
             "image": {
               "src": "/static/selfit/assets/personality/neon/hair-01.webp?v=20260826-db-v3",
               "alt": "灵动吸睛 · 法式复古外翻",
-              "width": 900,
-              "height": 1200
+              "width": 1080,
+              "height": 1440
             }
           },
           {
@@ -1763,8 +1763,8 @@
             "image": {
               "src": "/static/selfit/assets/personality/neon/hair-02.webp?v=20260826-db-v3",
               "alt": "灵动吸睛 · 复古俏皮波波",
-              "width": 900,
-              "height": 1200
+              "width": 1080,
+              "height": 1440
             }
           }
         ],
@@ -1781,50 +1781,50 @@
           "items": [
             {
               "id": "outfits-01",
-              "name": "油画背心风",
-              "byline": "@曲家瑞",
-              "sourceUrl": "https://www.xiaohongshu.com/explore/6a58c998000000000301ceba",
+              "name": "热烈撞色",
+              "byline": "@Wolee",
+              "sourceUrl": "https://www.xiaohongshu.com/explore/636cec43000000002203619b?xsec_token=UBKi2mfSF0-4LyubcySoKSf3DDjKzl0-fsJyz5fergdMM=&xsec_source=app_sharehi",
               "image": {
-                "src": "/static/selfit/assets/personality/neon/outfits-01.webp?v=20260826-db-v3",
-                "alt": "灵动吸睛 · 油画背心风",
-                "width": 900,
-                "height": 1200
+                "src": "/static/selfit/assets/personality/neon/outfits-01.webp?v=20260827-config-v1",
+                "alt": "灵动吸睛 · 热烈撞色",
+                "width": 1080,
+                "height": 1440
               }
             },
             {
               "id": "outfits-02",
-              "name": "星星半裙风",
+              "name": "星星半裙",
               "byline": "@TIM VISION",
               "sourceUrl": "https://www.xiaohongshu.com/explore/6a3bd9cd000000002201bf4b",
               "image": {
                 "src": "/static/selfit/assets/personality/neon/outfits-02.webp?v=20260826-db-v3",
-                "alt": "灵动吸睛 · 星星半裙风",
-                "width": 800,
-                "height": 1200
+                "alt": "灵动吸睛 · 星星半裙",
+                "width": 1080,
+                "height": 1620
               }
             },
             {
               "id": "outfits-03",
-              "name": "拼画背心风",
+              "name": "拼画背心",
               "byline": "@摄影电焊机",
               "sourceUrl": "https://www.xiaohongshu.com/explore/6a890499000000000902ff9d",
               "image": {
                 "src": "/static/selfit/assets/personality/neon/outfits-03.webp?v=20260826-db-v3",
-                "alt": "灵动吸睛 · 拼画背心风",
-                "width": 777,
-                "height": 1200
+                "alt": "灵动吸睛 · 拼画背心",
+                "width": 1050,
+                "height": 1620
               }
             },
             {
               "id": "outfits-04",
-              "name": "条纹牛仔风",
+              "name": "条纹牛仔",
               "byline": "@马思纯",
               "sourceUrl": "https://www.xiaohongshu.com/explore/6a4f8668000000001702b943",
               "image": {
                 "src": "/static/selfit/assets/personality/neon/outfits-04.webp?v=20260826-db-v3",
-                "alt": "灵动吸睛 · 条纹牛仔风",
-                "width": 900,
-                "height": 1200
+                "alt": "灵动吸睛 · 条纹牛仔",
+                "width": 1080,
+                "height": 1440
               }
             }
           ]
@@ -1844,13 +1844,13 @@
       "index": 9,
       "status": "assets-ready",
       "metadata": {
-        "name": "甜辣轻亚",
+        "name": "甜酷轻亚",
         "code": "EDGE"
       },
       "hero": {
         "image": {
-          "src": "/static/selfit/assets/personality/edge/hero.png?v=20260825-final",
-          "alt": "甜辣轻亚 EDGE 人格封面",
+          "src": "/static/selfit/assets/personality/edge/hero.png?v=20260827-config-v1",
+          "alt": "甜酷轻亚 EDGE 人格封面",
           "width": 1484,
           "height": 1072,
           "placeholder": false
@@ -1858,16 +1858,16 @@
       },
       "keywords": [
         "甜辣对撞",
-        "轻亚锋芒",
-        "露肤比例"
+        "锋芒感",
+        "露肤度"
       ],
       "summary": "你喜欢甜美元素与皮革、金属、利落线条间的张力。\n柔软与锋利同时出现，\n才更接近你想要的状态。",
       "colors": {
-        "tagline": "甜辣对撞 · 轻亚锋芒 · 露肤比例",
+        "tagline": "甜辣对撞 · 锋芒感 · 露肤度",
         "renderLimit": 5,
         "sourceCard": {
           "src": "../../static/selfit/assets/personality/edge/color-card.png",
-          "alt": "甜辣轻亚推荐色色卡",
+          "alt": "甜酷轻亚推荐色色卡",
           "width": 1800,
           "height": 520
         },
@@ -1953,9 +1953,9 @@
             "sourceUrl": "https://www.xiaohongshu.com/explore/6a5f3e4a00000000010036e7",
             "image": {
               "src": "/static/selfit/assets/personality/edge/makeup-01.webp?v=20260826-db-v3",
-              "alt": "甜辣轻亚 · 狗狗眼燕麦妆",
-              "width": 900,
-              "height": 1200
+              "alt": "甜酷轻亚 · 狗狗眼燕麦妆",
+              "width": 1080,
+              "height": 1440
             }
           },
           {
@@ -1965,9 +1965,9 @@
             "sourceUrl": "https://www.xiaohongshu.com/explore/6944074f000000001d039e84",
             "image": {
               "src": "/static/selfit/assets/personality/edge/makeup-02.webp?v=20260826-db-v3",
-              "alt": "甜辣轻亚 · 土棕厚唇妆",
-              "width": 900,
-              "height": 1200
+              "alt": "甜酷轻亚 · 土棕厚唇妆",
+              "width": 1080,
+              "height": 1440
             }
           }
         ],
@@ -1979,9 +1979,9 @@
             "sourceUrl": "https://www.xiaohongshu.com/explore/6a2634f20000000017008070",
             "image": {
               "src": "/static/selfit/assets/personality/edge/hair-01.webp?v=20260826-db-v3",
-              "alt": "甜辣轻亚 · 亚麻高级感发",
-              "width": 900,
-              "height": 1200
+              "alt": "甜酷轻亚 · 亚麻高级感发",
+              "width": 1080,
+              "height": 1440
             }
           },
           {
@@ -1991,9 +1991,9 @@
             "sourceUrl": "https://www.xiaohongshu.com/explore/6919c5540000000004006e3d",
             "image": {
               "src": "/static/selfit/assets/personality/edge/hair-02.webp?v=20260826-db-v3",
-              "alt": "甜辣轻亚 · 挑染潮酷发",
-              "width": 900,
-              "height": 1200
+              "alt": "甜酷轻亚 · 挑染潮酷发",
+              "width": 1080,
+              "height": 1440
             }
           }
         ],
@@ -2010,57 +2010,57 @@
           "items": [
             {
               "id": "outfits-01",
-              "name": "皮衣网袜风",
+              "name": "皮衣网袜",
               "byline": "@易梦玲",
               "sourceUrl": "https://www.xiaohongshu.com/explore/6a54b3bf000000001702e9a2",
               "image": {
                 "src": "/static/selfit/assets/personality/edge/outfits-01.webp?v=20260826-db-v3",
-                "alt": "甜辣轻亚 · 皮衣网袜风",
-                "width": 900,
-                "height": 1200
+                "alt": "甜酷轻亚 · 皮衣网袜",
+                "width": 1080,
+                "height": 1440
               }
             },
             {
               "id": "outfits-02",
-              "name": "蕾丝工装风",
+              "name": "蕾丝工装",
               "byline": "@薛牙牙",
               "sourceUrl": "https://www.xiaohongshu.com/discovery/item/6a7c0db800000000220306f0",
               "image": {
                 "src": "/static/selfit/assets/personality/edge/outfits-02.webp?v=20260826-db-v3",
-                "alt": "甜辣轻亚 · 蕾丝工装风",
-                "width": 900,
-                "height": 1200
+                "alt": "甜酷轻亚 · 蕾丝工装",
+                "width": 1080,
+                "height": 1440
               }
             },
             {
               "id": "outfits-03",
-              "name": "粉褶叠穿风",
+              "name": "粉褶叠穿",
               "byline": "@杨杨Fashion",
               "sourceUrl": "https://www.xiaohongshu.com/discovery/item/6a85c480000000002500b865",
               "image": {
                 "src": "/static/selfit/assets/personality/edge/outfits-03.webp?v=20260826-db-v3",
-                "alt": "甜辣轻亚 · 粉褶叠穿风",
-                "width": 900,
-                "height": 1199
+                "alt": "甜酷轻亚 · 粉褶叠穿",
+                "width": 1072,
+                "height": 1428
               }
             },
             {
               "id": "outfits-04",
-              "name": "波点紫裙风",
+              "name": "波点紫裙",
               "byline": "@设计师很懒",
               "sourceUrl": "https://www.xiaohongshu.com/discovery/item/69cfb1af000000001b023e58",
               "image": {
                 "src": "/static/selfit/assets/personality/edge/outfits-04.webp?v=20260826-db-v3",
-                "alt": "甜辣轻亚 · 波点紫裙风",
-                "width": 900,
-                "height": 1197
+                "alt": "甜酷轻亚 · 波点紫裙",
+                "width": 1080,
+                "height": 1436
               }
             }
           ]
         }
       },
       "conclusion": {
-        "intro": "你在意的不是单纯甜或辣，而是露肤、松紧和材质之间的边界。\n比例越准确，冲突就越显得有力量。",
+        "intro": "不能用单纯的甜或辣形容你，你既能拿捏露肤度、又能把握松紧和材质之间的边界。\n比例越准确，冲突就越显得有力量。",
         "points": [
           "一甜一辣：两种气质各选一个核心元素。",
           "露肤聚焦：腰、腿、肩颈只突出一个区域。",
@@ -2078,7 +2078,7 @@
       },
       "hero": {
         "image": {
-          "src": "/static/selfit/assets/personality/bolt/hero.png?v=20260825-final",
+          "src": "/static/selfit/assets/personality/bolt/hero.png?v=20260827-config-v1",
           "alt": "在逃千金 BOLT 人格封面",
           "width": 1484,
           "height": 1072,
@@ -2088,11 +2088,11 @@
       "keywords": [
         "华丽焦点",
         "戏剧轮廓",
-        "精致锋芒"
+        "精致贵气"
       ],
       "summary": "你偏爱丝绒、珠饰、毛绒，\n也喜欢具有仪式感的轮廓。\n即使在日常里，也会保留一处精致焦点。",
       "colors": {
-        "tagline": "华丽焦点 · 戏剧轮廓 · 精致锋芒",
+        "tagline": "华丽焦点 · 戏剧轮廓 · 精致贵气",
         "renderLimit": 5,
         "sourceCard": {
           "src": "../../static/selfit/assets/personality/bolt/color-card.png",
@@ -2183,8 +2183,8 @@
             "image": {
               "src": "/static/selfit/assets/personality/bolt/makeup-01.webp?v=20260826-db-v3",
               "alt": "在逃千金 · 奶油小烟熏妆",
-              "width": 900,
-              "height": 1200
+              "width": 1080,
+              "height": 1440
             }
           },
           {
@@ -2203,12 +2203,12 @@
         "hair": [
           {
             "id": "hair-01",
-            "name": "复古铁锈红",
+            "name": "复古铁锈",
             "byline": "@化妆师Mona",
             "sourceUrl": "https://www.xiaohongshu.com/explore/692fe228000000001e03a6dd",
             "image": {
               "src": "/static/selfit/assets/personality/bolt/hair-01.webp?v=20260826-db-v3",
-              "alt": "在逃千金 · 复古铁锈红",
+              "alt": "在逃千金 · 复古铁锈",
               "width": 891,
               "height": 1188
             }
@@ -2221,8 +2221,8 @@
             "image": {
               "src": "/static/selfit/assets/personality/bolt/hair-02.webp?v=20260826-db-v3",
               "alt": "在逃千金 · 优雅S卷",
-              "width": 900,
-              "height": 1200
+              "width": 1080,
+              "height": 1440
             }
           }
         ],
@@ -2239,50 +2239,50 @@
           "items": [
             {
               "id": "outfits-01",
-              "name": "丝绒礼服风",
+              "name": "丝绒礼服",
               "byline": "@欧阳娜娜Nana",
               "sourceUrl": "https://www.xiaohongshu.com/explore/6a2fc7ef000000001101105c",
               "image": {
                 "src": "/static/selfit/assets/personality/bolt/outfits-01.webp?v=20260826-db-v3",
-                "alt": "在逃千金 · 丝绒礼服风",
-                "width": 900,
-                "height": 1200
+                "alt": "在逃千金 · 丝绒礼服",
+                "width": 1080,
+                "height": 1440
               }
             },
             {
               "id": "outfits-02",
-              "name": "深蓝银饰风",
+              "name": "藏青牛仔",
               "byline": "@田曦薇",
               "sourceUrl": "https://www.xiaohongshu.com/explore/68f99e3200000000030237ca",
               "image": {
                 "src": "/static/selfit/assets/personality/bolt/outfits-02.webp?v=20260826-db-v3",
-                "alt": "在逃千金 · 深蓝银饰风",
-                "width": 900,
-                "height": 1200
+                "alt": "在逃千金 · 藏青牛仔",
+                "width": 1080,
+                "height": 1440
               }
             },
             {
               "id": "outfits-03",
-              "name": "红裙大摆风",
+              "name": "红裙大摆",
               "byline": "@-19doublew",
               "sourceUrl": "https://www.xiaohongshu.com/explore/6a838162000000002403d731",
               "image": {
                 "src": "/static/selfit/assets/personality/bolt/outfits-03.webp?v=20260826-db-v3",
-                "alt": "在逃千金 · 红裙大摆风",
-                "width": 900,
-                "height": 1200
+                "alt": "在逃千金 · 红裙大摆",
+                "width": 1080,
+                "height": 1440
               }
             },
             {
               "id": "outfits-04",
-              "name": "毛绒开衩风",
+              "name": "毛绒开衩",
               "byline": "@摄影电焊机",
               "sourceUrl": "https://www.xiaohongshu.com/explore/6708c7eb000000001902ed75",
               "image": {
                 "src": "/static/selfit/assets/personality/bolt/outfits-04.webp?v=20260826-db-v3",
-                "alt": "在逃千金 · 毛绒开衩风",
-                "width": 800,
-                "height": 1200
+                "alt": "在逃千金 · 毛绒开衩",
+                "width": 1080,
+                "height": 1620
               }
             }
           ]
@@ -2307,7 +2307,7 @@
       },
       "hero": {
         "image": {
-          "src": "/static/selfit/assets/personality/film/hero.png?v=20260825-final",
+          "src": "/static/selfit/assets/personality/film/hero.png?v=20260827-config-v1",
           "alt": "虚焦胶片 FILM 人格封面",
           "width": 1484,
           "height": 1072,
@@ -2402,8 +2402,8 @@
             "image": {
               "src": "/static/selfit/assets/personality/film/makeup-01.webp?v=20260826-db-v3",
               "alt": "虚焦胶片 · 肉桂奶茶妆",
-              "width": 900,
-              "height": 1200
+              "width": 1080,
+              "height": 1440
             }
           },
           {
@@ -2414,8 +2414,8 @@
             "image": {
               "src": "/static/selfit/assets/personality/film/makeup-02.webp?v=20260826-db-v3",
               "alt": "虚焦胶片 · 清纯桃粉妆",
-              "width": 900,
-              "height": 1200
+              "width": 1080,
+              "height": 1440
             }
           }
         ],
@@ -2428,8 +2428,8 @@
             "image": {
               "src": "/static/selfit/assets/personality/film/hair-01.webp?v=20260826-db-v3",
               "alt": "虚焦胶片 · 复古发卡卷",
-              "width": 900,
-              "height": 1198
+              "width": 1080,
+              "height": 1438
             }
           },
           {
@@ -2440,8 +2440,8 @@
             "image": {
               "src": "/static/selfit/assets/personality/film/hair-02.webp?v=20260826-db-v3",
               "alt": "虚焦胶片 · 温柔空气内扣",
-              "width": 900,
-              "height": 1200
+              "width": 1080,
+              "height": 1440
             }
           }
         ],
@@ -2458,50 +2458,50 @@
           "items": [
             {
               "id": "outfits-01",
-              "name": "牛仔工装风",
+              "name": "牛仔工装",
               "byline": "@温妮Winnie",
               "sourceUrl": "https://www.xiaohongshu.com/discovery/item/69b511ce000000002800832a",
               "image": {
                 "src": "/static/selfit/assets/personality/film/outfits-01.webp?v=20260826-db-v3",
-                "alt": "虚焦胶片 · 牛仔工装风",
-                "width": 900,
-                "height": 1200
+                "alt": "虚焦胶片 · 牛仔工装",
+                "width": 1080,
+                "height": 1440
               }
             },
             {
               "id": "outfits-02",
-              "name": "披衫牛仔风",
+              "name": "披衫牛仔",
               "byline": "@SHIYI",
               "sourceUrl": "https://www.xiaohongshu.com/discovery/item/6820af1d000000001101dc5e",
               "image": {
                 "src": "/static/selfit/assets/personality/film/outfits-02.webp?v=20260826-db-v3",
-                "alt": "虚焦胶片 · 披衫牛仔风",
-                "width": 900,
-                "height": 1200
+                "alt": "虚焦胶片 · 披衫牛仔",
+                "width": 1080,
+                "height": 1440
               }
             },
             {
               "id": "outfits-03",
-              "name": "裙裤叠穿风",
+              "name": "裙裤叠穿",
               "byline": "@五指风",
               "sourceUrl": "https://www.xiaohongshu.com/explore/69cf3b19000000001a02fa14",
               "image": {
                 "src": "/static/selfit/assets/personality/film/outfits-03.webp?v=20260826-db-v3",
-                "alt": "虚焦胶片 · 裙裤叠穿风",
+                "alt": "虚焦胶片 · 裙裤叠穿",
                 "width": 828,
                 "height": 1026
               }
             },
             {
               "id": "outfits-04",
-              "name": "碎花蕾丝风",
+              "name": "碎花蕾丝",
               "byline": "@桃花岛岛主",
               "sourceUrl": "https://www.xiaohongshu.com/explore/6a34c11a000000000803c9a9",
               "image": {
                 "src": "/static/selfit/assets/personality/film/outfits-04.webp?v=20260826-db-v3",
-                "alt": "虚焦胶片 · 碎花蕾丝风",
-                "width": 900,
-                "height": 1200
+                "alt": "虚焦胶片 · 碎花蕾丝",
+                "width": 1080,
+                "height": 1440
               }
             }
           ]
@@ -2526,7 +2526,7 @@
       },
       "hero": {
         "image": {
-          "src": "/static/selfit/assets/personality/jade/hero.png?v=20260825-final",
+          "src": "/static/selfit/assets/personality/jade/hero.png?v=20260827-config-v1",
           "alt": "东方玉骨 JADE 人格封面",
           "width": 1484,
           "height": 1072,
@@ -2535,12 +2535,12 @@
       },
       "keywords": [
         "东方线条",
-        "含蓄留白",
-        "现代玉骨"
+        "风骨自成",
+        "现代感"
       ],
       "summary": "你容易被立领、斜襟、流苏和含蓄曲线吸引。\n传统元素被穿得轻盈而现代，\n最能贴合你克制又有骨架的气质。",
       "colors": {
-        "tagline": "东方线条 · 含蓄留白 · 现代玉骨",
+        "tagline": "东方线条 · 风骨自成 · 现代感",
         "renderLimit": 5,
         "sourceCard": {
           "src": "../../static/selfit/assets/personality/jade/color-card.png",
@@ -2631,8 +2631,8 @@
             "image": {
               "src": "/static/selfit/assets/personality/jade/makeup-01.webp?v=20260826-db-v3",
               "alt": "东方玉骨 · 低饱和蜜桃妆",
-              "width": 800,
-              "height": 1200
+              "width": 1080,
+              "height": 1620
             }
           },
           {
@@ -2643,8 +2643,8 @@
             "image": {
               "src": "/static/selfit/assets/personality/jade/makeup-02.webp?v=20260826-db-v3",
               "alt": "东方玉骨 · 复古桃夭妆",
-              "width": 805,
-              "height": 1200
+              "width": 1080,
+              "height": 1610
             }
           }
         ],
@@ -2657,8 +2657,8 @@
             "image": {
               "src": "/static/selfit/assets/personality/jade/hair-01.webp?v=20260826-db-v3",
               "alt": "东方玉骨 · 慵懒中式盘",
-              "width": 900,
-              "height": 1200
+              "width": 1080,
+              "height": 1440
             }
           },
           {
@@ -2669,8 +2669,8 @@
             "image": {
               "src": "/static/selfit/assets/personality/jade/hair-02.webp?v=20260826-db-v3",
               "alt": "东方玉骨 · 利落短碎发",
-              "width": 801,
-              "height": 1200
+              "width": 1080,
+              "height": 1617
             }
           }
         ],
@@ -2687,50 +2687,50 @@
           "items": [
             {
               "id": "outfits-01",
-              "name": "印花旗袍风",
+              "name": "印花旗袍",
               "byline": "@cici爱豆日记",
               "sourceUrl": "https://www.xiaohongshu.com/discovery/item/69c6b06d000000001d01b839",
               "image": {
                 "src": "/static/selfit/assets/personality/jade/outfits-01.webp?v=20260826-db-v3",
-                "alt": "东方玉骨 · 印花旗袍风",
-                "width": 900,
-                "height": 1189
+                "alt": "东方玉骨 · 印花旗袍",
+                "width": 1080,
+                "height": 1427
               }
             },
             {
               "id": "outfits-02",
-              "name": "龙纹衬衫风",
+              "name": "龙纹衬衫",
               "byline": "@哆来咪哒",
               "sourceUrl": "https://www.xiaohongshu.com/discovery/item/6a81a696000000003300b871",
               "image": {
                 "src": "/static/selfit/assets/personality/jade/outfits-02.webp?v=20260826-db-v3",
-                "alt": "东方玉骨 · 龙纹衬衫风",
-                "width": 900,
-                "height": 1200
+                "alt": "东方玉骨 · 龙纹衬衫",
+                "width": 1080,
+                "height": 1440
               }
             },
             {
               "id": "outfits-03",
-              "name": "流苏长裙风",
+              "name": "流苏长裙",
               "byline": "@徐慢醒.",
               "sourceUrl": "https://www.xiaohongshu.com/discovery/item/6a5b514f0000000011006cdf",
               "image": {
                 "src": "/static/selfit/assets/personality/jade/outfits-03.webp?v=20260826-db-v3",
-                "alt": "东方玉骨 · 流苏长裙风",
-                "width": 900,
-                "height": 1200
+                "alt": "东方玉骨 · 流苏长裙",
+                "width": 1080,
+                "height": 1440
               }
             },
             {
               "id": "outfits-04",
-              "name": "一字肩裙风",
+              "name": "一字肩裙",
               "byline": "@cheeseday芝士日",
               "sourceUrl": "https://www.xiaohongshu.com/discovery/item/6a6efdd50000000025001ea0",
               "image": {
                 "src": "/static/selfit/assets/personality/jade/outfits-04.webp?v=20260826-db-v3",
-                "alt": "东方玉骨 · 一字肩裙风",
-                "width": 883,
-                "height": 1200
+                "alt": "东方玉骨 · 一字肩裙",
+                "width": 1080,
+                "height": 1467
               }
             }
           ]
@@ -2755,7 +2755,7 @@
       },
       "hero": {
         "image": {
-          "src": "/static/selfit/assets/personality/loop/hero.png?v=20260825-final",
+          "src": "/static/selfit/assets/personality/loop/hero.png?v=20260827-config-v1",
           "alt": "无限重启 LOOP 人格封面",
           "width": 1484,
           "height": 1072,
@@ -2765,11 +2765,11 @@
       "keywords": [
         "多套并存",
         "状态切换",
-        "模块衣柜"
+        "轻松驾驭"
       ],
       "summary": "你的偏好会随状态、季节和场景变化，\n衣柜里常常并存几条路线。\n你习惯不断试穿重组，再回到熟悉的组合。",
       "colors": {
-        "tagline": "多套并存 · 状态切换 · 模块衣柜",
+        "tagline": "多套并存 · 状态切换 · 轻松驾驭",
         "renderLimit": 5,
         "sourceCard": {
           "src": "../../static/selfit/assets/personality/loop/color-card.png",
@@ -2870,8 +2870,8 @@
             "image": {
               "src": "/static/selfit/assets/personality/loop/makeup-01.webp?v=20260826-db-v3",
               "alt": "无限重启 · 伪素颜妆",
-              "width": 900,
-              "height": 1200
+              "width": 1080,
+              "height": 1440
             }
           },
           {
@@ -2882,8 +2882,8 @@
             "image": {
               "src": "/static/selfit/assets/personality/loop/makeup-02.webp?v=20260826-db-v3",
               "alt": "无限重启 · 浅眉大地妆",
-              "width": 900,
-              "height": 1200
+              "width": 1080,
+              "height": 1440
             }
           }
         ],
@@ -2896,8 +2896,8 @@
             "image": {
               "src": "/static/selfit/assets/personality/loop/hair-01.webp?v=20260826-db-v3",
               "alt": "无限重启 · 空气刘海微卷发",
-              "width": 900,
-              "height": 1200
+              "width": 1080,
+              "height": 1440
             }
           },
           {
@@ -2908,8 +2908,8 @@
             "image": {
               "src": "/static/selfit/assets/personality/loop/hair-02.webp?v=20260826-db-v3",
               "alt": "无限重启 · 红棕日常内扣发",
-              "width": 900,
-              "height": 1181
+              "width": 960,
+              "height": 1260
             }
           }
         ],
@@ -2926,50 +2926,50 @@
           "items": [
             {
               "id": "outfits-01",
-              "name": "循环休闲风",
+              "name": "循环休闲",
               "byline": "@迪娜dina阿迪",
               "sourceUrl": "",
               "image": {
                 "src": "/static/selfit/assets/personality/loop/outfits-01.webp?v=20260826-db-v3",
-                "alt": "无限重启 · 循环休闲风",
-                "width": 900,
-                "height": 1200
+                "alt": "无限重启 · 循环休闲",
+                "width": 1080,
+                "height": 1440
               }
             },
             {
               "id": "outfits-02",
-              "name": "日常通勤风",
+              "name": "自在都市",
               "byline": "@董洁",
               "sourceUrl": "",
               "image": {
                 "src": "/static/selfit/assets/personality/loop/outfits-02.webp?v=20260826-db-v3",
-                "alt": "无限重启 · 日常通勤风",
-                "width": 900,
-                "height": 1200
+                "alt": "无限重启 · 自在都市",
+                "width": 1080,
+                "height": 1440
               }
             },
             {
               "id": "outfits-03",
-              "name": "叠穿日常风",
+              "name": "叠穿日常",
               "byline": "@Miki _yuanjz",
               "sourceUrl": "",
               "image": {
                 "src": "/static/selfit/assets/personality/loop/outfits-03.webp?v=20260826-db-v3",
-                "alt": "无限重启 · 叠穿日常风",
-                "width": 900,
-                "height": 1200
+                "alt": "无限重启 · 叠穿日常",
+                "width": 1080,
+                "height": 1440
               }
             },
             {
               "id": "outfits-04",
-              "name": "棉麻日常风",
+              "name": "棉麻随性",
               "byline": "@我不是煎饼果子",
               "sourceUrl": "",
               "image": {
                 "src": "/static/selfit/assets/personality/loop/outfits-04.webp?v=20260826-db-v3",
-                "alt": "无限重启 · 棉麻日常风",
-                "width": 899,
-                "height": 1200
+                "alt": "无限重启 · 棉麻随性",
+                "width": 1080,
+                "height": 1442
               }
             }
           ]
@@ -2994,7 +2994,7 @@
       },
       "hero": {
         "image": {
-          "src": "/static/selfit/assets/personality/noir/hero.png?v=20260825-final",
+          "src": "/static/selfit/assets/personality/noir/hero.png?v=20260827-config-v1",
           "alt": "暗黑肃杀 NOIR 人格封面",
           "width": 1484,
           "height": 1072,
@@ -3004,11 +3004,11 @@
       "keywords": [
         "黑色执念",
         "冷硬层次",
-        "无彩回归"
+        "无彩战士"
       ],
       "summary": "无论面对什么场景，\n你最终都会回到黑色、深色和低饱和配色。\n你擅长用材质差异，让克制的色盘拥有层次。",
       "colors": {
-        "tagline": "黑色执念 · 冷硬层次 · 无彩回归",
+        "tagline": "黑色执念 · 冷硬层次 · 无彩战士",
         "renderLimit": 5,
         "sourceCard": {
           "src": "../../static/selfit/assets/personality/noir/color-card.png",
@@ -3079,8 +3079,8 @@
             "image": {
               "src": "/static/selfit/assets/personality/noir/makeup-01.webp?v=20260826-db-v3",
               "alt": "暗黑肃杀 · 机能眼线妆",
-              "width": 900,
-              "height": 1199
+              "width": 1080,
+              "height": 1439
             }
           },
           {
@@ -3091,8 +3091,8 @@
             "image": {
               "src": "/static/selfit/assets/personality/noir/makeup-02.webp?v=20260826-db-v3",
               "alt": "暗黑肃杀 · 蓝紫闪片妆",
-              "width": 900,
-              "height": 1200
+              "width": 1080,
+              "height": 1440
             }
           }
         ],
@@ -3105,20 +3105,20 @@
             "image": {
               "src": "/static/selfit/assets/personality/noir/hair-01.webp?v=20260826-db-v3",
               "alt": "暗黑肃杀 · 冷酷黑长直",
-              "width": 900,
-              "height": 1160
+              "width": 1080,
+              "height": 1392
             }
           },
           {
             "id": "hair-02",
-            "name": "酷飒层次短发",
+            "name": "酷飒厚重",
             "byline": "@莫比墨墨",
             "sourceUrl": "https://www.xiaohongshu.com/explore/69abfea10000000015023c4d",
             "image": {
               "src": "/static/selfit/assets/personality/noir/hair-02.webp?v=20260826-db-v3",
-              "alt": "暗黑肃杀 · 酷飒层次短发",
-              "width": 900,
-              "height": 1200
+              "alt": "暗黑肃杀 · 酷飒厚重",
+              "width": 960,
+              "height": 1280
             }
           }
         ],
@@ -3135,50 +3135,50 @@
           "items": [
             {
               "id": "outfits-01",
-              "name": "立体流苏风",
+              "name": "立体褶边",
               "byline": "@未羊",
               "sourceUrl": "https://www.xiaohongshu.com/discovery/item/68c90852000000001300e152",
               "image": {
                 "src": "/static/selfit/assets/personality/noir/outfits-01.webp?v=20260826-db-v3",
-                "alt": "暗黑肃杀 · 立体流苏风",
-                "width": 900,
-                "height": 1125
+                "alt": "暗黑肃杀 · 立体褶边",
+                "width": 1018,
+                "height": 1272
               }
             },
             {
               "id": "outfits-02",
-              "name": "长款皮衣风",
+              "name": "长款皮衣",
               "byline": "@王子文",
               "sourceUrl": "https://www.xiaohongshu.com/explore/6a8829c3000000000902e91d",
               "image": {
                 "src": "/static/selfit/assets/personality/noir/outfits-02.webp?v=20260826-db-v3",
-                "alt": "暗黑肃杀 · 长款皮衣风",
-                "width": 675,
-                "height": 1200
+                "alt": "暗黑肃杀 · 长款皮衣",
+                "width": 911,
+                "height": 1620
               }
             },
             {
               "id": "outfits-03",
-              "name": "皮衣波点风",
-              "byline": "@易梦玲",
-              "sourceUrl": "https://www.xiaohongshu.com/explore/6a54b3bf000000001702e9a2",
+              "name": "垫肩廓形",
+              "byline": "@姐不伏",
+              "sourceUrl": "https://www.xiaohongshu.com/explore/693d5d9e000000001e038887?xsec_token=ABeE4dgJAuxADmOYoXTW0O5I8Y1wODLE3hvK73yOWTayE=&xsec_source=pc_search&source=web_explore_feed",
               "image": {
-                "src": "/static/selfit/assets/personality/noir/outfits-03.webp?v=20260826-db-v3",
-                "alt": "暗黑肃杀 · 皮衣波点风",
-                "width": 900,
-                "height": 1200
+                "src": "/static/selfit/assets/personality/noir/outfits-03.webp?v=20260827-config-v1",
+                "alt": "暗黑肃杀 · 垫肩廓形",
+                "width": 1080,
+                "height": 1844
               }
             },
             {
               "id": "outfits-04",
-              "name": "建筑剪裁风",
+              "name": "建筑剪裁",
               "byline": "@16Arlington",
               "sourceUrl": "https://www.vogue.com.cn/shows/16arlington/2025-aw-RTW/",
               "image": {
                 "src": "/static/selfit/assets/personality/noir/outfits-04.webp?v=20260826-db-v3",
-                "alt": "暗黑肃杀 · 建筑剪裁风",
-                "width": 800,
-                "height": 1200
+                "alt": "暗黑肃杀 · 建筑剪裁",
+                "width": 1000,
+                "height": 1500
               }
             }
           ]
@@ -3203,7 +3203,7 @@
       },
       "hero": {
         "image": {
-          "src": "/static/selfit/assets/personality/void/hero.png?v=20260825-final",
+          "src": "/static/selfit/assets/personality/void/hero.png?v=20260827-config-v1",
           "alt": "人间失格 VOID 人格封面",
           "width": 1484,
           "height": 1072,
@@ -3211,13 +3211,13 @@
         }
       },
       "keywords": [
-        "状态游移",
+        "状态游离",
         "拒绝定型",
         "默认制服"
       ],
       "summary": "你的收藏、理想造型和真实衣柜常指向不同方向，\n投入也会随精力变化。\n今天不想被一种风格定义，同样很诚实。",
       "colors": {
-        "tagline": "状态游移 · 拒绝定型 · 默认制服",
+        "tagline": "状态游离 · 拒绝定型 · 默认制服",
         "renderLimit": 5,
         "sourceCard": {
           "src": "../../static/selfit/assets/personality/void/color-card.png",
@@ -3318,8 +3318,8 @@
             "image": {
               "src": "/static/selfit/assets/personality/void/makeup-01.webp?v=20260826-db-v3",
               "alt": "人间失格 · 宿醉玫粉妆",
-              "width": 900,
-              "height": 1200
+              "width": 1080,
+              "height": 1440
             }
           },
           {
@@ -3330,8 +3330,8 @@
             "image": {
               "src": "/static/selfit/assets/personality/void/makeup-02.webp?v=20260826-db-v3",
               "alt": "人间失格 · 哥特暗红妆",
-              "width": 900,
-              "height": 1199
+              "width": 1080,
+              "height": 1439
             }
           }
         ],
@@ -3344,8 +3344,8 @@
             "image": {
               "src": "/static/selfit/assets/personality/void/hair-01.webp?v=20260826-db-v3",
               "alt": "人间失格 · 豹纹随性扎发",
-              "width": 900,
-              "height": 900
+              "width": 1080,
+              "height": 1080
             }
           },
           {
@@ -3374,50 +3374,50 @@
           "items": [
             {
               "id": "outfits-01",
-              "name": "格纹长裙风",
+              "name": "隐身就行",
               "byline": "@allizantt",
               "sourceUrl": "https://www.xiaohongshu.com/discovery/item/697b5068000000000e03cd9b",
               "image": {
                 "src": "/static/selfit/assets/personality/void/outfits-01.webp?v=20260826-db-v3",
-                "alt": "人间失格 · 格纹长裙风",
-                "width": 900,
-                "height": 1200
+                "alt": "人间失格 · 隐身就行",
+                "width": 1080,
+                "height": 1440
               }
             },
             {
               "id": "outfits-02",
-              "name": "印花T恤风",
+              "name": "舒服就行",
               "byline": "@Sallyhuahua",
               "sourceUrl": "https://www.xiaohongshu.com/discovery/item/68e20781000000000700ff25",
               "image": {
                 "src": "/static/selfit/assets/personality/void/outfits-02.webp?v=20260826-db-v3",
-                "alt": "人间失格 · 印花T恤风",
-                "width": 900,
-                "height": 1200
+                "alt": "人间失格 · 舒服就行",
+                "width": 1080,
+                "height": 1440
               }
             },
             {
               "id": "outfits-03",
-              "name": "蓬松羽绒风",
+              "name": "保暖就行",
               "byline": "@杂志研究员",
               "sourceUrl": "https://www.xiaohongshu.com/discovery/item/6927f7a1000000001e023439",
               "image": {
                 "src": "/static/selfit/assets/personality/void/outfits-03.webp?v=20260826-db-v3",
-                "alt": "人间失格 · 蓬松羽绒风",
-                "width": 900,
-                "height": 1147
+                "alt": "人间失格 · 保暖就行",
+                "width": 960,
+                "height": 1223
               }
             },
             {
               "id": "outfits-04",
-              "name": "格纹叠穿风",
+              "name": "快乐就行",
               "byline": "@创业者郭鹏",
               "sourceUrl": "https://www.xiaohongshu.com/discovery/item/69270c94000000001e0092f9",
               "image": {
                 "src": "/static/selfit/assets/personality/void/outfits-04.webp?v=20260826-db-v3",
-                "alt": "人间失格 · 格纹叠穿风",
-                "width": 900,
-                "height": 1200
+                "alt": "人间失格 · 快乐就行",
+                "width": 1080,
+                "height": 1440
               }
             }
           ]
@@ -3442,7 +3442,7 @@
       },
       "hero": {
         "image": {
-          "src": "/static/selfit/assets/personality/oops/hero.png?v=20260825-final",
+          "src": "/static/selfit/assets/personality/oops/hero.png?v=20260827-config-v1",
           "alt": "搭配事故 OOPS 人格封面",
           "width": 1484,
           "height": 1072,
@@ -3567,8 +3567,8 @@
             "image": {
               "src": "/static/selfit/assets/personality/oops/makeup-01.webp?v=20260826-db-v3",
               "alt": "搭配事故 · 西柚嘟嘟妆",
-              "width": 900,
-              "height": 1200
+              "width": 1080,
+              "height": 1440
             }
           },
           {
@@ -3579,39 +3579,39 @@
             "image": {
               "src": "/static/selfit/assets/personality/oops/makeup-02.webp?v=20260826-db-v3",
               "alt": "搭配事故 · 立体修容妆",
-              "width": 900,
-              "height": 1199
+              "width": 1080,
+              "height": 1439
             }
           }
         ],
         "hair": [
           {
             "id": "hair-01",
-            "name": "前卫渐变挑染",
+            "name": "前卫眉上刘海",
             "byline": "@BBBLUE",
             "sourceUrl": "https://www.xiaohongshu.com/explore/68d8d72b0000000007029ad8",
             "image": {
               "src": "/static/selfit/assets/personality/oops/hair-01.webp?v=20260826-db-v3",
-              "alt": "搭配事故 · 前卫渐变挑染",
-              "width": 900,
-              "height": 1200
+              "alt": "搭配事故 · 前卫眉上刘海",
+              "width": 1080,
+              "height": 1440
             }
           },
           {
             "id": "hair-02",
-            "name": "夸张金色爆炸卷",
+            "name": "夸张挑染",
             "byline": "@大树酱の日杂味道",
             "sourceUrl": "https://www.xiaohongshu.com/explore/694fc474000000001e02e7d8",
             "image": {
               "src": "/static/selfit/assets/personality/oops/hair-02.webp?v=20260826-db-v3",
-              "alt": "搭配事故 · 夸张金色爆炸卷",
-              "width": 885,
-              "height": 1200
+              "alt": "搭配事故 · 夸张挑染",
+              "width": 1080,
+              "height": 1465
             }
           }
         ],
         "outfits": {
-          "summary": "每次只选择一个主要冲突轴，例如颜色冲突、材质冲突或国别风格冲突，其他维度保留共同点。\n可以用相同色彩、重复图案或统一比例，把“事故”变成明确设计。",
+          "summary": "每次只选择一个主要冲突轴，例如颜色冲突、材质冲突或风格冲突，其他维度保留共同点。\n可以用相同色彩、重复图案或统一比例，把“事故”变成明确设计。",
           "source": {
             "name": "小红书",
             "copy": "已整理 5 条穿搭素材",
@@ -3623,50 +3623,50 @@
           "items": [
             {
               "id": "outfits-01",
-              "name": "金亮堆饰风",
+              "name": "撞色堆饰",
               "byline": "@曲家瑞",
               "sourceUrl": "https://www.xiaohongshu.com/explore/6883af5c00000000170378fd",
               "image": {
                 "src": "/static/selfit/assets/personality/oops/outfits-01.webp?v=20260826-db-v3",
-                "alt": "搭配事故 · 金亮堆饰风",
-                "width": 900,
-                "height": 1200
+                "alt": "搭配事故 · 撞色堆饰",
+                "width": 1080,
+                "height": 1440
               }
             },
             {
               "id": "outfits-02",
-              "name": "西装蓬裙风",
+              "name": "西装蓬裙",
               "byline": "@羅蛋皮",
               "sourceUrl": "",
               "image": {
                 "src": "/static/selfit/assets/personality/oops/outfits-02.webp?v=20260826-db-v3",
-                "alt": "搭配事故 · 西装蓬裙风",
-                "width": 899,
-                "height": 1200
+                "alt": "搭配事故 · 西装蓬裙",
+                "width": 1080,
+                "height": 1441
               }
             },
             {
               "id": "outfits-03",
-              "name": "机能蕾丝风",
+              "name": "机能蕾丝",
               "byline": "@Cecilie Bahnsen",
               "sourceUrl": "https://www.vogue.com.cn/shows/cecilie-bahnsen/2026-aw-RTW/",
               "image": {
                 "src": "/static/selfit/assets/personality/oops/outfits-03.webp?v=20260826-db-v3",
-                "alt": "搭配事故 · 机能蕾丝风",
-                "width": 800,
-                "height": 1200
+                "alt": "搭配事故 · 机能蕾丝",
+                "width": 1000,
+                "height": 1500
               }
             },
             {
               "id": "outfits-04",
-              "name": "扭结牛仔风",
+              "name": "扭结牛仔",
               "byline": "@diesel",
               "sourceUrl": "https://www.vogue.com.cn/shows/diesel/2026-aw-RTW/",
               "image": {
                 "src": "/static/selfit/assets/personality/oops/outfits-04.webp?v=20260826-db-v3",
-                "alt": "搭配事故 · 扭结牛仔风",
-                "width": 800,
-                "height": 1200
+                "alt": "搭配事故 · 扭结牛仔",
+                "width": 1000,
+                "height": 1500
               }
             }
           ]
@@ -3676,7 +3676,7 @@
         "intro": "你不是不会搭配，只是不满足于唯一的正确方式。\n让冲突保留共同线索，所谓事故就会变成明确的个人设计。",
         "points": [
           "单轴冲突：颜色、材质或风格每次只选一个主矛盾。",
-          "重复线索：用相同色彩或图案证明冲突是有意设计。",
+          "重复线索：用色彩呼应或同质叠穿证明冲突是有意设计。",
           "比例统一：让轮廓和长度保持一个共同秩序。"
         ]
       }
