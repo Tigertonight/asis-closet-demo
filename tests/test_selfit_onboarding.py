@@ -239,7 +239,7 @@ def test_selfit_personality_catalog_keeps_all_colors_but_renders_first_five() ->
 
     assert response.status_code == 200
     catalog = json.loads(response.text)
-    assert catalog["templateVersion"] == "2026.08.personality-db-v3"
+    assert catalog["templateVersion"] == "2026.08.personality-db-v4"
     assert catalog["renderRules"]["colors"]["limit"] == 5
     assert len(catalog["types"]) == 16
     assert sum(len(item["colors"]["items"]) for item in catalog["types"].values()) == 112
@@ -257,11 +257,22 @@ def test_selfit_personality_catalog_keeps_all_colors_but_renders_first_five() ->
         assert len(template["recommendations"]["outfits"]["items"]) == 4
         assert all(re.fullmatch(r"#[0-9A-F]{6}", color["value"]) for color in template["colors"]["items"])
 
+    mute_hair = catalog["types"]["mute"]["recommendations"]["hair"]
+    assert [item["name"] for item in mute_hair] == ["外翘初恋发", "八字显脸小发"]
+    assert all(item["name"] not in {"💇🏻‍♀️显脸小的发型💓", "减龄又显白的发色、米棕色"} for item in mute_hair)
+
     runtime = client.get("/static/selfit/selfit.js")
     assert runtime.status_code == 200
     assert "template.colors?.renderLimit || personalityCatalog.renderRules?.colors?.limit || 5" in runtime.text
     assert "data.colors.slice(0, personalityCatalog.renderRules?.colors?.limit || 5)" in runtime.text
     assert ".slice(0, personalityCatalog.renderRules?.outfits?.limit || 4)" in runtime.text
+    assert "replace(/^\\s*建议\\s*[：:]\\s*/, '')" in runtime.text
+
+    for template in catalog["types"].values():
+        assert all(
+            not str(point).lstrip().startswith(("建议：", "建议:"))
+            for point in template["conclusion"]["points"]
+        )
 
 
 def test_personality_hero_uses_the_final_artwork_ratio_without_a_fallback_background() -> None:
