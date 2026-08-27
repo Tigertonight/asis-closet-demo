@@ -129,6 +129,85 @@ def start_phone_login(phone: str) -> dict[str, Any]:
     return response
 
 
+def client_ip_from_request(request: Request) -> str:
+    real_ip = (request.headers.get("x-real-ip") or "").strip()
+    if real_ip:
+        return real_ip
+    forwarded = (request.headers.get("x-forwarded-for") or "").strip()
+    if forwarded:
+        return forwarded.split(",")[-1].strip()
+    return request.client.host if request.client else "unknown"
+
+
+def _invite_codes() -> list[str]:
+    raw = os.getenv("SELFIT_INVITE_CODES", "")
+    return [item.strip() for item in raw.split(",") if item.strip()]
+
+
+def _issue_session(data: dict[str, Any], user: dict[str, Any], now: datetime, provider: str, client_ip: str | None) -> str:
+    token = secrets.token_urlsafe(32)
+    session = {
+        "session_id": secrets.token_urlsafe(12),
+        "user_id": user["user_id"],
+        "token_hash": _hash_secret(token),
+        "status": "active",
+        "auth_provider": provider,
+        "source_ip": client_ip,
+        "created_at": now.isoformat(),
+        "expires_at": (now + timedelta(hours=TOKEN_TTL_HOURS)).isoformat(),
+        "revoked_at": None,
+    }
+    data["auth_sessions"].append(session)
+    return token
+
+
+def verify_invite_login(invite_code: str, client_ip: str) -> dict[str, Any]:
+    submitted = str(invite_code or "").strip()
+    allowed = _invite_codes()
+    if not allowed:
+        raise HTTPException(status_code=503, detail="邀请码登录未配置，请联系管理员")
+    if not submitted or not any(hmac.compare_digest(submitted, item) for item in allowed):
+        raise HTTPException(status_code=400, detail="邀请码不正确，请检查后重试")
+
+    now = datetime.now(timezone.utc)
+    data = _load_store()
+    user = next(
+        (
+            item
+            for item in data["users"]
+            if item.get("auth_provider") == "invite" and item.get("source_ip") == client_ip and item.get("status") == "active"
+        ),
+        None,
+    )
+    if user is None:
+        user_id = sanitize_user_id("u_g" + hashlib.sha256(client_ip.encode("utf-8")).hexdigest()[:16])
+        user = next((item for item in data["users"] if item.get("user_id") == user_id), None)
+        if user is None:
+            user = {
+                "user_id": user_id,
+                "phone_e164": None,
+                "status": "active",
+                "auth_provider": "invite",
+                "source_ip": client_ip,
+                "created_at": now.isoformat(),
+                "last_login_at": now.isoformat(),
+            }
+            data["users"].append(user)
+    else:
+        user["last_login_at"] = now.isoformat()
+
+    hydrate_user_from_demo_data(str(user["user_id"]))
+    token = _issue_session(data, user, now, "invite", client_ip)
+    _write_store(data)
+    return {
+        "status": "ok",
+        "access_token": token,
+        "token_type": "bearer",
+        "expires_in_seconds": TOKEN_TTL_HOURS * 3600,
+        "user": _public_user(user),
+    }
+
+
 def verify_phone_login(phone: str, code: str) -> dict[str, Any]:
     phone_e164 = _normalize_phone(phone)
     submitted_code = str(code or "").strip()

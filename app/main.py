@@ -24,6 +24,8 @@ from app.auth import (
     revoke_token,
     start_phone_login,
     verify_phone_login,
+    verify_invite_login,
+    client_ip_from_request,
 )
 from app.ops import deployment_guard_report, request_guard_middleware
 from app.analyzer import (
@@ -285,6 +287,9 @@ async def validation_exception_handler(request: Request, exc: RequestValidationE
 @app.exception_handler(StarletteHTTPException)
 async def http_exception_handler(request: Request, exc: StarletteHTTPException) -> JSONResponse:
     detail = exc.detail if isinstance(exc.detail, str) else "这次请求没有完成。"
+    if request.url.path.startswith("/auth"):
+        code = f"auth.http_{int(exc.status_code)}"
+        return _friendly_error(code, detail, detail, int(exc.status_code))
     code, message, suggestion = _upload_error_for_detail(detail, int(exc.status_code))
     return _friendly_error(code, message, suggestion, int(exc.status_code))
 
@@ -316,6 +321,12 @@ async def auth_phone_start(request: Request) -> dict[str, Any]:
 async def auth_phone_verify(request: Request) -> dict[str, Any]:
     payload = await request.json()
     return verify_phone_login(str(payload.get("phone") or ""), str(payload.get("code") or ""))
+
+
+@app.post("/auth/invite/verify")
+async def auth_invite_verify(request: Request) -> dict[str, Any]:
+    payload = await request.json()
+    return verify_invite_login(str(payload.get("invite_code") or ""), client_ip_from_request(request))
 
 
 @app.get("/auth/me")
@@ -640,6 +651,11 @@ def _selfit_index_html() -> str:
     if marker in html:
         html = html.replace(marker, tag + marker, 1)
     return html
+
+
+@app.get("/", include_in_schema=False)
+def root_page() -> RedirectResponse:
+    return RedirectResponse(url="/selfit", status_code=308)
 
 
 @app.get("/selfit", response_class=HTMLResponse)
