@@ -134,14 +134,15 @@
     busy = true; clearTimers();
     const runId = ++countdownRun;
     show('countdown');
-    countdownNumber.textContent = '3';
+    countdownNumber.textContent = '6';
     void startCamera(runId);
-    later(() => { if (runId === countdownRun) countdownNumber.textContent = '2'; }, 1000);
-    later(() => { if (runId === countdownRun) countdownNumber.textContent = '1'; }, 2000);
+    [5, 4, 3, 2, 1].forEach((n, i) => {
+      later(() => { if (runId === countdownRun) countdownNumber.textContent = String(n); }, (i + 1) * 1000);
+    });
     later(() => {
       if (runId !== countdownRun) return;
       capture().catch(() => { busy = false; notify('拍摄失败，请重新尝试'); show('home'); });
-    }, 3000);
+    }, 6000);
   };
   const processPhoto = async () => {
     if (busy) return;

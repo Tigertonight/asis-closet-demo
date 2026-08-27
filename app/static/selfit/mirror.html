@@ -9,30 +9,26 @@
   <link rel="preload" as="image" href="/static/selfit/assets/mirror-loading-stage-25@2x.png" />
   <link rel="preload" as="image" href="/static/selfit/assets/mirror-loading-stage-50@2x.png" />
   <link rel="preload" as="image" href="/static/selfit/assets/mirror-loading-stage-75@2x.png" />
-  <link rel="stylesheet" href="/static/selfit/mirror.css?v=20260824-5" />
+  <link rel="stylesheet" href="/static/selfit/mirror.css?v=20260827-20" />
 </head>
 <body>
   <main class="mirror-shell" id="mirrorApp" data-state="home" aria-live="polite">
     <section class="mirror-screen textile-screen is-active" data-screen="home" aria-labelledby="mirrorTitle">
-      <span class="home-brand" aria-label="selfit">
-        <span class="home-word" aria-hidden="true">selfit</span>
-        <i class="home-star home-star--1">★</i><i class="home-star home-star--2">★</i>
-        <i class="home-star home-star--3">★</i><i class="home-star home-star--4">★</i>
-        <i class="home-star home-star--5">★</i><i class="home-star home-star--6">★</i>
-        <i class="home-star home-star--7">★</i><i class="home-star home-star--8">★</i>
-        <i class="home-star home-star--9">★</i><i class="home-star home-star--10">★</i>
-        <i class="home-star home-star--11">★</i><i class="home-star home-star--12">★</i>
-        <i class="home-star home-star--13">★</i><i class="home-star home-star--14">★</i>
-      </span>
       <div class="home-copy">
         <h1 id="mirrorTitle">适我，不适众</h1>
-        <p>1 分钟，找到真正衬你的颜色与穿搭风格</p>
+        <img class="home-tagline" src="/static/selfit/assets/login-tagline-curved@2x.png" width="220" height="44" alt="Fit yourself, not in." data-dropwhite />
       </div>
-      <button class="mirror-button mirror-button--light home-action" id="startCapture" type="button">
-        <img src="/static/selfit/assets/icon-camera.svg" width="30" height="30" alt="" aria-hidden="true" />
-        开始风格测试
-      </button>
-      <div class="home-manifesto" role="img" aria-label="everyone has a code."><img class="home-manifesto-art" src="/static/selfit/assets/mirror-home-manifesto@2x.png" width="452" height="340" alt="" /></div>
+      <div class="home-lead">
+        <p>一分钟，测测你的 SFTI 16型型格</p>
+        <button class="mirror-button mirror-button--light home-action" id="startCapture" type="button">
+          <img src="/static/selfit/assets/icon-camera.svg" width="30" height="30" alt="" aria-hidden="true" />
+          拍照
+        </button>
+      </div>
+      <div class="home-buttons" role="img" aria-label="selfit">
+        <img class="home-buttons-art" src="/static/selfit/assets/login-buttons-ring@2x.png" width="240" height="200" alt="" />
+        <img class="home-buttons-logo" src="/static/selfit/assets/login-selfit-logo@2x.png" width="217" height="80" alt="selfit" data-whiten />
+      </div>
     </section>
 
     <section class="mirror-screen camera-screen" data-screen="countdown" aria-label="拍照倒计时">
@@ -41,10 +37,11 @@
         <video id="cameraVideo" autoplay muted playsinline></video>
       </div>
       <div class="camera-shade"></div>
+      <img class="countdown-lace" src="/static/selfit/assets/lace-card@4x.png" alt="" aria-hidden="true" />
       <img class="mirror-wordmark" src="/static/selfit/assets/selfit-wordmark.svg" width="55" height="20" alt="selfit" />
       <div class="countdown-copy">
         <p>准备拍照</p>
-        <strong id="countdownNumber">3</strong>
+        <strong id="countdownNumber">6</strong>
       </div>
       <p class="visually-hidden" id="cameraHint">请正对镜面，保持自然站姿</p>
     </section>
@@ -68,28 +65,82 @@
         <small id="processingHint">25%</small>
       </div>
       <img class="processing-art" id="processingArt" src="/static/selfit/assets/mirror-loading-stage-25@2x.png" width="369" height="114" alt="" aria-hidden="true" data-stage="25" />
-      <img class="processing-signature" src="/static/selfit/assets/mirror-signature-know-yourself@2x.png" width="452" height="140" alt="Know yourself first." />
+      <img class="processing-signature" src="/static/selfit/assets/login-tagline-curved@2x.png" width="220" height="44" alt="Fit yourself, not in." data-dropwhite />
     </section>
 
     <section class="mirror-screen result-screen" data-screen="result" aria-label="分析完成">
       <img class="mirror-wordmark" src="/static/selfit/assets/selfit-wordmark.svg" width="55" height="20" alt="selfit" />
-      <div class="result-card" aria-label="本次拍摄照片">
-        <img class="result-photo" id="resultPhoto" alt="本次拍摄照片" />
-        <img class="result-lace" src="/static/selfit/assets/lace-card@4x.png" alt="" />
-      </div>
-      <div class="report-qr">
-        <span>扫码查看</span>
-        <img id="reportQrImage" src="/static/selfit/assets/mirror-report-qr.png" alt="扫码获取完整报告" />
-        <small class="visually-hidden" id="reportCode">扫码查看完整报告</small>
+      <p class="result-intro">拿出手机扫码，完成型格测试<br />完成后即可免费打印照片</p>
+      <div class="result-panels">
+        <div class="result-col">
+          <span class="result-step">step1</span>
+          <span class="result-col-label">扫码测型格</span>
+          <img class="result-qr" id="reportQrImage" src="/static/selfit/assets/mirror-report-qr.png" alt="扫码获取完整报告" />
+          <small class="visually-hidden" id="reportCode">扫码查看完整报告</small>
+        </div>
+        <div class="result-col">
+          <span class="result-step">step2</span>
+          <span class="result-col-label">打印照片</span>
+          <div class="result-card" aria-label="本次拍摄照片">
+            <img class="result-photo" id="resultPhoto" alt="本次拍摄照片" />
+            <img class="result-lace" src="/static/selfit/assets/lace-card@4x.png" alt="" />
+          </div>
+        </div>
       </div>
       <div class="result-actions">
-        <button class="mirror-button mirror-button--primary mirror-button--wide" id="returnHome" type="button">返回首页</button>
+        <button class="mirror-button mirror-button--primary mirror-button--wide" id="returnHome" type="button">返回重拍</button>
       </div>
     </section>
 
     <div class="permission-toast" id="permissionToast" role="status" hidden></div>
     <canvas id="captureCanvas" width="786" height="1396" hidden></canvas>
   </main>
-  <script src="/static/selfit/mirror.js?v=20260824-3" defer></script>
+  <script>
+    // 前端抠白底：把 tagline 手写图的白/浅色像素按"白度"渐变转为透明，保留红字，避免深色背景上出现白块
+    (function () {
+      function dropWhite(img) {
+        try {
+          var c = document.createElement("canvas");
+          c.width = img.naturalWidth; c.height = img.naturalHeight;
+          var ctx = c.getContext("2d");
+          ctx.drawImage(img, 0, 0);
+          var im = ctx.getImageData(0, 0, c.width, c.height), d = im.data;
+          var T = 45; // 阈值：接近白的底色彻底透明，消除方块残影；其余按白度做平滑过渡
+          for (var i = 0; i < d.length; i += 4) {
+            var a = 255 - Math.min(d[i], d[i + 1], d[i + 2]);
+            a = a <= T ? 0 : Math.round((a - T) / (255 - T) * 255);
+            d[i + 3] = a;
+            d[i] = d[i + 1] = d[i + 2] = 255; // 把手写字染成白色，在酒红背景上清晰可读
+          }
+          ctx.putImageData(im, 0, 0);
+          img.src = c.toDataURL();
+        } catch (e) { /* 跨域等异常时保持原图 */ }
+        img.removeAttribute("data-dropwhite");
+      }
+      // 把透明底的酒红 logo 染成白色（保留原透明度），在酒红背景上清晰
+      function whiten(img) {
+        try {
+          var c = document.createElement("canvas");
+          c.width = img.naturalWidth; c.height = img.naturalHeight;
+          var ctx = c.getContext("2d");
+          ctx.drawImage(img, 0, 0);
+          var im = ctx.getImageData(0, 0, c.width, c.height), d = im.data;
+          for (var i = 0; i < d.length; i += 4) { d[i] = d[i + 1] = d[i + 2] = 255; }
+          ctx.putImageData(im, 0, 0);
+          img.src = c.toDataURL();
+        } catch (e) { /* 跨域等异常时保持原图 */ }
+        img.removeAttribute("data-whiten");
+      }
+      function run(sel, fn) {
+        document.querySelectorAll(sel).forEach(function (img) {
+          if (img.complete && img.naturalWidth) fn(img);
+          else img.addEventListener("load", function () { fn(img); }, { once: true });
+        });
+      }
+      run("img[data-dropwhite]", dropWhite);
+      run("img[data-whiten]", whiten);
+    })();
+  </script>
+  <script src="/static/selfit/mirror.js?v=20260827-15" defer></script>
 </body>
 </html>
