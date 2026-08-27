@@ -155,6 +155,14 @@
       return Promise.resolve({ report });
     }
 
+    getMirrorHandoff(token) {
+      return this.request(`/mirror/handoffs/${encodeURIComponent(token)}`);
+    }
+
+    claimMirrorHandoff(token) {
+      return this.request(`/mirror/handoffs/${encodeURIComponent(token)}/claim`, { method: 'POST', body: {} });
+    }
+
     createShareAsset(reportId, payload) {
       if (this.mode === 'live') return this.request(`/reports/${encodeURIComponent(reportId)}/share-assets`, { method: 'POST', body: payload, idempotencyKey: uid('share') });
       return wait(300).then(() => ({ asset: { assetId: uid('share'), status: 'ready', slideIndex: payload.slideIndex, channel: payload.channel, downloadUrl: null } }));

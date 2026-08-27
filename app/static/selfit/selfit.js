@@ -30,6 +30,7 @@
     });
   };
   const SESSION_STORAGE_KEY = 'selfit.onboarding.session.v1';
+  const handoffToken = new URLSearchParams(window.location.search).get('handoff') || '';
   let api;
   let auth;
   let authReady = Promise.resolve(null);
@@ -71,13 +72,38 @@
     };
     cycle();
   };
+  const claimPendingHandoff = async () => {
+    if (!handoffToken) return false;
+    const result = await api.claimMirrorHandoff(handoffToken);
+    state.sessionId = result.session?.sessionId || null;
+    state.revision = result.session?.revision || 1;
+    if (!state.sessionId) throw new Error('没有找到本次镜子测试，请重新扫码。');
+    localStorage.setItem(SESSION_STORAGE_KEY, JSON.stringify({
+      sessionId: state.sessionId,
+      expiresAt: result.session?.expiresAt || null,
+      userId: state.authUser?.user_id || null,
+    }));
+    const cleanUrl = new URL(window.location.href);
+    cleanUrl.searchParams.delete('handoff');
+    history.replaceState({}, '', `${cleanUrl.pathname}${cleanUrl.search}${cleanUrl.hash}`);
+    showScreen('like');
+    return true;
+  };
   const enterOnboarding = () => {
     if (splashTransitioning || state.screen !== 'splash') return;
     splashTransitioning = true; clearTimeout(splashTimer); splash.classList.add('is-leaving');
     setTimeout(async () => {
       await authReady;
-      const destination = state.authUser ? 'intro' : 'login';
-      showScreen(destination);
+      let destination = state.authUser ? 'intro' : 'login';
+      if (handoffToken) destination = state.authUser ? 'like' : 'phone-login';
+      if (handoffToken && state.authUser) {
+        try { await claimPendingHandoff(); }
+        catch (error) {
+          destination = 'phone-login';
+          showScreen(destination);
+          setAuthMessage(authNodes.phoneMessage, error.message || '这个二维码已失效。', 'error');
+        }
+      } else showScreen(destination);
       splash.classList.remove('is-leaving');
       splashTransitioning = false;
       if (destination === 'intro') playIntro();
@@ -125,11 +151,15 @@
   const syncInviteLogin = () => {
     authNodes.inviteSubmit.disabled = authNodes.invite.value.trim().length < 4 || authNodes.inviteSubmit.getAttribute('aria-busy') === 'true';
   };
-  const completeAuth = (session) => {
+  const completeAuth = async (session) => {
     state.authUser = session?.user || auth.user || null;
     state.sessionId = null;
     state.revision = 0;
     localStorage.removeItem(SESSION_STORAGE_KEY);
+    if (handoffToken) {
+      await claimPendingHandoff();
+      return;
+    }
     showScreen('intro');
     playIntro();
   };
@@ -177,7 +207,7 @@
     setAuthBusy(authNodes.phoneSubmit, true);
     setAuthMessage(authNodes.phoneMessage, '正在登录…');
     try {
-      completeAuth(await auth.verifyPhone(normalizedPhone(), authNodes.code.value));
+      await completeAuth(await auth.verifyPhone(normalizedPhone(), authNodes.code.value));
     } catch (error) {
       setAuthMessage(authNodes.phoneMessage, error.message || '登录失败，请重试。', 'error');
     } finally {
@@ -192,7 +222,7 @@
     setAuthBusy(authNodes.inviteSubmit, true);
     setAuthMessage(authNodes.inviteMessage, '正在登录…');
     try {
-      completeAuth(await auth.verifyInvite(authNodes.invite.value.trim()));
+      await completeAuth(await auth.verifyInvite(authNodes.invite.value.trim()));
     } catch (error) {
       const copy = error.status === 404 ? '邀请码登录接口尚未接入，请先使用手机号登录。' : (error.message || '邀请码登录失败，请重试。');
       setAuthMessage(authNodes.inviteMessage, copy, 'error');
@@ -356,6 +386,15 @@
     buildMockReport,
     getAccessToken: () => auth.accessToken,
   });
+  if (handoffToken) {
+    document.querySelectorAll('[data-handoff-context]').forEach((node) => { node.hidden = false; });
+    api.getMirrorHandoff(handoffToken).catch((error) => {
+      document.querySelectorAll('[data-handoff-context]').forEach((node) => {
+        node.textContent = error.message || '这个二维码已失效，请回到镜子重新生成。';
+        node.dataset.state = 'error';
+      });
+    });
+  }
   let sessionPromise = null;
   const persistSession = (session) => {
     localStorage.setItem(SESSION_STORAGE_KEY, JSON.stringify({ sessionId: session.sessionId, expiresAt: session.expiresAt, userId: state.authUser?.user_id || null }));

@@ -9,7 +9,7 @@
   <link rel="preload" as="image" href="/static/selfit/assets/mirror-loading-stage-25@2x.png" />
   <link rel="preload" as="image" href="/static/selfit/assets/mirror-loading-stage-50@2x.png" />
   <link rel="preload" as="image" href="/static/selfit/assets/mirror-loading-stage-75@2x.png" />
-  <link rel="stylesheet" href="/static/selfit/mirror.css?v=20260824-5" />
+  <link rel="stylesheet" href="/static/selfit/mirror.css?v=20260827-2" />
 </head>
 <body>
   <main class="mirror-shell" id="mirrorApp" data-state="home" aria-live="polite">
@@ -78,18 +78,19 @@
         <img class="result-lace" src="/static/selfit/assets/lace-card@4x.png" alt="" />
       </div>
       <div class="report-qr">
-        <span>扫码查看</span>
-        <img id="reportQrImage" src="/static/selfit/assets/mirror-report-qr.png" alt="扫码获取完整报告" />
-        <small class="visually-hidden" id="reportCode">扫码查看完整报告</small>
+        <span id="reportQrTitle">正在生成</span>
+        <img id="reportQrImage" alt="扫码登录并继续风格测试" hidden />
+        <small id="reportCode">请稍候…</small>
       </div>
       <div class="result-actions">
-        <button class="mirror-button mirror-button--primary mirror-button--wide" id="returnHome" type="button">返回首页</button>
+        <button class="mirror-button mirror-button--secondary" id="retryQrCode" type="button" hidden>重新生成</button>
+        <button class="mirror-button mirror-button--primary" id="returnHome" type="button">返回首页</button>
       </div>
     </section>
 
     <div class="permission-toast" id="permissionToast" role="status" hidden></div>
     <canvas id="captureCanvas" width="786" height="1396" hidden></canvas>
   </main>
-  <script src="/static/selfit/mirror.js?v=20260824-3" defer></script>
+  <script src="/static/selfit/mirror.js?v=20260827-1" defer></script>
 </body>
 </html>

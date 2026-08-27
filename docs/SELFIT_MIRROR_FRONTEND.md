@@ -23,20 +23,24 @@
 <script>
 window.__SELFIT_MIRROR_CONFIG__ = {
   analysisEndpoint: '/api/v1/selfit/mirror/analyze',
-  qrImageUrl: '/api/v1/selfit/mirror/demo-report-qr',
   minimumAnalysisMs: 2600,
   idleTimeoutMs: 60000
 };
 </script>
 ```
 
-`analysisEndpoint` 接收 `multipart/form-data` 的 `photo` 字段。镜子端只承载拍照、确认和扫码交接，肤色与穿搭详情在手机报告中展开；建议返回：
+`analysisEndpoint` 接收 `multipart/form-data` 的 `photo` 字段，可选接收上游已生成的 JSON 字符串 `result`。未传 `result` 时后端会执行现有色彩分析，并把结果与照片一起绑定到交接单。返回：
 
 ```json
 {
-  "reportId": "rpt_xxx",
-  "qrImageUrl": "/api/v1/selfit/mirror/reports/rpt_xxx/qr"
+  "handoffId": "mho_xxx",
+  "status": "pending",
+  "expiresAt": "2026-08-27T12:10:00Z",
+  "qrImageUrl": "/api/v1/selfit/mirror/handoffs/<token>/qr",
+  "statusUrl": "/api/v1/selfit/mirror/handoffs/<token>"
 }
 ```
 
-生产环境应让二维码指向一次性报告 token，并设置短有效期；不要把原始照片或用户信息放进二维码 URL。
+二维码指向 `/selfit?handoff=<token>`。手机号登录后调用 `POST /api/v1/selfit/mirror/handoffs/<token>/claim`，交接单将一次性绑定到该手机号对应 UID，创建已完成 `suit` 的 onboarding session，并从 `like` 继续。
+
+生产配置 `SELFIT_PUBLIC_BASE_URL=https://<手机可访问域名>`、`SELFIT_MIRROR_HANDOFF_SECRET` 和 `SELFIT_MIRROR_HANDOFF_TTL_SECONDS`。二维码只包含高熵随机 token；服务端仅保存带 pepper 的 SHA-256 摘要，不把原始照片、手机号、UID 或测试结果放进 URL。默认 10 分钟过期，首次领取后不可被其他用户再次领取。

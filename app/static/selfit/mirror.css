@@ -69,6 +69,7 @@ button { font: inherit; -webkit-tap-highlight-color: transparent; }
 .home-manifesto-art { display: block; width: 226px; height: 170px; margin: 0 auto; object-fit: contain; }
 
 .mirror-button { min-width: 120px; height: 44px; padding: 12px 28px; border: 0; border-radius: 18px; font-size: 14px; line-height: 20px; font-weight: 500; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 8px; transition: transform 120ms ease, filter 120ms ease; }
+.mirror-button[hidden] { display: none; }
 .mirror-button:active { transform: scale(.97); filter: brightness(.95); }
 .mirror-button img { display: block; width: 20px; height: 20px; object-fit: contain; }
 .mirror-button--light { width: 200px; color: var(--wine); background: white; }
@@ -102,10 +103,11 @@ button { font: inherit; -webkit-tap-highlight-color: transparent; }
 .result-card { position: absolute; z-index: 3; left: 53px; top: 118px; width: 165px; height: 245px; }
 .result-photo { position: absolute; z-index: 3; left: 25px; top: 26px; width: 116px; height: 195px; object-fit: cover; object-position: center; filter: brightness(1.04) saturate(.92); background: white; }
 .result-lace { position: absolute; z-index: 2; inset: 0; width: 100%; height: 100%; object-fit: fill; pointer-events: none; }
-.report-qr { position: absolute; z-index: 5; left: 244px; top: 253px; width: 95px; display: flex; flex-direction: column; align-items: center; gap: 11px; }
+.report-qr { position: absolute; z-index: 5; left: 224px; top: 196px; width: 145px; display: flex; flex-direction: column; align-items: center; gap: 9px; }
 .report-qr > span { font-size: 16px; line-height: 24px; white-space: nowrap; }
-.report-qr > img { display: block; width: 75px; height: 75px; padding: 6px; border-radius: 8px; background: white; object-fit: contain; }
-.report-qr small { font-size: 10px; line-height: 14px; color: rgba(255,255,255,.72); white-space: nowrap; }
+.report-qr > img { display: block; width: 112px; height: 112px; padding: 6px; border-radius: 8px; background: white; object-fit: contain; image-rendering: pixelated; }
+.report-qr > img[hidden] { display: none; }
+.report-qr small { max-width: 145px; font-size: 12px; line-height: 18px; color: rgba(255,255,255,.78); text-align: center; text-wrap: balance; }
 .result-actions { top: 406px; bottom: auto; background: transparent; }
 
 .permission-toast { position: absolute; z-index: 20; left: 32px; right: 32px; bottom: 30px; padding: 10px 14px; border-radius: 12px; color: #222; background: rgba(255,255,255,.94); box-shadow: 0 5px 24px rgba(0,0,0,.12); font-size: 14px; line-height: 20px; text-align: center; }

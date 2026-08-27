@@ -9,7 +9,12 @@
   const countdownNumber = document.querySelector('#countdownNumber');
   const cameraHint = document.querySelector('#cameraHint');
   const toast = document.querySelector('#permissionToast');
-  const config = window.__SELFIT_MIRROR_CONFIG__ || {};
+  const config = {
+    analysisEndpoint: '/api/v1/selfit/mirror/analyze',
+    minimumAnalysisMs: 2600,
+    idleTimeoutMs: 60000,
+    ...(window.__SELFIT_MIRROR_CONFIG__ || {}),
+  };
   const timers = new Set();
   let stream = null;
   let photoUrl = '';
@@ -19,6 +24,10 @@
   const processingTitle = document.querySelector('#processingTitle');
   const processingHint = document.querySelector('#processingHint');
   const processingArt = document.querySelector('#processingArt');
+  const qrImage = document.querySelector('#reportQrImage');
+  const qrTitle = document.querySelector('#reportQrTitle');
+  const qrCode = document.querySelector('#reportCode');
+  const retryQrCode = document.querySelector('#retryQrCode');
   const processingStages = [
     { delay: 0, percent: 25, line: '看见你本来的样子', art: '25' },
     { delay: 1100, percent: 50, line: '你不需要成为谁', art: '50' },
@@ -161,15 +170,50 @@
         const response = await fetch(config.analysisEndpoint, { method: 'POST', body });
         if (!response.ok) throw new Error('analysis failed');
         responseData = await response.json();
-      } catch (error) { notify('在线分析暂时不可用，先为你展示示例结果'); }
+      } catch (error) { notify('二维码生成失败，可以重新尝试'); }
     }
     if (runId !== analysisRun) return;
     later(() => {
       if (runId !== analysisRun) return;
-      const qrImage = document.querySelector('#reportQrImage');
+      show('result');
       const qrUrl = responseData?.qrImageUrl || config.qrImageUrl;
-      if (qrUrl) { qrImage.src = qrUrl; qrImage.hidden = false; document.querySelector('#reportCode').textContent = '微信扫码查看'; }
-      show('result'); busy = false; delete app.dataset.processingStage;
+      retryQrCode.hidden = Boolean(qrUrl);
+      qrImage.hidden = !qrUrl;
+      if (qrUrl) {
+        qrImage.src = qrUrl;
+        qrTitle.textContent = '手机扫码继续';
+        const expiresAt = Date.parse(responseData?.expiresAt || '');
+        const updateExpiry = () => {
+          if (app.dataset.state !== 'result') return;
+          const remaining = Math.max(0, Math.ceil((expiresAt - Date.now()) / 1000));
+          const minutes = String(Math.floor(remaining / 60)).padStart(2, '0');
+          const seconds = String(remaining % 60).padStart(2, '0');
+          qrCode.textContent = remaining > 0 ? `${minutes}:${seconds} 内有效` : '二维码已过期';
+          if (remaining > 0) later(updateExpiry, 1000);
+          else { qrImage.hidden = true; retryQrCode.hidden = false; }
+        };
+        updateExpiry();
+        const pollStatus = async () => {
+          if (app.dataset.state !== 'result' || !responseData?.statusUrl) return;
+          try {
+            const response = await fetch(responseData.statusUrl, { cache: 'no-store' });
+            const payload = await response.json();
+            if (payload.handoff?.status === 'claimed') {
+              qrTitle.textContent = '已保存到手机';
+              qrCode.textContent = '手机上将继续 like 与 vibe';
+              qrImage.classList.add('is-claimed');
+              later(reset, 2600);
+              return;
+            }
+          } catch { /* A later poll can recover from a transient kiosk network error. */ }
+          later(pollStatus, 1500);
+        };
+        later(pollStatus, 1500);
+      } else {
+        qrTitle.textContent = '生成失败';
+        qrCode.textContent = '检查网络后重新生成';
+      }
+      busy = false; delete app.dataset.processingStage;
       later(reset, Number(config.idleTimeoutMs) || 60000);
     }, Math.max(3500, config.minimumAnalysisMs || 0));
   };
@@ -183,12 +227,17 @@
     startCapture.disabled = false;
     startCapture.removeAttribute('aria-disabled');
     toast.hidden = true;
+    qrImage.hidden = true;
+    qrImage.removeAttribute('src');
+    qrImage.classList.remove('is-claimed');
+    retryQrCode.hidden = true;
     show('home');
   };
 
   startCapture.addEventListener('click', runCountdown);
   document.querySelector('#retakePhoto').addEventListener('click', runCountdown);
   document.querySelector('#confirmPhoto').addEventListener('click', processPhoto);
+  retryQrCode.addEventListener('click', processPhoto);
   document.querySelector('#returnHome').addEventListener('click', reset);
   document.addEventListener('visibilitychange', () => { if (document.hidden) reset(); });
   window.addEventListener('beforeunload', stopCamera);

@@ -107,6 +107,7 @@ from app.stylist_sessions import (
     update_stylist_session,
 )
 from app.selfit_onboarding import router as selfit_onboarding_router
+from app.selfit_mirror_handoff import router as selfit_mirror_handoff_router
 from app.qa_onboarding import QA_PHOTO_DIR, router as qa_onboarding_router
 from app.storage import storage_context, user_storage
 from scripts.generate_qa_artifacts import generate_qa_artifacts
@@ -118,6 +119,7 @@ load_dotenv(Path(__file__).resolve().parents[1] / ".env", override=True)
 app = FastAPI(title="selfit", version="0.2.0")
 app.middleware("http")(request_guard_middleware)
 app.include_router(selfit_onboarding_router)
+app.include_router(selfit_mirror_handoff_router)
 app.include_router(qa_onboarding_router)
 SELFIT_INDEX_PATH = Path(__file__).resolve().parent / "static" / "selfit" / "index.html"
 SELFIT_MIRROR_INDEX_PATH = Path(__file__).resolve().parent / "static" / "selfit" / "mirror.html"
