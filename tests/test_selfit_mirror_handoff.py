@@ -79,6 +79,10 @@ def test_dynamic_qr_claims_suit_result_once_and_continues_at_like(monkeypatch, t
     assert session["source"] == "mirror_handoff"
     assert session["suit_completed_at"]
     assert session["mirror_analysis"]["result"]["image_id"]
+    assert session["mirror_assets"]["original"]["role"] == "suit_input"
+    assert session["mirror_assets"]["retouched"]["role"] == "mirro_preview"
+    assert session["suit_input_asset_id"] == session["mirror_assets"]["original"]["asset_id"]
+    assert session["mirror_preview_asset_id"] == session["mirror_assets"]["retouched"]["asset_id"]
     assert "result_summary" in session["mirror_analysis"]["result"]
     restored = client.get(
         f"/api/v1/selfit/sessions/{session['session_id']}", headers=user_a
@@ -110,3 +114,86 @@ def test_claim_rejects_anonymous_and_second_user(monkeypatch, tmp_path: Path) ->
     assert first.status_code == 200
     assert second.status_code == 409
     assert second.json()["error"]["code"] == "mirror.handoff_claimed"
+
+
+def test_color_grade_save_is_immediately_effective_and_versioned(monkeypatch, tmp_path: Path) -> None:
+    _use_tmp_stores(monkeypatch, tmp_path)
+    client = TestClient(app)
+
+    initial = client.get("/api/v1/selfit/mirror/color-grade")
+    parameters = initial.json()["parameters"]
+    parameters["exposure"] = 0.12
+    parameters["highlights"] = -0.18
+    parameters["hsl"]["orange"]["lightness"] = 0.06
+    saved = client.put(
+        "/api/v1/selfit/mirror/color-grade",
+        headers={"If-Match": str(initial.json()["version"])},
+        json={"parameters": parameters},
+    )
+    effective = client.get("/api/v1/selfit/mirror/color-grade")
+
+    assert initial.status_code == 200
+    assert saved.status_code == 200
+    assert saved.json()["version"] == initial.json()["version"] + 1
+    assert effective.json() == saved.json()
+    assert effective.json()["parameters"]["exposure"] == 0.12
+    assert effective.json()["parameters"]["hsl"]["orange"]["lightness"] == 0.06
+    stored = json.loads((mirror_handoff.MIRROR_DIR / "color_grade.json").read_text(encoding="utf-8"))
+    assert stored["history"][0]["version"] == initial.json()["version"]
+
+
+def test_color_grade_rejects_out_of_range_and_stale_updates(monkeypatch, tmp_path: Path) -> None:
+    _use_tmp_stores(monkeypatch, tmp_path)
+    client = TestClient(app)
+    initial = client.get("/api/v1/selfit/mirror/color-grade").json()
+    invalid = json.loads(json.dumps(initial["parameters"]))
+    invalid["exposure"] = 2
+
+    rejected = client.put(
+        "/api/v1/selfit/mirror/color-grade",
+        headers={"If-Match": str(initial["version"])},
+        json={"parameters": invalid},
+    )
+    saved = client.put(
+        "/api/v1/selfit/mirror/color-grade",
+        headers={"If-Match": str(initial["version"])},
+        json={"parameters": initial["parameters"]},
+    )
+    stale = client.put(
+        "/api/v1/selfit/mirror/color-grade",
+        headers={"If-Match": str(initial["version"])},
+        json={"parameters": initial["parameters"]},
+    )
+
+    assert rejected.status_code == 422
+    assert saved.status_code == 200
+    assert stale.status_code == 409
+    assert stale.json()["error"]["code"] == "mirror.color_grade_conflict"
+
+
+def test_mirror_capture_keeps_original_and_retouched_assets_separate(monkeypatch, tmp_path: Path) -> None:
+    _use_tmp_stores(monkeypatch, tmp_path)
+    client = TestClient(app)
+    original = _photo_bytes()
+    retouched_output = io.BytesIO()
+    Image.new("RGB", (393, 698), "#d5ad9d").save(retouched_output, "JPEG")
+
+    created = client.post(
+        "/api/v1/selfit/mirror/analyze",
+        files={
+            "original": ("original.jpg", original, "image/jpeg"),
+            "retouched": ("retouched.jpg", retouched_output.getvalue(), "image/jpeg"),
+        },
+        data={"metadata": json.dumps({"colorGrade": {"configId": "mirro_color_grade", "version": 3}})},
+    )
+
+    assert created.status_code == 201
+    data = json.loads(mirror_handoff.HANDOFF_STORE_PATH.read_text(encoding="utf-8"))
+    handoff = data["handoffs"][0]
+    assert handoff["assets"]["original"]["role"] == "suit_input"
+    assert handoff["assets"]["retouched"]["role"] == "mirro_preview"
+    assert handoff["assets"]["retouched"]["derived_from"] == handoff["assets"]["original"]["asset_id"]
+    assert handoff["assets"]["retouched"]["color_grade"]["version"] == 3
+    assert handoff["asset_path"] == handoff["assets"]["original"]["asset_path"]
+    assert Path(handoff["assets"]["original"]["asset_path"]).read_bytes() == original
+    assert Path(handoff["assets"]["retouched"]["asset_path"]).read_bytes() == retouched_output.getvalue()

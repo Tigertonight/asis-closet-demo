@@ -31,6 +31,31 @@ window.__SELFIT_MIRROR_CONFIG__ = {
 
 `analysisEndpoint` 接收 `multipart/form-data` 的 `photo` 字段，可选接收上游已生成的 JSON 字符串 `result`。未传 `result` 时后端会执行现有色彩分析，并把结果与照片一起绑定到交接单。返回：
 
+新版 Mirro 会上传同一快门帧的两个版本：
+
+- `original`：未经 Mirro 调色的原图，用于 Suit 和色彩分析。
+- `retouched`：使用当前生效配置渲染的调色图，用于 Mirro 确认、相框和模板预览。
+- `metadata`：记录调色配置 ID、版本和参数摘要的 JSON 字符串。
+
+旧客户端的单 `photo` 字段继续兼容，服务端会把调色版标记为 `passthrough`。
+
+## 影像调试模式
+
+- 正常模式下 2 秒内连续点击 `selfit` 5 次进入调试模式。
+- 调试模式下再次连续点击 5 次退出并回到首页。
+- 滑杆修改会立即更新 WebGL 预览，但只有点击「保存并生效」才会写入服务端。
+- 未保存退出时恢复服务端当前配置。
+
+配置接口：
+
+```http
+GET /api/v1/selfit/mirror/color-grade
+PUT /api/v1/selfit/mirror/color-grade
+If-Match: <current-version>
+```
+
+`PUT` 成功后配置立即生效并递增版本；服务端保留最近 50 份历史快照用于追溯。其他空闲 Mirro 会在回到首页后重新拉取最新配置，不会在用户拍摄途中突然换色。
+
 ```json
 {
   "handoffId": "mho_xxx",

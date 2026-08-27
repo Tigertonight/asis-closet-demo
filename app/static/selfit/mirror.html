@@ -9,12 +9,12 @@
   <link rel="preload" as="image" href="/static/selfit/assets/mirror-loading-stage-25@2x.png" />
   <link rel="preload" as="image" href="/static/selfit/assets/mirror-loading-stage-50@2x.png" />
   <link rel="preload" as="image" href="/static/selfit/assets/mirror-loading-stage-75@2x.png" />
-  <link rel="stylesheet" href="/static/selfit/mirror.css?v=20260827-2" />
+  <link rel="stylesheet" href="/static/selfit/mirror.css?v=20260827-6" />
 </head>
 <body>
   <main class="mirror-shell" id="mirrorApp" data-state="home" aria-live="polite">
     <section class="mirror-screen textile-screen is-active" data-screen="home" aria-labelledby="mirrorTitle">
-      <span class="home-brand" aria-label="selfit">
+      <span class="home-brand" aria-label="selfit" data-debug-trigger>
         <span class="home-word" aria-hidden="true">selfit</span>
         <i class="home-star home-star--1">★</i><i class="home-star home-star--2">★</i>
         <i class="home-star home-star--3">★</i><i class="home-star home-star--4">★</i>
@@ -35,16 +35,25 @@
       <div class="home-manifesto" role="img" aria-label="everyone has a code."><img class="home-manifesto-art" src="/static/selfit/assets/mirror-home-manifesto@2x.png" width="452" height="340" alt="" /></div>
     </section>
 
+    <section class="mirror-screen camera-loading-screen" data-screen="camera-loading" aria-label="正在唤起摄像头">
+      <div class="camera-loading-brand" aria-hidden="true">
+        <span class="camera-loading-ring"></span>
+        <span class="camera-loading-word">selfit</span>
+        <small>正在唤起镜头</small>
+      </div>
+      <p class="visually-hidden" role="status">正在请求摄像头权限并准备镜头</p>
+    </section>
+
     <section class="mirror-screen camera-screen" data-screen="countdown" aria-label="拍照倒计时">
       <div class="camera-media" aria-hidden="true">
-        <img class="camera-fallback" src="/static/selfit/assets/mirror-demo-full-body.webp" alt="" />
         <video id="cameraVideo" autoplay muted playsinline></video>
+        <canvas class="camera-preview" id="cameraPreview" width="786" height="1492"></canvas>
       </div>
       <div class="camera-shade"></div>
-      <img class="mirror-wordmark" src="/static/selfit/assets/selfit-wordmark.svg" width="55" height="20" alt="selfit" />
+      <img class="mirror-wordmark" src="/static/selfit/assets/selfit-wordmark.svg" width="55" height="20" alt="selfit" data-debug-trigger />
       <div class="countdown-copy">
         <p>准备拍照</p>
-        <strong id="countdownNumber">3</strong>
+        <strong id="countdownNumber">6</strong>
       </div>
       <p class="visually-hidden" id="cameraHint">请正对镜面，保持自然站姿</p>
     </section>
@@ -54,7 +63,7 @@
         <img class="captured-photo" id="capturedPhoto" alt="刚刚拍摄的照片" />
         <img class="confirm-lace" src="/static/selfit/assets/lace-card@4x.png" alt="" />
       </div>
-      <img class="mirror-wordmark" src="/static/selfit/assets/selfit-wordmark.svg" width="55" height="20" alt="selfit" />
+      <img class="mirror-wordmark" src="/static/selfit/assets/selfit-wordmark.svg" width="55" height="20" alt="selfit" data-debug-trigger />
       <div class="photo-actions">
         <button class="mirror-button mirror-button--secondary" id="retakePhoto" type="button">重拍</button>
         <button class="mirror-button mirror-button--primary" id="confirmPhoto" type="button">确认</button>
@@ -62,7 +71,7 @@
     </section>
 
     <section class="mirror-screen textile-screen processing-screen" data-screen="processing" aria-label="AI 分析中">
-      <img class="mirror-wordmark mirror-wordmark--light" src="/static/selfit/assets/selfit-wordmark.svg" width="55" height="20" alt="selfit" />
+      <img class="mirror-wordmark mirror-wordmark--light" src="/static/selfit/assets/selfit-wordmark.svg" width="55" height="20" alt="selfit" data-debug-trigger />
       <div class="processing-copy" role="status" aria-live="polite">
         <p id="processingTitle">看见你本来的样子</p>
         <small id="processingHint">25%</small>
@@ -72,14 +81,14 @@
     </section>
 
     <section class="mirror-screen result-screen" data-screen="result" aria-label="分析完成">
-      <img class="mirror-wordmark" src="/static/selfit/assets/selfit-wordmark.svg" width="55" height="20" alt="selfit" />
+      <img class="mirror-wordmark" src="/static/selfit/assets/selfit-wordmark.svg" width="55" height="20" alt="selfit" data-debug-trigger />
       <div class="result-card" aria-label="本次拍摄照片">
         <img class="result-photo" id="resultPhoto" alt="本次拍摄照片" />
         <img class="result-lace" src="/static/selfit/assets/lace-card@4x.png" alt="" />
       </div>
       <div class="report-qr">
-        <span id="reportQrTitle">正在生成</span>
-        <img id="reportQrImage" alt="扫码登录并继续风格测试" hidden />
+        <span id="reportQrTitle">扫码查看</span>
+        <img id="reportQrImage" src="/static/selfit/assets/mirror-report-qr.png" alt="扫码登录并继续风格测试" hidden />
         <small id="reportCode">请稍候…</small>
       </div>
       <div class="result-actions">
@@ -88,9 +97,31 @@
       </div>
     </section>
 
+    <aside class="color-debug-panel" id="colorDebugPanel" aria-label="影像调试" hidden>
+      <div class="color-debug-head">
+        <div><small>影像调试</small><strong id="colorGradeVersion">自然光感 · v1</strong></div>
+        <button class="compare-button" id="compareColorGrade" type="button" aria-pressed="false">查看原生</button>
+      </div>
+      <div class="color-debug-scroll">
+        <div class="color-control-list" id="basicColorControls"></div>
+        <details class="hsl-controls">
+          <summary>分色 HSL</summary>
+          <div id="hslColorControls"></div>
+        </details>
+      </div>
+      <div class="color-debug-actions">
+        <span class="color-save-status" id="colorSaveStatus" role="status">已是生效配置</span>
+        <div>
+          <button class="mirror-button mirror-button--secondary" id="resetColorGrade" type="button">恢复</button>
+          <button class="mirror-button mirror-button--primary" id="saveColorGrade" type="button" disabled>保存并生效</button>
+        </div>
+      </div>
+    </aside>
+
     <div class="permission-toast" id="permissionToast" role="status" hidden></div>
     <canvas id="captureCanvas" width="786" height="1396" hidden></canvas>
+    <canvas id="originalCanvas" width="786" height="1396" hidden></canvas>
   </main>
-  <script src="/static/selfit/mirror.js?v=20260827-1" defer></script>
+  <script src="/static/selfit/mirror.js?v=20260827-5" defer></script>
 </body>
 </html>

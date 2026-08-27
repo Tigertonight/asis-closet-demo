@@ -321,6 +321,10 @@ def test_selfit_mirror_route_serves_the_capture_flow() -> None:
     assert 'data-screen="processing"' in response.text
     assert 'data-screen="result"' in response.text
     assert 'id="processingArt"' in response.text
+    assert 'id="colorDebugPanel"' in response.text
+    assert 'id="cameraPreview"' in response.text
+    assert 'id="saveColorGrade"' in response.text
+    assert response.text.count("data-debug-trigger") >= 2
     assert "看见你本来的样子" in response.text
     assert "正在分析中" not in response.text
 
