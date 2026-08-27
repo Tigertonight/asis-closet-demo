@@ -22,7 +22,7 @@ DEFAULT_SOURCE = ROOT / "app" / "static" / "report-builder" / "data" / "16-perso
 RUNTIME_JSON = ROOT / "app" / "static" / "selfit" / "data" / "personality-report-templates.v1.json"
 RUNTIME_JS = ROOT / "app" / "static" / "selfit" / "personality-report-templates.js"
 POOL_JSON = ROOT / "app" / "static" / "selfit" / "data" / "content-pool.v1.json"
-TEMPLATE_VERSION = "2026.08.personality-db-v4"
+TEMPLATE_VERSION = "2026.08.personality-db-v5"
 
 
 def _read_json(path: Path) -> dict[str, Any]:
@@ -56,16 +56,21 @@ def _image(src: str, alt: str, existing: dict[str, Any] | None = None) -> dict[s
 def _card(item: dict[str, Any], *, card_id: str, type_name: str,
           existing: dict[str, Any] | None = None) -> dict[str, Any]:
     prior = existing or {}
+    image = _image(
+        str(item.get("image") or ""),
+        f"{type_name} · {item.get('name') or '推荐参考'}",
+        prior.get("image") if isinstance(prior.get("image"), dict) else None,
+    )
+    width = int(item.get("imageWidth") or item.get("width") or 0)
+    height = int(item.get("imageHeight") or item.get("height") or 0)
+    if width > 0 and height > 0:
+        image.update({"width": width, "height": height})
     return {
         "id": card_id,
         "name": str(item.get("name") or ""),
         "byline": str(item.get("byline") or ""),
         "sourceUrl": str(item.get("sourceUrl") or ""),
-        "image": _image(
-            str(item.get("image") or ""),
-            f"{type_name} · {item.get('name') or '推荐参考'}",
-            prior.get("image") if isinstance(prior.get("image"), dict) else None,
-        ),
+        "image": image,
     }
 
 
@@ -105,6 +110,9 @@ def build_runtime(master: dict[str, Any], existing: dict[str, Any]) -> dict[str,
         hero_image.update({"width": 1484, "height": 1072, "placeholder": False})
         old_colors = previous.get("colors") or {}
         old_color_items = old_colors.get("items") or []
+        source_card = dict(old_colors.get("sourceCard") or {})
+        if source_card:
+            source_card["alt"] = f"{name}推荐色色卡"
         master_colors = template.get("colors") or []
         color_items = []
         color_count = max(len(old_color_items), len(master_colors))
@@ -129,7 +137,7 @@ def build_runtime(master: dict[str, Any], existing: dict[str, Any]) -> dict[str,
             "colors": {
                 "tagline": " · ".join(str(item) for item in (template.get("keywords") or [])),
                 "renderLimit": 5,
-                "sourceCard": old_colors.get("sourceCard") or {},
+                "sourceCard": source_card,
                 # 主数据维护前 5 个展示色，原资产模板中的扩展色仍完整保留。
                 "items": color_items,
             },

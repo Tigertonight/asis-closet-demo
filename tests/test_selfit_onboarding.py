@@ -36,7 +36,10 @@ def test_selfit_onboarding_includes_the_figma_login_extension() -> None:
     assert "手机号登录" in response.text
     assert "邀请码登录" in response.text
     assert "/static/selfit/assets/login-tagline-curved@2x.png" in response.text
-    assert "/static/selfit/assets/login-brand-ornament@2x.png" in response.text
+    assert "/static/selfit/assets/login-buttons-ring@2x.png" in response.text
+    assert "/static/selfit/assets/login-selfit-logo@2x.png" in response.text
+    assert "/static/selfit/assets/login-persona-board@2x.png" in response.text
+    assert "/static/selfit/assets/login-persona-title@2x.png" in response.text
     assert '/static/selfit/selfit-auth.js' in response.text
     assert '"authBase": "/auth"' in response.text
 
@@ -167,11 +170,11 @@ def test_selfit_suit_keeps_the_manual_selection_entry_above_the_primary_action()
     assert styles.status_code == 200
     assert 'class="direct-select" type="button" data-next="suit-manual"' in markup.text
     assert "不方便拍照？直接选" in markup.text
-    assert "bottom: calc(max(60px, env(safe-area-inset-bottom)) + 44px);" in styles.text
+    assert "bottom: calc(max(60px, env(safe-area-inset-bottom)) + 52px);" in styles.text
     assert "min-width: 184px;" in styles.text
     assert "height: 44px;" in styles.text
     assert "top: auto;" in styles.text
-    assert "bottom: calc(max(18px, env(safe-area-inset-bottom)) + 44px);" in styles.text
+    assert "bottom: calc(max(18px, env(safe-area-inset-bottom)) + 52px);" in styles.text
 
 
 def test_selfit_auth_adapter_and_bearer_wiring_are_available() -> None:
@@ -222,7 +225,7 @@ def test_selfit_report_typography_matches_the_approved_layout() -> None:
     assert ".report-body h2, .report-advice h2" in response.text
     assert ".report-image-grid figcaption, .outfit-list figcaption" in response.text
     assert "font-size: 14px; font-weight: 400; line-height: 20px; text-align: center;" in response.text
-    assert "border-radius: 8px; background: var(--c);" in response.text
+    assert "border-radius: 12px; background: var(--c);" in response.text
     assert ".report-advice-list { margin-top: 14px;" in response.text
     assert ".report-signoff-dots" in response.text
 
@@ -239,7 +242,7 @@ def test_selfit_personality_catalog_keeps_all_colors_but_renders_first_five() ->
 
     assert response.status_code == 200
     catalog = json.loads(response.text)
-    assert catalog["templateVersion"] == "2026.08.personality-db-v4"
+    assert catalog["templateVersion"] == "2026.08.personality-db-v5"
     assert catalog["renderRules"]["colors"]["limit"] == 5
     assert len(catalog["types"]) == 16
     assert sum(len(item["colors"]["items"]) for item in catalog["types"].values()) == 112
@@ -249,7 +252,7 @@ def test_selfit_personality_catalog_keeps_all_colors_but_renders_first_five() ->
         assert template["typeId"] == type_id
         hero = template["hero"]["image"]
         assert hero["placeholder"] is False
-        assert hero["src"] == f"/static/selfit/assets/personality/{type_id}/hero.png?v=20260825-final"
+        assert hero["src"] == f"/static/selfit/assets/personality/{type_id}/hero.png?v=20260827-config-v1"
         assert (hero["width"], hero["height"]) == (1484, 1072)
         assert len(template["colors"]["items"]) >= 5
         assert len(template["recommendations"]["makeup"]) == 2
@@ -258,7 +261,7 @@ def test_selfit_personality_catalog_keeps_all_colors_but_renders_first_five() ->
         assert all(re.fullmatch(r"#[0-9A-F]{6}", color["value"]) for color in template["colors"]["items"])
 
     mute_hair = catalog["types"]["mute"]["recommendations"]["hair"]
-    assert [item["name"] for item in mute_hair] == ["外翘初恋发", "八字显脸小发"]
+    assert [item["name"] for item in mute_hair] == ["外翘初恋发", "八字遮脸发"]
     assert all(item["name"] not in {"💇🏻‍♀️显脸小的发型💓", "减龄又显白的发色、米棕色"} for item in mute_hair)
 
     runtime = client.get("/static/selfit/selfit.js")
