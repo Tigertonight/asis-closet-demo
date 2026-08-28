@@ -52,10 +52,13 @@ REGIONAL_STYLES = ("日系", "韩系", "欧美系", "中式", "法式", "轻亚"
 # 算法版本指纹：每次修改分型口径（中心点/权重/阈值/换算）必须递增并说明变更，
 # 并同步三处：前端移植版 selfit-persona.js、管理后台人格匹配展示、
 # tests/test_selfit_persona.py 对拍测试。详见 docs/PERSONA_ALGORITHM.md。
-ALGORITHM_VERSION = "v1.2-margin-hardening"
+ALGORITHM_VERSION = "v1.3-vibe1-remap"
 
 # VIBE 题 key（onboarding 契约）→ 维度。
-VIBE_COMPLETION_VALUES = {"A": 10, "B": 40, "C": 70, "D": 95}
+# v1.3：《16 型人格典型答卷》定版映射——VIBE1 只有 A/B/C 三档（20/55/90），
+# D 档（95）随 UI 三选项方案一并删除；新 B=55 较旧 B=40 上移后，
+# FILM 完成度中心同步 40→50（见 FILM 定义处注释）。
+VIBE_COMPLETION_VALUES = {"A": 20, "B": 55, "C": 90}
 VIBE_INDIVIDUALITY_VALUES = {"A": 20, "B": 55, "C": 90}
 VIBE_REGIONAL_VALUES = {"A": "日系", "B": "韩系", "C": "欧美系", "D": "中式", "E": "法式"}
 
@@ -220,7 +223,13 @@ PERSONAS: dict[str, Persona] = {
                  "戏剧装饰、复古、角色感、极高完成度", ("戏剧千金", "复古华丽", "角色感强"),
                  "复古", ("明艳",)),
         _persona("FILM", "虚焦胶片", "法式", ("日系",),
-                 (30, 40, 20, 35, 70, 40, 45),
+                 # v1.3：completion 中心 40→50。VIBE1 定版三档（A=20/B=55/C=90）
+                 # 后 FILM 典型答卷答 B（55）：中心 40 时对 EASE（中心 60）
+                 # 判别余量仅 15 分，滑杆 ±5 偏差即误判松弛讲究。50 仍保持
+                 # 「生活感低完成度」梯队（低于 EASE 60/MELT 75），且 B 答案
+                 # 距 FILM(50) 与 EASE(60) 对称，判别回归繁简维度（40 vs 25）
+                 # ——FILM 的首要辨识。
+                 (30, 40, 20, 35, 70, 50, 45),
                  ("time_orientation", "temperature", "completion"),
                  "柔和、复古、暖调、生活感", ("复古胶片", "暖调生活感", "柔和氛围"),
                  "复古", ("自然",)),

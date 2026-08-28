@@ -46,10 +46,16 @@ def test_palette_signals_mapping() -> None:
 
 
 def test_vibe_values_mapping() -> None:
+    # v1.3：VIBE1 定版三档 A=20/B=55/C=90；D 已删除（超范围值回退中性 50）。
+    for choice, expected in (("A", 20), ("B", 55), ("C", 90)):
+        vector = build_user_vector(_session(vibe={
+            "occasion": choice, "wardrobe": "C", "expression": "E",
+        }))
+        assert vector["completion"] == expected
     vector = build_user_vector(_session(vibe={
         "occasion": "D", "wardrobe": "C", "expression": "E",
     }))
-    assert vector["completion"] == 95
+    assert vector["completion"] == 50  # D 不再是合法选项，回退中性
     assert vector["individuality"] == 90
     assert vector["regional_style"] == "法式"
 
@@ -313,7 +319,8 @@ def test_hardening_silhouette_never_lands_on_soft_persona() -> None:
     """
 
     # 内测真实反馈的组合：该输入原为 EASE。
-    base_preferences = {"axes": {"shape": 50, "energy": 60, "trend": 50}, "palette": "earth"}
+    # v1.3：VIBE1 B 档 40→55 后 energy=60 起点漂到 MELT，energy 调 45 保持 EASE 起点。
+    base_preferences = {"axes": {"shape": 50, "energy": 45, "trend": 50}, "palette": "earth"}
     vibe = {"occasion": "B", "wardrobe": "A", "expression": "B"}
 
     before = classify_persona(build_user_vector(
@@ -322,7 +329,7 @@ def test_hardening_silhouette_never_lands_on_soft_persona() -> None:
     assert before["primary_persona"] == "EASE"
 
     # 只把「硬朗锐利」拉满（shape → 0，silhouette → 100）。
-    hardened_preferences = {"axes": {"shape": 0, "energy": 60, "trend": 50}, "palette": "earth"}
+    hardened_preferences = {"axes": {"shape": 0, "energy": 45, "trend": 50}, "palette": "earth"}
     after = classify_persona(build_user_vector(
         {"preferences": hardened_preferences, "vibe": vibe}
     ))
@@ -453,27 +460,28 @@ def test_neon_typical_answer_unaffected_by_oops_center_change() -> None:
         "axes": {"shape": 35, "energy": 75, "trend": 90}, "palette": "bright",
     }, "vibe": {"occasion": "C", "wardrobe": "C", "expression": "C"}})
     numeric, _ = _persona_distance(PERSONAS["OOPS"], vector)
-    # ind 贡献 |90-80|×1.5 = 15（与 |90-100|×1.5 相同），其余维度贡献不变
-    assert abs(numeric - 50.0) < 0.01
+    # ind 贡献 |90-80|×1.5 = 15（与 |90-100|×1.5 相同）；
+    # v1.3 occasion=C 70→90，comp 贡献 |90-70|=20，总距离 50+20=70
+    assert abs(numeric - 70.0) < 0.01
 
 
-def test_typical_answer_sheets_all_hit_after_v12() -> None:
-    """《16 型人格典型答卷》全表精确命中（v1.2 变更后回归）。"""
+def test_typical_answer_sheets_all_hit_after_v13() -> None:
+    """《16 型人格典型答卷》定版口径全表精确命中（v1.3：VIBE1 三档 A=20/B=55/C=90，无 D）。"""
 
     sheets = {
         "MUTE": (75, 10, 40, "mono", "C", "A", "A"),
         "ICED": (25, 20, 65, "ocean", "C", "A", "B"),
-        "HEIR": (70, 30, 15, "earth", "D", "A", "C"),
+        "HEIR": (70, 30, 15, "earth", "B", "A", "C"),
         "EASE": (25, 25, 25, "earth", "C", "A", "E"),
         "MELT": (20, 70, 60, "pastel", "C", "A", "B"),
         "WABI": (25, 20, 10, "earth", "B", "A", "A"),
-        "FLOU": (15, 90, 30, "pastel", "D", "B", "E"),
+        "FLOU": (15, 90, 30, "pastel", "B", "B", "E"),
         "NEON": (65, 75, 90, "bright", "C", "C", "C"),
-        "EDGE": (85, 65, 85, "ocean", "D", "B", "B"),
-        "BOLT": (55, 75, 20, "pastel", "D", "B", "E"),
+        "EDGE": (85, 65, 85, "ocean", "B", "B", "B"),
+        "BOLT": (55, 75, 20, "pastel", "B", "B", "B"),
         "FILM": (30, 40, 20, "earth", "B", "B", "E"),
         "JADE": (70, 40, 15, "pastel", "C", "A", "D"),
-        "LOOP": (50, 50, 50, "pastel", "D", "B", "A"),
+        "LOOP": (50, 50, 50, "pastel", "B", "B", "A"),
         "NOIR": (75, 35, 65, "mono", "C", "A", "C"),
         "VOID": (50, 30, 50, "pastel", "A", "C", "A"),
         "OOPS": (70, 90, 90, "bright", "C", "C", "C"),
@@ -481,4 +489,18 @@ def test_typical_answer_sheets_all_hit_after_v12() -> None:
     for code, (like1, like2, like3, palette, v1, v2, v3) in sheets.items():
         assert _classify_axes(100 - like1, like2, like3, palette, v1, v2, v3) == code, (
             f"{code} 典型答卷误判"
+        )
+
+
+def test_film_typical_answer_survives_slider_jitter_v13() -> None:
+    """FILM 答卷（occasion=B=55）在滑杆 ±5 偏差下命中 FILM（v1.3 回归）。
+
+    根因：VIBE1 B 档 40→55 后 FILM completion 中心 40 对 EASE（60）
+    判别余量仅 15 分；v1.3 将 FILM 中心调至 50 后 B 答案两侧对称，
+    判别回归繁简维度。
+    """
+
+    for shape, energy, trend in [(70, 40, 20), (66, 44, 24), (74, 36, 16), (70, 35, 20)]:
+        assert _classify_axes(shape, energy, trend, "earth", "B", "B", "E") == "FILM", (
+            f"FILM 答卷近似输入 ({shape},{energy},{trend}) 误判"
         )

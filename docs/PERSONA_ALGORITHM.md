@@ -15,7 +15,7 @@
 | 时间 time_orientation | LIKE 滑杆「经典 ↔ 先锋」 | 直通 |
 | 饱和度 saturation | 偏好色板六选一 | 查表 `PALETTE_SIGNALS` |
 | 冷暖 temperature | 偏好色板六选一 | 查表 `PALETTE_SIGNALS` |
-| 完成度 completion | VIBE「出门场合」题 | A/B/C/D → 10/40/70/95 |
+| 完成度 completion | VIBE「出门场合」题 | A/B/C → 20/55/90（v1.3 定版三档） |
 | 个性 individuality | VIBE「衣橱状态」题 | A/B/C → 20/55/90 |
 | 地域 regional_style | VIBE「表达欲」题 | 日/韩/欧美/中/法 + 轻亚推导 |
 

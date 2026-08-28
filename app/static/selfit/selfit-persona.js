@@ -8,7 +8,8 @@
     'saturation', 'temperature', 'completion', 'individuality',
   ];
 
-  const VIBE_COMPLETION_VALUES = { A: 10, B: 40, C: 70, D: 95 };
+  // v1.3：VIBE1 定版三档映射（与后端 selfit_persona.py 同步，对拍测试强制一致）。
+  const VIBE_COMPLETION_VALUES = { A: 20, B: 55, C: 90 };
   const VIBE_INDIVIDUALITY_VALUES = { A: 20, B: 55, C: 90 };
   const VIBE_REGIONAL_VALUES = { A: '日系', B: '韩系', C: '欧美系', D: '中式', E: '法式' };
 
@@ -52,7 +53,7 @@
     ['NEON', [65, 75, 90, 95, 50, 75, 75], ['saturation', 'time_orientation', 'individuality'], '欧美系', ['轻亚']],
     ['EDGE', [85, 65, 85, 45, 20, 90, 70], ['silhouette', 'temperature', 'time_orientation'], '轻亚', ['韩系', '欧美系']],
     ['BOLT', [55, 75, 20, 35, 45, 95, 55], ['complexity', 'completion', 'time_orientation'], '法式', ['欧美系']],
-    ['FILM', [30, 40, 20, 35, 70, 40, 45], ['time_orientation', 'temperature', 'completion'], '法式', ['日系']],
+    ['FILM', [30, 40, 20, 35, 70, 50, 45], ['time_orientation', 'temperature', 'completion'], '法式', ['日系']],
     ['JADE', [70, 40, 15, 30, 50, 80, 35], ['silhouette', 'time_orientation', 'saturation'], '中式', []],
     ['LOOP', [50, 50, 50, 50, 50, 95, 60], ['completion', 'individuality'], '无倾向', []],
     ['NOIR', [75, 35, 65, 5, 20, 80, 35], ['silhouette', 'saturation'], '无倾向', ['轻亚', '欧美系']],
