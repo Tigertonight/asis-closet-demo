@@ -102,8 +102,6 @@
   .algo-compare em.diff { background: #fde8e8; color: #b91c1c; }
   .empty-inline { padding: 6px 0; color: var(--muted); font-size: 13px; }
   .link-btn.danger { color: #a90020; }
-  .hidden-bar { margin-top: 12px; padding: 10px 14px; border: 1px dashed rgba(31,26,26,.18); border-radius: 12px; font-size: 12px; color: var(--muted); display: flex; flex-wrap: wrap; gap: 6px 18px; align-items: center; }
-  .hidden-bar b { font-weight: 600; }
 
 </style>
 </head>
@@ -166,19 +164,17 @@
     </div>
     <div class="panel" id="submissionsPanel" data-tab-panel="submissions" hidden>
       <h2>用户提交（报告与照片）</h2>
-      <p class="panel-hint">每一行是一次完整的测试提交：报告数据、上传照片都在这里。智能镜拍摄有两个版本——<b>美颜照片</b>用于现场下载打印，<b>原始照片</b>仅作算法留存。会话过期后仍可查看和下载。「删除」只是从后台隐藏，不会删除服务器存储里的照片，可在下方已隐藏区恢复。</p>
+      <p class="panel-hint">每一行是一次完整的测试提交：报告数据、上传照片都在这里。智能镜拍摄有两个版本——<b>美颜照片</b>用于现场下载打印，<b>原始照片</b>仅作算法留存。会话过期后仍可查看和下载。「删除」只是从后台隐藏，不会删除服务器存储里的照片。</p>
       <div class="toolbar" style="margin-bottom:12px">
         <button class="mini-btn" type="button" id="submissionsRefresh">刷新</button>
         <small id="submissionsUpdatedAt"></small>
       </div>
       <table><thead><tr><th>提交时间</th><th>手机号</th><th>来源</th><th>报告</th><th>照片</th><th>操作</th></tr></thead><tbody id="submissionRows"></tbody></table>
-      <div class="hidden-bar" id="submissionHiddenBar" hidden></div>
     </div>
     <div class="panel" data-tab-panel="submissions" hidden>
       <h2>镜子拍摄记录（含未领取）</h2>
       <p class="panel-hint">用户在智能镜拍照后即使没有扫码完成报告，照片也会保留在这里，可随时下载打印。删除只是从后台隐藏，服务器存储里仍保留原片。</p>
       <table><thead><tr><th>拍摄时间</th><th>状态</th><th>领取手机号</th><th>原始照片（算法留存）</th><th>美颜照片（打印用）</th><th>操作</th></tr></thead><tbody id="captureRows"></tbody></table>
-      <div class="hidden-bar" id="captureHiddenBar" hidden></div>
     </div>
     <div class="panel" data-tab-panel="submissions" hidden>
       <h2>检测被拒的照片（算法优化素材）</h2>
@@ -305,7 +301,7 @@
 
   const photoThumb = (photo) => `<img class="photo-thumb" src="${esc(photo.previewUrl)}" alt="${esc(photo.label || photo.kind)}" loading="lazy" title="${esc(photo.label || photo.kind)}" />`;
 
-  const renderSubmissions = (rows, hidden) => {
+  const renderSubmissions = (rows) => {
     const tbody = $('submissionRows');
     if (!rows.length) {
       tbody.replaceChildren(Object.assign(document.createElement('tr'), {
@@ -342,10 +338,9 @@
         button.addEventListener('click', () => hideEntry('submissions', button.dataset.hide));
       });
     }
-    renderHiddenBar('submissionHiddenBar', '已隐藏提交', 'submissions', hidden);
   };
 
-  const renderCaptures = (rows, hidden) => {
+  const renderCaptures = (rows) => {
     const tbody = $('captureRows');
     if (!rows.length) {
       tbody.replaceChildren(Object.assign(document.createElement('tr'), {
@@ -370,19 +365,6 @@
         button.addEventListener('click', () => hideEntry('mirror-captures', button.dataset.hideCapture));
       });
     }
-    renderHiddenBar('captureHiddenBar', '已隐藏拍摄', 'mirror-captures', hidden);
-  };
-
-  const renderHiddenBar = (barId, label, kind, hidden) => {
-    const bar = $(barId);
-    if (!hidden || !hidden.length) { bar.hidden = true; return; }
-    bar.hidden = false;
-    bar.innerHTML = `<b>${label} ${hidden.length} 条</b>`
-      + hidden.map((item) => `<span>${esc(String(item.id).slice(0, 18))} · ${fmtTime(item.hiddenAt)} `
-        + `<button class="link-btn" type="button" data-unhide-kind="${esc(kind)}" data-unhide-id="${esc(item.id)}">恢复</button></span>`).join('');
-    bar.querySelectorAll('[data-unhide-id]').forEach((button) => {
-      button.addEventListener('click', () => unhideEntry(button.dataset.unhideKind, button.dataset.unhideId));
-    });
   };
 
   const REJECTED_SOURCE = { app: 'App 上传', mirror: '智能镜', mirror_head_crop: '智能镜·头部裁剪' };
@@ -441,18 +423,9 @@
   };
 
   const hideEntry = async (kind, id) => {
-    if (!confirm('确定从后台隐藏这条记录吗？\n照片和报告仍会保留在服务器存储中，可随时在「已隐藏」里恢复。')) return;
+    if (!confirm('确定从后台隐藏这条记录吗？\n照片和报告仍会保留在服务器存储中。')) return;
     try {
       await postAdmin(`/admin/api/${kind}/${encodeURIComponent(id)}/hide`);
-      void loadSubmissions();
-    } catch (error) {
-      alert(error.message || '操作失败');
-    }
-  };
-
-  const unhideEntry = async (kind, id) => {
-    try {
-      await postAdmin(`/admin/api/${kind}/${encodeURIComponent(id)}/unhide`);
       void loadSubmissions();
     } catch (error) {
       alert(error.message || '操作失败');
@@ -465,8 +438,8 @@
         api('/admin/api/submissions'),
         api('/admin/api/mirror-captures'),
       ]);
-      renderSubmissions(subs.submissions || [], subs.hidden || []);
-      renderCaptures(captures.captures || [], captures.hidden || []);
+      renderSubmissions(subs.submissions || []);
+      renderCaptures(captures.captures || []);
       void loadRejected();
       $('submissionsUpdatedAt').textContent = `更新于 ${new Date().toLocaleTimeString('zh-CN', { hour12: false })}`;
     } catch (error) {

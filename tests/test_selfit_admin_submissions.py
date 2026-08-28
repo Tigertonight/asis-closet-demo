@@ -282,7 +282,9 @@ def test_mirror_captures_include_unclaimed_and_allow_download(
     assert missing.status_code == 404
 
 
-def test_hide_submission_is_soft_delete_and_recoverable(monkeypatch, tmp_path: Path) -> None:
+def test_hide_submission_is_soft_delete_without_ui_recovery(monkeypatch, tmp_path: Path) -> None:
+    """隐藏提交 = 软删除：列表不再出现、无恢复入口；磁盘资产保留，洗数据可恢复。"""
+
     _use_tmp_stores(monkeypatch, tmp_path)
     client = TestClient(app)
     admin_headers = _admin_login(client, monkeypatch)
@@ -306,20 +308,30 @@ def test_hide_submission_is_soft_delete_and_recoverable(monkeypatch, tmp_path: P
 
     payload = client.get("/admin/api/submissions", headers=admin_headers).json()
     assert [row["sessionId"] for row in payload["submissions"]] == []
-    assert [item["id"] for item in payload["hidden"]] == [session_id]
+    # 已隐藏条目不出现在接口响应里（无展示、无恢复入口）
+    assert "hidden" not in payload
     # 软删除：照片资产与会话记录仍在磁盘上，详情接口也可访问
     assert asset_file.is_file()
     assert asset_file.read_bytes() == face_bytes
     detail = client.get(f"/admin/api/submissions/{session_id}", headers=admin_headers)
     assert detail.status_code == 200
 
-    restored = client.post(
+    # unhide 路由已移除（恢复只能离线洗 admin_hidden.json）
+    removed = client.post(
         f"/admin/api/submissions/{session_id}/unhide", headers=admin_headers
     )
-    assert restored.status_code == 200
+    assert removed.status_code == 404
+
+    # 洗数据恢复：把条目从 admin_hidden.json 里删掉即重新可见
+    hidden_store = json.loads(
+        admin_submissions.HIDDEN_STORE_PATH.read_text(encoding="utf-8")
+    )
+    hidden_store["submissions"].pop(session_id, None)
+    admin_submissions.HIDDEN_STORE_PATH.write_text(
+        json.dumps(hidden_store, ensure_ascii=False), encoding="utf-8"
+    )
     payload = client.get("/admin/api/submissions", headers=admin_headers).json()
     assert [row["sessionId"] for row in payload["submissions"]] == [session_id]
-    assert payload["hidden"] == []
 
     missing = client.post(
         "/admin/api/submissions/ses_missing/hide", headers=admin_headers
@@ -327,7 +339,7 @@ def test_hide_submission_is_soft_delete_and_recoverable(monkeypatch, tmp_path: P
     assert missing.status_code == 404
 
 
-def test_hide_mirror_capture_is_soft_delete_and_recoverable(
+def test_hide_mirror_capture_is_soft_delete_without_ui_recovery(
     monkeypatch, tmp_path: Path
 ) -> None:
     _use_tmp_stores(monkeypatch, tmp_path)
@@ -347,7 +359,8 @@ def test_hide_mirror_capture_is_soft_delete_and_recoverable(
 
     payload = client.get("/admin/api/mirror-captures", headers=admin_headers).json()
     assert [row["handoffId"] for row in payload["captures"]] == []
-    assert [item["id"] for item in payload["hidden"]] == [handoff_id]
+    # 已隐藏条目不出现在接口响应里（无展示、无恢复入口）
+    assert "hidden" not in payload
     # 软删除：磁盘上的原始/美颜照片都还在，下载接口仍可用
     assert any(asset_dir.glob("asset_original_*"))
     assert any(asset_dir.glob("asset_retouched_*"))
@@ -358,10 +371,20 @@ def test_hide_mirror_capture_is_soft_delete_and_recoverable(
     assert download.status_code == 200
     assert download.content == retouched_bytes
 
-    restored = client.post(
+    # unhide 路由已移除（恢复只能离线洗 admin_hidden.json）
+    removed = client.post(
         f"/admin/api/mirror-captures/{handoff_id}/unhide", headers=admin_headers
     )
-    assert restored.status_code == 200
+    assert removed.status_code == 404
+
+    # 洗数据恢复：把条目从 admin_hidden.json 里删掉即重新可见
+    hidden_store = json.loads(
+        admin_submissions.HIDDEN_STORE_PATH.read_text(encoding="utf-8")
+    )
+    hidden_store["captures"].pop(handoff_id, None)
+    admin_submissions.HIDDEN_STORE_PATH.write_text(
+        json.dumps(hidden_store, ensure_ascii=False), encoding="utf-8"
+    )
     payload = client.get("/admin/api/mirror-captures", headers=admin_headers).json()
     assert [row["handoffId"] for row in payload["captures"]] == [handoff_id]
 

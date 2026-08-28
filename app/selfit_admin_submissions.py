@@ -64,16 +64,6 @@ def _write_hidden(data: dict[str, Any]) -> None:
     tmp_path.replace(HIDDEN_STORE_PATH)
 
 
-def _hidden_entries(hidden: dict[str, Any], kind: str) -> list[dict[str, Any]]:
-    items = hidden.get(kind) or {}
-    rows = [
-        {"id": key, "hiddenAt": (meta or {}).get("hidden_at")}
-        for key, meta in items.items()
-    ]
-    rows.sort(key=lambda row: str(row.get("hiddenAt") or ""), reverse=True)
-    return rows
-
-
 def _phone_by_user() -> dict[str, str]:
     from app.auth import _load_store as load_auth_store
 
@@ -254,7 +244,7 @@ async def list_submissions(admin: dict[str, Any] = Depends(get_admin_user)) -> J
     ]
     rows.sort(key=lambda row: str(row.get("createdAt") or ""), reverse=True)
     return JSONResponse(
-        content={"submissions": rows, "hidden": _hidden_entries(hidden, "submissions")},
+        content={"submissions": rows},
         headers={"Cache-Control": "no-store"},
     )
 
@@ -510,7 +500,7 @@ async def list_mirror_captures(admin: dict[str, Any] = Depends(get_admin_user)) 
         )
     rows.sort(key=lambda row: str(row.get("createdAt") or ""), reverse=True)
     return JSONResponse(
-        content={"captures": rows, "hidden": _hidden_entries(hidden, "captures")},
+        content={"captures": rows},
         headers={"Cache-Control": "no-store"},
     )
 
@@ -553,15 +543,15 @@ async def download_mirror_capture_photo(
 # ---------------------------------------------------------------------------
 
 
-def _set_hidden(kind: str, entry_id: str, hidden: bool) -> JSONResponse:
+def _hide_entry(kind: str, entry_id: str) -> JSONResponse:
+    """软删除标记。已隐藏条目不出现在任何后台接口里；恢复只能离线洗数据
+    （把条目从 admin_hidden.json 里删掉即可）。"""
+
     with _HIDDEN_LOCK:
         data = _load_hidden()
-        if hidden:
-            data[kind][entry_id] = {"hidden_at": _now_iso()}
-        else:
-            data[kind].pop(entry_id, None)
+        data[kind][entry_id] = {"hidden_at": _now_iso()}
         _write_hidden(data)
-    return JSONResponse(content={"status": "ok", "hidden": hidden})
+    return JSONResponse(content={"status": "ok", "hidden": True})
 
 
 @router.post("/submissions/{session_id}/hide")
@@ -571,14 +561,7 @@ async def hide_submission(
     data = selfit_onboarding._load_store()
     if _find_submission(data, session_id) is None:
         return JSONResponse(status_code=404, content={"detail": "没有找到这份提交"})
-    return _set_hidden("submissions", session_id, True)
-
-
-@router.post("/submissions/{session_id}/unhide")
-async def unhide_submission(
-    session_id: str, admin: dict[str, Any] = Depends(get_admin_user)
-) -> JSONResponse:
-    return _set_hidden("submissions", session_id, False)
+    return _hide_entry("submissions", session_id)
 
 
 @router.post("/mirror-captures/{handoff_id}/hide")
@@ -589,11 +572,4 @@ async def hide_mirror_capture(
     exists = any(item.get("handoff_id") == handoff_id for item in data.get("handoffs", []))
     if not exists:
         return JSONResponse(status_code=404, content={"detail": "没有找到这次拍摄"})
-    return _set_hidden("captures", handoff_id, True)
-
-
-@router.post("/mirror-captures/{handoff_id}/unhide")
-async def unhide_mirror_capture(
-    handoff_id: str, admin: dict[str, Any] = Depends(get_admin_user)
-) -> JSONResponse:
-    return _set_hidden("captures", handoff_id, False)
+    return _hide_entry("captures", handoff_id)
