@@ -52,7 +52,7 @@ REGIONAL_STYLES = ("日系", "韩系", "欧美系", "中式", "法式", "轻亚"
 # 算法版本指纹：每次修改分型口径（中心点/权重/阈值/换算）必须递增并说明变更，
 # 并同步三处：前端移植版 selfit-persona.js、管理后台人格匹配展示、
 # tests/test_selfit_persona.py 对拍测试。详见 docs/PERSONA_ALGORITHM.md。
-ALGORITHM_VERSION = "v1.1-cross-side"
+ALGORITHM_VERSION = "v1.2-margin-hardening"
 
 # VIBE 题 key（onboarding 契约）→ 维度。
 VIBE_COMPLETION_VALUES = {"A": 10, "B": 40, "C": 70, "D": 95}
@@ -194,7 +194,14 @@ PERSONAS: dict[str, Persona] = {
                  "自然", ("清冷",)),
         _persona("FLOU", "造梦浪漫", "法式", ("中式",),
                  (15, 90, 30, 35, 60, 90, 45),
-                 ("complexity", "completion", "silhouette"),
+                 # v1.2：completion 移出核心。FLOU 完成度中心 90 只有
+                 # occasion=D（95）能接近，问卷 UI 上限为 C（70）；
+                 # 用户代答 B（40）时核心权重罚 75 分，FLOU 对 FILM
+                 # 判别余量仅 25 分，滑杆小幅偏差即误判虚焦胶片（内测
+                 # 实录：FLOU 答卷连测四次全部 FILM）。繁简（90 vs 40）
+                 # 仍是 FLOU/FILM 的首要区分维度，completion 降为普通
+                 # 权重后距离信号保留。
+                 ("complexity", "silhouette"),
                  "柔和、高装饰、经典浪漫、高完成度", ("浪漫装饰", "梦幻柔美", "高完成度"),
                  "甜美", ("复古",)),
         _persona("NEON", "灵动吸睛", "欧美系", ("轻亚",),
@@ -229,7 +236,13 @@ PERSONAS: dict[str, Persona] = {
                  "不限制", ()),
         _persona("NOIR", "暗黑肃杀", "无倾向", ("轻亚", "欧美系"),
                  (75, 35, 65, 5, 20, 80, 35),
-                 ("saturation", "temperature", "silhouette"),
+                 # v1.2：temperature 移出核心。无彩色色板（NOIR 典型答案的
+                 # 色板）温度恒为 50（中性），中心冷调 20 经问卷不可达，
+                 # 1.5 倍权重形成永久 45 分罚分，NOIR 答卷对 MUTE 判别
+                 # 余量仅 15 分，滑杆 ±10 偏差即误判静音时髦（内测实录：
+                 # NOIR 答卷连测三次全部 MUTE）。冷调信号仍由 saturation
+                 # 核心维度隐含覆盖（六色板中仅无彩色与冷调中饱和偏低饱和）。
+                 ("silhouette", "saturation"),
                  "极低饱和、冷调、硬朗、深色执念", ("暗黑极简", "冷调深色", "硬朗肃杀"),
                  "清冷", ("个性",)),
         _persona("VOID", "人间失格", "无倾向", (),
@@ -238,7 +251,15 @@ PERSONAS: dict[str, Persona] = {
                  "低完成度、高游移、方向不稳定", ("松弛游移", "低完成度", "混搭冲突"),
                  "不限制", ()),
         _persona("OOPS", "搭配事故", "无倾向", ("欧美系", "轻亚"),
-                 (70, 90, 90, 85, 50, 70, 100),
+                 # v1.2：individuality 中心 100 → 80。中心钉在量表极值时
+                 # 只有 wardrobe=C（90）算「接近」，答 B（55）即触发
+                 # 45×1.5=67.5 罚分并被 NEON（个性中心 75）接盘——内测
+                 # 实录：LIKE 四值全部命中 OOPS 答卷仅因 wardrobe 答 B
+                 # 即判 NEON。降到 80 后 OOPS 仍是全表次高个性中心
+                 # （主动混搭辨识保留），B 答案罚分减 30 分；NEON 答卷
+                 # （wardrobe=C=90）距 |90-80| 与 |90-100| 同为 15 分，
+                 # NEON 判别完全不受影响。
+                 (70, 90, 90, 85, 50, 70, 80),
                  ("complexity", "time_orientation", "individuality", "saturation"),
                  "高繁复、高先锋、高冲突、主动混搭", ("主动混搭", "高冲突感", "先锋实验"),
                  "个性", ("明艳",)),

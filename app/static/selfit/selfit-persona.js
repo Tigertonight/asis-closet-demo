@@ -48,16 +48,16 @@
     ['EASE', [25, 25, 25, 25, 65, 60, 25], ['silhouette', 'time_orientation', 'temperature'], '法式', ['韩系']],
     ['MELT', [20, 70, 60, 35, 65, 75, 35], ['complexity', 'saturation', 'completion'], '韩系', ['日系']],
     ['WABI', [25, 20, 10, 15, 55, 35, 20], ['complexity', 'time_orientation', 'saturation'], '日系', ['中式']],
-    ['FLOU', [15, 90, 30, 35, 60, 90, 45], ['complexity', 'completion', 'silhouette'], '法式', ['中式']],
+    ['FLOU', [15, 90, 30, 35, 60, 90, 45], ['complexity', 'silhouette'], '法式', ['中式']],
     ['NEON', [65, 75, 90, 95, 50, 75, 75], ['saturation', 'time_orientation', 'individuality'], '欧美系', ['轻亚']],
     ['EDGE', [85, 65, 85, 45, 20, 90, 70], ['silhouette', 'temperature', 'time_orientation'], '轻亚', ['韩系', '欧美系']],
     ['BOLT', [55, 75, 20, 35, 45, 95, 55], ['complexity', 'completion', 'time_orientation'], '法式', ['欧美系']],
     ['FILM', [30, 40, 20, 35, 70, 40, 45], ['time_orientation', 'temperature', 'completion'], '法式', ['日系']],
     ['JADE', [70, 40, 15, 30, 50, 80, 35], ['silhouette', 'time_orientation', 'saturation'], '中式', []],
     ['LOOP', [50, 50, 50, 50, 50, 95, 60], ['completion', 'individuality'], '无倾向', []],
-    ['NOIR', [75, 35, 65, 5, 20, 80, 35], ['saturation', 'temperature', 'silhouette'], '无倾向', ['轻亚', '欧美系']],
+    ['NOIR', [75, 35, 65, 5, 20, 80, 35], ['silhouette', 'saturation'], '无倾向', ['轻亚', '欧美系']],
     ['VOID', [50, 30, 50, 20, 50, 10, 95], ['completion', 'individuality'], '无倾向', []],
-    ['OOPS', [70, 90, 90, 85, 50, 70, 100], ['complexity', 'time_orientation', 'individuality', 'saturation'], '无倾向', ['欧美系', '轻亚']],
+    ['OOPS', [70, 90, 90, 85, 50, 70, 80], ['complexity', 'time_orientation', 'individuality', 'saturation'], '无倾向', ['欧美系', '轻亚']],
   ];
 
   const PERSONAS = PERSONA_ROWS.map(([code, center, coreDimensions, primaryRegion, compatibleRegions]) => ({

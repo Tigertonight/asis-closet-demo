@@ -174,7 +174,9 @@ def test_confidence_tiers() -> None:
         "regional_style": None,
     }
     result = classify_persona(vector)
-    assert result["persona_confidence"] == 0.061
+    # v1.2 OOPS 个性中心 100→80：wardrobe=C（90）距 OOPS 不变，
+    # 但此向量 ind=35 距 OOPS 缩近 30 分，次名距离变化使 confidence 移至 0.0649
+    assert result["persona_confidence"] == 0.0649
     assert result["confidence_tier"] == "low"
 
 
@@ -379,3 +381,104 @@ def test_persona_breakdown_matches_classify_result() -> None:
     # 每个 persona 的维度贡献之和等于它的数值距离
     for row in breakdown["ranking"]:
         assert abs(sum(d["weighted"] for d in row["dimensions"]) - row["numericDistance"]) < 0.5
+
+
+# ---------------------------------------------------------------------------
+# v1.2-margin-hardening：2026-08-28 内测实录回归（服务器 sessions.json 实测输入）
+# ---------------------------------------------------------------------------
+
+def _classify_axes(shape: float, energy: float, trend: float, palette: str,
+                   occasion: str, wardrobe: str, expression: str) -> str:
+    return classify_persona(build_user_vector({"preferences": {
+        "axes": {"shape": shape, "energy": energy, "trend": trend},
+        "palette": palette,
+    }, "vibe": {"occasion": occasion, "wardrobe": wardrobe, "expression": expression}}))["primary_persona"]
+
+
+def test_noir_typical_answer_survives_slider_jitter() -> None:
+    """NOIR 答卷在滑杆 ±10 偏差下必须命中 NOIR（内测实录：连测三次全 MUTE）。
+
+    根因：temperature 原为 NOIR 核心维度，但无彩色色板温度恒为 50，
+    中心冷调 20 不可达，1.5 倍权重形成永久罚分，对 MUTE 判别余量仅
+    15 分。v1.2 将 temperature 移出核心后余量恢复。
+    """
+
+    for shape, energy, trend in [(25, 35, 65), (25, 25, 65), (25, 35, 55), (20, 30, 60), (25, 45, 70)]:
+        assert _classify_axes(shape, energy, trend, "mono", "C", "A", "C") == "NOIR", (
+            f"NOIR 答卷近似输入 ({shape},{energy},{trend}) 误判"
+        )
+
+
+def test_flou_typical_answer_survives_occasion_substitution() -> None:
+    """FLOU 答卷在 occasion 用 B/C 代答 D 时必须命中 FLOU（内测实录：连测四次全 FILM）。
+
+    根因：FLOU 完成度中心 90 依赖 occasion=D（95），问卷 UI 上限 C（70）；
+    completion 原为核心维度，代答 B（40）罚 75 分后对 FILM 判别余量仅
+    25 分。v1.2 将 completion 移出核心后 B/C 代答均可容错。
+    """
+
+    for occasion in ("B", "C"):
+        assert _classify_axes(85, 90, 30, "pastel", occasion, "B", "E") == "FLOU", (
+            f"FLOU 答卷 occasion={occasion} 代答误判"
+        )
+    # 滑杆 ±10 偏差 + occasion=B 代答仍需命中
+    assert _classify_axes(80, 82, 35, "pastel", "B", "B", "E") == "FLOU"
+
+
+def test_oops_typical_answer_survives_wardrobe_stale_answer() -> None:
+    """OOPS 答卷在 wardrobe 误答 B（残留上题答案）时必须命中 OOPS（内测实录）。
+
+    根因：OOPS 个性中心原为 100（量表极值），仅 wardrobe=C（90）算接近，
+    误答 B（55）触发 67.5 罚分被 NEON 接盘；LIKE 四值全部命中也无济于事。
+    v1.2 将中心降至 80：OOPS 仍为全表次高个性中心，NEON 判别不受影响
+    （wardrobe=C 时 |90-80| 与 |90-100| 距离相同）。
+    """
+
+    # 内测实录输入：LIKE 四值命中，wardrobe 误答 B
+    assert _classify_axes(20, 89, 88, "bright", "C", "B", "C") == "OOPS"
+    # wardrobe 误答 A（更远）也需命中
+    assert _classify_axes(30, 90, 90, "bright", "C", "A", "C") == "OOPS"
+    # 正确答卷（wardrobe=C）命中
+    assert _classify_axes(30, 90, 90, "bright", "C", "C", "C") == "OOPS"
+
+
+def test_neon_typical_answer_unaffected_by_oops_center_change() -> None:
+    """NEON 答卷不受 OOPS 个性中心下调影响（wardrobe=C 时 |90-80| = |90-100|）。"""
+
+    from app.selfit_persona import PERSONAS, _persona_distance
+
+    assert _classify_axes(35, 75, 90, "bright", "C", "C", "C") == "NEON"
+    # 不变性本身：wardrobe=C（ind=90）向量到 OOPS 的距离在中心 80/100 下相同
+    vector = build_user_vector({"preferences": {
+        "axes": {"shape": 35, "energy": 75, "trend": 90}, "palette": "bright",
+    }, "vibe": {"occasion": "C", "wardrobe": "C", "expression": "C"}})
+    numeric, _ = _persona_distance(PERSONAS["OOPS"], vector)
+    # ind 贡献 |90-80|×1.5 = 15（与 |90-100|×1.5 相同），其余维度贡献不变
+    assert abs(numeric - 50.0) < 0.01
+
+
+def test_typical_answer_sheets_all_hit_after_v12() -> None:
+    """《16 型人格典型答卷》全表精确命中（v1.2 变更后回归）。"""
+
+    sheets = {
+        "MUTE": (75, 10, 40, "mono", "C", "A", "A"),
+        "ICED": (25, 20, 65, "ocean", "C", "A", "B"),
+        "HEIR": (70, 30, 15, "earth", "D", "A", "C"),
+        "EASE": (25, 25, 25, "earth", "C", "A", "E"),
+        "MELT": (20, 70, 60, "pastel", "C", "A", "B"),
+        "WABI": (25, 20, 10, "earth", "B", "A", "A"),
+        "FLOU": (15, 90, 30, "pastel", "D", "B", "E"),
+        "NEON": (65, 75, 90, "bright", "C", "C", "C"),
+        "EDGE": (85, 65, 85, "ocean", "D", "B", "B"),
+        "BOLT": (55, 75, 20, "pastel", "D", "B", "E"),
+        "FILM": (30, 40, 20, "earth", "B", "B", "E"),
+        "JADE": (70, 40, 15, "pastel", "C", "A", "D"),
+        "LOOP": (50, 50, 50, "pastel", "D", "B", "A"),
+        "NOIR": (75, 35, 65, "mono", "C", "A", "C"),
+        "VOID": (50, 30, 50, "pastel", "A", "C", "A"),
+        "OOPS": (70, 90, 90, "bright", "C", "C", "C"),
+    }
+    for code, (like1, like2, like3, palette, v1, v2, v3) in sheets.items():
+        assert _classify_axes(100 - like1, like2, like3, palette, v1, v2, v3) == code, (
+            f"{code} 典型答卷误判"
+        )
