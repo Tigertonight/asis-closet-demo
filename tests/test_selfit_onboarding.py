@@ -232,8 +232,8 @@ def test_selfit_report_share_cards_use_the_dedicated_qr_artwork() -> None:
     assert response.status_code == 200
     assert response.text.count("/static/selfit/assets/share-report-qr.png?v=20260828") == 3
     assert 'data-share-ornament' in response.text
-    assert "/static/selfit/selfit.css?v=20260828-share9" in response.text
-    assert "/static/selfit/selfit.js?v=20260828-persona1" in response.text
+    assert "/static/selfit/selfit.css?v=20260828-webview1" in response.text
+    assert "/static/selfit/selfit.js?v=20260828-webview1" in response.text
     assert "/static/selfit/selfit-persona.js?v=20260828-1" in response.text
 
     asset = client.get("/static/selfit/assets/share-report-qr.png")
@@ -253,6 +253,38 @@ def test_selfit_report_share_cards_use_the_dedicated_qr_artwork() -> None:
     assert "shareIdentityCard.dataset.personality" in runtime.text
     assert "const drawShareMaterial" in runtime.text
     assert "previewScreen === 'share'" in runtime.text
+
+
+def test_selfit_onboarding_has_webview_layout_and_boot_fallbacks() -> None:
+    response = client.get("/selfit/demo")
+    styles = client.get("/static/selfit/selfit.css")
+    runtime = client.get("/static/selfit/selfit.js")
+    compat = client.get("/static/selfit/selfit-compat.js")
+
+    assert response.status_code == 200
+    assert 'width=device-width, initial-scale=1, viewport-fit=cover' in response.text
+    assert 'id="compatFallback"' in response.text
+    assert "__SELFIT_BOOT_TIMER__" in response.text
+    assert response.text.index("selfit-compat.js") < response.text.index("selfit.js?v=")
+
+    assert compat.status_code == 200
+    assert "window.visualViewport" in compat.text
+    assert "--visual-viewport-height" in compat.text
+    assert "native-dialog" in compat.text
+    assert "data:image/webp" in compat.text
+
+    assert ".app-shell {\n  position: relative;\n  width: 100%;" in styles.text
+    assert "height: 100vh;" in styles.text
+    assert "@supports (height: 100dvh)" in styles.text
+    assert "html.has-visual-viewport .app-shell" in styles.text
+    assert ".report-actions { width: var(--screen-w); }" in styles.text
+    assert ".share-dialog { width: var(--screen-w); height: var(--screen-h);" in styles.text
+    assert ".no-native-dialog .share-dialog[open]" in styles.text
+
+    assert "window.__SELFIT_BOOT_OK__ = true" in runtime.text
+    assert "const openShareDialog" in runtime.text
+    assert runtime.text.count("shareDialog.showModal()") == 1
+    assert "placeholder-card.svg" in runtime.text
     assert "previewScreen === 'share-gallery'" in runtime.text
     assert "share-gallery-preview" in runtime.text
 

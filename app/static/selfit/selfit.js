@@ -1,5 +1,15 @@
 (() => {
   const shell = document.querySelector('#appShell');
+  window.__SELFIT_BOOT_OK__ = true;
+  window.clearTimeout(window.__SELFIT_BOOT_TIMER__);
+  document.documentElement.dataset.selfitBoot = 'ready';
+  shell.addEventListener('error', (event) => {
+    const image = event.target;
+    if (!(image instanceof HTMLImageElement) || image.dataset.fallbackApplied === 'true') return;
+    if (!/\/assets\/personality\//.test(image.currentSrc || image.src)) return;
+    image.dataset.fallbackApplied = 'true';
+    image.src = '/static/selfit/assets/personality/placeholder-card.svg';
+  }, true);
   const screens = [...document.querySelectorAll('[data-screen]')];
   const splash = document.querySelector('[data-screen="splash"]');
   const intro = document.querySelector('[data-screen="intro"]');
@@ -782,6 +792,28 @@
     if (!reportScrollFrame) reportScrollFrame = requestAnimationFrame(syncReportActions);
   }, { passive: true });
   const shareDialog = document.querySelector('#shareDialog');
+  const shareCloseButton = shareDialog.querySelector('button[value="cancel"]');
+  const supportsNativeDialog = typeof shareDialog.showModal === 'function';
+  const openShareDialog = () => {
+    if (supportsNativeDialog) shareDialog.showModal();
+    else {
+      shareDialog.setAttribute('open', '');
+      document.documentElement.classList.add('has-open-dialog');
+    }
+  };
+  const closeShareDialog = () => {
+    if (supportsNativeDialog) shareDialog.close();
+    else {
+      shareDialog.removeAttribute('open');
+      document.documentElement.classList.remove('has-open-dialog');
+    }
+  };
+  shareCloseButton.addEventListener('click', (event) => {
+    if (supportsNativeDialog) return;
+    event.preventDefault();
+    closeShareDialog();
+  });
+  shareDialog.addEventListener('close', () => document.documentElement.classList.remove('has-open-dialog'));
   const shareTrack = document.querySelector('#shareTrack');
   const shareSlides = [...document.querySelectorAll('[data-share-slide]')];
   const shareDots = [...document.querySelectorAll('[data-share-dot]')];
@@ -1001,7 +1033,7 @@
     else goToShareSlide(shareSlideIndex + (event.key === 'ArrowRight' ? 1 : -1));
   });
   document.querySelector('#openShare').addEventListener('click', () => {
-    shareDialog.showModal();
+    openShareDialog();
     requestAnimationFrame(() => goToShareSlide(0, false));
   });
   const currentReportId = () => state.reportId || window.__SELFIT_REPORT_ID__ || null;
@@ -1061,7 +1093,7 @@
     showScreen('report');
     shell.classList.add('is-ready');
     requestAnimationFrame(() => {
-      shareDialog.showModal();
+      openShareDialog();
       goToShareSlide(0, false);
     });
     return;

@@ -19,11 +19,17 @@
 }
 
 * { box-sizing: border-box; }
-html, body { min-height: 100%; margin: 0; }
+[hidden] { display: none !important; }
+html, body { width: 100%; min-height: 100%; margin: 0; overflow-x: hidden; }
+html { height: -webkit-fill-available; background: var(--canvas); }
 body {
-  background: #efedea;
+  min-height: 100vh;
+  min-height: -webkit-fill-available;
+  background: var(--canvas);
   color: var(--ink);
   -webkit-font-smoothing: antialiased;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
 }
 button, input { font: inherit; }
 button {
@@ -32,15 +38,37 @@ button {
   -webkit-tap-highlight-color: transparent;
 }
 
+.compat-fallback {
+  width: min(100% - 40px, 360px);
+  margin: 0 auto;
+  padding: max(72px, calc(env(safe-area-inset-top, 0px) + 52px)) 24px 40px;
+  color: var(--ink);
+  text-align: center;
+}
+.compat-fallback img { display: block; width: 72px; height: auto; margin: 0 auto 32px; }
+.compat-fallback h1 { margin: 0 0 12px; font-size: 21px; line-height: 30px; }
+.compat-fallback p { margin: 0; color: var(--muted); font-size: 14px; line-height: 22px; }
+.compat-fallback button { width: 100%; height: 48px; margin-top: 28px; border: 0; border-radius: 999px; color: #fff; background: var(--brand); font-weight: 600; }
+
 .app-shell {
   position: relative;
-  width: min(100vw, var(--screen-w));
-  height: 100svh;
-  min-height: 0;
-  margin: 0 auto;
+  width: 100%;
+  max-width: none;
+  height: 100vh;
+  min-height: 100vh;
+  margin: 0;
   overflow: hidden;
   background: var(--canvas);
   isolation: isolate;
+}
+@supports (height: 100dvh) {
+  .app-shell { height: 100dvh; min-height: 100dvh; }
+}
+@media (max-width: 599px) {
+  html.has-visual-viewport .app-shell {
+    height: var(--visual-viewport-height, 100vh);
+    min-height: var(--visual-viewport-height, 100vh);
+  }
 }
 
 .screen {
@@ -83,7 +111,7 @@ button {
   inset: 0;
   width: 100%;
   height: 100%;
-  object-fit: fill;
+  object-fit: cover;
   pointer-events: none;
 }
 .splash-signature {
@@ -508,7 +536,7 @@ button {
 .toast.is-visible { opacity: 1; transform: translate(-50%, 0); }
 
 @media (min-width: 600px) {
-  body { display: grid; min-height: 100vh; place-items: center; padding: 24px; }
+  body { display: grid; min-height: 100vh; place-items: center; padding: 24px; background: #efedea; }
   .app-shell { width: var(--screen-w); min-height: var(--screen-h); height: var(--screen-h); border-radius: 40px; box-shadow: 0 24px 80px rgba(48,38,34,.16); }
 }
 @media (max-height: 820px) and (max-width: 599px) {
@@ -848,7 +876,8 @@ button {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 10px;
-  width: min(100vw, var(--screen-w));
+  width: 100%;
+  max-width: none;
   padding: 20px 20px max(16px, env(safe-area-inset-bottom));
   background: linear-gradient(to bottom, rgba(250,250,250,0), #fafafa 34%);
   opacity: 0;
@@ -868,8 +897,11 @@ button {
 .report-actions button:last-child { color: #fff; background: #8a011b; }
 #retakeBtn { border-color: rgba(138, 1, 27, .2); }
 
-.share-dialog { width: min(100vw,393px); max-width: none; height: min(100svh,852px); max-height: none; margin: auto; padding: 0; border: 0; border-radius: min(40px, 5svh); color: var(--ink); background: #fafafa; }
+.share-dialog { width: 100%; max-width: none; height: 100vh; height: var(--visual-viewport-height, 100dvh); max-height: none; margin: 0; padding: 0; border: 0; border-radius: 0; color: var(--ink); background: #fafafa; }
 .share-dialog::backdrop { background: rgba(0,0,0,.35); }
+.no-native-dialog .share-dialog:not([open]) { display: none; }
+.no-native-dialog .share-dialog[open] { position: fixed; z-index: 100; inset: 0; display: block; }
+html.has-open-dialog, html.has-open-dialog body { overflow: hidden; }
 .share-sheet { display: flex; height: 100%; flex-direction: column; padding: max(8px, env(safe-area-inset-top)) 20px max(12px, env(safe-area-inset-bottom)); overflow: hidden; overscroll-behavior: contain; }
 .share-sheet > header { display: grid; min-height: 52px; margin-bottom: 82px; grid-template-columns: 44px 1fr 44px; align-items: center; flex: 0 0 auto; }
 .share-sheet header button {
@@ -1040,4 +1072,9 @@ body.is-share-gallery .app-shell { display: none; }
 @media (prefers-reduced-motion: reduce) {
   .report-actions, .report-hero, .report-hero h1, .report-hero small, .report-traits, .report-hero-art, .share-card { transition: none; }
   .loading-story img, .loading-story p, .loading-percent { transition: none; }
+}
+
+@media (min-width: 600px) {
+  .report-actions { width: var(--screen-w); }
+  .share-dialog { width: var(--screen-w); height: var(--screen-h); margin: auto; border-radius: 40px; }
 }
