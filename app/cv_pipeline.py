@@ -113,7 +113,9 @@ def run_face_cv(image: Image.Image) -> dict[str, Any]:
     face = faces[0]
     box = face["box"]
     ratio = face["area_ratio"]
-    if ratio < 0.08:
+    # 小脸判定用「占比 AND 绝对尺寸」双条件：高分辨率照片（如 4K）里占比 5% 的脸
+    # 实际有四五百像素宽，肤色/关键点完全够用，不能只按占比拒。
+    if ratio < 0.035 and min(box["width"], box["height"]) < 160:
         return _stage("fail", 0.84, {"face_count": 1, "primary_face": face}, [_issue("face.too_small", "脸部占比过小", "请靠近一些拍摄，让脸部更清晰。")])
 
     crop_issue = _face_crop_issue(box, w, h)
@@ -124,10 +126,11 @@ def run_face_cv(image: Image.Image) -> dict[str, Any]:
     sharpness = _sharpness(crop)
     # Smooth skin, compressed social posters, and beauty-camera selfies can have a low Laplacian
     # score inside the face box even when the face is clear enough for a consumer MVP result.
-    if sharpness < 18:
+    # 内测回归：磨皮/截图类自拍在 2.7~17 之间都完全可用，只有手抖真糊才会低于 2.5。
+    if sharpness < 2.5:
         return _stage("fail", 0.8, {"face_count": 1, "primary_face": face, "face_sharpness": sharpness}, [_issue("face.blurry", "脸部区域偏糊", "请保持手机稳定后重拍。")])
     blur_issue = None
-    if sharpness < 110:
+    if sharpness < 40:
         blur_issue = _issue("face.soft_detail", "脸部细节略软，已继续分析", "这张照片可以先测；更清晰的原图会让结果更稳定。")
 
     occlusion_issue = _face_occlusion_issue(bgr, box)
@@ -862,7 +865,9 @@ def _keep_dominant_face_if_clear(faces: list[dict[str, Any]]) -> list[dict[str, 
     ranked = sorted(faces, key=lambda face: float(face.get("area_ratio", 0.0)), reverse=True)
     largest = float(ranked[0].get("area_ratio", 0.0))
     second = float(ranked[1].get("area_ratio", 0.0))
-    if largest >= max(second * 3.0, 0.12) and second < 0.06:
+    # 主脸明显大于次脸（≥2.2 倍）时视为背景人像/海报/镜子反射，抑制次要脸。
+    # 内测回归：主 19%+次 7%、主 28%+次 8.5% 的自拍都应放行；两脸接近的合照仍拒绝。
+    if largest >= second * 2.2 and second < 0.10:
         dominant = dict(ranked[0])
         dominant["suppressed_secondary_faces"] = ranked[1:]
         return [dominant]
@@ -883,13 +888,14 @@ def _face_crop_issue(box: dict[str, int], image_width: int, image_height: int) -
     if not touched:
         return None
 
-    border_touch = x <= 2 or y <= 2 or x + w >= image_width - 2 or y + h >= image_height - 2
-    blocking = border_touch or any(edge in touched for edge in ["bottom"]) or len(touched) >= 2
-    if blocking:
+    # 超近大头照左右脸颊贴边、下巴贴底都是正常构图，只提示不拦截；
+    # 唯一硬拦的场景是额头被画面边缘切掉（脸型没法量）。
+    forehead_cut = y <= 2
+    if forehead_cut:
         return {
             "blocking": True,
             "edges": edges,
-            "issue": _issue("face.cropped", "脸部不完整", "请换一张脸颊和下巴都完整入镜的单人正脸照。"),
+            "issue": _issue("face.cropped", "额头被画面裁掉了", "请把手机拿远一点，让额头完整入镜后重拍。"),
         }
     return {
         "blocking": False,

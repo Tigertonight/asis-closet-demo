@@ -14,7 +14,7 @@ import cv2
 import numpy as np
 from fastapi import APIRouter, Depends, Request, Response
 from fastapi.responses import FileResponse, JSONResponse, RedirectResponse
-from PIL import Image, UnidentifiedImageError
+from PIL import Image, ImageOps, UnidentifiedImageError
 from starlette.concurrency import run_in_threadpool
 
 from app import selfit_assets, selfit_onboarding_store as _store_module
@@ -22,6 +22,15 @@ from app import selfit_photo, selfit_report, selfit_share
 from app.auth import get_optional_user
 from app.ops import env_int
 from app.storage import ROOT_DIR
+
+# iPhone 手机直拍默认是 HEIC/HEIF；不注册 opener 的话 PIL 直接打不开，
+# 用户会看到「格式不对」（内测反馈：接真实链路后手机直拍全部被拦）。
+try:
+    from pillow_heif import register_heif_opener
+
+    register_heif_opener()
+except Exception:  # pragma: no cover - 依赖缺失时退回 JPEG/PNG/WebP
+    register_heif_opener = None
 
 # 注意：SELFIT_ONBOARDING_ASSET_DIR 下的用户原图与分享图是初始数据资产，需要精心保留。
 # 会话过期只清理索引记录（sessions.json / 任务 / 报告），资产文件一律不删。
@@ -35,8 +44,10 @@ SELFIT_ONBOARDING_STORE_PATH = SELFIT_ONBOARDING_DIR / "sessions.json"
 SELFIT_ONBOARDING_ASSET_DIR = SELFIT_ONBOARDING_DIR / "assets"
 
 SCHEMA_VERSION = "selfit-onboarding-v1"
-PHOTO_MAX_BYTES = 12 * 1024 * 1024
+PHOTO_MAX_BYTES = 20 * 1024 * 1024
 PHOTO_SUPPORTED_FORMATS = {"JPEG": ".jpg", "PNG": ".png", "WEBP": ".webp"}
+# 手机直拍 HEIC 统一转 JPEG 存储：下游报告/分享/回看链路只认 JPEG/PNG/WebP。
+PHOTO_NATIVE_FORMATS = set(PHOTO_SUPPORTED_FORMATS) | {"HEIF", "HEIC", "AVIF", "TIFF", "BMP", "GIF"}
 
 # 报告任务：POST 创建后由后台线程真实执行 builder 并写入状态迁移；
 # GET 只读取，处理中的 stage/progress 为响应层估算（不落库，避免与 worker 写竞争）。
@@ -258,6 +269,23 @@ def create_session_from_mirror_handoff(
         "vibe": {},
     }
     _hydrate_mirror_photos(record, handoff)
+    pending_rejected = record.pop("_rejected_photos_pending", [])
+    for item in pending_rejected:
+        try:
+            _save_rejected_photo_record(
+                data,
+                session_id=record["session_id"],
+                kind=str(item.get("kind") or "face"),
+                asset_id=str(item.get("asset_id") or ""),
+                image_format=str(item.get("format") or "JPEG"),
+                width=int(item.get("width") or 0),
+                height=int(item.get("height") or 0),
+                issues=list(item.get("issues") or []),
+                user_id=record.get("user_id"),
+                source=str(item.get("source") or "mirror"),
+            )
+        except Exception:
+            pass  # 留存失败不影响 claim 主流程
     data["sessions"].append(record)
     _write_store(data)
     return _public_session(record)
@@ -379,7 +407,8 @@ def _hydrate_mirror_photos(record: dict[str, Any], handoff: dict[str, Any]) -> N
     """镜子拍摄原图回填 suit 照片：全身照直接检测，大头照从原图裁头部识别。
 
     任一环节失败都静默降级（对应 photos 槽位留空，报告层回退默认属性），
-    绝不让 claim 因照片质量问题失败。
+    绝不让 claim 因照片质量问题失败；被拒的检测同样留存 rejected_photos，
+    供管理后台回看与算法优化（原图本身已在 mirror assets 里，不重复落盘）。
     """
 
     # onboarding record 用 mirror_* 前缀；原始 handoff 记录用 assets / asset_path。
@@ -406,10 +435,26 @@ def _hydrate_mirror_photos(record: dict[str, Any], handoff: dict[str, Any]) -> N
 
     session_id = record["session_id"]
     photos = record.setdefault("photos", {})
+    rejected: list[dict[str, Any]] = record.setdefault("_rejected_photos_pending", [])
 
     body_inspection = selfit_photo.inspect_photo(image, "body")
     if body_inspection.accepted:
         photos["body"] = _accepted_photo_record(session_id, "body", image, body_inspection, "mirror")
+    else:
+        issues = selfit_photo.sanitize_issues(list(body_inspection.issues)) or [
+            selfit_photo.ISSUE_UNSUPPORTED_CONTENT
+        ]
+        rejected.append(
+            {
+                "kind": "body",
+                "asset_id": original.get("asset_id"),
+                "format": original.get("image_format") or "JPEG",
+                "width": image.width,
+                "height": image.height,
+                "issues": issues,
+                "source": "mirror",
+            }
+        )
 
     head_crop = _crop_head_from_photo(image)
     if head_crop is not None:
@@ -417,6 +462,21 @@ def _hydrate_mirror_photos(record: dict[str, Any], handoff: dict[str, Any]) -> N
         if face_inspection.accepted:
             photos["face"] = _accepted_photo_record(
                 session_id, "face", head_crop, face_inspection, "mirror_head_crop"
+            )
+        else:
+            issues = selfit_photo.sanitize_issues(list(face_inspection.issues)) or [
+                selfit_photo.ISSUE_UNSUPPORTED_CONTENT
+            ]
+            rejected.append(
+                {
+                    "kind": "face",
+                    "asset_id": original.get("asset_id"),
+                    "format": original.get("image_format") or "JPEG",
+                    "width": head_crop.width,
+                    "height": head_crop.height,
+                    "issues": issues,
+                    "source": "mirror_head_crop",
+                }
             )
 
 
@@ -854,6 +914,41 @@ def _save_photo_asset(session_id: str, kind: str, raw: bytes, image_format: str)
     return asset_id
 
 
+def _save_rejected_photo_record(
+    data: dict[str, Any],
+    *,
+    session_id: str,
+    kind: str,
+    asset_id: str,
+    image_format: str,
+    width: int,
+    height: int,
+    issues: list[str],
+    user_id: Any,
+    source: str | None,
+) -> None:
+    """检测被拒的照片留存：资产照常落盘 + 索引记录，供后台查看与算法优化。
+
+    不会因为保存失败让用户上传失败路径出错（留存是旁路）。
+    """
+
+    record = {
+        "record_id": "rej_" + secrets.token_urlsafe(12),
+        "session_id": session_id,
+        "user_id": user_id,
+        "kind": kind,
+        "asset_id": asset_id,
+        "format": image_format,
+        "width": width,
+        "height": height,
+        "issues": list(issues),
+        "primary_issue": selfit_photo.primary_issue(issues),
+        "source": source or "app",
+        "created_at": _iso(_now()),
+    }
+    data["rejected_photos"].append(record)
+
+
 @router.post("/sessions/{session_id}/photos/{kind}")
 async def upload_session_photo(
     session_id: str,
@@ -896,8 +991,23 @@ async def upload_session_photo(
         pil_image.load()
     except (UnidentifiedImageError, OSError):
         return _error_response(400, "photo.invalid_image", "无法识别照片内容，请更换一张照片。")
-    if pil_image.format not in PHOTO_SUPPORTED_FORMATS:
-        return _error_response(415, "photo.unsupported_type", "仅支持 JPG、PNG、WebP 格式的照片。")
+    source_format = str(pil_image.format or "")
+    if source_format not in PHOTO_NATIVE_FORMATS:
+        return _error_response(415, "photo.unsupported_type", "仅支持 JPG、PNG、WebP、HEIC 格式的照片。")
+
+    # EXIF 方向转正：手机直拍竖照的 orientation 在像素里不生效，不转正的话
+    # 人脸/姿态检测会拿到横躺的图。对所有格式统一做，幂等。
+    pil_image = ImageOps.exif_transpose(pil_image)
+    # exif_transpose 转置后副本的 format 会丢失，用 source_format 补记。
+    stored_format = source_format
+    if source_format not in PHOTO_SUPPORTED_FORMATS:
+        # HEIC/AVIF 等非原生格式统一重编码为 JPEG 存储，下游报告/分享/回看链路零改动。
+        buffer = io.BytesIO()
+        pil_image.convert("RGB").save(buffer, format="JPEG", quality=92)
+        raw = buffer.getvalue()
+        pil_image = Image.open(io.BytesIO(raw))
+        pil_image.load()
+        stored_format = "JPEG"
 
     # 照片检测为 CPU 密集的同步 CV 计算，丢线程池执行，避免阻塞事件循环。
     inspection = await run_in_threadpool(selfit_photo.inspect_photo, pil_image.convert("RGB"), kind)
@@ -908,11 +1018,11 @@ async def upload_session_photo(
     photos = record.setdefault("photos", {})
     request_id = _request_id()
     if accepted:
-        asset_id = _save_photo_asset(session_id, kind, raw, str(pil_image.format))
+        asset_id = _save_photo_asset(session_id, kind, raw, stored_format)
         photos[kind] = {
             "asset_id": asset_id,
             "status": "accepted",
-            "format": pil_image.format,
+            "format": stored_format,
             "width": pil_image.width,
             "height": pil_image.height,
             # 算法推断的肤色/脸型/身型标签，供报告任务与「手动纠正优先」合并消费。
@@ -933,6 +1043,24 @@ async def upload_session_photo(
         if not issues:
             issues = [selfit_photo.ISSUE_UNSUPPORTED_CONTENT]
         primary = selfit_photo.primary_issue(issues)
+        # 被拒照片同样落盘留存（asset 只增不删），并索引到 rejected_photos，
+        # 供管理后台回看与检测算法离线优化。
+        try:
+            rejected_asset_id = _save_photo_asset(session_id, kind, raw, stored_format)
+            _save_rejected_photo_record(
+                data,
+                session_id=session_id,
+                kind=kind,
+                asset_id=rejected_asset_id,
+                image_format=stored_format,
+                width=pil_image.width,
+                height=pil_image.height,
+                issues=issues,
+                user_id=record.get("user_id"),
+                source="app" if record.get("source") != "mirror_handoff" else "mirror",
+            )
+        except Exception:
+            pass  # 留存失败不影响用户主流程
         photos[kind] = {"asset_id": None, "status": "rejected", "code": f"photo.{primary}"}
         body = _photo_response(
             request_id,

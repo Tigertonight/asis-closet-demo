@@ -89,15 +89,19 @@ _SKIN_TONE_BY_DERIVED = {
 }
 
 # 脸部光照门禁（HSV V 通道 0-100 口径）
-FACE_TOO_DARK_V = 45.0
+# 内测回归：晚间室内正常拍照的脸部 V 均值在 35~42 之间，45 会把正常照片拦掉；
+# 32 以下才真正暗到肤色读数不可信。
+FACE_TOO_DARK_V = 32.0
 FACE_TOO_BRIGHT_V = 96.0
 FACE_STRONG_CAST = 42.0
 
 # ---------------------------------------------------------------------------
 # 脸型门禁与规则
 # TODO(calibration): 全部阈值待真实自拍标注集回归标定。
-FACE_YAW_REJECT = 0.22          # 鼻部到左右外眼角距离差 / 脸宽，超过则判侧脸
-BANGS_SKIN_RATIO_REJECT = 0.55  # 刘海检测：额区皮肤占比低于该值则判遮挡（无遮挡样本 ≥0.9，刘海样本 ≈0.33）
+# 内测口径：轻微转头（yaw < 0.35）不拦截，脸型结果有「手动纠正优先」兜底。
+FACE_YAW_REJECT = 0.35          # 鼻部到左右外眼角距离差 / 脸宽，超过则判侧脸
+BANGS_SKIN_RATIO_REJECT = 0.55  # 刘海检测：额区皮肤占比低于该值视为刘海遮挡（无遮挡样本 ≥0.9，刘海样本 ≈0.33）；
+                                # 仅降低脸型置信度，不再拦截上传（产品口径：刘海照可用，脸型交给用户确认）
 FACE_SHAPE_LABELS = ["椭圆脸", "圆脸", "方脸", "心形脸", "菱形脸"]
 FACE_ELONGATED_RATIO = 1.48     # 长宽比超过该值时脸型附注「偏修长」（长脸并入椭圆脸后的子标签）
 
@@ -148,10 +152,10 @@ def _face_shape_rules(features: dict[str, float]) -> dict[str, float]:
 # 身型门禁与规则
 # TODO(calibration): 全部阈值待真实全身照标注集回归标定。
 BODY_SHAPE_LABELS = ["梨型", "倒三角型", "沙漏型", "矩型", "苹果型"]
-BODY_MIN_VISIBILITY = 0.5
-BODY_ANKLE_EDGE_MARGIN = 0.985     # 脚踝归一化 y 超过该值视为被裁切
-BODY_SHOULDER_TILT_REJECT = 0.10   # 左右肩高度差 / 躯干长
-BODY_HIP_TILT_REJECT = 0.12
+BODY_MIN_VISIBILITY = 0.35
+BODY_ANKLE_EDGE_MARGIN = 0.985     # 脚踝归一化 y 超过该值视为被裁切（仅记录，不再拦截）
+BODY_SHOULDER_TILT_REJECT = 0.16   # 左右肩高度差 / 躯干长（自然站姿微倾不拦）
+BODY_HIP_TILT_REJECT = 0.18
 BODY_LOOSE_HIP_FACTOR = 2.4        # 轮廓髋宽 / 骨骼髋宽超过该值视为裙装/宽松
 PEAR_HIP_OVER_SHOULDER = 1.08      # 髋宽/肩宽 ≥ → 梨型
 INVERTED_SHOULDER_OVER_HIP = 1.08  # 肩宽/髋宽 ≥ → 倒三角
@@ -227,9 +231,14 @@ def analyze_face_photo(image: Image.Image) -> dict[str, Any]:
     attributes = {"skin_tone": skin_attr, "face_shape": face_attr}
     issues = gate_issues + skin_attr["issues"] + face_attr["issues"]
     statuses = [attr["status"] for attr in attributes.values()]
-    status = "warn" if "warn" in statuses or gate["status"] == "warn" else "pass"
-    if all(attr["status"] == "fail" for attr in attributes.values()):
+    # 任一属性 fail（如光线暗到肤色读不出）即 photo fail；
+    # 刘海等 warn 级问题只降置信度，不改变照片可用性（产品口径：宁可松不能紧）。
+    if "fail" in statuses:
         status = "fail"
+    elif "warn" in statuses or gate["status"] == "warn":
+        status = "warn"
+    else:
+        status = "pass"
     confidence = round(min(attr["confidence"] for attr in attributes.values()), 2)
     return _photo_result(status, confidence, issues, attributes, gate_evidence)
 
@@ -442,9 +451,11 @@ def _face_shape_attribute(rgb: np.ndarray, face: dict[str, Any], points: dict[in
 
     bangs = _bangs_forehead_ratio(rgb, points, face)
     if bangs is not None and bangs < BANGS_SKIN_RATIO_REJECT:
+        # 产品口径：刘海照不拦截上传。额宽特征被刘海污染时脸型标签不可信，
+        # 降级为 warn + 无预选标签，脸型交给用户在 onboarding 里手动确认。
         return _attribute(
-            "fail", 0.5, None,
-            [_issue("face.bangs_forehead", "刘海遮住了额头，暂时判断不了脸型", "把刘海拨开、露出额头后重新拍一张。")],
+            "warn", 0.4, None,
+            [_issue("face.bangs_forehead", "刘海遮住了额头，脸型自动识别不可用", "照片可用；请在下一步手动选择你的脸型。")],
             {"forehead_skin_ratio": round(bangs, 3)},
         )
 
@@ -612,13 +623,10 @@ def _body_gate_issues(pose: list[Any], img_w: int, img_h: int) -> dict[str, str]
     def visible(index: int) -> bool:
         return float(getattr(pose[index], "visibility", 1.0)) >= BODY_MIN_VISIBILITY
 
-    if not all(visible(index) for index in [0, 11, 12]):
-        return _issue("body.upper_incomplete", "上半身没有拍全", "请把镜头拿远一点，让头、肩都完整入镜。")
-    if not (visible(27) and visible(28)):
-        return _issue("body.not_full_body", "没有拍到脚踝，判断不了完整身型", "请拍全身照，头顶到脚踝都要在画面里。")
-    for index in [27, 28]:
-        if pose[index].y > BODY_ANKLE_EDGE_MARGIN:
-            return _issue("body.not_full_body", "脚踝被画面裁掉了", "把脚也拍进来，头顶和脚踝都完整入镜。")
+    # 产品口径（内测定版）：只要头、双肩、双髋完整入镜即可（露到大腿），
+    # 不强求完整全身照；身型以肩髋比为主，下半身缺失时置信度自然降低。
+    if not all(visible(index) for index in [0, 11, 12, 23, 24]):
+        return _issue("body.upper_incomplete", "身形拍得不完整", "请把镜头拿远一点，让头部、肩膀和髋部都完整入镜。")
     shoulder_y_l, shoulder_y_r = pose[11].y * img_h, pose[12].y * img_h
     hip_y_l, hip_y_r = pose[23].y * img_h, pose[24].y * img_h
     torso_len = max(abs((hip_y_l + hip_y_r) / 2 - (shoulder_y_l + shoulder_y_r) / 2), 1e-6)

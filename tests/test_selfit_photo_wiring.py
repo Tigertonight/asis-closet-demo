@@ -62,11 +62,12 @@ def test_inspector_accepts_clear_face_with_attributes() -> None:
     assert inspection.attributes["face_shape"]["label"] in {"椭圆脸", "圆脸", "方脸", "心形脸", "菱形脸"}
 
 
-def test_inspector_rejects_bangs_forehead() -> None:
+def test_inspector_accepts_bangs_forehead() -> None:
+    # 产品口径（内测定版）：刘海照不拦截上传，脸型交给用户手动确认。
     image = Image.open(FIXTURE_IMAGES / "real_bangs_forehead.jpg")
     inspection = selfit_photo.attribute_inspector(image, "face")
-    assert inspection.accepted is False
-    assert inspection.issues == [selfit_photo.ISSUE_BANGS_FOREHEAD]
+    assert inspection.accepted is True
+    assert inspection.issues == []
 
 
 def test_inspector_rejects_multiple_people() -> None:
@@ -118,22 +119,22 @@ def test_upload_real_face_photo_accepted_and_attributes_stored(monkeypatch: pyte
     assert attributes["face_shape"]["label"]
 
 
-def test_upload_bangs_photo_rejected_with_actionable_message(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
+def test_upload_bangs_photo_accepted_with_skin_attributes(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
+    # 产品口径（内测定版）：刘海照不拦截上传；肤色照常识别，脸型无预选标签。
     _use_tmp_store(monkeypatch, tmp_path)
     client = TestClient(app)
     session_id = _create_session(client)
 
     payload = _upload(client, session_id, "face", FIXTURE_IMAGES / "real_bangs_forehead.jpg")
     photo = payload["photo"]
-    assert photo["status"] == "rejected"
-    assert photo["code"] == "photo.bangs_forehead"
-    assert photo["issues"] == ["bangs_forehead"]
-    assert "刘海" in photo["message"]
-    assert photo["assetId"] is None
+    assert photo["status"] == "accepted"
+    assert photo["code"] == "photo.accepted"
+    assert photo["assetId"].startswith("asset_face_")
 
     stored = _stored_session(tmp_path, session_id)
-    assert stored["photos"]["face"]["status"] == "rejected"
-    assert "attributes" not in stored["photos"]["face"]
+    attributes = stored["photos"]["face"]["attributes"]
+    assert attributes["skin_tone"]["label"]
+    assert "face_shape" not in attributes or not attributes["face_shape"].get("label")
 
 
 def test_upload_full_body_photo_accepted(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
@@ -158,4 +159,4 @@ def test_upload_face_as_body_rejected(monkeypatch: pytest.MonkeyPatch, tmp_path:
     photo = payload["photo"]
     assert photo["status"] == "rejected"
     assert photo["code"] == "photo.body_not_complete"
-    assert "全身" in photo["message"]
+    assert "身形" in photo["message"]

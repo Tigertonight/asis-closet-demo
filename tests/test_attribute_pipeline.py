@@ -157,19 +157,26 @@ def test_body_gate_passes_frontal_full_body() -> None:
     assert ap._body_gate_issues(_fake_frontal_pose(), 1000, 2000) is None
 
 
-def test_body_gate_rejects_missing_ankles() -> None:
+def test_body_gate_passes_when_ankles_out_of_frame() -> None:
+    # 产品口径（内测定版）：露到大腿即可，脚踝不在画面不再拦截。
     pose = _fake_frontal_pose()
     pose[27] = _FakePoseLandmark(0.46, 0.92, visibility=0.1)
     pose[28] = _FakePoseLandmark(0.54, 0.92, visibility=0.1)
-    issue = ap._body_gate_issues(pose, 1000, 2000)
-    assert issue is not None and issue["code"] == "body.not_full_body"
+    assert ap._body_gate_issues(pose, 1000, 2000) is None
 
 
-def test_body_gate_rejects_ankle_cropped() -> None:
+def test_body_gate_passes_when_ankle_cropped_by_frame() -> None:
     pose = _fake_frontal_pose()
     pose[27] = _FakePoseLandmark(0.46, 0.999)
+    assert ap._body_gate_issues(pose, 1000, 2000) is None
+
+
+def test_body_gate_rejects_missing_hips() -> None:
+    pose = _fake_frontal_pose()
+    pose[23] = _FakePoseLandmark(0.43, 0.5, visibility=0.1)
+    pose[24] = _FakePoseLandmark(0.57, 0.5, visibility=0.1)
     issue = ap._body_gate_issues(pose, 1000, 2000)
-    assert issue is not None and issue["code"] == "body.not_full_body"
+    assert issue is not None and issue["code"] == "body.upper_incomplete"
 
 
 def test_body_gate_rejects_side_pose() -> None:
@@ -196,12 +203,14 @@ def _load_fixture(name: str) -> Image.Image:
     return Image.open(FIXTURE_IMAGES / "images" / name)
 
 
-def test_face_photo_bangs_blocks_face_shape_but_not_skin() -> None:
+def test_face_photo_bangs_downgrades_face_shape_but_keeps_photo_usable() -> None:
+    # 产品口径（内测定版）：刘海照不拦截上传，脸型降级为 warn（无预选标签，用户手动确认）。
     result = ap.analyze_face_photo(_load_fixture("real_bangs_forehead.jpg"))
     face_shape = result["attributes"]["face_shape"]
-    assert face_shape["status"] == "fail"
+    assert face_shape["status"] == "warn"
     assert any(issue["code"] == "face.bangs_forehead" for issue in face_shape["issues"])
     assert result["attributes"]["skin_tone"]["status"] in {"pass", "warn"}
+    assert result["status"] in {"pass", "warn"}
 
 
 def test_face_photo_clear_frontal_returns_labels() -> None:

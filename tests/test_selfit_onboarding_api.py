@@ -218,6 +218,43 @@ def _jpeg_bytes(color: tuple[int, int, int] = (200, 180, 170)) -> bytes:
     return buffer.getvalue()
 
 
+def _heic_bytes(color: tuple[int, int, int] = (200, 180, 170)) -> bytes | None:
+    """iPhone 直拍默认 HEIC；依赖 pillow-heif 生成，未安装时跳过用例。"""
+    try:
+        from pillow_heif import register_heif_opener
+    except ImportError:
+        return None
+    register_heif_opener()
+    buffer = io.BytesIO()
+    Image.new("RGB", (64, 64), color).save(buffer, "HEIF")
+    return buffer.getvalue()
+
+
+def test_photo_upload_accepts_heic_and_stores_jpeg(monkeypatch, tmp_path: Path) -> None:
+    """内测反馈：手机直拍 HEIC 报「格式不对」。HEIC 必须能上传并统一转 JPEG 存储。"""
+    heic = _heic_bytes()
+    if heic is None:
+        import pytest
+
+        pytest.skip("pillow-heif 未安装")
+    _use_tmp_store(monkeypatch, tmp_path)
+    monkeypatch.setattr(selfit_photo, "_inspector", selfit_photo.accept_all_inspector)
+    client = TestClient(app)
+    session_id = _create_session(client)["session"]["sessionId"]
+
+    response = _upload_photo(client, session_id, "face", heic, filename="photo.heic")
+    assert response.status_code == 200
+    photo = response.json()["photo"]
+    assert photo["status"] == "accepted"
+    assert photo["assetId"].startswith("asset_face_")
+
+    stored = list((tmp_path / "outputs" / "selfit_onboarding" / "assets").rglob("asset_face_*"))
+    assert stored, "HEIC 上传后应落盘资产"
+    assert stored[0].suffix == ".jpg", "HEIC 应统一转 JPEG 存储"
+    reopened = Image.open(stored[0])
+    assert reopened.format == "JPEG"
+
+
 def test_photo_upload_accepted_and_saves_asset(monkeypatch, tmp_path: Path) -> None:
     _use_tmp_store(monkeypatch, tmp_path)
     # 契约测试只关心接受后的存储行为，照片检测 stub 为全放行。
@@ -263,11 +300,15 @@ def test_photo_business_rejection_returns_200_without_asset(monkeypatch, tmp_pat
     assert response.status_code == 200
     photo = response.json()["photo"]
     assert photo["status"] == "rejected"
+    # 用户契约不变：被拒不返回 assetId；但照片会落盘留存在 rejected_photos（算法优化）
     assert photo["assetId"] is None
     assert photo["code"] == "photo.insufficient_light"
     assert photo["issues"] == ["insufficient_light", "blurred"]
     assert "光线不充足" in photo["message"]
-    assert not (tmp_path / "outputs" / "selfit_onboarding" / "assets" / session_id).exists()
+    data = selfit_onboarding._load_store()
+    assert len(data["rejected_photos"]) == 1
+    assert data["rejected_photos"][0]["primary_issue"] == "insufficient_light"
+    assert list((tmp_path / "outputs" / "selfit_onboarding" / "assets" / session_id).glob("asset_face_*"))
 
 
 def test_photo_unknown_issues_fall_back_to_unsupported(monkeypatch, tmp_path: Path) -> None:
@@ -295,7 +336,7 @@ def test_photo_protocol_errors(monkeypatch, tmp_path: Path) -> None:
     assert missing.status_code == 400
     assert missing.json()["error"]["code"] == "photo.image_missing"
 
-    too_large = _upload_photo(client, session_id, "face", b"0" * (12 * 1024 * 1024 + 1))
+    too_large = _upload_photo(client, session_id, "face", b"0" * (20 * 1024 * 1024 + 1))
     assert too_large.status_code == 413
     assert too_large.json()["error"]["code"] == "photo.too_large"
 
@@ -303,9 +344,9 @@ def test_photo_protocol_errors(monkeypatch, tmp_path: Path) -> None:
     assert undecodable.status_code == 400
     assert undecodable.json()["error"]["code"] == "photo.invalid_image"
 
-    gif_buffer = io.BytesIO()
-    Image.new("RGB", (8, 8)).save(gif_buffer, "GIF")
-    unsupported = _upload_photo(client, session_id, "face", gif_buffer.getvalue(), filename="photo.gif")
+    ppm_buffer = io.BytesIO()
+    Image.new("RGB", (8, 8)).save(ppm_buffer, "PPM")
+    unsupported = _upload_photo(client, session_id, "face", ppm_buffer.getvalue(), filename="photo.ppm")
     assert unsupported.status_code == 415
     assert unsupported.json()["error"]["code"] == "photo.unsupported_type"
 

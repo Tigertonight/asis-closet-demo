@@ -78,7 +78,7 @@ ISSUE_MESSAGES = {
     ISSUE_BLURRED: "{label}不够清晰，请拿稳手机重拍。",
     ISSUE_FACE_NOT_FOUND: "没有检测到清晰人脸，请上传单人正脸照。",
     ISSUE_MULTIPLE_PEOPLE: "照片里有多个人，请只保留本人。",
-    ISSUE_BODY_NOT_COMPLETE: "没有检测到完整全身，请上传头到脚都入镜的全身照。",
+    ISSUE_BODY_NOT_COMPLETE: "没有拍到完整身形，请上传头到大腿都入镜的照片。",
     ISSUE_UNSUPPORTED_CONTENT: "{label}无法用于分析，请更换一张照片。",
     ISSUE_OVEREXPOSED: "{label}过曝了，请避开强光直射重拍。",
     ISSUE_BANGS_FOREHEAD: "刘海遮住了额头，把刘海拨开、露出额头后重拍。",
@@ -168,7 +168,7 @@ _ISSUE_CODE_TO_ENUM: dict[str, str | None] = {
     "face.blurry": ISSUE_BLURRED,
     "face.soft_detail": None,
     "face.edge_close": None,
-    "face.bangs_forehead": ISSUE_BANGS_FOREHEAD,
+    "face.bangs_forehead": None,  # 产品口径：刘海照不拦截上传，脸型交给用户手动确认
     "face.side_pose": ISSUE_SIDE_POSE,
     "face.shape_close": None,
     "skin.sample_failed": ISSUE_UNSUPPORTED_CONTENT,
