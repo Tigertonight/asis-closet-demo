@@ -943,7 +943,7 @@ html.has-open-dialog, html.has-open-dialog body { overflow: hidden; }
 .share-card p { margin: 0; font-size: var(--font-report-small); line-height: var(--font-report-small-line); }
 .share-card strong { font-size: 25px; line-height: 34px; }
 .share-card small { margin-top: 4px; opacity: .78; }
-.share-card-meta { display: flex; min-height: 30px; align-items: center; gap: 7px; color: currentColor; font-size: 10px; opacity: .78; }
+.share-card-meta { display: flex; width: 100%; min-height: 30px; align-items: center; justify-content: flex-start; color: currentColor; font-size: 10px; text-align: left; opacity: .78; }
 .share-avatar { display: grid; width: 24px; height: 24px; place-items: center; border: 1px solid rgba(255,255,255,.56); border-radius: 50%; background: rgba(255,255,255,.12); font: 500 11px/1 Georgia, serif; }
 .share-card-identity { display: flex; min-height: 0; align-items: center; justify-content: center; flex: 1; flex-direction: column; text-align: center; }
 .share-card-identity p { max-width: 230px; margin-top: 8px; color: rgba(255,255,255,.72); }
@@ -981,8 +981,8 @@ html.has-open-dialog, html.has-open-dialog body { overflow: hidden; }
 .share-card--identity:is([data-personality="loop"],[data-personality="noir"],[data-personality="oops"]) .share-card-identity p { color: rgba(92,29,39,.72); }
 .share-card--identity:is([data-personality="loop"],[data-personality="noir"],[data-personality="oops"]) footer > img:first-child { filter: none; }
 .share-card-copy { display: flex; min-height: 0; justify-content: center; flex: 1; flex-direction: column; }
-.share-card footer { display: flex; height: 64px; align-items: end; justify-content: space-between; margin-top: auto; }
-.share-card footer > img:first-child { width: 46px; height: auto; filter: brightness(0) invert(1); }
+.share-card footer { display: flex; height: 64px; align-items: flex-end; justify-content: space-between; margin-top: auto; }
+.share-card footer > img:first-child { display: block; width: 46px; height: auto; align-self: flex-end; flex: 0 0 auto; filter: brightness(0) invert(1); }
 .share-card .share-qr { width: 64px; height: 64px; padding: 4px; border-radius: 4px; background: #fff; object-fit: cover; }
 .share-card--colors { color: var(--ink); background: #fff9f8; }
 .share-card--colors .share-avatar { border-color: rgba(138,1,27,.2); color: #8a011b; background: rgba(138,1,27,.06); }

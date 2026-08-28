@@ -22,7 +22,7 @@ DEFAULT_SOURCE = ROOT / "app" / "static" / "report-builder" / "data" / "16-perso
 RUNTIME_JSON = ROOT / "app" / "static" / "selfit" / "data" / "personality-report-templates.v1.json"
 RUNTIME_JS = ROOT / "app" / "static" / "selfit" / "personality-report-templates.js"
 POOL_JSON = ROOT / "app" / "static" / "selfit" / "data" / "content-pool.v1.json"
-TEMPLATE_VERSION = "2026.08.personality-db-v5"
+TEMPLATE_VERSION = "2026.08.personality-db-v6"
 
 
 def _read_json(path: Path) -> dict[str, Any]:

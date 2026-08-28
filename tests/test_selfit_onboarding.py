@@ -230,6 +230,9 @@ def test_selfit_report_share_cards_use_the_dedicated_qr_artwork() -> None:
     response = client.get("/selfit/demo")
 
     assert response.status_code == 200
+    assert "<small>你的风格灵感</small>" not in response.text
+    assert "share-avatar" not in response.text
+    assert response.text.count("<div class=\"share-card-meta\"><span>我的 selfit 风格报告</span></div>") == 3
     assert response.text.count("/static/selfit/assets/share-report-qr.png?v=20260828") == 3
     assert 'data-share-ornament' in response.text
     assert "/static/selfit/selfit.css?v=20260828-webview1" in response.text
@@ -242,6 +245,8 @@ def test_selfit_report_share_cards_use_the_dedicated_qr_artwork() -> None:
 
     styles = client.get("/static/selfit/selfit.css")
     assert ".share-card .share-qr { width: 64px; height: 64px;" in styles.text
+    assert ".share-card footer { display: flex; height: 64px; align-items: flex-end;" in styles.text
+    assert ".share-card footer > img:first-child { display: block; width: 46px; height: auto; align-self: flex-end;" in styles.text
     assert ".share-card-ornament { display: grid; width: 244px; height: 150px; margin: 16px 0 0;" in styles.text
     assert '.share-card--identity[data-personality="film"] .share-card-ornament { transform: translateY(24px); }' in styles.text
     assert '.share-card--identity:is([data-personality="loop"],[data-personality="noir"]) .share-card-ornament { transform: translateY(16px); }' in styles.text
@@ -325,7 +330,7 @@ def test_selfit_personality_catalog_keeps_all_colors_but_renders_first_five() ->
 
     assert response.status_code == 200
     catalog = json.loads(response.text)
-    assert catalog["templateVersion"] == "2026.08.personality-db-v5"
+    assert catalog["templateVersion"] == "2026.08.personality-db-v6"
     assert catalog["renderRules"]["colors"]["limit"] == 5
     assert len(catalog["types"]) == 16
     assert sum(len(item["colors"]["items"]) for item in catalog["types"].values()) == 112
@@ -335,7 +340,7 @@ def test_selfit_personality_catalog_keeps_all_colors_but_renders_first_five() ->
         assert template["typeId"] == type_id
         hero = template["hero"]["image"]
         assert hero["placeholder"] is False
-        assert hero["src"] == f"/static/selfit/assets/personality/{type_id}/hero.png?v=20260827-config-v1"
+        assert hero["src"] == f"/static/selfit/assets/personality/{type_id}/hero.png?v=20260828-config-v1"
         assert (hero["width"], hero["height"]) == (1484, 1072)
         assert len(template["colors"]["items"]) >= 5
         assert len(template["recommendations"]["makeup"]) == 2
@@ -344,7 +349,7 @@ def test_selfit_personality_catalog_keeps_all_colors_but_renders_first_five() ->
         assert all(re.fullmatch(r"#[0-9A-F]{6}", color["value"]) for color in template["colors"]["items"])
 
     mute_hair = catalog["types"]["mute"]["recommendations"]["hair"]
-    assert [item["name"] for item in mute_hair] == ["外翘初恋发", "八字遮脸发"]
+    assert [item["name"] for item in mute_hair] == ["暖棕微卷中长发", "八字遮脸发"]
     assert all(item["name"] not in {"💇🏻‍♀️显脸小的发型💓", "减龄又显白的发色、米棕色"} for item in mute_hair)
 
     runtime = client.get("/static/selfit/selfit.js")
