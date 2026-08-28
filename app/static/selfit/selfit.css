@@ -915,11 +915,43 @@ button {
 .share-avatar { display: grid; width: 24px; height: 24px; place-items: center; border: 1px solid rgba(255,255,255,.56); border-radius: 50%; background: rgba(255,255,255,.12); font: 500 11px/1 Georgia, serif; }
 .share-card-identity { display: flex; min-height: 0; align-items: center; justify-content: center; flex: 1; flex-direction: column; text-align: center; }
 .share-card-identity p { max-width: 230px; margin-top: 8px; color: rgba(255,255,255,.72); }
-.share-card-identity img { width: 148px; height: 185px; margin-top: 8px; object-fit: contain; }
+.share-card-ornament { display: grid; width: 244px; height: 150px; margin: 16px 0 0; overflow: visible; place-items: center; border: 0; background: none; box-shadow: none; }
+.share-card-ornament img { display: block; width: 100%; height: 100%; object-fit: contain; object-position: center; filter: drop-shadow(0 4px 7px rgba(45,10,15,.08)); }
+.share-card--identity[data-personality="mute"] .share-card-ornament { transform: translateY(18px); }
+.share-card--identity[data-personality="iced"] .share-card-ornament { transform: translateY(20px); }
+.share-card--identity[data-personality="ease"] .share-card-ornament { transform: translateY(22px); }
+.share-card--identity[data-personality="wabi"] .share-card-ornament { transform: translateY(20px); }
+.share-card--identity[data-personality="film"] .share-card-ornament { transform: translateY(24px); }
+.share-card--identity:is([data-personality="loop"],[data-personality="noir"]) .share-card-ornament { transform: translateY(16px); }
+.share-card--identity[data-personality="loop"] {
+  color: #8a011b;
+  background-color: #9eb8c7;
+  background-image: linear-gradient(135deg, rgba(255,255,255,.17) 0 1px, transparent 1px 7px), linear-gradient(90deg, rgba(62,96,118,.08), rgba(255,255,255,.06));
+}
+.share-card--identity[data-personality="noir"] {
+  color: #8a011b;
+  background-color: #f0efec;
+  background-image: linear-gradient(45deg, transparent 48%, rgba(118,123,127,.13) 49%, rgba(118,123,127,.13) 51%, transparent 52%), linear-gradient(-45deg, transparent 48%, rgba(255,255,255,.8) 49%, rgba(255,255,255,.8) 51%, transparent 52%);
+  background-size: 34px 34px;
+}
+.share-card--identity[data-personality="void"] {
+  color: #fff;
+  background-color: #425d72;
+  background-image: radial-gradient(circle at center, rgba(255,255,255,.26) 0 1px, transparent 1.5px), linear-gradient(90deg, rgba(24,43,58,.1) 50%, transparent 50%), linear-gradient(rgba(255,255,255,.05) 50%, transparent 50%);
+  background-size: 22px 22px, 44px 44px, 44px 44px;
+}
+.share-card--identity[data-personality="oops"] {
+  color: #8a011b;
+  background-color: #e8e1d7;
+  background-image: repeating-linear-gradient(0deg, rgba(100,83,66,.06) 0 1px, transparent 1px 4px), repeating-linear-gradient(90deg, rgba(255,255,255,.22) 0 1px, transparent 1px 5px);
+}
+.share-card--identity:is([data-personality="loop"],[data-personality="noir"],[data-personality="oops"]) .share-avatar { border-color: rgba(138,1,27,.26); background: rgba(255,255,255,.2); }
+.share-card--identity:is([data-personality="loop"],[data-personality="noir"],[data-personality="oops"]) .share-card-identity p { color: rgba(92,29,39,.72); }
+.share-card--identity:is([data-personality="loop"],[data-personality="noir"],[data-personality="oops"]) footer > img:first-child { filter: none; }
 .share-card-copy { display: flex; min-height: 0; justify-content: center; flex: 1; flex-direction: column; }
-.share-card footer { display: flex; height: 32px; align-items: end; justify-content: space-between; margin-top: auto; }
+.share-card footer { display: flex; height: 64px; align-items: end; justify-content: space-between; margin-top: auto; }
 .share-card footer > img:first-child { width: 46px; height: auto; filter: brightness(0) invert(1); }
-.share-card .share-qr { width: 28px; height: 28px; padding: 2px; background: #fff; object-fit: cover; }
+.share-card .share-qr { width: 64px; height: 64px; padding: 4px; border-radius: 4px; background: #fff; object-fit: cover; }
 .share-card--colors { color: var(--ink); background: #fff9f8; }
 .share-card--colors .share-avatar { border-color: rgba(138,1,27,.2); color: #8a011b; background: rgba(138,1,27,.06); }
 .share-card--colors strong { margin: 8px 0 26px; color: #8a011b; }
@@ -944,11 +976,23 @@ button {
 .share-action-icon.icon-wechat { --share-icon: url("/static/selfit/assets/iconfont-share/icon-wechat.svg"); }
 .share-action-icon.icon-moments { --share-icon: url("/static/selfit/assets/iconfont-share/icon-moments.svg"); }
 
+body.is-share-gallery { min-height: 100vh; overflow: auto; background: #3f3f3f; }
+body.is-share-gallery .app-shell { display: none; }
+.share-gallery-preview { display: grid; width: 1432px; margin: 0 auto; padding: 54px 42px 72px; grid-template-columns: repeat(4,324px); gap: 42px 24px; background: #3f3f3f; }
+.share-gallery-item { min-width: 0; }
+.share-gallery-label { margin: 0 0 10px; color: rgba(255,255,255,.76); font: 500 13px/20px -apple-system, BlinkMacSystemFont, "PingFang SC", sans-serif; letter-spacing: .05em; text-align: center; }
+.share-gallery-preview .share-card { width: 324px; height: 522px; max-height: none; opacity: 1; }
+
 @media (max-height: 700px) {
   .share-sheet { padding-block: 12px; }
   .share-sheet > header { margin-bottom: 0; }
   .share-carousel { margin-top: 4px; }
   .share-card { height: min(430px, 100%); }
+  .share-card-ornament { width: 216px; height: 112px; margin-top: 10px; }
+  .share-card--identity:is([data-personality="mute"],[data-personality="iced"],[data-personality="ease"],[data-personality="wabi"],[data-personality="loop"],[data-personality="noir"]) .share-card-ornament { transform: translateY(10px); }
+  .share-card--identity[data-personality="film"] .share-card-ornament { transform: translateY(14px); }
+  .share-card footer { height: 56px; }
+  .share-card .share-qr { width: 56px; height: 56px; }
   .share-dots { margin: 2px 0 4px; }
   .share-actions { min-height: 66px; }
 }
