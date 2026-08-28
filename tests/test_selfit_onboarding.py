@@ -217,6 +217,47 @@ def test_selfit_onboarding_uses_high_resolution_production_assets() -> None:
         assert response.headers["content-type"].startswith("image/"), asset_path
 
 
+def test_selfit_report_share_cards_use_the_dedicated_qr_artwork() -> None:
+    response = client.get("/selfit/demo")
+
+    assert response.status_code == 200
+    assert response.text.count("/static/selfit/assets/share-report-qr.png?v=20260828") == 3
+    assert 'data-share-ornament' in response.text
+    assert "/static/selfit/selfit.css?v=20260828-share9" in response.text
+    assert "/static/selfit/selfit.js?v=20260828-share7" in response.text
+
+    asset = client.get("/static/selfit/assets/share-report-qr.png")
+    assert asset.status_code == 200
+    assert asset.headers["content-type"].startswith("image/")
+
+    styles = client.get("/static/selfit/selfit.css")
+    assert ".share-card .share-qr { width: 64px; height: 64px;" in styles.text
+    assert ".share-card-ornament { display: grid; width: 244px; height: 150px; margin: 16px 0 0;" in styles.text
+    assert '.share-card--identity[data-personality="film"] .share-card-ornament { transform: translateY(24px); }' in styles.text
+    assert '.share-card--identity:is([data-personality="loop"],[data-personality="noir"]) .share-card-ornament { transform: translateY(16px); }' in styles.text
+    assert "share-ornament.png?v=20260828-figma-v2" in response.text
+
+    runtime = client.get("/static/selfit/selfit.js")
+    assert "share-ornament.png?v=20260828-figma-v2" in runtime.text
+    assert "drawContainImage(context, image" in runtime.text
+    assert "shareIdentityCard.dataset.personality" in runtime.text
+    assert "const drawShareMaterial" in runtime.text
+    assert "previewScreen === 'share'" in runtime.text
+    assert "previewScreen === 'share-gallery'" in runtime.text
+    assert "share-gallery-preview" in runtime.text
+
+    for personality in ("loop", "noir", "void", "oops"):
+        assert f'data-personality="{personality}"' in styles.text
+
+    for personality in (
+        "mute", "iced", "heir", "ease", "melt", "film", "wabi", "flou",
+        "neon", "jade", "edge", "bolt", "loop", "noir", "void", "oops",
+    ):
+        ornament = client.get(f"/static/selfit/assets/personality/{personality}/share-ornament.png")
+        assert ornament.status_code == 200, personality
+        assert ornament.headers["content-type"].startswith("image/"), personality
+
+
 def test_selfit_report_typography_matches_the_approved_layout() -> None:
     response = client.get("/static/selfit/selfit.css")
 

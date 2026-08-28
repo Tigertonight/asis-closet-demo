@@ -661,9 +661,16 @@
     document.querySelector('[data-share-eyebrow]').textContent = data.eyebrow || '';
     document.querySelector('[data-share-summary]').textContent = data.summary || data.traits.join(' · ') || data.title;
     const shareIllustration = document.querySelector('[data-share-illustration]');
-    shareIllustration.src = data.illustration.imageUrl || '';
-    shareIllustration.alt = data.illustration.alt || '';
-    shareIllustration.hidden = !data.illustration.imageUrl;
+    const shareOrnament = document.querySelector('[data-share-ornament]');
+    const shareIdentityCard = document.querySelector('.share-card--identity');
+    shareIdentityCard.dataset.personality = String(data.typeId || 'mute').toLowerCase();
+    const shareTypeId = String(data.typeId || 'mute').toLowerCase();
+    const shareIllustrationSource = `/static/selfit/assets/personality/${shareTypeId}/share-ornament.png?v=20260828-figma-v2`;
+    shareIllustration.src = shareIllustrationSource;
+    shareIllustration.alt = `${data.title} 风格摆件`;
+    shareIllustration.hidden = false;
+    shareOrnament.hidden = shareIllustration.hidden;
+    shareOrnament.classList.add('is-standalone');
     document.querySelector('[data-share-color-title]').textContent = data.title;
     document.querySelector('[data-share-inspiration-title]').textContent = data.title;
     document.querySelector('#shareCardColors').replaceChildren(...visibleColors.map((color) => {
@@ -795,7 +802,7 @@
     image.onerror = () => reject(new Error('分享卡片图片加载失败，请稍后重试。'));
     image.src = source;
   });
-  const drawCoverImage = (context, image, x, y, width, height) => {
+  const drawCoverImage = (context, image, x, y, width, height, focusX = 0.5, focusY = 0.5) => {
     const imageRatio = image.naturalWidth / image.naturalHeight;
     const frameRatio = width / height;
     let sourceX = 0;
@@ -804,12 +811,46 @@
     let sourceHeight = image.naturalHeight;
     if (imageRatio > frameRatio) {
       sourceWidth = image.naturalHeight * frameRatio;
-      sourceX = (image.naturalWidth - sourceWidth) / 2;
+      sourceX = (image.naturalWidth - sourceWidth) * focusX;
     } else {
       sourceHeight = image.naturalWidth / frameRatio;
-      sourceY = (image.naturalHeight - sourceHeight) / 2;
+      sourceY = (image.naturalHeight - sourceHeight) * focusY;
     }
     context.drawImage(image, sourceX, sourceY, sourceWidth, sourceHeight, x, y, width, height);
+  };
+  const drawContainImage = (context, image, x, y, width, height) => {
+    const scale = Math.min(width / image.naturalWidth, height / image.naturalHeight);
+    const drawWidth = image.naturalWidth * scale;
+    const drawHeight = image.naturalHeight * scale;
+    context.drawImage(image, x + (width - drawWidth) / 2, y + (height - drawHeight) / 2, drawWidth, drawHeight);
+  };
+  const drawShareMaterial = (context, personality, width, height) => {
+    if (personality === 'loop') {
+      context.strokeStyle = 'rgba(255,255,255,.14)';
+      context.lineWidth = .7;
+      for (let offset = -height; offset < width + height; offset += 7) {
+        context.beginPath(); context.moveTo(offset, 0); context.lineTo(offset - height, height); context.stroke();
+      }
+    } else if (personality === 'noir') {
+      context.lineWidth = .7;
+      for (let offset = -height; offset < width + height; offset += 34) {
+        context.strokeStyle = 'rgba(118,123,127,.13)';
+        context.beginPath(); context.moveTo(offset, 0); context.lineTo(offset + height, height); context.stroke();
+        context.strokeStyle = 'rgba(255,255,255,.72)';
+        context.beginPath(); context.moveTo(offset, height); context.lineTo(offset + height, 0); context.stroke();
+      }
+    } else if (personality === 'void') {
+      context.fillStyle = 'rgba(255,255,255,.22)';
+      for (let y = 11; y < height; y += 22) for (let x = 11; x < width; x += 22) {
+        context.beginPath(); context.arc(x, y, .8, 0, Math.PI * 2); context.fill();
+      }
+    } else if (personality === 'oops') {
+      context.lineWidth = .5;
+      context.strokeStyle = 'rgba(100,83,66,.07)';
+      for (let y = 1; y < height; y += 4) { context.beginPath(); context.moveTo(0, y); context.lineTo(width, y); context.stroke(); }
+      context.strokeStyle = 'rgba(255,255,255,.24)';
+      for (let x = 1; x < width; x += 5) { context.beginPath(); context.moveTo(x, 0); context.lineTo(x, height); context.stroke(); }
+    }
   };
   const renderShareCard = async (card) => {
     const cardRect = card.getBoundingClientRect();
@@ -835,6 +876,7 @@
     context.fillRect(0, 0, width, height);
     const backgroundUrl = cardStyle.backgroundImage.match(/url\(["']?(.*?)["']?\)/)?.[1];
     if (backgroundUrl) drawCoverImage(context, await loadCanvasImage(backgroundUrl), 0, 0, width, height);
+    drawShareMaterial(context, card.dataset.personality || '', width, height);
     context.restore();
 
     card.querySelectorAll('.share-card-colors i').forEach((swatch) => {
@@ -868,7 +910,12 @@
       context.save();
       roundedRectPath(context, x, y, rect.width, rect.height, radius);
       context.clip();
-      drawCoverImage(context, image, x, y, rect.width, rect.height);
+      const isShareOrnament = element.matches('[data-share-illustration]');
+      if (isShareOrnament || style.objectFit === 'contain') {
+        drawContainImage(context, image, x, y, rect.width, rect.height);
+      } else {
+        drawCoverImage(context, image, x, y, rect.width, rect.height, 0.5, 0.5);
+      }
       context.restore();
     }));
 
@@ -999,6 +1046,37 @@
     const requestedType = previewParams.get('type') || 'mute';
     renderReport({ typeId: requestedType });
     showScreen('report');
+    shell.classList.add('is-ready');
+    return;
+  }
+  if (previewScreen === 'share') {
+    const requestedType = previewParams.get('type') || 'mute';
+    renderReport({ typeId: requestedType });
+    showScreen('report');
+    shell.classList.add('is-ready');
+    requestAnimationFrame(() => {
+      shareDialog.showModal();
+      goToShareSlide(0, false);
+    });
+    return;
+  }
+  if (previewScreen === 'share-gallery') {
+    const gallery = Object.assign(document.createElement('main'), { className: 'share-gallery-preview' });
+    Object.keys(personalityCatalog.types || {}).forEach((typeId, index) => {
+      const data = renderReport({ typeId });
+      const card = document.querySelector('.share-card--identity').cloneNode(true);
+      card.classList.add('is-current');
+      card.setAttribute('aria-current', 'true');
+      const item = Object.assign(document.createElement('section'), { className: 'share-gallery-item' });
+      const label = Object.assign(document.createElement('p'), {
+        className: 'share-gallery-label',
+        textContent: `${String(index + 1).padStart(2, '0')} · ${data.eyebrow} · ${data.title}`,
+      });
+      item.append(label, card);
+      gallery.append(item);
+    });
+    document.body.classList.add('is-share-gallery');
+    document.body.append(gallery);
     shell.classList.add('is-ready');
     return;
   }
