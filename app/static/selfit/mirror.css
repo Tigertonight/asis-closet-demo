@@ -183,3 +183,17 @@ html[data-mirror-state="confirm"], body[data-mirror-state="confirm"] { backgroun
 @keyframes camera-loading-pulse { 0%, 100% { transform: scale(.96); opacity: .66; } 50% { transform: scale(1.04); opacity: 1; } }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: 1ms !important; transition-duration: 1ms !important; } }
 @media (max-aspect-ratio: 393 / 746) { .mirror-shell { box-shadow: none; } }
+
+/* 工作人员登录 gate（mirror/analyze 设备门禁的页面侧） */
+.gate-screen { background: radial-gradient(120% 90% at 50% 0%, #5d1b22 0%, var(--wine, #792a28) 58%, #4a141b 100%); }
+.gate-copy { height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 14px; padding: 40px 34px; text-align: center; color: #fff; }
+.gate-logo { margin-bottom: 6px; }
+.gate-copy h1 { margin: 0; font-size: 30px; letter-spacing: .06em; }
+.gate-lead { margin: 0; max-width: 30em; font-size: 15px; line-height: 1.7; color: rgba(255,255,255,.82); }
+.gate-form { margin-top: 10px; display: flex; flex-direction: column; gap: 12px; width: min(320px, 100%); }
+.gate-form input { height: 52px; border-radius: 14px; border: 1px solid rgba(255,255,255,.4); background: rgba(255,255,255,.12); color: #fff; font-size: 18px; text-align: center; letter-spacing: .2em; }
+.gate-form input::placeholder { color: rgba(255,255,255,.55); letter-spacing: .12em; }
+.gate-form input:focus-visible { outline: 2px solid rgba(255,255,255,.7); outline-offset: 2px; }
+.gate-form .mirror-button { height: 52px; font-size: 18px; }
+.gate-status { min-height: 20px; margin: 0; font-size: 14px; color: #ffd7d7; }
+.gate-status.is-error { color: #ffb3b3; }

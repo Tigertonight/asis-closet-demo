@@ -258,4 +258,15 @@
   startCapture.addEventListener('click',runCountdown);document.querySelector('#retakePhoto').addEventListener('click',runCountdown);document.querySelector('#confirmPhoto').addEventListener('click',processPhoto);retryQrCode.addEventListener('click',processPhoto);document.querySelector('#returnHome').addEventListener('click',reset);
   document.addEventListener('visibilitychange',()=>{if(document.hidden)debugMode?exitDebugMode():reset();});window.addEventListener('beforeunload',()=>{stopCamera();window.cancelAnimationFrame(renderFrame);});
   const previewParams=new URLSearchParams(window.location.search);if(previewParams.get('preview')==='processing'){const previewPercent=Number(previewParams.get('stage'))||25,previewStage=processingStages.find((stage)=>stage.percent===previewPercent)||processingStages[0];show('processing');renderProcessingStage(previewStage,false);}if(previewParams.get('preview')==='debug')void enterDebugMode();
+
+  // 工作人员登录 gate：mirror/analyze 需要管理员会话（cookie 由 /admin/api/login
+  // 下发）。登录成功前不进入 home；会话有效（页面刷新）则直接进 home。
+  const gateForm=document.querySelector('#gateForm');
+  const gatePassword=document.querySelector('#gatePassword');
+  const gateSubmit=document.querySelector('#gateSubmit');
+  const gateStatus=document.querySelector('#gateStatus');
+  const gateMode=previewParams.get('preview')===null;
+  const checkMirrorSession=async()=>{try{const response=await fetch('/api/v1/selfit/mirror/session',{cache:'no-store'});return response.ok;}catch{return false;}};
+  const loginGate=async(event)=>{if(event)event.preventDefault();gateSubmit.disabled=true;gateSubmit.textContent='验证中…';gateStatus.textContent='';try{const response=await fetch('/admin/api/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({password:gatePassword.value})});if(!response.ok){const payload=await response.json().catch(()=>({}));throw new Error(payload.detail||'密码不正确');}show('home');void loadColorGrade();}catch(error){gateStatus.textContent=error.message||'登录失败，请重试';gateStatus.classList.add('is-error');gateSubmit.disabled=false;gateSubmit.textContent='开始';gatePassword.value='';gatePassword.focus();}};
+  if(gateMode){gateForm.addEventListener('submit',loginGate);void (async()=>{if(await checkMirrorSession()){show('home');void loadColorGrade();}else{show('gate');gatePassword.focus();}})();}
 })();

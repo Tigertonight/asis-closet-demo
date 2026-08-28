@@ -66,6 +66,9 @@ def _login_phone(client: TestClient, phone: str) -> dict[str, str]:
 
 
 def _create_mirror_handoff(client: TestClient, *, retouched: bytes | None = None) -> dict:
+    # 镜子设备门禁：analyze 需要 admin 会话（_use_tmp_stores 已配置测试密码）
+    gate = client.post("/admin/api/login", json={"password": "admin-test-pw"})
+    assert gate.status_code == 200
     files = {"photo": ("capture.jpg", _jpeg_bytes("#c7a18f"), "image/jpeg")}
     if retouched is not None:
         files["retouched"] = ("capture-retouched.jpg", retouched, "image/jpeg")
