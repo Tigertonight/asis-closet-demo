@@ -236,7 +236,7 @@ def test_selfit_report_share_cards_use_the_dedicated_qr_artwork() -> None:
     assert response.text.count("<div class=\"share-card-meta\"><span>我的 selfit 风格报告</span></div>") == 3
     assert response.text.count("/static/selfit/assets/share-report-qr.png?v=20260828") == 3
     assert 'data-share-ornament' in response.text
-    assert "/static/selfit/selfit.css?v=20260828-webview2" in response.text
+    assert "/static/selfit/selfit.css?v=20260829-share-card-layout1" in response.text
     assert "/static/selfit/selfit.js?v=20260828-webview1" in response.text
     assert "/static/selfit/selfit-persona.js?v=20260828-1" in response.text
 
@@ -320,6 +320,18 @@ def test_selfit_onboarding_centers_393px_design_geometry_in_wide_webviews() -> N
         ornament = client.get(f"/static/selfit/assets/personality/{personality}/share-ornament.png")
         assert ornament.status_code == 200, personality
         assert ornament.headers["content-type"].startswith("image/"), personality
+
+
+def test_selfit_share_inspiration_card_keeps_title_clear_in_short_wechat_viewports() -> None:
+    styles = client.get("/static/selfit/selfit.css")
+
+    assert styles.status_code == 200
+    assert "flex: 0 0 30px;" in styles.text
+    assert ".share-card footer { display: flex; height: 64px;" in styles.text
+    assert "flex: 0 0 64px;" in styles.text
+    assert ".share-card--inspiration .share-card-copy { justify-content: flex-start; }" in styles.text
+    assert ".share-card--inspiration .share-card-images { flex: 1 1 auto; grid-template-rows: repeat(2,minmax(0,1fr)); }" in styles.text
+    assert ".share-card--inspiration .share-card-images img { height: 100%; aspect-ratio: auto; }" in styles.text
 
 
 def test_selfit_report_typography_matches_the_approved_layout() -> None:

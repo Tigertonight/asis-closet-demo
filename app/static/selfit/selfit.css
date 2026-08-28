@@ -953,7 +953,7 @@ html.has-open-dialog, html.has-open-dialog body { overflow: hidden; }
 .share-card p { margin: 0; font-size: var(--font-report-small); line-height: var(--font-report-small-line); }
 .share-card strong { font-size: 25px; line-height: 34px; }
 .share-card small { margin-top: 4px; opacity: .78; }
-.share-card-meta { display: flex; width: 100%; min-height: 30px; align-items: center; justify-content: flex-start; color: currentColor; font-size: 10px; text-align: left; opacity: .78; }
+.share-card-meta { display: flex; width: 100%; min-height: 30px; align-items: center; justify-content: flex-start; flex: 0 0 30px; color: currentColor; font-size: 10px; text-align: left; opacity: .78; }
 .share-avatar { display: grid; width: 24px; height: 24px; place-items: center; border: 1px solid rgba(255,255,255,.56); border-radius: 50%; background: rgba(255,255,255,.12); font: 500 11px/1 Georgia, serif; }
 .share-card-identity { display: flex; min-height: 0; align-items: center; justify-content: center; flex: 1; flex-direction: column; text-align: center; }
 .share-card-identity p { max-width: 230px; margin-top: 8px; color: rgba(255,255,255,.72); }
@@ -991,7 +991,7 @@ html.has-open-dialog, html.has-open-dialog body { overflow: hidden; }
 .share-card--identity:is([data-personality="loop"],[data-personality="noir"],[data-personality="oops"]) .share-card-identity p { color: rgba(92,29,39,.72); }
 .share-card--identity:is([data-personality="loop"],[data-personality="noir"],[data-personality="oops"]) footer > img:first-child { filter: none; }
 .share-card-copy { display: flex; min-height: 0; justify-content: center; flex: 1; flex-direction: column; }
-.share-card footer { display: flex; height: 64px; align-items: flex-end; justify-content: space-between; margin-top: auto; }
+.share-card footer { display: flex; height: 64px; align-items: flex-end; justify-content: space-between; flex: 0 0 64px; margin-top: auto; }
 .share-card footer > img:first-child { display: block; width: 46px; height: auto; align-self: flex-end; flex: 0 0 auto; filter: brightness(0) invert(1); }
 .share-card .share-qr { width: 64px; height: 64px; padding: 4px; border-radius: 4px; background: #fff; object-fit: cover; }
 .share-card--colors { color: var(--ink); background: #fff9f8; }
@@ -1002,9 +1002,9 @@ html.has-open-dialog, html.has-open-dialog body { overflow: hidden; }
 .share-card--colors footer > img:first-child, .share-card--inspiration footer > img:first-child { filter: none; }
 .share-card--inspiration { color: var(--ink); background: #f4ede9; }
 .share-card--inspiration .share-avatar { border-color: rgba(138,1,27,.2); color: #8a011b; background: rgba(138,1,27,.06); }
-.share-card--inspiration strong { margin: 8px 0 18px; color: #8a011b; }
-.share-card-images { display: grid; grid-template-columns: repeat(2,1fr); gap: 7px; }
-.share-card-images img { display: block; width: 100%; aspect-ratio: 1.04; border-radius: 10px; object-fit: cover; }
+.share-card--inspiration strong { flex: 0 0 auto; margin: 8px 0 18px; color: #8a011b; }
+.share-card-images { display: grid; min-height: 0; grid-template-columns: repeat(2,1fr); gap: 7px; }
+.share-card-images img { display: block; width: 100%; min-height: 0; aspect-ratio: 1.04; border-radius: 10px; object-fit: cover; }
 .share-dots { display: flex; justify-content: center; gap: 4px; margin: 20px 0 12px; flex: 0 0 auto; }
 .share-dots button { width: 6px; height: 20px; padding: 0; border: 0; background: transparent; }
 .share-dots button::before { display: block; width: 6px; height: 6px; margin: auto; border-radius: 50%; background: rgba(0,0,0,.16); content: ''; transition: background .18s ease, transform .18s ease; }
@@ -1033,7 +1033,10 @@ body.is-share-gallery .app-shell { display: none; }
   .share-card-ornament { width: 216px; height: 112px; margin-top: 10px; }
   .share-card--identity:is([data-personality="mute"],[data-personality="iced"],[data-personality="ease"],[data-personality="wabi"],[data-personality="loop"],[data-personality="noir"]) .share-card-ornament { transform: translateY(10px); }
   .share-card--identity[data-personality="film"] .share-card-ornament { transform: translateY(14px); }
-  .share-card footer { height: 56px; }
+  .share-card footer { height: 56px; flex-basis: 56px; }
+  .share-card--inspiration .share-card-copy { justify-content: flex-start; }
+  .share-card--inspiration .share-card-images { flex: 1 1 auto; grid-template-rows: repeat(2,minmax(0,1fr)); }
+  .share-card--inspiration .share-card-images img { height: 100%; aspect-ratio: auto; }
   .share-card .share-qr { width: 56px; height: 56px; }
   .share-dots { margin: 2px 0 4px; }
   .share-actions { min-height: 66px; }
