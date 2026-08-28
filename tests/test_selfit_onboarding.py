@@ -35,6 +35,11 @@ def test_selfit_onboarding_includes_the_figma_login_extension() -> None:
     assert "Fit yourself, not in." in response.text
     assert "手机号登录" in response.text
     assert "邀请码登录" in response.text
+    # 邀请码登录默认隐藏（内部测试用），由运行时配置 SELFIT_SHOW_INVITE_LOGIN 决定
+    assert 'data-invite-login hidden' in response.text
+    assert "无需验证码，输入手机号直接登录" in response.text
+    assert 'id="loginPin"' not in response.text
+    assert 'id="loginCode"' not in response.text
     assert "/static/selfit/assets/login-tagline-curved@2x.png" in response.text
     assert "/static/selfit/assets/login-buttons-ring@2x.png" in response.text
     assert "/static/selfit/assets/login-selfit-logo@2x.png" in response.text
@@ -185,12 +190,16 @@ def test_selfit_auth_adapter_and_bearer_wiring_are_available() -> None:
     assert auth.status_code == 200
     assert "startPhone(phone)" in auth.text
     assert "verifyPhone(phone, code)" in auth.text
+    assert "directPhone(phone)" in auth.text
     assert "verifyInvite(inviteCode)" in auth.text
     assert "sessionStorage.setItem(AUTH_STORAGE_KEY" in auth.text
     assert "this.request('/invite/verify'" in auth.text
+    assert "this.request('/phone/direct'" in auth.text
     assert "headers.Authorization = `Bearer ${accessToken}`" in api.text
     assert "getAccessToken: () => auth.accessToken" in runtime.text
     assert "state.authUser ? 'intro' : 'login'" in runtime.text
+    assert "auth.directPhone(normalizedPhone())" in runtime.text
+    assert "/^1[3-9]\\d{9}$/".replace("\\\\", "\\") in runtime.text or "1[3-9]" in runtime.text
 
 
 def test_selfit_vibe_question_keys_match_backend_contract() -> None:
@@ -234,7 +243,7 @@ def test_selfit_report_typography_matches_the_approved_layout() -> None:
     assert '<h2>你的风格解读</h2>' in markup.text
 
     runtime = client.get("/static/selfit/selfit.js")
-    assert "#retakeBtn').addEventListener('click', () => showScreen('vibe'))" in runtime.text
+    assert "#retakeBtn').addEventListener('click', () => { track('retake_clicked'); showScreen('vibe'); })" in runtime.text
 
 
 def test_selfit_personality_catalog_keeps_all_colors_but_renders_first_five() -> None:

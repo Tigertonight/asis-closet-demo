@@ -11,8 +11,23 @@ from pathlib import Path
 import pytest
 from fastapi.testclient import TestClient
 
+import app.auth as auth
 import app.qa_onboarding as qa_onboarding
 from app.main import app
+
+ADMIN_TEST_PASSWORD = "qa-admin-test-pw"
+
+
+@pytest.fixture
+def admin_client(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> TestClient:
+    """已登录管理后台的 client（QA 页面现在需要管理员密码）。"""
+
+    monkeypatch.setattr(auth, "ADMIN_PASSWORD_PATH", tmp_path / "auth" / "admin_password.json")
+    monkeypatch.setenv("SELFIT_ADMIN_PASSWORD", ADMIN_TEST_PASSWORD)
+    client = TestClient(app)
+    response = client.post("/admin/api/login", json={"password": ADMIN_TEST_PASSWORD})
+    assert response.status_code == 200
+    return client
 
 
 def _fake_entry(kind: str = "face") -> dict:
@@ -30,9 +45,9 @@ def _fake_entry(kind: str = "face") -> dict:
     }
 
 
-def test_qa_page_renders_entries(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_qa_page_renders_entries(monkeypatch: pytest.MonkeyPatch, admin_client: TestClient) -> None:
     monkeypatch.setattr(qa_onboarding, "_analyze_all", lambda refresh=False: [_fake_entry("face"), _fake_entry("body")])
-    client = TestClient(app)
+    client = admin_client
     response = client.get("/qa/onboarding-attributes")
     assert response.status_code == 200
     text = response.text
@@ -42,9 +57,9 @@ def test_qa_page_renders_entries(monkeypatch: pytest.MonkeyPatch) -> None:
     assert "重新分析" in text
 
 
-def test_qa_page_empty_manifest(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_qa_page_empty_manifest(monkeypatch: pytest.MonkeyPatch, admin_client: TestClient) -> None:
     monkeypatch.setattr(qa_onboarding, "_analyze_all", lambda refresh=False: [])
-    client = TestClient(app)
+    client = admin_client
     response = client.get("/qa/onboarding-attributes")
     assert response.status_code == 200
     assert "共 0 张" in response.text
@@ -75,9 +90,9 @@ def _create_task(client: TestClient, name: str = "第一轮标注") -> str:
     return location.split("task=", 1)[1]
 
 
-def test_create_annotation_task_and_list(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
+def test_create_annotation_task_and_list(monkeypatch: pytest.MonkeyPatch, tmp_path: Path, admin_client: TestClient) -> None:
     _setup_annotation_env(monkeypatch, tmp_path)
-    client = TestClient(app)
+    client = admin_client
     task_id = _create_task(client)
 
     list_page = client.get("/qa/onboarding-attributes?tab=annotate")
@@ -92,9 +107,9 @@ def test_create_annotation_task_and_list(monkeypatch: pytest.MonkeyPatch, tmp_pa
     assert "一键对比" in detail_page.text
 
 
-def test_batch_save_and_clear_annotations(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
+def test_batch_save_and_clear_annotations(monkeypatch: pytest.MonkeyPatch, tmp_path: Path, admin_client: TestClient) -> None:
     _setup_annotation_env(monkeypatch, tmp_path)
-    client = TestClient(app)
+    client = admin_client
     task_id = _create_task(client)
 
     ok = client.post(
@@ -119,9 +134,9 @@ def test_batch_save_and_clear_annotations(monkeypatch: pytest.MonkeyPatch, tmp_p
     assert stored["tasks"][0]["annotations"] == {"face/face_01.jpg": {"skin_tone": "暖白肤"}}
 
 
-def test_diff_filter_shows_only_mismatch(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
+def test_diff_filter_shows_only_mismatch(monkeypatch: pytest.MonkeyPatch, tmp_path: Path, admin_client: TestClient) -> None:
     _setup_annotation_env(monkeypatch, tmp_path)
-    client = TestClient(app)
+    client = admin_client
     task_id = _create_task(client)
 
     # face_01 算法识别为 中性自然肤/椭圆脸：标对一个、标错一个；body_01 标对
@@ -143,11 +158,11 @@ def test_diff_filter_shows_only_mismatch(monkeypatch: pytest.MonkeyPatch, tmp_pa
 # 数据分布与上传
 # ---------------------------------------------------------------------------
 
-def test_dataset_tab_renders_distribution(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_dataset_tab_renders_distribution(monkeypatch: pytest.MonkeyPatch, admin_client: TestClient) -> None:
     monkeypatch.setattr(qa_onboarding, "_analyze_all", lambda refresh=False: [_fake_entry("face"), _fake_entry("body")])
     monkeypatch.setattr(qa_onboarding, "_ensure_overlays", lambda entries, refresh=False: {})
     monkeypatch.setattr(qa_onboarding, "QA_ANNOTATIONS_PATH", Path("/tmp/nonexistent_annotations.json"))
-    client = TestClient(app)
+    client = admin_client
     response = client.get("/qa/onboarding-attributes?tab=dataset")
     assert response.status_code == 200
     text = response.text
@@ -158,12 +173,12 @@ def test_dataset_tab_renders_distribution(monkeypatch: pytest.MonkeyPatch) -> No
     assert "中性自然肤" in text and "梨型" in text
 
 
-def test_upload_photo_adds_to_manifest(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
+def test_upload_photo_adds_to_manifest(monkeypatch: pytest.MonkeyPatch, tmp_path: Path, admin_client: TestClient) -> None:
     photo_dir = tmp_path / "qa_photos"
     (photo_dir / "face").mkdir(parents=True)
     monkeypatch.setattr(qa_onboarding, "QA_PHOTO_DIR", photo_dir)
     monkeypatch.setattr(qa_onboarding, "QA_RESULTS_CACHE", photo_dir / "_results.json")
-    client = TestClient(app)
+    client = admin_client
 
     import io as _io
 
@@ -199,3 +214,70 @@ def test_upload_photo_adds_to_manifest(monkeypatch: pytest.MonkeyPatch, tmp_path
     manifest = json.loads((photo_dir / "manifest.json").read_text(encoding="utf-8"))
     assert len(manifest) == 1
 
+
+
+def test_qa_page_redirects_anonymous_to_admin(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
+    """QA 实验数据页未登录 → 307 跳转管理后台；错误密码 → 401。"""
+
+    monkeypatch.setattr(auth, "ADMIN_PASSWORD_PATH", tmp_path / "auth" / "admin_password.json")
+    monkeypatch.setenv("SELFIT_ADMIN_PASSWORD", ADMIN_TEST_PASSWORD)
+    anonymous = TestClient(app)
+
+    page = anonymous.get("/qa/onboarding-attributes", follow_redirects=False)
+    upload = anonymous.post(
+        "/qa/photos/upload",
+        data={"kind": "face"},
+        files={"image": ("t.jpg", b"fake", "image/jpeg")},
+        follow_redirects=False,
+    )
+    bad_login = anonymous.post("/admin/api/login", json={"password": "wrong-password"})
+    ok_login = anonymous.post("/admin/api/login", json={"password": ADMIN_TEST_PASSWORD})
+
+    assert page.status_code == 307
+    assert page.headers["location"] == "/admin"
+    assert upload.status_code == 307
+    assert bad_login.status_code == 401
+    assert ok_login.status_code == 200
+    # 登录后（cookie 生效）可访问
+    assert anonymous.get("/qa/onboarding-attributes").status_code == 200
+
+
+def test_admin_password_change_revokes_sessions(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
+    """后台改密码：旧密码失效、旧 session 被吊销、新密码可登录。"""
+
+    monkeypatch.setattr(auth, "ADMIN_PASSWORD_PATH", tmp_path / "auth" / "admin_password.json")
+    monkeypatch.setenv("SELFIT_ADMIN_PASSWORD", ADMIN_TEST_PASSWORD)
+    client = TestClient(app)
+    assert client.post("/admin/api/login", json={"password": ADMIN_TEST_PASSWORD}).status_code == 200
+
+    changed = client.put(
+        "/admin/api/password",
+        json={"current_password": ADMIN_TEST_PASSWORD, "new_password": "new-pw-456789"},
+    )
+    old_session = client.get("/admin/api/analytics/summary")
+
+    assert changed.status_code == 200
+    # 改密码后旧 session 已被吊销
+    assert old_session.status_code == 401
+    # 旧密码不能再登录，新密码可以
+    assert client.post("/admin/api/login", json={"password": ADMIN_TEST_PASSWORD}).status_code == 401
+    assert client.post("/admin/api/login", json={"password": "new-pw-456789"}).status_code == 200
+
+
+def test_admin_api_rejects_phone_user_token(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
+    """手机号登录用户的 token 无管理权限（403）。"""
+
+    monkeypatch.setattr(auth, "ADMIN_PASSWORD_PATH", tmp_path / "auth" / "admin_password.json")
+    monkeypatch.setattr(auth, "AUTH_DIR", tmp_path / "auth")
+    monkeypatch.setattr(auth, "AUTH_STORE_PATH", tmp_path / "auth" / "auth_store.json")
+    monkeypatch.setenv("SELFIT_ADMIN_PASSWORD", ADMIN_TEST_PASSWORD)
+    client = TestClient(app)
+    login = client.post("/auth/phone/direct", json={"phone": "13800000001"})
+
+    response = client.get(
+        "/admin/api/analytics/summary",
+        headers={"Authorization": f"Bearer {login.json()['access_token']}"},
+    )
+
+    assert login.status_code == 200
+    assert response.status_code == 403

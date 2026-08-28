@@ -90,6 +90,82 @@ def test_dynamic_qr_claims_suit_result_once_and_continues_at_like(monkeypatch, t
     assert "photos" in restored["completedSteps"]
 
 
+def test_dynamic_qr_supports_phone_direct_login_for_roadshow(monkeypatch, tmp_path: Path) -> None:
+    """路演链路：扫码 → 免验证码手机号登录 → 领取镜子结果 → 跳 like。"""
+
+    _use_tmp_stores(monkeypatch, tmp_path)
+    monkeypatch.setenv("SELFIT_AUTH_SECRET", "mirror-handoff-test-secret")
+    client = TestClient(app)
+
+    created = client.post(
+        "/api/v1/selfit/mirror/analyze",
+        files={"photo": ("capture.jpg", _photo_bytes(), "image/jpeg")},
+    ).json()
+    token = created["qrImageUrl"].split("/handoffs/", 1)[1].rsplit("/qr", 1)[0]
+
+    direct = client.post(
+        "/auth/phone/direct",
+        json={"phone": "13800000811"},
+        headers={"x-real-ip": "198.51.100.30"},
+    )
+    claimed = client.post(
+        f"/api/v1/selfit/mirror/handoffs/{token}/claim",
+        headers={"Authorization": f"Bearer {direct.json()['access_token']}"},
+    )
+
+    assert direct.status_code == 200
+    assert direct.json()["user"]["phone_e164"] == "+8613800000811"
+    assert claimed.status_code == 200
+    assert claimed.json()["nextStep"] == "like"
+    session_id = claimed.json()["session"]["sessionId"]
+    restored = client.get(
+        f"/api/v1/selfit/sessions/{session_id}",
+        headers={"Authorization": f"Bearer {direct.json()['access_token']}"},
+    ).json()["session"]
+    assert "photos" in restored["completedSteps"]
+    onboarding_data = json.loads(onboarding.SELFIT_ONBOARDING_STORE_PATH.read_text(encoding="utf-8"))
+    session = onboarding_data["sessions"][0]
+    assert session["user_id"] == direct.json()["user"]["user_id"]
+    assert session["suit_input_asset_id"] == session["mirror_assets"]["original"]["asset_id"]
+
+
+QA_BODY_PHOTO = Path(__file__).resolve().parents[1] / "qa_photos" / "body" / "body_01.jpg"
+
+
+def test_claim_hydrates_suit_photos_from_mirror_capture(monkeypatch, tmp_path: Path) -> None:
+    """镜子全身照应回填为 suit 的 body 输入，并裁出头部作为 face 输入。"""
+
+    _use_tmp_stores(monkeypatch, tmp_path)
+    monkeypatch.setenv("SELFIT_AUTH_SECRET", "mirror-handoff-test-secret")
+    client = TestClient(app)
+
+    created = client.post(
+        "/api/v1/selfit/mirror/analyze",
+        files={"photo": ("capture.jpg", QA_BODY_PHOTO.read_bytes(), "image/jpeg")},
+    )
+    payload = created.json()
+    token = payload["qrImageUrl"].split("/handoffs/", 1)[1].rsplit("/qr", 1)[0]
+    user = _login(client, "13800000804")
+    claimed = client.post(f"/api/v1/selfit/mirror/handoffs/{token}/claim", headers=user)
+
+    assert created.status_code == 201
+    assert claimed.status_code == 200
+    session_id = claimed.json()["session"]["sessionId"]
+    onboarding_data = json.loads(onboarding.SELFIT_ONBOARDING_STORE_PATH.read_text(encoding="utf-8"))
+    session = next(record for record in onboarding_data["sessions"] if record["session_id"] == session_id)
+    photos = session.get("photos") or {}
+    assert photos.get("body", {}).get("status") == "accepted"
+    assert photos["body"].get("source") == "mirror"
+    assert photos.get("face", {}).get("status") == "accepted"
+    assert photos["face"].get("source") == "mirror_head_crop"
+    # 大头照是全身照裁出来的方图，尺寸小于原图
+    assert photos["face"]["width"] == photos["face"]["height"]
+    assert photos["face"]["width"] < photos["body"]["width"]
+    asset_dir = onboarding.SELFIT_ONBOARDING_ASSET_DIR / session_id
+    assert list(asset_dir.glob("asset_body_*.jpg"))
+    assert list(asset_dir.glob("asset_face_*.jpg"))
+
+
 def test_claim_rejects_anonymous_and_second_user(monkeypatch, tmp_path: Path) -> None:
     _use_tmp_stores(monkeypatch, tmp_path)
     monkeypatch.setenv("SELFIT_AUTH_SECRET", "mirror-handoff-test-secret")

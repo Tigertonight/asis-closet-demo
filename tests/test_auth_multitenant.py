@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import io
+import json
 from pathlib import Path
 
 from fastapi.testclient import TestClient
@@ -93,7 +94,7 @@ def test_public_demo_rejects_default_auth_secret(monkeypatch, tmp_path: Path) ->
     response = client.post("/auth/phone/start", json={"phone": "13800000022"})
 
     assert response.status_code == 500
-    assert response.json()["error"]["code"] == "request.failed"
+    assert response.json()["error"]["code"] == "auth.http_500"
 
 
 def test_auth_rate_limit_is_enforced(monkeypatch, tmp_path: Path) -> None:
@@ -110,6 +111,95 @@ def test_auth_rate_limit_is_enforced(monkeypatch, tmp_path: Path) -> None:
     assert first.status_code == 200
     assert second.status_code == 429
     assert second.json()["error"]["code"] == "request.rate_limited"
+
+
+def test_phone_direct_login_creates_phone_unique_account(monkeypatch, tmp_path: Path) -> None:
+    _use_tmp_runtime(monkeypatch, tmp_path)
+    client = TestClient(app)
+    ip_headers = {"x-real-ip": "198.51.100.10"}
+
+    first = client.post("/auth/phone/direct", json={"phone": "13800000011"}, headers=ip_headers)
+    # 换 IP 再登录同一手机号 → 仍是同一账号（手机号唯一，不绑 IP）
+    second = client.post(
+        "/auth/phone/direct",
+        json={"phone": "13800000011"},
+        headers={"x-real-ip": "203.0.113.99"},
+    )
+
+    assert first.status_code == 200
+    assert first.json()["status"] == "ok"
+    assert first.json()["user"]["phone_e164"] == "+8613800000011"
+    assert second.json()["user"]["user_id"] == first.json()["user"]["user_id"]
+    store = json.loads(auth.AUTH_STORE_PATH.read_text(encoding="utf-8"))
+    record = next(user for user in store["users"] if user["user_id"] == first.json()["user"]["user_id"])
+    assert record["auth_provider"] == "phone_direct"
+    assert record["phone_e164"] == "+8613800000011"
+    # 无 PIN 方案：不存储任何 PIN 凭证
+    assert "pin_hash" not in record
+
+
+def test_phone_direct_login_rejects_unallocated_segments(monkeypatch, tmp_path: Path) -> None:
+    """10x/12x 等未启用号段应被拒绝，只有 1[3-9] 开头是有效大陆手机号。"""
+
+    _use_tmp_runtime(monkeypatch, tmp_path)
+    client = TestClient(app)
+
+    invalid = client.post("/auth/phone/direct", json={"phone": "12000000000"})
+    short = client.post("/auth/phone/direct", json={"phone": "1380000001"})
+
+    assert invalid.status_code == 400
+    assert short.status_code == 400
+    # 拒绝的请求不应产生任何账号副作用
+    store_path = auth.AUTH_STORE_PATH
+    assert not store_path.exists() or json.loads(store_path.read_text(encoding="utf-8"))["users"] == []
+
+
+def test_phone_direct_login_reuses_legacy_phone_account(monkeypatch, tmp_path: Path) -> None:
+    _use_tmp_runtime(monkeypatch, tmp_path)
+    client = TestClient(app)
+    started = client.post("/auth/phone/start", json={"phone": "13800000013"}).json()
+    verified = client.post(
+        "/auth/phone/verify", json={"phone": "13800000013", "code": started["dev_code"]}
+    ).json()
+
+    # 老的手机号账号（短信验证码登录创建）direct 登录直接复用
+    direct = client.post(
+        "/auth/phone/direct",
+        json={"phone": "13800000013"},
+        headers={"x-real-ip": "198.51.100.99"},
+    )
+
+    assert direct.status_code == 200
+    assert direct.json()["user"]["user_id"] == verified["user"]["user_id"]
+
+
+def test_phone_direct_login_can_be_disabled(monkeypatch, tmp_path: Path) -> None:
+    _use_tmp_runtime(monkeypatch, tmp_path)
+    monkeypatch.setenv("SELFIT_AUTH_ALLOW_PHONE_DIRECT", "0")
+    client = TestClient(app)
+
+    response = client.post("/auth/phone/direct", json={"phone": "13800000015"})
+
+    assert response.status_code == 503
+
+
+def test_invite_login_stays_ip_bound_for_internal_use(monkeypatch, tmp_path: Path) -> None:
+    _use_tmp_runtime(monkeypatch, tmp_path)
+    monkeypatch.setenv("SELFIT_INVITE_CODES", "ROADSHOW-2026")
+    client = TestClient(app)
+    ip_headers = {"x-real-ip": "198.51.100.20"}
+
+    invited = client.post("/auth/invite/verify", json={"invite_code": "ROADSHOW-2026"}, headers=ip_headers)
+    direct = client.post(
+        "/auth/phone/direct",
+        json={"phone": "13800000016"},
+        headers=ip_headers,
+    )
+
+    # 邀请码登录保留 IP 绑定（内部测试）；手机号登录走独立账号
+    assert invited.status_code == 200
+    assert direct.status_code == 200
+    assert direct.json()["user"]["user_id"] != invited.json()["user"]["user_id"]
 
 
 def test_xhs_image_proxy_uses_disk_cache(monkeypatch, tmp_path: Path) -> None:

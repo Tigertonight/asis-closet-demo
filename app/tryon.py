@@ -168,6 +168,13 @@ def _runway_google_url() -> str:
     return (os.getenv("TRYON_RUNWAY_GOOGLE_URL") or os.getenv("RUNWAY_GOOGLE_URL") or RUNWAY_GOOGLE_GENERATE_CONTENT_URL).strip()
 
 
+def _runway_google_auth_headers(url: str, api_key: str) -> dict[str, str]:
+    host = (urlparse(url).hostname or "").lower()
+    if host == "generativelanguage.googleapis.com" or host.endswith(".googleapis.com"):
+        return {"x-goog-api-key": api_key}
+    return {"api-key": api_key}
+
+
 def _runway_google_api_key() -> str | None:
     key = os.getenv("TRYON_RUNWAY_GOOGLE_API_KEY") or os.getenv("RUNWAY_GOOGLE_API_KEY") or os.getenv("REDNOTE_RUNWAY_API_KEY")
     if key:
@@ -1374,7 +1381,7 @@ class RunwayGoogleTryOnProvider(TryOnProvider):
             payload = _build_runway_google_tryon_payload(person_image, garment_image, mask_image, prompt)
             response = httpx.post(
                 self.url,
-                headers={"api-key": self.api_key, "Content-Type": "application/json"},
+                headers={**_runway_google_auth_headers(self.url, self.api_key), "Content-Type": "application/json"},
                 json=payload,
                 timeout=180,
             )
@@ -1623,7 +1630,9 @@ def render_tryon_demo_page() -> str:
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>AI 上衣试穿 Demo</title>
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='10' fill='%23ff4f86'/%3E%3Cpath d='M10 11c2-3 10-3 12 0v10H10V11z' fill='white'/%3E%3C/svg%3E" />
+  <link rel="icon" type="image/svg+xml" href="/static/brand/favicon.svg" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/static/brand/favicon-32.png" />
+  <link rel="apple-touch-icon" href="/static/brand/apple-touch-icon.png" />
   <style>
     :root {
       --accent: #ff4f86;

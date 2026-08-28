@@ -19,6 +19,10 @@ from app.storage import LOCAL_USER_ID, ROOT_DIR, hydrate_user_from_demo_data, sa
 
 AUTH_DIR = ROOT_DIR / "outputs" / "auth"
 AUTH_STORE_PATH = AUTH_DIR / "auth_store.json"
+ADMIN_PASSWORD_PATH = AUTH_DIR / "admin_password.json"
+ADMIN_COOKIE_NAME = "selfit_admin_session"
+ADMIN_CONSOLE_USER_ID = "admin_console"
+ADMIN_MIN_PASSWORD_LEN = 6
 DEFAULT_LOCAL_PHONE = "+8600000000000"
 TOKEN_TTL_HOURS = 24
 CODE_TTL_MINUTES = 10
@@ -43,12 +47,13 @@ def _parse_iso(value: str | None) -> datetime | None:
 def _normalize_phone(phone: str) -> str:
     text = str(phone or "").strip()
     digits = re.sub(r"\D", "", text)
+    # 带显式 + 前缀的按 E.164 国际号码处理（如海外用户）。
     if text.startswith("+") and 8 <= len(digits) <= 15:
         return f"+{digits}"
-    if len(digits) == 11 and digits.startswith("1"):
+    # 不带前缀的裸输入按中国大陆手机号校验：1 + 第二位 3-9 + 共 11 位。
+    # 只认 1 开头会放行 10x/12x 等未启用号段，位数不对也会被误当国际号建号。
+    if re.fullmatch(r"1[3-9]\d{9}", digits):
         return f"+86{digits}"
-    if 8 <= len(digits) <= 15:
-        return f"+{digits}"
     raise HTTPException(status_code=400, detail="手机号格式不正确")
 
 
@@ -208,6 +213,73 @@ def verify_invite_login(invite_code: str, client_ip: str) -> dict[str, Any]:
     }
 
 
+def _phone_direct_enabled() -> bool:
+    # 线下路演默认放开免短信验证码的手机号直接登录；正式运营可设 SELFIT_AUTH_ALLOW_PHONE_DIRECT=0 关闭。
+    return env_flag("SELFIT_AUTH_ALLOW_PHONE_DIRECT", True)
+
+
+def verify_phone_direct_login(phone: str, client_ip: str) -> dict[str, Any]:
+    """手机号直接登录（无短信验证码、无 PIN）。
+
+    适用前提：账号当前是"一次性测试 + 数据收集"定位——登录只为把测试资料
+    挂到手机号上（user_id = 手机号哈希），账号内无历史回看等资产可盗。
+    正式版接入短信验证码/微信登录后应设 SELFIT_AUTH_ALLOW_PHONE_DIRECT=0。
+
+    账号规则：手机号即唯一账号（跨设备、跨 IP 同一手机号同一账号）。
+    """
+
+    if not _phone_direct_enabled():
+        raise HTTPException(status_code=503, detail="手机号直接登录未开启，请使用验证码登录")
+    phone_e164 = _normalize_phone(phone)
+    now = datetime.now(timezone.utc)
+    data = _load_store()
+    user = next(
+        (
+            item
+            for item in data["users"]
+            if item.get("phone_e164") == phone_e164 and item.get("status") == "active"
+        ),
+        None,
+    )
+    if user is None:
+        user_id = sanitize_user_id(
+            "u_" + hashlib.sha256(phone_e164.encode("utf-8")).hexdigest()[:16]
+        )
+        user = next(
+            (item for item in data["users"] if item.get("user_id") == user_id),
+            None,
+        )
+        if user is None:
+            user = {
+                "user_id": user_id,
+                "phone_e164": phone_e164,
+                "status": "active",
+                "auth_provider": "phone_direct",
+                "source_ip": client_ip,
+                "created_at": now.isoformat(),
+                "last_login_at": now.isoformat(),
+            }
+            data["users"].append(user)
+        else:
+            user["phone_e164"] = phone_e164
+            user["status"] = "active"
+
+    user["last_login_at"] = now.isoformat()
+    if not user.get("source_ip"):
+        user["source_ip"] = client_ip
+
+    hydrate_user_from_demo_data(str(user["user_id"]))
+    token = _issue_session(data, user, now, "phone_direct", client_ip)
+    _write_store(data)
+    return {
+        "status": "ok",
+        "access_token": token,
+        "token_type": "bearer",
+        "expires_in_seconds": TOKEN_TTL_HOURS * 3600,
+        "user": _public_user(user),
+    }
+
+
 def verify_phone_login(phone: str, code: str) -> dict[str, Any]:
     phone_e164 = _normalize_phone(phone)
     submitted_code = str(code or "").strip()
@@ -353,6 +425,135 @@ async def get_optional_user(
     if credentials is None or not credentials.credentials:
         return None
     return resolve_token(credentials.credentials)
+
+
+def _load_admin_password_record() -> dict[str, Any] | None:
+    if not ADMIN_PASSWORD_PATH.exists():
+        return None
+    try:
+        data = json.loads(ADMIN_PASSWORD_PATH.read_text(encoding="utf-8"))
+        if isinstance(data, dict) and data.get("hash"):
+            return data
+    except json.JSONDecodeError:
+        pass
+    return None
+
+
+def set_admin_password(new_password: str) -> None:
+    """写入新的管理员密码哈希（后台修改密码用，立即生效）。"""
+
+    text = str(new_password or "")
+    if len(text) < ADMIN_MIN_PASSWORD_LEN:
+        raise HTTPException(
+            status_code=400,
+            detail=f"新密码至少 {ADMIN_MIN_PASSWORD_LEN} 位",
+        )
+    ADMIN_PASSWORD_PATH.parent.mkdir(parents=True, exist_ok=True)
+    record = {"hash": _hash_secret(text), "updated_at": _now_iso()}
+    ADMIN_PASSWORD_PATH.write_text(
+        json.dumps(record, ensure_ascii=False, indent=2), encoding="utf-8"
+    )
+
+
+def verify_admin_password(password: str) -> bool:
+    """管理员密码校验。
+
+    优先级：后台修改过的密码文件 > SELFIT_ADMIN_PASSWORD 环境变量（初始种子）。
+    env 密码首次验证成功后固化到文件，此后后台修改的密码优先生效。
+    """
+
+    text = str(password or "")
+    record = _load_admin_password_record()
+    if record is not None:
+        return hmac.compare_digest(str(record.get("hash")), _hash_secret(text))
+    env_password = os.getenv("SELFIT_ADMIN_PASSWORD", "")
+    if env_password:
+        set_admin_password(env_password)
+        return hmac.compare_digest(_hash_secret(text), _hash_secret(env_password))
+    return False
+
+
+def admin_password_configured() -> bool:
+    return _load_admin_password_record() is not None or bool(os.getenv("SELFIT_ADMIN_PASSWORD"))
+
+
+def issue_admin_session(client_ip: str) -> str:
+    """签发管理后台 session（auth_provider=admin，单例虚拟用户）。"""
+
+    now = datetime.now(timezone.utc)
+    data = _load_store()
+    if not any(item.get("user_id") == ADMIN_CONSOLE_USER_ID for item in data["users"]):
+        data["users"].append(
+            {
+                "user_id": ADMIN_CONSOLE_USER_ID,
+                "phone_e164": None,
+                "status": "active",
+                "auth_provider": "admin",
+                "created_at": now.isoformat(),
+                "last_login_at": now.isoformat(),
+            }
+        )
+    token = _issue_session(data, {"user_id": ADMIN_CONSOLE_USER_ID}, now, "admin", client_ip)
+    _write_store(data)
+    return token
+
+
+def revoke_admin_sessions() -> None:
+    """改密码后吊销全部管理员 session，强制重新登录。"""
+
+    data = _load_store()
+    changed = False
+    for session in data["auth_sessions"]:
+        if session.get("auth_provider") == "admin" and session.get("status") == "active":
+            session["status"] = "revoked"
+            session["revoked_at"] = _now_iso()
+            changed = True
+    if changed:
+        _write_store(data)
+
+
+def admin_token_from_request(request: Request) -> str | None:
+    """管理后台 token 解析：Bearer header 优先，其次 admin cookie（QA 页面用）。"""
+
+    value = request.headers.get("authorization") or ""
+    scheme, _, token = value.partition(" ")
+    if scheme.lower() == "bearer" and token.strip():
+        return token.strip()
+    return request.cookies.get(ADMIN_COOKIE_NAME)
+
+
+def resolve_admin_user(token: str) -> dict[str, Any]:
+    """校验 admin/invite session 并返回用户；普通用户 token 一律 403。"""
+
+    user = resolve_token(token)
+    data = _load_store()
+    token_hash = _hash_secret(token)
+    session = next(
+        (
+            item
+            for item in data["auth_sessions"]
+            if item.get("token_hash") == token_hash and item.get("status") == "active"
+        ),
+        None,
+    )
+    if session is None or session.get("auth_provider") not in {"admin", "invite"}:
+        raise HTTPException(status_code=403, detail="需要管理员权限")
+    return user
+
+
+async def get_admin_user(
+    request: Request,
+    credentials: HTTPAuthorizationCredentials | None = Depends(_bearer),
+) -> dict[str, Any]:
+    """管理后台鉴权：仅 admin 密码登录或邀请码登录的内部账号可访问。
+
+    普通用户（手机号登录）即使拿到 token 也无权访问 /admin/api/*。
+    """
+
+    token = (credentials.credentials if credentials else "") or request.cookies.get(ADMIN_COOKIE_NAME)
+    if not token:
+        raise HTTPException(status_code=401, detail="请先登录管理后台")
+    return resolve_admin_user(token)
 
 
 def current_token_from_request(request: Request) -> str | None:

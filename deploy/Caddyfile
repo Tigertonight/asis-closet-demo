@@ -1,0 +1,21 @@
+selfit.com.cn {
+	encode zstd gzip
+
+	# 应用最大上传约 36MB，反代层放宽到 48MB
+	request_body {
+		max_size 48MB
+	}
+
+	reverse_proxy 127.0.0.1:8002 {
+		header_up X-Real-IP {remote_host}
+		header_up X-Forwarded-Proto {scheme}
+		# 试穿生成为长请求
+		transport http {
+			response_header_timeout 300s
+		}
+	}
+}
+
+www.selfit.com.cn {
+	redir https://selfit.com.cn{uri} permanent
+}

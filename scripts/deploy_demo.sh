@@ -24,6 +24,7 @@ APP_PORT="${APP_PORT:-8002}"
 SELFIT_CLEANUP_DAYS="${SELFIT_CLEANUP_DAYS:-7}"
 SELFIT_CLEANUP_INTERVAL_SECONDS="${SELFIT_CLEANUP_INTERVAL_SECONDS:-21600}"
 REQUIRE_SIDECARS="${REQUIRE_SIDECARS:-1}"
+REQUIRE_TRYON="${REQUIRE_TRYON:-1}"
 
 if [ -z "${SELFIT_AUTH_SECRET:-}" ] || [ "$SELFIT_AUTH_SECRET" = "selfit-local-auth-secret" ]; then
   echo "SELFIT_AUTH_SECRET must be set to a strong non-default value before running the public demo." >&2
@@ -51,6 +52,9 @@ PIDS+=("$!")
 WAIT_ARGS=("--timeout" "120")
 if [ "$REQUIRE_SIDECARS" = "1" ]; then
   WAIT_ARGS+=("--require-sidecars")
+fi
+if [ "$REQUIRE_TRYON" != "1" ]; then
+  WAIT_ARGS+=("--allow-missing-tryon")
 fi
 
 APP_HOST="$APP_HOST" APP_PORT="$APP_PORT" "$ROOT_DIR/scripts/start_selfit_full_stack.sh" &

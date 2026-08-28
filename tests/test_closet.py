@@ -656,7 +656,8 @@ def test_selfit_demo_page_is_available(monkeypatch, tmp_path: Path) -> None:
     assert 'class="report-signoff"' in response.text
     assert 'class="report-image-grid"' in response.text
     assert 'data-share-summary' in response.text
-    assert "选择你更喜欢的风格和颜色" in response.text
+    assert "选择你更喜欢的风格和颜色" not in response.text
+    assert "再告诉我一些你的喜好吧" in response.text
     assert "几个问题，了解你想表达的" in response.text
     assert "生成风格报告" in response.text
     assert "保存并分享" in response.text
@@ -692,9 +693,8 @@ def test_selfit_mirror_route_exposes_the_complete_kiosk_flow(monkeypatch, tmp_pa
     assert 'data-screen="processing"' in response.text
     assert 'data-screen="result"' in response.text
     assert "适我，不适众" in response.text
-    assert "1 分钟，找到真正衬你的颜色与穿搭风格" in response.text
-    assert "开始风格测试" in response.text
-    assert "everyone has a code." in response.text
+    assert "一分钟，测测你的 SFTI 16型型格" in response.text
+    assert "拿出手机扫码，完成型格测试" in response.text
     assert "/static/selfit/assets/icon-camera.svg" in response.text
     assert "扫码查看" in response.text
     assert "mirror-report-qr.png" in response.text

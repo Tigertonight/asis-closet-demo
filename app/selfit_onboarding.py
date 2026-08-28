@@ -10,6 +10,8 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any
 
+import cv2
+import numpy as np
 from fastapi import APIRouter, Depends, Request, Response
 from fastapi.responses import FileResponse, JSONResponse, RedirectResponse
 from PIL import Image, UnidentifiedImageError
@@ -255,9 +257,167 @@ def create_session_from_mirror_handoff(
         "preferences": {},
         "vibe": {},
     }
+    _hydrate_mirror_photos(record, handoff)
     data["sessions"].append(record)
     _write_store(data)
     return _public_session(record)
+
+
+# 镜子全身照 → 大头照：裁剪框边长为脸宽的倍数。
+# 2.8 倍时脸占裁剪图约 36% 边长（area_ratio ≈ 0.17），稳过 face ≥ 0.08 门禁。
+HEAD_CROP_FACE_RATIO = 2.8
+# 眼/耳线位于裁剪框顶部下方的比例：上方留头顶头发，下方留下巴与脖颈。
+HEAD_CROP_ANCHOR_TOP = 0.35
+# 头部关键点最低可见性（与 attribute_pipeline.BODY_MIN_VISIBILITY 对齐）。
+HEAD_CROP_MIN_VISIBILITY = 0.5
+# 耳距 / 瞳距 → 全脸宽的换算系数（成年人颅面比例先验）。
+_HEAD_WIDTH_FROM_EARS = 1.2
+_HEAD_WIDTH_FROM_EYES = 2.3
+
+
+def _head_crop_box_from_pose(rgb: np.ndarray, img_w: int, img_h: int) -> tuple[int, int, int] | None:
+    """用 body pose 的眼/耳关键点定位头部裁剪框；全身照小脸时比人脸检测器可靠。"""
+
+    from app.attribute_pipeline import _detect_body_pose
+
+    pose = _detect_body_pose(rgb)
+    if pose is None or len(pose) < 9:
+        return None
+
+    def point(index: int) -> tuple[float, float, float]:
+        landmark = pose[index]
+        return (
+            float(landmark.x) * img_w,
+            float(landmark.y) * img_h,
+            float(getattr(landmark, "visibility", 1.0)),
+        )
+
+    left_ear, right_ear = point(7), point(8)
+    left_eye, right_eye = point(2), point(5)
+    ear_span = abs(left_ear[0] - right_ear[0])
+    eye_span = abs(left_eye[0] - right_eye[0])
+    ears_usable = left_ear[2] >= HEAD_CROP_MIN_VISIBILITY and right_ear[2] >= HEAD_CROP_MIN_VISIBILITY and ear_span > 2
+    eyes_usable = left_eye[2] >= HEAD_CROP_MIN_VISIBILITY and right_eye[2] >= HEAD_CROP_MIN_VISIBILITY and eye_span > 2
+    if ears_usable:
+        center_x = (left_ear[0] + right_ear[0]) / 2
+        anchor_y = (left_ear[1] + right_ear[1]) / 2
+        face_width = ear_span * _HEAD_WIDTH_FROM_EARS
+    elif eyes_usable:
+        center_x = (left_eye[0] + right_eye[0]) / 2
+        anchor_y = (left_eye[1] + right_eye[1]) / 2
+        face_width = eye_span * _HEAD_WIDTH_FROM_EYES
+    else:
+        return None
+    side = min(int(face_width * HEAD_CROP_FACE_RATIO), img_w, img_h)
+    if side < 80:
+        return None
+    left = int(center_x - side / 2)
+    top = int(anchor_y - side * HEAD_CROP_ANCHOR_TOP)
+    return left, top, side
+
+
+def _head_crop_box_from_face_detector(rgb: np.ndarray, img_w: int, img_h: int) -> tuple[int, int, int] | None:
+    """回退方案：人脸检测框（取语义检测器优先、面积最大者）扩成头部裁剪框。"""
+
+    from app.cv_pipeline import _detect_face_candidates
+
+    bgr = np.ascontiguousarray(rgb[:, :, ::-1])
+    gray = cv2.cvtColor(bgr, cv2.COLOR_BGR2GRAY)
+    candidates = _detect_face_candidates(bgr, gray)
+    if not candidates:
+        return None
+    semantic = [item for item in candidates if item[4].startswith("mediapipe")]
+    pool = semantic or candidates
+    x, y, w, h, _detector = max(pool, key=lambda item: item[2] * item[3])
+    if w <= 0 or h <= 0:
+        return None
+    side = min(int(max(w, h) * HEAD_CROP_FACE_RATIO), img_w, img_h)
+    if side < 80:
+        return None
+    left = int(x + w / 2 - side / 2)
+    top = int(y - h * 0.9)
+    return left, top, side
+
+
+def _crop_head_from_photo(image: Image.Image) -> Image.Image | None:
+    """从全身照裁出可用作 face 输入的头部方图；定位失败时返回 None。"""
+
+    rgb = np.asarray(image.convert("RGB"))
+    img_h, img_w = rgb.shape[:2]
+    crop_box = _head_crop_box_from_pose(rgb, img_w, img_h)
+    if crop_box is None:
+        crop_box = _head_crop_box_from_face_detector(rgb, img_w, img_h)
+    if crop_box is None:
+        return None
+    left, top, side = crop_box
+    left = max(0, min(left, img_w - side))
+    top = max(0, min(top, img_h - side))
+    return image.crop((left, top, left + side, top + side))
+
+
+def _encode_photo_jpeg(image: Image.Image) -> bytes:
+    output = io.BytesIO()
+    image.save(output, format="JPEG", quality=90)
+    return output.getvalue()
+
+
+def _accepted_photo_record(
+    session_id: str, kind: str, image: Image.Image, inspection: selfit_photo.PhotoInspection, source: str
+) -> dict[str, Any]:
+    return {
+        "asset_id": _save_photo_asset(session_id, kind, _encode_photo_jpeg(image), "JPEG"),
+        "status": "accepted",
+        "format": "JPEG",
+        "width": image.width,
+        "height": image.height,
+        "attributes": dict(inspection.attributes),
+        "source": source,
+    }
+
+
+def _hydrate_mirror_photos(record: dict[str, Any], handoff: dict[str, Any]) -> None:
+    """镜子拍摄原图回填 suit 照片：全身照直接检测，大头照从原图裁头部识别。
+
+    任一环节失败都静默降级（对应 photos 槽位留空，报告层回退默认属性），
+    绝不让 claim 因照片质量问题失败。
+    """
+
+    # onboarding record 用 mirror_* 前缀；原始 handoff 记录用 assets / asset_path。
+    # 两个来源都兜底，保证回填在旧记录与新记录上都可用。
+    assets = record.get("mirror_assets") or handoff.get("assets") or {}
+    original = assets.get("original") or {}
+    asset_path = (
+        record.get("mirror_asset_path")
+        or handoff.get("asset_path")
+        or original.get("asset_path")
+    )
+    if not asset_path:
+        return
+    path = Path(str(asset_path))
+    if not path.is_file():
+        return
+    try:
+        image = Image.open(path)
+        image.load()
+    except (UnidentifiedImageError, OSError):
+        return
+    if image.mode != "RGB":
+        image = image.convert("RGB")
+
+    session_id = record["session_id"]
+    photos = record.setdefault("photos", {})
+
+    body_inspection = selfit_photo.inspect_photo(image, "body")
+    if body_inspection.accepted:
+        photos["body"] = _accepted_photo_record(session_id, "body", image, body_inspection, "mirror")
+
+    head_crop = _crop_head_from_photo(image)
+    if head_crop is not None:
+        face_inspection = selfit_photo.inspect_photo(head_crop, "face")
+        if face_inspection.accepted:
+            photos["face"] = _accepted_photo_record(
+                session_id, "face", head_crop, face_inspection, "mirror_head_crop"
+            )
 
 
 def _session_response(record: dict[str, Any], *, status_code: int = 200) -> tuple[int, dict[str, Any]]:

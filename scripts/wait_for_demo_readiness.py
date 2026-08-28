@@ -18,6 +18,7 @@ def main() -> int:
     parser.add_argument("--timeout", type=int, default=90)
     parser.add_argument("--interval", type=float, default=3)
     parser.add_argument("--require-sidecars", action="store_true")
+    parser.add_argument("--allow-missing-tryon", action="store_true")
     parser.add_argument("--env", type=Path, default=None)
     args = parser.parse_args()
 
@@ -27,7 +28,9 @@ def main() -> int:
         report = readiness(args.env)
         last_report = report
         ready = report.get("ready", {})
-        base_ready = bool(ready.get("base_app") and ready.get("real_tryon"))
+        base_ready = bool(ready.get("base_app"))
+        if not args.allow_missing_tryon:
+            base_ready = base_ready and bool(ready.get("real_tryon"))
         sidecars_ready = bool(ready.get("ai_stylist") and ready.get("xhs_search")) if args.require_sidecars else True
         if base_ready and sidecars_ready:
             print(json.dumps({"status": "ready", "ready": ready}, ensure_ascii=False, indent=2))

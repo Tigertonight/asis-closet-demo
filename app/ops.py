@@ -26,6 +26,39 @@ def is_public_demo_mode() -> bool:
     return deployment_mode() in {"production", "prod", "demo", "staging"} or env_flag("SELFIT_PUBLIC_DEMO", False)
 
 
+# ---------------------------------------------------------------------------
+# 内部页面网关：线上只对用户开放主流程页，其余页面一律要求管理员登录。
+# 本地开发（SELFIT_ENV 缺省）不启用，避免影响日常调试。
+# ---------------------------------------------------------------------------
+
+# 对外（用户）可访问的页面路径前缀/精确路径。API/静态资源走各自鉴权。
+PUBLIC_PAGE_PREFIXES = ("/selfit", "/static", "/user-assets")
+PUBLIC_PAGE_EXACT = ("/", "/favicon.ico", "/admin")
+
+# 需要管理员登录的内部页面（页面级；数据 API 由各自路由的鉴权保护）。
+INTERNAL_PAGE_RULES = (
+    "/demo",
+    "/closet",
+    "/try-on",
+    "/tryon",
+    "/mvp",
+    "/qa",
+    "/self-test",
+    "/fixtures",
+    "/fixture-images",
+    "/report-builder",
+    "/wearwow",
+    "/ori",
+    "/analyze",
+)
+
+
+def is_internal_page(path: str) -> bool:
+    if path in PUBLIC_PAGE_EXACT or path.startswith(PUBLIC_PAGE_PREFIXES):
+        return False
+    return any(path == rule or path.startswith(rule + "/") or path.startswith(rule + "?") for rule in INTERNAL_PAGE_RULES)
+
+
 def env_int(name: str, default: int) -> int:
     try:
         return int(os.getenv(name, str(default)))
@@ -108,7 +141,7 @@ def _rate_rules() -> list[LimitRule]:
         ),
         LimitRule(
             "auth",
-            ("/auth/phone/start", "/auth/phone/verify"),
+            ("/auth/phone/start", "/auth/phone/verify", "/auth/phone/direct", "/admin/api/login"),
             env_int("SELFIT_AUTH_RATE_LIMIT", 20),
             env_int("SELFIT_AUTH_RATE_WINDOW_SECONDS", 3600),
         ),
@@ -161,8 +194,39 @@ def _contract_error(status_code: int, code: str, message: str, *, retryable: boo
     )
 
 
+def _internal_page_redirect(request: Request) -> Response | None:
+    """线上内部页面网关：非管理员访问调试页 → 307 到 /admin 登录后跳回。"""
+
+    if not is_public_demo_mode():
+        return None
+    path = request.url.path
+    if request.method not in {"GET", "HEAD"} or not is_internal_page(path):
+        return None
+    # 数据/操作 API 不在此拦截（各自路由已有鉴权），只拦页面浏览。
+    if path.startswith(("/api/", "/auth/")):
+        return None
+    from app.auth import admin_token_from_request, resolve_admin_user
+
+    token = admin_token_from_request(request)
+    if token:
+        try:
+            resolve_admin_user(token)
+            return None
+        except Exception:
+            pass
+    from urllib.parse import quote
+
+    next_target = quote(path + (f"?{request.url.query}" if request.url.query else ""), safe="/?=&")
+    from fastapi.responses import RedirectResponse
+
+    return RedirectResponse(url=f"/admin?next={next_target}", status_code=307)
+
+
 async def request_guard_middleware(request: Request, call_next: Callable[[Request], Any]) -> Response:
     path = request.url.path
+    internal_gate = _internal_page_redirect(request)
+    if internal_gate is not None:
+        return internal_gate
     max_body_mb = env_int("SELFIT_MAX_REQUEST_BODY_MB", 36)
     content_length = request.headers.get("content-length")
     if content_length:

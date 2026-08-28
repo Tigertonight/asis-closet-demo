@@ -1,0 +1,28 @@
+[Unit]
+Description=Selfit demo full stack (FastAPI + OpenClaw bridge + XHS MCP)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/selfit/asis-closet-demo
+EnvironmentFile=/opt/selfit/asis-closet-demo/.env.demo
+# deploy_demo.sh 的默认 NODE_BIN 是开发者本机 macOS 路径，必须覆盖
+Environment=NODE_BIN=/usr/bin/node
+Environment=PYTHON_BIN=/opt/selfit/asis-closet-demo/.venv/bin/python
+Environment=UVICORN_BIN=/opt/selfit/asis-closet-demo/.venv/bin/uvicorn
+# 只监听本机回环，由 Caddy 对外反代提供 HTTPS
+Environment=APP_HOST=127.0.0.1
+Environment=APP_PORT=8002
+ExecStart=/opt/selfit/asis-closet-demo/scripts/deploy_demo.sh
+Restart=always
+RestartSec=5
+KillMode=control-group
+KillSignal=SIGTERM
+TimeoutStartSec=300
+TimeoutStopSec=30
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target

@@ -473,6 +473,11 @@ async def claim_mirror_handoff(
     token: str,
     user: dict[str, Any] = Depends(get_current_user),
 ) -> JSONResponse:
+    # 照片回填含 CPU 密集 CV 检测（pose/face/肤色），整体移入线程池避免阻塞事件循环。
+    return await run_in_threadpool(_claim_mirror_handoff, token, user)
+
+
+def _claim_mirror_handoff(token: str, user: dict[str, Any]) -> JSONResponse:
     with _STORE_LOCK:
         data = _load_store()
         record = _find_by_token(data, token)

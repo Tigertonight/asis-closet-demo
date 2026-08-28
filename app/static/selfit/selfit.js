@@ -44,14 +44,37 @@
   };
   const personalityCatalog = window.__SELFIT_PERSONALITY_TEMPLATES__ || { types: {}, renderRules: {} };
 
+  // 轻量埋点：fire-and-forget，失败静默（sendBeacon 页面关闭也能送达）
+  const track = (event, props = {}) => {
+    try {
+      const payload = {
+        events: [{
+          event,
+          screen: state.screen,
+          sessionId: state.sessionId,
+          userId: state.authUser?.user_id || null,
+          props,
+        }],
+      };
+      const body = JSON.stringify(payload);
+      if (navigator.sendBeacon) {
+        navigator.sendBeacon('/api/v1/selfit/events', new Blob([body], { type: 'application/json' }));
+      } else {
+        void fetch('/api/v1/selfit/events', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body, keepalive: true }).catch(() => {});
+      }
+    } catch { /* 埋点失败不影响业务 */ }
+  };
+
   const showScreen = (name) => {
     const next = screens.find((screen) => screen.dataset.screen === name);
     if (!next) return;
+    const previous = state.screen;
     screens.forEach((screen) => {
       screen.classList.toggle('is-active', screen === next);
       screen.setAttribute('aria-hidden', screen === next ? 'false' : 'true');
     });
     state.screen = name;
+    if (previous !== name) track('screen_view', { from: previous, to: name });
     updateOnboardingNav(name);
     themeColor?.setAttribute('content', ['splash', 'loading'].includes(name) ? '#8a011b' : '#fafafa');
     next.scrollTop = 0;
@@ -121,9 +144,7 @@
   const authNodes = {
     phoneForm: document.querySelector('#phoneLoginForm'),
     phone: document.querySelector('#loginPhone'),
-    code: document.querySelector('#loginCode'),
     clearPhone: document.querySelector('#clearLoginPhone'),
-    sendCode: document.querySelector('#sendLoginCode'),
     phoneSubmit: document.querySelector('#phoneLoginSubmit'),
     phoneMessage: document.querySelector('#phoneLoginMessage'),
     inviteForm: document.querySelector('#inviteLoginForm'),
@@ -131,8 +152,6 @@
     inviteSubmit: document.querySelector('#inviteLoginSubmit'),
     inviteMessage: document.querySelector('#inviteLoginMessage'),
   };
-  let codeCountdownTimer = 0;
-  let codeCountdown = 0;
   const setAuthMessage = (node, copy = '', stateName = '') => {
     node.textContent = copy;
     if (stateName) node.dataset.state = stateName;
@@ -142,11 +161,10 @@
   const syncPhoneLogin = () => {
     const phone = normalizedPhone();
     if (authNodes.phone.value !== phone) authNodes.phone.value = phone;
-    const phoneValid = /^1\d{10}$/.test(phone);
-    const codeValid = /^\d{4,6}$/.test(authNodes.code.value);
+    // 中国大陆号段：1 + 第二位 3-9 + 共 11 位
+    const phoneValid = /^1[3-9]\d{9}$/.test(phone);
     authNodes.clearPhone.hidden = !phone;
-    authNodes.sendCode.disabled = !phoneValid || codeCountdown > 0 || authNodes.sendCode.getAttribute('aria-busy') === 'true';
-    authNodes.phoneSubmit.disabled = !(phoneValid && codeValid) || authNodes.phoneSubmit.getAttribute('aria-busy') === 'true';
+    authNodes.phoneSubmit.disabled = !phoneValid || authNodes.phoneSubmit.getAttribute('aria-busy') === 'true';
   };
   const syncInviteLogin = () => {
     authNodes.inviteSubmit.disabled = authNodes.invite.value.trim().length < 4 || authNodes.inviteSubmit.getAttribute('aria-busy') === 'true';
@@ -156,6 +174,7 @@
     state.sessionId = null;
     state.revision = 0;
     localStorage.removeItem(SESSION_STORAGE_KEY);
+    track('login_success', { provider: 'phone' });
     if (handoffToken) {
       await claimPendingHandoff();
       return;
@@ -168,38 +187,11 @@
     button.disabled = busy;
   };
   authNodes.phone.addEventListener('input', () => { setAuthMessage(authNodes.phoneMessage); syncPhoneLogin(); });
-  authNodes.code.addEventListener('input', () => {
-    authNodes.code.value = authNodes.code.value.replace(/\D/g, '').slice(0, 6);
-    setAuthMessage(authNodes.phoneMessage);
-    syncPhoneLogin();
-  });
   authNodes.clearPhone.addEventListener('click', () => {
     authNodes.phone.value = '';
     authNodes.phone.focus();
     setAuthMessage(authNodes.phoneMessage);
     syncPhoneLogin();
-  });
-  authNodes.sendCode.addEventListener('click', async () => {
-    setAuthBusy(authNodes.sendCode, true);
-    setAuthMessage(authNodes.phoneMessage, '正在发送验证码…');
-    try {
-      const result = await auth.startPhone(normalizedPhone());
-      codeCountdown = 60;
-      const devHint = result.dev_code ? `，本地测试码 ${result.dev_code}` : '';
-      setAuthMessage(authNodes.phoneMessage, `验证码已发送${devHint}`, 'success');
-      clearInterval(codeCountdownTimer);
-      codeCountdownTimer = setInterval(() => {
-        codeCountdown -= 1;
-        authNodes.sendCode.textContent = codeCountdown > 0 ? `${codeCountdown}s 后重发` : '重新发送';
-        if (codeCountdown <= 0) clearInterval(codeCountdownTimer);
-        syncPhoneLogin();
-      }, 1000);
-    } catch (error) {
-      setAuthMessage(authNodes.phoneMessage, error.message || '验证码发送失败，请重试。', 'error');
-    } finally {
-      setAuthBusy(authNodes.sendCode, false);
-      syncPhoneLogin();
-    }
   });
   authNodes.phoneForm.addEventListener('submit', async (event) => {
     event.preventDefault();
@@ -207,8 +199,9 @@
     setAuthBusy(authNodes.phoneSubmit, true);
     setAuthMessage(authNodes.phoneMessage, '正在登录…');
     try {
-      await completeAuth(await auth.verifyPhone(normalizedPhone(), authNodes.code.value));
+      await completeAuth(await auth.directPhone(normalizedPhone()));
     } catch (error) {
+      track('login_failed', { provider: 'phone', message: error.message || '' });
       setAuthMessage(authNodes.phoneMessage, error.message || '登录失败，请重试。', 'error');
     } finally {
       setAuthBusy(authNodes.phoneSubmit, false);
@@ -267,9 +260,11 @@
         const accepted = result.photo?.status === 'accepted';
         state.photoAssets[kind] = accepted ? result.photo.assetId : null;
         state.revision = result.revision || state.revision;
+        track('photo_upload_result', { kind, accepted, code: result.photo?.code || '' });
         setPhotoState(kind, accepted ? 'valid' : 'invalid', result.photo?.message || (accepted ? '照片可用' : '请重新上传'));
       } catch (requestError) {
         if (activeController.signal.aborted) return;
+        track('photo_upload_result', { kind, accepted: false, code: 'network' });
         setPhotoState(kind, 'invalid', requestError.message || '照片检测失败，请重试');
       }
     });
@@ -291,6 +286,7 @@
     const sessionId = await ensureSession();
     const result = await api.saveManualProfile(sessionId, state.manual);
     state.revision = result.session?.revision || state.revision;
+    track('manual_saved');
     showScreen('like');
   }));
 
@@ -309,6 +305,7 @@
     };
     const result = await api.savePreferences(sessionId, { axes: state.axes, palette: state.palette });
     state.revision = result.session?.revision || state.revision;
+    track('preferences_saved', { palette: state.palette });
     showScreen('vibe');
   }));
 
@@ -368,6 +365,8 @@
     return { typeId: typeByPalette[palette] || 'mute' };
   };
   const runtimeConfig = window.__SELFIT_CONFIG__ || {};
+  // 邀请码登录仅内部测试用：默认隐藏，服务端配置 SELFIT_SHOW_INVITE_LOGIN=1 时显示。
+  document.querySelector('[data-invite-login]')?.toggleAttribute('hidden', !runtimeConfig.showInviteLogin);
   const queryMode = new URLSearchParams(location.search).get('apiMode');
   const runtimeMode = queryMode || runtimeConfig.apiMode || shell.dataset.apiMode || 'mock';
   auth = window.SelfitAuth.createClient({
@@ -689,6 +688,7 @@
     const button = document.querySelector('#vibeNext');
     button.disabled = true; button.setAttribute('aria-busy', 'true');
     showScreen('loading'); setLoadingProgress(25);
+    track('report_started');
     try {
       const sessionId = await ensureSession();
       const saved = await api.saveVibe(sessionId, state.answers);
@@ -707,11 +707,13 @@
       if (!completedJob) throw new window.SelfitApi.SelfitApiError('报告生成时间较长，请稍后重试。', { code: 'report.timeout', retryable: true });
       state.reportId = completedJob.reportId;
       const report = completedJob.report || (await api.getReport(state.reportId)).report;
+      track('report_completed', { reportId: state.reportId, typeId: report?.typeId || '' });
       setLoadingProgress(100);
       renderReport(report);
       await new Promise((resolve) => setTimeout(resolve, 900));
       showScreen('report');
     } catch (error) {
+      track('report_failed', { message: error.message || '' });
       showScreen('vibe');
       toast(error.message || '报告生成失败，请重试。');
     } finally {
@@ -954,16 +956,18 @@
     requestAnimationFrame(() => goToShareSlide(0, false));
   });
   const currentReportId = () => state.reportId || window.__SELFIT_REPORT_ID__ || null;
-  document.querySelector('#retakeBtn').addEventListener('click', () => showScreen('vibe'));
+  document.querySelector('#retakeBtn').addEventListener('click', () => { track('retake_clicked'); showScreen('vibe'); });
   document.querySelectorAll('[data-share]').forEach((button) => button.addEventListener('click', () => runButtonAction(button, async () => {
     if (button.dataset.share === '保存单张') {
       await downloadShareCard(shareSlides[shareSlideIndex], shareSlideIndex);
+      track('share_saved', { slideIndex: shareSlideIndex, channel: 'save' });
       toast(`第 ${shareSlideIndex + 1} 张已保存为高清图片`);
       return;
     }
     const reportId = currentReportId();
     if (!reportId) throw new window.SelfitApi.SelfitApiError('报告仍在准备中，请稍后再试。', { code: 'report.not_ready' });
     const result = await api.createShareAsset(reportId, { slideIndex: shareSlideIndex, channel: button.dataset.share, format: 'png' });
+    track('share_saved', { slideIndex: shareSlideIndex, channel: button.dataset.share });
     toast(`${button.dataset.share}已准备好`);
   })));
 

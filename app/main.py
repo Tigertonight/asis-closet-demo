@@ -24,10 +24,11 @@ from app.auth import (
     revoke_token,
     start_phone_login,
     verify_phone_login,
+    verify_phone_direct_login,
     verify_invite_login,
     client_ip_from_request,
 )
-from app.ops import deployment_guard_report, request_guard_middleware
+from app.ops import deployment_guard_report, env_flag, request_guard_middleware
 from app.analyzer import (
     analyze_contract,
     explain_fixture_case,
@@ -110,6 +111,7 @@ from app.stylist_sessions import (
 )
 from app.selfit_onboarding import router as selfit_onboarding_router
 from app.selfit_mirror_handoff import router as selfit_mirror_handoff_router
+from app.selfit_analytics import admin_router as selfit_admin_router, router as selfit_analytics_router
 from app.qa_onboarding import QA_PHOTO_DIR, router as qa_onboarding_router
 from app.storage import storage_context, user_storage
 from scripts.generate_qa_artifacts import generate_qa_artifacts
@@ -122,8 +124,12 @@ app = FastAPI(title="selfit", version="0.2.0")
 app.middleware("http")(request_guard_middleware)
 app.include_router(selfit_onboarding_router)
 app.include_router(selfit_mirror_handoff_router)
+app.include_router(selfit_analytics_router)
+app.include_router(selfit_admin_router)
 app.include_router(qa_onboarding_router)
 SELFIT_INDEX_PATH = Path(__file__).resolve().parent / "static" / "selfit" / "index.html"
+ADMIN_INDEX_PATH = Path(__file__).resolve().parent / "static" / "admin" / "index.html"
+FAVICON_PATH = Path(__file__).resolve().parent / "static" / "brand" / "favicon.ico"
 SELFIT_MIRROR_INDEX_PATH = Path(__file__).resolve().parent / "static" / "selfit" / "mirror.html"
 REPORT_BUILDER_INDEX_PATH = Path(__file__).resolve().parent / "static" / "report-builder" / "index.html"
 TRYON_OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
@@ -321,6 +327,12 @@ async def auth_phone_start(request: Request) -> dict[str, Any]:
 async def auth_phone_verify(request: Request) -> dict[str, Any]:
     payload = await request.json()
     return verify_phone_login(str(payload.get("phone") or ""), str(payload.get("code") or ""))
+
+
+@app.post("/auth/phone/direct")
+async def auth_phone_direct(request: Request) -> dict[str, Any]:
+    payload = await request.json()
+    return verify_phone_direct_login(str(payload.get("phone") or ""), client_ip_from_request(request))
 
 
 @app.post("/auth/invite/verify")
@@ -645,6 +657,8 @@ def _selfit_index_html() -> str:
         "authMode": os.getenv("SELFIT_AUTH_FRONTEND_MODE") or os.getenv("SELFIT_ONBOARDING_API_MODE", "live"),
         "authBase": "/auth",
         "timeoutMs": 15000,
+        # 邀请码登录仅内部测试用，默认对用户隐藏（SELFIT_SHOW_INVITE_LOGIN=1 打开）。
+        "showInviteLogin": env_flag("SELFIT_SHOW_INVITE_LOGIN", False),
     }
     tag = "<script>window.__SELFIT_CONFIG__ = " + json.dumps(config, ensure_ascii=False) + ";</script>"
     marker = '<script src="/static/selfit/selfit-api.js'
@@ -658,12 +672,32 @@ def root_page() -> RedirectResponse:
     return RedirectResponse(url="/selfit", status_code=308)
 
 
+@app.get("/favicon.ico", include_in_schema=False)
+def favicon() -> FileResponse:
+    return FileResponse(FAVICON_PATH, media_type="image/x-icon")
+
+
 @app.get("/selfit", response_class=HTMLResponse)
 @app.get("/selfit/", response_class=HTMLResponse)
 @app.get("/selfit/demo", response_class=HTMLResponse)
 def selfit_onboarding_page() -> HTMLResponse:
     return HTMLResponse(
         _selfit_index_html(),
+        headers={
+            "Cache-Control": "no-store, no-cache, must-revalidate, max-age=0",
+            "Pragma": "no-cache",
+        },
+    )
+
+
+@app.get("/admin", response_class=FileResponse, include_in_schema=False)
+@app.get("/admin/", response_class=FileResponse, include_in_schema=False)
+def selfit_admin_page() -> FileResponse:
+    """管理后台（内部工具）：页面可加载，全部数据走需要管理员 token 的 /admin/api/*。"""
+
+    return FileResponse(
+        ADMIN_INDEX_PATH,
+        media_type="text/html",
         headers={
             "Cache-Control": "no-store, no-cache, must-revalidate, max-age=0",
             "Pragma": "no-cache",

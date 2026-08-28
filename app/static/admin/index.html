@@ -1,0 +1,317 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>selfit · 管理后台</title>
+<link rel="icon" type="image/svg+xml" href="/static/brand/favicon.svg" />
+<link rel="icon" type="image/png" sizes="32x32" href="/static/brand/favicon-32.png" />
+<link rel="apple-touch-icon" href="/static/brand/apple-touch-icon.png" />
+<style>
+  :root { --brand: #8a011b; --ink: #1f1a1a; --muted: rgba(31,26,26,.55); --line: rgba(31,26,26,.10); --bg: #faf7f5; --card: #ffffff; --rose: #ff4f86; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 14px/1.6 -apple-system, "PingFang SC", "Segoe UI", sans-serif; }
+  header { position: sticky; top: 0; z-index: 10; display: flex; align-items: center; gap: 16px; padding: 12px 28px; background: rgba(255,255,255,.92); backdrop-filter: blur(8px); border-bottom: 1px solid var(--line); }
+  header h1 { margin: 0; font-size: 16px; font-weight: 700; }
+  header h1 small { color: var(--muted); font-weight: 400; margin-left: 8px; }
+  nav.tabs { display: flex; gap: 4px; margin-left: auto; }
+  nav.tabs a, nav.tabs button { padding: 6px 14px; border: 0; border-radius: 999px; background: transparent; color: var(--muted); text-decoration: none; font-size: 13px; cursor: pointer; }
+  nav.tabs .is-active, nav.tabs a:hover { background: #f6e7ea; color: var(--brand); }
+  main { max-width: 1080px; margin: 0 auto; padding: 24px 28px 64px; }
+  .login-card { max-width: 380px; margin: 12vh auto 0; padding: 32px; background: var(--card); border-radius: 20px; box-shadow: 0 8px 30px rgba(60,21,25,.08); text-align: center; }
+  .login-card h2 { margin: 0 0 6px; font-size: 18px; }
+  .login-card p { margin: 0 0 20px; color: var(--muted); font-size: 13px; }
+  .login-card input { width: 100%; height: 46px; padding: 0 16px; border: 1px solid var(--line); border-radius: 12px; font-size: 15px; outline: none; }
+  .login-card button { width: 100%; height: 46px; margin-top: 14px; border: 0; border-radius: 999px; background: var(--brand); color: #fff; font-size: 15px; font-weight: 600; cursor: pointer; }
+  .login-card .msg { min-height: 20px; margin-top: 10px; color: #a90020; font-size: 13px; }
+  .kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin-bottom: 20px; }
+  .kpi { padding: 16px 18px; background: var(--card); border-radius: 16px; box-shadow: 0 4px 14px rgba(60,21,25,.05); }
+  .kpi b { display: block; font-size: 26px; font-weight: 700; letter-spacing: -.5px; }
+  .kpi span { color: var(--muted); font-size: 12px; }
+  .panel { margin-bottom: 20px; padding: 20px 22px; background: var(--card); border-radius: 16px; box-shadow: 0 4px 14px rgba(60,21,25,.05); }
+  .panel h2 { margin: 0 0 14px; font-size: 15px; font-weight: 700; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th, td { padding: 8px 10px; text-align: left; border-bottom: 1px solid var(--line); white-space: nowrap; }
+  th { color: var(--muted); font-weight: 500; font-size: 12px; }
+  tr:last-child td { border-bottom: 0; }
+  .rate { display: inline-block; min-width: 48px; padding: 1px 8px; border-radius: 999px; background: #f6e7ea; color: var(--brand); font-weight: 600; font-size: 12px; text-align: center; }
+  .bar { height: 6px; border-radius: 3px; background: #f1e6e8; overflow: hidden; min-width: 80px; }
+  .bar i { display: block; height: 100%; background: var(--rose); }
+  .empty { padding: 40px 0; text-align: center; color: var(--muted); }
+  .toolbar { display: flex; gap: 10px; align-items: center; margin-bottom: 18px; }
+  .toolbar button { padding: 7px 16px; border: 0; border-radius: 999px; background: var(--brand); color: #fff; font-size: 13px; cursor: pointer; }
+  .toolbar small { color: var(--muted); }
+  .debug-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 12px; }
+  .debug-card { display: flex; flex-direction: column; gap: 4px; padding: 14px 16px; background: var(--card); border: 1px solid var(--line); border-radius: 14px; text-decoration: none; color: var(--ink); transition: border-color .15s ease, transform .15s ease; }
+  .debug-card:hover { border-color: var(--rose); transform: translateY(-1px); }
+  .debug-card b { font-size: 14px; }
+  .debug-card span { color: var(--muted); font-size: 12px; line-height: 1.5; }
+</style>
+</head>
+<body>
+<header>
+  <h1>selfit 管理后台 <small>路演数据看板</small></h1>
+  <nav class="tabs">
+    <button class="is-active" data-tab="analytics" type="button">数据分析</button>
+    <a href="/qa/onboarding-attributes">实验数据 QA</a>
+    <button type="button" data-tab="debug">调试工具</button>
+    <a href="/mvp" target="_blank" rel="noopener">MVP 状态</a>
+    <button type="button" id="settingsBtn" hidden>修改密码</button>
+    <button type="button" id="logoutBtn" hidden>退出</button>
+  </nav>
+</header>
+<main>
+  <section class="login-card" id="loginCard" hidden>
+    <h2>管理后台</h2>
+    <p>内部工具，请输入管理员密码</p>
+    <input id="passwordInput" type="password" placeholder="管理员密码" autocomplete="current-password" />
+    <button id="loginBtn" type="button">登录</button>
+    <div class="msg" id="loginMsg"></div>
+  </section>
+  <section class="login-card" id="settingsCard" hidden>
+    <h2>修改管理员密码</h2>
+    <p>修改后所有已登录的管理会话将失效，需要用新密码重新登录</p>
+    <input id="currentPasswordInput" type="password" placeholder="当前密码" autocomplete="current-password" />
+    <input id="newPasswordInput" type="password" placeholder="新密码（至少 6 位）" autocomplete="new-password" style="margin-top:10px" />
+    <input id="confirmPasswordInput" type="password" placeholder="确认新密码" autocomplete="new-password" style="margin-top:10px" />
+    <button id="savePasswordBtn" type="button">保存新密码</button>
+    <div class="msg" id="passwordMsg"></div>
+    <button id="cancelSettingsBtn" type="button" style="background:transparent;color:#8a011b;margin-top:6px">取消</button>
+  </section>
+  <section id="dashboard" hidden>
+    <div class="toolbar" id="toolbar">
+      <button type="button" id="refreshBtn">刷新数据</button>
+      <small id="updatedAt"></small>
+    </div>
+    <div class="kpis" id="kpis"></div>
+    <div class="panel">
+      <h2>App 主流程漏斗</h2>
+      <table><thead><tr><th>步骤</th><th>屏</th><th>到达人数</th><th style="width:30%">进度</th><th>相对上步</th></tr></thead><tbody id="appFunnel"></tbody></table>
+    </div>
+    <div class="panel">
+      <h2>镜子端漏斗（线下流程）</h2>
+      <table><thead><tr><th>步骤</th><th>事件</th><th>次数</th><th>转化</th></tr></thead><tbody id="mirrorFunnel"></tbody></table>
+    </div>
+    <div class="panel">
+      <h2>各屏停留时长</h2>
+      <table><thead><tr><th>屏</th><th>样本数</th><th>平均（秒）</th><th>中位数（秒）</th></tr></thead><tbody id="dwell"></tbody></table>
+    </div>
+    <div class="panel">
+      <h2>按小时活跃（近 48 小时，北京时间）</h2>
+      <table><thead><tr><th>小时</th><th>事件数</th><th style="width:50%">分布</th></tr></thead><tbody id="hourly"></tbody></table>
+    </div>
+    <div class="panel">
+      <h2>用户行为（手机号关联）</h2>
+      <table><thead><tr><th>手机号</th><th>登录方式</th><th>行为事件数</th><th>首次活跃</th><th>最后活跃</th></tr></thead><tbody id="userRows"></tbody></table>
+    </div>
+    <div class="panel" id="debugPanel" hidden>
+      <h2>调试工具</h2>
+      <p style="margin:0 0 14px;color:var(--muted);font-size:13px">开发中功能的内部入口。所有页面均已纳入管理员密码保护，普通用户无法访问；点击新标签页打开。</p>
+      <div class="debug-grid">
+        <a class="debug-card" href="/report-builder" target="_blank" rel="noopener"><b>风格报告配置后台</b><span>16 人格模板的编辑与导出（改完需手动合入模板库）</span></a>
+        <a class="debug-card" href="/demo" target="_blank" rel="noopener"><b>十二季型色彩诊断</b><span>色卡检测 + 4/12/24 季候选的原始 Demo</span></a>
+        <a class="debug-card" href="/try-on/demo" target="_blank" rel="noopener"><b>AI 上衣试穿</b><span>人像 + 服装理解、mask 与试穿生成的调试页</span></a>
+        <a class="debug-card" href="/closet/demo" target="_blank" rel="noopener"><b>电子衣橱</b><span>单品入柜、链接导入、搭配组合的调试页</span></a>
+        <a class="debug-card" href="/mvp" target="_blank" rel="noopener"><b>MVP 状态总览</b><span>产品门禁、算法契约与回归状态</span></a>
+        <a class="debug-card" href="/qa" target="_blank" rel="noopener"><b>MVP 自测</b><span>色彩测试链路的自测页</span></a>
+        <a class="debug-card" href="/self-test" target="_blank" rel="noopener"><b>算法自测</b><span>fixture 样本回归与稳定性</span></a>
+        <a class="debug-card" href="/selfit/mirror?preview=processing&stage=50" target="_blank" rel="noopener"><b>镜子处理中预览</b><span>镜子端各进度阶段的视觉走查</span></a>
+        <a class="debug-card" href="/selfit?preview=report&type=neon" target="_blank" rel="noopener"><b>报告页预览</b><span>直接查看指定人格的报告渲染（type 参数可换）</span></a>
+      </div>
+    </div>
+  </section>
+</main>
+<script>
+(() => {
+  const TOKEN_KEY = 'selfit.admin.token.v1';
+  const $ = (id) => document.getElementById(id);
+  const state = { token: sessionStorage.getItem(TOKEN_KEY) || '' };
+
+  const api = async (path) => {
+    const response = await fetch(path, { headers: { Authorization: `Bearer ${state.token}` } });
+    if (response.status === 401 || response.status === 403) throw Object.assign(new Error('登录已失效，请重新登录'), { status: response.status });
+    if (!response.ok) throw new Error(`请求失败（${response.status}）`);
+    return response.json();
+  };
+
+  const login = async () => {
+    const password = $('passwordInput').value;
+    if (!password) return;
+    $('loginBtn').disabled = true; $('loginMsg').textContent = '';
+    try {
+      const response = await fetch('/admin/api/login', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password }),
+      });
+      const payload = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(payload.detail || '密码不正确');
+      state.token = payload.access_token;
+      sessionStorage.setItem(TOKEN_KEY, state.token);
+      // 内部页网关跳转过来时（?next=/xxx），登录成功后回到原页面
+      const next = new URLSearchParams(location.search).get('next');
+      if (next && next.startsWith('/') && !next.startsWith('//')) {
+        window.location.href = next;
+        return;
+      }
+      showDashboard();
+    } catch (error) {
+      $('loginMsg').textContent = error.message || '登录失败';
+    } finally {
+      $('loginBtn').disabled = false;
+    }
+  };
+
+  const changePassword = async () => {
+    const currentPassword = $('currentPasswordInput').value;
+    const newPassword = $('newPasswordInput').value;
+    const confirmPassword = $('confirmPasswordInput').value;
+    const message = $('passwordMsg');
+    message.textContent = '';
+    if (!currentPassword || !newPassword) { message.textContent = '请填写当前密码和新密码'; return; }
+    if (newPassword.length < 6) { message.textContent = '新密码至少 6 位'; return; }
+    if (newPassword !== confirmPassword) { message.textContent = '两次输入的新密码不一致'; return; }
+    $('savePasswordBtn').disabled = true;
+    try {
+      const response = await fetch('/admin/api/password', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${state.token}` },
+        body: JSON.stringify({ current_password: currentPassword, new_password: newPassword }),
+      });
+      const payload = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(payload.detail || '修改失败');
+      alert('密码已更新，请用新密码重新登录');
+      showLogin();
+    } catch (error) {
+      message.textContent = error.message || '修改失败';
+    } finally {
+      $('savePasswordBtn').disabled = false;
+    }
+  };
+
+  const fmtTime = (value) => {
+    if (!value) return '—';
+    const date = new Date(value);
+    return Number.isNaN(date.getTime()) ? value : date.toLocaleString('zh-CN', { hour12: false });
+  };
+  const maskPhone = (phone) => (phone ? `${phone.slice(0, 4)}****${phone.slice(-4)}` : '—');
+
+  const render = (summary, users) => {
+    const kpiDefs = [
+      ['logins', '手机号登录'],
+      ['mirrorCaptures', '镜子拍照'],
+      ['mirrorClaims', '扫码领取'],
+      ['reportsCompleted', '生成报告'],
+      ['users', '行为用户数'],
+      ['events', '总事件数'],
+    ];
+    $('kpis').replaceChildren(...kpiDefs.map(([key, label]) => {
+      const node = document.createElement('div');
+      node.className = 'kpi';
+      const value = summary.totals[key] ?? 0;
+      node.innerHTML = `<b>${value}</b><span>${label}</span>`;
+      return node;
+    }));
+
+    const maxFunnel = Math.max(...summary.appFunnel.map((row) => row.views), 1);
+    $('appFunnel').replaceChildren(...summary.appFunnel.map((row, index) => {
+      const tr = document.createElement('tr');
+      const prev = index > 0 ? summary.appFunnel[index - 1].views : null;
+      const rate = prev ? `<span class="rate">${prev ? Math.round(row.views / prev * 100) : 0}%</span>` : '—';
+      tr.innerHTML = `<td>${row.label}</td><td>${row.screen}</td><td>${row.views}</td><td><span class="bar"><i style="width:${Math.round(row.views / maxFunnel * 100)}%"></i></span></td><td>${rate}</td>`;
+      return tr;
+    }));
+
+    $('mirrorFunnel').replaceChildren(...summary.mirrorFunnel.map((row) => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `<td>${row.label}</td><td>${row.event}</td><td>${row.count}</td><td>${row.conversion != null ? `<span class="rate">${Math.round(row.conversion * 100)}%</span>` : '—'}</td>`;
+      return tr;
+    }));
+
+    const dwellRows = Object.entries(summary.dwell).map(([screen, item]) => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `<td>${screen}</td><td>${item.samples}</td><td>${item.avgSeconds}</td><td>${item.medianSeconds}</td>`;
+      return tr;
+    });
+    $('dwell').replaceChildren(...(dwellRows.length ? dwellRows : [Object.assign(document.createElement('tr'), { innerHTML: '<td colspan="4" class="empty">暂无停留数据</td>' })]));
+
+    const maxHour = Math.max(...summary.hourly.map((row) => row.count), 1);
+    $('hourly').replaceChildren(...(summary.hourly.length ? summary.hourly.map((row) => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `<td>${row.hour}</td><td>${row.count}</td><td><span class="bar"><i style="width:${Math.round(row.count / maxHour * 100)}%"></i></span></td>`;
+      return tr;
+    }) : [Object.assign(document.createElement('tr'), { innerHTML: '<td colspan="3" class="empty">暂无数据</td>' })]));
+
+    const phoneByUser = new Map(users.users.map((user) => [user.user_id, user]));
+    $('userRows').replaceChildren(...(summary.users.length ? summary.users.map((row) => {
+      const account = phoneByUser.get(row.user_id);
+      const tr = document.createElement('tr');
+      tr.innerHTML = `<td>${account?.phone_e164 ? maskPhone(account.phone_e164) : '—'}</td><td>${account?.auth_provider || '—'}</td><td>${row.events}</td><td>${fmtTime(row.first_seen)}</td><td>${fmtTime(row.last_seen)}</td>`;
+      return tr;
+    }) : [Object.assign(document.createElement('tr'), { innerHTML: '<td colspan="5" class="empty">暂无用户行为数据</td>' })]));
+
+    $('updatedAt').textContent = `更新于 ${new Date().toLocaleTimeString('zh-CN', { hour12: false })}`;
+  };
+
+  const load = async () => {
+    try {
+      const [summary, users] = await Promise.all([api('/admin/api/analytics/summary'), api('/admin/api/analytics/users')]);
+      render(summary, users);
+    } catch (error) {
+      if (error.status) showLogin();
+      else $('updatedAt').textContent = error.message || '加载失败';
+    }
+  };
+
+  const showLogin = () => {
+    $('loginCard').hidden = false; $('settingsCard').hidden = true; $('dashboard').hidden = true;
+    $('logoutBtn').hidden = true; $('settingsBtn').hidden = true;
+    sessionStorage.removeItem(TOKEN_KEY); state.token = '';
+    $('passwordInput').value = '';
+    // 从内部页跳转来时提示来源
+    const next = new URLSearchParams(location.search).get('next');
+    const hint = $('loginCard').querySelector('p');
+    if (next) hint.textContent = `该页面为内部工具（${next}），登录后自动返回`;
+    else hint.textContent = '内部工具，请输入管理员密码';
+  };
+  const showDashboard = () => {
+    $('loginCard').hidden = true; $('settingsCard').hidden = true; $('dashboard').hidden = false;
+    $('logoutBtn').hidden = false; $('settingsBtn').hidden = false;
+    void load();
+  };
+  const showSettings = () => {
+    $('loginCard').hidden = true; $('dashboard').hidden = true; $('settingsCard').hidden = false;
+    $('passwordMsg').textContent = '';
+    $('currentPasswordInput').value = ''; $('newPasswordInput').value = ''; $('confirmPasswordInput').value = '';
+  };
+
+  $('loginBtn').addEventListener('click', login);
+  $('passwordInput').addEventListener('keydown', (event) => { if (event.key === 'Enter') login(); });
+  $('savePasswordBtn').addEventListener('click', changePassword);
+  $('cancelSettingsBtn').addEventListener('click', showDashboard);
+  $('settingsBtn').addEventListener('click', showSettings);
+  $('refreshBtn').addEventListener('click', load);
+  document.querySelectorAll('[data-tab]').forEach((button) => button.addEventListener('click', () => {
+    document.querySelectorAll('[data-tab]').forEach((item) => item.classList.toggle('is-active', item === button));
+    if (button.dataset.tab === 'analytics') {
+      $('debugPanel').hidden = true;
+      $('kpis').hidden = false;
+      $('toolbar').hidden = false;
+      document.querySelectorAll('#dashboard .panel:not(#debugPanel)').forEach((panel) => { panel.hidden = false; });
+      void load();
+    } else {
+      document.querySelectorAll('#dashboard .panel:not(#debugPanel)').forEach((panel) => { panel.hidden = true; });
+      $('kpis').hidden = true;
+      $('toolbar').hidden = true;
+      $('debugPanel').hidden = false;
+    }
+  }));
+  $('logoutBtn').addEventListener('click', () => {
+    fetch('/auth/logout', { method: 'POST', headers: { Authorization: `Bearer ${state.token}` } }).catch(() => {});
+    showLogin();
+  });
+
+  if (state.token) showDashboard(); else showLogin();
+})();
+</script>
+</body>
+</html>

@@ -20,8 +20,10 @@ from pathlib import Path
 from typing import Any
 
 from fastapi import APIRouter, Request
-from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse
+from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse, Response
 from PIL import Image, ImageDraw, ImageFont
+
+from app.auth import admin_token_from_request, resolve_admin_user
 
 from app.attribute_pipeline import (
     BODY_SHAPE_LABELS,
@@ -684,6 +686,8 @@ def render_qa_page(content: str, active_tab: str) -> str:
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>onboarding 属性识别 QA</title>
+  <link rel="icon" type="image/svg+xml" href="/static/brand/favicon.svg" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/static/brand/favicon-32.png" />
   <style>
     body {{ margin: 0; background: #f7f3ef; color: #191719; font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Segoe UI", sans-serif; }}
     .layout {{ display: flex; min-height: 100vh; }}
@@ -787,6 +791,7 @@ def render_qa_page(content: str, active_tab: str) -> str:
   <div class="layout">
     <aside class="sidebar">
       <div class="logo">onboarding QA</div>
+      <a class="tab" href="/admin" style="margin-bottom:14px">← 管理后台</a>
       {tab("results", "实验结果")}
       {tab("annotate", "数据标注")}
       {tab("dataset", "数据分布")}
@@ -797,8 +802,22 @@ def render_qa_page(content: str, active_tab: str) -> str:
 </html>"""
 
 
+def _require_admin_redirect(request: Request) -> RedirectResponse | None:
+    """QA 页面鉴权：未登录跳管理后台。返回 None 表示已通过。"""
+
+    token = admin_token_from_request(request)
+    if not token:
+        return RedirectResponse(url="/admin", status_code=307)
+    try:
+        resolve_admin_user(token)
+    except Exception:
+        return RedirectResponse(url="/admin", status_code=307)
+    return None
+
+
 @router.get("/qa/onboarding-attributes", response_class=HTMLResponse)
 def qa_onboarding_attributes(
+    request: Request,
     tab: str = "results",
     task: str | None = None,
     diff: int = 0,
@@ -806,7 +825,10 @@ def qa_onboarding_attributes(
     uploaded: str = "",
     upload_error: str = "",
     upload_dup: str = "",
-) -> str:
+) -> Response:
+    denied = _require_admin_redirect(request)
+    if denied is not None:
+        return denied
     entries = _analyze_all(refresh=bool(refresh))
     overlays = _ensure_overlays(entries, refresh=bool(refresh))
     if tab == "annotate":
@@ -820,8 +842,11 @@ def qa_onboarding_attributes(
 
 
 @router.post("/qa/photos/upload")
-async def qa_upload_photo(request: Request) -> RedirectResponse:
+async def qa_upload_photo(request: Request) -> Response:
     """同事上传照片扩充数据集：校验 → 去重 → 落盘 → 立即跑算法并入缓存。"""
+    denied = _require_admin_redirect(request)
+    if denied is not None:
+        return denied
     base = "/qa/onboarding-attributes?tab=dataset"
 
     def back(query: str) -> RedirectResponse:
@@ -883,7 +908,10 @@ async def qa_upload_photo(request: Request) -> RedirectResponse:
 
 
 @router.post("/qa/annotations/tasks")
-async def qa_create_annotation_task(request: Request) -> RedirectResponse:
+async def qa_create_annotation_task(request: Request) -> Response:
+    denied = _require_admin_redirect(request)
+    if denied is not None:
+        return denied
     form = await request.form()
     name = str(form.get("name") or "").strip() or "未命名任务"
     data = _load_annotations()
@@ -901,8 +929,11 @@ async def qa_create_annotation_task(request: Request) -> RedirectResponse:
 
 
 @router.post("/qa/annotations/{task_id}/batch")
-async def qa_set_annotations_batch(task_id: str, request: Request) -> JSONResponse:
+async def qa_set_annotations_batch(task_id: str, request: Request) -> Response:
     """整体替换任务的标注集（页面网格的全量状态）。任一值非法则全部不落库。"""
+    denied = _require_admin_redirect(request)
+    if denied is not None:
+        return denied
     try:
         payload = await request.json()
     except Exception:

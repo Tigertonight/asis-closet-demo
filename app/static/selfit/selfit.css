@@ -178,6 +178,8 @@ button {
   .auth-choice-reveal { display: none; }
 }
 .auth-choice-actions { position: absolute; z-index: 5; right: 40px; bottom: max(72px, calc(env(safe-area-inset-bottom) + 56px)); left: 40px; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+/* 邀请码登录默认隐藏，仅剩手机号登录时横跨两列保持居中。 */
+.auth-choice-actions [data-invite-login][hidden] + .primary-action { grid-column: 1 / -1; }
 .auth-choice-actions .primary-action, .auth-choice-actions .secondary-action { width: 100%; }
 .secondary-action { height: 44px; padding: 0 14px; border: 1px solid rgba(138,1,27,.26); border-radius: 18px; color: var(--brand); background: #fff; font-size: 14px; font-weight: 500; line-height: 20px; cursor: pointer; }
 .secondary-action:active { background: #fff7f8; transform: scale(.985); }
@@ -199,8 +201,7 @@ button {
 .auth-field input::placeholder { color: rgba(0,0,0,.26); }
 .auth-field--phone > button { width: 18px; height: 18px; flex: 0 0 18px; margin-right: 16px; padding: 0; border: 0; font-size: 0; background: url(/static/selfit/assets/clear-input.svg) center / 18px 18px no-repeat; cursor: pointer; }
 .auth-code-field { margin-top: 24px; }
-.auth-code-field > button { height: 44px; min-width: 94px; margin-right: 16px; padding: 0 14px; border: 0; color: var(--brand); background: transparent; font-size: 14px; font-weight: 500; white-space: nowrap; cursor: pointer; }
-.auth-code-field > button:disabled { color: rgba(0,0,0,.25); cursor: default; }
+.auth-hint { margin: 14px 2px 0; color: rgba(0,0,0,.38); font-size: 13px; line-height: 20px; }
 .auth-invite-field { width: 100%; }
 .auth-message { min-height: 22px; margin: 12px 2px 0; color: rgba(0,0,0,.42); font-size: 14px; line-height: 22px; text-wrap: pretty; }
 .auth-message[data-state="error"] { color: #a90020; }

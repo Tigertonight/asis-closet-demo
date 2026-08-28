@@ -1641,7 +1641,9 @@ def render_demo_page() -> str:
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>AI 色彩诊断 Demo</title>
-  <link rel="icon" href="data:," />
+  <link rel="icon" type="image/svg+xml" href="/static/brand/favicon.svg" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/static/brand/favicon-32.png" />
+  <link rel="apple-touch-icon" href="/static/brand/apple-touch-icon.png" />
   <style>
     :root {
       --red: #ff4f86;

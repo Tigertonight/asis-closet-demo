@@ -102,6 +102,19 @@
       return { status: 'sent', phone_e164: `+86${phone}`, expires_in_seconds: 600, dev_code: '0000' };
     }
 
+    async directPhone(phone) {
+      if (this.mode === 'live') {
+        const payload = await this.request('/phone/direct', { method: 'POST', body: { phone } });
+        return this.persist(payload);
+      }
+      await wait(360);
+      return this.persist({
+        access_token: `mock_phone_${Date.now()}`,
+        expires_in_seconds: 86400,
+        user: { user_id: mockId(phone), phone_e164: `+86${phone}`, status: 'active' },
+      });
+    }
+
     async verifyPhone(phone, code) {
       if (this.mode === 'live') {
         const payload = await this.request('/phone/verify', { method: 'POST', body: { phone, code } });
