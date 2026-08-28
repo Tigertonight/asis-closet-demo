@@ -237,7 +237,7 @@ def test_selfit_report_share_cards_use_the_dedicated_qr_artwork() -> None:
     assert response.text.count("/static/selfit/assets/share-report-qr.png?v=20260828") == 3
     assert 'data-share-ornament' in response.text
     assert "/static/selfit/selfit.css?v=20260829-share-card-layout1" in response.text
-    assert "/static/selfit/selfit.js?v=20260828-webview1" in response.text
+    assert "/static/selfit/selfit.js?v=20260829-hero-preload" in response.text
     assert "/static/selfit/selfit-persona.js?v=20260828-1" in response.text
 
     asset = client.get("/static/selfit/assets/share-report-qr.png")
@@ -251,10 +251,10 @@ def test_selfit_report_share_cards_use_the_dedicated_qr_artwork() -> None:
     assert ".share-card-ornament { display: grid; width: 244px; height: 150px; margin: 16px 0 0;" in styles.text
     assert '.share-card--identity[data-personality="film"] .share-card-ornament { transform: translateY(24px); }' in styles.text
     assert '.share-card--identity:is([data-personality="loop"],[data-personality="noir"]) .share-card-ornament { transform: translateY(16px); }' in styles.text
-    assert "share-ornament.png?v=20260828-figma-v2" in response.text
+    assert "share-ornament.webp?v=20260829-webp-v1" in response.text
 
     runtime = client.get("/static/selfit/selfit.js")
-    assert "share-ornament.png?v=20260828-figma-v2" in runtime.text
+    assert "share-ornament.webp?v=20260829-webp-v1" in runtime.text
     assert "drawContainImage(context, image" in runtime.text
     assert "shareIdentityCard.dataset.personality" in runtime.text
     assert "const drawShareMaterial" in runtime.text

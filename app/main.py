@@ -142,7 +142,22 @@ for _mounted_dir in (Path("tests/fixtures/images"), Path("tests/results"), Path(
 app.mount("/fixture-images", StaticFiles(directory="tests/fixtures/images"), name="fixture-images")
 app.mount("/qa-artifacts", StaticFiles(directory="tests/results"), name="qa-artifacts")
 app.mount("/demo-assets", StaticFiles(directory="outputs/demo_assets"), name="demo-assets")
-app.mount("/static", StaticFiles(directory="app/static"), name="static")
+
+
+class CachedStaticFiles(StaticFiles):
+    """静态资源长缓存：报告页大图曾因无缓存头反复全量下载（内测反馈 hero 图 10s）。
+
+    图片/字体引用统一带 ?v= 版本参数（模板更新时升 v 强制刷新），
+    因此可以放心 immutable 一年；HTML 不走这个挂载。
+    """
+
+    def file_response(self, *args: Any, **kwargs: Any) -> Response:
+        response = super().file_response(*args, **kwargs)
+        response.headers.setdefault("Cache-Control", "public, max-age=31536000, immutable")
+        return response
+
+
+app.mount("/static", CachedStaticFiles(directory="app/static"), name="static")
 app.mount("/tryon-outputs", StaticFiles(directory="outputs/tryon"), name="tryon-outputs")
 app.mount("/tryon-models", StaticFiles(directory=TRYON_MODEL_FIXTURE_DIR), name="tryon-models")
 CLOSET_OUTPUT_DIR.mkdir(parents=True, exist_ok=True)

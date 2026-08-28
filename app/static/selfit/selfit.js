@@ -676,7 +676,7 @@
     const shareIdentityCard = document.querySelector('.share-card--identity');
     shareIdentityCard.dataset.personality = String(data.typeId || 'mute').toLowerCase();
     const shareTypeId = String(data.typeId || 'mute').toLowerCase();
-    const shareIllustrationSource = `/static/selfit/assets/personality/${shareTypeId}/share-ornament.png?v=20260828-figma-v2`;
+    const shareIllustrationSource = `/static/selfit/assets/personality/${shareTypeId}/share-ornament.webp?v=20260829-webp-v1`;
     shareIllustration.src = shareIllustrationSource;
     shareIllustration.alt = `${data.title} 风格摆件`;
     shareIllustration.hidden = false;
@@ -726,6 +726,11 @@
       if (!completedJob) throw new window.SelfitApi.SelfitApiError('报告生成时间较长，请稍后重试。', { code: 'report.timeout', retryable: true });
       state.reportId = completedJob.reportId;
       const report = completedJob.report || (await api.getReport(state.reportId)).report;
+      // 分型一确定就预加载 hero 大图：报告数据渲染前的等待时间里图片已在下载，
+      // 报告页出现时封面通常已就绪（hero.webp ~100KB，之前 PNG 1.6MB 要 6-10s）。
+      const heroTemplate = personalityCatalog.types?.[String(report?.typeId || '').toLowerCase()];
+      const heroSrc = heroTemplate?.hero?.image?.src;
+      if (heroSrc) { const preload = new Image(); preload.src = heroSrc; }
       track('report_completed', { reportId: state.reportId, typeId: report?.typeId || '' });
       setLoadingProgress(100);
       renderReport(report);
