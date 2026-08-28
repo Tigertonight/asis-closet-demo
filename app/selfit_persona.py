@@ -185,7 +185,7 @@ PERSONAS: dict[str, Persona] = {
                  ("silhouette", "time_orientation", "temperature"),
                  "柔和、经典、暖调、松弛讲究", ("松弛慵懒", "暖调柔和", "经典耐看"),
                  "自然", ("复古",)),
-        _persona("MELT", "甜感治愈", "韩系", ("日系",),
+        _persona("MELT", "奶油治愈", "韩系", ("日系",),
                  (20, 70, 60, 35, 65, 75, 35),
                  ("complexity", "saturation", "completion"),
                  "柔和、甜色、装饰感、精修", ("甜感装饰", "柔和治愈", "精致甜色"),
