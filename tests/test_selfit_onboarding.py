@@ -237,8 +237,8 @@ def test_selfit_report_share_cards_use_the_dedicated_qr_artwork() -> None:
     assert response.text.count("<div class=\"share-card-meta\"><span>我的 selfit 风格报告</span></div>") == 3
     assert response.text.count("/static/selfit/assets/share-report-qr.png?v=20260828") == 3
     assert 'data-share-ornament' in response.text
-    assert "/static/selfit/selfit.css?v=20260829-mobile-save1" in response.text
-    assert "/static/selfit/selfit.js?v=20260829-mobile-save1" in response.text
+    assert "/static/selfit/selfit.css?v=20260829-mobile-save2" in response.text
+    assert "/static/selfit/selfit.js?v=20260829-mobile-save2" in response.text
     assert "/static/selfit/selfit-persona.js?v=20260828-1" in response.text
 
     asset = client.get("/static/selfit/assets/share-report-qr.png")
@@ -266,6 +266,9 @@ def test_selfit_report_share_cards_use_the_dedicated_qr_artwork() -> None:
     assert "triggerBrowserDownload(blob, index)" in runtime.text
     assert 'id="saveImageGuide"' in response.text
     assert '长按图片保存到相册' in response.text
+    assert 'data-save-guide-copy' not in response.text
+    assert response.text.count('data-close-save-guide') == 1
+    assert "const saveGuideCopy" not in runtime.text
     assert "previewScreen === 'share'" in runtime.text
 
 

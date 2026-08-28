@@ -837,7 +837,6 @@
   const shareSaveLabel = document.querySelector('[data-share-save-label]');
   const saveImageGuide = document.querySelector('#saveImageGuide');
   const saveImagePreview = document.querySelector('#saveImagePreview');
-  const saveGuideCopy = document.querySelector('[data-save-guide-copy]');
   let shareSlideIndex = 0;
   let shareScrollFrame = 0;
   let saveImagePreviewUrl = '';
@@ -1023,9 +1022,6 @@
     closeShareDialog();
     saveImagePreviewUrl = URL.createObjectURL(blob);
     saveImagePreview.src = saveImagePreviewUrl;
-    saveGuideCopy.textContent = isWechatBrowser
-      ? '长按下方图片，选择“保存图片”即可存入手机相册。'
-      : '长按下方图片，选择“存储图像”或“保存图片”。';
     saveImageGuide.hidden = false;
   };
   saveImageGuide.querySelectorAll('[data-close-save-guide]').forEach((button) => button.addEventListener('click', closeSaveImageGuide));
