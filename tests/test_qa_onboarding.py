@@ -281,3 +281,106 @@ def test_admin_api_rejects_phone_user_token(monkeypatch: pytest.MonkeyPatch, tmp
 
     assert login.status_code == 200
     assert response.status_code == 403
+
+
+# ---------------------------------------------------------------------------
+# 照片来源体系：builtin / admin / mirror / app 四类 + 归档 + 筛选
+# ---------------------------------------------------------------------------
+
+def test_entry_source_infers_legacy_entries() -> None:
+    """旧 manifest 条目没有 source 字段：按采集标记推断，新数据直接读。"""
+
+    assert qa_onboarding.entry_source({"file": "face/face_01.jpg", "author": "a photographer", "query": "smile"}) == "builtin"
+    assert qa_onboarding.entry_source({"file": "face/face_01.jpg", "author": "同事上传", "query": "手动上传"}) == "admin"
+    assert qa_onboarding.entry_source({"file": "face/user_face_x.jpg", "source": "app"}) == "app"
+    assert qa_onboarding.entry_source({"file": "face/user_face_x.jpg", "source": "mirror"}) == "mirror"
+    assert qa_onboarding.entry_source({"file": "face/x.jpg", "source": "admin"}) == "admin"
+    assert qa_onboarding.entry_source({"file": "face/x.jpg", "source": "builtin"}) == "builtin"
+
+
+def test_archive_user_photo_marks_source_and_dedupes(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
+    """用户照片归档进 QA 数据集：写 source、缩图、内容 hash 去重；重复归档静默跳过。"""
+
+    import io as _io
+
+    from PIL import Image as _Image
+
+    photo_dir = tmp_path / "qa_photos"
+    monkeypatch.setattr(qa_onboarding, "QA_PHOTO_DIR", photo_dir)
+    monkeypatch.setattr(qa_onboarding, "QA_RESULTS_CACHE", photo_dir / "_results.json")
+
+    image = _Image.new("RGB", (2400, 3000), (200, 180, 170))
+    assert qa_onboarding.archive_user_photo(image, "face", "app") is True
+    manifest = json.loads((photo_dir / "manifest.json").read_text(encoding="utf-8"))
+    assert len(manifest) == 1
+    assert manifest[0]["source"] == "app"
+    assert manifest[0]["file"].startswith("face/user_face_")
+    # 长边压到 1600
+    with _Image.open(photo_dir / manifest[0]["file"]) as stored:
+        assert max(stored.size) <= 1600
+
+    # 同内容重复归档 → 跳过
+    assert qa_onboarding.archive_user_photo(image, "face", "app") is False
+    manifest = json.loads((photo_dir / "manifest.json").read_text(encoding="utf-8"))
+    assert len(manifest) == 1
+
+    # 非用户来源不归档
+    assert qa_onboarding.archive_user_photo(image, "face", "builtin") is False
+
+
+def test_upload_photo_marks_admin_source(monkeypatch: pytest.MonkeyPatch, tmp_path: Path, admin_client: TestClient) -> None:
+    """管理员上传的照片进 manifest 时标记 source=admin。"""
+
+    photo_dir = tmp_path / "qa_photos"
+    (photo_dir / "face").mkdir(parents=True)
+    monkeypatch.setattr(qa_onboarding, "QA_PHOTO_DIR", photo_dir)
+    monkeypatch.setattr(qa_onboarding, "QA_RESULTS_CACHE", photo_dir / "_results.json")
+
+    import io as _io
+
+    from PIL import Image as _Image
+
+    buffer = _io.BytesIO()
+    _Image.new("RGB", (600, 800), (200, 180, 170)).save(buffer, "JPEG")
+    response = admin_client.post(
+        "/qa/photos/upload",
+        data={"kind": "face"},
+        files={"image": ("admin.jpg", buffer.getvalue(), "image/jpeg")},
+        follow_redirects=False,
+    )
+    assert response.status_code == 303
+    manifest = json.loads((photo_dir / "manifest.json").read_text(encoding="utf-8"))
+    assert manifest[0]["source"] == "admin"
+
+
+def _entry_with_source(kind: str, source: str) -> dict:
+    entry = _fake_entry(kind)
+    entry["item"] = {
+        **entry["item"],
+        "source": source,
+        "file": f"{kind}/photo_{source}_{kind}.jpg",
+    }
+    return entry
+
+
+def test_qa_page_source_filter(monkeypatch: pytest.MonkeyPatch, admin_client: TestClient) -> None:
+    """来源筛选：默认全部显示；指定来源只显示对应条目，筛选条带计数。"""
+
+    entries = [
+        _entry_with_source("face", "builtin"),
+        _entry_with_source("face", "mirror"),
+        _entry_with_source("body", "app"),
+    ]
+    monkeypatch.setattr(qa_onboarding, "_analyze_all", lambda refresh=False: entries)
+    monkeypatch.setattr(qa_onboarding, "_ensure_overlays", lambda entries, refresh=False: {})
+
+    all_view = admin_client.get("/qa/onboarding-attributes").text
+    assert "全部" in all_view and "内置" in all_view and "镜子拍照" in all_view and "App 拍照" in all_view and "管理员上传" in all_view
+    assert "photo_builtin_face.jpg" in all_view
+
+    mirror_view = admin_client.get("/qa/onboarding-attributes?source=mirror").text
+    assert "src-badge--mirror" in mirror_view
+    assert "photo_builtin_face.jpg" not in mirror_view  # builtin 条目被过滤
+    assert "photo_app_body.jpg" not in mirror_view  # app 条目被过滤
+    # 筛选状态保持：重新分析链接带 source
+    assert "source=mirror" in mirror_view

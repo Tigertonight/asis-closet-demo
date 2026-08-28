@@ -10,6 +10,7 @@
 <style>
   :root { --brand: #8a011b; --ink: #1f1a1a; --muted: rgba(31,26,26,.55); --line: rgba(31,26,26,.10); --bg: #faf7f5; --card: #ffffff; --rose: #ff4f86; }
   * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
   body { margin: 0; background: var(--bg); color: var(--ink); font: 14px/1.6 -apple-system, "PingFang SC", "Segoe UI", sans-serif; }
   header { position: sticky; top: 0; z-index: 10; display: flex; align-items: center; gap: 16px; padding: 12px 28px; background: rgba(255,255,255,.92); backdrop-filter: blur(8px); border-bottom: 1px solid var(--line); }
   header h1 { margin: 0; font-size: 16px; font-weight: 700; }
@@ -46,6 +47,64 @@
   .debug-card:hover { border-color: var(--rose); transform: translateY(-1px); }
   .debug-card b { font-size: 14px; }
   .debug-card span { color: var(--muted); font-size: 12px; line-height: 1.5; }
+  /* 用户报告 / 照片下载 */
+  .panel-hint { margin: -6px 0 14px; color: var(--muted); font-size: 12px; line-height: 1.7; }
+  .mini-btn { padding: 6px 14px; border: 1px solid rgba(138,1,27,.35); border-radius: 999px; background: #fff; color: var(--brand); font-size: 13px; cursor: pointer; }
+  .mini-btn:hover { background: #fbf1f3; }
+  .link-btn { padding: 0; border: 0; background: none; color: var(--brand); font-size: 13px; cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
+  .tag { display: inline-block; padding: 1px 9px; border-radius: 999px; font-size: 12px; font-weight: 500; }
+  .tag-mirror { background: #f6e7ea; color: var(--brand); }
+  .tag-app { background: #e9eef5; color: #2f4a57; }
+  .tag-muted { background: #f1eeee; color: var(--muted); }
+  .tag-ok { background: #e7f2e9; color: #2f6a3c; }
+  .photo-thumbs { display: inline-flex; gap: 6px; vertical-align: middle; }
+  .photo-thumb { width: 42px; height: 42px; object-fit: cover; border-radius: 8px; border: 1px solid var(--line); background: #faf7f5; }
+  .dl-link { display: inline-block; margin-right: 10px; color: var(--brand); font-size: 13px; }
+  .dl-link:hover { text-decoration: underline; text-underline-offset: 3px; }
+  .modal-overlay { position: fixed; inset: 0; z-index: 50; align-items: flex-start; justify-content: center; padding: 40px 16px; background: rgba(31,26,26,.35); backdrop-filter: blur(2px); overflow-y: auto; }
+  .modal-overlay[hidden] { display: none; }
+  .modal-overlay:not([hidden]) { display: flex; }
+  .modal-card { width: min(760px, 100%); background: var(--card); border-radius: 20px; box-shadow: 0 18px 50px rgba(60,21,25,.22); overflow: hidden; }
+  .modal-card header { position: static; display: flex; align-items: center; justify-content: space-between; padding: 16px 22px; background: #fff; border-bottom: 1px solid var(--line); }
+  .modal-card header b { font-size: 15px; }
+  .modal-card header small { color: var(--muted); margin-left: 10px; font-weight: 400; }
+  .modal-body { padding: 18px 22px 26px; }
+  .detail-section { margin-bottom: 18px; }
+  .detail-section h3 { margin: 0 0 10px; font-size: 13px; color: var(--muted); font-weight: 600; }
+  .detail-kv { display: flex; flex-wrap: wrap; gap: 8px 18px; font-size: 13px; }
+  .detail-kv .k { color: var(--muted); margin-right: 4px; }
+  .trait-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+  .trait-tags i { font-style: normal; padding: 2px 10px; border-radius: 999px; background: #f6e7ea; color: var(--brand); font-size: 12px; }
+  .swatches { display: flex; flex-wrap: wrap; gap: 8px; }
+  .swatch { display: flex; align-items: center; gap: 6px; padding: 4px 10px 4px 4px; border: 1px solid var(--line); border-radius: 999px; font-size: 12px; }
+  .swatch i { width: 18px; height: 18px; border-radius: 999px; border: 1px solid rgba(31,26,26,.12); }
+  .advice-list { margin: 0; padding-left: 18px; font-size: 13px; color: var(--ink); }
+  .advice-list li { margin-bottom: 6px; }
+  .photo-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 12px; }
+  .photo-card { display: flex; flex-direction: column; border: 1px solid var(--line); border-radius: 14px; overflow: hidden; }
+  .photo-card .frame { aspect-ratio: 3 / 4; background: #faf7f5; }
+  .photo-card .frame img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .photo-card .meta { padding: 10px 12px; display: flex; flex-direction: column; gap: 2px; }
+  .photo-card .meta b { font-size: 13px; }
+  .photo-card .meta span { color: var(--muted); font-size: 12px; }
+  .photo-card .meta .dl-link { margin-top: 6px; align-self: flex-start; }
+  .attr-chips { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 6px; }
+  .attr-chip { display: inline-flex; align-items: center; gap: 4px; background: #ffe4ee; color: #9b344b; border-radius: 999px; padding: 2px 9px; font-size: 11px; font-weight: 700; }
+  .attr-chip i { font-style: normal; color: #c47b95; font-weight: 600; }
+  .attr-chip small { color: #c47b95; font-weight: 600; }
+  .algo-row { display: flex; flex-direction: column; gap: 2px; padding: 6px 0; border-bottom: 1px solid var(--line); }
+  .algo-row b { font-size: 12px; color: var(--muted); }
+  .algo-row span { font-size: 13px; }
+  .algo-compare { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 8px; }
+  .algo-compare .k { margin-right: 4px; }
+  .algo-compare em { font-style: normal; font-size: 11px; border-radius: 6px; padding: 2px 6px; margin-left: 6px; font-weight: 700; }
+  .algo-compare em.match { background: #e7f5ea; color: #166534; }
+  .algo-compare em.diff { background: #fde8e8; color: #b91c1c; }
+  .empty-inline { padding: 6px 0; color: var(--muted); font-size: 13px; }
+  .link-btn.danger { color: #a90020; }
+  .hidden-bar { margin-top: 12px; padding: 10px 14px; border: 1px dashed rgba(31,26,26,.18); border-radius: 12px; font-size: 12px; color: var(--muted); display: flex; flex-wrap: wrap; gap: 6px 18px; align-items: center; }
+  .hidden-bar b { font-weight: 600; }
+
 </style>
 </head>
 <body>
@@ -53,6 +112,7 @@
   <h1>selfit 管理后台 <small>路演数据看板</small></h1>
   <nav class="tabs">
     <button class="is-active" data-tab="analytics" type="button">数据分析</button>
+    <button type="button" data-tab="submissions">用户报告</button>
     <a href="/qa/onboarding-attributes">实验数据 QA</a>
     <button type="button" data-tab="debug">调试工具</button>
     <a href="/mvp" target="_blank" rel="noopener">MVP 状态</a>
@@ -84,27 +144,53 @@
       <small id="updatedAt"></small>
     </div>
     <div class="kpis" id="kpis"></div>
-    <div class="panel">
+    <div class="panel" data-tab-panel="analytics">
       <h2>App 主流程漏斗</h2>
       <table><thead><tr><th>步骤</th><th>屏</th><th>到达人数</th><th style="width:30%">进度</th><th>相对上步</th></tr></thead><tbody id="appFunnel"></tbody></table>
     </div>
-    <div class="panel">
+    <div class="panel" data-tab-panel="analytics">
       <h2>镜子端漏斗（线下流程）</h2>
       <table><thead><tr><th>步骤</th><th>事件</th><th>次数</th><th>转化</th></tr></thead><tbody id="mirrorFunnel"></tbody></table>
     </div>
-    <div class="panel">
+    <div class="panel" data-tab-panel="analytics">
       <h2>各屏停留时长</h2>
       <table><thead><tr><th>屏</th><th>样本数</th><th>平均（秒）</th><th>中位数（秒）</th></tr></thead><tbody id="dwell"></tbody></table>
     </div>
-    <div class="panel">
+    <div class="panel" data-tab-panel="analytics">
       <h2>按小时活跃（近 48 小时，北京时间）</h2>
       <table><thead><tr><th>小时</th><th>事件数</th><th style="width:50%">分布</th></tr></thead><tbody id="hourly"></tbody></table>
     </div>
-    <div class="panel">
+    <div class="panel" data-tab-panel="analytics">
       <h2>用户行为（手机号关联）</h2>
       <table><thead><tr><th>手机号</th><th>登录方式</th><th>行为事件数</th><th>首次活跃</th><th>最后活跃</th></tr></thead><tbody id="userRows"></tbody></table>
     </div>
-    <div class="panel" id="debugPanel" hidden>
+    <div class="panel" id="submissionsPanel" data-tab-panel="submissions" hidden>
+      <h2>用户提交（报告与照片）</h2>
+      <p class="panel-hint">每一行是一次完整的测试提交：报告数据、上传照片都在这里。智能镜拍摄有两个版本——<b>美颜照片</b>用于现场下载打印，<b>原始照片</b>仅作算法留存。会话过期后仍可查看和下载。「删除」只是从后台隐藏，不会删除服务器存储里的照片，可在下方已隐藏区恢复。</p>
+      <div class="toolbar" style="margin-bottom:12px">
+        <button class="mini-btn" type="button" id="submissionsRefresh">刷新</button>
+        <small id="submissionsUpdatedAt"></small>
+      </div>
+      <table><thead><tr><th>提交时间</th><th>手机号</th><th>来源</th><th>报告</th><th>照片</th><th>操作</th></tr></thead><tbody id="submissionRows"></tbody></table>
+      <div class="hidden-bar" id="submissionHiddenBar" hidden></div>
+    </div>
+    <div class="panel" data-tab-panel="submissions" hidden>
+      <h2>镜子拍摄记录（含未领取）</h2>
+      <p class="panel-hint">用户在智能镜拍照后即使没有扫码完成报告，照片也会保留在这里，可随时下载打印。删除只是从后台隐藏，服务器存储里仍保留原片。</p>
+      <table><thead><tr><th>拍摄时间</th><th>状态</th><th>领取手机号</th><th>原始照片（算法留存）</th><th>美颜照片（打印用）</th><th>操作</th></tr></thead><tbody id="captureRows"></tbody></table>
+      <div class="hidden-bar" id="captureHiddenBar" hidden></div>
+    </div>
+    <div class="panel" data-tab-panel="submissions" hidden>
+      <h2>检测被拒的照片（算法优化素材）</h2>
+      <p class="panel-hint">用户上传或镜拍回填时被检测拦截的照片会完整留存在这里——看得到原图和拦截原因，用于评估检测阈值是否过严。这些照片只做算法分析，不对外展示。</p>
+      <div class="toolbar" style="margin-bottom:12px">
+        <button class="mini-btn" type="button" id="rejectedRefresh">刷新</button>
+        <small id="rejectedUpdatedAt"></small>
+      </div>
+      <div id="rejectedBreakdown" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px"></div>
+      <table><thead><tr><th>上传时间</th><th>照片类型</th><th>来源</th><th>手机号</th><th>拦截原因</th><th>预览</th><th>操作</th></tr></thead><tbody id="rejectedRows"></tbody></table>
+    </div>
+    <div class="panel" id="debugPanel" data-tab-panel="debug" hidden>
       <h2>调试工具</h2>
       <p style="margin:0 0 14px;color:var(--muted);font-size:13px">开发中功能的内部入口。所有页面均已纳入管理员密码保护，普通用户无法访问；点击新标签页打开。</p>
       <div class="debug-grid">
@@ -120,6 +206,15 @@
       </div>
     </div>
   </section>
+  <div class="modal-overlay" id="submissionModal" hidden>
+    <div class="modal-card">
+      <header>
+        <div><b>提交详情</b><small id="submissionModalMeta"></small></div>
+        <button class="mini-btn" type="button" id="submissionModalClose">关闭</button>
+      </header>
+      <div class="modal-body" id="submissionModalBody"></div>
+    </div>
+  </div>
 </main>
 <script>
 (() => {
@@ -194,6 +289,309 @@
     return Number.isNaN(date.getTime()) ? value : date.toLocaleString('zh-CN', { hour12: false });
   };
   const maskPhone = (phone) => (phone ? `${phone.slice(0, 4)}****${phone.slice(-4)}` : '—');
+  const esc = (value) => String(value ?? '').replace(/[&<>"']/g, (ch) => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;',
+  })[ch]);
+
+  // ---------------------------------------------------------------------------
+  // 用户报告 / 照片下载
+  // ---------------------------------------------------------------------------
+
+  const MANUAL_LABELS = { skin: '肤色', faceShape: '脸型', bodyShape: '身型' };
+  const PALETTE_LABELS = { mono: '单色', earth: '大地', ocean: '海洋', jewel: '宝石', bright: '明亮', pastel: '粉彩' };
+  const AXIS_LABELS = { shape: '形态', energy: '能量', trend: '趋势' };
+  const VIBE_LABELS = { occasion: '场合', wardrobe: '衣橱', expression: '表达' };
+  const CAPTURE_STATUS = { pending: '待领取', claimed: '已领取', expired: '已过期' };
+
+  const photoThumb = (photo) => `<img class="photo-thumb" src="${esc(photo.previewUrl)}" alt="${esc(photo.label || photo.kind)}" loading="lazy" title="${esc(photo.label || photo.kind)}" />`;
+
+  const renderSubmissions = (rows, hidden) => {
+    const tbody = $('submissionRows');
+    if (!rows.length) {
+      tbody.replaceChildren(Object.assign(document.createElement('tr'), {
+        innerHTML: '<td colspan="6" class="empty">还没有用户提交</td>',
+      }));
+    } else {
+      tbody.replaceChildren(...rows.map((row) => {
+        const tr = document.createElement('tr');
+        const mirror = row.mirrorPhotos || {};
+        const reportCell = row.report
+          ? `<b>${esc(row.report.title || row.report.typeId || '已生成')}</b><br><small style="color:var(--muted)">${fmtTime(row.report.createdAt)}</small>`
+          : '<span class="tag tag-muted">未生成</span>';
+        const thumbs = [
+          ...(mirror.retouched ? [photoThumb({ ...mirror.retouched, label: '美颜照片' })] : []),
+          ...(mirror.original ? [photoThumb({ ...mirror.original, label: '原始照片' })] : []),
+          ...(row.photos || []).map(photoThumb),
+        ].join('');
+        const quickDownload = mirror.retouched
+          ? `<a class="dl-link" href="${esc(mirror.retouched.downloadUrl)}">下载美颜照片</a>`
+          : '';
+        tr.innerHTML = `<td>${fmtTime(row.createdAt)}</td>`
+          + `<td title="${esc(row.phone || '')}">${row.phone ? maskPhone(row.phone) : '—'}</td>`
+          + `<td>${row.source === 'mirror' ? '<span class="tag tag-mirror">智能镜</span>' : '<span class="tag tag-app">App 上传</span>'}</td>`
+          + `<td>${reportCell}</td>`
+          + `<td><span class="photo-thumbs">${thumbs || '<span class="tag tag-muted">无</span>'}</span></td>`
+          + `<td>${quickDownload}<button class="link-btn" type="button" data-detail="${esc(row.sessionId)}">详情</button>`
+          + `<button class="link-btn danger" type="button" data-hide="${esc(row.sessionId)}">删除</button></td>`;
+        return tr;
+      }));
+      tbody.querySelectorAll('[data-detail]').forEach((button) => {
+        button.addEventListener('click', () => openSubmissionDetail(button.dataset.detail));
+      });
+      tbody.querySelectorAll('[data-hide]').forEach((button) => {
+        button.addEventListener('click', () => hideEntry('submissions', button.dataset.hide));
+      });
+    }
+    renderHiddenBar('submissionHiddenBar', '已隐藏提交', 'submissions', hidden);
+  };
+
+  const renderCaptures = (rows, hidden) => {
+    const tbody = $('captureRows');
+    if (!rows.length) {
+      tbody.replaceChildren(Object.assign(document.createElement('tr'), {
+        innerHTML: '<td colspan="6" class="empty">还没有镜子拍摄记录</td>',
+      }));
+    } else {
+      tbody.replaceChildren(...rows.map((row) => {
+        const tr = document.createElement('tr');
+        const photoCell = (photo) => (photo
+          ? `<img class="photo-thumb" src="${esc(photo.previewUrl)}" alt="${esc(photo.label)}" title="${esc(photo.label)}" loading="lazy" style="margin-right:8px" /><a class="dl-link" href="${esc(photo.downloadUrl)}">下载</a>`
+          : '<span class="tag tag-muted">无</span>');
+        const claimed = row.status === 'claimed';
+        tr.innerHTML = `<td>${fmtTime(row.createdAt)}</td>`
+          + `<td><span class="tag ${claimed ? 'tag-ok' : 'tag-muted'}">${esc(CAPTURE_STATUS[row.status] || row.status || '—')}</span></td>`
+          + `<td title="${esc(row.phone || '')}">${row.phone ? maskPhone(row.phone) : '—'}</td>`
+          + `<td>${photoCell(row.original)}</td>`
+          + `<td>${photoCell(row.retouched)}</td>`
+          + `<td><button class="link-btn danger" type="button" data-hide-capture="${esc(row.handoffId)}">删除</button></td>`;
+        return tr;
+      }));
+      tbody.querySelectorAll('[data-hide-capture]').forEach((button) => {
+        button.addEventListener('click', () => hideEntry('mirror-captures', button.dataset.hideCapture));
+      });
+    }
+    renderHiddenBar('captureHiddenBar', '已隐藏拍摄', 'mirror-captures', hidden);
+  };
+
+  const renderHiddenBar = (barId, label, kind, hidden) => {
+    const bar = $(barId);
+    if (!hidden || !hidden.length) { bar.hidden = true; return; }
+    bar.hidden = false;
+    bar.innerHTML = `<b>${label} ${hidden.length} 条</b>`
+      + hidden.map((item) => `<span>${esc(String(item.id).slice(0, 18))} · ${fmtTime(item.hiddenAt)} `
+        + `<button class="link-btn" type="button" data-unhide-kind="${esc(kind)}" data-unhide-id="${esc(item.id)}">恢复</button></span>`).join('');
+    bar.querySelectorAll('[data-unhide-id]').forEach((button) => {
+      button.addEventListener('click', () => unhideEntry(button.dataset.unhideKind, button.dataset.unhideId));
+    });
+  };
+
+  const REJECTED_SOURCE = { app: 'App 上传', mirror: '智能镜', mirror_head_crop: '智能镜·头部裁剪' };
+
+  const renderRejected = (rows, breakdown) => {
+    const chips = $('rejectedBreakdown');
+    chips.replaceChildren(...(breakdown || []).map((item) => {
+      const node = document.createElement('span');
+      node.className = 'tag tag-muted';
+      node.style.padding = '4px 12px';
+      node.textContent = `${item.label}：${item.count} 张`;
+      return node;
+    }));
+    const tbody = $('rejectedRows');
+    if (!rows.length) {
+      tbody.replaceChildren(Object.assign(document.createElement('tr'), {
+        innerHTML: '<td colspan="7" class="empty">还没有被拒照片</td>',
+      }));
+      return;
+    }
+    tbody.replaceChildren(...rows.map((row) => {
+      const tr = document.createElement('tr');
+      const thumb = row.previewUrl
+        ? `<img class="photo-thumb" src="${esc(row.previewUrl)}" alt="被拒照片" loading="lazy" title="${esc((row.issueLabels || []).join('、'))}" />`
+        : '<span class="tag tag-muted">无</span>';
+      tr.innerHTML = `<td>${fmtTime(row.createdAt)}</td>`
+        + `<td>${esc(row.kindLabel || row.kind || '—')}</td>`
+        + `<td>${esc(REJECTED_SOURCE[row.source] || row.source || '—')}</td>`
+        + `<td title="${esc(row.phone || '')}">${row.phone ? maskPhone(row.phone) : '—'}</td>`
+        + `<td>${(row.issueLabels || []).map((label) => `<span class="tag tag-muted" style="margin-right:4px">${esc(label)}</span>`).join('')}</td>`
+        + `<td>${thumb}</td>`
+        + `<td>${row.downloadUrl ? `<a class="dl-link" href="${esc(row.downloadUrl)}">下载</a>` : '—'}</td>`;
+      return tr;
+    }));
+  };
+
+  const loadRejected = async () => {
+    try {
+      const payload = await api('/admin/api/rejected-photos');
+      renderRejected(payload.rejected || [], payload.breakdown || []);
+      $('rejectedUpdatedAt').textContent = `更新于 ${new Date().toLocaleTimeString('zh-CN', { hour12: false })}`;
+    } catch (error) {
+      if (error.status) showLogin();
+      else $('rejectedUpdatedAt').textContent = error.message || '加载失败';
+    }
+  };
+
+  const postAdmin = async (path) => {
+    const response = await fetch(path, { method: 'POST', headers: { Authorization: `Bearer ${state.token}` } });
+    if (response.status === 401 || response.status === 403) {
+      showLogin();
+      throw new Error('登录已失效，请重新登录');
+    }
+    if (!response.ok) throw new Error(`请求失败（${response.status}）`);
+    return response.json();
+  };
+
+  const hideEntry = async (kind, id) => {
+    if (!confirm('确定从后台隐藏这条记录吗？\n照片和报告仍会保留在服务器存储中，可随时在「已隐藏」里恢复。')) return;
+    try {
+      await postAdmin(`/admin/api/${kind}/${encodeURIComponent(id)}/hide`);
+      void loadSubmissions();
+    } catch (error) {
+      alert(error.message || '操作失败');
+    }
+  };
+
+  const unhideEntry = async (kind, id) => {
+    try {
+      await postAdmin(`/admin/api/${kind}/${encodeURIComponent(id)}/unhide`);
+      void loadSubmissions();
+    } catch (error) {
+      alert(error.message || '操作失败');
+    }
+  };
+
+  const loadSubmissions = async () => {
+    try {
+      const [subs, captures] = await Promise.all([
+        api('/admin/api/submissions'),
+        api('/admin/api/mirror-captures'),
+      ]);
+      renderSubmissions(subs.submissions || [], subs.hidden || []);
+      renderCaptures(captures.captures || [], captures.hidden || []);
+      void loadRejected();
+      $('submissionsUpdatedAt').textContent = `更新于 ${new Date().toLocaleTimeString('zh-CN', { hour12: false })}`;
+    } catch (error) {
+      if (error.status) showLogin();
+      else $('submissionsUpdatedAt').textContent = error.message || '加载失败';
+    }
+  };
+
+  const detailSection = (title, inner) => `<div class="detail-section"><h3>${title}</h3>${inner}</div>`;
+
+  const ATTR_NAME_LABELS = { skin_tone: '肤色', face_shape: '脸型', body_shape: '身型' };
+  const attrChips = (attributes) => {
+    const entries = Object.entries(attributes || {}).filter(([, value]) => value && value.label);
+    if (!entries.length) return '';
+    return '<div class="attr-chips">' + entries.map(([name, value]) =>
+      `<span class="attr-chip"><i>${esc(ATTR_NAME_LABELS[name] || name)}</i>${esc(value.label)}<small>${Math.round((value.confidence || 0) * 100)}%</small></span>`
+    ).join('') + '</div>';
+  };
+
+  const photoCard = (photo, label, note) => `<div class="photo-card">`
+    + `<div class="frame"><a href="${esc(photo.previewUrl)}" target="_blank" rel="noopener"><img src="${esc(photo.previewUrl)}" alt="${esc(label)}" loading="lazy" /></a></div>`
+    + `<div class="meta"><b>${esc(label)}</b><span>${esc(note)}</span>${attrChips(photo.attributes)}<a class="dl-link" href="${esc(photo.downloadUrl)}">下载</a></div>`
+    + `</div>`;
+
+  const renderSubmissionDetail = (detail) => {
+    const body = $('submissionModalBody');
+    const parts = [];
+
+    const report = detail.reportData || {};
+    const reportBits = [];
+    if (report.title || report.typeId) {
+      reportBits.push(`<div class="detail-kv"><span><span class="k">人格</span><b>${esc(report.title || report.typeId)}</b></span>${report.typeId ? `<span><span class="k">类型</span>${esc(report.typeId)}</span>` : ''}</div>`);
+    }
+    if (Array.isArray(report.traits) && report.traits.length) {
+      reportBits.push(`<div class="trait-tags" style="margin-top:8px">${report.traits.map((trait) => `<i>${esc(trait)}</i>`).join('')}</div>`);
+    }
+    if (Array.isArray(report.colors) && report.colors.length) {
+      reportBits.push(`<div class="swatches" style="margin-top:10px">${report.colors.map((color) => `<span class="swatch"><i style="background:${esc(color.value)}"></i>${esc(color.name)}</span>`).join('')}</div>`);
+    }
+    if (Array.isArray(report.advice) && report.advice.length) {
+      reportBits.push(`<ul class="advice-list" style="margin-top:10px">${report.advice.map((item) => `<li>${esc(item)}</li>`).join('')}</ul>`);
+    }
+    if (report.typeId) {
+      reportBits.push(`<div style="margin-top:10px"><a class="dl-link" href="/selfit?preview=report&type=${encodeURIComponent(report.typeId)}" target="_blank" rel="noopener">打开完整报告预览</a></div>`);
+    }
+    parts.push(detailSection('报告', reportBits.length ? reportBits.join('') : '<div class="empty-inline">未生成报告</div>'));
+
+    const manual = detail.manual || {};
+    const algoBits = [];
+    (detail.photos || []).forEach((photo) => {
+      const attrs = Object.entries(photo.attributes || {}).filter(([, value]) => value && value.label);
+      if (!attrs.length) return;
+      algoBits.push(`<div class="algo-row"><b>${esc(photo.label)}</b><span>${attrs.map(([name, value]) => `${esc(ATTR_NAME_LABELS[name] || name)} ${esc(value.label)}（${Math.round((value.confidence || 0) * 100)}%）`).join(' · ')}</span></div>`);
+    });
+    if (algoBits.length) {
+      const manualMap = { skin_tone: manual.skin, face_shape: manual.faceShape, body_shape: manual.bodyShape };
+      const agreeBits = algoBits.map((bit) => bit).join('');
+      const compare = Object.keys(manualMap)
+        .filter((key) => manualMap[key])
+        .map((key) => {
+          const algoPhoto = (detail.photos || []).find((photo) => (photo.attributes || {})[key]);
+          const algo = algoPhoto ? (algoPhoto.attributes[key] || {}).label : null;
+          const user = manualMap[key];
+          const match = algo && user === algo;
+          return `<span><span class="k">${ATTR_NAME_LABELS[key]}</span>${esc(user)}<em class="${match ? 'match' : 'diff'}">算法 ${esc(algo || '未识别')}${match ? ' 一致' : ' 不一致'}</em></span>`;
+        });
+      parts.push(detailSection('算法识别（照片）', `<div class="detail-kv">${agreeBits}${compare.length ? `<div class="algo-compare">${compare.join('')}</div>` : ''}</div>`));
+    }
+    const manualBits = Object.keys(MANUAL_LABELS)
+      .filter((key) => manual[key])
+      .map((key) => `<span><span class="k">${MANUAL_LABELS[key]}</span>${esc(manual[key])}</span>`);
+    const prefs = detail.preferences || {};
+    const axes = prefs.axes || {};
+    const prefBits = [
+      ...manualBits,
+      ...(axes.shape != null ? [`<span><span class="k">${AXIS_LABELS.shape}</span>${axes.shape}</span>`] : []),
+      ...(axes.energy != null ? [`<span><span class="k">${AXIS_LABELS.energy}</span>${axes.energy}</span>`] : []),
+      ...(axes.trend != null ? [`<span><span class="k">${AXIS_LABELS.trend}</span>${axes.trend}</span>`] : []),
+      ...(prefs.palette ? [`<span><span class="k">偏好色板</span>${esc(PALETTE_LABELS[prefs.palette] || prefs.palette)}</span>`] : []),
+    ];
+    const vibe = detail.vibe || {};
+    const vibeBits = Object.keys(VIBE_LABELS)
+      .filter((key) => vibe[key])
+      .map((key) => `<span><span class="k">${VIBE_LABELS[key]}</span>${esc(vibe[key])}</span>`);
+    parts.push(detailSection('用户填写', `<div class="detail-kv">${prefBits.length ? prefBits.join('') : '<span class="empty-inline">未填写</span>'}</div>`));
+
+    const photoCards = [];
+    const mirror = detail.mirrorPhotos || {};
+    if (mirror.retouched) photoCards.push(photoCard(mirror.retouched, '美颜照片', '现场打印用'));
+    if (mirror.original) photoCards.push(photoCard(mirror.original, '原始照片', '算法留存，不对外使用'));
+    (detail.photos || []).forEach((photo) => {
+      const label = photo.source === 'mirror_head_crop' ? `${photo.label}（镜拍裁剪）` : `${photo.label}（用户上传）`;
+      photoCards.push(photoCard(photo, label, '分析输入'));
+    });
+    if (photoCards.length) parts.push(detailSection('照片', `<div class="photo-grid">${photoCards.join('')}</div>`));
+
+    const shares = detail.shareAssets || [];
+    if (shares.length) {
+      parts.push(detailSection('分享图', shares.map((asset) => `<div style="margin-bottom:6px"><a class="dl-link" href="${esc(asset.downloadUrl)}">下载分享图（第 ${(asset.slideIndex ?? 0) + 1} 张 · ${esc(asset.channel || '')}）</a><small style="color:var(--muted)">${fmtTime(asset.createdAt)}</small></div>`).join('')));
+    }
+
+    body.innerHTML = parts.join('');
+  };
+
+  const openSubmissionDetail = async (sessionId) => {
+    $('submissionModalMeta').textContent = sessionId;
+    $('submissionModalBody').innerHTML = '<div class="empty-inline">加载中…</div>';
+    $('submissionModal').hidden = false;
+    try {
+      const payload = await api(`/admin/api/submissions/${encodeURIComponent(sessionId)}`);
+      renderSubmissionDetail(payload.submission || {});
+    } catch (error) {
+      $('submissionModalBody').innerHTML = `<div class="empty-inline">${esc(error.message || '加载失败')}</div>`;
+    }
+  };
+
+  $('submissionModalClose').addEventListener('click', () => { $('submissionModal').hidden = true; });
+  $('submissionModal').addEventListener('click', (event) => {
+    if (event.target === $('submissionModal')) $('submissionModal').hidden = true;
+  });
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') $('submissionModal').hidden = true;
+  });
+  $('submissionsRefresh').addEventListener('click', loadSubmissions);
+  $('rejectedRefresh').addEventListener('click', loadRejected);
 
   const render = (summary, users) => {
     const kpiDefs = [
@@ -290,20 +688,16 @@
   $('cancelSettingsBtn').addEventListener('click', showDashboard);
   $('settingsBtn').addEventListener('click', showSettings);
   $('refreshBtn').addEventListener('click', load);
+  const activateTab = (tab) => {
+    document.querySelectorAll('[data-tab]').forEach((item) => item.classList.toggle('is-active', item.dataset.tab === tab));
+    document.querySelectorAll('[data-tab-panel]').forEach((panel) => { panel.hidden = panel.dataset.tabPanel !== tab; });
+    $('kpis').hidden = tab !== 'analytics';
+    $('toolbar').hidden = tab !== 'analytics';
+    if (tab === 'analytics') void load();
+    if (tab === 'submissions') void loadSubmissions();
+  };
   document.querySelectorAll('[data-tab]').forEach((button) => button.addEventListener('click', () => {
-    document.querySelectorAll('[data-tab]').forEach((item) => item.classList.toggle('is-active', item === button));
-    if (button.dataset.tab === 'analytics') {
-      $('debugPanel').hidden = true;
-      $('kpis').hidden = false;
-      $('toolbar').hidden = false;
-      document.querySelectorAll('#dashboard .panel:not(#debugPanel)').forEach((panel) => { panel.hidden = false; });
-      void load();
-    } else {
-      document.querySelectorAll('#dashboard .panel:not(#debugPanel)').forEach((panel) => { panel.hidden = true; });
-      $('kpis').hidden = true;
-      $('toolbar').hidden = true;
-      $('debugPanel').hidden = false;
-    }
+    activateTab(button.dataset.tab);
   }));
   $('logoutBtn').addEventListener('click', () => {
     fetch('/auth/logout', { method: 'POST', headers: { Authorization: `Bearer ${state.token}` } }).catch(() => {});

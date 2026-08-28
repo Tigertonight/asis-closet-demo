@@ -164,6 +164,13 @@ def test_claim_hydrates_suit_photos_from_mirror_capture(monkeypatch, tmp_path: P
     asset_dir = onboarding.SELFIT_ONBOARDING_ASSET_DIR / session_id
     assert list(asset_dir.glob("asset_body_*.jpg"))
     assert list(asset_dir.glob("asset_face_*.jpg"))
+    # 镜拍照片归档进 QA 数据集（source=mirror，body 与裁剪的 face 各一条）
+    import app.qa_onboarding as qa_onboarding
+
+    qa_manifest = qa_onboarding._load_manifest()
+    qa_sources = {item["source"] for item in qa_manifest}
+    assert qa_sources == {"mirror"}
+    assert {item["kind"] for item in qa_manifest} == {"face", "body"}
 
 
 def test_claim_rejects_anonymous_and_second_user(monkeypatch, tmp_path: Path) -> None:

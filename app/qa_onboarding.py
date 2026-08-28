@@ -49,6 +49,33 @@ router = APIRouter(tags=["qa-onboarding"])
 ATTRIBUTE_LABELS = {"skin_tone": "肤色", "face_shape": "脸型", "body_shape": "身型"}
 STATUS_LABELS = {"pass": "通过", "warn": "存疑", "fail": "拒绝", "unknown": "未识别"}
 
+# 照片来源四类（manifest 条目的 source 字段）：
+# - builtin：内置数据集（collect 脚本从 Unsplash 收集）
+# - admin：管理员手动上传扩充
+# - mirror：用户通过镜子拍照上传（含镜拍裁剪的大头照）
+# - app：用户在 App 里直接拍照/选图上传
+SOURCE_BUILTIN = "builtin"
+SOURCE_ADMIN = "admin"
+SOURCE_MIRROR = "mirror"
+SOURCE_APP = "app"
+SOURCE_LABELS = {
+    SOURCE_BUILTIN: "内置",
+    SOURCE_ADMIN: "管理员上传",
+    SOURCE_MIRROR: "镜子拍照",
+    SOURCE_APP: "App 拍照",
+}
+
+
+def entry_source(item: dict[str, Any]) -> str:
+    """manifest 条目来源：新数据读 source 字段，旧数据按采集标记推断。"""
+
+    source = str(item.get("source") or "")
+    if source in SOURCE_LABELS:
+        return source
+    if item.get("author") == "同事上传" or item.get("query") == "手动上传":
+        return SOURCE_ADMIN
+    return SOURCE_BUILTIN
+
 
 def _load_manifest() -> list[dict[str, Any]]:
     path = QA_PHOTO_DIR / "manifest.json"
@@ -60,6 +87,51 @@ def _load_manifest() -> list[dict[str, Any]]:
 def _save_manifest(items: list[dict[str, Any]]) -> None:
     QA_PHOTO_DIR.mkdir(parents=True, exist_ok=True)
     (QA_PHOTO_DIR / "manifest.json").write_text(json.dumps(items, ensure_ascii=False, indent=2), encoding="utf-8")
+
+
+def archive_user_photo(image: Image.Image, kind: str, source: str, note: str = "") -> bool:
+    """用户上传的照片归档进 QA 数据集（算法分析资产）。
+
+    - 只归档通过检测的照片（accepted 才有属性价值）；
+    - 按图像内容 hash 命名，重复上传自动去重；
+    - 长边压到 1600 存 JPEG，避免手机原图撑爆磁盘；
+    - 任何失败都静默：QA 归档是旁路，绝不影响用户主流程。
+    """
+
+    if source not in {SOURCE_MIRROR, SOURCE_APP}:
+        return False
+    try:
+        rgb = image.convert("RGB")
+        buffer = io.BytesIO()
+        rgb.save(buffer, format="JPEG", quality=90)
+        digest = hashlib.sha256(buffer.getvalue()).hexdigest()[:12]
+        if max(rgb.size) > UPLOAD_MAX_SIDE:
+            ratio = UPLOAD_MAX_SIDE / max(rgb.size)
+            rgb = rgb.resize((round(rgb.width * ratio), round(rgb.height * ratio)))
+        filename = f"user_{kind}_{digest}.jpg"
+        rel = f"{kind}/{filename}"
+        manifest = _load_manifest()
+        if any(item["file"] == rel for item in manifest):
+            return False
+        target = QA_PHOTO_DIR / rel
+        target.parent.mkdir(parents=True, exist_ok=True)
+        rgb.save(target, "JPEG", quality=88)
+        manifest.append(
+            {
+                "file": rel,
+                "kind": kind,
+                "source": source,
+                "source_url": "",
+                "author": "",
+                "query": "",
+                "alt": note or ("用户上传（镜子拍照）" if source == SOURCE_MIRROR else "用户上传（App 拍照）"),
+                "uploaded_at": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
+            }
+        )
+        _save_manifest(manifest)
+        return True
+    except Exception:
+        return False
 
 
 def _load_cache() -> dict[str, Any]:
@@ -195,14 +267,14 @@ def _annotation_card(entry: dict[str, Any], task: dict[str, Any], overlays: dict
     <article class="card anno-card{" card--diff" if has_diff else ""}">
       <div class="thumb"><img loading="lazy" src="{thumb_src}" alt="{_esc(file)}" /></div>
       <div class="card-body">
-        <div class="card-head"><b>{_esc(file)}</b></div>
+        <div class="card-head"><b><span class="src-badge src-badge--{_esc(entry_source(item))}">{SOURCE_LABELS[entry_source(item)]}</span>{_esc(file)}</b></div>
         {"".join(groups_html)}
       </div>
     </article>
     """
 
 
-def _annotate_list_content(entries: list[dict[str, Any]]) -> str:
+def _annotate_list_content(entries: list[dict[str, Any]], source_query: str = "") -> str:
     """标注任务列表：统计概览 + 详情入口 + 新建。"""
     data = _load_annotations()
     rows = []
@@ -214,7 +286,7 @@ def _annotate_list_content(entries: list[dict[str, Any]]) -> str:
               <td><b>{_esc(task.get("name") or task["id"])}</b><br /><small>{_esc(str(task.get("created_at", ""))[:19].replace("T", " "))}</small></td>
               <td>{stats["annotated_files"]}/{stats["total_files"]} 张</td>
               <td><span class="pill pill--pass">一致 {stats["agree"]}</span> <span class="pill pill--fail">不一致 {stats["disagree"]}</span></td>
-              <td><a class="detail-link" href="/qa/onboarding-attributes?tab=annotate&task={_esc(task["id"])}">详情 →</a></td>
+              <td><a class="detail-link" href="/qa/onboarding-attributes?tab=annotate&task={_esc(task["id"])}{_esc(source_query)}">详情 →</a></td>
             </tr>"""
         )
     table = (
@@ -236,10 +308,10 @@ def _annotate_list_content(entries: list[dict[str, Any]]) -> str:
     {table}"""
 
 
-def _annotate_detail_content(entries: list[dict[str, Any]], overlays: dict[str, str], task: dict[str, Any], diff_only: bool) -> str:
+def _annotate_detail_content(entries: list[dict[str, Any]], overlays: dict[str, str], task: dict[str, Any], diff_only: bool, source_query: str = "") -> str:
     """任务详情：逐图标注网格，点选不落库，底部「保存标注」统一提交。"""
     stats = _annotation_stats(task, entries)
-    base = f"/qa/onboarding-attributes?tab=annotate&task={_esc(task['id'])}"
+    base = f"/qa/onboarding-attributes?tab=annotate&task={_esc(task['id'])}{_esc(source_query)}"
     diff_link = base if diff_only else f"{base}&diff=1"
     diff_text = "← 查看全部" if diff_only else "一键对比（只看标注≠算法）"
     cards = [card for entry in entries if (card := _annotation_card(entry, task, overlays, diff_only))]
@@ -248,7 +320,7 @@ def _annotate_detail_content(entries: list[dict[str, Any]], overlays: dict[str, 
     <h1>{_esc(task.get("name") or task["id"])}</h1>
     <p class="sub">点选只修改本地状态，点底部「保存标注」统一落库；标注与算法不一致的属性组会标红。</p>
     <div class="toolbar">
-      <a class="pill" href="/qa/onboarding-attributes?tab=annotate">← 任务列表</a>
+      <a class="pill" href="/qa/onboarding-attributes?tab=annotate{_esc(source_query)}">← 任务列表</a>
       <span class="pill">覆盖 {stats['annotated_files']}/{stats['total_files']} 张</span>
       <span class="pill pill--pass">一致 {stats['agree']}</span>
       <span class="pill pill--fail">不一致 {stats['disagree']}</span>
@@ -536,7 +608,7 @@ def _card(entry: dict[str, Any], overlays: dict[str, str]) -> str:
     <article class="card card--{_esc(status)}">
       {thumb}
       <div class="card-body">
-        <div class="card-head"><b>{_esc(item['file'])}</b><span class="status status--{_esc(status)}">{STATUS_LABELS.get(status, status)}</span></div>
+        <div class="card-head"><b><span class="src-badge src-badge--{_esc(entry_source(item))}">{SOURCE_LABELS[entry_source(item)]}</span>{_esc(item['file'])}</b><span class="status status--{_esc(status)}">{STATUS_LABELS.get(status, status)}</span></div>
         <div class="attrs">{_attribute_chips(result.get("attributes") or {})}</div>
         {candidates_html}
         <table class="metrics">{_metric_rows(result.get("attributes") or {})}</table>
@@ -631,7 +703,7 @@ def _distribution_section(entries: list[dict[str, Any]], annotated: dict[str, di
     </section>"""
 
 
-def _dataset_content(entries: list[dict[str, Any]], uploaded: str, upload_error: str, upload_dup: str) -> str:
+def _dataset_content(entries: list[dict[str, Any]], uploaded: str, upload_error: str, upload_dup: str, source_query: str = "") -> str:
     annotated = _all_annotations_union()
     notice = ""
     if uploaded:
@@ -655,30 +727,46 @@ def _dataset_content(entries: list[dict[str, Any]], uploaded: str, upload_error:
       <div class="upload-row">
         <select name="kind"><option value="face">大头照</option><option value="body">全身照</option></select>
         <input type="file" name="image" accept="image/jpeg,image/png,image/webp" required />
+        <input type="hidden" name="source" value="{_esc(source_query.replace('&source=', ''))}" />
         <button type="submit">上传</button>
       </div>
-      <small>要求：大头照正脸清晰、露出额头；全身照正面站立、头顶到脚踝完整入镜。JPG/PNG/WebP，≤12MB。</small>
+      <small>要求：大头照正脸清晰；全身照正面站立、头肩髋完整入镜。JPG/PNG/WebP，≤12MB。</small>
     </form>
     {notice}
     {sections}"""
 
 
-def _results_content(entries: list[dict[str, Any]], overlays: dict[str, str]) -> str:
+def _results_content(entries: list[dict[str, Any]], overlays: dict[str, str], source_query: str = "") -> str:
     face_entries = [e for e in entries if e["item"]["kind"] == "face"]
     body_entries = [e for e in entries if e["item"]["kind"] == "body"]
     return f"""
     <h1>实验结果</h1>
     <p class="sub">共 {len(entries)} 张（大头照 {len(face_entries)} / 全身照 {len(body_entries)}）。分析结果缓存在 qa_photos/_results.json，改图后点「重新分析」。卡片默认显示标注图，点击图片切换原图。</p>
-    <div class="toolbar">{_summary(entries)}<a class="refresh" href="/qa/onboarding-attributes?tab=results&refresh=1">重新分析</a></div>
+    <div class="toolbar">{_summary(entries)}<a class="refresh" href="/qa/onboarding-attributes?tab=results&refresh=1{_esc(source_query)}">重新分析</a></div>
     <h2>大头照（肤色 / 脸型）</h2>
     <div class="grid">{"".join(_card(e, overlays) for e in face_entries)}</div>
     <h2>全身照（身型）</h2>
     <div class="grid">{"".join(_card(e, overlays) for e in body_entries)}</div>"""
 
 
-def render_qa_page(content: str, active_tab: str) -> str:
+def render_qa_page(content: str, active_tab: str, source_counts: dict[str, int] | None = None, active_source: str = "") -> str:
+    source_counts = source_counts or {}
+    source_query = f"&source={active_source}" if active_source else ""
+    total = sum(source_counts.values())
+
     def tab(key: str, label: str) -> str:
-        return f'<a class="tab{" is-active" if active_tab == key else ""}" href="/qa/onboarding-attributes?tab={key}">{label}</a>'
+        return f'<a class="tab{" is-active" if active_tab == key else ""}" href="/qa/onboarding-attributes?tab={key}{source_query}">{label}</a>'
+
+    def source_filter(value: str, label: str, count: int) -> str:
+        is_active = active_source == value
+        href = f"/qa/onboarding-attributes?tab={active_tab}" + (f"&source={value}" if value else "")
+        return f'<a class="src-filter{" is-active" if is_active else ""}" href="{href}">{label} <b>{count}</b></a>'
+
+    filters = source_filter("", "全部", total) + "".join(
+        source_filter(key, SOURCE_LABELS[key], source_counts.get(key, 0))
+        for key in (SOURCE_BUILTIN, SOURCE_ADMIN, SOURCE_MIRROR, SOURCE_APP)
+    )
+    filter_bar = f'<div class="source-filter-bar"><span class="source-filter-label">图片来源</span>{filters}</div>'
 
     return f"""<!doctype html>
 <html lang="zh-CN">
@@ -699,6 +787,17 @@ def render_qa_page(content: str, active_tab: str) -> str:
     h1 {{ font-size: 24px; margin: 0 0 4px; }}
     h2 {{ font-size: 19px; margin: 26px 0 12px; }}
     .sub {{ color: #6c6260; font-size: 13px; margin: 0 0 14px; }}
+    .source-filter-bar {{ display: flex; flex-wrap: wrap; gap: 8px; align-items: center; background: #fff; border: 1px solid #e7ded9; border-radius: 14px; padding: 10px 14px; margin: 0 0 16px; }}
+    .source-filter-label {{ font-size: 12px; font-weight: 800; color: #8a807d; }}
+    .src-filter {{ background: #faf6f3; border: 1px solid #e7ded9; border-radius: 999px; padding: 6px 13px; font-size: 12px; font-weight: 700; color: #4c4441; text-decoration: none; }}
+    .src-filter b {{ font-weight: 800; margin-left: 2px; }}
+    .src-filter:hover {{ border-color: #ff4f86; color: #ff4f86; }}
+    .src-filter.is-active {{ background: #ff4f86; border-color: #ff4f86; color: #fff; }}
+    .src-badge {{ display: inline-block; border-radius: 8px; padding: 2px 8px; font-size: 11px; font-weight: 800; margin-right: 6px; }}
+    .src-badge--builtin {{ background: #f1edf3; color: #6d5b7a; }}
+    .src-badge--admin {{ background: #e8f0fa; color: #2d5f8a; }}
+    .src-badge--mirror {{ background: #e7f5ea; color: #166534; }}
+    .src-badge--app {{ background: #ffe4ee; color: #9b344b; }}
     .toolbar {{ display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 12px 0 16px; }}
     .pill {{ background: #fff; border: 1px solid #e7ded9; border-radius: 999px; padding: 6px 12px; font-size: 12px; font-weight: 700; }}
     .pill--pass {{ background: #e7f5ea; border-color: #cde7d4; }}
@@ -796,7 +895,7 @@ def render_qa_page(content: str, active_tab: str) -> str:
       {tab("annotate", "数据标注")}
       {tab("dataset", "数据分布")}
     </aside>
-    <main>{content}</main>
+    <main>{filter_bar}{content}</main>
   </div>
 </body>
 </html>"""
@@ -822,6 +921,7 @@ def qa_onboarding_attributes(
     task: str | None = None,
     diff: int = 0,
     refresh: int = 0,
+    source: str = "",
     uploaded: str = "",
     upload_error: str = "",
     upload_dup: str = "",
@@ -830,15 +930,30 @@ def qa_onboarding_attributes(
     if denied is not None:
         return denied
     entries = _analyze_all(refresh=bool(refresh))
+    source_counts = _source_counts(entries)
+    active_source = source if source in SOURCE_LABELS else ""
+    if active_source:
+        entries = [entry for entry in entries if entry_source(entry["item"]) == active_source]
     overlays = _ensure_overlays(entries, refresh=bool(refresh))
+    source_query = f"&source={active_source}" if active_source else ""
     if tab == "annotate":
         selected = _find_annotation_task(_load_annotations(), task) if task else None
         if selected is None:
-            return render_qa_page(_annotate_list_content(entries), "annotate")
-        return render_qa_page(_annotate_detail_content(entries, overlays, selected, bool(diff)), "annotate")
+            return render_qa_page(_annotate_list_content(entries, source_query), "annotate", source_counts, active_source)
+        return render_qa_page(
+            _annotate_detail_content(entries, overlays, selected, bool(diff), source_query), "annotate", source_counts, active_source
+        )
     if tab == "dataset":
-        return render_qa_page(_dataset_content(entries, uploaded, upload_error, upload_dup), "dataset")
-    return render_qa_page(_results_content(entries, overlays), "results")
+        return render_qa_page(_dataset_content(entries, uploaded, upload_error, upload_dup, source_query), "dataset", source_counts, active_source)
+    return render_qa_page(_results_content(entries, overlays, source_query), "results", source_counts, active_source)
+
+
+def _source_counts(entries: list[dict[str, Any]]) -> dict[str, int]:
+    counts: dict[str, int] = {}
+    for entry in entries:
+        key = entry_source(entry["item"])
+        counts[key] = counts.get(key, 0) + 1
+    return counts
 
 
 @router.post("/qa/photos/upload")
@@ -854,9 +969,12 @@ async def qa_upload_photo(request: Request) -> Response:
 
     form = await request.form()
     kind = str(form.get("kind") or "")
+    keep_source = str(form.get("source") or "")
     upload = form.get("image")
     if kind not in {"face", "body"}:
         return back("&upload_error=照片类型不正确")
+    if keep_source in SOURCE_LABELS:
+        base = f"{base}&source={keep_source}"
     if upload is None or not hasattr(upload, "read"):
         return back("&upload_error=请选择要上传的照片")
     raw = await upload.read()
@@ -891,6 +1009,7 @@ async def qa_upload_photo(request: Request) -> Response:
         {
             "file": rel,
             "kind": kind,
+            "source": SOURCE_ADMIN,
             "source_url": "",
             "author": "同事上传",
             "query": "手动上传",

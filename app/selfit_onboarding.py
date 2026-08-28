@@ -392,6 +392,7 @@ def _encode_photo_jpeg(image: Image.Image) -> bytes:
 def _accepted_photo_record(
     session_id: str, kind: str, image: Image.Image, inspection: selfit_photo.PhotoInspection, source: str
 ) -> dict[str, Any]:
+    _archive_photo_to_qa(image, kind, "mirror" if source.startswith("mirror") else "app")
     return {
         "asset_id": _save_photo_asset(session_id, kind, _encode_photo_jpeg(image), "JPEG"),
         "status": "accepted",
@@ -401,6 +402,17 @@ def _accepted_photo_record(
         "attributes": dict(inspection.attributes),
         "source": source,
     }
+
+
+def _archive_photo_to_qa(image: Image.Image, kind: str, source: str) -> None:
+    """用户照片归档进 QA 数据集（算法分析资产）。旁路失败不影响主流程。"""
+
+    try:
+        from app.qa_onboarding import archive_user_photo
+
+        archive_user_photo(image, kind, source)
+    except Exception:
+        pass
 
 
 def _hydrate_mirror_photos(record: dict[str, Any], handoff: dict[str, Any]) -> None:
@@ -1019,6 +1031,10 @@ async def upload_session_photo(
     request_id = _request_id()
     if accepted:
         asset_id = _save_photo_asset(session_id, kind, raw, stored_format)
+        # 用户照片归档进 QA 数据集：镜子流程（mirror_handoff）归 mirror，其余归 app。
+        _archive_photo_to_qa(
+            pil_image, kind, "mirror" if record.get("source") == "mirror_handoff" else "app"
+        )
         photos[kind] = {
             "asset_id": asset_id,
             "status": "accepted",

@@ -112,6 +112,7 @@ from app.stylist_sessions import (
 from app.selfit_onboarding import router as selfit_onboarding_router
 from app.selfit_mirror_handoff import router as selfit_mirror_handoff_router
 from app.selfit_analytics import admin_router as selfit_admin_router, router as selfit_analytics_router
+from app.selfit_admin_submissions import router as selfit_admin_submissions_router
 from app.qa_onboarding import QA_PHOTO_DIR, router as qa_onboarding_router
 from app.storage import storage_context, user_storage
 from scripts.generate_qa_artifacts import generate_qa_artifacts
@@ -126,6 +127,7 @@ app.include_router(selfit_onboarding_router)
 app.include_router(selfit_mirror_handoff_router)
 app.include_router(selfit_analytics_router)
 app.include_router(selfit_admin_router)
+app.include_router(selfit_admin_submissions_router)
 app.include_router(qa_onboarding_router)
 SELFIT_INDEX_PATH = Path(__file__).resolve().parent / "static" / "selfit" / "index.html"
 ADMIN_INDEX_PATH = Path(__file__).resolve().parent / "static" / "admin" / "index.html"

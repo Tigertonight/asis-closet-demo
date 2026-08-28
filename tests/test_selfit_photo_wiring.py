@@ -160,3 +160,43 @@ def test_upload_face_as_body_rejected(monkeypatch: pytest.MonkeyPatch, tmp_path:
     assert photo["status"] == "rejected"
     assert photo["code"] == "photo.body_not_complete"
     assert "身形" in photo["message"]
+
+
+# ---------------------------------------------------------------------------
+# 用户照片归档进 QA 数据集（算法分析资产）
+# ---------------------------------------------------------------------------
+
+def test_upload_accepted_archives_to_qa_dataset(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
+    """App 上传通过检测的照片自动进 QA 数据集，source=app；被拒照片不进。"""
+
+    import app.qa_onboarding as qa_onboarding
+
+    _use_tmp_store(monkeypatch, tmp_path)
+    qa_dir = tmp_path / "qa_photos"
+    monkeypatch.setattr(qa_onboarding, "QA_PHOTO_DIR", qa_dir)
+    monkeypatch.setattr(qa_onboarding, "QA_RESULTS_CACHE", qa_dir / "_results.json")
+    client = TestClient(app)
+    session_id = _create_session(client)
+
+    payload = _upload(client, session_id, "face", FIXTURE_IMAGES / "real_warm_indoor_light_no_card.jpg")
+    assert payload["photo"]["status"] == "accepted"
+
+    manifest = json.loads((qa_dir / "manifest.json").read_text(encoding="utf-8"))
+    assert len(manifest) == 1
+    assert manifest[0]["source"] == "app"
+    assert manifest[0]["kind"] == "face"
+    assert manifest[0]["file"].startswith("face/user_face_")
+    assert (qa_dir / manifest[0]["file"]).exists()
+
+    # 同一张照片重复上传（新 session）→ 内容 hash 去重
+    session_id_2 = _create_session(client)
+    payload_2 = _upload(client, session_id_2, "face", FIXTURE_IMAGES / "real_warm_indoor_light_no_card.jpg")
+    assert payload_2["photo"]["status"] == "accepted"
+    manifest = json.loads((qa_dir / "manifest.json").read_text(encoding="utf-8"))
+    assert len(manifest) == 1
+
+    # 被拒照片不归档
+    rejected = _upload(client, session_id_2, "face", FIXTURE_IMAGES / "portrait_non_person.png")
+    assert rejected["photo"]["status"] == "rejected"
+    manifest = json.loads((qa_dir / "manifest.json").read_text(encoding="utf-8"))
+    assert len(manifest) == 1
