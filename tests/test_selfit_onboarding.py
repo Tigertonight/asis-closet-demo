@@ -390,6 +390,10 @@ def test_selfit_personality_catalog_keeps_all_colors_but_renders_first_five() ->
     assert [item["name"] for item in mute_hair] == ["暖棕微卷中长发", "八字遮脸发"]
     assert all(item["name"] not in {"💇🏻‍♀️显脸小的发型💓", "减龄又显白的发色、米棕色"} for item in mute_hair)
 
+    bolt_hair = catalog["types"]["bolt"]["recommendations"]["hair"]
+    assert [item["name"] for item in bolt_hair] == ["柔感水波", "侧分长直"]
+    assert bolt_hair[1]["image"]["alt"] == "在逃千金 · 侧分长直"
+
     runtime = client.get("/static/selfit/selfit.js")
     assert runtime.status_code == 200
     assert "template.colors?.renderLimit || personalityCatalog.renderRules?.colors?.limit || 5" in runtime.text
