@@ -316,17 +316,6 @@
     document.querySelectorAll('[data-palette]').forEach((item) => { const selected = item === button; item.classList.toggle('is-selected', selected); item.setAttribute('aria-pressed', String(selected)); });
     document.querySelector('#likeNext').disabled = false;
   });
-  const bindSpectrumValue = (rangeId, valueId, invert) => {
-    const range = document.querySelector(`#${rangeId}`);
-    const value = document.querySelector(`#${valueId}`);
-    if (!range || !value) return;
-    const sync = () => { value.textContent = String(invert ? 100 - Number(range.value) : Number(range.value)); };
-    range.addEventListener('input', sync);
-    sync();
-  };
-  bindSpectrumValue('shapeRange', 'shapeValue', true);
-  bindSpectrumValue('energyRange', 'energyValue', false);
-  bindSpectrumValue('trendRange', 'trendValue', false);
   document.querySelector('#likeNext').addEventListener('click', (event) => runButtonAction(event.currentTarget, async () => {
     const sessionId = await ensureSession();
     state.axes = {
