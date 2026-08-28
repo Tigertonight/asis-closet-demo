@@ -49,6 +49,11 @@ DIMENSION_LABELS = {
 
 REGIONAL_STYLES = ("日系", "韩系", "欧美系", "中式", "法式", "轻亚", "无倾向")
 
+# 算法版本指纹：每次修改分型口径（中心点/权重/阈值/换算）必须递增并说明变更，
+# 并同步三处：前端移植版 selfit-persona.js、管理后台人格匹配展示、
+# tests/test_selfit_persona.py 对拍测试。详见 docs/PERSONA_ALGORITHM.md。
+ALGORITHM_VERSION = "v1.1-cross-side"
+
 # VIBE 题 key（onboarding 契约）→ 维度。
 VIBE_COMPLETION_VALUES = {"A": 10, "B": 40, "C": 70, "D": 95}
 VIBE_INDIVIDUALITY_VALUES = {"A": 20, "B": 55, "C": 90}
@@ -399,6 +404,106 @@ def classify_persona(vector: dict[str, Any]) -> dict[str, Any]:
         "numeric_distance": round(primary["numeric"], 4),
         "persona_confidence": round(max(0.0, min(1.0, confidence)), 4),
         "confidence_tier": tier,
+    }
+
+
+# ---------------------------------------------------------------------------
+# 匹配过程分解（管理后台展示用；算法口径变化时需同步维护，见 docs/PERSONA_ALGORITHM.md）
+# ---------------------------------------------------------------------------
+
+# 每个维度值来自哪道题（展示层文案，与 build_user_vector 的换算一一对应）。
+VECTOR_VALUE_SOURCES = {
+    "silhouette": "LIKE「硬朗锐利 ↔ 柔和温柔」滑杆（反向换算：硬朗=高分）",
+    "complexity": "LIKE「简约利落 ↔ 繁复华丽」滑杆",
+    "time_orientation": "LIKE「经典耐看 ↔ 先锋新潮」滑杆",
+    "saturation": "偏好色板（六选一映射）",
+    "temperature": "偏好色板（六选一映射）",
+    "completion": "VIBE「出门场合」题",
+    "individuality": "VIBE「衣橱状态」题",
+}
+
+
+def persona_breakdown(session: dict[str, Any]) -> dict[str, Any]:
+    """完整人格匹配分解：用户向量来源 + 16 型逐维度距离贡献 + 排名。
+
+    供管理后台「人格匹配」展示与客服对齐用。输出结构与 classify_persona
+    同源同口径——展示直接复用分型代码路径，算法改动自动反映到这里。
+    """
+
+    vector = build_user_vector(session)
+    classification = classify_persona(vector)
+
+    rows = []
+    for persona in PERSONAS.values():
+        penalty = _region_penalty(persona, vector.get("regional_style"))
+        dimensions = []
+        numeric = 0.0
+        for dimension in DIMENSIONS:
+            user_value = float(vector.get(dimension) or 0)
+            center_value = float(persona.center[dimension])
+            delta = abs(user_value - center_value)
+            is_core = dimension in persona.core_dimensions
+            weight = CORE_DIMENSION_WEIGHT if is_core else BASE_DIMENSION_WEIGHT
+            cross_side = delta > CROSS_SIDE_DELTA_THRESHOLD
+            effective_weight = CORE_DIMENSION_WEIGHT if cross_side else weight
+            weighted = effective_weight * delta
+            numeric += weighted
+            dimensions.append(
+                {
+                    "dimension": dimension,
+                    "label": DIMENSION_LABELS[dimension],
+                    "userValue": round(user_value, 1),
+                    "center": round(center_value, 1),
+                    "delta": round(delta, 1),
+                    "weight": weight,
+                    "effectiveWeight": effective_weight,
+                    "isCore": is_core,
+                    "crossSide": cross_side,
+                    "weighted": round(weighted, 1),
+                }
+            )
+        total = numeric if penalty is None else numeric + penalty
+        rows.append(
+            {
+                "code": persona.code,
+                "name": persona.name,
+                "signature": persona.signature,
+                "primaryRegion": persona.primary_region,
+                "coreDimensions": [DIMENSION_LABELS[d] for d in persona.core_dimensions],
+                "numericDistance": round(numeric, 1),
+                "regionPenalty": penalty,
+                "totalDistance": round(total, 1),
+                "dimensions": dimensions,
+            }
+        )
+    rows.sort(key=lambda row: row["totalDistance"])
+
+    user_vector_view = [
+        {
+            "dimension": dimension,
+            "label": DIMENSION_LABELS[dimension],
+            "value": round(float(vector.get(dimension) or 0), 1),
+            "source": VECTOR_VALUE_SOURCES[dimension],
+        }
+        for dimension in DIMENSIONS
+    ]
+
+    return {
+        "algorithmVersion": ALGORITHM_VERSION,
+        "thresholds": {
+            "coreWeight": CORE_DIMENSION_WEIGHT,
+            "baseWeight": BASE_DIMENSION_WEIGHT,
+            "crossSideDelta": CROSS_SIDE_DELTA_THRESHOLD,
+            "regionPenalties": {
+                "primary": REGION_PRIMARY_PENALTY,
+                "compatible": REGION_COMPATIBLE_PENALTY,
+                "mismatch": REGION_MISMATCH_PENALTY,
+            },
+        },
+        "vector": user_vector_view,
+        "regionalStyle": vector.get("regional_style"),
+        "classification": classification,
+        "ranking": rows,
     }
 
 

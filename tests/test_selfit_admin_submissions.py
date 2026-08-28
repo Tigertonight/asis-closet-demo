@@ -518,3 +518,65 @@ def test_submission_photo_attributes_visible_to_admin(monkeypatch, tmp_path: Pat
     assert face_entry["attributes"]["skin_tone"]["label"] == "暖白肤"
     assert face_entry["attributes"]["face_shape"]["label"] == "椭圆脸"
     assert face_entry["attributes"]["skin_tone"]["confidence"] == 0.78
+
+
+def test_persona_breakdown_endpoint_returns_full_math(monkeypatch, tmp_path: Path) -> None:
+    """人格匹配分解：向量来源 + 16 型排行 + 逐维贡献 + 算法版本。"""
+
+    _use_tmp_stores(monkeypatch, tmp_path)
+    client = TestClient(app)
+    admin_headers = _admin_login(client, monkeypatch)
+
+    session_id = client.post(f"{API}/sessions", json={}).json()["session"]["sessionId"]
+    client.patch(
+        f"{API}/sessions/{session_id}",
+        json={
+            "preferences": {"axes": {"shape": 20, "energy": 60, "trend": 50}, "palette": "earth"},
+            "vibe": {"occasion": "B", "wardrobe": "A", "expression": "B"},
+        },
+    )
+    # 保存偏好需要逐项 patch（契约按字段拆分），直接构造会话数据更快：
+    # 上面 patch 若字段拆分不匹配则退回直接改 store。
+    import app.selfit_onboarding as onboarding_store
+
+    data = json.loads(onboarding_store.SELFIT_ONBOARDING_STORE_PATH.read_text(encoding="utf-8"))
+    record = next(item for item in data["sessions"] if item["session_id"] == session_id)
+    record["preferences"] = {"axes": {"shape": 20, "energy": 60, "trend": 50}, "palette": "earth"}
+    record["vibe"] = {"occasion": "B", "wardrobe": "A", "expression": "B"}
+    onboarding_store.SELFIT_ONBOARDING_STORE_PATH.write_text(json.dumps(data, ensure_ascii=False), encoding="utf-8")
+
+    response = client.get(
+        f"/admin/api/submissions/{session_id}/persona-breakdown", headers=admin_headers
+    )
+    assert response.status_code == 200
+    payload = response.json()
+
+    # 算法版本与阈值
+    assert payload["algorithmVersion"]
+    assert payload["thresholds"]["crossSideDelta"] == 50.0
+    # 向量：7 维 + 来源说明
+    assert len(payload["vector"]) == 7
+    sources = {item["dimension"]: item["source"] for item in payload["vector"]}
+    assert "滑杆" in sources["silhouette"] and "反向" in sources["silhouette"]
+    assert "色板" in sources["saturation"]
+    assert "场合" in sources["completion"]
+    # 排行：16 型齐全、按总距离升序、第一名与分类结果一致
+    assert len(payload["ranking"]) == 16
+    distances = [row["totalDistance"] for row in payload["ranking"]]
+    assert distances == sorted(distances)
+    assert payload["ranking"][0]["code"] == payload["classification"]["primary_persona"]
+    assert payload["ranking"][1]["code"] == payload["classification"]["secondary_persona"]
+    # 维度明细：第一名有 7 维、权重规则、跨侧标记
+    top = payload["ranking"][0]
+    assert len(top["dimensions"]) == 7
+    dim_by_name = {d["dimension"]: d for d in top["dimensions"]}
+    silhouette_dim = dim_by_name["silhouette"]
+    # shape=20 → silhouette=80；跨侧与否取决于中心距离，字段必须存在
+    assert silhouette_dim["userValue"] == 80
+    assert "crossSide" in silhouette_dim and "effectiveWeight" in silhouette_dim
+    # 明细贡献之和 = 数值距离（±0.5 舍入误差）
+    assert abs(sum(d["weighted"] for d in top["dimensions"]) - top["numericDistance"]) < 0.5
+
+    # 匿名不可访问
+    anon = TestClient(app)
+    assert anon.get(f"/admin/api/submissions/{session_id}/persona-breakdown").status_code == 401

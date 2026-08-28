@@ -356,3 +356,26 @@ def test_hardening_scan_no_soft_landing() -> None:
                                 if after["primary_persona"] == "MELT":
                                     failures.append((shape, energy, trend, palette, occasion, wardrobe, expression))
     assert not failures, f"调大硬朗后仍落到 MELT 的输入: {failures[:5]}"
+
+
+def test_persona_breakdown_matches_classify_result() -> None:
+    """分解输出与 classify_persona 同源：主/次人格一致、距离可复算。"""
+
+    from app.selfit_persona import ALGORITHM_VERSION, persona_breakdown
+
+    assert ALGORITHM_VERSION
+    session = {
+        "preferences": {"axes": {"shape": 20, "energy": 60, "trend": 50}, "palette": "earth"},
+        "vibe": {"occasion": "B", "wardrobe": "A", "expression": "B"},
+    }
+    breakdown = persona_breakdown(session)
+    vector = build_user_vector(session)
+    result = classify_persona(vector)
+    assert breakdown["classification"] == result
+    assert breakdown["algorithmVersion"] == ALGORITHM_VERSION
+    # 前两名的总距离与 classify 的距离一致（±0.1 舍入）
+    assert abs(breakdown["ranking"][0]["totalDistance"] - result["primary_distance"]) < 0.1
+    assert abs(breakdown["ranking"][1]["totalDistance"] - result["secondary_distance"]) < 0.1
+    # 每个 persona 的维度贡献之和等于它的数值距离
+    for row in breakdown["ranking"]:
+        assert abs(sum(d["weighted"] for d in row["dimensions"]) - row["numericDistance"]) < 0.5

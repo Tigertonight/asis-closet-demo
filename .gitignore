@@ -45,7 +45,9 @@ selfit-agent-runtime/*workspace-state*.json
 .vscode/
 *.swp
 
-# QA 目检素材的分析缓存（可由页面重新生成）
+# QA 目检素材的分析缓存（可由页面重新生成）；照片与 manifest 进 git，
+# 管理员上传/用户归档的照片随代码一起发布，避免服务器文件与 git 漂移。
+# app/models（MediaPipe 模型，<10MB）同样进 git：部署只依赖 git 一个来源。
 qa_photos/_results.json
 qa_photos/_overlays/
 qa_photos/_annotations.json

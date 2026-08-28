@@ -304,7 +304,37 @@ async def http_exception_handler(request: Request, exc: StarletteHTTPException) 
 
 @app.get("/health")
 def health() -> dict[str, str]:
-    return {"status": "ok"}
+    return {"status": "ok", "release": _release_fingerprint()}
+
+
+def _release_fingerprint() -> str:
+    """部署版本指纹：git 提交 + 人格算法版本。
+
+    事故防护：并行部署/镜像覆盖导致代码回滚时，这个指纹会立刻暴露
+    「线上跑的不是你以为的版本」。git 信息不可用时降级为文件 mtime。
+    """
+
+    parts = []
+    try:
+        import subprocess
+
+        commit = subprocess.run(
+            ["git", "rev-parse", "--short", "HEAD"],
+            capture_output=True, text=True, timeout=5, cwd=Path(__file__).resolve().parent.parent,
+        ).stdout.strip()
+        if commit:
+            parts.append(f"git:{commit}")
+    except Exception:
+        pass
+    try:
+        from app.selfit_persona import ALGORITHM_VERSION
+
+        parts.append(f"persona:{ALGORITHM_VERSION}")
+    except Exception:
+        pass
+    if not parts:
+        parts.append(f"main.py:{Path(__file__).stat().st_mtime:.0f}")
+    return " ".join(parts)
 
 
 @app.get("/health/dependencies")

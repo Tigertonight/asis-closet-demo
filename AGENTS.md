@@ -60,3 +60,30 @@ Before finishing frontend work:
 - Confirm console has no broken resource errors.
 - Confirm the main action path is visually obvious without reading technical details.
 - Run the `DESIGN.md` MVP Self-Test Checklist before considering the UI finished.
+
+## Deployment（必读：2026-08-28 事故后定版）
+
+**服务器发布只允许一种方式**：`sudo bash scripts/deploy_release.sh [commit]`（在服务器上执行）。
+
+**绝对禁止**（任何 AI 或人类）：
+
+- `rsync --delete` / `tar` 整目录镜像覆盖服务器——2026-08-28 内测事故的直接原因：镜像覆盖把刚部署的算法修复回滚成旧版，服务器无 git 无人能发现，引发「同答案不同人格」的用户反馈
+- 手工 `scp` 单文件到服务器后不核对版本
+- 部署本地未 push 的代码
+
+规则要点：
+
+1. 先 `git commit + push`，再服务器 `scripts/deploy_release.sh` 发布（脚本会校验 git、备份、跑测试、健康检查、失败自动回滚）
+2. 发布后核对 `curl /health` 的 `release` 指纹（`git:<commit> persona:<版本>`）与预期一致
+3. 代码 = git（含 `app/models`、`qa_photos` 素材）；数据 = 服务器目录（`outputs/` 用户数据、`.env.demo` 密钥、`.venv`）
+4. 并行操作服务器前先在群里协调
+
+## Persona Algorithm（人格分型：三份实现必须同步）
+
+分型算法有三份实现，**改任何口径（中心点/权重/阈值/换算）必须三处一起改**：
+
+1. 后端 `app/selfit_persona.py`（唯一真相；`ALGORITHM_VERSION` 递增）
+2. 前端移植版 `app/static/selfit/selfit-persona.js`（对拍测试 `tests/test_selfit_persona.py::test_frontend_mock_persona_matches_backend` 强制同步）
+3. 管理后台「人格匹配」展示（`persona_breakdown()` 输出结构 + `app/static/admin/index.html` 渲染）
+
+完整口径说明、变更流程、事故复盘见 `docs/PERSONA_ALGORITHM.md`。排查「人格结果不对」第一步永远是 `curl /health` 看算法版本指纹。

@@ -26,6 +26,7 @@ from fastapi.responses import FileResponse, JSONResponse, RedirectResponse, Resp
 
 from app import selfit_assets, selfit_mirror_handoff, selfit_onboarding, selfit_photo
 from app.auth import get_admin_user
+from app.selfit_persona import persona_breakdown
 from app.storage import ROOT_DIR
 
 router = APIRouter(prefix="/admin/api", tags=["selfit-admin-submissions"])
@@ -275,6 +276,28 @@ async def get_submission(
         if item.get("session_id") == session_id
     ]
     return JSONResponse(content={"submission": row}, headers={"Cache-Control": "no-store"})
+
+
+@router.get("/submissions/{session_id}/persona-breakdown")
+async def get_submission_persona_breakdown(
+    session_id: str, admin: dict[str, Any] = Depends(get_admin_user)
+) -> JSONResponse:
+    """人格匹配过程分解：7 维向量来源 + 16 型逐维距离贡献 + 排名。
+
+    给管理后台「人格匹配」展示用（内测对齐口径：结果怎么来的、每一维
+    贡献多少）。算法口径变化时本接口随 selfit_persona.persona_breakdown
+    自动同步，前端展示层需要同步维护（见 docs/PERSONA_ALGORITHM.md）。
+    """
+
+    data = selfit_onboarding._load_store()
+    record = _find_submission(data, session_id)
+    if record is None:
+        return JSONResponse(status_code=404, content={"detail": "没有找到这份提交"})
+    try:
+        breakdown = persona_breakdown(record)
+    except Exception:
+        return JSONResponse(status_code=422, content={"detail": "这份提交的问卷输入不完整，无法计算人格匹配"})
+    return JSONResponse(content=breakdown, headers={"Cache-Control": "no-store"})
 
 
 @router.get("/submissions/{session_id}/photos/{kind}")

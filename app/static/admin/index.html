@@ -100,6 +100,45 @@
   .algo-compare em { font-style: normal; font-size: 11px; border-radius: 6px; padding: 2px 6px; margin-left: 6px; font-weight: 700; }
   .algo-compare em.match { background: #e7f5ea; color: #166534; }
   .algo-compare em.diff { background: #fde8e8; color: #b91c1c; }
+  /* 人格匹配分解 */
+  .persona-breakdown { border-top: 1px solid var(--line); padding: 14px 18px 18px; max-height: 46vh; overflow-y: auto; background: #fbf8f7; }
+  .persona-breakdown h4 { margin: 14px 0 8px; font-size: 13px; }
+  .persona-breakdown h4 small { color: var(--muted); font-weight: 500; }
+  .pb-head { display: flex; flex-direction: column; gap: 4px; }
+  .pb-title { font-size: 15px; }
+  .pb-conf { margin-left: 8px; font-size: 12px; color: var(--muted); }
+  .pb-meta { font-size: 11px; color: var(--muted); }
+  .pb-meta code { background: #fff; border: 1px solid var(--line); border-radius: 6px; padding: 1px 6px; }
+  .pb-vector { display: flex; flex-direction: column; gap: 4px; }
+  .pv-row { display: grid; grid-template-columns: 52px 1fr 2fr; gap: 8px; align-items: center; font-size: 12px; }
+  .pv-label { font-weight: 700; }
+  .pv-bar { position: relative; height: 14px; background: #f1e6e8; border-radius: 7px; overflow: hidden; }
+  .pv-bar i { display: block; height: 100%; background: #ff4f86; border-radius: 7px; }
+  .pv-bar b { position: absolute; right: 6px; top: 0; font-size: 10px; line-height: 14px; color: #6c5560; }
+  .pv-source { color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .pb-rank { width: 100%; border-collapse: collapse; background: #fff; border: 1px solid var(--line); border-radius: 12px; overflow: hidden; font-size: 12px; }
+  .pb-rank th { text-align: left; padding: 8px 10px; background: #faf6f3; color: var(--muted); font-size: 11px; }
+  .pb-rank td { padding: 7px 10px; border-top: 1px solid #f5eef0; }
+  .pr-row { cursor: pointer; }
+  .pr-row:hover { background: #fdf7f8; }
+  .pr-row.is-primary td { background: #ffe4ee; }
+  .pr-row.is-secondary td { background: #fff5f8; }
+  .rank-badge { margin-left: 6px; font-size: 10px; border-radius: 6px; padding: 1px 6px; font-weight: 800; }
+  .rank-badge.rank-primary { background: #ff4f86; color: #fff; }
+  .rank-badge.rank-secondary { background: #ffd7e5; color: #9b344b; }
+  .core-tags { margin-top: 2px; }
+  .core-tag { font-style: normal; font-size: 10px; color: #8a807d; background: #f5efe9; border-radius: 5px; padding: 1px 5px; margin-right: 4px; }
+  .penalty { display: block; color: #b91c1c; font-size: 10px; }
+  .pr-toggle { text-align: center; color: var(--muted); transition: transform .15s; }
+  .pr-toggle.is-open { transform: rotate(180deg); }
+  .pr-detail td { background: #fbf8f7; padding: 0 10px 10px; }
+  .dim-table { width: 100%; border-collapse: collapse; font-size: 11px; }
+  .dim-table th { padding: 6px 8px; background: transparent; }
+  .dim-table td { padding: 3px 8px; border-top: 1px solid #f0e8ea; background: transparent; }
+  .dim-table tr.is-cross td { background: #fff4d8; }
+  .dim-core, .dim-cross { font-size: 9px; border-radius: 4px; padding: 0 4px; margin-left: 3px; }
+  .dim-core { background: #e8f0fa; color: #2d5f8a; }
+  .dim-cross { background: #fff4d8; color: #8a5a00; }
   .empty-inline { padding: 6px 0; color: var(--muted); font-size: 13px; }
   .link-btn.danger { color: #a90020; }
 
@@ -209,6 +248,7 @@
         <button class="mini-btn" type="button" id="submissionModalClose">关闭</button>
       </header>
       <div class="modal-body" id="submissionModalBody"></div>
+      <div class="persona-breakdown" id="personaBreakdown" hidden></div>
     </div>
   </div>
 </main>
@@ -542,6 +582,64 @@
     }
 
     body.innerHTML = parts.join('');
+    void renderPersonaBreakdown(detail.sessionId);
+  };
+
+  // 人格匹配过程分解：7 维向量来源 + 16 型距离排行 + 逐维贡献。
+  // 算法口径变化（selfit_persona.py）时此处展示需同步维护，见 docs/PERSONA_ALGORITHM.md。
+  const renderPersonaBreakdown = async (sessionId) => {
+    const mount = $('personaBreakdown');
+    if (!mount) return;
+    mount.hidden = false;
+    mount.innerHTML = '<div class="empty-inline">人格匹配计算中…</div>';
+    let data;
+    try {
+      data = await api(`/admin/api/submissions/${encodeURIComponent(sessionId)}/persona-breakdown`);
+    } catch (error) {
+      mount.innerHTML = `<div class="empty-inline">${esc(error.message || '这份提交的问卷输入不完整，无法计算人格匹配')}</div>`;
+      return;
+    }
+    const cls = data.classification || {};
+    const tierLabels = { high: '高', mid: '中', low: '低' };
+    const vectorBars = (data.vector || []).map((item) =>
+      `<div class="pv-row"><span class="pv-label">${esc(item.label)}</span>`
+      + `<div class="pv-bar"><i style="width:${Math.max(2, Math.round(item.value))}%"></i><b>${item.value}</b></div>`
+      + `<span class="pv-source" title="${esc(item.source)}">${esc(item.source)}</span></div>`).join('');
+    const rankRows = (data.ranking || []).map((row, index) => {
+      const isPrimary = index === 0;
+      const isSecondary = index === 1;
+      const coreTags = (row.coreDimensions || []).map((label) => `<i class="core-tag">${esc(label)}</i>`).join('');
+      const dims = (row.dimensions || []).map((d) =>
+        `<tr class="${d.crossSide ? 'is-cross' : ''}">`
+        + `<td>${esc(d.label)}${d.isCore ? '<span class="dim-core">核心</span>' : ''}${d.crossSide ? '<span class="dim-cross">跨侧</span>' : ''}</td>`
+        + `<td>${d.userValue}</td><td>${d.center}</td><td>${d.delta}</td>`
+        + `<td>×${d.effectiveWeight}</td><td>${d.weighted}</td></tr>`).join('');
+      return `<tr class="pr-row${isPrimary ? ' is-primary' : ''}${isSecondary ? ' is-secondary' : ''}" data-persona="${esc(row.code)}">`
+        + `<td>${index + 1}</td>`
+        + `<td><b>${esc(row.name)}</b> <small>${esc(row.code)}</small>${isPrimary ? '<span class="rank-badge rank-primary">主</span>' : ''}${isSecondary ? '<span class="rank-badge rank-secondary">次</span>' : ''}<div class="core-tags">${coreTags}</div></td>`
+        + `<td>${row.totalDistance}${row.regionPenalty ? `<small class="penalty">含地域罚 +${row.regionPenalty}</small>` : ''}</td>`
+        + `<td class="pr-toggle" title="展开维度贡献">▾</td></tr>`
+        + `<tr class="pr-detail" hidden><td colspan="4"><table class="dim-table"><thead><tr><th>维度</th><th>用户</th><th>中心</th><th>Δ</th><th>权重</th><th>贡献</th></tr></thead><tbody>${dims}</tbody></table></td></tr>`;
+    }).join('');
+    mount.innerHTML = `
+      <div class="pb-head">
+        <div class="pb-title"><b>${esc(cls.primary_persona || '')}</b> 主人格 · <b>${esc(cls.secondary_persona || '')}</b> 次人格
+          <span class="pb-conf">置信度 ${Math.round((cls.persona_confidence || 0) * 100)}%（${tierLabels[cls.confidence_tier] || cls.confidence_tier}）</span></div>
+        <div class="pb-meta">算法版本 <code>${esc(data.algorithmVersion || '')}</code> · 权重 核心×${data.thresholds?.coreWeight} / 普通×${data.thresholds?.baseWeight} / 跨侧冲突 |Δ|>${data.thresholds?.crossSideDelta}×${data.thresholds?.coreWeight} · 地域 ${esc(data.regionalStyle || '无倾向')}</div>
+      </div>
+      <h4>你的 7 维得分（来自问卷输入）</h4>
+      <div class="pb-vector">${vectorBars}</div>
+      <h4>16 型距离排行 <small>（距离越小越匹配；点行展开每一维的贡献）</small></h4>
+      <table class="pb-rank"><thead><tr><th>#</th><th>人格</th><th>总距离</th><th></th></tr></thead><tbody>${rankRows}</tbody></table>`;
+    mount.querySelectorAll('.pr-row').forEach((row) => {
+      row.addEventListener('click', () => {
+        const detailRow = row.nextElementSibling;
+        if (detailRow) detailRow.hidden = !detailRow.hidden;
+        row.querySelector('.pr-toggle').classList.toggle('is-open', !detailRow.hidden);
+      });
+    });
+    // 默认展开主/次人格
+    mount.querySelectorAll('.pr-row.is-primary, .pr-row.is-secondary').forEach((row) => row.click());
   };
 
   const openSubmissionDetail = async (sessionId) => {
@@ -556,12 +654,18 @@
     }
   };
 
-  $('submissionModalClose').addEventListener('click', () => { $('submissionModal').hidden = true; });
+  const closeSubmissionModal = () => {
+    $('submissionModal').hidden = true;
+    $('personaBreakdown').hidden = true;
+    $('personaBreakdown').innerHTML = '';
+  };
+
+  $('submissionModalClose').addEventListener('click', closeSubmissionModal);
   $('submissionModal').addEventListener('click', (event) => {
-    if (event.target === $('submissionModal')) $('submissionModal').hidden = true;
+    if (event.target === $('submissionModal')) closeSubmissionModal();
   });
   document.addEventListener('keydown', (event) => {
-    if (event.key === 'Escape') $('submissionModal').hidden = true;
+    if (event.key === 'Escape') closeSubmissionModal();
   });
   $('submissionsRefresh').addEventListener('click', loadSubmissions);
   $('rejectedRefresh').addEventListener('click', loadRejected);
