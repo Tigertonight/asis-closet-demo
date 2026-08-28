@@ -25,6 +25,7 @@ html { height: -webkit-fill-available; background: var(--canvas); }
 body {
   min-height: 100vh;
   min-height: -webkit-fill-available;
+  overflow-y: hidden;
   background: var(--canvas);
   color: var(--ink);
   -webkit-font-smoothing: antialiased;
@@ -234,7 +235,7 @@ button {
 .auth-phone-dash { color: rgba(0,0,0,.36); }
 .auth-field { display: flex; height: 54px; min-width: 0; align-items: center; border: 0.5px solid rgba(0,0,0,.08); border-radius: 14px; background: #fff; box-shadow: 0 4px 14px rgba(0,0,0,.02); transition: border-color .18s ease, box-shadow .18s ease; }
 .auth-field:focus-within { border-color: rgba(138,1,27,.22); box-shadow: 0 4px 14px rgba(0,0,0,.02), 0 0 0 3px rgba(138,1,27,.06); }
-.auth-field input { width: 100%; min-width: 0; height: 100%; padding: 0 16px; border: 0; outline: 0; color: rgba(0,0,0,.8); background: transparent; font-size: 15px; line-height: 22px; }
+.auth-field input { width: 100%; min-width: 0; height: 100%; padding: 0 16px; border: 0; outline: 0; color: rgba(0,0,0,.8); background: transparent; font-size: 16px; line-height: 22px; }
 .auth-field input::placeholder { color: rgba(0,0,0,.26); }
 .auth-field--phone > button { width: 18px; height: 18px; flex: 0 0 18px; margin-right: 16px; padding: 0; border: 0; font-size: 0; background: url(/static/selfit/assets/clear-input.svg) center / 18px 18px no-repeat; cursor: pointer; }
 .auth-code-field { margin-top: 24px; }

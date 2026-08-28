@@ -237,7 +237,7 @@ def test_selfit_report_share_cards_use_the_dedicated_qr_artwork() -> None:
     assert response.text.count("<div class=\"share-card-meta\"><span>我的 selfit 风格报告</span></div>") == 3
     assert response.text.count("/static/selfit/assets/share-report-qr.png?v=20260828") == 3
     assert 'data-share-ornament' in response.text
-    assert "/static/selfit/selfit.css?v=20260829-webview-viewport2" in response.text
+    assert "/static/selfit/selfit.css?v=20260829-webview-zoom3" in response.text
     assert "/static/selfit/selfit.js?v=20260829-webview-viewport2" in response.text
     assert "/static/selfit/selfit-persona.js?v=20260828-1" in response.text
 
@@ -296,6 +296,9 @@ def test_selfit_onboarding_has_webview_layout_and_boot_fallbacks() -> None:
     assert "html.has-visual-viewport .app-shell" in styles.text
     assert "height: var(--app-viewport-height, 100vh);" in styles.text
     assert "html.has-editable-focus body { position: fixed; inset: 0; }" in styles.text
+    assert "overflow-y: hidden;" in styles.text
+    assert ".auth-field input {" in styles.text
+    assert "font-size: 16px; line-height: 22px;" in styles.text
     assert ".report-actions { width: var(--screen-w); }" in styles.text
     assert ".share-dialog { width: var(--screen-w); height: var(--screen-h);" in styles.text
     assert ".no-native-dialog .share-dialog[open]" in styles.text
