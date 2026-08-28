@@ -36,6 +36,8 @@
 
   const CORE_DIMENSION_WEIGHT = 1.5;
   const BASE_DIMENSION_WEIGHT = 1.0;
+  // 跨侧冲突阈值：与后端 CROSS_SIDE_DELTA_THRESHOLD 保持一致（对拍测试校验）。
+  const CROSS_SIDE_DELTA_THRESHOLD = 50.0;
 
   // 中心点 7 元组顺序 = DIMENSIONS：(廓形, 繁简, 时间, 饱和度, 冷暖, 完成度, 个性)
   // [code, center, coreDimensions, primaryRegion, compatibleRegions]
@@ -130,9 +132,15 @@
   const personaDistance = (persona, vector) => {
     let weightedDistance = 0;
     for (const dimension of DIMENSIONS) {
-      const weight = persona.coreDimensions.has(dimension) ? CORE_DIMENSION_WEIGHT : BASE_DIMENSION_WEIGHT;
+      let weight = persona.coreDimensions.has(dimension) ? CORE_DIMENSION_WEIGHT : BASE_DIMENSION_WEIGHT;
       const delta = (Number(vector[dimension]) || 0) - persona.center[dimension];
-      weightedDistance += weight * Math.abs(delta);
+      const absDelta = Math.abs(delta);
+      // 跨侧冲突（|Δ| > 50）时不论是否核心维度一律按核心强度计分，
+      // 避免硬朗用户因权重差异落到廓形柔和但不以廓形为核心的人格。
+      if (absDelta > CROSS_SIDE_DELTA_THRESHOLD && weight < CORE_DIMENSION_WEIGHT) {
+        weight = CORE_DIMENSION_WEIGHT;
+      }
+      weightedDistance += weight * absDelta;
     }
     const penalty = regionPenalty(persona, vector.regional_style);
     return { numeric: weightedDistance, total: penalty === null ? weightedDistance : weightedDistance + penalty };

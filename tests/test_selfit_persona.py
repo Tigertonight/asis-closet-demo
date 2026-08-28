@@ -277,3 +277,82 @@ def test_frontend_mock_persona_matches_backend() -> None:
         assert abs(front["distance"] - backend["primary_distance"]) < 0.0001, session
     # 分型多样性必须显著超过色板数（防止退化为「颜色查表」）。
     assert len(covered) >= 10
+
+
+# ---------------------------------------------------------------------------
+# 跨侧冲突权重（内测缺陷修复：调大硬朗锐利不能变成奶油治愈）
+# ---------------------------------------------------------------------------
+
+def test_cross_side_conflict_upgrades_base_weight() -> None:
+    """|Δ|>50 的跨侧冲突即使非核心维度也按 1.5 计分。"""
+
+    from app.selfit_persona import CROSS_SIDE_DELTA_THRESHOLD, _persona_distance
+
+    assert CROSS_SIDE_DELTA_THRESHOLD == 50.0
+    # EASE 的 saturation 非核心（基础权重 1.0）：跨侧冲突时应按 1.5 计。
+    persona = PERSONAS["EASE"]
+    vector = dict(persona.center)
+    vector["saturation"] = 100  # Δ=75 > 50，跨侧冲突
+    vector["regional_style"] = None
+    numeric, _ = _persona_distance(persona, vector)
+    assert numeric == 75 * 1.5
+    # 同样偏差若未跨侧（Δ≤50），保持基础权重 1.0。
+    vector["saturation"] = 60  # Δ=35 ≤ 50
+    numeric, _ = _persona_distance(persona, vector)
+    assert numeric == 35 * 1.0
+
+
+def test_hardening_silhouette_never_lands_on_soft_persona() -> None:
+    """内测缺陷回归：EASE 参数只调大「硬朗锐利」不能变成 MELT（奶油治愈）。
+
+    修复前的机制：silhouette 是 EASE 核心维度（权重 1.5）但不是 MELT 的
+    （1.0）。用户调硬朗时 EASE 被惩罚 1.5 倍速、MELT 只有 1.0 倍速，
+    越调硬朗越快甩掉 EASE，反被廓形同样柔和（中心 20）的 MELT 接盘。
+    """
+
+    # 内测真实反馈的组合：该输入原为 EASE。
+    base_preferences = {"axes": {"shape": 50, "energy": 60, "trend": 50}, "palette": "earth"}
+    vibe = {"occasion": "B", "wardrobe": "A", "expression": "B"}
+
+    before = classify_persona(build_user_vector(
+        {"preferences": base_preferences, "vibe": vibe}
+    ))
+    assert before["primary_persona"] == "EASE"
+
+    # 只把「硬朗锐利」拉满（shape → 0，silhouette → 100）。
+    hardened_preferences = {"axes": {"shape": 0, "energy": 60, "trend": 50}, "palette": "earth"}
+    after = classify_persona(build_user_vector(
+        {"preferences": hardened_preferences, "vibe": vibe}
+    ))
+    assert after["primary_persona"] != "MELT"
+    # 结果应推向硬朗侧人格（廓形中心明显偏硬朗），而不是更柔和的人格。
+    before_center = PERSONAS[before["primary_persona"]].center["silhouette"]
+    after_center = PERSONAS[after["primary_persona"]].center["silhouette"]
+    assert after_center >= before_center
+
+
+def test_hardening_scan_no_soft_landing() -> None:
+    """全量扫描：任何「原本 EASE」的输入只调大硬朗，都不应落到 MELT。"""
+
+    failures = []
+    for shape in range(30, 100, 4):
+        for energy in range(0, 100, 20):
+            for trend in range(0, 100, 20):
+                for palette in ("pastel", "earth", "mono", "bright"):
+                    for occasion in "ABCD":
+                        for wardrobe in "ABC":
+                            for expression in "ABE":
+                                vibe = {"occasion": occasion, "wardrobe": wardrobe, "expression": expression}
+                                before = classify_persona(build_user_vector({"preferences": {
+                                    "axes": {"shape": shape, "energy": energy, "trend": trend},
+                                    "palette": palette,
+                                }, "vibe": vibe}))
+                                if before["primary_persona"] != "EASE":
+                                    continue
+                                after = classify_persona(build_user_vector({"preferences": {
+                                    "axes": {"shape": 0, "energy": energy, "trend": trend},
+                                    "palette": palette,
+                                }, "vibe": vibe}))
+                                if after["primary_persona"] == "MELT":
+                                    failures.append((shape, energy, trend, palette, occasion, wardrobe, expression))
+    assert not failures, f"调大硬朗后仍落到 MELT 的输入: {failures[:5]}"

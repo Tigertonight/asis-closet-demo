@@ -84,6 +84,12 @@ REGION_MISMATCH_PENALTY = 15.0
 # 权重：人格核心维度 1.5，普通维度 1.0（用户输入×16型人格×内容标签映射方案）。
 CORE_DIMENSION_WEIGHT = 1.5
 BASE_DIMENSION_WEIGHT = 1.0
+# 跨侧冲突阈值：用户与人格中心在某维度上分处量表两端（|Δ| > 50）时，
+# 视为明确的风格冲突，即使该维度不是此人格的核心辨识也按核心强度计分。
+# 修复缺陷：否则「调大硬朗」反而会甩掉把廓形列为核心的人格（如 EASE 权重 1.5），
+# 落到廓形同样柔和、却不把廓形列为核心的人格上（如 MELT 权重 1.0）——
+# 内测反馈：EASE 参数只调大硬朗锐利，结果变成奶油治愈 MELT。
+CROSS_SIDE_DELTA_THRESHOLD = 50.0
 
 # 置信度分层阈值。
 CONFIDENCE_HIGH = 0.20
@@ -342,13 +348,21 @@ def _persona_distance(persona: Persona, vector: dict[str, Any]) -> tuple[float, 
 
     工程规格定义的数值距离为 ``Σ wᵢ · |userᵢ - centerᵢ|``。
     不对差值平方，避免单个问卷维度的较大偏差被额外放大。
+
+    权重规则：
+    - 人格核心维度按 1.5 计（核心辨识，用于区分相近人格）；
+    - 跨侧冲突（|user - center| > 50，用户与人格分处量表两端）时，
+      不论是否核心维度一律按 1.5 计——核心维度权重只表达「区分相近
+      人格」的分辨率，不能反过来让明显跨侧冲突被轻判。
     """
 
     weighted_distance = 0.0
     for dimension in DIMENSIONS:
         weight = CORE_DIMENSION_WEIGHT if dimension in persona.core_dimensions else BASE_DIMENSION_WEIGHT
-        delta = float(vector.get(dimension) or 0) - float(persona.center[dimension])
-        weighted_distance += weight * abs(delta)
+        delta = abs(float(vector.get(dimension) or 0) - float(persona.center[dimension]))
+        if delta > CROSS_SIDE_DELTA_THRESHOLD and weight < CORE_DIMENSION_WEIGHT:
+            weight = CORE_DIMENSION_WEIGHT
+        weighted_distance += weight * delta
     numeric_distance = weighted_distance
     penalty = _region_penalty(persona, vector.get("regional_style"))
     total = numeric_distance if penalty is None else numeric_distance + penalty
