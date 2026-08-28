@@ -53,6 +53,7 @@
     palette: null, answers: {}, sessionId: null, revision: 0, reportJobId: null, reportId: null, authUser: null,
   };
   const personalityCatalog = window.__SELFIT_PERSONALITY_TEMPLATES__ || { types: {}, renderRules: {} };
+  const dismissKeyboard = () => window.SelfitViewport?.dismissKeyboard?.() || Promise.resolve();
 
   // 轻量埋点：fire-and-forget，失败静默（sendBeacon 页面关闭也能送达）
   const track = (event, props = {}) => {
@@ -144,11 +145,19 @@
   };
   document.querySelector('#splashEnter').addEventListener('click', enterOnboarding);
 
-  document.addEventListener('click', (event) => {
+  document.addEventListener('click', async (event) => {
     const next = event.target.closest('[data-next]');
     const back = event.target.closest('[data-back]');
-    if (next) { if (next.dataset.next !== 'intro') clearIntroMotion(); showScreen(next.dataset.next); }
-    if (back) { showScreen(back.dataset.back); if (back.dataset.back === 'intro') playIntro(); }
+    if (next) {
+      if (document.activeElement?.matches?.('input, textarea, [contenteditable="true"]')) await dismissKeyboard();
+      if (next.dataset.next !== 'intro') clearIntroMotion();
+      showScreen(next.dataset.next);
+    }
+    if (back) {
+      if (document.activeElement?.matches?.('input, textarea, [contenteditable="true"]')) await dismissKeyboard();
+      showScreen(back.dataset.back);
+      if (back.dataset.back === 'intro') playIntro();
+    }
   });
 
   const authNodes = {
@@ -185,6 +194,7 @@
     state.revision = 0;
     localStorage.removeItem(SESSION_STORAGE_KEY);
     track('login_success', { provider: 'phone' });
+    await dismissKeyboard();
     if (handoffToken) {
       await claimPendingHandoff();
       return;

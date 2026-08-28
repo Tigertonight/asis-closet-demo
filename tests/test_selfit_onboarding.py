@@ -68,10 +68,11 @@ def test_selfit_manual_suit_options_follow_latest_figma_geometry() -> None:
     styles = client.get("/static/selfit/selfit.css")
 
     assert styles.status_code == 200
-    assert ".manual-visual-options--face { width: min(343px, 100%); margin-inline: auto; grid-template-columns: repeat(5, 59px); }" in styles.text
+    assert ".manual-visual-options--face { width: min(343px, 100%); margin-inline: auto; grid-template-columns: repeat(5,minmax(0,1fr));" in styles.text
     assert ".manual-visual-options--face .manual-art img { width: 39px; height: 60px;" in styles.text
-    assert ".manual-visual-options--body { width: min(348px, 100%); margin-inline: auto; grid-template-columns: repeat(5, 60px); }" in styles.text
+    assert ".manual-visual-options--body { width: min(348px, 100%); margin-inline: auto; grid-template-columns: repeat(5,minmax(0,1fr));" in styles.text
     assert ".manual-visual-options--body .manual-art img { width: 36px; height: 102px;" in styles.text
+    assert "overflow-y: auto;\n  overscroll-behavior: contain;" in styles.text
 
 
 def test_selfit_intro_uses_complete_high_density_lace_card_assets() -> None:
@@ -236,8 +237,8 @@ def test_selfit_report_share_cards_use_the_dedicated_qr_artwork() -> None:
     assert response.text.count("<div class=\"share-card-meta\"><span>我的 selfit 风格报告</span></div>") == 3
     assert response.text.count("/static/selfit/assets/share-report-qr.png?v=20260828") == 3
     assert 'data-share-ornament' in response.text
-    assert "/static/selfit/selfit.css?v=20260829-wechat-keyboard1" in response.text
-    assert "/static/selfit/selfit.js?v=20260829-hero-preload" in response.text
+    assert "/static/selfit/selfit.css?v=20260829-webview-viewport2" in response.text
+    assert "/static/selfit/selfit.js?v=20260829-webview-viewport2" in response.text
     assert "/static/selfit/selfit-persona.js?v=20260828-1" in response.text
 
     asset = client.get("/static/selfit/assets/share-report-qr.png")
@@ -269,6 +270,7 @@ def test_selfit_onboarding_has_webview_layout_and_boot_fallbacks() -> None:
 
     assert response.status_code == 200
     assert 'width=device-width, initial-scale=1, viewport-fit=cover' in response.text
+    assert 'interactive-widget=resizes-visual' in response.text
     assert 'id="compatFallback"' in response.text
     assert "__SELFIT_BOOT_TIMER__" in response.text
     assert response.text.index("selfit-compat.js") < response.text.index("selfit.js?v=")
@@ -282,6 +284,8 @@ def test_selfit_onboarding_has_webview_layout_and_boot_fallbacks() -> None:
     assert "document.addEventListener('focusin'" in compat.text
     assert "document.addEventListener('focusout'" in compat.text
     assert "window.scrollTo(0, 0)" in compat.text
+    assert "waitForViewportRestore" in compat.text
+    assert "window.SelfitViewport" in compat.text
     assert "['email', 'number', 'password', 'search', 'tel', 'text', 'url']" in compat.text
     assert "native-dialog" in compat.text
     assert "data:image/webp" in compat.text
@@ -300,6 +304,7 @@ def test_selfit_onboarding_has_webview_layout_and_boot_fallbacks() -> None:
     assert "const openShareDialog" in runtime.text
     assert runtime.text.count("shareDialog.showModal()") == 1
     assert "placeholder-card.svg" in runtime.text
+    assert "await dismissKeyboard();" in runtime.text
     assert "previewScreen === 'share-gallery'" in runtime.text
     assert "share-gallery-preview" in runtime.text
 
@@ -314,7 +319,8 @@ def test_selfit_onboarding_centers_393px_design_geometry_in_wide_webviews() -> N
     assert "left: 50%;\n  width: 265px;" in styles.text
     assert ".page-copy { width: calc(100% - 64px); max-width: 329px; margin: 36px auto 0; }" in styles.text
     assert "width: min(353px, calc(100% - 40px));" in styles.text
-    assert ".skin-options { display: grid; grid-template-columns: repeat(6,40px); justify-content: center;" in styles.text
+    assert ".skin-options { display: grid; grid-template-columns: repeat(6,minmax(0,40px)); justify-content: center;" in styles.text
+    assert "gap: clamp(8px, calc((100% - 240px) / 5), 20px);" in styles.text
     assert ".manual-visual-options--face { width: min(343px, 100%); margin-inline: auto;" in styles.text
     assert ".manual-visual-options--body { width: min(348px, 100%); margin-inline: auto;" in styles.text
     assert ".page-copy--vibe { width: 340px; max-width: 100%; height: 64px; margin: 0 auto; }" in styles.text
