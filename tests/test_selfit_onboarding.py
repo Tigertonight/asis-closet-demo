@@ -68,9 +68,9 @@ def test_selfit_manual_suit_options_follow_latest_figma_geometry() -> None:
     styles = client.get("/static/selfit/selfit.css")
 
     assert styles.status_code == 200
-    assert ".manual-visual-options--face { width: min(343px, 100%); grid-template-columns: repeat(5, 59px); }" in styles.text
+    assert ".manual-visual-options--face { width: min(343px, 100%); margin-inline: auto; grid-template-columns: repeat(5, 59px); }" in styles.text
     assert ".manual-visual-options--face .manual-art img { width: 39px; height: 60px;" in styles.text
-    assert ".manual-visual-options--body { width: min(348px, 100%); grid-template-columns: repeat(5, 60px); }" in styles.text
+    assert ".manual-visual-options--body { width: min(348px, 100%); margin-inline: auto; grid-template-columns: repeat(5, 60px); }" in styles.text
     assert ".manual-visual-options--body .manual-art img { width: 36px; height: 102px;" in styles.text
 
 
@@ -145,8 +145,8 @@ def test_selfit_vibe_form_matches_the_latest_figma_layout() -> None:
     assert 'class="vibe-action-dock"' in markup.text
     assert ".vibe-scroll {" in styles.text
     assert "top: 137px;" in styles.text
-    assert "padding: 20px 5px 134px 16px;" in styles.text
-    assert ".page-copy--vibe { width: 340px; max-width: 100%; height: 64px; margin: 0; }" in styles.text
+    assert "padding: 20px 10px 134px;" in styles.text
+    assert ".page-copy--vibe { width: 340px; max-width: 100%; height: 64px; margin: 0 auto; }" in styles.text
     assert ".vibe-questionnaire legend { margin: 0 0 16px;" in styles.text
     assert "height: 42px;" in styles.text
     assert ".vibe-action-dock" in styles.text
@@ -160,9 +160,10 @@ def test_selfit_back_control_and_stepper_share_the_figma_top_row() -> None:
     assert "--onboarding-safe-top: max(54px, env(safe-area-inset-top));" in styles.text
     assert ".screen-header--quiet { position: relative; z-index: 3; top: var(--onboarding-safe-top); height: 46px; padding: 0; }" in styles.text
     assert "top: calc(var(--onboarding-safe-top) + 4px);" in styles.text
-    assert "left: 64px;" in styles.text
+    assert "left: 50%;" in styles.text
     assert "width: 265px;" in styles.text
     assert "height: 38px;" in styles.text
+    assert "transform: translateX(-50%);" in styles.text
     assert ".manual-header .icon-button { position: absolute; top: 1px; left: 20px; width: 44px; height: 44px;" in styles.text
     assert ".page-copy--suit, .page-copy--assessment { margin-top: 111px; }" in styles.text
 
@@ -235,7 +236,7 @@ def test_selfit_report_share_cards_use_the_dedicated_qr_artwork() -> None:
     assert response.text.count("<div class=\"share-card-meta\"><span>我的 selfit 风格报告</span></div>") == 3
     assert response.text.count("/static/selfit/assets/share-report-qr.png?v=20260828") == 3
     assert 'data-share-ornament' in response.text
-    assert "/static/selfit/selfit.css?v=20260828-webview1" in response.text
+    assert "/static/selfit/selfit.css?v=20260828-webview2" in response.text
     assert "/static/selfit/selfit.js?v=20260828-webview1" in response.text
     assert "/static/selfit/selfit-persona.js?v=20260828-1" in response.text
 
@@ -292,6 +293,22 @@ def test_selfit_onboarding_has_webview_layout_and_boot_fallbacks() -> None:
     assert "placeholder-card.svg" in runtime.text
     assert "previewScreen === 'share-gallery'" in runtime.text
     assert "share-gallery-preview" in runtime.text
+
+
+def test_selfit_onboarding_centers_393px_design_geometry_in_wide_webviews() -> None:
+    styles = client.get("/static/selfit/selfit.css")
+
+    assert styles.status_code == 200
+    assert ".auth-submit { position: absolute; right: auto;" in styles.text
+    assert "left: 50%; width: min(313px, calc(100% - 80px)); transform: translateX(-50%);" in styles.text
+    assert ".stepper {" in styles.text
+    assert "left: 50%;\n  width: 265px;" in styles.text
+    assert ".page-copy { width: calc(100% - 64px); max-width: 329px; margin: 36px auto 0; }" in styles.text
+    assert "width: min(353px, calc(100% - 40px));" in styles.text
+    assert ".skin-options { display: grid; grid-template-columns: repeat(6,40px); justify-content: center;" in styles.text
+    assert ".manual-visual-options--face { width: min(343px, 100%); margin-inline: auto;" in styles.text
+    assert ".manual-visual-options--body { width: min(348px, 100%); margin-inline: auto;" in styles.text
+    assert ".page-copy--vibe { width: 340px; max-width: 100%; height: 64px; margin: 0 auto; }" in styles.text
 
     for personality in ("loop", "noir", "void", "oops"):
         assert f'data-personality="{personality}"' in styles.text
