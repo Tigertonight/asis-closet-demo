@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import pytest
+
 from app.selfit_persona import (
     DIMENSIONS,
     PERSONAS,
@@ -193,3 +195,85 @@ def test_all_persona_centers_are_complete() -> None:
         for value in persona.center.values():
             assert 0 <= value <= 100
         assert persona.makeup_primary == "不限制" or persona.makeup_primary in {"自然", "甜美", "清冷", "复古", "明艳", "个性"}
+
+
+def test_frontend_mock_persona_matches_backend() -> None:
+    """mock 模式前端移植（selfit-persona.js）必须与后端算法同口径。
+
+    曾出现 buildMockReport 只按色板查表返回 6 个人格的问题；本测试对拍
+    前后端向量化 + 分型结果，防止两侧算法再次漂移。
+    """
+
+    import json
+    import shutil
+    import subprocess
+    from pathlib import Path
+
+    node = shutil.which("node")
+    if node is None:
+        pytest.skip("node runtime unavailable")
+
+    script = Path(__file__).resolve().parents[1] / "app" / "static" / "selfit" / "selfit-persona.js"
+    palettes = ["mono", "earth", "ocean", "jewel", "bright", "pastel"]
+    occasions = ["A", "B", "C", "D"]
+    wardrobes = ["A", "B", "C"]
+    expressions = ["A", "B", "C", "D", "E"]
+
+    # 确定性样本：分层抽样 + 边界值。
+    sessions: list[dict] = []
+    index = 0
+    for shape in (0, 25, 50, 75, 100):
+        for energy in (0, 50, 100):
+            for trend in (10, 40, 90):
+                for palette in palettes:
+                    index += 1
+                    sessions.append({
+                        "preferences": {
+                            "axes": {"shape": shape, "energy": energy, "trend": trend},
+                            "palette": palette,
+                        },
+                        "answers": {
+                            "occasion": occasions[index % 4],
+                            "wardrobe": wardrobes[index % 3],
+                            "expression": expressions[index % 5],
+                        },
+                    })
+    # 边界：缺失字段、空会话。
+    sessions.append({"preferences": {"palette": "mono"}})
+    sessions.append({"answers": {"occasion": "D"}})
+    sessions.append({})
+
+    runner = (
+        "const fs=require('fs');global.window={};"
+        f"eval(fs.readFileSync({json.dumps(str(script))},'utf-8'));"
+        "const P=global.window.SelfitPersona;"
+        "const input=JSON.parse(fs.readFileSync(0,'utf-8'));"
+        "const out=input.map((s)=>{const v=P.buildUserVector(s);"
+        "const c=P.classifyPersona(v);"
+        "return {primary:c.primary_persona,secondary:c.secondary_persona,"
+        "distance:Math.round(c.primary_distance*10000)/10000};});"
+        "process.stdout.write(JSON.stringify(out));"
+    )
+    result = subprocess.run(
+        [node, "-e", runner],
+        input=json.dumps(sessions),
+        capture_output=True,
+        text=True,
+        check=True,
+    )
+    frontend = json.loads(result.stdout)
+
+    covered: set[str] = set()
+    assert len(frontend) == len(sessions)
+    for session, front in zip(sessions, frontend):
+        vector = build_user_vector({
+            "preferences": session.get("preferences") or {},
+            "vibe": session.get("answers") or session.get("vibe") or {},
+        })
+        backend = classify_persona(vector)
+        covered.add(backend["primary_persona"])
+        assert front["primary"] == backend["primary_persona"], session
+        assert front["secondary"] == backend["secondary_persona"], session
+        assert abs(front["distance"] - backend["primary_distance"]) < 0.0001, session
+    # 分型多样性必须显著超过色板数（防止退化为「颜色查表」）。
+    assert len(covered) >= 10

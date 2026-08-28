@@ -233,7 +233,8 @@ def test_selfit_report_share_cards_use_the_dedicated_qr_artwork() -> None:
     assert response.text.count("/static/selfit/assets/share-report-qr.png?v=20260828") == 3
     assert 'data-share-ornament' in response.text
     assert "/static/selfit/selfit.css?v=20260828-share9" in response.text
-    assert "/static/selfit/selfit.js?v=20260828-share7" in response.text
+    assert "/static/selfit/selfit.js?v=20260828-persona1" in response.text
+    assert "/static/selfit/selfit-persona.js?v=20260828-1" in response.text
 
     asset = client.get("/static/selfit/assets/share-report-qr.png")
     assert asset.status_code == 200

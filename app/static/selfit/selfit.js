@@ -358,11 +358,13 @@
   });
 
   const buildMockReport = (session) => {
-    const palette = session.preferences?.palette || 'mono';
-    const typeByPalette = {
-      mono: 'mute', earth: 'ease', ocean: 'iced', jewel: 'heir', bright: 'neon', pastel: 'melt',
-    };
-    return { typeId: typeByPalette[palette] || 'mute' };
+    // mock 演示同样跑完整 16 型分型（与后端 selfit_persona.py 同口径），
+    // 避免「只看色板、其余题目不影响结果」的失真演示。
+    const persona = window.SelfitPersona || null;
+    if (!persona) return { typeId: 'mute' };
+    const vector = persona.buildUserVector(session);
+    const classification = persona.classifyPersona(vector);
+    return { typeId: classification.primary_persona.toLowerCase() };
   };
   const runtimeConfig = window.__SELFIT_CONFIG__ || {};
   // 邀请码登录仅内部测试用：默认隐藏，服务端配置 SELFIT_SHOW_INVITE_LOGIN=1 时显示。
