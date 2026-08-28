@@ -140,8 +140,17 @@ def _rate_rules() -> list[LimitRule]:
             env_int("SELFIT_API_RATE_WINDOW_SECONDS", 3600),
         ),
         LimitRule(
+            # 手机号直接登录单列：内测手机号登录无验证码、无账号资产可盗，
+            # 且线下路演场景大量用户共享同一出口 IP（商场 WiFi），必须放宽；
+            # admin 登录仍走下方 auth 规则（保持严格，防密码枚举）。
+            "phone_login",
+            ("/auth/phone/start", "/auth/phone/verify", "/auth/phone/direct"),
+            env_int("SELFIT_PHONE_LOGIN_RATE_LIMIT", 600),
+            env_int("SELFIT_PHONE_LOGIN_RATE_WINDOW_SECONDS", 3600),
+        ),
+        LimitRule(
             "auth",
-            ("/auth/phone/start", "/auth/phone/verify", "/auth/phone/direct", "/admin/api/login"),
+            ("/auth/invite/verify", "/admin/api/login"),
             env_int("SELFIT_AUTH_RATE_LIMIT", 20),
             env_int("SELFIT_AUTH_RATE_WINDOW_SECONDS", 3600),
         ),

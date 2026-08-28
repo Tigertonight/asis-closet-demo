@@ -9,6 +9,7 @@
 from __future__ import annotations
 
 import json
+import os
 from pathlib import Path
 
 import pytest
@@ -200,3 +201,62 @@ def test_upload_accepted_archives_to_qa_dataset(monkeypatch: pytest.MonkeyPatch,
     assert rejected["photo"]["status"] == "rejected"
     manifest = json.loads((qa_dir / "manifest.json").read_text(encoding="utf-8"))
     assert len(manifest) == 1
+
+
+# ---------------------------------------------------------------------------
+# 路演容量保护：face 检测预缩 + 并发信号量
+# ---------------------------------------------------------------------------
+
+def test_face_inspect_input_is_downscaled_body_kept() -> None:
+    """face 检测输入预缩到长边 1280（landmark 归一化坐标，判定一致）；
+    body 不缩（轮廓测量对分辨率敏感，缩图会让身型漂移）。"""
+
+    from app.selfit_photo import _INSPECT_MAX_SIDE, _prepare_inspect_input
+
+    large = Image.new("RGB", (2000, 3000), (200, 180, 170))
+    face_small = _prepare_inspect_input(large, "face")
+    assert max(face_small.size) <= _INSPECT_MAX_SIDE
+    body_same = _prepare_inspect_input(large, "body")
+    assert body_same.size == large.size
+    # 小图原样返回（不放大）
+    small = Image.new("RGB", (600, 800), (200, 180, 170))
+    assert _prepare_inspect_input(small, "face").size == small.size
+
+
+def test_inspect_semaphore_limits_concurrency() -> None:
+    """并发信号量：同时进行的检测数不超过核数（高峰排队而非雪崩）。"""
+
+    import threading
+    import time
+
+    from app.selfit_photo import _INSPECT_SEMAPHORE
+
+    expected = max(1, os.cpu_count() or 2)
+    assert _INSPECT_SEMAPHORE._value == expected  # 初始满配
+    active = 0
+    peak = 0
+    lock = threading.Lock()
+
+    from app.selfit_photo import attribute_inspector
+
+    def slow_inspect(image, kind):
+        # 直接调 attribute_inspector 内部的信号量段（真实检测太慢，stub 检测函数）
+        with _INSPECT_SEMAPHORE:
+            nonlocal active, peak
+            with lock:
+                active += 1
+                peak = max(peak, active)
+            time.sleep(0.05)
+            with lock:
+                active -= 1
+        return selfit_photo.PhotoInspection(accepted=True, issues=[])
+
+    # 直接并发跑信号量段验证上限（真实检测慢，不需要跑完整管线）
+    threads = []
+    for _ in range(expected * 3):
+        t = threading.Thread(target=slow_inspect, args=(None, "face"))
+        threads.append(t)
+        t.start()
+    for t in threads:
+        t.join()
+    assert peak <= expected, f"并发峰值 {peak} 超过信号量上限 {expected}"

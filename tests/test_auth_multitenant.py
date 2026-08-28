@@ -100,8 +100,8 @@ def test_public_demo_rejects_default_auth_secret(monkeypatch, tmp_path: Path) ->
 def test_auth_rate_limit_is_enforced(monkeypatch, tmp_path: Path) -> None:
     _use_tmp_runtime(monkeypatch, tmp_path)
     monkeypatch.setenv("SELFIT_DISABLE_RATE_LIMIT", "0")
-    monkeypatch.setenv("SELFIT_AUTH_RATE_LIMIT", "1")
-    monkeypatch.setenv("SELFIT_AUTH_RATE_WINDOW_SECONDS", "3600")
+    monkeypatch.setenv("SELFIT_PHONE_LOGIN_RATE_LIMIT", "1")
+    monkeypatch.setenv("SELFIT_PHONE_LOGIN_RATE_WINDOW_SECONDS", "3600")
     client = TestClient(app)
     headers = {"x-forwarded-for": "203.0.113.77"}
 
@@ -258,3 +258,31 @@ def test_user_assets_are_read_under_current_user_only(monkeypatch, tmp_path: Pat
 
     assert client.get(asset_path, headers=user_a).status_code == 200
     assert client.get(asset_path, headers=user_b).status_code == 404
+
+
+def test_phone_direct_login_not_throttled_by_admin_auth_rule(monkeypatch, tmp_path: Path) -> None:
+    """路演场景：商场 WiFi 下大量用户共享出口 IP。
+
+    手机号直接登录（无资产可盗）与 admin 登录（防密码枚举）限流规则分离：
+    auth 限到 1 次/小时时，手机号登录不受影响，admin 登录立即被限。
+    """
+
+    _use_tmp_runtime(monkeypatch, tmp_path)
+    monkeypatch.setenv("SELFIT_DISABLE_RATE_LIMIT", "0")
+    monkeypatch.setenv("SELFIT_AUTH_RATE_LIMIT", "1")
+    monkeypatch.setenv("SELFIT_AUTH_RATE_WINDOW_SECONDS", "3600")
+    monkeypatch.setenv("SELFIT_PHONE_LOGIN_RATE_LIMIT", "600")
+    client = TestClient(app)
+    headers = {"x-forwarded-for": "203.0.113.99"}
+
+    # 手机号登录：auth=1 也不受影响（独立 phone_login 规则）
+    for i in range(3):
+        response = client.post("/auth/phone/direct", json={"phone": f"1380000030{i}"}, headers=headers)
+        assert response.status_code == 200, f"第 {i + 1} 次手机号登录不应被限流"
+
+    # admin 登录：auth 规则独立计数（第一次放行进入密码校验，第二次即被限）
+    first_admin = client.post("/admin/api/login", json={"password": "whatever"}, headers=headers)
+    assert first_admin.status_code == 401  # 密码错误（auth 规则的首次配额未被 phone 登录消耗）
+    second_admin = client.post("/admin/api/login", json={"password": "whatever"}, headers=headers)
+    assert second_admin.status_code == 429
+    assert second_admin.json()["error"]["code"] == "request.rate_limited"
