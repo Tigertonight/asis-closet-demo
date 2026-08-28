@@ -237,8 +237,8 @@ def test_selfit_report_share_cards_use_the_dedicated_qr_artwork() -> None:
     assert response.text.count("<div class=\"share-card-meta\"><span>我的 selfit 风格报告</span></div>") == 3
     assert response.text.count("/static/selfit/assets/share-report-qr.png?v=20260828") == 3
     assert 'data-share-ornament' in response.text
-    assert "/static/selfit/selfit.css?v=20260829-webview-zoom3" in response.text
-    assert "/static/selfit/selfit.js?v=20260829-webview-viewport2" in response.text
+    assert "/static/selfit/selfit.css?v=20260829-mobile-save1" in response.text
+    assert "/static/selfit/selfit.js?v=20260829-mobile-save1" in response.text
     assert "/static/selfit/selfit-persona.js?v=20260828-1" in response.text
 
     asset = client.get("/static/selfit/assets/share-report-qr.png")
@@ -259,6 +259,13 @@ def test_selfit_report_share_cards_use_the_dedicated_qr_artwork() -> None:
     assert "drawContainImage(context, image" in runtime.text
     assert "shareIdentityCard.dataset.personality" in runtime.text
     assert "const drawShareMaterial" in runtime.text
+    assert "navigator.canShare?.({ files: [file] })" in runtime.text
+    assert "navigator.share({ files: [file]" in runtime.text
+    assert "new File([blob], shareCardFilename(index), { type: 'image/png'" in runtime.text
+    assert "isWechatBrowser || isAppleMobileDevice" in runtime.text
+    assert "triggerBrowserDownload(blob, index)" in runtime.text
+    assert 'id="saveImageGuide"' in response.text
+    assert '长按图片保存到相册' in response.text
     assert "previewScreen === 'share'" in runtime.text
 
 

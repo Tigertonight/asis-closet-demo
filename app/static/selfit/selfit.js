@@ -833,8 +833,14 @@
   const shareSlides = [...document.querySelectorAll('[data-share-slide]')];
   const shareDots = [...document.querySelectorAll('[data-share-dot]')];
   const shareSlideStatus = document.querySelector('#shareSlideStatus');
+  const shareSaveButton = document.querySelector('#saveShareCard');
+  const shareSaveLabel = document.querySelector('[data-share-save-label]');
+  const saveImageGuide = document.querySelector('#saveImageGuide');
+  const saveImagePreview = document.querySelector('#saveImagePreview');
+  const saveGuideCopy = document.querySelector('[data-save-guide-copy]');
   let shareSlideIndex = 0;
   let shareScrollFrame = 0;
+  let saveImagePreviewUrl = '';
   const SHARE_EXPORT_SCALE = 2;
   const roundedRectPath = (context, x, y, width, height, radius) => {
     const safeRadius = Math.max(0, Math.min(radius, width / 2, height / 2));
@@ -998,17 +1004,94 @@
       else reject(new Error('分享卡片生成失败，请重试。'));
     }, 'image/png'));
   };
-  const downloadShareCard = async (card, index) => {
-    const blob = await renderShareCard(card);
+  const isAppleMobileDevice = /iPad|iPhone|iPod/i.test(navigator.userAgent)
+    || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  const isAndroidDevice = /Android/i.test(navigator.userAgent);
+  const isWechatBrowser = /MicroMessenger/i.test(navigator.userAgent);
+  const shareExportBlobs = new Map();
+  const shareExportPromises = new Map();
+  const shareExportErrors = new Map();
+  const shareCardFilename = (index) => `selfit-style-card-${index + 1}@2x.png`;
+  const closeSaveImageGuide = () => {
+    saveImageGuide.hidden = true;
+    saveImagePreview.removeAttribute('src');
+    if (saveImagePreviewUrl) URL.revokeObjectURL(saveImagePreviewUrl);
+    saveImagePreviewUrl = '';
+  };
+  const openSaveImageGuide = (blob) => {
+    closeSaveImageGuide();
+    closeShareDialog();
+    saveImagePreviewUrl = URL.createObjectURL(blob);
+    saveImagePreview.src = saveImagePreviewUrl;
+    saveGuideCopy.textContent = isWechatBrowser
+      ? '长按下方图片，选择“保存图片”即可存入手机相册。'
+      : '长按下方图片，选择“存储图像”或“保存图片”。';
+    saveImageGuide.hidden = false;
+  };
+  saveImageGuide.querySelectorAll('[data-close-save-guide]').forEach((button) => button.addEventListener('click', closeSaveImageGuide));
+  const triggerBrowserDownload = (blob, index) => {
     const objectUrl = URL.createObjectURL(blob);
     const link = Object.assign(document.createElement('a'), {
       href: objectUrl,
-      download: `selfit-style-card-${index + 1}@2x.png`,
+      download: shareCardFilename(index),
     });
     document.body.append(link);
     link.click();
     link.remove();
     window.setTimeout(() => URL.revokeObjectURL(objectUrl), 60000);
+  };
+  const fallbackSaveShareCard = (blob, index) => {
+    if (isWechatBrowser || isAppleMobileDevice) {
+      openSaveImageGuide(blob);
+      return { method: 'long-press' };
+    }
+    triggerBrowserDownload(blob, index);
+    return { method: isAndroidDevice ? 'android-download' : 'browser-download' };
+  };
+  const saveShareCardToDevice = (blob, index) => {
+    const file = typeof File === 'function'
+      ? new File([blob], shareCardFilename(index), { type: 'image/png', lastModified: Date.now() })
+      : null;
+    const canShareFile = Boolean(!isWechatBrowser && file && navigator.share && navigator.canShare?.({ files: [file] }));
+    if (!canShareFile) return Promise.resolve(fallbackSaveShareCard(blob, index));
+    toast(isAppleMobileDevice ? '请在系统菜单选择“存储图像”' : '请选择相册或图片应用保存');
+    try {
+      return navigator.share({ files: [file], title: 'selfit 风格报告' })
+        .then(() => ({ method: 'system-share' }))
+        .catch((error) => {
+          if (error?.name === 'AbortError') return { method: 'cancelled' };
+          return fallbackSaveShareCard(blob, index);
+        });
+    } catch {
+      return Promise.resolve(fallbackSaveShareCard(blob, index));
+    }
+  };
+  const syncShareSaveButton = () => {
+    const isReady = shareExportBlobs.has(shareSlideIndex);
+    const isPreparing = shareExportPromises.has(shareSlideIndex);
+    shareSaveButton.disabled = isPreparing;
+    shareSaveLabel.textContent = isReady ? '保存到相册' : (isPreparing ? '正在生成图片…' : '生成并保存');
+  };
+  const prepareShareCard = (index) => {
+    if (shareExportBlobs.has(index)) return Promise.resolve(shareExportBlobs.get(index));
+    if (shareExportPromises.has(index)) return shareExportPromises.get(index);
+    shareExportErrors.delete(index);
+    const promise = renderShareCard(shareSlides[index])
+      .then((blob) => {
+        shareExportBlobs.set(index, blob);
+        return blob;
+      })
+      .catch((error) => {
+        shareExportErrors.set(index, error);
+        return null;
+      })
+      .finally(() => {
+        shareExportPromises.delete(index);
+        if (index === shareSlideIndex) syncShareSaveButton();
+      });
+    shareExportPromises.set(index, promise);
+    if (index === shareSlideIndex) syncShareSaveButton();
+    return promise;
   };
   const shareSlideOffset = (slide) => slide.offsetLeft - ((shareTrack.clientWidth - slide.offsetWidth) / 2);
   const syncShareSlide = (index) => {
@@ -1020,6 +1103,8 @@
     });
     shareDots.forEach((dot, dotIndex) => dot.setAttribute('aria-current', String(dotIndex === shareSlideIndex)));
     shareSlideStatus.textContent = `第 ${shareSlideIndex + 1} 张，共 ${shareSlides.length} 张`;
+    syncShareSaveButton();
+    void prepareShareCard(shareSlideIndex);
   };
   const goToShareSlide = (index, smooth = true) => {
     const nextIndex = Math.max(0, Math.min(index, shareSlides.length - 1));
@@ -1049,15 +1134,25 @@
   });
   document.querySelector('#openShare').addEventListener('click', () => {
     openShareDialog();
+    shareExportBlobs.clear();
+    shareExportPromises.clear();
+    shareExportErrors.clear();
+    syncShareSaveButton();
     requestAnimationFrame(() => goToShareSlide(0, false));
   });
   const currentReportId = () => state.reportId || window.__SELFIT_REPORT_ID__ || null;
   document.querySelector('#retakeBtn').addEventListener('click', () => { track('retake_clicked'); showScreen('vibe'); });
   document.querySelectorAll('[data-share]').forEach((button) => button.addEventListener('click', () => runButtonAction(button, async () => {
-    if (button.dataset.share === '保存单张') {
-      await downloadShareCard(shareSlides[shareSlideIndex], shareSlideIndex);
-      track('share_saved', { slideIndex: shareSlideIndex, channel: 'save' });
-      toast(`第 ${shareSlideIndex + 1} 张已保存为高清图片`);
+    if (button.dataset.share === 'save-card') {
+      const blob = shareExportBlobs.get(shareSlideIndex) || await prepareShareCard(shareSlideIndex);
+      if (!blob) throw shareExportErrors.get(shareSlideIndex) || new Error('分享卡片生成失败，请重试。');
+      const result = await saveShareCardToDevice(blob, shareSlideIndex);
+      if (result.method === 'cancelled') {
+        track('share_save_cancelled', { slideIndex: shareSlideIndex });
+        return;
+      }
+      track('share_saved', { slideIndex: shareSlideIndex, channel: 'save', method: result.method });
+      if (result.method.includes('download')) toast('高清图片已下载，请在相册或“下载”中查看');
       return;
     }
     const reportId = currentReportId();
