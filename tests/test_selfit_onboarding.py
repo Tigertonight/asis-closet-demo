@@ -236,7 +236,7 @@ def test_selfit_report_share_cards_use_the_dedicated_qr_artwork() -> None:
     assert response.text.count("<div class=\"share-card-meta\"><span>我的 selfit 风格报告</span></div>") == 3
     assert response.text.count("/static/selfit/assets/share-report-qr.png?v=20260828") == 3
     assert 'data-share-ornament' in response.text
-    assert "/static/selfit/selfit.css?v=20260829-share-card-layout1" in response.text
+    assert "/static/selfit/selfit.css?v=20260829-wechat-keyboard1" in response.text
     assert "/static/selfit/selfit.js?v=20260829-hero-preload" in response.text
     assert "/static/selfit/selfit-persona.js?v=20260828-1" in response.text
 
@@ -276,6 +276,13 @@ def test_selfit_onboarding_has_webview_layout_and_boot_fallbacks() -> None:
     assert compat.status_code == 200
     assert "window.visualViewport" in compat.text
     assert "--visual-viewport-height" in compat.text
+    assert "--app-viewport-height" in compat.text
+    assert "has-editable-focus" in compat.text
+    assert "is-keyboard-open" in compat.text
+    assert "document.addEventListener('focusin'" in compat.text
+    assert "document.addEventListener('focusout'" in compat.text
+    assert "window.scrollTo(0, 0)" in compat.text
+    assert "['email', 'number', 'password', 'search', 'tel', 'text', 'url']" in compat.text
     assert "native-dialog" in compat.text
     assert "data:image/webp" in compat.text
 
@@ -283,6 +290,8 @@ def test_selfit_onboarding_has_webview_layout_and_boot_fallbacks() -> None:
     assert "height: 100vh;" in styles.text
     assert "@supports (height: 100dvh)" in styles.text
     assert "html.has-visual-viewport .app-shell" in styles.text
+    assert "height: var(--app-viewport-height, 100vh);" in styles.text
+    assert "html.has-editable-focus body { position: fixed; inset: 0; }" in styles.text
     assert ".report-actions { width: var(--screen-w); }" in styles.text
     assert ".share-dialog { width: var(--screen-w); height: var(--screen-h);" in styles.text
     assert ".no-native-dialog .share-dialog[open]" in styles.text
