@@ -305,7 +305,7 @@ def test_content_pool_hot_reload(tmp_path: Path) -> None:
 
 
 # ---------------------------------------------------------------------------
-# 报告 builder 端到端（走 mock 内容池）
+# 报告 builder 端到端（人格分型后固定走默认模板）
 # ---------------------------------------------------------------------------
 
 def test_default_report_builder_end_to_end(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
@@ -339,23 +339,24 @@ def test_default_report_builder_end_to_end(tmp_path: Path, monkeypatch: pytest.M
 
     assert report["eyebrow"] == "MUTE"
     assert report["typeId"] == "mute"
-    assert report["templateVersion"] == "2026.08.assets-v1"
+    assert report["templateVersion"] == "2026.08.personality-db-v6"
     assert report["title"] == "静音时髦"
-    assert report["traits"] == ["硬朗利落", "极简克制", "低饱和"]
-    assert report["colors"][0]["name"] == "雾霭蓝"
+    assert report["traits"] == ["低表达", "低装饰", "秩序感"]
+    assert report["colors"][0]["name"] == "黑"
     assert len(report["colors"]) == 5
-    assert report["colors"][-1]["value"] == "#141414"  # mono 偏好点缀
+    assert report["colors"][-1]["value"] == "#8296A6"
     assert len(report["makeup"]) == 2
-    assert report["makeup"][0]["imageUrl"].endswith("makeup-a.webp")
+    assert report["makeup"][0]["name"] == "裸玫瑰淡妆"
     assert len(report["hair"]) == 2
-    assert len(report["outfits"]) == 10
-    assert all(item["author"] for item in report["outfits"])
-    assert 1 <= len(report["advice"]) <= 3
+    assert report["hair"][0]["name"] == "暖棕微卷中长发"
+    assert len(report["outfits"]) == 4
+    assert report["outfits"][0]["name"] == "斜肩短裤"
+    assert len(report["advice"]) == 3
     assert all(not item.lstrip().startswith(("建议：", "建议:")) for item in report["advice"])
     selfit_recommend.reset_content_pool_cache()
 
 
-def test_default_report_builder_keeps_type_fallback_when_pool_is_empty(
+def test_default_report_builder_uses_complete_template_when_pool_is_empty(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     from app import selfit_report
@@ -370,10 +371,31 @@ def test_default_report_builder_keeps_type_fallback_when_pool_is_empty(
     })
 
     assert report["typeId"] == "mute"
-    assert "makeup" not in report
-    assert "hair" not in report
-    assert "outfits" not in report
+    assert len(report["colors"]) == 5
+    assert len(report["makeup"]) == 2
+    assert len(report["hair"]) == 2
+    assert len(report["outfits"]) == 4
     selfit_recommend.reset_content_pool_cache()
+
+
+def test_default_report_builder_does_not_personalize_template_content() -> None:
+    from app import selfit_report
+
+    base = {
+        "preferences": {"axes": {"shape": 25, "energy": 10, "trend": 40}, "palette": "mono"},
+        "vibe": {"occasion": "C", "wardrobe": "A", "expression": "A"},
+        "photos": {},
+    }
+    cold_pear = selfit_report.build_report({
+        **base,
+        "manual": {"skin": "冷白肤", "faceShape": "椭圆脸", "bodyShape": "梨型"},
+    })
+    warm_apple = selfit_report.build_report({
+        **base,
+        "manual": {"skin": "暖黄肤", "faceShape": "圆脸", "bodyShape": "苹果型"},
+    })
+
+    assert cold_pear == warm_apple
 
 
 def test_direct_body_and_multi_region_labels_are_scored() -> None:
