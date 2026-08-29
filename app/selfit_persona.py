@@ -52,8 +52,9 @@ REGIONAL_STYLES = ("日系", "韩系", "欧美系", "中式", "法式", "轻亚"
 # 算法版本指纹：每次修改分型口径（中心点/权重/阈值/换算）必须递增并说明变更，
 # 并同步三处：前端移植版 selfit-persona.js、管理后台人格匹配展示、
 # tests/test_selfit_persona.py 对拍测试。详见 docs/PERSONA_ALGORITHM.md。
-ALGORITHM_VERSION = "v1.3-vibe1-remap"
+ALGORITHM_VERSION = "v1.4-bolt-korean"
 
+# v1.4：业务配置将 BOLT「在逃千金」主地域由法式改为韩系；欧美系仍为兼容地域。
 # VIBE 题 key（onboarding 契约）→ 维度。
 # v1.3：《16 型人格典型答卷》定版映射——VIBE1 只有 A/B/C 三档（20/55/90），
 # D 档（95）随 UI 三选项方案一并删除；新 B=55 较旧 B=40 上移后，
@@ -217,7 +218,7 @@ PERSONAS: dict[str, Persona] = {
                  ("silhouette", "temperature", "time_orientation"),
                  "硬朗、先锋、冷调、强轮廓", ("甜酷先锋", "冷调强轮廓", "高完成度"),
                  "个性", ("清冷", "明艳")),
-        _persona("BOLT", "在逃千金", "法式", ("欧美系",),
+        _persona("BOLT", "在逃千金", "韩系", ("欧美系",),
                  (55, 75, 20, 35, 45, 95, 55),
                  ("complexity", "completion", "time_orientation"),
                  "戏剧装饰、复古、角色感、极高完成度", ("戏剧千金", "复古华丽", "角色感强"),

@@ -88,10 +88,10 @@ def test_light_asian_derivation() -> None:
 def test_persona_region_mapping_matches_engineering_spec() -> None:
     expected = {
         "日系": ({"WABI"}, {"MUTE", "MELT", "FILM"}),
-        "韩系": ({"ICED", "MELT"}, {"MUTE", "EASE", "EDGE"}),
+        "韩系": ({"ICED", "MELT", "BOLT"}, {"MUTE", "EASE", "EDGE"}),
         "欧美系": ({"HEIR", "NEON"}, {"EDGE", "BOLT", "NOIR", "OOPS"}),
         "中式": ({"JADE"}, {"WABI", "FLOU"}),
-        "法式": ({"EASE", "FLOU", "BOLT", "FILM"}, {"HEIR"}),
+        "法式": ({"EASE", "FLOU", "FILM"}, {"HEIR"}),
         "轻亚": ({"EDGE"}, {"ICED", "NEON", "NOIR", "OOPS"}),
     }
 
@@ -105,6 +105,17 @@ def test_persona_region_mapping_matches_engineering_spec() -> None:
     assert {
         code for code, persona in PERSONAS.items() if persona.primary_region == "无倾向"
     } == {"MUTE", "LOOP", "NOIR", "VOID", "OOPS"}
+
+
+def test_bolt_region_penalty_matches_korean_business_mapping() -> None:
+    """BOLT 主地域为韩系，欧美系保持兼容，原法式按不匹配处理。"""
+
+    from app.selfit_persona import _region_penalty
+
+    bolt = PERSONAS["BOLT"]
+    assert _region_penalty(bolt, "韩系") == 0
+    assert _region_penalty(bolt, "欧美系") == 5
+    assert _region_penalty(bolt, "法式") == 15
 
 
 def test_classify_exact_center_hits_persona() -> None:
