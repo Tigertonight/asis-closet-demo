@@ -4,10 +4,13 @@ import io
 import json
 from pathlib import Path
 
+import cv2
+import numpy as np
 from fastapi.testclient import TestClient
 from PIL import Image
 
 import app.auth as auth
+import app.ops as ops
 import app.selfit_mirror_handoff as mirror_handoff
 import app.selfit_onboarding as onboarding
 from app.main import app
@@ -65,6 +68,14 @@ def test_dynamic_qr_claims_suit_result_once_and_continues_at_like(monkeypatch, t
     assert qr.status_code == 200
     assert qr.headers["content-type"] == "image/png"
     assert qr.content.startswith(b"\x89PNG")
+    qr_image = cv2.imdecode(np.frombuffer(qr.content, dtype=np.uint8), cv2.IMREAD_COLOR)
+    assert qr_image.shape[:2] == (135, 135)
+    decoded, _, straight = cv2.QRCodeDetector().detectAndDecode(qr_image)
+    assert decoded.startswith("http://testserver/selfit?handoff=")
+    assert straight.shape == (37, 37)
+    blurred = cv2.GaussianBlur(qr_image, (3, 3), 0)
+    decoded_blurred, _, _ = cv2.QRCodeDetector().detectAndDecode(blurred)
+    assert decoded_blurred == decoded
     assert before["status"] == "pending"
     assert claimed.status_code == 200
     assert claimed.json()["nextStep"] == "like"
@@ -88,6 +99,30 @@ def test_dynamic_qr_claims_suit_result_once_and_continues_at_like(monkeypatch, t
         f"/api/v1/selfit/sessions/{session['session_id']}", headers=user_a
     ).json()["session"]
     assert "photos" in restored["completedSteps"]
+
+
+def test_mirror_handoff_reads_use_a_dedicated_rate_limit(monkeypatch, tmp_path: Path) -> None:
+    _use_tmp_stores(monkeypatch, tmp_path)
+    client = TestClient(app)
+    created = client.post(
+        "/api/v1/selfit/mirror/analyze",
+        files={"photo": ("capture.jpg", _photo_bytes(), "image/jpeg")},
+    )
+    assert created.status_code == 201
+    payload = created.json()
+
+    ops._limiter._hits.clear()
+    monkeypatch.setenv("SELFIT_DISABLE_RATE_LIMIT", "0")
+    monkeypatch.setenv("SELFIT_API_RATE_LIMIT", "1")
+    monkeypatch.setenv("SELFIT_MIRROR_HANDOFF_RATE_LIMIT", "2")
+    try:
+        assert client.get(payload["statusUrl"]).status_code == 200
+        assert client.get(payload["qrImageUrl"]).status_code == 200
+        limited = client.get(payload["statusUrl"])
+        assert limited.status_code == 429
+        assert limited.json()["error"]["code"] == "rate_limited"
+    finally:
+        ops._limiter._hits.clear()
 
 
 def test_dynamic_qr_supports_phone_direct_login_for_roadshow(monkeypatch, tmp_path: Path) -> None:

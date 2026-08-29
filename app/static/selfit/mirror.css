@@ -124,7 +124,8 @@ html[data-mirror-state="confirm"], body[data-mirror-state="confirm"] { backgroun
 .result-col { display: flex; flex-direction: column; align-items: center; gap: 16px; }
 .result-step { font-family: "REDcorner", -apple-system, sans-serif; font-size: 60px; line-height: 62px; font-weight: 400; letter-spacing: .04em; color: #fff; }
 .result-col-label { margin-top: -18px; font-size: 14px; line-height: 20px; font-weight: 400; color: #fff; }
-.result-qr { display: block; width: 118px; height: 118px; padding: 5px; border-radius: 8px; background: white; object-fit: contain; image-rendering: pixelated; }
+.result-qr { display: block; width: 135px; height: 135px; padding: 0; border-radius: 0; background: white; object-fit: contain; image-rendering: pixelated; }
+.result-qr.is-loading { visibility: hidden; }
 .result-qr[hidden] { display: none; }
 .result-qr-status { display: flex; flex-direction: column; align-items: center; gap: 2px; margin-top: -6px; text-align: center; }
 .result-qr-title { font-size: 13px; line-height: 18px; font-weight: 500; color: #fff; }

@@ -462,10 +462,15 @@ async def mirror_handoff_qr(request: Request, token: str) -> Response:
             return _error(404, "mirror.handoff_not_found", "二维码已失效。")
         if _public_status(record)["status"] == "expired":
             return _error(410, "mirror.handoff_expired", "二维码已过期。")
-    # The original mirror artwork uses a one-module internal margin. The white
-    # result card supplies the remaining optical quiet zone without doubling
-    # the visible border around the code.
-    qr = qrcode.QRCode(version=None, error_correction=qrcode.constants.ERROR_CORRECT_H, box_size=10, border=1)
+    # 生产 handoff URL 在 M 级纠错下稳定落在 Version 5（37×37 数据模块）。
+    # 加上 4 模块标准安静区后共 45 模块，按每模块 3px 直接生成
+    # 135×135 PNG，与前端显示尺寸一致，避免非整数缩放把码点撕裂。
+    qr = qrcode.QRCode(
+        version=5,
+        error_correction=qrcode.constants.ERROR_CORRECT_M,
+        box_size=3,
+        border=4,
+    )
     qr.add_data(_handoff_url(request, token))
     qr.make(fit=True)
     image = qr.make_image(fill_color="#171313", back_color="#ffffff")

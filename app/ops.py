@@ -134,6 +134,15 @@ def _rate_rules() -> list[LimitRule]:
             contains=("/photos/",),
         ),
         LimitRule(
+            # 镜子结果页会持续查询 handoff 是否已被手机领取。它使用短时、
+            # 不可猜测且会过期的 token，不应与普通 selfit API 共用较低额度，
+            # 否则轮询会误伤同一页面随后加载的二维码 PNG。
+            "mirror_handoff",
+            ("/api/v1/selfit/mirror/handoffs",),
+            env_int("SELFIT_MIRROR_HANDOFF_RATE_LIMIT", 3600),
+            env_int("SELFIT_MIRROR_HANDOFF_RATE_WINDOW_SECONDS", 3600),
+        ),
+        LimitRule(
             "selfit_api",
             ("/api/v1/selfit",),
             env_int("SELFIT_API_RATE_LIMIT", 240),
@@ -290,6 +299,7 @@ def deployment_guard_report() -> dict[str, Any]:
             "max_request_body_mb": env_int("SELFIT_MAX_REQUEST_BODY_MB", 36),
             "auth_per_window": env_int("SELFIT_AUTH_RATE_LIMIT", 20),
             "upload_per_window": env_int("SELFIT_UPLOAD_RATE_LIMIT", 60),
+            "mirror_handoff_per_window": env_int("SELFIT_MIRROR_HANDOFF_RATE_LIMIT", 3600),
             "ai_per_window": env_int("SELFIT_AI_RATE_LIMIT", 30),
         },
         "auth": {
