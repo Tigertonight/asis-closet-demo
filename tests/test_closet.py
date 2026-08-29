@@ -687,6 +687,9 @@ def test_selfit_mirror_route_exposes_the_complete_kiosk_flow(monkeypatch, tmp_pa
     response = client.get("/selfit/mirror")
 
     assert response.status_code == 200
+    assert 'data-state="home"' in response.text
+    assert 'data-screen="gate"' not in response.text
+    assert "工作人员登录" not in response.text
     assert 'data-screen="home"' in response.text
     assert 'data-screen="countdown"' in response.text
     assert 'data-screen="confirm"' in response.text

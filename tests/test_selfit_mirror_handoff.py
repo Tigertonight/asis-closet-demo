@@ -23,20 +23,12 @@ def _use_tmp_stores(monkeypatch, tmp_path: Path) -> None:
     monkeypatch.setattr(auth, "AUTH_DIR", tmp_path / "outputs" / "auth")
     monkeypatch.setattr(auth, "AUTH_STORE_PATH", auth.AUTH_DIR / "auth_store.json")
     monkeypatch.setattr(auth, "ADMIN_PASSWORD_PATH", auth.AUTH_DIR / "admin_password.json")
-    monkeypatch.setenv("SELFIT_ADMIN_PASSWORD", "mirror-gate-test-pw")
     monkeypatch.setattr(mirror_handoff, "MIRROR_DIR", tmp_path / "outputs" / "selfit_mirror")
     monkeypatch.setattr(mirror_handoff, "HANDOFF_STORE_PATH", mirror_handoff.MIRROR_DIR / "handoffs.json")
     monkeypatch.setattr(mirror_handoff, "MIRROR_ASSET_DIR", mirror_handoff.MIRROR_DIR / "assets")
     monkeypatch.setattr(onboarding, "SELFIT_ONBOARDING_DIR", tmp_path / "outputs" / "selfit_onboarding")
     monkeypatch.setattr(onboarding, "SELFIT_ONBOARDING_STORE_PATH", onboarding.SELFIT_ONBOARDING_DIR / "sessions.json")
     monkeypatch.setattr(onboarding, "SELFIT_ONBOARDING_ASSET_DIR", onboarding.SELFIT_ONBOARDING_DIR / "assets")
-
-
-def _admin_login(client: TestClient) -> None:
-    """镜子设备门禁：analyze 需要 admin cookie（复用管理后台会话）。"""
-
-    response = client.post("/admin/api/login", json={"password": "mirror-gate-test-pw"})
-    assert response.status_code == 200
 
 
 def _login(client: TestClient, phone: str) -> dict[str, str]:
@@ -51,8 +43,6 @@ def test_dynamic_qr_claims_suit_result_once_and_continues_at_like(monkeypatch, t
     _use_tmp_stores(monkeypatch, tmp_path)
     monkeypatch.setenv("SELFIT_AUTH_SECRET", "mirror-handoff-test-secret")
     client = TestClient(app)
-    _admin_login(client)
-
     created = client.post(
         "/api/v1/selfit/mirror/analyze",
         files={"photo": ("capture.jpg", _photo_bytes(), "image/jpeg")},
@@ -106,8 +96,6 @@ def test_dynamic_qr_supports_phone_direct_login_for_roadshow(monkeypatch, tmp_pa
     _use_tmp_stores(monkeypatch, tmp_path)
     monkeypatch.setenv("SELFIT_AUTH_SECRET", "mirror-handoff-test-secret")
     client = TestClient(app)
-    _admin_login(client)
-
     created = client.post(
         "/api/v1/selfit/mirror/analyze",
         files={"photo": ("capture.jpg", _photo_bytes(), "image/jpeg")},
@@ -149,8 +137,6 @@ def test_claim_hydrates_suit_photos_from_mirror_capture(monkeypatch, tmp_path: P
     _use_tmp_stores(monkeypatch, tmp_path)
     monkeypatch.setenv("SELFIT_AUTH_SECRET", "mirror-handoff-test-secret")
     client = TestClient(app)
-    _admin_login(client)
-
     created = client.post(
         "/api/v1/selfit/mirror/analyze",
         files={"photo": ("capture.jpg", QA_BODY_PHOTO.read_bytes(), "image/jpeg")},
@@ -189,7 +175,6 @@ def test_claim_rejects_anonymous_and_second_user(monkeypatch, tmp_path: Path) ->
     _use_tmp_stores(monkeypatch, tmp_path)
     monkeypatch.setenv("SELFIT_AUTH_SECRET", "mirror-handoff-test-secret")
     client = TestClient(app)
-    _admin_login(client)
     payload = client.post(
         "/api/v1/selfit/mirror/analyze",
         files={"photo": ("capture.jpg", _photo_bytes(), "image/jpeg")},
@@ -270,7 +255,6 @@ def test_color_grade_rejects_out_of_range_and_stale_updates(monkeypatch, tmp_pat
 def test_mirror_capture_keeps_original_and_retouched_assets_separate(monkeypatch, tmp_path: Path) -> None:
     _use_tmp_stores(monkeypatch, tmp_path)
     client = TestClient(app)
-    _admin_login(client)
     original = _photo_bytes()
     retouched_output = io.BytesIO()
     Image.new("RGB", (393, 698), "#d5ad9d").save(retouched_output, "JPEG")
@@ -296,48 +280,21 @@ def test_mirror_capture_keeps_original_and_retouched_assets_separate(monkeypatch
     assert Path(handoff["assets"]["retouched"]["asset_path"]).read_bytes() == retouched_output.getvalue()
 
 
-def test_mirror_analyze_requires_admin_gate(monkeypatch, tmp_path: Path) -> None:
-    """设备门禁：匿名 / 普通用户 token 都不能刷 analyze；admin cookie 可以；
-    SELFIT_MIRROR_REQUIRE_ADMIN=0 可临时关闭（联调用）。"""
+def test_mirror_analyze_and_qr_generation_are_passwordless(monkeypatch, tmp_path: Path) -> None:
+    """Mirro 自助流程无需管理员会话即可分析并生成二维码。"""
 
     _use_tmp_stores(monkeypatch, tmp_path)
     monkeypatch.setenv("SELFIT_AUTH_SECRET", "mirror-handoff-test-secret")
     client = TestClient(app)
 
-    # 匿名：401 契约错误
-    anon = client.post(
+    session = client.get("/api/v1/selfit/mirror/session")
+    created = client.post(
         "/api/v1/selfit/mirror/analyze",
         files={"photo": ("capture.jpg", _photo_bytes(), "image/jpeg")},
     )
-    assert anon.status_code == 401
-    assert anon.json()["error"]["code"] == "mirror.admin_required"
 
-    # 手机号用户 token（非 admin）：同样 401
-    user_headers = _login(client, "13800000806")
-    as_user = client.post(
-        "/api/v1/selfit/mirror/analyze",
-        files={"photo": ("capture.jpg", _photo_bytes(), "image/jpeg")},
-        headers=user_headers,
-    )
-    assert as_user.status_code == 401
-
-    # session 检查端点：未登录 401 / admin 登录后 200
-    assert client.get("/api/v1/selfit/mirror/session").status_code == 401
-    _admin_login(client)
-    assert client.get("/api/v1/selfit/mirror/session").status_code == 200
-
-    # admin cookie：放行
-    ok = client.post(
-        "/api/v1/selfit/mirror/analyze",
-        files={"photo": ("capture.jpg", _photo_bytes(), "image/jpeg")},
-    )
-    assert ok.status_code == 201
-
-    # 开关关闭后匿名可用（联调模式）
-    monkeypatch.setenv("SELFIT_MIRROR_REQUIRE_ADMIN", "0")
-    open_client = TestClient(app)
-    direct = open_client.post(
-        "/api/v1/selfit/mirror/analyze",
-        files={"photo": ("capture.jpg", _photo_bytes(), "image/jpeg")},
-    )
-    assert direct.status_code == 201
+    assert session.status_code == 200
+    assert session.json() == {"status": "ok", "authRequired": False}
+    assert created.status_code == 201
+    assert created.json()["qrImageUrl"].endswith("/qr")
+    assert client.get(created.json()["qrImageUrl"]).status_code == 200

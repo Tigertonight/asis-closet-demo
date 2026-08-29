@@ -18,9 +18,9 @@ from PIL import Image, UnidentifiedImageError
 from starlette.concurrency import run_in_threadpool
 
 from app.analyzer import analyze_image_bytes
-from app.auth import admin_token_from_request, get_current_user, resolve_admin_user
+from app.auth import get_current_user
 from app import selfit_assets
-from app.ops import env_flag, env_int
+from app.ops import env_int
 from app.storage import ROOT_DIR
 
 
@@ -306,31 +306,11 @@ async def update_mirror_color_grade(request: Request) -> JSONResponse:
     return JSONResponse(content=_public_color_grade(updated), headers={"Cache-Control": "no-store"})
 
 
-def _require_mirror_admin(request: Request) -> JSONResponse | None:
-    """镜子设备门禁：返回 None 表示通过，否则返回 401 契约错误。"""
-
-    if not env_flag("SELFIT_MIRROR_REQUIRE_ADMIN", True):
-        return None
-    token = admin_token_from_request(request)
-    if not token:
-        return _error(401, "mirror.admin_required", "请先在镜子页面完成管理员登录。")
-    try:
-        resolve_admin_user(token)
-    except Exception:
-        return _error(401, "mirror.admin_required", "管理员登录已过期，请刷新页面重新登录。")
-    return None
-
-
 @router.get("/session")
-async def mirror_session(request: Request) -> JSONResponse:
-    """镜子页面登录态检查（前端 gate 用；也供运维快速验证门禁是否生效）。"""
+async def mirror_session() -> JSONResponse:
+    """兼容已缓存的门禁版 Mirro 脚本：镜子流程现在免密开放。"""
 
-    if _require_mirror_admin(request) is not None:
-        return JSONResponse(
-            status_code=401,
-            content={"detail": "未登录"},
-        )
-    return JSONResponse(content={"status": "ok"})
+    return JSONResponse(content={"status": "ok", "authRequired": False})
 
 
 @router.post("/analyze", status_code=201)
@@ -342,13 +322,9 @@ async def create_mirror_handoff(
     metadata: str | None = Form(default=None),
     result: str | None = Form(default=None),
 ) -> JSONResponse:
-    # 设备门禁：镜机页面须先完成管理员登录（cookie 复用管理后台会话）。
-    # 现场工作人员在本地电脑打开镜子页面 → 输管理员密码 → 投屏到镜子；
-    # 匿名流量无法再刷 analyze 落盘照片。可用 SELFIT_MIRROR_REQUIRE_ADMIN=0
-    # 临时关闭（联调/单机演示）。
-    denied = _require_mirror_admin(request)
-    if denied is not None:
-        return denied
+    # Mirro 是现场自助设备，拍摄、分析和二维码交接均免密。
+    # 滥用防护由全局 mirror_upload 限流、照片体积上限、短时交接 token
+    # 和一次性 claim 契约负责，不再依赖管理员 Cookie。
     source_photo = original or photo
     if source_photo is None:
         return _error(400, "mirror.photo_required", "没有收到拍摄照片，请重新拍摄。")

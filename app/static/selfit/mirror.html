@@ -11,24 +11,11 @@
   <link rel="preload" as="image" href="/static/selfit/assets/mirror-loading-stage-25@2x.png" />
   <link rel="preload" as="image" href="/static/selfit/assets/mirror-loading-stage-50@2x.png" />
   <link rel="preload" as="image" href="/static/selfit/assets/mirror-loading-stage-75@2x.png" />
-  <link rel="stylesheet" href="/static/selfit/mirror.css?v=20260829-gate" />
+  <link rel="stylesheet" href="/static/selfit/mirror.css?v=20260829-passwordless" />
 </head>
 <body>
-  <main class="mirror-shell" id="mirrorApp" data-state="gate" aria-live="polite">
-    <section class="mirror-screen gate-screen is-active" data-screen="gate" aria-labelledby="gateTitle">
-      <div class="gate-copy">
-        <img class="gate-logo" src="/static/selfit/assets/selfit-wordmark.svg" width="110" height="40" alt="selfit" data-whiten />
-        <h1 id="gateTitle">工作人员登录</h1>
-        <p class="gate-lead">镜子页面仅限现场工作人员使用，输入管理密码后开始。用户用手机扫码继续，无需接触此页面。</p>
-        <form class="gate-form" id="gateForm" autocomplete="off">
-          <input type="password" id="gatePassword" placeholder="管理密码" autocomplete="current-password" required />
-          <button class="mirror-button mirror-button--light" type="submit" id="gateSubmit">开始</button>
-        </form>
-        <p class="gate-status" id="gateStatus" role="status"></p>
-      </div>
-    </section>
-
-    <section class="mirror-screen textile-screen" data-screen="home" aria-labelledby="mirrorTitle">
+  <main class="mirror-shell" id="mirrorApp" data-state="home" aria-live="polite">
+    <section class="mirror-screen textile-screen is-active" data-screen="home" aria-labelledby="mirrorTitle">
       <div class="home-copy">
         <h1 id="mirrorTitle">适我，不适众</h1>
         <img class="home-tagline" src="/static/selfit/assets/login-tagline-curved@2x.png" width="220" height="44" alt="Fit yourself, not in." data-dropwhite />
@@ -191,6 +178,6 @@
       run("img[data-whiten]", whiten);
     })();
   </script>
-  <script src="/static/selfit/mirror.js?v=20260827-21" defer></script>
+  <script src="/static/selfit/mirror.js?v=20260829-passwordless" defer></script>
 </body>
 </html>
