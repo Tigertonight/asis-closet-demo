@@ -1058,14 +1058,18 @@
       const parent = node.parentElement;
       const style = getComputedStyle(parent);
       const fontSize = parseFloat(style.fontSize) || 16;
-      textNodeLines(node).forEach((line) => {
+      const lines = textNodeLines(node);
+      const lineHeight = parseFloat(style.lineHeight) || fontSize * 1.2;
+      const firstLineTop = lines[0]?.top || 0;
+      const glyphOffset = Math.max(0, ((lines[0]?.height || fontSize) - fontSize) / 2);
+      lines.forEach((line, lineIndex) => {
         context.save();
         context.globalAlpha = Number.parseFloat(style.opacity) || 1;
         context.fillStyle = style.color;
         context.font = `${style.fontStyle} ${style.fontWeight} ${style.fontSize} ${style.fontFamily}`;
         context.textAlign = 'left';
         context.textBaseline = 'top';
-        context.fillText(line.text, line.left - cardRect.left, line.top - cardRect.top + Math.max(0, (line.height - fontSize) / 2));
+        context.fillText(line.text, line.left - cardRect.left, firstLineTop - cardRect.top + (lineIndex * lineHeight) + glyphOffset);
         context.restore();
       });
     }

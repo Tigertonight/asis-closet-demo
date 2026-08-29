@@ -238,7 +238,7 @@ def test_selfit_report_share_cards_use_the_dedicated_qr_artwork() -> None:
     assert response.text.count("/static/selfit/assets/share-report-qr.png?v=20260828") == 3
     assert 'data-share-ornament' in response.text
     assert "/static/selfit/selfit.css?v=20260829-share-card-stable1" in response.text
-    assert "/static/selfit/selfit.js?v=20260829-share-card-stable1" in response.text
+    assert "/static/selfit/selfit.js?v=20260829-share-card-stable2" in response.text
     assert "/static/selfit/selfit-persona.js?v=20260828-1" in response.text
 
     asset = client.get("/static/selfit/assets/share-report-qr.png")
@@ -369,6 +369,8 @@ def test_selfit_share_cards_keep_canonical_ratio_in_short_wechat_viewports() -> 
     assert ".share-export-stage .share-card { width: 324px; height: 522px;" in styles.text
     assert "const SHARE_CARD_WIDTH = 324;" in script.text
     assert "const SHARE_CARD_HEIGHT = 522;" in script.text
+    assert "const lineHeight = parseFloat(style.lineHeight) || fontSize * 1.2;" in script.text
+    assert "firstLineTop - cardRect.top + (lineIndex * lineHeight)" in script.text
 
 
 def test_selfit_report_typography_matches_the_approved_layout() -> None:
