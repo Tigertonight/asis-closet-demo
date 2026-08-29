@@ -65,7 +65,19 @@
   .tag-muted { background: #f1eeee; color: var(--muted); }
   .tag-ok { background: #e7f2e9; color: #2f6a3c; }
   .photo-thumbs { display: inline-flex; gap: 6px; vertical-align: middle; }
-  .photo-thumb { width: 42px; height: 42px; object-fit: cover; border-radius: 8px; border: 1px solid var(--line); background: #faf7f5; }
+  .photo-thumb-button { position: relative; width: 44px; height: 44px; padding: 0; border: 1px solid var(--line); border-radius: 9px; background: #faf7f5; overflow: hidden; cursor: zoom-in; transition: border-color .15s ease, box-shadow .15s ease, transform .15s ease; }
+  .photo-thumb-button:hover { border-color: rgba(138,1,27,.45); box-shadow: 0 3px 10px rgba(60,21,25,.12); transform: translateY(-1px); }
+  .photo-thumb-button:focus-visible { outline: 2px solid rgba(138,1,27,.35); outline-offset: 2px; }
+  .photo-thumb { width: 100%; height: 100%; object-fit: cover; display: block; background: #faf7f5; }
+  .photo-cell { display: inline-flex; align-items: center; gap: 8px; }
+  .report-list-footer { display: flex; align-items: center; justify-content: center; gap: 12px; min-height: 38px; margin-top: 14px; }
+  .report-list-footer small { color: var(--muted); }
+  .report-load-more { min-height: 36px; padding: 7px 18px; border: 1px solid rgba(138,1,27,.25); border-radius: 999px; background: #fff; color: var(--brand); font: inherit; font-size: 13px; font-weight: 600; cursor: pointer; }
+  .report-load-more:hover { background: #fbf1f3; }
+  .report-load-more:focus-visible { outline: 2px solid rgba(138,1,27,.35); outline-offset: 2px; }
+  .loading-row td { height: 52px; }
+  .loading-bar { display: block; width: min(100%, 160px); height: 10px; border-radius: 999px; background: linear-gradient(90deg, #f3eeee 25%, #faf7f5 50%, #f3eeee 75%); background-size: 200% 100%; animation: loading-shimmer 1.2s ease-in-out infinite; }
+  @keyframes loading-shimmer { to { background-position: -200% 0; } }
   .dl-link { display: inline-block; margin-right: 10px; color: var(--brand); font-size: 13px; }
   .dl-link:hover { text-decoration: underline; text-underline-offset: 3px; }
   .modal-overlay { position: fixed; inset: 0; z-index: 50; align-items: flex-start; justify-content: center; padding: 40px 16px; background: rgba(31,26,26,.35); backdrop-filter: blur(2px); overflow-y: auto; }
@@ -91,6 +103,8 @@
   .photo-card { display: flex; flex-direction: column; border: 1px solid var(--line); border-radius: 14px; overflow: hidden; }
   .photo-card .frame { aspect-ratio: 3 / 4; background: #faf7f5; }
   .photo-card .frame img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .photo-preview-card { width: 100%; height: 100%; padding: 0; border: 0; background: transparent; cursor: zoom-in; }
+  .photo-preview-card:focus-visible { outline: 3px solid rgba(138,1,27,.35); outline-offset: -3px; }
   .photo-card .meta { padding: 10px 12px; display: flex; flex-direction: column; gap: 2px; }
   .photo-card .meta b { font-size: 13px; }
   .photo-card .meta span { color: var(--muted); font-size: 12px; }
@@ -148,6 +162,30 @@
   .dim-cross { background: #fff4d8; color: #8a5a00; }
   .empty-inline { padding: 6px 0; color: var(--muted); font-size: 13px; }
   .link-btn.danger { color: #a90020; }
+  body.has-modal { overflow: hidden; }
+  .photo-lightbox { position: fixed; inset: 0; z-index: 80; display: grid; grid-template-rows: auto minmax(0, 1fr) auto; padding: 18px; background: rgba(20,16,17,.92); color: #fff; }
+  .photo-lightbox[hidden] { display: none; }
+  .lightbox-header, .lightbox-footer { display: flex; align-items: center; gap: 12px; width: min(1180px, 100%); margin: 0 auto; }
+  .lightbox-header { justify-content: space-between; min-height: 44px; }
+  .lightbox-title { min-width: 0; display: flex; align-items: baseline; gap: 10px; }
+  .lightbox-title b { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .lightbox-title span { flex: 0 0 auto; color: rgba(255,255,255,.62); font-size: 12px; }
+  .lightbox-close, .lightbox-nav { display: inline-grid; place-items: center; width: 44px; height: 44px; padding: 0; border: 1px solid rgba(255,255,255,.22); border-radius: 999px; background: rgba(255,255,255,.08); color: #fff; font: inherit; cursor: pointer; }
+  .lightbox-close:hover, .lightbox-nav:hover { background: rgba(255,255,255,.16); }
+  .lightbox-close:focus-visible, .lightbox-nav:focus-visible, .lightbox-download:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+  .lightbox-stage { position: relative; display: grid; place-items: center; min-height: 0; width: min(1180px, 100%); margin: 0 auto; padding: 14px 64px; }
+  .lightbox-image-wrap { position: relative; display: grid; place-items: center; width: 100%; height: 100%; min-height: 160px; }
+  .lightbox-image-wrap::before { content: '图片加载中…'; position: absolute; color: rgba(255,255,255,.55); font-size: 13px; }
+  .lightbox-image-wrap.is-ready::before { display: none; }
+  .lightbox-image { position: relative; z-index: 1; max-width: 100%; max-height: calc(100vh - 150px); object-fit: contain; opacity: 0; transition: opacity .18s ease; }
+  .lightbox-image-wrap.is-ready .lightbox-image { opacity: 1; }
+  .lightbox-image-wrap.is-error::before { content: '图片加载失败，可尝试下载原图'; color: rgba(255,255,255,.72); }
+  .lightbox-nav { position: absolute; top: 50%; z-index: 2; transform: translateY(-50%); font-size: 20px; }
+  .lightbox-prev { left: 8px; }
+  .lightbox-next { right: 8px; }
+  .lightbox-nav:disabled { opacity: .25; cursor: default; }
+  .lightbox-footer { justify-content: space-between; min-height: 48px; color: rgba(255,255,255,.65); font-size: 12px; }
+  .lightbox-download { flex: 0 0 auto; padding: 8px 16px; border-radius: 999px; background: #fff; color: var(--brand); text-decoration: none; font-weight: 700; }
 
   @media (max-width: 700px) {
     header { align-items: flex-start; flex-direction: column; gap: 8px; padding: 12px 16px; }
@@ -155,6 +193,18 @@
     nav.tabs a, nav.tabs button { flex: 0 0 auto; }
     main { padding: 16px 12px 48px; }
     .panel { padding: 16px; }
+    .photo-lightbox { padding: 10px; }
+    .lightbox-stage { padding: 10px 0 62px; }
+    .lightbox-nav { top: auto; bottom: 8px; transform: none; }
+    .lightbox-prev { left: calc(50% - 54px); }
+    .lightbox-next { right: calc(50% - 54px); }
+    .lightbox-footer { align-items: flex-start; }
+    .lightbox-footer span { max-width: 60%; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .loading-bar { animation: none; }
+    .photo-thumb-button, .lightbox-image { transition: none; }
   }
 
 </style>
@@ -231,11 +281,17 @@
           <small id="submissionsUpdatedAt"></small>
         </div>
         <div class="table-scroll"><table><thead><tr><th>提交时间</th><th>手机号</th><th>来源</th><th>报告</th><th>照片</th><th>操作</th></tr></thead><tbody id="submissionRows"></tbody></table></div>
+        <div class="report-list-footer"><small id="submissionsCount"></small><button class="report-load-more" type="button" id="submissionsLoadMore" hidden>加载更多</button></div>
       </section>
       <section class="report-list-panel" id="reportPanelCaptures" role="tabpanel" aria-labelledby="reportTabCaptures" data-report-panel="captures" hidden>
         <h3>镜子拍摄记录（含未领取）</h3>
         <p class="panel-hint">用户在智能镜拍照后即使没有扫码完成报告，照片也会保留在这里，可随时下载打印。删除只是从后台隐藏，服务器存储里仍保留原片。</p>
+        <div class="toolbar" style="margin-bottom:12px">
+          <button class="mini-btn" type="button" id="capturesRefresh">刷新</button>
+          <small id="capturesUpdatedAt"></small>
+        </div>
         <div class="table-scroll"><table><thead><tr><th>拍摄时间</th><th>状态</th><th>领取手机号</th><th>原始照片（算法留存）</th><th>美颜照片（打印用）</th><th>操作</th></tr></thead><tbody id="captureRows"></tbody></table></div>
+        <div class="report-list-footer"><small id="capturesCount"></small><button class="report-load-more" type="button" id="capturesLoadMore" hidden>加载更多</button></div>
       </section>
       <section class="report-list-panel" id="reportPanelRejected" role="tabpanel" aria-labelledby="reportTabRejected" data-report-panel="rejected" hidden>
         <h3>检测被拒的照片（算法优化素材）</h3>
@@ -246,6 +302,7 @@
         </div>
         <div id="rejectedBreakdown" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px"></div>
         <div class="table-scroll"><table><thead><tr><th>上传时间</th><th>照片类型</th><th>来源</th><th>手机号</th><th>拦截原因</th><th>预览</th><th>操作</th></tr></thead><tbody id="rejectedRows"></tbody></table></div>
+        <div class="report-list-footer"><small id="rejectedCount"></small><button class="report-load-more" type="button" id="rejectedLoadMore" hidden>加载更多</button></div>
       </section>
     </div>
     <div class="panel" id="debugPanel" data-tab-panel="debug" hidden>
@@ -274,6 +331,23 @@
       <div class="persona-breakdown" id="personaBreakdown" hidden></div>
     </div>
   </div>
+  <div class="photo-lightbox" id="photoLightbox" role="dialog" aria-modal="true" aria-labelledby="photoLightboxTitle" hidden>
+    <div class="lightbox-header">
+      <div class="lightbox-title"><b id="photoLightboxTitle">照片预览</b><span id="photoLightboxCount"></span></div>
+      <button class="lightbox-close" type="button" id="photoLightboxClose" aria-label="关闭照片预览">关闭</button>
+    </div>
+    <div class="lightbox-stage">
+      <button class="lightbox-nav lightbox-prev" type="button" id="photoLightboxPrev" aria-label="上一张">‹</button>
+      <div class="lightbox-image-wrap" id="photoLightboxImageWrap">
+        <img class="lightbox-image" id="photoLightboxImage" alt="" />
+      </div>
+      <button class="lightbox-nav lightbox-next" type="button" id="photoLightboxNext" aria-label="下一张">›</button>
+    </div>
+    <div class="lightbox-footer">
+      <span id="photoLightboxMeta">点击遮罩或按 Esc 关闭，方向键切换</span>
+      <a class="lightbox-download" id="photoLightboxDownload" href="#">下载原图</a>
+    </div>
+  </div>
 </main>
 <script>
 (() => {
@@ -281,8 +355,8 @@
   const $ = (id) => document.getElementById(id);
   const state = { token: sessionStorage.getItem(TOKEN_KEY) || '' };
 
-  const api = async (path) => {
-    const response = await fetch(path, { headers: { Authorization: `Bearer ${state.token}` } });
+  const api = async (path, { signal } = {}) => {
+    const response = await fetch(path, { signal, headers: { Authorization: `Bearer ${state.token}` } });
     if (response.status === 401 || response.status === 403) throw Object.assign(new Error('登录已失效，请重新登录'), { status: response.status });
     if (!response.ok) throw new Error(`请求失败（${response.status}）`);
     return response.json();
@@ -361,8 +435,49 @@
   const AXIS_LABELS = { shape: '形态', energy: '能量', trend: '趋势' };
   const VIBE_LABELS = { occasion: '场合', wardrobe: '衣橱', expression: '表达' };
   const CAPTURE_STATUS = { pending: '待领取', claimed: '已领取', expired: '已过期' };
+  const REPORT_PAGE_SIZE = 10;
+  const reportListState = {
+    submissions: { rows: [], visible: REPORT_PAGE_SIZE, loaded: false, loading: false },
+    captures: { rows: [], visible: REPORT_PAGE_SIZE, loaded: false, loading: false },
+    rejected: { rows: [], breakdown: [], visible: REPORT_PAGE_SIZE, loaded: false, loading: false },
+  };
+  const reportRequests = {};
+  const reportConfig = {
+    submissions: { path: '/admin/api/submissions', key: 'submissions', body: 'submissionRows', count: 'submissionsCount', more: 'submissionsLoadMore', updated: 'submissionsUpdatedAt', columns: 6 },
+    captures: { path: '/admin/api/mirror-captures', key: 'captures', body: 'captureRows', count: 'capturesCount', more: 'capturesLoadMore', updated: 'capturesUpdatedAt', columns: 6 },
+    rejected: { path: '/admin/api/rejected-photos', key: 'rejected', body: 'rejectedRows', count: 'rejectedCount', more: 'rejectedLoadMore', updated: 'rejectedUpdatedAt', columns: 7 },
+  };
 
-  const photoThumb = (photo) => `<img class="photo-thumb" src="${esc(photo.previewUrl)}" alt="${esc(photo.label || photo.kind)}" loading="lazy" title="${esc(photo.label || photo.kind)}" />`;
+  const photoThumb = (photo, meta = '') => {
+    const label = photo.label || photo.kind || '照片';
+    const downloadUrl = photo.downloadUrl || photo.previewUrl;
+    return `<button class="photo-thumb-button" type="button" data-photo-preview="${esc(photo.previewUrl)}" data-photo-download="${esc(downloadUrl)}" data-photo-label="${esc(label)}" data-photo-meta="${esc(meta)}" aria-label="放大查看${esc(label)}">`
+      + `<img class="photo-thumb" src="${esc(photo.previewUrl)}" alt="${esc(label)}" loading="lazy" decoding="async" fetchpriority="low" title="点击放大查看" />`
+      + `</button>`;
+  };
+
+  const setReportLoading = (tab) => {
+    const config = reportConfig[tab];
+    const rows = Array.from({ length: 6 }, () => `<tr class="loading-row"><td colspan="${config.columns}"><span class="loading-bar"></span></td></tr>`).join('');
+    $(config.body).innerHTML = rows;
+    $(config.count).textContent = '正在加载…';
+    $(config.more).hidden = true;
+  };
+
+  const setReportError = (tab, message) => {
+    const config = reportConfig[tab];
+    $(config.body).innerHTML = `<tr><td colspan="${config.columns}" class="empty">${esc(message || '加载失败，请重试')}</td></tr>`;
+    $(config.count).textContent = '';
+    $(config.more).hidden = true;
+  };
+
+  const updateReportFooter = (tab) => {
+    const config = reportConfig[tab];
+    const list = reportListState[tab];
+    const visible = Math.min(list.visible, list.rows.length);
+    $(config.count).textContent = list.rows.length ? `已显示 ${visible} / ${list.rows.length} 条` : '';
+    $(config.more).hidden = visible >= list.rows.length;
+  };
 
   const renderSubmissions = (rows) => {
     const tbody = $('submissionRows');
@@ -378,9 +493,9 @@
           ? `<b>${esc(row.report.title || row.report.typeId || '已生成')}</b><br><small style="color:var(--muted)">${fmtTime(row.report.createdAt)}</small>`
           : '<span class="tag tag-muted">未生成</span>';
         const thumbs = [
-          ...(mirror.retouched ? [photoThumb({ ...mirror.retouched, label: '美颜照片' })] : []),
-          ...(mirror.original ? [photoThumb({ ...mirror.original, label: '原始照片' })] : []),
-          ...(row.photos || []).map(photoThumb),
+          ...(mirror.retouched ? [photoThumb({ ...mirror.retouched, label: '美颜照片' }, fmtTime(row.createdAt))] : []),
+          ...(mirror.original ? [photoThumb({ ...mirror.original, label: '原始照片' }, fmtTime(row.createdAt))] : []),
+          ...(row.photos || []).map((photo) => photoThumb(photo, fmtTime(row.createdAt))),
         ].join('');
         const quickDownload = mirror.retouched
           ? `<a class="dl-link" href="${esc(mirror.retouched.downloadUrl)}">下载美颜照片</a>`
@@ -413,7 +528,7 @@
       tbody.replaceChildren(...rows.map((row) => {
         const tr = document.createElement('tr');
         const photoCell = (photo) => (photo
-          ? `<img class="photo-thumb" src="${esc(photo.previewUrl)}" alt="${esc(photo.label)}" title="${esc(photo.label)}" loading="lazy" style="margin-right:8px" /><a class="dl-link" href="${esc(photo.downloadUrl)}">下载</a>`
+          ? `<span class="photo-cell">${photoThumb(photo, fmtTime(row.createdAt))}<a class="dl-link" href="${esc(photo.downloadUrl)}">下载</a></span>`
           : '<span class="tag tag-muted">无</span>');
         const claimed = row.status === 'claimed';
         tr.innerHTML = `<td>${fmtTime(row.createdAt)}</td>`
@@ -451,7 +566,7 @@
     tbody.replaceChildren(...rows.map((row) => {
       const tr = document.createElement('tr');
       const thumb = row.previewUrl
-        ? `<img class="photo-thumb" src="${esc(row.previewUrl)}" alt="被拒照片" loading="lazy" title="${esc((row.issueLabels || []).join('、'))}" />`
+        ? photoThumb({ previewUrl: row.previewUrl, downloadUrl: row.downloadUrl, label: `被拒照片 · ${(row.issueLabels || []).join('、')}` }, fmtTime(row.createdAt))
         : '<span class="tag tag-muted">无</span>';
       tr.innerHTML = `<td>${fmtTime(row.createdAt)}</td>`
         + `<td>${esc(row.kindLabel || row.kind || '—')}</td>`
@@ -464,14 +579,49 @@
     }));
   };
 
-  const loadRejected = async () => {
+  const renderReportList = (tab) => {
+    const list = reportListState[tab];
+    const visibleRows = list.rows.slice(0, list.visible);
+    if (tab === 'submissions') renderSubmissions(visibleRows);
+    if (tab === 'captures') renderCaptures(visibleRows);
+    if (tab === 'rejected') renderRejected(visibleRows, list.breakdown || []);
+    updateReportFooter(tab);
+  };
+
+  const loadReportTab = async (tab, { force = false } = {}) => {
+    const config = reportConfig[tab];
+    const list = reportListState[tab];
+    if (!config) return;
+    if (list.loading && !reportRequests[tab]?.signal.aborted) return;
+    if (list.loaded && !force) {
+      renderReportList(tab);
+      return;
+    }
+    reportRequests[tab]?.abort();
+    const controller = new AbortController();
+    reportRequests[tab] = controller;
+    list.loading = true;
+    if (force) list.visible = REPORT_PAGE_SIZE;
+    setReportLoading(tab);
     try {
-      const payload = await api('/admin/api/rejected-photos');
-      renderRejected(payload.rejected || [], payload.breakdown || []);
-      $('rejectedUpdatedAt').textContent = `更新于 ${new Date().toLocaleTimeString('zh-CN', { hour12: false })}`;
+      const payload = await api(config.path, { signal: controller.signal });
+      list.rows = payload[config.key] || [];
+      if (tab === 'rejected') list.breakdown = payload.breakdown || [];
+      list.loaded = true;
+      renderReportList(tab);
+      $(config.updated).textContent = `更新于 ${new Date().toLocaleTimeString('zh-CN', { hour12: false })}`;
     } catch (error) {
+      if (error.name === 'AbortError') return;
       if (error.status) showLogin();
-      else $('rejectedUpdatedAt').textContent = error.message || '加载失败';
+      else {
+        setReportError(tab, error.message);
+        $(config.updated).textContent = error.message || '加载失败';
+      }
+    } finally {
+      if (reportRequests[tab] === controller) {
+        list.loading = false;
+        delete reportRequests[tab];
+      }
     }
   };
 
@@ -489,25 +639,9 @@
     if (!confirm('确定从后台隐藏这条记录吗？\n照片和报告仍会保留在服务器存储中。')) return;
     try {
       await postAdmin(`/admin/api/${kind}/${encodeURIComponent(id)}/hide`);
-      void loadSubmissions();
+      void loadReportTab(kind === 'submissions' ? 'submissions' : 'captures', { force: true });
     } catch (error) {
       alert(error.message || '操作失败');
-    }
-  };
-
-  const loadSubmissions = async () => {
-    try {
-      const [subs, captures] = await Promise.all([
-        api('/admin/api/submissions'),
-        api('/admin/api/mirror-captures'),
-      ]);
-      renderSubmissions(subs.submissions || []);
-      renderCaptures(captures.captures || []);
-      void loadRejected();
-      $('submissionsUpdatedAt').textContent = `更新于 ${new Date().toLocaleTimeString('zh-CN', { hour12: false })}`;
-    } catch (error) {
-      if (error.status) showLogin();
-      else $('submissionsUpdatedAt').textContent = error.message || '加载失败';
     }
   };
 
@@ -523,7 +657,7 @@
   };
 
   const photoCard = (photo, label, note) => `<div class="photo-card">`
-    + `<div class="frame"><a href="${esc(photo.previewUrl)}" target="_blank" rel="noopener"><img src="${esc(photo.previewUrl)}" alt="${esc(label)}" loading="lazy" /></a></div>`
+    + `<div class="frame"><button class="photo-preview-card" type="button" data-photo-preview="${esc(photo.previewUrl)}" data-photo-download="${esc(photo.downloadUrl || photo.previewUrl)}" data-photo-label="${esc(label)}" data-photo-meta="${esc(note)}" aria-label="放大查看${esc(label)}"><img src="${esc(photo.previewUrl)}" alt="${esc(label)}" loading="lazy" decoding="async" /></button></div>`
     + `<div class="meta"><b>${esc(label)}</b><span>${esc(note)}</span>${attrChips(photo.attributes)}<a class="dl-link" href="${esc(photo.downloadUrl)}">下载</a></div>`
     + `</div>`;
 
@@ -669,6 +803,7 @@
     $('submissionModalMeta').textContent = sessionId;
     $('submissionModalBody').innerHTML = '<div class="empty-inline">加载中…</div>';
     $('submissionModal').hidden = false;
+    document.body.classList.add('has-modal');
     try {
       const payload = await api(`/admin/api/submissions/${encodeURIComponent(sessionId)}`);
       renderSubmissionDetail(payload.submission || {});
@@ -681,14 +816,105 @@
     $('submissionModal').hidden = true;
     $('personaBreakdown').hidden = true;
     $('personaBreakdown').innerHTML = '';
+    if ($('photoLightbox').hidden) document.body.classList.remove('has-modal');
+  };
+
+  let lightboxItems = [];
+  let lightboxIndex = 0;
+  let lightboxReturnFocus = null;
+  let lightboxLoadToken = 0;
+
+  const renderPhotoLightbox = () => {
+    const item = lightboxItems[lightboxIndex];
+    if (!item) return;
+    const wrap = $('photoLightboxImageWrap');
+    const image = $('photoLightboxImage');
+    const token = ++lightboxLoadToken;
+    wrap.classList.remove('is-ready', 'is-error');
+    image.alt = item.label;
+    image.onload = () => {
+      if (token === lightboxLoadToken) wrap.classList.add('is-ready');
+    };
+    image.onerror = () => {
+      if (token === lightboxLoadToken) wrap.classList.add('is-error');
+    };
+    image.src = item.previewUrl;
+    $('photoLightboxTitle').textContent = item.label;
+    $('photoLightboxCount').textContent = `${lightboxIndex + 1} / ${lightboxItems.length}`;
+    $('photoLightboxMeta').textContent = item.meta || '方向键切换照片';
+    $('photoLightboxDownload').href = item.downloadUrl || item.previewUrl;
+    const single = lightboxItems.length < 2;
+    $('photoLightboxPrev').disabled = single;
+    $('photoLightboxNext').disabled = single;
+  };
+
+  const openPhotoLightbox = (trigger) => {
+    const context = trigger.closest('#submissionModalBody') || trigger.closest('[data-report-panel]') || document;
+    const triggers = [...context.querySelectorAll('[data-photo-preview]')];
+    lightboxItems = triggers.map((node) => ({
+      previewUrl: node.dataset.photoPreview,
+      downloadUrl: node.dataset.photoDownload,
+      label: node.dataset.photoLabel || '照片预览',
+      meta: node.dataset.photoMeta || '',
+    }));
+    lightboxIndex = Math.max(0, triggers.indexOf(trigger));
+    lightboxReturnFocus = trigger;
+    $('photoLightbox').hidden = false;
+    document.body.classList.add('has-modal');
+    renderPhotoLightbox();
+    $('photoLightboxClose').focus();
+  };
+
+  const closePhotoLightbox = () => {
+    if ($('photoLightbox').hidden) return;
+    $('photoLightbox').hidden = true;
+    lightboxLoadToken += 1;
+    $('photoLightboxImage').removeAttribute('src');
+    $('photoLightboxImageWrap').classList.remove('is-ready', 'is-error');
+    if ($('submissionModal').hidden) document.body.classList.remove('has-modal');
+    lightboxReturnFocus?.focus();
+    lightboxReturnFocus = null;
+  };
+
+  const movePhotoLightbox = (offset) => {
+    if (lightboxItems.length < 2) return;
+    lightboxIndex = (lightboxIndex + offset + lightboxItems.length) % lightboxItems.length;
+    renderPhotoLightbox();
   };
 
   $('submissionModalClose').addEventListener('click', closeSubmissionModal);
   $('submissionModal').addEventListener('click', (event) => {
     if (event.target === $('submissionModal')) closeSubmissionModal();
   });
+  document.addEventListener('click', (event) => {
+    const trigger = event.target.closest('[data-photo-preview]');
+    if (trigger) openPhotoLightbox(trigger);
+  });
+  $('photoLightboxClose').addEventListener('click', closePhotoLightbox);
+  $('photoLightboxPrev').addEventListener('click', () => movePhotoLightbox(-1));
+  $('photoLightboxNext').addEventListener('click', () => movePhotoLightbox(1));
+  $('photoLightbox').addEventListener('click', (event) => {
+    if (event.target === $('photoLightbox') || event.target === $('photoLightboxImageWrap')) closePhotoLightbox();
+  });
   document.addEventListener('keydown', (event) => {
-    if (event.key === 'Escape') closeSubmissionModal();
+    if (!$('photoLightbox').hidden) {
+      if (event.key === 'Escape') closePhotoLightbox();
+      if (event.key === 'ArrowLeft') movePhotoLightbox(-1);
+      if (event.key === 'ArrowRight') movePhotoLightbox(1);
+      if (event.key === 'Tab') {
+        const focusable = [...$('photoLightbox').querySelectorAll('button:not(:disabled), a[href]')];
+        const current = focusable.indexOf(document.activeElement);
+        if (event.shiftKey && current <= 0) {
+          event.preventDefault();
+          focusable.at(-1)?.focus();
+        } else if (!event.shiftKey && current === focusable.length - 1) {
+          event.preventDefault();
+          focusable[0]?.focus();
+        }
+      }
+      return;
+    }
+    if (event.key === 'Escape' && !$('submissionModal').hidden) closeSubmissionModal();
   });
 
   const activateReportTab = (tab, { focus = false } = {}) => {
@@ -702,6 +928,10 @@
     document.querySelectorAll('[data-report-panel]').forEach((panel) => {
       panel.hidden = panel.dataset.reportPanel !== tab;
     });
+    Object.entries(reportRequests).forEach(([requestTab, controller]) => {
+      if (requestTab !== tab) controller.abort();
+    });
+    void loadReportTab(tab);
   };
 
   document.querySelectorAll('[data-report-tab]').forEach((button) => {
@@ -717,8 +947,15 @@
       activateReportTab(tabs[next].dataset.reportTab, { focus: true });
     });
   });
-  $('submissionsRefresh').addEventListener('click', loadSubmissions);
-  $('rejectedRefresh').addEventListener('click', loadRejected);
+  $('submissionsRefresh').addEventListener('click', () => loadReportTab('submissions', { force: true }));
+  $('capturesRefresh').addEventListener('click', () => loadReportTab('captures', { force: true }));
+  $('rejectedRefresh').addEventListener('click', () => loadReportTab('rejected', { force: true }));
+  Object.keys(reportConfig).forEach((tab) => {
+    $(reportConfig[tab].more).addEventListener('click', () => {
+      reportListState[tab].visible += REPORT_PAGE_SIZE;
+      renderReportList(tab);
+    });
+  });
 
   const render = (summary, users) => {
     const kpiDefs = [
@@ -821,7 +1058,10 @@
     $('kpis').hidden = tab !== 'analytics';
     $('toolbar').hidden = tab !== 'analytics';
     if (tab === 'analytics') void load();
-    if (tab === 'submissions') void loadSubmissions();
+    if (tab === 'submissions') {
+      const selected = document.querySelector('[data-report-tab][aria-selected="true"]');
+      void loadReportTab(selected?.dataset.reportTab || 'submissions');
+    }
   };
   document.querySelectorAll('[data-tab]').forEach((button) => button.addEventListener('click', () => {
     activateTab(button.dataset.tab);
