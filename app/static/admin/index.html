@@ -49,6 +49,13 @@
   .debug-card span { color: var(--muted); font-size: 12px; line-height: 1.5; }
   /* 用户报告 / 照片下载 */
   .panel-hint { margin: -6px 0 14px; color: var(--muted); font-size: 12px; line-height: 1.7; }
+  .report-tabs { display: flex; gap: 4px; margin: 0 0 18px; padding: 4px; border: 1px solid var(--line); border-radius: 12px; background: #faf7f5; overflow-x: auto; scrollbar-width: thin; }
+  .report-tab { flex: 0 0 auto; min-height: 36px; padding: 7px 14px; border: 0; border-radius: 9px; background: transparent; color: var(--muted); font: inherit; font-size: 13px; font-weight: 600; cursor: pointer; transition: background .15s ease, color .15s ease, box-shadow .15s ease; }
+  .report-tab:hover { color: var(--brand); }
+  .report-tab:focus-visible { outline: 2px solid rgba(138,1,27,.35); outline-offset: 1px; }
+  .report-tab[aria-selected="true"] { background: #fff; color: var(--brand); box-shadow: 0 1px 5px rgba(60,21,25,.08); }
+  .report-list-panel h3 { margin: 0 0 10px; font-size: 15px; }
+  .table-scroll { width: 100%; overflow-x: auto; }
   .mini-btn { padding: 6px 14px; border: 1px solid rgba(138,1,27,.35); border-radius: 999px; background: #fff; color: var(--brand); font-size: 13px; cursor: pointer; }
   .mini-btn:hover { background: #fbf1f3; }
   .link-btn { padding: 0; border: 0; background: none; color: var(--brand); font-size: 13px; cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
@@ -142,6 +149,14 @@
   .empty-inline { padding: 6px 0; color: var(--muted); font-size: 13px; }
   .link-btn.danger { color: #a90020; }
 
+  @media (max-width: 700px) {
+    header { align-items: flex-start; flex-direction: column; gap: 8px; padding: 12px 16px; }
+    nav.tabs { width: 100%; margin-left: 0; overflow-x: auto; }
+    nav.tabs a, nav.tabs button { flex: 0 0 auto; }
+    main { padding: 16px 12px 48px; }
+    .panel { padding: 16px; }
+  }
+
 </style>
 </head>
 <body>
@@ -202,28 +217,36 @@
       <table><thead><tr><th>手机号</th><th>登录方式</th><th>行为事件数</th><th>首次活跃</th><th>最后活跃</th></tr></thead><tbody id="userRows"></tbody></table>
     </div>
     <div class="panel" id="submissionsPanel" data-tab-panel="submissions" hidden>
-      <h2>用户提交（报告与照片）</h2>
-      <p class="panel-hint">每一行是一次完整的测试提交：报告数据、上传照片都在这里。智能镜拍摄有两个版本——<b>美颜照片</b>用于现场下载打印，<b>原始照片</b>仅作算法留存。会话过期后仍可查看和下载。「删除」只是从后台隐藏，不会删除服务器存储里的照片。</p>
-      <div class="toolbar" style="margin-bottom:12px">
-        <button class="mini-btn" type="button" id="submissionsRefresh">刷新</button>
-        <small id="submissionsUpdatedAt"></small>
+      <h2>用户报告</h2>
+      <div class="report-tabs" role="tablist" aria-label="用户报告列表">
+        <button class="report-tab" id="reportTabSubmissions" type="button" role="tab" aria-selected="true" aria-controls="reportPanelSubmissions" data-report-tab="submissions">测试提交</button>
+        <button class="report-tab" id="reportTabCaptures" type="button" role="tab" aria-selected="false" aria-controls="reportPanelCaptures" data-report-tab="captures" tabindex="-1">镜子拍摄</button>
+        <button class="report-tab" id="reportTabRejected" type="button" role="tab" aria-selected="false" aria-controls="reportPanelRejected" data-report-tab="rejected" tabindex="-1">被拒照片</button>
       </div>
-      <table><thead><tr><th>提交时间</th><th>手机号</th><th>来源</th><th>报告</th><th>照片</th><th>操作</th></tr></thead><tbody id="submissionRows"></tbody></table>
-    </div>
-    <div class="panel" data-tab-panel="submissions" hidden>
-      <h2>镜子拍摄记录（含未领取）</h2>
-      <p class="panel-hint">用户在智能镜拍照后即使没有扫码完成报告，照片也会保留在这里，可随时下载打印。删除只是从后台隐藏，服务器存储里仍保留原片。</p>
-      <table><thead><tr><th>拍摄时间</th><th>状态</th><th>领取手机号</th><th>原始照片（算法留存）</th><th>美颜照片（打印用）</th><th>操作</th></tr></thead><tbody id="captureRows"></tbody></table>
-    </div>
-    <div class="panel" data-tab-panel="submissions" hidden>
-      <h2>检测被拒的照片（算法优化素材）</h2>
-      <p class="panel-hint">用户上传或镜拍回填时被检测拦截的照片会完整留存在这里——看得到原图和拦截原因，用于评估检测阈值是否过严。这些照片只做算法分析，不对外展示。</p>
-      <div class="toolbar" style="margin-bottom:12px">
-        <button class="mini-btn" type="button" id="rejectedRefresh">刷新</button>
-        <small id="rejectedUpdatedAt"></small>
-      </div>
-      <div id="rejectedBreakdown" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px"></div>
-      <table><thead><tr><th>上传时间</th><th>照片类型</th><th>来源</th><th>手机号</th><th>拦截原因</th><th>预览</th><th>操作</th></tr></thead><tbody id="rejectedRows"></tbody></table>
+      <section class="report-list-panel" id="reportPanelSubmissions" role="tabpanel" aria-labelledby="reportTabSubmissions" data-report-panel="submissions">
+        <h3>用户提交（报告与照片）</h3>
+        <p class="panel-hint">每一行是一次完整的测试提交：报告数据、上传照片都在这里。智能镜拍摄有两个版本——<b>美颜照片</b>用于现场下载打印，<b>原始照片</b>仅作算法留存。会话过期后仍可查看和下载。「删除」只是从后台隐藏，不会删除服务器存储里的照片。</p>
+        <div class="toolbar" style="margin-bottom:12px">
+          <button class="mini-btn" type="button" id="submissionsRefresh">刷新</button>
+          <small id="submissionsUpdatedAt"></small>
+        </div>
+        <div class="table-scroll"><table><thead><tr><th>提交时间</th><th>手机号</th><th>来源</th><th>报告</th><th>照片</th><th>操作</th></tr></thead><tbody id="submissionRows"></tbody></table></div>
+      </section>
+      <section class="report-list-panel" id="reportPanelCaptures" role="tabpanel" aria-labelledby="reportTabCaptures" data-report-panel="captures" hidden>
+        <h3>镜子拍摄记录（含未领取）</h3>
+        <p class="panel-hint">用户在智能镜拍照后即使没有扫码完成报告，照片也会保留在这里，可随时下载打印。删除只是从后台隐藏，服务器存储里仍保留原片。</p>
+        <div class="table-scroll"><table><thead><tr><th>拍摄时间</th><th>状态</th><th>领取手机号</th><th>原始照片（算法留存）</th><th>美颜照片（打印用）</th><th>操作</th></tr></thead><tbody id="captureRows"></tbody></table></div>
+      </section>
+      <section class="report-list-panel" id="reportPanelRejected" role="tabpanel" aria-labelledby="reportTabRejected" data-report-panel="rejected" hidden>
+        <h3>检测被拒的照片（算法优化素材）</h3>
+        <p class="panel-hint">用户上传或镜拍回填时被检测拦截的照片会完整留存在这里——看得到原图和拦截原因，用于评估检测阈值是否过严。这些照片只做算法分析，不对外展示。</p>
+        <div class="toolbar" style="margin-bottom:12px">
+          <button class="mini-btn" type="button" id="rejectedRefresh">刷新</button>
+          <small id="rejectedUpdatedAt"></small>
+        </div>
+        <div id="rejectedBreakdown" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px"></div>
+        <div class="table-scroll"><table><thead><tr><th>上传时间</th><th>照片类型</th><th>来源</th><th>手机号</th><th>拦截原因</th><th>预览</th><th>操作</th></tr></thead><tbody id="rejectedRows"></tbody></table></div>
+      </section>
     </div>
     <div class="panel" id="debugPanel" data-tab-panel="debug" hidden>
       <h2>调试工具</h2>
@@ -666,6 +689,33 @@
   });
   document.addEventListener('keydown', (event) => {
     if (event.key === 'Escape') closeSubmissionModal();
+  });
+
+  const activateReportTab = (tab, { focus = false } = {}) => {
+    const tabs = [...document.querySelectorAll('[data-report-tab]')];
+    tabs.forEach((button) => {
+      const active = button.dataset.reportTab === tab;
+      button.setAttribute('aria-selected', String(active));
+      button.tabIndex = active ? 0 : -1;
+      if (active && focus) button.focus();
+    });
+    document.querySelectorAll('[data-report-panel]').forEach((panel) => {
+      panel.hidden = panel.dataset.reportPanel !== tab;
+    });
+  };
+
+  document.querySelectorAll('[data-report-tab]').forEach((button) => {
+    button.addEventListener('click', () => activateReportTab(button.dataset.reportTab));
+    button.addEventListener('keydown', (event) => {
+      if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return;
+      event.preventDefault();
+      const tabs = [...document.querySelectorAll('[data-report-tab]')];
+      const current = tabs.indexOf(button);
+      const next = event.key === 'Home' ? 0
+        : event.key === 'End' ? tabs.length - 1
+        : (current + (event.key === 'ArrowRight' ? 1 : -1) + tabs.length) % tabs.length;
+      activateReportTab(tabs[next].dataset.reportTab, { focus: true });
+    });
   });
   $('submissionsRefresh').addEventListener('click', loadSubmissions);
   $('rejectedRefresh').addEventListener('click', loadRejected);
