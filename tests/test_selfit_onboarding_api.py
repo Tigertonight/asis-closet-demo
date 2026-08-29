@@ -732,6 +732,7 @@ def test_public_report_share_is_anonymous_private_and_expires_in_seven_days(monk
     assert created.status_code == 201
     share = created.json()["share"]
     assert share["url"].startswith("https://selfit.example/s/")
+    assert len(urlparse(share["url"]).path.rsplit("/", 1)[-1]) == 16
     assert share["qrUrl"].endswith("/qr.png")
     expires_at = datetime.fromisoformat(share["expiresAt"].replace("Z", "+00:00"))
     remaining_days = (expires_at - datetime.now(timezone.utc)).total_seconds() / 86400
@@ -764,12 +765,23 @@ def test_public_report_share_is_anonymous_private_and_expires_in_seven_days(monk
     assert qr.status_code == 200
     with Image.open(io.BytesIO(qr.content)) as image:
         assert image.size == (400, 400)
+        center = image.convert("RGB").crop((156, 156, 244, 244))
+        pixels = center.get_flattened_data()
+        assert any(red > 100 and green < 60 and blue < 80 for red, green, blue in pixels)
+        assert any(red > 235 and green > 235 and blue > 235 for red, green, blue in pixels)
 
     entry_qr = client.get("/selfit/qr.png")
     assert entry_qr.status_code == 200
     assert entry_qr.headers["content-type"] == "image/png"
     with Image.open(io.BytesIO(entry_qr.content)) as image:
         assert image.size == (400, 400)
+
+    brand_logo = client.get("/selfit/share-logo.png")
+    assert brand_logo.status_code == 200
+    assert brand_logo.headers["content-type"] == "image/png"
+    with Image.open(io.BytesIO(brand_logo.content)) as image:
+        assert image.size == (600, 600)
+        assert image.convert("RGB").getpixel((20, 20)) == (138, 1, 27)
 
     revoked = client.delete(f"{API}/public-shares/{share['shareId']}", headers=owner_headers)
     assert revoked.status_code == 200

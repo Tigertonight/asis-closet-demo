@@ -243,10 +243,74 @@ def _qr_image(share_url: str, box_size: int) -> Image.Image:
     return qr.make_image(fill_color="#3a0010", back_color="white").convert("RGB")
 
 
-def render_public_share_qr(share_url: str) -> bytes:
-    qr_image = _qr_image(share_url, box_size=8)
+def _brand_wordmark(*, max_width: int, max_height: int) -> Image.Image | None:
+    asset_path = Path(__file__).resolve().parent / "static" / "selfit" / "assets" / "selfit-wordmark@2x.png"
+    wordmark = _load_optional_image(asset_path)
+    if wordmark is None:
+        return None
+    alpha = wordmark.getchannel("A")
+    white_wordmark = Image.new("RGBA", wordmark.size, "white")
+    white_wordmark.putalpha(alpha)
+    white_wordmark.thumbnail((max_width, max_height), Image.Resampling.LANCZOS)
+    return white_wordmark
+
+
+def _brand_qr_image(share_url: str) -> Image.Image:
+    qr = qrcode.QRCode(
+        version=None,
+        error_correction=qrcode.constants.ERROR_CORRECT_H,
+        box_size=8,
+        border=4,
+    )
+    qr.add_data(share_url)
+    qr.make(fit=True)
+    qr_image = qr.make_image(fill_color="#3a0010", back_color="white").convert("RGB")
     canvas = Image.new("RGB", (400, 400), "white")
     canvas.paste(qr_image, ((400 - qr_image.width) // 2, (400 - qr_image.height) // 2))
+
+    badge_size = 88
+    badge_left = (400 - badge_size) // 2
+    badge_top = (400 - badge_size) // 2
+    draw = ImageDraw.Draw(canvas)
+    draw.rounded_rectangle(
+        (badge_left - 5, badge_top - 5, badge_left + badge_size + 5, badge_top + badge_size + 5),
+        radius=20,
+        fill="white",
+    )
+    draw.rounded_rectangle(
+        (badge_left, badge_top, badge_left + badge_size, badge_top + badge_size),
+        radius=16,
+        fill="#8a011b",
+    )
+    wordmark = _brand_wordmark(max_width=64, max_height=24)
+    if wordmark is not None:
+        canvas.paste(
+            wordmark,
+            ((400 - wordmark.width) // 2, (400 - wordmark.height) // 2),
+            wordmark,
+        )
+    return canvas
+
+
+def render_public_share_qr(share_url: str) -> bytes:
+    canvas = _brand_qr_image(share_url)
+    buffer = io.BytesIO()
+    canvas.save(buffer, "PNG", optimize=True)
+    return buffer.getvalue()
+
+
+def render_brand_share_logo() -> bytes:
+    """微信/WebView 默认分享缩略图：酒红底、白色 selfit 品牌标识。"""
+
+    size = 600
+    canvas = Image.new("RGB", (size, size), "#8a011b")
+    wordmark = _brand_wordmark(max_width=330, max_height=120)
+    if wordmark is not None:
+        canvas.paste(
+            wordmark,
+            ((size - wordmark.width) // 2, (size - wordmark.height) // 2),
+            wordmark,
+        )
     buffer = io.BytesIO()
     canvas.save(buffer, "PNG", optimize=True)
     return buffer.getvalue()

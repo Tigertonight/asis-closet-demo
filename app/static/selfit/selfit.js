@@ -767,6 +767,7 @@
       }
       if (!completedJob) throw new window.SelfitApi.SelfitApiError('报告生成时间较长，请稍后重试。', { code: 'report.timeout', retryable: true });
       state.reportId = completedJob.reportId;
+      state.publicShare = null;
       const report = completedJob.report || (await api.getReport(state.reportId)).report;
       // 分型一确定就预加载 hero 大图：报告数据渲染前的等待时间里图片已在下载，
       // 报告页出现时封面通常已就绪（hero.webp ~100KB，之前 PNG 1.6MB 要 6-10s）。
@@ -1262,16 +1263,38 @@
     else if (event.key === 'End') goToShareSlide(shareSlides.length - 1);
     else goToShareSlide(shareSlideIndex + (event.key === 'ArrowRight' ? 1 : -1));
   });
-  document.querySelector('#openShare').addEventListener('click', () => {
-    openShareDialog();
+  const currentReportId = () => state.reportId || window.__SELFIT_REPORT_ID__ || null;
+  const applyPublicShareQr = (share) => {
+    if (!share?.qrUrl) return;
+    document.querySelectorAll('.share-qr').forEach((image) => {
+      image.src = share.qrUrl;
+      image.alt = '扫码查看这份风格报告';
+    });
     invalidateShareExports();
+  };
+  const ensurePublicShare = async (slideIndex = shareSlideIndex) => {
+    if (state.publicShare?.share) return state.publicShare;
+    const reportId = currentReportId();
+    if (!reportId) throw new window.SelfitApi.SelfitApiError('报告仍在准备中，请稍后再试。', { code: 'report.not_ready' });
+    state.publicShare = await api.createPublicShare(reportId, { slideIndex });
+    applyPublicShareQr(state.publicShare.share);
+    track('share_link_created', {
+      reportId,
+      slideIndex,
+      expiresAt: state.publicShare.share.expiresAt || '',
+    });
+    return state.publicShare;
+  };
+  const openShareButton = document.querySelector('#openShare');
+  openShareButton.addEventListener('click', () => runButtonAction(openShareButton, async () => {
+    await ensurePublicShare(0);
+    openShareDialog();
     syncShareSaveButton();
     requestAnimationFrame(() => {
       syncSharePreviewScale();
       goToShareSlide(0, false);
     });
-  });
-  const currentReportId = () => state.reportId || window.__SELFIT_REPORT_ID__ || null;
+  }));
   const copyTextToClipboard = async (value) => {
     if (navigator.clipboard?.writeText) {
       try {
@@ -1295,18 +1318,13 @@
   document.querySelector('#retakeBtn').addEventListener('click', () => { track('retake_clicked'); showScreen('vibe'); });
   document.querySelectorAll('[data-share]').forEach((button) => button.addEventListener('click', () => runButtonAction(button, async () => {
     if (button.dataset.share === 'report-link') {
-      const reportId = currentReportId();
-      if (!reportId) throw new window.SelfitApi.SelfitApiError('报告仍在准备中，请稍后再试。', { code: 'report.not_ready' });
-      const created = state.publicShare || await api.createPublicShare(reportId, { slideIndex: shareSlideIndex });
-      state.publicShare = created;
+      const created = await ensurePublicShare(shareSlideIndex);
       const share = created.share;
-      if (share.qrUrl) {
-        document.querySelectorAll('.share-qr').forEach((image) => { image.src = share.qrUrl; });
-        invalidateShareExports();
-        void prepareShareCard(shareSlideIndex);
-      }
-      track('share_link_created', { reportId, slideIndex: shareSlideIndex, expiresAt: share.expiresAt || '' });
-      await copyTextToClipboard(share.url);
+      const reportTitle = document.querySelector('[data-share-title]')?.textContent?.trim();
+      const shareCopy = reportTitle
+        ? `Ta 分享了一份「${reportTitle}」风格报告\n${share.url}`
+        : `Ta 分享了一份 selfit 风格报告\n${share.url}`;
+      await copyTextToClipboard(shareCopy);
       track('share_action_clicked', { method: 'copy-link' });
       toast('已复制分享链接');
       return;

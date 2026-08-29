@@ -239,8 +239,11 @@ def test_selfit_report_share_cards_use_the_dedicated_qr_artwork() -> None:
     assert 'class="public-report-error-qr"><img src="/static/selfit/assets/share-report-qr.png?v=20260828"' in response.text
     assert 'data-share-ornament' in response.text
     assert "/static/selfit/selfit.css?v=20260829-public-share6" in response.text
-    assert "/static/selfit/selfit.js?v=20260829-public-share6" in response.text
-    assert "/static/selfit/selfit-persona.js?v=20260828-1" in response.text
+    assert "/static/selfit/selfit.js?v=20260829-public-share7" in response.text
+    assert "/static/selfit/selfit-persona.js?v=20260829-bolt-korean1" in response.text
+    assert 'property="og:image" content="http://testserver/selfit/share-logo.png"' in response.text
+    assert 'property="og:image:width" content="600"' in response.text
+    assert 'name="robots" content="index,follow"' in response.text
 
     asset = client.get("/static/selfit/assets/share-report-qr.png")
     assert asset.status_code == 200
@@ -270,6 +273,9 @@ def test_selfit_report_share_cards_use_the_dedicated_qr_artwork() -> None:
     assert "new File([blob], shareCardFilename(index), { type: 'image/png'" in runtime.text
     assert "isWechatBrowser || isAppleMobileDevice" in runtime.text
     assert "triggerBrowserDownload(blob, index)" in runtime.text
+    assert "await ensurePublicShare(0)" in runtime.text
+    assert "Ta 分享了一份「${reportTitle}」风格报告" in runtime.text
+    assert "document.querySelectorAll('.share-qr').forEach" in runtime.text
     assert 'id="saveImageGuide"' in response.text
     assert '长按图片保存到相册' in response.text
     assert 'data-save-guide-copy' not in response.text

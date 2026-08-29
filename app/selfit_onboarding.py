@@ -1422,7 +1422,8 @@ async def create_public_report_share(
     if not snapshot.get("title") and not snapshot.get("typeId"):
         return _error_response(422, "share.report_incomplete", "这份报告还没有准备好。")
 
-    token = secrets.token_urlsafe(24)
+    # 96-bit 随机短码在一周有效期内仍有充足不可猜测性，同时显著缩短聊天里的文字链。
+    token = secrets.token_urlsafe(12)
     share_id = "shr_" + secrets.token_urlsafe(12)
     created_at = _now()
     expires_at = created_at + timedelta(days=_public_share_ttl_days())

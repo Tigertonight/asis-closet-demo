@@ -723,6 +723,7 @@ def _selfit_index_html(
         description = html_lib.escape(social_meta.get("description") or "打开查看 selfit 风格报告", quote=True)
         image_url = html_lib.escape(social_meta.get("image") or "", quote=True)
         page_url = html_lib.escape(social_meta.get("url") or "", quote=True)
+        robots = html_lib.escape(social_meta.get("robots") or "noindex,nofollow,noarchive", quote=True)
         html_text = html_text.replace(
             "<title>selfit · 先认识自己，再决定怎么穿</title>",
             f"<title>{title}</title>",
@@ -730,12 +731,19 @@ def _selfit_index_html(
         )
         meta_tags = (
             f'<meta name="description" content="{description}" />'
-            '<meta name="robots" content="noindex,nofollow,noarchive" />'
+            f'<meta name="robots" content="{robots}" />'
             '<meta property="og:type" content="website" />'
+            '<meta property="og:site_name" content="selfit" />'
             f'<meta property="og:title" content="{title}" />'
             f'<meta property="og:description" content="{description}" />'
             f'<meta property="og:image" content="{image_url}" />'
+            f'<meta property="og:image:secure_url" content="{image_url}" />'
+            '<meta property="og:image:type" content="image/png" />'
+            '<meta property="og:image:width" content="600" />'
+            '<meta property="og:image:height" content="600" />'
             f'<meta property="og:url" content="{page_url}" />'
+            '<meta name="twitter:card" content="summary" />'
+            f'<meta name="twitter:image" content="{image_url}" />'
         )
         html_text = html_text.replace("<head>", "<head>" + meta_tags, 1)
     return html_text
@@ -754,13 +762,31 @@ def favicon() -> FileResponse:
 @app.get("/selfit", response_class=HTMLResponse)
 @app.get("/selfit/", response_class=HTMLResponse)
 @app.get("/selfit/demo", response_class=HTMLResponse)
-def selfit_onboarding_page() -> HTMLResponse:
+def selfit_onboarding_page(request: Request) -> HTMLResponse:
+    origin = os.getenv("SELFIT_PUBLIC_BASE_URL", "").strip().rstrip("/") or str(request.base_url).rstrip("/")
     return HTMLResponse(
-        _selfit_index_html(),
+        _selfit_index_html(
+            social_meta={
+                "title": "selfit · 先认识自己，再决定怎么穿",
+                "description": "1 分钟，找到真正衬你的颜色与穿搭风格",
+                "image": f"{origin}/selfit/share-logo.png",
+                "url": f"{origin}/selfit",
+                "robots": "index,follow",
+            },
+        ),
         headers={
             "Cache-Control": "no-store, no-cache, must-revalidate, max-age=0",
             "Pragma": "no-cache",
         },
+    )
+
+
+@app.get("/selfit/share-logo.png", response_model=None, include_in_schema=False)
+def selfit_share_logo() -> Response:
+    return Response(
+        content=selfit_share.render_brand_share_logo(),
+        media_type="image/png",
+        headers={"Cache-Control": "public, max-age=86400"},
     )
 
 
