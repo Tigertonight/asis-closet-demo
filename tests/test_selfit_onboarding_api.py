@@ -228,6 +228,15 @@ def _heic_bytes(color: tuple[int, int, int] = (200, 180, 170)) -> bytes:
     return buffer.getvalue()
 
 
+def _mpo_bytes(color: tuple[int, int, int] = (200, 180, 170)) -> bytes:
+    """部分手机人像/多镜头拍照会交付多帧 JPEG（MPO）容器。"""
+    buffer = io.BytesIO()
+    primary = Image.new("RGB", (64, 64), color)
+    secondary = Image.new("RGB", (64, 64), (160, 150, 140))
+    primary.save(buffer, "MPO", save_all=True, append_images=[secondary])
+    return buffer.getvalue()
+
+
 def test_photo_upload_accepts_heic_and_stores_jpeg(monkeypatch, tmp_path: Path) -> None:
     """内测反馈：手机直拍 HEIC 报「格式不对」。HEIC 必须能上传并统一转 JPEG 存储。"""
     heic = _heic_bytes()
@@ -247,6 +256,23 @@ def test_photo_upload_accepts_heic_and_stores_jpeg(monkeypatch, tmp_path: Path) 
     assert stored[0].suffix == ".jpg", "HEIC 应统一转 JPEG 存储"
     reopened = Image.open(stored[0])
     assert reopened.format == "JPEG"
+
+
+def test_photo_upload_accepts_mobile_mpo_and_stores_primary_as_jpeg(monkeypatch, tmp_path: Path) -> None:
+    """能解码的手机照片容器不应因 Pillow 格式名称不在前端白名单而被拒绝。"""
+    _use_tmp_store(monkeypatch, tmp_path)
+    monkeypatch.setattr(selfit_photo, "_inspector", selfit_photo.accept_all_inspector)
+    client = TestClient(app)
+    session_id = _create_session(client)["session"]["sessionId"]
+
+    response = _upload_photo(client, session_id, "face", _mpo_bytes(), filename="portrait.jpg")
+    assert response.status_code == 200
+    assert response.json()["photo"]["status"] == "accepted"
+
+    stored = list((tmp_path / "outputs" / "selfit_onboarding" / "assets").rglob("asset_face_*"))
+    assert len(stored) == 1
+    assert stored[0].suffix == ".jpg"
+    assert Image.open(stored[0]).format == "JPEG"
 
 
 def test_photo_upload_accepted_and_saves_asset(monkeypatch, tmp_path: Path) -> None:
@@ -337,12 +363,6 @@ def test_photo_protocol_errors(monkeypatch, tmp_path: Path) -> None:
     undecodable = _upload_photo(client, session_id, "face", b"not an image")
     assert undecodable.status_code == 400
     assert undecodable.json()["error"]["code"] == "photo.invalid_image"
-
-    ppm_buffer = io.BytesIO()
-    Image.new("RGB", (8, 8)).save(ppm_buffer, "PPM")
-    unsupported = _upload_photo(client, session_id, "face", ppm_buffer.getvalue(), filename="photo.ppm")
-    assert unsupported.status_code == 415
-    assert unsupported.json()["error"]["code"] == "photo.unsupported_type"
 
     invalid_kind = _upload_photo(client, session_id, "pet", _jpeg_bytes())
     assert invalid_kind.status_code == 422

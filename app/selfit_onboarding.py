@@ -46,8 +46,6 @@ SELFIT_ONBOARDING_ASSET_DIR = SELFIT_ONBOARDING_DIR / "assets"
 SCHEMA_VERSION = "selfit-onboarding-v1"
 PHOTO_MAX_BYTES = 20 * 1024 * 1024
 PHOTO_SUPPORTED_FORMATS = {"JPEG": ".jpg", "PNG": ".png", "WEBP": ".webp"}
-# 手机直拍 HEIC 统一转 JPEG 存储：下游报告/分享/回看链路只认 JPEG/PNG/WebP。
-PHOTO_NATIVE_FORMATS = set(PHOTO_SUPPORTED_FORMATS) | {"HEIF", "HEIC", "AVIF", "TIFF", "BMP", "GIF"}
 
 # 报告任务：POST 创建后由后台线程真实执行 builder 并写入状态迁移；
 # GET 只读取，处理中的 stage/progress 为响应层估算（不落库，避免与 worker 写竞争）。
@@ -1004,8 +1002,6 @@ async def upload_session_photo(
     except (UnidentifiedImageError, OSError):
         return _error_response(400, "photo.invalid_image", "无法识别照片内容，请更换一张照片。")
     source_format = str(pil_image.format or "")
-    if source_format not in PHOTO_NATIVE_FORMATS:
-        return _error_response(415, "photo.unsupported_type", "仅支持 JPG、PNG、WebP、HEIC 格式的照片。")
 
     # EXIF 方向转正：手机直拍竖照的 orientation 在像素里不生效，不转正的话
     # 人脸/姿态检测会拿到横躺的图。对所有格式统一做，幂等。
@@ -1013,7 +1009,8 @@ async def upload_session_photo(
     # exif_transpose 转置后副本的 format 会丢失，用 source_format 补记。
     stored_format = source_format
     if source_format not in PHOTO_SUPPORTED_FORMATS:
-        # HEIC/AVIF 等非原生格式统一重编码为 JPEG 存储，下游报告/分享/回看链路零改动。
+        # 手机可能交付 HEIC/HEIF/AVIF/MPO 等容器。只要 Pillow 能真实解码，
+        # 就取主图并统一重编码为 JPEG，不再用格式名称二次误拒。
         buffer = io.BytesIO()
         pil_image.convert("RGB").save(buffer, format="JPEG", quality=92)
         raw = buffer.getvalue()
