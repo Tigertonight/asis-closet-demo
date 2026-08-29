@@ -239,7 +239,7 @@ def test_selfit_report_share_cards_use_the_dedicated_qr_artwork() -> None:
     assert 'class="public-report-error-qr"><img src="/static/selfit/assets/share-report-qr.png?v=20260828"' in response.text
     assert 'data-share-ornament' in response.text
     assert "/static/selfit/selfit.css?v=20260829-public-share6" in response.text
-    assert "/static/selfit/selfit.js?v=20260829-public-share8" in response.text
+    assert "/static/selfit/selfit.js?v=20260829-resource-gate1" in response.text
     assert "/static/selfit/selfit-persona.js?v=20260829-bolt-korean1" in response.text
     assert 'property="og:image" content="http://testserver/selfit/share-logo.png"' in response.text
     assert 'property="og:image:width" content="600"' in response.text
@@ -278,13 +278,25 @@ def test_selfit_report_share_cards_use_the_dedicated_qr_artwork() -> None:
     assert "Ta 分享了一份「${reportTitle}」风格报告" in runtime.text
     assert "document.querySelectorAll('.share-qr').forEach" in runtime.text
     assert "const mobileHeroSource" in runtime.text
-    assert "preload.fetchPriority = 'high'" in runtime.text
+    assert "image.fetchPriority = src === heroSrc ? 'high' : 'auto'" in runtime.text
     assert 'loading="eager" decoding="async" fetchpriority="high"' in response.text
     assert 'id="saveImageGuide"' in response.text
     assert '长按图片保存到相册' in response.text
     assert 'data-save-guide-copy' not in response.text
     assert response.text.count('data-close-save-guide') == 1
     assert "const saveGuideCopy" not in runtime.text
+    assert "const resetSaveImageGuide = () =>" in runtime.text
+    assert "resetSaveImageGuide();\n    openShareDialog();" in runtime.text
+    assert "goToShareSlide(shareSlideIndex, false);" in runtime.text
+    assert "shareSaveButton.focus({ preventScroll: true });" in runtime.text
+    assert "if (event.key !== 'Escape') return;" in runtime.text
+    assert "const REPORT_RESOURCE_MIN_HOLD_MS = 1200" in runtime.text
+    assert "const REPORT_RESOURCE_MAX_WAIT_MS = 8000" in runtime.text
+    assert "data.illustration?.imageUrl" in runtime.text
+    assert "const cappedProgress = Math.min(result.job.progress || 25, 75)" in runtime.text
+    assert "const remaining75HoldMs = Math.max(0, REPORT_RESOURCE_MIN_HOLD_MS - (Date.now() - loading75StartedAt))" in runtime.text
+    assert "const resourceOutcome = await waitForReportResources(preparedReport, remaining75HoldMs)" in runtime.text
+    assert "setLoadingProgress(100);\n      renderReport(preparedReport);\n      await delay(650);" in runtime.text
     assert "previewScreen === 'share'" in runtime.text
 
 

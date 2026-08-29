@@ -639,6 +639,48 @@
     const isBundledPersonalityHero = source.includes('/static/selfit/assets/personality/') && source.includes('/hero.webp');
     return isBundledPersonalityHero ? source.replace('/hero.webp', '/hero-mobile.webp') : source;
   };
+  const REPORT_RESOURCE_MIN_HOLD_MS = 1200;
+  const REPORT_RESOURCE_MAX_WAIT_MS = 8000;
+  const delay = (milliseconds) => new Promise((resolve) => window.setTimeout(resolve, milliseconds));
+  const reportResourceUrls = (data) => {
+    const typeId = String(data.typeId || '').toLowerCase();
+    const urls = [
+      mobileHeroSource(data.heroImage?.src),
+      data.illustration?.imageUrl,
+      data.source?.avatars?.imageUrl || '/static/selfit/assets/report-user-avatar-stack@4x.png',
+      ...data.makeup.map((item) => item.imageUrl),
+      ...data.hair.map((item) => item.imageUrl),
+      ...data.outfits.map((item) => item.imageUrl),
+      typeId ? `/static/selfit/assets/personality/${typeId}/share-ornament.webp?v=20260829-webp-v1` : '',
+    ];
+    return [...new Set(urls.filter(Boolean))];
+  };
+  const preloadReportResource = (src, heroSrc) => new Promise((resolve) => {
+    const image = new Image();
+    image.decoding = 'async';
+    image.fetchPriority = src === heroSrc ? 'high' : 'auto';
+    const settle = (loaded) => resolve({ src, loaded });
+    image.addEventListener('load', async () => {
+      if (typeof image.decode === 'function') await image.decode().catch(() => {});
+      settle(true);
+    }, { once: true });
+    image.addEventListener('error', () => settle(false), { once: true });
+    image.src = src;
+  });
+  const waitForReportResources = async (data, minimumHoldMs = REPORT_RESOURCE_MIN_HOLD_MS) => {
+    const urls = reportResourceUrls(data);
+    const heroSrc = mobileHeroSource(data.heroImage?.src);
+    const startedAt = Date.now();
+    const resourcePromise = Promise.all(urls.map((src) => preloadReportResource(src, heroSrc)))
+      .then((results) => ({ timedOut: false, results }));
+    const timeoutPromise = delay(REPORT_RESOURCE_MAX_WAIT_MS)
+      .then(() => ({ timedOut: true, results: [] }));
+    const [outcome] = await Promise.all([
+      Promise.race([resourcePromise, timeoutPromise]),
+      delay(minimumHoldMs),
+    ]);
+    return { ...outcome, durationMs: Date.now() - startedAt, resourceCount: urls.length };
+  };
   const renderReport = (payload = {}) => {
     const data = normalizeReport(payload);
     const fullHero = Boolean(data.heroImage?.src);
@@ -764,9 +806,12 @@
       state.reportJobId = created.job.jobId;
       const deadline = Date.now() + 120000;
       let completedJob = null;
+      let loading75StartedAt = 0;
       while (Date.now() < deadline) {
         const result = await api.getReportJob(state.reportJobId);
-        setLoadingProgress(result.job.progress || 25);
+        const cappedProgress = Math.min(result.job.progress || 25, 75);
+        setLoadingProgress(cappedProgress);
+        if (cappedProgress >= 75 && !loading75StartedAt) loading75StartedAt = Date.now();
         if (result.job.status === 'failed') throw new window.SelfitApi.SelfitApiError(result.job.error?.message || '报告生成失败，请重试。', result.job.error || {});
         if (result.job.status === 'completed') { completedJob = result.job; break; }
         await new Promise((resolve) => setTimeout(resolve, Math.max(250, Math.min(result.job.pollAfterMs || 800, 3000))));
@@ -775,20 +820,21 @@
       state.reportId = completedJob.reportId;
       state.publicShare = null;
       const report = completedJob.report || (await api.getReport(state.reportId)).report;
-      // 分型一确定就预加载 hero 大图：报告数据渲染前的等待时间里图片已在下载，
-      // 报告页出现时封面通常已就绪（hero.webp ~100KB，之前 PNG 1.6MB 要 6-10s）。
-      const heroTemplate = personalityCatalog.types?.[String(report?.typeId || '').toLowerCase()];
-      const heroSrc = mobileHeroSource(heroTemplate?.hero?.image?.src);
-      if (heroSrc) {
-        const preload = new Image();
-        preload.fetchPriority = 'high';
-        preload.decoding = 'async';
-        preload.src = heroSrc;
-      }
+      const preparedReport = normalizeReport(report);
+      setLoadingProgress(75);
+      if (!loading75StartedAt) loading75StartedAt = Date.now();
+      const remaining75HoldMs = Math.max(0, REPORT_RESOURCE_MIN_HOLD_MS - (Date.now() - loading75StartedAt));
+      const resourceOutcome = await waitForReportResources(preparedReport, remaining75HoldMs);
+      track('report_resources_ready', {
+        resourceCount: resourceOutcome.resourceCount,
+        durationMs: resourceOutcome.durationMs,
+        timedOut: resourceOutcome.timedOut,
+        failedCount: resourceOutcome.results.filter((item) => !item.loaded).length,
+      });
       track('report_completed', { reportId: state.reportId, typeId: report?.typeId || '' });
       setLoadingProgress(100);
-      renderReport(report);
-      await new Promise((resolve) => setTimeout(resolve, 900));
+      renderReport(preparedReport);
+      await delay(650);
       showScreen('report');
     } catch (error) {
       track('report_failed', { message: error.message || '' });
