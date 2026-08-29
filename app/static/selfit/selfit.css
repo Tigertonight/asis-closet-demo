@@ -944,8 +944,11 @@ html.has-open-dialog, html.has-open-dialog body { overflow: hidden; }
 }
 .share-sheet header button:focus-visible { background: rgba(0,0,0,.05); }
 .share-sheet h2 { margin: 0; font-size: 18px; line-height: 28px; text-align: center; }
-.share-carousel { min-height: 0; margin: auto -20px 0; overflow: hidden; flex: 0 1 auto; }
+.share-carousel { min-height: 0; margin: auto -20px 0; overflow: hidden; flex: 1 1 auto; }
 .share-track {
+  --share-card-scale: 1;
+  --share-card-preview-width: 324px;
+  --share-card-preview-height: 522px;
   display: flex;
   height: 100%;
   align-items: center;
@@ -960,7 +963,8 @@ html.has-open-dialog, html.has-open-dialog body { overflow: hidden; }
 }
 .share-track::-webkit-scrollbar { display: none; }
 .share-track:focus-visible { outline: 2px solid rgba(138,1,27,.4); outline-offset: -2px; }
-.share-card { display: flex; flex: 0 0 324px; flex-direction: column; height: min(522px, 100%); max-height: 522px; padding: 14px; overflow: hidden; border-radius: 14px; opacity: .4; color: #fff; background: #8a011b url('/static/selfit/assets/splash-textile@2x.png') center/cover; box-shadow: 0 6px 22px rgba(60,0,12,.12); scroll-snap-align: center; scroll-snap-stop: always; transition: opacity .2s ease; }
+.share-card-slot { position: relative; width: var(--share-card-preview-width); height: var(--share-card-preview-height); flex: 0 0 var(--share-card-preview-width); scroll-snap-align: center; scroll-snap-stop: always; }
+.share-card { display: flex; width: 324px; height: 522px; max-height: none; padding: 14px; overflow: hidden; flex-direction: column; border-radius: 14px; opacity: .4; color: #fff; background: #8a011b url('/static/selfit/assets/splash-textile@2x.png') center/cover; box-shadow: 0 6px 22px rgba(60,0,12,.12); transform: scale(var(--share-card-scale)); transform-origin: top left; transition: opacity .2s ease; }
 .share-card.is-current { opacity: 1; }
 .share-card p { margin: 0; font-size: var(--font-report-small); line-height: var(--font-report-small-line); }
 .share-card strong { font-size: 25px; line-height: 34px; }
@@ -1035,7 +1039,16 @@ html.has-open-dialog, html.has-open-dialog body { overflow: hidden; }
 .save-image-guide-panel header { position: relative; display: grid; width: 100%; min-height: 44px; padding: 0 40px; place-items: center; }
 .save-image-guide-panel header > button { position: absolute; top: 0; left: -8px; display: grid; width: 44px; height: 44px; padding: 0; border: 0; place-items: center; color: rgba(0,0,0,.66); background: transparent; font-size: 28px; font-weight: 300; }
 .save-image-guide-panel h2 { margin: 0; color: rgba(0,0,0,.8); font-size: 18px; font-weight: 600; line-height: 26px; text-align: center; text-wrap: pretty; }
-.save-image-guide-panel > img { display: block; min-height: 0; max-width: 100%; max-height: calc(100% - 52px); margin: 8px auto 0; flex: 1 1 auto; border-radius: 14px; object-fit: contain; box-shadow: 0 6px 24px rgba(60,0,12,.12); -webkit-touch-callout: default; user-select: auto; }
+.save-image-guide-panel > img { display: block; width: auto; height: auto; min-height: 0; max-width: 100%; max-height: calc(100% - 52px); margin: 8px auto 0; flex: 0 1 auto; border-radius: 14px; object-fit: contain; box-shadow: 0 6px 24px rgba(60,0,12,.12); -webkit-touch-callout: default; user-select: auto; }
+
+.share-export-stage { position: fixed; z-index: -1; top: 0; left: -10000px; width: 324px; height: 522px; overflow: hidden; pointer-events: none; visibility: hidden; }
+.share-export-stage .share-card { width: 324px; height: 522px; max-height: none; opacity: 1; transform: none; transition: none; }
+
+.share-dialog.is-compact .share-sheet { padding-block: 12px; }
+.share-dialog.is-compact .share-sheet > header { margin-bottom: 0; }
+.share-dialog.is-compact .share-carousel { margin-top: 4px; }
+.share-dialog.is-compact .share-dots { margin: 2px 0 4px; }
+.share-dialog.is-compact .share-actions { min-height: 66px; }
 
 body.is-share-gallery { min-height: 100vh; overflow: auto; background: #3f3f3f; }
 body.is-share-gallery .app-shell { display: none; }
@@ -1048,15 +1061,6 @@ body.is-share-gallery .app-shell { display: none; }
   .share-sheet { padding-block: 12px; }
   .share-sheet > header { margin-bottom: 0; }
   .share-carousel { margin-top: 4px; }
-  .share-card { height: min(430px, 100%); }
-  .share-card-ornament { width: 216px; height: 112px; margin-top: 10px; }
-  .share-card--identity:is([data-personality="mute"],[data-personality="iced"],[data-personality="ease"],[data-personality="wabi"],[data-personality="loop"],[data-personality="noir"]) .share-card-ornament { transform: translateY(10px); }
-  .share-card--identity[data-personality="film"] .share-card-ornament { transform: translateY(14px); }
-  .share-card footer { height: 56px; flex-basis: 56px; }
-  .share-card--inspiration .share-card-copy { justify-content: flex-start; }
-  .share-card--inspiration .share-card-images { flex: 1 1 auto; grid-template-rows: repeat(2,minmax(0,1fr)); }
-  .share-card--inspiration .share-card-images img { height: 100%; aspect-ratio: auto; }
-  .share-card .share-qr { width: 56px; height: 56px; }
   .share-dots { margin: 2px 0 4px; }
   .share-actions { min-height: 66px; }
 }

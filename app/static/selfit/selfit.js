@@ -849,6 +849,7 @@
   shareDialog.addEventListener('close', () => document.documentElement.classList.remove('has-open-dialog'));
   const shareTrack = document.querySelector('#shareTrack');
   const shareSlides = [...document.querySelectorAll('[data-share-slide]')];
+  const shareSlots = shareSlides.map((slide) => slide.closest('.share-card-slot'));
   const shareDots = [...document.querySelectorAll('[data-share-dot]')];
   const shareSlideStatus = document.querySelector('#shareSlideStatus');
   const shareSaveButton = document.querySelector('#saveShareCard');
@@ -857,7 +858,10 @@
   const saveImagePreview = document.querySelector('#saveImagePreview');
   let shareSlideIndex = 0;
   let shareScrollFrame = 0;
+  let sharePreviewFrame = 0;
   let saveImagePreviewUrl = '';
+  const SHARE_CARD_WIDTH = 324;
+  const SHARE_CARD_HEIGHT = 522;
   const SHARE_EXPORT_SCALE = 2;
   const roundedRectPath = (context, x, y, width, height, radius) => {
     const safeRadius = Math.max(0, Math.min(radius, width / 2, height / 2));
@@ -926,10 +930,61 @@
       for (let x = 1; x < width; x += 5) { context.beginPath(); context.moveTo(x, 0); context.lineTo(x, height); context.stroke(); }
     }
   };
-  const renderShareCard = async (card) => {
+  const nextSharePaint = () => new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+  const waitForShareCardAssets = async (card) => {
+    if (document.fonts?.ready) await document.fonts.ready;
+    await Promise.all([...card.querySelectorAll('img')].map(async (image) => {
+      image.loading = 'eager';
+      if (!image.complete || !image.naturalWidth) {
+        await new Promise((resolve, reject) => {
+          image.addEventListener('load', resolve, { once: true });
+          image.addEventListener('error', () => reject(new Error('分享卡片图片加载失败，请稍后重试。')), { once: true });
+        });
+      }
+      if (typeof image.decode === 'function') await image.decode().catch(() => {});
+    }));
+    await nextSharePaint();
+  };
+  const createShareExportSurface = (sourceCard) => {
+    const stage = document.createElement('div');
+    stage.className = 'share-export-stage';
+    stage.setAttribute('aria-hidden', 'true');
+    const card = sourceCard.cloneNode(true);
+    card.classList.add('is-current', 'share-export-card');
+    card.querySelectorAll('[id]').forEach((element) => element.removeAttribute('id'));
+    stage.append(card);
+    document.body.append(stage);
+    return { card, stage };
+  };
+  const textNodeLines = (node) => {
+    const lines = [];
+    for (let index = 0; index < node.length; index += 1) {
+      const range = document.createRange();
+      range.setStart(node, index);
+      range.setEnd(node, index + 1);
+      const rect = range.getBoundingClientRect();
+      range.detach?.();
+      const character = node.textContent[index];
+      if (!rect.width && !rect.height) continue;
+      let line = lines[lines.length - 1];
+      if (!line || Math.abs(line.top - rect.top) > Math.max(1, rect.height * .45)) {
+        line = { text: '', left: rect.left, top: rect.top, height: rect.height };
+        lines.push(line);
+      }
+      line.text += character;
+      line.left = Math.min(line.left, rect.left);
+      line.top = Math.min(line.top, rect.top);
+      line.height = Math.max(line.height, rect.height);
+    }
+    return lines.map((line) => ({ ...line, text: line.text.replace(/\s+/g, ' ').trim() })).filter((line) => line.text);
+  };
+  const renderShareCard = async (sourceCard) => {
+    const { card, stage } = createShareExportSurface(sourceCard);
+    try {
+      await waitForShareCardAssets(card);
     const cardRect = card.getBoundingClientRect();
-    const width = Math.round(cardRect.width);
-    const height = Math.round(cardRect.height);
+    const width = SHARE_CARD_WIDTH;
+    const height = SHARE_CARD_HEIGHT;
     if (!width || !height) throw new Error('当前分享卡片还没有准备好。');
 
     const canvas = document.createElement('canvas');
@@ -1002,24 +1057,26 @@
       const node = walker.currentNode;
       const parent = node.parentElement;
       const style = getComputedStyle(parent);
-      const range = document.createRange();
-      range.selectNodeContents(node);
-      const rect = range.getBoundingClientRect();
-      if (!rect.width || !rect.height) continue;
       const fontSize = parseFloat(style.fontSize) || 16;
-      context.save();
-      context.globalAlpha = Number.parseFloat(style.opacity) || 1;
-      context.fillStyle = style.color;
-      context.font = `${style.fontStyle} ${style.fontWeight} ${style.fontSize} ${style.fontFamily}`;
-      context.textBaseline = 'top';
-      context.fillText(node.textContent.replace(/\s+/g, ' '), rect.left - cardRect.left, rect.top - cardRect.top + Math.max(0, (rect.height - fontSize) / 2));
-      context.restore();
+      textNodeLines(node).forEach((line) => {
+        context.save();
+        context.globalAlpha = Number.parseFloat(style.opacity) || 1;
+        context.fillStyle = style.color;
+        context.font = `${style.fontStyle} ${style.fontWeight} ${style.fontSize} ${style.fontFamily}`;
+        context.textAlign = 'left';
+        context.textBaseline = 'top';
+        context.fillText(line.text, line.left - cardRect.left, line.top - cardRect.top + Math.max(0, (line.height - fontSize) / 2));
+        context.restore();
+      });
     }
 
-    return new Promise((resolve, reject) => canvas.toBlob((blob) => {
+    return await new Promise((resolve, reject) => canvas.toBlob((blob) => {
       if (blob) resolve(blob);
       else reject(new Error('分享卡片生成失败，请重试。'));
     }, 'image/png'));
+    } finally {
+      stage.remove();
+    }
   };
   const isAppleMobileDevice = /iPad|iPhone|iPod/i.test(navigator.userAgent)
     || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
@@ -1028,6 +1085,14 @@
   const shareExportBlobs = new Map();
   const shareExportPromises = new Map();
   const shareExportErrors = new Map();
+  let shareExportRevision = 0;
+  const invalidateShareExports = () => {
+    shareExportRevision += 1;
+    shareExportBlobs.clear();
+    shareExportPromises.clear();
+    shareExportErrors.clear();
+  };
+  window.addEventListener('selfit:report-rendered', invalidateShareExports);
   const shareCardFilename = (index) => `selfit-style-card-${index + 1}@2x.png`;
   const closeSaveImageGuide = () => {
     saveImageGuide.hidden = true;
@@ -1090,17 +1155,18 @@
     if (shareExportBlobs.has(index)) return Promise.resolve(shareExportBlobs.get(index));
     if (shareExportPromises.has(index)) return shareExportPromises.get(index);
     shareExportErrors.delete(index);
+    const exportRevision = shareExportRevision;
     const promise = renderShareCard(shareSlides[index])
       .then((blob) => {
-        shareExportBlobs.set(index, blob);
+        if (exportRevision === shareExportRevision) shareExportBlobs.set(index, blob);
         return blob;
       })
       .catch((error) => {
-        shareExportErrors.set(index, error);
+        if (exportRevision === shareExportRevision) shareExportErrors.set(index, error);
         return null;
       })
       .finally(() => {
-        shareExportPromises.delete(index);
+        if (shareExportPromises.get(index) === promise) shareExportPromises.delete(index);
         if (index === shareSlideIndex) syncShareSaveButton();
       });
     shareExportPromises.set(index, promise);
@@ -1108,6 +1174,29 @@
     return promise;
   };
   const shareSlideOffset = (slide) => slide.offsetLeft - ((shareTrack.clientWidth - slide.offsetWidth) / 2);
+  const syncSharePreviewScale = () => {
+    sharePreviewFrame = 0;
+    if (!shareDialog.hasAttribute('open')) return;
+    shareDialog.classList.toggle('is-compact', shareDialog.getBoundingClientRect().height <= 700);
+    const availableHeight = Math.max(1, shareTrack.clientHeight);
+    const availableWidth = Math.max(1, shareTrack.clientWidth - 68);
+    const scale = Math.min(1, availableHeight / SHARE_CARD_HEIGHT, availableWidth / SHARE_CARD_WIDTH);
+    const safeScale = Math.max(.01, scale);
+    shareTrack.style.setProperty('--share-card-scale', String(safeScale.toFixed(4)));
+    shareTrack.style.setProperty('--share-card-preview-width', `${(SHARE_CARD_WIDTH * safeScale).toFixed(2)}px`);
+    shareTrack.style.setProperty('--share-card-preview-height', `${(SHARE_CARD_HEIGHT * safeScale).toFixed(2)}px`);
+    requestAnimationFrame(() => {
+      const slot = shareSlots[shareSlideIndex];
+      if (slot) shareTrack.scrollLeft = shareSlideOffset(slot);
+    });
+  };
+  const scheduleSharePreviewScale = () => {
+    if (sharePreviewFrame) cancelAnimationFrame(sharePreviewFrame);
+    sharePreviewFrame = requestAnimationFrame(syncSharePreviewScale);
+  };
+  if (typeof ResizeObserver === 'function') new ResizeObserver(scheduleSharePreviewScale).observe(shareTrack);
+  window.visualViewport?.addEventListener('resize', scheduleSharePreviewScale, { passive: true });
+  window.addEventListener('resize', scheduleSharePreviewScale, { passive: true });
   const syncShareSlide = (index) => {
     shareSlideIndex = Math.max(0, Math.min(index, shareSlides.length - 1));
     shareSlides.forEach((slide, slideIndex) => {
@@ -1123,7 +1212,7 @@
   const goToShareSlide = (index, smooth = true) => {
     const nextIndex = Math.max(0, Math.min(index, shareSlides.length - 1));
     shareTrack.scrollTo({
-      left: shareSlideOffset(shareSlides[nextIndex]),
+      left: shareSlideOffset(shareSlots[nextIndex]),
       behavior: smooth && !matchMedia('(prefers-reduced-motion: reduce)').matches ? 'smooth' : 'auto',
     });
     syncShareSlide(nextIndex);
@@ -1133,8 +1222,8 @@
     if (shareScrollFrame) return;
     shareScrollFrame = requestAnimationFrame(() => {
       shareScrollFrame = 0;
-      const closestIndex = shareSlides.reduce((closest, slide, index) => (
-        Math.abs(shareSlideOffset(slide) - shareTrack.scrollLeft) < Math.abs(shareSlideOffset(shareSlides[closest]) - shareTrack.scrollLeft) ? index : closest
+      const closestIndex = shareSlots.reduce((closest, slot, index) => (
+        Math.abs(shareSlideOffset(slot) - shareTrack.scrollLeft) < Math.abs(shareSlideOffset(shareSlots[closest]) - shareTrack.scrollLeft) ? index : closest
       ), 0);
       syncShareSlide(closestIndex);
     });
@@ -1148,11 +1237,12 @@
   });
   document.querySelector('#openShare').addEventListener('click', () => {
     openShareDialog();
-    shareExportBlobs.clear();
-    shareExportPromises.clear();
-    shareExportErrors.clear();
+    invalidateShareExports();
     syncShareSaveButton();
-    requestAnimationFrame(() => goToShareSlide(0, false));
+    requestAnimationFrame(() => {
+      syncSharePreviewScale();
+      goToShareSlide(0, false);
+    });
   });
   const currentReportId = () => state.reportId || window.__SELFIT_REPORT_ID__ || null;
   document.querySelector('#retakeBtn').addEventListener('click', () => { track('retake_clicked'); showScreen('vibe'); });
