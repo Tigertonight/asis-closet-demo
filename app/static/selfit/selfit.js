@@ -247,9 +247,27 @@
 
   const validatePhoto = (file) => {
     if (!file) return '请选择照片';
-    if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type)) return '仅支持 JPG、PNG 或 WebP';
-    if (file.size > 12 * 1024 * 1024) return '照片请小于 12MB';
+    if (file.size > 20 * 1024 * 1024) return '照片请小于 20MB';
     return '';
+  };
+  const renderPhotoPreview = (card, file, kind) => {
+    const preview = card.querySelector('.upload-preview');
+    const objectUrl = URL.createObjectURL(file);
+    const image = Object.assign(document.createElement('img'), {
+      alt: kind === 'face' ? '面部照预览' : '全身照预览',
+    });
+    const releaseObjectUrl = () => URL.revokeObjectURL(objectUrl);
+    image.addEventListener('load', releaseObjectUrl, { once: true });
+    image.addEventListener('error', () => {
+      releaseObjectUrl();
+      if (!preview.contains(image)) return;
+      const fallback = document.createElement('span');
+      fallback.className = 'upload-preview-fallback';
+      fallback.textContent = '照片已选择';
+      preview.replaceChildren(fallback);
+    }, { once: true });
+    preview.replaceChildren(image);
+    image.src = objectUrl;
   };
   const syncSuitButton = () => { document.querySelector('#suitNext').disabled = !(state.photoStatus.face === 'valid' && state.photoStatus.body === 'valid'); };
   const setPhotoState = (kind, status, copy) => {
@@ -271,7 +289,7 @@
       const file = input.files?.[0]; const error = validatePhoto(file);
       if (error) { setPhotoState(kind, 'invalid', error); return; }
       state[kind === 'face' ? 'facePhoto' : 'bodyPhoto'] = file;
-      card.querySelector('.upload-preview').replaceChildren(Object.assign(document.createElement('img'), { src: URL.createObjectURL(file), alt: kind === 'face' ? '面部照预览' : '全身照预览' }));
+      renderPhotoPreview(card, file, kind);
       setPhotoState(kind, 'checking', '照片检测中...');
       activeController?.abort(); activeController = new AbortController();
       try {

@@ -237,8 +237,8 @@ def test_selfit_report_share_cards_use_the_dedicated_qr_artwork() -> None:
     assert response.text.count("<div class=\"share-card-meta\"><span>我的 selfit 风格报告</span></div>") == 3
     assert response.text.count("/static/selfit/assets/share-report-qr.png?v=20260828") == 3
     assert 'data-share-ornament' in response.text
-    assert "/static/selfit/selfit.css?v=20260829-mobile-save2" in response.text
-    assert "/static/selfit/selfit.js?v=20260829-mobile-save2" in response.text
+    assert "/static/selfit/selfit.css?v=20260829-mobile-photo1" in response.text
+    assert "/static/selfit/selfit.js?v=20260829-mobile-photo1" in response.text
     assert "/static/selfit/selfit-persona.js?v=20260828-1" in response.text
 
     asset = client.get("/static/selfit/assets/share-report-qr.png")
@@ -255,6 +255,11 @@ def test_selfit_report_share_cards_use_the_dedicated_qr_artwork() -> None:
     assert "share-ornament.webp?v=20260829-webp-v1" in response.text
 
     runtime = client.get("/static/selfit/selfit.js")
+    assert response.text.count('accept="image/*,.heic,.heif"') == 2
+    assert "['image/jpeg', 'image/png', 'image/webp'].includes(file.type)" not in runtime.text
+    assert "file.size > 20 * 1024 * 1024" in runtime.text
+    assert "renderPhotoPreview(card, file, kind)" in runtime.text
+    assert "upload-preview-fallback" in runtime.text
     assert "share-ornament.webp?v=20260829-webp-v1" in runtime.text
     assert "drawContainImage(context, image" in runtime.text
     assert "shareIdentityCard.dataset.personality" in runtime.text

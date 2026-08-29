@@ -996,7 +996,7 @@ async def upload_session_photo(
     if not raw:
         return _error_response(400, "photo.image_missing", "请选择要上传的照片。")
     if len(raw) > PHOTO_MAX_BYTES:
-        return _error_response(413, "photo.too_large", "照片超过 12MB，请压缩后再试。")
+        return _error_response(413, "photo.too_large", "照片超过 20MB，请压缩后再试。")
 
     try:
         pil_image = Image.open(io.BytesIO(raw))

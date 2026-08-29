@@ -218,12 +218,10 @@ def _jpeg_bytes(color: tuple[int, int, int] = (200, 180, 170)) -> bytes:
     return buffer.getvalue()
 
 
-def _heic_bytes(color: tuple[int, int, int] = (200, 180, 170)) -> bytes | None:
-    """iPhone 直拍默认 HEIC；依赖 pillow-heif 生成，未安装时跳过用例。"""
-    try:
-        from pillow_heif import register_heif_opener
-    except ImportError:
-        return None
+def _heic_bytes(color: tuple[int, int, int] = (200, 180, 170)) -> bytes:
+    """iPhone 直拍常见 HEIC；解码依赖缺失时回归用例应直接失败。"""
+    from pillow_heif import register_heif_opener
+
     register_heif_opener()
     buffer = io.BytesIO()
     Image.new("RGB", (64, 64), color).save(buffer, "HEIF")
@@ -233,10 +231,6 @@ def _heic_bytes(color: tuple[int, int, int] = (200, 180, 170)) -> bytes | None:
 def test_photo_upload_accepts_heic_and_stores_jpeg(monkeypatch, tmp_path: Path) -> None:
     """内测反馈：手机直拍 HEIC 报「格式不对」。HEIC 必须能上传并统一转 JPEG 存储。"""
     heic = _heic_bytes()
-    if heic is None:
-        import pytest
-
-        pytest.skip("pillow-heif 未安装")
     _use_tmp_store(monkeypatch, tmp_path)
     monkeypatch.setattr(selfit_photo, "_inspector", selfit_photo.accept_all_inspector)
     client = TestClient(app)
