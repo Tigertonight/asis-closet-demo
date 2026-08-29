@@ -767,7 +767,7 @@ def selfit_onboarding_page(request: Request) -> HTMLResponse:
     return HTMLResponse(
         _selfit_index_html(
             social_meta={
-                "title": "selfit · 先认识自己，再决定怎么穿",
+                "title": "selfit · 适我",
                 "description": "1 分钟，找到真正衬你的颜色与穿搭风格",
                 "image": f"{origin}/selfit/share-logo.png",
                 "url": f"{origin}/selfit",

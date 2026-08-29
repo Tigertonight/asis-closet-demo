@@ -243,6 +243,7 @@ def test_selfit_report_share_cards_use_the_dedicated_qr_artwork() -> None:
     assert "/static/selfit/selfit-persona.js?v=20260829-bolt-korean1" in response.text
     assert 'property="og:image" content="http://testserver/selfit/share-logo.png"' in response.text
     assert 'property="og:image:width" content="600"' in response.text
+    assert 'property="og:title" content="selfit · 适我"' in response.text
     assert 'name="robots" content="index,follow"' in response.text
 
     asset = client.get("/static/selfit/assets/share-report-qr.png")
