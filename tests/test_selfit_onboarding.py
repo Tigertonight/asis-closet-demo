@@ -148,7 +148,9 @@ def test_selfit_vibe_form_matches_the_latest_figma_layout() -> None:
     assert "top: 137px;" in styles.text
     assert "padding: 20px 10px 134px;" in styles.text
     assert ".page-copy--vibe { width: 340px; max-width: 100%; height: 64px; margin: 0 auto; }" in styles.text
-    assert ".vibe-questionnaire legend { margin: 0 0 16px;" in styles.text
+    assert ".vibe-questionnaire fieldset { display: block; width: 100%; min-width: 0;" in styles.text
+    assert ".vibe-questionnaire legend { display: block; width: 100%; max-width: 100%;" in styles.text
+    assert ".vibe-questionnaire button + button { margin-top: 16px; }" in styles.text
     assert "height: 42px;" in styles.text
     assert ".vibe-action-dock" in styles.text
     assert "height: 114px;" in styles.text
@@ -238,7 +240,7 @@ def test_selfit_report_share_cards_use_the_dedicated_qr_artwork() -> None:
     assert response.text.count('class="share-qr" src="/static/selfit/assets/share-report-qr.png?v=20260828"') == 3
     assert 'class="public-report-error-qr"><img src="/static/selfit/assets/share-report-qr.png?v=20260828"' in response.text
     assert 'data-share-ornament' in response.text
-    assert "/static/selfit/selfit.css?v=20260829-public-share6" in response.text
+    assert "/static/selfit/selfit.css?v=20260829-vibe-webkit1" in response.text
     assert "/static/selfit/selfit.js?v=20260829-save-focus1" in response.text
     assert "/static/selfit/selfit-persona.js?v=20260829-bolt-korean1" in response.text
     assert 'property="og:image" content="http://testserver/selfit/share-logo.png"' in response.text
