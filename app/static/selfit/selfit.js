@@ -1133,20 +1133,37 @@
   };
   window.addEventListener('selfit:report-rendered', invalidateShareExports);
   const shareCardFilename = (index) => `selfit-style-card-${index + 1}@2x.png`;
-  const closeSaveImageGuide = () => {
+  const resetSaveImageGuide = () => {
     saveImageGuide.hidden = true;
     saveImagePreview.removeAttribute('src');
     if (saveImagePreviewUrl) URL.revokeObjectURL(saveImagePreviewUrl);
     saveImagePreviewUrl = '';
   };
+  const closeSaveImageGuide = () => {
+    if (saveImageGuide.hidden) return;
+    resetSaveImageGuide();
+    openShareDialog();
+    syncShareSaveButton();
+    requestAnimationFrame(() => {
+      syncSharePreviewScale();
+      goToShareSlide(shareSlideIndex, false);
+      shareSaveButton.focus({ preventScroll: true });
+    });
+  };
   const openSaveImageGuide = (blob) => {
-    closeSaveImageGuide();
+    resetSaveImageGuide();
     closeShareDialog();
     saveImagePreviewUrl = URL.createObjectURL(blob);
     saveImagePreview.src = saveImagePreviewUrl;
     saveImageGuide.hidden = false;
+    saveImageGuide.querySelector('[data-close-save-guide]')?.focus({ preventScroll: true });
   };
-  saveImageGuide.querySelectorAll('[data-close-save-guide]').forEach((button) => button.addEventListener('click', closeSaveImageGuide));
+  saveImageGuide.querySelectorAll('[data-close-save-guide]').forEach((button) => button.addEventListener('click', () => closeSaveImageGuide()));
+  saveImageGuide.addEventListener('keydown', (event) => {
+    if (event.key !== 'Escape') return;
+    event.preventDefault();
+    closeSaveImageGuide();
+  });
   const triggerBrowserDownload = (blob, index) => {
     const objectUrl = URL.createObjectURL(blob);
     const link = Object.assign(document.createElement('a'), {
