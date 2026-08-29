@@ -10,5 +10,5 @@ def test_closing_save_guide_returns_to_selected_share_card() -> None:
     assert "const resetSaveImageGuide = () =>" in runtime
     assert "resetSaveImageGuide();\n    openShareDialog();" in runtime
     assert "goToShareSlide(shareSlideIndex, false);" in runtime
-    assert "shareSaveButton.focus({ preventScroll: true });" in runtime
+    assert "shareSaveButton.focus({ preventScroll: true });" not in runtime
     assert "if (event.key !== 'Escape') return;" in runtime

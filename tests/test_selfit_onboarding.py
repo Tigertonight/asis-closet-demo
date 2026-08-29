@@ -239,7 +239,7 @@ def test_selfit_report_share_cards_use_the_dedicated_qr_artwork() -> None:
     assert 'class="public-report-error-qr"><img src="/static/selfit/assets/share-report-qr.png?v=20260828"' in response.text
     assert 'data-share-ornament' in response.text
     assert "/static/selfit/selfit.css?v=20260829-public-share6" in response.text
-    assert "/static/selfit/selfit.js?v=20260829-resource-gate1" in response.text
+    assert "/static/selfit/selfit.js?v=20260829-save-focus1" in response.text
     assert "/static/selfit/selfit-persona.js?v=20260829-bolt-korean1" in response.text
     assert 'property="og:image" content="http://testserver/selfit/share-logo.png"' in response.text
     assert 'property="og:image:width" content="600"' in response.text
@@ -288,7 +288,7 @@ def test_selfit_report_share_cards_use_the_dedicated_qr_artwork() -> None:
     assert "const resetSaveImageGuide = () =>" in runtime.text
     assert "resetSaveImageGuide();\n    openShareDialog();" in runtime.text
     assert "goToShareSlide(shareSlideIndex, false);" in runtime.text
-    assert "shareSaveButton.focus({ preventScroll: true });" in runtime.text
+    assert "shareSaveButton.focus({ preventScroll: true });" not in runtime.text
     assert "if (event.key !== 'Escape') return;" in runtime.text
     assert "const REPORT_RESOURCE_MIN_HOLD_MS = 1200" in runtime.text
     assert "const REPORT_RESOURCE_MAX_WAIT_MS = 8000" in runtime.text

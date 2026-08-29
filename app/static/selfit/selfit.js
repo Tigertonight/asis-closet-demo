@@ -1193,7 +1193,6 @@
     requestAnimationFrame(() => {
       syncSharePreviewScale();
       goToShareSlide(shareSlideIndex, false);
-      shareSaveButton.focus({ preventScroll: true });
     });
   };
   const openSaveImageGuide = (blob) => {
