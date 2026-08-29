@@ -35,6 +35,7 @@ COLLECTIONS = {
     "reports": "report_id",
     "outfit_requests": "request_id",
     "share_assets": "asset_id",
+    "public_report_shares": "share_id",
     # 照片检测被拒的留存记录（asset 只增不删，供算法离线优化阈值）
     "rejected_photos": "record_id",
 }

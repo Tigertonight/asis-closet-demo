@@ -235,10 +235,11 @@ def test_selfit_report_share_cards_use_the_dedicated_qr_artwork() -> None:
     assert "<small>你的风格灵感</small>" not in response.text
     assert "share-avatar" not in response.text
     assert response.text.count("<div class=\"share-card-meta\"><span>我的 selfit 风格报告</span></div>") == 3
-    assert response.text.count("/static/selfit/assets/share-report-qr.png?v=20260828") == 3
+    assert response.text.count('class="share-qr" src="/static/selfit/assets/share-report-qr.png?v=20260828"') == 3
+    assert 'class="public-report-error-qr"><img src="/static/selfit/assets/share-report-qr.png?v=20260828"' in response.text
     assert 'data-share-ornament' in response.text
-    assert "/static/selfit/selfit.css?v=20260829-share-card-stable1" in response.text
-    assert "/static/selfit/selfit.js?v=20260829-share-card-stable2" in response.text
+    assert "/static/selfit/selfit.css?v=20260829-public-share6" in response.text
+    assert "/static/selfit/selfit.js?v=20260829-public-share6" in response.text
     assert "/static/selfit/selfit-persona.js?v=20260828-1" in response.text
 
     asset = client.get("/static/selfit/assets/share-report-qr.png")
@@ -450,6 +451,9 @@ def test_personality_hero_uses_the_final_artwork_ratio_without_a_fallback_backgr
         assert "box-shadow: none" in stylesheet or "box-shadow:none" in stylesheet
         assert "object-position: center" in stylesheet or "object-position:center" in stylesheet
         assert "translateX(-2.39%)" not in stylesheet
+
+    # 公开分享页复用同一 report-hero，不允许增加单独的缩小规格。
+    assert ".is-public-report .report-hero {" not in selfit_css.text
 
 
 def test_selfit_personality_assets_and_runtime_catalog_are_available() -> None:

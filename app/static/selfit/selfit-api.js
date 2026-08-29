@@ -168,6 +168,25 @@
       return wait(300).then(() => ({ asset: { assetId: uid('share'), status: 'ready', slideIndex: payload.slideIndex, channel: payload.channel, downloadUrl: null } }));
     }
 
+    createPublicShare(reportId, payload = {}) {
+      if (this.mode === 'live') return this.request(`/reports/${encodeURIComponent(reportId)}/public-shares`, { method: 'POST', body: payload, idempotencyKey: uid('public_share') });
+      const token = uid('shared_report');
+      const origin = window.location.origin;
+      return wait(240).then(() => ({ share: {
+        shareId: uid('shr'),
+        url: `${origin}/s/${token}`,
+        thumbnailUrl: `${origin}/s/${token}/cover.png`,
+        qrUrl: `${origin}/s/${token}/qr.png`,
+        expiresAt: new Date(Date.now() + 7 * 86400000).toISOString(),
+      } }));
+    }
+
+    getPublicShare(token) {
+      if (this.mode === 'live') return this.request(`/public-shares/${encodeURIComponent(token)}`);
+      const report = this.buildMockReport ? this.buildMockReport({}) : {};
+      return Promise.resolve({ report, share: { expiresAt: new Date(Date.now() + 7 * 86400000).toISOString() } });
+    }
+
     requestOutfit(reportId, payload = {}) {
       if (this.mode === 'live') return this.request(`/reports/${encodeURIComponent(reportId)}/outfit-requests`, { method: 'POST', body: payload, idempotencyKey: uid('outfit') });
       return wait(320).then(() => ({ request: { requestId: uid('outfit'), status: 'queued' } }));

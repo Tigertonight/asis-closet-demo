@@ -22,10 +22,13 @@
 from __future__ import annotations
 
 import io
+import re
 from pathlib import Path
 from typing import Any, Callable
+from urllib.parse import urlparse
 
 from PIL import Image, ImageDraw, ImageFont
+import qrcode
 
 SHARE_CHANNELS = frozenset({"保存单张", "发笔记", "微信好友", "朋友圈"})
 SHARE_FORMATS = frozenset({"png"})
@@ -47,6 +50,14 @@ _FONT_CANDIDATES = (
 )
 
 ShareRenderer = Callable[[dict[str, Any], int, str, str], bytes]
+
+PUBLIC_REPORT_FIELDS = frozenset({
+    "typeId", "templateVersion", "title", "eyebrow", "traits", "summary",
+    "heroImage", "illustration", "colors", "makeup", "hair", "source",
+    "outfitSummary", "outfits", "adviceIntro", "advice", "personalization",
+})
+PUBLIC_CARD_FIELDS = frozenset({"id", "name", "byline", "sourceUrl", "imageUrl", "alt"})
+PUBLIC_IMAGE_FIELDS = frozenset({"src", "alt", "width", "height", "placeholder"})
 
 
 def _load_font(size: int) -> ImageFont.FreeTypeFont | ImageFont.ImageFont:
@@ -134,3 +145,146 @@ def register_share_renderer(renderer: ShareRenderer) -> None:
 
 def render_share_image(report: dict[str, Any], slide_index: int, channel: str, image_format: str) -> bytes:
     return _renderer(report, slide_index, channel, image_format)
+
+
+def _safe_public_url(value: Any) -> str:
+    text = str(value or "").strip()
+    if text.startswith("/static/"):
+        return text
+    parsed = urlparse(text)
+    return text if parsed.scheme == "https" and parsed.netloc else ""
+
+
+def _clean_text(value: Any, limit: int = 1200) -> str:
+    return re.sub(r"[\x00-\x08\x0b\x0c\x0e-\x1f]", "", str(value or ""))[:limit]
+
+
+def _sanitize_image(value: Any) -> dict[str, Any]:
+    if not isinstance(value, dict):
+        return {}
+    cleaned = {key: value.get(key) for key in PUBLIC_IMAGE_FIELDS if key in value}
+    cleaned["src"] = _safe_public_url(cleaned.get("src"))
+    cleaned["alt"] = _clean_text(cleaned.get("alt"), 240)
+    return {key: item for key, item in cleaned.items() if item not in (None, "")}
+
+
+def _sanitize_card(value: Any) -> dict[str, Any]:
+    if not isinstance(value, dict):
+        return {}
+    card = {key: value.get(key) for key in PUBLIC_CARD_FIELDS if key in value}
+    card["id"] = _clean_text(card.get("id"), 120)
+    card["name"] = _clean_text(card.get("name"), 240)
+    card["byline"] = _clean_text(card.get("byline"), 240)
+    card["alt"] = _clean_text(card.get("alt"), 240)
+    card["sourceUrl"] = _safe_public_url(card.get("sourceUrl"))
+    card["imageUrl"] = _safe_public_url(card.get("imageUrl"))
+    return {key: item for key, item in card.items() if item not in (None, "")}
+
+
+def sanitize_public_report(report: dict[str, Any]) -> dict[str, Any]:
+    """生成可持链接公开的报告快照，严格限定为报告展示字段。"""
+
+    source = report if isinstance(report, dict) else {}
+    public: dict[str, Any] = {}
+    for key in PUBLIC_REPORT_FIELDS:
+        if key not in source:
+            continue
+        value = source[key]
+        if key in {"typeId", "templateVersion", "title", "eyebrow", "summary", "outfitSummary", "adviceIntro"}:
+            public[key] = _clean_text(value)
+        elif key in {"traits", "advice"}:
+            public[key] = [_clean_text(item, 500) for item in (value or []) if isinstance(item, (str, int, float))][:12]
+        elif key == "colors":
+            public[key] = [
+                {
+                    "id": _clean_text(item.get("id"), 120),
+                    "name": _clean_text(item.get("name"), 120),
+                    "value": _clean_text(item.get("value"), 24),
+                }
+                for item in (value or []) if isinstance(item, dict)
+            ][:8]
+        elif key in {"makeup", "hair", "outfits"}:
+            public[key] = [_sanitize_card(item) for item in (value or []) if isinstance(item, dict)][:8]
+        elif key in {"heroImage", "illustration"}:
+            public[key] = _sanitize_image(value)
+        elif key == "source" and isinstance(value, dict):
+            avatars = value.get("avatars") if isinstance(value.get("avatars"), dict) else {}
+            public[key] = {
+                "name": _clean_text(value.get("name"), 120),
+                "copy": _clean_text(value.get("copy"), 240),
+                "avatars": {
+                    "imageUrl": _safe_public_url(avatars.get("imageUrl")),
+                    "alt": _clean_text(avatars.get("alt"), 240),
+                },
+            }
+        elif key == "personalization" and isinstance(value, dict):
+            public[key] = {
+                item_key: _clean_text(item_value) if not isinstance(item_value, list)
+                else [_clean_text(item, 500) for item in item_value[:12]]
+                for item_key, item_value in value.items()
+                if item_key in {"summary", "outfitSummary", "adviceIntro", "advice"}
+            }
+    return public
+
+
+def _load_optional_image(path: Path) -> Image.Image | None:
+    try:
+        if path.exists():
+            return Image.open(path).convert("RGBA")
+    except OSError:
+        pass
+    return None
+
+
+def _qr_image(share_url: str, box_size: int) -> Image.Image:
+    qr = qrcode.QRCode(version=None, box_size=box_size, border=4)
+    qr.add_data(share_url)
+    qr.make(fit=True)
+    return qr.make_image(fill_color="#3a0010", back_color="white").convert("RGB")
+
+
+def render_public_share_qr(share_url: str) -> bytes:
+    qr_image = _qr_image(share_url, box_size=8)
+    canvas = Image.new("RGB", (400, 400), "white")
+    canvas.paste(qr_image, ((400 - qr_image.width) // 2, (400 - qr_image.height) // 2))
+    buffer = io.BytesIO()
+    canvas.save(buffer, "PNG", optimize=True)
+    return buffer.getvalue()
+
+
+def render_public_share_cover(report: dict[str, Any], share_url: str) -> bytes:
+    """生成适合社交链接卡的 600×600 方形封面，不包含用户原图。"""
+
+    size = 600
+    image = Image.new("RGB", (size, size), "#8a011b")
+    draw = ImageDraw.Draw(image)
+    title_font = _load_font(54)
+    eyebrow_font = _load_font(24)
+    body_font = _load_font(24)
+    small_font = _load_font(18)
+    title = _clean_text(report.get("title") or "selfit 风格报告", 22)
+    eyebrow = _clean_text(report.get("eyebrow") or "SELFIT REPORT", 28).upper()
+    traits = [_clean_text(item, 12) for item in (report.get("traits") or [])[:3]]
+
+    draw.text((48, 46), "SELFIT REPORT", font=eyebrow_font, fill="#f3cad4")
+    draw.text((48, 92), title, font=title_font, fill="#ffffff")
+    if eyebrow:
+        draw.text((50, 162), eyebrow, font=body_font, fill="#f3cad4")
+
+    type_id = re.sub(r"[^a-z0-9_-]", "", str(report.get("typeId") or "").lower())
+    asset_root = Path(__file__).resolve().parent / "static" / "selfit" / "assets"
+    ornament = _load_optional_image(asset_root / "personality" / type_id / "share-ornament.webp") if type_id else None
+    if ornament is not None:
+        ornament.thumbnail((330, 235), Image.Resampling.LANCZOS)
+        image.paste(ornament, (48 + (330 - ornament.width) // 2, 210 + (235 - ornament.height) // 2), ornament)
+
+    if traits:
+        draw.text((48, 475), " · ".join(traits), font=body_font, fill="#ffffff")
+    draw.text((48, 526), "selfit · 先认识自己，再决定怎么穿", font=small_font, fill="#f3cad4")
+
+    qr_image = _qr_image(share_url, box_size=3)
+    image.paste(qr_image, (size - qr_image.width - 48, size - qr_image.height - 48))
+
+    buffer = io.BytesIO()
+    image.save(buffer, "PNG", optimize=True)
+    return buffer.getvalue()

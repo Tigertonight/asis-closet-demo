@@ -3,7 +3,9 @@ from __future__ import annotations
 import io
 import threading
 import time
+from datetime import datetime, timezone
 from pathlib import Path
+from urllib.parse import urlparse
 
 from fastapi.testclient import TestClient
 from PIL import Image
@@ -402,10 +404,10 @@ def _create_report_job(client: TestClient, session_id: str, **kwargs) -> dict:
     return response.json()
 
 
-def _wait_for_job(client: TestClient, job_id: str, timeout: float = 10.0) -> dict:
+def _wait_for_job(client: TestClient, job_id: str, timeout: float = 10.0, headers: dict | None = None) -> dict:
     deadline = time.monotonic() + timeout
     while time.monotonic() < deadline:
-        job = client.get(f"{API}/report-jobs/{job_id}").json()["job"]
+        job = client.get(f"{API}/report-jobs/{job_id}", headers=headers).json()["job"]
         if job["status"] in {"completed", "failed"}:
             return job
         time.sleep(0.05)
@@ -688,6 +690,116 @@ def test_share_asset_renderer_failure(monkeypatch, tmp_path: Path) -> None:
     assert response.status_code == 500
     assert response.json()["error"]["code"] == "share.render_failed"
     assert response.json()["error"]["retryable"] is True
+
+
+def test_public_report_share_is_anonymous_private_and_expires_in_seven_days(monkeypatch, tmp_path: Path) -> None:
+    _use_tmp_store(monkeypatch, tmp_path)
+    monkeypatch.setattr(storage, "ROOT_DIR", tmp_path)
+    monkeypatch.setattr(auth, "AUTH_DIR", tmp_path / "outputs" / "auth")
+    monkeypatch.setattr(auth, "AUTH_STORE_PATH", tmp_path / "outputs" / "auth" / "auth_store.json")
+    monkeypatch.setenv("SELFIT_PUBLIC_BASE_URL", "https://selfit.example")
+    monkeypatch.setenv("SELFIT_PUBLIC_REPORT_SHARE_TTL_DAYS", "7")
+    client = TestClient(app)
+
+    login = client.post("/auth/phone/direct", json={"phone": "13800000088"}).json()
+    owner_headers = {"Authorization": f"Bearer {login['access_token']}"}
+    session_id = _create_session(client, headers=owner_headers)["session"]["sessionId"]
+    monkeypatch.setattr(
+        selfit_report,
+        "_builder",
+        lambda session: {
+            "typeId": "mute",
+            "title": "静音时髦",
+            "eyebrow": "MUTE",
+            "traits": ["低表达", "低装饰", "秩序感"],
+            "summary": "这是可分享的风格摘要。",
+            "colors": [{"name": "炭灰", "value": "#4F5354", "private": "drop"}],
+            "makeup": [{"name": "裸玫瑰淡妆", "imageUrl": "/static/selfit/assets/personality/mute/report-makeup-01.webp"}],
+            "phone": "13800000088",
+            "sessionId": session_id,
+            "rawAnswers": {"occasion": "A"},
+        },
+    )
+    job = _create_report_job(client, session_id, headers=owner_headers)["job"]
+    report_id = _wait_for_job(client, job["jobId"], headers=owner_headers)["reportId"]
+
+    assert client.get(f"{API}/reports/{report_id}").status_code == 404
+    created = client.post(
+        f"{API}/reports/{report_id}/public-shares",
+        json={"slideIndex": 0},
+        headers=owner_headers,
+    )
+    assert created.status_code == 201
+    share = created.json()["share"]
+    assert share["url"].startswith("https://selfit.example/s/")
+    assert share["qrUrl"].endswith("/qr.png")
+    expires_at = datetime.fromisoformat(share["expiresAt"].replace("Z", "+00:00"))
+    remaining_days = (expires_at - datetime.now(timezone.utc)).total_seconds() / 86400
+    assert 6.99 <= remaining_days <= 7.01
+
+    token = urlparse(share["url"]).path.rsplit("/", 1)[-1]
+    public = client.get(f"{API}/public-shares/{token}")
+    assert public.status_code == 200
+    report = public.json()["report"]
+    assert report["title"] == "静音时髦"
+    assert report["colors"] == [{"id": "", "name": "炭灰", "value": "#4F5354"}]
+    serialized = public.text
+    assert "13800000088" not in serialized
+    assert "rawAnswers" not in serialized
+    assert session_id not in serialized
+
+    page = client.get(f"/s/{token}")
+    assert page.status_code == 200
+    assert "Ta的 selfit 风格报告 · 静音时髦" in page.text
+    assert f'https://selfit.example/s/{token}/cover.png' in page.text
+    assert 'property="og:image"' in page.text
+    assert 'name="robots" content="noindex,nofollow,noarchive"' in page.text
+
+    cover = client.get(f"/s/{token}/cover.png")
+    assert cover.status_code == 200
+    assert cover.headers["content-type"] == "image/png"
+    with Image.open(io.BytesIO(cover.content)) as image:
+        assert image.size == (600, 600)
+    qr = client.get(f"/s/{token}/qr.png")
+    assert qr.status_code == 200
+    with Image.open(io.BytesIO(qr.content)) as image:
+        assert image.size == (400, 400)
+
+    entry_qr = client.get("/selfit/qr.png")
+    assert entry_qr.status_code == 200
+    assert entry_qr.headers["content-type"] == "image/png"
+    with Image.open(io.BytesIO(entry_qr.content)) as image:
+        assert image.size == (400, 400)
+
+    revoked = client.delete(f"{API}/public-shares/{share['shareId']}", headers=owner_headers)
+    assert revoked.status_code == 200
+    assert client.get(f"{API}/public-shares/{token}").status_code == 410
+    assert client.get(f"/s/{token}").status_code == 410
+    expired_page = client.get(f"/s/{token}")
+    assert "好可惜，本分享已过期" in expired_page.text
+    assert 'src="/static/selfit/assets/share-report-qr.png?v=20260828"' in expired_page.text
+    assert client.get(f"/s/{token}/cover.png").status_code == 410
+    assert client.get(f"/s/{token}/qr.png").status_code == 410
+
+
+def test_public_report_share_survives_onboarding_session_prune(monkeypatch, tmp_path: Path) -> None:
+    _use_tmp_store(monkeypatch, tmp_path)
+    monkeypatch.setenv("SELFIT_ONBOARDING_SESSION_TTL_HOURS", "1")
+    client = TestClient(app)
+    report_id = _create_report(client, monkeypatch, {"typeId": "mute", "title": "静音时髦"})
+    created = client.post(f"{API}/reports/{report_id}/public-shares", json={})
+    assert created.status_code == 201
+    token = urlparse(created.json()["share"]["url"]).path.rsplit("/", 1)[-1]
+
+    data = selfit_onboarding._load_store()
+    data["sessions"][0]["expires_at"] = "2000-01-01T00:00:00Z"
+    selfit_onboarding._write_store(data)
+    client.post(f"{API}/sessions", json={})
+
+    assert client.get(f"{API}/reports/{report_id}").status_code == 404
+    shared = client.get(f"{API}/public-shares/{token}")
+    assert shared.status_code == 200
+    assert shared.json()["report"]["title"] == "静音时髦"
 
 
 def test_selfit_api_rate_limit_uses_contract_shape(monkeypatch, tmp_path: Path) -> None:

@@ -92,6 +92,10 @@ def _session_ttl_hours() -> int:
     return env_int("SELFIT_ONBOARDING_SESSION_TTL_HOURS", 24)
 
 
+def _public_share_ttl_days() -> int:
+    return max(1, min(env_int("SELFIT_PUBLIC_REPORT_SHARE_TTL_DAYS", 7), 30))
+
+
 def _request_id() -> str:
     return "req_" + secrets.token_urlsafe(12)
 
@@ -781,12 +785,20 @@ async def delete_session(
     for item in data["share_assets"]:
         if item.get("session_id") == session_id and item.get("filename"):
             store.delete(f"shared/{item['filename']}")
+    for item in data["public_report_shares"]:
+        if item.get("session_id") == session_id:
+            for key_field in ("cover_asset_key", "qr_asset_key"):
+                if item.get(key_field):
+                    store.delete(str(item[key_field]))
 
     data["sessions"] = [item for item in data["sessions"] if item.get("session_id") != session_id]
     data["report_jobs"] = [item for item in data["report_jobs"] if item.get("session_id") != session_id]
     data["reports"] = [item for item in data["reports"] if item.get("session_id") != session_id]
     data["outfit_requests"] = [item for item in data["outfit_requests"] if item.get("session_id") != session_id]
     data["share_assets"] = [item for item in data["share_assets"] if item.get("session_id") != session_id]
+    data["public_report_shares"] = [
+        item for item in data["public_report_shares"] if item.get("session_id") != session_id
+    ]
     _write_store(data)
     return JSONResponse(
         status_code=200,
@@ -1105,6 +1117,69 @@ def _find_report(data: dict[str, Any], report_id: str) -> dict[str, Any] | None:
     )
 
 
+def _public_share_token_hash(token: str) -> str:
+    return hashlib.sha256(str(token or "").encode("utf-8")).hexdigest()
+
+
+def _find_public_share(data: dict[str, Any], token: str) -> dict[str, Any] | None:
+    token_hash = _public_share_token_hash(token)
+    return next(
+        (
+            item for item in data["public_report_shares"]
+            if secrets.compare_digest(str(item.get("token_hash") or ""), token_hash)
+        ),
+        None,
+    )
+
+
+def get_public_share_record(token: str) -> tuple[dict[str, Any] | None, str]:
+    """供公开页和 API 共用的查询；返回 (record, active|expired|revoked|missing)。"""
+
+    data = _load_store()
+    record = _find_public_share(data, token)
+    if record is None:
+        return None, "missing"
+    if record.get("status") == "revoked":
+        return record, "revoked"
+    expires_at = _parse_iso(record.get("expires_at"))
+    if expires_at is None or expires_at <= _now():
+        return record, "expired"
+    return record, "active"
+
+
+def public_share_cover_response(token: str) -> Response:
+    record, status = get_public_share_record(token)
+    if record is None or status == "missing":
+        return _error_response(404, "share.public_not_found", "没有找到这份分享报告。")
+    if status != "active":
+        return _error_response(410, "share.public_expired", "这份报告已停止分享。")
+    key = str(record.get("cover_asset_key") or "")
+    path = _asset_store().local_path(key)
+    if path is None:
+        return _error_response(404, "share.cover_not_found", "分享封面还没有准备好。")
+    return FileResponse(
+        path,
+        media_type="image/png",
+        headers={"Cache-Control": "public, max-age=604800, immutable"},
+    )
+
+
+def public_share_qr_response(token: str) -> Response:
+    record, status = get_public_share_record(token)
+    if record is None or status == "missing":
+        return _error_response(404, "share.public_not_found", "没有找到这份分享报告。")
+    if status != "active":
+        return _error_response(410, "share.public_expired", "这份报告已停止分享。")
+    path = _asset_store().local_path(str(record.get("qr_asset_key") or ""))
+    if path is None:
+        return _error_response(404, "share.qr_not_found", "分享二维码还没有准备好。")
+    return FileResponse(
+        path,
+        media_type="image/png",
+        headers={"Cache-Control": "public, max-age=604800, immutable"},
+    )
+
+
 _REPORT_EXECUTOR = ThreadPoolExecutor(
     max_workers=env_int("SELFIT_REPORT_JOB_WORKERS", 2),
     thread_name_prefix="selfit-report",
@@ -1296,6 +1371,133 @@ async def get_report(
         status_code=200,
         content={"requestId": _request_id(), "report": report.get("data") or {}},
     )
+
+
+def _public_origin(request: Request) -> str:
+    configured = os.getenv("SELFIT_PUBLIC_BASE_URL", "").strip().rstrip("/")
+    return configured or str(request.base_url).rstrip("/")
+
+
+def _public_share_payload(record: dict[str, Any], token: str, request: Request) -> dict[str, Any]:
+    origin = _public_origin(request)
+    return {
+        "shareId": record["share_id"],
+        "url": f"{origin}/s/{token}",
+        "thumbnailUrl": f"{origin}/s/{token}/cover.png",
+        "qrUrl": f"{origin}/s/{token}/qr.png",
+        "expiresAt": record["expires_at"],
+    }
+
+
+@router.post("/reports/{report_id}/public-shares", status_code=201)
+async def create_public_report_share(
+    report_id: str,
+    request: Request,
+    user: dict[str, Any] | None = Depends(get_optional_user),
+) -> JSONResponse:
+    payload = await _read_json_object(request)
+    if isinstance(payload, JSONResponse):
+        return payload
+    slide_index = payload.get("slideIndex", 0)
+    if isinstance(slide_index, bool) or not isinstance(slide_index, int) or not 0 <= slide_index < selfit_share.SHARE_SLIDE_COUNT:
+        return _error_response(
+            422,
+            "validation.invalid_value",
+            "分享页序号不正确。",
+            details={"field": "slideIndex", "value": slide_index},
+        )
+
+    data = _prune_store(_load_store())
+    scope = _idempotency_scope(request, user)
+    idempotency_key = request.headers.get("x-idempotency-key")
+    replay = _idempotency_replay(data, scope, idempotency_key)
+    if replay is not None:
+        status_code, body = replay
+        return JSONResponse(status_code=status_code, content=body)
+
+    report = _load_visible_report(data, report_id, user)
+    if isinstance(report, JSONResponse):
+        return report
+    snapshot = selfit_share.sanitize_public_report(report.get("data") or {})
+    if not snapshot.get("title") and not snapshot.get("typeId"):
+        return _error_response(422, "share.report_incomplete", "这份报告还没有准备好。")
+
+    token = secrets.token_urlsafe(24)
+    share_id = "shr_" + secrets.token_urlsafe(12)
+    created_at = _now()
+    expires_at = created_at + timedelta(days=_public_share_ttl_days())
+    origin = _public_origin(request)
+    share_url = f"{origin}/s/{token}"
+    cover_key = f"public-shares/{share_id}/cover.png"
+    qr_key = f"public-shares/{share_id}/qr.png"
+    try:
+        cover = selfit_share.render_public_share_cover(snapshot, share_url)
+        _asset_store().save(cover_key, cover, "image/png")
+        qr = selfit_share.render_public_share_qr(share_url)
+        _asset_store().save(qr_key, qr, "image/png")
+    except Exception:
+        return _error_response(500, "share.render_failed", "分享封面生成失败，请稍后重试。", retryable=True)
+
+    record = {
+        "share_id": share_id,
+        "token_hash": _public_share_token_hash(token),
+        "report_id": report["report_id"],
+        "session_id": report.get("session_id"),
+        "owner_user_id": report.get("user_id"),
+        "snapshot_version": 1,
+        "report_snapshot": snapshot,
+        "title": str(snapshot.get("title") or "selfit 风格报告"),
+        "description": " · ".join(str(item) for item in (snapshot.get("traits") or [])[:3]),
+        "cover_asset_key": cover_key,
+        "qr_asset_key": qr_key,
+        "slide_index": slide_index,
+        "status": "active",
+        "created_at": _iso(created_at),
+        "expires_at": _iso(expires_at),
+        "revoked_at": None,
+    }
+    data["public_report_shares"].append(record)
+    body = {"requestId": _request_id(), "share": _public_share_payload(record, token, request)}
+    _idempotency_store(data, scope, idempotency_key, 201, body)
+    _write_store(data)
+    return JSONResponse(status_code=201, content=body)
+
+
+@router.get("/public-shares/{token}")
+async def get_public_report_share(token: str, request: Request) -> JSONResponse:
+    record, status = get_public_share_record(token)
+    if record is None or status == "missing":
+        return _error_response(404, "share.public_not_found", "没有找到这份分享报告。")
+    if status != "active":
+        return _error_response(410, "share.public_expired", "这份报告已停止分享。")
+    return JSONResponse(
+        status_code=200,
+        content={
+            "requestId": _request_id(),
+            "report": record.get("report_snapshot") or {},
+            "share": {
+                "expiresAt": record.get("expires_at"),
+                "thumbnailUrl": _public_share_payload(record, token, request)["thumbnailUrl"],
+            },
+        },
+        headers={"Cache-Control": "private, no-store", "Referrer-Policy": "no-referrer"},
+    )
+
+
+@router.delete("/public-shares/{share_id}")
+async def revoke_public_report_share(
+    share_id: str,
+    user: dict[str, Any] | None = Depends(get_optional_user),
+) -> JSONResponse:
+    data = _load_store()
+    record = next((item for item in data["public_report_shares"] if item.get("share_id") == share_id), None)
+    if record is None or not _session_visible_to({"user_id": record.get("owner_user_id")}, user):
+        return _error_response(404, "share.public_not_found", "没有找到这份分享报告。")
+    if record.get("status") != "revoked":
+        record["status"] = "revoked"
+        record["revoked_at"] = _iso(_now())
+        _write_store(data)
+    return JSONResponse(status_code=200, content={"requestId": _request_id(), "share": {"shareId": share_id, "status": "revoked"}})
 
 
 def _load_visible_report(

@@ -40,7 +40,10 @@
     });
   };
   const SESSION_STORAGE_KEY = 'selfit.onboarding.session.v1';
-  const handoffToken = new URLSearchParams(window.location.search).get('handoff') || '';
+  const entryParams = new URLSearchParams(window.location.search);
+  const handoffToken = entryParams.get('handoff') || '';
+  const sharedReportEntry = entryParams.get('from') === 'shared-report';
+  const sharedReportType = (entryParams.get('shared_type') || '').trim().slice(0, 24);
   let api;
   let auth;
   let authReady = Promise.resolve(null);
@@ -50,7 +53,7 @@
     photoAssets: { face: null, body: null },
     manual: { skin: null, faceShape: null, bodyShape: null },
     axes: { shape: 42, energy: 64, trend: 42 },
-    palette: null, answers: {}, sessionId: null, revision: 0, reportJobId: null, reportId: null, authUser: null,
+    palette: null, answers: {}, sessionId: null, revision: 0, reportJobId: null, reportId: null, authUser: null, publicShare: null,
   };
   const personalityCatalog = window.__SELFIT_PERSONALITY_TEMPLATES__ || { types: {}, renderRules: {} };
   const dismissKeyboard = () => window.SelfitViewport?.dismissKeyboard?.() || Promise.resolve();
@@ -143,6 +146,16 @@
       if (destination === 'intro') playIntro();
     }, matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 420);
   };
+
+  if (sharedReportEntry) {
+    track('shared_report_try_landed', { sharedType: sharedReportType });
+    const introTitle = document.querySelector('#introTitle');
+    if (introTitle) introTitle.textContent = sharedReportType
+      ? `Ta是「${sharedReportType}」，你会是哪一种？`
+      : '看过Ta的风格，也来认识你自己';
+    const introAction = document.querySelector('.intro-action');
+    if (introAction) introAction.textContent = '开始测我的风格';
+  }
   document.querySelector('#splashEnter').addEventListener('click', enterOnboarding);
 
   document.addEventListener('click', async (event) => {
@@ -405,6 +418,7 @@
     return { typeId: classification.primary_persona.toLowerCase() };
   };
   const runtimeConfig = window.__SELFIT_CONFIG__ || {};
+  const publicShareToken = String(runtimeConfig.publicShareToken || '');
   // 邀请码登录仅内部测试用：默认隐藏，服务端配置 SELFIT_SHOW_INVITE_LOGIN=1 时显示。
   document.querySelector('[data-invite-login]')?.toggleAttribute('hidden', !runtimeConfig.showInviteLogin);
   const queryMode = new URLSearchParams(location.search).get('apiMode');
@@ -793,8 +807,14 @@
   window.addEventListener('selfit:report-data', (event) => renderReport(event.detail || {}));
   renderReport(window.__SELFIT_REPORT__ || { typeId: 'mute' });
 
+  const toastNode = document.querySelector('#toast');
+  const toastHome = toastNode.parentElement;
   const toast = (copy) => {
-    const node = document.querySelector('#toast'); node.textContent = copy; node.classList.add('is-visible'); setTimeout(() => node.classList.remove('is-visible'), 1800);
+    const openDialog = document.querySelector('dialog[open]');
+    (openDialog || toastHome).appendChild(toastNode);
+    toastNode.textContent = copy;
+    toastNode.classList.add('is-visible');
+    setTimeout(() => toastNode.classList.remove('is-visible'), 1800);
   };
   const runButtonAction = async (button, action) => {
     if (button.getAttribute('aria-busy') === 'true') return;
@@ -846,7 +866,10 @@
     event.preventDefault();
     closeShareDialog();
   });
-  shareDialog.addEventListener('close', () => document.documentElement.classList.remove('has-open-dialog'));
+  shareDialog.addEventListener('close', () => {
+    document.documentElement.classList.remove('has-open-dialog');
+    toastHome.appendChild(toastNode);
+  });
   const shareTrack = document.querySelector('#shareTrack');
   const shareSlides = [...document.querySelectorAll('[data-share-slide]')];
   const shareSlots = shareSlides.map((slide) => slide.closest('.share-card-slot'));
@@ -1249,8 +1272,45 @@
     });
   });
   const currentReportId = () => state.reportId || window.__SELFIT_REPORT_ID__ || null;
+  const copyTextToClipboard = async (value) => {
+    if (navigator.clipboard?.writeText) {
+      try {
+        await navigator.clipboard.writeText(value);
+        return;
+      } catch { /* 部分微信 WebView 会拒绝 Clipboard API，继续使用兼容方案。 */ }
+    }
+    const input = Object.assign(document.createElement('textarea'), {
+      value,
+      readOnly: true,
+      ariaHidden: 'true',
+    });
+    Object.assign(input.style, { position: 'fixed', top: '-1000px', opacity: '0' });
+    document.body.appendChild(input);
+    input.select();
+    input.setSelectionRange(0, value.length);
+    const copied = document.execCommand('copy');
+    input.remove();
+    if (!copied) throw new Error('当前浏览器无法自动复制，请稍后重试。');
+  };
   document.querySelector('#retakeBtn').addEventListener('click', () => { track('retake_clicked'); showScreen('vibe'); });
   document.querySelectorAll('[data-share]').forEach((button) => button.addEventListener('click', () => runButtonAction(button, async () => {
+    if (button.dataset.share === 'report-link') {
+      const reportId = currentReportId();
+      if (!reportId) throw new window.SelfitApi.SelfitApiError('报告仍在准备中，请稍后再试。', { code: 'report.not_ready' });
+      const created = state.publicShare || await api.createPublicShare(reportId, { slideIndex: shareSlideIndex });
+      state.publicShare = created;
+      const share = created.share;
+      if (share.qrUrl) {
+        document.querySelectorAll('.share-qr').forEach((image) => { image.src = share.qrUrl; });
+        invalidateShareExports();
+        void prepareShareCard(shareSlideIndex);
+      }
+      track('share_link_created', { reportId, slideIndex: shareSlideIndex, expiresAt: share.expiresAt || '' });
+      await copyTextToClipboard(share.url);
+      track('share_action_clicked', { method: 'copy-link' });
+      toast('已复制分享链接');
+      return;
+    }
     if (button.dataset.share === 'save-card') {
       const blob = shareExportBlobs.get(shareSlideIndex) || await prepareShareCard(shareSlideIndex);
       if (!blob) throw shareExportErrors.get(shareSlideIndex) || new Error('分享卡片生成失败，请重试。');
@@ -1287,6 +1347,7 @@
       answeredQuestions: Object.keys(state.answers),
       reportJobId: state.reportJobId,
       reportId: state.reportId,
+      publicShare: state.publicShare ? { ...state.publicShare.share } : null,
     }),
   });
 
@@ -1341,6 +1402,49 @@
     showScreen('loading');
     setLoadingProgress(previewProgress);
     shell.classList.add('is-ready');
+    return;
+  }
+
+  if (publicShareToken) {
+    document.body.classList.add('is-public-report');
+    document.querySelector('.report-nav h2').textContent = 'Ta分享的风格报告';
+    const expiry = document.querySelector('#publicReportExpiry');
+    const errorState = document.querySelector('#publicReportError');
+    const visitorCta = document.querySelector('#publicReportCta');
+    visitorCta.hidden = false;
+    showScreen('report');
+    shell.classList.add('is-ready');
+    api.getPublicShare(publicShareToken).then((result) => {
+      renderReport(result.report || {});
+      const sharedType = String(result.report?.title || result.report?.typeName || '').trim().slice(0, 24);
+      const tryUrl = new URL('/selfit', window.location.origin);
+      tryUrl.searchParams.set('from', 'shared-report');
+      if (sharedType) tryUrl.searchParams.set('shared_type', sharedType);
+      document.querySelectorAll('[data-public-report-try]').forEach((link) => {
+        link.href = `${tryUrl.pathname}${tryUrl.search}`;
+        link.dataset.sharedTypeId = String(result.report?.typeId || '');
+      });
+      const ctaCopy = document.querySelector('#publicReportCtaCopy');
+      if (ctaCopy) ctaCopy.textContent = sharedType
+        ? `Ta是「${sharedType}」，你会是哪一种？`
+        : 'Ta已经找到自己的风格，你会是哪一种？';
+      const expiresAt = Date.parse(result.share?.expiresAt || '');
+      const expiryDate = Number.isFinite(expiresAt) ? new Date(expiresAt) : null;
+      expiry.textContent = expiryDate
+        ? `本分享将于 ${expiryDate.getMonth() + 1}月${expiryDate.getDate()}日到期`
+        : '本分享将在 7 天后到期';
+      expiry.hidden = false;
+      track('shared_report_opened', { typeId: result.report?.typeId || '' });
+    }).catch((error) => {
+      document.body.classList.add('has-public-report-error');
+      const isExpired = error.code === 'share.public_expired';
+      errorState.querySelector('h1').textContent = isExpired ? '好可惜，本分享已过期' : '没有找到这份分享报告';
+      errorState.querySelector('p').textContent = isExpired ? '请直接扫码访问selfit' : '请扫码访问selfit';
+      errorState.hidden = false;
+    });
+    document.querySelectorAll('[data-public-report-try]').forEach((link) => link.addEventListener('click', () => {
+      track('shared_report_try_clicked', { placement: link.dataset.publicReportTry || '', typeId: link.dataset.sharedTypeId || '' });
+    }));
     return;
   }
 

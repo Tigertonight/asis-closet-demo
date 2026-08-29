@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import hashlib
+import html as html_lib
 import json
 import mimetypes
 import os
@@ -109,6 +110,7 @@ from app.stylist_sessions import (
     recent_conversation,
     update_stylist_session,
 )
+from app import selfit_onboarding, selfit_share
 from app.selfit_onboarding import router as selfit_onboarding_router
 from app.selfit_mirror_handoff import router as selfit_mirror_handoff_router
 from app.selfit_analytics import admin_router as selfit_admin_router, router as selfit_analytics_router
@@ -694,10 +696,14 @@ def closet_demo_page() -> HTMLResponse:
     return HTMLResponse(render_closet_demo_page())
 
 
-def _selfit_index_html() -> str:
+def _selfit_index_html(
+    *,
+    config_overrides: dict[str, Any] | None = None,
+    social_meta: dict[str, str] | None = None,
+) -> str:
     """服务端注入运行配置：正式环境不再依赖 ?apiMode=live 查询参数。"""
 
-    html = SELFIT_INDEX_PATH.read_text(encoding="utf-8")
+    html_text = SELFIT_INDEX_PATH.read_text(encoding="utf-8")
     config = {
         "apiMode": os.getenv("SELFIT_ONBOARDING_API_MODE", "live"),
         "apiBase": "/api/v1/selfit",
@@ -707,11 +713,32 @@ def _selfit_index_html() -> str:
         # 邀请码登录仅内部测试用，默认对用户隐藏（SELFIT_SHOW_INVITE_LOGIN=1 打开）。
         "showInviteLogin": env_flag("SELFIT_SHOW_INVITE_LOGIN", False),
     }
+    config.update(config_overrides or {})
     tag = "<script>window.__SELFIT_CONFIG__ = " + json.dumps(config, ensure_ascii=False) + ";</script>"
     marker = '<script src="/static/selfit/selfit-api.js'
-    if marker in html:
-        html = html.replace(marker, tag + marker, 1)
-    return html
+    if marker in html_text:
+        html_text = html_text.replace(marker, tag + marker, 1)
+    if social_meta:
+        title = html_lib.escape(social_meta.get("title") or "selfit 风格报告", quote=True)
+        description = html_lib.escape(social_meta.get("description") or "打开查看 selfit 风格报告", quote=True)
+        image_url = html_lib.escape(social_meta.get("image") or "", quote=True)
+        page_url = html_lib.escape(social_meta.get("url") or "", quote=True)
+        html_text = html_text.replace(
+            "<title>selfit · 先认识自己，再决定怎么穿</title>",
+            f"<title>{title}</title>",
+            1,
+        )
+        meta_tags = (
+            f'<meta name="description" content="{description}" />'
+            '<meta name="robots" content="noindex,nofollow,noarchive" />'
+            '<meta property="og:type" content="website" />'
+            f'<meta property="og:title" content="{title}" />'
+            f'<meta property="og:description" content="{description}" />'
+            f'<meta property="og:image" content="{image_url}" />'
+            f'<meta property="og:url" content="{page_url}" />'
+        )
+        html_text = html_text.replace("<head>", "<head>" + meta_tags, 1)
+    return html_text
 
 
 @app.get("/", include_in_schema=False)
@@ -733,6 +760,54 @@ def selfit_onboarding_page() -> HTMLResponse:
         headers={
             "Cache-Control": "no-store, no-cache, must-revalidate, max-age=0",
             "Pragma": "no-cache",
+        },
+    )
+
+
+@app.get("/selfit/qr.png", response_model=None, include_in_schema=False)
+def selfit_entry_qr(request: Request) -> Response:
+    origin = os.getenv("SELFIT_PUBLIC_BASE_URL", "").strip().rstrip("/") or str(request.base_url).rstrip("/")
+    return Response(
+        content=selfit_share.render_public_share_qr(f"{origin}/selfit"),
+        media_type="image/png",
+        headers={"Cache-Control": "public, max-age=86400"},
+    )
+
+
+@app.get("/s/{token}/cover.png", response_model=None, include_in_schema=False)
+def public_report_share_cover(token: str) -> Response:
+    return selfit_onboarding.public_share_cover_response(token)
+
+
+@app.get("/s/{token}/qr.png", response_model=None, include_in_schema=False)
+def public_report_share_qr(token: str) -> Response:
+    return selfit_onboarding.public_share_qr_response(token)
+
+
+@app.get("/s/{token}", response_class=HTMLResponse, include_in_schema=False)
+def public_report_share_page(token: str, request: Request) -> HTMLResponse:
+    record, status = selfit_onboarding.get_public_share_record(token)
+    origin = (os.getenv("SELFIT_PUBLIC_BASE_URL", "").strip().rstrip("/") or str(request.base_url).rstrip("/"))
+    page_url = f"{origin}/s/{token}"
+    active = record is not None and status == "active"
+    title = f"Ta的 selfit 风格报告 · {record.get('title')}" if active else "selfit · 分享的风格报告"
+    description = str(record.get("description") or "打开查看Ta分享的风格报告") if active else "这份报告已停止分享"
+    html_text = _selfit_index_html(
+        config_overrides={"publicShareToken": token},
+        social_meta={
+            "title": title,
+            "description": description,
+            "image": f"{page_url}/cover.png" if active else "",
+            "url": page_url,
+        },
+    )
+    return HTMLResponse(
+        html_text,
+        status_code=200 if active else (410 if status in {"expired", "revoked"} else 404),
+        headers={
+            "Cache-Control": "no-store, no-cache, must-revalidate, max-age=0",
+            "Referrer-Policy": "no-referrer",
+            "X-Robots-Tag": "noindex, nofollow, noarchive",
         },
     )
 
