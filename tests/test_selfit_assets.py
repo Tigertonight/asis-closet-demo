@@ -15,6 +15,20 @@ from app.main import app
 API = "/api/v1/selfit"
 
 
+def test_mobile_report_heroes_are_two_x_sized_and_lightweight() -> None:
+    asset_root = Path("app/static/selfit/assets/personality")
+    type_dirs = sorted(path for path in asset_root.iterdir() if (path / "hero.png").exists())
+
+    assert len(type_dirs) == 16
+    for type_dir in type_dirs:
+        mobile_hero = type_dir / "hero-mobile.webp"
+        assert mobile_hero.exists(), type_dir.name
+        assert mobile_hero.stat().st_size < 130 * 1024, type_dir.name
+        with Image.open(mobile_hero) as image:
+            assert image.size == (742, 536), type_dir.name
+            assert image.format == "WEBP", type_dir.name
+
+
 class FakeBucket:
     def __init__(self) -> None:
         self.objects: dict[str, bytes] = {}

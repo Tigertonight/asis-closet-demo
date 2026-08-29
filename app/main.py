@@ -724,12 +724,17 @@ def _selfit_index_html(
         image_url = html_lib.escape(social_meta.get("image") or "", quote=True)
         page_url = html_lib.escape(social_meta.get("url") or "", quote=True)
         robots = html_lib.escape(social_meta.get("robots") or "noindex,nofollow,noarchive", quote=True)
+        preload_image = html_lib.escape(social_meta.get("preload_image") or "", quote=True)
         html_text = html_text.replace(
             "<title>selfit · 先认识自己，再决定怎么穿</title>",
             f"<title>{title}</title>",
             1,
         )
-        meta_tags = (
+        preload_tag = (
+            f'<link rel="preload" as="image" href="{preload_image}" fetchpriority="high" />'
+            if preload_image else ""
+        )
+        meta_tags = preload_tag + (
             f'<meta name="description" content="{description}" />'
             f'<meta name="robots" content="{robots}" />'
             '<meta property="og:type" content="website" />'
@@ -818,6 +823,16 @@ def public_report_share_page(token: str, request: Request) -> HTMLResponse:
     active = record is not None and status == "active"
     title = f"Ta的 selfit 风格报告 · {record.get('title')}" if active else "selfit · 分享的风格报告"
     description = str(record.get("description") or "打开查看Ta分享的风格报告") if active else "这份报告已停止分享"
+    hero_image = ((record or {}).get("report_snapshot") or {}).get("heroImage") or {}
+    hero_source = str(hero_image.get("src") or "")
+    is_bundled_hero = "/static/selfit/assets/personality/" in hero_source and "/hero.webp" in hero_source
+    mobile_hero_source = hero_source.replace("/hero.webp", "/hero-mobile.webp", 1) if is_bundled_hero else hero_source
+    if active and not mobile_hero_source:
+        type_id = str(((record or {}).get("report_snapshot") or {}).get("typeId") or "").lower()
+        if type_id.isascii() and type_id.isalnum():
+            mobile_asset = Path(__file__).resolve().parent / "static" / "selfit" / "assets" / "personality" / type_id / "hero-mobile.webp"
+            if mobile_asset.is_file():
+                mobile_hero_source = f"/static/selfit/assets/personality/{type_id}/hero-mobile.webp?v=20260829-mobile-v1"
     html_text = _selfit_index_html(
         config_overrides={"publicShareToken": token},
         social_meta={
@@ -825,6 +840,7 @@ def public_report_share_page(token: str, request: Request) -> HTMLResponse:
             "description": description,
             "image": f"{page_url}/cover.png" if active else "",
             "url": page_url,
+            "preload_image": mobile_hero_source if active else "",
         },
     )
     return HTMLResponse(

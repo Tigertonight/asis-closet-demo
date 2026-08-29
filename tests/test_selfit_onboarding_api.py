@@ -754,6 +754,8 @@ def test_public_report_share_is_anonymous_private_and_expires_in_seven_days(monk
     assert "Ta的 selfit 风格报告 · 静音时髦" in page.text
     assert f'https://selfit.example/s/{token}/cover.png' in page.text
     assert 'property="og:image"' in page.text
+    assert '<link rel="preload" as="image" href="/static/selfit/assets/personality/mute/hero-mobile.webp' in page.text
+    assert 'fetchpriority="high"' in page.text
     assert 'name="robots" content="noindex,nofollow,noarchive"' in page.text
 
     cover = client.get(f"/s/{token}/cover.png")

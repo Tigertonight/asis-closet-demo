@@ -634,12 +634,18 @@
   const toggleReportSection = (name, visible) => {
     document.querySelector(`[data-report-section="${name}"]`)?.toggleAttribute('hidden', !visible);
   };
+  const mobileHeroSource = (value) => {
+    const source = String(value || '');
+    const isBundledPersonalityHero = source.includes('/static/selfit/assets/personality/') && source.includes('/hero.webp');
+    return isBundledPersonalityHero ? source.replace('/hero.webp', '/hero-mobile.webp') : source;
+  };
   const renderReport = (payload = {}) => {
     const data = normalizeReport(payload);
     const fullHero = Boolean(data.heroImage?.src);
+    const heroSource = fullHero ? mobileHeroSource(data.heroImage.src) : '';
     reportNodes.hero.classList.toggle('report-hero--full', fullHero);
     reportNodes.hero.classList.remove('report-hero--reference');
-    reportNodes.heroImage.src = fullHero ? data.heroImage.src : '';
+    reportNodes.heroImage.src = heroSource;
     reportNodes.heroImage.alt = fullHero ? (data.heroImage.alt || `${data.title} ${data.eyebrow} 人格封面`) : '';
     reportNodes.heroImage.hidden = !fullHero;
     reportNodes.eyebrow.textContent = data.eyebrow;
@@ -772,8 +778,13 @@
       // 分型一确定就预加载 hero 大图：报告数据渲染前的等待时间里图片已在下载，
       // 报告页出现时封面通常已就绪（hero.webp ~100KB，之前 PNG 1.6MB 要 6-10s）。
       const heroTemplate = personalityCatalog.types?.[String(report?.typeId || '').toLowerCase()];
-      const heroSrc = heroTemplate?.hero?.image?.src;
-      if (heroSrc) { const preload = new Image(); preload.src = heroSrc; }
+      const heroSrc = mobileHeroSource(heroTemplate?.hero?.image?.src);
+      if (heroSrc) {
+        const preload = new Image();
+        preload.fetchPriority = 'high';
+        preload.decoding = 'async';
+        preload.src = heroSrc;
+      }
       track('report_completed', { reportId: state.reportId, typeId: report?.typeId || '' });
       setLoadingProgress(100);
       renderReport(report);

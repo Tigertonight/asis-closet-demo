@@ -16,7 +16,7 @@ def test_selfit_onboarding_route_serves_the_product_flow() -> None:
 
     assert response.status_code == 200
     assert response.headers["content-type"].startswith("text/html")
-    assert "selfit · 先认识自己，再决定怎么穿" in response.text
+    assert "selfit · 适我" in response.text
     assert 'data-screen="suit"' in response.text
     assert 'data-screen="report"' in response.text
 
@@ -239,7 +239,7 @@ def test_selfit_report_share_cards_use_the_dedicated_qr_artwork() -> None:
     assert 'class="public-report-error-qr"><img src="/static/selfit/assets/share-report-qr.png?v=20260828"' in response.text
     assert 'data-share-ornament' in response.text
     assert "/static/selfit/selfit.css?v=20260829-public-share6" in response.text
-    assert "/static/selfit/selfit.js?v=20260829-public-share7" in response.text
+    assert "/static/selfit/selfit.js?v=20260829-public-share8" in response.text
     assert "/static/selfit/selfit-persona.js?v=20260829-bolt-korean1" in response.text
     assert 'property="og:image" content="http://testserver/selfit/share-logo.png"' in response.text
     assert 'property="og:image:width" content="600"' in response.text
@@ -277,6 +277,9 @@ def test_selfit_report_share_cards_use_the_dedicated_qr_artwork() -> None:
     assert "await ensurePublicShare(0)" in runtime.text
     assert "Ta 分享了一份「${reportTitle}」风格报告" in runtime.text
     assert "document.querySelectorAll('.share-qr').forEach" in runtime.text
+    assert "const mobileHeroSource" in runtime.text
+    assert "preload.fetchPriority = 'high'" in runtime.text
+    assert 'loading="eager" decoding="async" fetchpriority="high"' in response.text
     assert 'id="saveImageGuide"' in response.text
     assert '长按图片保存到相册' in response.text
     assert 'data-save-guide-copy' not in response.text
