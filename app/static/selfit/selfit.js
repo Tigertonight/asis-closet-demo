@@ -3,13 +3,6 @@
   window.__SELFIT_BOOT_OK__ = true;
   window.clearTimeout(window.__SELFIT_BOOT_TIMER__);
   document.documentElement.dataset.selfitBoot = 'ready';
-  shell.addEventListener('error', (event) => {
-    const image = event.target;
-    if (!(image instanceof HTMLImageElement) || image.dataset.fallbackApplied === 'true') return;
-    if (!/\/assets\/personality\//.test(image.currentSrc || image.src)) return;
-    image.dataset.fallbackApplied = 'true';
-    image.src = '/static/selfit/assets/personality/placeholder-card.svg';
-  }, true);
   const screens = [...document.querySelectorAll('[data-screen]')];
   const splash = document.querySelector('[data-screen="splash"]');
   const intro = document.querySelector('[data-screen="intro"]');
@@ -78,6 +71,62 @@
       }
     } catch { /* 埋点失败不影响业务 */ }
   };
+
+  const IMAGE_RETRY_DELAYS_MS = [350, 1200];
+  const imagePathForTelemetry = (source) => {
+    try { return new URL(source, location.href).pathname.slice(0, 240); }
+    catch { return String(source || '').split('?')[0].slice(0, 240); }
+  };
+  const imageRetryUrl = (source, attempt) => {
+    const url = new URL(source, location.href);
+    url.searchParams.set('selfit_retry', `${attempt}-${Date.now()}`);
+    return url.href;
+  };
+  const applyImageFallback = (image, originalSource) => {
+    if (image.dataset.fallbackApplied === 'true') return;
+    image.dataset.fallbackApplied = 'true';
+    if (image.id === 'loadingArt') {
+      image.classList.remove('is-changing');
+      return;
+    }
+    if (/\/assets\/personality\//.test(originalSource) || image.alt) {
+      image.src = '/static/selfit/assets/personality/placeholder-card.svg';
+      return;
+    }
+    // Decorative images have empty alt text. Hiding them is preferable to exposing
+    // WebKit's blue broken-image icon in the middle of an otherwise usable screen.
+    image.hidden = true;
+  };
+  shell.addEventListener('error', (event) => {
+    const image = event.target;
+    if (!(image instanceof HTMLImageElement) || image.dataset.fallbackApplied === 'true') return;
+    const assignedSource = image.getAttribute('src');
+    if (!assignedSource) return;
+    const originalSource = image.dataset.retrySource || image.currentSrc || assignedSource;
+    if (!originalSource || originalSource.startsWith('blob:') || originalSource.startsWith('data:')) return;
+    image.dataset.retrySource = originalSource;
+    const attempt = Number(image.dataset.retryAttempt || 0) + 1;
+    image.dataset.retryAttempt = String(attempt);
+    track('image_load_failed', { path: imagePathForTelemetry(originalSource), attempt });
+    const delayMs = IMAGE_RETRY_DELAYS_MS[attempt - 1];
+    if (delayMs == null) {
+      applyImageFallback(image, originalSource);
+      return;
+    }
+    window.setTimeout(() => {
+      if (!image.isConnected || image.dataset.fallbackApplied === 'true') return;
+      image.src = imageRetryUrl(originalSource, attempt);
+    }, delayMs);
+  }, true);
+  shell.addEventListener('load', (event) => {
+    const image = event.target;
+    if (!(image instanceof HTMLImageElement)) return;
+    const attempts = Number(image.dataset.retryAttempt || 0);
+    if (!attempts) return;
+    track('image_load_recovered', { path: imagePathForTelemetry(image.dataset.retrySource || image.src), attempts });
+    delete image.dataset.retryAttempt;
+    delete image.dataset.retrySource;
+  }, true);
 
   const showScreen = (name) => {
     const next = screens.find((screen) => screen.dataset.screen === name);
@@ -377,27 +426,62 @@
     { percent: 75, line: '拼出更像你的样子', src: '/static/selfit/assets/loading-stage-75@2x.png?v=20260826' },
     { percent: 100, line: '我们认识你了...', src: '/static/selfit/assets/loading-stage-100@2x.png?v=20260826' },
   ];
-  loadingStages.forEach(({ src }) => { const image = new Image(); image.src = src; });
+  const loadingStagePromises = new Map();
+  const loadLoadingStage = (src) => {
+    if (loadingStagePromises.has(src)) return loadingStagePromises.get(src);
+    const promise = new Promise((resolve) => {
+      const tryLoad = (attempt = 0) => {
+        const image = new Image();
+        image.decoding = 'async';
+        image.addEventListener('load', () => {
+          if (attempt) track('image_load_recovered', { path: imagePathForTelemetry(src), attempts: attempt });
+          resolve(image.currentSrc || image.src || src);
+        }, { once: true });
+        image.addEventListener('error', () => {
+          const nextAttempt = attempt + 1;
+          track('image_load_failed', { path: imagePathForTelemetry(src), attempt: nextAttempt });
+          const delayMs = IMAGE_RETRY_DELAYS_MS[attempt];
+          if (delayMs == null) { resolve(''); return; }
+          window.setTimeout(() => tryLoad(nextAttempt), delayMs);
+        }, { once: true });
+        image.src = attempt ? imageRetryUrl(src, attempt) : src;
+      };
+      tryLoad();
+    });
+    loadingStagePromises.set(src, promise);
+    return promise;
+  };
+  // Warm the next frames without touching the currently visible <img>. If a
+  // request fails, the current artwork remains visible while retries happen.
+  loadingStages.slice(1).forEach(({ src }) => { void loadLoadingStage(src); });
+  let loadingArtRequest = 0;
   const setLoadingProgress = (progress) => {
     const stage = [...loadingStages].reverse().find((item) => progress >= item.percent) || loadingStages[0];
     const art = document.querySelector('#loadingArt');
     const line = document.querySelector('#loadingLine');
     const percent = document.querySelector('#loadingPercent');
-    const stageChanged = art.dataset.stage !== String(stage.percent);
+    const stageKey = String(stage.percent);
+    const stageChanged = art.dataset.stage !== stageKey && art.dataset.pendingStage !== stageKey;
     if (stageChanged) {
+      const requestId = ++loadingArtRequest;
+      art.dataset.pendingStage = stageKey;
       [art, line, percent].forEach((element) => element.classList.add('is-changing'));
       window.setTimeout(() => {
-        art.src = stage.src;
-        art.dataset.stage = String(stage.percent);
         line.textContent = stage.line;
         percent.textContent = `${stage.percent}%`;
-        requestAnimationFrame(() => requestAnimationFrame(() => {
-          [art, line, percent].forEach((element) => element.classList.remove('is-changing'));
-        }));
+        void loadLoadingStage(stage.src).then((loadedSource) => {
+          if (requestId !== loadingArtRequest) return;
+          if (loadedSource) art.src = loadedSource;
+          art.dataset.stage = stageKey;
+          delete art.dataset.pendingStage;
+          requestAnimationFrame(() => requestAnimationFrame(() => {
+            [art, line, percent].forEach((element) => element.classList.remove('is-changing'));
+          }));
+        });
       }, window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 150);
       return;
     }
-    art.dataset.stage = String(stage.percent);
+    if (!art.dataset.pendingStage) art.dataset.stage = stageKey;
     line.textContent = stage.line;
     percent.textContent = `${stage.percent}%`;
   };

@@ -241,7 +241,7 @@ def test_selfit_report_share_cards_use_the_dedicated_qr_artwork() -> None:
     assert 'class="public-report-error-qr"><img src="/static/selfit/assets/share-report-qr.png?v=20260828"' in response.text
     assert 'data-share-ornament' in response.text
     assert "/static/selfit/selfit.css?v=20260829-vibe-webkit1" in response.text
-    assert "/static/selfit/selfit.js?v=20260829-save-focus1" in response.text
+    assert "/static/selfit/selfit.js?v=20260831-image-retry1" in response.text
     assert "/static/selfit/selfit-persona.js?v=20260829-bolt-korean1" in response.text
     assert 'property="og:image" content="http://testserver/selfit/share-logo.png"' in response.text
     assert 'property="og:image:width" content="600"' in response.text
@@ -455,6 +455,14 @@ def test_selfit_personality_catalog_keeps_all_colors_but_renders_first_five() ->
     assert "data.colors.slice(0, personalityCatalog.renderRules?.colors?.limit || 5)" in runtime.text
     assert ".slice(0, personalityCatalog.renderRules?.outfits?.limit || 4)" in runtime.text
     assert "replace(/^\\s*建议\\s*[：:]\\s*/, '')" in runtime.text
+
+    # 瞬时静态资源失败会自动重试；loading 换帧要等新图就绪，不能暴露破图。
+    assert "const IMAGE_RETRY_DELAYS_MS = [350, 1200]" in runtime.text
+    assert "const assignedSource = image.getAttribute('src')" in runtime.text
+    assert "if (!assignedSource) return" in runtime.text
+    assert "imageRetryUrl(originalSource, attempt)" in runtime.text
+    assert "void loadLoadingStage(stage.src).then" in runtime.text
+    assert "if (loadedSource) art.src = loadedSource" in runtime.text
 
     for template in catalog["types"].values():
         assert all(

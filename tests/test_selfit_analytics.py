@@ -39,6 +39,9 @@ def test_events_report_appends_whitelisted_events(monkeypatch, tmp_path: Path) -
                 {"event": "screen_view", "screen": "suit", "sessionId": "ses_x", "userId": "u_1", "props": {"from": "intro"}},
                 {"event": "not_a_real_event"},
                 {"event": "login_success", "props": {"provider": "phone"}},
+                {"event": "image_load_failed", "props": {"path": "/static/selfit/example.webp", "attempt": 1}},
+                {"event": "image_load_recovered", "props": {"path": "/static/selfit/example.webp", "attempts": 1}},
+                {"event": "report_resources_ready", "props": {"failedCount": 0}},
             ]
         },
     )
@@ -47,7 +50,13 @@ def test_events_report_appends_whitelisted_events(monkeypatch, tmp_path: Path) -
     lines = analytics.EVENTS_PATH.read_text(encoding="utf-8").strip().split("\n")
     records = [json.loads(line) for line in lines]
     # 白名单外的事件被丢弃
-    assert [record["event"] for record in records] == ["screen_view", "login_success"]
+    assert [record["event"] for record in records] == [
+        "screen_view",
+        "login_success",
+        "image_load_failed",
+        "image_load_recovered",
+        "report_resources_ready",
+    ]
     assert records[0]["screen"] == "suit"
     assert records[0]["session_id"] == "ses_x"
     assert records[0]["client_ip"] == "testclient"
