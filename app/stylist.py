@@ -23,6 +23,7 @@ from app.closet import (
     list_closet_items,
     list_outfits,
     mock_tryon_from_outfit,
+    recommend_outfits,
 )
 from app.tryon import extract_xhs_link
 
@@ -721,14 +722,16 @@ def _light_closet_ai_prompt(request: dict[str, Any]) -> str:
         "closet_outfits": context.get("closet_outfits", [])[:6] if isinstance(context.get("closet_outfits"), list) else [],
         "closet_item_groups": _trim_context_groups(context.get("closet_item_groups"), 6, 2),
         "closet_outfit_groups": _trim_context_groups(context.get("closet_outfit_groups"), 5, 2),
+        "style_persona": _request_style_persona(request),
     }
     return (
         "根据以下衣橱数据回答用户。要求：\n"
         "1. assistant_message 用中文，最多 5 个短要点，给 1 套首选和最多 1 套备选。\n"
         "2. assistant_message 不要出现 item_id/outfit_id/raw id/JSON/字段名。\n"
         "3. recommended_items/recommended_outfits 可以填写真实 id；没有真实证据就留空。\n"
-        "4. 不要提小红书或外部参考。\n"
-        "5. 返回 JSON：status, mode, assistant_message, recommended_items, recommended_outfits, rationale, evidence_sources, next_actions, quality_checks。\n"
+        "4. 如果 style_persona 存在，必须根据其关键词、推荐色和穿搭原则选择证据，不能只取列表前几件。\n"
+        "5. 不要提小红书或外部参考。\n"
+        "6. 返回 JSON：status, mode, assistant_message, recommended_items, recommended_outfits, rationale, evidence_sources, next_actions, quality_checks。\n"
         f"衣橱上下文：{json.dumps(data, ensure_ascii=False)}"
     )
 
@@ -2153,17 +2156,31 @@ def _extract_openclaw_payload_text(data: dict[str, Any]) -> str:
 
 
 def _demo_chat_response(request: dict[str, Any]) -> dict[str, Any]:
-    outfits = list_outfits().get("outfits", [])[:2]
-    items = list_closet_items().get("items", [])[:6]
+    persona = _request_style_persona(request)
+    outfits = recommend_outfits({"persona": persona, "limit": 2, "rotate_by": 2}).get("outfits", [])
+    all_items = list_closet_items().get("items", [])
+    recommended_item_ids = [
+        str(item.get("item_id") or "")
+        for outfit in outfits
+        for item in outfit.get("items", [])
+        if item.get("item_id")
+    ]
+    ranked_items = []
+    for item_id in [*recommended_item_ids, *(str(item.get("item_id") or "") for item in all_items)]:
+        item = next((candidate for candidate in all_items if candidate.get("item_id") == item_id), None)
+        if item and not any(existing.get("item_id") == item_id for existing in ranked_items):
+            ranked_items.append(item)
+    items = ranked_items[:6]
+    persona_name = persona.get("metadata", {}).get("name") or "你的风格"
     return {
         "status": "ok",
         "mode": "demo",
-        "assistant_message": "我先基于你当前衣橱给一版演示推荐。正式模式会调用独立 OpenClaw 穿搭师运行时。",
+        "assistant_message": f"我先按照{persona_name}的关键词和推荐色，从你当前衣橱里排了一版。",
         "recommended_items": items,
         "recommended_outfits": outfits,
         "rationale": [
-            "优先选择衣橱里已有的可用单品。",
-            "正式运行时会结合记忆、技能、内部知识库和小红书检索做解释。",
+            f"优先匹配{persona_name}的风格特征与推荐色。",
+            "同时优先保留主服装、鞋包结构更完整的穿搭。",
         ],
         "evidence_sources": [{"type": "closet", "label": "本地衣橱", "count": len(items)}],
         "next_actions": [
@@ -2175,6 +2192,21 @@ def _demo_chat_response(request: dict[str, Any]) -> dict[str, Any]:
         "session_id": request["session_id"],
         "user_id": request["user_id"],
         "runtime": {"transport": "demo", "agent_id": request["agent_id"]},
+    }
+
+
+def _request_style_persona(request: dict[str, Any]) -> dict[str, Any]:
+    context = request.get("context") if isinstance(request.get("context"), dict) else {}
+    profile = context.get("mock_profile") if isinstance(context.get("mock_profile"), dict) else {}
+    raw = profile.get("style_persona") if isinstance(profile.get("style_persona"), dict) else {}
+    colors = raw.get("colors") if isinstance(raw.get("colors"), list) else []
+    return {
+        "typeId": raw.get("type_id") or raw.get("typeId"),
+        "metadata": {"name": raw.get("name"), "code": raw.get("code")},
+        "keywords": raw.get("keywords") if isinstance(raw.get("keywords"), list) else [],
+        "summary": raw.get("summary") or "",
+        "colors": {"items": colors},
+        "recommendations": raw.get("recommendations") if isinstance(raw.get("recommendations"), dict) else {},
     }
 
 

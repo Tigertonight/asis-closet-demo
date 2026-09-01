@@ -1,0 +1,286 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#f4f1ed" />
+    <title>Mirro 照片模板工坊</title>
+    <link rel="stylesheet" href="/src/styles.css" />
+  </head>
+  <body>
+    <div id="app">
+      <section class="library-view" id="libraryView">
+        <header class="library-topbar">
+          <a class="brand" href="#library" aria-label="Mirro 批次工作台首页">
+            <span class="brand-mark" aria-hidden="true"><i></i><i></i></span>
+            <span>mirro <b>batch</b></span>
+          </a>
+          <div class="library-nav">
+            <button class="is-active">成片队列</button>
+            <button id="openBlankStudio">单张 Studio</button>
+          </div>
+          <div class="local-badge"><i class="ready-dot"></i> 本机处理</div>
+        </header>
+
+        <main class="batch-library" id="batchDropZone">
+          <div class="batch-heading">
+            <div>
+              <span class="eyebrow">MIRRO PHOTO WORKFLOW</span>
+              <h1>批量成片</h1>
+              <p>一次导入多张 Mirro 原图，统一套用色彩与模板，再集中导出。</p>
+            </div>
+            <div class="batch-stats" aria-label="批次统计">
+              <span><b id="totalCount">0</b><small>全部</small></span>
+              <span><b id="pendingCount">0</b><small>未完成</small></span>
+              <span class="is-complete"><b id="completedCount">0</b><small>已完成</small></span>
+            </div>
+          </div>
+
+          <section class="batch-panel">
+            <div class="batch-toolbar">
+              <label class="batch-check-all">
+                <input type="checkbox" id="selectAllBatch" />
+                <i></i>
+                <span id="selectedCount">已选 0 张</span>
+              </label>
+              <label class="batch-template-field" for="batchTemplate">
+                <span>统一版式</span>
+                <select id="batchTemplate">
+                  <option value="wineClassic">酒红硬边框 · 3:4</option>
+                  <option value="silverClassic">银灰硬边框 · 3:4</option>
+                  <option value="silverLace">银灰蕾丝框 · 3:4</option>
+                  <option value="wineLace">酒红蕾丝框 · 3:4</option>
+                </select>
+              </label>
+              <div class="batch-actions">
+                <button class="button button-ghost" id="batchImportButton">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20V9m0 0 4 4m-4-4-4 4M5 8V4h14v4"/></svg>
+                  导入照片
+                </button>
+                <button class="button button-secondary" id="batchProcessButton" disabled>处理选中</button>
+                <button class="button button-primary" id="batchExportButton" disabled>
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v11m0 0 4-4m-4 4-4-4M5 15v4h14v-4"/></svg>
+                  批量导出
+                </button>
+              </div>
+              <input type="file" id="batchInput" accept="image/jpeg,image/png,image/webp" multiple hidden />
+            </div>
+
+            <div class="batch-empty" id="batchEmpty">
+              <span class="batch-empty-stack" aria-hidden="true"><i></i><i></i><i></i></span>
+              <h2>把一组照片拖进来</h2>
+              <p>可同时选择多张 JPG、PNG 或 WEBP，单张不超过 25MB。</p>
+              <button class="button button-primary" id="batchEmptyButton">选择多张照片</button>
+            </div>
+
+            <div class="batch-table-wrap" id="batchTableWrap" hidden>
+              <table class="batch-table">
+                <thead>
+                  <tr>
+                    <th class="check-column"><span class="sr-only">选择</span></th>
+                    <th>照片</th>
+                    <th>版式</th>
+                    <th>状态</th>
+                    <th>处理进度</th>
+                    <th><span class="sr-only">操作</span></th>
+                  </tr>
+                </thead>
+                <tbody id="batchRows"></tbody>
+              </table>
+            </div>
+
+            <footer class="batch-foot" id="batchFoot" hidden>
+              <span><i class="ready-dot"></i> 所有照片和成片仅保留在当前浏览器内存</span>
+              <span id="batchFootSummary">等待导入</span>
+            </footer>
+          </section>
+        </main>
+      </section>
+
+      <section class="studio-view" id="studioView" hidden>
+      <header class="topbar">
+        <div class="studio-brand-wrap">
+          <button class="back-to-library" id="backToLibrary" aria-label="返回批次工作台">‹</button>
+          <a class="brand" href="#library" aria-label="返回 Mirro 批次工作台">
+            <span class="brand-mark" aria-hidden="true"><i></i><i></i></span>
+            <span>mirro <b>studio</b></span>
+          </a>
+        </div>
+        <div class="project-title">
+          <span class="status-dot" aria-hidden="true"></span>
+          <input id="projectName" value="今日试镜 · 01" aria-label="项目名称" />
+        </div>
+        <div class="top-actions">
+          <button class="button button-ghost" id="resetButton">重置</button>
+          <button class="button button-primary" id="exportButton">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v11m0 0 4-4m-4 4-4-4M5 15v4h14v-4"/></svg>
+            导出 PNG
+          </button>
+        </div>
+      </header>
+
+      <main class="workspace">
+        <aside class="rail rail-left" aria-label="模板和素材">
+          <div class="rail-heading">
+            <span>创作台</span>
+            <small>01 / 03</small>
+          </div>
+
+          <section class="panel-section upload-section">
+            <div class="section-title"><h2>照片</h2><span>1 张</span></div>
+            <button class="photo-card" id="photoButton" data-drop-target="photo">
+              <img id="photoThumb" alt="当前照片缩略图" />
+              <span class="photo-placeholder">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h3l1.4-2h7.2L17 7h3v12H4z"/><circle cx="12" cy="13" r="3.5"/></svg>
+                <b>导入 Mirro 原图</b>
+                <small>JPG / PNG / WEBP</small>
+              </span>
+              <span class="replace-label">替换照片</span>
+            </button>
+            <input type="file" id="photoInput" accept="image/jpeg,image/png,image/webp" hidden />
+          </section>
+
+          <section class="panel-section templates-section">
+            <div class="section-title"><h2>版式</h2><span>4 款</span></div>
+            <div class="template-list" role="radiogroup" aria-label="选择模板">
+              <button class="template-card is-active" data-template="wineClassic" role="radio" aria-checked="true">
+                <span class="template-preview material-preview"><img src="/assets/templates/material-single/wine-classic.png" alt="" /></span>
+                <span><b>酒红硬边框</b><small>原版素材 · 3:4</small></span>
+                <em>01</em>
+              </button>
+              <button class="template-card" data-template="silverClassic" role="radio" aria-checked="false">
+                <span class="template-preview material-preview"><img src="/assets/templates/material-single/silver-classic.png" alt="" /></span>
+                <span><b>银灰硬边框</b><small>原版素材 · 3:4</small></span>
+                <em>02</em>
+              </button>
+              <button class="template-card" data-template="silverLace" role="radio" aria-checked="false">
+                <span class="template-preview material-preview"><img src="/assets/templates/material-single/silver-lace.png" alt="" /></span>
+                <span><b>银灰蕾丝框</b><small>原版素材 · 3:4</small></span>
+                <em>03</em>
+              </button>
+              <button class="template-card" data-template="wineLace" role="radio" aria-checked="false">
+                <span class="template-preview material-preview"><img src="/assets/templates/material-single/wine-lace.png" alt="" /></span>
+                <span><b>酒红蕾丝框</b><small>原版素材 · 3:4</small></span>
+                <em>04</em>
+              </button>
+            </div>
+          </section>
+
+          <div class="privacy-note">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 10V7a5 5 0 0 1 10 0v3M5 10h14v10H5z"/></svg>
+            <span><b>仅在本机处理</b><small>照片不会上传到服务器</small></span>
+          </div>
+        </aside>
+
+        <section class="stage" aria-label="模板预览画布">
+          <div class="stage-toolbar">
+            <div class="view-switch" role="group" aria-label="预览模式">
+              <button class="is-active" data-view="result">成片</button>
+              <button data-view="compare">对比</button>
+            </div>
+            <div class="zoom-control">
+              <button id="zoomOut" aria-label="缩小预览">−</button>
+              <span id="zoomValue">56%</span>
+              <button id="zoomIn" aria-label="放大预览">＋</button>
+            </div>
+          </div>
+
+          <div class="canvas-space" id="canvasSpace" data-drop-target="photo">
+            <div class="canvas-shell" id="canvasShell">
+              <canvas id="templateCanvas" width="1080" height="1440" aria-label="可拖动调整照片位置的模板预览"></canvas>
+              <div class="empty-overlay" id="emptyOverlay">
+                <span class="empty-glyph" aria-hidden="true"><i></i><i></i></span>
+                <h1>把这一刻，留成一张作品</h1>
+                <p>导入一张 Mirro 原图，自动套用撕拉片色彩与版式。</p>
+                <button class="button button-primary" id="emptyUploadButton">选择照片</button>
+              </div>
+              <div class="drag-hint" id="dragHint">拖动画面调整构图</div>
+            </div>
+          </div>
+          <div class="stage-foot">
+            <span>画布 <b id="canvasSize">1080 × 1440 px</b></span>
+            <span><i class="ready-dot"></i> 高质量预览</span>
+          </div>
+        </section>
+
+        <aside class="rail rail-right" aria-label="画面调整">
+          <div class="inspector-tabs" role="tablist">
+            <button class="is-active" data-tab="image" role="tab">画面</button>
+            <button data-tab="text" role="tab" hidden>文字</button>
+          </div>
+
+          <div class="tab-panel is-active" data-panel="image">
+            <section class="panel-section lut-section">
+              <div class="section-title"><h2>色彩风格</h2><button class="text-button" id="lutButton">导入 LUT</button></div>
+              <input type="file" id="lutInput" accept=".cube,image/png" hidden />
+              <button class="lut-card is-active" id="defaultLutCard">
+                <span class="lut-swatch"></span>
+                <span><b>撕拉片 · 肤色保护</b><small id="lutMeta">原配置 · 双 LUT</small></span>
+                <i aria-hidden="true"></i>
+              </button>
+              <div class="control-row">
+                <label for="lutStrength">滤镜强度</label>
+                <output id="lutStrengthValue">80</output>
+              </div>
+              <input class="range" id="lutStrength" type="range" min="0" max="100" value="80" />
+            </section>
+
+            <section class="panel-section adjustments">
+              <div class="section-title"><h2>质感</h2><button class="text-button" id="resetAdjustments">还原</button></div>
+              <div class="slider-set">
+                <div class="control-row"><label for="vignette">暗角</label><output id="vignetteValue">50</output></div>
+                <input class="range" id="vignette" type="range" min="0" max="100" value="50" />
+              </div>
+              <div class="slider-set">
+                <div class="control-row"><label for="softness">柔化</label><output id="softnessValue">10</output></div>
+                <input class="range" id="softness" type="range" min="0" max="30" value="10" />
+              </div>
+              <div class="slider-set">
+                <div class="control-row"><label for="grain">细噪</label><output id="grainValue">50</output></div>
+                <input class="range" id="grain" type="range" min="0" max="100" value="50" />
+              </div>
+              <div class="slider-set">
+                <div class="control-row"><label for="exposure">明暗</label><output id="exposureValue">0</output></div>
+                <input class="range range-mid" id="exposure" type="range" min="-30" max="30" value="0" />
+              </div>
+            </section>
+
+            <section class="panel-section crop-section">
+              <div class="section-title"><h2>构图</h2><span>拖动也可调整</span></div>
+              <div class="control-row"><label for="photoScale">照片缩放</label><output id="photoScaleValue">100%</output></div>
+              <input class="range" id="photoScale" type="range" min="100" max="180" value="100" />
+              <button class="wide-secondary" id="centerPhoto">居中照片</button>
+            </section>
+          </div>
+
+          <div class="tab-panel" data-panel="text">
+            <section class="panel-section copy-section">
+              <div class="section-title"><h2>模板文字</h2><span>实时预览</span></div>
+              <label class="field-label" for="headline">主标题</label>
+              <input class="text-field" id="headline" maxlength="18" value="此刻，刚刚好" />
+              <label class="field-label" for="subline">副标题</label>
+              <input class="text-field" id="subline" maxlength="36" value="MIRRO PORTRAIT · SHANGHAI" />
+              <label class="toggle-row">
+                <span><b>显示拍摄日期</b><small>自动使用今天日期</small></span>
+                <input type="checkbox" id="showDate" checked />
+                <i></i>
+              </label>
+            </section>
+          </div>
+        </aside>
+      </main>
+      </section>
+
+      <div class="toast" id="toast" role="status" aria-live="polite"></div>
+      <div class="exporting" id="exporting" aria-hidden="true"><span></span><b>正在生成高清图片…</b></div>
+      <div class="drop-overlay" id="dropOverlay" aria-hidden="true">
+        <div class="drop-card">
+          <span class="drop-icon" aria-hidden="true"><i></i></span>
+          <b>松开鼠标，导入照片</b>
+          <small>支持 JPG、PNG、WEBP</small>
+        </div>
+      </div>
+    </div>
+    <script type="module" src="/src/app.js"></script>
+  </body>
+</html>

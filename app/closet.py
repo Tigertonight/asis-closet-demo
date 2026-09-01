@@ -8,6 +8,8 @@ import os
 import re
 import shutil
 import base64
+import threading
+from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
@@ -41,10 +43,14 @@ from app.tryon import (
     _openai_base_url,
     _openai_compatible_client,
     _default_garment_analysis_provider,
+    _default_tryon_vision_model,
+    _extract_json_object,
     _extract_runway_google_image,
+    _image_to_data_url,
     _path_to_runway_inline_data,
     _response_shape,
     _runway_google_api_key,
+    _runway_google_auth_headers,
     _runway_google_error_summary,
     _runway_google_url,
     image_edit_model,
@@ -63,6 +69,10 @@ TRYON_RECORDS_MANIFEST_PATH = CLOSET_OUTPUT_DIR / "tryon_records_manifest.json"
 CLOSET_SUPPORTED_CATEGORIES = {"top", "bottom", "skirt", "dress", "shoes", "bag", "accessory"}
 MAX_LINK_IMAGES = 12
 OUTFIT_LAYOUT_VERSION = "selfit_flatlay_v1_card_safe"
+IMPORT_PIPELINE_VERSION = "closet_import_v2"
+IMPORT_JOB_EXECUTOR = ThreadPoolExecutor(max_workers=2, thread_name_prefix="selfit-closet-import")
+IMPORT_JOB_LOCK = threading.Lock()
+IMPORT_PIPELINE_LOCK = threading.Lock()
 SEGFORMER_CLOTHES_MODEL_ID = "mattmdjaga/segformer_b2_clothes"
 SEGFORMER_LABEL_CATEGORY_HINTS = {
     "top": ("upper", "shirt", "blouse", "coat", "jacket", "sweater", "hoodie", "cardigan", "vest", "t-shirt", "top"),
@@ -72,6 +82,33 @@ SEGFORMER_LABEL_CATEGORY_HINTS = {
     "shoes": ("shoe", "sneaker", "boot", "sandal", "loafer", "heel"),
     "bag": ("bag", "handbag", "backpack", "purse", "clutch"),
     "accessory": ("hat", "cap", "scarf", "belt", "sunglasses", "glove", "sock", "tie", "accessory"),
+}
+
+STYLE_TOKEN_ALIASES = {
+    "minimal": ("minimal", "minimalist", "clean", "simple", "简洁", "极简", "低装饰", "克制"),
+    "structured": ("structured", "tailored", "sharp", "clean lines", "秩序", "利落", "结构", "清晰线条", "剪裁"),
+    "soft": ("soft", "gentle", "flowy", "drape", "柔和", "温柔", "轻盈", "垂坠"),
+    "classic": ("classic", "timeless", "preppy", "heritage", "经典", "老钱", "学院", "稳定质感"),
+    "romantic": ("romantic", "lace", "ruffle", "feminine", "浪漫", "蕾丝", "荷叶", "女性"),
+    "casual": ("casual", "relaxed", "everyday", "休闲", "松弛", "日常", "舒适"),
+    "sporty": ("sport", "sporty", "athletic", "outdoor", "运动", "户外", "机能"),
+    "vintage": ("vintage", "retro", "nostalgic", "复古", "怀旧"),
+    "dark": ("dark", "goth", "black", "leather", "暗黑", "冷硬", "黑色", "皮革"),
+    "expressive": ("expressive", "bold", "statement", "contrast", "高表达", "大胆", "撞色", "冲突", "夸张"),
+    "airy": ("airy", "sheer", "transparent", "satin", "空气感", "薄纱", "半透明", "缎面", "冷雾"),
+}
+
+COLOR_TOKEN_ALIASES = {
+    "black": ("black", "charcoal", "onyx", "黑", "炭黑", "曜石"),
+    "white": ("white", "ivory", "cream", "oat", "白", "象牙", "奶油", "烟白", "雾白"),
+    "gray": ("gray", "grey", "silver", "灰", "银", "水泥"),
+    "blue": ("blue", "navy", "denim", "蓝", "藏青", "雾蓝", "冰蓝"),
+    "brown": ("brown", "camel", "tan", "coffee", "chocolate", "棕", "驼", "咖啡", "焦糖", "巧克力"),
+    "red": ("red", "burgundy", "wine", "红", "酒红", "番茄"),
+    "pink": ("pink", "rose", "blush", "粉", "玫瑰", "裸粉"),
+    "green": ("green", "mint", "olive", "绿", "薄荷", "墨绿"),
+    "yellow": ("yellow", "lemon", "champagne", "黄", "柠檬", "香槟"),
+    "purple": ("purple", "violet", "lavender", "紫", "薰衣草"),
 }
 
 
@@ -113,6 +150,10 @@ def _tryon_records_manifest_path() -> Path:
 
 def _user_preferences_path() -> Path:
     return storage_context().user_root / "preferences.json"
+
+
+def _import_job_dir() -> Path:
+    return storage_context().user_root / "closet" / "import_jobs"
 
 
 def _now_iso() -> str:
@@ -263,6 +304,8 @@ def closet_capabilities() -> dict[str, Any]:
         },
         "imports": {
             "upload": True,
+            "outfit_split": True,
+            "outfit_max_items": 12,
             "xiaohongshu": True,
             "webpage": True,
             "max_link_images": MAX_LINK_IMAGES,
@@ -306,11 +349,13 @@ def closet_capabilities() -> dict[str, Any]:
         },
         "categories": {
             "supported": sorted(CLOSET_SUPPORTED_CATEGORIES),
-            "tryon_ready": ["top"],
+            "tryon_ready": ["top", "bottom", "skirt", "dress"],
+            "legacy_single_image_tryon": ["top"],
+            "match_before_tryon": ["shoes", "bag", "accessory"],
         },
         "outfits": {
             "enabled": True,
-            "tryon_mode": "top_item_with_outfit_style_context",
+            "tryon_mode": "category_aware_outfit_reference",
         },
         "mode": "ai_garment_first" if ai_cutout.available() else "local_open_source_fallback",
     }
@@ -391,7 +436,7 @@ class AIGarmentCutoutProvider:
                 self.last_attempt.update({"status": "skipped", "reason": "garment_analysis_not_confident", "analysis_status": analysis.get("status"), "analysis_score": round(confidence, 3)})
                 return []
 
-            cutout = self._generate_cutout(source["saved_path"])
+            cutout = self._generate_cutout(source["saved_path"], category)
             if cutout is None:
                 self.last_attempt.setdefault("reason", "image_provider_did_not_return_an_image")
                 self.last_attempt["status"] = "failed"
@@ -400,9 +445,14 @@ class AIGarmentCutoutProvider:
             raw_output_path.parent.mkdir(parents=True, exist_ok=True)
             cutout.save(raw_output_path)
             self.last_attempt["raw_output_path"] = _public_closet_path(raw_output_path)
+            cutout, matting_status = _ensure_transparent_ai_cutout(cutout)
             if not _has_meaningful_transparency(cutout):
                 self.last_attempt.update({"status": "rejected", "reason": "image_provider_result_is_not_transparent"})
                 return []
+            if matting_status != "native_alpha":
+                matted_path = work_dir / "ai_cutout_matted.png"
+                cutout.save(matted_path)
+                self.last_attempt["matted_output_path"] = _public_closet_path(matted_path)
             item = _closet_item_from_ai_cutout(
                 category=category,
                 cutout=cutout,
@@ -411,28 +461,202 @@ class AIGarmentCutoutProvider:
                 model=self.model,
                 analysis=analysis,
             )
+            if item:
+                item.setdefault("pipeline", {}).setdefault("matting", {}).update({"provider": matting_status, "status": "transparent_png_verified"})
             self.last_attempt.update({"status": "ok", "category": category, "analysis_score": round(confidence, 3)})
             return [item] if item else []
         except Exception as exc:
             self.last_attempt.update({"status": "failed", "reason": "adapter_exception", "error": str(exc)[:300]})
             return []
 
-    def _generate_cutout(self, source_path: Path) -> Image.Image | None:
+    def extract_inventory(self, source: dict[str, Any], work_dir: Path) -> list[dict[str, Any]]:
+        """Find every visible fashion item, then create one transparent cutout per item.
+
+        This is deliberately separate from ``extract``: the latter remains the high
+        fidelity single-item path, while this method owns outfit/flat-lay splitting.
+        """
+        provider = self._provider_kind()
+        inventory_attempt: dict[str, Any] = {
+            "provider": provider or "none",
+            "model": self.model,
+            "status": "not_started",
+            "expected_count": 0,
+            "created_count": 0,
+        }
+        self.last_attempt = inventory_attempt
+        if provider is None:
+            inventory_attempt.update({"status": "skipped", "reason": "provider_not_configured"})
+            return []
+        try:
+            candidates = self._analyze_inventory(source["image"])
+            inventory_attempt["expected_count"] = len(candidates)
+            inventory_attempt["categories"] = [candidate["category"] for candidate in candidates]
+            if not candidates:
+                inventory_attempt.update({
+                    "status": "skipped",
+                    "reason": "no_inventory",
+                })
+                return []
+
+            items: list[dict[str, Any]] = []
+            failures: list[dict[str, Any]] = []
+            for index, candidate in enumerate(candidates):
+                candidate_path = _save_inventory_candidate_crop(source, candidate, work_dir, index)
+                cutout = self._generate_cutout(candidate_path, candidate["category"])
+                if cutout is None:
+                    failures.append({"index": index, "category": candidate["category"], "reason": "missing_transparent_cutout"})
+                    continue
+                raw_output_path = work_dir / f"inventory_{index:02d}_{candidate['category']}_raw.png"
+                cutout.save(raw_output_path)
+                cutout, matting_status = _ensure_transparent_ai_cutout(cutout)
+                if not _has_meaningful_transparency(cutout):
+                    failures.append({"index": index, "category": candidate["category"], "reason": "missing_transparent_cutout", "raw_output_path": _public_closet_path(raw_output_path)})
+                    continue
+                if matting_status != "native_alpha":
+                    cutout.save(work_dir / f"inventory_{index:02d}_{candidate['category']}_matted.png")
+                analysis = {
+                    "status": "pass" if candidate["confidence"] >= 0.68 else "warn",
+                    "confidence": candidate["confidence"],
+                    "evidence": {
+                        "provider": "fashion_inventory",
+                        "garment": {
+                            "category": candidate["category"],
+                            "bbox": candidate["bbox"],
+                            "colors": candidate.get("colors", []),
+                            "material": candidate.get("material", []),
+                            "style_tags": candidate.get("style_tags", []),
+                        },
+                    },
+                }
+                item = _closet_item_from_ai_cutout(
+                    category=candidate["category"],
+                    cutout=cutout,
+                    source=source,
+                    provider_name=provider,
+                    model=self.model,
+                    analysis=analysis,
+                    instance_key=f"inventory:{index}:{candidate['bbox']}",
+                )
+                if item:
+                    item.setdefault("pipeline", {}).setdefault("matting", {}).update({"provider": matting_status, "status": "transparent_png_verified"})
+                    item.setdefault("pipeline", {})["inventory"] = {
+                        "provider": provider,
+                        "status": "ok",
+                        "candidate_index": index,
+                        "candidate_count": len(candidates),
+                        "bbox": candidate["bbox"],
+                    }
+                    items.append(item)
+                else:
+                    failures.append({"index": index, "category": candidate["category"], "reason": "quality_rejected"})
+
+            inventory_attempt.update({
+                "status": "ok" if len(items) == len(candidates) else "partial" if items else "failed",
+                "created_count": len(items),
+                "failures": failures,
+            })
+            return items
+        except Exception as exc:
+            inventory_attempt.update({"status": "failed", "reason": "inventory_exception", "error": str(exc)[:300]})
+            return []
+
+    def _analyze_inventory(self, image: Image.Image) -> list[dict[str, Any]]:
+        prompt = (
+            "Analyze this fashion image and enumerate every distinct wearable item that should become a closet item. "
+            "Include tops, bottoms, skirts, dresses, shoes as a pair, bags and accessories. Exclude people, skin, hair, "
+            "phones, furniture, text, shadows and background objects. Return strict JSON only with schema "
+            "{items:[{category:string,bbox:{x:number,y:number,width:number,height:number},confidence:number,fully_visible:boolean,"
+            "colors:string[],material:string[],style_tags:string[]}]}. Coordinates must be normalized 0-1. "
+            "Every x, y, width and height value must be a decimal from 0.0 through 1.0; never use pixels, percentages, or 0-1000 coordinates. "
+            "Use only categories top,bottom,skirt,dress,shoes,bag,accessory. Keep separate garments as separate items, "
+            "but treat the two shoes of one pair as one item. Do not split a dress into top and skirt. "
+            "Only include real fashion items whose usable silhouette is mostly visible. Ignore base garments that are cut off by the frame, "
+            "and never classify towels, blankets, bedding, curtains, upholstery or folded household textiles as accessories."
+        )
         if self._uses_runway():
-            return self._generate_runway_cutout(source_path)
+            text = self._analyze_inventory_with_runway(image, prompt)
+        else:
+            text = self._analyze_inventory_with_openai(image, prompt)
+        payload = _extract_json_object(text or "")
+        return _normalize_inventory_candidates(payload.get("items"))
+
+    def _analyze_inventory_with_runway(self, image: Image.Image, prompt: str) -> str:
+        api_key = _runway_google_api_key()
+        if not api_key:
+            return ""
+        buffer = io.BytesIO()
+        image.convert("RGB").save(buffer, "JPEG", quality=92)
+        payload = {
+            "contents": [{"role": "user", "parts": [
+                {"inlineData": {"mimeType": "image/jpeg", "data": base64.b64encode(buffer.getvalue()).decode("ascii")}},
+                {"text": prompt},
+            ]}],
+            # The Runway Google proxy rejects an explicit TEXT-only modality for
+            # gemini-*-image models. Omitting it still returns text without asking
+            # the image model to generate a wasteful image response.
+            "generationConfig": {"temperature": 0.1, "maxOutputTokens": 4096},
+        }
+        response = httpx.post(
+            _runway_google_url(),
+            headers={**_runway_google_auth_headers(_runway_google_url(), api_key), "Content-Type": "application/json"},
+            json=payload,
+            timeout=90,
+        )
+        response.raise_for_status()
+        data = response.json()
+        texts: list[str] = []
+        for candidate in data.get("candidates") or []:
+            for part in ((candidate.get("content") or {}).get("parts") or []):
+                if isinstance(part.get("text"), str):
+                    texts.append(part["text"])
+        return "\n".join(texts)
+
+    def _analyze_inventory_with_openai(self, image: Image.Image, prompt: str) -> str:
+        from openai import OpenAI
+
+        client = _openai_compatible_client(OpenAI)
+        vision_model = os.environ.get("TRYON_VISION_MODEL") or _default_tryon_vision_model()
+        image_url = _image_to_data_url(image)
+        try:
+            response = client.responses.create(
+                model=vision_model,
+                input=[{"role": "user", "content": [
+                    {"type": "input_text", "text": prompt},
+                    {"type": "input_image", "image_url": image_url, "detail": "high"},
+                ]}],
+            )
+            return getattr(response, "output_text", "") or ""
+        except Exception as responses_exc:
+            response = client.chat.completions.create(
+                model=vision_model,
+                messages=[{"role": "user", "content": [
+                    {"type": "text", "text": prompt},
+                    {"type": "image_url", "image_url": {"url": image_url}},
+                ]}],
+                max_tokens=1600,
+            )
+            text = response.choices[0].message.content or ""
+            if not text:
+                raise responses_exc
+            return text
+
+    def _generate_cutout(self, source_path: Path, category: str | None = None) -> Image.Image | None:
+        if self._uses_runway():
+            return self._generate_runway_cutout(source_path, category)
         if self._uses_openai():
-            return self._generate_openai_cutout(source_path)
+            return self._generate_openai_cutout(source_path, category)
         return None
 
-    def _generate_runway_cutout(self, source_path: Path) -> Image.Image | None:
+    def _generate_runway_cutout(self, source_path: Path, category: str | None = None) -> Image.Image | None:
         api_key = _runway_google_api_key()
         if not api_key:
             return None
         prompt = (
-            "请从输入图片中提取唯一的主服饰/鞋/包单品，生成忠实的商品抠图。"
+            f"请从输入图片中提取唯一的{_fashion_category_label(category) if category else '主服饰/鞋/包'}单品，生成忠实的商品抠图。"
             "完整保留原始单品的轮廓、颜色、面料纹理、蕾丝、纽扣、印花、鞋带、背带和边缘。"
             "必须去除人物、皮肤、手、衣架、背景、地面、阴影、文字、水印和其他物体。"
-            "最终只输出一件居中的单品 PNG，背景必须完全透明（alpha），不要白底、不要阴影、不要重新设计，不能裁掉单品任何部分。"
+            "最终只输出一件居中的单品，背景使用单一、均匀、无纹理的纯洋红色 #FF00FF，方便系统转换为透明 alpha。"
+            "严禁绘制透明棋盘格、渐变、地面或投影；不要重新设计，不能裁掉单品任何部分。"
             f"使用与试穿一致的图片模型配置：{self.model}。"
         )
         payload = {
@@ -453,7 +677,7 @@ class AIGarmentCutoutProvider:
         try:
             response = httpx.post(
                 _runway_google_url(),
-                headers={"api-key": api_key, "Content-Type": "application/json"},
+                headers={**_runway_google_auth_headers(_runway_google_url(), api_key), "Content-Type": "application/json"},
                 json=payload,
                 timeout=180,
             )
@@ -475,13 +699,13 @@ class AIGarmentCutoutProvider:
             self.last_attempt.update({"status": "failed", "reason": "runway_request_failed", "error": str(exc)[:300]})
             return None
 
-    def _generate_openai_cutout(self, source_path: Path) -> Image.Image | None:
+    def _generate_openai_cutout(self, source_path: Path, category: str | None = None) -> Image.Image | None:
         try:
             from openai import OpenAI
 
             client = _openai_compatible_client(OpenAI)
             prompt = (
-                "Extract the single main fashion item from this image as a faithful product cutout. "
+                f"Extract the single {category or 'main fashion'} item from this image as a faithful product cutout. "
                 "Preserve the exact garment silhouette, color, fabric texture, trims, print, buttons, straps and edges. "
                 "Remove every person, mannequin, skin, hanger, hand, text, logo overlay, floor and background. "
                 "Return one centered item only as a PNG with a fully transparent background. Do not redesign, restyle, "
@@ -596,6 +820,20 @@ class RembgMattingProvider:
             return "optional_dependency_missing"
         return "available"
 
+    def remove_background(self, image: Image.Image) -> Image.Image | None:
+        if not self.available():
+            return None
+        try:
+            from rembg import remove
+
+            buffer = io.BytesIO()
+            image.convert("RGB").save(buffer, "PNG")
+            result = Image.open(io.BytesIO(remove(buffer.getvalue()))).convert("RGBA")
+            result.load()
+            return result
+        except Exception:
+            return None
+
     def refine(self, image: Image.Image, semantic_alpha: Image.Image) -> tuple[Image.Image, str]:
         if not self.available():
             rgba = image.convert("RGBA")
@@ -634,6 +872,141 @@ async def import_uploads(images: list[UploadFile]) -> dict[str, Any]:
         raw = await upload.read()
         sources.append(_save_source_image(raw, upload.filename, "upload", index))
     return _import_sources(sources, import_type="upload")
+
+
+async def create_import_upload_job(images: list[UploadFile], user_id: str) -> dict[str, Any]:
+    if not images:
+        raise HTTPException(status_code=422, detail="请至少上传一张图片")
+    sources = []
+    for index, upload in enumerate(images):
+        raw = await upload.read()
+        sources.append(_save_source_image(raw, upload.filename, "upload", index))
+    signature = ":".join(source["image_id"] for source in sources)
+    job_id = hashlib.sha256(f"{user_id}:{signature}:{_now_iso()}".encode("utf-8")).hexdigest()[:18]
+    descriptors = [
+        {
+            "image_id": source["image_id"],
+            "saved_path": str(source["saved_path"]),
+            "source": source["source"],
+        }
+        for source in sources
+    ]
+    now = _now_iso()
+    job = {
+        "job_id": job_id,
+        "user_id": user_id,
+        "pipeline_version": IMPORT_PIPELINE_VERSION,
+        "status": "queued",
+        "progress": 0,
+        "phase": "queued",
+        "attempt": 1,
+        "sources": descriptors,
+        "created_at": now,
+        "updated_at": now,
+        "result": None,
+        "error": None,
+    }
+    _write_import_job(job)
+    IMPORT_JOB_EXECUTOR.submit(_run_import_job, user_id, job_id)
+    return _public_import_job(job)
+
+
+def get_import_job(job_id: str) -> dict[str, Any]:
+    return _public_import_job(_read_import_job(job_id))
+
+
+def retry_import_job(job_id: str, user_id: str) -> dict[str, Any]:
+    job = _read_import_job(job_id)
+    if job.get("status") in {"queued", "processing"}:
+        return _public_import_job(job)
+    if job.get("status") == "completed":
+        return _public_import_job(job)
+    job.update({
+        "status": "queued",
+        "progress": 0,
+        "phase": "retry_queued",
+        "attempt": int(job.get("attempt") or 1) + 1,
+        "updated_at": _now_iso(),
+        "error": None,
+    })
+    _write_import_job(job)
+    IMPORT_JOB_EXECUTOR.submit(_run_import_job, user_id, job_id)
+    return _public_import_job(job)
+
+
+def _import_job_path(job_id: str) -> Path:
+    if not re.fullmatch(r"[a-f0-9]{18}", str(job_id or "")):
+        raise HTTPException(status_code=404, detail="没有找到这个导入任务")
+    return _import_job_dir() / f"{job_id}.json"
+
+
+def _write_import_job(job: dict[str, Any]) -> None:
+    path = _import_job_path(str(job.get("job_id") or ""))
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with IMPORT_JOB_LOCK:
+        tmp_path = path.with_suffix(".tmp")
+        tmp_path.write_text(json.dumps(job, ensure_ascii=False, indent=2), encoding="utf-8")
+        tmp_path.replace(path)
+
+
+def _read_import_job(job_id: str) -> dict[str, Any]:
+    path = _import_job_path(job_id)
+    if not path.exists():
+        raise HTTPException(status_code=404, detail="没有找到这个导入任务")
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        raise HTTPException(status_code=500, detail="导入任务状态无法读取") from exc
+    return data
+
+
+def _public_import_job(job: dict[str, Any]) -> dict[str, Any]:
+    return {key: value for key, value in job.items() if key not in {"sources", "user_id"}}
+
+
+def _update_import_job(job_id: str, **updates: Any) -> dict[str, Any]:
+    job = _read_import_job(job_id)
+    job.update(updates)
+    job["updated_at"] = _now_iso()
+    _write_import_job(job)
+    return job
+
+
+def _run_import_job(user_id: str, job_id: str) -> None:
+    from app.storage import user_storage
+
+    try:
+        with user_storage(user_id):
+            job = _read_import_job(job_id)
+            sources = []
+            for descriptor in job.get("sources", []):
+                saved_path = Path(str(descriptor.get("saved_path") or ""))
+                image = Image.open(saved_path).convert("RGB")
+                image.load()
+                sources.append({
+                    "image": image,
+                    "image_id": descriptor["image_id"],
+                    "saved_path": saved_path,
+                    "source": descriptor.get("source") or {},
+                })
+            _update_import_job(job_id, status="processing", phase="analyzing", progress=8)
+
+            def progress(completed: int, total: int, phase: str) -> None:
+                percent = 10 + int(78 * completed / max(1, total))
+                _update_import_job(job_id, status="processing", phase=phase, progress=min(88, percent))
+
+            with IMPORT_PIPELINE_LOCK:
+                result = _import_sources(sources, import_type="upload", progress_callback=progress)
+            _update_import_job(job_id, status="completed", phase="completed", progress=100, result=result, error=None)
+    except Exception as exc:
+        try:
+            with user_storage(user_id):
+                _update_import_job(job_id, status="failed", phase="failed", error={
+                    "message": str(exc)[:500],
+                    "retryable": True,
+                })
+        except Exception:
+            return
 
 
 async def import_link(url: str) -> dict[str, Any]:
@@ -719,6 +1092,7 @@ def update_closet_item(item_id: str, payload: dict[str, Any]) -> dict[str, Any]:
             edits["favorite"] = item["favorite"]
         item["updated_at"] = now
         _write_manifest(data)
+        _refresh_outfits_for_item(item_id)
         return item
     raise HTTPException(status_code=404, detail="没有找到这件衣物")
 
@@ -730,6 +1104,7 @@ def delete_closet_item(item_id: str) -> dict[str, Any]:
             item["deleted"] = True
             item["updated_at"] = _now_iso()
             _write_manifest(data)
+            _refresh_outfits_for_item(item_id)
             return {"status": "deleted", "item_id": item_id}
     raise HTTPException(status_code=404, detail="没有找到这件衣物")
 
@@ -758,11 +1133,17 @@ def closet_item_as_upload(item_id: str) -> dict[str, Any]:
 
 def list_outfits() -> dict[str, Any]:
     data = _ensure_outfit_manifest()
+    closet_data = _ensure_manifest()
+    items_by_id = {
+        str(item.get("item_id")): item
+        for item in closet_data.get("items", [])
+        if item.get("item_id") and not item.get("deleted")
+    }
     outfits = []
     for outfit in data.get("outfits", []):
         if outfit.get("deleted"):
             continue
-        resolved = _resolve_outfit(outfit)
+        resolved = _resolve_outfit(outfit, items_by_id)
         if resolved.get("items"):
             outfits.append(resolved)
     outfits = _dedupe_similar_outfits(outfits)
@@ -770,11 +1151,149 @@ def list_outfits() -> dict[str, Any]:
     return {"total": len(outfits), "outfits": outfits}
 
 
+def _refresh_outfits_for_item(item_id: str) -> None:
+    data = _ensure_outfit_manifest()
+    changed = False
+    for outfit in data.get("outfits", []):
+        if outfit.get("deleted") or item_id not in (outfit.get("item_ids") or []):
+            continue
+        items = []
+        for candidate_id in outfit.get("item_ids") or []:
+            try:
+                items.append(get_closet_item(str(candidate_id)))
+            except HTTPException:
+                continue
+        if not items or (outfit.get("origin") == "auto_split" and len(items) < 2):
+            outfit["deleted"] = True
+            outfit["updated_at"] = _now_iso()
+            changed = True
+            continue
+        layout = _build_outfit_cover(str(outfit["outfit_id"]), items)
+        outfit["item_ids"] = [item["item_id"] for item in items]
+        outfit["cover_path"] = _public_closet_path(layout["path"])
+        outfit["layout_snapshot_path"] = _public_closet_path(layout["path"])
+        outfit["layout_version"] = layout["layout_version"]
+        outfit["layout_slots"] = layout["layout_slots"]
+        outfit["display_item_ids"] = layout["display_item_ids"]
+        outfit["overflow_items"] = layout["overflow_items"]
+        outfit["warnings"] = layout["warnings"]
+        outfit["updated_at"] = _now_iso()
+        changed = True
+    if changed:
+        _write_outfit_manifest(data)
+
+
+def _canonical_tokens(values: Any, aliases: dict[str, tuple[str, ...]]) -> set[str]:
+    raw_values = values if isinstance(values, list) else [values]
+    text = " ".join(str(value or "").strip().lower() for value in raw_values)
+    return {
+        canonical
+        for canonical, terms in aliases.items()
+        if any(term.lower() in text for term in terms)
+    }
+
+
+def _persona_style_evidence(persona: dict[str, Any]) -> tuple[set[str], set[str]]:
+    metadata = persona.get("metadata") if isinstance(persona.get("metadata"), dict) else {}
+    recommendations = persona.get("recommendations") if isinstance(persona.get("recommendations"), dict) else {}
+    outfits = recommendations.get("outfits") if isinstance(recommendations.get("outfits"), dict) else {}
+    colors = persona.get("colors") if isinstance(persona.get("colors"), dict) else {}
+    color_items = colors.get("items") if isinstance(colors.get("items"), list) else []
+    persona_text = [
+        persona.get("typeId"),
+        metadata.get("name"),
+        metadata.get("code"),
+        persona.get("summary"),
+        outfits.get("summary"),
+        *(persona.get("keywords") or []),
+    ]
+    color_text = [item.get("name") for item in color_items if isinstance(item, dict)]
+    return _canonical_tokens(persona_text, STYLE_TOKEN_ALIASES), _canonical_tokens(color_text, COLOR_TOKEN_ALIASES)
+
+
+def _outfit_style_evidence(outfit: dict[str, Any]) -> tuple[set[str], set[str]]:
+    style_values: list[Any] = [outfit.get("title"), *(outfit.get("scene_tags") or [])]
+    color_values: list[Any] = []
+    for item in outfit.get("items", []):
+        attributes = item.get("attributes") if isinstance(item.get("attributes"), dict) else {}
+        style_values.extend(attributes.get("style_tags") or [])
+        style_values.extend([attributes.get("material"), attributes.get("fit"), attributes.get("pattern")])
+        color_values.extend(attributes.get("colors") or [])
+    return _canonical_tokens(style_values, STYLE_TOKEN_ALIASES), _canonical_tokens(color_values, COLOR_TOKEN_ALIASES)
+
+
+def _score_outfit_for_persona(outfit: dict[str, Any], persona: dict[str, Any]) -> dict[str, Any]:
+    persona_styles, persona_colors = _persona_style_evidence(persona)
+    outfit_styles, outfit_colors = _outfit_style_evidence(outfit)
+    shared_styles = sorted(persona_styles & outfit_styles)
+    shared_colors = sorted(persona_colors & outfit_colors)
+    categories = {str(item.get("category") or "") for item in outfit.get("items", [])}
+    has_main = "dress" in categories or ("top" in categories and bool(categories & {"bottom", "skirt"}))
+    completeness = (18 if has_main else 4) + (7 if "shoes" in categories else 0) + (5 if "bag" in categories else 0)
+    quality = sum(float(item.get("quality", {}).get("score") or 0) for item in outfit.get("items", [])) / max(1, len(outfit.get("items", [])))
+    score = completeness + len(shared_styles) * 24 + len(shared_colors) * 14 + quality * 8
+    if outfit.get("favorite"):
+        score += 5
+    reasons = []
+    if shared_styles:
+        reasons.append("风格特征呼应：" + "、".join(shared_styles[:2]))
+    if shared_colors:
+        reasons.append("推荐色呼应：" + "、".join(shared_colors[:2]))
+    if has_main:
+        reasons.append("主搭配结构完整")
+    if not reasons:
+        reasons.append("根据单品完整度排序")
+    return {
+        "score": round(score, 2),
+        "reasons": reasons,
+        "matched_style_tokens": shared_styles,
+        "matched_color_tokens": shared_colors,
+        "algorithm": "persona_style_rank_v1",
+    }
+
+
+def recommend_outfits(payload: dict[str, Any]) -> dict[str, Any]:
+    persona = payload.get("persona") if isinstance(payload.get("persona"), dict) else {}
+    offset = max(0, int(payload.get("offset") or 0))
+    limit = max(1, min(20, int(payload.get("limit") or 12)))
+    rotate_by = max(1, min(limit, int(payload.get("rotate_by") or 4)))
+    outfits = list_outfits()["outfits"]
+    ranked = []
+    for outfit in outfits:
+        recommendation = _score_outfit_for_persona(outfit, persona)
+        ranked.append({**outfit, "recommendation": recommendation})
+    ranked.sort(
+        key=lambda outfit: (
+            -float(outfit.get("recommendation", {}).get("score") or 0),
+            -int(bool(outfit.get("favorite"))),
+            str(outfit.get("outfit_id") or ""),
+        )
+    )
+    if ranked:
+        start = offset % len(ranked)
+        ordered = ranked[start:] + ranked[:start]
+    else:
+        ordered = []
+    return {
+        "total": len(ranked),
+        "offset": offset,
+        "next_offset": (offset + rotate_by) % max(1, len(ranked)),
+        "algorithm": "persona_style_rank_v1",
+        "outfits": ordered[:limit],
+    }
+
+
 def get_outfit(outfit_id: str) -> dict[str, Any]:
     data = _ensure_outfit_manifest()
     for outfit in data.get("outfits", []):
         if outfit.get("outfit_id") == outfit_id and not outfit.get("deleted"):
-            return _resolve_outfit(outfit)
+            closet_data = _ensure_manifest()
+            items_by_id = {
+                str(item.get("item_id")): item
+                for item in closet_data.get("items", [])
+                if item.get("item_id") and not item.get("deleted")
+            }
+            return _resolve_outfit(outfit, items_by_id)
     raise HTTPException(status_code=404, detail="没有找到这套搭配")
 
 
@@ -826,6 +1345,8 @@ def update_outfit(outfit_id: str, payload: dict[str, Any]) -> dict[str, Any]:
             outfit["favorite_count"] = max(0, int(payload.get("favorite_count") or 0))
         if "favorite" in payload:
             outfit["favorite"] = bool(payload.get("favorite"))
+        if "draft" in payload:
+            outfit["draft"] = bool(payload.get("draft"))
         if "item_ids" in payload:
             item_ids = _valid_item_ids(payload.get("item_ids"))
             items = [get_closet_item(item_id) for item_id in item_ids]
@@ -1012,6 +1533,19 @@ def record_selfit_tryon_result(outfit_id: str, tryon_result: dict[str, Any]) -> 
     image_path = tryon_result.get("result", {}).get("image_path")
     if not image_path:
         return None
+    tryon_id = str(tryon_result.get("tryon_id") or "")
+    data = _ensure_tryon_records_manifest()
+    if tryon_id:
+        existing = next(
+            (
+                record
+                for record in data.get("records", [])
+                if not record.get("deleted") and record.get("tryon_id") == tryon_id and record.get("outfit_id") == outfit_id
+            ),
+            None,
+        )
+        if existing:
+            return existing
     outfit = get_outfit(outfit_id)
     now = _now_iso()
     record_id = hashlib.sha256(f"selfit-tryon:{outfit_id}:{image_path}:{now}".encode("utf-8")).hexdigest()[:16]
@@ -1020,6 +1554,7 @@ def record_selfit_tryon_result(outfit_id: str, tryon_result: dict[str, Any]) -> 
         "user_id": storage_context().user_id,
         "mode": "selfit_from_outfit_plan",
         "status": tryon_result.get("status") or "generated",
+        "tryon_id": tryon_id or None,
         "outfit_id": outfit_id,
         "outfit_title": outfit.get("title") or "我的搭配",
         "image_path": image_path,
@@ -1033,7 +1568,6 @@ def record_selfit_tryon_result(outfit_id: str, tryon_result: dict[str, Any]) -> 
         "deleted": False,
         "note": "selfit 真实试穿链路生成结果。" if tryon_result.get("status") == "generated" else "试穿图已生成，建议复核后使用。",
     }
-    data = _ensure_tryon_records_manifest()
     data.setdefault("records", []).append(record)
     _write_tryon_records_manifest(data)
     return record
@@ -1153,13 +1687,19 @@ def _valid_item_ids(value: Any) -> list[str]:
     return item_ids[:8]
 
 
-def _resolve_outfit(outfit: dict[str, Any]) -> dict[str, Any]:
-    items = []
-    for item_id in outfit.get("item_ids", []):
-        try:
-            items.append(get_closet_item(str(item_id)))
-        except HTTPException:
-            continue
+def _resolve_outfit(outfit: dict[str, Any], items_by_id: dict[str, dict[str, Any]] | None = None) -> dict[str, Any]:
+    if items_by_id is None:
+        closet_data = _ensure_manifest()
+        items_by_id = {
+            str(item.get("item_id")): item
+            for item in closet_data.get("items", [])
+            if item.get("item_id") and not item.get("deleted")
+        }
+    items = [
+        items_by_id[str(item_id)]
+        for item_id in outfit.get("item_ids", [])
+        if str(item_id) in items_by_id
+    ]
     layout_patch: dict[str, Any] = {}
     if items and outfit.get("layout_version") != OUTFIT_LAYOUT_VERSION:
         layout = _build_outfit_cover(str(outfit.get("outfit_id") or hashlib.sha256(str(outfit.get("item_ids", [])).encode("utf-8")).hexdigest()[:16]), items)
@@ -2205,84 +2745,146 @@ def render_selfit_demo_page() -> str:
     .bottom-actions { position: fixed; left: 50%; bottom: 18px; transform: translateX(-50%); width: min(calc(100% - 32px), 398px); display: grid; grid-template-columns: 1fr 1fr; gap: 12px; z-index: 11; }
     .tryon-hero { min-height: 560px; display: grid; place-items: center; position: relative; background: linear-gradient(180deg, #fff, #f8f2f5); }
     .tryon-hero img { width: 100%; max-height: 560px; object-fit: contain; display: block; }
+    .tryon-failure { width: 100%; min-height: 560px; padding: 28px 24px; display: grid; align-content: center; justify-items: center; gap: 16px; text-align: center; }
+    .tryon-failure-preview { width: min(100%, 320px); aspect-ratio: 4 / 3; position: relative; border-radius: 18px; overflow: hidden; background: #f5f5f5; }
+    .tryon-failure-preview > img { width: 100%; height: 100%; max-height: none; object-fit: contain; }
+    .tryon-failure-model { position: absolute; right: 10px; bottom: 10px; width: 62px; height: 82px; padding: 4px; border-radius: 14px; background: rgba(255,255,255,.94); box-shadow: 0 5px 24px rgba(0,0,0,.10); }
+    .tryon-failure-model img { width: 100%; height: 100%; max-height: none; border-radius: 10px; object-fit: cover; }
+    .tryon-failure h3 { margin: 2px 0 -6px; color: #222; font-size: 18px; line-height: 1.45; }
+    .tryon-failure p { max-width: 300px; margin: 0; color: #666; font-size: 14px; line-height: 1.65; }
+    .tryon-failure-change { min-height: 44px; padding: 0 24px; border: 1px solid #8a011b; border-radius: 18px; background: #fff; color: #8a011b; font-size: 14px; font-weight: 800; }
+    .tryon-hero.is-generating {
+      color: #fff;
+      background: #8a011b url("/static/selfit/assets/splash-textile@2x.png") center / cover no-repeat;
+      box-shadow: none;
+      isolation: isolate;
+    }
     .tryon-hero.is-generating::after {
       content: "";
       position: absolute;
       inset: 0;
       z-index: 1;
-      background:
-        linear-gradient(180deg, rgba(255,250,250,.66), rgba(248,242,245,.74)),
-        radial-gradient(circle at 50% 38%, rgba(255,79,134,.16), transparent 36%);
+      background: linear-gradient(180deg, rgba(96,0,18,.04), rgba(58,0,11,.16));
       pointer-events: none;
     }
     .tryon-hero.is-generating > .empty { opacity: 0; }
+    .tryon-hero.is-generating + .result-actions { visibility: hidden; pointer-events: none; }
     .generating-layer {
       position: absolute;
       inset: 0;
       z-index: 2;
-      color: var(--ink);
+      color: #fff;
       display: none;
       place-items: center;
       text-align: center;
-      padding: 22px;
+      padding: 18px 24px 20px;
     }
     .generating-layer.active { display: grid; }
     .tryon-generating-card {
-      width: min(88%, 310px);
-      border-radius: 28px;
-      border: 1px solid rgba(255,255,255,.82);
-      background: rgba(255,255,255,.78);
-      box-shadow: 0 22px 58px rgba(82, 42, 61, .13);
-      backdrop-filter: blur(18px);
-      padding: 18px 18px 16px;
+      width: min(100%, 342px);
+      min-height: 520px;
+      padding: 20px 0 6px;
       display: grid;
       justify-items: center;
-      gap: 10px;
+      align-content: center;
+      grid-template-rows: auto auto auto auto auto auto;
+      gap: 12px;
     }
-    .tryon-lottie {
-      width: 172px;
-      height: 130px;
-      margin: -4px 0 -8px;
+    .tryon-loading-art {
+      width: min(100%, 282px);
+      height: auto;
+      max-height: none !important;
+      object-fit: contain;
+      margin: 0 0 8px;
+      opacity: 1;
+      transform: translateY(0) scale(1);
+      transition: opacity 300ms ease-out, transform 300ms ease-out;
+    }
+    .tryon-loading-art.is-changing {
+      opacity: .16;
+      transform: translateY(4px) scale(.985);
+    }
+    .tryon-generating-kicker {
+      margin: 0;
+      color: rgba(255,255,255,.64);
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 12px;
+      line-height: 18px;
+      letter-spacing: .16em;
     }
     .tryon-generating-title {
-      font-size: 20px;
-      line-height: 1.2;
-      font-weight: 900;
-      color: var(--ink);
+      max-width: 286px;
+      font-size: 18px;
+      line-height: 26px;
+      font-weight: 750;
+      color: #fff;
+      text-wrap: balance;
     }
     .tryon-generating-copy {
-      color: var(--soft-ink);
-      font-size: 13px;
-      line-height: 1.5;
-      font-weight: 650;
-      max-width: 230px;
+      max-width: 274px;
+      margin: -2px 0 0;
+      color: rgba(255,255,255,.68);
+      font-size: 14px;
+      line-height: 22px;
+      font-weight: 400;
+      text-wrap: balance;
+    }
+    .tryon-progress-row {
+      width: min(100%, 274px);
+      display: grid;
+      grid-template-columns: 1fr 38px;
+      align-items: center;
+      gap: 12px;
+      margin-top: 4px;
     }
     .tryon-progress {
-      width: min(100%, 232px);
-      height: 6px;
-      border-radius: var(--pill);
-      background: #ffe4ee;
+      width: 100%;
+      height: 2px;
+      border-radius: 2px;
+      background: rgba(255,255,255,.24);
       overflow: hidden;
-      margin-top: 2px;
     }
     .tryon-progress span {
       display: block;
-      width: 46%;
+      width: 8%;
       height: 100%;
       border-radius: inherit;
-      background: linear-gradient(90deg, rgba(255,79,134,.18), var(--rose), rgba(116,240,210,.86));
-      animation: tryonProgress 1.65s cubic-bezier(.2,.75,.34,.94) infinite;
+      background: #fff;
+      transition: width 420ms ease-out;
+    }
+    .tryon-progress-value {
+      color: rgba(255,255,255,.78);
+      font-size: 12px;
+      line-height: 18px;
+      font-variant-numeric: tabular-nums;
+      text-align: right;
     }
     .tryon-cancel {
-      margin-top: 4px;
-      min-height: 42px;
-      padding: 0 26px;
+      min-width: 96px;
+      min-height: 44px;
+      margin-top: 2px;
+      padding: 0 18px;
+      border: 0;
+      background: transparent;
+      color: rgba(255,255,255,.76);
       box-shadow: none;
+      font-size: 14px;
+      font-weight: 600;
+      text-decoration: underline;
+      text-decoration-color: rgba(255,255,255,.34);
+      text-underline-offset: 5px;
     }
-    @keyframes tryonProgress {
-      0% { transform: translateX(-115%); }
-      55%, 70% { transform: translateX(70%); }
-      100% { transform: translateX(230%); }
+    .tryon-loading-signature {
+      width: 72px !important;
+      height: auto !important;
+      max-height: none !important;
+      object-fit: contain;
+      margin-top: 0;
+      opacity: .74;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .tryon-loading-art,
+      .tryon-progress span { transition: none; }
     }
     .result-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 14px; }
     .color-card { padding: 18px; display: grid; gap: 14px; }
@@ -3175,6 +3777,13 @@ def render_selfit_demo_page() -> str:
     .link-line { display: grid; grid-template-columns: 1fr 86px; gap: 8px; }
     .link-line input { border: 0; background: #f5f6f8; border-radius: var(--pill); min-height: 48px; padding: 0 16px; outline: none; }
     .black-btn { border: 0; background: #050505; color: #fff; border-radius: var(--pill); font-weight: 850; }
+    .import-review-copy { margin: 0; color: #666; font-size: 14px; line-height: 1.6; }
+    .import-review-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+    .import-review-card { position: relative; display: grid; gap: 8px; min-width: 0; }
+    .import-review-image { width: 100%; aspect-ratio: 1; object-fit: contain; display: block; background: #faf8f8; border-radius: 12px; }
+    .import-review-select { width: 100%; min-height: 42px; border: 1px solid #e7e7e7; border-radius: 12px; background: #fff; color: #222; padding: 0 10px; font-size: 14px; }
+    .import-review-remove { position: absolute; top: 8px; right: 8px; width: 32px; height: 32px; border: 0; border-radius: 50%; background: rgba(255,255,255,.94); color: #8a011b; font-size: 20px; box-shadow: 0 4px 14px rgba(0,0,0,.08); }
+    .import-review-done { min-height: 44px; border: 0; border-radius: 18px; background: #8a011b; color: #fff; font-size: 14px; font-weight: 800; }
     .builder-list { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
     .pick-card { border: 2px solid transparent; border-radius: 16px; background: #f6f7f9; padding: 7px; min-height: 112px; }
     .pick-card.active { border-color: #050505; }
@@ -3748,50 +4357,36 @@ def render_selfit_demo_page() -> str:
       .sheet { bottom: 24px; border-radius: 28px 28px 34px 34px; }
     }
   </style>
+  <link rel="stylesheet" href="/static/selfit-app/app.css?v=20260901-closet-refine-v3" />
 </head>
 <body>
-  <main class="app">
-    <section id="loginScreen" class="login-screen active">
-      <div class="login-shell">
-        <div class="login-stage" aria-hidden="true">
-          <div class="login-logo-lockup">
-            <div class="login-logo-en">selfit</div>
-            <div class="login-brand-signature"><span class="login-wordmark-cn">适我</span></div>
-          </div>
-          <div class="login-closet-cloud">
-            <span class="login-closet-item"><img src="/static/login-closet/boots.webp" alt="" /></span>
-            <span class="login-closet-item"><img src="/static/login-closet/cardigan.webp" alt="" /></span>
-            <span class="login-closet-item"><img src="/static/login-closet/shirt.webp" alt="" /></span>
-            <span class="login-closet-item"><img src="/static/login-closet/trousers.webp" alt="" /></span>
-            <span class="login-closet-item"><img src="/static/login-closet/rose-knit.webp" alt="" /></span>
-            <span class="login-closet-item"><img src="/static/login-closet/hoodie.webp" alt="" /></span>
-            <span class="login-closet-item"><img src="/static/login-closet/bag.webp" alt="" /></span>
-            <span class="login-closet-item"><img src="/static/login-closet/denim-shorts.webp" alt="" /></span>
-            <span class="login-closet-item"><img src="/static/login-closet/loafers.webp" alt="" /></span>
-            <span class="login-closet-item"><img src="/static/login-closet/sunglasses.webp" alt="" /></span>
-            <img class="login-gift-box" src="/static/login-gift/gift-box.webp" alt="" />
-          </div>
-          <div class="login-hero">
-            <h1 class="login-brand">selfit <span>selfit</span></h1>
-            <div class="login-copy">
-              <span class="login-copy-main">遇见自己</span>
-              <span class="login-copy-en">meet yourself</span>
-            </div>
-          </div>
-        </div>
-        <div class="login-form">
-          <input id="loginPhone" inputmode="numeric" maxlength="11" placeholder="手机号" />
-          <input id="loginCode" inputmode="numeric" maxlength="4" placeholder="验证码" />
-          <button id="loginBtn" class="primary-btn" type="button">进入selfit</button>
-          <div id="loginNote" class="login-note" aria-live="polite"></div>
-        </div>
+  <main class="app auth-pending">
+    <section id="personaHandoff" class="persona-handoff" hidden aria-labelledby="handoffTitle">
+      <img class="handoff-wordmark" src="/static/selfit/assets/selfit-wordmark.svg" width="55" height="20" alt="selfit" />
+      <div class="handoff-ornament" aria-hidden="true">
+        <img src="/static/selfit/assets/loading-stage-100@2x.png" width="240" height="163" alt="" />
       </div>
+      <div class="handoff-copy">
+        <small>我们记住你了</small>
+        <h1 id="handoffTitle">从认识自己，开始真正适合你的穿搭</h1>
+        <p id="handoffPersonaCopy">你的风格人格、推荐色和穿搭偏好已经带入。</p>
+      </div>
+      <button id="handoffContinue" class="handoff-action" type="button">开始搭配</button>
     </section>
     <section id="page-home" class="page active">
       <div class="top-row">
         <div class="brand">selfit</div>
         <div class="weather"><b id="weatherTemp">24~29°C</b><span id="weatherText">上海市 小雨</span></div>
       </div>
+      <section class="home-section home-actions-section">
+        <div class="home-action-grid">
+          <button id="homeTryAction" class="home-action-card" type="button"><span class="home-action-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 4h8l3 4-2 12H7L5 8l3-4Z"/><path d="M9 4c0 2 1 3 3 3s3-1 3-3"/></svg></span><b>拍一件试试</b><small>上传衣服看上身</small></button>
+          <button id="homeExtractAction" class="home-action-card" type="button"><span class="home-action-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9.5 14.5 14.5 9"/><path d="m7 16.8-1 1a3.4 3.4 0 0 1-4.8-4.8l3.6-3.6a3.4 3.4 0 0 1 4.8 0"/><path d="m17 7.2 1-1A3.4 3.4 0 0 1 22.8 11l-3.6 3.6a3.4 3.4 0 0 1-4.8 0"/></svg></span><b>提取单品</b><small>粘贴喜欢的链接</small></button>
+          <button id="homeAskAction" class="home-action-card" type="button"><span class="home-action-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5.5h14v10H9l-4 3v-13Z"/><path d="M9 10.5h6"/></svg></span><b>问问搭配</b><small>结合风格与衣橱</small></button>
+        </div>
+      </section>
+      <section class="home-section today-section">
+        <div class="section-head"><div><small>PERSONAL EDIT</small><h2>今天，怎么穿</h2></div></div>
       <div class="today-carousel" aria-label="今日推荐">
         <div id="todayTrack" class="today-track">
           <article class="today-card today-empty" role="button" tabindex="0">
@@ -3804,16 +4399,9 @@ def render_selfit_demo_page() -> str:
         </div>
         <div id="todayDots" class="today-dots"></div>
       </div>
-      <section class="home-section">
-        <div class="section-head"><h2 id="widgetTitle">玩转 OOTD</h2></div>
-        <div class="widget-row">
-          <button id="colorWidget" class="widget-card color">色彩测试</button>
-          <button class="widget-card ai" data-tab-shortcut="ai">灵感</button>
-          <button class="widget-card upload" id="uploadWidget">单品入柜</button>
-        </div>
       </section>
       <section class="home-section">
-        <div class="section-head"><h2 id="feedTitle">灵感试穿</h2><button id="refreshInspiration">换一批</button></div>
+        <div class="section-head"><div><small>FOR YOUR STYLE</small><h2 id="feedTitle">与你同频的穿搭</h2></div><button id="refreshInspiration">换一批</button></div>
         <div id="refreshNote" class="refresh-note"></div>
         <div id="homeGrid" class="masonry"></div>
       </section>
@@ -3821,36 +4409,39 @@ def render_selfit_demo_page() -> str:
 
     <section id="page-detail" class="page">
       <div class="screen-top">
-        <button class="icon-btn" data-back-home>‹</button>
+        <button class="icon-btn" data-back-detail aria-label="返回"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 5-7 7 7 7"/></svg></button>
         <div class="screen-title" id="detailTitle">穿搭详情</div>
-        <button class="icon-btn" id="detailShare">↗</button>
+        <button class="icon-btn" id="detailShare" aria-label="分享"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V4"/><path d="m8 8 4-4 4 4"/><path d="M5 12v7h14v-7"/></svg></button>
       </div>
       <div class="detail-hero" id="detailHero"></div>
-      <section class="home-section">
-        <div class="section-head"><h2>穿搭单品</h2></div>
+      <section class="home-section" id="detailItemsSection">
+        <div class="section-head"><div><small id="detailItemsEyebrow">OUTFIT PIECES</small><h2 id="detailItemsTitle">穿搭单品</h2></div></div>
+        <p id="detailItemsNote" class="detail-items-note" hidden></p>
         <div id="detailItems" class="item-strip"></div>
       </section>
       <div class="bottom-actions">
-        <button id="detailEditBtn" class="secondary-btn">自由搭配</button>
-        <button id="detailTryBtn" class="primary-btn">试穿</button>
+        <button id="detailEditBtn" class="secondary-btn">调整搭配</button>
+        <button id="detailTryBtn" class="primary-btn">生成试穿图</button>
       </div>
     </section>
 
     <section id="page-tryon" class="page">
       <div class="screen-top">
-        <button class="icon-btn" data-open-detail>‹</button>
+        <button class="icon-btn" data-open-detail aria-label="返回"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 5-7 7 7 7"/></svg></button>
         <div class="screen-title">试穿</div>
-        <button class="icon-btn" id="tryonSaveBtn">☆</button>
+        <button class="icon-btn" id="tryonSaveBtn" aria-label="收藏"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3 2.7 5.5 6.1.9-4.4 4.3 1 6.1-5.4-2.9-5.4 2.9 1-6.1-4.4-4.3 6.1-.9L12 3Z"/></svg></button>
       </div>
       <div class="tryon-hero" id="tryonHero">
         <div class="empty">选择一套搭配后，就能在这里查看试穿效果。</div>
         <div id="generatingLayer" class="generating-layer">
-          <div class="tryon-generating-card">
-            <div class="tryon-lottie" data-tryon-lottie aria-hidden="true"></div>
-            <div class="tryon-generating-title" id="generatingText">正在生成试穿图</div>
-            <p class="tryon-generating-copy">正在保留你的身形和风格细节，生成后先看整体比例和上身效果。</p>
-            <div class="tryon-progress" aria-hidden="true"><span></span></div>
-            <button id="cancelGenerate" class="secondary-btn tryon-cancel" type="button">取消</button>
+          <div class="tryon-generating-card" role="status" aria-live="polite">
+            <img class="tryon-loading-art" id="tryonLoadingArt" src="/static/selfit/assets/loading-stage-25@2x.png" width="480" height="324" alt="" aria-hidden="true" data-stage="25">
+            <p class="tryon-generating-kicker">SUIT × LIKE × VIBE</p>
+            <div class="tryon-generating-title" id="generatingText">正在让这套穿搭更像你</div>
+            <p class="tryon-generating-copy" id="tryonGeneratingCopy">先整理好你的照片和每件单品。</p>
+            <div class="tryon-progress-row"><div class="tryon-progress" role="progressbar" aria-label="试穿图生成进度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="8"><span id="tryonProgressBar"></span></div><span class="tryon-progress-value" id="tryonProgressValue">8%</span></div>
+            <button id="cancelGenerate" class="tryon-cancel" type="button">取消生成</button>
+            <img class="tryon-loading-signature" src="/static/selfit/assets/splash-signature@2x.png" width="200" height="133" alt="" aria-hidden="true">
           </div>
         </div>
       </div>
@@ -3862,7 +4453,7 @@ def render_selfit_demo_page() -> str:
 
     <section id="page-color" class="page">
       <div class="screen-top">
-        <button class="icon-btn" data-back-home>‹</button>
+        <button class="icon-btn" data-back-home aria-label="返回"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 5-7 7 7 7"/></svg></button>
         <div class="screen-title">色彩测试</div>
         <span style="width:44px;"></span>
       </div>
@@ -3880,8 +4471,8 @@ def render_selfit_demo_page() -> str:
 
     <section id="page-editor" class="page">
       <div class="screen-top">
-        <button class="icon-btn" data-open-detail>‹</button>
-        <div class="screen-title">自由搭配</div>
+        <button class="icon-btn" data-open-detail aria-label="返回"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 5-7 7 7 7"/></svg></button>
+        <div class="screen-title">调整搭配</div>
         <button id="editorSaveBtn" class="primary-btn" style="min-height:44px;padding:0 18px;">保存</button>
       </div>
       <div id="editorCanvas" class="editor-canvas"></div>
@@ -3905,15 +4496,15 @@ def render_selfit_demo_page() -> str:
       </div>
       <div class="ai-hero">
         <div class="ai-copy">
-          <div class="hi" id="aiHi">Hi~</div>
-          <h2 id="aiTitle">告诉我你的场景，我来找灵感</h2>
-          <p id="aiSubtitle">接下来有什么计划？我来帮你惊艳全场！</p>
+          <div class="hi" id="aiHi">穿搭灵感</div>
+          <h2 id="aiTitle">今天想以什么样子出现？</h2>
+          <p id="aiSubtitle">说说场景和心情，我会结合你的风格与衣橱，整理一套更像你的选择。</p>
           <div id="aiChips" class="chips"></div>
         </div>
       </div>
       <div id="aiResult" class="ai-panel" style="display:none;"></div>
       <div class="ai-input">
-        <div class="ai-input-inner"><textarea id="aiPromptInput" rows="1" placeholder="向灵感发送消息"></textarea><button class="circle-icon" id="aiSendBtn" aria-label="发送">↑</button></div>
+        <div class="ai-input-inner"><textarea id="aiPromptInput" rows="1" placeholder="向灵感发送消息"></textarea><button class="circle-icon" id="aiSendBtn" aria-label="发送"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 18V6"/><path d="m7.5 10.5 4.5-4.5 4.5 4.5"/></svg></button></div>
       </div>
     </section>
 
@@ -3923,23 +4514,27 @@ def render_selfit_demo_page() -> str:
           <button class="closet-tab active" data-closet-mode="items">单品</button>
           <button class="closet-tab" data-closet-mode="outfits">套装</button>
         </div>
-        <div class="tool-row"><button id="filterBtn">⌕</button><button id="settingsBtn">⌾</button></div>
+        <div class="tool-row"><button id="floatingMatch" class="closet-compose" type="button">开始搭配</button></div>
       </div>
       <div id="categoryRow" class="category-row"></div>
-      <div id="closetGrid" class="item-grid"></div>
-      <button id="floatingMatch" class="floating-match">自由搭配</button>
+      <div id="closetGrid" class="item-grid" aria-busy="true" aria-label="正在整理衣橱">
+        <div class="closet-skeleton" aria-hidden="true"></div>
+        <div class="closet-skeleton" aria-hidden="true"></div>
+        <div class="closet-skeleton" aria-hidden="true"></div>
+        <div class="closet-skeleton" aria-hidden="true"></div>
+      </div>
     </section>
 
     <section id="page-me" class="page">
       <div class="profile-head">
-        <div class="avatar" id="profileAvatar">M</div>
-      <div><div class="profile-name" id="profileName">本地用户</div><div class="profile-line" id="profileLine">Mock 身份</div></div>
-        <button class="circle-icon" id="logoutBtn">↺</button>
+        <div class="avatar" id="profileAvatar" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.5"/><path d="M5.5 19.5c1.35-3.8 3.5-5.7 6.5-5.7s5.15 1.9 6.5 5.7"/></svg></div>
+        <div><div class="profile-name" id="profileName">本地用户</div><div class="profile-line" id="profileLine">Mock 身份</div></div>
+        <button class="circle-icon" id="logoutBtn" aria-label="退出登录"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 5H5v14h5"/><path d="M13 8l4 4-4 4M17 12H9"/></svg></button>
       </div>
-      <div class="pro-card"><b>selfit PRO</b><span>解锁无限穿搭灵感</span><span>无限智能搭配 · 无限试衣 · 无限上传优化</span></div>
+      <button id="profilePersonaLink" class="profile-persona-card" type="button"><span><small id="profilePersonaCode">MUTE · 你的风格人格</small><b id="profilePersonaName">静音时髦</b><em id="profilePersonaTraits">低表达 · 低装饰 · 秩序感</em></span><span aria-hidden="true">→</span></button>
       <div class="profile-grid">
-        <button class="profile-cell" id="modelCell" type="button">我的模特 <span id="currentModelName">沙漏型</span></button>
-        <button class="profile-cell" id="profileColorCell" type="button">色彩测试 <span style="width:34px;height:34px;border-radius:9px;background:linear-gradient(135deg,#ffe8aa,#b4f5e9);"></span></button>
+        <button class="profile-cell" id="modelCell" type="button"><small>试穿形象</small><b>我的模特</b><span id="currentModelName">沙漏型</span></button>
+        <button class="profile-cell" id="profileColorCell" type="button"><small>个人档案</small><b>适合我的颜色</b><span id="profileColorDots" class="profile-color-dots"></span></button>
       </div>
       <div class="profile-tabs"><button class="profile-tab active" data-profile-view="records">试穿记录</button><button class="profile-tab" data-profile-view="works">我的作品</button><button class="profile-tab" data-profile-view="favorites">我的收藏</button></div>
       <div class="record-head"><span><span id="recordCount">0</span><span id="recordCountLabel">条试穿记录</span></span><button id="recordEditBtn" class="record-edit-btn" type="button">编辑</button></div>
@@ -3949,23 +4544,30 @@ def render_selfit_demo_page() -> str:
     </section>
 
     <nav class="bottom-nav">
-      <button class="nav-btn active" data-tab="home"><span class="nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5 10.5 12 3l8.5 7.5"/><path d="M5.5 9.5V20h13V9.5"/><path d="M9.5 20v-6h5v6"/></svg></span><span class="nav-label">首页</span></button>
-      <button class="nav-btn" data-tab="ai"><span class="nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l1.7 5.3L19 10l-5.3 1.7L12 17l-1.7-5.3L5 10l5.3-1.7L12 3z"/><path d="M5 15l.8 2.2L8 18l-2.2.8L5 21l-.8-2.2L2 18l2.2-.8L5 15z"/></svg></span><span class="nav-label">灵感</span></button>
+      <button class="nav-btn active" data-tab="home"><span class="nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v14H4z"/><path d="m7 15 3-3 2 2 3-4 2 2"/></svg></span><span class="nav-label">推荐</span></button>
+      <button class="nav-btn" data-tab="ai"><span class="nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5.5h14v10H9l-4 3v-13Z"/><path d="M9 10.5h6"/></svg></span><span class="nav-label">问搭配</span></button>
       <button id="mainPlus" class="plus-btn" aria-label="添加"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button>
       <button class="nav-btn" data-tab="closet"><span class="nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4h10l2 4v12H5V8l2-4z"/><path d="M5 8h14"/><path d="M9 12h6"/></svg></span><span class="nav-label">衣橱</span></button>
-      <button class="nav-btn" data-tab="me"><span class="nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4.5 20c1.5-4 4-6 7.5-6s6 2 7.5 6"/></svg></span><span class="nav-label">我</span></button>
+      <button class="nav-btn" data-tab="me"><span class="nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4.5 20c1.5-4 4-6 7.5-6s6 2 7.5 6"/></svg></span><span class="nav-label">我的</span></button>
     </nav>
   </main>
 
   <aside id="uploadSheet" class="sheet">
-    <div class="sheet-title"><b>添加到衣橱</b><button class="close" data-close="uploadSheet">×</button></div>
+    <div class="sheet-title"><b>添加衣服</b><button class="close" data-close="uploadSheet" aria-label="关闭">×</button></div>
     <input id="wearUploadInput" class="hidden-input" type="file" accept="image/*" multiple />
     <div class="action-grid">
-      <button id="uploadGarmentBtn" class="action-card">上传单品 / 穿搭图</button>
-      <button id="cameraBtn" class="action-card">拍照入柜</button>
-      <div class="link-line"><input id="wearLinkInput" type="url" placeholder="粘贴小红书或网页链接" /><button id="wearLinkBtn" class="black-btn">导入</button></div>
+      <button id="uploadGarmentBtn" class="action-card"><b>从相册选择</b><span>支持单品图或整套穿搭图</span></button>
+      <button id="cameraBtn" class="action-card"><b>现在拍一张</b><span>背景简单，提取会更准确</span></button>
+      <div class="link-import"><label for="wearLinkInput">从喜欢的内容提取单品</label><div class="link-line"><input id="wearLinkInput" type="url" placeholder="粘贴小红书或网页链接" /><button id="wearLinkBtn" class="black-btn">提取</button></div></div>
     </div>
-    <p id="uploadStatus" style="color:#777;line-height:1.5;">上传后会自动提取衣物，并回到衣橱查看。</p>
+    <p id="uploadStatus" style="color:#777;line-height:1.5;">添加后会识别其中的衣服，并放入你的衣橱。</p>
+    <button id="retryImportBtn" class="secondary-btn" type="button" hidden>重试这次提取</button>
+  </aside>
+  <aside id="importReviewSheet" class="sheet">
+    <div class="sheet-title"><b id="importReviewTitle">确认识别结果</b><button class="close" data-close="importReviewSheet" aria-label="关闭">×</button></div>
+    <p id="importReviewCopy" class="import-review-copy">看看是否每件衣物都完整，分类不对可以直接修改。</p>
+    <div id="importReviewGrid" class="import-review-grid"></div>
+    <button id="importReviewDone" class="import-review-done" type="button">完成入柜</button>
   </aside>
   <div id="sessionBackdrop" class="session-backdrop"></div>
   <aside id="sessionSheet" class="session-sidebar">
@@ -3989,10 +4591,10 @@ def render_selfit_demo_page() -> str:
   </div>
 
   <aside id="builderSheet" class="sheet">
-    <div class="sheet-title"><b>自由搭配</b><button class="close" data-close="builderSheet">×</button></div>
-    <p style="color:#777;line-height:1.5;">选择 2-4 件单品，保存成套装，或直接用上衣先试穿。</p>
+    <div class="sheet-title"><b>选择搭配单品</b><button class="close" data-close="builderSheet">×</button></div>
+    <p class="builder-help">选择 2-4 件单品，保存成套装，或直接用上衣先试穿。</p>
     <div id="builderList" class="builder-list"></div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;"><button id="saveOutfitBtn" class="black-btn" style="min-height:52px;">保存套装</button><button id="tryOutfitBtn" class="match-btn" style="min-height:52px;">试穿</button></div>
+    <div class="builder-actions"><button id="saveOutfitBtn" class="secondary-btn">保存套装</button><button id="tryOutfitBtn" class="match-btn">生成试穿图</button></div>
   </aside>
   <aside id="modelSheet" class="sheet model-sheet" data-mode="preset">
     <div class="sheet-title"><span></span><button class="close" data-close="modelSheet">×</button></div>
@@ -4003,7 +4605,7 @@ def render_selfit_demo_page() -> str:
     <div id="modelCarousel" class="model-carousel"></div>
     <div id="myPhotoPanel" class="my-photo-panel">
       <label class="self-upload-zone" for="selfModelInput" id="selfUploadZone">
-        <span><b style="display:block;color:var(--ink);font-size:18px;margin-bottom:6px;">上传我的照片</b>建议正面全身照，后续试穿更贴近本人。</span>
+        <span><b>还没有可用的全身照</b>完成风格测试后会自动带入，也可以点击这里重新上传。</span>
       </label>
       <input id="selfModelInput" class="hidden-input" type="file" accept="image/*" />
       <button id="confirmSelfModel" class="model-confirm" type="button" disabled>确认</button>
@@ -4025,7 +4627,7 @@ def render_selfit_demo_page() -> str:
   </div>
   <div id="toast" class="toast"></div>
 
-  <script src="/static/vendor/lottie.min.js"></script>
+  <script src="/static/selfit/personality-report-templates.js"></script>
   <script>
     const state = {
       tab: "home",
@@ -4050,6 +4652,8 @@ def render_selfit_demo_page() -> str:
       aiToolsExpanded: false,
       aiToolTimer: null,
       aiAbortController: null,
+      tryonAbortController: null,
+      tryonJobId: "",
       aiVisibleToolCount: 0,
       aiLoadingSteps: [],
       aiSessions: [],
@@ -4069,24 +4673,38 @@ def render_selfit_demo_page() -> str:
       selfModelUrl: "",
       profileKey: "student",
       profile: null,
+      personalityCatalog: null,
+      stylePersona: null,
+      currentItem: null,
+      detailMode: "outfit",
+      detailReturnTab: "home",
       user: null,
-      isAuthenticated: false
+      isAuthenticated: false,
+      importReviewItems: [],
+      importDraftOutfit: null,
+      importJobId: "",
+      recommendationOffset: 0,
+      closetItemLimit: 20,
+      closetOutfitLimit: 12,
+      dataReady: false,
+      stylistSessionsLoaded: false,
+      stylistSessionsLoading: false
     };
     const personaProfiles = {
       student: {
         key: "student",
         phone: "13800000001",
         name: "小夏同学",
-        avatar: "S",
+        avatar: "夏",
         role: "娱乐型学生",
         summary: "学生党",
         weather: "广州 26~32°C",
         weatherNote: "多云 转 晴",
-        widgetTitle: "今天想去哪玩",
-        feedTitle: "穿搭灵感",
-        aiHi: "Hi，小夏",
-        aiTitle: "试着聊聊穿搭思路吧～",
-        aiSubtitle: "我会优先考虑显白、拍照效果、预算友好和小红书灵感。",
+        widgetTitle: "继续了解自己",
+        feedTitle: "与你同频的穿搭",
+        aiHi: "小夏的穿搭灵感",
+        aiTitle: "今天想以什么样子出现？",
+        aiSubtitle: "我会结合你的风格，优先考虑显白、拍照效果和预算友好。",
         emptyTitle: "先上传几件常穿单品",
         emptyCopy: "我会帮你凑生日局、约会和校园出片的搭配。",
         chips: ["生日派对怎么穿", "社团拍照 OOTD", "周末约会显白搭", "小红书同款平替", "预算 300 内", "演唱会出片"],
@@ -4101,16 +4719,16 @@ def render_selfit_demo_page() -> str:
         key: "professional",
         phone: "13900000001",
         name: "林予安",
-        avatar: "P",
+        avatar: "予",
         role: "通勤职场人",
         summary: "通勤职场人",
         weather: "上海 24~29°C",
         weatherNote: "小雨",
-        widgetTitle: "今天高效出门",
-        feedTitle: "穿搭灵感",
-        aiHi: "Hi，予安",
-        aiTitle: "试着聊聊穿搭思路吧～",
-        aiSubtitle: "我会优先考虑得体、低出错、天气适配和一衣多穿。",
+        widgetTitle: "继续了解自己",
+        feedTitle: "与你同频的穿搭",
+        aiHi: "予安的穿搭灵感",
+        aiTitle: "今天想以什么样子出现？",
+        aiSubtitle: "我会结合你的风格，优先考虑得体、低出错和一衣多穿。",
         emptyTitle: "先放入通勤常穿单品",
         emptyCopy: "有上衣、下装和鞋后，我会按天气给你排一套今日出门搭配。",
         chips: ["明天面试怎么穿", "小雨通勤不狼狈", "客户会面要稳", "周五上班接聚餐", "一衣多穿", "胶囊衣橱"],
@@ -4198,6 +4816,38 @@ def render_selfit_demo_page() -> str:
     function currentModel() {
       if (state.currentModelId === "self" && state.selfModelUrl) return { id: "self", src: state.selfModelUrl, name: "我的照片", tags: ["我的照片"] };
       return modelOptions.find(model => model.id === state.currentModelId) || modelOptions[0];
+    }
+    function renderSelfModelPhoto() {
+      const zone = $("#selfUploadZone");
+      const confirm = $("#confirmSelfModel");
+      if (!zone || !confirm) return;
+      zone.classList.toggle("has-photo", Boolean(state.selfModelUrl));
+      if (state.selfModelUrl) {
+        zone.innerHTML = `<img src="${state.selfModelUrl}" alt="我的全身照"><span class="self-photo-source">来自风格测试 · 点击更换</span>`;
+        confirm.disabled = false;
+        return;
+      }
+      delete zone.dataset.previewImage;
+      delete zone.dataset.previewTitle;
+      zone.innerHTML = `<span><b>还没有可用的全身照</b>完成风格测试后会自动带入，也可以点击这里重新上传。</span>`;
+      confirm.disabled = true;
+    }
+    async function loadOnboardingBodyPhoto() {
+      try {
+        const response = await fetch("/api/v1/selfit/me/photos/body", { headers: await authHeaders() });
+        if (response.status === 204) {
+          renderSelfModelPhoto();
+          return false;
+        }
+        if (!response.ok) throw new Error("全身照暂时无法读取。");
+        if (state.selfModelUrl?.startsWith("blob:")) URL.revokeObjectURL(state.selfModelUrl);
+        state.selfModelUrl = URL.createObjectURL(await response.blob());
+        renderSelfModelPhoto();
+        return true;
+      } catch (error) {
+        renderSelfModelPhoto();
+        return false;
+      }
     }
     function isColorBlockItem(item) {
       const filename = `${item?.source?.filename || ""} ${item?.source?.source_path || ""}`.toLowerCase();
@@ -4329,7 +4979,8 @@ def render_selfit_demo_page() -> str:
         </button>
       `).join("");
       $all("[data-model-id]").forEach(btn => btn.addEventListener("click", () => {
-        btn.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
+        const carousel = $("#modelCarousel");
+        if (carousel) carousel.scrollTo({ left: btn.offsetLeft - (carousel.clientWidth - btn.clientWidth) / 2, behavior: "smooth" });
         markPendingModel(btn.dataset.modelId);
       }));
       const carousel = $("#modelCarousel");
@@ -4377,17 +5028,28 @@ def render_selfit_demo_page() -> str:
       $all(".page").forEach(page => page.classList.toggle("active", page.id === pageId));
       $(".bottom-nav").classList.toggle("hidden", !["page-home", "page-ai", "page-closet", "page-me"].includes(pageId));
       $(".ai-input").style.display = pageId === "page-ai" ? "block" : "none";
-      $("#floatingMatch").style.display = pageId === "page-closet" && state.closetMode === "items" ? "block" : "none";
+      $("#floatingMatch").style.display = pageId === "page-closet" ? "block" : "none";
       window.scrollTo(0, 0);
     }
-    function setTab(tab) {
+    function syncTabURL(tab, historyMode = "replace") {
+      if (historyMode === "none") return;
+      const next = new URL(window.location.href);
+      if (next.searchParams.get("tab") === tab) return;
+      next.searchParams.set("tab", tab);
+      const method = historyMode === "push" ? "pushState" : "replaceState";
+      window.history[method]({}, "", `${next.pathname}${next.search}${next.hash}`);
+    }
+    function setTab(tab, { historyMode = "replace" } = {}) {
       state.tab = tab;
       if (tab !== "ai") closeSheet("sessionSheet");
       setPage(`page-${tab}`);
       $all(".nav-btn").forEach(btn => btn.classList.toggle("active", btn.dataset.tab === tab));
+      syncTabURL(tab, historyMode);
+      if (state.dataReady) renderTab(tab);
     }
-    const authStoreKey = "selfit_demo_mock_access_token";
     const personaStoreKey = "selfit_demo_mock_persona";
+    const stylePersonaStoreKey = "selfit.app.persona.v1";
+    const sharedAuthStoreKey = "selfit.auth.session.v1";
     const stylistSessionStoreKey = "selfit_demo_current_stylist_session";
     let authTokenPromise = null;
     const memoryStore = {};
@@ -4413,6 +5075,108 @@ def render_selfit_demo_page() -> str:
     function currentProfile() {
       return personaProfiles[state.profileKey] || personaProfiles.student;
     }
+    function requestedStylePersonaType() {
+      const params = new URLSearchParams(window.location.search);
+      const requested = String(params.get("persona") || "").toLowerCase();
+      if (requested && state.personalityCatalog?.types?.[requested]) return requested;
+      const stored = String(readStore(stylePersonaStoreKey) || "").toLowerCase();
+      if (stored && state.personalityCatalog?.types?.[stored]) return stored;
+      return "";
+    }
+    function loadStylePersona() {
+      state.personalityCatalog = window.__SELFIT_PERSONALITY_TEMPLATES__ || { types: {} };
+      const typeId = requestedStylePersonaType();
+      state.stylePersona = typeId ? state.personalityCatalog.types?.[typeId] || null : null;
+      if (state.stylePersona?.typeId) writeStore(stylePersonaStoreKey, state.stylePersona.typeId);
+      renderStylePersona();
+    }
+    function stylePersonaOutfits() {
+      return state.stylePersona?.recommendations?.outfits?.items || [];
+    }
+    function stylePersonaColors() {
+      return (state.stylePersona?.colors?.items || []).slice(0, 5);
+    }
+    function personaRecommendationPayload() {
+      const persona = state.stylePersona;
+      if (!persona) return {};
+      return {
+        typeId: persona.typeId,
+        metadata: persona.metadata || {},
+        keywords: persona.keywords || [],
+        summary: persona.summary || "",
+        colors: persona.colors || {},
+        recommendations: persona.recommendations || {},
+      };
+    }
+    async function loadRankedOutfits(offset = 0) {
+      if (!state.outfits.length) return;
+      const data = await fetchJSON("/closet/recommendations/outfits", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ persona: personaRecommendationPayload(), offset, limit: Math.max(12, state.outfits.length), rotate_by: 4 })
+      });
+      state.outfits = data.outfits || state.outfits;
+      state.recommendationOffset = Number(data.next_offset || 0);
+    }
+    function renderColorDots(node, colors = stylePersonaColors()) {
+      if (!node) return;
+      node.innerHTML = colors.map(color => `<i style="--tone:${escapeHTML(color.value || "#ddd")}" title="${escapeHTML(color.name || "推荐色")}"></i>`).join("");
+    }
+    function renderStylePersona() {
+      const persona = state.stylePersona;
+      const profile = currentProfile();
+      if (!persona) {
+        const heroNode = $("#personaHero");
+        if (heroNode) {
+          heroNode.src = "/static/selfit/assets/loading-stage-100@2x.png";
+          heroNode.alt = "完成风格测试，认识自己的风格";
+        }
+        $("#personaCard")?.classList.add("is-empty");
+        if ($(".persona-card-label")) $(".persona-card-label").textContent = "个人风格档案";
+        if ($("#personaCode")) $("#personaCode").textContent = "SUIT × LIKE × VIBE";
+        if ($("#personaCardTitle")) $("#personaCardTitle").textContent = "先认识自己";
+        if ($("#personaSummary")) $("#personaSummary").textContent = "完成风格测试后，你的推荐色、穿搭原则和同频灵感会在这里继续陪你做选择。";
+        if ($("#personaTraits")) $("#personaTraits").innerHTML = "";
+        if ($("#openPersonaReport")) {
+          $("#openPersonaReport").firstChild.textContent = "开始风格测试 ";
+          $("#openPersonaReport").dataset.reportUrl = "/selfit";
+        }
+        if ($("#profilePersonaCode")) $("#profilePersonaCode").textContent = "SELFIT · 个人风格档案";
+        if ($("#profilePersonaName")) $("#profilePersonaName").textContent = "认识自己的风格";
+        if ($("#profilePersonaTraits")) $("#profilePersonaTraits").textContent = "适合的 × 喜欢的 × 想表达的";
+        $("#profilePersonaLink")?.setAttribute("data-report-url", "/selfit");
+        renderColorDots($("#personaColors"), []);
+        renderColorDots($("#profileColorDots"), []);
+        return;
+      }
+      $("#personaCard")?.classList.remove("is-empty");
+      if ($(".persona-card-label")) $(".persona-card-label").textContent = "你的风格人格";
+      const name = persona.metadata?.name || "我的风格";
+      const code = persona.metadata?.code || String(persona.typeId || "").toUpperCase();
+      const traits = (persona.keywords || []).filter(Boolean);
+      const hero = persona.hero?.image?.src || "";
+      const heroNode = $("#personaHero");
+      if (heroNode) {
+        heroNode.src = hero;
+        heroNode.alt = persona.hero?.image?.alt || `${name}风格人格`;
+      }
+      if ($("#personaCode")) $("#personaCode").textContent = code;
+      if ($("#personaCardTitle")) $("#personaCardTitle").textContent = name;
+      if ($("#personaSummary")) $("#personaSummary").textContent = String(persona.summary || "你的风格结果会在这里继续陪你做选择。").replace(/\\n+/g, " ");
+      if ($("#personaTraits")) $("#personaTraits").innerHTML = traits.map(item => `<span>${escapeHTML(item)}</span>`).join("");
+      if ($("#profilePersonaCode")) $("#profilePersonaCode").textContent = `${code} · 你的风格人格`;
+      if ($("#profilePersonaName")) $("#profilePersonaName").textContent = name;
+      if ($("#profilePersonaTraits")) $("#profilePersonaTraits").textContent = traits.join(" · ");
+      if ($("#handoffPersonaCopy")) $("#handoffPersonaCopy").textContent = `“${name}”的推荐色、穿搭原则和灵感已经带入。`;
+      renderColorDots($("#personaColors"));
+      renderColorDots($("#profileColorDots"));
+      const reportUrl = `/selfit?preview=report&type=${encodeURIComponent(persona.typeId || "mute")}`;
+      if ($("#openPersonaReport")) {
+        $("#openPersonaReport").firstChild.textContent = "查看完整风格报告 ";
+        $("#openPersonaReport").setAttribute("data-report-url", `${reportUrl}&from=app-home`);
+      }
+      $("#profilePersonaLink")?.setAttribute("data-report-url", `${reportUrl}&from=app-profile`);
+    }
     function applyProfile(key = state.profileKey) {
       state.profileKey = personaProfiles[key] ? key : "student";
       state.profile = currentProfile();
@@ -4420,16 +5184,36 @@ def render_selfit_demo_page() -> str:
       $all("[data-persona]").forEach(btn => btn.classList.toggle("active", btn.dataset.persona === state.profileKey));
       $("#weatherTemp").textContent = state.profile.weather;
       $("#weatherText").textContent = state.profile.weatherNote;
-      $("#widgetTitle").textContent = state.profile.widgetTitle;
       $("#feedTitle").textContent = state.profile.feedTitle;
       $("#aiHi").textContent = state.profile.aiHi;
       $("#aiTitle").textContent = state.profile.aiTitle;
       $("#aiSubtitle").textContent = state.profile.aiSubtitle;
       $("#aiPromptInput").placeholder = state.profile.chips[0] || "向灵感发送消息";
+      renderStylePersona();
       renderProfile();
     }
+    function sharedAuthSession() {
+      try {
+        const shared = JSON.parse(window.sessionStorage?.getItem(sharedAuthStoreKey) || "null");
+        if (!shared?.accessToken) return null;
+        if (shared.expiresAt && Date.parse(shared.expiresAt) <= Date.now()) return null;
+        return shared;
+      } catch (error) {
+        return null;
+      }
+    }
+    function clearSharedAuth() {
+      try { window.sessionStorage?.removeItem(sharedAuthStoreKey); } catch (error) {}
+      removeStore("selfit_demo_mock_access_token");
+    }
+    function unifiedLoginUrl() {
+      return "/selfit?entry=login";
+    }
+    function openUnifiedLogin() {
+      window.location.replace(unifiedLoginUrl());
+    }
     async function currentAuthToken() {
-      const existing = readStore(authStoreKey);
+      const existing = sharedAuthSession()?.accessToken || "";
       if (existing) {
         const me = await fetch("/auth/me", { headers: { Authorization: `Bearer ${existing}` } }).catch(() => null);
         if (me?.ok) {
@@ -4438,94 +5222,49 @@ def render_selfit_demo_page() -> str:
           state.isAuthenticated = true;
           return existing;
         }
-        removeStore(authStoreKey);
+        clearSharedAuth();
       }
       throw new Error("请先登录");
-    }
-    async function loginWithMockProfile() {
-      const phone = $("#loginPhone").value.trim();
-      const code = $("#loginCode").value.trim();
-      const note = $("#loginNote");
-      note.classList.remove("error");
-      if (!/^[0-9]{11}$/.test(phone)) {
-        note.textContent = "请输入 11 位手机号。";
-        note.classList.add("error");
-        return;
-      }
-      if (!["0000", "0001"].includes(code)) {
-        note.textContent = "验证码不正确。";
-        note.classList.add("error");
-        return;
-      }
-      applyProfile(code === "0001" ? "student" : "professional");
-      $("#loginBtn").disabled = true;
-      $("#loginBtn").textContent = "正在进入";
-      const started = await fetch("/auth/phone/start", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ phone }),
-      });
-      const startData = await started.json();
-      const verified = await fetch("/auth/phone/verify", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ phone, code }),
-      });
-      const verifyData = await verified.json();
-      if (!started.ok || !verified.ok || !verifyData.access_token) {
-        note.textContent = verifyData.detail || startData.detail || "登录失败，请重新输入。";
-        note.classList.add("error");
-        $("#loginBtn").disabled = false;
-        $("#loginBtn").textContent = "进入selfit";
-        return;
-      }
-      writeStore(authStoreKey, verifyData.access_token);
-      state.user = verifyData.user || null;
-      state.isAuthenticated = true;
-      authTokenPromise = null;
-      $("#loginScreen").classList.remove("active");
-      $("#loginBtn").disabled = false;
-      $("#loginBtn").textContent = "进入selfit";
-      await loadData();
-      toast(`已进入${state.profile.role}身份。`);
     }
     async function demoAuthToken() {
       if (authTokenPromise) return authTokenPromise;
       authTokenPromise = currentAuthToken().catch(error => {
         authTokenPromise = null;
-        $("#loginScreen").classList.add("active");
+        openUnifiedLogin();
         throw error;
       });
       return authTokenPromise;
     }
     async function initializeAuth() {
       applyProfile(readStore(personaStoreKey) || "professional");
-      const existing = readStore(authStoreKey);
+      const existing = sharedAuthSession()?.accessToken || "";
       if (!existing) {
-        $("#loginScreen").classList.add("active");
+        openUnifiedLogin();
         return;
       }
       try {
         await demoAuthToken();
-        $("#loginScreen").classList.remove("active");
+        if (!state.stylePersona?.typeId) {
+          window.location.replace("/selfit");
+          return;
+        }
         await loadData();
       } catch (error) {
-        $("#loginScreen").classList.add("active");
+        openUnifiedLogin();
       }
     }
-    function logoutMockUser() {
-      removeStore(authStoreKey);
+    function logoutSelfitUser() {
+      clearSharedAuth();
       removeStore(stylistSessionStoreKey);
       state.user = null;
       state.isAuthenticated = false;
       authTokenPromise = null;
-      $("#loginScreen").classList.add("active");
-      toast("已切换到登录页。");
+      openUnifiedLogin();
     }
     function assetURL(path) {
       if (!path || !path.startsWith("/user-assets/")) return path || "";
       if (path.includes("access_token=")) return path;
-      const token = readStore(authStoreKey);
+      const token = sharedAuthSession()?.accessToken || "";
       return token ? `${path}${path.includes("?") ? "&" : "?"}access_token=${encodeURIComponent(token)}` : path;
     }
     async function imageObjectURL(path) {
@@ -4556,10 +5295,10 @@ def render_selfit_demo_page() -> str:
       const requestOptions = { ...options, headers: await authHeaders(options) };
       let res = await fetch(url, requestOptions);
       if (res.status === 401) {
-        removeStore(authStoreKey);
+        clearSharedAuth();
         authTokenPromise = null;
-        requestOptions.headers = await authHeaders(options);
-        res = await fetch(url, requestOptions);
+        openUnifiedLogin();
+        throw new Error("登录已过期，请重新登录");
       }
       const raw = await res.text();
       let data = {};
@@ -4570,8 +5309,32 @@ def render_selfit_demo_page() -> str:
           data = { error: { message: "暂时灵感耗尽，正在努力充能～" }, raw_text: raw.slice(0, 200) };
         }
       }
-      if (!res.ok) throw new Error(data.detail || data.error?.message || "请求失败");
+      if (!res.ok) {
+        const error = new Error(data.detail || data.error?.message || "请求失败");
+        error.status = res.status;
+        error.code = data.error?.code || "";
+        error.retryAfterSeconds = Math.max(0, Number(
+          res.headers.get("Retry-After") || data.error?.details?.retryAfterSeconds || data.retry_after_seconds || 0
+        ));
+        throw error;
+      }
       return data;
+    }
+    function waitWithSignal(delayMs, signal) {
+      return new Promise((resolve, reject) => {
+        if (signal?.aborted) return reject(new DOMException("已取消", "AbortError"));
+        const finish = () => {
+          signal?.removeEventListener("abort", abort);
+          resolve();
+        };
+        const timer = window.setTimeout(finish, delayMs);
+        const abort = () => {
+          window.clearTimeout(timer);
+          signal?.removeEventListener("abort", abort);
+          reject(new DOMException("已取消", "AbortError"));
+        };
+        signal?.addEventListener("abort", abort, { once: true });
+      });
     }
     function normalizeSessionMessages(messages = []) {
       return (messages || []).filter(message => ["user", "assistant"].includes(message.role) && message.content).map(message => ({
@@ -4657,6 +5420,18 @@ def render_selfit_demo_page() -> str:
           : state.aiSessions[0]?.session_id;
       if (nextId) await selectStylistSession(nextId, { silent: true, clearUnread: false });
       updateSessionTitle();
+    }
+    async function ensureStylistSessions() {
+      if (state.stylistSessionsLoaded || state.stylistSessionsLoading) return;
+      state.stylistSessionsLoading = true;
+      try {
+        await loadStylistSessions();
+        state.stylistSessionsLoaded = true;
+      } catch (error) {
+        updateSessionTitle();
+      } finally {
+        state.stylistSessionsLoading = false;
+      }
     }
     async function selectStylistSession(sessionId, options = {}) {
       if (!sessionId) return;
@@ -4767,18 +5542,57 @@ def render_selfit_demo_page() -> str:
         state.currentSessionId = preferencesData.current_stylist_session_id;
       }
       updateCurrentModelUI();
-      await loadStylistSessions();
-      renderAll();
+      state.dataReady = true;
+      renderTab(state.tab);
+      $(".app")?.classList.remove("auth-pending");
+      maybeShowPersonaHandoff();
+      loadDeferredData();
+    }
+    async function loadDeferredData() {
+      const ranked = loadRankedOutfits(0).then(() => {
+        if (state.tab === "home") renderHome();
+      }).catch(() => {});
+      const bodyPhoto = loadOnboardingBodyPhoto().catch(() => false);
+      if (state.tab === "ai") ensureStylistSessions();
+      await Promise.allSettled([ranked, bodyPhoto]);
+    }
+    function maybeShowPersonaHandoff() {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get("from") !== "report") return;
+      const handoff = $("#personaHandoff");
+      handoff.hidden = false;
+      handoff.setAttribute("aria-hidden", "false");
+    }
+    function closePersonaHandoff() {
+      const handoff = $("#personaHandoff");
+      handoff.hidden = true;
+      handoff.setAttribute("aria-hidden", "true");
+      const next = new URL(window.location.href);
+      next.searchParams.delete("from");
+      next.searchParams.delete("persona");
+      window.history.replaceState({}, "", `${next.pathname}${next.search}${next.hash}`);
+      setTab("home");
     }
     function renderAll() {
       renderHome();
       renderAI();
       renderCategories();
       renderCloset();
-      renderBuilder();
       renderProfile();
       renderDetail();
       renderEditor();
+    }
+    function renderTab(tab = state.tab) {
+      if (tab === "home") renderHome();
+      if (tab === "ai") {
+        renderAI();
+        ensureStylistSessions();
+      }
+      if (tab === "closet") {
+        renderCategories();
+        renderCloset();
+      }
+      if (tab === "me") renderProfile();
     }
     function renderHome() {
       applyProfile(state.profileKey);
@@ -4822,24 +5636,27 @@ def render_selfit_demo_page() -> str:
       const carousel = (cards || []).filter(card => card?.outfit_id).slice(0, 4);
       if (!carousel.length) {
         state.todayIndex = 0;
-        const profile = currentProfile();
-        track.innerHTML = `<article class="today-card today-empty" role="button" tabindex="0" data-today-empty><div class="today-copy"><span class="tag">${escapeHTML(profile.role)}</span><h1>${escapeHTML(profile.emptyTitle)}</h1><p>${escapeHTML(profile.emptyCopy)}</p></div></article>`;
+        const persona = state.stylePersona;
+        const inspiration = stylePersonaOutfits()[0] || null;
+        const image = inspiration?.image?.src || "";
+        const personaName = persona?.metadata?.name || "你的风格";
+        track.innerHTML = `<article class="today-card" role="button" tabindex="0" data-today-empty><div class="today-copy"><span class="tag">根据你的${escapeHTML(personaName)}</span><h1>${escapeHTML(inspiration?.name || "先从一个清晰重点开始")}</h1><p>${escapeHTML(persona?.recommendations?.outfits?.summary || currentProfile().emptyCopy)}</p></div><div class="today-art">${image ? `<img class="today-cover" src="${image}" alt="${escapeHTML(inspiration?.image?.alt || inspiration?.name || "风格灵感")}">` : ""}</div></article>`;
         dots.innerHTML = "";
-        $("[data-today-empty]").addEventListener("click", () => openSheet("uploadSheet"));
+        $("[data-today-empty]").addEventListener("click", () => {
+          setTab("ai");
+          $("#aiPromptInput").value = `按我的${personaName}风格，用衣橱里的单品搭一套今天能穿的`;
+          updateAISendButton();
+        });
         return;
       }
       state.todayIndex = Math.max(0, Math.min(state.todayIndex, carousel.length - 1));
       track.innerHTML = carousel.map((card, index) => todayCardHTML(card, index)).join("");
       dots.innerHTML = todayDots(carousel);
-      bindImagePreviews(track);
       window.requestAnimationFrame(() => {
         track.scrollLeft = state.todayIndex * Math.max(1, track.clientWidth);
       });
       bindTodayRail(track, carousel);
-      $all("[data-today-outfit]").forEach(cardNode => cardNode.addEventListener("click", event => {
-        if (event.target.closest("button")) return;
-        openOutfitDetail(cardNode.dataset.todayOutfit);
-      }));
+      $all("[data-today-outfit]").forEach(cardNode => cardNode.addEventListener("click", () => openOutfitDetail(cardNode.dataset.todayOutfit)));
       $all("[data-today-index]").forEach(btn => btn.addEventListener("click", event => {
         event.preventDefault();
         event.stopPropagation();
@@ -4864,7 +5681,7 @@ def render_selfit_demo_page() -> str:
       const cover = withVersion(card.layout_snapshot_path || card.cover_path || card.cover || "", card);
       return `<article class="today-card" role="button" tabindex="0" data-today-outfit="${card.outfit_id}" aria-label="${escapeHTML(card.title || "今日推荐")}">
         <div class="today-copy"><span class="tag">${copy.tag}</span><h1>${escapeHTML(copy.title)}</h1><p>${copy.reason}</p></div>
-        <button class="today-art image-preview-button" type="button" data-preview-image="${cover}" data-preview-title="${escapeHTML(card.title || copy.title)}" aria-label="放大查看${escapeHTML(card.title || copy.title)}">${todayOutfitArt(card)}</button>
+        <div class="today-art">${cover ? `<img class="today-cover" src="${cover}" alt="${escapeHTML(card.title || copy.title)}">` : todayOutfitArt(card)}</div>
       </article>`;
     }
     function todayRecommendationCopy(card, index) {
@@ -4931,10 +5748,11 @@ def render_selfit_demo_page() -> str:
         },
       ];
       const picked = variants[index % variants.length];
+      const recommendationReason = card.recommendation?.reasons?.[0];
       return {
-        tag: picked.tag,
+        tag: card.recommendation ? "与你同频" : picked.tag,
         title: genericTitle ? picked.title : rawTitle,
-        reason: picked.reason,
+        reason: recommendationReason || picked.reason,
       };
     }
     function todayOutfitArt(card) {
@@ -4953,53 +5771,81 @@ def render_selfit_demo_page() -> str:
     }
     function outfitCardHTML(card) {
       const cover = withVersion(card.layout_snapshot_path || card.cover_path || card.cover || "", card);
-      const img = cover ? `<img src="${cover}" alt="${card.title || "搭配"}">` : `<div class="empty" style="min-height:100%;border-radius:0;">这套搭配正在生成封面</div>`;
+      const img = cover ? `<img src="${cover}" alt="${escapeHTML(card.title || "搭配")}" loading="lazy" decoding="async">` : `<div class="empty" style="min-height:100%;border-radius:0;">这套搭配正在生成封面</div>`;
       const heart = card.favorite ? "♥" : "♡";
       return `<article class="outfit-card" data-open-outfit="${card.outfit_id || ""}">
-        <div class="outfit-canvas" data-preview-image="${cover}" data-preview-title="${escapeHTML(card.title || "搭配")}">${img}</div>
-        <div class="outfit-meta"><button class="favorite-btn ${card.favorite ? "active" : ""}" data-favorite-outfit="${card.outfit_id || ""}" aria-label="收藏搭配">${heart}</button><button class="try-btn" data-home-outfit="${card.outfit_id || ""}">试穿</button></div>
+        <div class="outfit-canvas">${img}</div>
+        <div class="outfit-meta"><button class="favorite-btn ${card.favorite ? "active" : ""}" data-favorite-outfit="${card.outfit_id || ""}" aria-label="${card.favorite ? "取消收藏" : "收藏"}搭配" aria-pressed="${Boolean(card.favorite)}">${heart}</button><button class="try-btn" data-home-outfit="${card.outfit_id || ""}">试穿</button></div>
       </article>`;
     }
     function personaFeedHTML() {
       const profile = currentProfile();
-      return profile.feed.map(([tag, title, reason]) => `<article class="outfit-card">
-        <div class="outfit-canvas" style="display:grid;place-items:start;padding:18px;background:linear-gradient(180deg,#fff,#fff1f6);">
-          <span class="tag" style="color:var(--rose-deep);background:#fff;padding:6px 10px;border-radius:999px;font-size:12px;font-weight:850;">${escapeHTML(tag)}</span>
-          <h3 style="font-size:22px;line-height:1.15;margin-top:34px;">${escapeHTML(title)}</h3>
-          <p style="color:var(--muted);line-height:1.55;margin-top:10px;">${escapeHTML(reason)}</p>
-        </div>
-        <div class="outfit-meta"><button class="try-btn" data-persona-question="${escapeHTML(title)}">问问灵感</button></div>
-      </article>`).join("");
+      const personaName = state.stylePersona?.metadata?.name || "我的风格";
+      const outfitImages = stylePersonaOutfits();
+      if (outfitImages.length) return outfitImages.slice(0, 4).map((item, index) => {
+        const fallback = profile.feed[index % profile.feed.length] || ["穿搭灵感", item.name, ""];
+        const title = item.name || fallback[1];
+        const image = item.image?.src || "";
+        return `<article class="outfit-card persona-inspiration-card">
+          <div class="outfit-canvas"><img src="${image}" alt="${escapeHTML(item.image?.alt || title)}"><div class="persona-inspiration-copy"><small>${escapeHTML(personaName)}</small><b>${escapeHTML(title)}</b></div></div>
+          <div class="outfit-meta"><button class="try-btn" data-persona-question="${escapeHTML(`参考${title}，用我的衣橱搭一套`)}">用我的衣橱搭</button></div>
+        </article>`;
+      }).join("");
+      return profile.feed.map(([tag, title, reason]) => `<article class="outfit-card"><div class="outfit-canvas"><div class="persona-inspiration-copy"><small>${escapeHTML(tag)}</small><b>${escapeHTML(title)}</b></div></div><div class="outfit-meta"><button class="try-btn" data-persona-question="${escapeHTML(title)}">问问搭配</button></div></article>`).join("");
     }
     function escapeHTML(value) {
       return String(value ?? "").replace(/[&<>"']/g, char => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[char]));
     }
     function generatingLayerHTML() {
-      return `<div class="tryon-generating-card">
-        <div class="tryon-lottie" data-tryon-lottie aria-hidden="true"></div>
-        <div class="tryon-generating-title" id="generatingText">正在生成试穿图</div>
-        <p class="tryon-generating-copy">正在保留你的身形和风格细节，生成后先看整体比例和上身效果。</p>
-        <div class="tryon-progress" aria-hidden="true"><span></span></div>
-        <button id="cancelGenerate" class="secondary-btn tryon-cancel" type="button">取消</button>
+      return `<div class="tryon-generating-card" role="status" aria-live="polite">
+        <img class="tryon-loading-art" id="tryonLoadingArt" src="/static/selfit/assets/loading-stage-25@2x.png" width="480" height="324" alt="" aria-hidden="true" data-stage="25">
+        <p class="tryon-generating-kicker">SUIT × LIKE × VIBE</p>
+        <div class="tryon-generating-title" id="generatingText">正在让这套穿搭更像你</div>
+        <p class="tryon-generating-copy" id="tryonGeneratingCopy">先整理好你的照片和每件单品。</p>
+        <div class="tryon-progress-row"><div class="tryon-progress" role="progressbar" aria-label="试穿图生成进度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="8"><span id="tryonProgressBar"></span></div><span class="tryon-progress-value" id="tryonProgressValue">8%</span></div>
+        <button id="cancelGenerate" class="tryon-cancel" type="button">取消生成</button>
+        <img class="tryon-loading-signature" src="/static/selfit/assets/splash-signature@2x.png" width="200" height="133" alt="" aria-hidden="true">
       </div>`;
     }
-    function initTryonGeneratingLottie(root = document) {
-      if (!window.lottie || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-      root.querySelectorAll("[data-tryon-lottie]").forEach(container => {
-        if (container.dataset.lottieReady) return;
-        container.dataset.lottieReady = "1";
-        window.lottie.loadAnimation({
-          container,
-          renderer: "svg",
-          loop: true,
-          autoplay: true,
-          path: "/static/animations/tryon-generating.json",
-          rendererSettings: {
-            preserveAspectRatio: "xMidYMid meet",
-            progressiveLoad: true
-          }
-        });
-      });
+    const tryonLoadingStages = {
+      queued: { stage: 25, title: "正在让这套穿搭更像你", copy: "先整理好你的照片和每件单品。" },
+      preparing: { stage: 25, title: "先把每件单品放到合适的位置", copy: "正在识别穿搭中可以自然替换的部分。" },
+      generating: { stage: 50, title: "正在让这套穿搭更像你", copy: "会保留你的脸、身形和照片氛围，再逐件替换可见单品。" },
+      finishing: { stage: 75, title: "再看一眼整体比例", copy: "正在检查服装边缘、身形和上身效果。" },
+    };
+    [25, 50, 75].forEach(stage => {
+      const image = new Image();
+      image.src = `/static/selfit/assets/loading-stage-${stage}@2x.png`;
+    });
+    function updateTryonGeneratingState(job = {}) {
+      const progress = Math.max(1, Math.min(96, Number(job.progress || 8)));
+      const phase = job.phase === "preparing"
+        ? "preparing"
+        : progress >= 72
+          ? "finishing"
+          : job.phase === "generating" || progress >= 30
+            ? "generating"
+            : "queued";
+      const presentation = tryonLoadingStages[phase];
+      const title = $("#generatingText");
+      const copy = $("#tryonGeneratingCopy");
+      const bar = $("#tryonProgressBar");
+      const value = $("#tryonProgressValue");
+      const progressbar = bar?.closest('[role="progressbar"]');
+      const art = $("#tryonLoadingArt");
+      if (title) title.textContent = presentation.title;
+      if (copy) copy.textContent = presentation.copy;
+      if (bar) bar.style.width = `${progress}%`;
+      if (value) value.textContent = `${progress}%`;
+      if (progressbar) progressbar.setAttribute("aria-valuenow", String(progress));
+      if (art && art.dataset.stage !== String(presentation.stage)) {
+        art.classList.add("is-changing");
+        window.setTimeout(() => {
+          art.src = `/static/selfit/assets/loading-stage-${presentation.stage}@2x.png`;
+          art.dataset.stage = String(presentation.stage);
+          requestAnimationFrame(() => requestAnimationFrame(() => art.classList.remove("is-changing")));
+        }, window.matchMedia("(prefers-reduced-motion: reduce)").matches ? 0 : 150);
+      }
     }
     function shouldUseXHSSkill(message = "") {
       const text = String(message || "");
@@ -5038,7 +5884,7 @@ def render_selfit_demo_page() -> str:
         current_query: String(message || "").trim(),
         recent_user_queries: queries,
         previous_query: queries.length >= 2 ? queries[queries.length - 2] : "",
-        previous_assistant_summary: String(lastAssistant?.content || "").replace(/\s+/g, " ").slice(0, 220),
+        previous_assistant_summary: String(lastAssistant?.content || "").replace(/\\s+/g, " ").slice(0, 220),
         previous_xhs_sources: lastSources.filter(item => item && (item.title || item.label)).slice(0, 6),
         conversation_turn_count: state.aiMessages.length,
         must_answer_current_query: true,
@@ -5108,7 +5954,7 @@ def render_selfit_demo_page() -> str:
     function renderInlineMarkdown(text = "") {
       return escapeHTML(text)
         .replace(/`([^`]+)`/g, "<code>$1</code>")
-        .replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
+        .replace(/\\*\\*([^*]+)\\*\\*/g, "<strong>$1</strong>");
     }
     function renderAssistantMarkdown(text = "", options = {}) {
       const lines = String(text || "").split(/\\n+/).map(line => line.trim()).filter(Boolean);
@@ -5156,7 +6002,7 @@ def render_selfit_demo_page() -> str:
         .map(line => line.trim())
         .filter(Boolean)
         .join(" ")
-        .replace(/\s{2,}/g, " ")
+        .replace(/\\s{2,}/g, " ")
         .trim();
     }
     function insertNormalizedPromptText(textarea, text = "") {
@@ -5166,11 +6012,12 @@ def render_selfit_demo_page() -> str:
       const end = textarea.selectionEnd ?? textarea.value.length;
       const before = textarea.value.slice(0, start);
       const after = textarea.value.slice(end);
-      const needsLead = before && !/\s$/.test(before) ? " " : "";
-      const needsTrail = after && !/^\s/.test(after) ? " " : "";
-      textarea.value = `${before}${needsLead}${normalized}${needsTrail}${after}`.replace(/\s{2,}/g, " ");
+      const needsLead = before && !/\\s$/.test(before) ? " " : "";
+      const needsTrail = after && !/^\\s/.test(after) ? " " : "";
+      textarea.value = `${before}${needsLead}${normalized}${needsTrail}${after}`.replace(/\\s{2,}/g, " ");
       const cursor = (before + needsLead + normalized).length;
       textarea.setSelectionRange(cursor, cursor);
+      updateAISendButton();
     }
     function stopAITextStream() {
       if (state.aiStreamTimer) window.clearInterval(state.aiStreamTimer);
@@ -5183,8 +6030,11 @@ def render_selfit_demo_page() -> str:
       const button = $("#aiSendBtn");
       if (!button) return;
       const stopping = isAIResponding();
+      button.disabled = !stopping && !normalizeAIInputText($("#aiPromptInput")?.value || "");
       button.classList.toggle("is-stopping", stopping);
-      button.textContent = stopping ? "■" : "↑";
+      button.innerHTML = stopping
+        ? `<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="7" y="7" width="10" height="10" rx="2"/></svg>`
+        : `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 18V6"/><path d="m7.5 10.5 4.5-4.5 4.5 4.5"/></svg>`;
       button.setAttribute("aria-label", stopping ? "停止输出" : "发送");
       button.setAttribute("title", stopping ? "停止输出" : "发送");
     }
@@ -5368,12 +6218,12 @@ def render_selfit_demo_page() -> str:
       const cleanItems = visibleItems();
       const counts = categoryOrder.reduce((acc, key) => ({ ...acc, [key]: key === "all" ? cleanItems.length : cleanItems.filter(item => item.category === key).length }), {});
       $("#categoryRow").innerHTML = categoryOrder.map(key => {
-        const sample = key === "all" ? cleanItems[0] : cleanItems.find(item => item.category === key);
-        const image = sample ? `<img src="${publicCutoutImg(sample)}" alt="${labels[key] || "全部"}">` : `<span style="font-size:28px;color:#c5c7cc;">▣</span>`;
-        return `<button class="cat ${state.category === key ? "active" : ""}" data-category="${key}"><span class="cat-thumb">${image}</span><span class="badge">${counts[key] || 0}</span><span>${key === "all" ? "全部" : labels[key]}</span></button>`;
+        const label = key === "all" ? "全部" : labels[key];
+        return `<button class="cat ${state.category === key ? "active" : ""}" data-category="${key}" aria-pressed="${state.category === key}"><span class="cat-label">${escapeHTML(label)}</span><span class="badge">${counts[key] || 0}</span></button>`;
       }).join("");
       $all("[data-category]").forEach(btn => btn.addEventListener("click", () => {
         state.category = btn.dataset.category;
+        state.closetItemLimit = 20;
         renderCategories();
         renderCloset();
       }));
@@ -5382,38 +6232,54 @@ def render_selfit_demo_page() -> str:
       if (state.closetMode === "plans") state.closetMode = "items";
       $all("[data-closet-mode]").forEach(btn => btn.classList.toggle("active", btn.dataset.closetMode === state.closetMode));
       $("#categoryRow").style.display = state.closetMode === "items" ? "flex" : "none";
-      $("#floatingMatch").style.display = state.tab === "closet" && state.closetMode === "items" ? "block" : "none";
+      $("#floatingMatch").style.display = state.tab === "closet" ? "block" : "none";
       if (state.closetMode === "items") renderItemGrid();
       if (state.closetMode === "outfits") renderOutfitGrid();
     }
     function renderItemGrid() {
       const cleanItems = visibleItems();
       const items = state.category === "all" ? cleanItems : cleanItems.filter(item => item.category === state.category);
+      const visiblePage = items.slice(0, state.closetItemLimit);
+      const remaining = Math.max(0, items.length - visiblePage.length);
       $("#closetGrid").className = "item-grid";
-      $("#closetGrid").innerHTML = items.length ? items.map(item => `<article class="closet-card">
-        <div class="closet-img" data-preview-image="${publicCutoutImg(item)}" data-preview-title="${escapeHTML(item.category_label || "单品")}"><img src="${publicCutoutImg(item)}" alt="${item.category_label}"></div>
-        <div class="closet-meta"><button class="item-favorite ${item.favorite ? "active" : ""}" data-favorite-item="${item.item_id}" aria-label="收藏单品">${item.favorite ? "♥" : "♡"}</button><button class="match-btn" data-match="${item.item_id}">去搭配</button></div>
-      </article>`).join("") : `<div class="empty">这个分类还没有衣物。点底部 + 上传一张试试。</div>`;
-      bindImagePreviews();
-      $all("[data-match]").forEach(btn => btn.addEventListener("click", () => openBuilder([btn.dataset.match])));
+      $("#closetGrid").removeAttribute("aria-busy");
+      $("#closetGrid").removeAttribute("aria-label");
+      $("#closetGrid").innerHTML = items.length ? `${visiblePage.map(item => `<article class="closet-card">
+        <button class="closet-img" type="button" data-open-item="${item.item_id}" aria-label="查看${escapeHTML(item.category_label || "单品")}详情"><img src="${publicCutoutImg(item)}" alt="${escapeHTML(item.category_label || "单品")}" loading="lazy" decoding="async"></button>
+        <button class="item-favorite ${item.favorite ? "active" : ""}" type="button" data-favorite-item="${item.item_id}" aria-label="${item.favorite ? "取消收藏" : "收藏"}${escapeHTML(item.category_label || "单品")}" aria-pressed="${Boolean(item.favorite)}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20.4 4.1 13A5.2 5.2 0 0 1 11.5 5.6l.5.5.5-.5A5.2 5.2 0 0 1 19.9 13L12 20.4Z"/></svg></button>
+        <div class="closet-card-label">${escapeHTML(item.category_label || labels[item.category] || "单品")}</div>
+      </article>`).join("")}${remaining ? `<button class="closet-load-more" type="button" data-closet-more="items">继续浏览 · 还有 ${remaining} 件</button>` : ""}` : `<div class="empty">这个分类还没有衣物。点底部 + 上传一张试试。</div>`;
+      $all("[data-open-item]").forEach(node => node.addEventListener("click", () => openItemDetail(node.dataset.openItem)));
       $all("[data-favorite-item]").forEach(btn => btn.addEventListener("click", event => {
         event.preventDefault();
         event.stopPropagation();
         toggleItemFavorite(btn.dataset.favoriteItem);
       }));
+      $("[data-closet-more='items']")?.addEventListener("click", () => {
+        state.closetItemLimit += 20;
+        renderItemGrid();
+      });
     }
     function renderOutfitGrid() {
       $("#closetGrid").className = "masonry";
+      $("#closetGrid").removeAttribute("aria-busy");
+      $("#closetGrid").removeAttribute("aria-label");
       const outfits = visibleOutfits();
-      $("#closetGrid").innerHTML = outfits.length ? outfits.map(outfit => outfitCardHTML(outfit)).join("") : `<div class="empty">还没有套装。选择几件单品，保存成一套搭配。</div>`;
+      const visiblePage = outfits.slice(0, state.closetOutfitLimit);
+      const remaining = Math.max(0, outfits.length - visiblePage.length);
+      $("#closetGrid").innerHTML = outfits.length ? `${visiblePage.map(outfit => outfitCardHTML(outfit)).join("")}${remaining ? `<button class="closet-load-more" type="button" data-closet-more="outfits">继续浏览 · 还有 ${remaining} 套</button>` : ""}` : `<div class="empty">还没有套装。选择几件单品，保存成一套搭配。</div>`;
       bindOutfitActions();
+      $("[data-closet-more='outfits']")?.addEventListener("click", () => {
+        state.closetOutfitLimit += 12;
+        renderOutfitGrid();
+      });
     }
     function renderPlans() {
       $("#closetGrid").className = "item-grid";
       $("#closetGrid").innerHTML = `<div class="empty">行程模式已预留。下一步可以为旅行、面试、约会创建穿搭计划。</div>`;
     }
     function renderBuilder() {
-      $("#builderList").innerHTML = visibleItems().map(item => `<button class="pick-card ${state.selectedItems.has(item.item_id) ? "active" : ""}" data-builder-item="${item.item_id}"><img src="${publicCutoutImg(item)}" alt="${item.category_label}"><span>${item.category_label}</span></button>`).join("");
+      $("#builderList").innerHTML = visibleItems().map(item => `<button class="pick-card ${state.selectedItems.has(item.item_id) ? "active" : ""}" data-builder-item="${item.item_id}"><img src="${publicCutoutImg(item)}" alt="${item.category_label}" loading="lazy" decoding="async"><span>${item.category_label}</span></button>`).join("");
       $all("[data-builder-item]").forEach(btn => btn.addEventListener("click", () => {
         const id = btn.dataset.builderItem;
         if (state.selectedItems.has(id)) state.selectedItems.delete(id);
@@ -5453,7 +6319,7 @@ def render_selfit_demo_page() -> str:
       const favoriteOutfits = visibleOutfits().filter(outfit => outfit.favorite).map(outfit => ({ id: outfit.outfit_id, type: "outfit", image_path: withVersion(outfit.layout_snapshot_path || outfit.cover_path || outfit.cover || "", outfit), label: outfit.title || "收藏套装" }));
       const favorites = [...favoriteOutfits, ...favoriteItems].filter(item => item.image_path);
       const workItems = visibleItems().filter(isUserCreatedItem).map(item => ({ id: `item:${item.item_id}`, raw_id: item.item_id, type: "item", image_path: publicCutoutImg(item), label: item.category_label || "上传单品", card_class: "work-item" })).filter(item => item.image_path);
-      const workOutfits = visibleOutfits().filter(isUserCreatedOutfit).map(outfit => ({ id: `outfit:${outfit.outfit_id}`, raw_id: outfit.outfit_id, type: "outfit", image_path: withVersion(outfit.layout_snapshot_path || outfit.cover_path || outfit.cover || "", outfit), label: outfit.title || "自由搭配", card_class: "work-outfit" })).filter(item => item.image_path);
+      const workOutfits = visibleOutfits().filter(isUserCreatedOutfit).map(outfit => ({ id: `outfit:${outfit.outfit_id}`, raw_id: outfit.outfit_id, type: "outfit", image_path: withVersion(outfit.layout_snapshot_path || outfit.cover_path || outfit.cover || "", outfit), label: outfit.title || "我的搭配", card_class: "work-outfit" })).filter(item => item.image_path);
       const isRecords = state.profileView === "records";
       const isWorks = state.profileView === "works";
       const currentWorks = isWorks ? (state.profileWorkView === "items" ? workItems : workOutfits) : [];
@@ -5462,7 +6328,6 @@ def render_selfit_demo_page() -> str:
         state.selectedRecordIds.clear();
         state.selectedWorkIds.clear();
       }
-      $("#profileAvatar").textContent = profile.avatar;
       $("#profileName").textContent = profile.name;
       $("#profileLine").textContent = profile.summary || profile.role || "";
       $all("[data-profile-view]").forEach(btn => btn.classList.toggle("active", btn.dataset.profileView === state.profileView));
@@ -5480,15 +6345,18 @@ def render_selfit_demo_page() -> str:
       $("#recordSelectText").textContent = selectedCount ? `已选择 ${selectedCount} ${isWorks ? "个作品" : "条记录"}` : isWorks ? "选择要删除的作品" : "选择要删除的记录";
       $("#recordDeleteBtn").disabled = !selectedCount;
       if (state.profileView === "favorites") {
-        $("#recordGrid").innerHTML = favorites.length ? favorites.slice(0, 18).map(item => `<button class="record-card" type="button" data-favorite-open="${item.type}:${item.id}" data-preview-image="${item.image_path}" data-preview-title="${escapeHTML(item.label)}"><img src="${item.image_path}" alt="${escapeHTML(item.label)}"></button>`).join("") : `<div class="empty" style="grid-column:1/-1;">收藏单品和套装会出现在这里。</div>`;
-        bindImagePreviews();
+        $("#recordGrid").innerHTML = favorites.length ? favorites.slice(0, 18).map(item => item.type === "outfit"
+          ? `<button class="record-card" type="button" data-profile-outfit="${item.id}"><img src="${item.image_path}" alt="${escapeHTML(item.label)}"></button>`
+          : `<button class="record-card" type="button" data-profile-item="${item.id}"><img src="${item.image_path}" alt="${escapeHTML(item.label)}"></button>`).join("") : `<div class="empty" style="grid-column:1/-1;">收藏单品和套装会出现在这里。</div>`;
+        $all("[data-profile-outfit]").forEach(card => card.addEventListener("click", () => openOutfitDetail(card.dataset.profileOutfit)));
+        $all("[data-profile-item]").forEach(card => card.addEventListener("click", () => openItemDetail(card.dataset.profileItem)));
         return;
       }
       if (isWorks) {
-        const emptyCopy = state.profileWorkView === "items" ? "你上传或从链接导入的单品会出现在这里。" : "自由搭配保存的套装会出现在这里。";
+        const emptyCopy = state.profileWorkView === "items" ? "你上传或从链接提取的单品会出现在这里。" : "你保存的搭配会出现在这里。";
         $("#recordGrid").innerHTML = currentWorks.length ? currentWorks.slice(0, 36).map(item => {
           const selected = state.selectedWorkIds.has(item.id);
-          return `<button class="record-card ${item.card_class} ${state.recordEditing ? "editing" : ""} ${selected ? "selected" : ""}" type="button" data-work-id="${item.id}" data-preview-image="${item.image_path}" data-preview-title="${escapeHTML(item.label)}"><img src="${item.image_path}" alt="${escapeHTML(item.label)}">${state.recordEditing ? `<span class="check">✓</span>` : ""}</button>`;
+          return `<button class="record-card ${item.card_class} ${state.recordEditing ? "editing" : ""} ${selected ? "selected" : ""}" type="button" data-work-id="${item.id}"><img src="${item.image_path}" alt="${escapeHTML(item.label)}">${state.recordEditing ? `<span class="check">✓</span>` : ""}</button>`;
         }).join("") : `<div class="empty" style="grid-column:1/-1;">${emptyCopy}</div>`;
         $all("[data-work-id]").forEach(card => card.addEventListener("click", () => {
           const id = card.dataset.workId;
@@ -5496,14 +6364,13 @@ def render_selfit_demo_page() -> str:
           if (!state.recordEditing) {
             const [type, rawId] = id.split(":");
             if (type === "outfit") return openOutfitDetail(rawId);
-            if (type === "item") return openBuilder([rawId]);
+            if (type === "item") return openItemDetail(rawId);
             return;
           }
           if (state.selectedWorkIds.has(id)) state.selectedWorkIds.delete(id);
           else state.selectedWorkIds.add(id);
           renderProfile();
         }));
-        bindImagePreviews();
         return;
       }
       $("#recordGrid").innerHTML = records.length ? records.slice(0, 18).map(record => {
@@ -5578,29 +6445,181 @@ def render_selfit_demo_page() -> str:
         return toast("先保存套装后再查看详情。");
       }
       const outfit = cleanOutfit(state.outfits.find(item => item.outfit_id === outfitId) || await fetchJSON(`/closet/outfits/${encodeURIComponent(outfitId)}`));
+      state.detailReturnTab = state.tab || "home";
+      state.detailMode = "outfit";
+      state.currentItem = null;
       state.currentOutfit = outfit;
       state.editorItems = visibleItems(outfit.items || []).map((item, index) => editorItemFromClosetItem(item, index));
       renderDetail();
       renderEditor();
       setPage("page-detail");
     }
+    function openItemDetail(itemId) {
+      const item = visibleItems().find(entry => entry.item_id === itemId);
+      if (!item) return toast("这件单品暂时无法查看。");
+      state.detailReturnTab = state.tab || "closet";
+      state.detailMode = "item";
+      state.currentItem = item;
+      renderDetail();
+      setPage("page-detail");
+    }
+    function recommendationGroup(item) {
+      const slot = itemSlot(item);
+      if (["bottom", "skirt"].includes(slot)) return "lower";
+      if (["hat", "scarf", "socks", "accessory"].includes(slot)) return "accessory";
+      return slot;
+    }
+    function recommendationTokens(values = []) {
+      const aliases = {
+        minimal: ["minimal", "minimalist", "clean", "simple", "简洁", "极简", "低装饰", "克制"],
+        structured: ["structured", "tailored", "sharp", "clean lines", "秩序", "利落", "结构", "清晰线条", "剪裁"],
+        soft: ["soft", "gentle", "flowy", "drape", "柔和", "温柔", "轻盈", "垂坠"],
+        classic: ["classic", "timeless", "preppy", "heritage", "经典", "老钱", "学院", "稳定质感"],
+        romantic: ["romantic", "lace", "ruffle", "feminine", "浪漫", "蕾丝", "荷叶", "女性"],
+        casual: ["casual", "relaxed", "everyday", "休闲", "松弛", "日常", "舒适"],
+        sporty: ["sport", "sporty", "athletic", "outdoor", "运动", "户外", "机能"],
+        vintage: ["vintage", "retro", "nostalgic", "复古", "怀旧"],
+        dark: ["dark", "goth", "black", "leather", "暗黑", "冷硬", "黑色", "皮革"],
+        expressive: ["expressive", "bold", "statement", "contrast", "高表达", "大胆", "撞色", "冲突", "夸张"],
+        airy: ["airy", "sheer", "transparent", "satin", "空气感", "薄纱", "半透明", "缎面", "冷雾"],
+      };
+      const text = (Array.isArray(values) ? values : [values]).map(value => String(value || "").trim().toLowerCase()).join(" ");
+      return Object.entries(aliases).filter(([, terms]) => terms.some(term => text.includes(term))).map(([token]) => token);
+    }
+    function recommendationColorRoots(item) {
+      const aliases = {
+        black: ["black", "charcoal", "onyx", "黑", "炭黑", "曜石"], white: ["white", "ivory", "cream", "oat", "白", "象牙", "奶油", "烟白", "雾白"],
+        gray: ["gray", "grey", "silver", "灰", "银", "水泥"], blue: ["blue", "navy", "denim", "蓝", "藏青", "雾蓝", "冰蓝"],
+        brown: ["brown", "camel", "tan", "coffee", "chocolate", "棕", "驼", "咖啡", "焦糖"], red: ["red", "burgundy", "wine", "红", "酒红"],
+        pink: ["pink", "rose", "blush", "粉", "玫瑰"], green: ["green", "mint", "olive", "绿", "薄荷", "墨绿"],
+        yellow: ["yellow", "lemon", "champagne", "黄", "柠檬", "香槟"], purple: ["purple", "violet", "lavender", "紫", "薰衣草"]
+      };
+      const text = (item?.attributes?.colors || []).map(value => String(value || "").toLowerCase()).join(" ");
+      return Object.entries(aliases).filter(([, terms]) => terms.some(term => text.includes(term))).map(([token]) => token);
+    }
+    function smartItemRecommendations(anchor, limit = 6) {
+      if (!anchor?.item_id) return [];
+      const anchorGroup = recommendationGroup(anchor);
+      const compatibility = {
+        top: { lower: 72, shoes: 42, bag: 38, accessory: 26 },
+        lower: { top: 72, shoes: 42, bag: 38, accessory: 26 },
+        dress: { shoes: 68, bag: 62, accessory: 38 },
+        shoes: { dress: 64, top: 54, lower: 54, bag: 32, accessory: 22 },
+        bag: { dress: 64, top: 54, lower: 54, shoes: 34, accessory: 22 },
+        accessory: { dress: 58, top: 52, lower: 52, shoes: 30, bag: 30, accessory: 12 },
+      };
+      const coOccurrence = new Map();
+      visibleOutfits().forEach(outfit => {
+        const outfitItems = visibleItems(outfit.items || []);
+        if (!outfitItems.some(item => item.item_id === anchor.item_id)) return;
+        outfitItems.forEach(item => {
+          if (item.item_id !== anchor.item_id) coOccurrence.set(item.item_id, (coOccurrence.get(item.item_id) || 0) + 1);
+        });
+      });
+      const anchorTags = new Set(recommendationTokens(anchor.attributes?.style_tags || []));
+      const anchorColors = recommendationColorRoots(anchor);
+      const personaColors = stylePersonaColors().flatMap(color => recommendationColorRoots({ attributes: { colors: [color.name || ""] } }));
+      const personaStyleTokens = new Set(recommendationTokens([...(state.stylePersona?.keywords || []), state.stylePersona?.summary || "", state.stylePersona?.recommendations?.outfits?.summary || ""]));
+      const neutralRoots = new Set(["black", "white", "gray", "blue", "brown"]);
+      const ranked = visibleItems().filter(item => item.item_id !== anchor.item_id).map(item => {
+        const group = recommendationGroup(item);
+        const coCount = coOccurrence.get(item.item_id) || 0;
+        let score = compatibility[anchorGroup]?.[group];
+        if (score == null && coCount) score = 44;
+        if (score == null) return null;
+        const itemTags = recommendationTokens(item.attributes?.style_tags || []);
+        const sharedTags = itemTags.filter(tag => anchorTags.has(tag));
+        const personaTags = itemTags.filter(tag => personaStyleTokens.has(tag));
+        const colors = recommendationColorRoots(item);
+        const sharedColors = colors.filter(color => anchorColors.includes(color));
+        const neutralHarmony = colors.some(color => neutralRoots.has(color)) && anchorColors.some(color => neutralRoots.has(color));
+        const personaHarmony = colors.some(color => personaColors.includes(color));
+        score += coCount * 120;
+        score += sharedTags.length * 18;
+        score += personaTags.length * 16;
+        score += sharedColors.length * 10;
+        score += neutralHarmony ? 6 : 0;
+        score += personaHarmony ? 7 : 0;
+        score += Math.max(0, Math.min(1, Number(item.quality?.score || 0))) * 6;
+        const reason = coCount
+          ? "衣橱常搭"
+          : personaTags[0]
+            ? "符合你的风格"
+            : sharedTags[0]
+              ? "风格特征呼应"
+            : sharedColors.length || neutralHarmony || personaHarmony
+              ? "配色协调"
+              : "补全搭配";
+        return { item, group, score, reason };
+      }).filter(Boolean).sort((a, b) => b.score - a.score || String(a.item.item_id).localeCompare(String(b.item.item_id)));
+      const groupCaps = anchorGroup === "top"
+        ? { lower: 2, shoes: 1, bag: 1, accessory: 2 }
+        : anchorGroup === "lower"
+          ? { top: 2, shoes: 1, bag: 1, accessory: 2 }
+          : { dress: 2, top: 2, lower: 2, shoes: 1, bag: 1, accessory: 1 };
+      const selected = [];
+      const groupCounts = {};
+      ranked.forEach(entry => {
+        if (selected.length >= limit) return;
+        const cap = groupCaps[entry.group] ?? 1;
+        if ((groupCounts[entry.group] || 0) >= cap) return;
+        selected.push(entry);
+        groupCounts[entry.group] = (groupCounts[entry.group] || 0) + 1;
+      });
+      if (selected.length < limit) {
+        ranked.forEach(entry => {
+          if (selected.length >= limit || selected.some(selectedEntry => selectedEntry.item.item_id === entry.item.item_id)) return;
+          selected.push(entry);
+        });
+      }
+      return selected.slice(0, limit);
+    }
     function renderDetail() {
+      const item = state.detailMode === "item" ? state.currentItem : null;
+      if (item) {
+        const model = currentModel();
+        const label = item.category_label || labels[item.category] || "单品详情";
+        $("#detailTitle").textContent = label;
+        $("#detailHero").classList.add("is-item");
+        delete $("#detailHero").dataset.previewImage;
+        delete $("#detailHero").dataset.previewTitle;
+        $("#detailHero").innerHTML = `<img src="${publicCutoutImg(item)}" alt="${escapeHTML(label)}"><div class="model-chip"><img src="${model.src}" alt="${escapeHTML(model.name || "当前模特")}"></div>`;
+        const recommendations = smartItemRecommendations(item);
+        $("#detailItemsSection").hidden = false;
+        $("#detailItemsEyebrow").textContent = "SMART MATCH";
+        $("#detailItemsTitle").textContent = "适合搭配";
+        $("#detailItemsNote").hidden = false;
+        $("#detailItemsNote").textContent = "根据这件单品、你的风格和衣橱搭配关系推荐";
+        $("#detailItems").innerHTML = recommendations.length ? recommendations.map(({ item: recommendation, reason }) => `<button class="item-tile recommendation-tile" data-detail-item="${recommendation.item_id}"><img src="${publicCutoutImg(recommendation)}" alt="${escapeHTML(recommendation.category_label || "推荐单品")}"><span>${escapeHTML(recommendation.category_label || "推荐单品")}</span><small>${escapeHTML(reason)}</small></button>`).join("") : `<div class="empty" style="min-width:100%;">衣橱里暂时没有合适的互补单品，先去添加一件试试。</div>`;
+        $all("[data-detail-item]").forEach(node => node.addEventListener("click", () => openItemDetail(node.dataset.detailItem)));
+        $("#detailEditBtn").textContent = "加入搭配";
+        $("#detailTryBtn").textContent = ["top", "bottom", "skirt", "dress"].includes(item.category) ? "试穿这件" : "搭配这件";
+        return;
+      }
       const outfit = state.currentOutfit;
       if (!outfit) return;
       $("#detailTitle").textContent = outfit.title || "穿搭详情";
       const cover = withVersion(outfit.layout_snapshot_path || outfit.cover_path || "", outfit);
       const model = currentModel();
-      $("#detailHero").dataset.previewImage = cover;
-      $("#detailHero").dataset.previewTitle = outfit.title || "穿搭";
-      $("#detailHero").innerHTML = `${cover ? `<img src="${cover}" alt="${escapeHTML(outfit.title || "穿搭")}">` : `<div class="empty">这套搭配正在生成封面</div>`}<div class="model-chip" data-preview-image="${model.src}" data-preview-title="${escapeHTML(model.name || "当前模特")}"><img src="${model.src}" alt="${escapeHTML(model.name || "当前模特")}"></div>`;
-      $("#detailItems").innerHTML = visibleItems(outfit.items || []).map(item => `<button class="item-tile" data-detail-item="${item.item_id}" data-preview-image="${publicCutoutImg(item)}" data-preview-title="${escapeHTML(item.category_label || "单品")}"><img src="${publicCutoutImg(item)}" alt="${escapeHTML(item.category_label || "单品")}"><span>${escapeHTML(item.category_label || "单品")}</span></button>`).join("") || `<div class="empty" style="min-width:100%;">这套搭配还没有单品。</div>`;
-      bindImagePreviews();
+      $("#detailHero").classList.remove("is-item");
+      delete $("#detailHero").dataset.previewImage;
+      delete $("#detailHero").dataset.previewTitle;
+      $("#detailHero").innerHTML = `${cover ? `<img src="${cover}" alt="${escapeHTML(outfit.title || "穿搭")}">` : `<div class="empty">这套搭配正在生成封面</div>`}<div class="model-chip"><img src="${model.src}" alt="${escapeHTML(model.name || "当前模特")}"></div>`;
+      $("#detailItemsSection").hidden = false;
+      $("#detailItemsEyebrow").textContent = "OUTFIT PIECES";
+      $("#detailItemsTitle").textContent = "穿搭单品";
+      $("#detailItemsNote").hidden = true;
+      $("#detailItemsNote").textContent = "";
+      $("#detailEditBtn").textContent = "调整搭配";
+      $("#detailTryBtn").textContent = "生成试穿图";
+      $("#detailItems").innerHTML = visibleItems(outfit.items || []).map(item => `<button class="item-tile" data-detail-item="${item.item_id}"><img src="${publicCutoutImg(item)}" alt="${escapeHTML(item.category_label || "单品")}"><span>${escapeHTML(item.category_label || "单品")}</span></button>`).join("") || `<div class="empty" style="min-width:100%;">这套搭配还没有单品。</div>`;
+      $all("[data-detail-item]").forEach(node => node.addEventListener("click", () => openItemDetail(node.dataset.detailItem)));
     }
     function editorItemFromClosetItem(item, index) {
       const slot = itemSlot(item);
       const defaults = {
-        top: [150, 54, 1.1], bottom: [82, 174, 1.45], skirt: [78, 184, 1.35],
-        dress: [112, 78, 1.65], shoes: [224, 304, .88], bag: [262, 134, .78], accessory: [248, 48, .7]
+        top: [112, 34, 1.55], bottom: [58, 168, 1.7], skirt: [58, 176, 1.6],
+        dress: [88, 60, 1.85], shoes: [188, 298, 1.12], bag: [232, 96, 1.02], accessory: [228, 38, .9]
       };
       const base = defaults[slot] || [54 + (index % 3) * 112, 80 + Math.floor(index / 3) * 126, .82];
       return { id: item.item_id, item, x: base[0], y: base[1], scale: base[2], rotation: 0, z: 2 + index };
@@ -5718,7 +6737,7 @@ def render_selfit_demo_page() -> str:
       const data = await fetchJSON("/closet/outfits", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ item_ids: itemIds, title: "自由搭配", scene_tags: ["自由搭配"] })
+        body: JSON.stringify({ item_ids: itemIds, title: "我的搭配", scene_tags: ["自主搭配"] })
       });
       state.outfits.unshift(data);
       state.currentOutfit = data;
@@ -5735,11 +6754,32 @@ def render_selfit_demo_page() -> str:
       hero.innerHTML = `${imagePath ? `<img id="${imageId}" class="image-loading" alt="试穿结果">` : `<div class="empty">选择一套搭配后，就能在这里查看试穿效果。</div>`}<div id="generatingLayer" class="generating-layer">${generatingLayerHTML()}</div>`;
       if (imagePath) loadImageInto(`#${imageId}`, imagePath);
       bindImagePreviews();
-      $("#cancelGenerate")?.addEventListener("click", () => {
-        $("#generatingLayer").classList.remove("active");
-        hero.classList.remove("is-generating");
+      $("#cancelGenerate")?.addEventListener("click", cancelTryonGeneration);
+    }
+    function renderTryonFailure(message) {
+      const hero = $("#tryonHero");
+      const outfit = state.currentOutfit || {};
+      const outfitImage = outfit.cover_path ? withVersion(outfit.cover_path, outfit) : "";
+      const model = currentModel();
+      hero.classList.remove("is-generating");
+      hero.dataset.previewImage = "";
+      hero.dataset.previewTitle = "";
+      hero.innerHTML = `<div class="tryon-failure">
+        ${outfitImage ? `<div class="tryon-failure-preview"><img src="${escapeHTML(outfitImage)}" alt="${escapeHTML(outfit.title || "已选搭配")}"><span class="tryon-failure-model"><img src="${escapeHTML(model.src)}" alt="${escapeHTML(model.name || "当前照片")}"></span></div>` : ""}
+        <h3>${escapeHTML(outfit.title || "已保留这套搭配")}</h3>
+        <p>${escapeHTML(message || "这张照片暂时不适合这套搭配，可以更换照片后继续。")}</p>
+        <button class="tryon-failure-change" id="changeTryonPhotoBtn" type="button">更换照片</button>
+      </div>`;
+      $("#changeTryonPhotoBtn")?.addEventListener("click", () => {
+        openModelSheet();
+        setModelMode("photo");
       });
-      initTryonGeneratingLottie(hero);
+    }
+    function cancelTryonGeneration() {
+      state.tryonAbortController?.abort();
+      state.tryonAbortController = null;
+      $("#generatingLayer")?.classList.remove("active");
+      $("#tryonHero")?.classList.remove("is-generating");
     }
     async function currentModelFile() {
       const model = currentModel();
@@ -5759,7 +6799,7 @@ def render_selfit_demo_page() -> str:
       const data = await fetchJSON("/closet/outfits", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ item_ids: itemIds, title: state.aiBrief || "自由搭配", scene_tags: state.aiBrief ? [state.aiBrief] : [] })
+        body: JSON.stringify({ item_ids: itemIds, title: state.aiBrief || "我的搭配", scene_tags: state.aiBrief ? [state.aiBrief] : [] })
       });
       state.outfits.unshift(data);
       state.selectedItems.clear();
@@ -5769,34 +6809,96 @@ def render_selfit_demo_page() -> str:
       renderAll();
       toast(data.warnings?.[0] || "已保存为套装。");
     }
-    async function tryOutfit(outfitId) {
+    async function tryOutfit(outfitId, options = {}) {
       if (!outfitId) {
         openBuilder();
         return toast("先保存套装后再试穿。");
       }
       const outfit = cleanOutfit(state.outfits.find(item => item.outfit_id === outfitId) || state.currentOutfit || await fetchJSON(`/closet/outfits/${encodeURIComponent(outfitId)}`));
+      state.detailMode = "outfit";
+      state.currentItem = null;
       state.currentOutfit = outfit;
       renderDetail();
       setPage("page-tryon");
       renderTryonResult("");
       $("#tryonHero").classList.add("is-generating");
       $("#generatingLayer").classList.add("active");
-      initTryonGeneratingLottie($("#tryonHero"));
-      toast("正在生成试穿图...");
+      updateTryonGeneratingState({ phase: "queued", progress: 8 });
       const body = new FormData();
       body.append("outfit_id", outfitId);
       body.append("photo_mode", state.currentModelId === "self" ? "standard" : "standard");
       body.append("person_image", await currentModelFile());
+      if (options.forceRegenerate) body.append("force_regenerate", "true");
+      const abortController = new AbortController();
+      state.tryonAbortController = abortController;
       try {
-        const data = await fetchJSON("/selfit/try-on/from-outfit", { method: "POST", body });
+        const job = options.retryJob && state.tryonJobId
+          ? await fetchJSON(`/selfit/try-on/jobs/${encodeURIComponent(state.tryonJobId)}/retry`, { method: "POST", signal: abortController.signal })
+          : await fetchJSON("/selfit/try-on/jobs", { method: "POST", body, signal: abortController.signal });
+        state.tryonJobId = job.job_id;
+        const data = await waitForTryonJob(job.job_id, abortController.signal);
         state.tryonResult = data;
         renderTryonResult(data.result?.image_path || "");
         if (data.record?.image_path) state.records.unshift(data.record);
         renderProfile();
         toast(data.result?.user_message || data.decision?.user_message || "已生成试穿记录。");
       } catch (error) {
-        renderTryonResult("");
-        toast(error.message || "这次没有生成成功，可以换张更清楚的照片再试。");
+        const message = error.name === "AbortError" ? "已取消生成。" : (error.message || "这次没有生成成功，可以换张更清楚的照片再试。");
+        renderTryonFailure(message);
+        toast(message);
+      } finally {
+        if (state.tryonAbortController === abortController) state.tryonAbortController = null;
+      }
+    }
+    async function waitForTryonJob(jobId, signal) {
+      for (let attempt = 0; attempt < 360; attempt += 1) {
+        if (signal?.aborted) throw new DOMException("已取消", "AbortError");
+        let job;
+        try {
+          job = await fetchJSON(`/selfit/try-on/jobs/${encodeURIComponent(jobId)}`, { signal });
+        } catch (error) {
+          if (error.status !== 429) throw error;
+          const retryDelay = Math.max(1200, Math.min(15000, Number(error.retryAfterSeconds || 2) * 1000));
+          const title = $("#generatingText");
+          const copy = $("#tryonGeneratingCopy");
+          if (title) title.textContent = "试穿任务还在继续";
+          if (copy) copy.textContent = "进度查询暂时拥挤，已为你保留任务，稍后会自动继续查看。";
+          await waitWithSignal(retryDelay, signal);
+          continue;
+        }
+        if (job.status === "processing") {
+          updateTryonGeneratingState(job);
+        }
+        if (job.status === "completed") return job.result;
+        if (job.status === "failed") {
+          const error = new Error(job.error?.message || "这次试穿没有完成。");
+          error.result = job.result;
+          throw error;
+        }
+        const pollDelay = attempt < 5 ? 1000 : attempt < 20 ? 1500 : 2500;
+        await waitWithSignal(pollDelay, signal);
+      }
+      throw new Error("试穿生成时间较长，任务仍在后台进行。");
+    }
+    async function tryCurrentItem() {
+      const item = state.currentItem;
+      if (!item) return toast("先选择一件单品。");
+      if (!["top", "bottom", "skirt", "dress"].includes(item.category)) {
+        const companions = smartItemRecommendations(item, 3).map(entry => entry.item.item_id);
+        openBuilder([item.item_id, ...companions]);
+        return toast("鞋包和配饰需要和主服装一起试穿，已为你选了一组搭配。");
+      }
+      const label = item.category_label || labels[item.category] || "单品";
+      try {
+        const outfit = await fetchJSON("/closet/outfits", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ item_ids: [item.item_id], title: `试穿·${label}`, scene_tags: ["单品试穿"] })
+        });
+        state.outfits.unshift(outfit);
+        await tryOutfit(outfit.outfit_id);
+      } catch (error) {
+        toast(error.message || "这件单品暂时无法试穿。");
       }
     }
     async function toggleFavorite(outfitId) {
@@ -5877,6 +6979,14 @@ def render_selfit_demo_page() -> str:
                 role: state.profile.role,
                 preferences: state.profile.preference,
                 feed_focus: state.profile.feed.map(item => item[0]),
+                style_persona: state.stylePersona ? {
+                  type_id: state.stylePersona.typeId,
+                  name: state.stylePersona.metadata?.name,
+                  code: state.stylePersona.metadata?.code,
+                  keywords: state.stylePersona.keywords || [],
+                  summary: state.stylePersona.summary || "",
+                  colors: stylePersonaColors().map(color => ({ name: color.name, value: color.value })),
+                } : null,
               },
               xiaohongshu_preferred: useXHSSkill,
               requested_skills: [
@@ -5951,19 +7061,105 @@ def render_selfit_demo_page() -> str:
         toggleFavorite(btn.dataset.favoriteOutfit);
       }));
     }
+    function renderImportReview(message = "") {
+      const items = state.importReviewItems || [];
+      $("#importReviewTitle").textContent = items.length ? `识别到 ${items.length} 件单品` : "没有可入柜的单品";
+      $("#importReviewCopy").textContent = message || (items.length ? "看看是否每件衣物都完整，分类不对可以直接修改。" : "换一张衣物完整、光线清晰的图片再试试。");
+      $("#importReviewGrid").innerHTML = items.map(item => `
+        <article class="import-review-card" data-import-review-item="${item.item_id}">
+          <img class="import-review-image" src="${publicCutoutImg(item)}" alt="${escapeHTML(item.category_label || labels[item.category] || "单品")}">
+          <button class="import-review-remove" type="button" data-import-remove="${item.item_id}" aria-label="移除这件单品">×</button>
+          <select class="import-review-select" data-import-category="${item.item_id}" aria-label="修改单品分类">
+            ${categoryOrder.filter(category => category !== "all").map(category => `<option value="${category}" ${item.category === category ? "selected" : ""}>${escapeHTML(labels[category])}</option>`).join("")}
+          </select>
+        </article>
+      `).join("");
+      $("#importReviewDone").textContent = items.length ? "完成入柜" : "返回重新上传";
+      $all("[data-import-category]").forEach(select => select.addEventListener("change", async () => {
+        try {
+          const updated = await fetchJSON(`/closet/items/${encodeURIComponent(select.dataset.importCategory)}`, {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ category: select.value })
+          });
+          const index = state.importReviewItems.findIndex(item => item.item_id === updated.item_id);
+          if (index >= 0) state.importReviewItems[index] = updated;
+          await loadData();
+          toast("已更新分类。");
+        } catch (error) {
+          toast(error.message || "分类修改失败。");
+        }
+      }));
+      $all("[data-import-remove]").forEach(button => button.addEventListener("click", async () => {
+        try {
+          const itemId = button.dataset.importRemove;
+          await fetchJSON(`/closet/items/${encodeURIComponent(itemId)}`, { method: "DELETE" });
+          state.importReviewItems = state.importReviewItems.filter(item => item.item_id !== itemId);
+          await loadData();
+          renderImportReview();
+        } catch (error) {
+          toast(error.message || "移除失败。");
+        }
+      }));
+    }
+    function showImportReview(data) {
+      state.importReviewItems = data.items || [];
+      state.importDraftOutfit = data.draft_outfit || null;
+      const draftCopy = state.importDraftOutfit ? " 这些单品已按原图关系组成一套待确认穿搭。" : "";
+      renderImportReview(`${data.message || ""}${draftCopy}`.trim());
+      closeSheet("uploadSheet");
+      openSheet("importReviewSheet");
+    }
     async function uploadFiles(files) {
       if (!files.length) return;
-      $("#uploadStatus").textContent = "正在提取衣物...";
+      $("#uploadStatus").textContent = "正在准备提取...";
+      $("#retryImportBtn").hidden = true;
       const body = new FormData();
       [...files].forEach(file => body.append("images", file));
-      const data = await fetchJSON("/closet/import/upload", { method: "POST", body });
-      $("#uploadStatus").textContent = data.message || "已放入衣橱。";
-      closeSheet("uploadSheet");
-      setTab("closet");
-      await loadData();
+      try {
+        const job = await fetchJSON("/closet/import/jobs", { method: "POST", body });
+        state.importJobId = job.job_id;
+        const data = await waitForImportJob(job.job_id);
+        $("#uploadStatus").textContent = data.message || "已放入衣橱。";
+        await loadData();
+        showImportReview(data);
+      } catch (error) {
+        $("#uploadStatus").textContent = error.message || "这张图暂时无法拆解，请换一张更清晰的图片。";
+        $("#retryImportBtn").hidden = !state.importJobId;
+        toast($("#uploadStatus").textContent);
+      } finally {
+        $("#wearUploadInput").value = "";
+      }
+    }
+    async function waitForImportJob(jobId) {
+      for (let attempt = 0; attempt < 300; attempt += 1) {
+        const job = await fetchJSON(`/closet/import/jobs/${encodeURIComponent(jobId)}`);
+        $("#uploadStatus").textContent = job.status === "queued"
+          ? "已排队，马上开始识别。"
+          : job.status === "processing"
+            ? `正在提取并抟图·${Math.max(1, Number(job.progress || 0))}%`
+            : $("#uploadStatus").textContent;
+        if (job.status === "completed") return job.result || { items: [], summary: { created: 0 } };
+        if (job.status === "failed") throw new Error(job.error?.message || "这次提取没有完成。");
+        await new Promise(resolve => window.setTimeout(resolve, 900));
+      }
+      throw new Error("提取时间较长，任务仍在后台处理，请稍后重试查看。");
+    }
+    async function retryCurrentImport() {
+      if (!state.importJobId) return;
+      $("#retryImportBtn").hidden = true;
+      try {
+        const job = await fetchJSON(`/closet/import/jobs/${encodeURIComponent(state.importJobId)}/retry`, { method: "POST" });
+        const data = await waitForImportJob(job.job_id);
+        await loadData();
+        showImportReview(data);
+      } catch (error) {
+        $("#uploadStatus").textContent = error.message || "重试失败，请换一张图片。";
+        $("#retryImportBtn").hidden = false;
+      }
     }
     function openColorUpload() {
-      window.location.href = "/demo?source=selfit";
+      setPage("page-color");
     }
     function previewColorFile(file) {
       state.colorFile = file || null;
@@ -6005,34 +7201,39 @@ def render_selfit_demo_page() -> str:
       body.append("url", url);
       const data = await fetchJSON("/closet/import/link", { method: "POST", body });
       $("#uploadStatus").textContent = data.message || "已导入衣橱。";
-      closeSheet("uploadSheet");
-      setTab("closet");
       await loadData();
+      showImportReview(data);
     }
-    $all("[data-tab]").forEach(btn => btn.addEventListener("click", () => setTab(btn.dataset.tab)));
-    window.addEventListener("scroll", maybeLoadMoreHomeOutfits, { passive: true });
-    $("#loginPhone").value = "";
-    $("#loginCode").value = "";
-    $("#loginCode").addEventListener("input", () => {
-      const code = $("#loginCode").value.trim();
-      if (code === "0001") applyProfile("student");
-      if (code === "0000") applyProfile("professional");
+    $all("[data-tab]").forEach(btn => btn.addEventListener("click", () => setTab(btn.dataset.tab, { historyMode: "push" })));
+    window.addEventListener("popstate", () => {
+      const requestedTab = new URLSearchParams(window.location.search).get("tab");
+      setTab(["home", "ai", "closet", "me"].includes(requestedTab) ? requestedTab : "home", { historyMode: "none" });
     });
-    $("#loginBtn").addEventListener("click", () => loginWithMockProfile().catch(error => {
-      $("#loginNote").textContent = error.message || "登录失败，请重试。";
-      $("#loginNote").classList.add("error");
-      $("#loginBtn").disabled = false;
-      $("#loginBtn").textContent = "进入selfit";
-    }));
-    $("#logoutBtn").addEventListener("click", logoutMockUser);
-    $all("[data-tab-shortcut]").forEach(btn => btn.addEventListener("click", () => setTab(btn.dataset.tabShortcut)));
+    window.addEventListener("scroll", maybeLoadMoreHomeOutfits, { passive: true });
+    $("#logoutBtn").addEventListener("click", logoutSelfitUser);
+    $all("[data-tab-shortcut]").forEach(btn => btn.addEventListener("click", () => setTab(btn.dataset.tabShortcut, { historyMode: "push" })));
     $all("[data-closet-mode]").forEach(btn => btn.addEventListener("click", () => { state.closetMode = btn.dataset.closetMode; renderCloset(); }));
     $all("[data-close]").forEach(btn => btn.addEventListener("click", () => closeSheet(btn.dataset.close)));
     $all("[data-back-home]").forEach(btn => btn.addEventListener("click", () => setTab("home")));
+    $all("[data-back-detail]").forEach(btn => btn.addEventListener("click", () => setTab(state.detailReturnTab || "home")));
     $all("[data-open-detail]").forEach(btn => btn.addEventListener("click", () => state.currentOutfit ? setPage("page-detail") : setTab("home")));
     $("#mainPlus").addEventListener("click", () => openSheet("uploadSheet"));
-    $("#uploadWidget").addEventListener("click", () => openSheet("uploadSheet"));
-    $("#colorWidget").addEventListener("click", openColorUpload);
+    $("#homeTryAction").addEventListener("click", () => {
+      const first = visibleOutfits()[0];
+      if (first?.outfit_id) return openOutfitDetail(first.outfit_id);
+      $("#uploadStatus").textContent = "先上传一件想试的衣服，识别完成后就可以直接生成试穿图。";
+      openSheet("uploadSheet");
+    });
+    $("#homeExtractAction").addEventListener("click", () => {
+      $("#uploadStatus").textContent = "粘贴喜欢的内容链接，我会提取其中可识别的衣服。";
+      openSheet("uploadSheet");
+      window.setTimeout(() => $("#wearLinkInput").focus(), 220);
+    });
+    $("#homeAskAction").addEventListener("click", () => setTab("ai"));
+    $("#handoffContinue").addEventListener("click", closePersonaHandoff);
+    [$("#profilePersonaLink")].forEach(button => button?.addEventListener("click", () => {
+      window.location.href = button.dataset.reportUrl || "/selfit";
+    }));
     $("#profileColorCell").addEventListener("click", openColorUpload);
     $("#modelCell").addEventListener("click", openModelSheet);
     $("#sessionPickerBtn").addEventListener("click", toggleSessionSidebar);
@@ -6065,13 +7266,9 @@ def render_selfit_demo_page() -> str:
     $("#selfModelInput").addEventListener("change", event => {
       const file = event.target.files?.[0];
       if (!file) return;
+      if (state.selfModelUrl?.startsWith("blob:")) URL.revokeObjectURL(state.selfModelUrl);
       state.selfModelUrl = URL.createObjectURL(file);
-      $("#selfUploadZone").dataset.previewImage = state.selfModelUrl;
-      $("#selfUploadZone").dataset.previewTitle = "我的模特照片";
-      delete $("#selfUploadZone").dataset.previewBound;
-      $("#selfUploadZone").innerHTML = `<img src="${state.selfModelUrl}" alt="我的模特照片">`;
-      $("#confirmSelfModel").disabled = false;
-      bindImagePreviews($("#selfUploadZone"));
+      renderSelfModelPhoto();
     });
     $("#confirmSelfModel").addEventListener("click", () => {
       if (!state.selfModelUrl) return toast("请先上传一张照片。");
@@ -6081,27 +7278,62 @@ def render_selfit_demo_page() -> str:
       saveCurrentModelPreference();
       toast("已使用我的照片。");
     });
-    $("#refreshInspiration").addEventListener("click", () => {
+    $("#refreshInspiration").addEventListener("click", async () => {
       $("#refreshNote").textContent = "正在刷新灵感穿搭...";
-      window.setTimeout(() => {
-        state.outfits = [...state.outfits].sort(() => Math.random() - 0.5);
+      try {
+        await loadRankedOutfits(state.recommendationOffset);
+        state.todayIndex = 0;
         renderHome();
-        $("#refreshNote").textContent = state.outfits.length ? "已换一批适合上海小雨天的灵感。" : "暂时没有新的灵感，先添加几件单品吧。";
-      }, 450);
+        $("#refreshNote").textContent = state.outfits.length ? "已经换了一组与你风格相近的灵感。" : `已按${state.stylePersona?.metadata?.name || "你的风格"}换了一组参考。`;
+      } catch (error) {
+        $("#refreshNote").textContent = "暂时没有更多符合的穿搭。";
+      }
     });
     $("#uploadGarmentBtn").addEventListener("click", () => $("#wearUploadInput").click());
     $("#cameraBtn").addEventListener("click", () => $("#wearUploadInput").click());
     $("#wearUploadInput").addEventListener("change", event => uploadFiles(event.target.files || []));
+    $("#retryImportBtn").addEventListener("click", retryCurrentImport);
     $("#wearLinkBtn").addEventListener("click", importLink);
+    $("#importReviewDone").addEventListener("click", async () => {
+      const hasItems = state.importReviewItems.length > 0;
+      const draftOutfit = state.importDraftOutfit;
+      closeSheet("importReviewSheet");
+      if (!hasItems) return openSheet("uploadSheet");
+      if (draftOutfit?.outfit_id) {
+        try {
+          const confirmed = await fetchJSON(`/closet/outfits/${encodeURIComponent(draftOutfit.outfit_id)}`, {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ draft: false })
+          });
+          const index = state.outfits.findIndex(outfit => outfit.outfit_id === confirmed.outfit_id);
+          if (index >= 0) state.outfits[index] = confirmed;
+        } catch (error) {}
+      }
+      setTab("closet", { historyMode: "push" });
+      toast(draftOutfit ? `已入柜 ${state.importReviewItems.length} 件单品，并保留为一套待确认穿搭。` : `已将 ${state.importReviewItems.length} 件单品放入衣橱。`);
+      state.importReviewItems = [];
+      state.importDraftOutfit = null;
+    });
     $("#detailEditBtn").addEventListener("click", () => {
+      if (state.detailMode === "item" && state.currentItem) return openBuilder([state.currentItem.item_id]);
       if (!state.currentOutfit) return toast("先选择一套搭配。");
       if (!state.editorItems.length) state.editorItems = visibleItems(state.currentOutfit.items || []).map((item, index) => editorItemFromClosetItem(item, index));
       renderEditor();
       setPage("page-editor");
     });
-    $("#detailTryBtn").addEventListener("click", () => state.currentOutfit ? tryOutfit(state.currentOutfit.outfit_id) : toast("先选择一套搭配。"));
+    $("#detailTryBtn").addEventListener("click", () => state.detailMode === "item" ? tryCurrentItem() : (state.currentOutfit ? tryOutfit(state.currentOutfit.outfit_id) : toast("先选择一套搭配。")));
+    $("#detailShare").addEventListener("click", async () => {
+      const title = state.detailMode === "item" ? (state.currentItem?.category_label || "我的 selfit 单品") : (state.currentOutfit?.title || "我的 selfit 穿搭");
+      if (navigator.share) {
+        await navigator.share({ title, text: `这套搭配很像我：${title}` }).catch(() => {});
+      } else {
+        await navigator.clipboard?.writeText(`${title} · selfit`).catch(() => {});
+        toast("搭配名称已复制。\\n可以发给朋友一起看看。");
+      }
+    });
     $("#tryAnotherBtn").addEventListener("click", () => setTab("home"));
-    $("#retryTryonBtn").addEventListener("click", () => state.currentOutfit ? tryOutfit(state.currentOutfit.outfit_id) : toast("先选择一套搭配。"));
+    $("#retryTryonBtn").addEventListener("click", () => state.currentOutfit ? tryOutfit(state.currentOutfit.outfit_id, { forceRegenerate: true, retryJob: true }) : toast("先选择一套搭配。"));
     $("#tryonSaveBtn").addEventListener("click", () => toast("已保存到试穿记录。"));
     $("#colorUploadInput").addEventListener("change", event => previewColorFile(event.target.files?.[0]));
     $("#startColorBtn").addEventListener("click", runColorTest);
@@ -6139,18 +7371,24 @@ def render_selfit_demo_page() -> str:
         handleAISend();
       }
     });
+    $("#aiPromptInput").addEventListener("input", updateAISendButton);
     $("#aiPromptInput").addEventListener("paste", event => {
       const text = event.clipboardData?.getData("text/plain") || "";
       if (!text) return;
       event.preventDefault();
       insertNormalizedPromptText(event.currentTarget, text);
     });
-    $("#cancelGenerate")?.addEventListener("click", () => {
-      $("#generatingLayer").classList.remove("active");
-      $("#tryonHero").classList.remove("is-generating");
-    });
-    initTryonGeneratingLottie($("#tryonHero"));
+    $("#cancelGenerate")?.addEventListener("click", cancelTryonGeneration);
+    document.addEventListener("error", event => {
+      const image = event.target;
+      if (!(image instanceof HTMLImageElement) || image.closest(".login-screen")) return;
+      image.style.display = "none";
+      image.parentElement?.classList.add("asset-missing");
+    }, true);
     $(".ai-input").style.display = "none";
+    loadStylePersona();
+    const initialTab = new URLSearchParams(window.location.search).get("tab");
+    setTab(["home", "ai", "closet", "me"].includes(initialTab) ? initialTab : "home", { historyMode: "none" });
     initializeAuth().catch(error => toast(error.message || "加载失败"));
   </script>
 </body>
@@ -6158,28 +7396,267 @@ def render_selfit_demo_page() -> str:
 """
 
 
-def _import_sources(sources: list[dict[str, Any]], import_type: str, source_url: str | None = None, final_url: str | None = None) -> dict[str, Any]:
+def _normalize_inventory_candidates(raw_items: Any) -> list[dict[str, Any]]:
+    if not isinstance(raw_items, list):
+        return []
+    candidates: list[dict[str, Any]] = []
+    for raw in raw_items[:16]:
+        if not isinstance(raw, dict):
+            continue
+        category = str(raw.get("category") or "").strip().lower()
+        if category not in CLOSET_SUPPORTED_CATEGORIES:
+            continue
+        bbox = _normalize_inventory_bbox(raw.get("bbox"))
+        if bbox is None:
+            continue
+        try:
+            confidence = max(0.0, min(1.0, float(raw.get("confidence") or 0.68)))
+        except (TypeError, ValueError):
+            confidence = 0.68
+        if confidence < 0.5:
+            continue
+        candidate = {
+            "category": category,
+            "bbox": bbox,
+            "confidence": confidence,
+            "colors": _string_list(raw.get("colors")),
+            "material": _string_list(raw.get("material")),
+            "style_tags": _string_list(raw.get("style_tags")),
+        }
+        if raw.get("fully_visible") is False or _inventory_candidate_is_nonfashion(candidate) or _inventory_candidate_is_clipped(candidate):
+            continue
+        if any(
+            previous["category"] == category and _inventory_bbox_iou(previous["bbox"], bbox) >= 0.82
+            for previous in candidates
+        ):
+            continue
+        candidates.append(candidate)
+    return candidates[:12]
+
+
+def _inventory_candidate_is_nonfashion(candidate: dict[str, Any]) -> bool:
+    if candidate.get("category") != "accessory":
+        return False
+    evidence = " ".join([*candidate.get("material", []), *candidate.get("style_tags", [])]).lower()
+    blocked_terms = {
+        "towel", "terrycloth", "bath towel", "blanket", "bedding", "bedsheet", "bed sheet",
+        "curtain", "upholstery", "pillow", "napkin", "tablecloth", "rug", "carpet",
+        "毛巾", "浴巾", "毯", "床单", "窗帘", "枕", "地毯", "桌布",
+    }
+    return any(term in evidence for term in blocked_terms)
+
+
+def _inventory_candidate_is_clipped(candidate: dict[str, Any]) -> bool:
+    """Drop garments whose primary silhouette clearly runs outside the image."""
+    category = candidate.get("category")
+    if category not in {"top", "bottom", "skirt", "dress", "shoes", "bag"}:
+        return False
+    bbox = candidate["bbox"]
+    right = bbox["x"] + bbox["width"]
+    bottom = bbox["y"] + bbox["height"]
+    return bbox["x"] <= 0.002 or bbox["y"] <= 0.002 or right >= 0.998 or bottom >= 0.998
+
+
+def _normalize_inventory_bbox(raw: Any) -> dict[str, float] | None:
+    if not isinstance(raw, dict):
+        return None
+    try:
+        x = float(raw.get("x"))
+        y = float(raw.get("y"))
+        width = float(raw.get("width"))
+        height = float(raw.get("height"))
+    except (TypeError, ValueError):
+        return None
+    # Gemini-family vision models occasionally return percentages or their
+    # conventional 0-1000 coordinate space despite a normalized-coordinate
+    # prompt. Accept those deterministic variants instead of dropping every
+    # otherwise valid candidate during clamping.
+    coordinate_max = max(abs(x), abs(y), abs(width), abs(height))
+    if coordinate_max > 1.0:
+        scale = 100.0 if coordinate_max <= 100.0 else 1000.0
+        x, y, width, height = x / scale, y / scale, width / scale, height / scale
+    x = max(0.0, min(1.0, x))
+    y = max(0.0, min(1.0, y))
+    width = max(0.0, min(1.0 - x, width))
+    height = max(0.0, min(1.0 - y, height))
+    if width * height < 0.0025 or width < 0.025 or height < 0.025:
+        return None
+    return {"x": round(x, 5), "y": round(y, 5), "width": round(width, 5), "height": round(height, 5)}
+
+
+def _inventory_bbox_iou(left: dict[str, float], right: dict[str, float]) -> float:
+    lx2, ly2 = left["x"] + left["width"], left["y"] + left["height"]
+    rx2, ry2 = right["x"] + right["width"], right["y"] + right["height"]
+    overlap_width = max(0.0, min(lx2, rx2) - max(left["x"], right["x"]))
+    overlap_height = max(0.0, min(ly2, ry2) - max(left["y"], right["y"]))
+    intersection = overlap_width * overlap_height
+    union = left["width"] * left["height"] + right["width"] * right["height"] - intersection
+    return intersection / max(0.000001, union)
+
+
+def _save_inventory_candidate_crop(source: dict[str, Any], candidate: dict[str, Any], work_dir: Path, index: int) -> Path:
+    image: Image.Image = source["image"].convert("RGB")
+    bbox = candidate["bbox"]
+    left = int(bbox["x"] * image.width)
+    top = int(bbox["y"] * image.height)
+    right = int((bbox["x"] + bbox["width"]) * image.width)
+    bottom = int((bbox["y"] + bbox["height"]) * image.height)
+    pad = max(8, int(max(right - left, bottom - top) * 0.08))
+    crop_box = (
+        max(0, left - pad),
+        max(0, top - pad),
+        min(image.width, right + pad),
+        min(image.height, bottom + pad),
+    )
+    target = work_dir / f"inventory_{index:02d}_{candidate['category']}.png"
+    target.parent.mkdir(parents=True, exist_ok=True)
+    image.crop(crop_box).save(target, "PNG")
+    return target
+
+
+def _merge_inventory_items(primary: list[dict[str, Any]], supplements: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    merged = list(primary)
+    primary_categories = {item.get("category") for item in primary}
+    for item in supplements:
+        if item.get("category") in primary_categories:
+            continue
+        merged.append(item)
+    return merged
+
+
+def _items_for_source(manifest: dict[str, Any], image_id: str) -> list[dict[str, Any]]:
+    return [
+        item
+        for item in manifest.get("items", [])
+        if not item.get("deleted")
+        and str(item.get("source", {}).get("image_id") or item.get("source", {}).get("source_group_id") or "") == image_id
+    ]
+
+
+def _ensure_source_outfit(source_group_id: str, items: list[dict[str, Any]]) -> dict[str, Any] | None:
+    usable_items = [item for item in items if not item.get("deleted") and item.get("item_id")]
+    if len(usable_items) < 2 or not any(item.get("category") in {"top", "bottom", "skirt", "dress"} for item in usable_items):
+        return None
+    data = _ensure_outfit_manifest()
+    existing = next(
+        (
+            outfit
+            for outfit in data.get("outfits", [])
+            if not outfit.get("deleted") and outfit.get("source_group_id") == source_group_id
+        ),
+        None,
+    )
+    if existing:
+        return _resolve_outfit(existing)
+    item_ids = [str(item["item_id"]) for item in usable_items[:8]]
+    outfit_id = hashlib.sha256(f"auto-split:{source_group_id}:{':'.join(item_ids)}".encode("utf-8")).hexdigest()[:16]
+    layout = _build_outfit_cover(outfit_id, usable_items[:8])
+    now = _now_iso()
+    outfit = {
+        "outfit_id": outfit_id,
+        "user_id": storage_context().user_id,
+        "title": "本次拆出的穿搭",
+        "item_ids": item_ids,
+        "cover_path": _public_closet_path(layout["path"]),
+        "layout_version": layout["layout_version"],
+        "layout_snapshot_path": _public_closet_path(layout["path"]),
+        "layout_slots": layout["layout_slots"],
+        "display_item_ids": layout["display_item_ids"],
+        "overflow_items": layout["overflow_items"],
+        "warnings": layout["warnings"],
+        "scene_tags": ["拆款待确认"],
+        "source_group_id": source_group_id,
+        "origin": "auto_split",
+        "draft": True,
+        "favorite_count": 0,
+        "favorite": False,
+        "created_at": now,
+        "updated_at": now,
+        "deleted": False,
+    }
+    data.setdefault("outfits", []).append(outfit)
+    _write_outfit_manifest(data)
+    return _resolve_outfit(outfit)
+
+
+def _import_sources(
+    sources: list[dict[str, Any]],
+    import_type: str,
+    source_url: str | None = None,
+    final_url: str | None = None,
+    progress_callback: Any | None = None,
+) -> dict[str, Any]:
     manifest = _ensure_manifest()
     all_items: list[dict[str, Any]] = []
+    cached_items: list[dict[str, Any]] = []
     rejected = 0
     used_fallback = False
     ai_attempts: list[dict[str, Any]] = []
+    inventory_attempts: list[dict[str, Any]] = []
+    extraction_modes: list[str] = []
     ai_cutout = AIGarmentCutoutProvider()
     segmenter = SegFormerClothesAdapter()
 
     for index, source in enumerate(sources):
+        cached_for_source = _items_for_source(manifest, source["image_id"])
+        if cached_for_source:
+            cached_items.extend(cached_for_source)
+            extraction_modes.append("source_cache")
+            if progress_callback:
+                progress_callback(index + 1, len(sources), "cached")
+            continue
         work_dir = _closet_item_dir() / source["image_id"]
         work_dir.mkdir(parents=True, exist_ok=True)
-        extracted = ai_cutout.extract(source, work_dir)
-        ai_attempts.append({"image_id": source["image_id"], **ai_cutout.last_attempt})
-        if not extracted:
+        extracted = ai_cutout.extract_inventory(source, work_dir)
+        inventory_attempt = {"image_id": source["image_id"], **ai_cutout.last_attempt}
+        inventory_attempts.append(inventory_attempt)
+        inventory_confirmed_empty = inventory_attempt.get("reason") == "no_inventory"
+        if extracted:
+            extraction_modes.append("ai_inventory")
+            expected_count = int(inventory_attempt.get("expected_count") or 0)
+            if len(extracted) < expected_count and segmenter.available():
+                supplements = segmenter.extract(source, work_dir)
+                extracted = _merge_inventory_items(extracted, supplements)
+                used_fallback = bool(supplements)
+        else:
+            if inventory_confirmed_empty:
+                # A valid AI inventory response explicitly found no fashion
+                # objects. Give the semantic single-item analyzer one second
+                # opinion, but do not let a generic segmentation/fallback shape
+                # detector turn towels or scenery into closet items.
+                extracted = ai_cutout.extract(source, work_dir)
+                ai_attempts.append({"image_id": source["image_id"], **ai_cutout.last_attempt})
+                if extracted:
+                    extraction_modes.append("single_ai_after_empty_inventory")
+            else:
+                segmented = segmenter.extract(source, work_dir) if segmenter.available() else []
+                if len(segmented) >= 2:
+                    used_fallback = True
+                    extracted = segmented
+                    extraction_modes.append("segformer_inventory")
+                else:
+                    extracted = ai_cutout.extract(source, work_dir)
+                    ai_attempts.append({"image_id": source["image_id"], **ai_cutout.last_attempt})
+                    if extracted:
+                        extraction_modes.append("single_ai")
+                    elif segmented:
+                        used_fallback = True
+                        extracted = segmented
+                        extraction_modes.append("single_segformer")
+        if not extracted and not inventory_confirmed_empty:
             used_fallback = True
-            extracted = segmenter.extract(source, work_dir) if segmenter.available() else []
-        if not extracted:
             extracted = _extract_with_top_fallback(source, index, work_dir)
+            if extracted:
+                extraction_modes.append("single_legacy_fallback")
         if not extracted:
             rejected += 1
-        all_items.extend(extracted)
+        for item in extracted:
+            if item.get("quality", {}).get("status") == "rejected":
+                rejected += 1
+                continue
+            all_items.append(item)
+        if progress_callback:
+            progress_callback(index + 1, len(sources), "extracted")
 
     now = _now_iso()
     existing_ids = {item.get("item_id") for item in manifest.get("items", [])}
@@ -6197,10 +7674,27 @@ def _import_sources(sources: list[dict[str, Any]], import_type: str, source_url:
         existing_ids.add(item["item_id"])
     _write_manifest(manifest)
 
+    returned_items: list[dict[str, Any]] = []
+    returned_ids: set[str] = set()
+    for item in [*new_items, *cached_items]:
+        item_id = str(item.get("item_id") or "")
+        if not item_id or item_id in returned_ids:
+            continue
+        returned_items.append(item)
+        returned_ids.add(item_id)
+
+    auto_outfits: list[dict[str, Any]] = []
+    refreshed_manifest = _ensure_manifest()
+    for source in sources:
+        source_items = _items_for_source(refreshed_manifest, source["image_id"])
+        outfit = _ensure_source_outfit(source["image_id"], source_items)
+        if outfit and not any(existing.get("outfit_id") == outfit.get("outfit_id") for existing in auto_outfits):
+            auto_outfits.append(outfit)
+
     review = sum(1 for item in new_items if item.get("quality", {}).get("status") == "review")
     usable = sum(1 for item in new_items if item.get("quality", {}).get("status") == "usable")
     rejected_items = sum(1 for item in new_items if item.get("quality", {}).get("status") == "rejected")
-    status = "imported" if new_items and not used_fallback else "partial" if new_items else "no_items_found"
+    status = "imported" if new_items and not used_fallback else "partial" if new_items else "cached" if returned_items else "no_items_found"
     return {
         "status": status,
         "import_type": import_type,
@@ -6209,16 +7703,21 @@ def _import_sources(sources: list[dict[str, Any]], import_type: str, source_url:
             "final_url": final_url,
             "image_count": len(sources),
         },
-        "items": new_items,
+        "items": returned_items,
+        "outfits": auto_outfits,
+        "draft_outfit": auto_outfits[0] if auto_outfits else None,
         "summary": {
             "created": len(new_items),
+            "cached": len(returned_items) - len(new_items),
             "usable": usable,
             "review": review,
             "rejected": rejected + rejected_items,
             "fallback_used": used_fallback,
             "ai_attempts": ai_attempts,
+            "inventory_attempts": inventory_attempts,
+            "extraction_modes": extraction_modes,
         },
-        "message": _import_message(len(new_items), review, used_fallback),
+        "message": "已找到之前拆出的单品，无需重复处理。" if status == "cached" else _import_message(len(new_items), review, used_fallback),
     }
 
 
@@ -6318,6 +7817,8 @@ def _closet_item_from_segmentation_mask(
         "category_label": _fashion_category_label(category),
         "source": {
             **source.get("source", {}),
+            "image_id": source["image_id"],
+            "source_group_id": source["image_id"],
             "crop_box": list(box),
         },
         "assets": {
@@ -6365,6 +7866,67 @@ def _has_meaningful_transparency(image: Image.Image) -> bool:
     return transparent_ratio >= 0.025 and visible_ratio >= 0.06
 
 
+def _ensure_transparent_ai_cutout(image: Image.Image) -> tuple[Image.Image, str]:
+    """Convert opaque/faux-checkerboard AI output into a real alpha cutout."""
+    rgba = image.convert("RGBA")
+    if _has_meaningful_transparency(rgba):
+        return rgba, "native_alpha"
+    keyed = _remove_uniform_chroma_background(rgba)
+    if keyed is not None and _has_meaningful_transparency(keyed):
+        return keyed, "chroma_key_after_ai"
+    matted = RembgMattingProvider().remove_background(rgba)
+    if matted is not None and _has_meaningful_transparency(matted):
+        return matted, "rembg_after_ai"
+    return rgba, "opaque_rejected"
+
+
+def _remove_uniform_chroma_background(image: Image.Image) -> Image.Image | None:
+    """Key a model-generated high-chroma border background into soft alpha."""
+    try:
+        import numpy as np
+    except Exception:
+        return None
+    rgb = np.asarray(image.convert("RGB"), dtype=np.float32)
+    height, width = rgb.shape[:2]
+    strip = max(2, min(height, width) // 30)
+    border = np.concatenate([
+        rgb[:strip].reshape(-1, 3), rgb[-strip:].reshape(-1, 3),
+        rgb[:, :strip].reshape(-1, 3), rgb[:, -strip:].reshape(-1, 3),
+    ])
+    background = np.median(border, axis=0)
+    if float(background.max() - background.min()) < 60.0:
+        return None
+    border_distance = np.linalg.norm(border - background, axis=1)
+    if float((border_distance <= 45.0).mean()) < 0.65:
+        return None
+    distance = np.linalg.norm(rgb - background, axis=2)
+    alpha = np.clip((distance - 18.0) / 52.0 * 255.0, 0.0, 255.0).astype("uint8")
+    # The image model may antialias foreground edges against the requested
+    # magenta key. Remove pixels that still carry that distinctive two-channel
+    # spill before softening alpha; otherwise a bright pink one-pixel halo is
+    # visible on the closet's warm-white cards.
+    magenta_spill = np.minimum(rgb[:, :, 0] - rgb[:, :, 1], rgb[:, :, 2] - rgb[:, :, 1])
+    alpha[magenta_spill > 22.0] = 0
+    alpha_image = Image.fromarray(alpha, mode="L").filter(ImageFilter.GaussianBlur(radius=0.45))
+    # Replace magenta-contaminated antialias RGB with the nearest opaque
+    # foreground color. Keeping the soft alpha while decontaminating RGB avoids
+    # a pink fringe when the cutout is rendered on warm-white closet cards.
+    try:
+        from scipy.ndimage import distance_transform_edt
+
+        softened_alpha = np.asarray(alpha_image)
+        opaque = softened_alpha >= 235
+        if opaque.any():
+            _, nearest = distance_transform_edt(~opaque, return_indices=True)
+            nearest_rgb = rgb[nearest[0], nearest[1]]
+            rgb[softened_alpha < 250] = nearest_rgb[softened_alpha < 250]
+    except Exception:
+        pass
+    result = Image.fromarray(rgb.clip(0, 255).astype("uint8"), mode="RGB").convert("RGBA")
+    result.putalpha(alpha_image)
+    return result
+
+
 def _closet_item_from_ai_cutout(
     category: str,
     cutout: Image.Image,
@@ -6372,13 +7934,14 @@ def _closet_item_from_ai_cutout(
     provider_name: str,
     model: str,
     analysis: dict[str, Any],
+    instance_key: str = "single",
 ) -> dict[str, Any] | None:
     if category not in CLOSET_SUPPORTED_CATEGORIES or not _has_meaningful_transparency(cutout):
         return None
     evidence = analysis.get("evidence") or {}
     garment = evidence.get("garment") or {}
-    confidence = max(0.0, min(1.0, float(analysis.get("score") or 0.72)))
-    raw_id = f"{source['image_id']}:{category}:{provider_name}:{model}"
+    confidence = max(0.0, min(1.0, float(analysis.get("confidence") or analysis.get("score") or 0.72)))
+    raw_id = f"{source['image_id']}:{category}:{provider_name}:{model}:{instance_key}"
     item_id = hashlib.sha256(raw_id.encode("utf-8")).hexdigest()[:16]
     item_dir = _closet_item_dir() / item_id
     item_dir.mkdir(parents=True, exist_ok=True)
@@ -6413,6 +7976,8 @@ def _closet_item_from_ai_cutout(
         "category_label": _fashion_category_label(category),
         "source": {
             **source.get("source", {}),
+            "image_id": source["image_id"],
+            "source_group_id": source["image_id"],
             "crop_box": garment.get("bbox"),
         },
         "assets": {
@@ -6451,6 +8016,8 @@ def _closet_item_from_fashion_item(item: dict[str, Any], source: dict[str, Any])
         "category_label": _fashion_category_label(category),
         "source": {
             **source.get("source", {}),
+            "image_id": source["image_id"],
+            "source_group_id": source["image_id"],
             "crop_box": item.get("source", {}).get("crop_box"),
         },
         "assets": {
@@ -6598,7 +8165,7 @@ def _import_message(created: int, review: int, used_fallback: bool) -> str:
     if created == 0:
         return "暂时没有找到可稳定入柜的衣物，请换一张更清晰的图片。"
     if used_fallback:
-        return f"已找到 {created} 件单品，当前先以上衣识别为主。"
+        return f"已找到 {created} 件单品，请确认图片和分类是否准确。"
     if review:
         return f"已找到 {created} 件单品，有 {review} 件建议确认后使用。"
     return f"已找到 {created} 件单品，已经放入衣橱。"

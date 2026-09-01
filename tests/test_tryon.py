@@ -7,6 +7,7 @@ import numpy as np
 import pytest
 from fastapi import HTTPException
 from PIL import Image
+import app.tryon as tryon
 
 from app.tryon import (
     TRYON_OUTPUT_DIR,
@@ -286,6 +287,61 @@ def test_run_tryon_from_outfit_plan_generates_with_mock_provider() -> None:
     assert result["result"]["mask_path"].startswith("/user-assets/tryon/")
 
 
+def test_outfit_semantic_review_fails_when_required_slot_is_missing() -> None:
+    expected = [
+        {"slot": "top", "category": "top"},
+        {"slot": "bag", "category": "bag"},
+    ]
+    stage = tryon._semantic_outfit_stage(
+        {
+            "items": [
+                {"slot": "top", "status": "matched", "confidence": 0.92},
+                {"slot": "bag", "status": "missing", "confidence": 0.84},
+            ],
+            "overall_confidence": 0.86,
+        },
+        expected,
+        "static_test",
+    )
+
+    assert stage["status"] == "fail"
+    assert stage["evidence"]["verified"] is True
+    assert any(issue["code"] == "semantic.bag.missing" for issue in stage["issues"])
+
+
+def test_outfit_tryon_reuses_completed_cache(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
+    person = _load_upload(TRYON_MODEL_FIXTURE_DIR / "male_medium_1.png", "person_cache")
+    top = _load_upload(FIXTURE_DIR / "card_missing.jpg", "top_cache")
+    plan = {
+        "title": "cache outfit",
+        "model_photo_mode": "standard",
+        "style_reference": {"image_id": "style-cache", "image_path": str(top["saved_path"])},
+        "items": [{"slot": "top", "category": "top", "image_path": str(top["saved_path"])}],
+    }
+
+    class CountingProvider(MockTryOnProvider):
+        def __init__(self):
+            self.calls = 0
+
+        def edit(self, *args, **kwargs):
+            self.calls += 1
+            return super().edit(*args, **kwargs)
+
+    provider = CountingProvider()
+    monkeypatch.setattr(tryon, "_tryon_output_dir", lambda: tmp_path)
+    monkeypatch.setattr(tryon, "_default_provider", lambda: provider)
+    monkeypatch.setattr(tryon, "_review_outfit_semantics", lambda *_: tryon._stage("pass", 0.9, {"verified": True, "slot_results": []}, []))
+
+    first = run_try_on_from_outfit_plan(person, plan)
+    second = run_try_on_from_outfit_plan(person, plan)
+
+    assert first["status"] == "generated"
+    assert first.get("cached") is not True
+    assert second["cached"] is True
+    assert second["tryon_id"] == first["tryon_id"]
+    assert provider.calls == 1
+
+
 def test_tryon_default_provider_fails_without_real_image_edit(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.delenv("OPENAI_API_KEY", raising=False)
     monkeypatch.delenv("TRYON_OPENAI_API_KEY", raising=False)
@@ -405,6 +461,103 @@ def test_tryon_blocks_when_person_image_has_no_face() -> None:
     assert result["pipeline"]["person_detection"]["status"] == "fail"
     assert any(issue["code"] == "person.no_face" for issue in result["decision"]["blocking_errors"])
     assert result["result"]["image_path"] is None
+
+
+def test_lower_face_like_prop_does_not_block_primary_subject() -> None:
+    faces = [
+        {"box": {"x": 293, "y": 372, "width": 214, "height": 214}, "area_ratio": 0.0291},
+        {"box": {"x": 162, "y": 1183, "width": 242, "height": 242}, "area_ratio": 0.0372},
+    ]
+
+    ignored = tryon._lower_face_like_props(faces, 1846)
+
+    assert ignored == [faces[1]]
+
+
+def test_second_face_at_primary_height_still_fails_closed() -> None:
+    faces = [
+        {"box": {"x": 120, "y": 170, "width": 150, "height": 150}, "area_ratio": 0.03},
+        {"box": {"x": 520, "y": 190, "width": 148, "height": 148}, "area_ratio": 0.029},
+    ]
+
+    assert tryon._lower_face_like_props(faces, 1000) == []
+
+
+def test_outfit_body_coverage_skips_hidden_shoes_without_blocking_visible_top() -> None:
+    image = Image.new("RGB", (852, 1846), "white")
+    person_stage = {
+        "status": "warn",
+        "evidence": {"primary_face": {"box": {"x": 293, "y": 372, "width": 214, "height": 214}}},
+    }
+
+    shoes = tryon._outfit_body_coverage_stage(image, person_stage, {"items": [{"slot": "top"}, {"slot": "shoes"}]})
+    top_only = tryon._outfit_body_coverage_stage(image, person_stage, {"items": [{"slot": "top"}]})
+
+    effective = tryon._visible_outfit_plan({"items": [{"item_id": "top", "slot": "top"}, {"item_id": "shoes", "slot": "shoes"}]}, shoes)
+
+    assert shoes["status"] == "warn"
+    assert shoes["issues"][0]["code"] == "person.hidden_slots_skipped"
+    assert shoes["evidence"]["skipped_slots"] == ["shoes"]
+    assert [item["item_id"] for item in effective["items"]] == ["top"]
+    assert top_only["status"] == "pass"
+
+
+def test_outfit_generation_runs_clothing_before_accessories(tmp_path: Path) -> None:
+    person = _load_upload(TRYON_MODEL_FIXTURE_DIR / "male_medium_1.png", "person_test")
+    detection = _detect_person(person["image"])
+    item_path = str(FIXTURE_DIR / "season_spring_bright.jpg")
+    plan = {
+        "title": "分阶段试穿",
+        "model_photo_mode": "standard",
+        "style_reference": {"image_path": item_path},
+        "items": [
+            {"item_id": "top", "slot": "top", "category": "top", "image_path": item_path},
+            {"item_id": "skirt", "slot": "skirt", "category": "skirt", "image_path": item_path},
+            {"item_id": "bag", "slot": "bag", "category": "bag", "image_path": item_path},
+            {"item_id": "hat", "slot": "accessory", "category": "accessory", "category_label": "奶油贝雷帽", "image_path": item_path},
+        ],
+    }
+
+    class RecordingProvider:
+        mode = "recording"
+
+        def __init__(self):
+            self.calls = []
+
+        def edit(self, person_image, garment_image, mask_image, prompt, output_dir):
+            self.calls.append({"person": person_image, "mask": mask_image, "prompt": prompt})
+            result_path = output_dir / "result.png"
+            Image.open(person_image).convert("RGB").save(result_path)
+            return {"stage": tryon._stage("pass", 0.9, {"provider": self.mode}, []), "image_path": result_path}
+
+    provider = RecordingProvider()
+    result = tryon._run_staged_outfit_edit(provider, person["saved_path"], plan, detection, tmp_path)
+
+    assert result["stage"]["status"] == "pass"
+    assert [stage["name"] for stage in result["stage"]["evidence"]["stages"]] == ["visible_clothing", "visible_accessories"]
+    assert result["stage"]["evidence"]["stages"][0]["item_ids"] == ["top", "skirt"]
+    assert result["stage"]["evidence"]["stages"][1]["item_ids"] == ["bag", "hat"]
+    assert len(provider.calls) == 2
+
+
+def test_head_accessory_mask_opens_hat_region_but_protects_face(tmp_path: Path) -> None:
+    image = Image.new("RGB", (852, 1846), "white")
+    person_stage = {
+        "status": "pass",
+        "evidence": {"primary_face": {"box": {"x": 293, "y": 372, "width": 214, "height": 214}}},
+    }
+    mask = tryon._generate_outfit_group_mask(
+        image,
+        person_stage,
+        [{"slot": "accessory", "category_label": "奶油贝雷帽"}],
+        tmp_path / "hat_mask.png",
+    )
+    alpha = np.array(Image.open(mask["evidence"]["mask_path"]).convert("RGBA").getchannel("A"))
+
+    assert mask["status"] == "pass"
+    assert mask["evidence"]["head_accessory_count"] == 1
+    assert alpha[230, 400] < 220
+    assert alpha[470, 400] > 220
 
 
 def test_garment_upload_rejects_empty_image() -> None:

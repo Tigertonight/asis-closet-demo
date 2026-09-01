@@ -19,7 +19,7 @@ from starlette.concurrency import run_in_threadpool
 
 from app import selfit_assets, selfit_onboarding_store as _store_module
 from app import selfit_photo, selfit_report, selfit_share
-from app.auth import get_optional_user
+from app.auth import get_current_user, get_optional_user
 from app.ops import env_int
 from app.storage import ROOT_DIR
 
@@ -33,7 +33,7 @@ except Exception:  # pragma: no cover - 依赖缺失时退回 JPEG/PNG/WebP
     register_heif_opener = None
 
 # 注意：SELFIT_ONBOARDING_ASSET_DIR 下的用户原图与分享图是初始数据资产，需要精心保留。
-# 会话过期只清理索引记录（sessions.json / 任务 / 报告），资产文件一律不删。
+# 会话过期只清理草稿索引与匿名报告；已登录用户的风格报告长期保留，资产文件一律不删。
 # 后续迁移对象存储时以该目录为同步源，禁止加入任何定期清理任务。
 # 接入真实照片检测与属性识别算法；联调时可设 SELFIT_PHOTO_INSPECTOR=accept_all 退回全放行。
 if os.getenv("SELFIT_PHOTO_INSPECTOR", "attribute") != "accept_all":
@@ -177,8 +177,12 @@ def _prune_store(data: dict[str, Any]) -> dict[str, Any]:
     data["report_jobs"] = [
         job for job in data["report_jobs"] if job.get("session_id") in live_session_ids
     ]
+    # 已登录用户的风格报告属于长期个人档案，不应随着 24 小时 onboarding
+    # 草稿会话一起过期；匿名 demo 报告仍跟随会话清理。
     data["reports"] = [
-        report for report in data["reports"] if report.get("session_id") in live_session_ids
+        report
+        for report in data["reports"]
+        if report.get("session_id") in live_session_ids or report.get("user_id")
     ]
     data["outfit_requests"] = [
         item for item in data["outfit_requests"] if item.get("session_id") in live_session_ids
@@ -194,6 +198,59 @@ def _find_session(data: dict[str, Any], session_id: str) -> dict[str, Any] | Non
         (record for record in data["sessions"] if record.get("session_id") == session_id),
         None,
     )
+
+
+def _index_user_photo(data: dict[str, Any], record: dict[str, Any], kind: str) -> None:
+    """Persist the latest accepted onboarding photo independently from session TTL."""
+
+    user_id = str(record.get("user_id") or "")
+    photo = (record.get("photos") or {}).get(kind) or {}
+    if not user_id or photo.get("status") != "accepted" or not photo.get("asset_id"):
+        return
+    entry = next(
+        (item for item in data["user_photos"] if item.get("user_id") == user_id),
+        None,
+    )
+    if entry is None:
+        entry = {"user_id": user_id, "photos": {}}
+        data["user_photos"].append(entry)
+    entry.setdefault("photos", {})[kind] = {
+        "session_id": record.get("session_id"),
+        "asset_id": photo.get("asset_id"),
+        "format": photo.get("format"),
+        "width": photo.get("width"),
+        "height": photo.get("height"),
+        "source": photo.get("source") or ("mirror" if record.get("source") == "mirror_handoff" else "app"),
+        "updated_at": _iso(_now()),
+    }
+    entry["updated_at"] = _iso(_now())
+
+
+def _latest_user_photo(data: dict[str, Any], user_id: str, kind: str) -> dict[str, Any] | None:
+    entry = next(
+        (item for item in data["user_photos"] if item.get("user_id") == user_id),
+        None,
+    )
+    indexed = (entry.get("photos") or {}).get(kind) if entry else None
+    if isinstance(indexed, dict) and indexed.get("asset_id"):
+        return indexed
+
+    # 兼容上线前已经完成 onboarding、但尚未写入持久索引的账号。
+    candidates = [
+        record
+        for record in data["sessions"]
+        if record.get("user_id") == user_id
+        and ((record.get("photos") or {}).get(kind) or {}).get("status") == "accepted"
+    ]
+    latest = max(candidates, key=lambda item: str(item.get("created_at") or ""), default=None)
+    if latest is None:
+        return None
+    _index_user_photo(data, latest, kind)
+    entry = next(
+        (item for item in data["user_photos"] if item.get("user_id") == user_id),
+        None,
+    )
+    return (entry.get("photos") or {}).get(kind) if entry else None
 
 
 def _session_visible_to(record: dict[str, Any], user: dict[str, Any] | None) -> bool:
@@ -271,6 +328,8 @@ def create_session_from_mirror_handoff(
         "vibe": {},
     }
     _hydrate_mirror_photos(record, handoff)
+    for kind in selfit_photo.PHOTO_KINDS:
+        _index_user_photo(data, record, kind)
     pending_rejected = record.pop("_rejected_photos_pending", [])
     for item in pending_rejected:
         try:
@@ -799,6 +858,17 @@ async def delete_session(
     data["public_report_shares"] = [
         item for item in data["public_report_shares"] if item.get("session_id") != session_id
     ]
+    retained_user_photos = []
+    for entry in data["user_photos"]:
+        photos = {
+            kind: photo
+            for kind, photo in (entry.get("photos") or {}).items()
+            if photo.get("session_id") != session_id
+        }
+        if photos:
+            entry["photos"] = photos
+            retained_user_photos.append(entry)
+    data["user_photos"] = retained_user_photos
     _write_store(data)
     return JSONResponse(
         status_code=200,
@@ -928,6 +998,38 @@ def _asset_store() -> selfit_assets.AssetStore:
     return selfit_assets.asset_store_from_env(SELFIT_ONBOARDING_ASSET_DIR)
 
 
+@router.get("/me/photos/{kind}")
+async def get_my_onboarding_photo(
+    kind: str,
+    user: dict[str, Any] = Depends(get_current_user),
+) -> Response:
+    """Serve the signed-in user's latest accepted onboarding photo."""
+
+    if kind not in selfit_photo.PHOTO_KINDS:
+        return _error_response(404, "photo.not_found", "没有找到这张照片。")
+    data = _load_store()
+    photo = _latest_user_photo(data, str(user.get("user_id") or ""), kind)
+    if photo is None:
+        return Response(status_code=204, headers={"Cache-Control": "no-store"})
+    # 回填旧账号索引；不依赖 24h onboarding 草稿保留周期。
+    _write_store(data)
+    suffix = PHOTO_SUPPORTED_FORMATS.get(str(photo.get("format") or ""), "")
+    session_id = str(photo.get("session_id") or "")
+    asset_id = str(photo.get("asset_id") or "")
+    if not suffix or not session_id or not asset_id:
+        return _error_response(404, "photo.not_found", "还没有可用的全身照。")
+    key = f"{session_id}/{asset_id}{suffix}"
+    store = _asset_store()
+    public_url = store.public_url(key)
+    if public_url:
+        return RedirectResponse(public_url, status_code=302)
+    path = store.local_path(key)
+    if path is None:
+        return _error_response(404, "photo.not_found", "这张照片暂时无法读取。")
+    content_type = {".jpg": "image/jpeg", ".png": "image/png", ".webp": "image/webp"}[suffix]
+    return FileResponse(path, media_type=content_type, headers={"Cache-Control": "private, max-age=300"})
+
+
 def _save_photo_asset(session_id: str, kind: str, raw: bytes, image_format: str) -> str:
     asset_id = f"asset_{kind}_{hashlib.sha256(raw).hexdigest()[:12]}"
     suffix = PHOTO_SUPPORTED_FORMATS[image_format]
@@ -1053,6 +1155,7 @@ async def upload_session_photo(
             # 算法推断的肤色/脸型/身型标签，供报告任务与「手动纠正优先」合并消费。
             "attributes": dict(inspection.attributes),
         }
+        _index_user_photo(data, record, kind)
         label = selfit_photo.KIND_LABELS[kind]
         body = _photo_response(
             request_id,
@@ -1353,6 +1456,40 @@ async def get_report_job(
     return JSONResponse(
         status_code=200,
         content={"requestId": _request_id(), "job": _public_job(job, report)},
+    )
+
+
+@router.get("/reports/latest")
+async def get_latest_report(
+    user: dict[str, Any] = Depends(get_current_user),
+) -> JSONResponse:
+    """返回当前登录用户最近一份有效风格报告的轻量摘要。"""
+
+    data = _load_store()
+    reports = [
+        report
+        for report in data["reports"]
+        if report.get("user_id") == user.get("user_id")
+        and isinstance(report.get("data"), dict)
+        and str((report.get("data") or {}).get("typeId") or "").strip()
+    ]
+    latest = max(reports, key=lambda item: str(item.get("created_at") or ""), default=None)
+    if latest is None:
+        return JSONResponse(
+            status_code=200,
+            content={"requestId": _request_id(), "report": None},
+        )
+    report_data = latest.get("data") or {}
+    return JSONResponse(
+        status_code=200,
+        content={
+            "requestId": _request_id(),
+            "report": {
+                "reportId": latest["report_id"],
+                "typeId": str(report_data.get("typeId") or "").strip().lower(),
+                "createdAt": latest.get("created_at"),
+            },
+        },
     )
 
 

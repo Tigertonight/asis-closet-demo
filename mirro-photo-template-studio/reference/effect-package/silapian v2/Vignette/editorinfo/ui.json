@@ -1,0 +1,608 @@
+{
+  "properties": [
+    {
+      "UIConfig": {
+        "type": "Group",
+        "extra": {
+          "groupTitle": "色彩调节"
+        }
+      }
+    },
+    {
+      "UIConfig": {
+        "type": "Slider",
+        "extra": {
+          "uiMin": -100,
+          "uiMax": 100,
+          "engineMin": -100,
+          "engineMax": 100,
+          "titleText": "亮度",
+          "titleTextWidth": 62
+        }
+      },
+      "EngineConfig": {
+        "type": "ZeusEngine",
+        "extra": {
+          "so": {
+            "path": "root/children[0]/components[0]/materials[0]"
+          },
+          "getter": {
+            "name": "GetMaterialParamValue",
+            "params": [
+              "Brightness"
+            ]
+          },
+          "setter": {
+            "name": "SetParam",
+            "params": [
+              "Brightness",
+              "{}"
+            ]
+          }
+        }
+      }
+    },{
+      "UIConfig": {
+        "type": "Spacing",
+        "extra": {
+          "height": "8"
+        }
+      }
+    },
+
+
+    {
+      "UIConfig": {
+        "type": "Slider",
+        "extra": {
+          "uiMin": -100,
+          "uiMax": 100,
+          "engineMin": -100,
+          "engineMax": 100,
+          "titleText": "对比度",
+          "titleTextWidth": 62
+        }
+      },
+      "EngineConfig": {
+        "type": "ZeusEngine",
+        "extra": {
+          "so": {
+            "path": "root/children[0]/components[0]/materials[0]"
+          },
+          "getter": {
+            "name": "GetMaterialParamValue",
+            "params": [
+              "Contrast"
+            ]
+          },
+          "setter": {
+            "name": "SetParam",
+            "params": [
+              "Contrast",
+              "{}"
+            ]
+          }
+        }
+      }
+    },{
+      "UIConfig": {
+        "type": "Spacing",
+        "extra": {
+          "height": "8"
+        }
+      }
+    },
+    
+
+    {
+      "UIConfig": {
+        "type": "Slider",
+        "extra": {
+          "uiMin": -100,
+          "uiMax": 100,
+          "engineMin": -100,
+          "engineMax": 100,
+          "titleText": "曝光",
+          "titleTextWidth": 62
+        }
+      },
+      "EngineConfig": {
+        "type": "ZeusEngine",
+        "extra": {
+          "so": {
+            "path": "root/children[0]/components[0]/materials[0]"
+          },
+          "getter": {
+            "name": "GetMaterialParamValue",
+            "params": [
+              "Exposure"
+            ]
+          },
+          "setter": {
+            "name": "SetParam",
+            "params": [
+              "Exposure",
+              "{}"
+            ]
+          }
+        }
+      }
+    },{
+      "UIConfig": {
+        "type": "Spacing",
+        "extra": {
+          "height": "8"
+        }
+      }
+    },
+
+
+    {
+      "UIConfig": {
+        "type": "Slider",
+        "extra": {
+          "uiMin": -100,
+          "uiMax": 100,
+          "engineMin": -100,
+          "engineMax": 100,
+          "titleText": "自然饱和度",
+          "titleTextWidth": 62
+        }
+      },
+      "EngineConfig": {
+        "type": "ZeusEngine",
+        "extra": {
+          "so": {
+            "path": "root/children[0]/components[0]/materials[0]"
+          },
+          "getter": {
+            "name": "GetMaterialParamValue",
+            "params": [
+              "Vibrance"
+            ]
+          },
+          "setter": {
+            "name": "SetParam",
+            "params": [
+              "Vibrance",
+              "{}"
+            ]
+          }
+        }
+      }
+    },{
+      "UIConfig": {
+        "type": "Spacing",
+        "extra": {
+          "height": "8"
+        }
+      }
+    },
+
+
+    {
+      "UIConfig": {
+        "type": "Slider",
+        "extra": {
+          "uiMin": -100,
+          "uiMax": 100,
+          "engineMin": -100,
+          "engineMax": 100,
+          "titleText": "饱和度",
+          "titleTextWidth": 62
+        }
+      },
+      "EngineConfig": {
+        "type": "ZeusEngine",
+        "extra": {
+          "so": {
+            "path": "root/children[0]/components[0]/materials[0]"
+          },
+          "getter": {
+            "name": "GetMaterialParamValue",
+            "params": [
+              "Saturation"
+            ]
+          },
+          "setter": {
+            "name": "SetParam",
+            "params": [
+              "Saturation",
+              "{}"
+            ]
+          }
+        }
+      }
+    },{
+      "UIConfig": {
+        "type": "Spacing",
+        "extra": {
+          "height": "8"
+        }
+      }
+    },
+
+
+    {
+      "UIConfig": {
+        "type": "Slider",
+        "extra": {
+          "uiMin": -100,
+          "uiMax": 100,
+          "engineMin": -100,
+          "engineMax": 100,
+          "titleText": "高光",
+          "titleTextWidth": 62
+        }
+      },
+      "EngineConfig": {
+        "type": "ZeusEngine",
+        "extra": {
+          "so": {
+            "path": "root/children[0]/components[0]/materials[0]"
+          },
+          "getter": {
+            "name": "GetMaterialParamValue",
+            "params": [
+              "Highlight"
+            ]
+          },
+          "setter": {
+            "name": "SetParam",
+            "params": [
+              "Highlight",
+              "{}"
+            ]
+          }
+        }
+      }
+    },{
+      "UIConfig": {
+        "type": "Spacing",
+        "extra": {
+          "height": "8"
+        }
+      }
+    },
+
+    {
+      "UIConfig": {
+        "type": "Slider",
+        "extra": {
+          "uiMin": -100,
+          "uiMax": 100,
+          "engineMin": -100,
+          "engineMax": 100,
+          "titleText": "阴影",
+          "titleTextWidth": 62
+        }
+      },
+      "EngineConfig": {
+        "type": "ZeusEngine",
+        "extra": {
+          "so": {
+            "path": "root/children[0]/components[0]/materials[0]"
+          },
+          "getter": {
+            "name": "GetMaterialParamValue",
+            "params": [
+              "Shadow"
+            ]
+          },
+          "setter": {
+            "name": "SetParam",
+            "params": [
+              "Shadow",
+              "{}"
+            ]
+          }
+        }
+      }
+    },{
+      "UIConfig": {
+        "type": "Spacing",
+        "extra": {
+          "height": "8"
+        }
+      }
+    },
+
+
+
+    {
+      "UIConfig": {
+        "type": "Slider",
+        "extra": {
+          "uiMin": -100,
+          "uiMax": 100,
+          "engineMin": -100,
+          "engineMax": 100,
+          "titleText": "色调",
+          "titleTextWidth": 62
+        }
+      },
+      "EngineConfig": {
+        "type": "ZeusEngine",
+        "extra": {
+          "so": {
+            "path": "root/children[0]/components[0]/materials[0]"
+          },
+          "getter": {
+            "name": "GetMaterialParamValue",
+            "params": [
+              "Tone"
+            ]
+          },
+          "setter": {
+            "name": "SetParam",
+            "params": [
+              "Tone",
+              "{}"
+            ]
+          }
+        }
+      }
+    },{
+      "UIConfig": {
+        "type": "Spacing",
+        "extra": {
+          "height": "8"
+        }
+      }
+    },
+
+
+    {
+      "UIConfig": {
+        "type": "Slider",
+        "extra": {
+          "uiMin": -100,
+          "uiMax": 100,
+          "engineMin": -100,
+          "engineMax": 100,
+          "titleText": "色温",
+          "titleTextWidth": 62
+        }
+      },
+      "EngineConfig": {
+        "type": "ZeusEngine",
+        "extra": {
+          "so": {
+            "path": "root/children[0]/components[0]/materials[0]"
+          },
+          "getter": {
+            "name": "GetMaterialParamValue",
+            "params": [
+              "Temperature"
+            ]
+          },
+          "setter": {
+            "name": "SetParam",
+            "params": [
+              "Temperature",
+              "{}"
+            ]
+          }
+        }
+      }
+    },{
+      "UIConfig": {
+        "type": "Spacing",
+        "extra": {
+          "height": "8"
+        }
+      }
+    },
+
+
+    {
+      "UIConfig": {
+        "type": "Slider",
+        "extra": {
+          "uiMin": -100,
+          "uiMax": 100,
+          "engineMin": -100,
+          "engineMax": 100,
+          "titleText": "光感",
+          "titleTextWidth": 62
+        }
+      },
+      "EngineConfig": {
+        "type": "ZeusEngine",
+        "extra": {
+          "so": {
+            "path": "root/children[0]/components[0]/materials[0]"
+          },
+          "getter": {
+            "name": "GetMaterialParamValue",
+            "params": [
+              "LightSensation"
+            ]
+          },
+          "setter": {
+            "name": "SetParam",
+            "params": [
+              "LightSensation",
+              "{}"
+            ]
+          }
+        }
+      }
+    },{
+      "UIConfig": {
+        "type": "Spacing",
+        "extra": {
+          "height": "8"
+        }
+      }
+    },
+
+
+    {
+      "UIConfig": {
+        "type": "Slider",
+        "extra": {
+          "uiMin": -100,
+          "uiMax": 100,
+          "engineMin": -100,
+          "engineMax": 100,
+          "titleText": "白色",
+          "titleTextWidth": 62
+        }
+      },
+      "EngineConfig": {
+        "type": "ZeusEngine",
+        "extra": {
+          "so": {
+            "path": "root/children[0]/components[0]/materials[1]"
+          },
+          "getter": {
+            "name": "GetMaterialParamValue",
+            "params": [
+              "adjustable_x"
+            ]
+          },
+          "setter": {
+            "name": "SetParam",
+            "params": [
+              "adjustable_x",
+              "{}"
+            ]
+          }
+        }
+      }
+    },{
+      "UIConfig": {
+        "type": "Spacing",
+        "extra": {
+          "height": "8"
+        }
+      }
+    },
+
+
+    {
+      "UIConfig": {
+        "type": "Slider",
+        "extra": {
+          "uiMin": -100,
+          "uiMax": 100,
+          "engineMin": -100,
+          "engineMax": 100,
+          "titleText": "黑色",
+          "titleTextWidth": 62
+        }
+      },
+      "EngineConfig": {
+        "type": "ZeusEngine",
+        "extra": {
+          "so": {
+            "path": "root/children[0]/components[0]/materials[1]"
+          },
+          "getter": {
+            "name": "GetMaterialParamValue",
+            "params": [
+              "adjustable_y"
+            ]
+          },
+          "setter": {
+            "name": "SetParam",
+            "params": [
+              "adjustable_y",
+              "{}"
+            ]
+          }
+        }
+      }
+    },{
+      "UIConfig": {
+        "type": "Spacing",
+        "extra": {
+          "height": "8"
+        }
+      }
+    },
+
+
+    {
+      "UIConfig": {
+        "type": "Slider",
+        "extra": {
+          "uiMin": 0,
+          "uiMax": 100,
+          "engineMin": 0,
+          "engineMax": 100,
+          "titleText": "褪色",
+          "titleTextWidth": 62
+        }
+      },
+      "EngineConfig": {
+        "type": "ZeusEngine",
+        "extra": {
+          "so": {
+            "path": "root/children[0]/components[0]/materials[0]"
+          },
+          "getter": {
+            "name": "GetMaterialParamValue",
+            "params": [
+              "Fade"
+            ]
+          },
+          "setter": {
+            "name": "SetParam",
+            "params": [
+              "Fade",
+              "{}"
+            ]
+          }
+        }
+      }
+    },{
+      "UIConfig": {
+        "type": "Spacing",
+        "extra": {
+          "height": "8"
+        }
+      }
+    },
+
+
+    {
+      "UIConfig": {
+        "type": "Slider",
+        "extra": {
+          "uiMin": -100,
+          "uiMax": 100,
+          "engineMin": -100,
+          "engineMax": 100,
+          "titleText": "暗角",
+          "titleTextWidth": 62
+        }
+      },
+      "EngineConfig": {
+        "type": "ZeusEngine",
+        "extra": {
+          "so": {
+            "path": "root/children[0]/components[0]/materials[1]"
+          },
+          "getter": {
+            "name": "GetMaterialParamValue",
+            "params": [
+              "Vignette"
+            ]
+          },
+          "setter": {
+            "name": "SetParam",
+            "params": [
+              "Vignette",
+              "{}"
+            ]
+          }
+        }
+      }
+    }
+
+
+
+  ]
+}

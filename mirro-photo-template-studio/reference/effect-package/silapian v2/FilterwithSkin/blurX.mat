@@ -1,0 +1,103 @@
+{
+    "zeus_version": 300100,
+    "typeId": "Material",
+    "type_version": -1,
+    "object": {
+        "name": "Default Material",
+        "m_passList": [
+            {
+                "instance_type": 1,
+                "instance_id": 1,
+                "data_description": "std::shared_ptr<Pass>"
+            }
+        ],
+        "m_ParamProperties": [],
+        "m_Type": 0,
+        "m_RenderQueue": 2000,
+        "m_isInstance": false
+    },
+    "instance_map": [
+        {
+            "instance_type": 1,
+            "instance_id": 1,
+            "typeId": "Pass",
+            "type_version": -1,
+            "object": {
+                "m_blendMode": 0,
+                "m_CustomBlendMode": 0,
+                "m_cullMode": 2,
+                "m_colorMask": {
+                    "MaskR": true,
+                    "MaskG": true,
+                    "MaskB": true,
+                    "MaskA": true
+                },
+                "m_depthTestFunc": 1,
+                "m_depthTest": false,
+                "m_depthWrite": false,
+                "m_cullFace": false,
+                "m_paramsMap": [
+                    {
+                        "p0": "image_height",
+                        "p1": {
+                            "type_": 4,
+                            "VariantValue": 1080.0
+                        }
+                    },
+                    {
+                        "p0": "image_width",
+                        "p1": {
+                            "type_": 4,
+                            "VariantValue": 1920.0
+                        }
+                    },
+                    {
+                        "p0": "isRotate",
+                        "p1": {
+                            "type_": 4,
+                            "VariantValue": 0.0
+                        }
+                    },
+                    {
+                        "p0": "rotation",
+                        "p1": {
+                            "type_": 4,
+                            "VariantValue": 0.0
+                        }
+                    }
+                ],
+                "m_multiTextureMap": [
+                    {
+                        "p0": "_BaseTexture0",
+                        "p1": [
+                            {
+                                "uuid": {
+                                    "uuid": "5f291f1a-946e-c13d-f843-08462a14b0c6"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "p0": "skinMaskTexture",
+                        "p1": [
+                            {
+                                "uuid": {
+                                    "uuid": "00000001-0000-0015-0000-000000000001"
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "m_program": {
+                    "uuid": {
+                        "uuid": "3e2f0f3a-1e40-6f2c-fff1-acc1bede2b65"
+                    }
+                },
+                "m_adjustableParams": [],
+                "m_SamplerMap": [],
+                "m_matrialMacros": [],
+                "m_usedFeedback": false
+            }
+        }
+    ]
+}

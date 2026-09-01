@@ -1,0 +1,206 @@
+{
+    "zeus_version": 300100,
+    "typeId": "Prefab",
+    "type_version": -1,
+    "object": {
+        "m_SignalConnections": {
+            "instance_type": 1,
+            "instance_id": 0,
+            "data_description": "NullPtr"
+        },
+        "m_RootSo": {
+            "instance_type": 1,
+            "instance_id": 1,
+            "data_description": "std::shared_ptr<SceneObject>"
+        },
+        "m_UUID": {
+            "uuid": "bce2521f-9e3e-cbad-c288-6d007f46a841"
+        }
+    },
+    "instance_map": [
+        {
+            "instance_type": 1,
+            "instance_id": 1,
+            "typeId": "SceneObject",
+            "type_version": -1,
+            "object": {
+                "m_Name": "Noise",
+                "m_ObjectUUID": {
+                    "uuid": "564666d7-a328-3f29-8529-374ae7841d8b"
+                },
+                "m_Children": [
+                    {
+                        "instance_type": 2,
+                        "instance_id": 2,
+                        "data_description": "GameObjectHandle<SceneObject>"
+                    }
+                ],
+                "m_Components": [],
+                "m_LocalTfrm": {
+                    "m_Position": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "m_Rotation": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0,
+                        "w": 1.0
+                    },
+                    "m_Scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    }
+                },
+                "m_Id": 0,
+                "m_isFrontRndr": 0,
+                "m_SortIndex": 3,
+                "m_ActiveSelf": 1,
+                "m_ActiveHierarchy": 1,
+                "m_LocalRotationZ": 0.0,
+                "m_metaInfo": []
+            }
+        },
+        {
+            "instance_type": 2,
+            "instance_id": 2,
+            "inner_ptr": {
+                "instance_type": 1,
+                "instance_id": 3,
+                "data_description": "std::shared_ptr<SceneObject>"
+            }
+        },
+        {
+            "instance_type": 1,
+            "instance_id": 3,
+            "typeId": "SceneObject",
+            "type_version": -1,
+            "object": {
+                "m_Name": "so",
+                "m_ObjectUUID": {
+                    "uuid": "c04d9b30-373a-c38c-7215-4a24d8eaedab"
+                },
+                "m_Children": [],
+                "m_Components": [
+                    {
+                        "instance_type": 2,
+                        "instance_id": 4,
+                        "data_description": "GameObjectHandle<FilterRenderer>"
+                    }
+                ],
+                "m_LocalTfrm": {
+                    "m_Position": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "m_Rotation": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0,
+                        "w": 1.0
+                    },
+                    "m_Scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    }
+                },
+                "m_Id": 0,
+                "m_isFrontRndr": 0,
+                "m_SortIndex": 4,
+                "m_ActiveSelf": 1,
+                "m_ActiveHierarchy": 1,
+                "m_LocalRotationZ": 0.0,
+                "m_metaInfo": []
+            }
+        },
+        {
+            "instance_type": 2,
+            "instance_id": 4,
+            "inner_ptr": {
+                "instance_type": 1,
+                "instance_id": 5,
+                "data_description": "std::shared_ptr<FilterRenderer>"
+            }
+        },
+        {
+            "instance_type": 1,
+            "instance_id": 5,
+            "typeId": "FilterRenderer",
+            "type_version": -1,
+            "object": {
+                "m_Name": "Renderable",
+                "m_ObjectUUID": {
+                    "uuid": "80269a6b-1a56-54bb-d004-de364c802311"
+                },
+                "m_isEnabled": true,
+                "m_renderLayer": 1000,
+                "m_Layer": 1,
+                "m_Materials": [
+                    {
+                        "uuid": {
+                            "uuid": "f11a6ef4-f2e5-88c4-a609-f57722a29f11"
+                        }
+                    }
+                ],
+                "m_customBlendMode": 0,
+                "m_filterSequence": 0,
+                "m_targetWidth": 0,
+                "m_targetHeight": 0,
+                "m_FilterObjectName": "BackGround",
+                "m_filterList": [
+                    {
+                        "instance_type": 1,
+                        "instance_id": 6,
+                        "data_description": "std::shared_ptr<Filter>"
+                    }
+                ],
+                "m_transformAnimations2D": [],
+                "m_rotateAdaptRes": 0.0,
+                "m_input": {
+                    "uuid": {
+                        "uuid": "23fa034b-16d2-4667-fdda-cb9be35c21b2"
+                    }
+                },
+                "m_output": {
+                    "uuid": {
+                        "uuid": "00000000-0000-0000-0000-000000000000"
+                    }
+                },
+                "m_bIsTransition": false,
+                "m_TemplateTextures": [],
+                "m_StickerProperties": []
+            }
+        },
+        {
+            "instance_type": 1,
+            "instance_id": 6,
+            "typeId": "Filter",
+            "type_version": -1,
+            "object": {
+                "m_uuid": {
+                    "uuid": "85c02cbc-016e-993a-ac29-3d927131eaeb"
+                },
+                "m_name": "NewFilter",
+                "m_BlenderSrc": false,
+                "m_clearColor": {
+                    "r": 0.0,
+                    "g": 0.0,
+                    "b": 0.0,
+                    "a": 0.0
+                },
+                "m_filterUUIDs": [],
+                "m_targetWidth": 0,
+                "m_targetHeight": 0,
+                "m_TargetType": 0,
+                "m_TargetScaleWidth": 1.0,
+                "m_TargetScaleHeight": 1.0,
+                "m_TargetAnchorShortSide": 0.0,
+                "m_TargetAnchorLongSide": 0.0
+            }
+        }
+    ]
+}

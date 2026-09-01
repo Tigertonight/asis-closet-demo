@@ -36,6 +36,9 @@ COLLECTIONS = {
     "outfit_requests": "request_id",
     "share_assets": "asset_id",
     "public_report_shares": "share_id",
+    # 按用户持久索引最新一张通过校验的 onboarding 照片。
+    # 会话过期只清理草稿，不应让 App 丢失用户的试穿形象。
+    "user_photos": "user_id",
     # 照片检测被拒的留存记录（asset 只增不删，供算法离线优化阈值）
     "rejected_photos": "record_id",
 }

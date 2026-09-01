@@ -48,6 +48,8 @@ def _synthetic_top_image() -> Image.Image:
 
 
 def _use_tmp_closet(monkeypatch, tmp_path: Path) -> None:
+    monkeypatch.setenv("SELFIT_GARMENT_AI_ENABLED", "0")
+    monkeypatch.setattr(closet.AIGarmentCutoutProvider, "_availability_cache", {})
     monkeypatch.setattr(storage, "ROOT_DIR", tmp_path)
     monkeypatch.setattr(auth, "AUTH_DIR", tmp_path / "outputs" / "auth")
     monkeypatch.setattr(auth, "AUTH_STORE_PATH", tmp_path / "outputs" / "auth" / "auth_store.json")
@@ -386,6 +388,30 @@ def test_stylist_demo_mode_is_explicit(monkeypatch, tmp_path: Path) -> None:
     assert data["mode"] == "demo"
     assert data["status"] == "ok"
     assert data["recommended_items"]
+
+
+def test_light_closet_prompt_carries_style_persona_evidence() -> None:
+    request = {
+        "message": "明天通勤怎么穿",
+        "context": {
+            "mock_profile": {
+                "style_persona": {
+                    "type_id": "mute",
+                    "name": "静音时驦",
+                    "code": "MUTE",
+                    "keywords": ["低装饰", "秩序感"],
+                    "summary": "偏爱清晰线条",
+                    "colors": [{"name": "黑", "value": "#181818"}],
+                }
+            }
+        },
+    }
+
+    prompt = stylist._light_closet_ai_prompt(request)
+
+    assert '"typeId": "mute"' in prompt
+    assert "低装饰" in prompt
+    assert "推荐色" in prompt
 
 
 def test_stylist_demo_quality_checks_track_inspiration_context(monkeypatch, tmp_path: Path) -> None:

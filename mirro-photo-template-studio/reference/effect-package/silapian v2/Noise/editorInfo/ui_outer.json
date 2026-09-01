@@ -1,0 +1,38 @@
+{
+  "properties": [
+    {
+      "UIConfig": {
+        "type": "Slider",
+        "extra": {
+          "uiMin": 0,
+          "uiMax": 100,
+          "engineMin": 0,
+          "engineMax": 100,
+          "titleText": "强度",
+          "adjustableKey": "adjustable_intensity"
+        }
+      },
+      "EngineConfig": {
+        "type": "ZeusEngine",
+        "extra": {
+          "so": {
+            "path": "root/children[0]/components[0]/materials[0]"
+          },
+          "getter": {
+            "name": "GetMaterialParamValue",
+            "params": [
+              "adjustable_intensity"
+            ]
+          },
+          "setter": {
+            "name": "SetParam",
+            "params": [
+              "adjustable_intensity",
+              "{}"
+            ]
+          }
+        }
+      }
+    }
+  ]
+}

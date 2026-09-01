@@ -1,0 +1,251 @@
+{
+    "zeus_version": 300100,
+    "typeId": "Prefab",
+    "type_version": -1,
+    "object": {
+        "m_SignalConnections": {
+            "instance_type": 1,
+            "instance_id": 0,
+            "data_description": "NullPtr"
+        },
+        "m_RootSo": {
+            "instance_type": 1,
+            "instance_id": 1,
+            "data_description": "std::shared_ptr<SceneObject>"
+        },
+        "m_UUID": {
+            "uuid": "2558fa29-0966-37d4-4591-78512e5d607f"
+        }
+    },
+    "instance_map": [
+        {
+            "instance_type": 1,
+            "instance_id": 1,
+            "typeId": "SceneObject",
+            "type_version": -1,
+            "object": {
+                "m_Name": "Blur",
+                "m_ObjectUUID": {
+                    "uuid": "93fcc99b-1eed-0360-e1db-275398fa82d1"
+                },
+                "m_Children": [
+                    {
+                        "instance_type": 2,
+                        "instance_id": 2,
+                        "data_description": "GameObjectHandle<SceneObject>"
+                    }
+                ],
+                "m_Components": [],
+                "m_LocalTfrm": {
+                    "m_Position": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "m_Rotation": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0,
+                        "w": 1.0
+                    },
+                    "m_Scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    }
+                },
+                "m_Id": 0,
+                "m_isFrontRndr": 0,
+                "m_SortIndex": 3,
+                "m_ActiveSelf": 1,
+                "m_ActiveHierarchy": 1,
+                "m_LocalRotationZ": 0.0,
+                "m_metaInfo": []
+            }
+        },
+        {
+            "instance_type": 2,
+            "instance_id": 2,
+            "inner_ptr": {
+                "instance_type": 1,
+                "instance_id": 3,
+                "data_description": "std::shared_ptr<SceneObject>"
+            }
+        },
+        {
+            "instance_type": 1,
+            "instance_id": 3,
+            "typeId": "SceneObject",
+            "type_version": -1,
+            "object": {
+                "m_Name": "gaussblurSo",
+                "m_ObjectUUID": {
+                    "uuid": "0d12fe02-220c-2301-5fb1-35b43eb0814f"
+                },
+                "m_Children": [],
+                "m_Components": [
+                    {
+                        "instance_type": 2,
+                        "instance_id": 4,
+                        "data_description": "GameObjectHandle<FilterSpriteRenderer>"
+                    }
+                ],
+                "m_LocalTfrm": {
+                    "m_Position": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "m_Rotation": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0,
+                        "w": 1.0
+                    },
+                    "m_Scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    }
+                },
+                "m_Id": 0,
+                "m_isFrontRndr": 0,
+                "m_SortIndex": 4,
+                "m_ActiveSelf": 1,
+                "m_ActiveHierarchy": 1,
+                "m_LocalRotationZ": 0.0,
+                "m_metaInfo": []
+            }
+        },
+        {
+            "instance_type": 2,
+            "instance_id": 4,
+            "inner_ptr": {
+                "instance_type": 1,
+                "instance_id": 5,
+                "data_description": "std::shared_ptr<FilterSpriteRenderer>"
+            }
+        },
+        {
+            "instance_type": 1,
+            "instance_id": 5,
+            "typeId": "FilterSpriteRenderer",
+            "type_version": -1,
+            "object": {
+                "m_Name": "Renderable",
+                "m_ObjectUUID": {
+                    "uuid": "1cdb8452-46b0-392a-fbdf-f454dad1f5d9"
+                },
+                "m_isEnabled": true,
+                "m_renderLayer": 1000,
+                "m_Layer": 1,
+                "m_Materials": [
+                    {
+                        "uuid": {
+                            "uuid": "61a590d5-a24e-b101-89be-dc3a352d8bd4"
+                        }
+                    },
+                    {
+                        "uuid": {
+                            "uuid": "4c579e57-a69e-109a-7613-6f668439d0c5"
+                        }
+                    }
+                ],
+                "m_customBlendMode": 0,
+                "m_filterSequence": 0,
+                "m_targetWidth": 0,
+                "m_targetHeight": 0,
+                "m_FilterObjectName": "BackGround",
+                "m_filterList": [
+                    {
+                        "instance_type": 1,
+                        "instance_id": 6,
+                        "data_description": "std::shared_ptr<Filter>"
+                    },
+                    {
+                        "instance_type": 1,
+                        "instance_id": 7,
+                        "data_description": "std::shared_ptr<Filter>"
+                    }
+                ],
+                "m_transformAnimations2D": [],
+                "m_rotateAdaptRes": 0.0,
+                "m_input": {
+                    "uuid": {
+                        "uuid": "23fa034b-16d2-4667-fdda-cb9be35c21b2"
+                    }
+                },
+                "m_output": {
+                    "uuid": {
+                        "uuid": "00000000-0000-0000-0000-000000000000"
+                    }
+                },
+                "m_bIsTransition": false,
+                "m_TemplateTextures": [],
+                "m_StickerProperties": [],
+                "m_CommonSprites": [],
+                "m_CommonAdaptiveSprites": [],
+                "m_SpriteTrans": [],
+                "m_EnabelTrans": false
+            }
+        },
+        {
+            "instance_type": 1,
+            "instance_id": 7,
+            "typeId": "Filter",
+            "type_version": -1,
+            "object": {
+                "m_uuid": {
+                    "uuid": "4ad19900-602d-57a0-b337-619d5177c362"
+                },
+                "m_name": "hBlurFilter",
+                "m_BlenderSrc": false,
+                "m_clearColor": {
+                    "r": 0.0,
+                    "g": 0.0,
+                    "b": 0.0,
+                    "a": 0.0
+                },
+                "m_filterUUIDs": [
+                    {
+                        "uuid": "24e15958-c591-d090-8ac1-cdb8c72d10fc"
+                    }
+                ],
+                "m_targetWidth": 0,
+                "m_targetHeight": 0,
+                "m_TargetType": 0,
+                "m_TargetScaleWidth": 1.0,
+                "m_TargetScaleHeight": 1.0,
+                "m_TargetAnchorShortSide": 0.0,
+                "m_TargetAnchorLongSide": 0.0
+            }
+        },
+        {
+            "instance_type": 1,
+            "instance_id": 6,
+            "typeId": "Filter",
+            "type_version": -1,
+            "object": {
+                "m_uuid": {
+                    "uuid": "24e15958-c591-d090-8ac1-cdb8c72d10fc"
+                },
+                "m_name": "vBlurFilter",
+                "m_BlenderSrc": false,
+                "m_clearColor": {
+                    "r": 0.0,
+                    "g": 0.0,
+                    "b": 0.0,
+                    "a": 0.0
+                },
+                "m_filterUUIDs": [],
+                "m_targetWidth": 0,
+                "m_targetHeight": 0,
+                "m_TargetType": 0,
+                "m_TargetScaleWidth": 1.0,
+                "m_TargetScaleHeight": 1.0,
+                "m_TargetAnchorShortSide": 0.0,
+                "m_TargetAnchorLongSide": 0.0
+            }
+        }
+    ]
+}

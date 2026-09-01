@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#792a28" />
+  <title>selfit 智能镜子</title>
+  <link rel="icon" href="data:," />
+  <link rel="preload" as="image" href="../../static/selfit/assets/mirror-loading-stage-25@2x.png" />
+  <link rel="preload" as="image" href="../../static/selfit/assets/mirror-loading-stage-50@2x.png" />
+  <link rel="preload" as="image" href="../../static/selfit/assets/mirror-loading-stage-75@2x.png" />
+  <link rel="stylesheet" href="../../static/selfit/mirror.css?v=20260824-5" />
+</head>
+<body>
+  <main class="mirror-shell" id="mirrorApp" data-state="home" aria-live="polite">
+    <section class="mirror-screen textile-screen is-active" data-screen="home" aria-labelledby="mirrorTitle">
+      <span class="home-brand" aria-label="selfit">
+        <span class="home-word" aria-hidden="true">selfit</span>
+        <i class="home-star home-star--1">★</i><i class="home-star home-star--2">★</i>
+        <i class="home-star home-star--3">★</i><i class="home-star home-star--4">★</i>
+        <i class="home-star home-star--5">★</i><i class="home-star home-star--6">★</i>
+        <i class="home-star home-star--7">★</i><i class="home-star home-star--8">★</i>
+        <i class="home-star home-star--9">★</i><i class="home-star home-star--10">★</i>
+        <i class="home-star home-star--11">★</i><i class="home-star home-star--12">★</i>
+        <i class="home-star home-star--13">★</i><i class="home-star home-star--14">★</i>
+      </span>
+      <div class="home-copy">
+        <h1 id="mirrorTitle">适我，不适众</h1>
+        <p>1 分钟，找到真正衬你的颜色与穿搭风格</p>
+      </div>
+      <button class="mirror-button mirror-button--light home-action" id="startCapture" type="button">
+        <img src="../../static/selfit/assets/icon-camera.svg" width="30" height="30" alt="" aria-hidden="true" />
+        开始风格测试
+      </button>
+      <div class="home-manifesto" role="img" aria-label="everyone has a code."><img class="home-manifesto-art" src="../../static/selfit/assets/mirror-home-manifesto@2x.png" width="452" height="340" alt="" /></div>
+    </section>
+
+    <section class="mirror-screen camera-screen" data-screen="countdown" aria-label="拍照倒计时">
+      <div class="camera-media" aria-hidden="true">
+        <img class="camera-fallback" src="../../static/selfit/assets/mirror-demo-full-body.webp" alt="" />
+        <video id="cameraVideo" autoplay muted playsinline></video>
+      </div>
+      <div class="camera-shade"></div>
+      <img class="mirror-wordmark" src="../../static/selfit/assets/selfit-wordmark.svg" width="55" height="20" alt="selfit" />
+      <div class="countdown-copy">
+        <p>准备拍照</p>
+        <strong id="countdownNumber">3</strong>
+      </div>
+      <p class="visually-hidden" id="cameraHint">请正对镜面，保持自然站姿</p>
+    </section>
+
+    <section class="mirror-screen camera-screen" data-screen="confirm" aria-label="确认照片">
+      <div class="confirm-card">
+        <img class="captured-photo" id="capturedPhoto" alt="刚刚拍摄的照片" />
+        <img class="confirm-lace" src="../../static/selfit/assets/lace-card@4x.png" alt="" />
+      </div>
+      <img class="mirror-wordmark" src="../../static/selfit/assets/selfit-wordmark.svg" width="55" height="20" alt="selfit" />
+      <div class="photo-actions">
+        <button class="mirror-button mirror-button--secondary" id="retakePhoto" type="button">重拍</button>
+        <button class="mirror-button mirror-button--primary" id="confirmPhoto" type="button">确认</button>
+      </div>
+    </section>
+
+    <section class="mirror-screen textile-screen processing-screen" data-screen="processing" aria-label="AI 分析中">
+      <img class="mirror-wordmark mirror-wordmark--light" src="../../static/selfit/assets/selfit-wordmark.svg" width="55" height="20" alt="selfit" />
+      <div class="processing-copy" role="status" aria-live="polite">
+        <p id="processingTitle">看见你本来的样子</p>
+        <small id="processingHint">25%</small>
+      </div>
+      <img class="processing-art" id="processingArt" src="../../static/selfit/assets/mirror-loading-stage-25@2x.png" width="369" height="114" alt="" aria-hidden="true" data-stage="25" />
+      <img class="processing-signature" src="../../static/selfit/assets/mirror-signature-know-yourself@2x.png" width="452" height="140" alt="Know yourself first." />
+    </section>
+
+    <section class="mirror-screen result-screen" data-screen="result" aria-label="分析完成">
+      <img class="mirror-wordmark" src="../../static/selfit/assets/selfit-wordmark.svg" width="55" height="20" alt="selfit" />
+      <div class="result-card" aria-label="本次拍摄照片">
+        <img class="result-photo" id="resultPhoto" alt="本次拍摄照片" />
+        <img class="result-lace" src="../../static/selfit/assets/lace-card@4x.png" alt="" />
+      </div>
+      <div class="report-qr">
+        <span>扫码查看</span>
+        <img id="reportQrImage" src="../../static/selfit/assets/mirror-report-qr.png" alt="扫码获取完整报告" />
+        <small class="visually-hidden" id="reportCode">扫码查看完整报告</small>
+      </div>
+      <div class="result-actions">
+        <button class="mirror-button mirror-button--primary mirror-button--wide" id="returnHome" type="button">返回首页</button>
+      </div>
+    </section>
+
+    <div class="permission-toast" id="permissionToast" role="status" hidden></div>
+    <canvas id="captureCanvas" width="786" height="1396" hidden></canvas>
+  </main>
+  <script src="../../static/selfit/mirror.js?v=20260824-3" defer></script>
+</body>
+</html>

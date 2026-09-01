@@ -1,0 +1,51 @@
+{
+    "zeus_version": 300100,
+    "typeId": "Program",
+    "type_version": -1,
+    "object": {
+        "name": "",
+        "m_shaderMap": [
+            {
+                "instance_type": 1,
+                "instance_id": 1,
+                "data_description": "std::shared_ptr<Shader>"
+            },
+            {
+                "instance_type": 1,
+                "instance_id": 2,
+                "data_description": "std::shared_ptr<Shader>"
+            }
+        ],
+        "m_customBlendMode": 0
+    },
+    "instance_map": [
+        {
+            "instance_type": 1,
+            "instance_id": 2,
+            "typeId": "Shader",
+            "type_version": -1,
+            "object": {
+                "m_type": 1,
+                "m_source": "in vec2 v_texcoord;\nout vec4 fragColor;\nuniform sampler2D _BaseTexture0;\nuniform float image_width;\nuniform float image_height;\nuniform float adjustable_intensity;\nuniform float adjustable_blur_y;\n\n  vec4 blur(vec4 curColor, float blurSize, vec2 uv,float intensity){\n    float half_gaussian_weight[9];\n    half_gaussian_weight[0]= 0.20;//0.137401;\n    half_gaussian_weight[1]= 0.19;//0.125794;\n    half_gaussian_weight[2]= 0.17;//0.106483;\n    half_gaussian_weight[3]= 0.15;//0.080657;\n    half_gaussian_weight[4]= 0.13;//0.054670;\n    half_gaussian_weight[5]= 0.11;//0.033159;\n    half_gaussian_weight[6]= 0.08;//0.017997;\n    half_gaussian_weight[7]= 0.05;//0.008741;\n    half_gaussian_weight[8]= 0.02;//0.003799;\n      \n    vec4 sum            = vec4(0.0);\n    vec4 result         = vec4(0.0);\n    vec2 unit_uv        = vec2(blurSize/image_width,blurSize/image_height);\n    unit_uv = unit_uv * intensity;\n    vec4 centerPixel    = curColor*half_gaussian_weight[0];\n    float sum_weight    = half_gaussian_weight[0];\n    for(int i=1;i<=8;i++)\n    {\n        vec2 curRightCoordinate = uv+vec2(float(0),float(i))*unit_uv;\n        vec2 curLeftCoordinate  = uv+vec2(float(0),float(-i))*unit_uv;\n        vec4 rightColor = texture(_BaseTexture0,curRightCoordinate);\n        vec4 leftColor = texture(_BaseTexture0,curLeftCoordinate);\n        sum+=rightColor*half_gaussian_weight[i];\n        sum+=leftColor*half_gaussian_weight[i];\n        sum_weight+=half_gaussian_weight[i]*2.0;\n    }\n    return (sum+centerPixel)/sum_weight;\n  }\n\nvoid main()\n{\n    vec4 color  =  texture(_BaseTexture0, v_texcoord);\n    fragColor = blur(color, 4.8, v_texcoord,adjustable_intensity / 100.0*adjustable_blur_y/100.0);\n}\n\n\n\n\n",
+                "m_entryPoint": "",
+                "m_language": "",
+                "m_blendSource": "",
+                "m_enableUberShader": 0
+            }
+        },
+        {
+            "instance_type": 1,
+            "instance_id": 1,
+            "typeId": "Shader",
+            "type_version": -1,
+            "object": {
+                "m_type": 0,
+                "m_source": "in vec3 a_position;\nin vec2 a_texcoord0;\nout vec2 v_texcoord;\nuniform mat4 u_ModelViewProjMat;\nvoid main()\n{\n    gl_Position = u_ModelViewProjMat * vec4(a_position, 1.0);\n    v_texcoord = a_texcoord0;\n}\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n",
+                "m_entryPoint": "",
+                "m_language": "",
+                "m_blendSource": "",
+                "m_enableUberShader": 0
+            }
+        }
+    ]
+}

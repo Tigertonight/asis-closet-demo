@@ -1,0 +1,53 @@
+{
+    "filterlist": {
+        "group_count": 4,
+        "groups": [
+            {
+                "effect_count": 1,
+                "effects": [
+                    {
+                        "active": true,
+                        "displayName": "暗角",
+                        "name": "Vignette",
+                        "type": "prefab"
+                    }
+                ]
+            },
+            {
+                "effect_count": 1,
+                "effects": [
+                    {
+                        "active": true,
+                        "displayName": "皮肤分割Lut图",
+                        "name": "FilterwithSkin",
+                        "type": "prefab"
+                    }
+                ]
+            },
+            {
+                "effect_count": 1,
+                "effects": [
+                    {
+                        "active": true,
+                        "displayName": "高斯模糊",
+                        "name": "Blur",
+                        "type": "prefab"
+                    }
+                ]
+            },
+            {
+                "effect_count": 1,
+                "effects": [
+                    {
+                        "active": true,
+                        "displayName": "细噪",
+                        "name": "Noise",
+                        "type": "prefab"
+                    }
+                ]
+            }
+        ]
+    },
+    "type": 16,
+    "verson": 1
+}

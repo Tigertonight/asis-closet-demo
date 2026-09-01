@@ -29,11 +29,11 @@ def test_internal_pages_redirect_anonymous_to_admin(demo_client: TestClient) -> 
         "/demo",
         "/closet/demo",
         "/try-on/demo",
+        "/wearwow/demo",
         "/mvp",
         "/qa",
         "/self-test",
         "/report-builder",
-        "/wearwow/demo",
         "/fixtures",
     ):
         response = demo_client.get(path, follow_redirects=False)

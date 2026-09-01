@@ -1,0 +1,16 @@
+{
+  "id": "silapian-v2-web",
+  "source": "撕拉片.zip / silapian v2",
+  "version": 1,
+  "pipeline": [
+    { "id": "vignette", "label": "暗角", "default": 50, "min": 0, "max": 100 },
+    { "id": "dual-lut", "label": "肤色保护 LUT", "default": 80, "min": 0, "max": 100 },
+    { "id": "softness", "label": "柔化", "default": 10, "min": 0, "max": 30 },
+    { "id": "grain", "label": "细噪", "default": 50, "min": 0, "max": 100 }
+  ],
+  "assets": {
+    "skinLut": "/assets/luts/filter-skin.png",
+    "backgroundLut": "/assets/luts/filter-bg.png",
+    "vignetteMaskReference": "/assets/luts/vignette-mask.png"
+  }
+}

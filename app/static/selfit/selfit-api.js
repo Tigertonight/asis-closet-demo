@@ -155,6 +155,11 @@
       return Promise.resolve({ report });
     }
 
+    getLatestReport() {
+      if (this.mode === 'live') return this.request('/reports/latest');
+      return Promise.resolve({ report: null });
+    }
+
     getMirrorHandoff(token) {
       return this.request(`/mirror/handoffs/${encodeURIComponent(token)}`);
     }

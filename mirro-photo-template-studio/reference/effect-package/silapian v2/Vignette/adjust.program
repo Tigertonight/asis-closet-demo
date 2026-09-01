@@ -1,0 +1,51 @@
+{
+    "zeus_version": 300100,
+    "typeId": "Program",
+    "type_version": -1,
+    "object": {
+        "name": "",
+        "m_shaderMap": [
+            {
+                "instance_type": 1,
+                "instance_id": 1,
+                "data_description": "std::shared_ptr<Shader>"
+            },
+            {
+                "instance_type": 1,
+                "instance_id": 2,
+                "data_description": "std::shared_ptr<Shader>"
+            }
+        ],
+        "m_customBlendMode": 0
+    },
+    "instance_map": [
+        {
+            "instance_type": 1,
+            "instance_id": 2,
+            "typeId": "Shader",
+            "type_version": -1,
+            "object": {
+                "m_type": 1,
+                "m_source": "\n    #ifdef GL_ES\n    #ifdef GL_FRAGMENT_PRECISION_HIGH\n        precision highp float;\n    #else\n        precision mediump float;\n    #endif\n    #endif\n    in vec2 v_texcoord;\n    out vec4 fragColor;\n    uniform sampler2D _BaseTexture0;\n    uniform sampler2D lut0;\n\n    uniform float Brightness;\n    uniform float Contrast;\n    uniform float Shadow;\n    uniform float Highlight;\n    uniform float Temperature;\n    uniform float Tone;\n    uniform float LightSensation;\n    uniform float Saturation;\n    uniform float Fade;\n    uniform float Exposure;\n    uniform float Vibrance;\n\n    uniform float adjustable_x;\n    uniform float adjustable_y;\n\n    const float brightnessInLutRow = 1.0;\n    const float contrastInLutRow = 2.0;\n    const float exposureInLutRow = 3.0;\n    const float fadeInLutRow = 4.0;\n    const float highlightInLutRow = 5.0;\n    const float lightSensationInLutRow = 6.0;\n    const float saturationInLutRow = 7.0;\n    const float shadowInLutRow = 8.0;\n    const float temperatureInLutRow = 9.0;\n    const float toneInLutRow = 10.0;\n    const float vibranceInLutRow = 11.0;\n\n    const float lut_scale_row_y = 1.0 / 22.0;\n    const float lut_scale_17 = 1.0 / 17.0;\n\n//用于min、max两张LUT图合并的情况，minLUT在上方，maxLUT在下方\nvec4 locationEffectByTextureMap(vec4 baseColor, float intensity, float rowInLut)\n{\n    float slider_progress = abs(intensity);\n    vec4 curColor = baseColor;\n    vec4 textureColor = curColor;\n    float blueColor = curColor.b * (17.0 - 1.0);\n    vec2 standardTableSize = vec2(289.0, 17.0);\n    vec2 pixelSize = 1.0 / standardTableSize;\n    vec2 quad1 = vec2(0.0);\n    quad1.y = floor(floor(blueColor) * lut_scale_17);\n    quad1.x = floor(blueColor) - (quad1.y * 1.0);\n    vec2 quad2;\n    quad2.y = floor(ceil(blueColor) * lut_scale_17);\n    quad2.x = ceil(blueColor) - (quad2.y * 1.0);\n    vec2 texPos1;\n    texPos1.x = (quad1.x * 1.0 * lut_scale_17) + 0.5 / standardTableSize.x + ((1.0 * lut_scale_17 - 1.0 / standardTableSize.x) * textureColor.r);\n    texPos1.y = (quad1.y * 1.0 / 1.0) + 0.5 / standardTableSize.y + ((1.0 / 1.0 - 1.0 / standardTableSize.y) * textureColor.g);\n    texPos1.y = texPos1.y * lut_scale_row_y + lut_scale_row_y * (rowInLut - 1.0) * 2.0;\n    vec2 texPos2;\n    texPos2.x = (quad2.x * 1.0 * lut_scale_17) + 0.5 / standardTableSize.x + ((1.0 * lut_scale_17 - 1.0 / standardTableSize.x) * textureColor.r);\n    texPos2.y = (quad2.y * 1.0 / 1.0) + 0.5 / standardTableSize.y + ((1.0 / 1.0 - 1.0 / standardTableSize.y) * textureColor.g);\n    texPos2.y = texPos2.y * lut_scale_row_y + lut_scale_row_y * (rowInLut - 1.0) * 2.0;\n\n    float alpha = fract(blueColor);\n    vec4 newColor = vec4(0.0);\n    if (intensity > 0.0) { // 因为对两张LUT图做了合并，上半部分对应于intensity < 0.0的情况，下半部分对应于intensity > 0.0的情况\n        texPos1.y = texPos1.y + lut_scale_row_y;\n        texPos2.y = texPos2.y + lut_scale_row_y;\n    }\n    vec4 newColor1 = texture2D(lut0, texPos1);\n    vec4 newColor2 = texture2D(lut0, texPos2);\n    newColor = mix(newColor1, newColor2, alpha);\n    newColor = mix(curColor,newColor,slider_progress);\n    return newColor;\n}\n\n\nvoid main()\n{\n\n    //uniform map\n    float _brightness       = Brightness*0.01;\n    float _contrast         = Contrast*0.01;\n    float _exposure         = Exposure*0.01;\n    float _vibrance         = Vibrance*0.01;\n    float _saturation       = Saturation*0.01;\n    float _highlight        = Highlight*0.01;\n    float _shadow           = Shadow*0.01;\n    float _tone             = Tone*0.01;\n    float _temperature      = Temperature*0.01;\n    float _lightsensation   = LightSensation*0.01;\n    float _fade             = Fade*0.01;\n\n\n    vec4 baseColor;\n    baseColor.r = (17.0 / 16.0) * v_texcoord.y - 0.5 / 16.0;\n    baseColor.g = floor (v_texcoord.x * 17.0) / 16.0;\n    baseColor.b = (v_texcoord.x - floor(v_texcoord.x * 17.0) * lut_scale_17) * 17.0;\n    baseColor.b = 17.0 / 16.0 * baseColor.b - 0.5 / 16.0;\n    baseColor.a = 1.0;\n\n    if(abs(_brightness) > 0.01){\n        baseColor = locationEffectByTextureMap(baseColor, _brightness, brightnessInLutRow);\n    }\n    if(abs(_contrast) > 0.01){\n        baseColor = locationEffectByTextureMap(baseColor, _contrast, contrastInLutRow);\n    }\n    if (abs(_shadow) > 0.01) { // 总是有Shadow >= 0，inputBrightnessMin仅用于填充第二个参数的位置\n        baseColor = locationEffectByTextureMap(baseColor, _shadow, shadowInLutRow);\n    }\n    if (abs(_highlight) > 0.01) {\n        baseColor = locationEffectByTextureMap(baseColor, _highlight, highlightInLutRow);\n    }\n    if(abs(_temperature) > 0.01){\n        baseColor = locationEffectByTextureMap(baseColor, _temperature, temperatureInLutRow);\n    }\n    if(abs(_tone) > 0.01){\n        baseColor = locationEffectByTextureMap(baseColor, _tone, toneInLutRow);\n    }\n    if(abs(_saturation) > 0.01){\n        baseColor = locationEffectByTextureMap(baseColor, _saturation, saturationInLutRow);\n    }\n    if (abs(_lightsensation) > 0.01) {\n        baseColor = locationEffectByTextureMap(baseColor, _lightsensation, lightSensationInLutRow);\n    }\n    if (_fade > 0.01) { // 总是有Fade >= 0，inputBrightnessMin仅用于填充第二个参数的位置\n        baseColor = locationEffectByTextureMap(baseColor, _fade, fadeInLutRow);\n    }\n    if (abs(_exposure) > 0.01) {\n        baseColor = locationEffectByTextureMap(baseColor, _exposure, exposureInLutRow);\n    }\n    if (abs(_vibrance) > 0.01) {\n        baseColor = locationEffectByTextureMap(baseColor, _vibrance, vibranceInLutRow);\n    }\n    fragColor =  baseColor;\n    //fragColor =  texture(_BaseTexture0, v_texcoord);\n}\n",
+                "m_entryPoint": "",
+                "m_language": "",
+                "m_blendSource": "",
+                "m_enableUberShader": 0
+            }
+        },
+        {
+            "instance_type": 1,
+            "instance_id": 1,
+            "typeId": "Shader",
+            "type_version": -1,
+            "object": {
+                "m_type": 0,
+                "m_source": "\n    #ifdef GL_ES\n    #ifdef GL_FRAGMENT_PRECISION_HIGH\n        precision highp float;\n    #else\n        precision mediump float;\n    #endif\n    #endif\n    in vec3 a_position;\n    in vec2 a_texcoord0;\n    out vec2 v_texcoord;\n \n    void main()\n    {\n        v_texcoord  = a_texcoord0;\n        gl_Position = vec4(a_position, 1.0);\n    }\n",
+                "m_entryPoint": "",
+                "m_language": "",
+                "m_blendSource": "",
+                "m_enableUberShader": 0
+            }
+        }
+    ]
+}

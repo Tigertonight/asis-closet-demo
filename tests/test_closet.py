@@ -9,6 +9,7 @@ from PIL import Image
 
 import app.closet as closet
 import app.auth as auth
+import app.ops as ops
 import app.storage as storage
 import app.tryon as tryon
 from app.main import app
@@ -125,8 +126,9 @@ def test_closet_prefers_ai_garment_cutout_before_local_fallback(monkeypatch, tmp
             "pipeline": {"ai_cutout": {"provider": "runway_google_generate_content", "status": "ok"}},
         }]
 
+    monkeypatch.setattr(closet.AIGarmentCutoutProvider, "extract_inventory", lambda *_: [])
     monkeypatch.setattr(closet.AIGarmentCutoutProvider, "extract", fake_extract)
-    monkeypatch.setattr(closet.SegFormerClothesAdapter, "extract", lambda *_: (_ for _ in ()).throw(AssertionError("should not reach SegFormer")))
+    monkeypatch.setattr(closet.SegFormerClothesAdapter, "extract", lambda *_: [])
     monkeypatch.setattr(closet, "_extract_with_top_fallback", lambda *_: (_ for _ in ()).throw(AssertionError("should not reach legacy fallback")))
 
     response = client.post(
@@ -142,6 +144,306 @@ def test_closet_prefers_ai_garment_cutout_before_local_fallback(monkeypatch, tmp
     assert data["items"][0]["pipeline"]["ai_cutout"]["provider"] == "runway_google_generate_content"
 
 
+def test_outfit_upload_splits_every_inventory_item_into_unique_transparent_pngs(monkeypatch, tmp_path: Path) -> None:
+    _use_tmp_closet(monkeypatch, tmp_path)
+    client = _auth_client()
+    candidates = [
+        {"category": "top", "bbox": {"x": 0.15, "y": 0.08, "width": 0.45, "height": 0.3}, "confidence": 0.91},
+        {"category": "bottom", "bbox": {"x": 0.22, "y": 0.4, "width": 0.35, "height": 0.35}, "confidence": 0.89},
+        {"category": "shoes", "bbox": {"x": 0.25, "y": 0.78, "width": 0.42, "height": 0.15}, "confidence": 0.86},
+    ]
+
+    def fake_cutout(self, source_path, category=None):
+        image = Image.new("RGBA", (320, 320), (255, 255, 255, 0))
+        color = {"top": (120, 160, 220, 255), "bottom": (40, 60, 90, 255), "shoes": (25, 25, 25, 255)}[category]
+        for y in range(55, 265):
+            for x in range(75, 245):
+                image.putpixel((x, y), color)
+        return image
+
+    monkeypatch.setattr(closet.AIGarmentCutoutProvider, "_provider_kind", lambda *_: "runway_google_generate_content")
+    monkeypatch.setattr(closet.AIGarmentCutoutProvider, "_analyze_inventory", lambda *_: candidates)
+    monkeypatch.setattr(closet.AIGarmentCutoutProvider, "_generate_cutout", fake_cutout)
+    monkeypatch.setattr(closet.SegFormerClothesAdapter, "extract", lambda *_: (_ for _ in ()).throw(AssertionError("complete AI inventory should not need fallback")))
+
+    response = client.post(
+        "/closet/import/upload",
+        files=[("images", ("full-outfit.png", _png_bytes(_synthetic_top_image()), "image/png"))],
+    )
+
+    assert response.status_code == 200
+    data = response.json()
+    assert data["summary"]["created"] == 3
+    assert data["summary"]["extraction_modes"] == ["ai_inventory"]
+    assert {item["category"] for item in data["items"]} == {"top", "bottom", "shoes"}
+    assert len({item["item_id"] for item in data["items"]}) == 3
+    for item in data["items"]:
+        cutout_path = closet._closet_disk_path(item["assets"]["cutout_path"])
+        assert cutout_path is not None and cutout_path.exists()
+        assert Image.open(cutout_path).mode == "RGBA"
+        assert closet._has_meaningful_transparency(Image.open(cutout_path)) is True
+    assert client.get("/closet/items").json()["total"] == 3
+    assert data["draft_outfit"]["origin"] == "auto_split"
+    assert data["draft_outfit"]["draft"] is True
+    assert set(data["draft_outfit"]["item_ids"]) == {item["item_id"] for item in data["items"]}
+    assert client.get("/closet/outfits").json()["total"] == 1
+
+
+def test_single_inventory_item_keeps_non_top_category(monkeypatch, tmp_path: Path) -> None:
+    _use_tmp_closet(monkeypatch, tmp_path)
+    client = _auth_client()
+    candidate = {"category": "dress", "bbox": {"x": 0.18, "y": 0.08, "width": 0.64, "height": 0.82}, "confidence": 0.94}
+
+    def fake_cutout(self, source_path, category=None):
+        image = Image.new("RGBA", (320, 420), (255, 255, 255, 0))
+        for y in range(30, 390):
+            for x in range(80, 240):
+                image.putpixel((x, y), (38, 38, 42, 255))
+        return image
+
+    monkeypatch.setattr(closet.AIGarmentCutoutProvider, "_provider_kind", lambda *_: "runway_google_generate_content")
+    monkeypatch.setattr(closet.AIGarmentCutoutProvider, "_analyze_inventory", lambda *_: [candidate])
+    monkeypatch.setattr(closet.AIGarmentCutoutProvider, "_generate_cutout", fake_cutout)
+    monkeypatch.setattr(closet.AIGarmentCutoutProvider, "extract", lambda *_: (_ for _ in ()).throw(AssertionError("single inventory must not fall back to the top analyzer")))
+
+    response = client.post(
+        "/closet/import/upload",
+        files=[("images", ("qipao.png", _png_bytes(_synthetic_top_image()), "image/png"))],
+    )
+
+    assert response.status_code == 200
+    data = response.json()
+    assert data["items"][0]["category"] == "dress"
+    assert data["items"][0]["source"]["source_group_id"]
+    assert data["summary"]["extraction_modes"] == ["ai_inventory"]
+
+
+def test_duplicate_source_uses_cutout_cache(monkeypatch, tmp_path: Path) -> None:
+    _use_tmp_closet(monkeypatch, tmp_path)
+    client = _auth_client()
+    calls = {"cutout": 0}
+    candidate = {"category": "bag", "bbox": {"x": 0.2, "y": 0.2, "width": 0.6, "height": 0.6}, "confidence": 0.9}
+
+    def fake_cutout(self, source_path, category=None):
+        calls["cutout"] += 1
+        image = Image.new("RGBA", (240, 240), (255, 255, 255, 0))
+        for y in range(45, 195):
+            for x in range(40, 200):
+                image.putpixel((x, y), (120, 88, 60, 255))
+        return image
+
+    monkeypatch.setattr(closet.AIGarmentCutoutProvider, "_provider_kind", lambda *_: "runway_google_generate_content")
+    monkeypatch.setattr(closet.AIGarmentCutoutProvider, "_analyze_inventory", lambda *_: [candidate])
+    monkeypatch.setattr(closet.AIGarmentCutoutProvider, "_generate_cutout", fake_cutout)
+    payload = [("images", ("bag.png", _png_bytes(_synthetic_top_image()), "image/png"))]
+
+    first = client.post("/closet/import/upload", files=payload).json()
+    second = client.post("/closet/import/upload", files=payload).json()
+
+    assert first["summary"]["created"] == 1
+    assert second["status"] == "cached"
+    assert second["summary"]["created"] == 0
+    assert second["summary"]["cached"] == 1
+    assert second["items"][0]["item_id"] == first["items"][0]["item_id"]
+    assert calls["cutout"] == 1
+
+
+def test_persona_recommendation_ranks_normalized_english_tags_and_colors() -> None:
+    persona = {
+        "keywords": ["低装饰", "秩序感"],
+        "colors": {"items": [{"name": "黑"}, {"name": "烟白"}]},
+        "recommendations": {"outfits": {"summary": "简洁轮廓和清晰线条"}},
+    }
+    aligned = {
+        "title": "quiet office",
+        "items": [
+            {"category": "top", "attributes": {"style_tags": ["minimal", "tailored"], "colors": ["white"]}, "quality": {"score": 0.8}},
+            {"category": "bottom", "attributes": {"style_tags": ["clean lines"], "colors": ["black"]}, "quality": {"score": 0.8}},
+        ],
+    }
+    loud = {
+        "title": "party",
+        "items": [
+            {"category": "dress", "attributes": {"style_tags": ["bold", "romantic"], "colors": ["hot pink"]}, "quality": {"score": 0.9}},
+        ],
+    }
+
+    aligned_score = closet._score_outfit_for_persona(aligned, persona)
+    loud_score = closet._score_outfit_for_persona(loud, persona)
+
+    assert aligned_score["score"] > loud_score["score"]
+    assert set(aligned_score["matched_style_tokens"]) >= {"minimal", "structured"}
+    assert set(aligned_score["matched_color_tokens"]) == {"black", "white"}
+
+
+def test_import_job_reports_progress_and_can_retry(monkeypatch, tmp_path: Path) -> None:
+    _use_tmp_closet(monkeypatch, tmp_path)
+    client = _auth_client()
+
+    class ImmediateExecutor:
+        def submit(self, fn, *args):
+            fn(*args)
+
+    attempts = {"count": 0}
+
+    def flaky_import(sources, import_type, progress_callback=None, **kwargs):
+        attempts["count"] += 1
+        if attempts["count"] == 1:
+            raise RuntimeError("temporary provider failure")
+        if progress_callback:
+            progress_callback(1, 1, "extracted")
+        return {"status": "imported", "items": [], "outfits": [], "summary": {"created": 0}, "message": "done"}
+
+    monkeypatch.setattr(closet, "IMPORT_JOB_EXECUTOR", ImmediateExecutor())
+    monkeypatch.setattr(closet, "_import_sources", flaky_import)
+    created = client.post(
+        "/closet/import/jobs",
+        files=[("images", ("top.png", _png_bytes(_synthetic_top_image()), "image/png"))],
+    ).json()
+    failed = client.get(f"/closet/import/jobs/{created['job_id']}").json()
+
+    assert failed["status"] == "failed"
+    assert failed["error"]["retryable"] is True
+    client.post(f"/closet/import/jobs/{created['job_id']}/retry")
+    completed = client.get(f"/closet/import/jobs/{created['job_id']}").json()
+    assert completed["status"] == "completed"
+    assert completed["progress"] == 100
+    assert completed["attempt"] == 2
+
+
+def test_tryon_job_reports_progress_and_force_retries(monkeypatch, tmp_path: Path) -> None:
+    _use_tmp_closet(monkeypatch, tmp_path)
+    client = _auth_client()
+
+    class ImmediateExecutor:
+        def submit(self, fn, *args):
+            fn(*args)
+
+    monkeypatch.setattr(tryon, "TRYON_JOB_EXECUTOR", ImmediateExecutor())
+    monkeypatch.setattr(tryon, "_default_provider", lambda: tryon.MockTryOnProvider())
+    item = client.post(
+        "/closet/import/upload",
+        files=[("images", ("top.png", _png_bytes(_synthetic_top_image()), "image/png"))],
+    ).json()["items"][0]
+    outfit = client.post("/closet/outfits", json={"item_ids": [item["item_id"]], "title": "任务试穿"}).json()
+    person = (Path(__file__).resolve().parent / "fixtures" / "tryon_models" / "male_medium_1.png").read_bytes()
+    created = client.post(
+        "/selfit/try-on/jobs",
+        files={"person_image": ("person.png", person, "image/png")},
+        data={"outfit_id": outfit["outfit_id"]},
+    ).json()
+    completed = client.get(f"/selfit/try-on/jobs/{created['job_id']}").json()
+
+    assert completed["status"] == "completed"
+    assert completed["progress"] == 100
+    assert completed["result"]["status"] == "generated"
+    assert completed["result"]["record"]["outfit_id"] == outfit["outfit_id"]
+
+    client.post(f"/selfit/try-on/jobs/{created['job_id']}/retry")
+    retried = client.get(f"/selfit/try-on/jobs/{created['job_id']}").json()
+    assert retried["status"] == "completed"
+    assert retried["attempt"] == 2
+    assert client.get("/closet/tryon-records").json()["total"] == 1
+
+
+def test_tryon_job_status_polling_has_a_separate_rate_limit(monkeypatch, tmp_path: Path) -> None:
+    _use_tmp_closet(monkeypatch, tmp_path)
+    monkeypatch.setenv("SELFIT_DISABLE_RATE_LIMIT", "0")
+    monkeypatch.setenv("SELFIT_UPLOAD_RATE_LIMIT", "1")
+    monkeypatch.setenv("SELFIT_TRYON_STATUS_RATE_LIMIT", "3")
+    monkeypatch.setattr(ops, "_limiter", ops.InMemoryRateLimiter())
+    client = _auth_client()
+    missing_job = "a" * 18
+
+    # 状态读取使用独立额度，不会消耗下方 POST 生成额度。
+    for _ in range(3):
+        assert client.get(f"/selfit/try-on/jobs/{missing_job}").status_code == 404
+    limited_status = client.get(f"/selfit/try-on/jobs/{missing_job}")
+    assert limited_status.status_code == 429
+    assert limited_status.json()["error"]["code"] == "request.rate_limited"
+
+    # 重试仍是真实生成动作，继续受上传/生成限额保护。
+    assert client.post(f"/selfit/try-on/jobs/{missing_job}/retry").status_code == 404
+    assert client.post(f"/selfit/try-on/jobs/{missing_job}/retry").status_code == 429
+
+
+def test_selfit_app_uses_ranked_refresh_and_category_aware_item_action() -> None:
+    response = TestClient(app).get("/wearwow/demo")
+
+    assert response.status_code == 200
+    assert "function loadRankedOutfits(offset = 0)" in response.text
+    assert 'fetchJSON("/closet/recommendations/outfits"' in response.text
+    assert "sort(() => Math.random() - 0.5)" not in response.text
+    assert '["top", "bottom", "skirt", "dress"].includes(item.category) ? "试穿这件" : "搭配这件"' in response.text
+    assert 'fetchJSON("/closet/import/jobs"' in response.text
+    assert 'fetchJSON("/selfit/try-on/jobs"' in response.text
+    assert 'id="retryImportBtn"' in response.text
+    assert "function renderTryonFailure(message)" in response.text
+    assert 'id="changeTryonPhotoBtn"' in response.text
+    assert 'renderTryonFailure(message);' in response.text
+    assert '/static/selfit/assets/splash-textile@2x.png' in response.text
+    assert '/static/selfit/assets/loading-stage-25@2x.png' in response.text
+    assert '/static/selfit/assets/loading-stage-${stage}@2x.png' in response.text
+    assert '/static/selfit/assets/splash-signature@2x.png' in response.text
+    assert 'id="tryonProgressBar"' in response.text
+    assert 'function updateTryonGeneratingState(job = {})' in response.text
+    assert '正在让这套穿搭更像你' in response.text
+    assert '/static/animations/tryon-generating.json' not in response.text
+    assert 'error.retryAfterSeconds = Math.max(0' in response.text
+    assert 'if (error.status !== 429) throw error;' in response.text
+    assert '试穿任务还在继续' in response.text
+    assert 'const pollDelay = attempt < 5 ? 1000 : attempt < 20 ? 1500 : 2500;' in response.text
+
+
+def test_inventory_candidate_normalization_deduplicates_overlapping_items() -> None:
+    candidates = closet._normalize_inventory_candidates([
+        {"category": "bag", "bbox": {"x": 0.6, "y": 0.2, "width": 0.25, "height": 0.3}, "confidence": 0.9},
+        {"category": "bag", "bbox": {"x": 0.61, "y": 0.21, "width": 0.25, "height": 0.3}, "confidence": 0.88},
+        {"category": "phone", "bbox": {"x": 0.1, "y": 0.1, "width": 0.1, "height": 0.1}, "confidence": 0.99},
+    ])
+
+    assert len(candidates) == 1
+    assert candidates[0]["category"] == "bag"
+
+
+def test_inventory_candidate_normalization_accepts_gemini_1000_space_and_percentages() -> None:
+    candidates = closet._normalize_inventory_candidates([
+        {"category": "top", "bbox": {"x": 33, "y": 164, "width": 933, "height": 688}, "confidence": 0.9},
+        {"category": "bag", "bbox": {"x": 60, "y": 20, "width": 25, "height": 30}, "confidence": 0.86},
+    ])
+
+    assert candidates[0]["bbox"] == {"x": 0.033, "y": 0.164, "width": 0.933, "height": 0.688}
+    assert candidates[1]["bbox"] == {"x": 0.6, "y": 0.2, "width": 0.25, "height": 0.3}
+
+
+def test_inventory_candidate_normalization_rejects_household_textiles_and_clipped_garments() -> None:
+    candidates = closet._normalize_inventory_candidates([
+        {"category": "accessory", "bbox": {"x": 0.1, "y": 0.2, "width": 0.7, "height": 0.5}, "confidence": 0.9, "style_tags": ["bath towel", "folded"]},
+        {"category": "bottom", "bbox": {"x": 0.2, "y": 0.68, "width": 0.5, "height": 0.32}, "confidence": 0.98, "fully_visible": False},
+        {"category": "top", "bbox": {"x": 0.15, "y": 0.1, "width": 0.7, "height": 0.5}, "confidence": 0.96, "fully_visible": True},
+    ])
+
+    assert [candidate["category"] for candidate in candidates] == ["top"]
+
+
+def test_confirmed_empty_inventory_does_not_reach_shape_fallback(monkeypatch, tmp_path: Path) -> None:
+    _use_tmp_closet(monkeypatch, tmp_path)
+    client = _auth_client()
+    monkeypatch.setattr(closet.AIGarmentCutoutProvider, "extract_inventory", lambda self, *_: (setattr(self, "last_attempt", {"status": "skipped", "reason": "no_inventory"}) or []))
+    monkeypatch.setattr(closet.AIGarmentCutoutProvider, "extract", lambda *_: [])
+    monkeypatch.setattr(closet.SegFormerClothesAdapter, "extract", lambda *_: (_ for _ in ()).throw(AssertionError("confirmed negative should not use segmentation")))
+    monkeypatch.setattr(closet, "_extract_with_top_fallback", lambda *_: (_ for _ in ()).throw(AssertionError("confirmed negative should not use legacy fallback")))
+
+    response = client.post(
+        "/closet/import/upload",
+        files=[("images", ("towel.png", _png_bytes(_synthetic_top_image()), "image/png"))],
+    )
+
+    assert response.status_code == 200
+    assert response.json()["status"] == "no_items_found"
+    assert response.json()["summary"]["created"] == 0
+
+
 def test_ai_cutout_requires_a_transparent_result() -> None:
     opaque = Image.new("RGBA", (120, 120), (255, 255, 255, 255))
     transparent = Image.new("RGBA", (120, 120), (255, 255, 255, 0))
@@ -151,6 +453,35 @@ def test_ai_cutout_requires_a_transparent_result() -> None:
 
     assert closet._has_meaningful_transparency(opaque) is False
     assert closet._has_meaningful_transparency(transparent) is True
+
+
+def test_opaque_ai_cutout_is_matted_before_rejection(monkeypatch) -> None:
+    opaque = Image.new("RGBA", (120, 120), (240, 240, 240, 255))
+    matted = Image.new("RGBA", (120, 120), (255, 255, 255, 0))
+    for y in range(20, 100):
+        for x in range(35, 85):
+            matted.putpixel((x, y), (70, 70, 70, 255))
+    monkeypatch.setattr(closet.RembgMattingProvider, "remove_background", lambda *_: matted)
+
+    result, status = closet._ensure_transparent_ai_cutout(opaque)
+
+    assert status == "rembg_after_ai"
+    assert closet._has_meaningful_transparency(result) is True
+
+
+def test_uniform_magenta_ai_background_is_converted_to_alpha(monkeypatch) -> None:
+    image = Image.new("RGBA", (160, 160), (255, 0, 255, 255))
+    for y in range(25, 140):
+        for x in range(45, 115):
+            image.putpixel((x, y), (28, 34, 45, 255))
+    monkeypatch.setattr(closet.RembgMattingProvider, "remove_background", lambda *_: (_ for _ in ()).throw(AssertionError("chroma key should run first")))
+
+    result, status = closet._ensure_transparent_ai_cutout(image)
+
+    assert status == "chroma_key_after_ai"
+    assert result.getpixel((0, 0))[3] == 0
+    assert result.getpixel((80, 80))[3] == 255
+    assert result.getpixel((44, 80))[3] <= 32
 
 
 def test_garment_cutout_and_tryon_share_nano_banana_model_config(monkeypatch) -> None:
@@ -174,6 +505,31 @@ def test_garment_cutout_prefers_the_existing_runway_tryon_service(monkeypatch) -
     assert provider.available() is True
     assert provider._provider_kind() == "runway_google_generate_content"
     assert provider.status() == "available_via_runway"
+
+
+def test_runway_inventory_text_request_omits_rejected_text_only_modality(monkeypatch) -> None:
+    captured: dict = {}
+
+    class FakeResponse:
+        def raise_for_status(self):
+            return None
+
+        def json(self):
+            return {"candidates": [{"content": {"parts": [{"text": '{"items": []}'}]}}]}
+
+    def fake_post(url, *, headers, json, timeout):
+        captured.update({"url": url, "headers": headers, "payload": json, "timeout": timeout})
+        return FakeResponse()
+
+    monkeypatch.setattr(closet, "_runway_google_api_key", lambda: "test-key")
+    monkeypatch.setattr(closet, "_runway_google_url", lambda: "https://runway.example/v1:generateContent")
+    monkeypatch.setattr(closet.httpx, "post", fake_post)
+
+    text = closet.AIGarmentCutoutProvider()._analyze_inventory_with_runway(Image.new("RGB", (80, 100), "white"), "inventory")
+
+    assert text == '{"items": []}'
+    assert "responseModalities" not in captured["payload"]["generationConfig"]
+    assert captured["headers"]["api-key"] == "test-key"
 
 
 def test_closet_cutout_quality_flags_sparse_reference(tmp_path: Path) -> None:
@@ -310,6 +666,33 @@ def test_outfit_crud_uses_existing_closet_items(monkeypatch, tmp_path: Path) -> 
     deleted = client.delete(f"/closet/outfits/{outfit['outfit_id']}")
     assert deleted.status_code == 200
     assert client.get("/closet/outfits").json()["total"] == 0
+
+
+def test_outfit_list_reads_closet_manifest_once(monkeypatch, tmp_path: Path) -> None:
+    _use_tmp_closet(monkeypatch, tmp_path)
+    client = _auth_client()
+    top = _create_closet_item(client, "top.png", "top", (210, 80, 110))
+    bottom = _create_closet_item(client, "bottom.png", "bottom", (70, 75, 85))
+    created = client.post(
+        "/closet/outfits",
+        json={"item_ids": [top["item_id"], bottom["item_id"]], "title": "一次读取"},
+    )
+    assert created.status_code == 200
+
+    original_ensure_manifest = closet._ensure_manifest
+    calls = 0
+
+    def counted_ensure_manifest() -> dict:
+        nonlocal calls
+        calls += 1
+        return original_ensure_manifest()
+
+    monkeypatch.setattr(closet, "_ensure_manifest", counted_ensure_manifest)
+    response = client.get("/closet/outfits")
+
+    assert response.status_code == 200
+    assert response.json()["total"] == 1
+    assert calls == 1
 
 
 def test_outfit_from_invalid_item_is_rejected(monkeypatch, tmp_path: Path) -> None:
@@ -696,7 +1079,7 @@ def test_selfit_mirror_route_exposes_the_complete_kiosk_flow(monkeypatch, tmp_pa
     assert 'data-screen="processing"' in response.text
     assert 'data-screen="result"' in response.text
     assert "适我，不适众" in response.text
-    assert "一分钟，测测你的 SFTI 16型型格" in response.text
+    assert "一分钟，看见你的 16 型风格人格" in response.text
     assert "拿出手机扫码，完成型格测试" in response.text
     assert "/static/selfit/assets/icon-camera.svg" in response.text
     assert "扫码查看" in response.text
@@ -714,3 +1097,50 @@ def test_wearwow_demo_route_keeps_selfit_compatibility(monkeypatch, tmp_path: Pa
     assert "selfit" in response.text
     assert "灵感" in response.text
     assert "AI穿搭师" not in response.text
+    assert 'id="loginScreen"' not in response.text
+    assert 'id="loginPhone"' not in response.text
+    assert 'id="loginCode"' not in response.text
+    assert 'return "/selfit?entry=login"' in response.text
+    assert 'id="personaCard"' not in response.text
+    assert 'window.location.replace("/selfit")' in response.text
+    assert 'class="app auth-pending"' in response.text
+    assert 'class="closet-skeleton"' in response.text
+    assert "state.dataReady = true" in response.text
+    assert "loadDeferredData();" in response.text
+    assert 'loading="lazy" decoding="async"><span>${item.category_label}</span>' in response.text
+    assert 'class="home-intro"' not in response.text
+    assert 'id="homeGreeting"' not in response.text
+    assert 'id="homePersona"' not in response.text
+    assert "今天，也穿得更像自己" not in response.text
+    assert "从这里开始" not in response.text
+    assert 'outfit-canvas" data-preview-image' not in response.text
+    assert "today-art image-preview-button" not in response.text
+    assert 'class="model-chip" data-preview-image' not in response.text
+    assert 'data-profile-outfit="${item.id}"' in response.text
+    assert 'closet-img" data-preview-image' not in response.text
+    assert 'data-open-item="${item.item_id}"' in response.text
+    assert 'data-detail-item="${item.item_id}" data-preview-image' not in response.text
+    assert '`${reportUrl}&from=app-profile`' in response.text
+    assert '["home", "ai", "closet", "me"].includes(requestedTab)' in response.text
+    assert 'function syncTabURL(tab, historyMode = "replace")' in response.text
+    assert 'setTab(btn.dataset.tab, { historyMode: "push" })' in response.text
+    assert 'id="filterBtn"' not in response.text
+    assert 'id="settingsBtn"' not in response.text
+    assert 'id="floatingMatch" class="closet-compose" type="button">开始搭配' in response.text
+    assert 'id="importReviewSheet"' in response.text
+    assert 'id="importReviewGrid"' in response.text
+    assert 'data-import-category="${item.item_id}"' in response.text
+    assert 'data-import-remove="${item.item_id}"' in response.text
+    assert 'class="closet-card-label"' in response.text
+    assert 'loading="lazy" decoding="async"' in response.text
+    assert 'data-match="${item.item_id}"' not in response.text
+    assert response.text.count('id="detailItemsSection"') == 1
+    assert "function smartItemRecommendations(anchor, limit = 6)" in response.text
+    assert 'id="detailItemsTitle">穿搭单品' in response.text
+
+    styles = client.get("/static/selfit-app/app.css")
+    assert styles.status_code == 200
+    assert ".closet-top {\n  position: sticky;" in styles.text
+    assert ".category-row {\n  position: sticky;" in styles.text
+    assert "transform: scale(1.16);" not in styles.text
+    assert ".recommendation-tile small" in styles.text

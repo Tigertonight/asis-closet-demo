@@ -1,0 +1,144 @@
+{
+    "zeus_version": 300100,
+    "typeId": "Material",
+    "type_version": -1,
+    "object": {
+        "name": "Default Material",
+        "m_passList": [
+            {
+                "instance_type": 1,
+                "instance_id": 1,
+                "data_description": "std::shared_ptr<Pass>"
+            }
+        ],
+        "m_ParamProperties": [],
+        "m_Type": 0,
+        "m_RenderQueue": 2000,
+        "m_isInstance": false
+    },
+    "instance_map": [
+        {
+            "instance_type": 1,
+            "instance_id": 1,
+            "typeId": "Pass",
+            "type_version": -1,
+            "object": {
+                "m_blendMode": 0,
+                "m_CustomBlendMode": 0,
+                "m_cullMode": 2,
+                "m_colorMask": {
+                    "MaskR": true,
+                    "MaskG": true,
+                    "MaskB": true,
+                    "MaskA": true
+                },
+                "m_depthTestFunc": 1,
+                "m_depthTest": false,
+                "m_depthWrite": false,
+                "m_cullFace": false,
+                "m_paramsMap": [
+                    {
+                        "p0": "adjustable_filter_intensity",
+                        "p1": {
+                            "type_": 4,
+                            "VariantValue": 80.0
+                        }
+                    },
+                    {
+                        "p0": "image_height",
+                        "p1": {
+                            "type_": 4,
+                            "VariantValue": 1080.0
+                        }
+                    },
+                    {
+                        "p0": "image_width",
+                        "p1": {
+                            "type_": 4,
+                            "VariantValue": 1920.0
+                        }
+                    },
+                    {
+                        "p0": "isRotate",
+                        "p1": {
+                            "type_": 4,
+                            "VariantValue": 0.0
+                        }
+                    },
+                    {
+                        "p0": "rotation",
+                        "p1": {
+                            "type_": 4,
+                            "VariantValue": 0.0
+                        }
+                    }
+                ],
+                "m_multiTextureMap": [
+                    {
+                        "p0": "_BaseTexture1",
+                        "p1": [
+                            {
+                                "uuid": {
+                                    "uuid": "907197ee-a698-3db3-59bc-c778d03a1ba2"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "p0": "fgLut",
+                        "p1": [
+                            {
+                                "uuid": {
+                                    "uuid": "d6af27ba-4d77-bc32-c6b2-f24df48ec260"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "p0": "bgLut",
+                        "p1": [
+                            {
+                                "uuid": {
+                                    "uuid": "ec433e34-fa97-84a0-e9ee-abe1f427bcef"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "p0": "_BaseTexture0",
+                        "p1": [
+                            {
+                                "uuid": {
+                                    "uuid": "5f291f1a-946e-c13d-f843-08462a14b0c6"
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "m_program": {
+                    "uuid": {
+                        "uuid": "2bebd5c3-a3e4-79d7-4ed1-15cd22ba5a3c"
+                    }
+                },
+                "m_adjustableParams": [
+                    {
+                        "p0": "adjustable_filter_intensity",
+                        "p1": {
+                            "p0": {
+                                "type_": 4,
+                                "VariantValue": 0.0
+                            },
+                            "p1": {
+                                "type_": 4,
+                                "VariantValue": 100.0
+                            }
+                        }
+                    }
+                ],
+                "m_SamplerMap": [],
+                "m_matrialMacros": [],
+                "m_usedFeedback": false
+            }
+        }
+    ]
+}

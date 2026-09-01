@@ -1,0 +1,33 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "trailingSlash": false,
+  "rewrites": [
+    {
+      "source": "/selfit/mirror",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/selfit/mirror/",
+      "destination": "/index.html"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "Permissions-Policy",
+          "value": "camera=(self)"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "same-origin"
+        },
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        }
+      ]
+    }
+  ]
+}

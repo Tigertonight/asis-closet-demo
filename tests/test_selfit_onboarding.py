@@ -21,6 +21,16 @@ def test_selfit_onboarding_route_serves_the_product_flow() -> None:
     assert 'data-screen="report"' in response.text
 
 
+def test_selfit_report_back_respects_the_app_parent_entry() -> None:
+    script = client.get("/static/selfit/selfit.js")
+
+    assert script.status_code == 200
+    assert "'app-home': 'home'" in script.text
+    assert "'app-profile': 'me'" in script.text
+    assert "state.screen === 'report' && returnToReportParent()" in script.text
+    assert "appUrl.searchParams.set('tab', reportParentTab)" in script.text
+
+
 def test_selfit_onboarding_includes_the_figma_login_extension() -> None:
     response = client.get("/selfit/demo")
 
@@ -47,6 +57,15 @@ def test_selfit_onboarding_includes_the_figma_login_extension() -> None:
     assert "/static/selfit/assets/login-persona-title@2x.png" in response.text
     assert '/static/selfit/selfit-auth.js' in response.text
     assert '"authBase": "/auth"' in response.text
+
+
+def test_selfit_login_entry_continues_through_required_onboarding() -> None:
+    script = client.get("/static/selfit/selfit.js")
+
+    assert script.status_code == 200
+    assert "entryParams.get('entry') === 'login'" in script.text
+    assert "showScreen('intro')" in script.text
+    assert "authReturnPath" not in script.text
 
 
 def test_selfit_manual_suit_selection_uses_the_figma_option_order() -> None:
@@ -200,9 +219,12 @@ def test_selfit_auth_adapter_and_bearer_wiring_are_available() -> None:
     assert "this.request('/invite/verify'" in auth.text
     assert "this.request('/phone/direct'" in auth.text
     assert "headers.Authorization = `Bearer ${accessToken}`" in api.text
+    assert "getLatestReport()" in api.text
     assert "getAccessToken: () => auth.accessToken" in runtime.text
     assert "state.authUser ? 'intro' : 'login'" in runtime.text
     assert "auth.directPhone(normalizedPhone())" in runtime.text
+    assert "openAppForExistingReport()" in runtime.text
+    assert "/wearwow/demo?from=login&persona=" in runtime.text
     assert "/^1[3-9]\\d{9}$/".replace("\\\\", "\\") in runtime.text or "1[3-9]" in runtime.text
 
 
@@ -241,7 +263,7 @@ def test_selfit_report_share_cards_use_the_dedicated_qr_artwork() -> None:
     assert 'class="public-report-error-qr"><img src="/static/selfit/assets/share-report-qr.png?v=20260828"' in response.text
     assert 'data-share-ornament' in response.text
     assert "/static/selfit/selfit.css?v=20260829-vibe-webkit1" in response.text
-    assert "/static/selfit/selfit.js?v=20260831-image-retry1" in response.text
+    assert "/static/selfit/selfit.js?v=20260901-report-parent2" in response.text
     assert "/static/selfit/selfit-persona.js?v=20260829-bolt-korean1" in response.text
     assert 'property="og:image" content="http://testserver/selfit/share-logo.png"' in response.text
     assert 'property="og:image:width" content="600"' in response.text

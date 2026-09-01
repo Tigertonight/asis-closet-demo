@@ -1,6 +1,6 @@
 {
   "name": "selfit closet cutout imagegen test set",
-  "version": "2026-07-07-expanded-v2",
+  "version": "2026-09-01-multi-item-v3",
   "purpose": "Generate synthetic but realistic images to test garment detection, semantic category assignment, mask quality, cutout quality, and review/rejected routing. Expanded with long-tail user-upload, source-platform, demographic, cultural, accessory, framing, duplicate, and hard-negative cases.",
   "image_generation_defaults": {
     "style": "photorealistic product or lifestyle photo",
@@ -130,7 +130,7 @@
         },
         {
           "id": "B02",
-          "seed": false,
+          "seed": true,
           "title": "full body blazer skirt shoes",
           "expected_items": [
             {
@@ -246,7 +246,7 @@
         },
         {
           "id": "C02",
-          "seed": false,
+          "seed": true,
           "title": "cardigan skirt heels bag flatlay",
           "expected_items": [
             {
@@ -276,7 +276,7 @@
         },
         {
           "id": "C03",
-          "seed": false,
+          "seed": true,
           "title": "dress bag shoes flatlay",
           "expected_items": [
             {
@@ -301,7 +301,7 @@
         },
         {
           "id": "C04",
-          "seed": false,
+          "seed": true,
           "title": "light overlap outfit flatlay",
           "expected_items": [
             {

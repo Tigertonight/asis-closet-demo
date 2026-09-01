@@ -911,16 +911,6 @@ button {
 .is-public-report.has-public-report-error .report-intro,
 .is-public-report.has-public-report-error .report-body { display: none; }
 .is-public-report.has-public-report-error .report-nav { display: none; }
-.beta-entries { margin: 34px 32px 8px; text-align: left; }
-.beta-entries-title { margin: 0 0 6px; font-size: 17px; line-height: 24px; font-weight: 600; letter-spacing: .02em; color: #8a011b; }
-.beta-entries-hint { margin: 0 0 14px; font-size: 12px; line-height: 18px; color: rgba(0,0,0,.45); }
-.beta-entries-list { display: flex; flex-direction: column; gap: 12px; }
-.beta-entry-card { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 16px 18px; border: 1px solid rgba(138,1,27,.14); border-radius: 18px; background: #fff; box-shadow: 0 5px 24px rgba(0,0,0,.06); text-decoration: none; transition: transform .15s ease, border-color .15s ease; }
-.beta-entry-card:active { transform: scale(.985); border-color: rgba(138,1,27,.4); }
-.beta-entry-copy { display: flex; flex-direction: column; gap: 3px; }
-.beta-entry-copy b { font-size: 15px; line-height: 22px; font-weight: 600; color: #1f1a1a; }
-.beta-entry-copy small { font-size: 12px; line-height: 17px; color: rgba(0,0,0,.45); }
-.beta-entry-arrow { flex: 0 0 auto; width: 32px; height: 32px; border-radius: 999px; background: #8a011b; color: #fff; font-size: 15px; line-height: 32px; text-align: center; }
 .report-actions {
   position: fixed;
   z-index: 6;
@@ -949,6 +939,10 @@ button {
 .report-actions button { height: 44px; border: 1px solid #8a011b; border-radius: 18px; color: #8a011b; background: #fff; font-size: var(--font-small); }
 .report-actions button:last-child { color: #fff; background: #8a011b; }
 #retakeBtn { border-color: rgba(138, 1, 27, .2); }
+.report-app-action { display: grid; grid-column: 1 / -1; height: 44px; place-items: center; border-radius: 18px; color: #fff; background: #8a011b; font-size: var(--font-small); font-weight: 600; text-decoration: none; }
+.report-app-action[hidden] { display: none; }
+.report-actions .report-app-action:not([hidden]) + button,
+.report-actions .report-app-action:not([hidden]) + button + button { background: #fff; color: #8a011b; }
 
 .share-dialog { width: 100%; max-width: none; height: 100vh; height: var(--visual-viewport-height, 100dvh); max-height: none; margin: 0; padding: 0; border: 0; border-radius: 0; color: var(--ink); background: #fafafa; }
 .share-dialog::backdrop { background: rgba(0,0,0,.35); }

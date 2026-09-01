@@ -1,0 +1,70 @@
+{
+  "properties": [
+    {
+      "UIConfig": {
+        "type": "Slider",
+        "extra": {
+          "uiMin": 0,
+          "uiMax": 100,
+          "engineMin": 0,
+          "engineMax": 100,
+          "titleText": "强度",
+          "adjustableKey": "adjustable_intensity"
+        }
+      },
+      "EngineConfig": {
+        "type": "ZeusEngine",
+        "extra": {
+          "so": {
+            "path": "root/children[0]/components[0]/materials[0]"
+          },
+          "getter": {
+            "name": "GetMaterialParamValue",
+            "params": [
+              "adjustable_intensity"
+            ]
+          },
+          "setter": {
+            "name": "SetParam",
+            "params": [
+              "adjustable_intensity",
+              "{}"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "UIConfig": {
+        "type": "Spacing",
+        "extra": {
+          "height": 8
+        }
+      }
+    },
+    {
+      "UIConfig": {
+        "type": "RadioButtonGroup",
+        "extra": {
+          "itemList": [
+            {
+              "key": true,
+              "name": "开放"
+            },
+            {
+              "key": false,
+              "name": "不开放"
+            }
+          ],
+          "titleText": "线上权限"
+        }
+      },
+      "EngineConfig": {
+        "type": "OpenParam",
+        "extra": {
+          "adjustableKey": "adjustable_intensity"
+        }
+      }
+    }
+  ]
+}

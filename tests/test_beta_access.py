@@ -181,14 +181,28 @@ def test_beta_gating_covers_followup_apis(monkeypatch, tmp_path: Path) -> None:
         "/closet/preferences",
         "/closet/outfits",
         "/closet/capabilities",
+        "/closet/import/jobs/job-not-exist",
         "/stylist/capabilities",
         "/stylist/sessions",
         "/stylist/memory",
         "/try-on/capabilities",
         "/try-on/codex-bridge/jobs",
+        "/selfit/try-on/jobs/job-not-exist",
     ]
     for path in followup_paths:
         assert client.get(path, headers=outsider).status_code == 403, path
+
+    # WearWow app 的写端点同样挂门禁（GET 不适用的 POST 路径单独验证）
+    for path in (
+        "/closet/recommendations/outfits",
+        "/closet/import/jobs/job-not-exist/retry",
+        "/selfit/try-on/jobs/job-not-exist/retry",
+    ):
+        assert client.post(path, json={}, headers=outsider).status_code == 403, path
+
+    # onboarding 主链路对普通用户保持开放（含报告摘要——非 beta 用户登录时也要判断是否有历史报告）
+    latest = client.get("/reports/latest", headers=outsider)
+    assert latest.status_code in {200, 404}, latest.text
 
     # onboarding 主链路对普通用户保持开放
     created = client.post(
@@ -230,13 +244,15 @@ def test_login_sets_user_cookie_and_internal_page_allows_beta_user(monkeypatch, 
     still_blocked = client.get("/closet/demo", follow_redirects=False)
     assert still_blocked.status_code == 307
 
-    # 白名单用户带 cookie → 放行页面
+    # 白名单用户带 cookie → 放行页面（含 WearWow 新 app）
     beta_response = client.post("/auth/phone/direct", json={"phone": "13800000001"})
     beta_cookie = beta_response.cookies.get(auth.USER_COOKIE_NAME)
     assert beta_cookie
     client.cookies.set(auth.USER_COOKIE_NAME, beta_cookie)
     allowed = client.get("/closet/demo", follow_redirects=False)
     assert allowed.status_code == 200
+    wearwow = client.get("/wearwow/demo", follow_redirects=False)
+    assert wearwow.status_code == 200
 
     # 登出清除 cookie
     logout = client.post(

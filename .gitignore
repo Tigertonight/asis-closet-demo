@@ -29,6 +29,10 @@ openclaw-workspace-state.json
 .cowork-deploy/
 .evidence-reconstruction/
 cowork-login.command
+tmp/
+cowork/*.zip
+mirro-photo-template-studio/reference/**/__MACOSX/
+mirro-photo-template-studio/reference/**/._*
 
 # Agent/runtime generated dependencies and local state
 selfit-agent-runtime/vendor/
