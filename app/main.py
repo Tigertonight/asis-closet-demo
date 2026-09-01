@@ -18,6 +18,8 @@ from fastapi.staticfiles import StaticFiles
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
 from app.auth import (
+    USER_COOKIE_NAME,
+    TOKEN_TTL_HOURS,
     current_token_from_request,
     get_current_user,
     get_optional_user,
@@ -28,6 +30,7 @@ from app.auth import (
     verify_phone_direct_login,
     verify_invite_login,
     client_ip_from_request,
+    require_beta_user,
 )
 from app.ops import deployment_guard_report, env_flag, request_guard_middleware
 from app.analyzer import (
@@ -115,6 +118,7 @@ from app.selfit_onboarding import router as selfit_onboarding_router
 from app.selfit_mirror_handoff import router as selfit_mirror_handoff_router
 from app.selfit_analytics import admin_router as selfit_admin_router, router as selfit_analytics_router
 from app.selfit_admin_submissions import router as selfit_admin_submissions_router
+from app.beta_access import admin_router as beta_access_admin_router
 from app.qa_onboarding import QA_PHOTO_DIR, router as qa_onboarding_router
 from app.storage import storage_context, user_storage
 from scripts.generate_qa_artifacts import generate_qa_artifacts
@@ -130,6 +134,7 @@ app.include_router(selfit_mirror_handoff_router)
 app.include_router(selfit_analytics_router)
 app.include_router(selfit_admin_router)
 app.include_router(selfit_admin_submissions_router)
+app.include_router(beta_access_admin_router)
 app.include_router(qa_onboarding_router)
 SELFIT_INDEX_PATH = Path(__file__).resolve().parent / "static" / "selfit" / "index.html"
 ADMIN_INDEX_PATH = Path(__file__).resolve().parent / "static" / "admin" / "index.html"
@@ -315,6 +320,13 @@ async def http_exception_handler(request: Request, exc: StarletteHTTPException) 
     if request.url.path.startswith("/auth"):
         code = f"auth.http_{int(exc.status_code)}"
         return _friendly_error(code, detail, detail, int(exc.status_code))
+    # 管理后台是内部工具：错误文案直接用 detail，不套用户侧照片上传话术。
+    if request.url.path.startswith("/admin/api"):
+        code = f"admin.http_{int(exc.status_code)}"
+        return _friendly_error(code, detail, detail, int(exc.status_code))
+    # 内测门禁 403：提示等待正式开放，不套照片上传话术。
+    if int(exc.status_code) == 403 and "内测" in detail:
+        return _friendly_error("beta.forbidden", detail, detail, 403)
     code, message, suggestion = _upload_error_for_detail(detail, int(exc.status_code))
     return _friendly_error(code, message, suggestion, int(exc.status_code))
 
@@ -366,6 +378,26 @@ def health_dependencies() -> dict[str, Any]:
     }
 
 
+def _user_session_response(payload: dict[str, Any]) -> JSONResponse:
+    """登录响应 + 用户 session cookie。
+
+    内测用户直接打开 /closet/demo、/try-on/demo 等后续功能页面时浏览器导航
+    带 Authorization header，页面网关靠这个 cookie 识别内测身份（httponly，
+    samesite=lax 防跨站 POST）。登出时同步清除。
+    """
+
+    response = JSONResponse(content=payload)
+    response.set_cookie(
+        USER_COOKIE_NAME,
+        str(payload.get("access_token") or ""),
+        max_age=TOKEN_TTL_HOURS * 3600,
+        httponly=True,
+        samesite="lax",
+        path="/",
+    )
+    return response
+
+
 @app.post("/auth/phone/start")
 async def auth_phone_start(request: Request) -> dict[str, Any]:
     payload = await request.json()
@@ -373,21 +405,24 @@ async def auth_phone_start(request: Request) -> dict[str, Any]:
 
 
 @app.post("/auth/phone/verify")
-async def auth_phone_verify(request: Request) -> dict[str, Any]:
+async def auth_phone_verify(request: Request) -> JSONResponse:
     payload = await request.json()
-    return verify_phone_login(str(payload.get("phone") or ""), str(payload.get("code") or ""))
+    result = verify_phone_login(str(payload.get("phone") or ""), str(payload.get("code") or ""))
+    return _user_session_response(result)
 
 
 @app.post("/auth/phone/direct")
-async def auth_phone_direct(request: Request) -> dict[str, Any]:
+async def auth_phone_direct(request: Request) -> JSONResponse:
     payload = await request.json()
-    return verify_phone_direct_login(str(payload.get("phone") or ""), client_ip_from_request(request))
+    result = verify_phone_direct_login(str(payload.get("phone") or ""), client_ip_from_request(request))
+    return _user_session_response(result)
 
 
 @app.post("/auth/invite/verify")
-async def auth_invite_verify(request: Request) -> dict[str, Any]:
+async def auth_invite_verify(request: Request) -> JSONResponse:
     payload = await request.json()
-    return verify_invite_login(str(payload.get("invite_code") or ""), client_ip_from_request(request))
+    result = verify_invite_login(str(payload.get("invite_code") or ""), client_ip_from_request(request))
+    return _user_session_response(result)
 
 
 @app.get("/auth/me")
@@ -396,11 +431,15 @@ async def auth_me(current_user: dict[str, Any] = Depends(get_current_user)) -> d
 
 
 @app.post("/auth/logout")
-async def auth_logout(request: Request, current_user: dict[str, Any] = Depends(get_current_user)) -> dict[str, Any]:
+async def auth_logout(request: Request, current_user: dict[str, Any] = Depends(get_current_user)) -> JSONResponse:
     token = current_token_from_request(request)
     if token:
-        return revoke_token(token)
-    return {"status": "logged_out", "user_id": current_user["user_id"]}
+        result = revoke_token(token)
+    else:
+        result = {"status": "logged_out", "user_id": current_user["user_id"]}
+    response = JSONResponse(content=result)
+    response.delete_cookie(USER_COOKIE_NAME, path="/")
+    return response
 
 
 @app.get("/user-assets/{kind}/{asset_path:path}")
@@ -573,7 +612,7 @@ def demo_page() -> HTMLResponse:
 
 
 @app.post("/try-on/analyze-garment")
-async def analyze_garment(image: UploadFile = File(...), current_user: dict[str, Any] = Depends(get_current_user)) -> dict[str, Any]:
+async def analyze_garment(image: UploadFile = File(...), current_user: dict[str, Any] = Depends(require_beta_user)) -> dict[str, Any]:
     with user_storage(current_user["user_id"]):
         return await analyze_garment_upload(image)
 
@@ -583,110 +622,110 @@ async def try_on(
     person_image: UploadFile = File(...),
     garment_image: UploadFile | None = File(None),
     closet_item_id: str | None = Form(None),
-    current_user: dict[str, Any] = Depends(get_current_user),
+    current_user: dict[str, Any] = Depends(require_beta_user),
 ) -> dict[str, Any]:
     with user_storage(current_user["user_id"]):
         return await run_try_on_upload(person_image, garment_image, closet_item_id)
 
 
 @app.post("/closet/import/upload")
-async def closet_import_upload(images: list[UploadFile] = File(...), current_user: dict[str, Any] = Depends(get_current_user)) -> dict[str, Any]:
+async def closet_import_upload(images: list[UploadFile] = File(...), current_user: dict[str, Any] = Depends(require_beta_user)) -> dict[str, Any]:
     with user_storage(current_user["user_id"]):
         return await import_closet_uploads(images)
 
 
 @app.post("/closet/import/link")
-async def closet_import_link(url: str = Form(...), current_user: dict[str, Any] = Depends(get_current_user)) -> dict[str, Any]:
+async def closet_import_link(url: str = Form(...), current_user: dict[str, Any] = Depends(require_beta_user)) -> dict[str, Any]:
     with user_storage(current_user["user_id"]):
         return await import_closet_link(url)
 
 
 @app.get("/closet/preferences")
-def closet_preferences(current_user: dict[str, Any] = Depends(get_current_user)) -> dict[str, Any]:
+def closet_preferences(current_user: dict[str, Any] = Depends(require_beta_user)) -> dict[str, Any]:
     with user_storage(current_user["user_id"]):
         return get_user_preferences()
 
 
 @app.patch("/closet/preferences")
-async def closet_preferences_update(request: Request, current_user: dict[str, Any] = Depends(get_current_user)) -> dict[str, Any]:
+async def closet_preferences_update(request: Request, current_user: dict[str, Any] = Depends(require_beta_user)) -> dict[str, Any]:
     with user_storage(current_user["user_id"]):
         return update_user_preferences(await request.json())
 
 
 @app.get("/closet/items")
-def closet_items(category: str | None = None, current_user: dict[str, Any] = Depends(get_current_user)) -> dict[str, Any]:
+def closet_items(category: str | None = None, current_user: dict[str, Any] = Depends(require_beta_user)) -> dict[str, Any]:
     with user_storage(current_user["user_id"]):
         return list_closet_items(category)
 
 
 @app.get("/closet/items/{item_id}")
-def closet_item(item_id: str, current_user: dict[str, Any] = Depends(get_current_user)) -> dict[str, Any]:
+def closet_item(item_id: str, current_user: dict[str, Any] = Depends(require_beta_user)) -> dict[str, Any]:
     with user_storage(current_user["user_id"]):
         return get_closet_item(item_id)
 
 
 @app.patch("/closet/items/{item_id}")
-async def closet_item_update(item_id: str, request: Request, current_user: dict[str, Any] = Depends(get_current_user)) -> dict[str, Any]:
+async def closet_item_update(item_id: str, request: Request, current_user: dict[str, Any] = Depends(require_beta_user)) -> dict[str, Any]:
     with user_storage(current_user["user_id"]):
         return update_closet_item(item_id, await request.json())
 
 
 @app.post("/closet/items/{item_id}/reprocess")
-def closet_item_reprocess(item_id: str, current_user: dict[str, Any] = Depends(get_current_user)) -> dict[str, Any]:
+def closet_item_reprocess(item_id: str, current_user: dict[str, Any] = Depends(require_beta_user)) -> dict[str, Any]:
     with user_storage(current_user["user_id"]):
         return reprocess_closet_item(item_id)
 
 
 @app.delete("/closet/items/{item_id}")
-def closet_item_delete(item_id: str, current_user: dict[str, Any] = Depends(get_current_user)) -> dict[str, Any]:
+def closet_item_delete(item_id: str, current_user: dict[str, Any] = Depends(require_beta_user)) -> dict[str, Any]:
     with user_storage(current_user["user_id"]):
         return delete_closet_item(item_id)
 
 
 @app.get("/closet/capabilities")
-def closet_capability_status(current_user: dict[str, Any] = Depends(get_current_user)) -> dict[str, Any]:
+def closet_capability_status(current_user: dict[str, Any] = Depends(require_beta_user)) -> dict[str, Any]:
     with user_storage(current_user["user_id"]):
         return closet_capabilities()
 
 
 @app.get("/closet/outfits")
-def closet_outfits(current_user: dict[str, Any] = Depends(get_current_user)) -> dict[str, Any]:
+def closet_outfits(current_user: dict[str, Any] = Depends(require_beta_user)) -> dict[str, Any]:
     with user_storage(current_user["user_id"]):
         return list_outfits()
 
 
 @app.post("/closet/outfits")
-async def closet_outfit_create(request: Request, current_user: dict[str, Any] = Depends(get_current_user)) -> dict[str, Any]:
+async def closet_outfit_create(request: Request, current_user: dict[str, Any] = Depends(require_beta_user)) -> dict[str, Any]:
     with user_storage(current_user["user_id"]):
         return create_outfit(await request.json())
 
 
 @app.get("/closet/outfits/{outfit_id}")
-def closet_outfit(outfit_id: str, current_user: dict[str, Any] = Depends(get_current_user)) -> dict[str, Any]:
+def closet_outfit(outfit_id: str, current_user: dict[str, Any] = Depends(require_beta_user)) -> dict[str, Any]:
     with user_storage(current_user["user_id"]):
         return get_outfit(outfit_id)
 
 
 @app.patch("/closet/outfits/{outfit_id}")
-async def closet_outfit_update(outfit_id: str, request: Request, current_user: dict[str, Any] = Depends(get_current_user)) -> dict[str, Any]:
+async def closet_outfit_update(outfit_id: str, request: Request, current_user: dict[str, Any] = Depends(require_beta_user)) -> dict[str, Any]:
     with user_storage(current_user["user_id"]):
         return update_outfit(outfit_id, await request.json())
 
 
 @app.delete("/closet/outfits/{outfit_id}")
-def closet_outfit_delete(outfit_id: str, current_user: dict[str, Any] = Depends(get_current_user)) -> dict[str, Any]:
+def closet_outfit_delete(outfit_id: str, current_user: dict[str, Any] = Depends(require_beta_user)) -> dict[str, Any]:
     with user_storage(current_user["user_id"]):
         return delete_outfit(outfit_id)
 
 
 @app.get("/closet/tryon-records")
-def closet_tryon_records(current_user: dict[str, Any] = Depends(get_current_user)) -> dict[str, Any]:
+def closet_tryon_records(current_user: dict[str, Any] = Depends(require_beta_user)) -> dict[str, Any]:
     with user_storage(current_user["user_id"]):
         return list_tryon_records()
 
 
 @app.delete("/closet/tryon-records/{record_id}")
-def closet_tryon_record_delete(record_id: str, current_user: dict[str, Any] = Depends(get_current_user)) -> dict[str, Any]:
+def closet_tryon_record_delete(record_id: str, current_user: dict[str, Any] = Depends(require_beta_user)) -> dict[str, Any]:
     with user_storage(current_user["user_id"]):
         return delete_tryon_record(record_id)
 
@@ -911,7 +950,7 @@ async def selfit_try_on_from_outfit(
     outfit_id: str = Form(...),
     photo_mode: str | None = Form(None),
     scene_label: str | None = Form(None),
-    current_user: dict[str, Any] = Depends(get_current_user),
+    current_user: dict[str, Any] = Depends(require_beta_user),
 ) -> dict[str, Any]:
     with user_storage(current_user["user_id"]):
         result = await run_try_on_from_outfit_upload(person_image, outfit_id, photo_mode, scene_label)
@@ -923,19 +962,19 @@ async def selfit_try_on_from_outfit(
 
 
 @app.get("/stylist/capabilities")
-def stylist_capability_status(current_user: dict[str, Any] = Depends(get_current_user)) -> dict[str, Any]:
+def stylist_capability_status(current_user: dict[str, Any] = Depends(require_beta_user)) -> dict[str, Any]:
     with user_storage(current_user["user_id"]):
         return stylist_capabilities()
 
 
 @app.get("/stylist/sessions")
-def stylist_sessions(include_archived: bool = False, current_user: dict[str, Any] = Depends(get_current_user)) -> dict[str, Any]:
+def stylist_sessions(include_archived: bool = False, current_user: dict[str, Any] = Depends(require_beta_user)) -> dict[str, Any]:
     with user_storage(current_user["user_id"]):
         return list_stylist_sessions(include_archived)
 
 
 @app.post("/stylist/sessions")
-async def stylist_session_create(request: Request, current_user: dict[str, Any] = Depends(get_current_user)) -> dict[str, Any]:
+async def stylist_session_create(request: Request, current_user: dict[str, Any] = Depends(require_beta_user)) -> dict[str, Any]:
     try:
         payload = await request.json()
     except Exception:
@@ -945,19 +984,19 @@ async def stylist_session_create(request: Request, current_user: dict[str, Any] 
 
 
 @app.get("/stylist/sessions/{session_id}")
-def stylist_session_detail(session_id: str, current_user: dict[str, Any] = Depends(get_current_user)) -> dict[str, Any]:
+def stylist_session_detail(session_id: str, current_user: dict[str, Any] = Depends(require_beta_user)) -> dict[str, Any]:
     with user_storage(current_user["user_id"]):
         return get_stylist_session(session_id)
 
 
 @app.patch("/stylist/sessions/{session_id}")
-async def stylist_session_update(session_id: str, request: Request, current_user: dict[str, Any] = Depends(get_current_user)) -> dict[str, Any]:
+async def stylist_session_update(session_id: str, request: Request, current_user: dict[str, Any] = Depends(require_beta_user)) -> dict[str, Any]:
     with user_storage(current_user["user_id"]):
         return update_stylist_session(session_id, await request.json())
 
 
 @app.delete("/stylist/sessions/{session_id}")
-def stylist_session_delete(session_id: str, current_user: dict[str, Any] = Depends(get_current_user)) -> dict[str, Any]:
+def stylist_session_delete(session_id: str, current_user: dict[str, Any] = Depends(require_beta_user)) -> dict[str, Any]:
     with user_storage(current_user["user_id"]):
         return delete_stylist_session(session_id)
 
@@ -1008,7 +1047,7 @@ def _stylist_conversation_context(conversation: list[dict[str, Any]], current_qu
 
 
 @app.post("/stylist/chat")
-async def stylist_chat(request: Request, current_user: dict[str, Any] = Depends(get_current_user)) -> JSONResponse:
+async def stylist_chat(request: Request, current_user: dict[str, Any] = Depends(require_beta_user)) -> JSONResponse:
     try:
         payload = await request.json()
         payload["user_id"] = current_user["user_id"]
@@ -1067,14 +1106,14 @@ async def stylist_chat(request: Request, current_user: dict[str, Any] = Depends(
 
 
 @app.get("/stylist/chat/stream")
-async def stylist_chat_stream(message: str, session_id: str = "default", current_user: dict[str, Any] = Depends(get_current_user)) -> StreamingResponse:
+async def stylist_chat_stream(message: str, session_id: str = "default", current_user: dict[str, Any] = Depends(require_beta_user)) -> StreamingResponse:
     payload = {"message": message, "session_id": session_id, "user_id": current_user["user_id"]}
     with user_storage(current_user["user_id"]):
         return StreamingResponse(stream_stylist_chat(payload), media_type="text/event-stream")
 
 
 @app.post("/stylist/tools/{tool_name}")
-async def stylist_tool(tool_name: str, request: Request, current_user: dict[str, Any] = Depends(get_current_user)) -> JSONResponse:
+async def stylist_tool(tool_name: str, request: Request, current_user: dict[str, Any] = Depends(require_beta_user)) -> JSONResponse:
     payload = await request.json()
     payload["user_id"] = current_user["user_id"]
     with user_storage(current_user["user_id"]):
@@ -1083,21 +1122,21 @@ async def stylist_tool(tool_name: str, request: Request, current_user: dict[str,
 
 
 @app.get("/stylist/memory")
-async def stylist_memory(current_user: dict[str, Any] = Depends(get_current_user)) -> JSONResponse:
+async def stylist_memory(current_user: dict[str, Any] = Depends(require_beta_user)) -> JSONResponse:
     with user_storage(current_user["user_id"]):
         result, status_code = await get_stylist_memory(current_user["user_id"])
     return JSONResponse(status_code=status_code, content=result)
 
 
 @app.patch("/stylist/memory")
-async def stylist_memory_update(request: Request, current_user: dict[str, Any] = Depends(get_current_user)) -> JSONResponse:
+async def stylist_memory_update(request: Request, current_user: dict[str, Any] = Depends(require_beta_user)) -> JSONResponse:
     with user_storage(current_user["user_id"]):
         result, status_code = await patch_stylist_memory(current_user["user_id"], await request.json())
     return JSONResponse(status_code=status_code, content=result)
 
 
 @app.delete("/stylist/memory")
-async def stylist_memory_delete(current_user: dict[str, Any] = Depends(get_current_user)) -> JSONResponse:
+async def stylist_memory_delete(current_user: dict[str, Any] = Depends(require_beta_user)) -> JSONResponse:
     with user_storage(current_user["user_id"]):
         result, status_code = await delete_stylist_memory(current_user["user_id"])
     return JSONResponse(status_code=status_code, content=result)
@@ -1108,7 +1147,7 @@ async def try_on_from_inspiration(
     person_image: UploadFile = File(...),
     inspiration_image: UploadFile = File(...),
     style_brief: str | None = Form(None),
-    current_user: dict[str, Any] = Depends(get_current_user),
+    current_user: dict[str, Any] = Depends(require_beta_user),
 ) -> dict[str, Any]:
     with user_storage(current_user["user_id"]):
         return await run_try_on_from_inspiration_upload(person_image, inspiration_image, style_brief)
@@ -1120,7 +1159,7 @@ async def try_on_from_outfit(
     outfit_id: str = Form(...),
     photo_mode: str | None = Form(None),
     scene_label: str | None = Form(None),
-    current_user: dict[str, Any] = Depends(get_current_user),
+    current_user: dict[str, Any] = Depends(require_beta_user),
 ) -> dict[str, Any]:
     with user_storage(current_user["user_id"]):
         return await run_try_on_from_outfit_upload(person_image, outfit_id, photo_mode, scene_label)
@@ -1134,7 +1173,7 @@ async def try_on_from_outfit_plan(
     outfit_plan: str | None = Form(None),
     photo_mode: str | None = Form(None),
     scene_label: str | None = Form(None),
-    current_user: dict[str, Any] = Depends(get_current_user),
+    current_user: dict[str, Any] = Depends(require_beta_user),
 ) -> dict[str, Any]:
     with user_storage(current_user["user_id"]):
         return await run_try_on_from_outfit_plan_upload(
@@ -1148,43 +1187,43 @@ async def try_on_from_outfit_plan(
 
 
 @app.post("/try-on/mock-from-outfit")
-def try_on_mock_from_outfit(outfit_id: str = Form(...), current_user: dict[str, Any] = Depends(get_current_user)) -> dict[str, Any]:
+def try_on_mock_from_outfit(outfit_id: str = Form(...), current_user: dict[str, Any] = Depends(require_beta_user)) -> dict[str, Any]:
     with user_storage(current_user["user_id"]):
         return mock_tryon_from_outfit(outfit_id)
 
 
 @app.post("/try-on/extract-xhs")
-async def extract_xhs(url: str = Form(...), current_user: dict[str, Any] = Depends(get_current_user)) -> dict[str, Any]:
+async def extract_xhs(url: str = Form(...), current_user: dict[str, Any] = Depends(require_beta_user)) -> dict[str, Any]:
     with user_storage(current_user["user_id"]):
         return await extract_xhs_link(url)
 
 
 @app.post("/try-on/extract-inspiration")
-async def extract_inspiration(url: str = Form(...), current_user: dict[str, Any] = Depends(get_current_user)) -> dict[str, Any]:
+async def extract_inspiration(url: str = Form(...), current_user: dict[str, Any] = Depends(require_beta_user)) -> dict[str, Any]:
     with user_storage(current_user["user_id"]):
         return await extract_xhs_link(url)
 
 
 @app.get("/try-on/capabilities")
-def try_on_capabilities(current_user: dict[str, Any] = Depends(get_current_user)) -> dict[str, Any]:
+def try_on_capabilities(current_user: dict[str, Any] = Depends(require_beta_user)) -> dict[str, Any]:
     with user_storage(current_user["user_id"]):
         return tryon_capabilities()
 
 
 @app.get("/try-on/codex-bridge/jobs")
-def codex_bridge_jobs(status: str | None = None, current_user: dict[str, Any] = Depends(get_current_user)) -> dict[str, Any]:
+def codex_bridge_jobs(status: str | None = None, current_user: dict[str, Any] = Depends(require_beta_user)) -> dict[str, Any]:
     with user_storage(current_user["user_id"]):
         return list_codex_bridge_jobs(status)
 
 
 @app.get("/try-on/codex-bridge/jobs/next")
-def codex_bridge_next_job(current_user: dict[str, Any] = Depends(get_current_user)) -> dict[str, Any]:
+def codex_bridge_next_job(current_user: dict[str, Any] = Depends(require_beta_user)) -> dict[str, Any]:
     with user_storage(current_user["user_id"]):
         return next_codex_bridge_job()
 
 
 @app.get("/try-on/codex-bridge/jobs/{job_id}")
-def codex_bridge_job(job_id: str, current_user: dict[str, Any] = Depends(get_current_user)) -> dict[str, Any]:
+def codex_bridge_job(job_id: str, current_user: dict[str, Any] = Depends(require_beta_user)) -> dict[str, Any]:
     with user_storage(current_user["user_id"]):
         return get_codex_bridge_job(job_id)
 
@@ -1194,7 +1233,7 @@ async def codex_bridge_complete_job(
     job_id: str,
     result_image: UploadFile | None = File(None),
     result_path: str | None = Form(None),
-    current_user: dict[str, Any] = Depends(get_current_user),
+    current_user: dict[str, Any] = Depends(require_beta_user),
 ) -> dict[str, Any]:
     with user_storage(current_user["user_id"]):
         return await complete_codex_bridge_job_upload(job_id, result_image, result_path)

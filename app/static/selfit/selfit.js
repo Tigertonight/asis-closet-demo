@@ -238,6 +238,15 @@
     if (stateName) node.dataset.state = stateName;
     else delete node.dataset.state;
   };
+  // 内测入口：仅白名单手机号登录（后端 /auth/me 返回 beta_access）或 ?beta=1 预览时显示，
+  // 指向 onboarding 之后的后续功能（AI 试穿、电子衣橱/服装拆款等）。
+  const syncBetaEntries = () => {
+    const node = document.querySelector('#betaEntries');
+    if (!node) return;
+    const previewForce = new URLSearchParams(window.location.search).get('beta') === '1';
+    node.hidden = !(previewForce || state.authUser?.beta_access === true);
+  };
+  syncBetaEntries();
   const normalizedPhone = () => authNodes.phone.value.replace(/\D/g, '').slice(0, 11);
   const syncPhoneLogin = () => {
     const phone = normalizedPhone();
@@ -255,6 +264,7 @@
     state.sessionId = null;
     state.revision = 0;
     localStorage.removeItem(SESSION_STORAGE_KEY);
+    syncBetaEntries();
     track('login_success', { provider: 'phone' });
     await dismissKeyboard();
     if (handoffToken) {
@@ -514,6 +524,7 @@
   });
   authReady = auth.restore().then((session) => {
     state.authUser = session?.user || null;
+    syncBetaEntries();
     return session;
   }).catch(() => null);
   api = window.SelfitApi.createClient({

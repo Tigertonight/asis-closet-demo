@@ -21,6 +21,7 @@ AUTH_DIR = ROOT_DIR / "outputs" / "auth"
 AUTH_STORE_PATH = AUTH_DIR / "auth_store.json"
 ADMIN_PASSWORD_PATH = AUTH_DIR / "admin_password.json"
 ADMIN_COOKIE_NAME = "selfit_admin_session"
+USER_COOKIE_NAME = "selfit_user_session"
 ADMIN_CONSOLE_USER_ID = "admin_console"
 ADMIN_MIN_PASSWORD_LEN = 6
 DEFAULT_LOCAL_PHONE = "+8600000000000"
@@ -365,12 +366,16 @@ def _find_or_create_user(data: dict[str, Any], phone_e164: str, now: datetime) -
 
 
 def _public_user(user: dict[str, Any]) -> dict[str, Any]:
+    from app.beta_access import beta_access_for_user
+
     return {
         "user_id": user.get("user_id"),
         "phone_e164": user.get("phone_e164"),
         "status": user.get("status"),
         "created_at": user.get("created_at"),
         "last_login_at": user.get("last_login_at"),
+        # 内测资格：登录后前端据此展示「后续功能」入口（服装拆款、AI 试穿等）。
+        "beta_access": beta_access_for_user(user),
     }
 
 
@@ -425,6 +430,22 @@ async def get_optional_user(
     if credentials is None or not credentials.credentials:
         return None
     return resolve_token(credentials.credentials)
+
+
+async def require_beta_user(
+    credentials: HTTPAuthorizationCredentials | None = Depends(_bearer),
+) -> dict[str, Any]:
+    """内测功能门禁：onboarding 之外的后续功能（服装拆款、电子衣橱、AI 试穿、AI 穿搭师）。
+
+    线上（demo）模式只有内测白名单手机号和内部账号（admin/invite）可用；
+    本地开发模式一律放行，保证调试与测试不被拦。
+    普通用户被拦时返回 403 + 用户可读文案，前端引导等待正式开放。
+    """
+
+    user = await get_current_user(credentials)
+    if user.get("beta_access"):
+        return user
+    raise HTTPException(status_code=403, detail="该功能正在内测中，暂未对你开放，敬请期待")
 
 
 def _load_admin_password_record() -> dict[str, Any] | None:
@@ -520,6 +541,20 @@ def admin_token_from_request(request: Request) -> str | None:
     if scheme.lower() == "bearer" and token.strip():
         return token.strip()
     return request.cookies.get(ADMIN_COOKIE_NAME)
+
+
+def user_token_from_request(request: Request) -> str | None:
+    """普通用户 token 解析：Bearer header 优先，其次用户 session cookie。
+
+    页面级网关（直接 GET /closet/demo 等）拿不到 Bearer header，
+    登录时下发的 cookie 让浏览器导航也能带上内测身份。
+    """
+
+    value = request.headers.get("authorization") or ""
+    scheme, _, token = value.partition(" ")
+    if scheme.lower() == "bearer" and token.strip():
+        return token.strip()
+    return request.cookies.get(USER_COOKIE_NAME)
 
 
 def resolve_admin_user(token: str) -> dict[str, Any]:

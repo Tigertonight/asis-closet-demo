@@ -108,10 +108,11 @@
         return this.persist(payload);
       }
       await wait(360);
+      // mock 模式默认给内测资格，便于本地走通报告页的后续功能入口预览。
       return this.persist({
         access_token: `mock_phone_${Date.now()}`,
         expires_in_seconds: 86400,
-        user: { user_id: mockId(phone), phone_e164: `+86${phone}`, status: 'active' },
+        user: { user_id: mockId(phone), phone_e164: `+86${phone}`, status: 'active', beta_access: true },
       });
     }
 
@@ -125,7 +126,7 @@
       return this.persist({
         access_token: `mock_phone_${Date.now()}`,
         expires_in_seconds: 86400,
-        user: { user_id: mockId(phone), phone_e164: `+86${phone}`, status: 'active' },
+        user: { user_id: mockId(phone), phone_e164: `+86${phone}`, status: 'active', beta_access: true },
       });
     }
 
@@ -139,7 +140,7 @@
       return this.persist({
         access_token: `mock_invite_${Date.now()}`,
         expires_in_seconds: 86400,
-        user: { user_id: mockId(inviteCode), phone_e164: null, status: 'active' },
+        user: { user_id: mockId(inviteCode), phone_e164: null, status: 'active', beta_access: true },
       });
     }
   }

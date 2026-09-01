@@ -59,6 +59,26 @@ def is_internal_page(path: str) -> bool:
     return any(path == rule or path.startswith(rule + "/") or path.startswith(rule + "?") for rule in INTERNAL_PAGE_RULES)
 
 
+# 页面网关的 API 豁免：这些前缀下全是数据接口，没有 HTML 页面。
+# 浏览器导航只会 GET 确切的页面 URL，REST API 走各自路由的鉴权（含内测门禁）。
+_INTERNAL_GATE_API_PREFIXES = ("/api/", "/auth/", "/admin/", "/stylist/", "/user-assets/")
+
+
+def _is_gate_target_page(path: str) -> bool:
+    """页面网关只拦「确切的页面 URL」。
+
+    /closet、/try-on 等前缀下页面（/xxx/demo）与 REST API 混布，
+    必须精确到页面路径，否则 /closet/items 这类 GET API 会被误 307 到 /admin。
+    """
+
+    if path.startswith(_INTERNAL_GATE_API_PREFIXES):
+        return False
+    for page_rule, api_prefix in (("/closet/demo", "/closet/"), ("/try-on/demo", "/try-on/"), ("/tryon/demo", "/tryon/")):
+        if path.startswith(api_prefix) and path != page_rule:
+            return False
+    return is_internal_page(path)
+
+
 def env_int(name: str, default: int) -> int:
     try:
         return int(os.getenv(name, str(default)))
@@ -213,23 +233,35 @@ def _contract_error(status_code: int, code: str, message: str, *, retryable: boo
 
 
 def _internal_page_redirect(request: Request) -> Response | None:
-    """线上内部页面网关：非管理员访问调试页 → 307 到 /admin 登录后跳回。"""
+    """线上内部页面网关：管理员或内测白名单用户可访问，其余 307 到 /admin 登录后跳回。"""
 
     if not is_public_demo_mode():
         return None
     path = request.url.path
-    if request.method not in {"GET", "HEAD"} or not is_internal_page(path):
+    if request.method not in {"GET", "HEAD"} or not _is_gate_target_page(path):
         return None
     # 数据/操作 API 不在此拦截（各自路由已有鉴权），只拦页面浏览。
     if path.startswith(("/api/", "/auth/")):
         return None
-    from app.auth import admin_token_from_request, resolve_admin_user
+    from app.auth import admin_token_from_request, resolve_admin_user, user_token_from_request
 
-    token = admin_token_from_request(request)
-    if token:
+    admin_token = admin_token_from_request(request)
+    if admin_token:
         try:
-            resolve_admin_user(token)
+            resolve_admin_user(admin_token)
             return None
+        except Exception:
+            pass
+    # 内测用户：登录 cookie/Bearer 对应的手机号在白名单里，
+    # 放行后续功能页面（服装拆款、电子衣橱、AI 试穿等）。
+    user_token = user_token_from_request(request)
+    if user_token:
+        from app.auth import resolve_token
+
+        try:
+            user = resolve_token(user_token)
+            if user.get("beta_access"):
+                return None
         except Exception:
             pass
     from urllib.parse import quote

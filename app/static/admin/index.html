@@ -207,6 +207,16 @@
     .photo-thumb-button, .lightbox-image { transition: none; }
   }
 
+  /* 内测用户白名单 */
+  .beta-add-form { display: flex; gap: 10px; flex-wrap: wrap; margin: 0 0 8px; }
+  .beta-add-form input { height: 40px; padding: 0 14px; border: 1px solid var(--line); border-radius: 12px; font-size: 14px; outline: none; flex: 0 0 180px; }
+  .beta-add-form input:focus { border-color: rgba(138,1,27,.45); }
+  .beta-add-form #betaNoteInput { flex: 1 1 220px; }
+  .beta-add-form button { height: 40px; padding: 0 22px; border: 0; border-radius: 999px; background: var(--brand); color: #fff; font-size: 14px; cursor: pointer; }
+  .beta-add-form button:disabled { opacity: .5; cursor: default; }
+  #betaMsg { min-height: 20px; margin: 0 0 10px; color: #a90020; font-size: 13px; }
+  #betaMsg.is-ok { color: #2f6a3c; }
+
 </style>
 </head>
 <body>
@@ -215,6 +225,7 @@
   <nav class="tabs">
     <button class="is-active" data-tab="analytics" type="button">数据分析</button>
     <button type="button" data-tab="submissions">用户报告</button>
+    <button type="button" data-tab="beta">内测用户</button>
     <a href="/qa/onboarding-attributes">实验数据 QA</a>
     <button type="button" data-tab="debug">调试工具</button>
     <a href="/mvp" target="_blank" rel="noopener">MVP 状态</a>
@@ -304,6 +315,21 @@
         <div class="table-scroll"><table><thead><tr><th>上传时间</th><th>照片类型</th><th>来源</th><th>手机号</th><th>拦截原因</th><th>预览</th><th>操作</th></tr></thead><tbody id="rejectedRows"></tbody></table></div>
         <div class="report-list-footer"><small id="rejectedCount"></small><button class="report-load-more" type="button" id="rejectedLoadMore" hidden>加载更多</button></div>
       </section>
+    </div>
+    <div class="panel" id="betaPanel" data-tab-panel="beta" hidden>
+      <h2>内测用户（手机号白名单）</h2>
+      <p class="panel-hint">名单里的手机号登录后，除了风格测试主流程，还能体验全部内测功能：服装拆款 / 电子衣橱、AI 试穿、AI 穿搭师等（后续新上的内测功能自动生效）。名单外用户只能走风格测试流程，访问内测功能会提示「正在内测中」。</p>
+      <div class="beta-add-form">
+        <input id="betaPhoneInput" type="tel" inputmode="numeric" maxlength="11" placeholder="手机号（11 位）" autocomplete="off" />
+        <input id="betaNoteInput" type="text" maxlength="80" placeholder="备注（选填，如：种子用户 / 同事）" autocomplete="off" />
+        <button type="button" id="betaAddBtn">添加</button>
+      </div>
+      <div class="msg" id="betaMsg"></div>
+      <div class="toolbar" style="margin-bottom:12px">
+        <button class="mini-btn" type="button" id="betaRefresh">刷新</button>
+        <small id="betaUpdatedAt"></small>
+      </div>
+      <table><thead><tr><th>手机号</th><th>备注</th><th>添加时间</th><th>操作</th></tr></thead><tbody id="betaRows"></tbody></table>
     </div>
     <div class="panel" id="debugPanel" data-tab-panel="debug" hidden>
       <h2>调试工具</h2>
@@ -957,6 +983,95 @@
     });
   });
 
+  // ---------------------------------------------------------------------------
+  // 内测用户白名单
+  // ---------------------------------------------------------------------------
+
+  const setBetaMessage = (text, ok = false) => {
+    const node = $('betaMsg');
+    node.textContent = text || '';
+    node.classList.toggle('is-ok', ok);
+  };
+
+  const renderBetaUsers = (rows) => {
+    const tbody = $('betaRows');
+    if (!rows.length) {
+      tbody.replaceChildren(Object.assign(document.createElement('tr'), {
+        innerHTML: '<td colspan="4" class="empty">还没有内测用户，添加手机号后即可体验后续功能</td>',
+      }));
+      return;
+    }
+    tbody.replaceChildren(...rows.map((row) => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `<td>${esc(row.phone || '')}</td>`
+        + `<td>${esc(row.note || '—')}</td>`
+        + `<td>${fmtTime(row.addedAt)}</td>`
+        + `<td><button class="link-btn danger" type="button" data-remove-beta="${esc(row.phone)}">移除</button></td>`;
+      return tr;
+    }));
+    tbody.querySelectorAll('[data-remove-beta]').forEach((button) => {
+      button.addEventListener('click', () => removeBetaUser(button.dataset.removeBeta));
+    });
+  };
+
+  const loadBetaUsers = async () => {
+    try {
+      const payload = await api('/admin/api/beta-users');
+      renderBetaUsers(payload.betaUsers || []);
+      $('betaUpdatedAt').textContent = `更新于 ${new Date().toLocaleTimeString('zh-CN', { hour12: false })}`;
+    } catch (error) {
+      if (error.status) showLogin();
+      else setBetaMessage(error.message || '加载失败');
+    }
+  };
+
+  const removeBetaUser = async (phone) => {
+    if (!confirm(`确定移除 ${phone} 吗？移除后该用户将无法继续使用内测功能。`)) return;
+    try {
+      const response = await fetch(`/admin/api/beta-users/${encodeURIComponent(phone)}`, {
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${state.token}` },
+      });
+      if (response.status === 401 || response.status === 403) { showLogin(); return; }
+      const payload = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(payload.detail || '移除失败');
+      setBetaMessage(`已移除 ${phone}`, true);
+      void loadBetaUsers();
+    } catch (error) {
+      setBetaMessage(error.message || '移除失败');
+    }
+  };
+
+  const addBetaUser = async () => {
+    const phone = $('betaPhoneInput').value.replace(/\D/g, '').slice(0, 11);
+    const note = $('betaNoteInput').value.trim();
+    if (!/^1[3-9]\d{9}$/.test(phone)) { setBetaMessage('请输入 11 位中国大陆手机号'); return; }
+    $('betaAddBtn').disabled = true;
+    try {
+      const response = await fetch('/admin/api/beta-users', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${state.token}` },
+        body: JSON.stringify({ phone, note }),
+      });
+      if (response.status === 401 || response.status === 403) { showLogin(); return; }
+      const payload = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(payload.detail || '添加失败');
+      setBetaMessage(`已添加 ${payload.betaUser?.phone || phone}，该手机号登录后即可体验内测功能`, true);
+      $('betaPhoneInput').value = '';
+      $('betaNoteInput').value = '';
+      void loadBetaUsers();
+    } catch (error) {
+      setBetaMessage(error.message || '添加失败');
+    } finally {
+      $('betaAddBtn').disabled = false;
+    }
+  };
+
+  $('betaAddBtn').addEventListener('click', addBetaUser);
+  $('betaPhoneInput').addEventListener('keydown', (event) => { if (event.key === 'Enter') addBetaUser(); });
+  $('betaNoteInput').addEventListener('keydown', (event) => { if (event.key === 'Enter') addBetaUser(); });
+  $('betaRefresh').addEventListener('click', loadBetaUsers);
+
   const render = (summary, users) => {
     const kpiDefs = [
       ['logins', '手机号登录'],
@@ -1062,6 +1177,7 @@
       const selected = document.querySelector('[data-report-tab][aria-selected="true"]');
       void loadReportTab(selected?.dataset.reportTab || 'submissions');
     }
+    if (tab === 'beta') { setBetaMessage(''); void loadBetaUsers(); }
   };
   document.querySelectorAll('[data-tab]').forEach((button) => button.addEventListener('click', () => {
     activateTab(button.dataset.tab);
