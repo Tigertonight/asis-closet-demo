@@ -54,11 +54,13 @@ from app.analyzer import (
 from app.closet import (
     CLOSET_OUTPUT_DIR,
     closet_capabilities,
+    create_import_upload_job,
     create_outfit,
     delete_closet_item,
     delete_outfit,
     delete_tryon_record,
     get_closet_item,
+    get_import_job,
     get_outfit,
     get_user_preferences,
     import_link as import_closet_link,
@@ -67,10 +69,12 @@ from app.closet import (
     list_outfits,
     list_tryon_records,
     mock_tryon_from_outfit,
+    recommend_outfits,
     record_selfit_tryon_result,
     render_closet_demo_page,
     render_selfit_demo_page,
     reprocess_closet_item,
+    retry_import_job,
     update_closet_item,
     update_outfit,
     update_user_preferences,
@@ -80,11 +84,14 @@ from app.tryon import (
     TRYON_OUTPUT_DIR,
     analyze_garment_upload,
     complete_codex_bridge_job_upload,
+    create_outfit_tryon_job,
     extract_xhs_link,
+    get_outfit_tryon_job,
     get_codex_bridge_job,
     list_codex_bridge_jobs,
     next_codex_bridge_job,
     render_tryon_demo_page,
+    retry_outfit_tryon_job,
     run_try_on_from_outfit_upload,
     run_try_on_from_outfit_plan_upload,
     run_try_on_from_inspiration_upload,
@@ -116,7 +123,7 @@ from app.selfit_mirror_handoff import router as selfit_mirror_handoff_router
 from app.selfit_analytics import admin_router as selfit_admin_router, router as selfit_analytics_router
 from app.selfit_admin_submissions import router as selfit_admin_submissions_router
 from app.qa_onboarding import QA_PHOTO_DIR, router as qa_onboarding_router
-from app.storage import storage_context, user_storage
+from app.storage import hydrate_user_from_demo_data, storage_context, user_storage
 from scripts.generate_qa_artifacts import generate_qa_artifacts
 from scripts.check_runtime_readiness import readiness as runtime_readiness
 
@@ -424,6 +431,10 @@ async def user_asset(
         except ValueError as exc:
             raise StarletteHTTPException(status_code=404, detail="没有找到这个资源") from exc
         if not target.exists() or not target.is_file():
+            # 早期账号可能已经有 demo 清单，但只创建了上层目录，导致后续
+            # hydration 跳过目录内部图片。请求时补齐缺失文件，让老账号刷新即恢复。
+            hydrate_user_from_demo_data(str(user["user_id"]))
+        if not target.exists() or not target.is_file():
             raise StarletteHTTPException(status_code=404, detail="没有找到这个资源")
         return FileResponse(target)
 
@@ -595,6 +606,24 @@ async def closet_import_upload(images: list[UploadFile] = File(...), current_use
         return await import_closet_uploads(images)
 
 
+@app.post("/closet/import/jobs")
+async def closet_import_job_create(images: list[UploadFile] = File(...), current_user: dict[str, Any] = Depends(get_current_user)) -> dict[str, Any]:
+    with user_storage(current_user["user_id"]):
+        return await create_import_upload_job(images, current_user["user_id"])
+
+
+@app.get("/closet/import/jobs/{job_id}")
+def closet_import_job(job_id: str, current_user: dict[str, Any] = Depends(get_current_user)) -> dict[str, Any]:
+    with user_storage(current_user["user_id"]):
+        return get_import_job(job_id)
+
+
+@app.post("/closet/import/jobs/{job_id}/retry")
+def closet_import_job_retry(job_id: str, current_user: dict[str, Any] = Depends(get_current_user)) -> dict[str, Any]:
+    with user_storage(current_user["user_id"]):
+        return retry_import_job(job_id, current_user["user_id"])
+
+
 @app.post("/closet/import/link")
 async def closet_import_link(url: str = Form(...), current_user: dict[str, Any] = Depends(get_current_user)) -> dict[str, Any]:
     with user_storage(current_user["user_id"]):
@@ -653,6 +682,12 @@ def closet_capability_status(current_user: dict[str, Any] = Depends(get_current_
 def closet_outfits(current_user: dict[str, Any] = Depends(get_current_user)) -> dict[str, Any]:
     with user_storage(current_user["user_id"]):
         return list_outfits()
+
+
+@app.post("/closet/recommendations/outfits")
+async def closet_outfit_recommendations(request: Request, current_user: dict[str, Any] = Depends(get_current_user)) -> dict[str, Any]:
+    with user_storage(current_user["user_id"]):
+        return recommend_outfits(await request.json())
 
 
 @app.post("/closet/outfits")
@@ -911,15 +946,49 @@ async def selfit_try_on_from_outfit(
     outfit_id: str = Form(...),
     photo_mode: str | None = Form(None),
     scene_label: str | None = Form(None),
+    force_regenerate: bool = Form(False),
     current_user: dict[str, Any] = Depends(get_current_user),
 ) -> dict[str, Any]:
     with user_storage(current_user["user_id"]):
-        result = await run_try_on_from_outfit_upload(person_image, outfit_id, photo_mode, scene_label)
+        result = await run_try_on_from_outfit_upload(person_image, outfit_id, photo_mode, scene_label, force_regenerate)
         result["selfit_mode"] = "product_tryon"
         record = record_selfit_tryon_result(outfit_id, result)
         if record:
             result["record"] = record
         return result
+
+
+@app.post("/selfit/try-on/jobs")
+async def selfit_try_on_job_create(
+    person_image: UploadFile = File(...),
+    outfit_id: str = Form(...),
+    photo_mode: str | None = Form(None),
+    scene_label: str | None = Form(None),
+    force_regenerate: bool = Form(False),
+    current_user: dict[str, Any] = Depends(get_current_user),
+) -> dict[str, Any]:
+    with user_storage(current_user["user_id"]):
+        return create_outfit_tryon_job(
+            await person_image.read(),
+            person_image.filename,
+            outfit_id,
+            photo_mode,
+            scene_label,
+            current_user["user_id"],
+            force_regenerate,
+        )
+
+
+@app.get("/selfit/try-on/jobs/{job_id}")
+def selfit_try_on_job(job_id: str, current_user: dict[str, Any] = Depends(get_current_user)) -> dict[str, Any]:
+    with user_storage(current_user["user_id"]):
+        return get_outfit_tryon_job(job_id)
+
+
+@app.post("/selfit/try-on/jobs/{job_id}/retry")
+def selfit_try_on_job_retry(job_id: str, current_user: dict[str, Any] = Depends(get_current_user)) -> dict[str, Any]:
+    with user_storage(current_user["user_id"]):
+        return retry_outfit_tryon_job(job_id, current_user["user_id"])
 
 
 @app.get("/stylist/capabilities")

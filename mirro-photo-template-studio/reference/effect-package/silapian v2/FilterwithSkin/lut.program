@@ -1,0 +1,51 @@
+{
+    "zeus_version": 300100,
+    "typeId": "Program",
+    "type_version": -1,
+    "object": {
+        "name": "",
+        "m_shaderMap": [
+            {
+                "instance_type": 1,
+                "instance_id": 1,
+                "data_description": "std::shared_ptr<Shader>"
+            },
+            {
+                "instance_type": 1,
+                "instance_id": 2,
+                "data_description": "std::shared_ptr<Shader>"
+            }
+        ],
+        "m_customBlendMode": 0
+    },
+    "instance_map": [
+        {
+            "instance_type": 1,
+            "instance_id": 2,
+            "typeId": "Shader",
+            "type_version": -1,
+            "object": {
+                "m_type": 1,
+                "m_source": "\n#ifdef GL_ES\n#ifdef GL_FRAGMENT_PRECISION_HIGH\n    precision highp float;\n#else\n    precision mediump float;\n#endif\n#endif\nin vec2 v_texcoord;\nout vec4 fragColor;\nuniform sampler2D _BaseTexture0;\nuniform sampler2D _BaseTexture1;\nuniform sampler2D fgLut;\nuniform sampler2D bgLut;\n// uniform float adjustable_bg_filter;\n// uniform float adjustable_fg_filter;\nuniform float adjustable_filter_intensity;\n\n\n\nvec4 lm_take_effect_filter(sampler2D filterTex,vec4 inputColor,float uniAlpha)\n{\n  highp vec4 textureColor= inputColor;\n  highp float blueColor=textureColor.b*63.;\n  \n  highp vec2 quad1;\n  quad1.y=floor(floor(blueColor)/8.);\n  quad1.x=floor(blueColor)-(quad1.y*8.);\n  \n  highp vec2 quad2;\n  quad2.y=floor(ceil(blueColor)/8.);\n  quad2.x=ceil(blueColor)-(quad2.y*8.);\n  \n  highp vec2 texPos1;\n  texPos1.x=(quad1.x*1./8.)+.5/512.+((1./8.-1./512.)*textureColor.r);\n  texPos1.y=(quad1.y*1./8.)+.5/512.+((1./8.-1./512.)*textureColor.g);\n  texPos1.y=1.-texPos1.y;\n  highp vec2 texPos2;\n  texPos2.x=(quad2.x*1./8.)+.5/512.+((1./8.-1./512.)*textureColor.r);\n  texPos2.y=(quad2.y*1./8.)+.5/512.+((1./8.-1./512.)*textureColor.g);\n  texPos2.y=1.-texPos2.y;\n  vec4 newColor1=texture2D(filterTex,texPos1);\n  vec4 newColor2=texture2D(filterTex,texPos2);\n  vec4 newColor=mix(newColor1,newColor2,fract(blueColor));\n  newColor = mix(textureColor,vec4(newColor.rgb,textureColor.w),uniAlpha);\n\n  return newColor;\n}\n\nvoid main()\n{\n    vec4 pass1 = texture(_BaseTexture0, v_texcoord);\n    vec4 bgColor = lm_take_effect_filter(bgLut, pass1, adjustable_filter_intensity / 100.0);\n    vec4 fgColor = lm_take_effect_filter(fgLut, pass1, adjustable_filter_intensity / 100.0);\n    vec4 mask = texture(_BaseTexture1, v_texcoord);\n    vec4 result = mix(bgColor, fgColor, mask.r);\n    fragColor = result;\n    // fragColor = mask;\n    // fragColor = vec4(1.0, 0.0, 0.0, 1.0);\n    \n}\n",
+                "m_entryPoint": "",
+                "m_language": "",
+                "m_blendSource": "",
+                "m_enableUberShader": 0
+            }
+        },
+        {
+            "instance_type": 1,
+            "instance_id": 1,
+            "typeId": "Shader",
+            "type_version": -1,
+            "object": {
+                "m_type": 0,
+                "m_source": "\n    #ifdef GL_ES\n    #ifdef GL_FRAGMENT_PRECISION_HIGH\n        precision highp float;\n    #else\n        precision mediump float;\n    #endif\n    #endif\n    in vec3 a_position;\n    in vec2 a_texcoord0;\n    out vec2 v_texcoord;\n \n    void main()\n    {\n        v_texcoord  = a_texcoord0;\n        gl_Position = vec4(a_position, 1.0);\n    }\n",
+                "m_entryPoint": "",
+                "m_language": "",
+                "m_blendSource": "",
+                "m_enableUberShader": 0
+            }
+        }
+    ]
+}

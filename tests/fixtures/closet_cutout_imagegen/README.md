@@ -14,7 +14,9 @@ Use it to generate controlled images, import them through `/closet/import/upload
 
 Generate all `seed: true` cases first. They cover every category with a smaller run:
 
-- `A01`, `B01`, `C01`, `D01`, `E01`, `F01`, `G01`, `H01`, `I01`, `J01`, `K01`, `L01`, `M01`, `N01`, `O01`, `P01`, `Q01`, `R01`, `S01`, `T01`
+- `A01`, `B01`, `B02`, `C01`, `C02`, `C03`, `C04`, `D01`, `E01`, `F01`, `G01`, `H01`, `I01`, `J01`, `K01`, `L01`, `M01`, `N01`, `O01`, `P01`, `Q01`, `R01`, `S01`, `T01`
+
+`B02` and `C02`–`C04` are the multi-item regression core. They cover a model-worn outfit, a clean four-item flatlay, a dress that must remain one garment, and a lightly overlapping four-item outfit.
 
 Then expand to the full 100-case set once the pipeline is stable.
 

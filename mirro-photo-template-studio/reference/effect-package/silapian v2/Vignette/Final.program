@@ -1,0 +1,51 @@
+{
+    "zeus_version": 300100,
+    "typeId": "Program",
+    "type_version": -1,
+    "object": {
+        "name": "",
+        "m_shaderMap": [
+            {
+                "instance_type": 1,
+                "instance_id": 1,
+                "data_description": "std::shared_ptr<Shader>"
+            },
+            {
+                "instance_type": 1,
+                "instance_id": 2,
+                "data_description": "std::shared_ptr<Shader>"
+            }
+        ],
+        "m_customBlendMode": 0
+    },
+    "instance_map": [
+        {
+            "instance_type": 1,
+            "instance_id": 2,
+            "typeId": "Shader",
+            "type_version": -1,
+            "object": {
+                "m_type": 1,
+                "m_source": "\n    #ifdef GL_ES\n    #ifdef GL_FRAGMENT_PRECISION_HIGH\n        precision highp float;\n    #else\n        precision mediump float;\n    #endif\n    #endif\n    in vec2 v_texcoord;\n    out vec4 fragColor;\n    uniform sampler2D _BaseTexture0;\n    uniform sampler2D _BaseTexture1;//lut\n    \n    uniform float adjustable_x;\n    uniform float adjustable_y;\n    uniform float adjustable_intensity;\n\n    uniform float slope;\n    uniform float bias;\n\n    uniform sampler2D maskN;\n    uniform sampler2D maskZ;\nvec4 caculLut(vec4 inColor){\n    float g = inColor.g * 16.0;\n    float v = (0.5 / 17.0) + inColor.r * (1.0 - 1.0 / 17.0);\n    float b = inColor.b * 16.0 / 17.0 + (0.5 / 17.0);\n    float u1 = b / 17.0 + floor(g) / 17.0;\n    float u2 = b / 17.0 + ceil(g) / 17.0;\n    vec4 newColor1 = texture2D(_BaseTexture1, vec2(u1, v));\n    vec4 newColor2 = texture2D(_BaseTexture1, vec2(u2, v));\n    return mix(newColor1, newColor2, fract(g));\n }\n\n    void main()\n{\n    vec4 textureColor = texture(_BaseTexture0, v_texcoord);\n    vec4 baseColor = caculLut(textureColor);\n\n    vec3 result = slope * baseColor.rgb + bias;\n    result = clamp(result, 0.0, 1.0);\n    vec4 blackAndWhite = vec4(result, baseColor.a);\n\n    // 始终使用 maskN，不再根据 Vignette 正负选择 maskZ\n    vec4 maskNColor = texture(maskN, v_texcoord);\n    vec4 maskValue = maskNColor;\n\n    // 混合因子，确保在 [0, 1] 范围内\n    float factor = maskValue.a * clamp(abs(adjustable_intensity), 0.0, 100.0) * (0.32 / 100.0);\n\n    // 正片叠底混合：base * blend\n    vec4 blended = blackAndWhite * maskValue;\n\n    // 混合原颜色与正片叠底后的颜色，根据 factor 控制强度\n    vec4 VignetteColor = mix(blackAndWhite, blended, factor);\n\n    // 保留原颜色的 alpha 通道\n    fragColor = vec4(VignetteColor.rgb, blackAndWhite.a);\n\n    // 保持原 alpha 通道的 clamp 操作\n    fragColor = clamp(fragColor, 0.0, fragColor.a);\n}\n\n    ",
+                "m_entryPoint": "",
+                "m_language": "",
+                "m_blendSource": "uniform sampler2D u_FBOTexture1; vec4 FBOTexture(vec2 uv) { vec4 result = texture(u_FBOTexture1, uv); return result; }vec3 customBlend_(vec3 src1, vec3 src2, float alpha) { return src2; }",
+                "m_enableUberShader": 0
+            }
+        },
+        {
+            "instance_type": 1,
+            "instance_id": 1,
+            "typeId": "Shader",
+            "type_version": -1,
+            "object": {
+                "m_type": 0,
+                "m_source": "\n    #ifdef GL_ES\n    #ifdef GL_FRAGMENT_PRECISION_HIGH\n        precision highp float;\n    #else\n        precision mediump float;\n    #endif\n    #endif\n    in vec3 a_position;\n    in vec2 a_texcoord0;\n    out vec2 v_texcoord;\n \n    void main()\n    {\n        v_texcoord  = a_texcoord0;\n        gl_Position = vec4(a_position, 1.0);\n    }\n",
+                "m_entryPoint": "",
+                "m_language": "",
+                "m_blendSource": "",
+                "m_enableUberShader": 0
+            }
+        }
+    ]
+}

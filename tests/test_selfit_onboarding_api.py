@@ -308,6 +308,42 @@ def test_photo_upload_accepted_and_saves_asset(monkeypatch, tmp_path: Path) -> N
     assert session["completedSteps"] == ["photos"]
 
 
+def test_authenticated_user_can_reuse_latest_body_photo_after_session_cleanup(
+    monkeypatch, tmp_path: Path
+) -> None:
+    _use_tmp_store(monkeypatch, tmp_path)
+    monkeypatch.setattr(storage, "ROOT_DIR", tmp_path)
+    monkeypatch.setattr(auth, "AUTH_DIR", tmp_path / "outputs" / "auth")
+    monkeypatch.setattr(auth, "AUTH_STORE_PATH", tmp_path / "outputs" / "auth" / "auth_store.json")
+    monkeypatch.setattr(selfit_photo, "_inspector", selfit_photo.accept_all_inspector)
+    client = TestClient(app)
+
+    owner = client.post("/auth/phone/direct", json={"phone": "13800000901"}).json()
+    other = client.post("/auth/phone/direct", json={"phone": "13800000902"}).json()
+    owner_headers = {"Authorization": f"Bearer {owner['access_token']}"}
+    other_headers = {"Authorization": f"Bearer {other['access_token']}"}
+    session_id = _create_session(client, headers=owner_headers)["session"]["sessionId"]
+
+    uploaded = _upload_photo(
+        client, session_id, "body", _jpeg_bytes((120, 150, 180)), headers=owner_headers
+    )
+    assert uploaded.status_code == 200
+    assert uploaded.json()["photo"]["status"] == "accepted"
+
+    own_photo = client.get(f"{API}/me/photos/body", headers=owner_headers)
+    assert own_photo.status_code == 200
+    assert own_photo.headers["content-type"] == "image/jpeg"
+    assert client.get(f"{API}/me/photos/body", headers=other_headers).status_code == 204
+
+    # onboarding 草稿过期后，按用户索引的照片仍可供 App 试穿使用。
+    data = selfit_onboarding._load_store()
+    data["sessions"] = []
+    selfit_onboarding._write_store(data)
+    persisted = client.get(f"{API}/me/photos/body", headers=owner_headers)
+    assert persisted.status_code == 200
+    assert persisted.content == own_photo.content
+
+
 def test_photo_business_rejection_returns_200_without_asset(monkeypatch, tmp_path: Path) -> None:
     _use_tmp_store(monkeypatch, tmp_path)
     monkeypatch.setattr(
@@ -441,6 +477,45 @@ def test_report_job_lifecycle_completes_with_report(monkeypatch, tmp_path: Path)
     fetched = client.get(f"{API}/reports/{finished['reportId']}")
     assert fetched.status_code == 200
     assert fetched.json()["report"]["traits"] == ["冷调柔和"]
+
+
+def test_latest_report_is_user_scoped_and_survives_session_expiry(monkeypatch, tmp_path: Path) -> None:
+    _use_tmp_store(monkeypatch, tmp_path)
+    monkeypatch.setattr(auth, "AUTH_DIR", tmp_path / "outputs" / "auth")
+    monkeypatch.setattr(auth, "AUTH_STORE_PATH", tmp_path / "outputs" / "auth" / "auth_store.json")
+    monkeypatch.setattr(
+        selfit_report,
+        "_builder",
+        lambda session: {"typeId": "noir", "title": "冷感黑标"},
+    )
+    client = TestClient(app)
+
+    owner_login = client.post("/auth/phone/direct", json={"phone": "13800000601"}).json()
+    owner_headers = {"Authorization": f"Bearer {owner_login['access_token']}"}
+    other_login = client.post("/auth/phone/direct", json={"phone": "13800000602"}).json()
+    other_headers = {"Authorization": f"Bearer {other_login['access_token']}"}
+    session_id = _create_session(client, headers=owner_headers)["session"]["sessionId"]
+    job = _create_report_job(client, session_id, headers=owner_headers)["job"]
+    report_id = _wait_for_job(client, job["jobId"], headers=owner_headers)["reportId"]
+
+    assert client.get(f"{API}/reports/latest").status_code == 401
+    latest = client.get(f"{API}/reports/latest", headers=owner_headers)
+    assert latest.status_code == 200
+    assert latest.json()["report"] == {
+        "reportId": report_id,
+        "typeId": "noir",
+        "createdAt": latest.json()["report"]["createdAt"],
+    }
+    assert client.get(f"{API}/reports/latest", headers=other_headers).json()["report"] is None
+
+    data = selfit_onboarding._load_store()
+    next(item for item in data["sessions"] if item["session_id"] == session_id)["expires_at"] = "2000-01-01T00:00:00Z"
+    selfit_onboarding._write_store(data)
+    client.post(f"{API}/sessions", json={})
+
+    retained = client.get(f"{API}/reports/latest", headers=owner_headers)
+    assert retained.status_code == 200
+    assert retained.json()["report"]["reportId"] == report_id
 
 
 def test_report_job_processing_state(monkeypatch, tmp_path: Path) -> None:

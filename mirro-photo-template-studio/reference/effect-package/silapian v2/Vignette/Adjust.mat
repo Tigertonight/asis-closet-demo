@@ -1,0 +1,378 @@
+{
+    "zeus_version": 300100,
+    "typeId": "Material",
+    "type_version": -1,
+    "object": {
+        "name": "Default Material",
+        "m_passList": [
+            {
+                "instance_type": 1,
+                "instance_id": 1,
+                "data_description": "std::shared_ptr<Pass>"
+            }
+        ],
+        "m_ParamProperties": [],
+        "m_Type": 0,
+        "m_RenderQueue": 2000,
+        "m_isInstance": false
+    },
+    "instance_map": [
+        {
+            "instance_type": 1,
+            "instance_id": 1,
+            "typeId": "Pass",
+            "type_version": -1,
+            "object": {
+                "m_blendMode": 0,
+                "m_CustomBlendMode": 0,
+                "m_cullMode": 2,
+                "m_colorMask": {
+                    "MaskR": true,
+                    "MaskG": true,
+                    "MaskB": true,
+                    "MaskA": true
+                },
+                "m_depthTestFunc": 1,
+                "m_depthTest": false,
+                "m_depthWrite": false,
+                "m_cullFace": false,
+                "m_paramsMap": [
+                    {
+                        "p0": "Brightness",
+                        "p1": {
+                            "type_": 4,
+                            "VariantValue": 0.0
+                        }
+                    },
+                    {
+                        "p0": "Contrast",
+                        "p1": {
+                            "type_": 4,
+                            "VariantValue": 0.0
+                        }
+                    },
+                    {
+                        "p0": "Exposure",
+                        "p1": {
+                            "type_": 4,
+                            "VariantValue": 0.0
+                        }
+                    },
+                    {
+                        "p0": "Fade",
+                        "p1": {
+                            "type_": 4,
+                            "VariantValue": 0.0
+                        }
+                    },
+                    {
+                        "p0": "Highlight",
+                        "p1": {
+                            "type_": 4,
+                            "VariantValue": 0.0
+                        }
+                    },
+                    {
+                        "p0": "LightSensation",
+                        "p1": {
+                            "type_": 4,
+                            "VariantValue": 0.0
+                        }
+                    },
+                    {
+                        "p0": "Saturation",
+                        "p1": {
+                            "type_": 4,
+                            "VariantValue": 0.019999999552965165
+                        }
+                    },
+                    {
+                        "p0": "Shadow",
+                        "p1": {
+                            "type_": 4,
+                            "VariantValue": 0.0
+                        }
+                    },
+                    {
+                        "p0": "Temperature",
+                        "p1": {
+                            "type_": 4,
+                            "VariantValue": 0.0
+                        }
+                    },
+                    {
+                        "p0": "Tone",
+                        "p1": {
+                            "type_": 4,
+                            "VariantValue": 0.0
+                        }
+                    },
+                    {
+                        "p0": "Vibrance",
+                        "p1": {
+                            "type_": 4,
+                            "VariantValue": 0.0
+                        }
+                    },
+                    {
+                        "p0": "adjustable_x",
+                        "p1": {
+                            "type_": 4,
+                            "VariantValue": 0.0
+                        }
+                    },
+                    {
+                        "p0": "adjustable_y",
+                        "p1": {
+                            "type_": 4,
+                            "VariantValue": 0.0
+                        }
+                    },
+                    {
+                        "p0": "bias",
+                        "p1": {
+                            "type_": 4,
+                            "VariantValue": 0.0
+                        }
+                    },
+                    {
+                        "p0": "image_height",
+                        "p1": {
+                            "type_": 4,
+                            "VariantValue": 1080.0
+                        }
+                    },
+                    {
+                        "p0": "image_width",
+                        "p1": {
+                            "type_": 4,
+                            "VariantValue": 1920.0
+                        }
+                    },
+                    {
+                        "p0": "isRotate",
+                        "p1": {
+                            "type_": 4,
+                            "VariantValue": 0.0
+                        }
+                    },
+                    {
+                        "p0": "rotation",
+                        "p1": {
+                            "type_": 4,
+                            "VariantValue": 0.0
+                        }
+                    },
+                    {
+                        "p0": "slope",
+                        "p1": {
+                            "type_": 4,
+                            "VariantValue": 1.0
+                        }
+                    }
+                ],
+                "m_multiTextureMap": [
+                    {
+                        "p0": "lut0",
+                        "p1": [
+                            {
+                                "uuid": {
+                                    "uuid": "ecfe4e0d-b29a-3a71-dc3d-c93360e17f75"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "p0": "_BaseTexture0",
+                        "p1": [
+                            {
+                                "uuid": {
+                                    "uuid": "f1b149a0-a5ba-ee7f-e39f-808ce2666ec9"
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "m_program": {
+                    "uuid": {
+                        "uuid": "46565d70-1037-4cac-8da2-b7e182a882f2"
+                    }
+                },
+                "m_adjustableParams": [
+                    {
+                        "p0": "Brightness",
+                        "p1": {
+                            "p0": {
+                                "type_": 4,
+                                "VariantValue": -100.0
+                            },
+                            "p1": {
+                                "type_": 4,
+                                "VariantValue": 100.0
+                            }
+                        }
+                    },
+                    {
+                        "p0": "Contrast",
+                        "p1": {
+                            "p0": {
+                                "type_": 4,
+                                "VariantValue": -100.0
+                            },
+                            "p1": {
+                                "type_": 4,
+                                "VariantValue": 100.0
+                            }
+                        }
+                    },
+                    {
+                        "p0": "Exposure",
+                        "p1": {
+                            "p0": {
+                                "type_": 4,
+                                "VariantValue": -100.0
+                            },
+                            "p1": {
+                                "type_": 4,
+                                "VariantValue": 100.0
+                            }
+                        }
+                    },
+                    {
+                        "p0": "Fade",
+                        "p1": {
+                            "p0": {
+                                "type_": 4,
+                                "VariantValue": 0.0
+                            },
+                            "p1": {
+                                "type_": 4,
+                                "VariantValue": 100.0
+                            }
+                        }
+                    },
+                    {
+                        "p0": "Highlight",
+                        "p1": {
+                            "p0": {
+                                "type_": 4,
+                                "VariantValue": -100.0
+                            },
+                            "p1": {
+                                "type_": 4,
+                                "VariantValue": 100.0
+                            }
+                        }
+                    },
+                    {
+                        "p0": "LightSensation",
+                        "p1": {
+                            "p0": {
+                                "type_": 4,
+                                "VariantValue": -100.0
+                            },
+                            "p1": {
+                                "type_": 4,
+                                "VariantValue": 100.0
+                            }
+                        }
+                    },
+                    {
+                        "p0": "Saturation",
+                        "p1": {
+                            "p0": {
+                                "type_": 4,
+                                "VariantValue": -100.0
+                            },
+                            "p1": {
+                                "type_": 4,
+                                "VariantValue": 100.0
+                            }
+                        }
+                    },
+                    {
+                        "p0": "Shadow",
+                        "p1": {
+                            "p0": {
+                                "type_": 4,
+                                "VariantValue": -100.0
+                            },
+                            "p1": {
+                                "type_": 4,
+                                "VariantValue": 100.0
+                            }
+                        }
+                    },
+                    {
+                        "p0": "Temperature",
+                        "p1": {
+                            "p0": {
+                                "type_": 4,
+                                "VariantValue": -100.0
+                            },
+                            "p1": {
+                                "type_": 4,
+                                "VariantValue": 100.0
+                            }
+                        }
+                    },
+                    {
+                        "p0": "Tone",
+                        "p1": {
+                            "p0": {
+                                "type_": 4,
+                                "VariantValue": -100.0
+                            },
+                            "p1": {
+                                "type_": 4,
+                                "VariantValue": 100.0
+                            }
+                        }
+                    },
+                    {
+                        "p0": "Vibrance",
+                        "p1": {
+                            "p0": {
+                                "type_": 4,
+                                "VariantValue": -100.0
+                            },
+                            "p1": {
+                                "type_": 4,
+                                "VariantValue": 100.0
+                            }
+                        }
+                    },
+                    {
+                        "p0": "adjustable_x",
+                        "p1": {
+                            "p0": {
+                                "type_": 4,
+                                "VariantValue": -100.0
+                            },
+                            "p1": {
+                                "type_": 4,
+                                "VariantValue": 100.0
+                            }
+                        }
+                    },
+                    {
+                        "p0": "adjustable_y",
+                        "p1": {
+                            "p0": {
+                                "type_": 4,
+                                "VariantValue": -100.0
+                            },
+                            "p1": {
+                                "type_": 4,
+                                "VariantValue": 100.0
+                            }
+                        }
+                    }
+                ],
+                "m_SamplerMap": [],
+                "m_matrialMacros": [],
+                "m_usedFeedback": false
+            }
+        }
+    ]
+}

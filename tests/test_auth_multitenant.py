@@ -260,6 +260,27 @@ def test_user_assets_are_read_under_current_user_only(monkeypatch, tmp_path: Pat
     assert client.get(asset_path, headers=user_b).status_code == 404
 
 
+def test_missing_demo_asset_is_backfilled_for_existing_user(monkeypatch, tmp_path: Path) -> None:
+    _use_tmp_runtime(monkeypatch, tmp_path)
+    client = TestClient(app)
+    headers = _login(client, "13800000007")
+    user_id = client.get("/auth/me", headers=headers).json()["user"]["user_id"]
+
+    demo_asset = storage.storage_context(storage.LOCAL_USER_ID).closet_output_dir / "items" / "demo_top" / "cutout.png"
+    demo_asset.parent.mkdir(parents=True, exist_ok=True)
+    demo_asset.write_bytes(_png_bytes(_synthetic_top_image((180, 80, 120))))
+
+    user_asset_dir = storage.storage_context(user_id).closet_output_dir / "items" / "demo_top"
+    user_asset_dir.mkdir(parents=True, exist_ok=True)
+    assert not (user_asset_dir / "cutout.png").exists()
+
+    response = client.get("/user-assets/closet/items/demo_top/cutout.png", headers=headers)
+
+    assert response.status_code == 200
+    assert response.headers["content-type"] == "image/png"
+    assert (user_asset_dir / "cutout.png").exists()
+
+
 def test_phone_direct_login_not_throttled_by_admin_auth_rule(monkeypatch, tmp_path: Path) -> None:
     """路演场景：商场 WiFi 下大量用户共享出口 IP。
 

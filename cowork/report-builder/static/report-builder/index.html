@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#faf8f7" />
+  <title>selfit · 风格报告模板编辑器</title>
+  <link rel="icon" href="data:," />
+  <link rel="stylesheet" href="../../static/report-builder/builder.css?v=20260825-1" />
+</head>
+<body>
+  <header class="workspace-header">
+    <div class="brand-lockup"><img src="../../static/selfit/assets/selfit-wordmark.svg" width="55" height="20" alt="selfit" /><span>风格报告模板编辑器</span></div>
+    <div class="header-actions"><span class="save-state" id="saveState" role="status">所有更改已保存</span><button class="button button--quiet" id="importButton" type="button">导入配置</button><button class="button button--primary" id="exportButton" type="button">导出配置</button><input id="importInput" type="file" accept="application/json,.json" hidden /></div>
+  </header>
+  <main class="workspace">
+    <section class="editor-pane" aria-label="模板配置表单">
+      <div class="editor-intro"><div><p class="eyebrow">REPORT TEMPLATE</p><h1>编辑风格报告</h1><p>内容会实时同步到右侧预览，并自动保存在当前浏览器。</p></div><button class="button button--quiet" id="resetButton" type="button">恢复示例</button></div>
+      <nav class="section-nav" aria-label="配置分组">
+        <button class="is-active" type="button" data-jump="identity">基础信息 <span>6</span></button><button type="button" data-jump="colors">推荐色 <span>5</span></button><button type="button" data-jump="beauty">妆发 <span>4</span></button><button type="button" data-jump="outfits">穿搭 <span>5</span></button><button type="button" data-jump="conclusion">总结 <span>4</span></button>
+      </nav>
+      <form id="builderForm" novalidate>
+        <section class="form-section" id="identity" data-form-section>
+          <div class="section-heading"><span>01</span><div><h2>基础信息</h2><p>定义人格的第一印象与核心表达。</p></div></div>
+          <div class="field-grid field-grid--2"><label class="field"><span>人格名称 <b>必填</b></span><input name="name" maxlength="12" required /></label><label class="field"><span>英文代号 <b>必填</b></span><input name="code" maxlength="12" required /></label></div>
+          <div class="field"><span>头部插画 <b>1 张</b></span><div class="image-field" data-image-field="hero"><input type="file" accept="image/png,image/jpeg,image/webp" /><div class="image-thumb"><img alt="头部插画预览" /></div><div><strong>替换头部插画</strong><small>建议 706 × 514px，PNG / JPG / WebP</small></div><button type="button" data-clear-image>移除</button></div></div>
+          <fieldset class="repeater"><legend>Keyword <b>3 个</b></legend><div class="field-grid field-grid--3" id="keywordFields"></div></fieldset>
+          <label class="field"><span>人格概述 <b>1 段 · Markdown</b></span><textarea name="summary" rows="5" maxlength="500"></textarea><small class="markdown-help">支持 **加粗**、*斜体*、- 列表、[链接](https://...)</small><small class="counter" data-counter="summary"></small></label>
+        </section>
+        <section class="form-section" id="colors" data-form-section>
+          <div class="section-heading"><span>02</span><div><h2>推荐色</h2><p>固定展示 5 个颜色，可同时编辑色值和名称。</p></div></div><div class="color-editor" id="colorFields"></div>
+        </section>
+        <section class="form-section" id="beauty" data-form-section>
+          <div class="section-heading"><span>03</span><div><h2>妆容与发型</h2><p>每项包含图片、标题与选填的来源署名。</p></div></div>
+          <fieldset class="repeater"><legend>妆容 <b>2 组</b></legend><div class="media-editor" id="makeupFields"></div></fieldset><fieldset class="repeater"><legend>发型 <b>2 组</b></legend><div class="media-editor" id="hairFields"></div></fieldset>
+        </section>
+        <section class="form-section" id="outfits" data-form-section>
+          <div class="section-heading"><span>04</span><div><h2>穿搭</h2><p>先说明整体方向，再提供 4 组视觉参考。</p></div></div>
+          <label class="field"><span>穿搭综述 <b>1 段 · Markdown</b></span><textarea name="outfitSummary" rows="5" maxlength="800"></textarea><small class="markdown-help">支持 **加粗**、*斜体*、- 列表、[链接](https://...)</small><small class="counter" data-counter="outfitSummary"></small></label><fieldset class="repeater"><legend>穿搭参考 <b>4 组</b></legend><div class="media-editor" id="outfitFields"></div></fieldset>
+        </section>
+        <section class="form-section" id="conclusion" data-form-section>
+          <div class="section-heading"><span>05</span><div><h2>结尾总结</h2><p>用一段概括和 3 个行动建议收束报告。</p></div></div>
+          <label class="field"><span>结尾概括 <b>1 段 · Markdown</b></span><textarea name="conclusion" rows="5" maxlength="800"></textarea><small class="markdown-help">支持 **加粗**、*斜体*、- 列表、[链接](https://...)</small><small class="counter" data-counter="conclusion"></small></label><fieldset class="repeater"><legend>建议点 <b>3 条 · Markdown</b></legend><div class="advice-editor" id="adviceFields"></div></fieldset>
+        </section>
+      </form>
+    </section>
+    <aside class="preview-pane" aria-label="报告实时预览">
+      <div class="preview-toolbar"><div><strong>实时预览</strong><span><i></i> 已同步</span></div><button id="previewTop" type="button">回到顶部</button></div>
+      <div class="phone-stage"><iframe class="onboarding-preview-frame" id="reportPreview" src="../../static/selfit/index.html?preview=report&amp;type=flou&amp;builder=1" title="onboarding 风格报告实时预览"></iframe></div>
+    </aside>
+  </main>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div><script src="../../static/report-builder/builder.js?v=20260825-1" defer></script>
+</body>
+</html>

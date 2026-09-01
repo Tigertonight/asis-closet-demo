@@ -1,0 +1,316 @@
+{
+    "zeus_version": 300100,
+    "typeId": "Prefab",
+    "type_version": -1,
+    "object": {
+        "m_SignalConnections": {
+            "instance_type": 1,
+            "instance_id": 0,
+            "data_description": "NullPtr"
+        },
+        "m_RootSo": {
+            "instance_type": 1,
+            "instance_id": 1,
+            "data_description": "std::shared_ptr<SceneObject>"
+        },
+        "m_UUID": {
+            "uuid": "88972fec-ef65-b44e-3aec-49f2f905a90a"
+        }
+    },
+    "instance_map": [
+        {
+            "instance_type": 1,
+            "instance_id": 1,
+            "typeId": "SceneObject",
+            "type_version": -1,
+            "object": {
+                "m_Name": "FilterwithSkin",
+                "m_ObjectUUID": {
+                    "uuid": "002d8e60-e28c-d928-d53a-7270119c4f62"
+                },
+                "m_Children": [
+                    {
+                        "instance_type": 2,
+                        "instance_id": 2,
+                        "data_description": "GameObjectHandle<SceneObject>"
+                    }
+                ],
+                "m_Components": [],
+                "m_LocalTfrm": {
+                    "m_Position": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "m_Rotation": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0,
+                        "w": 1.0
+                    },
+                    "m_Scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    }
+                },
+                "m_Id": 0,
+                "m_isFrontRndr": 0,
+                "m_SortIndex": 3,
+                "m_ActiveSelf": 1,
+                "m_ActiveHierarchy": 1,
+                "m_LocalRotationZ": 0.0,
+                "m_metaInfo": []
+            }
+        },
+        {
+            "instance_type": 2,
+            "instance_id": 2,
+            "inner_ptr": {
+                "instance_type": 1,
+                "instance_id": 3,
+                "data_description": "std::shared_ptr<SceneObject>"
+            }
+        },
+        {
+            "instance_type": 1,
+            "instance_id": 3,
+            "typeId": "SceneObject",
+            "type_version": -1,
+            "object": {
+                "m_Name": "filter",
+                "m_ObjectUUID": {
+                    "uuid": "e7524c36-a4eb-7faf-59e3-9c247242ecc0"
+                },
+                "m_Children": [],
+                "m_Components": [
+                    {
+                        "instance_type": 2,
+                        "instance_id": 4,
+                        "data_description": "GameObjectHandle<FilterRenderer>"
+                    },
+                    {
+                        "instance_type": 2,
+                        "instance_id": 5,
+                        "data_description": "GameObjectHandle<SkinSegmentBehavior>"
+                    }
+                ],
+                "m_LocalTfrm": {
+                    "m_Position": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "m_Rotation": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0,
+                        "w": 1.0
+                    },
+                    "m_Scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    }
+                },
+                "m_Id": 0,
+                "m_isFrontRndr": 0,
+                "m_SortIndex": 4,
+                "m_ActiveSelf": 1,
+                "m_ActiveHierarchy": 1,
+                "m_LocalRotationZ": 0.0,
+                "m_metaInfo": []
+            }
+        },
+        {
+            "instance_type": 2,
+            "instance_id": 5,
+            "inner_ptr": {
+                "instance_type": 1,
+                "instance_id": 6,
+                "data_description": "std::shared_ptr<SkinSegmentBehavior>"
+            }
+        },
+        {
+            "instance_type": 1,
+            "instance_id": 6,
+            "typeId": "SkinSegmentBehavior",
+            "type_version": -1,
+            "object": {
+                "m_Name": "Component",
+                "m_ObjectUUID": {
+                    "uuid": "de835390-73f3-b324-e919-ac4f64bd0e95"
+                },
+                "m_isEnabled": true,
+                "m_EnableUpdateTexInBehavior": true
+            }
+        },
+        {
+            "instance_type": 2,
+            "instance_id": 4,
+            "inner_ptr": {
+                "instance_type": 1,
+                "instance_id": 7,
+                "data_description": "std::shared_ptr<FilterRenderer>"
+            }
+        },
+        {
+            "instance_type": 1,
+            "instance_id": 7,
+            "typeId": "FilterRenderer",
+            "type_version": -1,
+            "object": {
+                "m_Name": "Renderable",
+                "m_ObjectUUID": {
+                    "uuid": "6400b981-2584-1399-cb46-0a6c41e89138"
+                },
+                "m_isEnabled": true,
+                "m_renderLayer": 1000,
+                "m_Layer": 1,
+                "m_Materials": [
+                    {
+                        "uuid": {
+                            "uuid": "d9d21fc4-b071-8928-8481-18c64c40dc14"
+                        }
+                    },
+                    {
+                        "uuid": {
+                            "uuid": "9d6f9e29-5e23-0e86-1ddf-4c827ffad8fb"
+                        }
+                    },
+                    {
+                        "uuid": {
+                            "uuid": "93ba25bb-e25a-2d2c-c5e6-06c3a8b36762"
+                        }
+                    }
+                ],
+                "m_customBlendMode": 0,
+                "m_filterSequence": 0,
+                "m_targetWidth": 0,
+                "m_targetHeight": 0,
+                "m_FilterObjectName": "BackGround",
+                "m_filterList": [
+                    {
+                        "instance_type": 1,
+                        "instance_id": 8,
+                        "data_description": "std::shared_ptr<Filter>"
+                    },
+                    {
+                        "instance_type": 1,
+                        "instance_id": 9,
+                        "data_description": "std::shared_ptr<Filter>"
+                    },
+                    {
+                        "instance_type": 1,
+                        "instance_id": 10,
+                        "data_description": "std::shared_ptr<Filter>"
+                    }
+                ],
+                "m_transformAnimations2D": [],
+                "m_rotateAdaptRes": 0.0,
+                "m_input": {
+                    "uuid": {
+                        "uuid": "5f291f1a-946e-c13d-f843-08462a14b0c6"
+                    }
+                },
+                "m_output": {
+                    "uuid": {
+                        "uuid": "00000000-0000-0000-0000-000000000000"
+                    }
+                },
+                "m_bIsTransition": false,
+                "m_TemplateTextures": [],
+                "m_StickerProperties": []
+            }
+        },
+        {
+            "instance_type": 1,
+            "instance_id": 10,
+            "typeId": "Filter",
+            "type_version": -1,
+            "object": {
+                "m_uuid": {
+                    "uuid": "80fcf96e-cc33-f348-1fe2-4d93a6520542"
+                },
+                "m_name": "lut",
+                "m_BlenderSrc": true,
+                "m_clearColor": {
+                    "r": 0.0,
+                    "g": 0.0,
+                    "b": 0.0,
+                    "a": 0.0
+                },
+                "m_filterUUIDs": [
+                    {
+                        "uuid": "c9dab53f-8614-25d8-fe41-c26ed089b8ff"
+                    }
+                ],
+                "m_targetWidth": 0,
+                "m_targetHeight": 0,
+                "m_TargetType": 0,
+                "m_TargetScaleWidth": 1.0,
+                "m_TargetScaleHeight": 1.0,
+                "m_TargetAnchorShortSide": 0.0,
+                "m_TargetAnchorLongSide": 0.0
+            }
+        },
+        {
+            "instance_type": 1,
+            "instance_id": 9,
+            "typeId": "Filter",
+            "type_version": -1,
+            "object": {
+                "m_uuid": {
+                    "uuid": "c9dab53f-8614-25d8-fe41-c26ed089b8ff"
+                },
+                "m_name": "blurY",
+                "m_BlenderSrc": false,
+                "m_clearColor": {
+                    "r": 0.0,
+                    "g": 0.0,
+                    "b": 0.0,
+                    "a": 0.0
+                },
+                "m_filterUUIDs": [
+                    {
+                        "uuid": "98255d7b-be62-93b9-648e-f717d432a807"
+                    }
+                ],
+                "m_targetWidth": 0,
+                "m_targetHeight": 0,
+                "m_TargetType": 0,
+                "m_TargetScaleWidth": 1.0,
+                "m_TargetScaleHeight": 1.0,
+                "m_TargetAnchorShortSide": 0.0,
+                "m_TargetAnchorLongSide": 0.0
+            }
+        },
+        {
+            "instance_type": 1,
+            "instance_id": 8,
+            "typeId": "Filter",
+            "type_version": -1,
+            "object": {
+                "m_uuid": {
+                    "uuid": "98255d7b-be62-93b9-648e-f717d432a807"
+                },
+                "m_name": "blurX",
+                "m_BlenderSrc": false,
+                "m_clearColor": {
+                    "r": 0.0,
+                    "g": 0.0,
+                    "b": 0.0,
+                    "a": 0.0
+                },
+                "m_filterUUIDs": [],
+                "m_targetWidth": 0,
+                "m_targetHeight": 0,
+                "m_TargetType": 0,
+                "m_TargetScaleWidth": 1.0,
+                "m_TargetScaleHeight": 1.0,
+                "m_TargetAnchorShortSide": 0.0,
+                "m_TargetAnchorLongSide": 0.0
+            }
+        }
+    ]
+}

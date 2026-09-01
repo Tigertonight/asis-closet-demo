@@ -33,7 +33,6 @@ def test_internal_pages_redirect_anonymous_to_admin(demo_client: TestClient) -> 
         "/qa",
         "/self-test",
         "/report-builder",
-        "/wearwow/demo",
         "/fixtures",
     ):
         response = demo_client.get(path, follow_redirects=False)
@@ -46,7 +45,7 @@ def test_internal_pages_redirect_anonymous_to_admin(demo_client: TestClient) -> 
 def test_user_flow_pages_stay_public(demo_client: TestClient) -> None:
     """用户主流程页面不受网关影响。"""
 
-    for path in ("/selfit", "/selfit/mirror"):
+    for path in ("/selfit", "/selfit/mirror", "/wearwow/demo"):
         response = demo_client.get(path, follow_redirects=False)
         assert response.status_code == 200, path
 

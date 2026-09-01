@@ -37,6 +37,14 @@
   const handoffToken = entryParams.get('handoff') || '';
   const sharedReportEntry = entryParams.get('from') === 'shared-report';
   const sharedReportType = (entryParams.get('shared_type') || '').trim().slice(0, 24);
+  const reportParentTab = ({
+    'app-home': 'home',
+    'app-profile': 'me',
+  })[entryParams.get('from')] || '';
+  const reportBack = document.querySelector('[data-screen="report"] [data-back]');
+  if (reportParentTab && reportBack) {
+    reportBack.setAttribute('aria-label', reportParentTab === 'me' ? '返回我的' : '返回推荐');
+  }
   let api;
   let auth;
   let authReady = Promise.resolve(null);
@@ -46,7 +54,7 @@
     photoAssets: { face: null, body: null },
     manual: { skin: null, faceShape: null, bodyShape: null },
     axes: { shape: 42, energy: 64, trend: 42 },
-    palette: null, answers: {}, sessionId: null, revision: 0, reportJobId: null, reportId: null, authUser: null, publicShare: null,
+    palette: null, answers: {}, sessionId: null, revision: 0, reportJobId: null, reportId: null, currentReportTypeId: '', authUser: null, publicShare: null,
   };
   const personalityCatalog = window.__SELFIT_PERSONALITY_TEMPLATES__ || { types: {}, renderRules: {} };
   const dismissKeyboard = () => window.SelfitViewport?.dismissKeyboard?.() || Promise.resolve();
@@ -137,10 +145,23 @@
       screen.setAttribute('aria-hidden', screen === next ? 'false' : 'true');
     });
     state.screen = name;
+    if (name === 'report' && state.currentReportTypeId && !publicShareToken) {
+      try { localStorage.setItem('selfit.app.persona.v1', state.currentReportTypeId); } catch { /* 无痕模式下仍可继续查看报告。 */ }
+    }
     if (previous !== name) track('screen_view', { from: previous, to: name });
     updateOnboardingNav(name);
     themeColor?.setAttribute('content', ['splash', 'loading'].includes(name) ? '#8a011b' : '#fafafa');
     next.scrollTop = 0;
+  };
+
+  const returnToReportParent = () => {
+    if (!reportParentTab) return false;
+    const appUrl = new URL('/wearwow/demo', window.location.origin);
+    const typeId = String(entryParams.get('type') || state.currentReportTypeId || '').trim().toLowerCase();
+    if (typeId) appUrl.searchParams.set('persona', typeId);
+    appUrl.searchParams.set('tab', reportParentTab);
+    window.location.assign(`${appUrl.pathname}${appUrl.search}`);
+    return true;
   };
 
   let splashTimer = 0;
@@ -189,6 +210,15 @@
           showScreen(destination);
           setAuthMessage(authNodes.phoneMessage, error.message || '这个二维码已失效。', 'error');
         }
+      } else if (state.authUser) {
+        try {
+          if (await openAppForExistingReport()) return;
+          showScreen(destination);
+        } catch (error) {
+          destination = 'phone-login';
+          showScreen(destination);
+          setAuthMessage(authNodes.phoneMessage, error.message || '暂时无法读取你的风格档案，请重试。', 'error');
+        }
       } else showScreen(destination);
       splash.classList.remove('is-leaving');
       splashTransitioning = false;
@@ -217,6 +247,7 @@
     }
     if (back) {
       if (document.activeElement?.matches?.('input, textarea, [contenteditable="true"]')) await dismissKeyboard();
+      if (state.screen === 'report' && returnToReportParent()) return;
       showScreen(back.dataset.back);
       if (back.dataset.back === 'intro') playIntro();
     }
@@ -261,8 +292,18 @@
       await claimPendingHandoff();
       return;
     }
+    if (await openAppForExistingReport()) return;
     showScreen('intro');
     playIntro();
+  };
+  const openAppForExistingReport = async () => {
+    if (!state.authUser) return false;
+    const result = await api.getLatestReport();
+    const typeId = String(result?.report?.typeId || '').trim().toLowerCase();
+    if (!typeId) return false;
+    track('existing_report_app_entered', { typeId, reportId: result.report.reportId || '' });
+    window.location.replace(`/wearwow/demo?from=login&persona=${encodeURIComponent(typeId)}`);
+    return true;
   };
   const setAuthBusy = (button, busy) => {
     button.toggleAttribute('aria-busy', busy);
@@ -767,6 +808,10 @@
   };
   const renderReport = (payload = {}) => {
     const data = normalizeReport(payload);
+    const reportTypeId = String(data.typeId || 'mute').toLowerCase();
+    state.currentReportTypeId = reportTypeId;
+    const continueToApp = document.querySelector('#continueToApp');
+    if (continueToApp) continueToApp.href = `/wearwow/demo?from=report&persona=${encodeURIComponent(reportTypeId)}`;
     const fullHero = Boolean(data.heroImage?.src);
     const heroSource = fullHero ? mobileHeroSource(data.heroImage.src) : '';
     reportNodes.hero.classList.toggle('report-hero--full', fullHero);
@@ -1620,6 +1665,22 @@
     document.querySelectorAll('[data-public-report-try]').forEach((link) => link.addEventListener('click', () => {
       track('shared_report_try_clicked', { placement: link.dataset.publicReportTry || '', typeId: link.dataset.sharedTypeId || '' });
     }));
+    return;
+  }
+
+  if (entryParams.get('entry') === 'login') {
+    showScreen('login');
+    void authReady.then(async (session) => {
+      if (session?.user) {
+        if (await openAppForExistingReport()) return;
+        showScreen('intro');
+        playIntro();
+      }
+    }).catch((error) => {
+      showScreen('phone-login');
+      setAuthMessage(authNodes.phoneMessage, error.message || '暂时无法读取你的风格档案，请重试。', 'error');
+    });
+    shell.classList.add('is-ready');
     return;
   }
 

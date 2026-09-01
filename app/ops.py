@@ -32,7 +32,7 @@ def is_public_demo_mode() -> bool:
 # ---------------------------------------------------------------------------
 
 # 对外（用户）可访问的页面路径前缀/精确路径。API/静态资源走各自鉴权。
-PUBLIC_PAGE_PREFIXES = ("/selfit", "/static", "/user-assets")
+PUBLIC_PAGE_PREFIXES = ("/selfit", "/wearwow", "/static", "/user-assets")
 PUBLIC_PAGE_EXACT = ("/", "/favicon.ico", "/admin")
 
 # 需要管理员登录的内部页面（页面级；数据 API 由各自路由的鉴权保护）。
@@ -47,7 +47,6 @@ INTERNAL_PAGE_RULES = (
     "/fixtures",
     "/fixture-images",
     "/report-builder",
-    "/wearwow",
     "/ori",
     "/analyze",
 )
@@ -73,6 +72,7 @@ class LimitRule:
     max_requests: int
     window_seconds: int
     contains: tuple[str, ...] = field(default_factory=tuple)
+    methods: tuple[str, ...] = field(default_factory=tuple)
 
 
 class InMemoryRateLimiter:
@@ -164,6 +164,15 @@ def _rate_rules() -> list[LimitRule]:
             env_int("SELFIT_AUTH_RATE_WINDOW_SECONDS", 3600),
         ),
         LimitRule(
+            # 异步试穿通常需要数十秒，前端会持续读取任务状态。
+            # 查询不触发模型或上传，不应消耗生成请求的限额。
+            "tryon_job_status",
+            ("/selfit/try-on/jobs/",),
+            env_int("SELFIT_TRYON_STATUS_RATE_LIMIT", 3600),
+            env_int("SELFIT_TRYON_STATUS_RATE_WINDOW_SECONDS", 3600),
+            methods=("GET",),
+        ),
+        LimitRule(
             "upload",
             ("/analyze", "/demo/analyze", "/closet/import/upload", "/try-on", "/try-on/", "/selfit/try-on/"),
             env_int("SELFIT_UPLOAD_RATE_LIMIT", 60),
@@ -178,8 +187,11 @@ def _rate_rules() -> list[LimitRule]:
     ]
 
 
-def _matching_rule(path: str) -> LimitRule | None:
+def _matching_rule(path: str, method: str = "GET") -> LimitRule | None:
+    normalized_method = str(method or "GET").upper()
     for rule in _rate_rules():
+        if rule.methods and normalized_method not in rule.methods:
+            continue
         if rule.paths and not any(path == prefix or path.startswith(prefix) for prefix in rule.paths):
             continue
         if any(fragment not in path for fragment in rule.contains):
@@ -266,7 +278,7 @@ async def request_guard_middleware(request: Request, call_next: Callable[[Reques
         except ValueError:
             pass
 
-    rule = _matching_rule(path)
+    rule = _matching_rule(path, request.method)
     if rule and not env_flag("SELFIT_DISABLE_RATE_LIMIT", False):
         allowed, retry_after = _limiter.check(_client_id(request), rule)
         if not allowed:
@@ -299,6 +311,7 @@ def deployment_guard_report() -> dict[str, Any]:
             "max_request_body_mb": env_int("SELFIT_MAX_REQUEST_BODY_MB", 36),
             "auth_per_window": env_int("SELFIT_AUTH_RATE_LIMIT", 20),
             "upload_per_window": env_int("SELFIT_UPLOAD_RATE_LIMIT", 60),
+            "tryon_status_per_window": env_int("SELFIT_TRYON_STATUS_RATE_LIMIT", 3600),
             "mirror_handoff_per_window": env_int("SELFIT_MIRROR_HANDOFF_RATE_LIMIT", 3600),
             "ai_per_window": env_int("SELFIT_AI_RATE_LIMIT", 30),
         },

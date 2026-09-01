@@ -1,0 +1,292 @@
+{
+    "zeus_version": 300100,
+    "typeId": "Prefab",
+    "type_version": -1,
+    "object": {
+        "m_SignalConnections": {
+            "instance_type": 1,
+            "instance_id": 0,
+            "data_description": "NullPtr"
+        },
+        "m_RootSo": {
+            "instance_type": 1,
+            "instance_id": 1,
+            "data_description": "std::shared_ptr<SceneObject>"
+        },
+        "m_UUID": {
+            "uuid": "394d92c6-139e-2ea6-d691-6269ac5baca2"
+        }
+    },
+    "instance_map": [
+        {
+            "instance_type": 1,
+            "instance_id": 1,
+            "typeId": "SceneObject",
+            "type_version": -1,
+            "object": {
+                "m_Name": "Vignette",
+                "m_ObjectUUID": {
+                    "uuid": "da7f28a7-b675-dd2c-0aa1-04aa66821f0d"
+                },
+                "m_Children": [
+                    {
+                        "instance_type": 2,
+                        "instance_id": 2,
+                        "data_description": "GameObjectHandle<SceneObject>"
+                    }
+                ],
+                "m_Components": [],
+                "m_LocalTfrm": {
+                    "m_Position": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "m_Rotation": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0,
+                        "w": 1.0
+                    },
+                    "m_Scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    }
+                },
+                "m_Id": 0,
+                "m_isFrontRndr": 0,
+                "m_SortIndex": 3,
+                "m_ActiveSelf": 1,
+                "m_ActiveHierarchy": 1,
+                "m_LocalRotationZ": 0.0,
+                "m_metaInfo": []
+            }
+        },
+        {
+            "instance_type": 2,
+            "instance_id": 2,
+            "inner_ptr": {
+                "instance_type": 1,
+                "instance_id": 3,
+                "data_description": "std::shared_ptr<SceneObject>"
+            }
+        },
+        {
+            "instance_type": 1,
+            "instance_id": 3,
+            "typeId": "SceneObject",
+            "type_version": -1,
+            "object": {
+                "m_Name": "adjustment",
+                "m_ObjectUUID": {
+                    "uuid": "f6dbabac-a9b0-c0fd-1b56-e298cc31bba3"
+                },
+                "m_Children": [],
+                "m_Components": [
+                    {
+                        "instance_type": 2,
+                        "instance_id": 4,
+                        "data_description": "GameObjectHandle<FilterRenderer>"
+                    },
+                    {
+                        "instance_type": 2,
+                        "instance_id": 5,
+                        "data_description": "GameObjectHandle<ScriptComponent>"
+                    }
+                ],
+                "m_LocalTfrm": {
+                    "m_Position": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "m_Rotation": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0,
+                        "w": 1.0
+                    },
+                    "m_Scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    }
+                },
+                "m_Id": 0,
+                "m_isFrontRndr": 0,
+                "m_SortIndex": 4,
+                "m_ActiveSelf": 1,
+                "m_ActiveHierarchy": 1,
+                "m_LocalRotationZ": 0.0,
+                "m_metaInfo": []
+            }
+        },
+        {
+            "instance_type": 2,
+            "instance_id": 5,
+            "inner_ptr": {
+                "instance_type": 1,
+                "instance_id": 6,
+                "data_description": "std::shared_ptr<ScriptComponent>"
+            }
+        },
+        {
+            "instance_type": 1,
+            "instance_id": 6,
+            "typeId": "ScriptComponent",
+            "type_version": -1,
+            "object": {
+                "m_Name": "Component",
+                "m_ObjectUUID": {
+                    "uuid": "b8369948-14db-f2e6-01eb-205e278941bb"
+                },
+                "m_isEnabled": true,
+                "m_ScriptResource": {
+                    "uuid": {
+                        "uuid": "9f9fef03-1197-0474-846a-1e59caad279c"
+                    }
+                },
+                "mScriptSignalDealer": {
+                    "instance_type": 1,
+                    "instance_id": 0,
+                    "data_description": "NullPtr"
+                },
+                "m_PreSetProperties": [],
+                "m_PreSetTypes": [],
+                "m_ScriptGraph": {
+                    "uuid": {
+                        "uuid": "00000000-0000-0000-0000-000000000000"
+                    }
+                },
+                "m_UseSignal": false
+            }
+        },
+        {
+            "instance_type": 2,
+            "instance_id": 4,
+            "inner_ptr": {
+                "instance_type": 1,
+                "instance_id": 7,
+                "data_description": "std::shared_ptr<FilterRenderer>"
+            }
+        },
+        {
+            "instance_type": 1,
+            "instance_id": 7,
+            "typeId": "FilterRenderer",
+            "type_version": -1,
+            "object": {
+                "m_Name": "Renderable",
+                "m_ObjectUUID": {
+                    "uuid": "81003be5-b40a-eea7-f959-b1b4491026bb"
+                },
+                "m_isEnabled": true,
+                "m_renderLayer": 1000,
+                "m_Layer": 1,
+                "m_Materials": [
+                    {
+                        "uuid": {
+                            "uuid": "3ebec98f-a704-a7d4-95e8-10d4ecbc5b78"
+                        }
+                    },
+                    {
+                        "uuid": {
+                            "uuid": "c5fe113d-0c96-08c9-2077-5ee7cc7de993"
+                        }
+                    }
+                ],
+                "m_customBlendMode": 0,
+                "m_filterSequence": 0,
+                "m_targetWidth": 0,
+                "m_targetHeight": 0,
+                "m_FilterObjectName": "BackGround",
+                "m_filterList": [
+                    {
+                        "instance_type": 1,
+                        "instance_id": 8,
+                        "data_description": "std::shared_ptr<Filter>"
+                    },
+                    {
+                        "instance_type": 1,
+                        "instance_id": 9,
+                        "data_description": "std::shared_ptr<Filter>"
+                    }
+                ],
+                "m_transformAnimations2D": [],
+                "m_rotateAdaptRes": 0.0,
+                "m_input": {
+                    "uuid": {
+                        "uuid": "f1b149a0-a5ba-ee7f-e39f-808ce2666ec9"
+                    }
+                },
+                "m_output": {
+                    "uuid": {
+                        "uuid": "00000000-0000-0000-0000-000000000000"
+                    }
+                },
+                "m_bIsTransition": false,
+                "m_TemplateTextures": [],
+                "m_StickerProperties": []
+            }
+        },
+        {
+            "instance_type": 1,
+            "instance_id": 9,
+            "typeId": "Filter",
+            "type_version": -1,
+            "object": {
+                "m_uuid": {
+                    "uuid": "a540ace2-4bbb-52c7-c097-971c9a2b1e2a"
+                },
+                "m_name": "Final",
+                "m_BlenderSrc": true,
+                "m_clearColor": {
+                    "r": 0.0,
+                    "g": 0.0,
+                    "b": 0.0,
+                    "a": 0.0
+                },
+                "m_filterUUIDs": [
+                    {
+                        "uuid": "3a3c93ea-7a2d-047a-6255-4daab7659be2"
+                    }
+                ],
+                "m_targetWidth": 0,
+                "m_targetHeight": 0,
+                "m_TargetType": 0,
+                "m_TargetScaleWidth": 1.0,
+                "m_TargetScaleHeight": 1.0,
+                "m_TargetAnchorShortSide": 0.0,
+                "m_TargetAnchorLongSide": 0.0
+            }
+        },
+        {
+            "instance_type": 1,
+            "instance_id": 8,
+            "typeId": "Filter",
+            "type_version": -1,
+            "object": {
+                "m_uuid": {
+                    "uuid": "3a3c93ea-7a2d-047a-6255-4daab7659be2"
+                },
+                "m_name": "NewFilter",
+                "m_BlenderSrc": false,
+                "m_clearColor": {
+                    "r": 0.0,
+                    "g": 0.0,
+                    "b": 0.0,
+                    "a": 0.0
+                },
+                "m_filterUUIDs": [],
+                "m_targetWidth": 0,
+                "m_targetHeight": 0,
+                "m_TargetType": 0,
+                "m_TargetScaleWidth": 1.0,
+                "m_TargetScaleHeight": 1.0,
+                "m_TargetAnchorShortSide": 0.0,
+                "m_TargetAnchorLongSide": 0.0
+            }
+        }
+    ]
+}

@@ -128,13 +128,12 @@ def _copy_missing(source: Path, target: Path, copied: list[str], skip_names: set
         if item.name in skip_names:
             continue
         dest = target / item.name
-        if dest.exists():
-            continue
         if item.is_dir():
-            shutil.copytree(item, dest)
-        else:
+            dest.mkdir(parents=True, exist_ok=True)
+            _copy_missing(item, dest, copied, skip_names)
+        elif not dest.exists():
             shutil.copy2(item, dest)
-        copied.append(str(dest))
+            copied.append(str(dest))
 
 
 def _patch_manifest_user_id(path: Path, collection_key: str) -> bool:
@@ -160,16 +159,7 @@ def _patch_manifest_user_id(path: Path, collection_key: str) -> bool:
 def _hydrate_tree(source: Path, target: Path, copied: list[str], manifests: list[tuple[str, str]], user_id: str) -> None:
     if not source.exists():
         return
-    target.mkdir(parents=True, exist_ok=True)
-    for item in source.iterdir():
-        dest = target / item.name
-        if item.is_dir():
-            if not dest.exists():
-                shutil.copytree(item, dest)
-                copied.append(str(dest))
-        elif not dest.exists():
-            shutil.copy2(item, dest)
-            copied.append(str(dest))
+    _copy_missing(source, target, copied)
     for filename, collection_key in manifests:
         manifest = target / filename
         source_manifest = source / filename

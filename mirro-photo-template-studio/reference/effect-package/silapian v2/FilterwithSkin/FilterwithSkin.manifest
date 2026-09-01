@@ -1,0 +1,350 @@
+{
+    "class": "ResourceManifest",
+    "UUIDToFilePath": [
+        {
+            "key": {
+                "value": "adcb56bb-be2e-8087-7787-cafbf4bab497"
+            },
+            "value": {
+                "directories": [],
+                "device": "",
+                "fileName": "FilterwithSkin.prefab",
+                "node": "",
+                "isAbsolute": false
+            }
+        },
+        {
+            "key": {
+                "value": "93ba25bb-e25a-2d2c-c5e6-06c3a8b36762"
+            },
+            "value": {
+                "directories": [],
+                "device": "",
+                "fileName": "lut.mat",
+                "node": "",
+                "isAbsolute": false
+            }
+        },
+        {
+            "key": {
+                "value": "7f1e5fa7-2020-09c0-5666-edfa120a6091"
+            },
+            "value": {
+                "directories": [],
+                "device": "",
+                "fileName": "blurY.program",
+                "node": "",
+                "isAbsolute": false
+            }
+        },
+        {
+            "key": {
+                "value": "e209af35-da52-30c0-2971-99190b095803"
+            },
+            "value": {
+                "directories": [],
+                "device": "",
+                "fileName": "filter_bg.png",
+                "node": "",
+                "isAbsolute": false
+            }
+        },
+        {
+            "key": {
+                "value": "ec433e34-fa97-84a0-e9ee-abe1f427bcef"
+            },
+            "value": {
+                "directories": [
+                    "textures"
+                ],
+                "device": "",
+                "fileName": "filter_bg.png",
+                "node": "",
+                "isAbsolute": false
+            }
+        },
+        {
+            "key": {
+                "value": "d6af27ba-4d77-bc32-c6b2-f24df48ec260"
+            },
+            "value": {
+                "directories": [
+                    "textures"
+                ],
+                "device": "",
+                "fileName": "filter_skin.png",
+                "node": "",
+                "isAbsolute": false
+            }
+        },
+        {
+            "key": {
+                "value": "9d6f9e29-5e23-0e86-1ddf-4c827ffad8fb"
+            },
+            "value": {
+                "directories": [],
+                "device": "",
+                "fileName": "blurY.mat",
+                "node": "",
+                "isAbsolute": false
+            }
+        },
+        {
+            "key": {
+                "value": "d9d21fc4-b071-8928-8481-18c64c40dc14"
+            },
+            "value": {
+                "directories": [],
+                "device": "",
+                "fileName": "blurX.mat",
+                "node": "",
+                "isAbsolute": false
+            }
+        },
+        {
+            "key": {
+                "value": "9397ef56-d080-3981-f94f-5ec8ae5010a9"
+            },
+            "value": {
+                "directories": [],
+                "device": "",
+                "fileName": "filter_skin.png",
+                "node": "",
+                "isAbsolute": false
+            }
+        },
+        {
+            "key": {
+                "value": "2bebd5c3-a3e4-79d7-4ed1-15cd22ba5a3c"
+            },
+            "value": {
+                "directories": [],
+                "device": "",
+                "fileName": "lut.program",
+                "node": "",
+                "isAbsolute": false
+            }
+        },
+        {
+            "key": {
+                "value": "3e2f0f3a-1e40-6f2c-fff1-acc1bede2b65"
+            },
+            "value": {
+                "directories": [],
+                "device": "",
+                "fileName": "blurX.program",
+                "node": "",
+                "isAbsolute": false
+            }
+        },
+        {
+            "key": {
+                "value": "85f8dd6d-4750-fdac-06a3-839b7d1f3c06"
+            },
+            "value": {
+                "directories": [],
+                "device": "",
+                "fileName": "param.json",
+                "node": "",
+                "isAbsolute": false
+            }
+        }
+    ],
+    "ResourceMetaData": [
+        {
+            "key": {
+                "value": "adcb56bb-be2e-8087-7787-cafbf4bab497"
+            },
+            "value": {
+                "class": "ResourceMetaData",
+                "isFlipY": true,
+                "isSRGB": false,
+                "isLut": false,
+                "generateMipmap": false,
+                "isStatic": false,
+                "mipmapFilter": 0,
+                "displayName": "",
+                "Immutable": true
+            }
+        },
+        {
+            "key": {
+                "value": "93ba25bb-e25a-2d2c-c5e6-06c3a8b36762"
+            },
+            "value": {
+                "class": "ResourceMetaData",
+                "isFlipY": true,
+                "isSRGB": false,
+                "isLut": false,
+                "generateMipmap": false,
+                "isStatic": false,
+                "mipmapFilter": 0,
+                "displayName": "",
+                "Immutable": true
+            }
+        },
+        {
+            "key": {
+                "value": "e209af35-da52-30c0-2971-99190b095803"
+            },
+            "value": {
+                "class": "ResourceMetaData",
+                "isFlipY": true,
+                "isSRGB": false,
+                "isLut": true,
+                "generateMipmap": false,
+                "isStatic": false,
+                "mipmapFilter": 0,
+                "displayName": "filter_bg.png",
+                "Immutable": true
+            }
+        },
+        {
+            "key": {
+                "value": "7f1e5fa7-2020-09c0-5666-edfa120a6091"
+            },
+            "value": {
+                "class": "ResourceMetaData",
+                "isFlipY": true,
+                "isSRGB": false,
+                "isLut": false,
+                "generateMipmap": false,
+                "isStatic": false,
+                "mipmapFilter": 0,
+                "displayName": "",
+                "Immutable": true
+            }
+        },
+        {
+            "key": {
+                "value": "ec433e34-fa97-84a0-e9ee-abe1f427bcef"
+            },
+            "value": {
+                "class": "ResourceMetaData",
+                "isFlipY": true,
+                "isSRGB": false,
+                "isLut": false,
+                "generateMipmap": false,
+                "isStatic": false,
+                "mipmapFilter": 0,
+                "displayName": "",
+                "Immutable": true
+            }
+        },
+        {
+            "key": {
+                "value": "2bebd5c3-a3e4-79d7-4ed1-15cd22ba5a3c"
+            },
+            "value": {
+                "class": "ResourceMetaData",
+                "isFlipY": true,
+                "isSRGB": false,
+                "isLut": false,
+                "generateMipmap": false,
+                "isStatic": false,
+                "mipmapFilter": 0,
+                "displayName": "",
+                "Immutable": true
+            }
+        },
+        {
+            "key": {
+                "value": "9397ef56-d080-3981-f94f-5ec8ae5010a9"
+            },
+            "value": {
+                "class": "ResourceMetaData",
+                "isFlipY": true,
+                "isSRGB": false,
+                "isLut": true,
+                "generateMipmap": false,
+                "isStatic": false,
+                "mipmapFilter": 0,
+                "displayName": "filter_skin.png",
+                "Immutable": true
+            }
+        },
+        {
+            "key": {
+                "value": "d9d21fc4-b071-8928-8481-18c64c40dc14"
+            },
+            "value": {
+                "class": "ResourceMetaData",
+                "isFlipY": true,
+                "isSRGB": false,
+                "isLut": false,
+                "generateMipmap": false,
+                "isStatic": false,
+                "mipmapFilter": 0,
+                "displayName": "",
+                "Immutable": true
+            }
+        },
+        {
+            "key": {
+                "value": "3e2f0f3a-1e40-6f2c-fff1-acc1bede2b65"
+            },
+            "value": {
+                "class": "ResourceMetaData",
+                "isFlipY": true,
+                "isSRGB": false,
+                "isLut": false,
+                "generateMipmap": false,
+                "isStatic": false,
+                "mipmapFilter": 0,
+                "displayName": "",
+                "Immutable": true
+            }
+        },
+        {
+            "key": {
+                "value": "d6af27ba-4d77-bc32-c6b2-f24df48ec260"
+            },
+            "value": {
+                "class": "ResourceMetaData",
+                "isFlipY": true,
+                "isSRGB": false,
+                "isLut": false,
+                "generateMipmap": false,
+                "isStatic": false,
+                "mipmapFilter": 0,
+                "displayName": "",
+                "Immutable": true
+            }
+        },
+        {
+            "key": {
+                "value": "9d6f9e29-5e23-0e86-1ddf-4c827ffad8fb"
+            },
+            "value": {
+                "class": "ResourceMetaData",
+                "isFlipY": true,
+                "isSRGB": false,
+                "isLut": false,
+                "generateMipmap": false,
+                "isStatic": false,
+                "mipmapFilter": 0,
+                "displayName": "",
+                "Immutable": true
+            }
+        },
+        {
+            "key": {
+                "value": "85f8dd6d-4750-fdac-06a3-839b7d1f3c06"
+            },
+            "value": {
+                "class": "ResourceMetaData",
+                "isFlipY": true,
+                "isSRGB": false,
+                "isLut": false,
+                "generateMipmap": false,
+                "isStatic": false,
+                "mipmapFilter": 0,
+                "displayName": "",
+                "Immutable": true
+            }
+        }
+    ],
+    "isYUpResource": true,
+    "isYUpAIResource": true,
+    "name": ""
+}
