@@ -235,7 +235,7 @@ def test_login_sets_user_cookie_and_internal_page_allows_beta_user(monkeypatch, 
     assert anonymous.status_code == 307
     assert anonymous.headers["location"].startswith("/admin?next=")
 
-    # 非白名单用户带 cookie → 仍 307
+    # 非白名单用户带 cookie → 仍 307；WearWow 引导回主流程登录页换号
     outsider_response = client.post("/auth/phone/direct", json={"phone": "13800000099"})
     assert outsider_response.status_code == 200
     outsider_cookie = outsider_response.cookies.get(auth.USER_COOKIE_NAME)
@@ -243,6 +243,9 @@ def test_login_sets_user_cookie_and_internal_page_allows_beta_user(monkeypatch, 
     client.cookies.set(auth.USER_COOKIE_NAME, outsider_cookie)
     still_blocked = client.get("/closet/demo", follow_redirects=False)
     assert still_blocked.status_code == 307
+    wearwow_blocked = client.get("/wearwow/demo", follow_redirects=False)
+    assert wearwow_blocked.status_code == 307
+    assert wearwow_blocked.headers["location"] == "/selfit?entry=login&beta=denied"
 
     # 白名单用户带 cookie → 放行页面（含 WearWow 新 app）
     beta_response = client.post("/auth/phone/direct", json={"phone": "13800000001"})

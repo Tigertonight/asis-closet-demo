@@ -48,6 +48,14 @@
       sessionStorage.removeItem(AUTH_STORAGE_KEY);
     }
 
+    async logout() {
+      const token = this.session?.accessToken || null;
+      this.clear();
+      if (this.mode !== 'live' || !token) return { status: 'logged_out' };
+      try { return await this.request('/logout', { method: 'POST', token }); }
+      catch { return { status: 'logged_out' }; }
+    }
+
     async request(path, { method = 'GET', body, token, timeoutMs = this.timeoutMs } = {}) {
       const controller = new AbortController();
       const timeout = setTimeout(() => controller.abort(), timeoutMs);

@@ -785,6 +785,11 @@ button {
 }
 .report-nav .icon-button { position: relative; width: 44px; height: 44px; margin-left: -8px; font-size: 0; color: rgba(0,0,0,.32); }
 .report-nav .icon-button::before { position: absolute; top: 16px; left: 15px; width: 11px; height: 11px; border: solid currentColor; border-width: 0 0 2px 2px; content: ''; transform: rotate(45deg); }
+.report-nav .report-logout { margin-left: 0; justify-self: end; }
+.report-nav .report-logout::before { content: none; }
+.report-nav .report-logout svg { width: 19px; height: 19px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+.account-switch { position: absolute; top: 66px; right: 12px; padding: 8px 12px; border: 0; background: transparent; color: rgba(0,0,0,.34); font-size: 13px; line-height: 18px; cursor: pointer; }
+.account-switch:active { color: rgba(138,1,27,.6); }
 .report-nav h2 { margin: 0; font-size: 18px; font-weight: 600; line-height: 26px; text-align: center; }
 .report-nav .header-spacer { width: 44px; }
 .public-report-error { display: grid; width: calc(100% - 40px); min-height: 100dvh; margin: 0 auto; padding: 40px 18px max(40px, env(safe-area-inset-bottom)); place-content: center; text-align: center; }

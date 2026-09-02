@@ -271,13 +271,29 @@
   };
   // 内测入口：仅白名单手机号登录（后端 /auth/me 返回 beta_access）或 ?beta=1 预览时显示，
   // 报告页主 CTA 进入 onboarding 之后的 WearWow 试衣搭配 app。
+  // 退出登录入口同样跟随登录态显隐（非白名单用户换号全靠它）。
   const syncBetaEntries = () => {
     const node = document.querySelector('#continueToApp');
-    if (!node) return;
-    const previewForce = new URLSearchParams(window.location.search).get('beta') === '1';
-    node.hidden = !(previewForce || state.authUser?.beta_access === true);
+    if (node) {
+      const previewForce = new URLSearchParams(window.location.search).get('beta') === '1';
+      node.hidden = !(previewForce || state.authUser?.beta_access === true);
+    }
+    document.querySelectorAll('[data-account-logout]').forEach((button) => {
+      button.hidden = !state.authUser;
+    });
   };
   syncBetaEntries();
+  const logoutAccount = (button) => {
+    if (button.getAttribute('aria-busy') === 'true') return;
+    button.setAttribute('aria-busy', 'true');
+    track('logout_clicked');
+    void auth.logout().finally(() => {
+      window.location.replace('/selfit');
+    });
+  };
+  document.querySelectorAll('[data-account-logout]').forEach((button) => {
+    button.addEventListener('click', () => logoutAccount(button));
+  });
   const normalizedPhone = () => authNodes.phone.value.replace(/\D/g, '').slice(0, 11);
   const syncPhoneLogin = () => {
     const phone = normalizedPhone();
@@ -1696,6 +1712,7 @@
 
   if (entryParams.get('entry') === 'login') {
     showScreen('login');
+    if (entryParams.get('beta') === 'denied') toast('该功能正在内测中，请使用内测手机号登录');
     void authReady.then(async (session) => {
       if (session?.user) {
         if (await openAppForExistingReport()) return;

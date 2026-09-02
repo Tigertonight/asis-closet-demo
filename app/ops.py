@@ -282,6 +282,11 @@ def _internal_page_redirect(request: Request) -> Response | None:
     next_target = quote(path + (f"?{request.url.query}" if request.url.query else ""), safe="/?=&")
     from fastapi.responses import RedirectResponse
 
+    # WearWow 是面向用户的内测 app（非内部调试页）：未登录或非白名单
+    # 引导回主流程登录页换号，而不是死在后台密码页。
+    if path.startswith("/wearwow"):
+        query = "&beta=denied" if user_token else ""
+        return RedirectResponse(url=f"/selfit?entry=login{query}", status_code=307)
     return RedirectResponse(url=f"/admin?next={next_target}", status_code=307)
 
 

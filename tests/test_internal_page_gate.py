@@ -29,7 +29,6 @@ def test_internal_pages_redirect_anonymous_to_admin(demo_client: TestClient) -> 
         "/demo",
         "/closet/demo",
         "/try-on/demo",
-        "/wearwow/demo",
         "/mvp",
         "/qa",
         "/self-test",
@@ -41,6 +40,14 @@ def test_internal_pages_redirect_anonymous_to_admin(demo_client: TestClient) -> 
         location = response.headers["location"]
         assert location.startswith("/admin?next="), (path, location)
         assert path.replace("/", "%2F") in location or path in location, (path, location)
+
+
+def test_wearwow_gate_redirects_to_login_flow(demo_client: TestClient) -> None:
+    """WearWow 是面向用户的内测 app：未登录访问引导回主流程登录页，而非后台密码页。"""
+
+    response = demo_client.get("/wearwow/demo", follow_redirects=False)
+    assert response.status_code == 307
+    assert response.headers["location"] == "/selfit?entry=login"
 
 
 def test_user_flow_pages_stay_public(demo_client: TestClient) -> None:
