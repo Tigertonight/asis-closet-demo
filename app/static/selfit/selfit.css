@@ -788,7 +788,8 @@ button {
 .report-nav .report-logout { margin-left: 0; justify-self: end; }
 .report-nav .report-logout::before { content: none; }
 .report-nav .report-logout svg { width: 19px; height: 19px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
-.account-switch { position: absolute; top: 66px; right: 12px; padding: 8px 12px; border: 0; background: transparent; color: rgba(0,0,0,.34); font-size: 13px; line-height: 18px; cursor: pointer; }
+.account-switch { position: absolute; top: 63px; right: 20px; display: grid; width: 44px; height: 44px; padding: 0; border: 0; place-items: center; background: transparent; color: rgba(0,0,0,.32); font-size: 0; cursor: pointer; }
+.account-switch svg { width: 19px; height: 19px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
 .account-switch:active { color: rgba(138,1,27,.6); }
 .report-nav h2 { margin: 0; font-size: 18px; font-weight: 600; line-height: 26px; text-align: center; }
 .report-nav .header-spacer { width: 44px; }
@@ -948,6 +949,22 @@ button {
 .report-app-action[hidden] { display: none; }
 .report-actions .report-app-action:not([hidden]) + button,
 .report-actions .report-app-action:not([hidden]) + button + button { background: #fff; color: #8a011b; }
+
+.confirm-dialog { width: min(calc(100% - 48px), 320px); padding: 0; border: 0; border-radius: 24px; color: var(--ink); background: #fff; }
+.confirm-dialog::backdrop { background: rgba(0,0,0,.42); }
+.no-native-dialog .confirm-dialog:not([open]) { display: none; }
+.no-native-dialog .confirm-dialog[open] { position: fixed; z-index: 110; inset: 0; display: grid; place-items: center; width: auto; max-width: none; height: 100vh; padding: 24px; border-radius: 0; background: rgba(0,0,0,.42); }
+.no-native-dialog .confirm-dialog[open] .confirm-sheet { width: min(100%, 320px); background: #fff; border-radius: 24px; box-shadow: 0 24px 70px rgba(0,0,0,.2); }
+.confirm-sheet { display: grid; gap: 8px; padding: 26px 22px 20px; text-align: center; }
+.confirm-sheet h2 { margin: 0; font-size: 17px; line-height: 24px; font-weight: 600; }
+.confirm-copy { margin: 0 0 10px; color: var(--muted); font-size: 13px; line-height: 20px; }
+.confirm-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.confirm-actions button { height: 44px; border: 0; border-radius: 999px; font-size: var(--font-small); font-weight: 600; cursor: pointer; transition: background .16s ease, transform .16s ease; }
+.confirm-cancel { background: #f2f2f2; color: var(--ink); }
+.confirm-cancel:active { background: #e8e8e8; transform: scale(.985); }
+.confirm-accept { background: var(--brand); color: #fff; }
+.confirm-accept:active { background: var(--brand-pressed); transform: scale(.985); }
+.confirm-actions button:focus-visible { outline: 3px solid rgba(138, 1, 27, .2); outline-offset: 3px; }
 
 .share-dialog { width: 100%; max-width: none; height: 100vh; height: var(--visual-viewport-height, 100dvh); max-height: none; margin: 0; padding: 0; border: 0; border-radius: 0; color: var(--ink); background: #fafafa; }
 .share-dialog::backdrop { background: rgba(0,0,0,.35); }

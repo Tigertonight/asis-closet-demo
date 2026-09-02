@@ -3541,6 +3541,7 @@ def render_selfit_demo_page() -> str:
     .session-confirm-actions button { border: 0; border-radius: var(--pill); min-height: 46px; font-size: 15px; font-weight: 850; }
     .session-confirm-actions .cancel { background: #f4f5f7; color: var(--ink); }
     .session-confirm-actions .danger { background: var(--rose); color: #fff; }
+    .session-confirm-actions .primary { background: var(--rose); color: #fff; }
     .closet-top {
       display: grid;
       grid-template-columns: 1fr auto;
@@ -4589,6 +4590,16 @@ def render_selfit_demo_page() -> str:
       </div>
     </div>
   </div>
+  <div id="logoutConfirm" class="session-confirm" role="dialog" aria-modal="true" aria-labelledby="logoutConfirmTitle">
+    <div class="session-confirm-card">
+      <b id="logoutConfirmTitle">退出登录？</b>
+      <p>退出后需要重新登录，才能查看你的衣橱和试穿记录。</p>
+      <div class="session-confirm-actions">
+        <button id="logoutCancelBtn" class="cancel" type="button">取消</button>
+        <button id="logoutConfirmBtn" class="primary" type="button">退出登录</button>
+      </div>
+    </div>
+  </div>
 
   <aside id="builderSheet" class="sheet">
     <div class="sheet-title"><b>选择搭配单品</b><button class="close" data-close="builderSheet">×</button></div>
@@ -5263,12 +5274,19 @@ def render_selfit_demo_page() -> str:
       }
     }
     function logoutSelfitUser() {
+      closeLogoutConfirm();
       clearSharedAuth();
       removeStore(stylistSessionStoreKey);
       state.user = null;
       state.isAuthenticated = false;
       authTokenPromise = null;
       openUnifiedLogin();
+    }
+    function openLogoutConfirm() {
+      $("#logoutConfirm").classList.add("open");
+    }
+    function closeLogoutConfirm() {
+      $("#logoutConfirm").classList.remove("open");
     }
     function assetURL(path) {
       if (!path || !path.startsWith("/user-assets/")) return path || "";
@@ -7219,7 +7237,12 @@ def render_selfit_demo_page() -> str:
       setTab(["home", "ai", "closet", "me"].includes(requestedTab) ? requestedTab : "home", { historyMode: "none" });
     });
     window.addEventListener("scroll", maybeLoadMoreHomeOutfits, { passive: true });
-    $("#logoutBtn").addEventListener("click", logoutSelfitUser);
+    $("#logoutBtn").addEventListener("click", openLogoutConfirm);
+    $("#logoutCancelBtn").addEventListener("click", closeLogoutConfirm);
+    $("#logoutConfirmBtn").addEventListener("click", logoutSelfitUser);
+    $("#logoutConfirm").addEventListener("click", event => {
+      if (event.target.id === "logoutConfirm") closeLogoutConfirm();
+    });
     $all("[data-tab-shortcut]").forEach(btn => btn.addEventListener("click", () => setTab(btn.dataset.tabShortcut, { historyMode: "push" })));
     $all("[data-closet-mode]").forEach(btn => btn.addEventListener("click", () => { state.closetMode = btn.dataset.closetMode; renderCloset(); }));
     $all("[data-close]").forEach(btn => btn.addEventListener("click", () => closeSheet(btn.dataset.close)));

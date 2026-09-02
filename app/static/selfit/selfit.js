@@ -283,13 +283,44 @@
     });
   };
   syncBetaEntries();
+  const logoutConfirmDialog = document.querySelector('#logoutConfirmDialog');
   const logoutAccount = (button) => {
     if (button.getAttribute('aria-busy') === 'true') return;
-    button.setAttribute('aria-busy', 'true');
-    track('logout_clicked');
-    void auth.logout().finally(() => {
-      window.location.replace('/selfit');
-    });
+    const proceedLogout = () => {
+      if (button.getAttribute('aria-busy') === 'true') return;
+      button.setAttribute('aria-busy', 'true');
+      track('logout_clicked');
+      void auth.logout().finally(() => {
+        window.location.replace('/selfit');
+      });
+    };
+    if (!logoutConfirmDialog) { proceedLogout(); return; }
+    const supportsNativeDialog = typeof logoutConfirmDialog.showModal === 'function';
+    const cleanupLogoutConfirm = () => {
+      logoutConfirmDialog.removeEventListener('close', onLogoutConfirmClose);
+      logoutConfirmDialog.removeEventListener('click', onLogoutConfirmClick, true);
+    };
+    const onLogoutConfirmClose = () => {
+      cleanupLogoutConfirm();
+      if (logoutConfirmDialog.returnValue === 'confirm') proceedLogout();
+    };
+    const onLogoutConfirmClick = (event) => {
+      const submit = event.target.closest('button[value]');
+      if (!submit || supportsNativeDialog) return;
+      event.preventDefault();
+      logoutConfirmDialog.returnValue = submit.value;
+      logoutConfirmDialog.removeAttribute('open');
+      document.documentElement.classList.remove('has-open-dialog');
+      onLogoutConfirmClose();
+    };
+    logoutConfirmDialog.addEventListener('close', onLogoutConfirmClose);
+    logoutConfirmDialog.addEventListener('click', onLogoutConfirmClick, true);
+    logoutConfirmDialog.returnValue = '';
+    if (supportsNativeDialog) logoutConfirmDialog.showModal();
+    else {
+      logoutConfirmDialog.setAttribute('open', '');
+      document.documentElement.classList.add('has-open-dialog');
+    }
   };
   document.querySelectorAll('[data-account-logout]').forEach((button) => {
     button.addEventListener('click', () => logoutAccount(button));
