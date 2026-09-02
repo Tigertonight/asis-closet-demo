@@ -1596,6 +1596,20 @@
     renderReport({ typeId: requestedType });
     showScreen('report');
     shell.classList.add('is-ready');
+    // 从 WearWow app 跳转过来时只带 persona 模板（无 reportId，分享会提示
+    // 「报告仍在准备中」）。已登录用户异步换成本人的真实报告，保证分享可用。
+    void authReady.then(async (session) => {
+      if (!session?.user) return;
+      try {
+        const latest = await api.getLatestReport();
+        const reportId = String(latest?.report?.reportId || '').trim();
+        if (!reportId) return;
+        state.reportId = reportId;
+        state.publicShare = null;
+        const full = await api.getReport(reportId);
+        renderReport(normalizeReport(full.report || {}));
+      } catch { /* 拉取失败时保持模板预览，用户仍可查看报告。 */ }
+    });
     return;
   }
   if (previewScreen === 'share') {
