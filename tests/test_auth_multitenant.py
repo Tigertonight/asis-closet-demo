@@ -307,3 +307,40 @@ def test_phone_direct_login_not_throttled_by_admin_auth_rule(monkeypatch, tmp_pa
     second_admin = client.post("/admin/api/login", json={"password": "whatever"}, headers=headers)
     assert second_admin.status_code == 429
     assert second_admin.json()["error"]["code"] == "request.rate_limited"
+
+
+def test_store_purge_drops_stale_codes_and_dead_sessions(monkeypatch, tmp_path: Path) -> None:
+    """_load_store 惰性清理：过期验证码与已终结会话只保留最近一批，更早的删除。"""
+
+    _use_tmp_runtime(monkeypatch, tmp_path)
+    from datetime import datetime, timedelta, timezone
+
+    now = datetime.now(timezone.utc)
+    iso = lambda **kw: (now + timedelta(**kw)).isoformat()  # noqa: E731
+
+    stale_code = {"code_id": "old", "expires_at": iso(days=-2), "consumed_at": None}
+    live_code = {"code_id": "live", "expires_at": iso(minutes=5), "consumed_at": None}
+
+    sessions = [{"session_id": f"s{i}", "status": "revoked", "revoked_at": iso(days=-30), "expires_at": iso(days=-29)} for i in range(auth._EXPIRED_PURGE_KEEP + 5)]
+    sessions += [
+        {"session_id": "recent-dead", "status": "revoked", "revoked_at": iso(minutes=-1), "expires_at": iso(days=29)},
+        {"session_id": "active", "status": "active", "revoked_at": None, "expires_at": iso(days=29)},
+    ]
+
+    auth.AUTH_DIR.mkdir(parents=True, exist_ok=True)
+    auth.AUTH_STORE_PATH.write_text(
+        json.dumps({"version": 1, "users": [], "phone_login_codes": [stale_code, live_code], "auth_sessions": sessions}),
+        encoding="utf-8",
+    )
+
+    data = auth._load_store()
+
+    # 过期验证码被删，未过期保留
+    assert [item["code_id"] for item in data["phone_login_codes"]] == ["live"]
+    # 会话：active 保留；最近 revoked 保留；超出的旧 revoked 只留最近 KEEP 条
+    session_ids = {item["session_id"] for item in data["auth_sessions"]}
+    assert "active" in session_ids
+    assert "recent-dead" in session_ids
+    assert len(data["auth_sessions"]) == auth._EXPIRED_PURGE_KEEP + 1  # 206 死会话按额度留 200 + 1 活会话
+    # 再读一次不再有删减（幂等，不触发写盘）
+    assert auth._purge_expired(data) is False

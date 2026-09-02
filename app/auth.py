@@ -67,7 +67,50 @@ def _hash_secret(secret: str) -> str:
     return hmac.new(salt.encode("utf-8"), secret.encode("utf-8"), hashlib.sha256).hexdigest()
 
 
+_EXPIRED_PURGE_KEEP = 200  # 已终结条目最多保留条数，方便近期操作（如登出）排查
+
+
+def _purge_expired(data: dict[str, Any]) -> bool:
+    """顺手清理过期的验证码与已终结会话（expired/revoked/consumed）。
+
+    在 _load_store 内做惰性清理：无需定时任务，任何登录/校验路径触发读存储时
+    即完成。过期/已消费的验证码直接删除；已终结会话按终结时间倒序保留最近
+    _EXPIRED_PURGE_KEEP 条（方便排查近期登出/过期），更早的删除。
+    返回是否有删减，由调用方决定是否回写。
+    """
+
+    now = datetime.now(timezone.utc)
+
+    def split(items: list[dict[str, Any]], end_keys: tuple[str, ...]) -> tuple[list[dict], list[dict]]:
+        alive: list[dict] = []
+        dead: list[dict] = []
+        for item in items:
+            expires_at = _parse_iso(item.get("expires_at"))
+            ended = (
+                (expires_at is not None and expires_at < now)
+                or item.get("status") in {"expired", "revoked"}
+                or any(item.get(key) for key in end_keys)
+            )
+            (dead if ended else alive).append(item)
+        return alive, dead
+
+    alive_codes, dead_codes = split(list(data.get("phone_login_codes", [])), ("consumed_at",))
+    alive_sessions, dead_sessions = split(list(data.get("auth_sessions", [])), ("revoked_at",))
+
+    dead_sessions.sort(
+        key=lambda item: str(item.get("revoked_at") or item.get("expires_at") or ""),
+        reverse=True,
+    )
+    kept_sessions = dead_sessions[:_EXPIRED_PURGE_KEEP]
+    if not dead_codes and len(kept_sessions) == len(dead_sessions):
+        return False
+    data["phone_login_codes"] = alive_codes
+    data["auth_sessions"] = alive_sessions + kept_sessions
+    return True
+
+
 def _load_store() -> dict[str, Any]:
+    empty = {"version": 1, "users": [], "phone_login_codes": [], "auth_sessions": []}
     if not AUTH_STORE_PATH.exists():
         return {"version": 1, "users": [], "phone_login_codes": [], "auth_sessions": []}
     try:
@@ -77,10 +120,12 @@ def _load_store() -> dict[str, Any]:
             data.setdefault("users", [])
             data.setdefault("phone_login_codes", [])
             data.setdefault("auth_sessions", [])
+            if _purge_expired(data):
+                _write_store(data)
             return data
     except json.JSONDecodeError:
         pass
-    return {"version": 1, "users": [], "phone_login_codes": [], "auth_sessions": []}
+    return empty
 
 
 def _write_store(data: dict[str, Any]) -> None:
