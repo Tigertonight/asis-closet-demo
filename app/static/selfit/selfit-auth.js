@@ -25,8 +25,18 @@
     get user() { return this.session?.user || null; }
 
     readStoredSession() {
+      // localStorage 持久化登录态（未主动退出前跨标签页/重启浏览器保留）；
+      // 兼容读取旧版 sessionStorage 会话并迁移，避免升级后全员重新登录。
       try {
-        const stored = JSON.parse(sessionStorage.getItem(AUTH_STORAGE_KEY) || 'null');
+        let stored = JSON.parse(localStorage.getItem(AUTH_STORAGE_KEY) || 'null');
+        if (!stored?.accessToken) {
+          const legacy = JSON.parse(sessionStorage.getItem(AUTH_STORAGE_KEY) || 'null');
+          if (legacy?.accessToken) {
+            stored = legacy;
+            localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(legacy));
+          }
+        }
+        sessionStorage.removeItem(AUTH_STORAGE_KEY);
         if (!stored?.accessToken || (stored.expiresAt && Date.parse(stored.expiresAt) <= Date.now())) return null;
         return stored;
       } catch { return null; }
@@ -39,12 +49,13 @@
         expiresAt: new Date(Date.now() + expiresIn * 1000).toISOString(),
         user: payload.user || null,
       };
-      sessionStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(this.session));
+      localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(this.session));
       return this.session;
     }
 
     clear() {
       this.session = null;
+      localStorage.removeItem(AUTH_STORAGE_KEY);
       sessionStorage.removeItem(AUTH_STORAGE_KEY);
     }
 
@@ -96,7 +107,7 @@
       try {
         const result = await this.request('/me', { token: stored.accessToken });
         this.session = { ...stored, user: result.user || stored.user };
-        sessionStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(this.session));
+        localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(this.session));
         return this.session;
       } catch {
         this.clear();
@@ -119,7 +130,7 @@
       // mock 模式默认给内测资格，便于本地走通报告页的后续功能入口预览。
       return this.persist({
         access_token: `mock_phone_${Date.now()}`,
-        expires_in_seconds: 86400,
+        expires_in_seconds: 86400 * 30,
         user: { user_id: mockId(phone), phone_e164: `+86${phone}`, status: 'active', beta_access: true },
       });
     }
@@ -133,7 +144,7 @@
       if (!['0000', '0001'].includes(String(code))) throw new SelfitAuthError('验证码不正确', { code: 'auth.code_invalid', status: 400 });
       return this.persist({
         access_token: `mock_phone_${Date.now()}`,
-        expires_in_seconds: 86400,
+        expires_in_seconds: 86400 * 30,
         user: { user_id: mockId(phone), phone_e164: `+86${phone}`, status: 'active', beta_access: true },
       });
     }
@@ -147,7 +158,7 @@
       if (String(inviteCode || '').trim().length < 4) throw new SelfitAuthError('请输入有效的邀请码', { code: 'auth.invite_invalid', status: 400 });
       return this.persist({
         access_token: `mock_invite_${Date.now()}`,
-        expires_in_seconds: 86400,
+        expires_in_seconds: 86400 * 30,
         user: { user_id: mockId(inviteCode), phone_e164: null, status: 'active', beta_access: true },
       });
     }

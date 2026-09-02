@@ -25,7 +25,9 @@ USER_COOKIE_NAME = "selfit_user_session"
 ADMIN_CONSOLE_USER_ID = "admin_console"
 ADMIN_MIN_PASSWORD_LEN = 6
 DEFAULT_LOCAL_PHONE = "+8600000000000"
-TOKEN_TTL_HOURS = 24
+# 登录态保留 30 天：未主动退出时刷新/重进不再重新输入手机号（退出登录
+# 会吊销服务端会话并清 cookie/localStorage）。
+TOKEN_TTL_HOURS = 24 * 30
 CODE_TTL_MINUTES = 10
 MAX_CODE_ATTEMPTS = 5
 

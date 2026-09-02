@@ -5193,8 +5193,16 @@ def render_selfit_demo_page() -> str:
       renderProfile();
     }
     function sharedAuthSession() {
+      // localStorage 持久化登录态（主流程登录后未主动退出则一直可用），
+      // 兼容读取旧版 sessionStorage 会话。
       try {
-        const shared = JSON.parse(window.sessionStorage?.getItem(sharedAuthStoreKey) || "null");
+        let shared = JSON.parse(window.localStorage?.getItem(sharedAuthStoreKey) || "null");
+        if (!shared?.accessToken) {
+          shared = JSON.parse(window.sessionStorage?.getItem(sharedAuthStoreKey) || "null");
+          if (shared?.accessToken) {
+            try { window.localStorage?.setItem(sharedAuthStoreKey, JSON.stringify(shared)); } catch (error) {}
+          }
+        }
         if (!shared?.accessToken) return null;
         if (shared.expiresAt && Date.parse(shared.expiresAt) <= Date.now()) return null;
         return shared;
@@ -5203,6 +5211,7 @@ def render_selfit_demo_page() -> str:
       }
     }
     function clearSharedAuth() {
+      try { window.localStorage?.removeItem(sharedAuthStoreKey); } catch (error) {}
       try { window.sessionStorage?.removeItem(sharedAuthStoreKey); } catch (error) {}
       removeStore("selfit_demo_mock_access_token");
     }
