@@ -4,6 +4,7 @@ import hashlib
 import html
 import io
 import json
+import math
 import os
 import re
 import shutil
@@ -17,9 +18,13 @@ from urllib.parse import urljoin, urlparse
 
 import httpx
 from fastapi import HTTPException, UploadFile
-from PIL import Image, ImageDraw, ImageFilter, UnidentifiedImageError
+from PIL import Image, ImageDraw, ImageFilter, ImageOps, UnidentifiedImageError
 
 from app.storage import storage_context, user_asset_public_path
+from app.selfit_recommend import content_pool as selfit_content_pool
+from app.recommendation_diversity import select_diverse_outfits, style_family_map
+from app.outfit_layered_layout import is_layered
+from app.outfit_layout import BACKGROUND, CANVAS, LAYOUT_VERSION, MAIN_GAP, MAIN_SPAN, outfit_box, outfit_preview_url, vertical_align
 from app.tryon import (
     FASHION_ITEM_CATEGORIES,
     HTTP_HEADERS,
@@ -68,11 +73,18 @@ TRYON_RECORD_DIR = CLOSET_OUTPUT_DIR / "tryon_records"
 TRYON_RECORDS_MANIFEST_PATH = CLOSET_OUTPUT_DIR / "tryon_records_manifest.json"
 CLOSET_SUPPORTED_CATEGORIES = {"top", "bottom", "skirt", "dress", "shoes", "bag", "accessory"}
 MAX_LINK_IMAGES = 12
-OUTFIT_LAYOUT_VERSION = "selfit_flatlay_v1_card_safe"
+OUTFIT_LAYOUT_VERSION = LAYOUT_VERSION
+OUTFIT_CANVAS_SIZE = CANVAS
+OUTFIT_LAYOUT_MODE = "semantic-main-accessory-rail"
+OUTFIT_MAIN_SPAN = MAIN_SPAN
+OUTFIT_MAIN_GAP = MAIN_GAP
+WARDROBE_EXTRACTION_PROMPT_VERSION = "look-extract-v1.0-selfit"
 IMPORT_PIPELINE_VERSION = "closet_import_v2"
 IMPORT_JOB_EXECUTOR = ThreadPoolExecutor(max_workers=2, thread_name_prefix="selfit-closet-import")
 IMPORT_JOB_LOCK = threading.Lock()
 IMPORT_PIPELINE_LOCK = threading.Lock()
+RECOMMENDATION_FEEDBACK_VERSION = 1
+OUTFIT_ANALYSIS_VERSION = "selfit_outfit_completeness_v1"
 SEGFORMER_CLOTHES_MODEL_ID = "mattmdjaga/segformer_b2_clothes"
 SEGFORMER_LABEL_CATEGORY_HINTS = {
     "top": ("upper", "shirt", "blouse", "coat", "jacket", "sweater", "hoodie", "cardigan", "vest", "t-shirt", "top"),
@@ -118,6 +130,10 @@ def _legacy_paths_active() -> bool:
 
 def _closet_output_dir() -> Path:
     return CLOSET_OUTPUT_DIR if _legacy_paths_active() else storage_context().closet_output_dir
+
+
+def _recommendation_feedback_path() -> Path:
+    return _closet_output_dir() / "recommendation_feedback.json"
 
 
 def _closet_source_dir() -> Path:
@@ -184,7 +200,109 @@ def _closet_disk_path(public_path: str | None) -> Path | None:
         return CLOSET_OUTPUT_DIR / public_path.replace("/closet-outputs/", "", 1)
     if public_path.startswith("/tryon-outputs/"):
         return TRYON_OUTPUT_DIR / public_path.replace("/tryon-outputs/", "", 1)
+    if public_path.startswith("/static/"):
+        return ROOT_DIR / "app" / public_path.lstrip("/")
     return Path(public_path)
+
+
+def _published_catalog_outfits(*, include_archived: bool = False) -> list[dict[str, Any]]:
+    """Adapt reviewed global content into the main app's outfit contract."""
+
+    pool = selfit_content_pool()
+    if pool.metadata.get("releaseMode") != "incremental" and pool.metadata.get("status") != "published":
+        return []
+    garment_by_id: dict[str, dict[str, Any]] = {}
+    families = style_family_map(pool.garments)
+    for garment in pool.garments:
+        garment_id = str(garment.get("id") or "")
+        assets = garment.get("assets") or {}
+        if not garment_id or assets.get("rights_status") != "owned":
+            continue
+        category = str(garment.get("category") or "accessory")
+        closet_category = "top" if category == "outer" else "accessory" if category in {"hat", "scarf", "accessory"} else category
+        style_tags = [
+            *[str(value) for value in garment.get("details") or []],
+            *[str(value) for value in garment.get("silhouette") or []],
+            *[str(value) for value in garment.get("scene_tags") or []],
+        ]
+        if category == "outer":
+            style_tags.append("outer")
+        garment_by_id[garment_id] = {
+            "item_id": garment_id,
+            "style_family_id": families.get(garment_id, "item:" + garment_id),
+            "image_id": garment_id,
+            "category": closet_category,
+            "category_label": "外套" if category == "outer" else _fashion_category_label(closet_category),
+            "subcategory": category if category in {"hat", "scarf"} else str(garment.get("subcategory") or ""),
+            "slot": category if category in {"hat", "scarf", "outer"} else None,
+            "title": str(garment.get("subcategory") or _fashion_category_label(closet_category)),
+            "assets": {"cutout_path": assets.get("image_url"), "preview_path": assets.get("image_url")},
+            "attributes": {
+                "colors": list((garment.get("color_evidence") or {}).get("palette_names") or (garment.get("color") or {}).get("palette") or []),
+                "color_hex": list((garment.get("color") or {}).get("palette") or []),
+                "material": list(garment.get("materials") or []),
+                "fit": garment.get("fit"),
+                "style_tags": style_tags,
+                "scene_tags": list(garment.get("scene_tags") or []),
+                "season_tags": list(garment.get("season_tags") or []),
+            },
+            "quality": {"status": "usable", "score": 1.0, "reasons": ["published_content_v2"]},
+            "source": {"type": "published_content_v2", "content_version": pool.metadata.get("contentVersion")},
+            "tryon_ready": True,
+            "favorite": False,
+            "deleted": False,
+        }
+
+    source_garments = {str(item["id"]): item for item in pool.garments}
+    published: list[dict[str, Any]] = []
+    for outfit in (pool.all_outfits if include_archived else pool.outfits):
+        if (outfit.get("annotation") or {}).get("status") != "published":
+            continue
+        item_ids = [str(value) for value in outfit.get("garment_ids") or []]
+        if not item_ids or any(item_id not in garment_by_id for item_id in item_ids):
+            continue
+        roles = outfit.get("slot_roles") or {}
+        # Role belongs to the recipe, not the reusable garment.  Copy the item
+        # so a garment can be hero in one outfit and support in another without
+        # leaking state across cached catalog rows.
+        items = [{**garment_by_id[item_id], "outfit_role": roles.get(item_id)} for item_id in item_ids]
+        assets = outfit.get("assets") or {}
+        preview_url = outfit_preview_url([source_garments[item_id] for item_id in item_ids])
+        if not (ROOT_DIR / "app" / preview_url.lstrip("/")).is_file():
+            preview_url = None
+        completeness = analyze_outfit_items(items, _string_list(outfit.get("scene_tags")))
+        published.append({
+            "outfit_id": str(outfit.get("id") or ""),
+            "title": str(outfit.get("title") or "精选穿搭"),
+            "description": str(outfit.get("description") or ""),
+            "item_ids": item_ids,
+            "items": items,
+            "scene_tags": list(outfit.get("scene_tags") or []),
+            "season_tags": list(outfit.get("season_tags") or []),
+            "primary_persona": outfit.get("primary_persona"),
+            "parent_outfit_id": outfit.get("parent_outfit_id"),
+            "recipe_kind": outfit.get("kind"),
+            "secondary_personas": list(outfit.get("secondary_personas") or []),
+            "cover_path": preview_url or assets.get("image_url"),
+            "layout_snapshot_path": preview_url or assets.get("image_url"),
+            "layout_version": OUTFIT_LAYOUT_VERSION if preview_url else assets.get("layout_version", "source-original"),
+            "layout_mode": OUTFIT_LAYOUT_MODE,
+            "canvas": {"width": assets.get("width") or 1200, "height": assets.get("height") or 1500},
+            "display_item_ids": item_ids,
+            "overflow_items": [],
+            "warnings": [],
+            "source": "published_content_v2",
+            "content_version": pool.metadata.get("contentVersion"),
+            "curation": outfit.get("curation") or {},
+            "favorite_count": 0,
+            "favorite": False,
+            "tryon_ready": bool(completeness.get("main_complete")) and not completeness.get("conflicts"),
+            "completeness": completeness,
+            "created_at": "",
+            "updated_at": "",
+            "deleted": False,
+        })
+    return published
 
 
 def _ensure_manifest() -> dict[str, Any]:
@@ -291,6 +409,8 @@ def closet_capabilities() -> dict[str, Any]:
     birefnet = BiRefNetMattingProvider()
     model_available = segmenter.available()
     edge_available = rembg.available() or birefnet.available()
+    published_pool = selfit_content_pool()
+    published_catalog = _published_catalog_outfits()
     return {
         "status": "ready_for_validation",
         "storage": {
@@ -309,6 +429,12 @@ def closet_capabilities() -> dict[str, Any]:
             "xiaohongshu": True,
             "webpage": True,
             "max_link_images": MAX_LINK_IMAGES,
+        },
+        "published_content": {
+            **published_pool.metadata,
+            "garment_count": len(published_pool.garments),
+            "main_app_outfit_count": len(published_catalog),
+            "fallback": "content-pool.v1.json",
         },
         "models": {
             "primary": {
@@ -356,6 +482,13 @@ def closet_capabilities() -> dict[str, Any]:
         "outfits": {
             "enabled": True,
             "tryon_mode": "category_aware_outfit_reference",
+            "collage": {
+                "enabled": True,
+                "layout_mode": OUTFIT_LAYOUT_MODE,
+                "layout_version": OUTFIT_LAYOUT_VERSION,
+                "canvas": {"width": OUTFIT_CANVAS_SIZE[0], "height": OUTFIT_CANVAS_SIZE[1]},
+                "history_limit": 24,
+            },
         },
         "mode": "ai_garment_first" if ai_cutout.available() else "local_open_source_fallback",
     }
@@ -374,6 +507,7 @@ class AIGarmentCutoutProvider:
     def __init__(self, model: str | None = None) -> None:
         self.model = model or image_edit_model()
         self.last_attempt: dict[str, Any] = {}
+        self.last_inventory_plan: dict[str, Any] = {}
 
     def available(self) -> bool:
         return self._provider_kind() is not None
@@ -432,6 +566,7 @@ class AIGarmentCutoutProvider:
             garment = evidence.get("garment") or {}
             category = str(garment.get("category") or "").strip().lower()
             confidence = float(analysis.get("confidence") or 0)
+            self.last_attempt.update({"category": category, "analysis_score": round(confidence, 3)})
             if analysis.get("status") not in {"pass", "warn"} or category not in CLOSET_SUPPORTED_CATEGORIES or confidence < 0.68:
                 self.last_attempt.update({"status": "skipped", "reason": "garment_analysis_not_confident", "analysis_status": analysis.get("status"), "analysis_score": round(confidence, 3)})
                 return []
@@ -484,6 +619,7 @@ class AIGarmentCutoutProvider:
             "created_count": 0,
         }
         self.last_attempt = inventory_attempt
+        self.last_inventory_plan = {}
         if provider is None:
             inventory_attempt.update({"status": "skipped", "reason": "provider_not_configured"})
             return []
@@ -491,6 +627,7 @@ class AIGarmentCutoutProvider:
             candidates = self._analyze_inventory(source["image"])
             inventory_attempt["expected_count"] = len(candidates)
             inventory_attempt["categories"] = [candidate["category"] for candidate in candidates]
+            inventory_attempt["skipped_items"] = self.last_inventory_plan.get("skipped_items", [])
             if not candidates:
                 inventory_attempt.update({
                     "status": "skipped",
@@ -522,9 +659,16 @@ class AIGarmentCutoutProvider:
                         "garment": {
                             "category": candidate["category"],
                             "bbox": candidate["bbox"],
+                            "garment_name": candidate.get("garment_name"),
+                            "subtype": candidate.get("subtype"),
+                            "visibility": candidate.get("visibility"),
+                            "needs_approximate_reconstruction": candidate.get("needs_approximate_reconstruction", False),
+                            "evidence": candidate.get("evidence", []),
                             "colors": candidate.get("colors", []),
                             "material": candidate.get("material", []),
                             "style_tags": candidate.get("style_tags", []),
+                            "season_tags": candidate.get("season_tags", []),
+                            "scene_tags": candidate.get("scene_tags", []),
                         },
                     },
                 }
@@ -562,15 +706,19 @@ class AIGarmentCutoutProvider:
 
     def _analyze_inventory(self, image: Image.Image) -> list[dict[str, Any]]:
         prompt = (
-            "Analyze this fashion image and enumerate every distinct wearable item that should become a closet item. "
-            "Include tops, bottoms, skirts, dresses, shoes as a pair, bags and accessories. Exclude people, skin, hair, "
+            "You are Selfit's outfit-to-wardrobe planner. Enumerate every distinct visible fashion item that should become a closet asset. "
+            "Include tops, bottoms, skirts, dresses, shoes as a pair, bags and useful accessories. Exclude people, skin, hair, "
             "phones, furniture, text, shadows and background objects. Return strict JSON only with schema "
-            "{items:[{category:string,bbox:{x:number,y:number,width:number,height:number},confidence:number,fully_visible:boolean,"
-            "colors:string[],material:string[],style_tags:string[]}]}. Coordinates must be normalized 0-1. "
+            "{items:[{garment_name:string,category:string,subtype:string,bbox:{x:number,y:number,width:number,height:number},"
+            "confidence:number,fully_visible:boolean,visibility:'full|partial|small',needs_approximate_reconstruction:boolean,"
+            "evidence:string[],colors:string[],material:string[],style_tags:string[],season_tags:string[],scene_tags:string[]}],"
+            "skipped_items:[{name:string,reason:string}]}. garment_name must be a concise Chinese common name, not a brand. "
+            "Infer practical season tags (spring,summer,autumn,winter) and scene tags (commute,casual,date,formal,sport,travel) "
+            "only when the image provides reasonable evidence. Coordinates must be normalized 0-1. "
             "Every x, y, width and height value must be a decimal from 0.0 through 1.0; never use pixels, percentages, or 0-1000 coordinates. "
             "Use only categories top,bottom,skirt,dress,shoes,bag,accessory. Keep separate garments as separate items, "
             "but treat the two shoes of one pair as one item. Do not split a dress into top and skirt. "
-            "Only include real fashion items whose usable silhouette is mostly visible. Ignore base garments that are cut off by the frame, "
+            "Only include real fashion items whose usable silhouette is mostly visible. Put unreliable, tiny or severely occluded objects in skipped_items, "
             "and never classify towels, blankets, bedding, curtains, upholstery or folded household textiles as accessories."
         )
         if self._uses_runway():
@@ -578,6 +726,10 @@ class AIGarmentCutoutProvider:
         else:
             text = self._analyze_inventory_with_openai(image, prompt)
         payload = _extract_json_object(text or "")
+        self.last_inventory_plan = {
+            "prompt_version": WARDROBE_EXTRACTION_PROMPT_VERSION,
+            "skipped_items": _normalize_skipped_inventory_items(payload.get("skipped_items")),
+        }
         return _normalize_inventory_candidates(payload.get("items"))
 
     def _analyze_inventory_with_runway(self, image: Image.Image, prompt: str) -> str:
@@ -1084,12 +1236,42 @@ def update_closet_item(item_id: str, payload: dict[str, Any]) -> dict[str, Any]:
                 raise HTTPException(status_code=400, detail="标签格式不正确")
             item.setdefault("attributes", {})["style_tags"] = [str(tag).strip() for tag in tags if str(tag).strip()]
             edits["style_tags"] = item["attributes"]["style_tags"]
+        for field in ("colors", "season_tags", "scene_tags"):
+            if field in payload:
+                values = payload.get(field) or []
+                if not isinstance(values, list):
+                    raise HTTPException(status_code=400, detail="标签格式不正确")
+                item.setdefault("attributes", {})[field] = [str(value).strip() for value in values if str(value).strip()][:12]
+                edits[field] = item["attributes"][field]
+        for field in ("material", "fit", "pattern"):
+            if field in payload:
+                item.setdefault("attributes", {})[field] = str(payload.get(field) or "").strip()[:80] or None
+                edits[field] = item["attributes"][field]
         if "note" in payload:
             item["note"] = str(payload.get("note") or "")[:240]
             edits["note"] = item["note"]
         if "favorite" in payload:
             item["favorite"] = bool(payload["favorite"])
             edits["favorite"] = item["favorite"]
+        if "import_state" in payload:
+            state = str(payload.get("import_state") or "confirmed")
+            if state not in {"review", "confirmed", "archived"}:
+                raise HTTPException(status_code=400, detail="单品状态不正确")
+            item["import_state"] = state
+            edits["import_state"] = state
+        if "laundry_status" in payload:
+            laundry = str(payload.get("laundry_status") or "available")
+            if laundry not in {"available", "laundry", "unavailable"}:
+                raise HTTPException(status_code=400, detail="衣物状态不正确")
+            item["laundry_status"] = laundry
+            edits["laundry_status"] = laundry
+        if "tryon_ready" in payload:
+            item["tryon_ready"] = bool(payload.get("tryon_ready"))
+            edits["tryon_ready"] = item["tryon_ready"]
+        if payload.get("mark_worn"):
+            item["wear_count"] = int(item.get("wear_count") or 0) + 1
+            item["last_worn_at"] = now
+            edits["last_worn_at"] = now
         item["updated_at"] = now
         _write_manifest(data)
         _refresh_outfits_for_item(item_id)
@@ -1120,6 +1302,156 @@ def reprocess_closet_item(item_id: str) -> dict[str, Any]:
     return {"status": result["status"], "original_item_id": item_id, "items": result["items"], "summary": result["summary"]}
 
 
+def adjust_closet_item(item_id: str, payload: dict[str, Any]) -> dict[str, Any]:
+    item = get_closet_item(item_id)
+    source_path = _closet_disk_path(item.get("assets", {}).get("cutout_path"))
+    if source_path is None or not source_path.exists():
+        raise HTTPException(status_code=404, detail="单品图片不存在")
+    image = Image.open(source_path).convert("RGBA")
+    action = str(payload.get("action") or "").strip()
+    if action == "rotate":
+        degrees = int(payload.get("degrees") or 0)
+        if degrees not in {-90, 90, 180}:
+            raise HTTPException(status_code=400, detail="旋转角度不正确")
+        image = image.rotate(-degrees, expand=True, resample=Image.Resampling.BICUBIC)
+    elif action == "crop":
+        crop = payload.get("crop") if isinstance(payload.get("crop"), dict) else {}
+        if crop:
+            x, y = float(crop.get("x", 0)), float(crop.get("y", 0))
+            width, height = float(crop.get("width", 1)), float(crop.get("height", 1))
+            if min(x, y, width, height) < 0 or x + width > 1.001 or y + height > 1.001 or width < .08 or height < .08:
+                raise HTTPException(status_code=400, detail="裁切范围不正确")
+            image = image.crop((round(x * image.width), round(y * image.height), round((x + width) * image.width), round((y + height) * image.height)))
+        else:
+            bbox = image.getchannel("A").getbbox()
+            if bbox:
+                pad = max(8, round(max(image.size) * .045))
+                image = image.crop((max(0, bbox[0] - pad), max(0, bbox[1] - pad), min(image.width, bbox[2] + pad), min(image.height, bbox[3] + pad)))
+    elif action == "clean_edges":
+        alpha = image.getchannel("A")
+        bbox = alpha.getbbox()
+        if bbox:
+            pad = max(6, round(max(image.size) * .035))
+            box = (max(0, bbox[0] - pad), max(0, bbox[1] - pad), min(image.width, bbox[2] + pad), min(image.height, bbox[3] + pad))
+            image = image.crop(box)
+        feather = max(0, min(3, float(payload.get("feather") or .65)))
+        if feather:
+            image.putalpha(image.getchannel("A").filter(ImageFilter.GaussianBlur(feather)))
+    else:
+        raise HTTPException(status_code=400, detail="请选择需要的修正方式")
+    data = _ensure_manifest()
+    stored = next((entry for entry in data.get("items", []) if entry.get("item_id") == item_id and not entry.get("deleted")), None)
+    if stored is None:
+        raise HTTPException(status_code=404, detail="没有找到这件衣物")
+    previous_assets = dict(stored.get("assets") or {})
+    previous_quality = dict(stored.get("quality") or {})
+    previous_revision = int(stored.get("asset_revision") or 0)
+    revision = int(stored.get("asset_revision") or 0) + 1
+    item_dir = _closet_item_dir() / item_id
+    target = item_dir / f"cutout_v{revision}.png"
+    mask_path = item_dir / f"mask_v{revision}.png"
+    preview_path = item_dir / f"preview_v{revision}.png"
+    image.save(target)
+    image.getchannel("A").save(mask_path)
+    _build_closet_item_preview(target, preview_path)
+    stored["assets"].update({"cutout_path": _public_closet_path(target), "mask_path": _public_closet_path(mask_path), "preview_path": _public_closet_path(preview_path)})
+    stored["asset_revision"] = revision
+    stored.setdefault("corrections", []).append({
+        "action": action,
+        "payload": payload,
+        "created_at": _now_iso(),
+        "previous_assets": previous_assets,
+        "previous_quality": previous_quality,
+        "previous_revision": previous_revision,
+    })
+    stored["quality"] = _closet_cutout_quality(stored.get("category") or "accessory", target, .82, ["user_corrected"])
+    stored["updated_at"] = _now_iso()
+    _write_manifest(data)
+    _refresh_outfits_for_item(item_id)
+    return stored
+
+
+def undo_closet_item_adjustment(item_id: str) -> dict[str, Any]:
+    data = _ensure_manifest()
+    stored = next((entry for entry in data.get("items", []) if entry.get("item_id") == item_id and not entry.get("deleted")), None)
+    if stored is None:
+        raise HTTPException(status_code=404, detail="没有找到这件衣物")
+    corrections = stored.get("corrections") if isinstance(stored.get("corrections"), list) else []
+    if not corrections or not isinstance(corrections[-1].get("previous_assets"), dict):
+        raise HTTPException(status_code=409, detail="这件单品没有可撤销的修正")
+    correction = corrections.pop()
+    stored["assets"] = correction["previous_assets"]
+    stored["quality"] = correction.get("previous_quality") or stored.get("quality") or {}
+    stored["asset_revision"] = int(correction.get("previous_revision") or 0)
+    stored["corrections"] = corrections
+    stored["updated_at"] = _now_iso()
+    _write_manifest(data)
+    _refresh_outfits_for_item(item_id)
+    return stored
+
+
+def split_closet_item(item_id: str, payload: dict[str, Any]) -> dict[str, Any]:
+    item = get_closet_item(item_id)
+    source_path = _closet_disk_path(item.get("assets", {}).get("cutout_path"))
+    if source_path is None or not source_path.exists():
+        raise HTTPException(status_code=404, detail="单品图片不存在")
+    direction = str(payload.get("direction") or "vertical")
+    image = Image.open(source_path).convert("RGBA")
+    boxes = [(0, 0, image.width // 2, image.height), (image.width // 2, 0, image.width, image.height)] if direction == "vertical" else [(0, 0, image.width, image.height // 2), (0, image.height // 2, image.width, image.height)]
+    data = _ensure_manifest()
+    created: list[dict[str, Any]] = []
+    now = _now_iso()
+    for index, box in enumerate(boxes):
+        crop = image.crop(box)
+        alpha_box = crop.getchannel("A").getbbox()
+        if not alpha_box:
+            continue
+        crop = crop.crop(alpha_box)
+        new_id = hashlib.sha256(f"split:{item_id}:{direction}:{index}:{now}".encode("utf-8")).hexdigest()[:16]
+        item_dir = _closet_item_dir() / new_id
+        item_dir.mkdir(parents=True, exist_ok=True)
+        cutout_path, mask_path, preview_path = item_dir / "cutout.png", item_dir / "mask.png", item_dir / "preview.png"
+        crop.save(cutout_path); crop.getchannel("A").save(mask_path); _build_closet_item_preview(cutout_path, preview_path)
+        new_item = {**item, "item_id": new_id, "assets": {"cutout_path": _public_closet_path(cutout_path), "mask_path": _public_closet_path(mask_path), "preview_path": _public_closet_path(preview_path)}, "derived_from": [item_id], "import_state": "review", "favorite": False, "created_at": now, "updated_at": now, "deleted": False}
+        data.setdefault("items", []).append(new_item); created.append(new_item)
+    if len(created) < 2:
+        raise HTTPException(status_code=422, detail="这张图暂时无法自动拆成两件")
+    _write_manifest(data)
+    return {"status": "split", "source_item_id": item_id, "items": created}
+
+
+def merge_closet_items(payload: dict[str, Any]) -> dict[str, Any]:
+    item_ids = _valid_item_ids(payload.get("item_ids"))
+    if len(item_ids) < 2:
+        raise HTTPException(status_code=400, detail="请选择至少两个需要合并的片段")
+    items = [get_closet_item(item_id) for item_id in item_ids]
+    images = []
+    for item in items:
+        path = _closet_disk_path(item.get("assets", {}).get("cutout_path"))
+        if path and path.exists(): images.append(Image.open(path).convert("RGBA"))
+    if len(images) < 2:
+        raise HTTPException(status_code=422, detail="选中片段暂时无法合并")
+    canvas = Image.new("RGBA", (max(image.width for image in images), sum(image.height for image in images)), (0, 0, 0, 0))
+    y = 0
+    for image in images:
+        x = (canvas.width - image.width) // 2; canvas.alpha_composite(image, (x, y)); y += image.height
+    now = _now_iso(); item_id = hashlib.sha256(f"merge:{item_ids}:{now}".encode("utf-8")).hexdigest()[:16]
+    item_dir = _closet_item_dir() / item_id; item_dir.mkdir(parents=True, exist_ok=True)
+    cutout_path, mask_path, preview_path = item_dir / "cutout.png", item_dir / "mask.png", item_dir / "preview.png"
+    canvas.save(cutout_path); canvas.getchannel("A").save(mask_path); _build_closet_item_preview(cutout_path, preview_path)
+    category = str(payload.get("category") or items[0].get("category") or "accessory")
+    if category not in CLOSET_SUPPORTED_CATEGORIES: category = "accessory"
+    merged = {**items[0], "item_id": item_id, "category": category, "category_label": _fashion_category_label(category), "assets": {"cutout_path": _public_closet_path(cutout_path), "mask_path": _public_closet_path(mask_path), "preview_path": _public_closet_path(preview_path)}, "derived_from": item_ids, "import_state": "review", "favorite": False, "created_at": now, "updated_at": now, "deleted": False}
+    data = _ensure_manifest(); data.setdefault("items", []).append(merged); _write_manifest(data)
+    return {"status": "merged", "item": merged}
+
+
+def batch_update_closet_items(payload: dict[str, Any]) -> dict[str, Any]:
+    item_ids = _valid_item_ids(payload.get("item_ids"))
+    updates = payload.get("updates") if isinstance(payload.get("updates"), dict) else {}
+    return {"status": "updated", "items": [update_closet_item(item_id, updates) for item_id in item_ids]}
+
+
 def closet_item_as_upload(item_id: str) -> dict[str, Any]:
     item = get_closet_item(item_id)
     if item.get("category") != "top":
@@ -1140,15 +1472,54 @@ def list_outfits() -> dict[str, Any]:
         if item.get("item_id") and not item.get("deleted")
     }
     outfits = []
+    layout_migrated = False
     for outfit in data.get("outfits", []):
         if outfit.get("deleted"):
             continue
         resolved = _resolve_outfit(outfit, items_by_id)
+        if resolved.get("layout_version") != outfit.get("layout_version"):
+            for field in (
+                "cover_path",
+                "layout_snapshot_path",
+                "layout_version",
+                "layout_mode",
+                "canvas",
+                "layout_slots",
+                "display_item_ids",
+                "overflow_items",
+                "warnings",
+                "updated_at",
+            ):
+                outfit[field] = resolved.get(field)
+            layout_migrated = True
         if resolved.get("items"):
             outfits.append(resolved)
+    if layout_migrated:
+        _write_outfit_manifest(data)
     outfits = _dedupe_similar_outfits(outfits)
     outfits.sort(key=lambda item: item.get("created_at", ""), reverse=True)
     return {"total": len(outfits), "outfits": outfits}
+
+
+def list_collage_records() -> dict[str, Any]:
+    records = []
+    for outfit in list_outfits()["outfits"][:24]:
+        created_at = str(outfit.get("created_at") or "")
+        try:
+            created_at_ms = int(datetime.fromisoformat(created_at.replace("Z", "+00:00")).timestamp() * 1000)
+        except (TypeError, ValueError):
+            created_at_ms = 0
+        records.append({
+            "id": str(outfit.get("outfit_id") or ""),
+            "createdAt": created_at_ms,
+            "layoutMode": outfit.get("layout_mode") or OUTFIT_LAYOUT_MODE,
+            "itemNames": [str(item.get("title") or item.get("category_label") or "单品") for item in outfit.get("items", [])],
+            "width": int((outfit.get("canvas") or {}).get("width") or OUTFIT_CANVAS_SIZE[0]),
+            "height": int((outfit.get("canvas") or {}).get("height") or OUTFIT_CANVAS_SIZE[1]),
+            "imageUrl": outfit.get("layout_snapshot_path") or outfit.get("cover_path"),
+            "outfitId": str(outfit.get("outfit_id") or ""),
+        })
+    return {"records": records}
 
 
 def _refresh_outfits_for_item(item_id: str) -> None:
@@ -1173,6 +1544,8 @@ def _refresh_outfits_for_item(item_id: str) -> None:
         outfit["cover_path"] = _public_closet_path(layout["path"])
         outfit["layout_snapshot_path"] = _public_closet_path(layout["path"])
         outfit["layout_version"] = layout["layout_version"]
+        outfit["layout_mode"] = layout["layout_mode"]
+        outfit["canvas"] = layout["canvas"]
         outfit["layout_slots"] = layout["layout_slots"]
         outfit["display_item_ids"] = layout["display_item_ids"]
         outfit["overflow_items"] = layout["overflow_items"]
@@ -1222,33 +1595,256 @@ def _outfit_style_evidence(outfit: dict[str, Any]) -> tuple[set[str], set[str]]:
     return _canonical_tokens(style_values, STYLE_TOKEN_ALIASES), _canonical_tokens(color_values, COLOR_TOKEN_ALIASES)
 
 
-def _score_outfit_for_persona(outfit: dict[str, Any], persona: dict[str, Any]) -> dict[str, Any]:
+def _ensure_recommendation_feedback() -> dict[str, Any]:
+    path = _recommendation_feedback_path()
+    if not path.exists():
+        return {"version": RECOMMENDATION_FEEDBACK_VERSION, "events": []}
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+        if isinstance(data, dict) and isinstance(data.get("events"), list):
+            return data
+    except (OSError, json.JSONDecodeError):
+        pass
+    return {"version": RECOMMENDATION_FEEDBACK_VERSION, "events": []}
+
+
+_recommendation_feedback_lock = threading.RLock()
+
+
+def record_recommendation_feedback(payload: dict[str, Any]) -> dict[str, Any]:
+    # Multiple visible cards report concurrently; serialize read/check/replace.
+    with _recommendation_feedback_lock:
+        return _record_recommendation_feedback(payload)
+
+
+def _record_recommendation_feedback(payload: dict[str, Any]) -> dict[str, Any]:
+    event_type = str(payload.get("event_type") or "").strip().lower()
+    allowed = {"impression", "like", "dislike", "favorite", "tryon", "save", "worn"}
+    if event_type not in allowed:
+        raise HTTPException(status_code=400, detail="反馈类型不正确")
+    entity_type = str(payload.get("entity_type") or "outfit").strip().lower()
+    if entity_type not in {"outfit", "item"}:
+        raise HTTPException(status_code=400, detail="反馈对象不正确")
+    entity_id = str(payload.get("entity_id") or "").strip()
+    if not entity_id:
+        raise HTTPException(status_code=400, detail="缺少反馈对象")
+    reason = str(payload.get("reason") or "").strip()[:48]
+    if event_type == "dislike" and reason not in {"color", "fit", "scene", "formal", "complex", "repeated", "other"}:
+        raise HTTPException(status_code=400, detail="请选择不喜欢的原因")
+    data = _ensure_recommendation_feedback()
+    now = _now_iso()
+    signature = str(payload.get("client_event_id") or "").strip()[:96]
+    if signature and any(event.get("client_event_id") == signature for event in data["events"]):
+        existing = next(event for event in data["events"] if event.get("client_event_id") == signature)
+        return {"status": "recorded", "event": existing, "deduplicated": True}
+    event = {
+        "event_id": hashlib.sha256(f"{entity_type}:{entity_id}:{event_type}:{reason}:{now}".encode("utf-8")).hexdigest()[:16],
+        "entity_type": entity_type,
+        "entity_id": entity_id,
+        "event_type": event_type,
+        "reason": reason or None,
+        "context": payload.get("context") if isinstance(payload.get("context"), dict) else {},
+        "client_event_id": signature or None,
+        "created_at": now,
+    }
+    data["events"] = [*data.get("events", []), event][-2000:]
+    path = _recommendation_feedback_path()
+    path.parent.mkdir(parents=True, exist_ok=True)
+    tmp = path.with_suffix(".tmp")
+    tmp.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
+    tmp.replace(path)
+    return {"status": "recorded", "event": event, "deduplicated": False}
+
+
+def _feedback_profile(entity_id: str) -> dict[str, Any]:
+    events = [event for event in _ensure_recommendation_feedback().get("events", []) if str(event.get("entity_id")) == entity_id]
+    counts: dict[str, int] = {}
+    reasons: dict[str, int] = {}
+    for event in events:
+        kind = str(event.get("event_type") or "")
+        counts[kind] = counts.get(kind, 0) + 1
+        reason = str(event.get("reason") or "")
+        if reason:
+            reasons[reason] = reasons.get(reason, 0) + 1
+    return {"counts": counts, "reasons": reasons, "last_event_at": events[-1].get("created_at") if events else None}
+
+
+def analyze_outfit_items(items: list[dict[str, Any]], scene_tags: list[str] | None = None) -> dict[str, Any]:
+    def analysis_slot(item: dict[str, Any]) -> str:
+        slot = _outfit_item_slot(item)
+        tags = " ".join(_string_list((item.get("attributes") or {}).get("style_tags"))).lower()
+        if slot == "top" and any(token in tags for token in ("outer", "coat", "jacket", "blazer", "cardigan", "外套", "大衣", "西装", "开衫")):
+            return "outer"
+        return "lower" if slot in {"bottom", "skirt"} else slot
+
+    slots = [analysis_slot(item) for item in items]
+    counts = {slot: slots.count(slot) for slot in set(slots)}
+    has_dress = counts.get("dress", 0) > 0
+    has_top = counts.get("top", 0) > 0
+    has_lower = counts.get("lower", 0) > 0
+    main_complete = has_dress or (has_top and has_lower)
+    conflicts: list[dict[str, str]] = []
+    for slot, count in counts.items():
+        if count > 1 and slot not in {"outer", "accessory"}:
+            conflicts.append({"code": f"duplicate_{slot}", "message": {"top":"有两件上衣，请保留一件或设为叠穿", "lower":"下装重复，请保留一件", "dress":"连衣装重复，请保留一件", "shoes":"一套搭配建议保留一双鞋", "bag":"一套搭配建议保留一个包"}.get(slot, "同类单品重复")})
+    if has_dress and (has_top or has_lower):
+        conflicts.append({"code": "dress_main_conflict", "message": "连衣装与上下装同时存在，请确认是否为叠穿"})
+    missing: list[str] = []
+    if not main_complete:
+        if has_top and not has_lower:
+            missing.append("lower")
+        elif has_lower and not has_top:
+            missing.append("top")
+        elif not has_dress:
+            missing.append("main")
+    elif not counts.get("shoes"):
+        missing.append("shoes")
+    elif not counts.get("bag"):
+        missing.append("bag")
+    warnings: list[dict[str, str]] = []
+    seasons = [set(_string_list((item.get("attributes") or {}).get("season_tags"))) for item in items]
+    known_seasons = [value for value in seasons if value]
+    if len(known_seasons) > 1 and not set.intersection(*known_seasons):
+        warnings.append({"code": "season_mismatch", "message": "这些单品的适穿季节不完全一致"})
+    unavailable = [item for item in items if item.get("laundry_status") in {"laundry", "unavailable"}]
+    if unavailable:
+        warnings.append({"code": "item_unavailable", "message": f"{len(unavailable)} 件单品当前不可穿"})
+    requested_scenes = set(_string_list(scene_tags))
+    item_scenes = [set(_string_list((item.get("attributes") or {}).get("scene_tags"))) for item in items]
+    known_item_scenes = set().union(*(value for value in item_scenes if value)) if any(item_scenes) else set()
+    if requested_scenes and known_item_scenes and not requested_scenes.intersection(known_item_scenes):
+        warnings.append({"code": "scene_mismatch", "message": "这些单品与当前场景标签匹配度较低"})
+    color_tokens = {
+        color.strip().lower()
+        for item in items
+        for color in _string_list((item.get("attributes") or {}).get("colors"))
+        if color.strip()
+    }
+    if len(color_tokens) > 4:
+        warnings.append({"code": "color_complexity", "message": "配色较多，可减少一个亮色让主次更清晰"})
+    label = "搭配已完整" if main_complete and not conflicts else "需要调整" if conflicts else "继续补全搭配"
+    next_copy = {"main":"先选一件主服装", "top":"再加一件上衣即可完整", "lower":"再加一件下装即可完整", "shoes":"基础穿搭已完整，再加一双鞋", "bag":"主搭配已完整，可再加包或配饰"}.get(missing[0] if missing else "", "已可以保存和试穿")
+    return {
+        "version": OUTFIT_ANALYSIS_VERSION,
+        "status": "conflict" if conflicts else "complete" if main_complete else "incomplete",
+        "label": label,
+        "message": conflicts[0]["message"] if conflicts else next_copy,
+        "main_complete": main_complete,
+        "missing_slots": missing,
+        "conflicts": conflicts,
+        "warnings": warnings,
+        "selected_count": len(items),
+        "scene_tags": scene_tags or [],
+    }
+
+
+def analyze_outfit_selection(payload: dict[str, Any]) -> dict[str, Any]:
+    item_ids = _valid_item_ids(payload.get("item_ids"))
+    return analyze_outfit_items([get_closet_item(item_id) for item_id in item_ids], _string_list(payload.get("scene_tags")))
+
+
+def _score_outfit_for_persona(
+    outfit: dict[str, Any],
+    persona: dict[str, Any],
+    feedback: dict[str, Any] | None = None,
+    context: dict[str, Any] | None = None,
+) -> dict[str, Any]:
     persona_styles, persona_colors = _persona_style_evidence(persona)
     outfit_styles, outfit_colors = _outfit_style_evidence(outfit)
     shared_styles = sorted(persona_styles & outfit_styles)
     shared_colors = sorted(persona_colors & outfit_colors)
+    metadata = persona.get("metadata") if isinstance(persona.get("metadata"), dict) else {}
+    persona_code = str(metadata.get("code") or persona.get("typeId") or "").strip().upper()
+    primary_persona = str(outfit.get("primary_persona") or "").strip().upper()
+    secondary_personas = {str(value).strip().upper() for value in outfit.get("secondary_personas") or []}
     categories = {str(item.get("category") or "") for item in outfit.get("items", [])}
     has_main = "dress" in categories or ("top" in categories and bool(categories & {"bottom", "skirt"}))
     completeness = (18 if has_main else 4) + (7 if "shoes" in categories else 0) + (5 if "bag" in categories else 0)
     quality = sum(float(item.get("quality", {}).get("score") or 0) for item in outfit.get("items", [])) / max(1, len(outfit.get("items", [])))
     score = completeness + len(shared_styles) * 24 + len(shared_colors) * 14 + quality * 8
+    if persona_code and primary_persona == persona_code:
+        score += 64
+    elif persona_code and persona_code in secondary_personas:
+        score += 28
     if outfit.get("favorite"):
         score += 5
+    feedback = feedback or {"counts": {}, "reasons": {}}
+    counts = feedback.get("counts") or {}
+    score += counts.get("like", 0) * 18 + counts.get("favorite", 0) * 14 + counts.get("tryon", 0) * 10 + counts.get("save", 0) * 12
+    # A worn event is positive preference evidence, but the exact same outfit
+    # should take a short rest so the feed does not feel repetitive.
+    score -= counts.get("worn", 0) * 42
+    score -= counts.get("dislike", 0) * 90 + min(18, counts.get("impression", 0) * 2)
+    context = context if isinstance(context, dict) else {}
+    requested_scenes = set(_string_list(context.get("scene_tags") or context.get("scene")))
+    requested_seasons = set(_string_list(context.get("season_tags") or context.get("season")))
+    weather_text = str(context.get("weather") or "").strip().lower()
+    outfit_scenes = set(_string_list(outfit.get("scene_tags")))
+    item_seasons = {
+        value
+        for item in outfit.get("items", [])
+        for value in _string_list((item.get("attributes") or {}).get("season_tags"))
+    }
+    if requested_scenes and outfit_scenes:
+        score += 18 if requested_scenes.intersection(outfit_scenes) else -8
+    if requested_seasons and item_seasons:
+        score += 12 if requested_seasons.intersection(item_seasons) else -14
+    outfit_attribute_text = " ".join(
+        str(value or "")
+        for item in outfit.get("items", [])
+        for value in [
+            (item.get("attributes") or {}).get("material"),
+            *((item.get("attributes") or {}).get("style_tags") or []),
+            *((item.get("attributes") or {}).get("scene_tags") or []),
+        ]
+    ).lower()
+    weather_matched = bool(weather_text and any(token in weather_text for token in ("rain", "雨")) and any(token in outfit_attribute_text for token in ("waterproof", "rain", "防水", "雨天")))
+    if weather_matched:
+        score += 10
+    unavailable_count = sum(1 for item in outfit.get("items", []) if item.get("laundry_status") in {"laundry", "unavailable"})
+    score -= unavailable_count * 60
     reasons = []
+    if persona_code and primary_persona == persona_code:
+        reasons.append("呼应你的人格风格")
+    elif persona_code and persona_code in secondary_personas:
+        reasons.append("与你的风格特征相容")
     if shared_styles:
         reasons.append("风格特征呼应：" + "、".join(shared_styles[:2]))
     if shared_colors:
         reasons.append("推荐色呼应：" + "、".join(shared_colors[:2]))
     if has_main:
         reasons.append("主搭配结构完整")
+    if requested_scenes and requested_scenes.intersection(outfit_scenes):
+        reasons.insert(0, "符合你这次的穿衣场景")
+    elif weather_matched:
+        reasons.insert(0, "考虑了今天的天气")
+    elif requested_seasons and requested_seasons.intersection(item_seasons):
+        reasons.insert(0, "适合当前季节")
+    elif counts.get("favorite") or outfit.get("favorite"):
+        reasons.insert(0, "来自你收藏过的偏好")
+    elif counts.get("worn"):
+        reasons.insert(0, "你穿过这套，已降低近期重复度")
     if not reasons:
         reasons.append("根据单品完整度排序")
+    scene_reason = ""
+    if outfit_scenes:
+        scene_reason = f"适合{sorted(outfit_scenes)[0]}场景"
+        if scene_reason not in reasons:
+            reasons.append(scene_reason)
+    if reasons[0] in {"符合你这次的穿衣场景", "考虑了今天的天气", "适合当前季节", "来自你收藏过的偏好", "你穿过这套，已降低近期重复度"}:
+        primary_reason = reasons[0]
+    else:
+        useful_reasons = [reason for reason in reasons if reason != "主搭配结构完整"] or reasons
+        identity = str(outfit.get("outfit_id") or outfit.get("title") or "outfit")
+        primary_reason = useful_reasons[int(hashlib.sha256(identity.encode("utf-8")).hexdigest()[:8], 16) % len(useful_reasons)]
     return {
         "score": round(score, 2),
         "reasons": reasons,
+        "primary_reason": primary_reason,
         "matched_style_tokens": shared_styles,
         "matched_color_tokens": shared_colors,
-        "algorithm": "persona_style_rank_v1",
+        "feedback": feedback,
+        "algorithm": "persona_behavior_rank_v2",
     }
 
 
@@ -1257,10 +1853,41 @@ def recommend_outfits(payload: dict[str, Any]) -> dict[str, Any]:
     offset = max(0, int(payload.get("offset") or 0))
     limit = max(1, min(20, int(payload.get("limit") or 12)))
     rotate_by = max(1, min(limit, int(payload.get("rotate_by") or 4)))
-    outfits = list_outfits()["outfits"]
+    context = payload.get("context") if isinstance(payload.get("context"), dict) else {}
+    preview = context.get("persona_preview") is True
+    # Preview the published pool alone: no hydrated Demo or private creations.
+    outfits = [] if preview else list_outfits()["outfits"]
+    known_ids = {str(outfit.get("outfit_id") or "") for outfit in outfits}
+    outfits.extend(
+        outfit
+        for outfit in _published_catalog_outfits()
+        if str(outfit.get("outfit_id") or "") not in known_ids
+    )
+    if preview:
+        persona_id = str(persona.get("typeId") or "").strip().lower()
+        outfits = [outfit for outfit in outfits
+                   if persona_id and str(outfit.get("primary_persona") or "").lower() == persona_id]
+    outfits_by_id = {str(outfit.get("outfit_id") or ""): outfit for outfit in outfits}
+    recently_worn_items: dict[str, int] = {}
+    worn_events = [
+        event for event in ([] if preview else _ensure_recommendation_feedback().get("events", []))
+        if event.get("entity_type") == "outfit" and event.get("event_type") == "worn"
+    ][-24:]
+    for event in worn_events:
+        worn_outfit = outfits_by_id.get(str(event.get("entity_id") or ""))
+        if not worn_outfit:
+            continue
+        for item_id in worn_outfit.get("item_ids", []):
+            recently_worn_items[str(item_id)] = recently_worn_items.get(str(item_id), 0) + 1
     ranked = []
     for outfit in outfits:
-        recommendation = _score_outfit_for_persona(outfit, persona)
+        outfit_feedback = {"counts": {}, "reasons": {}} if preview else _feedback_profile(str(outfit.get("outfit_id") or ""))
+        recommendation = _score_outfit_for_persona(outfit, persona, outfit_feedback, context)
+        repeated_item_count = sum(recently_worn_items.get(str(item_id), 0) for item_id in outfit.get("item_ids", []))
+        if repeated_item_count:
+            recommendation["score"] = round(float(recommendation["score"]) - min(54, repeated_item_count * 12), 2)
+            if not outfit_feedback.get("counts", {}).get("worn"):
+                recommendation["reasons"].append("含近期穿过的单品，已降低重复推荐")
         ranked.append({**outfit, "recommendation": recommendation})
     ranked.sort(
         key=lambda outfit: (
@@ -1269,17 +1896,40 @@ def recommend_outfits(payload: dict[str, Any]) -> dict[str, Any]:
             str(outfit.get("outfit_id") or ""),
         )
     )
+    # The wardrobe recommendation surface must not let a large published pool
+    # bury outfits the user just created. Reserve a small, score-ordered share
+    # for personal outfits, then fill the rest from the global ranking.
+    personal = [] if preview else [
+        outfit for outfit in ranked
+        if outfit.get("user_id")
+        and not str(outfit.get("outfit_id") or "").startswith("w_outfit_")
+        and outfit.get("source") != "published_content_v2"
+    ]
+    if personal:
+        # Keep personal creations visible without allowing a large legacy
+        # wardrobe to occupy the entire six-card home viewport.
+        personal_quota = min(limit, len(personal), 2)
+        reserved_ids = {str(outfit.get("outfit_id") or "") for outfit in personal[:personal_quota]}
+        ranked = personal[:personal_quota] + [
+            outfit for outfit in ranked
+            if str(outfit.get("outfit_id") or "") not in reserved_ids
+        ]
     if ranked:
         start = offset % len(ranked)
         ordered = ranked[start:] + ranked[:start]
     else:
         ordered = []
+    # Scroll pagination excludes already delivered IDs instead of relying on
+    # unstable offsets: exposure feedback can reorder the ranking between calls.
+    # Preserve delivery order so the last page participates in the same window.
+    seen_ids = _string_list(payload.get("exclude_outfit_ids"))[:5000]
+    selection = select_diverse_outfits(ordered, seen_ids, limit)
     return {
         "total": len(ranked),
         "offset": offset,
         "next_offset": (offset + rotate_by) % max(1, len(ranked)),
-        "algorithm": "persona_style_rank_v1",
-        "outfits": ordered[:limit],
+        "algorithm": "persona_behavior_rank_v2",
+        **selection,
     }
 
 
@@ -1294,6 +1944,9 @@ def get_outfit(outfit_id: str) -> dict[str, Any]:
                 if item.get("item_id") and not item.get("deleted")
             }
             return _resolve_outfit(outfit, items_by_id)
+    published = next((outfit for outfit in _published_catalog_outfits(include_archived=True) if outfit.get("outfit_id") == outfit_id), None)
+    if published is not None:
+        return published
     raise HTTPException(status_code=404, detail="没有找到这套搭配")
 
 
@@ -1314,6 +1967,8 @@ def create_outfit(payload: dict[str, Any]) -> dict[str, Any]:
         "item_ids": item_ids,
         "cover_path": _public_closet_path(layout["path"]),
         "layout_version": layout["layout_version"],
+        "layout_mode": layout["layout_mode"],
+        "canvas": layout["canvas"],
         "layout_snapshot_path": _public_closet_path(layout["path"]),
         "layout_slots": layout["layout_slots"],
         "display_item_ids": layout["display_item_ids"],
@@ -1355,6 +2010,8 @@ def update_outfit(outfit_id: str, payload: dict[str, Any]) -> dict[str, Any]:
             outfit["cover_path"] = _public_closet_path(layout["path"])
             outfit["layout_snapshot_path"] = _public_closet_path(layout["path"])
             outfit["layout_version"] = layout["layout_version"]
+            outfit["layout_mode"] = layout["layout_mode"]
+            outfit["canvas"] = layout["canvas"]
             outfit["layout_slots"] = layout["layout_slots"]
             outfit["display_item_ids"] = layout["display_item_ids"]
             outfit["overflow_items"] = layout["overflow_items"]
@@ -1396,7 +2053,11 @@ def outfit_as_tryon_plan(outfit_id: str, photo_mode: str | None = None, scene_la
         cover_disk_path = layout["path"]
 
     plan_items: list[dict[str, Any]] = []
+    skipped_item_ids: list[str] = []
     for index, item in enumerate(outfit.get("items", [])):
+        if item.get("tryon_ready") is False:
+            skipped_item_ids.append(str(item.get("item_id") or ""))
+            continue
         slot = _outfit_item_slot(item)
         public_path = item.get("assets", {}).get("cutout_path") or item.get("assets", {}).get("preview_path")
         disk_path = _closet_disk_path(public_path)
@@ -1410,6 +2071,7 @@ def outfit_as_tryon_plan(outfit_id: str, photo_mode: str | None = None, scene_la
                 "category": item.get("category") or slot,
                 "category_label": item.get("category_label") or _fashion_category_label(str(item.get("category") or slot)),
                 "image_path": str(disk_path),
+                "public_image_path": public_path,
                 "attributes": item.get("attributes") or {},
                 "note": item.get("note") or "",
                 "wearing_instruction": _outfit_item_wearing_instruction(slot, item),
@@ -1434,6 +2096,7 @@ def outfit_as_tryon_plan(outfit_id: str, photo_mode: str | None = None, scene_la
             },
         },
         "items": plan_items,
+        "reference_only_item_ids": [item_id for item_id in skipped_item_ids if item_id],
         "style_brief": " ".join(str(tag) for tag in outfit.get("scene_tags", []) if str(tag).strip()),
     }
     return plan, outfit
@@ -1492,14 +2155,34 @@ def get_user_preferences() -> dict[str, Any]:
                 data.setdefault("version", 1)
                 data.setdefault("current_model_id", "female_medium_1")
                 data.setdefault("current_stylist_session_id", "")
+                data.setdefault("self_model_path", "")
                 return data
         except json.JSONDecodeError:
             pass
-    return {"version": 1, "current_model_id": "female_medium_1", "current_stylist_session_id": ""}
+    return {
+        "version": 1,
+        "current_model_id": "female_medium_1",
+        "current_stylist_session_id": "",
+        "self_model_path": "",
+    }
 
 
 def update_user_preferences(payload: dict[str, Any]) -> dict[str, Any]:
     data = get_user_preferences()
+    if "recommendation" in payload:
+        from app.recommendation_profile import PALETTES
+        from app.recommendation_feed import SCENES
+        pref = payload["recommendation"]
+        if not isinstance(pref, dict) or set(pref)-{"palette", "excluded_categories", "preferred_categories", "scene"}:
+            raise HTTPException(422, "推荐偏好格式不正确")
+        if "palette" in pref and pref["palette"] is not None and pref["palette"] not in PALETTES:
+            raise HTTPException(422, "请选择有效色板")
+        for field in ("excluded_categories", "preferred_categories"):
+            if field in pref and (not isinstance(pref[field],list) or any(v not in CLOSET_SUPPORTED_CATEGORIES for v in pref[field])):
+                raise HTTPException(422, "请选择有效品类")
+        if pref.get("scene") is not None and pref["scene"] not in SCENES:
+            raise HTTPException(422, "请选择有效场景")
+        data["recommendation"] = {**data.get("recommendation", {}), **pref}
     if "current_model_id" in payload:
         model_id = str(payload.get("current_model_id") or "").strip()
         if model_id:
@@ -1507,6 +2190,9 @@ def update_user_preferences(payload: dict[str, Any]) -> dict[str, Any]:
     if "current_stylist_session_id" in payload:
         session_id = str(payload.get("current_stylist_session_id") or "").strip()
         data["current_stylist_session_id"] = session_id[:80]
+    if "self_model_path" in payload:
+        model_path = str(payload.get("self_model_path") or "").strip()
+        data["self_model_path"] = model_path[:500]
     data["updated_at"] = _now_iso()
     path = _user_preferences_path()
     path.parent.mkdir(parents=True, exist_ok=True)
@@ -1514,6 +2200,31 @@ def update_user_preferences(payload: dict[str, Any]) -> dict[str, Any]:
     tmp_path.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
     tmp_path.replace(path)
     return data
+
+
+async def save_user_model_photo(upload: UploadFile) -> dict[str, Any]:
+    """Persist an App-selected model photo in the signed-in user's asset space."""
+
+    raw = await upload.read()
+    if not raw:
+        raise HTTPException(status_code=400, detail="请选择一张照片。")
+    if len(raw) > MAX_IMAGE_BYTES:
+        raise HTTPException(status_code=413, detail="照片过大，请选择 15MB 以内的图片。")
+    try:
+        with Image.open(io.BytesIO(raw)) as source:
+            image = ImageOps.exif_transpose(source).convert("RGB")
+    except (UnidentifiedImageError, OSError) as error:
+        raise HTTPException(status_code=400, detail="这张照片暂时无法读取，请换一张。") from error
+    if image.width < 240 or image.height < 320:
+        raise HTTPException(status_code=400, detail="照片分辨率偏低，请选择一张更清晰的照片。")
+    image.thumbnail((2048, 2048), Image.Resampling.LANCZOS)
+    target_dir = _closet_output_dir() / "profile"
+    target_dir.mkdir(parents=True, exist_ok=True)
+    target = target_dir / "self_model.webp"
+    image.save(target, "WEBP", quality=92, method=6)
+    public_path = _public_closet_path(target) or ""
+    preferences = update_user_preferences({"self_model_path": public_path})
+    return {**preferences, "self_model_path": public_path}
 
 
 def delete_tryon_record(record_id: str) -> dict[str, Any]:
@@ -1562,6 +2273,9 @@ def record_selfit_tryon_result(outfit_id: str, tryon_result: dict[str, Any]) -> 
         "scene_tags": outfit.get("scene_tags", []),
         "photo_mode": tryon_result.get("photo_mode"),
         "generation_strategy": tryon_result.get("generation_strategy"),
+        "piece_summary": tryon_result.get("summary") or {},
+        "piece_results": tryon_result.get("piece_results") or [],
+        "version_id": tryon_result.get("version_id") or tryon_id or None,
         "quality_review": tryon_result.get("pipeline", {}).get("quality_review") if isinstance(tryon_result.get("pipeline"), dict) else None,
         "created_at": now,
         "updated_at": now,
@@ -1701,22 +2415,31 @@ def _resolve_outfit(outfit: dict[str, Any], items_by_id: dict[str, dict[str, Any
         if str(item_id) in items_by_id
     ]
     layout_patch: dict[str, Any] = {}
-    if items and outfit.get("layout_version") != OUTFIT_LAYOUT_VERSION:
+    expected_layout = OUTFIT_LAYOUT_VERSION
+    if items and outfit.get("layout_version") != expected_layout:
         layout = _build_outfit_cover(str(outfit.get("outfit_id") or hashlib.sha256(str(outfit.get("item_ids", [])).encode("utf-8")).hexdigest()[:16]), items)
         layout_patch = {
             "cover_path": _public_closet_path(layout["path"]),
             "layout_snapshot_path": _public_closet_path(layout["path"]),
             "layout_version": layout["layout_version"],
+            "layout_mode": layout["layout_mode"],
+            "canvas": layout["canvas"],
             "layout_slots": layout["layout_slots"],
             "display_item_ids": layout["display_item_ids"],
             "overflow_items": layout["overflow_items"],
             "warnings": [*(outfit.get("warnings") or []), *layout["warnings"]],
+            "updated_at": _now_iso(),
         }
+    completeness = analyze_outfit_items(items, _string_list(outfit.get("scene_tags"))) if items else {
+        "status": "incomplete", "label": "继续补全搭配", "message": "先选一件主服装", "main_complete": False,
+        "missing_slots": ["main"], "conflicts": [], "warnings": [], "selected_count": 0, "version": OUTFIT_ANALYSIS_VERSION,
+    }
     return {
         **outfit,
         **layout_patch,
         "items": items,
-        "tryon_ready": any(item.get("category") == "top" for item in items),
+        "tryon_ready": bool(completeness.get("main_complete")) and not completeness.get("conflicts"),
+        "completeness": completeness,
     }
 
 
@@ -1770,15 +2493,11 @@ def _outfit_completeness_score(outfit: dict[str, Any]) -> tuple[int, int, int, i
 
 def _build_outfit_cover(outfit_id: str, items: list[dict[str, Any]]) -> dict[str, Any]:
     normalized = _normalize_outfit_layout_items(items)
-    canvas = Image.new("RGBA", (900, 900), "#ffffff")
-    draw = ImageDraw.Draw(canvas)
-    draw.rounded_rectangle((24, 24, 876, 876), radius=42, outline="#f0f1f3", width=2)
-
-    layout_slots: list[dict[str, Any]] = []
+    canvas_width, canvas_height = OUTFIT_CANVAS_SIZE
+    canvas = Image.new("RGBA", OUTFIT_CANVAS_SIZE, BACKGROUND)
+    prepared: list[dict[str, Any]] = []
     for entry in normalized["display_entries"]:
         item = entry["item"]
-        slot = entry["slot"]
-        box = _flatlay_box(slot, bool(normalized["has_dress"]))
         source = _closet_disk_path(item.get("assets", {}).get("cutout_path") or item.get("assets", {}).get("preview_path"))
         if source is None or not source.exists():
             normalized["warnings"].append(f"{item.get('category_label') or '单品'} 暂时没有可用于排版的图片。")
@@ -1789,38 +2508,165 @@ def _build_outfit_cover(outfit_id: str, items: list[dict[str, Any]]) -> dict[str
             normalized["warnings"].append(f"{item.get('category_label') or '单品'} 图片暂时无法读取。")
             continue
         image = _trim_flatlay_image(image)
-        left, top, right, bottom = box
-        max_w = right - left
-        max_h = bottom - top
-        original_w, original_h = image.size
-        image.thumbnail((max_w, max_h), Image.Resampling.LANCZOS)
-        x = left + (max_w - image.width) // 2
-        y = top + (max_h - image.height) // 2
-        if _needs_flatlay_shadow(image):
-            canvas.alpha_composite(_flatlay_shadow(image), (x + 3, y + 7))
+        if image.width < 2 or image.height < 2:
+            continue
+        prepared.append({**entry, "image": image, "aspect": image.width / image.height})
+
+    slots = [entry["slot"] for entry in prepared]
+    layered = is_layered(slots)
+    placements: list[dict[str, Any]] = []
+    if len(prepared) == 1:
+        only_slot = str(prepared[0]["slot"])
+        only_box = outfit_box(only_slot, slots)
+        placements.append(_fit_flatlay_entry(prepared[0], only_box, column=0, row=0, vertical_align=vertical_align(only_slot, slots)))
+    else:
+        main_row = 0
+        accessory_row = 0
+        for entry in prepared:
+            slot = str(entry["slot"])
+            accessory = _is_accessory_slot(slot)
+            placements.append(
+                _fit_flatlay_entry(
+                    entry,
+                    outfit_box(slot, slots),
+                    column=(2 if accessory else 0 if slot == "outer" else 1) if layered else 1 if accessory else 0,
+                    row=accessory_row if accessory else main_row,
+                    vertical_align=vertical_align(slot, slots),
+                )
+            )
+            if accessory:
+                accessory_row += 1
+            else:
+                main_row += 1
+
+    layout_slots: list[dict[str, Any]] = []
+    for placement in placements:
+        item = placement["item"]
+        slot = placement["slot"]
+        image = placement["image"].copy()
+        target_size = (max(1, round(placement["width"])), max(1, round(placement["height"])))
+        if image.size != target_size:
+            image = image.resize(target_size, Image.Resampling.LANCZOS)
+        x = round(placement["x"] + (placement["width"] - image.width) / 2)
+        y = round(placement["y"] + (placement["height"] - image.height) / 2)
         canvas.alpha_composite(image, (x, y))
         layout_slots.append(
             {
                 "item_id": item.get("item_id"),
                 "slot": slot,
                 "box": {"x": x, "y": y, "width": image.width, "height": image.height},
-                "source_box": {"x": left, "y": top, "width": max_w, "height": max_h},
-                "scale": round(image.width / original_w, 4) if original_w else 1.0,
-                "z_index": _flatlay_z_index(slot),
+                "source_box": {"x": round(placement["x"]), "y": round(placement["y"]), "width": round(placement["width"]), "height": round(placement["height"])},
+                "column": placement["column"],
+                "row": placement["row"],
+                "scale": round(image.width / max(1, placement["image"].width), 4),
+                "visual_area_ratio": round(_collage_visual_area_ratio(slot), 4),
+                "optical_group": "accessory_rail" if _is_accessory_slot(slot) else "main_outfit",
+                "z_index": len(layout_slots) + 10,
             }
         )
 
-    target = _outfit_dir() / outfit_id / "flatlay.png"
+    target = _outfit_dir() / outfit_id / f"flatlay-{OUTFIT_LAYOUT_VERSION}.png"
     target.parent.mkdir(parents=True, exist_ok=True)
     canvas.convert("RGB").save(target, "PNG")
     return {
         "path": target,
         "layout_version": OUTFIT_LAYOUT_VERSION,
+        "layout_mode": OUTFIT_LAYOUT_MODE,
+        "canvas": {"width": canvas_width, "height": canvas_height},
         "layout_slots": layout_slots,
         "display_item_ids": [slot["item_id"] for slot in layout_slots if slot.get("item_id")],
         "overflow_items": normalized["overflow_items"],
         "warnings": normalized["warnings"],
     }
+
+
+def _collage_visual_area_ratio(slot: str) -> float:
+    if slot in {"outer", "dress"}:
+        return 1.0
+    if slot in {"top", "bottom", "skirt"}:
+        return 2 / 3
+    return 2 / 9
+
+
+def _is_accessory_slot(slot: str) -> bool:
+    return slot in {"hat", "scarf", "socks", "shoes", "bag"} or slot.startswith("accessory_")
+
+
+def _fit_flatlay_entry(
+    entry: dict[str, Any],
+    box: tuple[int, int, int, int],
+    *,
+    column: int,
+    row: int,
+    vertical_align: str = "center",
+) -> dict[str, Any]:
+    """Contain one cutout inside a deterministic semantic slot."""
+
+    x1, y1, x2, y2 = box
+    box_width = max(1, x2 - x1)
+    box_height = max(1, y2 - y1)
+    image = entry["image"]
+    scale = min(box_width / max(1, image.width), box_height / max(1, image.height))
+    width = image.width * scale
+    height = image.height * scale
+    if vertical_align == "start":
+        y = y1
+    elif vertical_align == "end":
+        y = y2 - height
+    else:
+        y = y1 + (box_height - height) / 2
+    return {
+        **entry,
+        "x": x1 + (box_width - width) / 2,
+        "y": y,
+        "width": width,
+        "height": height,
+        "column": column,
+        "row": row,
+    }
+
+
+def _collage_sequence_rank(entry: dict[str, Any]) -> float:
+    slot = str(entry.get("slot") or "accessory")
+    ranks = {"outer": 0, "top": 1, "bottom": 2, "skirt": 3, "dress": 4, "hat": 5, "scarf": 6, "socks": 7, "bag": 8, "shoes": 9}
+    return ranks.get(slot, 7.5)
+
+
+def _collage_partition(entries: list[dict[str, Any]]) -> tuple[list[dict[str, Any]], int]:
+    ordered = sorted(enumerate(entries), key=lambda pair: (_collage_sequence_rank(pair[1]), pair[0]))
+    items = [entry for _, entry in ordered]
+    if len(items) <= 1:
+        return items, len(items)
+    weights = [_collage_visual_area_ratio(entry["slot"]) for entry in items]
+    heights = [math.sqrt(weight / max(0.05, float(entry["aspect"]))) for weight, entry in zip(weights, items)]
+    total_weight = sum(weights)
+    total_height = sum(heights)
+    has_upper = any(entry["slot"] in {"outer", "top"} for entry in items)
+    has_lower = any(entry["slot"] in {"bottom", "skirt"} for entry in items)
+    best_indices: list[int] | None = None
+    best_score = float("inf")
+    for mask in range(1, 2 ** len(items)):
+        indices = [index for index in range(len(items)) if mask & (1 << index)]
+        if len(items) > 2 and len(indices) == len(items):
+            continue
+        if has_upper and has_lower:
+            upper_count = sum(items[index]["slot"] in {"outer", "top"} for index in indices)
+            lower_count = sum(items[index]["slot"] in {"bottom", "skirt"} for index in indices)
+            if not (1 <= upper_count <= 2 and lower_count >= 1):
+                continue
+        left_weight = sum(weights[index] for index in indices)
+        left_height = sum(heights[index] for index in indices)
+        score = abs(left_weight - (total_weight - left_weight)) / max(1, total_weight) * 0.55
+        score += abs(left_height - (total_height - left_height)) / max(1, total_height) * 0.35
+        score += abs(len(indices) - len(items) / 2) / len(items) * 0.1
+        if score < best_score:
+            best_score = score
+            best_indices = indices
+    if not best_indices:
+        best_indices = list(range(max(1, len(items) // 2)))
+    left = set(best_indices)
+    partitioned = [entry for index, entry in enumerate(items) if index in left] + [entry for index, entry in enumerate(items) if index not in left]
+    return partitioned, len(left)
 
 
 def _normalize_outfit_layout_items(items: list[dict[str, Any]]) -> dict[str, Any]:
@@ -1863,7 +2709,7 @@ def _normalize_outfit_layout_items(items: list[dict[str, Any]]) -> dict[str, Any
                     warnings.append(f"裤子和裙子先保留一个，{label} 未放入封面。")
                     continue
             has_separate_main = True
-        elif slot in {"hat", "scarf", "socks", "shoes", "bag"}:
+        elif slot in {"outer", "hat", "scarf", "socks", "shoes", "bag"}:
             if used_slots.get(slot):
                 overflow_items.append({"item_id": item_id, "slot": slot, "reason": "duplicate_slot"})
                 warnings.append(f"一套搭配里先保留一件{_slot_label(slot)}，{label} 未放入封面。")
@@ -1890,10 +2736,12 @@ def _normalize_outfit_layout_items(items: list[dict[str, Any]]) -> dict[str, Any
 
 def _outfit_item_slot(item: dict[str, Any]) -> str:
     explicit = str(item.get("slot") or item.get("subcategory") or "").strip().lower()
-    allowed = {"hat", "scarf", "top", "bottom", "skirt", "dress", "socks", "shoes", "bag", "accessory"}
+    allowed = {"outer", "hat", "scarf", "top", "bottom", "skirt", "dress", "socks", "shoes", "bag", "accessory"}
     if explicit in allowed:
         return explicit
     tags = [str(tag).strip().lower() for tag in item.get("attributes", {}).get("style_tags", [])]
+    if "outer" in tags or item.get("attributes", {}).get("slot") == "outer":
+        return "outer"
     tag_text = " ".join(tags)
     tag_map = [
         ("hat", ("hat", "cap", "帽")),
@@ -1904,7 +2752,7 @@ def _outfit_item_slot(item: dict[str, Any]) -> str:
         if any(needle in tag_text for needle in needles):
             return slot
     category = str(item.get("category") or "accessory")
-    if category in {"top", "bottom", "skirt", "dress", "shoes", "bag"}:
+    if category in {"outer", "top", "bottom", "skirt", "dress", "shoes", "bag"}:
         return category
     return "accessory"
 
@@ -1916,35 +2764,12 @@ def _category_to_layout_slot(category: str) -> str:
 
 
 def _flatlay_box(slot: str, has_dress: bool) -> tuple[int, int, int, int]:
-    if has_dress:
-        boxes = {
-            "hat": (128, 54, 300, 190),
-            "scarf": (76, 214, 240, 366),
-            "dress": (236, 76, 656, 620),
-            "socks": (286, 636, 438, 760),
-            "shoes": (398, 642, 766, 844),
-            "bag": (632, 250, 842, 510),
-            "accessory_1": (82, 540, 258, 704),
-            "accessory_2": (658, 540, 832, 704),
-        }
-    else:
-        boxes = {
-            "hat": (126, 48, 306, 184),
-            "scarf": (78, 208, 242, 366),
-            "top": (230, 56, 638, 342),
-            "bottom": (246, 320, 620, 664),
-            "skirt": (246, 326, 620, 640),
-            "socks": (292, 646, 452, 762),
-            "shoes": (406, 660, 782, 842),
-            "bag": (640, 220, 846, 474),
-            "accessory_1": (84, 560, 260, 724),
-            "accessory_2": (646, 520, 828, 682),
-        }
-    return boxes.get(slot, boxes.get("accessory_1", (82, 674, 260, 858)))
+    return outfit_box(slot, {"dress"} if has_dress else {"top", "bottom"})
 
 
 def _flatlay_z_index(slot: str) -> int:
     order = {
+        "outer": 25,
         "hat": 10,
         "scarf": 20,
         "top": 30,
@@ -1961,7 +2786,7 @@ def _flatlay_z_index(slot: str) -> int:
 
 
 def _slot_label(slot: str) -> str:
-    labels = {"hat": "帽子", "scarf": "围巾", "socks": "袜子", "shoes": "鞋子", "bag": "包"}
+    labels = {"outer": "外套", "hat": "帽子", "scarf": "围巾", "socks": "袜子", "shoes": "鞋子", "bag": "包"}
     return labels.get(slot, "配饰")
 
 
@@ -2891,7 +3716,7 @@ def render_selfit_demo_page() -> str:
     .upload-zone { border: 2px dashed #f2b4c8; background: #fff8fb; border-radius: 24px; min-height: 240px; display: grid; place-items: center; text-align: center; color: var(--muted); padding: 20px; }
     .upload-zone img { max-width: 100%; max-height: 260px; object-fit: contain; border-radius: 18px; }
     .color-result { background: #fff; border-radius: 18px; padding: 14px; color: var(--soft-ink, #4f454c); line-height: 1.55; display: none; }
-    .editor-canvas { height: 488px; position: relative; margin-bottom: 14px; background: #fff; border: 10px solid #f1f2f5; touch-action: none; }
+    .editor-canvas { height: 488px; position: relative; margin-bottom: 14px; background: #fffaf8; border: 1px solid #f2e4e9; border-radius: 22px; box-shadow: 0 16px 42px rgba(82,42,61,.07); overflow: hidden; touch-action: none; }
     .canvas-item { position: absolute; width: 132px; height: 132px; display: grid; place-items: center; border: 2px solid transparent; border-radius: 14px; touch-action: none; }
     .canvas-item.active { border-color: #fff; box-shadow: 0 0 0 2px var(--rose); }
     .canvas-item img { width: 100%; height: 100%; object-fit: contain; pointer-events: none; filter: drop-shadow(0 12px 18px rgba(0,0,0,.08)); }
@@ -4357,10 +5182,14 @@ def render_selfit_demo_page() -> str:
       .sheet { bottom: 24px; border-radius: 28px 28px 34px 34px; }
     }
   </style>
-  <link rel="stylesheet" href="/static/selfit-app/app.css?v=20260901-closet-refine-v3" />
+  <link rel="stylesheet" href="/static/selfit-app/app.css?v=20260903-scroll-feed-v1" />
 </head>
 <body>
   <main class="app auth-pending">
+    <section id="personaTestPanel" class="persona-test-panel" hidden aria-label="人格推荐测试模式">
+      <div><strong>测试模式</strong><span id="personaTestStatus" role="status">仅预览推荐，不修改风格报告</span></div>
+      <button id="personaTestPicker" type="button" aria-haspopup="dialog">切换人格</button>
+    </section>
     <section id="personaHandoff" class="persona-handoff" hidden aria-labelledby="handoffTitle">
       <img class="handoff-wordmark" src="/static/selfit/assets/selfit-wordmark.svg" width="55" height="20" alt="selfit" />
       <div class="handoff-ornament" aria-hidden="true">
@@ -4389,12 +5218,9 @@ def render_selfit_demo_page() -> str:
         <div class="section-head"><div><small>PERSONAL EDIT</small><h2>今天，怎么穿</h2></div></div>
       <div class="today-carousel" aria-label="今日推荐">
         <div id="todayTrack" class="today-track">
-          <article class="today-card today-empty" role="button" tabindex="0">
-            <div class="today-copy">
-              <span class="tag">今日推荐</span>
-              <h1>先放入常穿单品</h1>
-              <p>有上衣、下装和鞋后，我会按天气给你排一套今日出门搭配。</p>
-            </div>
+          <article class="today-card home-today-skeleton" aria-label="正在准备今日推荐" aria-busy="true">
+            <div class="home-skeleton-copy"><span></span><b></b><i></i><i></i></div>
+            <div class="home-skeleton-art"></div>
           </article>
         </div>
         <div id="todayDots" class="today-dots"></div>
@@ -4403,7 +5229,11 @@ def render_selfit_demo_page() -> str:
       <section class="home-section">
         <div class="section-head"><div><small>FOR YOUR STYLE</small><h2 id="feedTitle">与你同频的穿搭</h2></div><button id="refreshInspiration">换一批</button></div>
         <div id="refreshNote" class="refresh-note"></div>
-        <div id="homeGrid" class="masonry"></div>
+        <div id="homeGrid" class="masonry home-feed-loading" aria-label="正在准备风格推荐" aria-busy="true"><div class="home-feed-skeleton"></div><div class="home-feed-skeleton"></div></div>
+        <div id="homeFeedFooter" class="home-feed-footer" hidden>
+          <span id="homeFeedStatus" role="status" aria-live="polite"></span>
+          <button id="homeFeedMore" type="button">加载更多穿搭</button>
+        </div>
       </section>
     </section>
 
@@ -4414,6 +5244,11 @@ def render_selfit_demo_page() -> str:
         <button class="icon-btn" id="detailShare" aria-label="分享"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V4"/><path d="m8 8 4-4 4 4"/><path d="M5 12v7h14v-7"/></svg></button>
       </div>
       <div class="detail-hero" id="detailHero"></div>
+      <div id="detailFeedbackActions" class="detail-feedback-actions" role="group" aria-label="穿搭反馈">
+        <button id="detailLikeBtn" type="button" aria-label="喜欢这套" title="喜欢这套" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 10H3v11h4V10Zm0 0 5-7c.5-.8 2-.5 2 1v5h5a2 2 0 0 1 2 2.4l-1.5 7A3 3 0 0 1 16.6 21H7"/></svg></button>
+        <button id="detailDislikeBtn" type="button" aria-label="不太适合" title="不太适合" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 14H3V3h4v11Zm0 0 5 7c.5.8 2 .5 2-1v-5h5a2 2 0 0 0 2-2.4l-1.5-7A3 3 0 0 0 16.6 3H7"/></svg></button>
+      </div>
+      <div id="itemWearStateActions" class="item-wear-state-actions" hidden><span>当前状态</span><button type="button" data-item-wear-state="available">可穿</button><button type="button" data-item-wear-state="laundry">洗护中</button><button type="button" data-item-wear-state="unavailable">暂不可用</button></div>
       <section class="home-section" id="detailItemsSection">
         <div class="section-head"><div><small id="detailItemsEyebrow">OUTFIT PIECES</small><h2 id="detailItemsTitle">穿搭单品</h2></div></div>
         <p id="detailItemsNote" class="detail-items-note" hidden></p>
@@ -4421,7 +5256,35 @@ def render_selfit_demo_page() -> str:
       </section>
       <div class="bottom-actions">
         <button id="detailEditBtn" class="secondary-btn">调整搭配</button>
-        <button id="detailTryBtn" class="primary-btn">生成试穿图</button>
+        <button id="detailTryBtn" class="primary-btn">开始试穿</button>
+      </div>
+    </section>
+
+    <section id="page-tryon-confirm" class="page tryon-confirm-page">
+      <div class="screen-top">
+        <button class="icon-btn" id="confirmTryonBack" aria-label="返回穿搭详情"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 5-7 7 7 7"/></svg></button>
+        <div class="screen-title">确认试穿</div>
+        <span aria-hidden="true" style="width:44px;"></span>
+      </div>
+      <div id="tryonConfirmLoading" class="tryon-confirm-loading" role="status">正在看看这张照片能替换哪些单品…</div>
+      <div id="tryonConfirmContent" class="tryon-confirm-content" hidden>
+        <div class="tryon-confirm-photo">
+          <img id="tryonConfirmPhoto" alt="当前试穿照片" />
+        </div>
+        <button id="changeConfirmPhoto" class="photo-fit-bar" type="button">
+          <span class="photo-fit-thumb"><img id="tryonConfirmPhotoThumb" alt="" /></span>
+          <span><b id="tryonConfirmPhotoName">当前照片</b><small id="tryonConfirmPhotoSummary">正在判断入镜范围</small></span>
+          <em>更换</em>
+        </button>
+        <div class="tryon-confirm-heading">
+          <div><small>TRY ON PLAN</small><h2 id="tryonConfirmCount">预计替换 0 件单品</h2></div>
+          <p id="tryonConfirmHint">只替换照片里清楚可见的部分</p>
+        </div>
+        <div id="tryonConflict" class="tryon-conflict" hidden></div>
+        <div id="tryonPieceList" class="tryon-piece-list"></div>
+      </div>
+      <div class="tryon-confirm-actions">
+        <button id="confirmTryonBtn" class="primary-btn" type="button" disabled>生成试穿图</button>
       </div>
     </section>
 
@@ -4440,14 +5303,19 @@ def render_selfit_demo_page() -> str:
             <div class="tryon-generating-title" id="generatingText">正在让这套穿搭更像你</div>
             <p class="tryon-generating-copy" id="tryonGeneratingCopy">先整理好你的照片和每件单品。</p>
             <div class="tryon-progress-row"><div class="tryon-progress" role="progressbar" aria-label="试穿图生成进度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="8"><span id="tryonProgressBar"></span></div><span class="tryon-progress-value" id="tryonProgressValue">8%</span></div>
-            <button id="cancelGenerate" class="tryon-cancel" type="button">取消生成</button>
+            <button id="cancelGenerate" class="tryon-cancel" type="button">返回继续逛</button>
             <img class="tryon-loading-signature" src="/static/selfit/assets/splash-signature@2x.png" width="200" height="133" alt="" aria-hidden="true">
           </div>
         </div>
       </div>
+      <section id="tryonResultDetails" class="tryon-result-details" hidden>
+        <div class="tryon-result-summary"><small>TRY ON RESULT</small><h2 id="tryonResultSummary">已完成试穿</h2><p>按住结果图可以查看原来的照片</p></div>
+        <div id="tryonResultPieces" class="tryon-result-pieces"></div>
+        <p class="tryon-reality-note">试穿图用于判断颜色、比例和整体风格，实际尺码与面料效果请以实物为准。</p>
+      </section>
       <div class="result-actions">
-        <button id="tryAnotherBtn" class="secondary-btn">换一套</button>
-        <button id="retryTryonBtn" class="primary-btn">重新生成</button>
+        <button id="tryAnotherBtn" class="secondary-btn">调整搭配</button>
+        <button id="retryTryonBtn" class="primary-btn">保存结果</button>
       </div>
     </section>
 
@@ -4517,6 +5385,10 @@ def render_selfit_demo_page() -> str:
         <div class="tool-row"><button id="floatingMatch" class="closet-compose" type="button">开始搭配</button></div>
       </div>
       <div id="categoryRow" class="category-row"></div>
+      <div id="closetSearchPanel" class="closet-search-panel">
+        <label class="closet-search"><span aria-hidden="true">⌕</span><input id="closetSearchInput" type="search" placeholder="搜索颜色、品类或材质" autocomplete="off"></label>
+        <div class="closet-quick-filters" aria-label="衣橱快速筛选"><button type="button" class="active" data-closet-filter="all">全部</button><button type="button" data-closet-filter="favorite">收藏</button><button type="button" data-closet-filter="worn">穿过</button><button type="button" data-closet-filter="laundry">洗护中</button></div>
+      </div>
       <div id="closetGrid" class="item-grid" aria-busy="true" aria-label="正在整理衣橱">
         <div class="closet-skeleton" aria-hidden="true"></div>
         <div class="closet-skeleton" aria-hidden="true"></div>
@@ -4543,6 +5415,8 @@ def render_selfit_demo_page() -> str:
       <div id="recordGrid" class="record-grid"></div>
     </section>
 
+    <button id="tryonTaskBar" class="tryon-task-bar" type="button" hidden><span class="tryon-task-pulse" aria-hidden="true"></span><span><b id="tryonTaskTitle">试穿图生成中</b><small id="tryonTaskCopy">完成后会保存在试穿记录</small></span><em>查看</em></button>
+
     <nav class="bottom-nav">
       <button class="nav-btn active" data-tab="home"><span class="nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v14H4z"/><path d="m7 15 3-3 2 2 3-4 2 2"/></svg></span><span class="nav-label">推荐</span></button>
       <button class="nav-btn" data-tab="ai"><span class="nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5.5h14v10H9l-4 3v-13Z"/><path d="M9 10.5h6"/></svg></span><span class="nav-label">问搭配</span></button>
@@ -4566,6 +5440,7 @@ def render_selfit_demo_page() -> str:
   <aside id="importReviewSheet" class="sheet">
     <div class="sheet-title"><b id="importReviewTitle">确认识别结果</b><button class="close" data-close="importReviewSheet" aria-label="关闭">×</button></div>
     <p id="importReviewCopy" class="import-review-copy">看看是否每件衣物都完整，分类不对可以直接修改。</p>
+    <div class="import-review-toolbar"><span id="importReviewSelected">0 件待入柜</span><button id="mergeImportItems" type="button" disabled>合并所选</button></div>
     <div id="importReviewGrid" class="import-review-grid"></div>
     <button id="importReviewDone" class="import-review-done" type="button">完成入柜</button>
   </aside>
@@ -4592,7 +5467,10 @@ def render_selfit_demo_page() -> str:
 
   <aside id="builderSheet" class="sheet">
     <div class="sheet-title"><b>选择搭配单品</b><button class="close" data-close="builderSheet">×</button></div>
-    <p class="builder-help">选择 2-4 件单品，保存成套装，或直接用上衣先试穿。</p>
+    <div id="builderSelection" class="builder-selection" aria-live="polite"></div>
+    <div id="builderCategories" class="builder-categories" aria-label="筛选搭配单品"></div>
+    <p id="builderHelp" class="builder-help">先选一件主单品，我会优先给你适合的搭配候选。</p>
+    <div id="builderAnalysis" class="builder-analysis" aria-live="polite"></div>
     <div id="builderList" class="builder-list"></div>
     <div class="builder-actions"><button id="saveOutfitBtn" class="secondary-btn">保存套装</button><button id="tryOutfitBtn" class="match-btn">生成试穿图</button></div>
   </aside>
@@ -4612,8 +5490,31 @@ def render_selfit_demo_page() -> str:
     </div>
     <button id="confirmModelBtn" class="model-confirm" type="button">确认</button>
   </aside>
+  <aside id="pieceRetrySheet" class="sheet piece-retry-sheet">
+    <div class="sheet-title"><b id="pieceRetryTitle">重新处理这件</b><button class="close" data-close="pieceRetrySheet" aria-label="关闭">×</button></div>
+    <div class="piece-retry-preview"><img id="pieceRetryImage" alt="需要重新处理的单品" /><p>只调整这件单品，尽量保持人物、背景和其他穿搭不变。</p></div>
+    <fieldset class="piece-retry-reasons">
+      <legend>哪里需要调整？</legend>
+      <label><input type="radio" name="pieceRetryReason" value="没有换上" checked><span>没有换上</span></label>
+      <label><input type="radio" name="pieceRetryReason" value="版型不对"><span>版型不对</span></label>
+      <label><input type="radio" name="pieceRetryReason" value="颜色不对"><span>颜色不对</span></label>
+      <label><input type="radio" name="pieceRetryReason" value="图案或细节丢失"><span>细节丢失</span></label>
+      <label><input type="radio" name="pieceRetryReason" value="边缘不自然"><span>边缘不自然</span></label>
+    </fieldset>
+    <button id="submitPieceRetry" class="primary-btn piece-retry-submit" type="button">重新处理这件</button>
+  </aside>
+  <aside id="recommendationFeedbackSheet" class="sheet recommendation-feedback-sheet">
+    <div class="sheet-title"><b>这套哪里不合适？</b><button class="close" data-close="recommendationFeedbackSheet" aria-label="关闭">×</button></div>
+    <p>你的选择会用来调整之后的推荐。</p>
+    <div class="feedback-reasons">
+      <button type="button" data-feedback-reason="color">颜色不适合</button><button type="button" data-feedback-reason="fit">版型不适合</button>
+      <button type="button" data-feedback-reason="scene">不合场景</button><button type="button" data-feedback-reason="formal">太正式</button>
+      <button type="button" data-feedback-reason="complex">太复杂</button><button type="button" data-feedback-reason="repeated">最近看过太多</button>
+    </div>
+  </aside>
   <div id="imageLightbox" class="image-lightbox" aria-hidden="true">
     <div class="image-lightbox-head">
+      <button id="imageLightboxBack" class="image-lightbox-back" type="button" aria-label="返回"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 5-7 7 7 7"/></svg></button>
       <div id="imageLightboxTitle" class="image-lightbox-title">查看图片</div>
       <div class="image-lightbox-actions">
         <button id="imageLightboxZoom" class="image-lightbox-zoom" type="button">适应屏幕</button>
@@ -4622,12 +5523,24 @@ def render_selfit_demo_page() -> str:
     </div>
     <div class="image-lightbox-stage">
       <img id="imageLightboxImg" alt="放大预览" />
+      <span id="imageLightboxModel" class="image-lightbox-model" hidden><img alt="当前试穿模特" /></span>
     </div>
-    <div id="imageLightboxTip" class="image-lightbox-tip">已按图片比例完整展示，点空白处或按 Esc 关闭</div>
+    <div id="imageLightboxTip" class="image-lightbox-tip">已按图片比例完整展示</div>
   </div>
+  <dialog id="personaTestDialog" class="persona-test-dialog" aria-labelledby="personaTestTitle">
+    <div class="persona-test-dialog-head"><h2 id="personaTestTitle">切换推荐人格</h2><button id="personaTestClose" type="button" aria-label="关闭人格选择">×</button></div>
+    <p>仅用于查看推荐效果。再次连续点击底部“我的”5次，恢复正式模式。</p>
+    <div id="personaTestOptions" class="persona-test-options" role="group" aria-label="16种风格人格"></div>
+    <label for="personaTestPalette">测试颜色偏好</label>
+    <select id="personaTestPalette" aria-label="测试颜色偏好">
+      <option value="">人格模板推荐色</option><option value="mono">黑白灰</option><option value="earth">大地色</option><option value="ocean">海洋蓝</option><option value="jewel">宝石色</option><option value="bright">明亮色</option><option value="pastel">柔粉浅彩</option>
+    </select>
+  </dialog>
   <div id="toast" class="toast"></div>
 
   <script src="/static/selfit/personality-report-templates.js"></script>
+  <script src="/static/selfit-app/persona-test-mode.js?v=2"></script>
+  <script src="/static/selfit-app/feed-exposure.js?v=1"></script>
   <script>
     const state = {
       tab: "home",
@@ -4654,6 +5567,13 @@ def render_selfit_demo_page() -> str:
       aiAbortController: null,
       tryonAbortController: null,
       tryonJobId: "",
+      tryonPlan: null,
+      tryonSelectedItemIds: new Set(),
+      tryonPlanPhotoFile: null,
+      tryonClientRequestId: "",
+      tryonVersions: [],
+      retryPieceItemId: "",
+      tryonRestoring: false,
       aiVisibleToolCount: 0,
       aiLoadingSteps: [],
       aiSessions: [],
@@ -4671,6 +5591,10 @@ def render_selfit_demo_page() -> str:
       currentModelId: "female_medium_1",
       pendingModelId: "female_medium_1",
       selfModelUrl: "",
+      selfModelFallbackUrl: "",
+      selfModelSource: "",
+      selfModelSaving: false,
+      modelSheetReturn: "",
       profileKey: "student",
       profile: null,
       personalityCatalog: null,
@@ -4681,15 +5605,48 @@ def render_selfit_demo_page() -> str:
       user: null,
       isAuthenticated: false,
       importReviewItems: [],
+      importReviewSelectedIds: new Set(),
       importDraftOutfit: null,
       importJobId: "",
+      importConfirmDeadline: 0,
+      recommendationFeedbackOutfitId: "",
+      recommendationImpressions: new Set(),
+      recommendationProfile: null,
+      recommendationSession: null,
+      recommendationCursor: null,
+      recommendationValidation: false,
+      todayOutfits: [],
+      testPalette: null,
+      detailFeedback: new Map(),
+      detailFeedbackPending: new Set(),
       recommendationOffset: 0,
+      recommendationRequest: 0,
+      recommendationLoading: false,
+      recommendationError: "",
+      recommendationMoreLoading: false,
+      recommendationMoreError: "",
+      recommendationHasMore: false,
+      recommendationSeenIds: [],
+      recommendationCursorInFlight: "",
+      recommendationConsumedCursorKeys: new Set(),
+      homeFeedUserIntent: false,
+      homeFeedRestoring: false,
+      homeFeedLastIntentPosition: -1,
+      homeScrollPosition: { windowY: 0, pageY: 0 },
       closetItemLimit: 20,
       closetOutfitLimit: 12,
+      closetQuery: "",
+      closetFilter: "all",
+      closetDataRevision: 0,
+      closetRenderKey: "",
+      categoryRenderKey: "",
+      builderCategory: "top",
       dataReady: false,
+      tryonStartedAt: 0,
       stylistSessionsLoaded: false,
       stylistSessionsLoading: false
     };
+    const personaTestMode = window.SelfitPersonaTest.create(Object.keys(window.__SELFIT_PERSONALITY_TEMPLATES__?.types || {}));
     const personaProfiles = {
       student: {
         key: "student",
@@ -4760,11 +5717,18 @@ def render_selfit_demo_page() -> str:
       el.classList.add("show");
       window.setTimeout(() => el.classList.remove("show"), 2200);
     }
-    function openImagePreview(src, title = "查看图片") {
+    function openImagePreview(src, title = "查看图片", options = {}) {
       if (!src) return;
       const box = $("#imageLightbox");
       $("#imageLightboxImg").src = assetURL(src);
       $("#imageLightboxTitle").textContent = title || "查看图片";
+      const modelChip = $("#imageLightboxModel");
+      const modelImage = modelChip?.querySelector("img");
+      const showModel = Boolean(options.showModel);
+      if (modelChip) modelChip.hidden = !showModel;
+      if (showModel && modelImage) modelImage.src = currentModel().src;
+      const tip = $("#imageLightboxTip");
+      if (tip) tip.textContent = options.tip || "已按图片比例完整展示";
       setImagePreviewZoom(false);
       box.classList.add("open");
       box.setAttribute("aria-hidden", "false");
@@ -4775,6 +5739,8 @@ def render_selfit_demo_page() -> str:
       box.setAttribute("aria-hidden", "true");
       setImagePreviewZoom(false);
       $("#imageLightboxImg").removeAttribute("src");
+      const modelChip = $("#imageLightboxModel");
+      if (modelChip) modelChip.hidden = true;
     }
     function setImagePreviewZoom(actual) {
       const box = $("#imageLightbox");
@@ -4783,7 +5749,7 @@ def render_selfit_demo_page() -> str:
       const zoomBtn = $("#imageLightboxZoom");
       if (zoomBtn) zoomBtn.textContent = "适应屏幕";
       const tip = $("#imageLightboxTip");
-      if (tip) tip.textContent = "已按图片比例完整展示，点空白处或按 Esc 关闭";
+      if (tip && !tip.textContent) tip.textContent = "已按图片比例完整展示";
       if (stage) {
         stage.scrollLeft = 0;
         stage.scrollTop = 0;
@@ -4801,7 +5767,10 @@ def render_selfit_demo_page() -> str:
           if (!src || state.recordEditing) return;
           event.preventDefault();
           event.stopPropagation();
-          openImagePreview(src, node.dataset.previewTitle || node.querySelector("img")?.alt || "查看图片");
+          openImagePreview(src, node.dataset.previewTitle || node.querySelector("img")?.alt || "查看图片", {
+            showModel: node.dataset.previewModel === "1",
+            tip: node.dataset.previewTip || "",
+          });
         });
       });
     }
@@ -4823,8 +5792,9 @@ def render_selfit_demo_page() -> str:
       if (!zone || !confirm) return;
       zone.classList.toggle("has-photo", Boolean(state.selfModelUrl));
       if (state.selfModelUrl) {
-        zone.innerHTML = `<img src="${state.selfModelUrl}" alt="我的全身照"><span class="self-photo-source">来自风格测试 · 点击更换</span>`;
-        confirm.disabled = false;
+        const sourceLabel = state.selfModelSaving ? "正在保存到我的档案" : (state.selfModelSource || "我的全身照") + " · 点击更换";
+        zone.innerHTML = `<img src="${state.selfModelUrl}" alt="我的全身照"><span class="self-photo-source">${escapeHTML(sourceLabel)}</span>`;
+        confirm.disabled = state.selfModelSaving;
         return;
       }
       delete zone.dataset.previewImage;
@@ -4836,17 +5806,52 @@ def render_selfit_demo_page() -> str:
       try {
         const response = await fetch("/api/v1/selfit/me/photos/body", { headers: await authHeaders() });
         if (response.status === 204) {
+          if (state.selfModelFallbackUrl) {
+            state.selfModelUrl = state.selfModelFallbackUrl;
+            state.selfModelSource = "已保存到我的档案";
+          }
           renderSelfModelPhoto();
-          return false;
+          updateCurrentModelUI();
+          return Boolean(state.selfModelUrl);
         }
         if (!response.ok) throw new Error("全身照暂时无法读取。");
         if (state.selfModelUrl?.startsWith("blob:")) URL.revokeObjectURL(state.selfModelUrl);
         state.selfModelUrl = URL.createObjectURL(await response.blob());
+        state.selfModelSource = "来自风格测试";
         renderSelfModelPhoto();
+        updateCurrentModelUI();
         return true;
       } catch (error) {
+        if (!state.selfModelUrl && state.selfModelFallbackUrl) {
+          state.selfModelUrl = state.selfModelFallbackUrl;
+          state.selfModelSource = "已保存到我的档案";
+        }
         renderSelfModelPhoto();
-        return false;
+        updateCurrentModelUI();
+        return Boolean(state.selfModelUrl);
+      }
+    }
+    async function persistSelfModelPhoto(file) {
+      if (!file) return;
+      if (state.selfModelUrl?.startsWith("blob:")) URL.revokeObjectURL(state.selfModelUrl);
+      state.selfModelUrl = URL.createObjectURL(file);
+      state.selfModelSource = "刚刚上传";
+      state.selfModelSaving = true;
+      renderSelfModelPhoto();
+      const body = new FormData();
+      body.append("image", file);
+      try {
+        const data = await fetchJSON("/closet/preferences/model-photo", { method: "POST", body });
+        state.selfModelFallbackUrl = assetURL(data.self_model_path || "");
+        if (state.selfModelUrl?.startsWith("blob:")) URL.revokeObjectURL(state.selfModelUrl);
+        state.selfModelUrl = state.selfModelFallbackUrl;
+        state.selfModelSource = "已保存到我的档案";
+      } catch (error) {
+        state.selfModelSource = "暂未保存";
+        toast(error.message || "照片暂时没有保存成功。");
+      } finally {
+        state.selfModelSaving = false;
+        renderSelfModelPhoto();
       }
     }
     function isColorBlockItem(item) {
@@ -4907,9 +5912,27 @@ def render_selfit_demo_page() -> str:
       const updated = Date.parse(outfit.updated_at || outfit.created_at || "") || 0;
       return hasMain * 1e13 + hasShoes * 1e12 + hasBag * 1e11 + (displayCount + favoriteCount) * 1e8 + updated;
     }
+    function diverseHomeOutfits(outfits = visibleOutfits()) {
+      const source = [...(outfits || [])];
+      const selected = [];
+      const overlapRatio = (left, right) => {
+        const a = new Set(left.item_ids || []);
+        const b = new Set(right.item_ids || []);
+        const union = new Set([...a, ...b]).size || 1;
+        return [...a].filter(id => b.has(id)).length / union;
+      };
+      source.forEach(outfit => {
+        if (selected.every(existing => overlapRatio(existing, outfit) < .58)) selected.push(outfit);
+      });
+      source.forEach(outfit => {
+        if (!selected.some(existing => existing.outfit_id === outfit.outfit_id)) selected.push(outfit);
+      });
+      return selected;
+    }
     function openSheet(id) { $("#" + id).classList.add("open"); }
     function closeSheet(id) {
       $("#" + id).classList.remove("open");
+      if (id === "modelSheet") state.modelSheetReturn = "";
       if (id === "sessionSheet") {
         $("#sessionPickerBtn")?.classList.remove("active");
         $("#sessionBackdrop")?.classList.remove("open");
@@ -5011,11 +6034,15 @@ def render_selfit_demo_page() -> str:
       }
     }
     function confirmPresetModel() {
+      const returnTarget = state.modelSheetReturn;
       state.currentModelId = state.pendingModelId || modelOptions[0].id;
       updateCurrentModelUI();
       closeSheet("modelSheet");
       saveCurrentModelPreference();
       toast("已切换模特。");
+      if (returnTarget === "tryon-confirm" && state.currentOutfit?.outfit_id) {
+        openTryonConfirmation(state.currentOutfit.outfit_id);
+      }
     }
     function updateCurrentModelUI() {
       const model = currentModel();
@@ -5024,12 +6051,45 @@ def render_selfit_demo_page() -> str:
       if (node) node.textContent = label;
       if (state.currentOutfit) renderDetail();
     }
+    const MAX_HOME_FEED_CARDS = 60;
+    let homeRestoreFrame = 0;
+    function homePageIsActive() {
+      const page = $("#page-home");
+      const documentVisible = !document.visibilityState || document.visibilityState === "visible";
+      return state.tab === "home" && Boolean(page?.classList.contains("active")) && documentVisible;
+    }
+    function rememberHomeScroll() {
+      const page = $("#page-home");
+      state.homeScrollPosition = {
+        windowY: Math.max(0, Number(window.scrollY || window.pageYOffset || 0)),
+        pageY: Math.max(0, Number(page?.scrollTop || 0)),
+      };
+    }
+    function restoreHomeScroll() {
+      window.cancelAnimationFrame(homeRestoreFrame);
+      state.homeFeedRestoring = true;
+      state.homeFeedUserIntent = false;
+      const position = state.homeScrollPosition || { windowY: 0, pageY: 0 };
+      homeRestoreFrame = window.requestAnimationFrame(() => {
+        window.scrollTo(0, position.windowY || 0);
+        const page = $("#page-home");
+        if (page) page.scrollTop = position.pageY || 0;
+        homeRestoreFrame = window.requestAnimationFrame(() => {
+          state.homeFeedRestoring = false;
+        });
+      });
+    }
     function setPage(pageId) {
+      const leavingHome = $("#page-home")?.classList.contains("active") && pageId !== "page-home";
+      if (leavingHome) rememberHomeScroll();
       $all(".page").forEach(page => page.classList.toggle("active", page.id === pageId));
       $(".bottom-nav").classList.toggle("hidden", !["page-home", "page-ai", "page-closet", "page-me"].includes(pageId));
       $(".ai-input").style.display = pageId === "page-ai" ? "block" : "none";
       $("#floatingMatch").style.display = pageId === "page-closet" ? "block" : "none";
+      renderPersonaTestPanel(pageId);
       window.scrollTo(0, 0);
+      if (pageId === "page-home") restoreHomeScroll();
+      else homeExposure?.disconnect();
     }
     function syncTabURL(tab, historyMode = "replace") {
       if (historyMode === "none") return;
@@ -5040,17 +6100,20 @@ def render_selfit_demo_page() -> str:
       window.history[method]({}, "", `${next.pathname}${next.search}${next.hash}`);
     }
     function setTab(tab, { historyMode = "replace" } = {}) {
+      const renderStartedAt = Date.now();
       state.tab = tab;
       if (tab !== "ai") closeSheet("sessionSheet");
       setPage(`page-${tab}`);
       $all(".nav-btn").forEach(btn => btn.classList.toggle("active", btn.dataset.tab === tab));
       syncTabURL(tab, historyMode);
       if (state.dataReady) renderTab(tab);
+      document.documentElement.dataset.selfitTabRenderMs = String(Date.now() - renderStartedAt);
     }
     const personaStoreKey = "selfit_demo_mock_persona";
     const stylePersonaStoreKey = "selfit.app.persona.v1";
     const sharedAuthStoreKey = "selfit.auth.session.v1";
     const stylistSessionStoreKey = "selfit_demo_current_stylist_session";
+    const tryonJobStoreKey = "selfit.app.active_tryon_job.v1";
     let authTokenPromise = null;
     const memoryStore = {};
     function readStore(key) {
@@ -5090,14 +6153,69 @@ def render_selfit_demo_page() -> str:
       if (state.stylePersona?.typeId) writeStore(stylePersonaStoreKey, state.stylePersona.typeId);
       renderStylePersona();
     }
+    function recommendationPersona() {
+      return personaTestMode.enabled ? state.personalityCatalog?.types?.[personaTestMode.typeId] || state.stylePersona : state.stylePersona;
+    }
+    function personaTestStorageKey() { return `selfit.app.persona-test.v1:${state.user?.user_id || ""}`; }
+    function savePersonaTestMode() {
+      if (!state.user?.user_id) return;
+      try {
+        if (personaTestMode.enabled) window.sessionStorage.setItem(personaTestStorageKey(), JSON.stringify(personaTestMode.snapshot()));
+        else window.sessionStorage.removeItem(personaTestStorageKey());
+      } catch (error) {}
+    }
+    function restorePersonaTestMode() {
+      try { personaTestMode.restore(JSON.parse(window.sessionStorage.getItem(personaTestStorageKey()) || "null")); }
+      catch (error) { personaTestMode.restore(null); }
+      renderPersonaTestPanel();
+    }
+    function renderPersonaTestPanel(pageId = $(".page.active")?.id) {
+      $("#personaTestPanel").hidden = !personaTestMode.enabled || !["page-home", "page-me"].includes(pageId);
+      const persona = recommendationPersona();
+      $("#personaTestPicker").textContent = `${persona?.metadata?.code || ""} · 切换人格`;
+      $("#personaTestStatus").textContent = state.recommendationLoading ? "正在更新推荐…" : `${persona?.metadata?.name || ""} · 不修改风格报告`;
+    }
+    function openPersonaTestPicker() {
+      if (!personaTestMode.enabled) return;
+      $("#personaTestOptions").innerHTML = Object.values(state.personalityCatalog.types).map(persona => `<button type="button" data-test-persona="${escapeHTML(persona.typeId)}" aria-pressed="${persona.typeId === personaTestMode.typeId}"><b>${escapeHTML(persona.metadata.code)}</b><span>${escapeHTML(persona.metadata.name)}</span></button>`).join("");
+      $("#personaTestDialog").showModal();
+      $("#personaTestPalette").value = state.testPalette || "";
+      $("#personaTestPalette").disabled = !state.recommendationProfile?.validation_enabled;
+    }
+    async function refreshPersonaRecommendations() {
+      state.todayIndex = 0;
+      state.homeOutfitLimit = 6;
+      state.outfits = [];
+      const pending = loadRankedOutfits(0);
+      renderHome();
+      try { await pending; } catch (error) { /* The inline retry state retains the selected persona. */ }
+      renderHome();
+      renderPersonaTestPanel();
+    }
+    function handleNavigationTap(tab) {
+      const toggled = personaTestMode.tap(tab, Date.now(), state.stylePersona?.typeId);
+      setTab(tab, { historyMode: "push" });
+      if (!toggled) return;
+      savePersonaTestMode();
+      state.detailFeedback.clear();
+      refreshPersonaRecommendations();
+      renderPersonaTestPanel();
+      if (personaTestMode.enabled) {
+        toast("已进入测试模式，选择人格查看推荐。");
+        openPersonaTestPicker();
+      } else {
+        if ($("#personaTestDialog").open) $("#personaTestDialog").close();
+        toast("已恢复正式模式，推荐使用原来的风格人格。");
+      }
+    }
     function stylePersonaOutfits() {
-      return state.stylePersona?.recommendations?.outfits?.items || [];
+      return recommendationPersona()?.recommendations?.outfits?.items || [];
     }
     function stylePersonaColors() {
       return (state.stylePersona?.colors?.items || []).slice(0, 5);
     }
     function personaRecommendationPayload() {
-      const persona = state.stylePersona;
+      const persona = recommendationPersona();
       if (!persona) return {};
       return {
         typeId: persona.typeId,
@@ -5108,15 +6226,89 @@ def render_selfit_demo_page() -> str:
         recommendations: persona.recommendations || {},
       };
     }
-    async function loadRankedOutfits(offset = 0) {
-      if (!state.outfits.length) return;
+    async function loadRankedOutfits(offset = 0, append = false) {
+      if (append && (state.recommendationLoading || state.recommendationMoreLoading || !state.recommendationHasMore)) return false;
+      const cursorKey = append
+        ? String(state.recommendationCursor || `legacy:${state.recommendationSeenIds.join(",")}`)
+        : "";
+      if (append && (state.recommendationCursorInFlight === cursorKey || state.recommendationConsumedCursorKeys?.has(cursorKey))) return false;
+      const requestId = append ? state.recommendationRequest : ++state.recommendationRequest;
+      if (append) {
+        state.recommendationMoreLoading = true;
+        state.recommendationMoreError = "";
+        state.recommendationCursorInFlight = cursorKey;
+      } else {
+        state.recommendationLoading = true;
+        state.recommendationError = "";
+        state.recommendationMoreLoading = false;
+        state.recommendationMoreError = "";
+        state.recommendationHasMore = false;
+        state.recommendationStopReason = "";
+        state.recommendationSeenIds = [];
+        state.recommendationSession = null;
+        state.recommendationCursor = null;
+        state.recommendationCursorInFlight = "";
+        state.recommendationConsumedCursorKeys?.clear();
+        state.todayOutfits = [];
+        state.homeOutfitLimit = 6;
+        state.homeFeedUserIntent = false;
+        state.homeFeedLastIntentPosition = -1;
+      }
+      renderPersonaTestPanel();
+      const month = new Date().getMonth() + 1;
+      const season = month <= 2 || month === 12 ? "winter" : month <= 5 ? "spring" : month <= 8 ? "summer" : "autumn";
+      try {
       const data = await fetchJSON("/closet/recommendations/outfits", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ persona: personaRecommendationPayload(), offset, limit: Math.max(12, state.outfits.length), rotate_by: 4 })
+        body: JSON.stringify({
+          persona: personaRecommendationPayload(),
+          context: { scene_tags: state.aiBrief ? [state.aiBrief] : [], season_tags: [season], weather: $("#weatherText")?.textContent || "", persona_preview: personaTestMode.enabled, palette: personaTestMode.enabled ? state.testPalette || null : null },
+          session_id: append ? state.recommendationSession || null : null,
+          cursor: append ? state.recommendationCursor || null : null,
+          offset,
+          limit: 6,
+          exclude_outfit_ids: append ? state.recommendationSeenIds : [],
+          rotate_by: 4
+        })
       });
-      state.outfits = data.outfits || state.outfits;
-      state.recommendationOffset = Number(data.next_offset || 0);
+      if (requestId !== state.recommendationRequest) return false;
+      const incoming = data.outfits || [];
+      state.recommendationValidation = data.validation === true;
+      state.recommendationSession = data.session_id || null;
+      state.recommendationCursor = data.next_cursor || null;
+      if (!append) state.todayOutfits = data.carousel || [];
+      const seen = new Set(state.recommendationSeenIds);
+      (state.todayOutfits || []).forEach(outfit => seen.add(outfit.outfit_id));
+      const unique = incoming.filter(outfit => {
+        if (seen.has(outfit.outfit_id)) return false;
+        seen.add(outfit.outfit_id);
+        return true;
+      });
+      const nextOutfits = append ? [...state.outfits, ...unique] : unique;
+      state.outfits = nextOutfits.slice(-60);
+      state.recommendationSeenIds = [...seen];
+      state.recommendationHasMore = Boolean(data.has_more) && unique.length > 0;
+      state.recommendationStopReason = data.diversity?.stop_reason || "";
+      state.homeOutfitLimit = state.outfits.length;
+      if (append) state.recommendationConsumedCursorKeys?.add(cursorKey);
+      if (!append) state.recommendationOffset = Number(data.next_offset || 0);
+      return true;
+      } catch (error) {
+        if (requestId !== state.recommendationRequest) return false;
+        if (append) state.recommendationMoreError = "加载失败，已显示的穿搭会保留。";
+        else state.recommendationError = "推荐暂时没有加载成功，请重试。";
+        throw error;
+      } finally {
+        if (requestId === state.recommendationRequest) {
+          if (append) {
+            state.recommendationMoreLoading = false;
+            if (state.recommendationCursorInFlight === cursorKey) state.recommendationCursorInFlight = "";
+          }
+          else state.recommendationLoading = false;
+        }
+        renderPersonaTestPanel();
+      }
     }
     function renderColorDots(node, colors = stylePersonaColors()) {
       if (!node) return;
@@ -5244,6 +6436,10 @@ def render_selfit_demo_page() -> str:
       }
       try {
         await demoAuthToken();
+        state.recommendationProfile = await fetchJSON("/closet/recommendations/profile");
+        state.stylePersona = state.personalityCatalog.types?.[state.recommendationProfile.persona_id] || null;
+        renderStylePersona();
+        restorePersonaTestMode();
         if (!state.stylePersona?.typeId) {
           window.location.replace("/selfit");
           return;
@@ -5254,6 +6450,8 @@ def render_selfit_demo_page() -> str:
       }
     }
     function logoutSelfitUser() {
+      personaTestMode.restore(null);
+      savePersonaTestMode();
       clearSharedAuth();
       removeStore(stylistSessionStoreKey);
       state.user = null;
@@ -5534,9 +6732,13 @@ def render_selfit_demo_page() -> str:
       state.items = itemsData.items || [];
       state.outfits = outfitsData.outfits || [];
       state.records = recordsData.records || [];
+      state.closetDataRevision += 1;
+      state.closetRenderKey = "";
+      state.categoryRenderKey = "";
+      state.selfModelFallbackUrl = assetURL(preferencesData.self_model_path || "");
       const savedModelId = preferencesData.current_model_id;
       if (savedModelId && (savedModelId === "self" || modelOptions.some(model => model.id === savedModelId))) {
-        state.currentModelId = savedModelId === "self" && !state.selfModelUrl ? modelOptions[0].id : savedModelId;
+        state.currentModelId = savedModelId;
       }
       if (preferencesData.current_stylist_session_id) {
         state.currentSessionId = preferencesData.current_stylist_session_id;
@@ -5546,12 +6748,21 @@ def render_selfit_demo_page() -> str:
       renderTab(state.tab);
       $(".app")?.classList.remove("auth-pending");
       maybeShowPersonaHandoff();
+      const warmCloset = () => {
+        if (state.tab === "closet" || state.closetRenderKey) return;
+        renderCategories();
+        renderCloset();
+      };
+      if ("requestIdleCallback" in window) window.requestIdleCallback(warmCloset, { timeout: 800 });
+      else window.setTimeout(warmCloset, 180);
       loadDeferredData();
+      if (!state.tryonJobId && !state.tryonRestoring) restoreActiveTryonJob();
     }
     async function loadDeferredData() {
       const ranked = loadRankedOutfits(0).then(() => {
         if (state.tab === "home") renderHome();
-      }).catch(() => {});
+      }).catch(() => { if (state.tab === "home") renderHome(); });
+      if (personaTestMode.enabled && state.tab === "home") renderHome();
       const bodyPhoto = loadOnboardingBodyPhoto().catch(() => false);
       if (state.tab === "ai") ensureStylistSessions();
       await Promise.allSettled([ranked, bodyPhoto]);
@@ -5596,21 +6807,73 @@ def render_selfit_demo_page() -> str:
     }
     function renderHome() {
       applyProfile(state.profileKey);
-      const visibleCards = visibleOutfits();
-      const cards = visibleCards.length ? visibleCards : buildSyntheticOutfits();
-      renderTodayRecommendation(cards);
+      renderHomeFeedFooter();
+      if (state.recommendationLoading || state.recommendationError) {
+        $("#todayTrack").innerHTML = '<article class="today-card today-card-skeleton" aria-label="正在更新推荐"></article>';
+        $("#todayDots").innerHTML = "";
+        $("#homeGrid").setAttribute("aria-busy", String(state.recommendationLoading));
+        $("#homeGrid").innerHTML = state.recommendationError ? '<div class="persona-test-error" role="status">推荐暂时没有加载成功。<button id="retryPersonaRecommendations" type="button">重新加载</button></div>' : '<div class="home-feed-skeleton"></div><div class="home-feed-skeleton"></div>';
+        $("#retryPersonaRecommendations")?.addEventListener("click", refreshPersonaRecommendations);
+        return;
+      }
+      const visibleCards = homeRecommendationCards();
+      const cards = visibleCards.length || personaTestMode.enabled || state.recommendationValidation ? visibleCards : buildSyntheticOutfits();
+      renderTodayRecommendation(state.recommendationValidation ? state.todayOutfits : cards);
       renderHomeWidgets(cards);
       if (cards.length) {
         $("#homeGrid").innerHTML = cards.slice(0, state.homeOutfitLimit).map(card => outfitCardHTML(card)).join("");
+        $("#homeGrid").classList.remove("home-feed-loading");
+        $("#homeGrid").removeAttribute("aria-busy");
+        $("#homeGrid").removeAttribute("aria-label");
         bindOutfitActions();
+        observeHomeExposure();
       } else {
-        $("#homeGrid").innerHTML = personaFeedHTML();
+        $("#homeGrid").innerHTML = state.recommendationValidation
+          ? '<div class="persona-test-error" role="status">符合本次偏好的穿搭还在审核中，请稍后再来看看。</div>'
+          : personaTestMode.enabled
+          ? '<div class="persona-test-error" role="status">该人格暂无可用穿搭，请切换人格查看。</div>'
+          : personaFeedHTML();
+        $("#homeGrid").classList.remove("home-feed-loading");
+        $("#homeGrid").removeAttribute("aria-busy");
+        $("#homeGrid").removeAttribute("aria-label");
         $all("[data-persona-question]").forEach(btn => btn.addEventListener("click", () => {
           setTab("ai");
           $("#aiPromptInput").value = btn.dataset.personaQuestion;
           askStylist();
         }));
       }
+    }
+    function homeRecommendationCards() {
+      // Keep delivered order stable. Different accessory variants are real
+      // recipes; collapsing by top/bottom would hide part of the persona pool.
+      return (state.outfits || []).map(cleanOutfit).filter(outfit => outfit.items.length > 0);
+    }
+    function renderHomeFeedFooter() {
+      const footer = $("#homeFeedFooter");
+      footer.hidden = state.recommendationLoading || Boolean(state.recommendationError) || !state.outfits.length;
+      const endMessage = state.recommendationStopReason === "diversity_limit" ? "相似的穿搭已为你收起，可以换一批看看。" : "这一轮穿搭已看完，可以换一批看看。";
+      $("#homeFeedStatus").textContent = state.recommendationMoreError || (state.recommendationMoreLoading ? "正在加载更多穿搭…" : state.recommendationHasMore ? "继续下滑，发现更多穿搭" : endMessage);
+      $("#homeFeedMore").hidden = !state.recommendationHasMore || state.recommendationMoreLoading;
+      $("#homeFeedMore").textContent = state.recommendationMoreError ? "重新加载" : "加载更多穿搭";
+    }
+    function appendHomeRecommendationCards() {
+      const grid = $("#homeGrid");
+      const displayed = new Set([...grid.querySelectorAll("[data-open-outfit]")].map(node => node.dataset.openOutfit));
+      const additions = homeRecommendationCards().filter(card => !displayed.has(card.outfit_id));
+      grid.insertAdjacentHTML("beforeend", additions.map(outfitCardHTML).join(""));
+      trimHomeRecommendationCards();
+      bindOutfitActions();
+      observeHomeExposure();
+    }
+    function trimHomeRecommendationCards() {
+      const cards = [...$("#homeGrid").querySelectorAll("[data-open-outfit]")];
+      const excess = cards.length - MAX_HOME_FEED_CARDS;
+      if (excess <= 0) return;
+      const anchor = cards[excess];
+      const before = anchor?.getBoundingClientRect().top || 0;
+      cards.slice(0, excess).forEach(card => card.remove());
+      const after = anchor?.getBoundingClientRect().top || before;
+      if (homePageIsActive() && Math.abs(after - before) > 1) window.scrollBy(0, after - before);
     }
     function renderHomeWidgets(cards) {
       const inspiration = $(".widget-card.ai");
@@ -5621,14 +6884,29 @@ def render_selfit_demo_page() -> str:
       if (inspiration && firstCover) inspiration.style.setProperty("--widget-image", `url("${firstCover}")`);
       if (upload && firstItemImage) upload.style.setProperty("--widget-image", `url("${firstItemImage}")`);
     }
-    function maybeLoadMoreHomeOutfits() {
-      if (state.tab !== "home") return;
-      const total = (visibleOutfits().length ? visibleOutfits() : buildSyntheticOutfits()).length;
-      if (state.homeOutfitLimit >= total) return;
-      const nearBottom = window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 260;
-      if (!nearBottom) return;
-      state.homeOutfitLimit = Math.min(total, state.homeOutfitLimit + 6);
-      renderHome();
+    async function maybeLoadMoreHomeOutfits(force = false) {
+      if (!homePageIsActive() || state.homeFeedRestoring || (!force && !state.homeFeedUserIntent)
+          || state.recommendationLoading || state.recommendationMoreLoading || !state.recommendationHasMore
+          || (state.recommendationMoreError && !force)) return;
+      const footer = $("#homeFeedFooter");
+      const page = $("#page-home");
+      const bottom = getComputedStyle(page).overflowY === "auto" ? Math.min(window.innerHeight, page.getBoundingClientRect().bottom) : window.innerHeight;
+      if (!force && (footer.hidden || footer.getBoundingClientRect().top > bottom + 260)) return;
+      // One deliberate scroll/click unlocks one page only. Appending cards can
+      // keep the sentinel intersecting; it must not recursively consume the
+      // remaining pool without another user movement.
+      state.homeFeedUserIntent = false;
+      state.homeFeedLastIntentPosition = Math.max(
+        Number(window.scrollY || window.pageYOffset || 0),
+        Number(page?.scrollTop || 0),
+      );
+      const pending = loadRankedOutfits(0, true);
+      renderHomeFeedFooter();
+      try {
+        const applied = await pending;
+        if (applied && state.tab === "home") appendHomeRecommendationCards();
+      } catch (error) { /* The footer offers a manual retry; never clear cards. */ }
+      renderHomeFeedFooter();
     }
     function renderTodayRecommendation(cards) {
       const track = $("#todayTrack");
@@ -5636,7 +6914,12 @@ def render_selfit_demo_page() -> str:
       const carousel = (cards || []).filter(card => card?.outfit_id).slice(0, 4);
       if (!carousel.length) {
         state.todayIndex = 0;
-        const persona = state.stylePersona;
+        if (personaTestMode.enabled || state.recommendationValidation) {
+          track.innerHTML = "";
+          dots.innerHTML = "";
+          return;
+        }
+        const persona = recommendationPersona();
         const inspiration = stylePersonaOutfits()[0] || null;
         const image = inspiration?.image?.src || "";
         const personaName = persona?.metadata?.name || "你的风格";
@@ -5656,6 +6939,7 @@ def render_selfit_demo_page() -> str:
         track.scrollLeft = state.todayIndex * Math.max(1, track.clientWidth);
       });
       bindTodayRail(track, carousel);
+      observeHomeExposure();
       $all("[data-today-outfit]").forEach(cardNode => cardNode.addEventListener("click", () => openOutfitDetail(cardNode.dataset.todayOutfit)));
       $all("[data-today-index]").forEach(btn => btn.addEventListener("click", event => {
         event.preventDefault();
@@ -5748,12 +7032,25 @@ def render_selfit_demo_page() -> str:
         },
       ];
       const picked = variants[index % variants.length];
-      const recommendationReason = card.recommendation?.reasons?.[0];
+      const recommendationReason = humanizeRecommendationReason(card.recommendation?.primary_reason || card.recommendation?.reasons?.[0]);
       return {
         tag: card.recommendation ? "与你同频" : picked.tag,
         title: genericTitle ? picked.title : rawTitle,
         reason: recommendationReason || picked.reason,
       };
+    }
+    function humanizeRecommendationReason(reason) {
+      const text = String(reason || "").trim();
+      if (!text) return "";
+      const colorNames = {
+        black: "黑色", white: "象牙白", gray: "烟灰", grey: "烟灰", blue: "冰蓝",
+        navy: "藏蓝", brown: "驼色", red: "酒红", pink: "浅粉", green: "竹青",
+        yellow: "柔黄", purple: "薰衣草紫", lavender: "薰衣草紫", cream: "奶油白",
+      };
+      return text.replace(/\\b(black|white|gray|grey|blue|navy|brown|red|pink|green|yellow|purple|lavender|cream)\\b/gi, token => colorNames[token.toLowerCase()] || token)
+        .replace(/\\s*[,/|]\\s*/g, "、")
+        .replace(/recommended colors?/gi, "推荐色")
+        .replace(/style match/gi, "风格呼应");
     }
     function todayOutfitArt(card) {
       const items = visibleItems(card.items || []);
@@ -5775,12 +7072,55 @@ def render_selfit_demo_page() -> str:
       const heart = card.favorite ? "♥" : "♡";
       return `<article class="outfit-card" data-open-outfit="${card.outfit_id || ""}">
         <div class="outfit-canvas">${img}</div>
-        <div class="outfit-meta"><button class="favorite-btn ${card.favorite ? "active" : ""}" data-favorite-outfit="${card.outfit_id || ""}" aria-label="${card.favorite ? "取消收藏" : "收藏"}搭配" aria-pressed="${Boolean(card.favorite)}">${heart}</button><button class="try-btn" data-home-outfit="${card.outfit_id || ""}">试穿</button></div>
+        <div class="outfit-reason">${escapeHTML(humanizeRecommendationReason(card.recommendation?.primary_reason || card.recommendation?.reasons?.[0]) || card.completeness?.message || "根据你的风格与衣橱推荐")}</div>
+        <div class="outfit-meta"><button class="favorite-btn ${card.favorite ? "active" : ""}" data-favorite-outfit="${card.outfit_id || ""}" aria-label="${card.favorite ? "取消收藏" : "收藏"}搭配" aria-pressed="${Boolean(card.favorite)}">${heart}</button><button class="outfit-dislike" data-dislike-outfit="${card.outfit_id || ""}" type="button">不适合</button><button class="try-btn" data-home-outfit="${card.outfit_id || ""}">试穿</button></div>
       </article>`;
+    }
+    function createRecommendationClientId(prefix = "event") {
+      if (window.crypto?.randomUUID) return `${prefix}-${window.crypto.randomUUID()}`;
+      const entropy = `${Date.now()}-${Math.random()}-${navigator.userAgent || "browser"}`;
+      return `${prefix}-${Array.from(entropy).reduce((hash, char) => ((hash * 33) ^ char.charCodeAt(0)) >>> 0, 5381).toString(16)}`;
+    }
+    const recommendationPageVisit = createRecommendationClientId("visit");
+    async function recordRecommendationEvent(eventType, entityId, reason = "", context = {}, silent = false) {
+      if (personaTestMode.enabled) return true;
+      if (!entityId) return;
+      const belongsToFeed = state.recommendationSeenIds.includes(entityId);
+      const session = belongsToFeed ? state.recommendationSession : null;
+      context = { ...context, recommendation_session: session };
+      const impressionKey = `${session || `legacy-${recommendationPageVisit}-${state.recommendationRequest}`}:${eventType}:${entityId}:${context.surface || "app"}`;
+      if (eventType === "impression" && state.recommendationImpressions.has(impressionKey)) return;
+      if (eventType === "impression") state.recommendationImpressions.add(impressionKey);
+      try {
+        const signature = eventType === "impression"
+          ? Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(impressionKey)))).map(n => n.toString(16).padStart(2, '0')).join('')
+          : createRecommendationClientId("feedback");
+        await fetchJSON("/closet/recommendations/feedback", {
+          method: "POST", headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ event_type: eventType, entity_type: "outfit", entity_id: entityId, reason, context, client_event_id: signature })
+        });
+        return true;
+      } catch (error) { if (eventType === "impression") state.recommendationImpressions.delete(impressionKey); if (!silent) toast(error.message || "反馈暂时没有保存。"); return false; }
+    }
+    let homeExposure = null, homeExposureSession = null;
+    function observeHomeExposure() {
+      if (!window.SelfitFeedExposure || !window.IntersectionObserver) return;
+      const key = `${state.recommendationSession || 'legacy'}:${personaTestMode.enabled}`;
+      if (homeExposureSession !== key) { homeExposure?.disconnect(); homeExposure = null; homeExposureSession = key; }
+      if (personaTestMode.enabled) return;
+      if (!homeExposure) homeExposure = window.SelfitFeedExposure.create({onExposure: (node, visibility) => {
+        const oid = node.dataset.todayOutfit || node.dataset.openOutfit || node.querySelector('[data-open-outfit]')?.dataset.openOutfit;
+        return recordRecommendationEvent('impression', oid, '', {surface: node.dataset.todayOutfit ? 'carousel' : 'home', ...visibility}, true);
+      }});
+      document.querySelectorAll('#homeGrid .outfit-card, #todayTrack [data-today-outfit]').forEach(node => homeExposure.observe(node));
+    }
+    function openRecommendationFeedback(outfitId) {
+      state.recommendationFeedbackOutfitId = outfitId || "";
+      openSheet("recommendationFeedbackSheet");
     }
     function personaFeedHTML() {
       const profile = currentProfile();
-      const personaName = state.stylePersona?.metadata?.name || "我的风格";
+      const personaName = recommendationPersona()?.metadata?.name || "我的风格";
       const outfitImages = stylePersonaOutfits();
       if (outfitImages.length) return outfitImages.slice(0, 4).map((item, index) => {
         const fallback = profile.feed[index % profile.feed.length] || ["穿搭灵感", item.name, ""];
@@ -5803,7 +7143,8 @@ def render_selfit_demo_page() -> str:
         <div class="tryon-generating-title" id="generatingText">正在让这套穿搭更像你</div>
         <p class="tryon-generating-copy" id="tryonGeneratingCopy">先整理好你的照片和每件单品。</p>
         <div class="tryon-progress-row"><div class="tryon-progress" role="progressbar" aria-label="试穿图生成进度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="8"><span id="tryonProgressBar"></span></div><span class="tryon-progress-value" id="tryonProgressValue">8%</span></div>
-        <button id="cancelGenerate" class="tryon-cancel" type="button">取消生成</button>
+        <p class="tryon-generating-eta" id="tryonGeneratingEta">通常需要 30–60 秒，可以先继续浏览</p>
+        <button id="cancelGenerate" class="tryon-cancel" type="button">返回继续逛</button>
         <img class="tryon-loading-signature" src="/static/selfit/assets/splash-signature@2x.png" width="200" height="133" alt="" aria-hidden="true">
       </div>`;
     }
@@ -5833,11 +7174,13 @@ def render_selfit_demo_page() -> str:
       const value = $("#tryonProgressValue");
       const progressbar = bar?.closest('[role="progressbar"]');
       const art = $("#tryonLoadingArt");
+      const eta = $("#tryonGeneratingEta");
       if (title) title.textContent = presentation.title;
       if (copy) copy.textContent = presentation.copy;
       if (bar) bar.style.width = `${progress}%`;
       if (value) value.textContent = `${progress}%`;
       if (progressbar) progressbar.setAttribute("aria-valuenow", String(progress));
+      if (eta) eta.textContent = phase === "finishing" ? "快完成了，正在检查服装边缘" : phase === "generating" ? "正在生成主体，通常还需 15–40 秒" : "通常需要 30–60 秒，可以先继续浏览";
       if (art && art.dataset.stage !== String(presentation.stage)) {
         art.classList.add("is-changing");
         window.setTimeout(() => {
@@ -6217,6 +7560,8 @@ def render_selfit_demo_page() -> str:
     function renderCategories() {
       const cleanItems = visibleItems();
       const counts = categoryOrder.reduce((acc, key) => ({ ...acc, [key]: key === "all" ? cleanItems.length : cleanItems.filter(item => item.category === key).length }), {});
+      const renderKey = `${state.category}:${categoryOrder.map(key => `${key}:${counts[key] || 0}`).join("|")}`;
+      if (state.categoryRenderKey === renderKey && $("#categoryRow").childElementCount) return;
       $("#categoryRow").innerHTML = categoryOrder.map(key => {
         const label = key === "all" ? "全部" : labels[key];
         return `<button class="cat ${state.category === key ? "active" : ""}" data-category="${key}" aria-pressed="${state.category === key}"><span class="cat-label">${escapeHTML(label)}</span><span class="badge">${counts[key] || 0}</span></button>`;
@@ -6227,28 +7572,50 @@ def render_selfit_demo_page() -> str:
         renderCategories();
         renderCloset();
       }));
+      state.categoryRenderKey = renderKey;
     }
     function renderCloset() {
       if (state.closetMode === "plans") state.closetMode = "items";
       $all("[data-closet-mode]").forEach(btn => btn.classList.toggle("active", btn.dataset.closetMode === state.closetMode));
       $("#categoryRow").style.display = state.closetMode === "items" ? "flex" : "none";
+      $("#closetSearchPanel").style.display = state.closetMode === "items" ? "block" : "none";
+      $all("[data-closet-filter]").forEach(btn => {
+        const active = btn.dataset.closetFilter === state.closetFilter;
+        btn.classList.toggle("active", active);
+        btn.setAttribute("aria-pressed", String(active));
+      });
       $("#floatingMatch").style.display = state.tab === "closet" ? "block" : "none";
+      const entities = state.closetMode === "items" ? visibleItems() : visibleOutfits();
+      const entityFingerprint = entities.map(entity => `${entity.item_id || entity.outfit_id}:${entity.favorite ? 1 : 0}:${entity.updated_at || entity.created_at || ""}`).join("|");
+      const renderKey = `${state.closetMode}:${state.category}:${state.closetQuery}:${state.closetFilter}:${state.closetItemLimit}:${state.closetOutfitLimit}:${entityFingerprint}`;
+      if (state.closetRenderKey === renderKey && $("#closetGrid").childElementCount) return;
       if (state.closetMode === "items") renderItemGrid();
       if (state.closetMode === "outfits") renderOutfitGrid();
+      state.closetRenderKey = renderKey;
     }
     function renderItemGrid() {
       const cleanItems = visibleItems();
-      const items = state.category === "all" ? cleanItems : cleanItems.filter(item => item.category === state.category);
+      const categoryItems = state.category === "all" ? cleanItems : cleanItems.filter(item => item.category === state.category);
+      const query = String(state.closetQuery || "").trim().toLowerCase();
+      const items = categoryItems.filter(item => {
+        if (state.closetFilter === "favorite" && !item.favorite) return false;
+        if (state.closetFilter === "worn" && Number(item.wear_count || 0) < 1) return false;
+        if (state.closetFilter === "laundry" && item.laundry_status !== "laundry") return false;
+        if (!query) return true;
+        const attributes = item.attributes || {};
+        const haystack = [item.title, item.category_label, labels[item.category], attributes.material, attributes.note, ...(attributes.colors || []), ...(attributes.style_tags || []), ...(attributes.season_tags || []), ...(attributes.scene_tags || [])].filter(Boolean).join(" ").toLowerCase();
+        return haystack.includes(query);
+      });
       const visiblePage = items.slice(0, state.closetItemLimit);
       const remaining = Math.max(0, items.length - visiblePage.length);
       $("#closetGrid").className = "item-grid";
       $("#closetGrid").removeAttribute("aria-busy");
       $("#closetGrid").removeAttribute("aria-label");
       $("#closetGrid").innerHTML = items.length ? `${visiblePage.map(item => `<article class="closet-card">
-        <button class="closet-img" type="button" data-open-item="${item.item_id}" aria-label="查看${escapeHTML(item.category_label || "单品")}详情"><img src="${publicCutoutImg(item)}" alt="${escapeHTML(item.category_label || "单品")}" loading="lazy" decoding="async"></button>
+        <button class="closet-img" type="button" data-open-item="${item.item_id}" aria-label="查看${escapeHTML(item.category_label || "单品")}详情"><img src="${publicCutoutImg(item)}" alt="${escapeHTML(item.category_label || "单品")}" width="320" height="320" loading="lazy" decoding="async"></button>
         <button class="item-favorite ${item.favorite ? "active" : ""}" type="button" data-favorite-item="${item.item_id}" aria-label="${item.favorite ? "取消收藏" : "收藏"}${escapeHTML(item.category_label || "单品")}" aria-pressed="${Boolean(item.favorite)}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20.4 4.1 13A5.2 5.2 0 0 1 11.5 5.6l.5.5.5-.5A5.2 5.2 0 0 1 19.9 13L12 20.4Z"/></svg></button>
         <div class="closet-card-label">${escapeHTML(item.category_label || labels[item.category] || "单品")}</div>
-      </article>`).join("")}${remaining ? `<button class="closet-load-more" type="button" data-closet-more="items">继续浏览 · 还有 ${remaining} 件</button>` : ""}` : `<div class="empty">这个分类还没有衣物。点底部 + 上传一张试试。</div>`;
+      </article>`).join("")}${remaining ? `<button class="closet-load-more" type="button" data-closet-more="items">继续浏览 · 还有 ${remaining} 件</button>` : ""}` : `<div class="empty">${query || state.closetFilter !== "all" ? "没有找到符合条件的单品，换个关键词或筛选试试。" : "这个分类还没有衣物。点底部 + 上传一张试试。"}</div>`;
       $all("[data-open-item]").forEach(node => node.addEventListener("click", () => openItemDetail(node.dataset.openItem)));
       $all("[data-favorite-item]").forEach(btn => btn.addEventListener("click", event => {
         event.preventDefault();
@@ -6257,7 +7624,8 @@ def render_selfit_demo_page() -> str:
       }));
       $("[data-closet-more='items']")?.addEventListener("click", () => {
         state.closetItemLimit += 20;
-        renderItemGrid();
+        state.closetRenderKey = "";
+        renderCloset();
       });
     }
     function renderOutfitGrid() {
@@ -6271,7 +7639,8 @@ def render_selfit_demo_page() -> str:
       bindOutfitActions();
       $("[data-closet-more='outfits']")?.addEventListener("click", () => {
         state.closetOutfitLimit += 12;
-        renderOutfitGrid();
+        state.closetRenderKey = "";
+        renderCloset();
       });
     }
     function renderPlans() {
@@ -6279,24 +7648,84 @@ def render_selfit_demo_page() -> str:
       $("#closetGrid").innerHTML = `<div class="empty">行程模式已预留。下一步可以为旅行、面试、约会创建穿搭计划。</div>`;
     }
     function renderBuilder() {
-      $("#builderList").innerHTML = visibleItems().map(item => `<button class="pick-card ${state.selectedItems.has(item.item_id) ? "active" : ""}" data-builder-item="${item.item_id}"><img src="${publicCutoutImg(item)}" alt="${item.category_label}" loading="lazy" decoding="async"><span>${item.category_label}</span></button>`).join("");
+      const cleanItems = visibleItems();
+      const selected = [...state.selectedItems].map(id => cleanItems.find(item => item.item_id === id)).filter(Boolean);
+      const anchor = selected[0] || null;
+      if (state.builderCategory === "recommended" && !anchor) state.builderCategory = "top";
+      const categories = [
+        ...(anchor ? [{ key: "recommended", label: "智能候选" }] : []),
+        ...categoryOrder.map(key => ({ key, label: key === "all" ? "全部" : labels[key] })),
+      ];
+      $("#builderCategories").innerHTML = categories.map(category => `<button class="builder-category ${state.builderCategory === category.key ? "active" : ""}" type="button" data-builder-category="${category.key}" aria-pressed="${state.builderCategory === category.key}">${escapeHTML(category.label)}</button>`).join("");
+      $("#builderSelection").innerHTML = selected.length
+        ? `<div class="builder-selection-head"><b>已选 ${selected.length} 件</b><span>最多 6 件</span></div><div class="builder-selected-rail">${selected.map(item => `<button type="button" class="builder-selected-item" data-builder-selected="${item.item_id}" aria-label="移除${escapeHTML(item.category_label || labels[item.category] || "单品")}"><img src="${publicCutoutImg(item)}" alt=""><span>${escapeHTML(item.category_label || labels[item.category] || "单品")}</span><i aria-hidden="true">×</i></button>`).join("")}</div>`
+        : `<div class="builder-selection-empty"><b>先选一件主单品</b><span>选中后会在这里保留，向下浏览也不会丢。</span></div>`;
+      let candidates = [];
+      if (state.builderCategory === "recommended" && anchor) {
+        candidates = smartItemRecommendations(anchor, 14).map(entry => ({ ...entry, recommended: true }));
+      } else {
+        const categoryItems = state.builderCategory === "all" ? cleanItems : cleanItems.filter(item => item.category === state.builderCategory);
+        candidates = categoryItems.slice(0, state.builderCategory === "all" ? 24 : categoryItems.length).map(item => ({ item, reason: "", recommended: false }));
+      }
+      $("#builderHelp").textContent = state.builderCategory === "recommended" && anchor
+        ? `根据「${anchor.category_label || labels[anchor.category] || "这件单品"}」、你的风格和衣橱搭配关系推荐`
+        : state.builderCategory === "all"
+          ? "先展示常用单品；可以按品类查看完整衣橱。"
+          : `选择${labels[state.builderCategory] || "单品"}，我会继续补齐下一件。`;
+      const analysis = analyzeBuilderSelection(selected);
+      $("#builderAnalysis").className = `builder-analysis ${analysis.status}`;
+      $("#builderAnalysis").innerHTML = `<span aria-hidden="true"></span><div><b>${escapeHTML(analysis.label)}</b><small>${escapeHTML(analysis.message)}</small>${analysis.warnings.length ? `<em>${escapeHTML(analysis.warnings.join("·"))}</em>` : ""}</div>`;
+      $("#builderList").innerHTML = candidates.length ? candidates.map(({ item, reason, recommended }) => `<button class="pick-card ${state.selectedItems.has(item.item_id) ? "active" : ""}" type="button" data-builder-item="${item.item_id}" aria-pressed="${state.selectedItems.has(item.item_id)}"><span class="pick-card-media"><img src="${publicCutoutImg(item)}" alt="${escapeHTML(item.category_label || "单品")}" loading="lazy" decoding="async"></span><span>${escapeHTML(item.category_label || labels[item.category] || "单品")}</span>${recommended && reason ? `<small>${escapeHTML(reason)}</small>` : ""}</button>`).join("") : `<div class="builder-empty">这个分类还没有可用单品。</div>`;
+      const canCompose = selected.length >= 2 && analysis.status !== "conflict";
+      $("#saveOutfitBtn").disabled = !canCompose;
+      $("#tryOutfitBtn").disabled = !canCompose;
+      $all("[data-builder-category]").forEach(btn => btn.addEventListener("click", () => {
+        state.builderCategory = btn.dataset.builderCategory || "all";
+        renderBuilder();
+      }));
+      $all("[data-builder-selected]").forEach(btn => btn.addEventListener("click", () => {
+        state.selectedItems.delete(btn.dataset.builderSelected);
+        renderBuilder();
+      }));
       $all("[data-builder-item]").forEach(btn => btn.addEventListener("click", () => {
         const id = btn.dataset.builderItem;
         if (state.selectedItems.has(id)) state.selectedItems.delete(id);
         else {
+          if (state.selectedItems.size >= 6) return toast("一套最多选 6 件，先移除一件再继续。");
           const warning = builderConflictWarning(id);
           state.selectedItems.add(id);
+          if (state.selectedItems.size === 1) state.builderCategory = "recommended";
           if (warning) toast(warning);
         }
         renderBuilder();
       }));
     }
     function itemSlot(item) {
+      if (["outer", "hat", "scarf"].includes(item?.slot)) return item.slot;
       const tags = (item?.attributes?.style_tags || []).join(" ");
+      if (item?.attributes?.slot === "outer" || /(outer|coat|jacket|外套|西装)/i.test(tags)) return "outer";
       if (tags.includes("帽")) return "hat";
       if (tags.includes("围巾") || tags.includes("丝巾")) return "scarf";
       if (tags.includes("袜")) return "socks";
       return item?.category || "accessory";
+    }
+    function analyzeBuilderSelection(items = []) {
+      const slots = items.map(itemSlot).map(slot => ["bottom", "skirt"].includes(slot) ? "lower" : slot);
+      const count = slot => slots.filter(value => value === slot).length;
+      const conflicts = [];
+      if (count("dress") && (count("top") || count("lower"))) conflicts.push("连衣装与上下装同时存在，请确认叠穿关系");
+      if (count("top") > 1) conflicts.push("有两件上衣，外套请标记为叠穿");
+      if (count("lower") > 1) conflicts.push("下装重复，请保留一件");
+      if (count("shoes") > 1 || count("bag") > 1) conflicts.push("鞋包有重复，请各保留一件");
+      const mainComplete = count("dress") > 0 || (count("top") > 0 && count("lower") > 0);
+      let message = "先选一件主服装";
+      if (count("top") && !count("lower")) message = "上衣已选，接下来优先推荐下装";
+      else if (count("lower") && !count("top")) message = "下装已选，接下来优先推荐上衣";
+      else if (mainComplete && !count("shoes")) message = "基础穿搭已完整，再加一双鞋";
+      else if (mainComplete && !count("bag")) message = "主搭配已完整，可再加包或配饰";
+      else if (mainComplete) message = "已可以保存和试穿";
+      const unavailable = items.filter(item => ["laundry", "unavailable"].includes(item.laundry_status)).length;
+      return { status: conflicts.length ? "conflict" : mainComplete ? "complete" : "incomplete", label: conflicts.length ? "需要调整" : mainComplete ? "搭配已完整" : "继续补全搭配", message: conflicts[0] || message, warnings: unavailable ? [`${unavailable} 件单品当前不可穿`] : [] };
     }
     function builderConflictWarning(nextId) {
       const next = state.items.find(item => item.item_id === nextId);
@@ -6306,7 +7735,7 @@ def render_selfit_demo_page() -> str:
       const selectedSlots = selected.map(itemSlot);
       if (nextSlot === "shoes" && selectedSlots.includes("shoes")) return "一套搭配里先保留一双鞋。";
       if ((nextSlot === "bottom" || nextSlot === "skirt") && selectedSlots.some(slot => slot === "bottom" || slot === "skirt")) return "裤子和裙子先保留一个。";
-      if (nextSlot === "top" && selectedSlots.includes("top")) return "一套搭配里先保留一件上衣。";
+      if (nextSlot === "top" && selectedSlots.includes("top")) return "一套搭配里先保留一件上衣；外套可以叠穿。";
       if (nextSlot === "dress" && selectedSlots.some(slot => ["top", "bottom", "skirt", "dress"].includes(slot))) return "连衣装会作为主搭配，其他主服装会作为参考。";
       if (["top", "bottom", "skirt"].includes(nextSlot) && selectedSlots.includes("dress")) return "已选择连衣装，其他主服装会作为参考。";
       if (nextSlot === "bag" && selectedSlots.includes("bag")) return "一套搭配里先保留一个包。";
@@ -6375,8 +7804,11 @@ def render_selfit_demo_page() -> str:
       }
       $("#recordGrid").innerHTML = records.length ? records.slice(0, 18).map(record => {
         const selected = state.selectedRecordIds.has(record.record_id);
-        const badge = record.status === "review" ? `<span class="record-badge">需复核</span>` : "";
-        return `<button class="record-card ${state.recordEditing ? "editing" : ""} ${selected ? "selected" : ""}" type="button" data-record-id="${record.record_id || ""}" data-preview-image="${assetURL(record.image_path)}" data-preview-title="试穿记录"><img src="${assetURL(record.image_path)}" alt="试穿记录">${badge}${state.recordEditing ? `<span class="check">✓</span>` : ""}</button>`;
+        const needsReview = record.status === "review";
+        const badge = needsReview ? `<span class="record-badge">检查一下</span>` : "";
+        const title = record.outfit_title || "试穿记录";
+        const tip = needsReview ? "这张结果已生成，建议检查服装边缘和配饰是否自然。" : "这是你保存的试穿结果。";
+        return `<button class="record-card ${state.recordEditing ? "editing" : ""} ${selected ? "selected" : ""}" type="button" data-record-id="${record.record_id || ""}" data-preview-image="${assetURL(record.image_path)}" data-preview-title="${escapeHTML(title)}" data-preview-model="1" data-preview-tip="${escapeHTML(tip)}" aria-label="查看${escapeHTML(title)}${needsReview ? "，建议检查边缘" : ""}"><img src="${assetURL(record.image_path)}" alt="${escapeHTML(title)}" loading="lazy" decoding="async">${badge}${state.recordEditing ? `<span class="check">✓</span>` : ""}</button>`;
       }).join("") : `<div class="empty" style="grid-column:1/-1;">试穿记录会出现在这里。</div>`;
       $all("[data-record-id]").forEach(card => card.addEventListener("click", () => {
         if (!state.recordEditing) return;
@@ -6444,12 +7876,12 @@ def render_selfit_demo_page() -> str:
         openBuilder();
         return toast("先保存套装后再查看详情。");
       }
-      const outfit = cleanOutfit(state.outfits.find(item => item.outfit_id === outfitId) || await fetchJSON(`/closet/outfits/${encodeURIComponent(outfitId)}`));
+      const outfit = cleanOutfit([...state.outfits, ...state.todayOutfits].find(item => item.outfit_id === outfitId) || await fetchJSON(`/closet/outfits/${encodeURIComponent(outfitId)}`));
       state.detailReturnTab = state.tab || "home";
       state.detailMode = "outfit";
       state.currentItem = null;
       state.currentOutfit = outfit;
-      state.editorItems = visibleItems(outfit.items || []).map((item, index) => editorItemFromClosetItem(item, index));
+      state.editorItems = smartEditorItems(visibleItems(outfit.items || []));
       renderDetail();
       renderEditor();
       setPage("page-detail");
@@ -6521,6 +7953,13 @@ def render_selfit_demo_page() -> str:
       const personaColors = stylePersonaColors().flatMap(color => recommendationColorRoots({ attributes: { colors: [color.name || ""] } }));
       const personaStyleTokens = new Set(recommendationTokens([...(state.stylePersona?.keywords || []), state.stylePersona?.summary || "", state.stylePersona?.recommendations?.outfits?.summary || ""]));
       const neutralRoots = new Set(["black", "white", "gray", "blue", "brown"]);
+      const structuralPriority = anchorGroup === "top"
+        ? { lower: 0, shoes: 1, bag: 2, accessory: 3 }
+        : anchorGroup === "lower"
+          ? { top: 0, shoes: 1, bag: 2, accessory: 3 }
+          : anchorGroup === "dress"
+            ? { shoes: 0, bag: 1, accessory: 2 }
+            : {};
       const ranked = visibleItems().filter(item => item.item_id !== anchor.item_id).map(item => {
         const group = recommendationGroup(item);
         const coCount = coOccurrence.get(item.item_id) || 0;
@@ -6551,7 +7990,7 @@ def render_selfit_demo_page() -> str:
               ? "配色协调"
               : "补全搭配";
         return { item, group, score, reason };
-      }).filter(Boolean).sort((a, b) => b.score - a.score || String(a.item.item_id).localeCompare(String(b.item.item_id)));
+      }).filter(Boolean).sort((a, b) => (structuralPriority[a.group] ?? 9) - (structuralPriority[b.group] ?? 9) || b.score - a.score || String(a.item.item_id).localeCompare(String(b.item.item_id)));
       const groupCaps = anchorGroup === "top"
         ? { lower: 2, shoes: 1, bag: 1, accessory: 2 }
         : anchorGroup === "lower"
@@ -6574,9 +8013,20 @@ def render_selfit_demo_page() -> str:
       }
       return selected.slice(0, limit);
     }
+    function renderDetailFeedback() {
+      const outfitId = state.currentOutfit?.outfit_id;
+      const feedback = state.detailFeedback.get(outfitId);
+      [["#detailLikeBtn", "like"], ["#detailDislikeBtn", "dislike"]].forEach(([selector, value]) => {
+        $(selector).setAttribute("aria-pressed", String(feedback === value));
+        $(selector).disabled = state.detailFeedbackPending.has(outfitId);
+      });
+    }
     function renderDetail() {
       const item = state.detailMode === "item" ? state.currentItem : null;
       if (item) {
+        $("#detailFeedbackActions").hidden = true;
+        $("#itemWearStateActions").hidden = false;
+        $all("[data-item-wear-state]").forEach(button => button.classList.toggle("active", button.dataset.itemWearState === (item.laundry_status || "available")));
         const model = currentModel();
         const label = item.category_label || labels[item.category] || "单品详情";
         $("#detailTitle").textContent = label;
@@ -6598,6 +8048,9 @@ def render_selfit_demo_page() -> str:
       }
       const outfit = state.currentOutfit;
       if (!outfit) return;
+      $("#detailFeedbackActions").hidden = false;
+      renderDetailFeedback();
+      $("#itemWearStateActions").hidden = true;
       $("#detailTitle").textContent = outfit.title || "穿搭详情";
       const cover = withVersion(outfit.layout_snapshot_path || outfit.cover_path || "", outfit);
       const model = currentModel();
@@ -6611,18 +8064,21 @@ def render_selfit_demo_page() -> str:
       $("#detailItemsNote").hidden = true;
       $("#detailItemsNote").textContent = "";
       $("#detailEditBtn").textContent = "调整搭配";
-      $("#detailTryBtn").textContent = "生成试穿图";
+      $("#detailTryBtn").textContent = "开始试穿";
       $("#detailItems").innerHTML = visibleItems(outfit.items || []).map(item => `<button class="item-tile" data-detail-item="${item.item_id}"><img src="${publicCutoutImg(item)}" alt="${escapeHTML(item.category_label || "单品")}"><span>${escapeHTML(item.category_label || "单品")}</span></button>`).join("") || `<div class="empty" style="min-width:100%;">这套搭配还没有单品。</div>`;
       $all("[data-detail-item]").forEach(node => node.addEventListener("click", () => openItemDetail(node.dataset.detailItem)));
     }
     function editorItemFromClosetItem(item, index) {
+      const columnCount = 3;
+      const column = index >= columnCount ? 1 : 0;
+      const row = index % columnCount;
       const slot = itemSlot(item);
-      const defaults = {
-        top: [112, 34, 1.55], bottom: [58, 168, 1.7], skirt: [58, 176, 1.6],
-        dress: [88, 60, 1.85], shoes: [188, 298, 1.12], bag: [232, 96, 1.02], accessory: [228, 38, .9]
-      };
-      const base = defaults[slot] || [54 + (index % 3) * 112, 80 + Math.floor(index / 3) * 126, .82];
-      return { id: item.item_id, item, x: base[0], y: base[1], scale: base[2], rotation: 0, z: 2 + index };
+      const scale = ["bag", "shoes", "hat", "scarf", "socks", "accessory"].includes(slot) ? .7 : .84;
+      return { id: item.item_id, item, x: column ? 210 : 28, y: 22 + row * 148, scale, rotation: 0, z: 2 + index };
+    }
+    function smartEditorItems(items = []) {
+      const rank = { outer:0, top:1, bottom:2, skirt:3, dress:4, hat:5, scarf:6, socks:7, accessory:7.5, bag:8, shoes:9 };
+      return [...items].sort((a, b) => (rank[itemSlot(a)] ?? 7.5) - (rank[itemSlot(b)] ?? 7.5)).map((item, index) => editorItemFromClosetItem(item, index));
     }
     function renderEditor() {
       renderEditorCanvas();
@@ -6726,7 +8182,7 @@ def render_selfit_demo_page() -> str:
       renderEditorCanvas();
     }
     function applySmartLayout() {
-      state.editorItems = state.editorItems.map((entry, index) => editorItemFromClosetItem(entry.item, index));
+      state.editorItems = smartEditorItems(state.editorItems.map(entry => entry.item));
       state.activeEditorItemId = "";
       renderEditorCanvas();
       toast("已整理版面。");
@@ -6740,21 +8196,149 @@ def render_selfit_demo_page() -> str:
         body: JSON.stringify({ item_ids: itemIds, title: "我的搭配", scene_tags: ["自主搭配"] })
       });
       state.outfits.unshift(data);
+      recordRecommendationEvent("save", data.outfit_id, "", { surface: "builder" }, true);
       state.currentOutfit = data;
       renderAll();
       setPage("page-detail");
       toast("已保存新的穿搭方案。");
     }
-    function renderTryonResult(imagePath) {
+    function tryonSlotLabel(slot, fallback = "单品") {
+      return { hat:"帽子", scarf:"围巾", top:"上衣", outer:"外套", bottom:"长裤", skirt:"半身裙", dress:"连衣装", socks:"袜子", shoes:"鞋", bag:"包", accessory:"配饰" }[slot] || fallback;
+    }
+    function createTryonRequestId(prefix = "tryon") {
+      if (window.crypto?.randomUUID) return `${prefix}-${window.crypto.randomUUID()}`;
+      return `${prefix}-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+    }
+    function tryonSelectionHasConflict() {
+      const selectedSlots = new Set((state.tryonPlan?.pieces || []).filter(piece => state.tryonSelectedItemIds.has(String(piece.item_id))).map(piece => piece.slot));
+      return selectedSlots.has("dress") && ["top", "outer", "bottom", "skirt"].some(slot => selectedSlots.has(slot));
+    }
+    function renderTryonConfirmation() {
+      const plan = state.tryonPlan;
+      if (!plan) return;
+      const model = currentModel();
+      const count = state.tryonSelectedItemIds.size;
+      const conflict = tryonSelectionHasConflict();
+      $("#tryonConfirmPhoto").src = model.src;
+      $("#tryonConfirmPhotoThumb").src = model.src;
+      $("#tryonConfirmPhotoName").textContent = model.id === "self" ? "我的照片" : model.name;
+      $("#tryonConfirmPhotoSummary").textContent = plan.photo_summary || "已判断入镜范围";
+      $("#tryonConfirmCount").textContent = `预计替换 ${count} 件单品`;
+      $("#tryonConfirmHint").textContent = plan.photo_issue || "只替换照片里清楚可见的部分";
+      const conflictNode = $("#tryonConflict");
+      conflictNode.hidden = !conflict;
+      conflictNode.textContent = conflict ? "连衣装与上下装会覆盖同一区域，请关闭其中一种穿法。" : "";
+      $("#tryonPieceList").innerHTML = (plan.pieces || []).map(piece => {
+        const itemId = String(piece.item_id || "");
+        const selected = state.tryonSelectedItemIds.has(itemId);
+        const unavailable = piece.status === "not_visible";
+        const statusText = unavailable ? "未入镜" : selected ? "本次替换" : "已保留";
+        return `<article class="tryon-piece-row ${unavailable ? "unavailable" : ""}">
+          <div class="tryon-piece-image"><img src="${assetURL(piece.image_path || "")}" alt="${escapeHTML(piece.category_label || tryonSlotLabel(piece.slot))}"></div>
+          <div class="tryon-piece-copy"><b>${escapeHTML(piece.category_label || tryonSlotLabel(piece.slot))}</b><small>${escapeHTML(piece.reason || "画面中清楚可见")}</small></div>
+          ${unavailable
+            ? `<span class="tryon-piece-state muted">${statusText}</span>`
+            : `<label class="tryon-switch"><input type="checkbox" data-tryon-piece="${escapeHTML(itemId)}" ${selected ? "checked" : ""}><span aria-hidden="true"></span><em>${statusText}</em></label>`}
+        </article>`;
+      }).join("");
+      $all("[data-tryon-piece]").forEach(input => input.addEventListener("change", () => {
+        const itemId = String(input.dataset.tryonPiece || "");
+        if (input.checked) state.tryonSelectedItemIds.add(itemId);
+        else state.tryonSelectedItemIds.delete(itemId);
+        renderTryonConfirmation();
+      }));
+      const action = $("#confirmTryonBtn");
+      action.disabled = count < 1 || conflict;
+      action.textContent = count ? `生成试穿图（${count} 件）` : "至少选择一件单品";
+    }
+    async function openTryonConfirmation(outfitId) {
+      if (!outfitId) return toast("先选择一套搭配。");
+      const outfit = cleanOutfit(state.outfits.find(item => item.outfit_id === outfitId) || state.currentOutfit || await fetchJSON(`/closet/outfits/${encodeURIComponent(outfitId)}`));
+      state.detailMode = "outfit";
+      state.currentItem = null;
+      state.currentOutfit = outfit;
+      state.tryonPlan = null;
+      state.tryonSelectedItemIds = new Set();
+      state.tryonClientRequestId = createTryonRequestId();
+      $("#tryonConfirmLoading").hidden = false;
+      $("#tryonConfirmContent").hidden = true;
+      $("#confirmTryonBtn").disabled = true;
+      $("#confirmTryonBtn").textContent = "正在确认可替换单品";
+      setPage("page-tryon-confirm");
+      try {
+        const personFile = await currentModelFile();
+        state.tryonPlanPhotoFile = personFile;
+        const body = new FormData();
+        body.append("person_image", personFile);
+        body.append("outfit_id", outfitId);
+        body.append("photo_mode", "standard");
+        const plan = await fetchJSON("/selfit/try-on/preview-plan", { method: "POST", body });
+        state.tryonPlan = plan;
+        state.tryonSelectedItemIds = new Set((plan.pieces || []).filter(piece => piece.selected).map(piece => String(piece.item_id)));
+        $("#tryonConfirmLoading").hidden = true;
+        $("#tryonConfirmContent").hidden = false;
+        renderTryonConfirmation();
+      } catch (error) {
+        $("#tryonConfirmLoading").textContent = error.message || "暂时无法确认可替换单品，请更换照片再试。";
+        $("#confirmTryonBtn").textContent = "生成试穿图";
+        toast(error.message || "预检失败，请稍后再试。");
+      }
+    }
+    function renderTryonResult(imagePath, data = state.tryonResult) {
       const imageId = `tryonResultImage_${Date.now()}`;
       const hero = $("#tryonHero");
       hero.classList.remove("is-generating");
+      $("#page-tryon")?.setAttribute("aria-busy", imagePath ? "false" : "true");
+      if (!imagePath && $("#tryonResultSummary")) $("#tryonResultSummary").textContent = "正在生成试穿图";
       hero.dataset.previewImage = imagePath ? assetURL(imagePath) : "";
       hero.dataset.previewTitle = imagePath ? "试穿结果" : "";
       hero.innerHTML = `${imagePath ? `<img id="${imageId}" class="image-loading" alt="试穿结果">` : `<div class="empty">选择一套搭配后，就能在这里查看试穿效果。</div>`}<div id="generatingLayer" class="generating-layer">${generatingLayerHTML()}</div>`;
       if (imagePath) loadImageInto(`#${imageId}`, imagePath);
+      renderTryonResultDetails(imagePath ? data : null);
       bindImagePreviews();
-      $("#cancelGenerate")?.addEventListener("click", cancelTryonGeneration);
+      bindTryonBeforeAfter();
+      $("#cancelGenerate")?.addEventListener("click", leaveTryonGeneration);
+    }
+    function bindTryonBeforeAfter() {
+      const image = $("#tryonHero > img");
+      if (!image || image.dataset.compareBound === "1") return;
+      image.dataset.compareBound = "1";
+      const resultSource = image.src;
+      const originalSource = currentModel().src;
+      const showOriginal = event => { event.preventDefault(); image.src = originalSource; image.classList.add("showing-original"); };
+      const showResult = () => { image.src = resultSource; image.classList.remove("showing-original"); };
+      image.addEventListener("pointerdown", showOriginal);
+      ["pointerup", "pointercancel", "pointerleave"].forEach(type => image.addEventListener(type, showResult));
+    }
+    function renderTryonResultDetails(data) {
+      const details = $("#tryonResultDetails");
+      if (!details) return;
+      details.hidden = !data;
+      if (!data) return;
+      const summary = data.summary || {};
+      const completed = Number(summary.applied_count || 0);
+      const review = Number(summary.review_count || 0);
+      const skipped = Number(summary.skipped_count || 0);
+      $("#tryonResultSummary").textContent = `${completed + review} 件已替换${review ? ` · ${review} 处建议检查` : ""}${skipped ? ` · ${skipped} 件跳过` : ""}`;
+      const itemsById = new Map(visibleItems(state.currentOutfit?.items || []).map(item => [String(item.item_id), item]));
+      const statusCopy = { applied:"已替换", review:"检查一下", failed_item:"未替换", skipped_not_visible:"未入镜", skipped_user:"已保留" };
+      $("#tryonResultPieces").innerHTML = (data.piece_results || []).map(piece => {
+        const item = itemsById.get(String(piece.item_id || ""));
+        const canRetry = Boolean(piece.retry_available && ["review", "failed_item"].includes(piece.status));
+        const canChangePhoto = piece.status === "skipped_not_visible";
+        const statusLabel = statusCopy[piece.status] || "已处理";
+        const detailMessage = String(piece.message || "").trim();
+        const supportingCopy = detailMessage && detailMessage !== statusLabel ? `<small>${escapeHTML(detailMessage)}</small>` : "";
+        return `<article class="tryon-result-piece">
+          <div class="tryon-result-piece-image">${item ? `<img src="${publicCutoutImg(item)}" alt="${escapeHTML(piece.category_label || "单品")}">` : ""}</div>
+          <div><b>${escapeHTML(piece.category_label || tryonSlotLabel(piece.slot))}</b>${supportingCopy}</div>
+          <span class="piece-status ${escapeHTML(piece.status || "")}">${statusLabel}</span>
+          ${canRetry ? `<button class="piece-result-action" data-retry-piece="${escapeHTML(String(piece.item_id || ""))}">重新处理这件</button>` : ""}
+          ${canChangePhoto ? `<button class="piece-result-action" data-change-result-photo>更换照片</button>` : ""}
+        </article>`;
+      }).join("");
+      $all("[data-retry-piece]").forEach(button => button.addEventListener("click", () => openPieceRetry(button.dataset.retryPiece)));
+      $all("[data-change-result-photo]").forEach(button => button.addEventListener("click", () => { state.modelSheetReturn = "tryon-confirm"; openModelSheet(); setModelMode("photo"); }));
     }
     function renderTryonFailure(message) {
       const hero = $("#tryonHero");
@@ -6775,11 +8359,10 @@ def render_selfit_demo_page() -> str:
         setModelMode("photo");
       });
     }
-    function cancelTryonGeneration() {
-      state.tryonAbortController?.abort();
-      state.tryonAbortController = null;
-      $("#generatingLayer")?.classList.remove("active");
-      $("#tryonHero")?.classList.remove("is-generating");
+    function leaveTryonGeneration() {
+      setTab("home");
+      updateTryonTaskBar("processing");
+      toast("试穿任务会在后台继续，完成后可以回来查看。");
     }
     async function currentModelFile() {
       const model = currentModel();
@@ -6789,13 +8372,14 @@ def render_selfit_demo_page() -> str:
       return new File([blob], `${model.id || "model"}.png`, { type: blob.type || "image/png" });
     }
     function openBuilder(seedIds = []) {
-      seedIds.forEach(id => state.selectedItems.add(id));
+      state.selectedItems = new Set(seedIds.filter(Boolean));
+      state.builderCategory = state.selectedItems.size ? "recommended" : "top";
       renderBuilder();
       openSheet("builderSheet");
     }
     async function saveOutfit() {
       const itemIds = [...state.selectedItems];
-      if (!itemIds.length) return toast("请先选择衣物。");
+      if (itemIds.length < 2) return toast("至少选择 2 件单品，才能保存为一套搭配。");
       const data = await fetchJSON("/closet/outfits", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -6814,10 +8398,13 @@ def render_selfit_demo_page() -> str:
         openBuilder();
         return toast("先保存套装后再试穿。");
       }
+      if (!options.confirmed) return openTryonConfirmation(outfitId);
+      recordRecommendationEvent("tryon", outfitId, "", { surface: state.tab }, true);
       const outfit = cleanOutfit(state.outfits.find(item => item.outfit_id === outfitId) || state.currentOutfit || await fetchJSON(`/closet/outfits/${encodeURIComponent(outfitId)}`));
       state.detailMode = "outfit";
       state.currentItem = null;
       state.currentOutfit = outfit;
+      state.tryonStartedAt = Date.now();
       renderDetail();
       setPage("page-tryon");
       renderTryonResult("");
@@ -6827,23 +8414,22 @@ def render_selfit_demo_page() -> str:
       const body = new FormData();
       body.append("outfit_id", outfitId);
       body.append("photo_mode", state.currentModelId === "self" ? "standard" : "standard");
-      body.append("person_image", await currentModelFile());
+      body.append("person_image", options.personFile || state.tryonPlanPhotoFile || await currentModelFile());
+      body.append("selected_item_ids", JSON.stringify(options.selectedItemIds || [...state.tryonSelectedItemIds]));
+      body.append("client_request_id", options.clientRequestId || state.tryonClientRequestId || createTryonRequestId());
       if (options.forceRegenerate) body.append("force_regenerate", "true");
       const abortController = new AbortController();
       state.tryonAbortController = abortController;
       try {
-        const job = options.retryJob && state.tryonJobId
-          ? await fetchJSON(`/selfit/try-on/jobs/${encodeURIComponent(state.tryonJobId)}/retry`, { method: "POST", signal: abortController.signal })
-          : await fetchJSON("/selfit/try-on/jobs", { method: "POST", body, signal: abortController.signal });
+        const job = await fetchJSON("/selfit/try-on/jobs", { method: "POST", body, signal: abortController.signal });
         state.tryonJobId = job.job_id;
+        persistActiveTryonJob(job, outfitId);
+        updateTryonTaskBar("processing", job);
         const data = await waitForTryonJob(job.job_id, abortController.signal);
-        state.tryonResult = data;
-        renderTryonResult(data.result?.image_path || "");
-        if (data.record?.image_path) state.records.unshift(data.record);
-        renderProfile();
-        toast(data.result?.user_message || data.decision?.user_message || "已生成试穿记录。");
+        completeTryonResult(data, outfitId);
       } catch (error) {
-        const message = error.name === "AbortError" ? "已取消生成。" : (error.message || "这次没有生成成功，可以换张更清楚的照片再试。");
+        const message = error.name === "AbortError" ? "试穿任务已停止。" : (error.message || "这次没有生成成功，可以换张更清楚的照片再试。");
+        updateTryonTaskBar("failed");
         renderTryonFailure(message);
         toast(message);
       } finally {
@@ -6868,6 +8454,7 @@ def render_selfit_demo_page() -> str:
         }
         if (job.status === "processing") {
           updateTryonGeneratingState(job);
+          updateTryonTaskBar("processing", job);
         }
         if (job.status === "completed") return job.result;
         if (job.status === "failed") {
@@ -6880,9 +8467,113 @@ def render_selfit_demo_page() -> str:
       }
       throw new Error("试穿生成时间较长，任务仍在后台进行。");
     }
+    function persistActiveTryonJob(job, outfitId = state.currentOutfit?.outfit_id || "") {
+      const payload = { job_id: job?.job_id || state.tryonJobId, outfit_id: outfitId, status: job?.status || "processing", updated_at: Date.now() };
+      try { window.sessionStorage?.setItem(tryonJobStoreKey, JSON.stringify(payload)); } catch (error) {}
+    }
+    function readActiveTryonJob() {
+      try { return JSON.parse(window.sessionStorage?.getItem(tryonJobStoreKey) || "null"); } catch (error) { return null; }
+    }
+    function updateTryonTaskBar(status, job = {}) {
+      const bar = $("#tryonTaskBar");
+      if (!bar) return;
+      const onTryonPage = $("#page-tryon")?.classList.contains("active");
+      if (!status || status === "failed" || onTryonPage) {
+        bar.hidden = true;
+        return;
+      }
+      bar.hidden = false;
+      bar.classList.toggle("completed", status === "completed");
+      $("#tryonTaskTitle").textContent = status === "completed" ? "试穿图已经好了" : "试穿图生成中";
+      $("#tryonTaskCopy").textContent = status === "completed" ? "看看这套穿在你身上的效果" : `正在处理 ${Math.max(1, Math.min(96, Number(job.progress || 8)))}% · 可以继续浏览`;
+    }
+    function completeTryonResult(data, outfitId = state.currentOutfit?.outfit_id || "") {
+      state.tryonResult = data;
+      state.tryonStartedAt = 0;
+      $("#page-tryon")?.setAttribute("aria-busy", "false");
+      if (data?.version_id && !state.tryonVersions.some(version => version.version_id === data.version_id)) state.tryonVersions.push(data);
+      renderTryonResult(data?.result?.image_path || "", data);
+      if (data?.record?.image_path && !state.records.some(record => record.record_id === data.record.record_id)) state.records.unshift(data.record);
+      renderProfile();
+      persistActiveTryonJob({ job_id: state.tryonJobId, status: "completed" }, outfitId);
+      updateTryonTaskBar("completed");
+      toast(data?.result?.user_message || data?.decision?.user_message || "试穿图已经好了。");
+    }
+    async function restoreActiveTryonJob() {
+      if (state.tryonRestoring) return;
+      state.tryonRestoring = true;
+      const saved = readActiveTryonJob();
+      if (!saved?.job_id || !saved?.outfit_id) {
+        state.tryonRestoring = false;
+        return;
+      }
+      state.tryonJobId = saved.job_id;
+      const savedOutfit = state.outfits.find(outfit => outfit.outfit_id === saved.outfit_id);
+      if (!savedOutfit) {
+        state.tryonRestoring = false;
+        return;
+      }
+      state.currentOutfit = cleanOutfit(savedOutfit);
+      try {
+        const job = await fetchJSON(`/selfit/try-on/jobs/${encodeURIComponent(saved.job_id)}`);
+        if (job.status === "completed" && job.result) {
+          completeTryonResult(job.result, saved.outfit_id);
+          return;
+        }
+        if (!["queued", "processing"].includes(job.status)) return updateTryonTaskBar("failed");
+        updateTryonTaskBar("processing", job);
+        const data = await waitForTryonJob(saved.job_id);
+        completeTryonResult(data, saved.outfit_id);
+      } catch (error) {
+        updateTryonTaskBar("failed");
+      } finally {
+        state.tryonRestoring = false;
+      }
+    }
+    function openPieceRetry(itemId) {
+      const piece = (state.tryonResult?.piece_results || []).find(entry => String(entry.item_id || "") === String(itemId));
+      const item = visibleItems(state.currentOutfit?.items || []).find(entry => String(entry.item_id) === String(itemId));
+      if (!piece || !item || !state.tryonJobId) return toast("这件单品暂时无法单独处理。");
+      state.retryPieceItemId = String(itemId);
+      $("#pieceRetryTitle").textContent = `重新处理${piece.category_label || tryonSlotLabel(piece.slot)}`;
+      $("#pieceRetryImage").src = publicCutoutImg(item);
+      openSheet("pieceRetrySheet");
+    }
+    async function submitPieceRetry() {
+      const itemId = state.retryPieceItemId;
+      const baseJobId = state.tryonJobId;
+      if (!itemId || !baseJobId) return;
+      const reason = $("input[name='pieceRetryReason']:checked")?.value || "细节需要调整";
+      $("#submitPieceRetry").disabled = true;
+      try {
+        const job = await fetchJSON(`/selfit/try-on/jobs/${encodeURIComponent(baseJobId)}/pieces/${encodeURIComponent(itemId)}/retry`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ reason, client_request_id: createTryonRequestId("piece") })
+        });
+        closeSheet("pieceRetrySheet");
+        state.tryonJobId = job.job_id;
+        setPage("page-tryon");
+        renderTryonResult("");
+        $("#tryonHero").classList.add("is-generating");
+        $("#generatingLayer").classList.add("active");
+        updateTryonGeneratingState({ phase: "generating", progress: 38 });
+        persistActiveTryonJob(job);
+        const data = await waitForTryonJob(job.job_id);
+        completeTryonResult(data);
+      } catch (error) {
+        renderTryonFailure(error.message || "这件单品暂时没有处理成功，可以稍后再试。");
+        toast(error.message || "单件处理失败。");
+      } finally {
+        $("#submitPieceRetry").disabled = false;
+      }
+    }
     async function tryCurrentItem() {
       const item = state.currentItem;
       if (!item) return toast("先选择一件单品。");
+      if (item.tryon_ready === false) {
+        return toast("这件的图片还不适合直接试穿，但可以继续用它搭配。");
+      }
       if (!["top", "bottom", "skirt", "dress"].includes(item.category)) {
         const companions = smartItemRecommendations(item, 3).map(entry => entry.item.item_id);
         openBuilder([item.item_id, ...companions]);
@@ -6902,6 +8593,7 @@ def render_selfit_demo_page() -> str:
       }
     }
     async function toggleFavorite(outfitId) {
+      if (personaTestMode.enabled) return toast("测试模式下不会保存收藏。");
       if (!outfitId) return toast("这套搭配保存后就能收藏。");
       const outfit = state.outfits.find(item => item.outfit_id === outfitId);
       if (!outfit) return;
@@ -6914,6 +8606,7 @@ def render_selfit_demo_page() -> str:
       });
       const index = state.outfits.findIndex(item => item.outfit_id === outfitId);
       if (index >= 0) state.outfits[index] = data;
+      if (nextFavorite) recordRecommendationEvent("favorite", outfitId, "", { surface: state.tab });
       renderAll();
       toast(nextFavorite ? "已收藏。" : "已取消收藏。");
     }
@@ -7050,31 +8743,58 @@ def render_selfit_demo_page() -> str:
     }
     function bindOutfitActions() {
       bindImagePreviews();
-      $all("[data-open-outfit]").forEach(card => card.addEventListener("click", () => openOutfitDetail(card.dataset.openOutfit)));
-      $all("[data-home-outfit]").forEach(btn => btn.addEventListener("click", event => {
+      const unbound = selector => $all(selector).filter(node => {
+        if (node.dataset.outfitActionBound) return false;
+        node.dataset.outfitActionBound = "true";
+        return true;
+      });
+      unbound("[data-open-outfit]").forEach(card => card.addEventListener("click", () => openOutfitDetail(card.dataset.openOutfit)));
+      unbound("[data-home-outfit]").forEach(btn => btn.addEventListener("click", event => {
         event.stopPropagation();
         openOutfitDetail(btn.dataset.homeOutfit);
       }));
-      $all("[data-favorite-outfit]").forEach(btn => btn.addEventListener("click", event => {
+      unbound("[data-favorite-outfit]").forEach(btn => btn.addEventListener("click", event => {
         event.preventDefault();
         event.stopPropagation();
         toggleFavorite(btn.dataset.favoriteOutfit);
       }));
+      unbound("[data-dislike-outfit]").forEach(btn => btn.addEventListener("click", event => {
+        event.preventDefault();
+        event.stopPropagation();
+        openRecommendationFeedback(btn.dataset.dislikeOutfit);
+      }));
     }
     function renderImportReview(message = "") {
       const items = state.importReviewItems || [];
+      state.importConfirmDeadline = 0;
       $("#importReviewTitle").textContent = items.length ? `识别到 ${items.length} 件单品` : "没有可入柜的单品";
-      $("#importReviewCopy").textContent = message || (items.length ? "看看是否每件衣物都完整，分类不对可以直接修改。" : "换一张衣物完整、光线清晰的图片再试试。");
-      $("#importReviewGrid").innerHTML = items.map(item => `
+      $("#importReviewCopy").textContent = message || (items.length ? "看看是否每件衣物都完整，分类不对可以直接修改。未勾选的单品不会保存。" : "换一张衣物完整、光线清晰的图片再试试。");
+      $("#importReviewSelected").textContent = `${state.importReviewSelectedIds.size} 件待入柜`;
+      $("#mergeImportItems").disabled = state.importReviewSelectedIds.size < 2;
+      $("#importReviewGrid").innerHTML = items.map(item => {
+        const attributes = item.attributes || {};
+        const tags = [...(attributes.colors || []), attributes.material, ...(attributes.season_tags || []), ...(attributes.scene_tags || [])].filter(Boolean).slice(0, 3);
+        return `
         <article class="import-review-card" data-import-review-item="${item.item_id}">
+          <label class="import-review-check"><input type="checkbox" data-import-select="${item.item_id}" ${state.importReviewSelectedIds.has(String(item.item_id)) ? "checked" : ""}><span aria-hidden="true">✓</span></label>
           <img class="import-review-image" src="${publicCutoutImg(item)}" alt="${escapeHTML(item.category_label || labels[item.category] || "单品")}">
           <button class="import-review-remove" type="button" data-import-remove="${item.item_id}" aria-label="移除这件单品">×</button>
+          ${item.duplicate_of ? `<span class="import-duplicate">可能已有</span>` : ""}
+          <button class="import-tryon-state ${item.tryon_ready === false ? "is-limited" : ""}" type="button" data-import-ready="${item.item_id}" aria-label="切换试穿状态">${item.tryon_ready === false ? "仅可搭配" : "可试穿"}</button>
           <select class="import-review-select" data-import-category="${item.item_id}" aria-label="修改单品分类">
             ${categoryOrder.filter(category => category !== "all").map(category => `<option value="${category}" ${item.category === category ? "selected" : ""}>${escapeHTML(labels[category])}</option>`).join("")}
           </select>
+          <div class="import-attribute-chips">${tags.length ? tags.map(tag => `<span>${escapeHTML(tag)}</span>`).join("") : `<span>待补充属性</span>`}</div>
+          <div class="import-correct-actions"><button type="button" data-import-adjust="${item.item_id}" data-action="rotate" data-degrees="-90">左转</button><button type="button" data-import-adjust="${item.item_id}" data-action="rotate" data-degrees="90">右转</button><button type="button" data-import-adjust="${item.item_id}" data-action="crop">裁掉留白</button><button type="button" data-import-adjust="${item.item_id}" data-action="clean_edges">修边</button><button type="button" data-import-undo="${item.item_id}" ${item.corrections?.length ? "" : "disabled"}>撤销修正</button><button type="button" data-import-split="${item.item_id}">拆成两件</button></div>
         </article>
-      `).join("");
-      $("#importReviewDone").textContent = items.length ? "完成入柜" : "返回重新上传";
+      `}).join("");
+      $("#importReviewDone").classList.remove("is-confirming");
+      $("#importReviewDone").textContent = items.length ? `完成入柜（${state.importReviewSelectedIds.size}）` : "返回重新上传";
+      $all("[data-import-select]").forEach(input => input.addEventListener("change", () => {
+        const itemId = String(input.dataset.importSelect || "");
+        if (input.checked) state.importReviewSelectedIds.add(itemId); else state.importReviewSelectedIds.delete(itemId);
+        renderImportReview(message);
+      }));
       $all("[data-import-category]").forEach(select => select.addEventListener("change", async () => {
         try {
           const updated = await fetchJSON(`/closet/items/${encodeURIComponent(select.dataset.importCategory)}`, {
@@ -7090,21 +8810,68 @@ def render_selfit_demo_page() -> str:
           toast(error.message || "分类修改失败。");
         }
       }));
+      $all("[data-import-ready]").forEach(button => button.addEventListener("click", async () => {
+        const item = state.importReviewItems.find(entry => String(entry.item_id) === String(button.dataset.importReady));
+        if (!item) return;
+        try {
+          const updated = await fetchJSON(`/closet/items/${encodeURIComponent(item.item_id)}`, {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ tryon_ready: item.tryon_ready === false })
+          });
+          const index = state.importReviewItems.findIndex(entry => entry.item_id === updated.item_id);
+          if (index >= 0) state.importReviewItems[index] = updated;
+          renderImportReview(updated.tryon_ready ? "已标记为可试穿单品。" : "这件仍可参与搭配，但不会用于生成试穿。");
+        } catch (error) { toast(error.message || "状态更新失败。"); }
+      }));
       $all("[data-import-remove]").forEach(button => button.addEventListener("click", async () => {
         try {
           const itemId = button.dataset.importRemove;
           await fetchJSON(`/closet/items/${encodeURIComponent(itemId)}`, { method: "DELETE" });
           state.importReviewItems = state.importReviewItems.filter(item => item.item_id !== itemId);
+          state.importReviewSelectedIds.delete(String(itemId));
           await loadData();
           renderImportReview();
         } catch (error) {
           toast(error.message || "移除失败。");
         }
       }));
+      $all("[data-import-adjust]").forEach(button => button.addEventListener("click", async () => {
+        const itemId = button.dataset.importAdjust;
+        button.disabled = true;
+        try {
+          const payload = { action: button.dataset.action };
+          if (button.dataset.degrees) payload.degrees = Number(button.dataset.degrees);
+          const updated = await fetchJSON(`/closet/items/${encodeURIComponent(itemId)}/adjust`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
+          const index = state.importReviewItems.findIndex(item => item.item_id === updated.item_id);
+          if (index >= 0) state.importReviewItems[index] = updated;
+          renderImportReview("已更新单品图，请再检查一下边缘。");
+        } catch (error) { toast(error.message || "修正失败。"); } finally { button.disabled = false; }
+      }));
+      $all("[data-import-undo]").forEach(button => button.addEventListener("click", async () => {
+        const itemId = button.dataset.importUndo;
+        button.disabled = true;
+        try {
+          const updated = await fetchJSON(`/closet/items/${encodeURIComponent(itemId)}/undo-adjustment`, { method: "POST" });
+          const index = state.importReviewItems.findIndex(item => item.item_id === updated.item_id);
+          if (index >= 0) state.importReviewItems[index] = updated;
+          renderImportReview("已撤销上一步图片修正。");
+        } catch (error) { toast(error.message || "暂时无法撤销。"); } finally { button.disabled = false; }
+      }));
+      $all("[data-import-split]").forEach(button => button.addEventListener("click", async () => {
+        try {
+          const data = await fetchJSON(`/closet/items/${encodeURIComponent(button.dataset.importSplit)}/split`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ direction: "vertical" }) });
+          state.importReviewItems.push(...(data.items || []));
+          (data.items || []).forEach(item => state.importReviewSelectedIds.add(String(item.item_id)));
+          renderImportReview("已左右拆成两件，请分别确认分类。");
+        } catch (error) { toast(error.message || "暂时无法拆分。"); }
+      }));
     }
     function showImportReview(data) {
       state.importReviewItems = data.items || [];
+      state.importReviewSelectedIds = new Set(state.importReviewItems.map(item => String(item.item_id)));
       state.importDraftOutfit = data.draft_outfit || null;
+      state.importConfirmDeadline = 0;
       const draftCopy = state.importDraftOutfit ? " 这些单品已按原图关系组成一套待确认穿搭。" : "";
       renderImportReview(`${data.message || ""}${draftCopy}`.trim());
       closeSheet("uploadSheet");
@@ -7204,15 +8971,65 @@ def render_selfit_demo_page() -> str:
       await loadData();
       showImportReview(data);
     }
-    $all("[data-tab]").forEach(btn => btn.addEventListener("click", () => setTab(btn.dataset.tab, { historyMode: "push" })));
+    $all("[data-tab]").forEach(btn => btn.addEventListener("click", () => handleNavigationTap(btn.dataset.tab)));
+    $("#personaTestPicker").addEventListener("click", openPersonaTestPicker);
+    $("#personaTestClose").addEventListener("click", () => $("#personaTestDialog").close());
+    $("#personaTestPalette").addEventListener("change", () => {
+      state.testPalette = $("#personaTestPalette").value || null;
+      refreshPersonaRecommendations();
+    });
+    $("#personaTestOptions").addEventListener("click", event => {
+      const button = event.target.closest("[data-test-persona]");
+      if (!button || !personaTestMode.select(button.dataset.testPersona)) return;
+      savePersonaTestMode();
+      $("#personaTestDialog").close();
+      setTab("home", { historyMode: "push" });
+      refreshPersonaRecommendations();
+    });
     window.addEventListener("popstate", () => {
       const requestedTab = new URLSearchParams(window.location.search).get("tab");
       setTab(["home", "ai", "closet", "me"].includes(requestedTab) ? requestedTab : "home", { historyMode: "none" });
     });
-    window.addEventListener("scroll", maybeLoadMoreHomeOutfits, { passive: true });
+    function onHomeFeedScroll() {
+      if (!homePageIsActive() || state.homeFeedRestoring) return;
+      const page = $("#page-home");
+      const position = Math.max(
+        Number(window.scrollY || window.pageYOffset || 0),
+        Number(page?.scrollTop || 0),
+      );
+      if (position < state.homeFeedLastIntentPosition + 24) return;
+      state.homeFeedUserIntent = true;
+      rememberHomeScroll();
+      maybeLoadMoreHomeOutfits();
+    }
+    window.addEventListener("scroll", onHomeFeedScroll, { passive: true });
+    $("#page-home").addEventListener("scroll", onHomeFeedScroll, { passive: true });
+    $("#homeFeedMore").addEventListener("click", () => maybeLoadMoreHomeOutfits(true));
+    if ("IntersectionObserver" in window) {
+      const feedObserver = new IntersectionObserver(entries => {
+        if (entries.some(entry => entry.isIntersecting) && homePageIsActive() && state.homeFeedUserIntent) maybeLoadMoreHomeOutfits();
+      }, { rootMargin: "260px 0px" });
+      feedObserver.observe($("#homeFeedFooter"));
+    }
+    document.addEventListener("visibilitychange", () => {
+      if (document.visibilityState === "hidden") homeExposure?.disconnect();
+      else if (homePageIsActive()) observeHomeExposure();
+    });
     $("#logoutBtn").addEventListener("click", logoutSelfitUser);
     $all("[data-tab-shortcut]").forEach(btn => btn.addEventListener("click", () => setTab(btn.dataset.tabShortcut, { historyMode: "push" })));
     $all("[data-closet-mode]").forEach(btn => btn.addEventListener("click", () => { state.closetMode = btn.dataset.closetMode; renderCloset(); }));
+    $("#closetSearchInput").addEventListener("input", event => {
+      state.closetQuery = event.target.value || "";
+      state.closetItemLimit = 20;
+      state.closetRenderKey = "";
+      renderCloset();
+    });
+    $all("[data-closet-filter]").forEach(btn => btn.addEventListener("click", () => {
+      state.closetFilter = btn.dataset.closetFilter || "all";
+      state.closetItemLimit = 20;
+      state.closetRenderKey = "";
+      renderCloset();
+    }));
     $all("[data-close]").forEach(btn => btn.addEventListener("click", () => closeSheet(btn.dataset.close)));
     $all("[data-back-home]").forEach(btn => btn.addEventListener("click", () => setTab("home")));
     $all("[data-back-detail]").forEach(btn => btn.addEventListener("click", () => setTab(state.detailReturnTab || "home")));
@@ -7266,17 +9083,19 @@ def render_selfit_demo_page() -> str:
     $("#selfModelInput").addEventListener("change", event => {
       const file = event.target.files?.[0];
       if (!file) return;
-      if (state.selfModelUrl?.startsWith("blob:")) URL.revokeObjectURL(state.selfModelUrl);
-      state.selfModelUrl = URL.createObjectURL(file);
-      renderSelfModelPhoto();
+      persistSelfModelPhoto(file);
     });
     $("#confirmSelfModel").addEventListener("click", () => {
       if (!state.selfModelUrl) return toast("请先上传一张照片。");
+      const returnTarget = state.modelSheetReturn;
       state.currentModelId = "self";
       updateCurrentModelUI();
       closeSheet("modelSheet");
       saveCurrentModelPreference();
       toast("已使用我的照片。");
+      if (returnTarget === "tryon-confirm" && state.currentOutfit?.outfit_id) {
+        openTryonConfirmation(state.currentOutfit.outfit_id);
+      }
     });
     $("#refreshInspiration").addEventListener("click", async () => {
       $("#refreshNote").textContent = "正在刷新灵感穿搭...";
@@ -7297,8 +9116,28 @@ def render_selfit_demo_page() -> str:
     $("#importReviewDone").addEventListener("click", async () => {
       const hasItems = state.importReviewItems.length > 0;
       const draftOutfit = state.importDraftOutfit;
-      closeSheet("importReviewSheet");
       if (!hasItems) return openSheet("uploadSheet");
+      const selectedIds = [...state.importReviewSelectedIds];
+      if (!selectedIds.length) return toast("至少保留一件单品。");
+      const ignoredCount = Math.max(0, state.importReviewItems.length - selectedIds.length);
+      if (Date.now() > state.importConfirmDeadline) {
+        state.importConfirmDeadline = Date.now() + 5000;
+        $("#importReviewDone").classList.add("is-confirming");
+        $("#importReviewDone").textContent = ignoredCount ? `确认保存 ${selectedIds.length} 件，忽略 ${ignoredCount} 件` : `确认保存 ${selectedIds.length} 件`;
+        toast(ignoredCount ? `将保存 ${selectedIds.length} 件，另外 ${ignoredCount} 件不会入柜。再次点击确认。` : "再次点击确认入柜。");
+        return;
+      }
+      state.importConfirmDeadline = 0;
+      $("#importReviewDone").disabled = true;
+      try {
+        await fetchJSON("/closet/items/batch", { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ item_ids: selectedIds, updates: { import_state: "confirmed" } }) });
+        const removedIds = state.importReviewItems.map(item => String(item.item_id)).filter(id => !state.importReviewSelectedIds.has(id));
+        await Promise.all(removedIds.map(itemId => fetchJSON(`/closet/items/${encodeURIComponent(itemId)}`, { method: "DELETE" })));
+      } catch (error) {
+        $("#importReviewDone").disabled = false;
+        return toast(error.message || "入柜状态暂时没有保存。");
+      }
+      closeSheet("importReviewSheet");
       if (draftOutfit?.outfit_id) {
         try {
           const confirmed = await fetchJSON(`/closet/outfits/${encodeURIComponent(draftOutfit.outfit_id)}`, {
@@ -7311,18 +9150,84 @@ def render_selfit_demo_page() -> str:
         } catch (error) {}
       }
       setTab("closet", { historyMode: "push" });
-      toast(draftOutfit ? `已入柜 ${state.importReviewItems.length} 件单品，并保留为一套待确认穿搭。` : `已将 ${state.importReviewItems.length} 件单品放入衣橱。`);
+      toast(draftOutfit ? `已入柜 ${selectedIds.length} 件单品，并保留为一套待确认穿搭。` : `已将 ${selectedIds.length} 件单品放入衣橱。`);
       state.importReviewItems = [];
+      state.importReviewSelectedIds.clear();
       state.importDraftOutfit = null;
+      $("#importReviewDone").disabled = false;
+    });
+    $("#mergeImportItems").addEventListener("click", async () => {
+      const itemIds = [...state.importReviewSelectedIds];
+      if (itemIds.length < 2) return;
+      $("#mergeImportItems").disabled = true;
+      try {
+        const data = await fetchJSON("/closet/items/merge", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ item_ids: itemIds }) });
+        state.importReviewItems.push(data.item);
+        state.importReviewSelectedIds = new Set([String(data.item.item_id)]);
+        renderImportReview("已合并为一件新单品。原片段暂时保留，完成入柜时只保存当前勾选项。");
+      } catch (error) { toast(error.message || "合并失败。"); } finally { $("#mergeImportItems").disabled = state.importReviewSelectedIds.size < 2; }
     });
     $("#detailEditBtn").addEventListener("click", () => {
       if (state.detailMode === "item" && state.currentItem) return openBuilder([state.currentItem.item_id]);
       if (!state.currentOutfit) return toast("先选择一套搭配。");
-      if (!state.editorItems.length) state.editorItems = visibleItems(state.currentOutfit.items || []).map((item, index) => editorItemFromClosetItem(item, index));
+      if (!state.editorItems.length) state.editorItems = smartEditorItems(visibleItems(state.currentOutfit.items || []));
       renderEditor();
       setPage("page-editor");
     });
     $("#detailTryBtn").addEventListener("click", () => state.detailMode === "item" ? tryCurrentItem() : (state.currentOutfit ? tryOutfit(state.currentOutfit.outfit_id) : toast("先选择一套搭配。")));
+    $("#detailLikeBtn").addEventListener("click", async () => {
+      const outfitId = state.currentOutfit?.outfit_id;
+      if (!outfitId || state.detailFeedbackPending.has(outfitId) || state.detailFeedback.get(outfitId) === "like") return;
+      state.detailFeedbackPending.add(outfitId);
+      renderDetailFeedback();
+      const saved = await recordRecommendationEvent("like", outfitId, "", { surface: "detail" });
+      state.detailFeedbackPending.delete(outfitId);
+      if (saved) { state.detailFeedback.set(outfitId, "like"); toast(personaTestMode.enabled ? "测试反馈仅本次预览生效。" : "已记下你喜欢这种搭配。"); }
+      renderDetailFeedback();
+    });
+    $("#detailDislikeBtn").addEventListener("click", () => openRecommendationFeedback(state.currentOutfit?.outfit_id));
+    $all("[data-item-wear-state]").forEach(button => button.addEventListener("click", async () => {
+      if (!state.currentItem?.item_id) return;
+      try {
+        const updated = await fetchJSON(`/closet/items/${encodeURIComponent(state.currentItem.item_id)}`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ laundry_status: button.dataset.itemWearState })
+        });
+        state.currentItem = updated;
+        const index = state.items.findIndex(item => item.item_id === updated.item_id);
+        if (index >= 0) state.items[index] = updated;
+        renderDetail();
+        toast(updated.laundry_status === "available" ? "已恢复为可穿状态。" : "推荐时会暂时避开这件。");
+      } catch (error) { toast(error.message || "状态更新失败。"); }
+    }));
+    $all("[data-feedback-reason]").forEach(button => button.addEventListener("click", async () => {
+      const outfitId = state.recommendationFeedbackOutfitId;
+      if (!outfitId || state.detailFeedbackPending.has(outfitId)) return;
+      state.detailFeedbackPending.add(outfitId);
+      renderDetailFeedback();
+      const saved = await recordRecommendationEvent("dislike", outfitId, button.dataset.feedbackReason, { surface: state.tab });
+      state.detailFeedbackPending.delete(outfitId);
+      if (saved) state.detailFeedback.set(outfitId, "dislike");
+      renderDetailFeedback();
+      if (!saved) return;
+      state.outfits = state.outfits.filter(outfit => outfit.outfit_id !== outfitId);
+      closeSheet("recommendationFeedbackSheet");
+      renderHome();
+      if (homePageIsActive() && state.recommendationHasMore) await maybeLoadMoreHomeOutfits(true);
+      toast(personaTestMode.enabled ? "测试反馈仅本次预览生效。" : "已记下，之后会少推荐类似搭配。");
+    }));
+    $("#confirmTryonBack").addEventListener("click", () => setPage("page-detail"));
+    $("#changeConfirmPhoto").addEventListener("click", () => { state.modelSheetReturn = "tryon-confirm"; openModelSheet(); });
+    $("#confirmTryonBtn").addEventListener("click", () => {
+      if (!state.currentOutfit || !state.tryonSelectedItemIds.size || tryonSelectionHasConflict()) return;
+      tryOutfit(state.currentOutfit.outfit_id, {
+        confirmed: true,
+        selectedItemIds: [...state.tryonSelectedItemIds],
+        personFile: state.tryonPlanPhotoFile,
+        clientRequestId: state.tryonClientRequestId,
+      });
+    });
     $("#detailShare").addEventListener("click", async () => {
       const title = state.detailMode === "item" ? (state.currentItem?.category_label || "我的 selfit 单品") : (state.currentOutfit?.title || "我的 selfit 穿搭");
       if (navigator.share) {
@@ -7332,9 +9237,23 @@ def render_selfit_demo_page() -> str:
         toast("搭配名称已复制。\\n可以发给朋友一起看看。");
       }
     });
-    $("#tryAnotherBtn").addEventListener("click", () => setTab("home"));
-    $("#retryTryonBtn").addEventListener("click", () => state.currentOutfit ? tryOutfit(state.currentOutfit.outfit_id, { forceRegenerate: true, retryJob: true }) : toast("先选择一套搭配。"));
+    $("#tryAnotherBtn").addEventListener("click", () => state.currentOutfit ? setPage("page-detail") : setTab("home"));
+    $("#retryTryonBtn").addEventListener("click", () => toast("结果已保存到试穿记录。"));
     $("#tryonSaveBtn").addEventListener("click", () => toast("已保存到试穿记录。"));
+    $("#tryonTaskBar").addEventListener("click", () => {
+      if (state.tryonResult) {
+        try { window.sessionStorage?.removeItem(tryonJobStoreKey); } catch (error) {}
+      }
+      setPage("page-tryon");
+      updateTryonTaskBar(state.tryonResult ? "completed" : "processing");
+      if (state.tryonResult) renderTryonResult(state.tryonResult.result?.image_path || "", state.tryonResult);
+      else {
+        renderTryonResult("");
+        $("#tryonHero").classList.add("is-generating");
+        $("#generatingLayer").classList.add("active");
+      }
+    });
+    $("#submitPieceRetry").addEventListener("click", submitPieceRetry);
     $("#colorUploadInput").addEventListener("change", event => previewColorFile(event.target.files?.[0]));
     $("#startColorBtn").addEventListener("click", runColorTest);
     $("#smartLayoutBtn").addEventListener("click", applySmartLayout);
@@ -7359,6 +9278,7 @@ def render_selfit_demo_page() -> str:
       toggleImagePreviewZoom();
     });
     $("#imageLightboxClose").addEventListener("click", closeImagePreview);
+    $("#imageLightboxBack").addEventListener("click", closeImagePreview);
     $("#imageLightbox").addEventListener("click", event => {
       if (event.target.id === "imageLightbox" || event.target.classList.contains("image-lightbox-stage")) closeImagePreview();
     });
@@ -7378,7 +9298,7 @@ def render_selfit_demo_page() -> str:
       event.preventDefault();
       insertNormalizedPromptText(event.currentTarget, text);
     });
-    $("#cancelGenerate")?.addEventListener("click", cancelTryonGeneration);
+    $("#cancelGenerate")?.addEventListener("click", leaveTryonGeneration);
     document.addEventListener("error", event => {
       const image = event.target;
       if (!(image instanceof HTMLImageElement) || image.closest(".login-screen")) return;
@@ -7419,9 +9339,16 @@ def _normalize_inventory_candidates(raw_items: Any) -> list[dict[str, Any]]:
             "category": category,
             "bbox": bbox,
             "confidence": confidence,
+            "garment_name": str(raw.get("garment_name") or _fashion_category_label(category)).strip()[:48],
+            "subtype": str(raw.get("subtype") or "other").strip().lower()[:48],
+            "visibility": str(raw.get("visibility") or ("full" if raw.get("fully_visible") is not False else "partial")).strip().lower(),
+            "needs_approximate_reconstruction": bool(raw.get("needs_approximate_reconstruction") or raw.get("fully_visible") is False),
+            "evidence": _string_list(raw.get("evidence"))[:4],
             "colors": _string_list(raw.get("colors")),
             "material": _string_list(raw.get("material")),
             "style_tags": _string_list(raw.get("style_tags")),
+            "season_tags": _string_list(raw.get("season_tags")),
+            "scene_tags": _string_list(raw.get("scene_tags")),
         }
         if raw.get("fully_visible") is False or _inventory_candidate_is_nonfashion(candidate) or _inventory_candidate_is_clipped(candidate):
             continue
@@ -7432,6 +9359,19 @@ def _normalize_inventory_candidates(raw_items: Any) -> list[dict[str, Any]]:
             continue
         candidates.append(candidate)
     return candidates[:12]
+
+
+def _normalize_skipped_inventory_items(raw_items: Any) -> list[dict[str, str]]:
+    if not isinstance(raw_items, list):
+        return []
+    normalized: list[dict[str, str]] = []
+    for raw in raw_items[:12]:
+        if not isinstance(raw, dict):
+            continue
+        name = str(raw.get("name") or "未识别单品").strip()[:48]
+        reason = str(raw.get("reason") or "画面信息不足，未可靠拆出").strip()[:160]
+        normalized.append({"name": name, "reason": reason})
+    return normalized
 
 
 def _inventory_candidate_is_nonfashion(candidate: dict[str, Any]) -> bool:
@@ -7533,6 +9473,35 @@ def _items_for_source(manifest: dict[str, Any], image_id: str) -> list[dict[str,
     ]
 
 
+def _item_image_fingerprint(item: dict[str, Any]) -> int | None:
+    path = _closet_disk_path((item.get("assets") or {}).get("cutout_path"))
+    if path is None or not path.exists():
+        return None
+    try:
+        image = Image.open(path).convert("L").resize((9, 8), Image.Resampling.LANCZOS)
+        pixels = list(image.get_flattened_data() if hasattr(image, "get_flattened_data") else image.getdata())
+        bits = 0
+        for y in range(8):
+            for x in range(8):
+                bits = (bits << 1) | int(pixels[y * 9 + x] > pixels[y * 9 + x + 1])
+        return bits
+    except Exception:
+        return None
+
+
+def _duplicate_item_id(item: dict[str, Any], existing_items: list[dict[str, Any]]) -> str | None:
+    fingerprint = _item_image_fingerprint(item)
+    if fingerprint is None:
+        return None
+    for existing in existing_items:
+        if existing.get("deleted") or existing.get("category") != item.get("category"):
+            continue
+        other = _item_image_fingerprint(existing)
+        if other is not None and (fingerprint ^ other).bit_count() <= 5:
+            return str(existing.get("item_id") or "") or None
+    return None
+
+
 def _ensure_source_outfit(source_group_id: str, items: list[dict[str, Any]]) -> dict[str, Any] | None:
     usable_items = [item for item in items if not item.get("deleted") and item.get("item_id")]
     if len(usable_items) < 2 or not any(item.get("category") in {"top", "bottom", "skirt", "dress"} for item in usable_items):
@@ -7559,6 +9528,8 @@ def _ensure_source_outfit(source_group_id: str, items: list[dict[str, Any]]) -> 
         "item_ids": item_ids,
         "cover_path": _public_closet_path(layout["path"]),
         "layout_version": layout["layout_version"],
+        "layout_mode": layout["layout_mode"],
+        "canvas": layout["canvas"],
         "layout_snapshot_path": _public_closet_path(layout["path"]),
         "layout_slots": layout["layout_slots"],
         "display_item_ids": layout["display_item_ids"],
@@ -7593,6 +9564,7 @@ def _import_sources(
     used_fallback = False
     ai_attempts: list[dict[str, Any]] = []
     inventory_attempts: list[dict[str, Any]] = []
+    skipped_items: list[dict[str, str]] = []
     extraction_modes: list[str] = []
     ai_cutout = AIGarmentCutoutProvider()
     segmenter = SegFormerClothesAdapter()
@@ -7610,7 +9582,9 @@ def _import_sources(
         extracted = ai_cutout.extract_inventory(source, work_dir)
         inventory_attempt = {"image_id": source["image_id"], **ai_cutout.last_attempt}
         inventory_attempts.append(inventory_attempt)
+        skipped_items.extend(inventory_attempt.get("skipped_items") or [])
         inventory_confirmed_empty = inventory_attempt.get("reason") == "no_inventory"
+        confident_single_failed = False
         if extracted:
             extraction_modes.append("ai_inventory")
             expected_count = int(inventory_attempt.get("expected_count") or 0)
@@ -7626,6 +9600,7 @@ def _import_sources(
                 # detector turn towels or scenery into closet items.
                 extracted = ai_cutout.extract(source, work_dir)
                 ai_attempts.append({"image_id": source["image_id"], **ai_cutout.last_attempt})
+                confident_single_failed = float(ai_cutout.last_attempt.get("analysis_score") or 0) >= 0.68
                 if extracted:
                     extraction_modes.append("single_ai_after_empty_inventory")
             else:
@@ -7643,7 +9618,7 @@ def _import_sources(
                         used_fallback = True
                         extracted = segmented
                         extraction_modes.append("single_segformer")
-        if not extracted and not inventory_confirmed_empty:
+        if not extracted and (not inventory_confirmed_empty or confident_single_failed):
             used_fallback = True
             extracted = _extract_with_top_fallback(source, index, work_dir)
             if extracted:
@@ -7669,6 +9644,11 @@ def _import_sources(
         item["updated_at"] = now
         item.setdefault("user_edits", {})
         item.setdefault("favorite", False)
+        item.setdefault("import_state", "review")
+        item.setdefault("laundry_status", "available")
+        item.setdefault("wear_count", 0)
+        item["duplicate_of"] = _duplicate_item_id(item, manifest.get("items", []))
+        item["tryon_ready"] = item.get("quality", {}).get("status") != "rejected" and bool((item.get("assets") or {}).get("cutout_path"))
         manifest["items"].append(item)
         new_items.append(item)
         existing_ids.add(item["item_id"])
@@ -7696,6 +9676,8 @@ def _import_sources(
     rejected_items = sum(1 for item in new_items if item.get("quality", {}).get("status") == "rejected")
     status = "imported" if new_items and not used_fallback else "partial" if new_items else "cached" if returned_items else "no_items_found"
     return {
+        "request_id": f"look_{hashlib.sha256(':'.join(source['image_id'] for source in sources).encode('utf-8')).hexdigest()[:10]}",
+        "prompt_version": WARDROBE_EXTRACTION_PROMPT_VERSION,
         "status": status,
         "import_type": import_type,
         "source": {
@@ -7706,6 +9688,7 @@ def _import_sources(
         "items": returned_items,
         "outfits": auto_outfits,
         "draft_outfit": auto_outfits[0] if auto_outfits else None,
+        "skipped_items": skipped_items,
         "summary": {
             "created": len(new_items),
             "cached": len(returned_items) - len(new_items),
@@ -7940,6 +9923,12 @@ def _closet_item_from_ai_cutout(
         return None
     evidence = analysis.get("evidence") or {}
     garment = evidence.get("garment") or {}
+    garment_name = str(garment.get("garment_name") or _fashion_category_label(category)).strip()[:48]
+    subtype = str(garment.get("subtype") or "other").strip().lower()[:48]
+    visibility = str(garment.get("visibility") or "full").strip().lower()
+    if visibility not in {"full", "partial", "small"}:
+        visibility = "partial"
+    reconstruction_method = "approximate" if garment.get("needs_approximate_reconstruction") else "direct"
     confidence = max(0.0, min(1.0, float(analysis.get("confidence") or analysis.get("score") or 0.72)))
     raw_id = f"{source['image_id']}:{category}:{provider_name}:{model}:{instance_key}"
     item_id = hashlib.sha256(raw_id.encode("utf-8")).hexdigest()[:16]
@@ -7968,10 +9957,16 @@ def _closet_item_from_ai_cutout(
         "neckline": garment.get("neckline"),
         "pattern": garment.get("pattern"),
         "style_tags": _string_list(garment.get("style_tags")),
+        "season_tags": _string_list(garment.get("season_tags")),
+        "scene_tags": _string_list(garment.get("scene_tags")),
         "slot": _category_to_layout_slot(category),
+        "subtype": subtype,
     }
     return {
         "item_id": item_id,
+        "title": garment_name,
+        "garment_name": garment_name,
+        "asset_filename": f"{garment_name}__{item_id}.png",
         "category": category,
         "category_label": _fashion_category_label(category),
         "source": {
@@ -7987,6 +9982,13 @@ def _closet_item_from_ai_cutout(
         },
         "attributes": attributes,
         "quality": {**quality, "confidence": round(confidence, 3)},
+        "extraction": {
+            "prompt_version": WARDROBE_EXTRACTION_PROMPT_VERSION,
+            "visibility": visibility,
+            "asset_status": "ready_approximate" if reconstruction_method == "approximate" else "ready",
+            "reconstruction_method": reconstruction_method,
+            "evidence": _string_list(garment.get("evidence"))[:4],
+        },
         "pipeline": {
             "ai_cutout": {
                 "provider": provider_name,

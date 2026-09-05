@@ -11,10 +11,14 @@ from urllib.parse import unquote, urlparse
 
 import httpx
 from dotenv import load_dotenv
-from fastapi import Depends, FastAPI, File, Form, Request, UploadFile
+from fastapi import Depends, FastAPI, File, Form, HTTPException, Request, UploadFile
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import FileResponse, HTMLResponse, JSONResponse, PlainTextResponse, RedirectResponse, Response, StreamingResponse
 from fastapi.staticfiles import StaticFiles
+from starlette.concurrency import run_in_threadpool
+from app.recommendation_profile import resolve_profile, preview_profile
+from app.recommendation_feed import create_feed, continue_feed, validate_feedback
+from app.recommendation_visual import attach_visual, load_visual
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
 from app.auth import (
@@ -53,6 +57,9 @@ from app.analyzer import (
 )
 from app.closet import (
     CLOSET_OUTPUT_DIR,
+    adjust_closet_item,
+    analyze_outfit_selection,
+    batch_update_closet_items,
     closet_capabilities,
     create_import_upload_job,
     create_outfit,
@@ -66,15 +73,21 @@ from app.closet import (
     import_link as import_closet_link,
     import_uploads as import_closet_uploads,
     list_closet_items,
+    list_collage_records,
     list_outfits,
     list_tryon_records,
+    merge_closet_items,
     mock_tryon_from_outfit,
     recommend_outfits,
+    record_recommendation_feedback,
     record_selfit_tryon_result,
     render_closet_demo_page,
     render_selfit_demo_page,
     reprocess_closet_item,
+    undo_closet_item_adjustment,
     retry_import_job,
+    save_user_model_photo,
+    split_closet_item,
     update_closet_item,
     update_outfit,
     update_user_preferences,
@@ -85,11 +98,13 @@ from app.tryon import (
     analyze_garment_upload,
     complete_codex_bridge_job_upload,
     create_outfit_tryon_job,
+    create_piece_retry_job,
     extract_xhs_link,
     get_outfit_tryon_job,
     get_codex_bridge_job,
     list_codex_bridge_jobs,
     next_codex_bridge_job,
+    preview_outfit_tryon_plan,
     render_tryon_demo_page,
     retry_outfit_tryon_job,
     run_try_on_from_outfit_upload,
@@ -169,6 +184,18 @@ class CachedStaticFiles(StaticFiles):
 app.mount("/static", CachedStaticFiles(directory="app/static"), name="static")
 app.mount("/tryon-outputs", StaticFiles(directory="outputs/tryon"), name="tryon-outputs")
 app.mount("/tryon-models", StaticFiles(directory=TRYON_MODEL_FIXTURE_DIR), name="tryon-models")
+
+
+def _parse_selected_item_ids(value: str | None) -> list[str] | None:
+    if value is None:
+        return None
+    try:
+        parsed = json.loads(value)
+    except json.JSONDecodeError as exc:
+        raise StarletteHTTPException(status_code=400, detail="单品选择格式不正确") from exc
+    if not isinstance(parsed, list):
+        raise StarletteHTTPException(status_code=400, detail="单品选择格式不正确")
+    return list(dict.fromkeys(str(item_id).strip() for item_id in parsed if str(item_id).strip()))[:8]
 CLOSET_OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 app.mount("/closet-outputs", StaticFiles(directory="outputs/closet"), name="closet-outputs")
 QA_PHOTO_DIR.mkdir(parents=True, exist_ok=True)
@@ -606,6 +633,13 @@ async def closet_import_upload(images: list[UploadFile] = File(...), current_use
         return await import_closet_uploads(images)
 
 
+@app.post("/api/extract-look")
+async def wardrobe_extract_look(image: UploadFile = File(...), current_user: dict[str, Any] = Depends(get_current_user)) -> dict[str, Any]:
+    """Compatibility entry for the delivered wardrobe extraction capability."""
+    with user_storage(current_user["user_id"]):
+        return await import_closet_uploads([image])
+
+
 @app.post("/closet/import/jobs")
 async def closet_import_job_create(images: list[UploadFile] = File(...), current_user: dict[str, Any] = Depends(get_current_user)) -> dict[str, Any]:
     with user_storage(current_user["user_id"]):
@@ -642,10 +676,31 @@ async def closet_preferences_update(request: Request, current_user: dict[str, An
         return update_user_preferences(await request.json())
 
 
+@app.post("/closet/preferences/model-photo")
+async def closet_preferences_model_photo(
+    image: UploadFile = File(...),
+    current_user: dict[str, Any] = Depends(get_current_user),
+) -> dict[str, Any]:
+    with user_storage(current_user["user_id"]):
+        return await save_user_model_photo(image)
+
+
 @app.get("/closet/items")
 def closet_items(category: str | None = None, current_user: dict[str, Any] = Depends(get_current_user)) -> dict[str, Any]:
     with user_storage(current_user["user_id"]):
         return list_closet_items(category)
+
+
+@app.patch("/closet/items/batch")
+async def closet_items_batch_update(request: Request, current_user: dict[str, Any] = Depends(get_current_user)) -> dict[str, Any]:
+    with user_storage(current_user["user_id"]):
+        return batch_update_closet_items(await request.json())
+
+
+@app.post("/closet/items/merge")
+async def closet_items_merge(request: Request, current_user: dict[str, Any] = Depends(get_current_user)) -> dict[str, Any]:
+    with user_storage(current_user["user_id"]):
+        return merge_closet_items(await request.json())
 
 
 @app.get("/closet/items/{item_id}")
@@ -666,6 +721,24 @@ def closet_item_reprocess(item_id: str, current_user: dict[str, Any] = Depends(g
         return reprocess_closet_item(item_id)
 
 
+@app.post("/closet/items/{item_id}/adjust")
+async def closet_item_adjust(item_id: str, request: Request, current_user: dict[str, Any] = Depends(get_current_user)) -> dict[str, Any]:
+    with user_storage(current_user["user_id"]):
+        return adjust_closet_item(item_id, await request.json())
+
+
+@app.post("/closet/items/{item_id}/undo-adjustment")
+def closet_item_undo_adjustment(item_id: str, current_user: dict[str, Any] = Depends(get_current_user)) -> dict[str, Any]:
+    with user_storage(current_user["user_id"]):
+        return undo_closet_item_adjustment(item_id)
+
+
+@app.post("/closet/items/{item_id}/split")
+async def closet_item_split(item_id: str, request: Request, current_user: dict[str, Any] = Depends(get_current_user)) -> dict[str, Any]:
+    with user_storage(current_user["user_id"]):
+        return split_closet_item(item_id, await request.json())
+
+
 @app.delete("/closet/items/{item_id}")
 def closet_item_delete(item_id: str, current_user: dict[str, Any] = Depends(get_current_user)) -> dict[str, Any]:
     with user_storage(current_user["user_id"]):
@@ -684,16 +757,122 @@ def closet_outfits(current_user: dict[str, Any] = Depends(get_current_user)) -> 
         return list_outfits()
 
 
+@app.get("/api/collage-records")
+def collage_records(current_user: dict[str, Any] = Depends(get_current_user)) -> dict[str, Any]:
+    """Expose the user's latest native outfit collages in the handoff package contract."""
+    with user_storage(current_user["user_id"]):
+        return list_collage_records()
+
+
 @app.post("/closet/recommendations/outfits")
 async def closet_outfit_recommendations(request: Request, current_user: dict[str, Any] = Depends(get_current_user)) -> dict[str, Any]:
+    payload = await request.json()
+    if not isinstance(payload, dict) or not isinstance(payload.get("persona", {}), dict):
+        raise HTTPException(422, "推荐请求格式无效")
+    def compute():
+        from app import closet
+        with user_storage(current_user["user_id"]):
+            profile = resolve_profile(current_user["user_id"])
+            context = payload.get("context") if isinstance(payload.get("context"), dict) else {}
+            preview = context.get("persona_preview") is True
+            if preview:
+                profile = preview_profile(profile, context, payload.get("persona") or {})
+            if not profile.get("validation_enabled"):
+                # Legacy scoring remains available, but the account owns formal identity.
+                if not preview:
+                    if not profile["persona_id"]:
+                        # Existing wardrobe browsing still works without a report.
+                        # Do not invent a persona from client state in this fallback.
+                        payload["persona"] = {}
+                        return {**recommend_outfits(payload), "profile_required": True, "personalized": False}
+                    from app.selfit_report import _personality_template_catalog
+                    payload["persona"] = _personality_template_catalog()["types"][profile["persona_id"]]
+                return recommend_outfits(payload)
+            if not profile["persona_id"]:
+                return {"outfits": [], "carousel": [], "validation": True, "has_more": False, "profile_required": True}
+            if payload.get("session_id"):
+                return continue_feed(payload["session_id"], payload.get("cursor"), profile)
+            pool = closet.selfit_content_pool()
+            visual = load_visual()
+            candidates, held = attach_visual(closet._published_catalog_outfits(), pool.garments, pool.outfits, visual)
+            from app.recommendation_anchors import approved_anchor_pool, enabled as p0_anchors_enabled
+            anchor_gate = None
+            if p0_anchors_enabled():
+                candidates, anchor_gate = approved_anchor_pool(
+                    candidates,
+                    pool.outfits,
+                    content_version=str(pool.metadata.get("contentVersion") or "unknown"),
+                    visual_version=str(visual.get("version") or "pending-vision"),
+                )
+                if not anchor_gate.get("valid"):
+                    return {
+                        "outfits": [], "carousel": [], "validation": True, "has_more": False,
+                        "supply_gaps": [{"reason": "p0_anchor_release_unavailable"}],
+                        "anchor_release": {"valid": False, "error_count": len(anchor_gate.get("errors") or [])},
+                    }
+                target_persona = str(profile.get("persona_id") or "").lower()
+                candidates = [
+                    row for row in candidates
+                    if str(row.get("primary_persona") or "").lower() == target_persona
+                ]
+            if preview:
+                candidates = [o for o in candidates if str(o.get("primary_persona") or "").lower()==profile["persona_id"]]
+            events = [] if preview else closet._ensure_recommendation_feedback().get("events", [])
+            from app.recommendation_aw import enabled as aw_enabled, load_recomposition_candidates, prepare_candidates as prepare_aw_candidates, validation_context
+            bundle = None
+            aw_context = validation_context(context, profile) if anchor_gate is None and aw_enabled(current_user["user_id"]) else None
+            if aw_context is not None:
+                context = aw_context
+                try:
+                    supplemental, supplemental_version = load_recomposition_candidates(pool.garments, visual)
+                    if preview:
+                        supplemental = [o for o in supplemental if str(o.get("primary_persona") or "").lower()==profile["persona_id"]]
+                    candidates, bundle = prepare_aw_candidates(candidates + supplemental, pool.garments, visual,
+                                                                 supplemental_version=supplemental_version)
+                except (OSError, ValueError, KeyError, TypeError):
+                    return {"outfits": [], "carousel": [], "validation": True, "has_more": False,
+                            "supply_gaps": [{"reason":"validation_bundle_invalid"}]}
+            feed_profile = {**profile, "palette": None} if anchor_gate is not None else profile
+            feed_context = ({**context, "season_tags": [], "scene_tags": ["daily"]}
+                            if anchor_gate is not None else context)
+            from app.recommendation_anchors import P0_SEQUENCE_ROLES
+            result = create_feed(feed_profile, candidates, feed_context, events,
+                                 str(visual.get("version") or "pending-vision"), validation_bundle=bundle,
+                                 expression_roles=P0_SEQUENCE_ROLES if anchor_gate is not None else None)
+            if anchor_gate is not None:
+                result["anchor_release"] = {
+                    "valid": True,
+                    "manifest_sha256": anchor_gate.get("manifest_sha256"),
+                    "blind_result_sha256": anchor_gate.get("blind_result_sha256"),
+                }
+            if not candidates:
+                result["supply_gaps"].append({"reason":"visual_review_pending", "held_count":len(held)})
+            return result
+    return await run_in_threadpool(compute)
+
+
+@app.get("/closet/recommendations/profile")
+def closet_recommendation_profile(current_user: dict[str, Any] = Depends(get_current_user)) -> dict[str, Any]:
     with user_storage(current_user["user_id"]):
-        return recommend_outfits(await request.json())
+        return resolve_profile(current_user["user_id"])
+
+
+@app.post("/closet/recommendations/feedback")
+async def closet_recommendation_feedback(request: Request, current_user: dict[str, Any] = Depends(get_current_user)) -> dict[str, Any]:
+    with user_storage(current_user["user_id"]):
+        return record_recommendation_feedback(validate_feedback(await request.json()))
 
 
 @app.post("/closet/outfits")
 async def closet_outfit_create(request: Request, current_user: dict[str, Any] = Depends(get_current_user)) -> dict[str, Any]:
     with user_storage(current_user["user_id"]):
         return create_outfit(await request.json())
+
+
+@app.post("/closet/outfits/analyze-selection")
+async def closet_outfit_analyze_selection(request: Request, current_user: dict[str, Any] = Depends(get_current_user)) -> dict[str, Any]:
+    with user_storage(current_user["user_id"]):
+        return analyze_outfit_selection(await request.json())
 
 
 @app.get("/closet/outfits/{outfit_id}")
@@ -947,10 +1126,18 @@ async def selfit_try_on_from_outfit(
     photo_mode: str | None = Form(None),
     scene_label: str | None = Form(None),
     force_regenerate: bool = Form(False),
+    selected_item_ids: str | None = Form(None),
     current_user: dict[str, Any] = Depends(get_current_user),
 ) -> dict[str, Any]:
     with user_storage(current_user["user_id"]):
-        result = await run_try_on_from_outfit_upload(person_image, outfit_id, photo_mode, scene_label, force_regenerate)
+        result = await run_try_on_from_outfit_upload(
+            person_image,
+            outfit_id,
+            photo_mode,
+            scene_label,
+            force_regenerate,
+            _parse_selected_item_ids(selected_item_ids),
+        )
         result["selfit_mode"] = "product_tryon"
         record = record_selfit_tryon_result(outfit_id, result)
         if record:
@@ -965,6 +1152,8 @@ async def selfit_try_on_job_create(
     photo_mode: str | None = Form(None),
     scene_label: str | None = Form(None),
     force_regenerate: bool = Form(False),
+    selected_item_ids: str | None = Form(None),
+    client_request_id: str | None = Form(None),
     current_user: dict[str, Any] = Depends(get_current_user),
 ) -> dict[str, Any]:
     with user_storage(current_user["user_id"]):
@@ -976,6 +1165,24 @@ async def selfit_try_on_job_create(
             scene_label,
             current_user["user_id"],
             force_regenerate,
+            _parse_selected_item_ids(selected_item_ids),
+            client_request_id,
+        )
+
+
+@app.post("/selfit/try-on/preview-plan")
+async def selfit_try_on_preview_plan(
+    person_image: UploadFile = File(...),
+    outfit_id: str = Form(...),
+    photo_mode: str | None = Form(None),
+    current_user: dict[str, Any] = Depends(get_current_user),
+) -> dict[str, Any]:
+    with user_storage(current_user["user_id"]):
+        return preview_outfit_tryon_plan(
+            await person_image.read(),
+            person_image.filename,
+            outfit_id,
+            photo_mode,
         )
 
 
@@ -989,6 +1196,27 @@ def selfit_try_on_job(job_id: str, current_user: dict[str, Any] = Depends(get_cu
 def selfit_try_on_job_retry(job_id: str, current_user: dict[str, Any] = Depends(get_current_user)) -> dict[str, Any]:
     with user_storage(current_user["user_id"]):
         return retry_outfit_tryon_job(job_id, current_user["user_id"])
+
+
+@app.post("/selfit/try-on/jobs/{job_id}/pieces/{item_id}/retry")
+async def selfit_try_on_piece_retry(
+    job_id: str,
+    item_id: str,
+    request: Request,
+    current_user: dict[str, Any] = Depends(get_current_user),
+) -> dict[str, Any]:
+    try:
+        payload = await request.json()
+    except Exception:
+        payload = {}
+    with user_storage(current_user["user_id"]):
+        return create_piece_retry_job(
+            job_id,
+            item_id,
+            current_user["user_id"],
+            str(payload.get("reason") or ""),
+            str(payload.get("client_request_id") or ""),
+        )
 
 
 @app.get("/stylist/capabilities")

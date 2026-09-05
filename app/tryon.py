@@ -49,7 +49,7 @@ XHS_ALLOWED_HOST_PARTS = ("xiaohongshu.com", "xhslink.com", "xhscdn.com")
 MAX_XHS_IMAGES = 12
 FASHION_ITEM_CATEGORIES = {"top", "outer", "bottom", "skirt", "dress", "shoes", "bag", "accessory"}
 OUTFIT_PHOTO_MODES = {"standard", "mirror_selfie", "face_covered", "scene_photo"}
-OUTFIT_TRYON_PIPELINE_VERSION = "outfit_tryon_v3_visible_regions"
+OUTFIT_TRYON_PIPELINE_VERSION = "outfit_tryon_v4_controllable_pieces"
 TRYON_JOB_EXECUTOR = ThreadPoolExecutor(max_workers=2, thread_name_prefix="selfit-tryon")
 TRYON_JOB_LOCK = threading.Lock()
 OUTFIT_REQUIRED_GROUPS = {
@@ -264,15 +264,114 @@ async def run_try_on_from_outfit_upload(
     photo_mode: str | None = None,
     scene_label: str | None = None,
     force_regenerate: bool = False,
+    selected_item_ids: list[str] | None = None,
 ) -> dict[str, Any]:
     from app.closet import outfit_as_tryon_plan
 
     outfit_plan, outfit = outfit_as_tryon_plan(outfit_id, photo_mode=photo_mode, scene_label=scene_label)
     person = _read_upload_image(await person_image.read(), person_image.filename, "person")
-    result = run_try_on_from_outfit_plan(person, outfit_plan, force_regenerate=force_regenerate)
+    result = run_try_on_from_outfit_plan(
+        person,
+        outfit_plan,
+        force_regenerate=force_regenerate,
+        selected_item_ids=selected_item_ids,
+    )
     result["source_mode"] = "from_outfit"
     result["outfit"] = outfit
     return result
+
+
+def preview_outfit_tryon_plan(
+    person_raw: bytes,
+    person_filename: str | None,
+    outfit_id: str,
+    photo_mode: str | None = None,
+) -> dict[str, Any]:
+    from app.closet import outfit_as_tryon_plan
+
+    outfit_plan, outfit = outfit_as_tryon_plan(outfit_id, photo_mode=photo_mode)
+    plan = _normalize_outfit_tryon_plan(outfit_plan)
+    person = _read_upload_image(person_raw, person_filename, "person_preview")
+    person_detection = _detect_person(person["image"])
+    if person_detection.get("status") == "fail":
+        person_detection = _relax_outfit_person_detection_for_ai_tryon(
+            person["image"],
+            person_detection,
+            _stage("pass", 0.7, {"preview": True}, []),
+        )
+    coverage = _outfit_body_coverage_stage(person["image"], person_detection, plan)
+    coverage_evidence = coverage.get("evidence", {})
+    skipped_slots = set(coverage_evidence.get("skipped_slots") or [])
+    if coverage_evidence.get("measured") is False:
+        skipped_slots.update({"bottom", "skirt", "dress", "shoes", "socks"})
+    pieces = []
+    for item in plan.get("items", []):
+        slot = str(item.get("slot") or item.get("category") or "accessory")
+        status = "not_visible" if slot in skipped_slots else "replaceable"
+        reason = _not_visible_piece_message(slot) if status == "not_visible" else _replaceable_piece_message(slot)
+        pieces.append({
+            "item_id": item.get("item_id"),
+            "slot": slot,
+            "category": item.get("category") or slot,
+            "category_label": item.get("category_label") or _fashion_category_label(str(item.get("category") or slot)),
+            "image_path": item.get("public_image_path") or _public_outfit_tryon_plan({"items": [item]}).get("items", [{}])[0].get("image_path"),
+            "status": status,
+            "selected": status == "replaceable",
+            "reason": reason,
+        })
+    selected_ids = [str(piece["item_id"]) for piece in pieces if piece.get("selected") and piece.get("item_id")]
+    conflicts = _outfit_preview_conflicts(pieces)
+    plan_id = hashlib.sha256(
+        f"{outfit_id}:{person['image_id']}:{':'.join(selected_ids)}".encode("utf-8")
+    ).hexdigest()[:18]
+    return {
+        "plan_id": plan_id,
+        "outfit_id": outfit_id,
+        "outfit_title": outfit.get("title") or "穿搭试穿",
+        "photo_summary": _coverage_photo_summary(coverage_evidence),
+        "person_image_id": person["image_id"],
+        "replaceable_count": len(selected_ids),
+        "pieces": pieces,
+        "conflicts": conflicts,
+        "photo_issue": (
+            "暂时无法准确判断身体范围，已只保留能确认的单品。"
+            if coverage_evidence.get("measured") is False
+            else ""
+        ),
+    }
+
+
+def _replaceable_piece_message(slot: str) -> str:
+    return {
+        "hat": "头部区域清楚可见",
+        "scarf": "颈部区域清楚可见",
+        "bag": "画面中可搭配，生成后请检查接触位置",
+        "accessory": "画面中可搭配，生成后请检查细节",
+        "shoes": "脚部区域清楚可见",
+        "socks": "脚部区域清楚可见",
+    }.get(slot, "画面中清楚可见")
+
+
+def _coverage_photo_summary(evidence: dict[str, Any]) -> str:
+    if evidence.get("measured") is False:
+        return "可确认上半身"
+    visible = set(evidence.get("visible_slots") or [])
+    if "shoes" in visible:
+        return "全身区域清楚"
+    if visible.intersection({"bottom", "skirt", "dress"}):
+        return "上半身与下装区域清楚"
+    return "上半身清楚"
+
+
+def _outfit_preview_conflicts(pieces: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    selected_slots = {piece.get("slot") for piece in pieces if piece.get("selected")}
+    if "dress" not in selected_slots or not selected_slots.intersection({"top", "outer", "bottom", "skirt"}):
+        return []
+    return [{
+        "code": "dress_main_garment_conflict",
+        "message": "连衣装与上下装会覆盖同一区域，请保留一种穿法。",
+        "slots": ["dress", "top", "outer", "bottom", "skirt"],
+    }]
 
 
 def create_outfit_tryon_job(
@@ -283,11 +382,25 @@ def create_outfit_tryon_job(
     scene_label: str | None,
     user_id: str,
     force_regenerate: bool = False,
+    selected_item_ids: list[str] | None = None,
+    client_request_id: str | None = None,
+    base_job_id: str | None = None,
+    retry_item_id: str | None = None,
+    retry_reason: str | None = None,
 ) -> dict[str, Any]:
     person = _read_upload_image(person_raw, person_filename, "person")
-    job_id = hashlib.sha256(
-        f"{user_id}:{outfit_id}:{person['image_id']}:{datetime.now(timezone.utc).isoformat()}".encode("utf-8")
-    ).hexdigest()[:18]
+    selected_ids = list(dict.fromkeys(str(item_id).strip() for item_id in (selected_item_ids or []) if str(item_id).strip()))[:8]
+    if selected_item_ids is not None and not selected_ids:
+        raise HTTPException(status_code=400, detail="请至少选择一件要替换的单品")
+    request_key = str(client_request_id or "").strip()[:128]
+    signature = request_key or datetime.now(timezone.utc).isoformat()
+    job_id = hashlib.sha256(f"{user_id}:{outfit_id}:{person['image_id']}:{signature}".encode("utf-8")).hexdigest()[:18]
+    if request_key:
+        try:
+            return _public_tryon_job(_read_tryon_job(job_id))
+        except HTTPException as exc:
+            if exc.status_code != 404:
+                raise
     now = datetime.now(timezone.utc).isoformat()
     job = {
         "job_id": job_id,
@@ -302,6 +415,11 @@ def create_outfit_tryon_job(
         "person_path": str(person["saved_path"]),
         "person_filename": person_filename or "person.png",
         "force_regenerate": bool(force_regenerate),
+        "selected_item_ids": selected_ids if selected_item_ids is not None else None,
+        "client_request_id": request_key or None,
+        "base_job_id": str(base_job_id or "") or None,
+        "retry_item_id": str(retry_item_id or "") or None,
+        "retry_reason": str(retry_reason or "")[:80] or None,
         "created_at": now,
         "updated_at": now,
         "result": None,
@@ -333,6 +451,63 @@ def retry_outfit_tryon_job(job_id: str, user_id: str) -> dict[str, Any]:
     _write_tryon_job(job)
     TRYON_JOB_EXECUTOR.submit(_run_outfit_tryon_job, user_id, job_id)
     return _public_tryon_job(job)
+
+
+def create_piece_retry_job(
+    job_id: str,
+    item_id: str,
+    user_id: str,
+    reason: str | None = None,
+    client_request_id: str | None = None,
+) -> dict[str, Any]:
+    base_job = _read_tryon_job(job_id)
+    if base_job.get("status") != "completed" or not isinstance(base_job.get("result"), dict):
+        raise HTTPException(status_code=409, detail="试穿结果完成后才能重新处理单件")
+    result = base_job["result"]
+    plan_items = result.get("available_outfit_plan", {}).get("items") or result.get("outfit_plan", {}).get("items") or []
+    item = next((entry for entry in plan_items if str(entry.get("item_id") or "") == str(item_id)), None)
+    if not item:
+        raise HTTPException(status_code=404, detail="这件单品不在当前试穿结果中")
+    result_path = _tryon_result_disk_path(result.get("result", {}).get("image_path"))
+    if result_path is None or not result_path.exists():
+        raise HTTPException(status_code=404, detail="原试穿结果暂时无法读取")
+    retry_reason = str(reason or "细节需要调整").strip()[:80]
+    label = str(item.get("category_label") or _fashion_category_label(str(item.get("category") or item.get("slot") or "accessory")))
+    request_key = str(client_request_id or f"{job_id}:{item_id}:{retry_reason}").strip()[:128]
+    retry_job = create_outfit_tryon_job(
+        result_path.read_bytes(),
+        f"retry_base_{result_path.name}",
+        str(base_job.get("outfit_id") or ""),
+        str(base_job.get("photo_mode") or "standard"),
+        f"只重新处理{label}：{retry_reason}。保持人物、背景和其他已替换单品不变。",
+        user_id,
+        True,
+        selected_item_ids=[str(item_id)],
+        client_request_id=request_key,
+        base_job_id=job_id,
+        retry_item_id=str(item_id),
+        retry_reason=retry_reason,
+    )
+    return {
+        **retry_job,
+        "base_job_id": job_id,
+        "retry_item_id": str(item_id),
+        "retry_reason": retry_reason,
+    }
+
+
+def _tryon_result_disk_path(public_path: Any) -> Path | None:
+    value = str(public_path or "")
+    if value.startswith("/user-assets/tryon/"):
+        return _tryon_output_dir() / value.replace("/user-assets/tryon/", "", 1)
+    if value.startswith("/tryon-outputs/"):
+        return TRYON_OUTPUT_DIR / value.replace("/tryon-outputs/", "", 1)
+    candidate = Path(value)
+    try:
+        candidate.resolve().relative_to(_tryon_output_dir().resolve())
+        return candidate
+    except (OSError, ValueError):
+        return None
 
 
 def _tryon_job_path(job_id: str) -> Path:
@@ -391,7 +566,16 @@ def _run_outfit_tryon_job(user_id: str, job_id: str) -> None:
                 person,
                 outfit_plan,
                 force_regenerate=bool(job.get("force_regenerate")),
+                selected_item_ids=job.get("selected_item_ids"),
             )
+            if job.get("base_job_id") and job.get("retry_item_id"):
+                base_job = _read_tryon_job(str(job["base_job_id"]))
+                result = _merge_piece_retry_result(
+                    result,
+                    base_job.get("result") if isinstance(base_job.get("result"), dict) else {},
+                    str(job["retry_item_id"]),
+                    str(job.get("retry_reason") or ""),
+                )
             result["source_mode"] = "from_outfit"
             result["outfit"] = outfit
             record = record_selfit_tryon_result(str(job.get("outfit_id") or ""), result)
@@ -409,6 +593,43 @@ def _run_outfit_tryon_job(user_id: str, job_id: str) -> None:
                 _update_tryon_job(job_id, status="failed", phase="failed", error={"message": str(exc)[:500], "retryable": True})
         except Exception:
             return
+
+
+def _merge_piece_retry_result(
+    retry_result: dict[str, Any],
+    base_result: dict[str, Any],
+    retry_item_id: str,
+    retry_reason: str,
+) -> dict[str, Any]:
+    """Keep prior per-piece decisions when only one item is regenerated."""
+    fresh_by_id = {
+        str(piece.get("item_id") or ""): piece
+        for piece in retry_result.get("piece_results", [])
+        if isinstance(piece, dict)
+    }
+    merged: list[dict[str, Any]] = []
+    for base_piece in base_result.get("piece_results", []) or []:
+        if not isinstance(base_piece, dict):
+            continue
+        item_id = str(base_piece.get("item_id") or "")
+        if item_id == retry_item_id and item_id in fresh_by_id:
+            target = dict(fresh_by_id[item_id])
+            if retry_reason:
+                target["retry_reason"] = retry_reason
+            merged.append(target)
+        else:
+            preserved = dict(base_piece)
+            preserved["preserved_from_version"] = base_result.get("version_id")
+            if preserved.get("status") in {"applied", "review"}:
+                preserved["message"] = "沿用上一版效果"
+            merged.append(preserved)
+    if not merged:
+        merged = list(retry_result.get("piece_results", []) or [])
+    retry_result["piece_results"] = merged
+    retry_result["summary"] = _summarize_outfit_piece_results(merged)
+    retry_result["base_version_id"] = base_result.get("version_id")
+    retry_result["retry_item_id"] = retry_item_id
+    return retry_result
 
 
 async def run_try_on_from_outfit_plan_upload(
@@ -785,10 +1006,29 @@ def run_try_on_from_outfit_plan(
     outfit_plan: dict[str, Any],
     provider: "TryOnProvider | None" = None,
     force_regenerate: bool = False,
+    selected_item_ids: list[str] | None = None,
 ) -> dict[str, Any]:
     allow_cache = provider is None
     normalized_plan = _normalize_outfit_tryon_plan(outfit_plan)
-    plan_signature = json.dumps(_public_outfit_tryon_plan(normalized_plan), ensure_ascii=False, sort_keys=True)
+    selected_ids = (
+        {str(item_id) for item_id in selected_item_ids if str(item_id).strip()}
+        if selected_item_ids is not None
+        else None
+    )
+    requested_plan = {
+        **normalized_plan,
+        "items": [
+            item
+            for item in normalized_plan.get("items", [])
+            if selected_ids is None or str(item.get("item_id") or "") in selected_ids
+        ],
+    }
+    if not requested_plan["items"]:
+        raise HTTPException(status_code=400, detail="请至少选择一件要替换的单品")
+    requested_slots = {str(item.get("slot") or "") for item in requested_plan["items"]}
+    if "dress" in requested_slots and requested_slots.intersection({"top", "outer", "bottom", "skirt"}):
+        raise HTTPException(status_code=400, detail="连衣装与上下装会覆盖同一区域，请保留一种穿法")
+    plan_signature = json.dumps(_public_outfit_tryon_plan(requested_plan), ensure_ascii=False, sort_keys=True)
     tryon_id = hashlib.sha256(f"outfit-plan:{person['image_id']}:{plan_signature}".encode("utf-8")).hexdigest()[:16]
     work_dir = _tryon_output_dir() / tryon_id
     work_dir.mkdir(parents=True, exist_ok=True)
@@ -799,15 +1039,15 @@ def run_try_on_from_outfit_plan(
             cached["cached"] = True
             return cached
 
-    full_reference_board_path = _build_outfit_reference_board(normalized_plan, work_dir / "outfit_reference_board_full.png")
+    full_reference_board_path = _build_outfit_reference_board(requested_plan, work_dir / "outfit_reference_board_full.png")
     reference_board = Image.open(full_reference_board_path).convert("RGB")
     raw_input_quality = _input_quality_stage(person["image"], reference_board)
     person_detection = _detect_person(person["image"])
     person_detection = _relax_outfit_person_detection_for_ai_tryon(person["image"], person_detection, raw_input_quality)
     input_quality = _relax_preset_model_blur_for_outfit_tryon(person, raw_input_quality, person_detection)
-    plan_stage = _outfit_plan_stage(normalized_plan)
-    body_coverage = _outfit_body_coverage_stage(person["image"], person_detection, normalized_plan)
-    effective_plan = _visible_outfit_plan(normalized_plan, body_coverage)
+    plan_stage = _outfit_plan_stage(requested_plan)
+    body_coverage = _outfit_body_coverage_stage(person["image"], person_detection, requested_plan)
+    effective_plan = _visible_outfit_plan(requested_plan, body_coverage)
     reference_board_path = _build_outfit_reference_board(effective_plan, work_dir / "outfit_reference_board.png")
     mask_stage = (
         _generate_outfit_group_mask(
@@ -890,14 +1130,21 @@ def run_try_on_from_outfit_plan(
         "photo_mode": normalized_plan["model_photo_mode"],
         "missing_slots": plan_stage["evidence"].get("missing_slots", []),
         "applied_item_ids": [item.get("item_id") for item in effective_plan.get("items", []) if item.get("item_id")],
-        "skipped_item_ids": [item.get("item_id") for item in normalized_plan.get("items", []) if item not in effective_plan.get("items", []) and item.get("item_id")],
+        "requested_item_ids": [item.get("item_id") for item in requested_plan.get("items", []) if item.get("item_id")],
+        "user_skipped_item_ids": [
+            item.get("item_id")
+            for item in normalized_plan.get("items", [])
+            if item.get("item_id") and item not in requested_plan.get("items", [])
+        ],
+        "skipped_item_ids": [item.get("item_id") for item in requested_plan.get("items", []) if item not in effective_plan.get("items", []) and item.get("item_id")],
         "input": {
             "person_image_id": person["image_id"],
             "person": person["meta"],
             "style_reference_image_id": normalized_plan.get("style_reference", {}).get("image_id"),
             "item_image_ids": [item.get("image_id") for item in normalized_plan.get("items", []) if item.get("image_id")],
         },
-        "outfit_plan": _public_outfit_tryon_plan(normalized_plan),
+        "available_outfit_plan": _public_outfit_tryon_plan(normalized_plan),
+        "outfit_plan": _public_outfit_tryon_plan(requested_plan),
         "applied_outfit_plan": _public_outfit_tryon_plan(effective_plan),
         "reference_board_path": _public_output_path(reference_board_path),
         "prompt_context": prompt_context,
@@ -915,9 +1162,80 @@ def run_try_on_from_outfit_plan(
             "user_message": user_message,
         },
     }
+    response_payload["piece_results"] = _build_outfit_piece_results(
+        normalized_plan,
+        requested_plan,
+        effective_plan,
+        status,
+        pipeline.get("quality_review") or {},
+    )
+    response_payload["summary"] = _summarize_outfit_piece_results(response_payload["piece_results"])
+    response_payload["version_id"] = tryon_id
     if allow_cache and status == "generated" and response_payload.get("result", {}).get("image_path"):
         _write_completed_tryon_cache(cache_path, response_payload)
     return response_payload
+
+
+def _build_outfit_piece_results(
+    available_plan: dict[str, Any],
+    requested_plan: dict[str, Any],
+    effective_plan: dict[str, Any],
+    result_status: str,
+    quality_review: dict[str, Any],
+) -> list[dict[str, Any]]:
+    requested_ids = {str(item.get("item_id") or "") for item in requested_plan.get("items", [])}
+    applied_ids = {str(item.get("item_id") or "") for item in effective_plan.get("items", [])}
+    semantic_results = quality_review.get("evidence", {}).get("semantic_review", {}).get("slot_results", [])
+    semantic_by_id = {
+        str(item.get("review_id") or ""): item
+        for item in semantic_results
+        if isinstance(item, dict) and item.get("review_id")
+    }
+    results: list[dict[str, Any]] = []
+    for item in available_plan.get("items", []):
+        item_id = str(item.get("item_id") or "")
+        slot = str(item.get("slot") or item.get("category") or "accessory")
+        base = {
+            "item_id": item_id or None,
+            "slot": slot,
+            "category": item.get("category") or slot,
+            "category_label": item.get("category_label") or _fashion_category_label(str(item.get("category") or slot)),
+        }
+        if item_id not in requested_ids:
+            results.append({**base, "status": "skipped_user", "message": "本次保留原穿搭", "retry_available": True})
+            continue
+        if item_id not in applied_ids:
+            results.append({**base, "status": "skipped_not_visible", "message": _not_visible_piece_message(slot), "retry_available": False})
+            continue
+        semantic = semantic_by_id.get(item_id)
+        semantic_status = str((semantic or {}).get("status") or "").lower()
+        if semantic_status in {"missing", "wrong"}:
+            results.append({**base, "status": "failed_item", "message": "这件没有正确换上", "retry_available": True})
+        elif semantic_status == "not_visible":
+            results.append({**base, "status": "review", "message": "画面中不易确认，建议检查", "retry_available": True})
+        elif result_status == "review" and not semantic_results:
+            results.append({**base, "status": "review", "message": "已替换，建议检查边缘和细节", "retry_available": True})
+        else:
+            results.append({**base, "status": "applied", "message": "已替换", "retry_available": False})
+    return results
+
+
+def _summarize_outfit_piece_results(piece_results: list[dict[str, Any]]) -> dict[str, int]:
+    return {
+        "applied_count": sum(item.get("status") == "applied" for item in piece_results),
+        "review_count": sum(item.get("status") in {"review", "failed_item"} for item in piece_results),
+        "skipped_count": sum(str(item.get("status") or "").startswith("skipped_") for item in piece_results),
+    }
+
+
+def _not_visible_piece_message(slot: str) -> str:
+    return {
+        "shoes": "照片没有拍到脚部，本次跳过",
+        "socks": "照片没有拍到脚部，本次跳过",
+        "bottom": "照片没有拍全下装区域，本次跳过",
+        "skirt": "照片没有拍全裙装区域，本次跳过",
+        "dress": "照片没有拍全连衣装区域，本次跳过",
+    }.get(slot, "对应区域没有清楚入镜，本次跳过")
 
 
 def _load_completed_tryon_cache(path: Path) -> dict[str, Any] | None:
@@ -3060,11 +3378,11 @@ def _outfit_body_coverage_stage(
             "本次会只替换可确认的上半身单品。",
         )])
     visible_head_units = (image.height - float(box.get("y") or 0)) / max(1.0, float(box["height"]))
-    visible_slots = {"top", "outer", "bag", "accessory"}
+    visible_slots = {"hat", "scarf", "top", "outer", "bag", "accessory"}
     if visible_head_units >= 5.4:
         visible_slots.update({"bottom", "skirt", "dress"})
     if visible_head_units >= 7.0:
-        visible_slots.add("shoes")
+        visible_slots.update({"shoes", "socks"})
     skipped_slots = sorted(slots - visible_slots)
     evidence.update({
         "measured": True,
@@ -3086,7 +3404,7 @@ def _visible_outfit_plan(plan: dict[str, Any], coverage: dict[str, Any]) -> dict
     skipped_slots = set(evidence.get("skipped_slots") or [])
     if not skipped_slots and evidence.get("measured") is not False:
         return {**plan, "items": list(plan.get("items", []))}
-    allowed_slots = {"top", "outer", "bag", "accessory"} if evidence.get("measured") is False else None
+    allowed_slots = {"hat", "scarf", "top", "outer", "bag", "accessory"} if evidence.get("measured") is False else None
     items = []
     for item in plan.get("items", []):
         slot = str(item.get("slot") or item.get("category") or "accessory")
@@ -3538,8 +3856,10 @@ def _normalize_outfit_category(value: Any) -> str:
 
 
 def _normalize_outfit_slot(value: Any) -> str:
-    slot = _normalize_outfit_category(value)
-    return slot
+    raw = str(value or "accessory").strip().lower()
+    if raw in {"hat", "scarf", "socks"}:
+        return raw
+    return _normalize_outfit_category(raw)
 
 
 def _wear_region_for_slot(slot: str) -> str:
@@ -3551,6 +3871,9 @@ def _wear_region_for_slot(slot: str) -> str:
         "dress": "full_body_main_garment",
         "shoes": "feet",
         "bag": "hand_or_shoulder",
+        "hat": "head",
+        "scarf": "neck",
+        "socks": "feet",
         "accessory": "matching_accessory",
     }.get(slot, "matching_accessory")
 
@@ -3564,6 +3887,9 @@ def _placement_rule_for_slot(slot: str) -> str:
         "dress": "align with visible shoulders, waist, hips, and legs; keep the original body crop and camera distance.",
         "shoes": "apply only when feet are visible in Image A; if feet are cropped or hidden, omit shoes instead of zooming out or inventing feet.",
         "bag": "must have a believable contact point: handbag held by a visible hand or hanging from the forearm, shoulder bag resting on the shoulder, crossbody strap crossing the torso. Never let the bag float, hover, or sit detached from the arm/body.",
+        "hat": "place naturally on the visible head and preserve hair and face; do not change the hairstyle or cover the face.",
+        "scarf": "place naturally around the visible neck or shoulders while preserving hair, face, and garment layering.",
+        "socks": "apply only when the corresponding feet or lower legs are visible; do not invent hidden legs or feet.",
         "accessory": "place only where it naturally attaches to the visible body or clothing; do not float or cover the face unless Image A already does.",
     }.get(slot, "place naturally on the visible body or clothing without floating.")
 
@@ -3577,12 +3903,15 @@ def _default_wearing_instruction(slot: str) -> str:
         "dress": "作为连衣装覆盖上半身和下半身，保留裙长、腰线和整体廓形。",
         "shoes": "穿在模特双脚，保留鞋型、颜色和鞋底比例。",
         "bag": "作为包袋搭配在可见手臂、手部或肩侧；手提包需要手握或挂在前臂，肩背包需要贴合肩线，不能悬空。",
+        "hat": "自然佩戴在可见头部，保留脸部与发型特征。",
+        "scarf": "自然搭配在可见颈部或肩部，保留头发和服装层次。",
+        "socks": "只在脚部或小腿清楚可见时替换，不补造未入镜部位。",
         "accessory": "作为配饰自然搭配，不改变模特身份和脸部。",
     }.get(slot, "作为配饰自然搭配。")
 
 
 def _slot_sort_key(slot: str) -> int:
-    order = {"outer": 0, "top": 1, "dress": 2, "bottom": 3, "skirt": 4, "shoes": 5, "bag": 6, "accessory": 7}
+    order = {"hat": 0, "scarf": 1, "outer": 2, "top": 3, "dress": 4, "bottom": 5, "skirt": 6, "socks": 7, "shoes": 8, "bag": 9, "accessory": 10}
     return order.get(slot, 99)
 
 
@@ -3638,7 +3967,7 @@ def _relax_preset_model_blur_for_outfit_tryon(
     if person_detection.get("status") not in {"pass", "warn"}:
         return input_quality
     filename = str(person.get("meta", {}).get("filename") or "")
-    if filename not in _preset_tryon_model_filenames():
+    if filename not in _preset_tryon_model_filenames() and not filename.startswith("retry_base_"):
         return input_quality
     relaxed_issue = _issue("person.preset_model_soft_detail", "预设模特照片细节偏柔", "已按预设模特继续生成。")
     evidence = {
@@ -4844,6 +5173,9 @@ def _fashion_category_label(category: str) -> str:
         "dress": "连衣裙",
         "shoes": "鞋子",
         "bag": "包",
+        "hat": "帽子",
+        "scarf": "围巾",
+        "socks": "袜子",
         "accessory": "配饰",
     }.get(category, "单品")
 

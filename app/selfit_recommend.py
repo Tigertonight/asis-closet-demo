@@ -28,13 +28,18 @@ import hashlib
 import json
 import os
 import threading
+from collections import Counter
+from functools import lru_cache
 from pathlib import Path
 from typing import Any
 
 from app.storage import ROOT_DIR
+from app.selfit_content_quality import apply_curation, curation_stamp, recommendable
 
 DEFAULT_CONTENT_POOL_PATH = ROOT_DIR / "outputs" / "selfit_content_pool" / "pool.json"
 BUNDLED_CONTENT_POOL_PATH = ROOT_DIR / "app" / "static" / "selfit" / "data" / "content-pool.v1.json"
+BUNDLED_CONTENT_POOL_V2_PATH = ROOT_DIR / "app" / "static" / "selfit" / "data" / "content-pool.v2.published.json"
+BUNDLED_CONTENT_POOL_V2_INCREMENTAL_PATH = ROOT_DIR / "app" / "static" / "selfit" / "data" / "content-pool.v2.incremental.json"
 
 # 穿搭重排权重（用户特征×穿搭妆发标签映射方案「六、推荐计算」）。
 WEIGHT_PERSONA_REGION = 0.5
@@ -120,6 +125,7 @@ class ContentPool:
         self._path = path
         self._lock = threading.Lock()
         self._mtime: float | None = None
+        self._curation_mtime: int | None = None
         self._data: dict[str, Any] = {"outfits": [], "makeup": {}, "hair": {}}
 
     def _load(self) -> dict[str, Any]:
@@ -128,7 +134,8 @@ class ContentPool:
         except OSError:
             return self._data
         with self._lock:
-            if self._mtime == mtime:
+            editorial_mtime = curation_stamp()
+            if self._mtime == mtime and self._curation_mtime == editorial_mtime:
                 return self._data
             try:
                 data = json.loads(self._path.read_text(encoding="utf-8"))
@@ -138,14 +145,37 @@ class ContentPool:
                 data.setdefault("outfits", [])
                 data.setdefault("makeup", {})
                 data.setdefault("hair", {})
-                self._data = data
+                self._data = apply_curation(data) if data.get("schemaVersion") == "2.0" else data
                 self._mtime = mtime
+                self._curation_mtime = editorial_mtime
         return self._data
 
     @property
     def outfits(self) -> list[dict[str, Any]]:
+        return [item for item in self.all_outfits if recommendable(item)]
+
+    @property
+    def all_outfits(self) -> list[dict[str, Any]]:
+        """Includes editorial holds for saved-look/history resolution only."""
         items = self._load()["outfits"]
         return [item for item in items if isinstance(item, dict)]
+
+    @property
+    def garments(self) -> list[dict[str, Any]]:
+        items = self._load().get("garments", [])
+        return [item for item in items if isinstance(item, dict)]
+
+    @property
+    def metadata(self) -> dict[str, Any]:
+        data = self._load()
+        return {
+            "schemaVersion": data.get("schemaVersion"),
+            "contentVersion": data.get("contentVersion"),
+            "status": data.get("status"),
+            "releaseMode": data.get("releaseMode"),
+            "publication": data.get("publication") or {},
+            "curation": data.get("curation_summary") or {},
+        }
 
     def static_set(self, section: str, key: str) -> list[dict[str, Any]]:
         items = self._load().get(section, {}).get(key, [])
@@ -159,8 +189,15 @@ _POOL_SINGLETONS: dict[str, ContentPool] = {}
 
 def content_pool() -> ContentPool:
     configured = os.getenv("SELFIT_CONTENT_POOL_PATH", "").strip()
+    version = os.getenv("SELFIT_CONTENT_POOL_VERSION", "auto").strip().lower()
     if configured:
         path = configured
+    elif version == "v1":
+        path = str(BUNDLED_CONTENT_POOL_PATH if BUNDLED_CONTENT_POOL_PATH.exists() else DEFAULT_CONTENT_POOL_PATH)
+    elif version in {"auto", "v2", "v2-full"} and _published_v2_ready(BUNDLED_CONTENT_POOL_V2_PATH):
+        path = str(BUNDLED_CONTENT_POOL_V2_PATH)
+    elif version in {"auto", "v2", "incremental", "v2-incremental"} and _incremental_v2_ready(BUNDLED_CONTENT_POOL_V2_INCREMENTAL_PATH):
+        path = str(BUNDLED_CONTENT_POOL_V2_INCREMENTAL_PATH)
     elif BUNDLED_CONTENT_POOL_PATH.exists():
         # 正式导入数据随应用发布；outputs 路径继续兼容 seed/mock 与旧环境。
         path = str(BUNDLED_CONTENT_POOL_PATH)
@@ -171,6 +208,90 @@ def content_pool() -> ContentPool:
         pool = ContentPool(Path(path))
         _POOL_SINGLETONS[path] = pool
     return pool
+
+
+def _published_v2_ready(path: Path) -> bool:
+    """Require useful curated coverage, not merely a raw 1,200-row manifest."""
+    try:
+        return _published_v2_ready_at(str(path), path.stat().st_mtime_ns, curation_stamp())
+    except OSError:
+        return False
+
+
+@lru_cache(maxsize=8)
+def _published_v2_ready_at(path: str, source_stamp: int, editorial_stamp: int) -> bool:
+
+    try:
+        data = json.loads(Path(path).read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return False
+    if data.get("schemaVersion") != "2.0" or data.get("status") != "published":
+        return False
+    data = apply_curation(data)
+    garments = data.get("garments") or []
+    outfits = [item for item in data.get("outfits") or [] if isinstance(item, dict) and recommendable(item)]
+    if len(garments) < 600 or len(outfits) < 160:
+        return False
+    counts = Counter(item.get("primary_persona") for item in outfits if isinstance(item, dict))
+    if any(counts[code] < 10 for code in ("MUTE", "ICED", "HEIR", "EASE", "MELT", "WABI", "FLOU", "NEON", "EDGE", "BOLT", "FILM", "JADE", "LOOP", "NOIR", "VOID", "OOPS")):
+        return False
+    return all((item.get("assets") or {}).get("rights_status") == "owned" for item in garments if isinstance(item, dict))
+
+
+def _incremental_v2_ready(path: Path) -> bool:
+    """Accept a reviewed V2 delta only when its manifest is internally complete."""
+
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return False
+    if data.get("schemaVersion") != "2.0" or data.get("status") != "published" or data.get("releaseMode") != "incremental":
+        return False
+    publication = data.get("publication") or {}
+    outfits = [item for item in data.get("outfits") or [] if isinstance(item, dict)]
+    garments = [item for item in data.get("garments") or [] if isinstance(item, dict)]
+    garment_by_id = {str(item.get("id") or ""): item for item in garments}
+    outfit_by_id = {str(item.get("id") or ""): item for item in outfits}
+    garment_ids = publication.get("incrementalGarmentIds") or []
+    outfit_ids = publication.get("incrementalOutfitIds") or []
+    if not garment_ids or not outfit_ids or len(garment_ids) != len(set(garment_ids)) or len(outfit_ids) != len(set(outfit_ids)):
+        return False
+    if publication.get("incrementalGarmentCount") != len(garment_ids) or publication.get("incrementalOutfitCount") != len(outfit_ids):
+        return False
+    if publication.get("baselineOutfitCount", 0) + len(outfit_ids) != len(outfits):
+        return False
+    if any(item_id not in garment_by_id for item_id in garment_ids) or any(item_id not in outfit_by_id for item_id in outfit_ids):
+        return False
+    for item_id in garment_ids:
+        garment = garment_by_id[item_id]
+        if (garment.get("assets") or {}).get("rights_status") != "owned":
+            return False
+        if (garment.get("production") or {}).get("qa_status") != "approved":
+            return False
+        if (garment.get("annotation") or {}).get("status") != "published":
+            return False
+        image_url = str((garment.get("assets") or {}).get("image_url") or "")
+        if not image_url or not _bundled_asset_exists(image_url):
+            return False
+    published_garments = set(garment_ids)
+    for item_id in outfit_ids:
+        outfit = outfit_by_id[item_id]
+        if (outfit.get("assets") or {}).get("rights_status") != "owned":
+            return False
+        if (outfit.get("annotation") or {}).get("status") != "published":
+            return False
+        image_url = str((outfit.get("assets") or {}).get("image_url") or "")
+        if not image_url or not _bundled_asset_exists(image_url):
+            return False
+        if not set(outfit.get("garment_ids") or []).issubset(published_garments):
+            return False
+    return True
+
+
+def _bundled_asset_exists(public_path: str) -> bool:
+    if public_path.startswith("/static/"):
+        return (ROOT_DIR / "app" / public_path.lstrip("/")).is_file()
+    return Path(public_path).is_file()
 
 
 def reset_content_pool_cache() -> None:
@@ -276,7 +397,7 @@ def body_structure_score(outfit: dict[str, Any], body_shape: str | None,
     count = 0
     for key in STRUCTURE_KEYS:
         label = structure.get(key)
-        if not label:
+        if not label or label == "未判断":
             continue
         mapping = preferences.get(key) or {}
         total += mapping.get(str(label), STRUCTURE_MISS_SCORE)
@@ -345,7 +466,7 @@ def skin_color_score(outfit: dict[str, Any], skin: str | None) -> float | None:
     for key in COLOR_KEYS:
         mapping = preferences.get(key)
         label = color.get(key)
-        if mapping is None or not label:
+        if mapping is None or not label or label == "未判断":
             continue
         total += mapping.get(str(label), COLOR_MISS_SCORE)
         count += 1
@@ -452,6 +573,11 @@ def recommend_outfits(
     rectangle_branch: str | None,
     skin: str | None,
     top_n: int = OUTFIT_TOP_N,
+    scene: str | None = None,
+    season: str | None = None,
+    weather: str | None = None,
+    visible_slots: tuple[str, ...] = (),
+    recently_exposed_ids: tuple[str, ...] = (),
 ) -> list[dict[str, Any]]:
     """人格池 → Suit 重排 → top10。
 
@@ -464,8 +590,10 @@ def recommend_outfits(
     if not outfits:
         return []
 
+    recent = set(recently_exposed_ids)
+
     def score(item: dict[str, Any]) -> float:
-        return suit_score(
+        value = suit_score(
             item,
             primary=primary,
             secondary=secondary,
@@ -476,6 +604,15 @@ def recommend_outfits(
             rectangle_branch=rectangle_branch,
             skin=skin,
         )
+        if scene and scene in (item.get("scene_tags") or []):
+            value += 8
+        if season and (season in (item.get("season_tags") or []) or "四季" in (item.get("season_tags") or [])):
+            value += 8
+        if weather and weather in (item.get("weather_tags") or []):
+            value += 5
+        if str(item.get("id") or "") in recent:
+            value -= 30
+        return value
 
     def match_count(item: dict[str, Any]) -> int:
         """统计可判定且命中的人格/地域/体型/肤色标签类别数。"""
@@ -494,7 +631,20 @@ def recommend_outfits(
             matches += 1
         return matches
 
-    indexed = [(index, item, match_count(item)) for index, item in enumerate(outfits)]
+    def context_compatible(item: dict[str, Any]) -> bool:
+        if scene and scene not in (item.get("scene_tags") or []):
+            return False
+        if season and season not in (item.get("season_tags") or []) and "四季" not in (item.get("season_tags") or []):
+            return False
+        if weather and weather not in (item.get("weather_tags") or []):
+            return False
+        if visible_slots and not set(visible_slots).intersection(item.get("visible_slots") or []):
+            return False
+        return True
+
+    compatible = [item for item in outfits if context_compatible(item)]
+    candidate_items = compatible + [item for item in outfits if item not in compatible]
+    indexed = [(index, item, match_count(item)) for index, item in enumerate(candidate_items)]
     multi = [(index, item) for index, item, count in indexed if count >= 2]
     single = [(index, item) for index, item, count in indexed if count == 1]
     fallback = [(index, item) for index, item, count in indexed if count == 0]
@@ -511,4 +661,32 @@ def recommend_outfits(
         ).digest()
     )
     ordered = ranked(multi) + ranked(single) + [item for _, item in fallback]
-    return ordered[:top_n]
+    selected: list[dict[str, Any]] = []
+    main_item_counts: dict[str, int] = {}
+    fingerprints: set[tuple[str, ...] | str] = set()
+    for item in ordered:
+        garment_ids = [str(value) for value in item.get("garment_ids") or []]
+        slot_roles = item.get("slot_roles") or {}
+        main_id = next((value for value in garment_ids if slot_roles.get(value) == "hero"), garment_ids[0] if garment_ids else "")
+        # V2 recipes can be deduplicated by their actual item composition. Legacy
+        # V1 cards often share one placeholder URL, so keep their stable IDs.
+        fingerprint: tuple[str, ...] | str = tuple(sorted(garment_ids)) if garment_ids else str(item.get("id") or "")
+        if fingerprint and fingerprint in fingerprints:
+            continue
+        if main_id and main_item_counts.get(main_id, 0) >= 2:
+            continue
+        reasons = list(item.get("recommendation_reasons") or [])
+        if scene and scene in (item.get("scene_tags") or []):
+            reasons.append(f"适合{scene}场景")
+        if season and (season in (item.get("season_tags") or []) or "四季" in (item.get("season_tags") or [])):
+            reasons.append(f"适合{season}季节")
+        if visible_slots and set(visible_slots).intersection(item.get("visible_slots") or []):
+            reasons.append("适配当前可见试穿部位")
+        decorated = {**item, "recommendation_reasons": list(dict.fromkeys(reasons))}
+        selected.append(decorated)
+        fingerprints.add(fingerprint)
+        if main_id:
+            main_item_counts[main_id] = main_item_counts.get(main_id, 0) + 1
+        if len(selected) >= top_n:
+            break
+    return selected
