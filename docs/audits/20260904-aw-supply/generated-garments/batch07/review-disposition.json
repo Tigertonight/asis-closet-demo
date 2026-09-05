@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "manifest_version": "aw-generated-garments-e6e175dc3f361a52900e",
+  "status": "partially_restricted",
+  "restrictions": [
+    {
+      "token": "n0037",
+      "reason": "Actual pixels show fitted classic tailoring; EASE affinity in generation target is not visually supported.",
+      "allowed_personas": [
+        "HEIR",
+        "MUTE",
+        "LOOP"
+      ],
+      "blocked_personas": [
+        "EASE"
+      ]
+    }
+  ],
+  "production_approved": false
+}

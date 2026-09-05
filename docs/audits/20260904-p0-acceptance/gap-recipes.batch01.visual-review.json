@@ -1,0 +1,117 @@
+{
+  "schema_version": 1,
+  "version": "p0-gap-01-visual-review-v1",
+  "source_rendered_version": "aw-designed-rendered-6ba6ef463192d1d19876",
+  "independent_blind_review": false,
+  "four_gate_editorial_review": false,
+  "entries": [
+    {
+      "outfit_id": "outfit_film_p0-gap-01_01",
+      "status": "reject",
+      "record_fingerprint": "2182088c287f2c53b7974f818f7188a3537c688f4afc6b73e416cd3b4bdc8a86",
+      "asset_sha256": "84420f8edeee8f58eed3316e27b4f461f7a43487afd1e0be9007bd676590f234",
+      "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/d4c857bbf711d37b270ae6ee.webp",
+      "source_kind": "codex_visual_review",
+      "evidence": "不对称破边上衣的 WABI/VOID 证据强于 FILM，人格方向不通过。",
+      "model": "current_codex_session",
+      "prompt_version": "p0-gap-01-visual-v1",
+      "review_level": "individual_whole_image_judgment",
+      "evidence_scope": "nonblind visual candidate only; not editorial or independent blind review"
+    },
+    {
+      "outfit_id": "outfit_iced_p0-gap-01_02",
+      "status": "ai_candidate",
+      "record_fingerprint": "64f45231b2f51e5ca69513483aaef05ac4374bef10fc4a7bb31a6445383474c9",
+      "asset_sha256": "910bd001af214c32291cfdff9f8f290d296603b246cac531d3a5fd0813ee450e",
+      "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/4ceefff3cb2aa3a696711215.webp",
+      "source_kind": "codex_visual_review",
+      "evidence": "斜向抽褶冰蓝背心为唯一主视觉，炭灰窄裙、乐福鞋与托特包都保持冷静线条，达到日常轻探索。",
+      "model": "current_codex_session",
+      "prompt_version": "p0-gap-01-visual-v1",
+      "review_level": "individual_whole_image_judgment",
+      "evidence_scope": "nonblind visual candidate only; not editorial or independent blind review",
+      "observations": {
+        "axes": {},
+        "expression": "explore",
+        "formality": "smart_casual",
+        "layering": 1,
+        "persona_scores": {
+          "iced": 0.9
+        },
+        "scenes": [
+          "daily",
+          "commute"
+        ],
+        "seasons": [
+          "autumn"
+        ],
+        "structure": "skirt",
+        "wearability": "everyday_with_statement",
+        "main_visual_slots": [
+          "top",
+          "skirt"
+        ],
+        "main_colors": [],
+        "conflicts": null,
+        "silhouette": "single_focal_daily_exploration",
+        "color_relation": "low_competition_supports",
+        "persona_evidence": "斜向抽褶冰蓝背心为唯一主视觉，炭灰窄裙、乐福鞋与托特包都保持冷静线条，达到日常轻探索。"
+      },
+      "confidence": 0.86
+    },
+    {
+      "outfit_id": "outfit_wabi_p0-gap-01_03",
+      "status": "ai_candidate",
+      "record_fingerprint": "5675cc6147f06f4c5e176f6da85e91f5d615b66c42f0d2ae4ee8da2dc70f8420",
+      "asset_sha256": "0997adca1edb8b6bafb2d7a9b11b8b38d09c4aaf9f429f217b2fcbd4ba1be292",
+      "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/cd2156a587d8047c66ee5054.webp",
+      "source_kind": "codex_visual_review",
+      "evidence": "手作拼片上衣集中肌理和不对称证据，锥形裤与低饱和配件收敛，是可日常化的 WABI 轻探索。",
+      "model": "current_codex_session",
+      "prompt_version": "p0-gap-01-visual-v1",
+      "review_level": "individual_whole_image_judgment",
+      "evidence_scope": "nonblind visual candidate only; not editorial or independent blind review",
+      "observations": {
+        "axes": {},
+        "expression": "explore",
+        "formality": "smart_casual",
+        "layering": 1,
+        "persona_scores": {
+          "wabi": 0.9
+        },
+        "scenes": [
+          "daily",
+          "commute"
+        ],
+        "seasons": [
+          "autumn"
+        ],
+        "structure": "pants",
+        "wearability": "everyday_with_statement",
+        "main_visual_slots": [
+          "top",
+          "pants"
+        ],
+        "main_colors": [],
+        "conflicts": null,
+        "silhouette": "single_focal_daily_exploration",
+        "color_relation": "low_competition_supports",
+        "persona_evidence": "手作拼片上衣集中肌理和不对称证据，锥形裤与低饱和配件收敛，是可日常化的 WABI 轻探索。"
+      },
+      "confidence": 0.86
+    },
+    {
+      "outfit_id": "outfit_wabi_p0-gap-01_04",
+      "status": "reject",
+      "record_fingerprint": "7d5b96865a48955d6f58ddc071010e6785a03d01d660b6ef688379a407a5d2e1",
+      "asset_sha256": "a9adfd37f24aa8f93d6c412fe51adf62e1baeeccfc581b3dda4e7d3e4fdd5eff",
+      "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/45de7616aa827316ac74710f.webp",
+      "source_kind": "codex_visual_review",
+      "evidence": "主裙体积和层片过强，更接近主题化造型，不符合 everyday_with_statement。",
+      "model": "current_codex_session",
+      "prompt_version": "p0-gap-01-visual-v1",
+      "review_level": "individual_whole_image_judgment",
+      "evidence_scope": "nonblind visual candidate only; not editorial or independent blind review"
+    }
+  ]
+}

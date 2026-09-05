@@ -1,0 +1,622 @@
+{
+  "schema_version": 1,
+  "batch_id": "aw-repair-02",
+  "source_visual_version": "codex-visual-16b18cdcdca36dbc306a",
+  "entries": [
+    {
+      "source_outfit_id": "outfit_neon_master_10_v2",
+      "source_token": "o0797",
+      "source_record_fingerprint": "fa46aa667e6a8cf5ed13199ba83bd35fd76d79201b6f17b758da66f00310434e",
+      "new_record": {
+        "id": "outfit_neon_master_10_v2__aw-repair-02",
+        "kind": "variant",
+        "parent_outfit_id": "outfit_neon_master_10",
+        "recipe_version": "aw-repair-02",
+        "title": "NEON 日常 10 · 替换 2",
+        "description": "NEON 人格的夏日常原创穿搭配方。",
+        "primary_persona": "NEON",
+        "secondary_personas": [
+          "EDGE",
+          "OOPS"
+        ],
+        "persona_affinity": {
+          "NEON": 0.96,
+          "EDGE": 0.65,
+          "OOPS": 0.55
+        },
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "日常"
+        ],
+        "season_tags": [
+          "夏"
+        ],
+        "weather_tags": [
+          "晴",
+          "室内"
+        ],
+        "presentation": [
+          "feminine"
+        ],
+        "intensity": "entry",
+        "formality": 3,
+        "garment_ids": [
+          "garment_neon_top_0120",
+          "garment_oops_bottom_0576",
+          "garment_edge_shoes_0265",
+          "garment_oops_bag_0272"
+        ],
+        "visible_slots": [
+          "top",
+          "bottom",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_neon_top_0120": "hero",
+          "garment_oops_bottom_0576": "support",
+          "garment_edge_shoes_0265": "support",
+          "garment_oops_bag_0272": "accent"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "浅色",
+          "saturation": "低饱和",
+          "harmony": "未判断",
+          "palette": [
+            "#c0cee7",
+            "#5a5d69",
+            "#5b595f",
+            "#aea8a1"
+          ]
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/bea57e885915be4a179b4294.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source_outfit_id": "outfit_neon_master_10_v2"
+        },
+        "design_intent": "保留素蓝长上衣与拼接阔裤主次，使用协调灰色短靴解除异跟风险"
+      },
+      "record_fingerprint": "ed5d614b001dd2ec0aa37dae3967af19eb15710db1f247484117a2509563544f",
+      "asset_sha256": "df7c9aae8b1961d010116a34445b87fec012d2069f2a58dfad03dc8836e64033",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/bea57e885915be4a179b4294.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_neon_top_0120",
+            "slot": "top",
+            "box": [
+              246,
+              160,
+              653,
+              620
+            ]
+          },
+          {
+            "garment_id": "garment_oops_bottom_0576",
+            "slot": "bottom",
+            "box": [
+              251,
+              644,
+              648,
+              1330
+            ]
+          },
+          {
+            "garment_id": "garment_edge_shoes_0265",
+            "slot": "shoes",
+            "box": [
+              875,
+              880,
+              1095,
+              1080
+            ]
+          },
+          {
+            "garment_id": "garment_oops_bag_0272",
+            "slot": "bag",
+            "box": [
+              876,
+              410,
+              1104,
+              730
+            ]
+          }
+        ]
+      },
+      "replacements": {
+        "garment_oops_shoes_0080": "garment_edge_shoes_0265"
+      },
+      "status": "pending_native_review",
+      "review": null
+    },
+    {
+      "source_outfit_id": "outfit_oops_master_06_v1",
+      "source_token": "o1136",
+      "source_record_fingerprint": "12aba18080ff538c1825e2db583acd5278e4fce89e2adc2c91010af15dd2d42f",
+      "new_record": {
+        "id": "outfit_oops_master_06_v1__aw-repair-02",
+        "kind": "variant",
+        "parent_outfit_id": "outfit_oops_master_06",
+        "recipe_version": "aw-repair-02",
+        "title": "OOPS 通勤 06 · 替换 1",
+        "description": "OOPS 人格的春通勤原创穿搭配方。",
+        "primary_persona": "OOPS",
+        "secondary_personas": [
+          "NEON",
+          "EDGE"
+        ],
+        "persona_affinity": {
+          "OOPS": 0.96,
+          "NEON": 0.65,
+          "EDGE": 0.55
+        },
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "通勤"
+        ],
+        "season_tags": [
+          "春"
+        ],
+        "weather_tags": [
+          "晴",
+          "室内"
+        ],
+        "presentation": [
+          "feminine"
+        ],
+        "intensity": "entry",
+        "formality": 4,
+        "garment_ids": [
+          "garment_neon_top_0360",
+          "garment_neon_bottom_0184",
+          "garment_film_shoes_0267",
+          "garment_noir_bag_0270"
+        ],
+        "visible_slots": [
+          "top",
+          "bottom",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_neon_top_0360": "hero",
+          "garment_neon_bottom_0184": "support",
+          "garment_film_shoes_0267": "support",
+          "garment_noir_bag_0270": "accent"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "浅色",
+          "saturation": "高饱和",
+          "harmony": "未判断",
+          "palette": [
+            "#2f4ed4",
+            "#8f96a6",
+            "#5b595f",
+            "#4c5055"
+          ]
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/85fdf4bd2e7384663f9b7295.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source_outfit_id": "outfit_oops_master_06_v1"
+        },
+        "design_intent": "保留彩色短上衣作为唯一鲜明焦点，灰直裤配低调运动鞋与黑素包"
+      },
+      "record_fingerprint": "19a18874a2a64498dd3dcf727209a38d92cf9db6489fe9fe37d81dc9fa5d68b9",
+      "asset_sha256": "fcefca9f6709eab6c31f15f6a7c0a4dda3853ee1882f9389e1ede2d56072f498",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/85fdf4bd2e7384663f9b7295.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_neon_top_0360",
+            "slot": "top",
+            "box": [
+              222,
+              160,
+              677,
+              620
+            ]
+          },
+          {
+            "garment_id": "garment_neon_bottom_0184",
+            "slot": "bottom",
+            "box": [
+              324,
+              644,
+              576,
+              1330
+            ]
+          },
+          {
+            "garment_id": "garment_film_shoes_0267",
+            "slot": "shoes",
+            "box": [
+              840,
+              883,
+              1130,
+              1077
+            ]
+          },
+          {
+            "garment_id": "garment_noir_bag_0270",
+            "slot": "bag",
+            "box": [
+              865,
+              410,
+              1114,
+              730
+            ]
+          }
+        ]
+      },
+      "replacements": {
+        "garment_oops_shoes_0080": "garment_film_shoes_0267",
+        "garment_oops_bag_0528": "garment_noir_bag_0270"
+      },
+      "status": "pending_native_review",
+      "review": null
+    },
+    {
+      "source_outfit_id": "outfit_oops_master_06_v2",
+      "source_token": "o1137",
+      "source_record_fingerprint": "f96e36eebe6f069769ac15a6fafbe35e2471718707b94e5240b59f9426700d96",
+      "new_record": {
+        "id": "outfit_oops_master_06_v2__aw-repair-02",
+        "kind": "variant",
+        "parent_outfit_id": "outfit_oops_master_06",
+        "recipe_version": "aw-repair-02",
+        "title": "OOPS 通勤 06 · 替换 2",
+        "description": "OOPS 人格的春通勤原创穿搭配方。",
+        "primary_persona": "OOPS",
+        "secondary_personas": [
+          "NEON",
+          "EDGE"
+        ],
+        "persona_affinity": {
+          "OOPS": 0.96,
+          "NEON": 0.65,
+          "EDGE": 0.55
+        },
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "通勤"
+        ],
+        "season_tags": [
+          "春"
+        ],
+        "weather_tags": [
+          "晴",
+          "室内"
+        ],
+        "presentation": [
+          "feminine"
+        ],
+        "intensity": "entry",
+        "formality": 4,
+        "garment_ids": [
+          "garment_oops_top_0096",
+          "garment_neon_bottom_0184",
+          "garment_film_shoes_0267",
+          "garment_noir_bag_0270"
+        ],
+        "visible_slots": [
+          "top",
+          "bottom",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_oops_top_0096": "hero",
+          "garment_neon_bottom_0184": "support",
+          "garment_film_shoes_0267": "support",
+          "garment_noir_bag_0270": "accent"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "浅色",
+          "saturation": "无彩",
+          "harmony": "未判断",
+          "palette": [
+            "#d8d8db",
+            "#8f96a6",
+            "#5b595f",
+            "#4c5055"
+          ]
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/7494f74b1d493332c99c73ba.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source_outfit_id": "outfit_oops_master_06_v2"
+        },
+        "design_intent": "白衬衫和灰直裤建立易穿基底，使用协调运动鞋和素黑包"
+      },
+      "record_fingerprint": "ad9bd02bf2dfe96561ba82183d6872c408c1fa29c88a08f6f9c88aead72dd9cf",
+      "asset_sha256": "28bc337116c9c5ed68d9bbb531f990c23019dfed55fdad06f7b7b0131bb8a94f",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/7494f74b1d493332c99c73ba.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_oops_top_0096",
+            "slot": "top",
+            "box": [
+              250,
+              160,
+              650,
+              620
+            ]
+          },
+          {
+            "garment_id": "garment_neon_bottom_0184",
+            "slot": "bottom",
+            "box": [
+              324,
+              644,
+              576,
+              1330
+            ]
+          },
+          {
+            "garment_id": "garment_film_shoes_0267",
+            "slot": "shoes",
+            "box": [
+              840,
+              883,
+              1130,
+              1077
+            ]
+          },
+          {
+            "garment_id": "garment_noir_bag_0270",
+            "slot": "bag",
+            "box": [
+              865,
+              410,
+              1114,
+              730
+            ]
+          }
+        ]
+      },
+      "replacements": {
+        "garment_oops_shoes_0080": "garment_film_shoes_0267",
+        "garment_oops_bag_0528": "garment_noir_bag_0270"
+      },
+      "status": "pending_native_review",
+      "review": null
+    },
+    {
+      "source_outfit_id": "outfit_oops_master_27_v1",
+      "source_token": "o1166",
+      "source_record_fingerprint": "290484e2f95667dc666b52d9095ba169a51640a4edb35c0f637278692b708e8c",
+      "new_record": {
+        "id": "outfit_oops_master_27_v1__aw-repair-02",
+        "kind": "variant",
+        "parent_outfit_id": "outfit_oops_master_27",
+        "recipe_version": "aw-repair-02",
+        "title": "OOPS 创意表达 27 · 替换 1",
+        "description": "OOPS 人格的冬创意表达原创穿搭配方。",
+        "primary_persona": "OOPS",
+        "secondary_personas": [
+          "NEON",
+          "EDGE"
+        ],
+        "persona_affinity": {
+          "OOPS": 0.96,
+          "NEON": 0.65,
+          "EDGE": 0.55
+        },
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "创意表达"
+        ],
+        "season_tags": [
+          "冬"
+        ],
+        "weather_tags": [
+          "晴",
+          "室内"
+        ],
+        "presentation": [
+          "neutral"
+        ],
+        "intensity": "experimental",
+        "formality": 3,
+        "garment_ids": [
+          "garment_oops_dress_0464",
+          "garment_neon_shoes_0248",
+          "garment_oops_bag_0288",
+          "garment_oops_accessory_0560"
+        ],
+        "visible_slots": [
+          "dress",
+          "shoes",
+          "bag",
+          "accessory"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_oops_dress_0464": "hero",
+          "garment_neon_shoes_0248": "support",
+          "garment_oops_bag_0288": "support",
+          "garment_oops_accessory_0560": "accent"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "中等",
+          "saturation": "中饱和",
+          "harmony": "未判断",
+          "palette": [
+            "#364151",
+            "#5b595f",
+            "#5a544f",
+            "#424e67"
+          ]
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/bb76778e8de6fda53dc0091b.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source_outfit_id": "outfit_oops_master_27_v1"
+        },
+        "design_intent": "保留错位拼片裙为唯一主件，蓝色低跟玛丽珍鞋呼应主衣并解除异跟风险"
+      },
+      "record_fingerprint": "61feac6d8c98dc8cf965119d8947c7f19d0c4db7c513ca90921f375177cf6645",
+      "asset_sha256": "82164297c1c014e7dabf018389b1d09f28a303e61e67055bbaa1c41c5d3c75ec",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/bb76778e8de6fda53dc0091b.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_oops_dress_0464",
+            "slot": "dress",
+            "box": [
+              121,
+              160,
+              778,
+              1330
+            ]
+          },
+          {
+            "garment_id": "garment_neon_shoes_0248",
+            "slot": "shoes",
+            "box": [
+              901,
+              880,
+              1069,
+              1080
+            ]
+          },
+          {
+            "garment_id": "garment_oops_bag_0288",
+            "slot": "bag",
+            "box": [
+              850,
+              444,
+              1130,
+              695
+            ]
+          },
+          {
+            "garment_id": "garment_oops_accessory_0560",
+            "slot": "accessory_1",
+            "box": [
+              956,
+              750,
+              1024,
+              850
+            ]
+          }
+        ]
+      },
+      "replacements": {
+        "garment_oops_shoes_0080": "garment_neon_shoes_0248"
+      },
+      "status": "pending_native_review",
+      "review": null
+    }
+  ],
+  "production_approved": false
+}

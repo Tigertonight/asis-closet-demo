@@ -1,0 +1,3652 @@
+{
+  "schema_version": 1,
+  "source_matrix": "coverage.after-targeted06.json",
+  "source_strategy_version": "personal_home_aw_v1",
+  "source_bundle": {
+    "strategy": "personal_home_aw_v1",
+    "visual": "codex-visual-16b18cdcdca36dbc306a",
+    "families": "native-family-29dfc79c909cff365924",
+    "supplemental": "aw-recomposition-index-20260904-19",
+    "content": "21a98a6d6a31f822ae82225c9cdbda7820d4918001eebe26e551c979154c1ead"
+  },
+  "conditions_with_remaining_gap": 164,
+  "action_counts": {
+    "add_non_similar_parent_recipes_for_browse_depth": 16,
+    "recompose_existing_then_assess_new_garments": 148
+  },
+  "tasks": [
+    {
+      "season": "winter",
+      "persona": "iced",
+      "palette": "ocean",
+      "current_valid_sequence": 9,
+      "shortfall_to_first_ten": 1,
+      "shortfall_to_thirty": 21,
+      "missing_main_structures": [],
+      "next_action": "recompose_existing_then_assess_new_garments",
+      "evidence": {
+        "eligible_by_expression_structure": {
+          "typical:dress": 6,
+          "typical:pants": 3,
+          "typical:skirt": 1,
+          "easy:skirt": 1
+        },
+        "reported_gap_reasons": [
+          "search_unmet"
+        ],
+        "search_complete": false
+      }
+    },
+    {
+      "season": "winter",
+      "persona": "iced",
+      "palette": "pastel",
+      "current_valid_sequence": 9,
+      "shortfall_to_first_ten": 1,
+      "shortfall_to_thirty": 21,
+      "missing_main_structures": [],
+      "next_action": "recompose_existing_then_assess_new_garments",
+      "evidence": {
+        "eligible_by_expression_structure": {
+          "typical:dress": 8,
+          "typical:pants": 3,
+          "easy:skirt": 2,
+          "typical:skirt": 2
+        },
+        "reported_gap_reasons": [
+          "search_unmet"
+        ],
+        "search_complete": false
+      }
+    },
+    {
+      "season": "winter",
+      "persona": "void",
+      "palette": "mono",
+      "current_valid_sequence": 9,
+      "shortfall_to_first_ten": 1,
+      "shortfall_to_thirty": 21,
+      "missing_main_structures": [],
+      "next_action": "recompose_existing_then_assess_new_garments",
+      "evidence": {
+        "eligible_by_expression_structure": {
+          "typical:skirt": 9,
+          "typical:pants": 7,
+          "typical:dress": 6,
+          "easy:dress": 2
+        },
+        "reported_gap_reasons": [
+          "search_unmet"
+        ],
+        "search_complete": false
+      }
+    },
+    {
+      "season": "winter",
+      "persona": "wabi",
+      "palette": "jewel",
+      "current_valid_sequence": 9,
+      "shortfall_to_first_ten": 1,
+      "shortfall_to_thirty": 21,
+      "missing_main_structures": [],
+      "next_action": "recompose_existing_then_assess_new_garments",
+      "evidence": {
+        "eligible_by_expression_structure": {
+          "typical:dress": 7,
+          "typical:pants": 5,
+          "easy:dress": 2,
+          "typical:skirt": 3
+        },
+        "reported_gap_reasons": [
+          "search_unmet"
+        ],
+        "search_complete": false
+      }
+    },
+    {
+      "season": "winter",
+      "persona": "wabi",
+      "palette": "ocean",
+      "current_valid_sequence": 9,
+      "shortfall_to_first_ten": 1,
+      "shortfall_to_thirty": 21,
+      "missing_main_structures": [],
+      "next_action": "recompose_existing_then_assess_new_garments",
+      "evidence": {
+        "eligible_by_expression_structure": {
+          "typical:dress": 6,
+          "typical:pants": 3,
+          "typical:skirt": 3
+        },
+        "reported_gap_reasons": [
+          "search_unmet"
+        ],
+        "search_complete": false
+      }
+    },
+    {
+      "season": "winter",
+      "persona": "ease",
+      "palette": "earth",
+      "current_valid_sequence": 8,
+      "shortfall_to_first_ten": 2,
+      "shortfall_to_thirty": 22,
+      "missing_main_structures": [
+        "skirt"
+      ],
+      "next_action": "recompose_existing_then_assess_new_garments",
+      "evidence": {
+        "eligible_by_expression_structure": {
+          "typical:dress": 2,
+          "typical:pants": 3,
+          "easy:dress": 2,
+          "easy:pants": 2
+        },
+        "reported_gap_reasons": [
+          "missing_main_structure"
+        ],
+        "search_complete": false
+      }
+    },
+    {
+      "season": "winter",
+      "persona": "ease",
+      "palette": "jewel",
+      "current_valid_sequence": 8,
+      "shortfall_to_first_ten": 2,
+      "shortfall_to_thirty": 22,
+      "missing_main_structures": [
+        "skirt"
+      ],
+      "next_action": "recompose_existing_then_assess_new_garments",
+      "evidence": {
+        "eligible_by_expression_structure": {
+          "typical:dress": 2,
+          "easy:pants": 1,
+          "typical:pants": 4,
+          "easy:dress": 2
+        },
+        "reported_gap_reasons": [
+          "missing_main_structure"
+        ],
+        "search_complete": false
+      }
+    },
+    {
+      "season": "winter",
+      "persona": "edge",
+      "palette": "mono",
+      "current_valid_sequence": 8,
+      "shortfall_to_first_ten": 2,
+      "shortfall_to_thirty": 22,
+      "missing_main_structures": [],
+      "next_action": "recompose_existing_then_assess_new_garments",
+      "evidence": {
+        "eligible_by_expression_structure": {
+          "typical:pants": 8,
+          "typical:skirt": 3,
+          "typical:dress": 3
+        },
+        "reported_gap_reasons": [
+          "search_unmet"
+        ],
+        "search_complete": false
+      }
+    },
+    {
+      "season": "winter",
+      "persona": "heir",
+      "palette": "ocean",
+      "current_valid_sequence": 8,
+      "shortfall_to_first_ten": 2,
+      "shortfall_to_thirty": 22,
+      "missing_main_structures": [
+        "skirt"
+      ],
+      "next_action": "recompose_existing_then_assess_new_garments",
+      "evidence": {
+        "eligible_by_expression_structure": {
+          "typical:dress": 9,
+          "easy:dress": 2,
+          "typical:pants": 3,
+          "easy:pants": 1
+        },
+        "reported_gap_reasons": [
+          "missing_main_structure"
+        ],
+        "search_complete": false
+      }
+    },
+    {
+      "season": "winter",
+      "persona": "heir",
+      "palette": "pastel",
+      "current_valid_sequence": 8,
+      "shortfall_to_first_ten": 2,
+      "shortfall_to_thirty": 22,
+      "missing_main_structures": [],
+      "next_action": "recompose_existing_then_assess_new_garments",
+      "evidence": {
+        "eligible_by_expression_structure": {
+          "typical:pants": 2,
+          "typical:skirt": 1,
+          "typical:dress": 8,
+          "easy:skirt": 1
+        },
+        "reported_gap_reasons": [
+          "search_unmet"
+        ],
+        "search_complete": false
+      }
+    },
+    {
+      "season": "winter",
+      "persona": "loop",
+      "palette": "mono",
+      "current_valid_sequence": 8,
+      "shortfall_to_first_ten": 2,
+      "shortfall_to_thirty": 22,
+      "missing_main_structures": [],
+      "next_action": "recompose_existing_then_assess_new_garments",
+      "evidence": {
+        "eligible_by_expression_structure": {
+          "typical:dress": 1,
+          "typical:pants": 2,
+          "easy:skirt": 2,
+          "easy:dress": 1,
+          "easy:pants": 2
+        },
+        "reported_gap_reasons": [
+          "search_unmet"
+        ],
+        "search_complete": false
+      }
+    },
+    {
+      "season": "winter",
+      "persona": "mute",
+      "palette": "mono",
+      "current_valid_sequence": 7,
+      "shortfall_to_first_ten": 3,
+      "shortfall_to_thirty": 23,
+      "missing_main_structures": [],
+      "next_action": "recompose_existing_then_assess_new_garments",
+      "evidence": {
+        "eligible_by_expression_structure": {
+          "easy:skirt": 2,
+          "typical:dress": 2,
+          "typical:pants": 1,
+          "easy:pants": 3,
+          "easy:dress": 1
+        },
+        "reported_gap_reasons": [
+          "search_unmet"
+        ],
+        "search_complete": false
+      }
+    },
+    {
+      "season": "winter",
+      "persona": "ease",
+      "palette": "pastel",
+      "current_valid_sequence": 6,
+      "shortfall_to_first_ten": 4,
+      "shortfall_to_thirty": 24,
+      "missing_main_structures": [
+        "skirt"
+      ],
+      "next_action": "recompose_existing_then_assess_new_garments",
+      "evidence": {
+        "eligible_by_expression_structure": {
+          "typical:pants": 2,
+          "easy:pants": 2,
+          "easy:dress": 1,
+          "typical:dress": 1
+        },
+        "reported_gap_reasons": [
+          "missing_main_structure"
+        ],
+        "search_complete": false
+      }
+    },
+    {
+      "season": "winter",
+      "persona": "flou",
+      "palette": "mono",
+      "current_valid_sequence": 6,
+      "shortfall_to_first_ten": 4,
+      "shortfall_to_thirty": 24,
+      "missing_main_structures": [],
+      "next_action": "recompose_existing_then_assess_new_garments",
+      "evidence": {
+        "eligible_by_expression_structure": {
+          "typical:pants": 1,
+          "typical:dress": 1,
+          "typical:skirt": 3,
+          "easy:dress": 1
+        },
+        "reported_gap_reasons": [
+          "search_unmet"
+        ],
+        "search_complete": false
+      }
+    },
+    {
+      "season": "winter",
+      "persona": "neon",
+      "palette": "jewel",
+      "current_valid_sequence": 6,
+      "shortfall_to_first_ten": 4,
+      "shortfall_to_thirty": 24,
+      "missing_main_structures": [],
+      "next_action": "recompose_existing_then_assess_new_garments",
+      "evidence": {
+        "eligible_by_expression_structure": {
+          "typical:pants": 4,
+          "typical:skirt": 2,
+          "easy:dress": 2,
+          "typical:dress": 1
+        },
+        "reported_gap_reasons": [
+          "search_unmet"
+        ],
+        "search_complete": false
+      }
+    },
+    {
+      "season": "winter",
+      "persona": "neon",
+      "palette": "mono",
+      "current_valid_sequence": 6,
+      "shortfall_to_first_ten": 4,
+      "shortfall_to_thirty": 24,
+      "missing_main_structures": [],
+      "next_action": "recompose_existing_then_assess_new_garments",
+      "evidence": {
+        "eligible_by_expression_structure": {
+          "typical:skirt": 2,
+          "typical:dress": 3,
+          "typical:pants": 6
+        },
+        "reported_gap_reasons": [
+          "search_unmet"
+        ],
+        "search_complete": false
+      }
+    },
+    {
+      "season": "winter",
+      "persona": "oops",
+      "palette": "mono",
+      "current_valid_sequence": 6,
+      "shortfall_to_first_ten": 4,
+      "shortfall_to_thirty": 24,
+      "missing_main_structures": [],
+      "next_action": "recompose_existing_then_assess_new_garments",
+      "evidence": {
+        "eligible_by_expression_structure": {
+          "typical:skirt": 3,
+          "typical:dress": 2,
+          "typical:pants": 6
+        },
+        "reported_gap_reasons": [
+          "search_unmet"
+        ],
+        "search_complete": false
+      }
+    },
+    {
+      "season": "winter",
+      "persona": "wabi",
+      "palette": "earth",
+      "current_valid_sequence": 6,
+      "shortfall_to_first_ten": 4,
+      "shortfall_to_thirty": 24,
+      "missing_main_structures": [],
+      "next_action": "recompose_existing_then_assess_new_garments",
+      "evidence": {
+        "eligible_by_expression_structure": {
+          "easy:dress": 2,
+          "easy:pants": 1,
+          "typical:dress": 1,
+          "typical:pants": 1,
+          "typical:skirt": 3
+        },
+        "reported_gap_reasons": [
+          "search_unmet"
+        ],
+        "search_complete": false
+      }
+    },
+    {
+      "season": "winter",
+      "persona": "bolt",
+      "palette": "mono",
+      "current_valid_sequence": 5,
+      "shortfall_to_first_ten": 5,
+      "shortfall_to_thirty": 25,
+      "missing_main_structures": [],
+      "next_action": "recompose_existing_then_assess_new_garments",
+      "evidence": {
+        "eligible_by_expression_structure": {
+          "typical:pants": 4,
+          "typical:dress": 3,
+          "typical:skirt": 1
+        },
+        "reported_gap_reasons": [
+          "search_unmet"
+        ],
+        "search_complete": false
+      }
+    },
+    {
+      "season": "winter",
+      "persona": "film",
+      "palette": "jewel",
+      "current_valid_sequence": 5,
+      "shortfall_to_first_ten": 5,
+      "shortfall_to_thirty": 25,
+      "missing_main_structures": [],
+      "next_action": "recompose_existing_then_assess_new_garments",
+      "evidence": {
+        "eligible_by_expression_structure": {
+          "easy:dress": 2,
+          "easy:pants": 1,
+          "typical:skirt": 2,
+          "typical:dress": 1
+        },
+        "reported_gap_reasons": [
+          "search_unmet"
+        ],
+        "search_complete": false
+      }
+    },
+    {
+      "season": "winter",
+      "persona": "film",
+      "palette": "mono",
+      "current_valid_sequence": 5,
+      "shortfall_to_first_ten": 5,
+      "shortfall_to_thirty": 25,
+      "missing_main_structures": [],
+      "next_action": "recompose_existing_then_assess_new_garments",
+      "evidence": {
+        "eligible_by_expression_structure": {
+          "easy:dress": 1,
+          "easy:pants": 1,
+          "typical:dress": 1,
+          "typical:skirt": 2
+        },
+        "reported_gap_reasons": [
+          "search_unmet"
+        ],
+        "search_complete": false
+      }
+    },
+    {
+      "season": "winter",
+      "persona": "jade",
+      "palette": "mono",
+      "current_valid_sequence": 5,
+      "shortfall_to_first_ten": 5,
+      "shortfall_to_thirty": 25,
+      "missing_main_structures": [],
+      "next_action": "recompose_existing_then_assess_new_garments",
+      "evidence": {
+        "eligible_by_expression_structure": {
+          "typical:skirt": 4,
+          "typical:pants": 2,
+          "typical:dress": 1
+        },
+        "reported_gap_reasons": [
+          "search_unmet"
+        ],
+        "search_complete": false
+      }
+    },
+    {
+      "season": "winter",
+      "persona": "mute",
+      "palette": "jewel",
+      "current_valid_sequence": 5,
+      "shortfall_to_first_ten": 5,
+      "shortfall_to_thirty": 25,
+      "missing_main_structures": [],
+      "next_action": "recompose_existing_then_assess_new_garments",
+      "evidence": {
+        "eligible_by_expression_structure": {
+          "easy:pants": 3,
+          "easy:skirt": 1,
+          "easy:dress": 1
+        },
+        "reported_gap_reasons": [
+          "search_unmet"
+        ],
+        "search_complete": false
+      }
+    },
+    {
+      "season": "winter",
+      "persona": "mute",
+      "palette": "pastel",
+      "current_valid_sequence": 5,
+      "shortfall_to_first_ten": 5,
+      "shortfall_to_thirty": 25,
+      "missing_main_structures": [],
+      "next_action": "recompose_existing_then_assess_new_garments",
+      "evidence": {
+        "eligible_by_expression_structure": {
+          "easy:skirt": 1,
+          "typical:pants": 1,
+          "easy:pants": 1,
+          "typical:dress": 1,
+          "easy:dress": 1
+        },
+        "reported_gap_reasons": [
+          "search_unmet"
+        ],
+        "search_complete": false
+      }
+    },
+    {
+      "season": "winter",
+      "persona": "neon",
+      "palette": "bright",
+      "current_valid_sequence": 5,
+      "shortfall_to_first_ten": 5,
+      "shortfall_to_thirty": 25,
+      "missing_main_structures": [],
+      "next_action": "recompose_existing_then_assess_new_garments",
+      "evidence": {
+        "eligible_by_expression_structure": {
+          "typical:pants": 4,
+          "typical:skirt": 2,
+          "easy:dress": 2,
+          "typical:dress": 1
+        },
+        "reported_gap_reasons": [
+          "search_unmet"
+        ],
+        "search_complete": false
+      }
+    },
+    {
+      "season": "winter",
+      "persona": "noir",
+      "palette": "jewel",
+      "current_valid_sequence": 5,
+      "shortfall_to_first_ten": 5,
+      "shortfall_to_thirty": 25,
+      "missing_main_structures": [
+        "skirt"
+      ],
+      "next_action": "recompose_existing_then_assess_new_garments",
+      "evidence": {
+        "eligible_by_expression_structure": {
+          "typical:pants": 2,
+          "easy:dress": 1,
+          "typical:dress": 1,
+          "easy:pants": 1
+        },
+        "reported_gap_reasons": [
+          "missing_main_structure"
+        ],
+        "search_complete": false
+      }
+    },
+    {
+      "season": "winter",
+      "persona": "oops",
+      "palette": "jewel",
+      "current_valid_sequence": 5,
+      "shortfall_to_first_ten": 5,
+      "shortfall_to_thirty": 25,
+      "missing_main_structures": [],
+      "next_action": "recompose_existing_then_assess_new_garments",
+      "evidence": {
+        "eligible_by_expression_structure": {
+          "typical:pants": 4,
+          "typical:skirt": 2,
+          "easy:dress": 1
+        },
+        "reported_gap_reasons": [
+          "search_unmet"
+        ],
+        "search_complete": false
+      }
+    },
+    {
+      "season": "winter",
+      "persona": "void",
+      "palette": "jewel",
+      "current_valid_sequence": 5,
+      "shortfall_to_first_ten": 5,
+      "shortfall_to_thirty": 25,
+      "missing_main_structures": [],
+      "next_action": "recompose_existing_then_assess_new_garments",
+      "evidence": {
+        "eligible_by_expression_structure": {
+          "typical:skirt": 3,
+          "typical:dress": 2,
+          "typical:pants": 2,
+          "easy:dress": 1
+        },
+        "reported_gap_reasons": [
+          "search_unmet"
+        ],
+        "search_complete": false
+      }
+    },
+    {
+      "season": "winter",
+      "persona": "bolt",
+      "palette": "jewel",
+      "current_valid_sequence": 4,
+      "shortfall_to_first_ten": 6,
+      "shortfall_to_thirty": 26,
+      "missing_main_structures": [
+        "skirt"
+      ],
+      "next_action": "recompose_existing_then_assess_new_garments",
+      "evidence": {
+        "eligible_by_expression_structure": {
+          "typical:pants": 3,
+          "typical:dress": 2
+        },
+        "reported_gap_reasons": [
+          "missing_main_structure"
+        ],
+        "search_complete": false
+      }
+    },
+    {
+      "season": "winter",
+      "persona": "ease",
+      "palette": "bright",
+      "current_valid_sequence": 4,
+      "shortfall_to_first_ten": 6,
+      "shortfall_to_thirty": 26,
+      "missing_main_structures": [
+        "skirt"
+      ],
+      "next_action": "recompose_existing_then_assess_new_garments",
+      "evidence": {
+        "eligible_by_expression_structure": {
+          "easy:pants": 1,
+          "typical:dress": 1,
+          "easy:dress": 1,
+          "typical:pants": 1
+        },
+        "reported_gap_reasons": [
+          "missing_main_structure"
+        ],
+        "search_complete": false
+      }
+    },
+    {
+      "season": "winter",
+      "persona": "ease",
+      "palette": "ocean",
+      "current_valid_sequence": 4,
+      "shortfall_to_first_ten": 6,
+      "shortfall_to_thirty": 26,
+      "missing_main_structures": [
+        "dress"
+      ],
+      "next_action": "recompose_existing_then_assess_new_garments",
+      "evidence": {
+        "eligible_by_expression_structure": {
+          "typical:pants": 3,
+          "easy:skirt": 1
+        },
+        "reported_gap_reasons": [
+          "missing_main_structure"
+        ],
+        "search_complete": false
+      }
+    },
+    {
+      "season": "winter",
+      "persona": "edge",
+      "palette": "jewel",
+      "current_valid_sequence": 4,
+      "shortfall_to_first_ten": 6,
+      "shortfall_to_thirty": 26,
+      "missing_main_structures": [
+        "dress"
+      ],
+      "next_action": "recompose_existing_then_assess_new_garments",
+      "evidence": {
+        "eligible_by_expression_structure": {
+          "typical:pants": 4,
+          "typical:skirt": 1
+        },
+        "reported_gap_reasons": [
+          "missing_main_structure"
+        ],
+        "search_complete": false
+      }
+    },
+    {
+      "season": "winter",
+      "persona": "jade",
+      "palette": "jewel",
+      "current_valid_sequence": 4,
+      "shortfall_to_first_ten": 6,
+      "shortfall_to_thirty": 26,
+      "missing_main_structures": [],
+      "next_action": "recompose_existing_then_assess_new_garments",
+      "evidence": {
+        "eligible_by_expression_structure": {
+          "typical:skirt": 3,
+          "typical:pants": 1,
+          "typical:dress": 1
+        },
+        "reported_gap_reasons": [
+          "search_unmet"
+        ],
+        "search_complete": false
+      }
+    },
+    {
+      "season": "winter",
+      "persona": "jade",
+      "palette": "ocean",
+      "current_valid_sequence": 4,
+      "shortfall_to_first_ten": 6,
+      "shortfall_to_thirty": 26,
+      "missing_main_structures": [],
+      "next_action": "recompose_existing_then_assess_new_garments",
+      "evidence": {
+        "eligible_by_expression_structure": {
+          "typical:skirt": 2,
+          "typical:pants": 1,
+          "typical:dress": 1
+        },
+        "reported_gap_reasons": [
+          "search_unmet"
+        ],
+        "search_complete": false
+      }
+    },
+    {
+      "season": "winter",
+      "persona": "melt",
+      "palette": "mono",
+      "current_valid_sequence": 4,
+      "shortfall_to_first_ten": 6,
+      "shortfall_to_thirty": 26,
+      "missing_main_structures": [],
+      "next_action": "recompose_existing_then_assess_new_garments",
+      "evidence": {
+        "eligible_by_expression_structure": {
+          "typical:dress": 1,
+          "typical:pants": 2,
+          "easy:skirt": 1,
+          "typical:skirt": 2
+        },
+        "reported_gap_reasons": [
+          "search_unmet"
+        ],
+        "search_complete": false
+      }
+    },
+    {
+      "season": "winter",
+      "persona": "melt",
+      "palette": "pastel",
+      "current_valid_sequence": 4,
+      "shortfall_to_first_ten": 6,
+      "shortfall_to_thirty": 26,
+      "missing_main_structures": [],
+      "next_action": "recompose_existing_then_assess_new_garments",
+      "evidence": {
+        "eligible_by_expression_structure": {
+          "typical:pants": 2,
+          "typical:dress": 1,
+          "easy:skirt": 1,
+          "typical:skirt": 2
+        },
+        "reported_gap_reasons": [
+          "search_unmet"
+        ],
+        "search_complete": false
+      }
+    },
+    {
+      "season": "winter",
+      "persona": "neon",
+      "palette": "ocean",
+      "current_valid_sequence": 4,
+      "shortfall_to_first_ten": 6,
+      "shortfall_to_thirty": 26,
+      "missing_main_structures": [
+        "skirt"
+      ],
+      "next_action": "recompose_existing_then_assess_new_garments",
+      "evidence": {
+        "eligible_by_expression_structure": {
+          "typical:pants": 2,
+          "typical:dress": 2
+        },
+        "reported_gap_reasons": [
+          "missing_main_structure"
+        ],
+        "search_complete": false
+      }
+    },
+    {
+      "season": "winter",
+      "persona": "neon",
+      "palette": "pastel",
+      "current_valid_sequence": 4,
+      "shortfall_to_first_ten": 6,
+      "shortfall_to_thirty": 26,
+      "missing_main_structures": [
+        "dress"
+      ],
+      "next_action": "recompose_existing_then_assess_new_garments",
+      "evidence": {
+        "eligible_by_expression_structure": {
+          "typical:pants": 3,
+          "typical:skirt": 2
+        },
+        "reported_gap_reasons": [
+          "missing_main_structure"
+        ],
+        "search_complete": false
+      }
+    },
+    {
+      "season": "winter",
+      "persona": "noir",
+      "palette": "ocean",
+      "current_valid_sequence": 4,
+      "shortfall_to_first_ten": 6,
+      "shortfall_to_thirty": 26,
+      "missing_main_structures": [
+        "skirt"
+      ],
+      "next_action": "recompose_existing_then_assess_new_garments",
+      "evidence": {
+        "eligible_by_expression_structure": {
+          "easy:dress": 1,
+          "typical:pants": 2,
+          "easy:pants": 1
+        },
+        "reported_gap_reasons": [
+          "missing_main_structure"
+        ],
+        "search_complete": false
+      }
+    },
+    {
+      "season": "winter",
+      "persona": "oops",
+      "palette": "bright",
+      "current_valid_sequence": 4,
+      "shortfall_to_first_ten": 6,
+      "shortfall_to_thirty": 26,
+      "missing_main_structures": [],
+      "next_action": "recompose_existing_then_assess_new_garments",
+      "evidence": {
+        "eligible_by_expression_structure": {
+          "typical:pants": 4,
+          "typical:skirt": 1,
+          "easy:dress": 1
+        },
+        "reported_gap_reasons": [
+          "search_unmet"
+        ],
+        "search_complete": false
+      }
+    },
+    {
+      "season": "winter",
+      "persona": "oops",
+      "palette": "ocean",
+      "current_valid_sequence": 4,
+      "shortfall_to_first_ten": 6,
+      "shortfall_to_thirty": 26,
+      "missing_main_structures": [
+        "skirt"
+      ],
+      "next_action": "recompose_existing_then_assess_new_garments",
+      "evidence": {
+        "eligible_by_expression_structure": {
+          "typical:pants": 2,
+          "typical:dress": 2
+        },
+        "reported_gap_reasons": [
+          "missing_main_structure"
+        ],
+        "search_complete": false
+      }
+    },
+    {
+      "season": "winter",
+      "persona": "edge",
+      "palette": "bright",
+      "current_valid_sequence": 3,
+      "shortfall_to_first_ten": 7,
+      "shortfall_to_thirty": 27,
+      "missing_main_structures": [
+        "dress",
+        "skirt"
+      ],
+      "next_action": "recompose_existing_then_assess_new_garments",
+      "evidence": {
+        "eligible_by_expression_structure": {
+          "typical:pants": 3
+        },
+        "reported_gap_reasons": [
+          "missing_main_structure"
+        ],
+        "search_complete": false
+      }
+    },
+    {
+      "season": "winter",
+      "persona": "edge",
+      "palette": "ocean",
+      "current_valid_sequence": 3,
+      "shortfall_to_first_ten": 7,
+      "shortfall_to_thirty": 27,
+      "missing_main_structures": [
+        "skirt"
+      ],
+      "next_action": "recompose_existing_then_assess_new_garments",
+      "evidence": {
+        "eligible_by_expression_structure": {
+          "typical:pants": 2,
+          "typical:dress": 1
+        },
+        "reported_gap_reasons": [
+          "missing_main_structure"
+        ],
+        "search_complete": false
+      }
+    },
+    {
+      "season": "winter",
+      "persona": "film",
+      "palette": "earth",
+      "current_valid_sequence": 3,
+      "shortfall_to_first_ten": 7,
+      "shortfall_to_thirty": 27,
+      "missing_main_structures": [
+        "pants"
+      ],
+      "next_action": "recompose_existing_then_assess_new_garments",
+      "evidence": {
+        "eligible_by_expression_structure": {
+          "easy:dress": 2,
+          "typical:skirt": 1
+        },
+        "reported_gap_reasons": [
+          "missing_main_structure"
+        ],
+        "search_complete": false
+      }
+    },
+    {
+      "season": "winter",
+      "persona": "film",
+      "palette": "ocean",
+      "current_valid_sequence": 3,
+      "shortfall_to_first_ten": 7,
+      "shortfall_to_thirty": 27,
+      "missing_main_structures": [],
+      "next_action": "recompose_existing_then_assess_new_garments",
+      "evidence": {
+        "eligible_by_expression_structure": {
+          "easy:pants": 1,
+          "typical:dress": 1,
+          "typical:skirt": 1
+        },
+        "reported_gap_reasons": [
+          "search_unmet"
+        ],
+        "search_complete": false
+      }
+    },
+    {
+      "season": "winter",
+      "persona": "flou",
+      "palette": "jewel",
+      "current_valid_sequence": 3,
+      "shortfall_to_first_ten": 7,
+      "shortfall_to_thirty": 27,
+      "missing_main_structures": [
+        "pants"
+      ],
+      "next_action": "recompose_existing_then_assess_new_garments",
+      "evidence": {
+        "eligible_by_expression_structure": {
+          "easy:dress": 1,
+          "typical:skirt": 2
+        },
+        "reported_gap_reasons": [
+          "missing_main_structure"
+        ],
+        "search_complete": false
+      }
+    },
+    {
+      "season": "winter",
+      "persona": "flou",
+      "palette": "pastel",
+      "current_valid_sequence": 3,
+      "shortfall_to_first_ten": 7,
+      "shortfall_to_thirty": 27,
+      "missing_main_structures": [
+        "pants"
+      ],
+      "next_action": "recompose_existing_then_assess_new_garments",
+      "evidence": {
+        "eligible_by_expression_structure": {
+          "typical:dress": 1,
+          "easy:dress": 1,
+          "typical:skirt": 1
+        },
+        "reported_gap_reasons": [
+          "missing_main_structure"
+        ],
+        "search_complete": false
+      }
+    },
+    {
+      "season": "winter",
+      "persona": "heir",
+      "palette": "bright",
+      "current_valid_sequence": 3,
+      "shortfall_to_first_ten": 7,
+      "shortfall_to_thirty": 27,
+      "missing_main_structures": [
+        "pants",
+        "skirt"
+      ],
+      "next_action": "recompose_existing_then_assess_new_garments",
+      "evidence": {
+        "eligible_by_expression_structure": {
+          "typical:dress": 2,
+          "easy:dress": 2
+        },
+        "reported_gap_reasons": [
+          "missing_main_structure"
+        ],
+        "search_complete": false
+      }
+    },
+    {
+      "season": "winter",
+      "persona": "jade",
+      "palette": "earth",
+      "current_valid_sequence": 3,
+      "shortfall_to_first_ten": 7,
+      "shortfall_to_thirty": 27,
+      "missing_main_structures": [],
+      "next_action": "recompose_existing_then_assess_new_garments",
+      "evidence": {
+        "eligible_by_expression_structure": {
+          "typical:skirt": 1,
+          "typical:dress": 1,
+          "typical:pants": 1
+        },
+        "reported_gap_reasons": [
+          "search_unmet"
+        ],
+        "search_complete": false
+      }
+    },
+    {
+      "season": "winter",
+      "persona": "jade",
+      "palette": "pastel",
+      "current_valid_sequence": 3,
+      "shortfall_to_first_ten": 7,
+      "shortfall_to_thirty": 27,
+      "missing_main_structures": [],
+      "next_action": "recompose_existing_then_assess_new_garments",
+      "evidence": {
+        "eligible_by_expression_structure": {
+          "typical:pants": 1,
+          "typical:dress": 1,
+          "typical:skirt": 1
+        },
+        "reported_gap_reasons": [
+          "search_unmet"
+        ],
+        "search_complete": false
+      }
+    },
+    {
+      "season": "winter",
+      "persona": "loop",
+      "palette": "bright",
+      "current_valid_sequence": 3,
+      "shortfall_to_first_ten": 7,
+      "shortfall_to_thirty": 27,
+      "missing_main_structures": [
+        "dress",
+        "skirt"
+      ],
+      "next_action": "recompose_existing_then_assess_new_garments",
+      "evidence": {
+        "eligible_by_expression_structure": {
+          "typical:pants": 1,
+          "easy:pants": 2
+        },
+        "reported_gap_reasons": [
+          "missing_main_structure"
+        ],
+        "search_complete": false
+      }
+    },
+    {
+      "season": "winter",
+      "persona": "loop",
+      "palette": "jewel",
+      "current_valid_sequence": 3,
+      "shortfall_to_first_ten": 7,
+      "shortfall_to_thirty": 27,
+      "missing_main_structures": [
+        "dress",
+        "skirt"
+      ],
+      "next_action": "recompose_existing_then_assess_new_garments",
+      "evidence": {
+        "eligible_by_expression_structure": {
+          "typical:pants": 1,
+          "easy:pants": 2
+        },
+        "reported_gap_reasons": [
+          "missing_main_structure"
+        ],
+        "search_complete": false
+      }
+    },
+    {
+      "season": "winter",
+      "persona": "loop",
+      "palette": "ocean",
+      "current_valid_sequence": 3,
+      "shortfall_to_first_ten": 7,
+      "shortfall_to_thirty": 27,
+      "missing_main_structures": [],
+      "next_action": "recompose_existing_then_assess_new_garments",
+      "evidence": {
+        "eligible_by_expression_structure": {
+          "typical:pants": 1,
+          "easy:dress": 1,
+          "easy:skirt": 1
+        },
+        "reported_gap_reasons": [
+          "search_unmet"
+        ],
+        "search_complete": false
+      }
+    },
+    {
+      "season": "winter",
+      "persona": "loop",
+      "palette": "pastel",
+      "current_valid_sequence": 3,
+      "shortfall_to_first_ten": 7,
+      "shortfall_to_thirty": 27,
+      "missing_main_structures": [
+        "dress"
+      ],
+      "next_action": "recompose_existing_then_assess_new_garments",
+      "evidence": {
+        "eligible_by_expression_structure": {
+          "easy:skirt": 1,
+          "easy:pants": 2
+        },
+        "reported_gap_reasons": [
+          "missing_main_structure"
+        ],
+        "search_complete": false
+      }
+    },
+    {
+      "season": "winter",
+      "persona": "noir",
+      "palette": "pastel",
+      "current_valid_sequence": 3,
+      "shortfall_to_first_ten": 7,
+      "shortfall_to_thirty": 27,
+      "missing_main_structures": [],
+      "next_action": "recompose_existing_then_assess_new_garments",
+      "evidence": {
+        "eligible_by_expression_structure": {
+          "typical:pants": 2,
+          "typical:dress": 1,
+          "typical:skirt": 1
+        },
+        "reported_gap_reasons": [
+          "search_unmet"
+        ],
+        "search_complete": false
+      }
+    },
+    {
+      "season": "winter",
+      "persona": "oops",
+      "palette": "pastel",
+      "current_valid_sequence": 3,
+      "shortfall_to_first_ten": 7,
+      "shortfall_to_thirty": 27,
+      "missing_main_structures": [
+        "dress"
+      ],
+      "next_action": "recompose_existing_then_assess_new_garments",
+      "evidence": {
+        "eligible_by_expression_structure": {
+          "typical:pants": 3,
+          "typical:skirt": 1
+        },
+        "reported_gap_reasons": [
+          "missing_main_structure"
+        ],
+        "search_complete": false
+      }
+    },
+    {
+      "season": "winter",
+      "persona": "void",
+      "palette": "earth",
+      "current_valid_sequence": 3,
+      "shortfall_to_first_ten": 7,
+      "shortfall_to_thirty": 27,
+      "missing_main_structures": [],
+      "next_action": "recompose_existing_then_assess_new_garments",
+      "evidence": {
+        "eligible_by_expression_structure": {
+          "typical:pants": 1,
+          "typical:skirt": 1,
+          "typical:dress": 1
+        },
+        "reported_gap_reasons": [
+          "search_unmet"
+        ],
+        "search_complete": false
+      }
+    },
+    {
+      "season": "winter",
+      "persona": "void",
+      "palette": "ocean",
+      "current_valid_sequence": 3,
+      "shortfall_to_first_ten": 7,
+      "shortfall_to_thirty": 27,
+      "missing_main_structures": [
+        "pants"
+      ],
+      "next_action": "recompose_existing_then_assess_new_garments",
+      "evidence": {
+        "eligible_by_expression_structure": {
+          "typical:skirt": 3,
+          "typical:dress": 1
+        },
+        "reported_gap_reasons": [
+          "missing_main_structure"
+        ],
+        "search_complete": false
+      }
+    },
+    {
+      "season": "winter",
+      "persona": "wabi",
+      "palette": "bright",
+      "current_valid_sequence": 3,
+      "shortfall_to_first_ten": 7,
+      "shortfall_to_thirty": 27,
+      "missing_main_structures": [],
+      "next_action": "recompose_existing_then_assess_new_garments",
+      "evidence": {
+        "eligible_by_expression_structure": {
+          "easy:dress": 1,
+          "typical:skirt": 1,
+          "typical:pants": 1
+        },
+        "reported_gap_reasons": [
+          "search_unmet"
+        ],
+        "search_complete": false
+      }
+    },
+    {
+      "season": "winter",
+      "persona": "wabi",
+      "palette": "pastel",
+      "current_valid_sequence": 3,
+      "shortfall_to_first_ten": 7,
+      "shortfall_to_thirty": 27,
+      "missing_main_structures": [
+        "dress"
+      ],
+      "next_action": "recompose_existing_then_assess_new_garments",
+      "evidence": {
+        "eligible_by_expression_structure": {
+          "easy:pants": 1,
+          "typical:skirt": 1,
+          "typical:pants": 1
+        },
+        "reported_gap_reasons": [
+          "missing_main_structure"
+        ],
+        "search_complete": false
+      }
+    },
+    {
+      "season": "winter",
+      "persona": "bolt",
+      "palette": "bright",
+      "current_valid_sequence": 2,
+      "shortfall_to_first_ten": 8,
+      "shortfall_to_thirty": 28,
+      "missing_main_structures": [
+        "dress",
+        "skirt"
+      ],
+      "next_action": "recompose_existing_then_assess_new_garments",
+      "evidence": {
+        "eligible_by_expression_structure": {
+          "typical:pants": 2
+        },
+        "reported_gap_reasons": [
+          "missing_main_structure"
+        ],
+        "search_complete": false
+      }
+    },
+    {
+      "season": "winter",
+      "persona": "bolt",
+      "palette": "earth",
+      "current_valid_sequence": 2,
+      "shortfall_to_first_ten": 8,
+      "shortfall_to_thirty": 28,
+      "missing_main_structures": [
+        "skirt"
+      ],
+      "next_action": "recompose_existing_then_assess_new_garments",
+      "evidence": {
+        "eligible_by_expression_structure": {
+          "typical:pants": 1,
+          "typical:dress": 1
+        },
+        "reported_gap_reasons": [
+          "missing_main_structure"
+        ],
+        "search_complete": false
+      }
+    },
+    {
+      "season": "winter",
+      "persona": "bolt",
+      "palette": "pastel",
+      "current_valid_sequence": 2,
+      "shortfall_to_first_ten": 8,
+      "shortfall_to_thirty": 28,
+      "missing_main_structures": [],
+      "next_action": "recompose_existing_then_assess_new_garments",
+      "evidence": {
+        "eligible_by_expression_structure": {
+          "typical:pants": 1,
+          "typical:dress": 1,
+          "typical:skirt": 1
+        },
+        "reported_gap_reasons": [
+          "search_unmet"
+        ],
+        "search_complete": false
+      }
+    },
+    {
+      "season": "winter",
+      "persona": "edge",
+      "palette": "earth",
+      "current_valid_sequence": 2,
+      "shortfall_to_first_ten": 8,
+      "shortfall_to_thirty": 28,
+      "missing_main_structures": [
+        "dress"
+      ],
+      "next_action": "recompose_existing_then_assess_new_garments",
+      "evidence": {
+        "eligible_by_expression_structure": {
+          "typical:skirt": 1,
+          "typical:pants": 1
+        },
+        "reported_gap_reasons": [
+          "missing_main_structure"
+        ],
+        "search_complete": false
+      }
+    },
+    {
+      "season": "winter",
+      "persona": "edge",
+      "palette": "pastel",
+      "current_valid_sequence": 2,
+      "shortfall_to_first_ten": 8,
+      "shortfall_to_thirty": 28,
+      "missing_main_structures": [
+        "skirt"
+      ],
+      "next_action": "recompose_existing_then_assess_new_garments",
+      "evidence": {
+        "eligible_by_expression_structure": {
+          "typical:pants": 1,
+          "typical:dress": 1
+        },
+        "reported_gap_reasons": [
+          "missing_main_structure"
+        ],
+        "search_complete": false
+      }
+    },
+    {
+      "season": "winter",
+      "persona": "film",
+      "palette": "bright",
+      "current_valid_sequence": 2,
+      "shortfall_to_first_ten": 8,
+      "shortfall_to_thirty": 28,
+      "missing_main_structures": [
+        "pants"
+      ],
+      "next_action": "recompose_existing_then_assess_new_garments",
+      "evidence": {
+        "eligible_by_expression_structure": {
+          "easy:dress": 1,
+          "typical:skirt": 1
+        },
+        "reported_gap_reasons": [
+          "missing_main_structure"
+        ],
+        "search_complete": false
+      }
+    },
+    {
+      "season": "winter",
+      "persona": "flou",
+      "palette": "bright",
+      "current_valid_sequence": 2,
+      "shortfall_to_first_ten": 8,
+      "shortfall_to_thirty": 28,
+      "missing_main_structures": [
+        "pants"
+      ],
+      "next_action": "recompose_existing_then_assess_new_garments",
+      "evidence": {
+        "eligible_by_expression_structure": {
+          "easy:dress": 1,
+          "typical:skirt": 1
+        },
+        "reported_gap_reasons": [
+          "missing_main_structure"
+        ],
+        "search_complete": false
+      }
+    },
+    {
+      "season": "winter",
+      "persona": "iced",
+      "palette": "jewel",
+      "current_valid_sequence": 2,
+      "shortfall_to_first_ten": 8,
+      "shortfall_to_thirty": 28,
+      "missing_main_structures": [
+        "skirt"
+      ],
+      "next_action": "recompose_existing_then_assess_new_garments",
+      "evidence": {
+        "eligible_by_expression_structure": {
+          "typical:dress": 1,
+          "typical:pants": 1
+        },
+        "reported_gap_reasons": [
+          "missing_main_structure"
+        ],
+        "search_complete": false
+      }
+    },
+    {
+      "season": "winter",
+      "persona": "loop",
+      "palette": "earth",
+      "current_valid_sequence": 2,
+      "shortfall_to_first_ten": 8,
+      "shortfall_to_thirty": 28,
+      "missing_main_structures": [
+        "dress"
+      ],
+      "next_action": "recompose_existing_then_assess_new_garments",
+      "evidence": {
+        "eligible_by_expression_structure": {
+          "easy:skirt": 1,
+          "easy:pants": 1
+        },
+        "reported_gap_reasons": [
+          "missing_main_structure"
+        ],
+        "search_complete": false
+      }
+    },
+    {
+      "season": "winter",
+      "persona": "melt",
+      "palette": "bright",
+      "current_valid_sequence": 2,
+      "shortfall_to_first_ten": 8,
+      "shortfall_to_thirty": 28,
+      "missing_main_structures": [
+        "dress",
+        "pants"
+      ],
+      "next_action": "recompose_existing_then_assess_new_garments",
+      "evidence": {
+        "eligible_by_expression_structure": {
+          "typical:skirt": 4
+        },
+        "reported_gap_reasons": [
+          "missing_main_structure"
+        ],
+        "search_complete": false
+      }
+    },
+    {
+      "season": "winter",
+      "persona": "melt",
+      "palette": "earth",
+      "current_valid_sequence": 2,
+      "shortfall_to_first_ten": 8,
+      "shortfall_to_thirty": 28,
+      "missing_main_structures": [
+        "dress"
+      ],
+      "next_action": "recompose_existing_then_assess_new_garments",
+      "evidence": {
+        "eligible_by_expression_structure": {
+          "typical:pants": 1,
+          "typical:skirt": 1
+        },
+        "reported_gap_reasons": [
+          "missing_main_structure"
+        ],
+        "search_complete": false
+      }
+    },
+    {
+      "season": "winter",
+      "persona": "melt",
+      "palette": "jewel",
+      "current_valid_sequence": 2,
+      "shortfall_to_first_ten": 8,
+      "shortfall_to_thirty": 28,
+      "missing_main_structures": [
+        "dress",
+        "pants"
+      ],
+      "next_action": "recompose_existing_then_assess_new_garments",
+      "evidence": {
+        "eligible_by_expression_structure": {
+          "typical:skirt": 4
+        },
+        "reported_gap_reasons": [
+          "missing_main_structure"
+        ],
+        "search_complete": false
+      }
+    },
+    {
+      "season": "winter",
+      "persona": "mute",
+      "palette": "bright",
+      "current_valid_sequence": 2,
+      "shortfall_to_first_ten": 8,
+      "shortfall_to_thirty": 28,
+      "missing_main_structures": [
+        "skirt"
+      ],
+      "next_action": "recompose_existing_then_assess_new_garments",
+      "evidence": {
+        "eligible_by_expression_structure": {
+          "easy:pants": 1,
+          "easy:dress": 1
+        },
+        "reported_gap_reasons": [
+          "missing_main_structure"
+        ],
+        "search_complete": false
+      }
+    },
+    {
+      "season": "winter",
+      "persona": "neon",
+      "palette": "earth",
+      "current_valid_sequence": 2,
+      "shortfall_to_first_ten": 8,
+      "shortfall_to_thirty": 28,
+      "missing_main_structures": [],
+      "next_action": "recompose_existing_then_assess_new_garments",
+      "evidence": {
+        "eligible_by_expression_structure": {
+          "typical:pants": 1,
+          "typical:skirt": 1,
+          "typical:dress": 1
+        },
+        "reported_gap_reasons": [
+          "search_unmet"
+        ],
+        "search_complete": false
+      }
+    },
+    {
+      "season": "winter",
+      "persona": "noir",
+      "palette": "bright",
+      "current_valid_sequence": 2,
+      "shortfall_to_first_ten": 8,
+      "shortfall_to_thirty": 28,
+      "missing_main_structures": [
+        "skirt"
+      ],
+      "next_action": "recompose_existing_then_assess_new_garments",
+      "evidence": {
+        "eligible_by_expression_structure": {
+          "typical:pants": 1,
+          "easy:dress": 1
+        },
+        "reported_gap_reasons": [
+          "missing_main_structure"
+        ],
+        "search_complete": false
+      }
+    },
+    {
+      "season": "winter",
+      "persona": "noir",
+      "palette": "earth",
+      "current_valid_sequence": 2,
+      "shortfall_to_first_ten": 8,
+      "shortfall_to_thirty": 28,
+      "missing_main_structures": [
+        "skirt"
+      ],
+      "next_action": "recompose_existing_then_assess_new_garments",
+      "evidence": {
+        "eligible_by_expression_structure": {
+          "typical:pants": 1,
+          "typical:dress": 1
+        },
+        "reported_gap_reasons": [
+          "missing_main_structure"
+        ],
+        "search_complete": false
+      }
+    },
+    {
+      "season": "winter",
+      "persona": "oops",
+      "palette": "earth",
+      "current_valid_sequence": 2,
+      "shortfall_to_first_ten": 8,
+      "shortfall_to_thirty": 28,
+      "missing_main_structures": [
+        "dress"
+      ],
+      "next_action": "recompose_existing_then_assess_new_garments",
+      "evidence": {
+        "eligible_by_expression_structure": {
+          "typical:pants": 1,
+          "typical:skirt": 1
+        },
+        "reported_gap_reasons": [
+          "missing_main_structure"
+        ],
+        "search_complete": false
+      }
+    },
+    {
+      "season": "winter",
+      "persona": "void",
+      "palette": "bright",
+      "current_valid_sequence": 2,
+      "shortfall_to_first_ten": 8,
+      "shortfall_to_thirty": 28,
+      "missing_main_structures": [],
+      "next_action": "recompose_existing_then_assess_new_garments",
+      "evidence": {
+        "eligible_by_expression_structure": {
+          "typical:pants": 1,
+          "typical:skirt": 1,
+          "easy:dress": 1
+        },
+        "reported_gap_reasons": [
+          "search_unmet"
+        ],
+        "search_complete": false
+      }
+    },
+    {
+      "season": "winter",
+      "persona": "void",
+      "palette": "pastel",
+      "current_valid_sequence": 2,
+      "shortfall_to_first_ten": 8,
+      "shortfall_to_thirty": 28,
+      "missing_main_structures": [],
+      "next_action": "recompose_existing_then_assess_new_garments",
+      "evidence": {
+        "eligible_by_expression_structure": {
+          "typical:pants": 1,
+          "typical:skirt": 1,
+          "easy:dress": 1
+        },
+        "reported_gap_reasons": [
+          "search_unmet"
+        ],
+        "search_complete": false
+      }
+    },
+    {
+      "season": "winter",
+      "persona": "bolt",
+      "palette": "ocean",
+      "current_valid_sequence": 1,
+      "shortfall_to_first_ten": 9,
+      "shortfall_to_thirty": 29,
+      "missing_main_structures": [
+        "pants",
+        "skirt"
+      ],
+      "next_action": "recompose_existing_then_assess_new_garments",
+      "evidence": {
+        "eligible_by_expression_structure": {
+          "typical:dress": 1
+        },
+        "reported_gap_reasons": [
+          "missing_main_structure"
+        ],
+        "search_complete": false
+      }
+    },
+    {
+      "season": "winter",
+      "persona": "film",
+      "palette": "pastel",
+      "current_valid_sequence": 1,
+      "shortfall_to_first_ten": 9,
+      "shortfall_to_thirty": 29,
+      "missing_main_structures": [
+        "dress",
+        "pants"
+      ],
+      "next_action": "recompose_existing_then_assess_new_garments",
+      "evidence": {
+        "eligible_by_expression_structure": {
+          "typical:skirt": 1
+        },
+        "reported_gap_reasons": [
+          "missing_main_structure"
+        ],
+        "search_complete": false
+      }
+    },
+    {
+      "season": "winter",
+      "persona": "flou",
+      "palette": "earth",
+      "current_valid_sequence": 1,
+      "shortfall_to_first_ten": 9,
+      "shortfall_to_thirty": 29,
+      "missing_main_structures": [
+        "pants",
+        "skirt"
+      ],
+      "next_action": "recompose_existing_then_assess_new_garments",
+      "evidence": {
+        "eligible_by_expression_structure": {
+          "easy:dress": 1
+        },
+        "reported_gap_reasons": [
+          "missing_main_structure"
+        ],
+        "search_complete": false
+      }
+    },
+    {
+      "season": "winter",
+      "persona": "flou",
+      "palette": "ocean",
+      "current_valid_sequence": 1,
+      "shortfall_to_first_ten": 9,
+      "shortfall_to_thirty": 29,
+      "missing_main_structures": [
+        "dress",
+        "pants"
+      ],
+      "next_action": "recompose_existing_then_assess_new_garments",
+      "evidence": {
+        "eligible_by_expression_structure": {
+          "typical:skirt": 1
+        },
+        "reported_gap_reasons": [
+          "missing_main_structure"
+        ],
+        "search_complete": false
+      }
+    },
+    {
+      "season": "winter",
+      "persona": "iced",
+      "palette": "bright",
+      "current_valid_sequence": 1,
+      "shortfall_to_first_ten": 9,
+      "shortfall_to_thirty": 29,
+      "missing_main_structures": [
+        "pants",
+        "skirt"
+      ],
+      "next_action": "recompose_existing_then_assess_new_garments",
+      "evidence": {
+        "eligible_by_expression_structure": {
+          "typical:dress": 1
+        },
+        "reported_gap_reasons": [
+          "missing_main_structure"
+        ],
+        "search_complete": false
+      }
+    },
+    {
+      "season": "winter",
+      "persona": "iced",
+      "palette": "earth",
+      "current_valid_sequence": 1,
+      "shortfall_to_first_ten": 9,
+      "shortfall_to_thirty": 29,
+      "missing_main_structures": [
+        "pants",
+        "skirt"
+      ],
+      "next_action": "recompose_existing_then_assess_new_garments",
+      "evidence": {
+        "eligible_by_expression_structure": {
+          "typical:dress": 1
+        },
+        "reported_gap_reasons": [
+          "missing_main_structure"
+        ],
+        "search_complete": false
+      }
+    },
+    {
+      "season": "winter",
+      "persona": "jade",
+      "palette": "bright",
+      "current_valid_sequence": 1,
+      "shortfall_to_first_ten": 9,
+      "shortfall_to_thirty": 29,
+      "missing_main_structures": [
+        "dress",
+        "pants"
+      ],
+      "next_action": "recompose_existing_then_assess_new_garments",
+      "evidence": {
+        "eligible_by_expression_structure": {
+          "typical:skirt": 1
+        },
+        "reported_gap_reasons": [
+          "missing_main_structure"
+        ],
+        "search_complete": false
+      }
+    },
+    {
+      "season": "winter",
+      "persona": "melt",
+      "palette": "ocean",
+      "current_valid_sequence": 1,
+      "shortfall_to_first_ten": 9,
+      "shortfall_to_thirty": 29,
+      "missing_main_structures": [
+        "dress",
+        "pants"
+      ],
+      "next_action": "recompose_existing_then_assess_new_garments",
+      "evidence": {
+        "eligible_by_expression_structure": {
+          "easy:skirt": 1
+        },
+        "reported_gap_reasons": [
+          "missing_main_structure"
+        ],
+        "search_complete": false
+      }
+    },
+    {
+      "season": "winter",
+      "persona": "mute",
+      "palette": "earth",
+      "current_valid_sequence": 1,
+      "shortfall_to_first_ten": 9,
+      "shortfall_to_thirty": 29,
+      "missing_main_structures": [
+        "dress",
+        "skirt"
+      ],
+      "next_action": "recompose_existing_then_assess_new_garments",
+      "evidence": {
+        "eligible_by_expression_structure": {
+          "easy:pants": 1
+        },
+        "reported_gap_reasons": [
+          "missing_main_structure"
+        ],
+        "search_complete": false
+      }
+    },
+    {
+      "season": "winter",
+      "persona": "mute",
+      "palette": "ocean",
+      "current_valid_sequence": 1,
+      "shortfall_to_first_ten": 9,
+      "shortfall_to_thirty": 29,
+      "missing_main_structures": [
+        "dress",
+        "skirt"
+      ],
+      "next_action": "recompose_existing_then_assess_new_garments",
+      "evidence": {
+        "eligible_by_expression_structure": {
+          "easy:pants": 1
+        },
+        "reported_gap_reasons": [
+          "missing_main_structure"
+        ],
+        "search_complete": false
+      }
+    },
+    {
+      "season": "winter",
+      "persona": "heir",
+      "palette": "mono",
+      "current_valid_sequence": 25,
+      "shortfall_to_first_ten": 0,
+      "shortfall_to_thirty": 5,
+      "missing_main_structures": [],
+      "next_action": "add_non_similar_parent_recipes_for_browse_depth",
+      "evidence": {
+        "eligible_by_expression_structure": {
+          "typical:skirt": 2,
+          "typical:dress": 14,
+          "easy:pants": 3,
+          "typical:pants": 6,
+          "easy:skirt": 2,
+          "easy:dress": 2
+        },
+        "reported_gap_reasons": [
+          "search_unmet"
+        ],
+        "search_complete": false
+      }
+    },
+    {
+      "season": "winter",
+      "persona": "iced",
+      "palette": "mono",
+      "current_valid_sequence": 19,
+      "shortfall_to_first_ten": 0,
+      "shortfall_to_thirty": 11,
+      "missing_main_structures": [],
+      "next_action": "add_non_similar_parent_recipes_for_browse_depth",
+      "evidence": {
+        "eligible_by_expression_structure": {
+          "typical:skirt": 4,
+          "typical:dress": 10,
+          "typical:pants": 8,
+          "easy:skirt": 2
+        },
+        "reported_gap_reasons": [
+          "search_unmet"
+        ],
+        "search_complete": false
+      }
+    },
+    {
+      "season": "winter",
+      "persona": "wabi",
+      "palette": "mono",
+      "current_valid_sequence": 16,
+      "shortfall_to_first_ten": 0,
+      "shortfall_to_thirty": 14,
+      "missing_main_structures": [],
+      "next_action": "add_non_similar_parent_recipes_for_browse_depth",
+      "evidence": {
+        "eligible_by_expression_structure": {
+          "typical:skirt": 11,
+          "typical:pants": 7,
+          "easy:pants": 1,
+          "typical:dress": 5,
+          "easy:dress": 1
+        },
+        "reported_gap_reasons": [
+          "search_unmet"
+        ],
+        "search_complete": false
+      }
+    },
+    {
+      "season": "winter",
+      "persona": "heir",
+      "palette": "jewel",
+      "current_valid_sequence": 15,
+      "shortfall_to_first_ten": 0,
+      "shortfall_to_thirty": 15,
+      "missing_main_structures": [],
+      "next_action": "add_non_similar_parent_recipes_for_browse_depth",
+      "evidence": {
+        "eligible_by_expression_structure": {
+          "typical:dress": 11,
+          "typical:pants": 3,
+          "easy:pants": 2,
+          "easy:dress": 3,
+          "easy:skirt": 1
+        },
+        "reported_gap_reasons": [
+          "search_unmet"
+        ],
+        "search_complete": false
+      }
+    },
+    {
+      "season": "winter",
+      "persona": "ease",
+      "palette": "mono",
+      "current_valid_sequence": 14,
+      "shortfall_to_first_ten": 0,
+      "shortfall_to_thirty": 16,
+      "missing_main_structures": [],
+      "next_action": "add_non_similar_parent_recipes_for_browse_depth",
+      "evidence": {
+        "eligible_by_expression_structure": {
+          "typical:pants": 7,
+          "typical:dress": 2,
+          "easy:skirt": 1,
+          "easy:pants": 3,
+          "easy:dress": 2
+        },
+        "reported_gap_reasons": [
+          "search_unmet"
+        ],
+        "search_complete": false
+      }
+    },
+    {
+      "season": "winter",
+      "persona": "noir",
+      "palette": "mono",
+      "current_valid_sequence": 13,
+      "shortfall_to_first_ten": 0,
+      "shortfall_to_thirty": 17,
+      "missing_main_structures": [],
+      "next_action": "add_non_similar_parent_recipes_for_browse_depth",
+      "evidence": {
+        "eligible_by_expression_structure": {
+          "typical:pants": 8,
+          "typical:dress": 5,
+          "typical:skirt": 2,
+          "easy:dress": 1,
+          "easy:pants": 1
+        },
+        "reported_gap_reasons": [
+          "search_unmet"
+        ],
+        "search_complete": false
+      }
+    },
+    {
+      "season": "winter",
+      "persona": "heir",
+      "palette": "earth",
+      "current_valid_sequence": 11,
+      "shortfall_to_first_ten": 0,
+      "shortfall_to_thirty": 19,
+      "missing_main_structures": [],
+      "next_action": "add_non_similar_parent_recipes_for_browse_depth",
+      "evidence": {
+        "eligible_by_expression_structure": {
+          "easy:pants": 1,
+          "easy:dress": 1,
+          "typical:pants": 3,
+          "easy:skirt": 1,
+          "typical:dress": 5
+        },
+        "reported_gap_reasons": [
+          "search_unmet"
+        ],
+        "search_complete": false
+      }
+    },
+    {
+      "season": "autumn",
+      "persona": "jade",
+      "palette": "earth",
+      "current_valid_sequence": 9,
+      "shortfall_to_first_ten": 1,
+      "shortfall_to_thirty": 21,
+      "missing_main_structures": [],
+      "next_action": "recompose_existing_then_assess_new_garments",
+      "evidence": {
+        "eligible_by_expression_structure": {
+          "typical:dress": 1,
+          "typical:pants": 9,
+          "typical:skirt": 2,
+          "explore:pants": 3,
+          "easy:pants": 2,
+          "easy:skirt": 1
+        },
+        "reported_gap_reasons": [
+          "search_unmet"
+        ],
+        "search_complete": false
+      }
+    },
+    {
+      "season": "autumn",
+      "persona": "void",
+      "palette": "pastel",
+      "current_valid_sequence": 9,
+      "shortfall_to_first_ten": 1,
+      "shortfall_to_thirty": 21,
+      "missing_main_structures": [],
+      "next_action": "recompose_existing_then_assess_new_garments",
+      "evidence": {
+        "eligible_by_expression_structure": {
+          "typical:pants": 9,
+          "typical:skirt": 3,
+          "typical:dress": 1
+        },
+        "reported_gap_reasons": [
+          "search_unmet"
+        ],
+        "search_complete": false
+      }
+    },
+    {
+      "season": "autumn",
+      "persona": "edge",
+      "palette": "mono",
+      "current_valid_sequence": 8,
+      "shortfall_to_first_ten": 2,
+      "shortfall_to_thirty": 22,
+      "missing_main_structures": [],
+      "next_action": "recompose_existing_then_assess_new_garments",
+      "evidence": {
+        "eligible_by_expression_structure": {
+          "typical:skirt": 1,
+          "typical:pants": 14,
+          "typical:dress": 2
+        },
+        "reported_gap_reasons": [
+          "search_unmet"
+        ],
+        "search_complete": false
+      }
+    },
+    {
+      "season": "autumn",
+      "persona": "jade",
+      "palette": "mono",
+      "current_valid_sequence": 8,
+      "shortfall_to_first_ten": 2,
+      "shortfall_to_thirty": 22,
+      "missing_main_structures": [
+        "dress"
+      ],
+      "next_action": "recompose_existing_then_assess_new_garments",
+      "evidence": {
+        "eligible_by_expression_structure": {
+          "typical:pants": 11,
+          "typical:skirt": 2,
+          "explore:pants": 4,
+          "easy:pants": 2,
+          "easy:skirt": 1
+        },
+        "reported_gap_reasons": [
+          "missing_main_structure"
+        ],
+        "search_complete": false
+      }
+    },
+    {
+      "season": "autumn",
+      "persona": "loop",
+      "palette": "jewel",
+      "current_valid_sequence": 8,
+      "shortfall_to_first_ten": 2,
+      "shortfall_to_thirty": 22,
+      "missing_main_structures": [],
+      "next_action": "recompose_existing_then_assess_new_garments",
+      "evidence": {
+        "eligible_by_expression_structure": {
+          "typical:pants": 3,
+          "typical:dress": 2,
+          "typical:skirt": 3,
+          "easy:pants": 5,
+          "easy:dress": 1
+        },
+        "reported_gap_reasons": [
+          "search_unmet"
+        ],
+        "search_complete": false
+      }
+    },
+    {
+      "season": "autumn",
+      "persona": "ease",
+      "palette": "jewel",
+      "current_valid_sequence": 7,
+      "shortfall_to_first_ten": 3,
+      "shortfall_to_thirty": 23,
+      "missing_main_structures": [],
+      "next_action": "recompose_existing_then_assess_new_garments",
+      "evidence": {
+        "eligible_by_expression_structure": {
+          "typical:dress": 5,
+          "typical:pants": 4,
+          "typical:skirt": 1,
+          "easy:pants": 2,
+          "easy:dress": 3
+        },
+        "reported_gap_reasons": [
+          "search_unmet"
+        ],
+        "search_complete": false
+      }
+    },
+    {
+      "season": "autumn",
+      "persona": "film",
+      "palette": "ocean",
+      "current_valid_sequence": 7,
+      "shortfall_to_first_ten": 3,
+      "shortfall_to_thirty": 23,
+      "missing_main_structures": [],
+      "next_action": "recompose_existing_then_assess_new_garments",
+      "evidence": {
+        "eligible_by_expression_structure": {
+          "typical:pants": 6,
+          "typical:dress": 1,
+          "typical:skirt": 2,
+          "easy:skirt": 4,
+          "easy:pants": 4
+        },
+        "reported_gap_reasons": [
+          "search_unmet"
+        ],
+        "search_complete": false
+      }
+    },
+    {
+      "season": "autumn",
+      "persona": "mute",
+      "palette": "jewel",
+      "current_valid_sequence": 7,
+      "shortfall_to_first_ten": 3,
+      "shortfall_to_thirty": 23,
+      "missing_main_structures": [
+        "skirt"
+      ],
+      "next_action": "recompose_existing_then_assess_new_garments",
+      "evidence": {
+        "eligible_by_expression_structure": {
+          "typical:dress": 2,
+          "typical:pants": 2,
+          "easy:pants": 5
+        },
+        "reported_gap_reasons": [
+          "missing_main_structure"
+        ],
+        "search_complete": false
+      }
+    },
+    {
+      "season": "autumn",
+      "persona": "flou",
+      "palette": "ocean",
+      "current_valid_sequence": 6,
+      "shortfall_to_first_ten": 4,
+      "shortfall_to_thirty": 24,
+      "missing_main_structures": [
+        "dress"
+      ],
+      "next_action": "recompose_existing_then_assess_new_garments",
+      "evidence": {
+        "eligible_by_expression_structure": {
+          "explore:pants": 1,
+          "easy:pants": 3,
+          "typical:pants": 1,
+          "typical:skirt": 2,
+          "easy:skirt": 1
+        },
+        "reported_gap_reasons": [
+          "missing_main_structure"
+        ],
+        "search_complete": false
+      }
+    },
+    {
+      "season": "autumn",
+      "persona": "jade",
+      "palette": "pastel",
+      "current_valid_sequence": 6,
+      "shortfall_to_first_ten": 4,
+      "shortfall_to_thirty": 24,
+      "missing_main_structures": [
+        "dress"
+      ],
+      "next_action": "recompose_existing_then_assess_new_garments",
+      "evidence": {
+        "eligible_by_expression_structure": {
+          "typical:pants": 9,
+          "explore:pants": 4,
+          "easy:pants": 2,
+          "easy:skirt": 1
+        },
+        "reported_gap_reasons": [
+          "missing_main_structure"
+        ],
+        "search_complete": false
+      }
+    },
+    {
+      "season": "autumn",
+      "persona": "neon",
+      "palette": "bright",
+      "current_valid_sequence": 6,
+      "shortfall_to_first_ten": 4,
+      "shortfall_to_thirty": 24,
+      "missing_main_structures": [],
+      "next_action": "recompose_existing_then_assess_new_garments",
+      "evidence": {
+        "eligible_by_expression_structure": {
+          "typical:pants": 4,
+          "typical:skirt": 1,
+          "typical:dress": 2
+        },
+        "reported_gap_reasons": [
+          "search_unmet"
+        ],
+        "search_complete": false
+      }
+    },
+    {
+      "season": "autumn",
+      "persona": "neon",
+      "palette": "jewel",
+      "current_valid_sequence": 6,
+      "shortfall_to_first_ten": 4,
+      "shortfall_to_thirty": 24,
+      "missing_main_structures": [],
+      "next_action": "recompose_existing_then_assess_new_garments",
+      "evidence": {
+        "eligible_by_expression_structure": {
+          "typical:pants": 4,
+          "typical:skirt": 1,
+          "typical:dress": 2
+        },
+        "reported_gap_reasons": [
+          "search_unmet"
+        ],
+        "search_complete": false
+      }
+    },
+    {
+      "season": "autumn",
+      "persona": "noir",
+      "palette": "ocean",
+      "current_valid_sequence": 6,
+      "shortfall_to_first_ten": 4,
+      "shortfall_to_thirty": 24,
+      "missing_main_structures": [],
+      "next_action": "recompose_existing_then_assess_new_garments",
+      "evidence": {
+        "eligible_by_expression_structure": {
+          "typical:dress": 1,
+          "typical:pants": 2,
+          "easy:skirt": 1,
+          "easy:pants": 2
+        },
+        "reported_gap_reasons": [
+          "search_unmet"
+        ],
+        "search_complete": false
+      }
+    },
+    {
+      "season": "autumn",
+      "persona": "oops",
+      "palette": "earth",
+      "current_valid_sequence": 6,
+      "shortfall_to_first_ten": 4,
+      "shortfall_to_thirty": 24,
+      "missing_main_structures": [
+        "dress"
+      ],
+      "next_action": "recompose_existing_then_assess_new_garments",
+      "evidence": {
+        "eligible_by_expression_structure": {
+          "typical:pants": 5,
+          "typical:skirt": 2
+        },
+        "reported_gap_reasons": [
+          "missing_main_structure"
+        ],
+        "search_complete": false
+      }
+    },
+    {
+      "season": "autumn",
+      "persona": "bolt",
+      "palette": "bright",
+      "current_valid_sequence": 5,
+      "shortfall_to_first_ten": 5,
+      "shortfall_to_thirty": 25,
+      "missing_main_structures": [],
+      "next_action": "recompose_existing_then_assess_new_garments",
+      "evidence": {
+        "eligible_by_expression_structure": {
+          "typical:pants": 3,
+          "typical:skirt": 2,
+          "typical:dress": 2
+        },
+        "reported_gap_reasons": [
+          "search_unmet"
+        ],
+        "search_complete": false
+      }
+    },
+    {
+      "season": "autumn",
+      "persona": "bolt",
+      "palette": "jewel",
+      "current_valid_sequence": 5,
+      "shortfall_to_first_ten": 5,
+      "shortfall_to_thirty": 25,
+      "missing_main_structures": [],
+      "next_action": "recompose_existing_then_assess_new_garments",
+      "evidence": {
+        "eligible_by_expression_structure": {
+          "typical:pants": 4,
+          "typical:skirt": 3,
+          "typical:dress": 3
+        },
+        "reported_gap_reasons": [
+          "search_unmet"
+        ],
+        "search_complete": false
+      }
+    },
+    {
+      "season": "autumn",
+      "persona": "bolt",
+      "palette": "mono",
+      "current_valid_sequence": 5,
+      "shortfall_to_first_ten": 5,
+      "shortfall_to_thirty": 25,
+      "missing_main_structures": [],
+      "next_action": "recompose_existing_then_assess_new_garments",
+      "evidence": {
+        "eligible_by_expression_structure": {
+          "typical:pants": 4,
+          "easy:pants": 1,
+          "typical:skirt": 1,
+          "typical:dress": 1
+        },
+        "reported_gap_reasons": [
+          "search_unmet"
+        ],
+        "search_complete": false
+      }
+    },
+    {
+      "season": "autumn",
+      "persona": "film",
+      "palette": "jewel",
+      "current_valid_sequence": 5,
+      "shortfall_to_first_ten": 5,
+      "shortfall_to_thirty": 25,
+      "missing_main_structures": [],
+      "next_action": "recompose_existing_then_assess_new_garments",
+      "evidence": {
+        "eligible_by_expression_structure": {
+          "typical:dress": 5,
+          "typical:pants": 2,
+          "typical:skirt": 2
+        },
+        "reported_gap_reasons": [
+          "search_unmet"
+        ],
+        "search_complete": false
+      }
+    },
+    {
+      "season": "autumn",
+      "persona": "flou",
+      "palette": "jewel",
+      "current_valid_sequence": 5,
+      "shortfall_to_first_ten": 5,
+      "shortfall_to_thirty": 25,
+      "missing_main_structures": [],
+      "next_action": "recompose_existing_then_assess_new_garments",
+      "evidence": {
+        "eligible_by_expression_structure": {
+          "typical:skirt": 3,
+          "typical:pants": 2,
+          "typical:dress": 2
+        },
+        "reported_gap_reasons": [
+          "search_unmet"
+        ],
+        "search_complete": false
+      }
+    },
+    {
+      "season": "autumn",
+      "persona": "iced",
+      "palette": "jewel",
+      "current_valid_sequence": 5,
+      "shortfall_to_first_ten": 5,
+      "shortfall_to_thirty": 25,
+      "missing_main_structures": [],
+      "next_action": "recompose_existing_then_assess_new_garments",
+      "evidence": {
+        "eligible_by_expression_structure": {
+          "typical:pants": 4,
+          "typical:dress": 6,
+          "typical:skirt": 1
+        },
+        "reported_gap_reasons": [
+          "search_unmet"
+        ],
+        "search_complete": false
+      }
+    },
+    {
+      "season": "autumn",
+      "persona": "melt",
+      "palette": "ocean",
+      "current_valid_sequence": 5,
+      "shortfall_to_first_ten": 5,
+      "shortfall_to_thirty": 25,
+      "missing_main_structures": [],
+      "next_action": "recompose_existing_then_assess_new_garments",
+      "evidence": {
+        "eligible_by_expression_structure": {
+          "explore:dress": 1,
+          "easy:pants": 3,
+          "typical:pants": 2,
+          "typical:dress": 1,
+          "explore:pants": 1,
+          "typical:skirt": 1
+        },
+        "reported_gap_reasons": [
+          "search_unmet"
+        ],
+        "search_complete": false
+      }
+    },
+    {
+      "season": "autumn",
+      "persona": "bolt",
+      "palette": "ocean",
+      "current_valid_sequence": 4,
+      "shortfall_to_first_ten": 6,
+      "shortfall_to_thirty": 26,
+      "missing_main_structures": [],
+      "next_action": "recompose_existing_then_assess_new_garments",
+      "evidence": {
+        "eligible_by_expression_structure": {
+          "typical:pants": 2,
+          "typical:dress": 2,
+          "typical:skirt": 2
+        },
+        "reported_gap_reasons": [
+          "search_unmet"
+        ],
+        "search_complete": false
+      }
+    },
+    {
+      "season": "autumn",
+      "persona": "edge",
+      "palette": "jewel",
+      "current_valid_sequence": 4,
+      "shortfall_to_first_ten": 6,
+      "shortfall_to_thirty": 26,
+      "missing_main_structures": [
+        "skirt"
+      ],
+      "next_action": "recompose_existing_then_assess_new_garments",
+      "evidence": {
+        "eligible_by_expression_structure": {
+          "typical:pants": 4,
+          "typical:dress": 2
+        },
+        "reported_gap_reasons": [
+          "missing_main_structure"
+        ],
+        "search_complete": false
+      }
+    },
+    {
+      "season": "autumn",
+      "persona": "edge",
+      "palette": "ocean",
+      "current_valid_sequence": 4,
+      "shortfall_to_first_ten": 6,
+      "shortfall_to_thirty": 26,
+      "missing_main_structures": [
+        "dress",
+        "skirt"
+      ],
+      "next_action": "recompose_existing_then_assess_new_garments",
+      "evidence": {
+        "eligible_by_expression_structure": {
+          "typical:pants": 4
+        },
+        "reported_gap_reasons": [
+          "missing_main_structure"
+        ],
+        "search_complete": false
+      }
+    },
+    {
+      "season": "autumn",
+      "persona": "edge",
+      "palette": "pastel",
+      "current_valid_sequence": 4,
+      "shortfall_to_first_ten": 6,
+      "shortfall_to_thirty": 26,
+      "missing_main_structures": [
+        "dress",
+        "skirt"
+      ],
+      "next_action": "recompose_existing_then_assess_new_garments",
+      "evidence": {
+        "eligible_by_expression_structure": {
+          "typical:pants": 4
+        },
+        "reported_gap_reasons": [
+          "missing_main_structure"
+        ],
+        "search_complete": false
+      }
+    },
+    {
+      "season": "autumn",
+      "persona": "heir",
+      "palette": "bright",
+      "current_valid_sequence": 4,
+      "shortfall_to_first_ten": 6,
+      "shortfall_to_thirty": 26,
+      "missing_main_structures": [
+        "skirt"
+      ],
+      "next_action": "recompose_existing_then_assess_new_garments",
+      "evidence": {
+        "eligible_by_expression_structure": {
+          "typical:pants": 1,
+          "typical:dress": 3
+        },
+        "reported_gap_reasons": [
+          "missing_main_structure"
+        ],
+        "search_complete": false
+      }
+    },
+    {
+      "season": "autumn",
+      "persona": "jade",
+      "palette": "jewel",
+      "current_valid_sequence": 4,
+      "shortfall_to_first_ten": 6,
+      "shortfall_to_thirty": 26,
+      "missing_main_structures": [
+        "skirt"
+      ],
+      "next_action": "recompose_existing_then_assess_new_garments",
+      "evidence": {
+        "eligible_by_expression_structure": {
+          "typical:dress": 3,
+          "typical:pants": 3
+        },
+        "reported_gap_reasons": [
+          "missing_main_structure"
+        ],
+        "search_complete": false
+      }
+    },
+    {
+      "season": "autumn",
+      "persona": "melt",
+      "palette": "jewel",
+      "current_valid_sequence": 4,
+      "shortfall_to_first_ten": 6,
+      "shortfall_to_thirty": 26,
+      "missing_main_structures": [
+        "pants"
+      ],
+      "next_action": "recompose_existing_then_assess_new_garments",
+      "evidence": {
+        "eligible_by_expression_structure": {
+          "typical:skirt": 3,
+          "typical:dress": 2
+        },
+        "reported_gap_reasons": [
+          "missing_main_structure"
+        ],
+        "search_complete": false
+      }
+    },
+    {
+      "season": "autumn",
+      "persona": "neon",
+      "palette": "pastel",
+      "current_valid_sequence": 4,
+      "shortfall_to_first_ten": 6,
+      "shortfall_to_thirty": 26,
+      "missing_main_structures": [
+        "dress"
+      ],
+      "next_action": "recompose_existing_then_assess_new_garments",
+      "evidence": {
+        "eligible_by_expression_structure": {
+          "typical:pants": 3,
+          "typical:skirt": 1
+        },
+        "reported_gap_reasons": [
+          "missing_main_structure"
+        ],
+        "search_complete": false
+      }
+    },
+    {
+      "season": "autumn",
+      "persona": "noir",
+      "palette": "jewel",
+      "current_valid_sequence": 4,
+      "shortfall_to_first_ten": 6,
+      "shortfall_to_thirty": 26,
+      "missing_main_structures": [
+        "skirt"
+      ],
+      "next_action": "recompose_existing_then_assess_new_garments",
+      "evidence": {
+        "eligible_by_expression_structure": {
+          "typical:pants": 3,
+          "typical:dress": 3
+        },
+        "reported_gap_reasons": [
+          "missing_main_structure"
+        ],
+        "search_complete": false
+      }
+    },
+    {
+      "season": "autumn",
+      "persona": "oops",
+      "palette": "ocean",
+      "current_valid_sequence": 4,
+      "shortfall_to_first_ten": 6,
+      "shortfall_to_thirty": 26,
+      "missing_main_structures": [
+        "skirt"
+      ],
+      "next_action": "recompose_existing_then_assess_new_garments",
+      "evidence": {
+        "eligible_by_expression_structure": {
+          "typical:pants": 3,
+          "typical:dress": 1
+        },
+        "reported_gap_reasons": [
+          "missing_main_structure"
+        ],
+        "search_complete": false
+      }
+    },
+    {
+      "season": "autumn",
+      "persona": "void",
+      "palette": "jewel",
+      "current_valid_sequence": 4,
+      "shortfall_to_first_ten": 6,
+      "shortfall_to_thirty": 26,
+      "missing_main_structures": [
+        "pants"
+      ],
+      "next_action": "recompose_existing_then_assess_new_garments",
+      "evidence": {
+        "eligible_by_expression_structure": {
+          "typical:skirt": 2,
+          "typical:dress": 2
+        },
+        "reported_gap_reasons": [
+          "missing_main_structure"
+        ],
+        "search_complete": false
+      }
+    },
+    {
+      "season": "autumn",
+      "persona": "wabi",
+      "palette": "jewel",
+      "current_valid_sequence": 4,
+      "shortfall_to_first_ten": 6,
+      "shortfall_to_thirty": 26,
+      "missing_main_structures": [],
+      "next_action": "recompose_existing_then_assess_new_garments",
+      "evidence": {
+        "eligible_by_expression_structure": {
+          "typical:dress": 3,
+          "typical:pants": 2,
+          "typical:skirt": 2
+        },
+        "reported_gap_reasons": [
+          "search_unmet"
+        ],
+        "search_complete": false
+      }
+    },
+    {
+      "season": "autumn",
+      "persona": "wabi",
+      "palette": "ocean",
+      "current_valid_sequence": 4,
+      "shortfall_to_first_ten": 6,
+      "shortfall_to_thirty": 26,
+      "missing_main_structures": [
+        "dress"
+      ],
+      "next_action": "recompose_existing_then_assess_new_garments",
+      "evidence": {
+        "eligible_by_expression_structure": {
+          "typical:skirt": 1,
+          "typical:pants": 4,
+          "easy:skirt": 1
+        },
+        "reported_gap_reasons": [
+          "missing_main_structure"
+        ],
+        "search_complete": false
+      }
+    },
+    {
+      "season": "autumn",
+      "persona": "edge",
+      "palette": "bright",
+      "current_valid_sequence": 3,
+      "shortfall_to_first_ten": 7,
+      "shortfall_to_thirty": 27,
+      "missing_main_structures": [
+        "skirt"
+      ],
+      "next_action": "recompose_existing_then_assess_new_garments",
+      "evidence": {
+        "eligible_by_expression_structure": {
+          "typical:pants": 3,
+          "typical:dress": 2
+        },
+        "reported_gap_reasons": [
+          "missing_main_structure"
+        ],
+        "search_complete": false
+      }
+    },
+    {
+      "season": "autumn",
+      "persona": "film",
+      "palette": "bright",
+      "current_valid_sequence": 3,
+      "shortfall_to_first_ten": 7,
+      "shortfall_to_thirty": 27,
+      "missing_main_structures": [],
+      "next_action": "recompose_existing_then_assess_new_garments",
+      "evidence": {
+        "eligible_by_expression_structure": {
+          "typical:dress": 2,
+          "typical:pants": 1,
+          "typical:skirt": 1
+        },
+        "reported_gap_reasons": [
+          "search_unmet"
+        ],
+        "search_complete": false
+      }
+    },
+    {
+      "season": "autumn",
+      "persona": "flou",
+      "palette": "bright",
+      "current_valid_sequence": 3,
+      "shortfall_to_first_ten": 7,
+      "shortfall_to_thirty": 27,
+      "missing_main_structures": [],
+      "next_action": "recompose_existing_then_assess_new_garments",
+      "evidence": {
+        "eligible_by_expression_structure": {
+          "typical:pants": 1,
+          "typical:skirt": 2,
+          "typical:dress": 1
+        },
+        "reported_gap_reasons": [
+          "search_unmet"
+        ],
+        "search_complete": false
+      }
+    },
+    {
+      "season": "autumn",
+      "persona": "iced",
+      "palette": "earth",
+      "current_valid_sequence": 3,
+      "shortfall_to_first_ten": 7,
+      "shortfall_to_thirty": 27,
+      "missing_main_structures": [
+        "dress"
+      ],
+      "next_action": "recompose_existing_then_assess_new_garments",
+      "evidence": {
+        "eligible_by_expression_structure": {
+          "easy:skirt": 1,
+          "easy:pants": 2
+        },
+        "reported_gap_reasons": [
+          "missing_main_structure"
+        ],
+        "search_complete": false
+      }
+    },
+    {
+      "season": "autumn",
+      "persona": "neon",
+      "palette": "mono",
+      "current_valid_sequence": 3,
+      "shortfall_to_first_ten": 7,
+      "shortfall_to_thirty": 27,
+      "missing_main_structures": [],
+      "next_action": "recompose_existing_then_assess_new_garments",
+      "evidence": {
+        "eligible_by_expression_structure": {
+          "typical:pants": 2,
+          "typical:skirt": 1,
+          "typical:dress": 1
+        },
+        "reported_gap_reasons": [
+          "search_unmet"
+        ],
+        "search_complete": false
+      }
+    },
+    {
+      "season": "autumn",
+      "persona": "oops",
+      "palette": "bright",
+      "current_valid_sequence": 3,
+      "shortfall_to_first_ten": 7,
+      "shortfall_to_thirty": 27,
+      "missing_main_structures": [
+        "dress",
+        "skirt"
+      ],
+      "next_action": "recompose_existing_then_assess_new_garments",
+      "evidence": {
+        "eligible_by_expression_structure": {
+          "typical:pants": 3
+        },
+        "reported_gap_reasons": [
+          "missing_main_structure"
+        ],
+        "search_complete": false
+      }
+    },
+    {
+      "season": "autumn",
+      "persona": "oops",
+      "palette": "jewel",
+      "current_valid_sequence": 3,
+      "shortfall_to_first_ten": 7,
+      "shortfall_to_thirty": 27,
+      "missing_main_structures": [
+        "dress",
+        "skirt"
+      ],
+      "next_action": "recompose_existing_then_assess_new_garments",
+      "evidence": {
+        "eligible_by_expression_structure": {
+          "typical:pants": 3
+        },
+        "reported_gap_reasons": [
+          "missing_main_structure"
+        ],
+        "search_complete": false
+      }
+    },
+    {
+      "season": "autumn",
+      "persona": "bolt",
+      "palette": "earth",
+      "current_valid_sequence": 2,
+      "shortfall_to_first_ten": 8,
+      "shortfall_to_thirty": 28,
+      "missing_main_structures": [
+        "dress",
+        "skirt"
+      ],
+      "next_action": "recompose_existing_then_assess_new_garments",
+      "evidence": {
+        "eligible_by_expression_structure": {
+          "typical:pants": 2
+        },
+        "reported_gap_reasons": [
+          "missing_main_structure"
+        ],
+        "search_complete": false
+      }
+    },
+    {
+      "season": "autumn",
+      "persona": "bolt",
+      "palette": "pastel",
+      "current_valid_sequence": 2,
+      "shortfall_to_first_ten": 8,
+      "shortfall_to_thirty": 28,
+      "missing_main_structures": [
+        "dress",
+        "skirt"
+      ],
+      "next_action": "recompose_existing_then_assess_new_garments",
+      "evidence": {
+        "eligible_by_expression_structure": {
+          "typical:pants": 1,
+          "easy:pants": 1
+        },
+        "reported_gap_reasons": [
+          "missing_main_structure"
+        ],
+        "search_complete": false
+      }
+    },
+    {
+      "season": "autumn",
+      "persona": "ease",
+      "palette": "bright",
+      "current_valid_sequence": 2,
+      "shortfall_to_first_ten": 8,
+      "shortfall_to_thirty": 28,
+      "missing_main_structures": [],
+      "next_action": "recompose_existing_then_assess_new_garments",
+      "evidence": {
+        "eligible_by_expression_structure": {
+          "typical:pants": 4,
+          "typical:dress": 3,
+          "typical:skirt": 1
+        },
+        "reported_gap_reasons": [
+          "search_unmet"
+        ],
+        "search_complete": false
+      }
+    },
+    {
+      "season": "autumn",
+      "persona": "edge",
+      "palette": "earth",
+      "current_valid_sequence": 2,
+      "shortfall_to_first_ten": 8,
+      "shortfall_to_thirty": 28,
+      "missing_main_structures": [
+        "dress",
+        "skirt"
+      ],
+      "next_action": "recompose_existing_then_assess_new_garments",
+      "evidence": {
+        "eligible_by_expression_structure": {
+          "typical:pants": 2
+        },
+        "reported_gap_reasons": [
+          "missing_main_structure"
+        ],
+        "search_complete": false
+      }
+    },
+    {
+      "season": "autumn",
+      "persona": "iced",
+      "palette": "bright",
+      "current_valid_sequence": 2,
+      "shortfall_to_first_ten": 8,
+      "shortfall_to_thirty": 28,
+      "missing_main_structures": [],
+      "next_action": "recompose_existing_then_assess_new_garments",
+      "evidence": {
+        "eligible_by_expression_structure": {
+          "typical:dress": 3,
+          "typical:pants": 2,
+          "typical:skirt": 1
+        },
+        "reported_gap_reasons": [
+          "search_unmet"
+        ],
+        "search_complete": false
+      }
+    },
+    {
+      "season": "autumn",
+      "persona": "jade",
+      "palette": "bright",
+      "current_valid_sequence": 2,
+      "shortfall_to_first_ten": 8,
+      "shortfall_to_thirty": 28,
+      "missing_main_structures": [
+        "skirt"
+      ],
+      "next_action": "recompose_existing_then_assess_new_garments",
+      "evidence": {
+        "eligible_by_expression_structure": {
+          "typical:dress": 1,
+          "typical:pants": 1
+        },
+        "reported_gap_reasons": [
+          "missing_main_structure"
+        ],
+        "search_complete": false
+      }
+    },
+    {
+      "season": "autumn",
+      "persona": "jade",
+      "palette": "ocean",
+      "current_valid_sequence": 2,
+      "shortfall_to_first_ten": 8,
+      "shortfall_to_thirty": 28,
+      "missing_main_structures": [
+        "skirt"
+      ],
+      "next_action": "recompose_existing_then_assess_new_garments",
+      "evidence": {
+        "eligible_by_expression_structure": {
+          "typical:pants": 2,
+          "typical:dress": 2
+        },
+        "reported_gap_reasons": [
+          "missing_main_structure"
+        ],
+        "search_complete": false
+      }
+    },
+    {
+      "season": "autumn",
+      "persona": "loop",
+      "palette": "bright",
+      "current_valid_sequence": 2,
+      "shortfall_to_first_ten": 8,
+      "shortfall_to_thirty": 28,
+      "missing_main_structures": [],
+      "next_action": "recompose_existing_then_assess_new_garments",
+      "evidence": {
+        "eligible_by_expression_structure": {
+          "typical:pants": 2,
+          "typical:dress": 1,
+          "typical:skirt": 1
+        },
+        "reported_gap_reasons": [
+          "search_unmet"
+        ],
+        "search_complete": false
+      }
+    },
+    {
+      "season": "autumn",
+      "persona": "melt",
+      "palette": "bright",
+      "current_valid_sequence": 2,
+      "shortfall_to_first_ten": 8,
+      "shortfall_to_thirty": 28,
+      "missing_main_structures": [
+        "dress",
+        "pants"
+      ],
+      "next_action": "recompose_existing_then_assess_new_garments",
+      "evidence": {
+        "eligible_by_expression_structure": {
+          "typical:skirt": 2
+        },
+        "reported_gap_reasons": [
+          "missing_main_structure"
+        ],
+        "search_complete": false
+      }
+    },
+    {
+      "season": "autumn",
+      "persona": "mute",
+      "palette": "bright",
+      "current_valid_sequence": 2,
+      "shortfall_to_first_ten": 8,
+      "shortfall_to_thirty": 28,
+      "missing_main_structures": [
+        "skirt"
+      ],
+      "next_action": "recompose_existing_then_assess_new_garments",
+      "evidence": {
+        "eligible_by_expression_structure": {
+          "typical:dress": 1,
+          "typical:pants": 1
+        },
+        "reported_gap_reasons": [
+          "missing_main_structure"
+        ],
+        "search_complete": false
+      }
+    },
+    {
+      "season": "autumn",
+      "persona": "neon",
+      "palette": "earth",
+      "current_valid_sequence": 2,
+      "shortfall_to_first_ten": 8,
+      "shortfall_to_thirty": 28,
+      "missing_main_structures": [],
+      "next_action": "recompose_existing_then_assess_new_garments",
+      "evidence": {
+        "eligible_by_expression_structure": {
+          "typical:pants": 1,
+          "typical:skirt": 1,
+          "typical:dress": 1
+        },
+        "reported_gap_reasons": [
+          "search_unmet"
+        ],
+        "search_complete": false
+      }
+    },
+    {
+      "season": "autumn",
+      "persona": "neon",
+      "palette": "ocean",
+      "current_valid_sequence": 2,
+      "shortfall_to_first_ten": 8,
+      "shortfall_to_thirty": 28,
+      "missing_main_structures": [
+        "dress",
+        "skirt"
+      ],
+      "next_action": "recompose_existing_then_assess_new_garments",
+      "evidence": {
+        "eligible_by_expression_structure": {
+          "typical:pants": 2
+        },
+        "reported_gap_reasons": [
+          "missing_main_structure"
+        ],
+        "search_complete": false
+      }
+    },
+    {
+      "season": "autumn",
+      "persona": "noir",
+      "palette": "bright",
+      "current_valid_sequence": 2,
+      "shortfall_to_first_ten": 8,
+      "shortfall_to_thirty": 28,
+      "missing_main_structures": [
+        "skirt"
+      ],
+      "next_action": "recompose_existing_then_assess_new_garments",
+      "evidence": {
+        "eligible_by_expression_structure": {
+          "typical:pants": 1,
+          "typical:dress": 1
+        },
+        "reported_gap_reasons": [
+          "missing_main_structure"
+        ],
+        "search_complete": false
+      }
+    },
+    {
+      "season": "autumn",
+      "persona": "noir",
+      "palette": "earth",
+      "current_valid_sequence": 2,
+      "shortfall_to_first_ten": 8,
+      "shortfall_to_thirty": 28,
+      "missing_main_structures": [
+        "skirt"
+      ],
+      "next_action": "recompose_existing_then_assess_new_garments",
+      "evidence": {
+        "eligible_by_expression_structure": {
+          "typical:pants": 1,
+          "typical:dress": 1
+        },
+        "reported_gap_reasons": [
+          "missing_main_structure"
+        ],
+        "search_complete": false
+      }
+    },
+    {
+      "season": "autumn",
+      "persona": "noir",
+      "palette": "pastel",
+      "current_valid_sequence": 2,
+      "shortfall_to_first_ten": 8,
+      "shortfall_to_thirty": 28,
+      "missing_main_structures": [
+        "dress",
+        "skirt"
+      ],
+      "next_action": "recompose_existing_then_assess_new_garments",
+      "evidence": {
+        "eligible_by_expression_structure": {
+          "typical:pants": 1,
+          "easy:pants": 1
+        },
+        "reported_gap_reasons": [
+          "missing_main_structure"
+        ],
+        "search_complete": false
+      }
+    },
+    {
+      "season": "autumn",
+      "persona": "void",
+      "palette": "bright",
+      "current_valid_sequence": 2,
+      "shortfall_to_first_ten": 8,
+      "shortfall_to_thirty": 28,
+      "missing_main_structures": [
+        "pants"
+      ],
+      "next_action": "recompose_existing_then_assess_new_garments",
+      "evidence": {
+        "eligible_by_expression_structure": {
+          "typical:skirt": 1,
+          "typical:dress": 1
+        },
+        "reported_gap_reasons": [
+          "missing_main_structure"
+        ],
+        "search_complete": false
+      }
+    },
+    {
+      "season": "autumn",
+      "persona": "void",
+      "palette": "ocean",
+      "current_valid_sequence": 2,
+      "shortfall_to_first_ten": 8,
+      "shortfall_to_thirty": 28,
+      "missing_main_structures": [
+        "dress"
+      ],
+      "next_action": "recompose_existing_then_assess_new_garments",
+      "evidence": {
+        "eligible_by_expression_structure": {
+          "typical:pants": 1,
+          "typical:skirt": 1
+        },
+        "reported_gap_reasons": [
+          "missing_main_structure"
+        ],
+        "search_complete": false
+      }
+    },
+    {
+      "season": "autumn",
+      "persona": "wabi",
+      "palette": "bright",
+      "current_valid_sequence": 2,
+      "shortfall_to_first_ten": 8,
+      "shortfall_to_thirty": 28,
+      "missing_main_structures": [],
+      "next_action": "recompose_existing_then_assess_new_garments",
+      "evidence": {
+        "eligible_by_expression_structure": {
+          "typical:pants": 1,
+          "typical:dress": 1,
+          "typical:skirt": 1
+        },
+        "reported_gap_reasons": [
+          "search_unmet"
+        ],
+        "search_complete": false
+      }
+    },
+    {
+      "season": "autumn",
+      "persona": "flou",
+      "palette": "earth",
+      "current_valid_sequence": 25,
+      "shortfall_to_first_ten": 0,
+      "shortfall_to_thirty": 5,
+      "missing_main_structures": [],
+      "next_action": "add_non_similar_parent_recipes_for_browse_depth",
+      "evidence": {
+        "eligible_by_expression_structure": {
+          "typical:skirt": 8,
+          "typical:pants": 10,
+          "typical:dress": 1,
+          "easy:pants": 3,
+          "easy:skirt": 3
+        },
+        "reported_gap_reasons": [
+          "search_unmet"
+        ],
+        "search_complete": false
+      }
+    },
+    {
+      "season": "autumn",
+      "persona": "wabi",
+      "palette": "pastel",
+      "current_valid_sequence": 24,
+      "shortfall_to_first_ten": 0,
+      "shortfall_to_thirty": 6,
+      "missing_main_structures": [],
+      "next_action": "add_non_similar_parent_recipes_for_browse_depth",
+      "evidence": {
+        "eligible_by_expression_structure": {
+          "typical:skirt": 6,
+          "easy:pants": 3,
+          "typical:pants": 9,
+          "easy:skirt": 3,
+          "easy:dress": 1,
+          "explore:pants": 2,
+          "typical:dress": 1
+        },
+        "reported_gap_reasons": [
+          "search_unmet"
+        ],
+        "search_complete": false
+      }
+    },
+    {
+      "season": "autumn",
+      "persona": "film",
+      "palette": "earth",
+      "current_valid_sequence": 23,
+      "shortfall_to_first_ten": 0,
+      "shortfall_to_thirty": 7,
+      "missing_main_structures": [],
+      "next_action": "add_non_similar_parent_recipes_for_browse_depth",
+      "evidence": {
+        "eligible_by_expression_structure": {
+          "easy:pants": 5,
+          "typical:dress": 4,
+          "easy:skirt": 4,
+          "typical:pants": 10,
+          "typical:skirt": 1,
+          "explore:skirt": 1
+        },
+        "reported_gap_reasons": [
+          "search_unmet"
+        ],
+        "search_complete": false
+      }
+    },
+    {
+      "season": "autumn",
+      "persona": "void",
+      "palette": "earth",
+      "current_valid_sequence": 22,
+      "shortfall_to_first_ten": 0,
+      "shortfall_to_thirty": 8,
+      "missing_main_structures": [],
+      "next_action": "add_non_similar_parent_recipes_for_browse_depth",
+      "evidence": {
+        "eligible_by_expression_structure": {
+          "typical:dress": 1,
+          "typical:pants": 19,
+          "typical:skirt": 6,
+          "easy:pants": 1,
+          "explore:pants": 2
+        },
+        "reported_gap_reasons": [
+          "search_unmet"
+        ],
+        "search_complete": false
+      }
+    },
+    {
+      "season": "autumn",
+      "persona": "oops",
+      "palette": "mono",
+      "current_valid_sequence": 20,
+      "shortfall_to_first_ten": 0,
+      "shortfall_to_thirty": 10,
+      "missing_main_structures": [],
+      "next_action": "add_non_similar_parent_recipes_for_browse_depth",
+      "evidence": {
+        "eligible_by_expression_structure": {
+          "typical:dress": 2,
+          "typical:pants": 11,
+          "typical:skirt": 5,
+          "explore:pants": 2,
+          "explore:skirt": 1
+        },
+        "reported_gap_reasons": [
+          "search_unmet"
+        ],
+        "search_complete": false
+      }
+    },
+    {
+      "season": "autumn",
+      "persona": "film",
+      "palette": "pastel",
+      "current_valid_sequence": 17,
+      "shortfall_to_first_ten": 0,
+      "shortfall_to_thirty": 13,
+      "missing_main_structures": [],
+      "next_action": "add_non_similar_parent_recipes_for_browse_depth",
+      "evidence": {
+        "eligible_by_expression_structure": {
+          "typical:pants": 3,
+          "typical:skirt": 3,
+          "easy:pants": 11,
+          "easy:skirt": 6,
+          "explore:skirt": 1,
+          "typical:dress": 1
+        },
+        "reported_gap_reasons": [
+          "search_unmet"
+        ],
+        "search_complete": false
+      }
+    },
+    {
+      "season": "autumn",
+      "persona": "noir",
+      "palette": "mono",
+      "current_valid_sequence": 17,
+      "shortfall_to_first_ten": 0,
+      "shortfall_to_thirty": 13,
+      "missing_main_structures": [],
+      "next_action": "add_non_similar_parent_recipes_for_browse_depth",
+      "evidence": {
+        "eligible_by_expression_structure": {
+          "typical:pants": 9,
+          "typical:dress": 3,
+          "easy:skirt": 4,
+          "typical:skirt": 1,
+          "easy:pants": 3,
+          "explore:pants": 1,
+          "easy:dress": 1
+        },
+        "reported_gap_reasons": [
+          "search_unmet"
+        ],
+        "search_complete": false
+      }
+    },
+    {
+      "season": "autumn",
+      "persona": "oops",
+      "palette": "pastel",
+      "current_valid_sequence": 15,
+      "shortfall_to_first_ten": 0,
+      "shortfall_to_thirty": 15,
+      "missing_main_structures": [],
+      "next_action": "add_non_similar_parent_recipes_for_browse_depth",
+      "evidence": {
+        "eligible_by_expression_structure": {
+          "typical:dress": 1,
+          "explore:pants": 2,
+          "typical:skirt": 3,
+          "typical:pants": 8,
+          "explore:skirt": 1
+        },
+        "reported_gap_reasons": [
+          "search_unmet"
+        ],
+        "search_complete": false
+      }
+    },
+    {
+      "season": "autumn",
+      "persona": "heir",
+      "palette": "jewel",
+      "current_valid_sequence": 14,
+      "shortfall_to_first_ten": 0,
+      "shortfall_to_thirty": 16,
+      "missing_main_structures": [],
+      "next_action": "add_non_similar_parent_recipes_for_browse_depth",
+      "evidence": {
+        "eligible_by_expression_structure": {
+          "typical:pants": 3,
+          "typical:dress": 5,
+          "easy:pants": 4,
+          "easy:dress": 3,
+          "typical:skirt": 2
+        },
+        "reported_gap_reasons": [
+          "search_unmet"
+        ],
+        "search_complete": false
+      }
+    }
+  ],
+  "production_approved": false,
+  "interpretation": "Shortfalls count sequence positions, not unique garments or promised production quantities.",
+  "version": "aw-gap-tasks-d09acf2491452aeb9b99"
+}

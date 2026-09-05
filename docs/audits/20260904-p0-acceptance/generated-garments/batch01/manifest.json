@@ -1,0 +1,1888 @@
+{
+  "schema_version": 1,
+  "batch_id": "p0-generated-low-expression-01",
+  "prompt_version": "selfit-p0-low-expression-persona-v1",
+  "status": "internal_candidate",
+  "production_approved": false,
+  "generation": [
+    {
+      "garment_id": "garment_p0_low_bolt_top_n0088",
+      "token": "n0088",
+      "source_output": "/Users/yuanzexiang/.codex/generated_images/01a06b62-ef79-7533-88b0-79111246bf6f/exec-f663f956-802f-4c50-ae3f-0b4d5ac44299.png",
+      "raw_path": "raw/bolt-bow-blouse-raw-v1.png",
+      "prepared_path": "prepared/bolt-bow-blouse-v1.png",
+      "qa_path": "qa/bolt-bow-blouse-v1.json",
+      "final_prompt": "象牙白酒红丝绒结珍珠扣衬衫，原创无品牌透明背景日常低表达强度独立主衣。 Photorealistic premium fashion e-commerce product cutout, exactly one original unbranded garment, front-facing and naturally shaped as if invisibly supported, genuinely transparent alpha background, centered square canvas, complete silhouette with 12% clear padding on every side. No person, mannequin, hanger, stand, accessories, text, label, logo, watermark, floor shadow, white halo, duplicate item or clipped edge.",
+      "target_conditions": [
+        "BOLT×easy×daily"
+      ]
+    },
+    {
+      "garment_id": "garment_p0_low_bolt_dress_n0089",
+      "token": "n0089",
+      "source_output": "/Users/yuanzexiang/.codex/generated_images/01a06b62-ef79-7533-88b0-79111246bf6f/exec-ff24811f-1006-4761-906c-5ba58936c4ae.png",
+      "raw_path": "raw/bolt-bow-dress-raw-v1.png",
+      "prepared_path": "prepared/bolt-bow-dress-v1.png",
+      "qa_path": "qa/bolt-bow-dress-v1.json",
+      "final_prompt": "象牙白酒红丝绒结衬衫裙，原创无品牌透明背景日常低表达强度独立主衣。 Photorealistic premium fashion e-commerce product cutout, exactly one original unbranded garment, front-facing and naturally shaped as if invisibly supported, genuinely transparent alpha background, centered square canvas, complete silhouette with 12% clear padding on every side. No person, mannequin, hanger, stand, accessories, text, label, logo, watermark, floor shadow, white halo, duplicate item or clipped edge.",
+      "target_conditions": [
+        "BOLT×easy×daily"
+      ]
+    },
+    {
+      "garment_id": "garment_p0_low_edge_top_n0090",
+      "token": "n0090",
+      "source_output": "/Users/yuanzexiang/.codex/generated_images/01a06b62-ef79-7533-88b0-79111246bf6f/exec-c04f6ef9-696a-4d77-835f-2def28e1b0c8.png",
+      "raw_path": "raw/edge-piped-knit-raw-v1.png",
+      "prepared_path": "prepared/edge-piped-knit-v1.png",
+      "qa_path": "qa/edge-piped-knit-v1.json",
+      "final_prompt": "灰粉黑皮革斜线针织上衣，原创无品牌透明背景日常低表达强度独立主衣。 Photorealistic premium fashion e-commerce product cutout, exactly one original unbranded garment, front-facing and naturally shaped as if invisibly supported, genuinely transparent alpha background, centered square canvas, complete silhouette with 12% clear padding on every side. No person, mannequin, hanger, stand, accessories, text, label, logo, watermark, floor shadow, white halo, duplicate item or clipped edge.",
+      "target_conditions": [
+        "EDGE×easy×daily"
+      ]
+    },
+    {
+      "garment_id": "garment_p0_low_edge_dress_n0091",
+      "token": "n0091",
+      "source_output": "/Users/yuanzexiang/.codex/generated_images/01a06b62-ef79-7533-88b0-79111246bf6f/exec-5fc4654f-6b2f-48e4-8048-95c7c88c723b.png",
+      "raw_path": "raw/edge-piped-dress-raw-v1.png",
+      "prepared_path": "prepared/edge-piped-dress-v1.png",
+      "qa_path": "qa/edge-piped-dress-v1.json",
+      "final_prompt": "灰紫黑皮革细带方领连衣裙，原创无品牌透明背景日常低表达强度独立主衣。 Photorealistic premium fashion e-commerce product cutout, exactly one original unbranded garment, front-facing and naturally shaped as if invisibly supported, genuinely transparent alpha background, centered square canvas, complete silhouette with 12% clear padding on every side. No person, mannequin, hanger, stand, accessories, text, label, logo, watermark, floor shadow, white halo, duplicate item or clipped edge.",
+      "target_conditions": [
+        "EDGE×easy×daily"
+      ]
+    },
+    {
+      "garment_id": "garment_p0_low_jade_dress_n0092",
+      "token": "n0092",
+      "source_output": "/Users/yuanzexiang/.codex/generated_images/01a06b62-ef79-7533-88b0-79111246bf6f/exec-8fe47ed9-80ee-493e-823c-165b9cada9e6.png",
+      "raw_path": "raw/jade-wrap-dress-raw-v1.png",
+      "prepared_path": "prepared/jade-wrap-dress-v1.png",
+      "qa_path": "qa/jade-wrap-dress-v1.json",
+      "final_prompt": "暖白斜襟玉扣立领连衣裙，原创无品牌透明背景日常低表达强度独立主衣。 Photorealistic premium fashion e-commerce product cutout, exactly one original unbranded garment, front-facing and naturally shaped as if invisibly supported, genuinely transparent alpha background, centered square canvas, complete silhouette with 12% clear padding on every side. No person, mannequin, hanger, stand, accessories, text, label, logo, watermark, floor shadow, white halo, duplicate item or clipped edge.",
+      "target_conditions": [
+        "JADE×easy×daily"
+      ]
+    },
+    {
+      "garment_id": "garment_p0_low_neon_top_n0093",
+      "token": "n0093",
+      "source_output": "/Users/yuanzexiang/.codex/generated_images/01a06b62-ef79-7533-88b0-79111246bf6f/exec-84fe5b0e-3c3d-4801-9a2f-e75f8bc38276.png",
+      "raw_path": "raw/neon-polo-raw-v1.png",
+      "prepared_path": "prepared/neon-polo-v1.png",
+      "qa_path": "qa/neon-polo-v1.json",
+      "final_prompt": "钴蓝荧光绿珊瑚口袋针织Polo，原创无品牌透明背景日常低表达强度独立主衣。 Photorealistic premium fashion e-commerce product cutout, exactly one original unbranded garment, front-facing and naturally shaped as if invisibly supported, genuinely transparent alpha background, centered square canvas, complete silhouette with 12% clear padding on every side. No person, mannequin, hanger, stand, accessories, text, label, logo, watermark, floor shadow, white halo, duplicate item or clipped edge.",
+      "target_conditions": [
+        "NEON×easy×daily"
+      ]
+    },
+    {
+      "garment_id": "garment_p0_low_neon_dress_n0094",
+      "token": "n0094",
+      "source_output": "/Users/yuanzexiang/.codex/generated_images/01a06b62-ef79-7533-88b0-79111246bf6f/exec-e35c04c5-e857-478a-9fef-1c6d499d1b8e.png",
+      "raw_path": "raw/neon-panel-dress-raw-v1.png",
+      "prepared_path": "prepared/neon-panel-dress-v1.png",
+      "qa_path": "qa/neon-panel-dress-v1.json",
+      "final_prompt": "钴蓝荧光绿侧片A线连衣裙，原创无品牌透明背景日常低表达强度独立主衣。 Photorealistic premium fashion e-commerce product cutout, exactly one original unbranded garment, front-facing and naturally shaped as if invisibly supported, genuinely transparent alpha background, centered square canvas, complete silhouette with 12% clear padding on every side. No person, mannequin, hanger, stand, accessories, text, label, logo, watermark, floor shadow, white halo, duplicate item or clipped edge.",
+      "target_conditions": [
+        "NEON×easy×daily"
+      ]
+    },
+    {
+      "garment_id": "garment_p0_low_oops_skirt_n0095",
+      "token": "n0095",
+      "source_output": "/Users/yuanzexiang/.codex/generated_images/01a06b62-ef79-7533-88b0-79111246bf6f/exec-de1d8afb-031c-46ab-ad24-7aa08e10f98b.png",
+      "raw_path": "raw/oops-split-skirt-raw-v1.png",
+      "prepared_path": "prepared/oops-split-skirt-v1.png",
+      "qa_path": "qa/oops-split-skirt-v1.json",
+      "final_prompt": "灰条纹鼠尾草异材质拼接裙，原创无品牌透明背景日常低表达强度独立主衣。 Photorealistic premium fashion e-commerce product cutout, exactly one original unbranded garment, front-facing and naturally shaped as if invisibly supported, genuinely transparent alpha background, centered square canvas, complete silhouette with 12% clear padding on every side. No person, mannequin, hanger, stand, accessories, text, label, logo, watermark, floor shadow, white halo, duplicate item or clipped edge.",
+      "target_conditions": [
+        "OOPS×easy×daily"
+      ]
+    },
+    {
+      "garment_id": "garment_p0_low_oops_dress_n0096",
+      "token": "n0096",
+      "source_output": "/Users/yuanzexiang/.codex/generated_images/01a06b62-ef79-7533-88b0-79111246bf6f/exec-2621cadb-e2c7-418c-90a6-fa7c0074e8ad.png",
+      "raw_path": "raw/oops-split-dress-raw-v1.png",
+      "prepared_path": "prepared/oops-split-dress-v1.png",
+      "qa_path": "qa/oops-split-dress-v1.json",
+      "final_prompt": "蓝条纹米色错位拼接衬衫裙，原创无品牌透明背景日常低表达强度独立主衣。 Photorealistic premium fashion e-commerce product cutout, exactly one original unbranded garment, front-facing and naturally shaped as if invisibly supported, genuinely transparent alpha background, centered square canvas, complete silhouette with 12% clear padding on every side. No person, mannequin, hanger, stand, accessories, text, label, logo, watermark, floor shadow, white halo, duplicate item or clipped edge.",
+      "target_conditions": [
+        "OOPS×easy×daily"
+      ]
+    },
+    {
+      "garment_id": "garment_p0_low_void_skirt_n0097",
+      "token": "n0097",
+      "source_output": "/Users/yuanzexiang/.codex/generated_images/01a06b62-ef79-7533-88b0-79111246bf6f/exec-02441b32-ae99-4884-86ae-bf96b554d280.png",
+      "raw_path": "raw/void-washed-skirt-raw-v1.png",
+      "prepared_path": "prepared/void-washed-skirt-v1.png",
+      "qa_path": "qa/void-washed-skirt-v1.json",
+      "final_prompt": "水洗炭灰偏置缝线补丁裙，原创无品牌透明背景日常低表达强度独立主衣。 Photorealistic premium fashion e-commerce product cutout, exactly one original unbranded garment, front-facing and naturally shaped as if invisibly supported, genuinely transparent alpha background, centered square canvas, complete silhouette with 12% clear padding on every side. No person, mannequin, hanger, stand, accessories, text, label, logo, watermark, floor shadow, white halo, duplicate item or clipped edge.",
+      "target_conditions": [
+        "VOID×easy×daily"
+      ]
+    },
+    {
+      "garment_id": "garment_p0_low_void_dress_n0098",
+      "token": "n0098",
+      "source_output": "/Users/yuanzexiang/.codex/generated_images/01a06b62-ef79-7533-88b0-79111246bf6f/exec-eb80db25-170c-4003-ae3e-90ef0180ba3c.png",
+      "raw_path": "raw/void-pocket-dress-raw-v1.png",
+      "prepared_path": "prepared/void-pocket-dress-v1.png",
+      "qa_path": "qa/void-pocket-dress-v1.json",
+      "final_prompt": "水洗石墨灰偏置口袋T恤裙，原创无品牌透明背景日常低表达强度独立主衣。 Photorealistic premium fashion e-commerce product cutout, exactly one original unbranded garment, front-facing and naturally shaped as if invisibly supported, genuinely transparent alpha background, centered square canvas, complete silhouette with 12% clear padding on every side. No person, mannequin, hanger, stand, accessories, text, label, logo, watermark, floor shadow, white halo, duplicate item or clipped edge.",
+      "target_conditions": [
+        "VOID×easy×daily"
+      ]
+    }
+  ],
+  "garments": [
+    {
+      "id": "garment_p0_low_bolt_top_n0088",
+      "category": "top",
+      "subcategory": "象牙白酒红丝绒结珍珠扣衬衫",
+      "silhouette": [
+        "daily",
+        "single_focal",
+        "low_expression"
+      ],
+      "fit": "合体",
+      "materials": [],
+      "details": [
+        "original_gap_fill",
+        "p0_persona_not_color_test",
+        "visually_reviewed_cutout"
+      ],
+      "season_tags": [
+        "秋",
+        "冬"
+      ],
+      "scene_tags": [
+        "日常",
+        "通勤",
+        "旅行"
+      ],
+      "weather_tags": [],
+      "presentation": [
+        "feminine",
+        "neutral"
+      ],
+      "layer_role": "single",
+      "tryon_slot": "top",
+      "persona_affinity": {
+        "BOLT": 0.96
+      },
+      "color": {
+        "temperature": "未判断",
+        "lightness": "浅色",
+        "saturation": "低饱和",
+        "harmony": "未判断",
+        "palette": [
+          "#d8cdc2",
+          "#e3dad1",
+          "#ebe4dd",
+          "#f3f0eb",
+          "#a0887d"
+        ]
+      },
+      "assets": {
+        "image_url": "/static/selfit/assets/content_v2_drafts/p0-low-expression-01/garments/bolt-bow-blouse-v1.png",
+        "source_url": "",
+        "width": 1200,
+        "height": 1200,
+        "alpha_verified": true,
+        "rights_status": "owned"
+      },
+      "production": {
+        "source_kind": "generated_original",
+        "generation_job_id": "p0-generated-low-expression-01-n0088",
+        "prompt_version": "selfit-p0-low-expression-persona-v1",
+        "reference_ids": [],
+        "qa_status": "approved",
+        "phash": "8296d4d4dcec69b2-d4c8be"
+      },
+      "annotation": {
+        "status": "designer_reviewed",
+        "source": "designer",
+        "confidence": 0.92,
+        "review_notes": [
+          "Cutout and visible silhouette reviewed in current Codex session; outfit use remains draft."
+        ]
+      },
+      "color_evidence": {
+        "source": "opaque_pixel_quantization_v1",
+        "status": "measured_not_semantic_review",
+        "asset_sha256": "62050afcc83adc4437f2929d9dca5d0200a51d26ad6eddf8cf2e001a1cbdb056",
+        "swatches": [
+          {
+            "hex": "#d8cdc2",
+            "weight": 0.3827,
+            "family": "白"
+          },
+          {
+            "hex": "#e3dad1",
+            "weight": 0.2379,
+            "family": "白"
+          },
+          {
+            "hex": "#ebe4dd",
+            "weight": 0.1597,
+            "family": "白"
+          },
+          {
+            "hex": "#f3f0eb",
+            "weight": 0.118,
+            "family": "白"
+          },
+          {
+            "hex": "#a0887d",
+            "weight": 0.1017,
+            "family": "棕"
+          }
+        ],
+        "palette_names": [
+          "白"
+        ],
+        "color": {
+          "temperature": "未判断",
+          "lightness": "浅色",
+          "saturation": "低饱和",
+          "harmony": "未判断",
+          "palette": [
+            "#d8cdc2",
+            "#e3dad1",
+            "#ebe4dd",
+            "#f3f0eb",
+            "#a0887d"
+          ]
+        },
+        "limitations": "渲染光照会影响色值；不据此推断面料成分、真实冷暖或人体适配。"
+      }
+    },
+    {
+      "id": "garment_p0_low_bolt_dress_n0089",
+      "category": "dress",
+      "subcategory": "象牙白酒红丝绒结衬衫裙",
+      "silhouette": [
+        "daily",
+        "single_focal",
+        "low_expression"
+      ],
+      "fit": "合体",
+      "materials": [],
+      "details": [
+        "original_gap_fill",
+        "p0_persona_not_color_test",
+        "visually_reviewed_cutout"
+      ],
+      "season_tags": [
+        "秋",
+        "冬"
+      ],
+      "scene_tags": [
+        "日常",
+        "通勤",
+        "旅行"
+      ],
+      "weather_tags": [],
+      "presentation": [
+        "feminine",
+        "neutral"
+      ],
+      "layer_role": "single",
+      "tryon_slot": "dress",
+      "persona_affinity": {
+        "BOLT": 0.96
+      },
+      "color": {
+        "temperature": "未判断",
+        "lightness": "浅色",
+        "saturation": "低饱和",
+        "harmony": "未判断",
+        "palette": [
+          "#dcd5cb",
+          "#e4ded5",
+          "#e9e4dc",
+          "#f0ebe4",
+          "#bfb1a8"
+        ]
+      },
+      "assets": {
+        "image_url": "/static/selfit/assets/content_v2_drafts/p0-low-expression-01/garments/bolt-bow-dress-v1.png",
+        "source_url": "",
+        "width": 1200,
+        "height": 1200,
+        "alpha_verified": true,
+        "rights_status": "owned"
+      },
+      "production": {
+        "source_kind": "generated_original",
+        "generation_job_id": "p0-generated-low-expression-01-n0089",
+        "prompt_version": "selfit-p0-low-expression-persona-v1",
+        "reference_ids": [],
+        "qa_status": "approved",
+        "phash": "707971f07179b230-ddd5cc"
+      },
+      "annotation": {
+        "status": "designer_reviewed",
+        "source": "designer",
+        "confidence": 0.92,
+        "review_notes": [
+          "Cutout and visible silhouette reviewed in current Codex session; outfit use remains draft."
+        ]
+      },
+      "color_evidence": {
+        "source": "opaque_pixel_quantization_v1",
+        "status": "measured_not_semantic_review",
+        "asset_sha256": "32173a0e834a3c435e8a0db180e47535ad46ed19e5256806bb953a337c83cc54",
+        "swatches": [
+          {
+            "hex": "#dcd5cb",
+            "weight": 0.3631,
+            "family": "白"
+          },
+          {
+            "hex": "#e4ded5",
+            "weight": 0.2447,
+            "family": "白"
+          },
+          {
+            "hex": "#e9e4dc",
+            "weight": 0.1613,
+            "family": "白"
+          },
+          {
+            "hex": "#f0ebe4",
+            "weight": 0.1387,
+            "family": "白"
+          },
+          {
+            "hex": "#bfb1a8",
+            "weight": 0.0922,
+            "family": "灰"
+          }
+        ],
+        "palette_names": [
+          "白"
+        ],
+        "color": {
+          "temperature": "未判断",
+          "lightness": "浅色",
+          "saturation": "低饱和",
+          "harmony": "未判断",
+          "palette": [
+            "#dcd5cb",
+            "#e4ded5",
+            "#e9e4dc",
+            "#f0ebe4",
+            "#bfb1a8"
+          ]
+        },
+        "limitations": "渲染光照会影响色值；不据此推断面料成分、真实冷暖或人体适配。"
+      }
+    },
+    {
+      "id": "garment_p0_low_edge_top_n0090",
+      "category": "top",
+      "subcategory": "灰粉黑皮革斜线针织上衣",
+      "silhouette": [
+        "daily",
+        "single_focal",
+        "low_expression"
+      ],
+      "fit": "合体",
+      "materials": [],
+      "details": [
+        "original_gap_fill",
+        "p0_persona_not_color_test",
+        "visually_reviewed_cutout"
+      ],
+      "season_tags": [
+        "秋",
+        "冬"
+      ],
+      "scene_tags": [
+        "日常",
+        "通勤",
+        "旅行"
+      ],
+      "weather_tags": [],
+      "presentation": [
+        "feminine",
+        "neutral"
+      ],
+      "layer_role": "single",
+      "tryon_slot": "top",
+      "persona_affinity": {
+        "EDGE": 0.96
+      },
+      "color": {
+        "temperature": "未判断",
+        "lightness": "中等",
+        "saturation": "中饱和",
+        "harmony": "未判断",
+        "palette": [
+          "#ae7c81",
+          "#b7868a",
+          "#96666a",
+          "#bc8c90",
+          "#c49599"
+        ]
+      },
+      "assets": {
+        "image_url": "/static/selfit/assets/content_v2_drafts/p0-low-expression-01/garments/edge-piped-knit-v1.png",
+        "source_url": "",
+        "width": 1200,
+        "height": 1200,
+        "alpha_verified": true,
+        "rights_status": "owned"
+      },
+      "production": {
+        "source_kind": "generated_original",
+        "generation_job_id": "p0-generated-low-expression-01-n0090",
+        "prompt_version": "selfit-p0-low-expression-persona-v1",
+        "reference_ids": [],
+        "qa_status": "approved",
+        "phash": "8696f0f0f0e06868-af7f83"
+      },
+      "annotation": {
+        "status": "designer_reviewed",
+        "source": "designer",
+        "confidence": 0.92,
+        "review_notes": [
+          "Cutout and visible silhouette reviewed in current Codex session; outfit use remains draft."
+        ]
+      },
+      "color_evidence": {
+        "source": "opaque_pixel_quantization_v1",
+        "status": "measured_not_semantic_review",
+        "asset_sha256": "b00a02f157ef802074110ee03a50b2434ec515eb0b5fb833b58b792190b32408",
+        "swatches": [
+          {
+            "hex": "#ae7c81",
+            "weight": 0.2736,
+            "family": "粉"
+          },
+          {
+            "hex": "#b7868a",
+            "weight": 0.2423,
+            "family": "粉"
+          },
+          {
+            "hex": "#96666a",
+            "weight": 0.1941,
+            "family": "红"
+          },
+          {
+            "hex": "#bc8c90",
+            "weight": 0.1651,
+            "family": "粉"
+          },
+          {
+            "hex": "#c49599",
+            "weight": 0.1249,
+            "family": "粉"
+          }
+        ],
+        "palette_names": [
+          "粉",
+          "红"
+        ],
+        "color": {
+          "temperature": "未判断",
+          "lightness": "中等",
+          "saturation": "中饱和",
+          "harmony": "未判断",
+          "palette": [
+            "#ae7c81",
+            "#b7868a",
+            "#96666a",
+            "#bc8c90",
+            "#c49599"
+          ]
+        },
+        "limitations": "渲染光照会影响色值；不据此推断面料成分、真实冷暖或人体适配。"
+      }
+    },
+    {
+      "id": "garment_p0_low_edge_dress_n0091",
+      "category": "dress",
+      "subcategory": "灰紫黑皮革细带方领连衣裙",
+      "silhouette": [
+        "daily",
+        "single_focal",
+        "low_expression"
+      ],
+      "fit": "合体",
+      "materials": [],
+      "details": [
+        "original_gap_fill",
+        "p0_persona_not_color_test",
+        "visually_reviewed_cutout"
+      ],
+      "season_tags": [
+        "秋",
+        "冬"
+      ],
+      "scene_tags": [
+        "日常",
+        "通勤",
+        "旅行"
+      ],
+      "weather_tags": [],
+      "presentation": [
+        "feminine",
+        "neutral"
+      ],
+      "layer_role": "single",
+      "tryon_slot": "dress",
+      "persona_affinity": {
+        "EDGE": 0.96
+      },
+      "color": {
+        "temperature": "未判断",
+        "lightness": "中等",
+        "saturation": "低饱和",
+        "harmony": "未判断",
+        "palette": [
+          "#8c7278",
+          "#977e85",
+          "#71595f",
+          "#a1888f",
+          "#b0969e"
+        ]
+      },
+      "assets": {
+        "image_url": "/static/selfit/assets/content_v2_drafts/p0-low-expression-01/garments/edge-piped-dress-v1.png",
+        "source_url": "",
+        "width": 1200,
+        "height": 1200,
+        "alpha_verified": true,
+        "rights_status": "owned"
+      },
+      "production": {
+        "source_kind": "generated_original",
+        "generation_job_id": "p0-generated-low-expression-01-n0091",
+        "prompt_version": "selfit-p0-low-expression-persona-v1",
+        "reference_ids": [],
+        "qa_status": "approved",
+        "phash": "30696971b2b2b228-90777d"
+      },
+      "annotation": {
+        "status": "designer_reviewed",
+        "source": "designer",
+        "confidence": 0.92,
+        "review_notes": [
+          "Cutout and visible silhouette reviewed in current Codex session; outfit use remains draft."
+        ]
+      },
+      "color_evidence": {
+        "source": "opaque_pixel_quantization_v1",
+        "status": "measured_not_semantic_review",
+        "asset_sha256": "a99705648643f4dc4471d45fb22cd0de5771ee68e8322e64981eedfc702efeee",
+        "swatches": [
+          {
+            "hex": "#8c7278",
+            "weight": 0.2722,
+            "family": "红"
+          },
+          {
+            "hex": "#977e85",
+            "weight": 0.235,
+            "family": "红"
+          },
+          {
+            "hex": "#71595f",
+            "weight": 0.2177,
+            "family": "红"
+          },
+          {
+            "hex": "#a1888f",
+            "weight": 0.1624,
+            "family": "红"
+          },
+          {
+            "hex": "#b0969e",
+            "weight": 0.1126,
+            "family": "粉"
+          }
+        ],
+        "palette_names": [
+          "红"
+        ],
+        "color": {
+          "temperature": "未判断",
+          "lightness": "中等",
+          "saturation": "低饱和",
+          "harmony": "未判断",
+          "palette": [
+            "#8c7278",
+            "#977e85",
+            "#71595f",
+            "#a1888f",
+            "#b0969e"
+          ]
+        },
+        "limitations": "渲染光照会影响色值；不据此推断面料成分、真实冷暖或人体适配。"
+      }
+    },
+    {
+      "id": "garment_p0_low_jade_dress_n0092",
+      "category": "dress",
+      "subcategory": "暖白斜襟玉扣立领连衣裙",
+      "silhouette": [
+        "daily",
+        "single_focal",
+        "low_expression"
+      ],
+      "fit": "合体",
+      "materials": [],
+      "details": [
+        "original_gap_fill",
+        "p0_persona_not_color_test",
+        "visually_reviewed_cutout"
+      ],
+      "season_tags": [
+        "秋",
+        "冬"
+      ],
+      "scene_tags": [
+        "日常",
+        "通勤",
+        "旅行"
+      ],
+      "weather_tags": [],
+      "presentation": [
+        "feminine",
+        "neutral"
+      ],
+      "layer_role": "single",
+      "tryon_slot": "dress",
+      "persona_affinity": {
+        "JADE": 0.96
+      },
+      "color": {
+        "temperature": "未判断",
+        "lightness": "浅色",
+        "saturation": "无彩",
+        "harmony": "未判断",
+        "palette": [
+          "#dad5cc",
+          "#dfdbd2",
+          "#e6e2da",
+          "#d1ccc1",
+          "#edeae3"
+        ]
+      },
+      "assets": {
+        "image_url": "/static/selfit/assets/content_v2_drafts/p0-low-expression-01/garments/jade-wrap-dress-v1.png",
+        "source_url": "",
+        "width": 1200,
+        "height": 1200,
+        "alpha_verified": true,
+        "rights_status": "owned"
+      },
+      "production": {
+        "source_kind": "generated_original",
+        "generation_job_id": "p0-generated-low-expression-01-n0092",
+        "prompt_version": "selfit-p0-low-expression-persona-v1",
+        "reference_ids": [],
+        "qa_status": "approved",
+        "phash": "32b2b2b2b2b2b210-dfdad2"
+      },
+      "annotation": {
+        "status": "designer_reviewed",
+        "source": "designer",
+        "confidence": 0.92,
+        "review_notes": [
+          "Cutout and visible silhouette reviewed in current Codex session; outfit use remains draft."
+        ]
+      },
+      "color_evidence": {
+        "source": "opaque_pixel_quantization_v1",
+        "status": "measured_not_semantic_review",
+        "asset_sha256": "674daefb6a7f10cbf71d07b064801d8d03ac167c854f79b632249b20cda60114",
+        "swatches": [
+          {
+            "hex": "#dad5cc",
+            "weight": 0.332,
+            "family": "白"
+          },
+          {
+            "hex": "#dfdbd2",
+            "weight": 0.2099,
+            "family": "白"
+          },
+          {
+            "hex": "#e6e2da",
+            "weight": 0.1682,
+            "family": "白"
+          },
+          {
+            "hex": "#d1ccc1",
+            "weight": 0.1545,
+            "family": "白"
+          },
+          {
+            "hex": "#edeae3",
+            "weight": 0.1354,
+            "family": "白"
+          }
+        ],
+        "palette_names": [
+          "白"
+        ],
+        "color": {
+          "temperature": "未判断",
+          "lightness": "浅色",
+          "saturation": "无彩",
+          "harmony": "未判断",
+          "palette": [
+            "#dad5cc",
+            "#dfdbd2",
+            "#e6e2da",
+            "#d1ccc1",
+            "#edeae3"
+          ]
+        },
+        "limitations": "渲染光照会影响色值；不据此推断面料成分、真实冷暖或人体适配。"
+      }
+    },
+    {
+      "id": "garment_p0_low_neon_top_n0093",
+      "category": "top",
+      "subcategory": "钴蓝荧光绿珊瑚口袋针织Polo",
+      "silhouette": [
+        "daily",
+        "single_focal",
+        "low_expression"
+      ],
+      "fit": "宽松",
+      "materials": [],
+      "details": [
+        "original_gap_fill",
+        "p0_persona_not_color_test",
+        "visually_reviewed_cutout"
+      ],
+      "season_tags": [
+        "秋",
+        "冬"
+      ],
+      "scene_tags": [
+        "日常",
+        "通勤",
+        "旅行"
+      ],
+      "weather_tags": [],
+      "presentation": [
+        "feminine",
+        "neutral"
+      ],
+      "layer_role": "single",
+      "tryon_slot": "top",
+      "persona_affinity": {
+        "NEON": 0.96
+      },
+      "color": {
+        "temperature": "未判断",
+        "lightness": "浅色",
+        "saturation": "高饱和",
+        "harmony": "未判断",
+        "palette": [
+          "#0237b7",
+          "#033cbe",
+          "#053fc2",
+          "#012fa5",
+          "#6b7484"
+        ]
+      },
+      "assets": {
+        "image_url": "/static/selfit/assets/content_v2_drafts/p0-low-expression-01/garments/neon-polo-v1.png",
+        "source_url": "",
+        "width": 1200,
+        "height": 1200,
+        "alpha_verified": true,
+        "rights_status": "owned"
+      },
+      "production": {
+        "source_kind": "generated_original",
+        "generation_job_id": "p0-generated-low-expression-01-n0093",
+        "prompt_version": "selfit-p0-low-expression-persona-v1",
+        "reference_ids": [],
+        "qa_status": "approved",
+        "phash": "68696969e0ec70b2-1341ae"
+      },
+      "annotation": {
+        "status": "designer_reviewed",
+        "source": "designer",
+        "confidence": 0.92,
+        "review_notes": [
+          "Cutout and visible silhouette reviewed in current Codex session; outfit use remains draft."
+        ]
+      },
+      "color_evidence": {
+        "source": "opaque_pixel_quantization_v1",
+        "status": "measured_not_semantic_review",
+        "asset_sha256": "943121a892a56d7676b34e08e48934a62505adefa1d5dd470c507bd4c5387c52",
+        "swatches": [
+          {
+            "hex": "#0237b7",
+            "weight": 0.3044,
+            "family": "蓝"
+          },
+          {
+            "hex": "#033cbe",
+            "weight": 0.2312,
+            "family": "蓝"
+          },
+          {
+            "hex": "#053fc2",
+            "weight": 0.1999,
+            "family": "蓝"
+          },
+          {
+            "hex": "#012fa5",
+            "weight": 0.1773,
+            "family": "蓝"
+          },
+          {
+            "hex": "#6b7484",
+            "weight": 0.0873,
+            "family": "蓝"
+          }
+        ],
+        "palette_names": [
+          "蓝"
+        ],
+        "color": {
+          "temperature": "未判断",
+          "lightness": "浅色",
+          "saturation": "高饱和",
+          "harmony": "未判断",
+          "palette": [
+            "#0237b7",
+            "#033cbe",
+            "#053fc2",
+            "#012fa5",
+            "#6b7484"
+          ]
+        },
+        "limitations": "渲染光照会影响色值；不据此推断面料成分、真实冷暖或人体适配。"
+      }
+    },
+    {
+      "id": "garment_p0_low_neon_dress_n0094",
+      "category": "dress",
+      "subcategory": "钴蓝荧光绿侧片A线连衣裙",
+      "silhouette": [
+        "daily",
+        "single_focal",
+        "low_expression"
+      ],
+      "fit": "宽松",
+      "materials": [],
+      "details": [
+        "original_gap_fill",
+        "p0_persona_not_color_test",
+        "visually_reviewed_cutout"
+      ],
+      "season_tags": [
+        "秋",
+        "冬"
+      ],
+      "scene_tags": [
+        "日常",
+        "通勤",
+        "旅行"
+      ],
+      "weather_tags": [],
+      "presentation": [
+        "feminine",
+        "neutral"
+      ],
+      "layer_role": "single",
+      "tryon_slot": "dress",
+      "persona_affinity": {
+        "NEON": 0.96
+      },
+      "color": {
+        "temperature": "未判断",
+        "lightness": "浅色",
+        "saturation": "高饱和",
+        "harmony": "未判断",
+        "palette": [
+          "#063bc0",
+          "#0b42cf",
+          "#012aa4",
+          "#124bd9",
+          "#c1e04f"
+        ]
+      },
+      "assets": {
+        "image_url": "/static/selfit/assets/content_v2_drafts/p0-low-expression-01/garments/neon-panel-dress-v1.png",
+        "source_url": "",
+        "width": 1200,
+        "height": 1200,
+        "alpha_verified": true,
+        "rights_status": "owned"
+      },
+      "production": {
+        "source_kind": "generated_original",
+        "generation_job_id": "p0-generated-low-expression-01-n0094",
+        "prompt_version": "selfit-p0-low-expression-persona-v1",
+        "reference_ids": [],
+        "qa_status": "approved",
+        "phash": "70696860b2b2b230-2354b1"
+      },
+      "annotation": {
+        "status": "designer_reviewed",
+        "source": "designer",
+        "confidence": 0.92,
+        "review_notes": [
+          "Cutout and visible silhouette reviewed in current Codex session; outfit use remains draft."
+        ]
+      },
+      "color_evidence": {
+        "source": "opaque_pixel_quantization_v1",
+        "status": "measured_not_semantic_review",
+        "asset_sha256": "29166fe4afadd5fba75cc88c04b4233be983749cb7d355c7d2a438f85769a37b",
+        "swatches": [
+          {
+            "hex": "#063bc0",
+            "weight": 0.2965,
+            "family": "蓝"
+          },
+          {
+            "hex": "#0b42cf",
+            "weight": 0.2349,
+            "family": "蓝"
+          },
+          {
+            "hex": "#012aa4",
+            "weight": 0.172,
+            "family": "蓝"
+          },
+          {
+            "hex": "#124bd9",
+            "weight": 0.1634,
+            "family": "蓝"
+          },
+          {
+            "hex": "#c1e04f",
+            "weight": 0.1332,
+            "family": "黄"
+          }
+        ],
+        "palette_names": [
+          "蓝",
+          "黄"
+        ],
+        "color": {
+          "temperature": "未判断",
+          "lightness": "浅色",
+          "saturation": "高饱和",
+          "harmony": "未判断",
+          "palette": [
+            "#063bc0",
+            "#0b42cf",
+            "#012aa4",
+            "#124bd9",
+            "#c1e04f"
+          ]
+        },
+        "limitations": "渲染光照会影响色值；不据此推断面料成分、真实冷暖或人体适配。"
+      }
+    },
+    {
+      "id": "garment_p0_low_oops_skirt_n0095",
+      "category": "skirt",
+      "subcategory": "灰条纹鼠尾草异材质拼接裙",
+      "silhouette": [
+        "daily",
+        "single_focal",
+        "low_expression"
+      ],
+      "fit": "宽松",
+      "materials": [],
+      "details": [
+        "original_gap_fill",
+        "p0_persona_not_color_test",
+        "visually_reviewed_cutout"
+      ],
+      "season_tags": [
+        "秋",
+        "冬"
+      ],
+      "scene_tags": [
+        "日常",
+        "通勤",
+        "旅行"
+      ],
+      "weather_tags": [],
+      "presentation": [
+        "feminine",
+        "neutral"
+      ],
+      "layer_role": "single",
+      "tryon_slot": "skirt",
+      "persona_affinity": {
+        "OOPS": 0.96
+      },
+      "color": {
+        "temperature": "未判断",
+        "lightness": "中等",
+        "saturation": "低饱和",
+        "harmony": "未判断",
+        "palette": [
+          "#5e5a5b",
+          "#4b4a4e",
+          "#7f816e",
+          "#707062",
+          "#898b77"
+        ]
+      },
+      "assets": {
+        "image_url": "/static/selfit/assets/content_v2_drafts/p0-low-expression-01/garments/oops-split-skirt-v1.png",
+        "source_url": "",
+        "width": 1200,
+        "height": 1200,
+        "alpha_verified": true,
+        "rights_status": "owned"
+      },
+      "production": {
+        "source_kind": "generated_original",
+        "generation_job_id": "p0-generated-low-expression-01-n0095",
+        "prompt_version": "selfit-p0-low-expression-persona-v1",
+        "reference_ids": [],
+        "qa_status": "approved",
+        "phash": "e0e0e06161616030-686860"
+      },
+      "annotation": {
+        "status": "designer_reviewed",
+        "source": "designer",
+        "confidence": 0.92,
+        "review_notes": [
+          "Cutout and visible silhouette reviewed in current Codex session; outfit use remains draft."
+        ]
+      },
+      "color_evidence": {
+        "source": "opaque_pixel_quantization_v1",
+        "status": "measured_not_semantic_review",
+        "asset_sha256": "dcbecb0ba5ce1405fbc7a1dca418e6ebe6243a743fabc2423dd07d52683a11ce",
+        "swatches": [
+          {
+            "hex": "#5e5a5b",
+            "weight": 0.3476,
+            "family": "灰"
+          },
+          {
+            "hex": "#4b4a4e",
+            "weight": 0.1772,
+            "family": "灰"
+          },
+          {
+            "hex": "#7f816e",
+            "weight": 0.1756,
+            "family": "黄"
+          },
+          {
+            "hex": "#707062",
+            "weight": 0.175,
+            "family": "灰"
+          },
+          {
+            "hex": "#898b77",
+            "weight": 0.1247,
+            "family": "黄"
+          }
+        ],
+        "palette_names": [
+          "灰",
+          "黄"
+        ],
+        "color": {
+          "temperature": "未判断",
+          "lightness": "中等",
+          "saturation": "低饱和",
+          "harmony": "未判断",
+          "palette": [
+            "#5e5a5b",
+            "#4b4a4e",
+            "#7f816e",
+            "#707062",
+            "#898b77"
+          ]
+        },
+        "limitations": "渲染光照会影响色值；不据此推断面料成分、真实冷暖或人体适配。"
+      }
+    },
+    {
+      "id": "garment_p0_low_oops_dress_n0096",
+      "category": "dress",
+      "subcategory": "蓝条纹米色错位拼接衬衫裙",
+      "silhouette": [
+        "daily",
+        "single_focal",
+        "low_expression"
+      ],
+      "fit": "宽松",
+      "materials": [],
+      "details": [
+        "original_gap_fill",
+        "p0_persona_not_color_test",
+        "visually_reviewed_cutout"
+      ],
+      "season_tags": [
+        "秋",
+        "冬"
+      ],
+      "scene_tags": [
+        "日常",
+        "通勤",
+        "旅行"
+      ],
+      "weather_tags": [],
+      "presentation": [
+        "feminine",
+        "neutral"
+      ],
+      "layer_role": "single",
+      "tryon_slot": "dress",
+      "persona_affinity": {
+        "OOPS": 0.96
+      },
+      "color": {
+        "temperature": "未判断",
+        "lightness": "浅色",
+        "saturation": "低饱和",
+        "harmony": "未判断",
+        "palette": [
+          "#a4a7b3",
+          "#d1bda9",
+          "#898c9a",
+          "#dac4b2",
+          "#bab4b2"
+        ]
+      },
+      "assets": {
+        "image_url": "/static/selfit/assets/content_v2_drafts/p0-low-expression-01/garments/oops-split-dress-v1.png",
+        "source_url": "",
+        "width": 1200,
+        "height": 1200,
+        "alpha_verified": true,
+        "rights_status": "owned"
+      },
+      "production": {
+        "source_kind": "generated_original",
+        "generation_job_id": "p0-generated-low-expression-01-n0096",
+        "prompt_version": "selfit-p0-low-expression-persona-v1",
+        "reference_ids": [],
+        "qa_status": "approved",
+        "phash": "706171716161b0b0-b1abac"
+      },
+      "annotation": {
+        "status": "designer_reviewed",
+        "source": "designer",
+        "confidence": 0.92,
+        "review_notes": [
+          "Cutout and visible silhouette reviewed in current Codex session; outfit use remains draft."
+        ]
+      },
+      "color_evidence": {
+        "source": "opaque_pixel_quantization_v1",
+        "status": "measured_not_semantic_review",
+        "asset_sha256": "6ef3898e7e048c7c220aa3c341c6c8bf576a4d3d191875446001a2ef349dd220",
+        "swatches": [
+          {
+            "hex": "#a4a7b3",
+            "weight": 0.3369,
+            "family": "灰"
+          },
+          {
+            "hex": "#d1bda9",
+            "weight": 0.2693,
+            "family": "黄"
+          },
+          {
+            "hex": "#898c9a",
+            "weight": 0.1896,
+            "family": "灰"
+          },
+          {
+            "hex": "#dac4b2",
+            "weight": 0.1319,
+            "family": "奶油白"
+          },
+          {
+            "hex": "#bab4b2",
+            "weight": 0.0723,
+            "family": "灰"
+          }
+        ],
+        "palette_names": [
+          "灰",
+          "黄",
+          "奶油白"
+        ],
+        "color": {
+          "temperature": "未判断",
+          "lightness": "浅色",
+          "saturation": "低饱和",
+          "harmony": "未判断",
+          "palette": [
+            "#a4a7b3",
+            "#d1bda9",
+            "#898c9a",
+            "#dac4b2",
+            "#bab4b2"
+          ]
+        },
+        "limitations": "渲染光照会影响色值；不据此推断面料成分、真实冷暖或人体适配。"
+      }
+    },
+    {
+      "id": "garment_p0_low_void_skirt_n0097",
+      "category": "skirt",
+      "subcategory": "水洗炭灰偏置缝线补丁裙",
+      "silhouette": [
+        "daily",
+        "single_focal",
+        "low_expression"
+      ],
+      "fit": "宽松",
+      "materials": [],
+      "details": [
+        "original_gap_fill",
+        "p0_persona_not_color_test",
+        "visually_reviewed_cutout"
+      ],
+      "season_tags": [
+        "秋",
+        "冬"
+      ],
+      "scene_tags": [
+        "日常",
+        "通勤",
+        "旅行"
+      ],
+      "weather_tags": [],
+      "presentation": [
+        "feminine",
+        "neutral"
+      ],
+      "layer_role": "single",
+      "tryon_slot": "skirt",
+      "persona_affinity": {
+        "VOID": 0.96
+      },
+      "color": {
+        "temperature": "未判断",
+        "lightness": "深色",
+        "saturation": "无彩",
+        "harmony": "未判断",
+        "palette": [
+          "#413f3f",
+          "#3f3d3d",
+          "#3d3c3c",
+          "#4a4848",
+          "#383737"
+        ]
+      },
+      "assets": {
+        "image_url": "/static/selfit/assets/content_v2_drafts/p0-low-expression-01/garments/void-washed-skirt-v1.png",
+        "source_url": "",
+        "width": 1200,
+        "height": 1200,
+        "alpha_verified": true,
+        "rights_status": "owned"
+      },
+      "production": {
+        "source_kind": "generated_original",
+        "generation_job_id": "p0-generated-low-expression-01-n0097",
+        "prompt_version": "selfit-p0-low-expression-persona-v1",
+        "reference_ids": [],
+        "qa_status": "approved",
+        "phash": "7069696969697030-424040"
+      },
+      "annotation": {
+        "status": "designer_reviewed",
+        "source": "designer",
+        "confidence": 0.92,
+        "review_notes": [
+          "Cutout and visible silhouette reviewed in current Codex session; outfit use remains draft."
+        ]
+      },
+      "color_evidence": {
+        "source": "opaque_pixel_quantization_v1",
+        "status": "measured_not_semantic_review",
+        "asset_sha256": "b4bedf11f57990bf000d32f6be1ca55b460d38478db919f66baf249a538ebfeb",
+        "swatches": [
+          {
+            "hex": "#413f3f",
+            "weight": 0.3417,
+            "family": "灰"
+          },
+          {
+            "hex": "#3f3d3d",
+            "weight": 0.2426,
+            "family": "灰"
+          },
+          {
+            "hex": "#3d3c3c",
+            "weight": 0.1866,
+            "family": "灰"
+          },
+          {
+            "hex": "#4a4848",
+            "weight": 0.1638,
+            "family": "灰"
+          },
+          {
+            "hex": "#383737",
+            "weight": 0.0653,
+            "family": "灰"
+          }
+        ],
+        "palette_names": [
+          "灰"
+        ],
+        "color": {
+          "temperature": "未判断",
+          "lightness": "深色",
+          "saturation": "无彩",
+          "harmony": "未判断",
+          "palette": [
+            "#413f3f",
+            "#3f3d3d",
+            "#3d3c3c",
+            "#4a4848",
+            "#383737"
+          ]
+        },
+        "limitations": "渲染光照会影响色值；不据此推断面料成分、真实冷暖或人体适配。"
+      }
+    },
+    {
+      "id": "garment_p0_low_void_dress_n0098",
+      "category": "dress",
+      "subcategory": "水洗石墨灰偏置口袋T恤裙",
+      "silhouette": [
+        "daily",
+        "single_focal",
+        "low_expression"
+      ],
+      "fit": "宽松",
+      "materials": [],
+      "details": [
+        "original_gap_fill",
+        "p0_persona_not_color_test",
+        "visually_reviewed_cutout"
+      ],
+      "season_tags": [
+        "秋",
+        "冬"
+      ],
+      "scene_tags": [
+        "日常",
+        "通勤",
+        "旅行"
+      ],
+      "weather_tags": [],
+      "presentation": [
+        "feminine",
+        "neutral"
+      ],
+      "layer_role": "single",
+      "tryon_slot": "dress",
+      "persona_affinity": {
+        "VOID": 0.96
+      },
+      "color": {
+        "temperature": "未判断",
+        "lightness": "深色",
+        "saturation": "无彩",
+        "harmony": "未判断",
+        "palette": [
+          "#484647",
+          "#4e4c4d",
+          "#393838",
+          "#525152",
+          "#5f5d5e"
+        ]
+      },
+      "assets": {
+        "image_url": "/static/selfit/assets/content_v2_drafts/p0-low-expression-01/garments/void-pocket-dress-v1.png",
+        "source_url": "",
+        "width": 1200,
+        "height": 1200,
+        "alpha_verified": true,
+        "rights_status": "owned"
+      },
+      "production": {
+        "source_kind": "generated_original",
+        "generation_job_id": "p0-generated-low-expression-01-n0098",
+        "prompt_version": "selfit-p0-low-expression-persona-v1",
+        "reference_ids": [],
+        "qa_status": "approved",
+        "phash": "6869786070697030-4b494a"
+      },
+      "annotation": {
+        "status": "designer_reviewed",
+        "source": "designer",
+        "confidence": 0.92,
+        "review_notes": [
+          "Cutout and visible silhouette reviewed in current Codex session; outfit use remains draft."
+        ]
+      },
+      "color_evidence": {
+        "source": "opaque_pixel_quantization_v1",
+        "status": "measured_not_semantic_review",
+        "asset_sha256": "bdf190aa73d03d121fbb60b0bfd965556283b9392fb9051a0a7c4bb5d5af5e93",
+        "swatches": [
+          {
+            "hex": "#484647",
+            "weight": 0.2903,
+            "family": "灰"
+          },
+          {
+            "hex": "#4e4c4d",
+            "weight": 0.2505,
+            "family": "灰"
+          },
+          {
+            "hex": "#393838",
+            "weight": 0.1829,
+            "family": "灰"
+          },
+          {
+            "hex": "#525152",
+            "weight": 0.1671,
+            "family": "灰"
+          },
+          {
+            "hex": "#5f5d5e",
+            "weight": 0.1092,
+            "family": "灰"
+          }
+        ],
+        "palette_names": [
+          "灰"
+        ],
+        "color": {
+          "temperature": "未判断",
+          "lightness": "深色",
+          "saturation": "无彩",
+          "harmony": "未判断",
+          "palette": [
+            "#484647",
+            "#4e4c4d",
+            "#393838",
+            "#525152",
+            "#5f5d5e"
+          ]
+        },
+        "limitations": "渲染光照会影响色值；不据此推断面料成分、真实冷暖或人体适配。"
+      }
+    }
+  ],
+  "visual": {
+    "garment_p0_low_bolt_top_n0088": {
+      "token": "n0088",
+      "status": "ai_candidate",
+      "record_fingerprint": "d1739bb342afdf0fe502f453a3deeaebe4869931a05f4573bd7432f2143b8d0e",
+      "asset_sha256": "62050afcc83adc4437f2929d9dca5d0200a51d26ad6eddf8cf2e001a1cbdb056",
+      "image_url": "/static/selfit/assets/content_v2_drafts/p0-low-expression-01/garments/bolt-bow-blouse-v1.png",
+      "source_kind": "codex_visual_review",
+      "evidence": "低强度丝绒领结、珍珠扣与收腰线提供日常化的精致贵气证据。",
+      "observations": {
+        "category": "top",
+        "subcategory": "bow_pearl_fitted_blouse",
+        "neckline": "as_observed",
+        "sleeve": "as_observed",
+        "length": "regular",
+        "volume": "controlled",
+        "construction": "single_persona_detail_on_daily_base",
+        "pattern": "solid_or_restrained",
+        "decoration": "low",
+        "material_appearance": "as_observed",
+        "main_colors": [
+          "ivory",
+          "wine_red"
+        ],
+        "visual_personas": [
+          "bolt"
+        ],
+        "usage_limits": null
+      },
+      "confidence": 0.9,
+      "model": "current_codex_session",
+      "prompt_version": "aw-generated-garment-review-v1",
+      "review_level": "individual_full_resolution_judgment",
+      "review_complete": true,
+      "confidence_basis": "Non-calibrated AI visual judgment; material appearance is visual only and warmth is not claimed."
+    },
+    "garment_p0_low_bolt_dress_n0089": {
+      "token": "n0089",
+      "status": "ai_candidate",
+      "record_fingerprint": "8a1a2782218f476367053baf9e051bca34c8122effbc97b7777c5cf22fc702cd",
+      "asset_sha256": "32173a0e834a3c435e8a0db180e47535ad46ed19e5256806bb953a337c83cc54",
+      "image_url": "/static/selfit/assets/content_v2_drafts/p0-low-expression-01/garments/bolt-bow-dress-v1.png",
+      "source_kind": "codex_visual_review",
+      "evidence": "单一酒红领结、珍珠扣与克制 A 线形成低强度在逃千金表达。",
+      "observations": {
+        "category": "dress",
+        "subcategory": "bow_pearl_a_line_shirtdress",
+        "neckline": "as_observed",
+        "sleeve": "as_observed",
+        "length": "midi",
+        "volume": "controlled",
+        "construction": "single_persona_detail_on_daily_base",
+        "pattern": "solid_or_restrained",
+        "decoration": "low",
+        "material_appearance": "as_observed",
+        "main_colors": [
+          "ivory",
+          "wine_red"
+        ],
+        "visual_personas": [
+          "bolt"
+        ],
+        "usage_limits": null
+      },
+      "confidence": 0.9,
+      "model": "current_codex_session",
+      "prompt_version": "aw-generated-garment-review-v1",
+      "review_level": "individual_full_resolution_judgment",
+      "review_complete": true,
+      "confidence_basis": "Non-calibrated AI visual judgment; material appearance is visual only and warmth is not claimed."
+    },
+    "garment_p0_low_edge_top_n0090": {
+      "token": "n0090",
+      "status": "ai_candidate",
+      "record_fingerprint": "fe16acbfe76e02bd124d839831b65d565d4ba454f6d437eef33770cac7606d97",
+      "asset_sha256": "b00a02f157ef802074110ee03a50b2434ec515eb0b5fb833b58b792190b32408",
+      "image_url": "/static/selfit/assets/content_v2_drafts/p0-low-expression-01/garments/edge-piped-knit-v1.png",
+      "source_kind": "codex_visual_review",
+      "evidence": "灰粉软针织与一条黑色皮革斜线、银环形成克制甜酷对撞。",
+      "observations": {
+        "category": "top",
+        "subcategory": "soft_knit_leather_piped_top",
+        "neckline": "as_observed",
+        "sleeve": "as_observed",
+        "length": "regular",
+        "volume": "controlled",
+        "construction": "single_persona_detail_on_daily_base",
+        "pattern": "solid_or_restrained",
+        "decoration": "low",
+        "material_appearance": "as_observed",
+        "main_colors": [
+          "dusty_rose",
+          "black"
+        ],
+        "visual_personas": [
+          "edge"
+        ],
+        "usage_limits": null
+      },
+      "confidence": 0.9,
+      "model": "current_codex_session",
+      "prompt_version": "aw-generated-garment-review-v1",
+      "review_level": "individual_full_resolution_judgment",
+      "review_complete": true,
+      "confidence_basis": "Non-calibrated AI visual judgment; material appearance is visual only and warmth is not claimed."
+    },
+    "garment_p0_low_edge_dress_n0091": {
+      "token": "n0091",
+      "status": "ai_candidate",
+      "record_fingerprint": "f26cfe151e711c3bd138e3d31d7c3400b6f0f67757308c0302261805621ff59e",
+      "asset_sha256": "a99705648643f4dc4471d45fb22cd0de5771ee68e8322e64981eedfc702efeee",
+      "image_url": "/static/selfit/assets/content_v2_drafts/p0-low-expression-01/garments/edge-piped-dress-v1.png",
+      "source_kind": "codex_visual_review",
+      "evidence": "柔和灰紫 A 线与细黑皮革腰线、小银扣形成日常甜酷证据。",
+      "observations": {
+        "category": "dress",
+        "subcategory": "soft_square_neck_piped_midi_dress",
+        "neckline": "as_observed",
+        "sleeve": "as_observed",
+        "length": "midi",
+        "volume": "controlled",
+        "construction": "single_persona_detail_on_daily_base",
+        "pattern": "solid_or_restrained",
+        "decoration": "low",
+        "material_appearance": "as_observed",
+        "main_colors": [
+          "dusty_mauve",
+          "black"
+        ],
+        "visual_personas": [
+          "edge"
+        ],
+        "usage_limits": null
+      },
+      "confidence": 0.9,
+      "model": "current_codex_session",
+      "prompt_version": "aw-generated-garment-review-v1",
+      "review_level": "individual_full_resolution_judgment",
+      "review_complete": true,
+      "confidence_basis": "Non-calibrated AI visual judgment; material appearance is visual only and warmth is not claimed."
+    },
+    "garment_p0_low_jade_dress_n0092": {
+      "token": "n0092",
+      "status": "ai_candidate",
+      "record_fingerprint": "b0a295de6048af2bf80871c4854aa0c869767bff90c5956e0bfad7bed97aed3b",
+      "asset_sha256": "674daefb6a7f10cbf71d07b064801d8d03ac167c854f79b632249b20cda60114",
+      "image_url": "/static/selfit/assets/content_v2_drafts/p0-low-expression-01/garments/jade-wrap-dress-v1.png",
+      "source_kind": "codex_visual_review",
+      "evidence": "短立领、斜襟线与单颗玉色扣构成克制现代的东方线条。",
+      "observations": {
+        "category": "dress",
+        "subcategory": "modern_stand_collar_wrap_midi_dress",
+        "neckline": "as_observed",
+        "sleeve": "as_observed",
+        "length": "midi",
+        "volume": "controlled",
+        "construction": "single_persona_detail_on_daily_base",
+        "pattern": "solid_or_restrained",
+        "decoration": "low",
+        "material_appearance": "as_observed",
+        "main_colors": [
+          "warm_white",
+          "jade_green"
+        ],
+        "visual_personas": [
+          "jade"
+        ],
+        "usage_limits": null
+      },
+      "confidence": 0.9,
+      "model": "current_codex_session",
+      "prompt_version": "aw-generated-garment-review-v1",
+      "review_level": "individual_full_resolution_judgment",
+      "review_complete": true,
+      "confidence_basis": "Non-calibrated AI visual judgment; material appearance is visual only and warmth is not claimed."
+    },
+    "garment_p0_low_neon_top_n0093": {
+      "token": "n0093",
+      "status": "ai_candidate",
+      "record_fingerprint": "b7c37a8b826523243806f39d4729c073e409f209f0c79ac014b04b1bd1eb6dc5",
+      "asset_sha256": "943121a892a56d7676b34e08e48934a62505adefa1d5dd470c507bd4c5387c52",
+      "image_url": "/static/selfit/assets/content_v2_drafts/p0-low-expression-01/garments/neon-polo-v1.png",
+      "source_kind": "codex_visual_review",
+      "evidence": "高能钴蓝、荧光绿和珊瑚色被限制在简洁 Polo 轮廓和单一口袋内。",
+      "observations": {
+        "category": "top",
+        "subcategory": "simple_high_color_polo",
+        "neckline": "as_observed",
+        "sleeve": "as_observed",
+        "length": "regular",
+        "volume": "controlled",
+        "construction": "single_persona_detail_on_daily_base",
+        "pattern": "solid_or_restrained",
+        "decoration": "low",
+        "material_appearance": "as_observed",
+        "main_colors": [
+          "cobalt_blue",
+          "lime",
+          "coral"
+        ],
+        "visual_personas": [
+          "neon"
+        ],
+        "usage_limits": null
+      },
+      "confidence": 0.9,
+      "model": "current_codex_session",
+      "prompt_version": "aw-generated-garment-review-v1",
+      "review_level": "individual_full_resolution_judgment",
+      "review_complete": true,
+      "confidence_basis": "Non-calibrated AI visual judgment; material appearance is visual only and warmth is not claimed."
+    },
+    "garment_p0_low_neon_dress_n0094": {
+      "token": "n0094",
+      "status": "ai_candidate",
+      "record_fingerprint": "9d77ff7fa6f57c78e2661cdae0265b852cacdb6e27a5af1a2061708672a743e0",
+      "asset_sha256": "29166fe4afadd5fba75cc88c04b4233be983749cb7d355c7d2a438f85769a37b",
+      "image_url": "/static/selfit/assets/content_v2_drafts/p0-low-expression-01/garments/neon-panel-dress-v1.png",
+      "source_kind": "codex_visual_review",
+      "evidence": "钴蓝主色与单一荧光绿侧片构成吸睛焦点，A 线结构保持低复杂度。",
+      "observations": {
+        "category": "dress",
+        "subcategory": "simple_high_color_panel_midi_dress",
+        "neckline": "as_observed",
+        "sleeve": "as_observed",
+        "length": "midi",
+        "volume": "controlled",
+        "construction": "single_persona_detail_on_daily_base",
+        "pattern": "solid_or_restrained",
+        "decoration": "low",
+        "material_appearance": "as_observed",
+        "main_colors": [
+          "cobalt_blue",
+          "lime",
+          "coral"
+        ],
+        "visual_personas": [
+          "neon"
+        ],
+        "usage_limits": null
+      },
+      "confidence": 0.9,
+      "model": "current_codex_session",
+      "prompt_version": "aw-generated-garment-review-v1",
+      "review_level": "individual_full_resolution_judgment",
+      "review_complete": true,
+      "confidence_basis": "Non-calibrated AI visual judgment; material appearance is visual only and warmth is not claimed."
+    },
+    "garment_p0_low_oops_skirt_n0095": {
+      "token": "n0095",
+      "status": "ai_candidate",
+      "record_fingerprint": "58bc03410d995b9e1fad0f753ce5ec4f1598098b8f2c79064f4ee5d2ef3dacc8",
+      "asset_sha256": "dcbecb0ba5ce1405fbc7a1dca418e6ebe6243a743fabc2423dd07d52683a11ce",
+      "image_url": "/static/selfit/assets/content_v2_drafts/p0-low-expression-01/garments/oops-split-skirt-v1.png",
+      "source_kind": "codex_visual_review",
+      "evidence": "条纹西装料与鼠尾草棉料主动冲突，蓝色口袋是唯一意外点。",
+      "observations": {
+        "category": "skirt",
+        "subcategory": "controlled_mismatch_split_midi_skirt",
+        "neckline": "as_observed",
+        "sleeve": "as_observed",
+        "length": "midi",
+        "volume": "controlled",
+        "construction": "single_persona_detail_on_daily_base",
+        "pattern": "controlled_mismatch",
+        "decoration": "low",
+        "material_appearance": "as_observed",
+        "main_colors": [
+          "charcoal",
+          "sage",
+          "cobalt"
+        ],
+        "visual_personas": [
+          "oops"
+        ],
+        "usage_limits": null
+      },
+      "confidence": 0.9,
+      "model": "current_codex_session",
+      "prompt_version": "aw-generated-garment-review-v1",
+      "review_level": "individual_full_resolution_judgment",
+      "review_complete": true,
+      "confidence_basis": "Non-calibrated AI visual judgment; material appearance is visual only and warmth is not claimed."
+    },
+    "garment_p0_low_oops_dress_n0096": {
+      "token": "n0096",
+      "status": "ai_candidate",
+      "record_fingerprint": "5119300e58955ace62b326a5f6d1f8d4accf2c378f70c13bf6ea1e1c3af103a5",
+      "asset_sha256": "6ef3898e7e048c7c220aa3c341c6c8bf576a4d3d191875446001a2ef349dd220",
+      "image_url": "/static/selfit/assets/content_v2_drafts/p0-low-expression-01/garments/oops-split-dress-v1.png",
+      "source_kind": "codex_visual_review",
+      "evidence": "普通蓝条纹与米色衬衫面被刻意对半拼接，以小珊瑚扣保留失序趣味。",
+      "observations": {
+        "category": "dress",
+        "subcategory": "controlled_mismatch_split_shirtdress",
+        "neckline": "as_observed",
+        "sleeve": "as_observed",
+        "length": "midi",
+        "volume": "controlled",
+        "construction": "single_persona_detail_on_daily_base",
+        "pattern": "controlled_mismatch",
+        "decoration": "low",
+        "material_appearance": "as_observed",
+        "main_colors": [
+          "muted_blue",
+          "beige",
+          "coral"
+        ],
+        "visual_personas": [
+          "oops"
+        ],
+        "usage_limits": null
+      },
+      "confidence": 0.9,
+      "model": "current_codex_session",
+      "prompt_version": "aw-generated-garment-review-v1",
+      "review_level": "individual_full_resolution_judgment",
+      "review_complete": true,
+      "confidence_basis": "Non-calibrated AI visual judgment; material appearance is visual only and warmth is not claimed."
+    },
+    "garment_p0_low_void_skirt_n0097": {
+      "token": "n0097",
+      "status": "ai_candidate",
+      "record_fingerprint": "f94daab4f1ae9904da1d6b1be94d55f2f8eb60f8726934c9cbf3bc09dc9520ac",
+      "asset_sha256": "b4bedf11f57990bf000d32f6be1ca55b460d38478db919f66baf249a538ebfeb",
+      "image_url": "/static/selfit/assets/content_v2_drafts/p0-low-expression-01/garments/void-washed-skirt-v1.png",
+      "source_kind": "codex_visual_review",
+      "evidence": "默认制服般的水洗炭灰直裙，以偏置门襟和低对比补丁保留轻微游离感。",
+      "observations": {
+        "category": "skirt",
+        "subcategory": "washed_offset_seam_midi_skirt",
+        "neckline": "as_observed",
+        "sleeve": "as_observed",
+        "length": "midi",
+        "volume": "controlled",
+        "construction": "single_persona_detail_on_daily_base",
+        "pattern": "solid_or_restrained",
+        "decoration": "low",
+        "material_appearance": "as_observed",
+        "main_colors": [
+          "washed_charcoal",
+          "faded_gray"
+        ],
+        "visual_personas": [
+          "void"
+        ],
+        "usage_limits": null
+      },
+      "confidence": 0.9,
+      "model": "current_codex_session",
+      "prompt_version": "aw-generated-garment-review-v1",
+      "review_level": "individual_full_resolution_judgment",
+      "review_complete": true,
+      "confidence_basis": "Non-calibrated AI visual judgment; material appearance is visual only and warmth is not claimed."
+    },
+    "garment_p0_low_void_dress_n0098": {
+      "token": "n0098",
+      "status": "ai_candidate",
+      "record_fingerprint": "0f1f426269ad05d38af0c06e1a6d4b08426e8a2b0bfac5ad4c6d2cb76384fe42",
+      "asset_sha256": "bdf190aa73d03d121fbb60b0bfd965556283b9392fb9051a0a7c4bb5d5af5e93",
+      "image_url": "/static/selfit/assets/content_v2_drafts/p0-low-expression-01/garments/void-pocket-dress-v1.png",
+      "source_kind": "codex_visual_review",
+      "evidence": "松身石墨灰 T 恤裙接近默认制服，斜缝与偏置口袋提供低表达不确定感。",
+      "observations": {
+        "category": "dress",
+        "subcategory": "washed_offset_pocket_tshirt_dress",
+        "neckline": "as_observed",
+        "sleeve": "as_observed",
+        "length": "midi",
+        "volume": "controlled",
+        "construction": "single_persona_detail_on_daily_base",
+        "pattern": "solid_or_restrained",
+        "decoration": "low",
+        "material_appearance": "as_observed",
+        "main_colors": [
+          "washed_graphite",
+          "faded_gray"
+        ],
+        "visual_personas": [
+          "void"
+        ],
+        "usage_limits": null
+      },
+      "confidence": 0.9,
+      "model": "current_codex_session",
+      "prompt_version": "aw-generated-garment-review-v1",
+      "review_level": "individual_full_resolution_judgment",
+      "review_complete": true,
+      "confidence_basis": "Non-calibrated AI visual judgment; material appearance is visual only and warmth is not claimed."
+    }
+  },
+  "limitations": [
+    "Generated cutout approval is not outfit approval, four-gate editorial approval, or blind review.",
+    "Persona and expression must be re-evaluated on the complete outfit image.",
+    "Color testing is outside this P0 scope."
+  ],
+  "version": "aw-generated-garments-b42e54ea8cabc29fe4f7",
+  "binding_method": "individual_output_binding_verified_visually_and_by_filename"
+}

@@ -1,0 +1,2337 @@
+{
+  "schema_version": 1,
+  "source_rendered_version": "aw-designed-rendered-b33c7d1e8adfd7e922ea",
+  "independent_blind_review": false,
+  "winter_outdoor_reviewed": true,
+  "physical_warmth_verified": false,
+  "entries": [
+    {
+      "outfit_id": "outfit_bolt_aw-targeted-08_01",
+      "status": "ai_candidate",
+      "record_fingerprint": "a765ac50863b92ebce1c2fefbb3f23e791b628dc8d947d8619ab07995c035415",
+      "asset_sha256": "df36c5de1bf8ab1b554cf7441a695264ad379cf8b6177bd366a99f049aa2ca40",
+      "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/4b109a971441445b1c858ed6.webp",
+      "source_kind": "codex_visual_review",
+      "evidence": "BOLT 的目标轮廓由主外层提供，pants 内层低竞争且闭合鞋履完成冬季关系。",
+      "observations": {
+        "axes": {},
+        "expression": "typical",
+        "formality": "smart_casual",
+        "layering": 2,
+        "persona_scores": {
+          "bolt": 0.84
+        },
+        "scenes": [
+          "daily"
+        ],
+        "seasons": [
+          "winter"
+        ],
+        "structure": "pants",
+        "wearability": "everyday_with_statement",
+        "main_visual_slots": [
+          "outer",
+          "top",
+          "pants"
+        ],
+        "main_colors": [
+          "deep_ocean_blue",
+          "charcoal",
+          "black"
+        ],
+        "conflicts": null,
+        "silhouette": "reviewed_reuse_winter_pants",
+        "color_relation": "reviewed_coherent",
+        "persona_evidence": "BOLT 的目标轮廓由主外层提供，pants 内层低竞争且闭合鞋履完成冬季关系。",
+        "winter_outdoor": "complete_layers_visually_reviewed"
+      },
+      "confidence": 0.84,
+      "model": "current_codex_session",
+      "prompt_version": "aw-targeted-08-native-v1",
+      "review_level": "individual_contact_sheet_judgment",
+      "evidence_scope": "nonblind_individual_visual_judgment; no temperature/waterproof claim",
+      "review_complete": true,
+      "field_status": {
+        "axes": "ai_observed",
+        "expression": "ai_observed",
+        "formality": "ai_observed",
+        "layering": "ai_observed",
+        "persona_scores": "ai_observed",
+        "scenes": "ai_observed",
+        "seasons": "ai_observed",
+        "structure": "ai_observed",
+        "wearability": "ai_observed",
+        "main_visual_slots": "ai_observed",
+        "main_colors": "ai_observed",
+        "conflicts": "unknown",
+        "silhouette": "ai_observed",
+        "color_relation": "ai_observed",
+        "persona_evidence": "ai_observed",
+        "winter_outdoor": "ai_observed"
+      },
+      "field_provenance": {
+        "axes": {
+          "source_file": "targeted-batch08-review/recipes-1.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "expression": {
+          "source_file": "targeted-batch08-review/recipes-1.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "formality": {
+          "source_file": "targeted-batch08-review/recipes-1.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "layering": {
+          "source_file": "targeted-batch08-review/recipes-1.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "persona_scores": {
+          "source_file": "targeted-batch08-review/recipes-1.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "scenes": {
+          "source_file": "targeted-batch08-review/recipes-1.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "seasons": {
+          "source_file": "targeted-batch08-review/recipes-1.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "structure": {
+          "source_file": "targeted-batch08-review/recipes-1.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "wearability": {
+          "source_file": "targeted-batch08-review/recipes-1.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "main_visual_slots": {
+          "source_file": "targeted-batch08-review/recipes-1.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "main_colors": {
+          "source_file": "targeted-batch08-review/recipes-1.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "conflicts": {
+          "source_file": "targeted-batch08-review/recipes-1.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": null
+        },
+        "silhouette": {
+          "source_file": "targeted-batch08-review/recipes-1.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "color_relation": {
+          "source_file": "targeted-batch08-review/recipes-1.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "persona_evidence": {
+          "source_file": "targeted-batch08-review/recipes-1.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "winter_outdoor": {
+          "source_file": "targeted-batch08-review/recipes-1.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        }
+      }
+    },
+    {
+      "outfit_id": "outfit_bolt_aw-targeted-08_02",
+      "status": "ai_candidate",
+      "record_fingerprint": "60410661e27a40eadb898c430e3a50f0af7bfb339f2df71206208d7b38c5e44f",
+      "asset_sha256": "4468ce9f0b7caadc52a2b9de79ed8b36f4bd20f22aae9bda3819a40132d7a50c",
+      "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/959980ba813a48104cf8361f.webp",
+      "source_kind": "codex_visual_review",
+      "evidence": "BOLT 的目标轮廓由主外层提供，skirt 内层低竞争且闭合鞋履完成冬季关系。",
+      "observations": {
+        "axes": {},
+        "expression": "typical",
+        "formality": "smart_casual",
+        "layering": 2,
+        "persona_scores": {
+          "bolt": 0.84
+        },
+        "scenes": [
+          "daily"
+        ],
+        "seasons": [
+          "winter"
+        ],
+        "structure": "skirt",
+        "wearability": "everyday_with_statement",
+        "main_visual_slots": [
+          "outer",
+          "top",
+          "skirt"
+        ],
+        "main_colors": [
+          "deep_ocean_blue",
+          "charcoal"
+        ],
+        "conflicts": null,
+        "silhouette": "reviewed_reuse_winter_skirt",
+        "color_relation": "reviewed_coherent",
+        "persona_evidence": "BOLT 的目标轮廓由主外层提供，skirt 内层低竞争且闭合鞋履完成冬季关系。",
+        "winter_outdoor": "complete_layers_visually_reviewed"
+      },
+      "confidence": 0.84,
+      "model": "current_codex_session",
+      "prompt_version": "aw-targeted-08-native-v1",
+      "review_level": "individual_contact_sheet_judgment",
+      "evidence_scope": "nonblind_individual_visual_judgment; no temperature/waterproof claim",
+      "review_complete": true,
+      "field_status": {
+        "axes": "ai_observed",
+        "expression": "ai_observed",
+        "formality": "ai_observed",
+        "layering": "ai_observed",
+        "persona_scores": "ai_observed",
+        "scenes": "ai_observed",
+        "seasons": "ai_observed",
+        "structure": "ai_observed",
+        "wearability": "ai_observed",
+        "main_visual_slots": "ai_observed",
+        "main_colors": "ai_observed",
+        "conflicts": "unknown",
+        "silhouette": "ai_observed",
+        "color_relation": "ai_observed",
+        "persona_evidence": "ai_observed",
+        "winter_outdoor": "ai_observed"
+      },
+      "field_provenance": {
+        "axes": {
+          "source_file": "targeted-batch08-review/recipes-1.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "expression": {
+          "source_file": "targeted-batch08-review/recipes-1.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "formality": {
+          "source_file": "targeted-batch08-review/recipes-1.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "layering": {
+          "source_file": "targeted-batch08-review/recipes-1.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "persona_scores": {
+          "source_file": "targeted-batch08-review/recipes-1.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "scenes": {
+          "source_file": "targeted-batch08-review/recipes-1.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "seasons": {
+          "source_file": "targeted-batch08-review/recipes-1.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "structure": {
+          "source_file": "targeted-batch08-review/recipes-1.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "wearability": {
+          "source_file": "targeted-batch08-review/recipes-1.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "main_visual_slots": {
+          "source_file": "targeted-batch08-review/recipes-1.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "main_colors": {
+          "source_file": "targeted-batch08-review/recipes-1.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "conflicts": {
+          "source_file": "targeted-batch08-review/recipes-1.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": null
+        },
+        "silhouette": {
+          "source_file": "targeted-batch08-review/recipes-1.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "color_relation": {
+          "source_file": "targeted-batch08-review/recipes-1.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "persona_evidence": {
+          "source_file": "targeted-batch08-review/recipes-1.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "winter_outdoor": {
+          "source_file": "targeted-batch08-review/recipes-1.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        }
+      }
+    },
+    {
+      "outfit_id": "outfit_wabi_aw-targeted-08_03",
+      "status": "needs_review",
+      "record_fingerprint": "f3f5a245aca9cc4b29c0c9b9fdbe5b2341364ac9240dc73e4223d7c4a1638b73",
+      "asset_sha256": "97fdbed41dcb171228c5828345dcff72458842ae417d3aa3923ffe5602b27801",
+      "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/0426b0d82c38f05ca7f40aab.webp",
+      "source_kind": "codex_visual_review",
+      "evidence": "雾海蓝系带 A 线外层实际更偏光洁流动，缺少 WABI 所需的自然材质或安静弧线证据。",
+      "observations": {
+        "axes": {},
+        "expression": "typical",
+        "formality": "smart_casual",
+        "layering": 2,
+        "persona_scores": {},
+        "scenes": null,
+        "seasons": null,
+        "structure": "pants",
+        "wearability": null,
+        "main_visual_slots": [
+          "outer",
+          "top",
+          "pants"
+        ],
+        "main_colors": [
+          "muted_ocean_blue",
+          "cream",
+          "taupe"
+        ],
+        "conflicts": [
+          "persona_mismatch"
+        ],
+        "silhouette": "reviewed_reuse_winter_pants",
+        "color_relation": "unresolved",
+        "persona_evidence": "雾海蓝系带 A 线外层实际更偏光洁流动，缺少 WABI 所需的自然材质或安静弧线证据。",
+        "winter_outdoor": null
+      },
+      "confidence": 0.84,
+      "model": "current_codex_session",
+      "prompt_version": "aw-targeted-08-native-v1",
+      "review_level": "individual_contact_sheet_judgment",
+      "evidence_scope": "nonblind_individual_visual_judgment; no temperature/waterproof claim",
+      "review_complete": true,
+      "field_status": {
+        "axes": "ai_observed",
+        "expression": "ai_observed",
+        "formality": "ai_observed",
+        "layering": "ai_observed",
+        "persona_scores": "ai_observed",
+        "scenes": "unknown",
+        "seasons": "unknown",
+        "structure": "ai_observed",
+        "wearability": "unknown",
+        "main_visual_slots": "ai_observed",
+        "main_colors": "ai_observed",
+        "conflicts": "ai_observed",
+        "silhouette": "ai_observed",
+        "color_relation": "ai_observed",
+        "persona_evidence": "ai_observed",
+        "winter_outdoor": "unknown"
+      },
+      "field_provenance": {
+        "axes": {
+          "source_file": "targeted-batch08-review/recipes-1.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "expression": {
+          "source_file": "targeted-batch08-review/recipes-1.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "formality": {
+          "source_file": "targeted-batch08-review/recipes-1.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "layering": {
+          "source_file": "targeted-batch08-review/recipes-1.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "persona_scores": {
+          "source_file": "targeted-batch08-review/recipes-1.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "scenes": {
+          "source_file": "targeted-batch08-review/recipes-1.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": null
+        },
+        "seasons": {
+          "source_file": "targeted-batch08-review/recipes-1.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": null
+        },
+        "structure": {
+          "source_file": "targeted-batch08-review/recipes-1.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "wearability": {
+          "source_file": "targeted-batch08-review/recipes-1.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": null
+        },
+        "main_visual_slots": {
+          "source_file": "targeted-batch08-review/recipes-1.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "main_colors": {
+          "source_file": "targeted-batch08-review/recipes-1.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "conflicts": {
+          "source_file": "targeted-batch08-review/recipes-1.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "silhouette": {
+          "source_file": "targeted-batch08-review/recipes-1.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "color_relation": {
+          "source_file": "targeted-batch08-review/recipes-1.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "persona_evidence": {
+          "source_file": "targeted-batch08-review/recipes-1.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "winter_outdoor": {
+          "source_file": "targeted-batch08-review/recipes-1.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": null
+        }
+      }
+    },
+    {
+      "outfit_id": "outfit_wabi_aw-targeted-08_04",
+      "status": "needs_review",
+      "record_fingerprint": "c84e0212d38d2d7154a0911b617069f57ceb20175c78dd52a116ba3234a721fb",
+      "asset_sha256": "5ad214e014ba1ec9e84d3da382543bad54f8c5b6745adbe72131257135b85b8c",
+      "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/831a0093d4d4fc6083e3fe88.webp",
+      "source_kind": "codex_visual_review",
+      "evidence": "同一光洁系带外层与规整灰裙进一步偏向 FLOU/HEIR，不能借目标标签归入 WABI。",
+      "observations": {
+        "axes": {},
+        "expression": "typical",
+        "formality": "smart_casual",
+        "layering": 2,
+        "persona_scores": {},
+        "scenes": null,
+        "seasons": null,
+        "structure": "dress",
+        "wearability": null,
+        "main_visual_slots": [
+          "outer",
+          "dress"
+        ],
+        "main_colors": [
+          "muted_ocean_blue",
+          "taupe"
+        ],
+        "conflicts": [
+          "persona_mismatch"
+        ],
+        "silhouette": "reviewed_reuse_winter_dress",
+        "color_relation": "unresolved",
+        "persona_evidence": "同一光洁系带外层与规整灰裙进一步偏向 FLOU/HEIR，不能借目标标签归入 WABI。",
+        "winter_outdoor": null
+      },
+      "confidence": 0.84,
+      "model": "current_codex_session",
+      "prompt_version": "aw-targeted-08-native-v1",
+      "review_level": "individual_contact_sheet_judgment",
+      "evidence_scope": "nonblind_individual_visual_judgment; no temperature/waterproof claim",
+      "review_complete": true,
+      "field_status": {
+        "axes": "ai_observed",
+        "expression": "ai_observed",
+        "formality": "ai_observed",
+        "layering": "ai_observed",
+        "persona_scores": "ai_observed",
+        "scenes": "unknown",
+        "seasons": "unknown",
+        "structure": "ai_observed",
+        "wearability": "unknown",
+        "main_visual_slots": "ai_observed",
+        "main_colors": "ai_observed",
+        "conflicts": "ai_observed",
+        "silhouette": "ai_observed",
+        "color_relation": "ai_observed",
+        "persona_evidence": "ai_observed",
+        "winter_outdoor": "unknown"
+      },
+      "field_provenance": {
+        "axes": {
+          "source_file": "targeted-batch08-review/recipes-1.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "expression": {
+          "source_file": "targeted-batch08-review/recipes-1.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "formality": {
+          "source_file": "targeted-batch08-review/recipes-1.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "layering": {
+          "source_file": "targeted-batch08-review/recipes-1.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "persona_scores": {
+          "source_file": "targeted-batch08-review/recipes-1.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "scenes": {
+          "source_file": "targeted-batch08-review/recipes-1.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": null
+        },
+        "seasons": {
+          "source_file": "targeted-batch08-review/recipes-1.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": null
+        },
+        "structure": {
+          "source_file": "targeted-batch08-review/recipes-1.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "wearability": {
+          "source_file": "targeted-batch08-review/recipes-1.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": null
+        },
+        "main_visual_slots": {
+          "source_file": "targeted-batch08-review/recipes-1.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "main_colors": {
+          "source_file": "targeted-batch08-review/recipes-1.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "conflicts": {
+          "source_file": "targeted-batch08-review/recipes-1.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "silhouette": {
+          "source_file": "targeted-batch08-review/recipes-1.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "color_relation": {
+          "source_file": "targeted-batch08-review/recipes-1.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "persona_evidence": {
+          "source_file": "targeted-batch08-review/recipes-1.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "winter_outdoor": {
+          "source_file": "targeted-batch08-review/recipes-1.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": null
+        }
+      }
+    },
+    {
+      "outfit_id": "outfit_heir_aw-targeted-08_05",
+      "status": "ai_candidate",
+      "record_fingerprint": "96e7c3046771bf67b02599971cbabae2afbc2c71fc96cefe50a82e053994c88a",
+      "asset_sha256": "2e39f549e7bb9824f0cc7614d7307efa936cbcad6c367246486cba52b2e3d666",
+      "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/eeaf64a9eb4d4b736914759b.webp",
+      "source_kind": "codex_visual_review",
+      "evidence": "HEIR 的目标轮廓由主外层提供，pants 内层低竞争且闭合鞋履完成冬季关系。",
+      "observations": {
+        "axes": {},
+        "expression": "typical",
+        "formality": "smart_casual",
+        "layering": 2,
+        "persona_scores": {
+          "heir": 0.84
+        },
+        "scenes": [
+          "daily"
+        ],
+        "seasons": [
+          "winter"
+        ],
+        "structure": "pants",
+        "wearability": "everyday_with_statement",
+        "main_visual_slots": [
+          "outer",
+          "top",
+          "pants"
+        ],
+        "main_colors": [
+          "cool_mushroom_taupe",
+          "ice_blue",
+          "light_gray"
+        ],
+        "conflicts": null,
+        "silhouette": "reviewed_reuse_winter_pants",
+        "color_relation": "reviewed_coherent",
+        "persona_evidence": "HEIR 的目标轮廓由主外层提供，pants 内层低竞争且闭合鞋履完成冬季关系。",
+        "winter_outdoor": "complete_layers_visually_reviewed"
+      },
+      "confidence": 0.84,
+      "model": "current_codex_session",
+      "prompt_version": "aw-targeted-08-native-v1",
+      "review_level": "individual_contact_sheet_judgment",
+      "evidence_scope": "nonblind_individual_visual_judgment; no temperature/waterproof claim",
+      "review_complete": true,
+      "field_status": {
+        "axes": "ai_observed",
+        "expression": "ai_observed",
+        "formality": "ai_observed",
+        "layering": "ai_observed",
+        "persona_scores": "ai_observed",
+        "scenes": "ai_observed",
+        "seasons": "ai_observed",
+        "structure": "ai_observed",
+        "wearability": "ai_observed",
+        "main_visual_slots": "ai_observed",
+        "main_colors": "ai_observed",
+        "conflicts": "unknown",
+        "silhouette": "ai_observed",
+        "color_relation": "ai_observed",
+        "persona_evidence": "ai_observed",
+        "winter_outdoor": "ai_observed"
+      },
+      "field_provenance": {
+        "axes": {
+          "source_file": "targeted-batch08-review/recipes-1.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "expression": {
+          "source_file": "targeted-batch08-review/recipes-1.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "formality": {
+          "source_file": "targeted-batch08-review/recipes-1.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "layering": {
+          "source_file": "targeted-batch08-review/recipes-1.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "persona_scores": {
+          "source_file": "targeted-batch08-review/recipes-1.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "scenes": {
+          "source_file": "targeted-batch08-review/recipes-1.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "seasons": {
+          "source_file": "targeted-batch08-review/recipes-1.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "structure": {
+          "source_file": "targeted-batch08-review/recipes-1.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "wearability": {
+          "source_file": "targeted-batch08-review/recipes-1.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "main_visual_slots": {
+          "source_file": "targeted-batch08-review/recipes-1.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "main_colors": {
+          "source_file": "targeted-batch08-review/recipes-1.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "conflicts": {
+          "source_file": "targeted-batch08-review/recipes-1.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": null
+        },
+        "silhouette": {
+          "source_file": "targeted-batch08-review/recipes-1.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "color_relation": {
+          "source_file": "targeted-batch08-review/recipes-1.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "persona_evidence": {
+          "source_file": "targeted-batch08-review/recipes-1.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "winter_outdoor": {
+          "source_file": "targeted-batch08-review/recipes-1.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        }
+      }
+    },
+    {
+      "outfit_id": "outfit_heir_aw-targeted-08_06",
+      "status": "ai_candidate",
+      "record_fingerprint": "a3b7cb216f32bb07720abe5b4b24ec39ec46ae638e6c9bdac179f058315b8d3c",
+      "asset_sha256": "d236e15953782c4868d4a1ce0f496f978948d88e5f9f71c26a4fb33771687f10",
+      "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/54e027539af737150d42f0b5.webp",
+      "source_kind": "codex_visual_review",
+      "evidence": "HEIR 的目标轮廓由主外层提供，dress 内层低竞争且闭合鞋履完成冬季关系。",
+      "observations": {
+        "axes": {},
+        "expression": "typical",
+        "formality": "smart_casual",
+        "layering": 2,
+        "persona_scores": {
+          "heir": 0.84
+        },
+        "scenes": [
+          "daily"
+        ],
+        "seasons": [
+          "winter"
+        ],
+        "structure": "dress",
+        "wearability": "everyday_with_statement",
+        "main_visual_slots": [
+          "outer",
+          "dress"
+        ],
+        "main_colors": [
+          "cool_mushroom_taupe",
+          "charcoal"
+        ],
+        "conflicts": null,
+        "silhouette": "reviewed_reuse_winter_dress",
+        "color_relation": "reviewed_coherent",
+        "persona_evidence": "HEIR 的目标轮廓由主外层提供，dress 内层低竞争且闭合鞋履完成冬季关系。",
+        "winter_outdoor": "complete_layers_visually_reviewed"
+      },
+      "confidence": 0.84,
+      "model": "current_codex_session",
+      "prompt_version": "aw-targeted-08-native-v1",
+      "review_level": "individual_contact_sheet_judgment",
+      "evidence_scope": "nonblind_individual_visual_judgment; no temperature/waterproof claim",
+      "review_complete": true,
+      "field_status": {
+        "axes": "ai_observed",
+        "expression": "ai_observed",
+        "formality": "ai_observed",
+        "layering": "ai_observed",
+        "persona_scores": "ai_observed",
+        "scenes": "ai_observed",
+        "seasons": "ai_observed",
+        "structure": "ai_observed",
+        "wearability": "ai_observed",
+        "main_visual_slots": "ai_observed",
+        "main_colors": "ai_observed",
+        "conflicts": "unknown",
+        "silhouette": "ai_observed",
+        "color_relation": "ai_observed",
+        "persona_evidence": "ai_observed",
+        "winter_outdoor": "ai_observed"
+      },
+      "field_provenance": {
+        "axes": {
+          "source_file": "targeted-batch08-review/recipes-1.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "expression": {
+          "source_file": "targeted-batch08-review/recipes-1.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "formality": {
+          "source_file": "targeted-batch08-review/recipes-1.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "layering": {
+          "source_file": "targeted-batch08-review/recipes-1.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "persona_scores": {
+          "source_file": "targeted-batch08-review/recipes-1.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "scenes": {
+          "source_file": "targeted-batch08-review/recipes-1.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "seasons": {
+          "source_file": "targeted-batch08-review/recipes-1.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "structure": {
+          "source_file": "targeted-batch08-review/recipes-1.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "wearability": {
+          "source_file": "targeted-batch08-review/recipes-1.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "main_visual_slots": {
+          "source_file": "targeted-batch08-review/recipes-1.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "main_colors": {
+          "source_file": "targeted-batch08-review/recipes-1.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "conflicts": {
+          "source_file": "targeted-batch08-review/recipes-1.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": null
+        },
+        "silhouette": {
+          "source_file": "targeted-batch08-review/recipes-1.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "color_relation": {
+          "source_file": "targeted-batch08-review/recipes-1.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "persona_evidence": {
+          "source_file": "targeted-batch08-review/recipes-1.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "winter_outdoor": {
+          "source_file": "targeted-batch08-review/recipes-1.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        }
+      }
+    },
+    {
+      "outfit_id": "outfit_ease_aw-targeted-08_07",
+      "status": "ai_candidate",
+      "record_fingerprint": "fff8fc059f33db7c9b2de4888dfabaeaef627681d21a7356c893e95dc68974ea",
+      "asset_sha256": "b4717b860170b79715ee46ecb9acbda146261d15cfd563eebe4d65aa15e669d7",
+      "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/0ffc1f17946e97d5e8e8ea84.webp",
+      "source_kind": "codex_visual_review",
+      "evidence": "EASE 的目标轮廓由主外层提供，skirt 内层低竞争且闭合鞋履完成冬季关系。",
+      "observations": {
+        "axes": {},
+        "expression": "typical",
+        "formality": "smart_casual",
+        "layering": 2,
+        "persona_scores": {
+          "ease": 0.84
+        },
+        "scenes": [
+          "daily"
+        ],
+        "seasons": [
+          "winter"
+        ],
+        "structure": "skirt",
+        "wearability": "everyday_with_statement",
+        "main_visual_slots": [
+          "outer",
+          "top",
+          "skirt"
+        ],
+        "main_colors": [
+          "warm_clay_taupe",
+          "taupe"
+        ],
+        "conflicts": null,
+        "silhouette": "reviewed_reuse_winter_skirt",
+        "color_relation": "reviewed_coherent",
+        "persona_evidence": "EASE 的目标轮廓由主外层提供，skirt 内层低竞争且闭合鞋履完成冬季关系。",
+        "winter_outdoor": "complete_layers_visually_reviewed"
+      },
+      "confidence": 0.84,
+      "model": "current_codex_session",
+      "prompt_version": "aw-targeted-08-native-v1",
+      "review_level": "individual_contact_sheet_judgment",
+      "evidence_scope": "nonblind_individual_visual_judgment; no temperature/waterproof claim",
+      "review_complete": true,
+      "field_status": {
+        "axes": "ai_observed",
+        "expression": "ai_observed",
+        "formality": "ai_observed",
+        "layering": "ai_observed",
+        "persona_scores": "ai_observed",
+        "scenes": "ai_observed",
+        "seasons": "ai_observed",
+        "structure": "ai_observed",
+        "wearability": "ai_observed",
+        "main_visual_slots": "ai_observed",
+        "main_colors": "ai_observed",
+        "conflicts": "unknown",
+        "silhouette": "ai_observed",
+        "color_relation": "ai_observed",
+        "persona_evidence": "ai_observed",
+        "winter_outdoor": "ai_observed"
+      },
+      "field_provenance": {
+        "axes": {
+          "source_file": "targeted-batch08-review/recipes-2.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "expression": {
+          "source_file": "targeted-batch08-review/recipes-2.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "formality": {
+          "source_file": "targeted-batch08-review/recipes-2.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "layering": {
+          "source_file": "targeted-batch08-review/recipes-2.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "persona_scores": {
+          "source_file": "targeted-batch08-review/recipes-2.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "scenes": {
+          "source_file": "targeted-batch08-review/recipes-2.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "seasons": {
+          "source_file": "targeted-batch08-review/recipes-2.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "structure": {
+          "source_file": "targeted-batch08-review/recipes-2.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "wearability": {
+          "source_file": "targeted-batch08-review/recipes-2.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "main_visual_slots": {
+          "source_file": "targeted-batch08-review/recipes-2.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "main_colors": {
+          "source_file": "targeted-batch08-review/recipes-2.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "conflicts": {
+          "source_file": "targeted-batch08-review/recipes-2.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": null
+        },
+        "silhouette": {
+          "source_file": "targeted-batch08-review/recipes-2.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "color_relation": {
+          "source_file": "targeted-batch08-review/recipes-2.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "persona_evidence": {
+          "source_file": "targeted-batch08-review/recipes-2.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "winter_outdoor": {
+          "source_file": "targeted-batch08-review/recipes-2.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        }
+      }
+    },
+    {
+      "outfit_id": "outfit_ease_aw-targeted-08_08",
+      "status": "ai_candidate",
+      "record_fingerprint": "bd9b05d8682f3bdfdc11429166ccfcf04ef84d2ef687b641d021205e94295db8",
+      "asset_sha256": "56fe7e9e51d6ad95e46a3b57cc16e921c180d6e2ca52570a376c551facd73c00",
+      "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/69a4d09e9244547a7707bf41.webp",
+      "source_kind": "codex_visual_review",
+      "evidence": "EASE 的目标轮廓由主外层提供，dress 内层低竞争且闭合鞋履完成冬季关系。",
+      "observations": {
+        "axes": {},
+        "expression": "typical",
+        "formality": "smart_casual",
+        "layering": 2,
+        "persona_scores": {
+          "ease": 0.84
+        },
+        "scenes": [
+          "daily"
+        ],
+        "seasons": [
+          "winter"
+        ],
+        "structure": "dress",
+        "wearability": "everyday_with_statement",
+        "main_visual_slots": [
+          "outer",
+          "dress"
+        ],
+        "main_colors": [
+          "warm_clay_taupe",
+          "taupe"
+        ],
+        "conflicts": null,
+        "silhouette": "reviewed_reuse_winter_dress",
+        "color_relation": "reviewed_coherent",
+        "persona_evidence": "EASE 的目标轮廓由主外层提供，dress 内层低竞争且闭合鞋履完成冬季关系。",
+        "winter_outdoor": "complete_layers_visually_reviewed"
+      },
+      "confidence": 0.84,
+      "model": "current_codex_session",
+      "prompt_version": "aw-targeted-08-native-v1",
+      "review_level": "individual_contact_sheet_judgment",
+      "evidence_scope": "nonblind_individual_visual_judgment; no temperature/waterproof claim",
+      "review_complete": true,
+      "field_status": {
+        "axes": "ai_observed",
+        "expression": "ai_observed",
+        "formality": "ai_observed",
+        "layering": "ai_observed",
+        "persona_scores": "ai_observed",
+        "scenes": "ai_observed",
+        "seasons": "ai_observed",
+        "structure": "ai_observed",
+        "wearability": "ai_observed",
+        "main_visual_slots": "ai_observed",
+        "main_colors": "ai_observed",
+        "conflicts": "unknown",
+        "silhouette": "ai_observed",
+        "color_relation": "ai_observed",
+        "persona_evidence": "ai_observed",
+        "winter_outdoor": "ai_observed"
+      },
+      "field_provenance": {
+        "axes": {
+          "source_file": "targeted-batch08-review/recipes-2.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "expression": {
+          "source_file": "targeted-batch08-review/recipes-2.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "formality": {
+          "source_file": "targeted-batch08-review/recipes-2.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "layering": {
+          "source_file": "targeted-batch08-review/recipes-2.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "persona_scores": {
+          "source_file": "targeted-batch08-review/recipes-2.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "scenes": {
+          "source_file": "targeted-batch08-review/recipes-2.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "seasons": {
+          "source_file": "targeted-batch08-review/recipes-2.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "structure": {
+          "source_file": "targeted-batch08-review/recipes-2.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "wearability": {
+          "source_file": "targeted-batch08-review/recipes-2.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "main_visual_slots": {
+          "source_file": "targeted-batch08-review/recipes-2.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "main_colors": {
+          "source_file": "targeted-batch08-review/recipes-2.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "conflicts": {
+          "source_file": "targeted-batch08-review/recipes-2.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": null
+        },
+        "silhouette": {
+          "source_file": "targeted-batch08-review/recipes-2.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "color_relation": {
+          "source_file": "targeted-batch08-review/recipes-2.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "persona_evidence": {
+          "source_file": "targeted-batch08-review/recipes-2.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "winter_outdoor": {
+          "source_file": "targeted-batch08-review/recipes-2.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        }
+      }
+    },
+    {
+      "outfit_id": "outfit_neon_aw-targeted-08_09",
+      "status": "ai_candidate",
+      "record_fingerprint": "f9ac27427c7e52a213f1bcafcb5b4a161b1f374978da0e8dff727360a2910b30",
+      "asset_sha256": "dc743be54e35e5d80a09460e8946f9cd03906ec04f0eeff3accf991c640d5411",
+      "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/5fd094f1684fe583b7020b2b.webp",
+      "source_kind": "codex_visual_review",
+      "evidence": "NEON 的目标轮廓由主外层提供，pants 内层低竞争且闭合鞋履完成冬季关系。",
+      "observations": {
+        "axes": {},
+        "expression": "typical",
+        "formality": "smart_casual",
+        "layering": 2,
+        "persona_scores": {
+          "neon": 0.84
+        },
+        "scenes": [
+          "daily"
+        ],
+        "seasons": [
+          "winter"
+        ],
+        "structure": "pants",
+        "wearability": "everyday_with_statement",
+        "main_visual_slots": [
+          "outer",
+          "top",
+          "pants"
+        ],
+        "main_colors": [
+          "vivid_cobalt",
+          "charcoal",
+          "black"
+        ],
+        "conflicts": null,
+        "silhouette": "reviewed_reuse_winter_pants",
+        "color_relation": "reviewed_coherent",
+        "persona_evidence": "NEON 的目标轮廓由主外层提供，pants 内层低竞争且闭合鞋履完成冬季关系。",
+        "winter_outdoor": "complete_layers_visually_reviewed"
+      },
+      "confidence": 0.84,
+      "model": "current_codex_session",
+      "prompt_version": "aw-targeted-08-native-v1",
+      "review_level": "individual_contact_sheet_judgment",
+      "evidence_scope": "nonblind_individual_visual_judgment; no temperature/waterproof claim",
+      "review_complete": true,
+      "field_status": {
+        "axes": "ai_observed",
+        "expression": "ai_observed",
+        "formality": "ai_observed",
+        "layering": "ai_observed",
+        "persona_scores": "ai_observed",
+        "scenes": "ai_observed",
+        "seasons": "ai_observed",
+        "structure": "ai_observed",
+        "wearability": "ai_observed",
+        "main_visual_slots": "ai_observed",
+        "main_colors": "ai_observed",
+        "conflicts": "unknown",
+        "silhouette": "ai_observed",
+        "color_relation": "ai_observed",
+        "persona_evidence": "ai_observed",
+        "winter_outdoor": "ai_observed"
+      },
+      "field_provenance": {
+        "axes": {
+          "source_file": "targeted-batch08-review/recipes-2.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "expression": {
+          "source_file": "targeted-batch08-review/recipes-2.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "formality": {
+          "source_file": "targeted-batch08-review/recipes-2.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "layering": {
+          "source_file": "targeted-batch08-review/recipes-2.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "persona_scores": {
+          "source_file": "targeted-batch08-review/recipes-2.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "scenes": {
+          "source_file": "targeted-batch08-review/recipes-2.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "seasons": {
+          "source_file": "targeted-batch08-review/recipes-2.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "structure": {
+          "source_file": "targeted-batch08-review/recipes-2.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "wearability": {
+          "source_file": "targeted-batch08-review/recipes-2.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "main_visual_slots": {
+          "source_file": "targeted-batch08-review/recipes-2.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "main_colors": {
+          "source_file": "targeted-batch08-review/recipes-2.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "conflicts": {
+          "source_file": "targeted-batch08-review/recipes-2.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": null
+        },
+        "silhouette": {
+          "source_file": "targeted-batch08-review/recipes-2.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "color_relation": {
+          "source_file": "targeted-batch08-review/recipes-2.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "persona_evidence": {
+          "source_file": "targeted-batch08-review/recipes-2.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "winter_outdoor": {
+          "source_file": "targeted-batch08-review/recipes-2.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        }
+      }
+    },
+    {
+      "outfit_id": "outfit_neon_aw-targeted-08_10",
+      "status": "ai_candidate",
+      "record_fingerprint": "6e71777293a1bf4790beeb86488d9e49f53452b62056a0874a375fbd35078cb3",
+      "asset_sha256": "9da1a69a227d6cef7b031706d37d4d063278fe13bc91ab6f1339d763a478dd22",
+      "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/cd175f59ebd81df6cf710836.webp",
+      "source_kind": "codex_visual_review",
+      "evidence": "NEON 的目标轮廓由主外层提供，dress 内层低竞争且闭合鞋履完成冬季关系。",
+      "observations": {
+        "axes": {},
+        "expression": "typical",
+        "formality": "smart_casual",
+        "layering": 2,
+        "persona_scores": {
+          "neon": 0.84
+        },
+        "scenes": [
+          "daily"
+        ],
+        "seasons": [
+          "winter"
+        ],
+        "structure": "dress",
+        "wearability": "everyday_with_statement",
+        "main_visual_slots": [
+          "outer",
+          "dress"
+        ],
+        "main_colors": [
+          "vivid_cobalt",
+          "charcoal"
+        ],
+        "conflicts": null,
+        "silhouette": "reviewed_reuse_winter_dress",
+        "color_relation": "reviewed_coherent",
+        "persona_evidence": "NEON 的目标轮廓由主外层提供，dress 内层低竞争且闭合鞋履完成冬季关系。",
+        "winter_outdoor": "complete_layers_visually_reviewed"
+      },
+      "confidence": 0.84,
+      "model": "current_codex_session",
+      "prompt_version": "aw-targeted-08-native-v1",
+      "review_level": "individual_contact_sheet_judgment",
+      "evidence_scope": "nonblind_individual_visual_judgment; no temperature/waterproof claim",
+      "review_complete": true,
+      "field_status": {
+        "axes": "ai_observed",
+        "expression": "ai_observed",
+        "formality": "ai_observed",
+        "layering": "ai_observed",
+        "persona_scores": "ai_observed",
+        "scenes": "ai_observed",
+        "seasons": "ai_observed",
+        "structure": "ai_observed",
+        "wearability": "ai_observed",
+        "main_visual_slots": "ai_observed",
+        "main_colors": "ai_observed",
+        "conflicts": "unknown",
+        "silhouette": "ai_observed",
+        "color_relation": "ai_observed",
+        "persona_evidence": "ai_observed",
+        "winter_outdoor": "ai_observed"
+      },
+      "field_provenance": {
+        "axes": {
+          "source_file": "targeted-batch08-review/recipes-2.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "expression": {
+          "source_file": "targeted-batch08-review/recipes-2.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "formality": {
+          "source_file": "targeted-batch08-review/recipes-2.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "layering": {
+          "source_file": "targeted-batch08-review/recipes-2.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "persona_scores": {
+          "source_file": "targeted-batch08-review/recipes-2.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "scenes": {
+          "source_file": "targeted-batch08-review/recipes-2.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "seasons": {
+          "source_file": "targeted-batch08-review/recipes-2.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "structure": {
+          "source_file": "targeted-batch08-review/recipes-2.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "wearability": {
+          "source_file": "targeted-batch08-review/recipes-2.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "main_visual_slots": {
+          "source_file": "targeted-batch08-review/recipes-2.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "main_colors": {
+          "source_file": "targeted-batch08-review/recipes-2.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "conflicts": {
+          "source_file": "targeted-batch08-review/recipes-2.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": null
+        },
+        "silhouette": {
+          "source_file": "targeted-batch08-review/recipes-2.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "color_relation": {
+          "source_file": "targeted-batch08-review/recipes-2.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "persona_evidence": {
+          "source_file": "targeted-batch08-review/recipes-2.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "winter_outdoor": {
+          "source_file": "targeted-batch08-review/recipes-2.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        }
+      }
+    },
+    {
+      "outfit_id": "outfit_loop_aw-targeted-08_11",
+      "status": "ai_candidate",
+      "record_fingerprint": "c77192f9759b75bf139ba0d14f8d923fb5b5b70d5856076f7f5bb537c4c255a2",
+      "asset_sha256": "4bd92678549230113b51280cd94f68dce32383f2eac51f41f8c9d582e16113ee",
+      "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/4ccabe707dc19dd653d02387.webp",
+      "source_kind": "codex_visual_review",
+      "evidence": "LOOP 的目标轮廓由主外层提供，skirt 内层低竞争且闭合鞋履完成冬季关系。",
+      "observations": {
+        "axes": {},
+        "expression": "typical",
+        "formality": "smart_casual",
+        "layering": 2,
+        "persona_scores": {
+          "loop": 0.84
+        },
+        "scenes": [
+          "daily"
+        ],
+        "seasons": [
+          "winter"
+        ],
+        "structure": "skirt",
+        "wearability": "everyday_with_statement",
+        "main_visual_slots": [
+          "outer",
+          "top",
+          "skirt"
+        ],
+        "main_colors": [
+          "vivid_marigold",
+          "taupe"
+        ],
+        "conflicts": null,
+        "silhouette": "reviewed_reuse_winter_skirt",
+        "color_relation": "reviewed_coherent",
+        "persona_evidence": "LOOP 的目标轮廓由主外层提供，skirt 内层低竞争且闭合鞋履完成冬季关系。",
+        "winter_outdoor": "complete_layers_visually_reviewed"
+      },
+      "confidence": 0.84,
+      "model": "current_codex_session",
+      "prompt_version": "aw-targeted-08-native-v1",
+      "review_level": "individual_contact_sheet_judgment",
+      "evidence_scope": "nonblind_individual_visual_judgment; no temperature/waterproof claim",
+      "review_complete": true,
+      "field_status": {
+        "axes": "ai_observed",
+        "expression": "ai_observed",
+        "formality": "ai_observed",
+        "layering": "ai_observed",
+        "persona_scores": "ai_observed",
+        "scenes": "ai_observed",
+        "seasons": "ai_observed",
+        "structure": "ai_observed",
+        "wearability": "ai_observed",
+        "main_visual_slots": "ai_observed",
+        "main_colors": "ai_observed",
+        "conflicts": "unknown",
+        "silhouette": "ai_observed",
+        "color_relation": "ai_observed",
+        "persona_evidence": "ai_observed",
+        "winter_outdoor": "ai_observed"
+      },
+      "field_provenance": {
+        "axes": {
+          "source_file": "targeted-batch08-review/recipes-2.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "expression": {
+          "source_file": "targeted-batch08-review/recipes-2.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "formality": {
+          "source_file": "targeted-batch08-review/recipes-2.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "layering": {
+          "source_file": "targeted-batch08-review/recipes-2.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "persona_scores": {
+          "source_file": "targeted-batch08-review/recipes-2.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "scenes": {
+          "source_file": "targeted-batch08-review/recipes-2.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "seasons": {
+          "source_file": "targeted-batch08-review/recipes-2.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "structure": {
+          "source_file": "targeted-batch08-review/recipes-2.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "wearability": {
+          "source_file": "targeted-batch08-review/recipes-2.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "main_visual_slots": {
+          "source_file": "targeted-batch08-review/recipes-2.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "main_colors": {
+          "source_file": "targeted-batch08-review/recipes-2.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "conflicts": {
+          "source_file": "targeted-batch08-review/recipes-2.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": null
+        },
+        "silhouette": {
+          "source_file": "targeted-batch08-review/recipes-2.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "color_relation": {
+          "source_file": "targeted-batch08-review/recipes-2.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "persona_evidence": {
+          "source_file": "targeted-batch08-review/recipes-2.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "winter_outdoor": {
+          "source_file": "targeted-batch08-review/recipes-2.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        }
+      }
+    },
+    {
+      "outfit_id": "outfit_loop_aw-targeted-08_12",
+      "status": "ai_candidate",
+      "record_fingerprint": "c28202ba815033de0b64c2c55a648e08729cd61d2979ba091cbdbc3405d98ca0",
+      "asset_sha256": "a23f3194c5b5252cb9a818f3b81e248a760fc773efe11f81cbb0ccfe5bfae550",
+      "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/d684382e3fcadb1e91e74d7b.webp",
+      "source_kind": "codex_visual_review",
+      "evidence": "LOOP 的目标轮廓由主外层提供，dress 内层低竞争且闭合鞋履完成冬季关系。",
+      "observations": {
+        "axes": {},
+        "expression": "typical",
+        "formality": "smart_casual",
+        "layering": 2,
+        "persona_scores": {
+          "loop": 0.84
+        },
+        "scenes": [
+          "daily"
+        ],
+        "seasons": [
+          "winter"
+        ],
+        "structure": "dress",
+        "wearability": "everyday_with_statement",
+        "main_visual_slots": [
+          "outer",
+          "dress"
+        ],
+        "main_colors": [
+          "vivid_marigold",
+          "taupe"
+        ],
+        "conflicts": null,
+        "silhouette": "reviewed_reuse_winter_dress",
+        "color_relation": "reviewed_coherent",
+        "persona_evidence": "LOOP 的目标轮廓由主外层提供，dress 内层低竞争且闭合鞋履完成冬季关系。",
+        "winter_outdoor": "complete_layers_visually_reviewed"
+      },
+      "confidence": 0.84,
+      "model": "current_codex_session",
+      "prompt_version": "aw-targeted-08-native-v1",
+      "review_level": "individual_contact_sheet_judgment",
+      "evidence_scope": "nonblind_individual_visual_judgment; no temperature/waterproof claim",
+      "review_complete": true,
+      "field_status": {
+        "axes": "ai_observed",
+        "expression": "ai_observed",
+        "formality": "ai_observed",
+        "layering": "ai_observed",
+        "persona_scores": "ai_observed",
+        "scenes": "ai_observed",
+        "seasons": "ai_observed",
+        "structure": "ai_observed",
+        "wearability": "ai_observed",
+        "main_visual_slots": "ai_observed",
+        "main_colors": "ai_observed",
+        "conflicts": "unknown",
+        "silhouette": "ai_observed",
+        "color_relation": "ai_observed",
+        "persona_evidence": "ai_observed",
+        "winter_outdoor": "ai_observed"
+      },
+      "field_provenance": {
+        "axes": {
+          "source_file": "targeted-batch08-review/recipes-2.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "expression": {
+          "source_file": "targeted-batch08-review/recipes-2.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "formality": {
+          "source_file": "targeted-batch08-review/recipes-2.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "layering": {
+          "source_file": "targeted-batch08-review/recipes-2.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "persona_scores": {
+          "source_file": "targeted-batch08-review/recipes-2.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "scenes": {
+          "source_file": "targeted-batch08-review/recipes-2.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "seasons": {
+          "source_file": "targeted-batch08-review/recipes-2.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "structure": {
+          "source_file": "targeted-batch08-review/recipes-2.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "wearability": {
+          "source_file": "targeted-batch08-review/recipes-2.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "main_visual_slots": {
+          "source_file": "targeted-batch08-review/recipes-2.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "main_colors": {
+          "source_file": "targeted-batch08-review/recipes-2.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "conflicts": {
+          "source_file": "targeted-batch08-review/recipes-2.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": null
+        },
+        "silhouette": {
+          "source_file": "targeted-batch08-review/recipes-2.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "color_relation": {
+          "source_file": "targeted-batch08-review/recipes-2.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "persona_evidence": {
+          "source_file": "targeted-batch08-review/recipes-2.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "winter_outdoor": {
+          "source_file": "targeted-batch08-review/recipes-2.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        }
+      }
+    },
+    {
+      "outfit_id": "outfit_heir_aw-targeted-08_13",
+      "status": "ai_candidate",
+      "record_fingerprint": "a978b3e611ae372d0abcc02d292be144d1c8b92444eb6d9c5c662cf68d6aca27",
+      "asset_sha256": "a8e29e8a075bc1c96f509015ed66d351b9e2dc2536abffb472398a4d341320b8",
+      "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/57b9d96d8e40f0b9ae0de52f.webp",
+      "source_kind": "codex_visual_review",
+      "evidence": "HEIR 的目标轮廓由主外层提供，skirt 内层低竞争且闭合鞋履完成冬季关系。",
+      "observations": {
+        "axes": {},
+        "expression": "typical",
+        "formality": "smart_casual",
+        "layering": 2,
+        "persona_scores": {
+          "heir": 0.84
+        },
+        "scenes": [
+          "daily"
+        ],
+        "seasons": [
+          "winter"
+        ],
+        "structure": "skirt",
+        "wearability": "everyday_with_statement",
+        "main_visual_slots": [
+          "outer",
+          "top",
+          "skirt"
+        ],
+        "main_colors": [
+          "deep_ruby_red",
+          "charcoal"
+        ],
+        "conflicts": null,
+        "silhouette": "reviewed_reuse_winter_skirt",
+        "color_relation": "reviewed_coherent",
+        "persona_evidence": "HEIR 的目标轮廓由主外层提供，skirt 内层低竞争且闭合鞋履完成冬季关系。",
+        "winter_outdoor": "complete_layers_visually_reviewed"
+      },
+      "confidence": 0.84,
+      "model": "current_codex_session",
+      "prompt_version": "aw-targeted-08-native-v1",
+      "review_level": "individual_contact_sheet_judgment",
+      "evidence_scope": "nonblind_individual_visual_judgment; no temperature/waterproof claim",
+      "review_complete": true,
+      "field_status": {
+        "axes": "ai_observed",
+        "expression": "ai_observed",
+        "formality": "ai_observed",
+        "layering": "ai_observed",
+        "persona_scores": "ai_observed",
+        "scenes": "ai_observed",
+        "seasons": "ai_observed",
+        "structure": "ai_observed",
+        "wearability": "ai_observed",
+        "main_visual_slots": "ai_observed",
+        "main_colors": "ai_observed",
+        "conflicts": "unknown",
+        "silhouette": "ai_observed",
+        "color_relation": "ai_observed",
+        "persona_evidence": "ai_observed",
+        "winter_outdoor": "ai_observed"
+      },
+      "field_provenance": {
+        "axes": {
+          "source_file": "targeted-batch08-review/recipes-3.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "expression": {
+          "source_file": "targeted-batch08-review/recipes-3.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "formality": {
+          "source_file": "targeted-batch08-review/recipes-3.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "layering": {
+          "source_file": "targeted-batch08-review/recipes-3.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "persona_scores": {
+          "source_file": "targeted-batch08-review/recipes-3.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "scenes": {
+          "source_file": "targeted-batch08-review/recipes-3.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "seasons": {
+          "source_file": "targeted-batch08-review/recipes-3.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "structure": {
+          "source_file": "targeted-batch08-review/recipes-3.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "wearability": {
+          "source_file": "targeted-batch08-review/recipes-3.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "main_visual_slots": {
+          "source_file": "targeted-batch08-review/recipes-3.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "main_colors": {
+          "source_file": "targeted-batch08-review/recipes-3.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "conflicts": {
+          "source_file": "targeted-batch08-review/recipes-3.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": null
+        },
+        "silhouette": {
+          "source_file": "targeted-batch08-review/recipes-3.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "color_relation": {
+          "source_file": "targeted-batch08-review/recipes-3.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "persona_evidence": {
+          "source_file": "targeted-batch08-review/recipes-3.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "winter_outdoor": {
+          "source_file": "targeted-batch08-review/recipes-3.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        }
+      }
+    },
+    {
+      "outfit_id": "outfit_heir_aw-targeted-08_14",
+      "status": "ai_candidate",
+      "record_fingerprint": "11ca514c460e42a43eaf2d5e48a44427019e2d3d7aab4fc41edf62f5a4c4afdc",
+      "asset_sha256": "b2a05ed1dfee89517e32475b11768e6a936f2268ede96936d38416211de13294",
+      "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/c7f3f93c76041b6e75724c18.webp",
+      "source_kind": "codex_visual_review",
+      "evidence": "HEIR 的目标轮廓由主外层提供，pants 内层低竞争且闭合鞋履完成冬季关系。",
+      "observations": {
+        "axes": {},
+        "expression": "typical",
+        "formality": "smart_casual",
+        "layering": 2,
+        "persona_scores": {
+          "heir": 0.84
+        },
+        "scenes": [
+          "daily"
+        ],
+        "seasons": [
+          "winter"
+        ],
+        "structure": "pants",
+        "wearability": "everyday_with_statement",
+        "main_visual_slots": [
+          "outer",
+          "top",
+          "pants"
+        ],
+        "main_colors": [
+          "deep_ruby_red",
+          "charcoal",
+          "black"
+        ],
+        "conflicts": null,
+        "silhouette": "reviewed_reuse_winter_pants",
+        "color_relation": "reviewed_coherent",
+        "persona_evidence": "HEIR 的目标轮廓由主外层提供，pants 内层低竞争且闭合鞋履完成冬季关系。",
+        "winter_outdoor": "complete_layers_visually_reviewed"
+      },
+      "confidence": 0.84,
+      "model": "current_codex_session",
+      "prompt_version": "aw-targeted-08-native-v1",
+      "review_level": "individual_contact_sheet_judgment",
+      "evidence_scope": "nonblind_individual_visual_judgment; no temperature/waterproof claim",
+      "review_complete": true,
+      "field_status": {
+        "axes": "ai_observed",
+        "expression": "ai_observed",
+        "formality": "ai_observed",
+        "layering": "ai_observed",
+        "persona_scores": "ai_observed",
+        "scenes": "ai_observed",
+        "seasons": "ai_observed",
+        "structure": "ai_observed",
+        "wearability": "ai_observed",
+        "main_visual_slots": "ai_observed",
+        "main_colors": "ai_observed",
+        "conflicts": "unknown",
+        "silhouette": "ai_observed",
+        "color_relation": "ai_observed",
+        "persona_evidence": "ai_observed",
+        "winter_outdoor": "ai_observed"
+      },
+      "field_provenance": {
+        "axes": {
+          "source_file": "targeted-batch08-review/recipes-3.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "expression": {
+          "source_file": "targeted-batch08-review/recipes-3.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "formality": {
+          "source_file": "targeted-batch08-review/recipes-3.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "layering": {
+          "source_file": "targeted-batch08-review/recipes-3.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "persona_scores": {
+          "source_file": "targeted-batch08-review/recipes-3.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "scenes": {
+          "source_file": "targeted-batch08-review/recipes-3.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "seasons": {
+          "source_file": "targeted-batch08-review/recipes-3.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "structure": {
+          "source_file": "targeted-batch08-review/recipes-3.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "wearability": {
+          "source_file": "targeted-batch08-review/recipes-3.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "main_visual_slots": {
+          "source_file": "targeted-batch08-review/recipes-3.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "main_colors": {
+          "source_file": "targeted-batch08-review/recipes-3.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "conflicts": {
+          "source_file": "targeted-batch08-review/recipes-3.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": null
+        },
+        "silhouette": {
+          "source_file": "targeted-batch08-review/recipes-3.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "color_relation": {
+          "source_file": "targeted-batch08-review/recipes-3.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "persona_evidence": {
+          "source_file": "targeted-batch08-review/recipes-3.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "winter_outdoor": {
+          "source_file": "targeted-batch08-review/recipes-3.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        }
+      }
+    },
+    {
+      "outfit_id": "outfit_wabi_aw-targeted-08_15",
+      "status": "ai_candidate",
+      "record_fingerprint": "dc4764c9a56e7993220dd9431c357e5c7c7d34b08a46bb02de51296718888655",
+      "asset_sha256": "0f73666ff710e16ead0c420eccf238e89ab4bb2a7129ff36605fb74fd89fcc08",
+      "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/bc0e98df154bff87bdf44a2b.webp",
+      "source_kind": "codex_visual_review",
+      "evidence": "WABI 的目标轮廓由主外层提供，skirt 内层低竞争且闭合鞋履完成冬季关系。",
+      "observations": {
+        "axes": {},
+        "expression": "typical",
+        "formality": "smart_casual",
+        "layering": 2,
+        "persona_scores": {
+          "wabi": 0.84
+        },
+        "scenes": [
+          "daily"
+        ],
+        "seasons": [
+          "winter"
+        ],
+        "structure": "skirt",
+        "wearability": "everyday_with_statement",
+        "main_visual_slots": [
+          "outer",
+          "top",
+          "skirt"
+        ],
+        "main_colors": [
+          "deep_amethyst",
+          "taupe"
+        ],
+        "conflicts": null,
+        "silhouette": "reviewed_reuse_winter_skirt",
+        "color_relation": "reviewed_coherent",
+        "persona_evidence": "WABI 的目标轮廓由主外层提供，skirt 内层低竞争且闭合鞋履完成冬季关系。",
+        "winter_outdoor": "complete_layers_visually_reviewed"
+      },
+      "confidence": 0.84,
+      "model": "current_codex_session",
+      "prompt_version": "aw-targeted-08-native-v1",
+      "review_level": "individual_contact_sheet_judgment",
+      "evidence_scope": "nonblind_individual_visual_judgment; no temperature/waterproof claim",
+      "review_complete": true,
+      "field_status": {
+        "axes": "ai_observed",
+        "expression": "ai_observed",
+        "formality": "ai_observed",
+        "layering": "ai_observed",
+        "persona_scores": "ai_observed",
+        "scenes": "ai_observed",
+        "seasons": "ai_observed",
+        "structure": "ai_observed",
+        "wearability": "ai_observed",
+        "main_visual_slots": "ai_observed",
+        "main_colors": "ai_observed",
+        "conflicts": "unknown",
+        "silhouette": "ai_observed",
+        "color_relation": "ai_observed",
+        "persona_evidence": "ai_observed",
+        "winter_outdoor": "ai_observed"
+      },
+      "field_provenance": {
+        "axes": {
+          "source_file": "targeted-batch08-review/recipes-3.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "expression": {
+          "source_file": "targeted-batch08-review/recipes-3.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "formality": {
+          "source_file": "targeted-batch08-review/recipes-3.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "layering": {
+          "source_file": "targeted-batch08-review/recipes-3.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "persona_scores": {
+          "source_file": "targeted-batch08-review/recipes-3.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "scenes": {
+          "source_file": "targeted-batch08-review/recipes-3.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "seasons": {
+          "source_file": "targeted-batch08-review/recipes-3.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "structure": {
+          "source_file": "targeted-batch08-review/recipes-3.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "wearability": {
+          "source_file": "targeted-batch08-review/recipes-3.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "main_visual_slots": {
+          "source_file": "targeted-batch08-review/recipes-3.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "main_colors": {
+          "source_file": "targeted-batch08-review/recipes-3.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "conflicts": {
+          "source_file": "targeted-batch08-review/recipes-3.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": null
+        },
+        "silhouette": {
+          "source_file": "targeted-batch08-review/recipes-3.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "color_relation": {
+          "source_file": "targeted-batch08-review/recipes-3.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "persona_evidence": {
+          "source_file": "targeted-batch08-review/recipes-3.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "winter_outdoor": {
+          "source_file": "targeted-batch08-review/recipes-3.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        }
+      }
+    },
+    {
+      "outfit_id": "outfit_wabi_aw-targeted-08_16",
+      "status": "ai_candidate",
+      "record_fingerprint": "d37fa3a58e6f07d56b6ef475a7cec2b8d3a0f208ab14fa00fd542c97fa8471f8",
+      "asset_sha256": "bc11c0271ed5425ba15ce2c6aa502538a967ccdc0ba1c4080fd6a675a1c4d50f",
+      "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/49f8d5cd681d34395e54cfb9.webp",
+      "source_kind": "codex_visual_review",
+      "evidence": "WABI 的目标轮廓由主外层提供，dress 内层低竞争且闭合鞋履完成冬季关系。",
+      "observations": {
+        "axes": {},
+        "expression": "typical",
+        "formality": "smart_casual",
+        "layering": 2,
+        "persona_scores": {
+          "wabi": 0.84
+        },
+        "scenes": [
+          "daily"
+        ],
+        "seasons": [
+          "winter"
+        ],
+        "structure": "dress",
+        "wearability": "everyday_with_statement",
+        "main_visual_slots": [
+          "outer",
+          "dress"
+        ],
+        "main_colors": [
+          "deep_amethyst",
+          "taupe"
+        ],
+        "conflicts": null,
+        "silhouette": "reviewed_reuse_winter_dress",
+        "color_relation": "reviewed_coherent",
+        "persona_evidence": "WABI 的目标轮廓由主外层提供，dress 内层低竞争且闭合鞋履完成冬季关系。",
+        "winter_outdoor": "complete_layers_visually_reviewed"
+      },
+      "confidence": 0.84,
+      "model": "current_codex_session",
+      "prompt_version": "aw-targeted-08-native-v1",
+      "review_level": "individual_contact_sheet_judgment",
+      "evidence_scope": "nonblind_individual_visual_judgment; no temperature/waterproof claim",
+      "review_complete": true,
+      "field_status": {
+        "axes": "ai_observed",
+        "expression": "ai_observed",
+        "formality": "ai_observed",
+        "layering": "ai_observed",
+        "persona_scores": "ai_observed",
+        "scenes": "ai_observed",
+        "seasons": "ai_observed",
+        "structure": "ai_observed",
+        "wearability": "ai_observed",
+        "main_visual_slots": "ai_observed",
+        "main_colors": "ai_observed",
+        "conflicts": "unknown",
+        "silhouette": "ai_observed",
+        "color_relation": "ai_observed",
+        "persona_evidence": "ai_observed",
+        "winter_outdoor": "ai_observed"
+      },
+      "field_provenance": {
+        "axes": {
+          "source_file": "targeted-batch08-review/recipes-3.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "expression": {
+          "source_file": "targeted-batch08-review/recipes-3.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "formality": {
+          "source_file": "targeted-batch08-review/recipes-3.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "layering": {
+          "source_file": "targeted-batch08-review/recipes-3.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "persona_scores": {
+          "source_file": "targeted-batch08-review/recipes-3.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "scenes": {
+          "source_file": "targeted-batch08-review/recipes-3.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "seasons": {
+          "source_file": "targeted-batch08-review/recipes-3.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "structure": {
+          "source_file": "targeted-batch08-review/recipes-3.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "wearability": {
+          "source_file": "targeted-batch08-review/recipes-3.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "main_visual_slots": {
+          "source_file": "targeted-batch08-review/recipes-3.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "main_colors": {
+          "source_file": "targeted-batch08-review/recipes-3.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "conflicts": {
+          "source_file": "targeted-batch08-review/recipes-3.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": null
+        },
+        "silhouette": {
+          "source_file": "targeted-batch08-review/recipes-3.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "color_relation": {
+          "source_file": "targeted-batch08-review/recipes-3.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "persona_evidence": {
+          "source_file": "targeted-batch08-review/recipes-3.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        },
+        "winter_outdoor": {
+          "source_file": "targeted-batch08-review/recipes-3.jpg",
+          "version": "aw-targeted-08-native-v1",
+          "confidence": 0.84
+        }
+      }
+    }
+  ],
+  "version": "aw-targeted-review-5e0f74b180ad9268cca8"
+}

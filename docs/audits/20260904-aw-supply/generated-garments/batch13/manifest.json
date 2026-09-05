@@ -1,0 +1,1417 @@
+{
+  "schema_version": 1,
+  "batch_id": "aw-generated-garments-13",
+  "prompt_version": "selfit-aw-near-threshold-family-v1",
+  "status": "internal_candidate",
+  "production_approved": false,
+  "generation": [
+    {
+      "garment_id": "garment_aw_targeted12_outer_iced_ocean_03_01",
+      "token": "n0080",
+      "source_output": "/Users/yuanzexiang/.codex/generated_images/01a056c3-ad43-77d1-aed3-35866995a6d6/exec-be1f5db6-2f57-4439-8faf-eb3a09d23a29.png",
+      "raw_path": "raw/aw-main-iced-ocean-03-raw-v1.png",
+      "prepared_path": "prepared/aw-main-iced-ocean-03-v1.png",
+      "qa_path": "qa/aw-main-iced-ocean-03-v1.json",
+      "final_prompt": "深海蓝交叠高领窄长大衣，原创无品牌透明背景冬季独立主衣家族。 Photorealistic premium fashion e-commerce product cutout, exactly one original unbranded garment, front-facing and naturally shaped as if invisibly supported, genuinely transparent alpha background, centered square canvas, complete silhouette with 12% clear padding on every side. No person, mannequin, hanger, stand, accessories, text, label, logo, watermark, floor shadow, white halo, duplicate item or clipped edge.",
+      "target_conditions": [
+        "ICED×ocean×winter",
+        "NOIR×ocean×winter",
+        "MUTE×ocean×winter"
+      ]
+    },
+    {
+      "garment_id": "garment_aw_targeted12_outer_iced_pastel_03_01",
+      "token": "n0081",
+      "source_output": "/Users/yuanzexiang/.codex/generated_images/01a056c3-ad43-77d1-aed3-35866995a6d6/exec-2ec1c0ee-5bbf-4386-acbb-a4ed200b9eef.png",
+      "raw_path": "raw/aw-main-iced-pastel-03-raw-v1.png",
+      "prepared_path": "prepared/aw-main-iced-pastel-03-v1.png",
+      "qa_path": "qa/aw-main-iced-pastel-03-v1.json",
+      "final_prompt": "珠光粉灰斜襟窄长大衣，原创无品牌透明背景冬季独立主衣家族。 Photorealistic premium fashion e-commerce product cutout, exactly one original unbranded garment, front-facing and naturally shaped as if invisibly supported, genuinely transparent alpha background, centered square canvas, complete silhouette with 12% clear padding on every side. No person, mannequin, hanger, stand, accessories, text, label, logo, watermark, floor shadow, white halo, duplicate item or clipped edge.",
+      "target_conditions": [
+        "ICED×pastel×winter",
+        "MELT×pastel×winter",
+        "EDGE×pastel×winter"
+      ]
+    },
+    {
+      "garment_id": "garment_aw_targeted12_outer_jade_mono_03_01",
+      "token": "n0082",
+      "source_output": "/Users/yuanzexiang/.codex/generated_images/01a056c3-ad43-77d1-aed3-35866995a6d6/exec-19496d87-c3bb-4198-8ec4-6fc0d42f8e6e.png",
+      "raw_path": "raw/aw-main-jade-mono-03-raw-v1.png",
+      "prepared_path": "prepared/aw-main-jade-mono-03-v1.png",
+      "qa_path": "qa/aw-main-jade-mono-03-v1.json",
+      "final_prompt": "炭黑立领斜襟纵线大衣，原创无品牌透明背景冬季独立主衣家族。 Photorealistic premium fashion e-commerce product cutout, exactly one original unbranded garment, front-facing and naturally shaped as if invisibly supported, genuinely transparent alpha background, centered square canvas, complete silhouette with 12% clear padding on every side. No person, mannequin, hanger, stand, accessories, text, label, logo, watermark, floor shadow, white halo, duplicate item or clipped edge.",
+      "target_conditions": [
+        "JADE×mono×winter",
+        "NOIR×mono×winter",
+        "ICED×mono×winter"
+      ]
+    },
+    {
+      "garment_id": "garment_aw_targeted12_outer_melt_mono_03_01",
+      "token": "n0083",
+      "source_output": "/Users/yuanzexiang/.codex/generated_images/01a056c3-ad43-77d1-aed3-35866995a6d6/exec-e0a76015-5173-46b1-bf88-0a2321ab5044.png",
+      "raw_path": "raw/aw-main-melt-mono-03-raw-v1.png",
+      "prepared_path": "prepared/aw-main-melt-mono-03-v1.png",
+      "qa_path": "qa/aw-main-melt-mono-03-v1.json",
+      "final_prompt": "鸽灰圆领柔茧摆大衣，原创无品牌透明背景冬季独立主衣家族。 Photorealistic premium fashion e-commerce product cutout, exactly one original unbranded garment, front-facing and naturally shaped as if invisibly supported, genuinely transparent alpha background, centered square canvas, complete silhouette with 12% clear padding on every side. No person, mannequin, hanger, stand, accessories, text, label, logo, watermark, floor shadow, white halo, duplicate item or clipped edge.",
+      "target_conditions": [
+        "MELT×mono×winter",
+        "WABI×mono×winter",
+        "EASE×mono×winter"
+      ]
+    },
+    {
+      "garment_id": "garment_aw_targeted12_outer_mute_jewel_03_01",
+      "token": "n0084",
+      "source_output": "/Users/yuanzexiang/.codex/generated_images/01a056c3-ad43-77d1-aed3-35866995a6d6/exec-916b4a94-c4fc-4438-98c0-01956ad8e837.png",
+      "raw_path": "raw/aw-main-mute-jewel-03-raw-v1.png",
+      "prepared_path": "prepared/aw-main-mute-jewel-03-v1.png",
+      "qa_path": "qa/aw-main-mute-jewel-03-v1.json",
+      "final_prompt": "深祖母绿无领直身长大衣，原创无品牌透明背景冬季独立主衣家族。 Photorealistic premium fashion e-commerce product cutout, exactly one original unbranded garment, front-facing and naturally shaped as if invisibly supported, genuinely transparent alpha background, centered square canvas, complete silhouette with 12% clear padding on every side. No person, mannequin, hanger, stand, accessories, text, label, logo, watermark, floor shadow, white halo, duplicate item or clipped edge.",
+      "target_conditions": [
+        "MUTE×jewel×winter",
+        "LOOP×jewel×winter",
+        "ICED×jewel×winter"
+      ]
+    },
+    {
+      "garment_id": "garment_aw_targeted12_outer_wabi_bright_03_01",
+      "token": "n0085",
+      "source_output": "/Users/yuanzexiang/.codex/generated_images/01a056c3-ad43-77d1-aed3-35866995a6d6/exec-18491a75-111a-401e-9844-937f9a2d8e83.png",
+      "raw_path": "raw/aw-main-wabi-bright-03-raw-v1.png",
+      "prepared_path": "prepared/aw-main-wabi-bright-03-v1.png",
+      "qa_path": "qa/aw-main-wabi-bright-03-v1.json",
+      "final_prompt": "钴蓝木扣弧线茧形大衣，原创无品牌透明背景冬季独立主衣家族。 Photorealistic premium fashion e-commerce product cutout, exactly one original unbranded garment, front-facing and naturally shaped as if invisibly supported, genuinely transparent alpha background, centered square canvas, complete silhouette with 12% clear padding on every side. No person, mannequin, hanger, stand, accessories, text, label, logo, watermark, floor shadow, white halo, duplicate item or clipped edge.",
+      "target_conditions": [
+        "WABI×bright×winter",
+        "EASE×bright×winter",
+        "MELT×bright×winter"
+      ]
+    },
+    {
+      "garment_id": "garment_aw_targeted12_outer_wabi_ocean_03_01",
+      "token": "n0086",
+      "source_output": "/Users/yuanzexiang/.codex/generated_images/01a056c3-ad43-77d1-aed3-35866995a6d6/exec-8da4c207-9481-4252-87b0-cdb9cd9bb5d9.png",
+      "raw_path": "raw/aw-main-wabi-ocean-03-raw-v1.png",
+      "prepared_path": "prepared/aw-main-wabi-ocean-03-v1.png",
+      "qa_path": "qa/aw-main-wabi-ocean-03-v1.json",
+      "final_prompt": "靛蓝织感曲襟系带大衣，原创无品牌透明背景冬季独立主衣家族。 Photorealistic premium fashion e-commerce product cutout, exactly one original unbranded garment, front-facing and naturally shaped as if invisibly supported, genuinely transparent alpha background, centered square canvas, complete silhouette with 12% clear padding on every side. No person, mannequin, hanger, stand, accessories, text, label, logo, watermark, floor shadow, white halo, duplicate item or clipped edge.",
+      "target_conditions": [
+        "WABI×ocean×winter",
+        "VOID×ocean×winter",
+        "EASE×ocean×winter"
+      ]
+    },
+    {
+      "garment_id": "garment_aw_targeted12_outer_film_mono_03_01",
+      "token": "n0087",
+      "source_output": "/Users/yuanzexiang/.codex/generated_images/01a056c3-ad43-77d1-aed3-35866995a6d6/exec-0f7117dc-8e49-4fab-890b-a5171c60c96b.png",
+      "raw_path": "raw/aw-main-film-mono-03-raw-v1.png",
+      "prepared_path": "prepared/aw-main-film-mono-03-v1.png",
+      "qa_path": "qa/aw-main-film-mono-03-v1.json",
+      "final_prompt": "黑白六十年代图形A线大衣，原创无品牌透明背景冬季独立主衣家族。 Photorealistic premium fashion e-commerce product cutout, exactly one original unbranded garment, front-facing and naturally shaped as if invisibly supported, genuinely transparent alpha background, centered square canvas, complete silhouette with 12% clear padding on every side. No person, mannequin, hanger, stand, accessories, text, label, logo, watermark, floor shadow, white halo, duplicate item or clipped edge.",
+      "target_conditions": [
+        "FILM×mono×winter",
+        "BOLT×mono×winter",
+        "EDGE×mono×winter"
+      ]
+    }
+  ],
+  "garments": [
+    {
+      "id": "garment_aw_targeted12_outer_iced_ocean_03_01",
+      "category": "outer",
+      "subcategory": "深海蓝交叠高领窄长大衣",
+      "silhouette": [
+        "sculpted_high_collar",
+        "concealed_asymmetric_front",
+        "ankle_column"
+      ],
+      "fit": "合体",
+      "materials": [],
+      "details": [
+        "original_gap_fill",
+        "ocean",
+        "visually_reviewed_cutout"
+      ],
+      "season_tags": [
+        "秋",
+        "冬"
+      ],
+      "scene_tags": [
+        "日常",
+        "通勤",
+        "旅行"
+      ],
+      "weather_tags": [],
+      "presentation": [
+        "feminine",
+        "neutral"
+      ],
+      "layer_role": "outer",
+      "tryon_slot": "outer",
+      "persona_affinity": {
+        "ICED": 0.96,
+        "NOIR": 0.88,
+        "MUTE": 0.8
+      },
+      "color": {
+        "temperature": "未判断",
+        "lightness": "深色",
+        "saturation": "高饱和",
+        "harmony": "未判断",
+        "palette": [
+          "#0d2737",
+          "#0f2a3b",
+          "#102d3e",
+          "#143344",
+          "#091f2c"
+        ]
+      },
+      "assets": {
+        "image_url": "/static/selfit/assets/content_v2_drafts/aw-targeted-12/garments/aw-main-iced-ocean-03-v1.png",
+        "source_url": "",
+        "width": 1200,
+        "height": 1200,
+        "alpha_verified": true,
+        "rights_status": "owned"
+      },
+      "production": {
+        "source_kind": "generated_original",
+        "generation_job_id": "aw-generated-garments-13-n0080",
+        "prompt_version": "selfit-aw-near-threshold-family-v1",
+        "reference_ids": [],
+        "qa_status": "approved",
+        "phash": "3032b2b070303210-0f293a"
+      },
+      "annotation": {
+        "status": "designer_reviewed",
+        "source": "designer",
+        "confidence": 0.92,
+        "review_notes": [
+          "Cutout and visible silhouette reviewed in current Codex session; outfit use remains draft."
+        ]
+      },
+      "color_evidence": {
+        "source": "opaque_pixel_quantization_v1",
+        "status": "measured_not_semantic_review",
+        "asset_sha256": "097137feb45d6e3b04e998af0caa53819cd4cc493ba9e1949316f5cb85fce7ea",
+        "swatches": [
+          {
+            "hex": "#0d2737",
+            "weight": 0.3756,
+            "family": "蓝"
+          },
+          {
+            "hex": "#0f2a3b",
+            "weight": 0.2108,
+            "family": "蓝"
+          },
+          {
+            "hex": "#102d3e",
+            "weight": 0.1976,
+            "family": "蓝"
+          },
+          {
+            "hex": "#143344",
+            "weight": 0.121,
+            "family": "蓝"
+          },
+          {
+            "hex": "#091f2c",
+            "weight": 0.095,
+            "family": "黑"
+          }
+        ],
+        "palette_names": [
+          "蓝"
+        ],
+        "color": {
+          "temperature": "未判断",
+          "lightness": "深色",
+          "saturation": "高饱和",
+          "harmony": "未判断",
+          "palette": [
+            "#0d2737",
+            "#0f2a3b",
+            "#102d3e",
+            "#143344",
+            "#091f2c"
+          ]
+        },
+        "limitations": "渲染光照会影响色值；不据此推断面料成分、真实冷暖或人体适配。"
+      }
+    },
+    {
+      "id": "garment_aw_targeted12_outer_iced_pastel_03_01",
+      "category": "outer",
+      "subcategory": "珠光粉灰斜襟窄长大衣",
+      "silhouette": [
+        "sculpted_raglan",
+        "diagonal_hidden_closure",
+        "slim_ankle"
+      ],
+      "fit": "合体",
+      "materials": [],
+      "details": [
+        "original_gap_fill",
+        "pastel",
+        "visually_reviewed_cutout"
+      ],
+      "season_tags": [
+        "秋",
+        "冬"
+      ],
+      "scene_tags": [
+        "日常",
+        "通勤",
+        "旅行"
+      ],
+      "weather_tags": [],
+      "presentation": [
+        "feminine",
+        "neutral"
+      ],
+      "layer_role": "outer",
+      "tryon_slot": "outer",
+      "persona_affinity": {
+        "ICED": 0.96,
+        "MELT": 0.88,
+        "EDGE": 0.8
+      },
+      "color": {
+        "temperature": "未判断",
+        "lightness": "浅色",
+        "saturation": "无彩",
+        "harmony": "未判断",
+        "palette": [
+          "#c2b8ba",
+          "#c7bdbf",
+          "#cbc0c2",
+          "#d2c7c9",
+          "#b4a6a8"
+        ]
+      },
+      "assets": {
+        "image_url": "/static/selfit/assets/content_v2_drafts/aw-targeted-12/garments/aw-main-iced-pastel-03-v1.png",
+        "source_url": "",
+        "width": 1200,
+        "height": 1200,
+        "alpha_verified": true,
+        "rights_status": "owned"
+      },
+      "production": {
+        "source_kind": "generated_original",
+        "generation_job_id": "aw-generated-garments-13-n0081",
+        "prompt_version": "selfit-aw-near-threshold-family-v1",
+        "reference_ids": [],
+        "qa_status": "approved",
+        "phash": "32b2b27071b0b210-c4b8ba"
+      },
+      "annotation": {
+        "status": "designer_reviewed",
+        "source": "designer",
+        "confidence": 0.92,
+        "review_notes": [
+          "Cutout and visible silhouette reviewed in current Codex session; outfit use remains draft."
+        ]
+      },
+      "color_evidence": {
+        "source": "opaque_pixel_quantization_v1",
+        "status": "measured_not_semantic_review",
+        "asset_sha256": "4426e667c74790234ae8e902b9d55a906c459bda7424afdeacaad91a944d1864",
+        "swatches": [
+          {
+            "hex": "#c2b8ba",
+            "weight": 0.3348,
+            "family": "灰"
+          },
+          {
+            "hex": "#c7bdbf",
+            "weight": 0.2276,
+            "family": "灰"
+          },
+          {
+            "hex": "#cbc0c2",
+            "weight": 0.2032,
+            "family": "灰"
+          },
+          {
+            "hex": "#d2c7c9",
+            "weight": 0.1199,
+            "family": "白"
+          },
+          {
+            "hex": "#b4a6a8",
+            "weight": 0.1146,
+            "family": "灰"
+          }
+        ],
+        "palette_names": [
+          "灰"
+        ],
+        "color": {
+          "temperature": "未判断",
+          "lightness": "浅色",
+          "saturation": "无彩",
+          "harmony": "未判断",
+          "palette": [
+            "#c2b8ba",
+            "#c7bdbf",
+            "#cbc0c2",
+            "#d2c7c9",
+            "#b4a6a8"
+          ]
+        },
+        "limitations": "渲染光照会影响色值；不据此推断面料成分、真实冷暖或人体适配。"
+      }
+    },
+    {
+      "id": "garment_aw_targeted12_outer_jade_mono_03_01",
+      "category": "outer",
+      "subcategory": "炭黑立领斜襟纵线大衣",
+      "silhouette": [
+        "standing_wrap_collar",
+        "restrained_diagonal_overlap",
+        "long_vertical"
+      ],
+      "fit": "合体",
+      "materials": [],
+      "details": [
+        "original_gap_fill",
+        "mono",
+        "visually_reviewed_cutout"
+      ],
+      "season_tags": [
+        "秋",
+        "冬"
+      ],
+      "scene_tags": [
+        "日常",
+        "通勤",
+        "旅行"
+      ],
+      "weather_tags": [],
+      "presentation": [
+        "feminine",
+        "neutral"
+      ],
+      "layer_role": "outer",
+      "tryon_slot": "outer",
+      "persona_affinity": {
+        "JADE": 0.96,
+        "NOIR": 0.88,
+        "ICED": 0.8
+      },
+      "color": {
+        "temperature": "未判断",
+        "lightness": "深色",
+        "saturation": "无彩",
+        "harmony": "未判断",
+        "palette": [
+          "#1e1e1f",
+          "#222223",
+          "#242425",
+          "#29292a",
+          "#131314"
+        ]
+      },
+      "assets": {
+        "image_url": "/static/selfit/assets/content_v2_drafts/aw-targeted-12/garments/aw-main-jade-mono-03-v1.png",
+        "source_url": "",
+        "width": 1200,
+        "height": 1200,
+        "alpha_verified": true,
+        "rights_status": "owned"
+      },
+      "production": {
+        "source_kind": "generated_original",
+        "generation_job_id": "aw-generated-garments-13-n0082",
+        "prompt_version": "selfit-aw-near-threshold-family-v1",
+        "reference_ids": [],
+        "qa_status": "approved",
+        "phash": "3070307070703010-1f1f20"
+      },
+      "annotation": {
+        "status": "designer_reviewed",
+        "source": "designer",
+        "confidence": 0.92,
+        "review_notes": [
+          "Cutout and visible silhouette reviewed in current Codex session; outfit use remains draft."
+        ]
+      },
+      "color_evidence": {
+        "source": "opaque_pixel_quantization_v1",
+        "status": "measured_not_semantic_review",
+        "asset_sha256": "5f92873d8fd2fc464898dacea89999a965ef58c76ae9548be0fc9f67faefbcbd",
+        "swatches": [
+          {
+            "hex": "#1e1e1f",
+            "weight": 0.3136,
+            "family": "黑"
+          },
+          {
+            "hex": "#222223",
+            "weight": 0.2184,
+            "family": "黑"
+          },
+          {
+            "hex": "#242425",
+            "weight": 0.1773,
+            "family": "黑"
+          },
+          {
+            "hex": "#29292a",
+            "weight": 0.1507,
+            "family": "黑"
+          },
+          {
+            "hex": "#131314",
+            "weight": 0.14,
+            "family": "黑"
+          }
+        ],
+        "palette_names": [
+          "黑"
+        ],
+        "color": {
+          "temperature": "未判断",
+          "lightness": "深色",
+          "saturation": "无彩",
+          "harmony": "未判断",
+          "palette": [
+            "#1e1e1f",
+            "#222223",
+            "#242425",
+            "#29292a",
+            "#131314"
+          ]
+        },
+        "limitations": "渲染光照会影响色值；不据此推断面料成分、真实冷暖或人体适配。"
+      }
+    },
+    {
+      "id": "garment_aw_targeted12_outer_melt_mono_03_01",
+      "category": "outer",
+      "subcategory": "鸽灰圆领柔茧摆大衣",
+      "silhouette": [
+        "rounded_collar",
+        "soft_balloon_sleeve",
+        "curved_swing_cocoon"
+      ],
+      "fit": "宽松",
+      "materials": [],
+      "details": [
+        "original_gap_fill",
+        "mono",
+        "visually_reviewed_cutout"
+      ],
+      "season_tags": [
+        "秋",
+        "冬"
+      ],
+      "scene_tags": [
+        "日常",
+        "通勤",
+        "旅行"
+      ],
+      "weather_tags": [],
+      "presentation": [
+        "feminine",
+        "neutral"
+      ],
+      "layer_role": "outer",
+      "tryon_slot": "outer",
+      "persona_affinity": {
+        "MELT": 0.96,
+        "WABI": 0.88,
+        "EASE": 0.8
+      },
+      "color": {
+        "temperature": "未判断",
+        "lightness": "中等",
+        "saturation": "无彩",
+        "harmony": "未判断",
+        "palette": [
+          "#9d9a9a",
+          "#a5a2a2",
+          "#827f7f",
+          "#afacad",
+          "#bcb9b9"
+        ]
+      },
+      "assets": {
+        "image_url": "/static/selfit/assets/content_v2_drafts/aw-targeted-12/garments/aw-main-melt-mono-03-v1.png",
+        "source_url": "",
+        "width": 1200,
+        "height": 1200,
+        "alpha_verified": true,
+        "rights_status": "owned"
+      },
+      "production": {
+        "source_kind": "generated_original",
+        "generation_job_id": "aw-generated-garments-13-n0083",
+        "prompt_version": "selfit-aw-near-threshold-family-v1",
+        "reference_ids": [],
+        "qa_status": "approved",
+        "phash": "306969696961b010-9f9c9d"
+      },
+      "annotation": {
+        "status": "designer_reviewed",
+        "source": "designer",
+        "confidence": 0.92,
+        "review_notes": [
+          "Cutout and visible silhouette reviewed in current Codex session; outfit use remains draft."
+        ]
+      },
+      "color_evidence": {
+        "source": "opaque_pixel_quantization_v1",
+        "status": "measured_not_semantic_review",
+        "asset_sha256": "f3b6f5d9b97282f0b66b32ad85e4633675901c4f805838d65fe2886f764a5b6f",
+        "swatches": [
+          {
+            "hex": "#9d9a9a",
+            "weight": 0.3269,
+            "family": "灰"
+          },
+          {
+            "hex": "#a5a2a2",
+            "weight": 0.2435,
+            "family": "灰"
+          },
+          {
+            "hex": "#827f7f",
+            "weight": 0.1622,
+            "family": "灰"
+          },
+          {
+            "hex": "#afacad",
+            "weight": 0.1477,
+            "family": "灰"
+          },
+          {
+            "hex": "#bcb9b9",
+            "weight": 0.1197,
+            "family": "灰"
+          }
+        ],
+        "palette_names": [
+          "灰"
+        ],
+        "color": {
+          "temperature": "未判断",
+          "lightness": "中等",
+          "saturation": "无彩",
+          "harmony": "未判断",
+          "palette": [
+            "#9d9a9a",
+            "#a5a2a2",
+            "#827f7f",
+            "#afacad",
+            "#bcb9b9"
+          ]
+        },
+        "limitations": "渲染光照会影响色值；不据此推断面料成分、真实冷暖或人体适配。"
+      }
+    },
+    {
+      "id": "garment_aw_targeted12_outer_mute_jewel_03_01",
+      "category": "outer",
+      "subcategory": "深祖母绿无领直身长大衣",
+      "silhouette": [
+        "collarless",
+        "dropped_clean_shoulder",
+        "boxy_long_column"
+      ],
+      "fit": "合体",
+      "materials": [],
+      "details": [
+        "original_gap_fill",
+        "jewel",
+        "visually_reviewed_cutout"
+      ],
+      "season_tags": [
+        "秋",
+        "冬"
+      ],
+      "scene_tags": [
+        "日常",
+        "通勤",
+        "旅行"
+      ],
+      "weather_tags": [],
+      "presentation": [
+        "feminine",
+        "neutral"
+      ],
+      "layer_role": "outer",
+      "tryon_slot": "outer",
+      "persona_affinity": {
+        "MUTE": 0.96,
+        "LOOP": 0.88,
+        "ICED": 0.8
+      },
+      "color": {
+        "temperature": "未判断",
+        "lightness": "深色",
+        "saturation": "高饱和",
+        "harmony": "未判断",
+        "palette": [
+          "#0c2c20",
+          "#0f3125",
+          "#123528",
+          "#082016",
+          "#163b2e"
+        ]
+      },
+      "assets": {
+        "image_url": "/static/selfit/assets/content_v2_drafts/aw-targeted-12/garments/aw-main-mute-jewel-03-v1.png",
+        "source_url": "",
+        "width": 1200,
+        "height": 1200,
+        "alpha_verified": true,
+        "rights_status": "owned"
+      },
+      "production": {
+        "source_kind": "generated_original",
+        "generation_job_id": "aw-generated-garments-13-n0084",
+        "prompt_version": "selfit-aw-near-threshold-family-v1",
+        "reference_ids": [],
+        "qa_status": "approved",
+        "phash": "3070307079783030-0f2e22"
+      },
+      "annotation": {
+        "status": "designer_reviewed",
+        "source": "designer",
+        "confidence": 0.92,
+        "review_notes": [
+          "Cutout and visible silhouette reviewed in current Codex session; outfit use remains draft."
+        ]
+      },
+      "color_evidence": {
+        "source": "opaque_pixel_quantization_v1",
+        "status": "measured_not_semantic_review",
+        "asset_sha256": "71e795b0734b66bbcb773d3e2f6770dd0b90e40d1a65708aa9366e9fff676c65",
+        "swatches": [
+          {
+            "hex": "#0c2c20",
+            "weight": 0.3309,
+            "family": "黑"
+          },
+          {
+            "hex": "#0f3125",
+            "weight": 0.2135,
+            "family": "绿"
+          },
+          {
+            "hex": "#123528",
+            "weight": 0.1834,
+            "family": "绿"
+          },
+          {
+            "hex": "#082016",
+            "weight": 0.1634,
+            "family": "黑"
+          },
+          {
+            "hex": "#163b2e",
+            "weight": 0.1089,
+            "family": "绿"
+          }
+        ],
+        "palette_names": [
+          "黑",
+          "绿"
+        ],
+        "color": {
+          "temperature": "未判断",
+          "lightness": "深色",
+          "saturation": "高饱和",
+          "harmony": "未判断",
+          "palette": [
+            "#0c2c20",
+            "#0f3125",
+            "#123528",
+            "#082016",
+            "#163b2e"
+          ]
+        },
+        "limitations": "渲染光照会影响色值；不据此推断面料成分、真实冷暖或人体适配。"
+      }
+    },
+    {
+      "id": "garment_aw_targeted12_outer_wabi_bright_03_01",
+      "category": "outer",
+      "subcategory": "钴蓝木扣弧线茧形大衣",
+      "silhouette": [
+        "soft_shawl_collar",
+        "single_wood_toggle",
+        "curved_cocoon"
+      ],
+      "fit": "宽松",
+      "materials": [],
+      "details": [
+        "original_gap_fill",
+        "bright",
+        "visually_reviewed_cutout"
+      ],
+      "season_tags": [
+        "秋",
+        "冬"
+      ],
+      "scene_tags": [
+        "日常",
+        "通勤",
+        "旅行"
+      ],
+      "weather_tags": [],
+      "presentation": [
+        "feminine",
+        "neutral"
+      ],
+      "layer_role": "outer",
+      "tryon_slot": "outer",
+      "persona_affinity": {
+        "WABI": 0.96,
+        "EASE": 0.88,
+        "MELT": 0.8
+      },
+      "color": {
+        "temperature": "未判断",
+        "lightness": "浅色",
+        "saturation": "高饱和",
+        "harmony": "未判断",
+        "palette": [
+          "#0134c2",
+          "#023bd0",
+          "#043fd9",
+          "#01238c",
+          "#0a46df"
+        ]
+      },
+      "assets": {
+        "image_url": "/static/selfit/assets/content_v2_drafts/aw-targeted-12/garments/aw-main-wabi-bright-03-v1.png",
+        "source_url": "",
+        "width": 1200,
+        "height": 1200,
+        "alpha_verified": true,
+        "rights_status": "owned"
+      },
+      "production": {
+        "source_kind": "generated_original",
+        "generation_job_id": "aw-generated-garments-13-n0085",
+        "prompt_version": "selfit-aw-near-threshold-family-v1",
+        "reference_ids": [],
+        "qa_status": "approved",
+        "phash": "2070797070793030-0437c2"
+      },
+      "annotation": {
+        "status": "designer_reviewed",
+        "source": "designer",
+        "confidence": 0.92,
+        "review_notes": [
+          "Cutout and visible silhouette reviewed in current Codex session; outfit use remains draft."
+        ]
+      },
+      "color_evidence": {
+        "source": "opaque_pixel_quantization_v1",
+        "status": "measured_not_semantic_review",
+        "asset_sha256": "69e0aab5ffc9d266ccfd4c5edcef24520d72545d84bac25cbf22af170ef01f47",
+        "swatches": [
+          {
+            "hex": "#0134c2",
+            "weight": 0.3364,
+            "family": "蓝"
+          },
+          {
+            "hex": "#023bd0",
+            "weight": 0.2084,
+            "family": "蓝"
+          },
+          {
+            "hex": "#043fd9",
+            "weight": 0.2027,
+            "family": "蓝"
+          },
+          {
+            "hex": "#01238c",
+            "weight": 0.1327,
+            "family": "蓝"
+          },
+          {
+            "hex": "#0a46df",
+            "weight": 0.1198,
+            "family": "蓝"
+          }
+        ],
+        "palette_names": [
+          "蓝"
+        ],
+        "color": {
+          "temperature": "未判断",
+          "lightness": "浅色",
+          "saturation": "高饱和",
+          "harmony": "未判断",
+          "palette": [
+            "#0134c2",
+            "#023bd0",
+            "#043fd9",
+            "#01238c",
+            "#0a46df"
+          ]
+        },
+        "limitations": "渲染光照会影响色值；不据此推断面料成分、真实冷暖或人体适配。"
+      }
+    },
+    {
+      "id": "garment_aw_targeted12_outer_wabi_ocean_03_01",
+      "category": "outer",
+      "subcategory": "靛蓝织感曲襟系带大衣",
+      "silhouette": [
+        "soft_shawl_collar",
+        "low_asymmetric_tie",
+        "curved_wrap_cocoon"
+      ],
+      "fit": "宽松",
+      "materials": [],
+      "details": [
+        "original_gap_fill",
+        "ocean",
+        "visually_reviewed_cutout"
+      ],
+      "season_tags": [
+        "秋",
+        "冬"
+      ],
+      "scene_tags": [
+        "日常",
+        "通勤",
+        "旅行"
+      ],
+      "weather_tags": [],
+      "presentation": [
+        "feminine",
+        "neutral"
+      ],
+      "layer_role": "outer",
+      "tryon_slot": "outer",
+      "persona_affinity": {
+        "WABI": 0.96,
+        "VOID": 0.88,
+        "EASE": 0.8
+      },
+      "color": {
+        "temperature": "未判断",
+        "lightness": "深色",
+        "saturation": "中饱和",
+        "harmony": "未判断",
+        "palette": [
+          "#23314a",
+          "#2b3a58",
+          "#141f32",
+          "#647085",
+          "#3b4a66"
+        ]
+      },
+      "assets": {
+        "image_url": "/static/selfit/assets/content_v2_drafts/aw-targeted-12/garments/aw-main-wabi-ocean-03-v1.png",
+        "source_url": "",
+        "width": 1200,
+        "height": 1200,
+        "alpha_verified": true,
+        "rights_status": "owned"
+      },
+      "production": {
+        "source_kind": "generated_original",
+        "generation_job_id": "aw-generated-garments-13-n0086",
+        "prompt_version": "selfit-aw-near-threshold-family-v1",
+        "reference_ids": [],
+        "qa_status": "approved",
+        "phash": "287070706170b210-2e3b54"
+      },
+      "annotation": {
+        "status": "designer_reviewed",
+        "source": "designer",
+        "confidence": 0.92,
+        "review_notes": [
+          "Cutout and visible silhouette reviewed in current Codex session; outfit use remains draft."
+        ]
+      },
+      "color_evidence": {
+        "source": "opaque_pixel_quantization_v1",
+        "status": "measured_not_semantic_review",
+        "asset_sha256": "d2f8e96896d23d1a4cd92802cae649820acfba13e9395ad2c9a00d0e71a6ace5",
+        "swatches": [
+          {
+            "hex": "#23314a",
+            "weight": 0.284,
+            "family": "蓝"
+          },
+          {
+            "hex": "#2b3a58",
+            "weight": 0.2587,
+            "family": "蓝"
+          },
+          {
+            "hex": "#141f32",
+            "weight": 0.2028,
+            "family": "蓝"
+          },
+          {
+            "hex": "#647085",
+            "weight": 0.1367,
+            "family": "蓝"
+          },
+          {
+            "hex": "#3b4a66",
+            "weight": 0.1177,
+            "family": "蓝"
+          }
+        ],
+        "palette_names": [
+          "蓝"
+        ],
+        "color": {
+          "temperature": "未判断",
+          "lightness": "深色",
+          "saturation": "中饱和",
+          "harmony": "未判断",
+          "palette": [
+            "#23314a",
+            "#2b3a58",
+            "#141f32",
+            "#647085",
+            "#3b4a66"
+          ]
+        },
+        "limitations": "渲染光照会影响色值；不据此推断面料成分、真实冷暖或人体适配。"
+      }
+    },
+    {
+      "id": "garment_aw_targeted12_outer_film_mono_03_01",
+      "category": "outer",
+      "subcategory": "黑白六十年代图形A线大衣",
+      "silhouette": [
+        "wide_pointed_collar",
+        "covered_buttons",
+        "sixties_a_line"
+      ],
+      "fit": "合体",
+      "materials": [],
+      "details": [
+        "original_gap_fill",
+        "mono",
+        "visually_reviewed_cutout"
+      ],
+      "season_tags": [
+        "秋",
+        "冬"
+      ],
+      "scene_tags": [
+        "日常",
+        "通勤",
+        "旅行"
+      ],
+      "weather_tags": [],
+      "presentation": [
+        "feminine",
+        "neutral"
+      ],
+      "layer_role": "outer",
+      "tryon_slot": "outer",
+      "persona_affinity": {
+        "FILM": 0.96,
+        "BOLT": 0.88,
+        "EDGE": 0.8
+      },
+      "color": {
+        "temperature": "未判断",
+        "lightness": "中等",
+        "saturation": "低饱和",
+        "harmony": "未判断",
+        "palette": [
+          "#e7dbc9",
+          "#222222",
+          "#181818",
+          "#a69d90",
+          "#3f3d3a"
+        ]
+      },
+      "assets": {
+        "image_url": "/static/selfit/assets/content_v2_drafts/aw-targeted-12/garments/aw-main-film-mono-03-v1.png",
+        "source_url": "",
+        "width": 1200,
+        "height": 1200,
+        "alpha_verified": true,
+        "rights_status": "owned"
+      },
+      "production": {
+        "source_kind": "generated_original",
+        "generation_job_id": "aw-generated-garments-13-n0087",
+        "prompt_version": "selfit-aw-near-threshold-family-v1",
+        "reference_ids": [],
+        "qa_status": "approved",
+        "phash": "7069e0f071716830-777169"
+      },
+      "annotation": {
+        "status": "designer_reviewed",
+        "source": "designer",
+        "confidence": 0.92,
+        "review_notes": [
+          "Cutout and visible silhouette reviewed in current Codex session; outfit use remains draft."
+        ]
+      },
+      "color_evidence": {
+        "source": "opaque_pixel_quantization_v1",
+        "status": "measured_not_semantic_review",
+        "asset_sha256": "6ec54314cd3a90bea35648763b18e932edc9b78e5832a36377f42ca9c9616551",
+        "swatches": [
+          {
+            "hex": "#e7dbc9",
+            "weight": 0.318,
+            "family": "白"
+          },
+          {
+            "hex": "#222222",
+            "weight": 0.206,
+            "family": "黑"
+          },
+          {
+            "hex": "#181818",
+            "weight": 0.1932,
+            "family": "黑"
+          },
+          {
+            "hex": "#a69d90",
+            "weight": 0.1502,
+            "family": "棕"
+          },
+          {
+            "hex": "#3f3d3a",
+            "weight": 0.1325,
+            "family": "灰"
+          }
+        ],
+        "palette_names": [
+          "白",
+          "黑",
+          "棕"
+        ],
+        "color": {
+          "temperature": "未判断",
+          "lightness": "中等",
+          "saturation": "低饱和",
+          "harmony": "未判断",
+          "palette": [
+            "#e7dbc9",
+            "#222222",
+            "#181818",
+            "#a69d90",
+            "#3f3d3a"
+          ]
+        },
+        "limitations": "渲染光照会影响色值；不据此推断面料成分、真实冷暖或人体适配。"
+      }
+    }
+  ],
+  "visual": {
+    "garment_aw_targeted12_outer_iced_ocean_03_01": {
+      "token": "n0080",
+      "status": "ai_candidate",
+      "record_fingerprint": "42d2995c42a384890b23ad1f74386db997af4badef7384666e0a358e32585339",
+      "asset_sha256": "097137feb45d6e3b04e998af0caa53819cd4cc493ba9e1949316f5cb85fce7ea",
+      "image_url": "/static/selfit/assets/content_v2_drafts/aw-targeted-12/garments/aw-main-iced-ocean-03-v1.png",
+      "source_kind": "codex_visual_review",
+      "evidence": "窄长柱形、交叠高领和隐形斜门襟提供冷静精确感。",
+      "observations": {
+        "category": "outer",
+        "subcategory": "precision_column_coat",
+        "neckline": "as_observed",
+        "sleeve": "long",
+        "length": "midi_or_long",
+        "volume": "shaped",
+        "construction": "distinct_near_threshold_family",
+        "pattern": "solid",
+        "decoration": "controlled",
+        "material_appearance": "dense_winter_material_as_observed",
+        "main_colors": [
+          "deep_petrol_blue"
+        ],
+        "visual_personas": [
+          "iced",
+          "noir",
+          "mute"
+        ],
+        "usage_limits": null
+      },
+      "confidence": 0.9,
+      "model": "current_codex_session",
+      "prompt_version": "aw-generated-garment-review-v1",
+      "review_level": "individual_full_resolution_judgment",
+      "review_complete": true,
+      "confidence_basis": "Non-calibrated AI visual judgment; material appearance is visual only and warmth is not claimed."
+    },
+    "garment_aw_targeted12_outer_iced_pastel_03_01": {
+      "token": "n0081",
+      "status": "ai_candidate",
+      "record_fingerprint": "4ba3d3f9072ee4d84873645a0f8998c7e41f27d5c4e6d38f78150ceaf86cc273",
+      "asset_sha256": "4426e667c74790234ae8e902b9d55a906c459bda7424afdeacaad91a944d1864",
+      "image_url": "/static/selfit/assets/content_v2_drafts/aw-targeted-12/garments/aw-main-iced-pastel-03-v1.png",
+      "source_kind": "codex_visual_review",
+      "evidence": "浅彩通过雕塑肩线、窄长比例和斜襟保持 ICED 的收净感。",
+      "observations": {
+        "category": "outer",
+        "subcategory": "pastel_sculpted_wrap_coat",
+        "neckline": "as_observed",
+        "sleeve": "long",
+        "length": "midi_or_long",
+        "volume": "shaped",
+        "construction": "distinct_near_threshold_family",
+        "pattern": "solid",
+        "decoration": "controlled",
+        "material_appearance": "dense_winter_material_as_observed",
+        "main_colors": [
+          "pearl_blush_gray"
+        ],
+        "visual_personas": [
+          "iced",
+          "melt",
+          "edge"
+        ],
+        "usage_limits": null
+      },
+      "confidence": 0.9,
+      "model": "current_codex_session",
+      "prompt_version": "aw-generated-garment-review-v1",
+      "review_level": "individual_full_resolution_judgment",
+      "review_complete": true,
+      "confidence_basis": "Non-calibrated AI visual judgment; material appearance is visual only and warmth is not claimed."
+    },
+    "garment_aw_targeted12_outer_jade_mono_03_01": {
+      "token": "n0082",
+      "status": "ai_candidate",
+      "record_fingerprint": "768009954edc1be5e831cb69de051e1ca7f169e2fcfe43ecd9f3ee4e2e1621e8",
+      "asset_sha256": "5f92873d8fd2fc464898dacea89999a965ef58c76ae9548be0fc9f67faefbcbd",
+      "image_url": "/static/selfit/assets/content_v2_drafts/aw-targeted-12/garments/aw-main-jade-mono-03-v1.png",
+      "source_kind": "codex_visual_review",
+      "evidence": "立领、克制斜襟和连续纵线构成现代日常 JADE 证据。",
+      "observations": {
+        "category": "outer",
+        "subcategory": "restrained_wrap_column_coat",
+        "neckline": "as_observed",
+        "sleeve": "long",
+        "length": "midi_or_long",
+        "volume": "shaped",
+        "construction": "distinct_near_threshold_family",
+        "pattern": "solid",
+        "decoration": "controlled",
+        "material_appearance": "dense_winter_material_as_observed",
+        "main_colors": [
+          "charcoal_black"
+        ],
+        "visual_personas": [
+          "jade",
+          "noir",
+          "iced"
+        ],
+        "usage_limits": null
+      },
+      "confidence": 0.9,
+      "model": "current_codex_session",
+      "prompt_version": "aw-generated-garment-review-v1",
+      "review_level": "individual_full_resolution_judgment",
+      "review_complete": true,
+      "confidence_basis": "Non-calibrated AI visual judgment; material appearance is visual only and warmth is not claimed."
+    },
+    "garment_aw_targeted12_outer_melt_mono_03_01": {
+      "token": "n0083",
+      "status": "ai_candidate",
+      "record_fingerprint": "d26ff24bd7e6784ba4961e54fca3ef34c7a6b23a831724a65935b2e08ee18424",
+      "asset_sha256": "f3b6f5d9b97282f0b66b32ad85e4633675901c4f805838d65fe2886f764a5b6f",
+      "image_url": "/static/selfit/assets/content_v2_drafts/aw-targeted-12/garments/aw-main-melt-mono-03-v1.png",
+      "source_kind": "codex_visual_review",
+      "evidence": "圆领、柔圆袖和弧形茧摆形成可日常穿的 MELT 柔软线条。",
+      "observations": {
+        "category": "outer",
+        "subcategory": "rounded_swing_cocoon_coat",
+        "neckline": "as_observed",
+        "sleeve": "long",
+        "length": "midi_or_long",
+        "volume": "shaped",
+        "construction": "distinct_near_threshold_family",
+        "pattern": "solid",
+        "decoration": "controlled",
+        "material_appearance": "dense_winter_material_as_observed",
+        "main_colors": [
+          "dove_gray"
+        ],
+        "visual_personas": [
+          "melt",
+          "wabi",
+          "ease"
+        ],
+        "usage_limits": null
+      },
+      "confidence": 0.9,
+      "model": "current_codex_session",
+      "prompt_version": "aw-generated-garment-review-v1",
+      "review_level": "individual_full_resolution_judgment",
+      "review_complete": true,
+      "confidence_basis": "Non-calibrated AI visual judgment; material appearance is visual only and warmth is not claimed."
+    },
+    "garment_aw_targeted12_outer_mute_jewel_03_01": {
+      "token": "n0084",
+      "status": "ai_candidate",
+      "record_fingerprint": "497845a4d4016cf395c46c05659d8255e52afb1e9a5d00276c2fab2b6016f963",
+      "asset_sha256": "71e795b0734b66bbcb773d3e2f6770dd0b90e40d1a65708aa9366e9fff676c65",
+      "image_url": "/static/selfit/assets/content_v2_drafts/aw-targeted-12/garments/aw-main-mute-jewel-03-v1.png",
+      "source_kind": "codex_visual_review",
+      "evidence": "宝石色被限制在无领、暗扣、低装饰的直身长线中。",
+      "observations": {
+        "category": "outer",
+        "subcategory": "minimal_collarless_column_coat",
+        "neckline": "as_observed",
+        "sleeve": "long",
+        "length": "midi_or_long",
+        "volume": "shaped",
+        "construction": "distinct_near_threshold_family",
+        "pattern": "solid",
+        "decoration": "controlled",
+        "material_appearance": "dense_winter_material_as_observed",
+        "main_colors": [
+          "deep_emerald"
+        ],
+        "visual_personas": [
+          "mute",
+          "loop",
+          "iced"
+        ],
+        "usage_limits": null
+      },
+      "confidence": 0.9,
+      "model": "current_codex_session",
+      "prompt_version": "aw-generated-garment-review-v1",
+      "review_level": "individual_full_resolution_judgment",
+      "review_complete": true,
+      "confidence_basis": "Non-calibrated AI visual judgment; material appearance is visual only and warmth is not claimed."
+    },
+    "garment_aw_targeted12_outer_wabi_bright_03_01": {
+      "token": "n0085",
+      "status": "ai_candidate",
+      "record_fingerprint": "5fc5fa084ab46128ce36d108d5dc586985739bd9ad842877fd06b386e71ec9db",
+      "asset_sha256": "69e0aab5ffc9d266ccfd4c5edcef24520d72545d84bac25cbf22af170ef01f47",
+      "image_url": "/static/selfit/assets/content_v2_drafts/aw-targeted-12/garments/aw-main-wabi-bright-03-v1.png",
+      "source_kind": "codex_visual_review",
+      "evidence": "单一木扣、弧线茧形和织物观感提供明亮但不碎片化的 WABI。",
+      "observations": {
+        "category": "outer",
+        "subcategory": "bright_handcrafted_cocoon",
+        "neckline": "as_observed",
+        "sleeve": "long",
+        "length": "midi_or_long",
+        "volume": "shaped",
+        "construction": "distinct_near_threshold_family",
+        "pattern": "solid",
+        "decoration": "controlled",
+        "material_appearance": "dense_winter_material_as_observed",
+        "main_colors": [
+          "vivid_cobalt_blue"
+        ],
+        "visual_personas": [
+          "wabi",
+          "ease",
+          "melt"
+        ],
+        "usage_limits": null
+      },
+      "confidence": 0.9,
+      "model": "current_codex_session",
+      "prompt_version": "aw-generated-garment-review-v1",
+      "review_level": "individual_full_resolution_judgment",
+      "review_complete": true,
+      "confidence_basis": "Non-calibrated AI visual judgment; material appearance is visual only and warmth is not claimed."
+    },
+    "garment_aw_targeted12_outer_wabi_ocean_03_01": {
+      "token": "n0086",
+      "status": "ai_candidate",
+      "record_fingerprint": "01a3d18963cf3c09ab396bdeb7e5899020f01e02cee813321fae25b2d623fa55",
+      "asset_sha256": "d2f8e96896d23d1a4cd92802cae649820acfba13e9395ad2c9a00d0e71a6ace5",
+      "image_url": "/static/selfit/assets/content_v2_drafts/aw-targeted-12/garments/aw-main-wabi-ocean-03-v1.png",
+      "source_kind": "codex_visual_review",
+      "evidence": "不规则织感、低位系带和曲线包裹构成安静手作层次。",
+      "observations": {
+        "category": "outer",
+        "subcategory": "indigo_textured_wrap_duster",
+        "neckline": "as_observed",
+        "sleeve": "long",
+        "length": "midi_or_long",
+        "volume": "shaped",
+        "construction": "distinct_near_threshold_family",
+        "pattern": "solid",
+        "decoration": "controlled",
+        "material_appearance": "dense_winter_material_as_observed",
+        "main_colors": [
+          "indigo",
+          "muted_slate_blue"
+        ],
+        "visual_personas": [
+          "wabi",
+          "void",
+          "ease"
+        ],
+        "usage_limits": null
+      },
+      "confidence": 0.9,
+      "model": "current_codex_session",
+      "prompt_version": "aw-generated-garment-review-v1",
+      "review_level": "individual_full_resolution_judgment",
+      "review_complete": true,
+      "confidence_basis": "Non-calibrated AI visual judgment; material appearance is visual only and warmth is not claimed."
+    },
+    "garment_aw_targeted12_outer_film_mono_03_01": {
+      "token": "n0087",
+      "status": "ai_candidate",
+      "record_fingerprint": "17ffcda06cd79358bcade9ce212a1dd159ce24302cc94e781e872623e6b17613",
+      "asset_sha256": "6ec54314cd3a90bea35648763b18e932edc9b78e5832a36377f42ca9c9616551",
+      "image_url": "/static/selfit/assets/content_v2_drafts/aw-targeted-12/garments/aw-main-film-mono-03-v1.png",
+      "source_kind": "codex_visual_review",
+      "evidence": "宽尖领、图形格纹与六十年代 A 线比例构成明确复古证据。",
+      "observations": {
+        "category": "outer",
+        "subcategory": "sixties_graphic_a_line_coat",
+        "neckline": "as_observed",
+        "sleeve": "long",
+        "length": "midi_or_long",
+        "volume": "shaped",
+        "construction": "distinct_near_threshold_family",
+        "pattern": "graphic",
+        "decoration": "controlled",
+        "material_appearance": "dense_winter_material_as_observed",
+        "main_colors": [
+          "black",
+          "ivory"
+        ],
+        "visual_personas": [
+          "film",
+          "bolt",
+          "edge"
+        ],
+        "usage_limits": null
+      },
+      "confidence": 0.9,
+      "model": "current_codex_session",
+      "prompt_version": "aw-generated-garment-review-v1",
+      "review_level": "individual_full_resolution_judgment",
+      "review_complete": true,
+      "confidence_basis": "Non-calibrated AI visual judgment; material appearance is visual only and warmth is not claimed."
+    }
+  },
+  "limitations": [
+    "AI visual review is not independent blind review.",
+    "Dense or wool-like appearance does not prove warmth, fiber, waterproofing or comfort.",
+    "No garment is in the published pool."
+  ],
+  "version": "aw-generated-garments-f1e45ce71345319a4c4e",
+  "binding_method": "individual_output_binding_verified_visually_and_by_filename"
+}

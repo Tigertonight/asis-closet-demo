@@ -1,0 +1,190 @@
+{
+  "schema_version": 1,
+  "batch_id": "p0-generated-medium-expression-02",
+  "prompt_version": "selfit-p0-bolt-typical-v1",
+  "status": "internal_candidate",
+  "production_approved": false,
+  "generation": [
+    {
+      "garment_id": "garment_p0_typical_bolt_dress_n0099",
+      "token": "n0099",
+      "source_output": "/Users/yuanzexiang/.codex/generated_images/01a06b62-ef79-7533-88b0-79111246bf6f/exec-50612541-6c76-4f04-bff2-a8bc5db1eb09.png",
+      "raw_path": "raw/bolt-wine-typical-dress-raw-v1.png",
+      "prepared_path": "prepared/bolt-wine-typical-dress-v1.png",
+      "qa_path": "qa/bolt-wine-typical-dress-v1.json",
+      "final_prompt": "酒红丝绒象牙领珍珠扣中强度日常连衣裙，原创无品牌透明背景独立主衣。 Photorealistic premium fashion e-commerce product cutout, exactly one original unbranded garment, front-facing and naturally shaped as if invisibly supported, genuinely transparent alpha background, centered square canvas, complete silhouette with 12% clear padding on every side. No person, mannequin, hanger, stand, accessories, text, label, logo, watermark, floor shadow, white halo, duplicate item or clipped edge.",
+      "target_conditions": [
+        "BOLT×typical×daily"
+      ]
+    }
+  ],
+  "garments": [
+    {
+      "id": "garment_p0_typical_bolt_dress_n0099",
+      "category": "dress",
+      "subcategory": "酒红丝绒象牙领珍珠扣连衣裙",
+      "silhouette": [
+        "daily_midi",
+        "shaped_waist",
+        "controlled_puff_sleeve"
+      ],
+      "fit": "合体",
+      "materials": [],
+      "details": [
+        "original_gap_fill",
+        "p0_persona_not_color_test",
+        "visually_reviewed_cutout"
+      ],
+      "season_tags": [
+        "秋",
+        "冬"
+      ],
+      "scene_tags": [
+        "日常",
+        "通勤",
+        "旅行"
+      ],
+      "weather_tags": [],
+      "presentation": [
+        "feminine",
+        "neutral"
+      ],
+      "layer_role": "single",
+      "tryon_slot": "dress",
+      "persona_affinity": {
+        "BOLT": 0.96
+      },
+      "color": {
+        "temperature": "未判断",
+        "lightness": "深色",
+        "saturation": "高饱和",
+        "harmony": "未判断",
+        "palette": [
+          "#39030a",
+          "#2a0003",
+          "#6d2d34",
+          "#300005",
+          "#210001"
+        ]
+      },
+      "assets": {
+        "image_url": "/static/selfit/assets/content_v2_drafts/p0-medium-expression-02/garments/bolt-wine-typical-dress-v1.png",
+        "source_url": "",
+        "width": 1200,
+        "height": 1200,
+        "alpha_verified": true,
+        "rights_status": "owned"
+      },
+      "production": {
+        "source_kind": "generated_original",
+        "generation_job_id": "p0-generated-medium-expression-02-n0099",
+        "prompt_version": "selfit-p0-bolt-typical-v1",
+        "reference_ids": [],
+        "qa_status": "approved",
+        "phash": "307060706969f030-400d12"
+      },
+      "annotation": {
+        "status": "designer_reviewed",
+        "source": "designer",
+        "confidence": 0.92,
+        "review_notes": [
+          "Cutout and visible silhouette reviewed in current Codex session; outfit use remains draft."
+        ]
+      },
+      "color_evidence": {
+        "source": "opaque_pixel_quantization_v1",
+        "status": "measured_not_semantic_review",
+        "asset_sha256": "0c26ca3d7ef085126fd85ad9271448ad716eca3d9feaad50fa8c86945fda5cb0",
+        "swatches": [
+          {
+            "hex": "#39030a",
+            "weight": 0.2684,
+            "family": "红"
+          },
+          {
+            "hex": "#2a0003",
+            "weight": 0.2239,
+            "family": "黑"
+          },
+          {
+            "hex": "#6d2d34",
+            "weight": 0.1762,
+            "family": "红"
+          },
+          {
+            "hex": "#300005",
+            "weight": 0.1708,
+            "family": "黑"
+          },
+          {
+            "hex": "#210001",
+            "weight": 0.1608,
+            "family": "黑"
+          }
+        ],
+        "palette_names": [
+          "红",
+          "黑"
+        ],
+        "color": {
+          "temperature": "未判断",
+          "lightness": "深色",
+          "saturation": "高饱和",
+          "harmony": "未判断",
+          "palette": [
+            "#39030a",
+            "#2a0003",
+            "#6d2d34",
+            "#300005",
+            "#210001"
+          ]
+        },
+        "limitations": "渲染光照会影响色值；不据此推断面料成分、真实冷暖或人体适配。"
+      }
+    }
+  ],
+  "visual": {
+    "garment_p0_typical_bolt_dress_n0099": {
+      "token": "n0099",
+      "status": "ai_candidate",
+      "record_fingerprint": "bdca60f201346c27673cbd9cc6d4169a54013a1044b3c5c02e4c581d2c4cb37b",
+      "asset_sha256": "0c26ca3d7ef085126fd85ad9271448ad716eca3d9feaad50fa8c86945fda5cb0",
+      "image_url": "/static/selfit/assets/content_v2_drafts/p0-medium-expression-02/garments/bolt-wine-typical-dress-v1.png",
+      "source_kind": "codex_visual_review",
+      "evidence": "酒红丝绒、象牙领、珍珠扣与收腰线构成明确精致贵气，装饰集中且仍为日常中强度。",
+      "observations": {
+        "category": "dress",
+        "subcategory": "wine_velvet_pearl_typical_midi_dress",
+        "neckline": "ivory_peter_pan_collar",
+        "sleeve": "long_soft_puff",
+        "length": "midi",
+        "volume": "controlled_a_line",
+        "construction": "shaped_waist_single_ribbon_band",
+        "pattern": "solid",
+        "decoration": "medium",
+        "material_appearance": "velvet_and_crepe_as_observed",
+        "main_colors": [
+          "wine_red",
+          "ivory",
+          "champagne"
+        ],
+        "visual_personas": [
+          "bolt"
+        ],
+        "usage_limits": null
+      },
+      "confidence": 0.9,
+      "model": "current_codex_session",
+      "prompt_version": "aw-generated-garment-review-v1",
+      "review_level": "individual_full_resolution_judgment",
+      "review_complete": true,
+      "confidence_basis": "Non-calibrated AI visual judgment; material appearance is visual only and warmth is not claimed."
+    }
+  },
+  "limitations": [
+    "Generated cutout approval is not outfit approval, four-gate editorial approval, or blind review.",
+    "Color testing is outside this P0 scope."
+  ],
+  "version": "aw-generated-garments-23ad6406883358eeb3dd",
+  "binding_method": "individual_output_binding_verified_visually_and_by_filename"
+}

@@ -1,0 +1,357 @@
+{
+  "schema_version": 1,
+  "status": "candidate",
+  "version": "selfit-p0-anchor-candidates-20260904-v1",
+  "content_version": "2026.09-v2-published1",
+  "visual_version": "codex-visual-16b18cdcdca36dbc306a",
+  "family_registry_sha256": "428a6a9234c0484b47098fef4172d5bfae69fe25303ed58c2d6c854484654bc9",
+  "blind_review_package_id": null,
+  "anchors": [],
+  "readiness": {
+    "selected": 0,
+    "required": 160,
+    "current_four_gate_reviews": 0,
+    "visual_catalog_candidates": 952,
+    "visual_catalog_held": 217,
+    "gaps": [
+      {
+        "persona": "bolt",
+        "required": {
+          "easy": 4,
+          "typical": 4,
+          "explore": 2
+        },
+        "eligible_supply": {
+          "easy": 0,
+          "typical": 0,
+          "explore": 0
+        },
+        "selected_mix": {},
+        "missing_by_expression": {
+          "easy": 4,
+          "typical": 4,
+          "explore": 2
+        },
+        "selected": 0,
+        "missing": 10
+      },
+      {
+        "persona": "ease",
+        "required": {
+          "easy": 4,
+          "typical": 4,
+          "explore": 2
+        },
+        "eligible_supply": {
+          "easy": 0,
+          "typical": 0,
+          "explore": 0
+        },
+        "selected_mix": {},
+        "missing_by_expression": {
+          "easy": 4,
+          "typical": 4,
+          "explore": 2
+        },
+        "selected": 0,
+        "missing": 10
+      },
+      {
+        "persona": "edge",
+        "required": {
+          "easy": 4,
+          "typical": 4,
+          "explore": 2
+        },
+        "eligible_supply": {
+          "easy": 0,
+          "typical": 0,
+          "explore": 0
+        },
+        "selected_mix": {},
+        "missing_by_expression": {
+          "easy": 4,
+          "typical": 4,
+          "explore": 2
+        },
+        "selected": 0,
+        "missing": 10
+      },
+      {
+        "persona": "film",
+        "required": {
+          "easy": 4,
+          "typical": 4,
+          "explore": 2
+        },
+        "eligible_supply": {
+          "easy": 0,
+          "typical": 0,
+          "explore": 0
+        },
+        "selected_mix": {},
+        "missing_by_expression": {
+          "easy": 4,
+          "typical": 4,
+          "explore": 2
+        },
+        "selected": 0,
+        "missing": 10
+      },
+      {
+        "persona": "flou",
+        "required": {
+          "easy": 4,
+          "typical": 4,
+          "explore": 2
+        },
+        "eligible_supply": {
+          "easy": 0,
+          "typical": 0,
+          "explore": 0
+        },
+        "selected_mix": {},
+        "missing_by_expression": {
+          "easy": 4,
+          "typical": 4,
+          "explore": 2
+        },
+        "selected": 0,
+        "missing": 10
+      },
+      {
+        "persona": "heir",
+        "required": {
+          "easy": 4,
+          "typical": 4,
+          "explore": 2
+        },
+        "eligible_supply": {
+          "easy": 0,
+          "typical": 0,
+          "explore": 0
+        },
+        "selected_mix": {},
+        "missing_by_expression": {
+          "easy": 4,
+          "typical": 4,
+          "explore": 2
+        },
+        "selected": 0,
+        "missing": 10
+      },
+      {
+        "persona": "iced",
+        "required": {
+          "easy": 4,
+          "typical": 4,
+          "explore": 2
+        },
+        "eligible_supply": {
+          "easy": 0,
+          "typical": 0,
+          "explore": 0
+        },
+        "selected_mix": {},
+        "missing_by_expression": {
+          "easy": 4,
+          "typical": 4,
+          "explore": 2
+        },
+        "selected": 0,
+        "missing": 10
+      },
+      {
+        "persona": "jade",
+        "required": {
+          "easy": 4,
+          "typical": 4,
+          "explore": 2
+        },
+        "eligible_supply": {
+          "easy": 0,
+          "typical": 0,
+          "explore": 0
+        },
+        "selected_mix": {},
+        "missing_by_expression": {
+          "easy": 4,
+          "typical": 4,
+          "explore": 2
+        },
+        "selected": 0,
+        "missing": 10
+      },
+      {
+        "persona": "loop",
+        "required": {
+          "easy": 4,
+          "typical": 4,
+          "explore": 2
+        },
+        "eligible_supply": {
+          "easy": 0,
+          "typical": 0,
+          "explore": 0
+        },
+        "selected_mix": {},
+        "missing_by_expression": {
+          "easy": 4,
+          "typical": 4,
+          "explore": 2
+        },
+        "selected": 0,
+        "missing": 10
+      },
+      {
+        "persona": "melt",
+        "required": {
+          "easy": 4,
+          "typical": 4,
+          "explore": 2
+        },
+        "eligible_supply": {
+          "easy": 0,
+          "typical": 0,
+          "explore": 0
+        },
+        "selected_mix": {},
+        "missing_by_expression": {
+          "easy": 4,
+          "typical": 4,
+          "explore": 2
+        },
+        "selected": 0,
+        "missing": 10
+      },
+      {
+        "persona": "mute",
+        "required": {
+          "easy": 4,
+          "typical": 4,
+          "explore": 2
+        },
+        "eligible_supply": {
+          "easy": 0,
+          "typical": 0,
+          "explore": 0
+        },
+        "selected_mix": {},
+        "missing_by_expression": {
+          "easy": 4,
+          "typical": 4,
+          "explore": 2
+        },
+        "selected": 0,
+        "missing": 10
+      },
+      {
+        "persona": "neon",
+        "required": {
+          "easy": 4,
+          "typical": 4,
+          "explore": 2
+        },
+        "eligible_supply": {
+          "easy": 0,
+          "typical": 0,
+          "explore": 0
+        },
+        "selected_mix": {},
+        "missing_by_expression": {
+          "easy": 4,
+          "typical": 4,
+          "explore": 2
+        },
+        "selected": 0,
+        "missing": 10
+      },
+      {
+        "persona": "noir",
+        "required": {
+          "easy": 4,
+          "typical": 4,
+          "explore": 2
+        },
+        "eligible_supply": {
+          "easy": 0,
+          "typical": 0,
+          "explore": 0
+        },
+        "selected_mix": {},
+        "missing_by_expression": {
+          "easy": 4,
+          "typical": 4,
+          "explore": 2
+        },
+        "selected": 0,
+        "missing": 10
+      },
+      {
+        "persona": "oops",
+        "required": {
+          "easy": 4,
+          "typical": 4,
+          "explore": 2
+        },
+        "eligible_supply": {
+          "easy": 0,
+          "typical": 0,
+          "explore": 0
+        },
+        "selected_mix": {},
+        "missing_by_expression": {
+          "easy": 4,
+          "typical": 4,
+          "explore": 2
+        },
+        "selected": 0,
+        "missing": 10
+      },
+      {
+        "persona": "void",
+        "required": {
+          "easy": 4,
+          "typical": 4,
+          "explore": 2
+        },
+        "eligible_supply": {
+          "easy": 0,
+          "typical": 0,
+          "explore": 0
+        },
+        "selected_mix": {},
+        "missing_by_expression": {
+          "easy": 4,
+          "typical": 4,
+          "explore": 2
+        },
+        "selected": 0,
+        "missing": 10
+      },
+      {
+        "persona": "wabi",
+        "required": {
+          "easy": 4,
+          "typical": 4,
+          "explore": 2
+        },
+        "eligible_supply": {
+          "easy": 0,
+          "typical": 0,
+          "explore": 0
+        },
+        "selected_mix": {},
+        "missing_by_expression": {
+          "easy": 4,
+          "typical": 4,
+          "explore": 2
+        },
+        "selected": 0,
+        "missing": 10
+      }
+    ],
+    "release_ready": false,
+    "note": "AI visual candidates are not editorial approval or independent blind review."
+  }
+}

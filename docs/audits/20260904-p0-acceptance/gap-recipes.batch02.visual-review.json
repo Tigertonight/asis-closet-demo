@@ -1,0 +1,91 @@
+{
+  "schema_version": 1,
+  "version": "p0-gap-02-visual-review-v1",
+  "source_rendered_version": "aw-designed-rendered-162e2d2940a68ab9fe5e",
+  "independent_blind_review": false,
+  "four_gate_editorial_review": false,
+  "entries": [
+    {
+      "outfit_id": "outfit_film_p0-gap-02_01",
+      "status": "ai_candidate",
+      "record_fingerprint": "fad65595218987b767d8252538f93730888f49f02d6b342890b487ba04a46a8c",
+      "asset_sha256": "62e506d438ab4a0f8538a35e311c6c655f81cc64f9059d3fdea6cf5e7b09737b",
+      "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/03676f9faa5e7b5a940ff688.webp",
+      "source_kind": "codex_visual_review",
+      "evidence": "做旧牛仔束腰上衣提供明确胶片复古证据，宽裤与素色鞋包不抢焦点，轻探索且可日常。",
+      "model": "current_codex_session",
+      "prompt_version": "p0-gap-02-visual-v1",
+      "review_level": "individual_whole_image_judgment",
+      "evidence_scope": "nonblind visual candidate only; not editorial or independent blind review",
+      "observations": {
+        "axes": {},
+        "expression": "explore",
+        "formality": "smart_casual",
+        "layering": 1,
+        "persona_scores": {
+          "film": 0.9
+        },
+        "scenes": [
+          "daily",
+          "commute"
+        ],
+        "seasons": [
+          "autumn"
+        ],
+        "structure": "pants",
+        "wearability": "everyday_with_statement",
+        "main_visual_slots": [
+          "top",
+          "pants"
+        ],
+        "main_colors": [],
+        "conflicts": null,
+        "silhouette": "single_focal_daily_exploration",
+        "color_relation": "low_competition_supports",
+        "persona_evidence": "做旧牛仔束腰上衣提供明确胶片复古证据，宽裤与素色鞋包不抢焦点，轻探索且可日常。"
+      },
+      "confidence": 0.86
+    },
+    {
+      "outfit_id": "outfit_wabi_p0-gap-02_02",
+      "status": "ai_candidate",
+      "record_fingerprint": "d760088dfd18b577d191407550293c0791d337605fa4ec884cd49a2584bff19b",
+      "asset_sha256": "14649ef5236932b63a3b2785112db9fdee08fb28d53ff2f6b829be4f98173bd6",
+      "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/594b3f69f3f6518625ea458d.webp",
+      "source_kind": "codex_visual_review",
+      "evidence": "低饱和亚麻感不对称上衣为唯一主视觉，素色窄裙和简洁配件保留日常性。",
+      "model": "current_codex_session",
+      "prompt_version": "p0-gap-02-visual-v1",
+      "review_level": "individual_whole_image_judgment",
+      "evidence_scope": "nonblind visual candidate only; not editorial or independent blind review",
+      "observations": {
+        "axes": {},
+        "expression": "explore",
+        "formality": "smart_casual",
+        "layering": 1,
+        "persona_scores": {
+          "wabi": 0.9
+        },
+        "scenes": [
+          "daily",
+          "commute"
+        ],
+        "seasons": [
+          "autumn"
+        ],
+        "structure": "skirt",
+        "wearability": "everyday_with_statement",
+        "main_visual_slots": [
+          "top",
+          "skirt"
+        ],
+        "main_colors": [],
+        "conflicts": null,
+        "silhouette": "single_focal_daily_exploration",
+        "color_relation": "low_competition_supports",
+        "persona_evidence": "低饱和亚麻感不对称上衣为唯一主视觉，素色窄裙和简洁配件保留日常性。"
+      },
+      "confidence": 0.86
+    }
+  ]
+}

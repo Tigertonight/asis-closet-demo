@@ -1,0 +1,4055 @@
+{
+  "schema_version": 1,
+  "source_rendered_version": "aw-repair-03",
+  "independent_blind_review": false,
+  "winter_outdoor_reviewed": false,
+  "entries": [
+    {
+      "outfit_id": "outfit_mute_master_23__aw-repair-03",
+      "source_token": "o0023",
+      "status": "needs_review",
+      "record_fingerprint": "9887eeb685fce3ac2facaee7a80680f4f98530413b42d7d7d6cea81380cf2a84",
+      "asset_sha256": "84f1bf58b68ec24c468d72e38bea31c311cd30c6d9158b8b95f02bd23111e8e3",
+      "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/2d27265016cb45923c70be2b.webp",
+      "source_kind": "codex_visual_review",
+      "evidence": "不透蓝衬衫已替换，但蓬袖内层与短收口外套的袖量仍需结构复核。",
+      "observations": {
+        "axes": {},
+        "expression": "easy",
+        "formality": "smart_casual",
+        "layering": 2,
+        "persona_scores": {
+          "mute": 0.65,
+          "iced": 0.6
+        },
+        "scenes": null,
+        "seasons": null,
+        "structure": "pants",
+        "wearability": null,
+        "main_visual_slots": [
+          "pants"
+        ],
+        "main_colors": [
+          "ice_blue",
+          "denim_blue",
+          "black"
+        ],
+        "conflicts": [
+          "outer_inner_volume_unverified"
+        ],
+        "silhouette": "reviewed_pants_composition",
+        "color_relation": "controlled_or_review_pending",
+        "persona_evidence": "不透蓝衬衫已替换，但蓬袖内层与短收口外套的袖量仍需结构复核。"
+      },
+      "confidence": 0.8,
+      "model": "current_codex_session",
+      "prompt_version": "aw-coverage-repair-native-v1",
+      "review_level": "individual_contact_sheet_judgment",
+      "evidence_scope": "nonblind_individual_visual_judgment",
+      "review_complete": true,
+      "field_status": {
+        "axes": "unknown",
+        "expression": "ai_observed",
+        "formality": "ai_observed",
+        "layering": "ai_observed",
+        "persona_scores": "ai_observed",
+        "scenes": "unknown",
+        "seasons": "unknown",
+        "structure": "ai_observed",
+        "wearability": "unknown",
+        "main_visual_slots": "ai_observed",
+        "main_colors": "ai_observed",
+        "conflicts": "ai_observed",
+        "silhouette": "ai_observed",
+        "color_relation": "ai_observed",
+        "persona_evidence": "ai_observed"
+      },
+      "field_provenance": {
+        "axes": {
+          "source_file": "repairs-batch03-review/recipes-1.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": null
+        },
+        "expression": {
+          "source_file": "repairs-batch03-review/recipes-1.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "formality": {
+          "source_file": "repairs-batch03-review/recipes-1.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "layering": {
+          "source_file": "repairs-batch03-review/recipes-1.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "persona_scores": {
+          "source_file": "repairs-batch03-review/recipes-1.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "scenes": {
+          "source_file": "repairs-batch03-review/recipes-1.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": null
+        },
+        "seasons": {
+          "source_file": "repairs-batch03-review/recipes-1.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": null
+        },
+        "structure": {
+          "source_file": "repairs-batch03-review/recipes-1.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "wearability": {
+          "source_file": "repairs-batch03-review/recipes-1.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": null
+        },
+        "main_visual_slots": {
+          "source_file": "repairs-batch03-review/recipes-1.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "main_colors": {
+          "source_file": "repairs-batch03-review/recipes-1.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "conflicts": {
+          "source_file": "repairs-batch03-review/recipes-1.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "silhouette": {
+          "source_file": "repairs-batch03-review/recipes-1.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "color_relation": {
+          "source_file": "repairs-batch03-review/recipes-1.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "persona_evidence": {
+          "source_file": "repairs-batch03-review/recipes-1.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        }
+      }
+    },
+    {
+      "outfit_id": "outfit_iced_master_01__aw-repair-03",
+      "source_token": "o0031",
+      "status": "ai_candidate",
+      "record_fingerprint": "9823c01b9636a4603090b83972976b77c3f72c01dc3588f3c3ab4af0f9b6365f",
+      "asset_sha256": "fec4cbedab067fb9476d108d33fcf9c142db7ce7fe9cff7263fe749edde0634c",
+      "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/86a9039b88ee51b9fed78997.webp",
+      "source_kind": "codex_visual_review",
+      "evidence": "不透冰蓝长袖衬衫配同色宽裤、蓝包和银色尖头鞋，长线收净且主次清楚。",
+      "observations": {
+        "axes": {},
+        "expression": "easy",
+        "formality": "smart_casual",
+        "layering": 1,
+        "persona_scores": {
+          "iced": 0.86,
+          "loop": 0.58
+        },
+        "scenes": [
+          "daily"
+        ],
+        "seasons": [
+          "autumn"
+        ],
+        "structure": "pants",
+        "wearability": "everyday",
+        "main_visual_slots": [
+          "pants"
+        ],
+        "main_colors": [
+          "ice_blue",
+          "silver"
+        ],
+        "conflicts": null,
+        "silhouette": "reviewed_pants_composition",
+        "color_relation": "controlled_or_review_pending",
+        "persona_evidence": "不透冰蓝长袖衬衫配同色宽裤、蓝包和银色尖头鞋，长线收净且主次清楚。"
+      },
+      "confidence": 0.8,
+      "model": "current_codex_session",
+      "prompt_version": "aw-coverage-repair-native-v1",
+      "review_level": "individual_contact_sheet_judgment",
+      "evidence_scope": "nonblind_individual_visual_judgment",
+      "review_complete": true,
+      "field_status": {
+        "axes": "unknown",
+        "expression": "ai_observed",
+        "formality": "ai_observed",
+        "layering": "ai_observed",
+        "persona_scores": "ai_observed",
+        "scenes": "ai_observed",
+        "seasons": "ai_observed",
+        "structure": "ai_observed",
+        "wearability": "ai_observed",
+        "main_visual_slots": "ai_observed",
+        "main_colors": "ai_observed",
+        "conflicts": "unknown",
+        "silhouette": "ai_observed",
+        "color_relation": "ai_observed",
+        "persona_evidence": "ai_observed"
+      },
+      "field_provenance": {
+        "axes": {
+          "source_file": "repairs-batch03-review/recipes-1.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": null
+        },
+        "expression": {
+          "source_file": "repairs-batch03-review/recipes-1.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "formality": {
+          "source_file": "repairs-batch03-review/recipes-1.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "layering": {
+          "source_file": "repairs-batch03-review/recipes-1.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "persona_scores": {
+          "source_file": "repairs-batch03-review/recipes-1.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "scenes": {
+          "source_file": "repairs-batch03-review/recipes-1.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "seasons": {
+          "source_file": "repairs-batch03-review/recipes-1.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "structure": {
+          "source_file": "repairs-batch03-review/recipes-1.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "wearability": {
+          "source_file": "repairs-batch03-review/recipes-1.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "main_visual_slots": {
+          "source_file": "repairs-batch03-review/recipes-1.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "main_colors": {
+          "source_file": "repairs-batch03-review/recipes-1.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "conflicts": {
+          "source_file": "repairs-batch03-review/recipes-1.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": null
+        },
+        "silhouette": {
+          "source_file": "repairs-batch03-review/recipes-1.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "color_relation": {
+          "source_file": "repairs-batch03-review/recipes-1.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "persona_evidence": {
+          "source_file": "repairs-batch03-review/recipes-1.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        }
+      }
+    },
+    {
+      "outfit_id": "outfit_iced_master_11__aw-repair-03",
+      "source_token": "o0041",
+      "status": "ai_candidate",
+      "record_fingerprint": "a1d87dabc57a72cefaecf9aae20ecf2f72418b934768ff4b42b2990d8cb4157b",
+      "asset_sha256": "20cd65ea85735c8f5dafbee37e5d0bcdcc77defdea244141903d094cde43f3d1",
+      "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/7ba766882be1e56cf6659114.webp",
+      "source_kind": "codex_visual_review",
+      "evidence": "不透冰蓝衬衫配斜向光泽长裙和银色尖头鞋，黑包压住亮度；冷感来自长线与材质观感。",
+      "observations": {
+        "axes": {},
+        "expression": "typical",
+        "formality": "smart_casual",
+        "layering": 1,
+        "persona_scores": {
+          "iced": 0.84,
+          "flou": 0.62
+        },
+        "scenes": [
+          "daily"
+        ],
+        "seasons": [
+          "autumn"
+        ],
+        "structure": "skirt",
+        "wearability": "everyday",
+        "main_visual_slots": [
+          "skirt"
+        ],
+        "main_colors": [
+          "ice_blue",
+          "silver",
+          "black"
+        ],
+        "conflicts": null,
+        "silhouette": "reviewed_skirt_composition",
+        "color_relation": "controlled_or_review_pending",
+        "persona_evidence": "不透冰蓝衬衫配斜向光泽长裙和银色尖头鞋，黑包压住亮度；冷感来自长线与材质观感。"
+      },
+      "confidence": 0.8,
+      "model": "current_codex_session",
+      "prompt_version": "aw-coverage-repair-native-v1",
+      "review_level": "individual_contact_sheet_judgment",
+      "evidence_scope": "nonblind_individual_visual_judgment",
+      "review_complete": true,
+      "field_status": {
+        "axes": "unknown",
+        "expression": "ai_observed",
+        "formality": "ai_observed",
+        "layering": "ai_observed",
+        "persona_scores": "ai_observed",
+        "scenes": "ai_observed",
+        "seasons": "ai_observed",
+        "structure": "ai_observed",
+        "wearability": "ai_observed",
+        "main_visual_slots": "ai_observed",
+        "main_colors": "ai_observed",
+        "conflicts": "unknown",
+        "silhouette": "ai_observed",
+        "color_relation": "ai_observed",
+        "persona_evidence": "ai_observed"
+      },
+      "field_provenance": {
+        "axes": {
+          "source_file": "repairs-batch03-review/recipes-1.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": null
+        },
+        "expression": {
+          "source_file": "repairs-batch03-review/recipes-1.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "formality": {
+          "source_file": "repairs-batch03-review/recipes-1.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "layering": {
+          "source_file": "repairs-batch03-review/recipes-1.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "persona_scores": {
+          "source_file": "repairs-batch03-review/recipes-1.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "scenes": {
+          "source_file": "repairs-batch03-review/recipes-1.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "seasons": {
+          "source_file": "repairs-batch03-review/recipes-1.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "structure": {
+          "source_file": "repairs-batch03-review/recipes-1.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "wearability": {
+          "source_file": "repairs-batch03-review/recipes-1.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "main_visual_slots": {
+          "source_file": "repairs-batch03-review/recipes-1.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "main_colors": {
+          "source_file": "repairs-batch03-review/recipes-1.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "conflicts": {
+          "source_file": "repairs-batch03-review/recipes-1.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": null
+        },
+        "silhouette": {
+          "source_file": "repairs-batch03-review/recipes-1.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "color_relation": {
+          "source_file": "repairs-batch03-review/recipes-1.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "persona_evidence": {
+          "source_file": "repairs-batch03-review/recipes-1.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        }
+      }
+    },
+    {
+      "outfit_id": "outfit_iced_master_14__aw-repair-03",
+      "source_token": "o0044",
+      "status": "ai_candidate",
+      "record_fingerprint": "bfd35420389fea36083eb7bacdc0af1ff32c8b5e803ef419580545e108956393",
+      "asset_sha256": "222eed616ac39cd4dcee7f8fbd59a3141b0e5284ff1d4334916b191d9f554373",
+      "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/12d38db81fd026e02b862e8d.webp",
+      "source_kind": "codex_visual_review",
+      "evidence": "不透抽褶蓝衬衫配灰褐直中裙、长靴和蓝托特，色块安静，长度适合秋季日常。",
+      "observations": {
+        "axes": {},
+        "expression": "easy",
+        "formality": "smart_casual",
+        "layering": 1,
+        "persona_scores": {
+          "iced": 0.78,
+          "mute": 0.72,
+          "heir": 0.55
+        },
+        "scenes": [
+          "daily"
+        ],
+        "seasons": [
+          "autumn"
+        ],
+        "structure": "skirt",
+        "wearability": "everyday",
+        "main_visual_slots": [
+          "skirt"
+        ],
+        "main_colors": [
+          "ice_blue",
+          "taupe"
+        ],
+        "conflicts": null,
+        "silhouette": "reviewed_skirt_composition",
+        "color_relation": "controlled_or_review_pending",
+        "persona_evidence": "不透抽褶蓝衬衫配灰褐直中裙、长靴和蓝托特，色块安静，长度适合秋季日常。"
+      },
+      "confidence": 0.8,
+      "model": "current_codex_session",
+      "prompt_version": "aw-coverage-repair-native-v1",
+      "review_level": "individual_contact_sheet_judgment",
+      "evidence_scope": "nonblind_individual_visual_judgment",
+      "review_complete": true,
+      "field_status": {
+        "axes": "unknown",
+        "expression": "ai_observed",
+        "formality": "ai_observed",
+        "layering": "ai_observed",
+        "persona_scores": "ai_observed",
+        "scenes": "ai_observed",
+        "seasons": "ai_observed",
+        "structure": "ai_observed",
+        "wearability": "ai_observed",
+        "main_visual_slots": "ai_observed",
+        "main_colors": "ai_observed",
+        "conflicts": "unknown",
+        "silhouette": "ai_observed",
+        "color_relation": "ai_observed",
+        "persona_evidence": "ai_observed"
+      },
+      "field_provenance": {
+        "axes": {
+          "source_file": "repairs-batch03-review/recipes-1.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": null
+        },
+        "expression": {
+          "source_file": "repairs-batch03-review/recipes-1.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "formality": {
+          "source_file": "repairs-batch03-review/recipes-1.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "layering": {
+          "source_file": "repairs-batch03-review/recipes-1.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "persona_scores": {
+          "source_file": "repairs-batch03-review/recipes-1.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "scenes": {
+          "source_file": "repairs-batch03-review/recipes-1.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "seasons": {
+          "source_file": "repairs-batch03-review/recipes-1.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "structure": {
+          "source_file": "repairs-batch03-review/recipes-1.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "wearability": {
+          "source_file": "repairs-batch03-review/recipes-1.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "main_visual_slots": {
+          "source_file": "repairs-batch03-review/recipes-1.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "main_colors": {
+          "source_file": "repairs-batch03-review/recipes-1.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "conflicts": {
+          "source_file": "repairs-batch03-review/recipes-1.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": null
+        },
+        "silhouette": {
+          "source_file": "repairs-batch03-review/recipes-1.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "color_relation": {
+          "source_file": "repairs-batch03-review/recipes-1.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "persona_evidence": {
+          "source_file": "repairs-batch03-review/recipes-1.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        }
+      }
+    },
+    {
+      "outfit_id": "outfit_iced_master_24__aw-repair-03",
+      "source_token": "o0054",
+      "status": "needs_review",
+      "record_fingerprint": "7b7fafaed3123e727ae2f4fe0dbfa2ec58fdf0117dd2e0bb4993bb1f3e1d1604",
+      "asset_sha256": "67e164b44ee89e950b1c2f00944afd30d39c99c6e2189f73c32d7c7a4cbc7010",
+      "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/b6b2eeb5dcadae24335c9dfe.webp",
+      "source_kind": "codex_visual_review",
+      "evidence": "覆盖已修复，但抽褶蓬袖衬衫与合体西装外套的袖量没有穿着证据。",
+      "observations": {
+        "axes": {},
+        "expression": "easy",
+        "formality": "smart_casual",
+        "layering": 2,
+        "persona_scores": {
+          "iced": 0.65,
+          "heir": 0.58
+        },
+        "scenes": null,
+        "seasons": null,
+        "structure": "pants",
+        "wearability": null,
+        "main_visual_slots": [
+          "pants"
+        ],
+        "main_colors": [
+          "ice_blue",
+          "taupe",
+          "denim_blue"
+        ],
+        "conflicts": [
+          "outer_inner_volume_unverified"
+        ],
+        "silhouette": "reviewed_pants_composition",
+        "color_relation": "controlled_or_review_pending",
+        "persona_evidence": "覆盖已修复，但抽褶蓬袖衬衫与合体西装外套的袖量没有穿着证据。"
+      },
+      "confidence": 0.8,
+      "model": "current_codex_session",
+      "prompt_version": "aw-coverage-repair-native-v1",
+      "review_level": "individual_contact_sheet_judgment",
+      "evidence_scope": "nonblind_individual_visual_judgment",
+      "review_complete": true,
+      "field_status": {
+        "axes": "unknown",
+        "expression": "ai_observed",
+        "formality": "ai_observed",
+        "layering": "ai_observed",
+        "persona_scores": "ai_observed",
+        "scenes": "unknown",
+        "seasons": "unknown",
+        "structure": "ai_observed",
+        "wearability": "unknown",
+        "main_visual_slots": "ai_observed",
+        "main_colors": "ai_observed",
+        "conflicts": "ai_observed",
+        "silhouette": "ai_observed",
+        "color_relation": "ai_observed",
+        "persona_evidence": "ai_observed"
+      },
+      "field_provenance": {
+        "axes": {
+          "source_file": "repairs-batch03-review/recipes-1.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": null
+        },
+        "expression": {
+          "source_file": "repairs-batch03-review/recipes-1.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "formality": {
+          "source_file": "repairs-batch03-review/recipes-1.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "layering": {
+          "source_file": "repairs-batch03-review/recipes-1.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "persona_scores": {
+          "source_file": "repairs-batch03-review/recipes-1.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "scenes": {
+          "source_file": "repairs-batch03-review/recipes-1.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": null
+        },
+        "seasons": {
+          "source_file": "repairs-batch03-review/recipes-1.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": null
+        },
+        "structure": {
+          "source_file": "repairs-batch03-review/recipes-1.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "wearability": {
+          "source_file": "repairs-batch03-review/recipes-1.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": null
+        },
+        "main_visual_slots": {
+          "source_file": "repairs-batch03-review/recipes-1.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "main_colors": {
+          "source_file": "repairs-batch03-review/recipes-1.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "conflicts": {
+          "source_file": "repairs-batch03-review/recipes-1.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "silhouette": {
+          "source_file": "repairs-batch03-review/recipes-1.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "color_relation": {
+          "source_file": "repairs-batch03-review/recipes-1.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "persona_evidence": {
+          "source_file": "repairs-batch03-review/recipes-1.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        }
+      }
+    },
+    {
+      "outfit_id": "outfit_melt_master_05__aw-repair-03",
+      "source_token": "o0123",
+      "status": "ai_candidate",
+      "record_fingerprint": "ffe853e31d9d5ab97cf71d3504464b18d85fcb8346c5348888c1e418c30acd84",
+      "asset_sha256": "5cc43f8659ca8108d275be5f163571979bcb007c0188e94750ccefaa7a3eb485",
+      "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/7a264901e942170c90d71e37.webp",
+      "source_kind": "codex_visual_review",
+      "evidence": "不透抽褶蓝衬衫配奶油软裤，花纱包为小面积浪漫点，酒红玛丽珍鞋稳定下盘。",
+      "observations": {
+        "axes": {},
+        "expression": "easy",
+        "formality": "smart_casual",
+        "layering": 1,
+        "persona_scores": {
+          "melt": 0.76,
+          "ease": 0.68,
+          "flou": 0.62
+        },
+        "scenes": [
+          "daily"
+        ],
+        "seasons": [
+          "autumn"
+        ],
+        "structure": "pants",
+        "wearability": "everyday",
+        "main_visual_slots": [
+          "pants"
+        ],
+        "main_colors": [
+          "ice_blue",
+          "ivory",
+          "pale_pink"
+        ],
+        "conflicts": null,
+        "silhouette": "reviewed_pants_composition",
+        "color_relation": "controlled_or_review_pending",
+        "persona_evidence": "不透抽褶蓝衬衫配奶油软裤，花纱包为小面积浪漫点，酒红玛丽珍鞋稳定下盘。"
+      },
+      "confidence": 0.8,
+      "model": "current_codex_session",
+      "prompt_version": "aw-coverage-repair-native-v1",
+      "review_level": "individual_contact_sheet_judgment",
+      "evidence_scope": "nonblind_individual_visual_judgment",
+      "review_complete": true,
+      "field_status": {
+        "axes": "unknown",
+        "expression": "ai_observed",
+        "formality": "ai_observed",
+        "layering": "ai_observed",
+        "persona_scores": "ai_observed",
+        "scenes": "ai_observed",
+        "seasons": "ai_observed",
+        "structure": "ai_observed",
+        "wearability": "ai_observed",
+        "main_visual_slots": "ai_observed",
+        "main_colors": "ai_observed",
+        "conflicts": "unknown",
+        "silhouette": "ai_observed",
+        "color_relation": "ai_observed",
+        "persona_evidence": "ai_observed"
+      },
+      "field_provenance": {
+        "axes": {
+          "source_file": "repairs-batch03-review/recipes-1.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": null
+        },
+        "expression": {
+          "source_file": "repairs-batch03-review/recipes-1.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "formality": {
+          "source_file": "repairs-batch03-review/recipes-1.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "layering": {
+          "source_file": "repairs-batch03-review/recipes-1.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "persona_scores": {
+          "source_file": "repairs-batch03-review/recipes-1.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "scenes": {
+          "source_file": "repairs-batch03-review/recipes-1.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "seasons": {
+          "source_file": "repairs-batch03-review/recipes-1.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "structure": {
+          "source_file": "repairs-batch03-review/recipes-1.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "wearability": {
+          "source_file": "repairs-batch03-review/recipes-1.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "main_visual_slots": {
+          "source_file": "repairs-batch03-review/recipes-1.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "main_colors": {
+          "source_file": "repairs-batch03-review/recipes-1.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "conflicts": {
+          "source_file": "repairs-batch03-review/recipes-1.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": null
+        },
+        "silhouette": {
+          "source_file": "repairs-batch03-review/recipes-1.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "color_relation": {
+          "source_file": "repairs-batch03-review/recipes-1.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "persona_evidence": {
+          "source_file": "repairs-batch03-review/recipes-1.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        }
+      }
+    },
+    {
+      "outfit_id": "outfit_melt_master_16__aw-repair-03",
+      "source_token": "o0134",
+      "status": "needs_review",
+      "record_fingerprint": "f94ad14aa67926527aea775d8614cfce3a2b9d0a11516ed2337d772557defc3f",
+      "asset_sha256": "a27b2e111786b645ec4a2520b2014d7dc32b2574e7468954ca0c776a4c1bf8f9",
+      "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/5a92a28179b23ee8d2cb730e.webp",
+      "source_kind": "codex_visual_review",
+      "evidence": "不透粉针织已替换，但花纱裙、珍珠软包和花饰鞋同时为焦点，不进默认日常。",
+      "observations": {
+        "axes": {},
+        "expression": "typical",
+        "formality": "smart_casual",
+        "layering": 1,
+        "persona_scores": {
+          "melt": 0.7,
+          "flou": 0.68
+        },
+        "scenes": null,
+        "seasons": null,
+        "structure": "skirt",
+        "wearability": null,
+        "main_visual_slots": [
+          "skirt"
+        ],
+        "main_colors": [
+          "pale_pink",
+          "ivory",
+          "sage"
+        ],
+        "conflicts": [
+          "multiple_focal_competition"
+        ],
+        "silhouette": "reviewed_skirt_composition",
+        "color_relation": "controlled_or_review_pending",
+        "persona_evidence": "不透粉针织已替换，但花纱裙、珍珠软包和花饰鞋同时为焦点，不进默认日常。"
+      },
+      "confidence": 0.8,
+      "model": "current_codex_session",
+      "prompt_version": "aw-coverage-repair-native-v1",
+      "review_level": "individual_contact_sheet_judgment",
+      "evidence_scope": "nonblind_individual_visual_judgment",
+      "review_complete": true,
+      "field_status": {
+        "axes": "unknown",
+        "expression": "ai_observed",
+        "formality": "ai_observed",
+        "layering": "ai_observed",
+        "persona_scores": "ai_observed",
+        "scenes": "unknown",
+        "seasons": "unknown",
+        "structure": "ai_observed",
+        "wearability": "unknown",
+        "main_visual_slots": "ai_observed",
+        "main_colors": "ai_observed",
+        "conflicts": "ai_observed",
+        "silhouette": "ai_observed",
+        "color_relation": "ai_observed",
+        "persona_evidence": "ai_observed"
+      },
+      "field_provenance": {
+        "axes": {
+          "source_file": "repairs-batch03-review/recipes-2.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": null
+        },
+        "expression": {
+          "source_file": "repairs-batch03-review/recipes-2.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "formality": {
+          "source_file": "repairs-batch03-review/recipes-2.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "layering": {
+          "source_file": "repairs-batch03-review/recipes-2.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "persona_scores": {
+          "source_file": "repairs-batch03-review/recipes-2.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "scenes": {
+          "source_file": "repairs-batch03-review/recipes-2.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": null
+        },
+        "seasons": {
+          "source_file": "repairs-batch03-review/recipes-2.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": null
+        },
+        "structure": {
+          "source_file": "repairs-batch03-review/recipes-2.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "wearability": {
+          "source_file": "repairs-batch03-review/recipes-2.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": null
+        },
+        "main_visual_slots": {
+          "source_file": "repairs-batch03-review/recipes-2.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "main_colors": {
+          "source_file": "repairs-batch03-review/recipes-2.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "conflicts": {
+          "source_file": "repairs-batch03-review/recipes-2.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "silhouette": {
+          "source_file": "repairs-batch03-review/recipes-2.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "color_relation": {
+          "source_file": "repairs-batch03-review/recipes-2.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "persona_evidence": {
+          "source_file": "repairs-batch03-review/recipes-2.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        }
+      }
+    },
+    {
+      "outfit_id": "outfit_flou_master_03__aw-repair-03",
+      "source_token": "o0181",
+      "status": "ai_candidate",
+      "record_fingerprint": "e387607590542c35a26ef8ecabb5a9c94c7291155f0b76fbec7be9327a71ac49",
+      "asset_sha256": "9fca772c6b21972fc06d5c6820b3abd33221df4773d710380857e5c015d13c13",
+      "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/ec9690b7bdb490caadd4def5.webp",
+      "source_kind": "codex_visual_review",
+      "evidence": "不透抽褶蓝衬衫配粉白软裤，花纱包和酒红玛丽珍鞋体量受控，柔软圆线清楚。",
+      "observations": {
+        "axes": {},
+        "expression": "easy",
+        "formality": "smart_casual",
+        "layering": 1,
+        "persona_scores": {
+          "melt": 0.8,
+          "flou": 0.72,
+          "ease": 0.58
+        },
+        "scenes": [
+          "daily"
+        ],
+        "seasons": [
+          "autumn"
+        ],
+        "structure": "pants",
+        "wearability": "everyday",
+        "main_visual_slots": [
+          "pants"
+        ],
+        "main_colors": [
+          "ice_blue",
+          "pale_pink",
+          "ivory"
+        ],
+        "conflicts": null,
+        "silhouette": "reviewed_pants_composition",
+        "color_relation": "controlled_or_review_pending",
+        "persona_evidence": "不透抽褶蓝衬衫配粉白软裤，花纱包和酒红玛丽珍鞋体量受控，柔软圆线清楚。"
+      },
+      "confidence": 0.8,
+      "model": "current_codex_session",
+      "prompt_version": "aw-coverage-repair-native-v1",
+      "review_level": "individual_contact_sheet_judgment",
+      "evidence_scope": "nonblind_individual_visual_judgment",
+      "review_complete": true,
+      "field_status": {
+        "axes": "unknown",
+        "expression": "ai_observed",
+        "formality": "ai_observed",
+        "layering": "ai_observed",
+        "persona_scores": "ai_observed",
+        "scenes": "ai_observed",
+        "seasons": "ai_observed",
+        "structure": "ai_observed",
+        "wearability": "ai_observed",
+        "main_visual_slots": "ai_observed",
+        "main_colors": "ai_observed",
+        "conflicts": "unknown",
+        "silhouette": "ai_observed",
+        "color_relation": "ai_observed",
+        "persona_evidence": "ai_observed"
+      },
+      "field_provenance": {
+        "axes": {
+          "source_file": "repairs-batch03-review/recipes-2.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": null
+        },
+        "expression": {
+          "source_file": "repairs-batch03-review/recipes-2.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "formality": {
+          "source_file": "repairs-batch03-review/recipes-2.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "layering": {
+          "source_file": "repairs-batch03-review/recipes-2.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "persona_scores": {
+          "source_file": "repairs-batch03-review/recipes-2.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "scenes": {
+          "source_file": "repairs-batch03-review/recipes-2.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "seasons": {
+          "source_file": "repairs-batch03-review/recipes-2.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "structure": {
+          "source_file": "repairs-batch03-review/recipes-2.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "wearability": {
+          "source_file": "repairs-batch03-review/recipes-2.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "main_visual_slots": {
+          "source_file": "repairs-batch03-review/recipes-2.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "main_colors": {
+          "source_file": "repairs-batch03-review/recipes-2.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "conflicts": {
+          "source_file": "repairs-batch03-review/recipes-2.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": null
+        },
+        "silhouette": {
+          "source_file": "repairs-batch03-review/recipes-2.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "color_relation": {
+          "source_file": "repairs-batch03-review/recipes-2.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "persona_evidence": {
+          "source_file": "repairs-batch03-review/recipes-2.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        }
+      }
+    },
+    {
+      "outfit_id": "outfit_flou_master_08__aw-repair-03",
+      "source_token": "o0186",
+      "status": "ai_candidate",
+      "record_fingerprint": "93d54edf8a264a4607b769661037ffb273a247e53159eb83ef9163a1c1e0d57c",
+      "asset_sha256": "1ec6d22c5e5b58988d7d6e189482abf75ad21700367853ee1cb04c123ebae038",
+      "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/d69a1a942e1406c242b78dbb.webp",
+      "source_kind": "codex_visual_review",
+      "evidence": "不透冰蓝衬衫、锥裤、蓝低跟鞋和奶油包构成清楚同类色，覆盖与主次均成立。",
+      "observations": {
+        "axes": {},
+        "expression": "easy",
+        "formality": "smart_casual",
+        "layering": 1,
+        "persona_scores": {
+          "iced": 0.88,
+          "loop": 0.62,
+          "mute": 0.58
+        },
+        "scenes": [
+          "daily"
+        ],
+        "seasons": [
+          "autumn"
+        ],
+        "structure": "pants",
+        "wearability": "everyday",
+        "main_visual_slots": [
+          "pants"
+        ],
+        "main_colors": [
+          "ice_blue",
+          "ivory"
+        ],
+        "conflicts": null,
+        "silhouette": "reviewed_pants_composition",
+        "color_relation": "controlled_or_review_pending",
+        "persona_evidence": "不透冰蓝衬衫、锥裤、蓝低跟鞋和奶油包构成清楚同类色，覆盖与主次均成立。"
+      },
+      "confidence": 0.8,
+      "model": "current_codex_session",
+      "prompt_version": "aw-coverage-repair-native-v1",
+      "review_level": "individual_contact_sheet_judgment",
+      "evidence_scope": "nonblind_individual_visual_judgment",
+      "review_complete": true,
+      "field_status": {
+        "axes": "unknown",
+        "expression": "ai_observed",
+        "formality": "ai_observed",
+        "layering": "ai_observed",
+        "persona_scores": "ai_observed",
+        "scenes": "ai_observed",
+        "seasons": "ai_observed",
+        "structure": "ai_observed",
+        "wearability": "ai_observed",
+        "main_visual_slots": "ai_observed",
+        "main_colors": "ai_observed",
+        "conflicts": "unknown",
+        "silhouette": "ai_observed",
+        "color_relation": "ai_observed",
+        "persona_evidence": "ai_observed"
+      },
+      "field_provenance": {
+        "axes": {
+          "source_file": "repairs-batch03-review/recipes-2.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": null
+        },
+        "expression": {
+          "source_file": "repairs-batch03-review/recipes-2.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "formality": {
+          "source_file": "repairs-batch03-review/recipes-2.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "layering": {
+          "source_file": "repairs-batch03-review/recipes-2.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "persona_scores": {
+          "source_file": "repairs-batch03-review/recipes-2.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "scenes": {
+          "source_file": "repairs-batch03-review/recipes-2.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "seasons": {
+          "source_file": "repairs-batch03-review/recipes-2.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "structure": {
+          "source_file": "repairs-batch03-review/recipes-2.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "wearability": {
+          "source_file": "repairs-batch03-review/recipes-2.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "main_visual_slots": {
+          "source_file": "repairs-batch03-review/recipes-2.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "main_colors": {
+          "source_file": "repairs-batch03-review/recipes-2.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "conflicts": {
+          "source_file": "repairs-batch03-review/recipes-2.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": null
+        },
+        "silhouette": {
+          "source_file": "repairs-batch03-review/recipes-2.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "color_relation": {
+          "source_file": "repairs-batch03-review/recipes-2.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "persona_evidence": {
+          "source_file": "repairs-batch03-review/recipes-2.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        }
+      }
+    },
+    {
+      "outfit_id": "outfit_bolt_master_12__aw-repair-03",
+      "source_token": "o0279",
+      "status": "needs_review",
+      "record_fingerprint": "65c3d65096a680a175e7fddafb2922e7590a75eca62683286e94efe8d7cf905a",
+      "asset_sha256": "2f57857da4c4fb76a410a9a4910e0bddf98596808e13598c4f2dfcf6f450343e",
+      "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/0b08b6ae4b6922c9ab12064a.webp",
+      "source_kind": "codex_visual_review",
+      "evidence": "蓝抽褶衬衫与奶油 A 裙协调，但与 o0756 主衣鞋结构近似，只换包不能算独立供给。",
+      "observations": {
+        "axes": {},
+        "expression": "easy",
+        "formality": "smart_casual",
+        "layering": 1,
+        "persona_scores": {
+          "flou": 0.7,
+          "heir": 0.62
+        },
+        "scenes": null,
+        "seasons": null,
+        "structure": "skirt",
+        "wearability": null,
+        "main_visual_slots": [
+          "skirt"
+        ],
+        "main_colors": [
+          "ice_blue",
+          "ivory",
+          "burgundy"
+        ],
+        "conflicts": [
+          "near_duplicate_recomposition"
+        ],
+        "silhouette": "reviewed_skirt_composition",
+        "color_relation": "controlled_or_review_pending",
+        "persona_evidence": "蓝抽褶衬衫与奶油 A 裙协调，但与 o0756 主衣鞋结构近似，只换包不能算独立供给。"
+      },
+      "confidence": 0.8,
+      "model": "current_codex_session",
+      "prompt_version": "aw-coverage-repair-native-v1",
+      "review_level": "individual_contact_sheet_judgment",
+      "evidence_scope": "nonblind_individual_visual_judgment",
+      "review_complete": true,
+      "field_status": {
+        "axes": "unknown",
+        "expression": "ai_observed",
+        "formality": "ai_observed",
+        "layering": "ai_observed",
+        "persona_scores": "ai_observed",
+        "scenes": "unknown",
+        "seasons": "unknown",
+        "structure": "ai_observed",
+        "wearability": "unknown",
+        "main_visual_slots": "ai_observed",
+        "main_colors": "ai_observed",
+        "conflicts": "ai_observed",
+        "silhouette": "ai_observed",
+        "color_relation": "ai_observed",
+        "persona_evidence": "ai_observed"
+      },
+      "field_provenance": {
+        "axes": {
+          "source_file": "repairs-batch03-review/recipes-2.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": null
+        },
+        "expression": {
+          "source_file": "repairs-batch03-review/recipes-2.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "formality": {
+          "source_file": "repairs-batch03-review/recipes-2.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "layering": {
+          "source_file": "repairs-batch03-review/recipes-2.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "persona_scores": {
+          "source_file": "repairs-batch03-review/recipes-2.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "scenes": {
+          "source_file": "repairs-batch03-review/recipes-2.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": null
+        },
+        "seasons": {
+          "source_file": "repairs-batch03-review/recipes-2.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": null
+        },
+        "structure": {
+          "source_file": "repairs-batch03-review/recipes-2.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "wearability": {
+          "source_file": "repairs-batch03-review/recipes-2.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": null
+        },
+        "main_visual_slots": {
+          "source_file": "repairs-batch03-review/recipes-2.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "main_colors": {
+          "source_file": "repairs-batch03-review/recipes-2.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "conflicts": {
+          "source_file": "repairs-batch03-review/recipes-2.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "silhouette": {
+          "source_file": "repairs-batch03-review/recipes-2.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "color_relation": {
+          "source_file": "repairs-batch03-review/recipes-2.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "persona_evidence": {
+          "source_file": "repairs-batch03-review/recipes-2.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        }
+      }
+    },
+    {
+      "outfit_id": "outfit_noir_master_15__aw-repair-03",
+      "source_token": "o0396",
+      "status": "needs_review",
+      "record_fingerprint": "34b150809f29528975abe035e2d2c42172a9515c497e1091bef7913a372b0f89",
+      "asset_sha256": "d8712308696415cd1abed0ab00913da00da931ef991b5c5070b970b5df46c9b8",
+      "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/e0d8d9cade29ffd577a1387a.webp",
+      "source_kind": "codex_visual_review",
+      "evidence": "不透炭灰中裙已修复覆盖，但黑粉多带包仍与清简上下装竞争，须换素包。",
+      "observations": {
+        "axes": {},
+        "expression": "easy",
+        "formality": "smart_casual",
+        "layering": 1,
+        "persona_scores": {
+          "noir": 0.68,
+          "mute": 0.65
+        },
+        "scenes": null,
+        "seasons": null,
+        "structure": "skirt",
+        "wearability": null,
+        "main_visual_slots": [
+          "skirt"
+        ],
+        "main_colors": [
+          "charcoal",
+          "black",
+          "pale_pink"
+        ],
+        "conflicts": [
+          "accessory_language_competition"
+        ],
+        "silhouette": "reviewed_skirt_composition",
+        "color_relation": "controlled_or_review_pending",
+        "persona_evidence": "不透炭灰中裙已修复覆盖，但黑粉多带包仍与清简上下装竞争，须换素包。"
+      },
+      "confidence": 0.8,
+      "model": "current_codex_session",
+      "prompt_version": "aw-coverage-repair-native-v1",
+      "review_level": "individual_contact_sheet_judgment",
+      "evidence_scope": "nonblind_individual_visual_judgment",
+      "review_complete": true,
+      "field_status": {
+        "axes": "unknown",
+        "expression": "ai_observed",
+        "formality": "ai_observed",
+        "layering": "ai_observed",
+        "persona_scores": "ai_observed",
+        "scenes": "unknown",
+        "seasons": "unknown",
+        "structure": "ai_observed",
+        "wearability": "unknown",
+        "main_visual_slots": "ai_observed",
+        "main_colors": "ai_observed",
+        "conflicts": "ai_observed",
+        "silhouette": "ai_observed",
+        "color_relation": "ai_observed",
+        "persona_evidence": "ai_observed"
+      },
+      "field_provenance": {
+        "axes": {
+          "source_file": "repairs-batch03-review/recipes-2.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": null
+        },
+        "expression": {
+          "source_file": "repairs-batch03-review/recipes-2.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "formality": {
+          "source_file": "repairs-batch03-review/recipes-2.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "layering": {
+          "source_file": "repairs-batch03-review/recipes-2.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "persona_scores": {
+          "source_file": "repairs-batch03-review/recipes-2.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "scenes": {
+          "source_file": "repairs-batch03-review/recipes-2.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": null
+        },
+        "seasons": {
+          "source_file": "repairs-batch03-review/recipes-2.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": null
+        },
+        "structure": {
+          "source_file": "repairs-batch03-review/recipes-2.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "wearability": {
+          "source_file": "repairs-batch03-review/recipes-2.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": null
+        },
+        "main_visual_slots": {
+          "source_file": "repairs-batch03-review/recipes-2.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "main_colors": {
+          "source_file": "repairs-batch03-review/recipes-2.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "conflicts": {
+          "source_file": "repairs-batch03-review/recipes-2.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "silhouette": {
+          "source_file": "repairs-batch03-review/recipes-2.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "color_relation": {
+          "source_file": "repairs-batch03-review/recipes-2.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "persona_evidence": {
+          "source_file": "repairs-batch03-review/recipes-2.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        }
+      }
+    },
+    {
+      "outfit_id": "outfit_mute_master_06_v2__aw-repair-03",
+      "source_token": "o0480",
+      "status": "ai_candidate",
+      "record_fingerprint": "897e9d0b5e3f8e65e018ec409659874b5564d36e65fdc066bd7138cbef6d70c6",
+      "asset_sha256": "f3b0eb66b38ed73a9719088cc4f1000010dfcabd2ced921a62ccc21c170e310f",
+      "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/0dcae395325ff3555c363fd3.webp",
+      "source_kind": "codex_visual_review",
+      "evidence": "不透冰蓝衬衫与同色直裤组成收净长线，灰绿托特和米白后绊鞋低装饰。",
+      "observations": {
+        "axes": {},
+        "expression": "easy",
+        "formality": "smart_casual",
+        "layering": 1,
+        "persona_scores": {
+          "iced": 0.86,
+          "mute": 0.68,
+          "loop": 0.6
+        },
+        "scenes": [
+          "daily"
+        ],
+        "seasons": [
+          "autumn"
+        ],
+        "structure": "pants",
+        "wearability": "everyday",
+        "main_visual_slots": [
+          "pants"
+        ],
+        "main_colors": [
+          "ice_blue",
+          "sage",
+          "ivory"
+        ],
+        "conflicts": null,
+        "silhouette": "reviewed_pants_composition",
+        "color_relation": "controlled_or_review_pending",
+        "persona_evidence": "不透冰蓝衬衫与同色直裤组成收净长线，灰绿托特和米白后绊鞋低装饰。"
+      },
+      "confidence": 0.8,
+      "model": "current_codex_session",
+      "prompt_version": "aw-coverage-repair-native-v1",
+      "review_level": "individual_contact_sheet_judgment",
+      "evidence_scope": "nonblind_individual_visual_judgment",
+      "review_complete": true,
+      "field_status": {
+        "axes": "unknown",
+        "expression": "ai_observed",
+        "formality": "ai_observed",
+        "layering": "ai_observed",
+        "persona_scores": "ai_observed",
+        "scenes": "ai_observed",
+        "seasons": "ai_observed",
+        "structure": "ai_observed",
+        "wearability": "ai_observed",
+        "main_visual_slots": "ai_observed",
+        "main_colors": "ai_observed",
+        "conflicts": "unknown",
+        "silhouette": "ai_observed",
+        "color_relation": "ai_observed",
+        "persona_evidence": "ai_observed"
+      },
+      "field_provenance": {
+        "axes": {
+          "source_file": "repairs-batch03-review/recipes-2.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": null
+        },
+        "expression": {
+          "source_file": "repairs-batch03-review/recipes-2.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "formality": {
+          "source_file": "repairs-batch03-review/recipes-2.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "layering": {
+          "source_file": "repairs-batch03-review/recipes-2.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "persona_scores": {
+          "source_file": "repairs-batch03-review/recipes-2.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "scenes": {
+          "source_file": "repairs-batch03-review/recipes-2.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "seasons": {
+          "source_file": "repairs-batch03-review/recipes-2.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "structure": {
+          "source_file": "repairs-batch03-review/recipes-2.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "wearability": {
+          "source_file": "repairs-batch03-review/recipes-2.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "main_visual_slots": {
+          "source_file": "repairs-batch03-review/recipes-2.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "main_colors": {
+          "source_file": "repairs-batch03-review/recipes-2.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "conflicts": {
+          "source_file": "repairs-batch03-review/recipes-2.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": null
+        },
+        "silhouette": {
+          "source_file": "repairs-batch03-review/recipes-2.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "color_relation": {
+          "source_file": "repairs-batch03-review/recipes-2.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "persona_evidence": {
+          "source_file": "repairs-batch03-review/recipes-2.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        }
+      }
+    },
+    {
+      "outfit_id": "outfit_iced_master_02_v1__aw-repair-03",
+      "source_token": "o0516",
+      "status": "needs_review",
+      "record_fingerprint": "a9900d969dc90e88163738d5ef875f285e064cd90c5ea25d32e45316e7e1381e",
+      "asset_sha256": "907cb1994e7ba5b4b7f9a03af65f75e37863f9070700809fc55078b6c102ff3d",
+      "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/aff846e2757d71ef0296f514.webp",
+      "source_kind": "codex_visual_review",
+      "evidence": "成套本身清楚，但与 o0186 的冰蓝衬衫裤装、蓝鞋包几乎同构，不能作为独立新增。",
+      "observations": {
+        "axes": {},
+        "expression": "easy",
+        "formality": "smart_casual",
+        "layering": 1,
+        "persona_scores": {
+          "iced": 0.85,
+          "loop": 0.6
+        },
+        "scenes": null,
+        "seasons": null,
+        "structure": "pants",
+        "wearability": null,
+        "main_visual_slots": [
+          "pants"
+        ],
+        "main_colors": [
+          "ice_blue"
+        ],
+        "conflicts": [
+          "near_duplicate_recomposition"
+        ],
+        "silhouette": "reviewed_pants_composition",
+        "color_relation": "controlled_or_review_pending",
+        "persona_evidence": "成套本身清楚，但与 o0186 的冰蓝衬衫裤装、蓝鞋包几乎同构，不能作为独立新增。"
+      },
+      "confidence": 0.8,
+      "model": "current_codex_session",
+      "prompt_version": "aw-coverage-repair-native-v1",
+      "review_level": "individual_contact_sheet_judgment",
+      "evidence_scope": "nonblind_individual_visual_judgment",
+      "review_complete": true,
+      "field_status": {
+        "axes": "unknown",
+        "expression": "ai_observed",
+        "formality": "ai_observed",
+        "layering": "ai_observed",
+        "persona_scores": "ai_observed",
+        "scenes": "unknown",
+        "seasons": "unknown",
+        "structure": "ai_observed",
+        "wearability": "unknown",
+        "main_visual_slots": "ai_observed",
+        "main_colors": "ai_observed",
+        "conflicts": "ai_observed",
+        "silhouette": "ai_observed",
+        "color_relation": "ai_observed",
+        "persona_evidence": "ai_observed"
+      },
+      "field_provenance": {
+        "axes": {
+          "source_file": "repairs-batch03-review/recipes-3.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": null
+        },
+        "expression": {
+          "source_file": "repairs-batch03-review/recipes-3.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "formality": {
+          "source_file": "repairs-batch03-review/recipes-3.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "layering": {
+          "source_file": "repairs-batch03-review/recipes-3.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "persona_scores": {
+          "source_file": "repairs-batch03-review/recipes-3.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "scenes": {
+          "source_file": "repairs-batch03-review/recipes-3.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": null
+        },
+        "seasons": {
+          "source_file": "repairs-batch03-review/recipes-3.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": null
+        },
+        "structure": {
+          "source_file": "repairs-batch03-review/recipes-3.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "wearability": {
+          "source_file": "repairs-batch03-review/recipes-3.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": null
+        },
+        "main_visual_slots": {
+          "source_file": "repairs-batch03-review/recipes-3.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "main_colors": {
+          "source_file": "repairs-batch03-review/recipes-3.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "conflicts": {
+          "source_file": "repairs-batch03-review/recipes-3.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "silhouette": {
+          "source_file": "repairs-batch03-review/recipes-3.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "color_relation": {
+          "source_file": "repairs-batch03-review/recipes-3.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "persona_evidence": {
+          "source_file": "repairs-batch03-review/recipes-3.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        }
+      }
+    },
+    {
+      "outfit_id": "outfit_iced_master_07_v1__aw-repair-03",
+      "source_token": "o0526",
+      "status": "ai_candidate",
+      "record_fingerprint": "c4f89ee208fd2d3a701625db025a18c75dae3cc99dcd8c8d2c122bccfa534151",
+      "asset_sha256": "1e78c134543ab0ab895a59fc91463d1d83ad2d17fcb6836bbbbf85a43f7d698e",
+      "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/785625a8086aa2c21706394a.webp",
+      "source_kind": "codex_visual_review",
+      "evidence": "不透冰蓝衬衫配黑阔裤和黑托特，银尖头鞋形成小面积冷亮点，主次明确。",
+      "observations": {
+        "axes": {},
+        "expression": "easy",
+        "formality": "smart_casual",
+        "layering": 1,
+        "persona_scores": {
+          "iced": 0.82,
+          "mute": 0.74,
+          "noir": 0.55
+        },
+        "scenes": [
+          "daily"
+        ],
+        "seasons": [
+          "autumn"
+        ],
+        "structure": "pants",
+        "wearability": "everyday",
+        "main_visual_slots": [
+          "pants"
+        ],
+        "main_colors": [
+          "ice_blue",
+          "black",
+          "silver"
+        ],
+        "conflicts": null,
+        "silhouette": "reviewed_pants_composition",
+        "color_relation": "controlled_or_review_pending",
+        "persona_evidence": "不透冰蓝衬衫配黑阔裤和黑托特，银尖头鞋形成小面积冷亮点，主次明确。"
+      },
+      "confidence": 0.8,
+      "model": "current_codex_session",
+      "prompt_version": "aw-coverage-repair-native-v1",
+      "review_level": "individual_contact_sheet_judgment",
+      "evidence_scope": "nonblind_individual_visual_judgment",
+      "review_complete": true,
+      "field_status": {
+        "axes": "unknown",
+        "expression": "ai_observed",
+        "formality": "ai_observed",
+        "layering": "ai_observed",
+        "persona_scores": "ai_observed",
+        "scenes": "ai_observed",
+        "seasons": "ai_observed",
+        "structure": "ai_observed",
+        "wearability": "ai_observed",
+        "main_visual_slots": "ai_observed",
+        "main_colors": "ai_observed",
+        "conflicts": "unknown",
+        "silhouette": "ai_observed",
+        "color_relation": "ai_observed",
+        "persona_evidence": "ai_observed"
+      },
+      "field_provenance": {
+        "axes": {
+          "source_file": "repairs-batch03-review/recipes-3.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": null
+        },
+        "expression": {
+          "source_file": "repairs-batch03-review/recipes-3.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "formality": {
+          "source_file": "repairs-batch03-review/recipes-3.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "layering": {
+          "source_file": "repairs-batch03-review/recipes-3.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "persona_scores": {
+          "source_file": "repairs-batch03-review/recipes-3.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "scenes": {
+          "source_file": "repairs-batch03-review/recipes-3.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "seasons": {
+          "source_file": "repairs-batch03-review/recipes-3.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "structure": {
+          "source_file": "repairs-batch03-review/recipes-3.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "wearability": {
+          "source_file": "repairs-batch03-review/recipes-3.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "main_visual_slots": {
+          "source_file": "repairs-batch03-review/recipes-3.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "main_colors": {
+          "source_file": "repairs-batch03-review/recipes-3.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "conflicts": {
+          "source_file": "repairs-batch03-review/recipes-3.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": null
+        },
+        "silhouette": {
+          "source_file": "repairs-batch03-review/recipes-3.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "color_relation": {
+          "source_file": "repairs-batch03-review/recipes-3.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "persona_evidence": {
+          "source_file": "repairs-batch03-review/recipes-3.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        }
+      }
+    },
+    {
+      "outfit_id": "outfit_iced_master_12_v1__aw-repair-03",
+      "source_token": "o0536",
+      "status": "ai_candidate",
+      "record_fingerprint": "327f24ce312214ca06c890bad498b9566d113509b5750d9942bd32819214f84e",
+      "asset_sha256": "e98452e3fc00a967e9f49f08502354383eab632ba75fa8b007d7403a6e53588b",
+      "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/1cf21e643c4f4f994545e90e.webp",
+      "source_kind": "codex_visual_review",
+      "evidence": "不透冰蓝衬衫、蓝 A 裙、蓝包鞋同类色完整，衬衫直线和裙摆提供结构区别。",
+      "observations": {
+        "axes": {},
+        "expression": "easy",
+        "formality": "smart_casual",
+        "layering": 1,
+        "persona_scores": {
+          "iced": 0.88,
+          "heir": 0.6,
+          "loop": 0.58
+        },
+        "scenes": [
+          "daily"
+        ],
+        "seasons": [
+          "autumn"
+        ],
+        "structure": "skirt",
+        "wearability": "everyday",
+        "main_visual_slots": [
+          "skirt"
+        ],
+        "main_colors": [
+          "ice_blue"
+        ],
+        "conflicts": null,
+        "silhouette": "reviewed_skirt_composition",
+        "color_relation": "controlled_or_review_pending",
+        "persona_evidence": "不透冰蓝衬衫、蓝 A 裙、蓝包鞋同类色完整，衬衫直线和裙摆提供结构区别。"
+      },
+      "confidence": 0.8,
+      "model": "current_codex_session",
+      "prompt_version": "aw-coverage-repair-native-v1",
+      "review_level": "individual_contact_sheet_judgment",
+      "evidence_scope": "nonblind_individual_visual_judgment",
+      "review_complete": true,
+      "field_status": {
+        "axes": "unknown",
+        "expression": "ai_observed",
+        "formality": "ai_observed",
+        "layering": "ai_observed",
+        "persona_scores": "ai_observed",
+        "scenes": "ai_observed",
+        "seasons": "ai_observed",
+        "structure": "ai_observed",
+        "wearability": "ai_observed",
+        "main_visual_slots": "ai_observed",
+        "main_colors": "ai_observed",
+        "conflicts": "unknown",
+        "silhouette": "ai_observed",
+        "color_relation": "ai_observed",
+        "persona_evidence": "ai_observed"
+      },
+      "field_provenance": {
+        "axes": {
+          "source_file": "repairs-batch03-review/recipes-3.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": null
+        },
+        "expression": {
+          "source_file": "repairs-batch03-review/recipes-3.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "formality": {
+          "source_file": "repairs-batch03-review/recipes-3.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "layering": {
+          "source_file": "repairs-batch03-review/recipes-3.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "persona_scores": {
+          "source_file": "repairs-batch03-review/recipes-3.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "scenes": {
+          "source_file": "repairs-batch03-review/recipes-3.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "seasons": {
+          "source_file": "repairs-batch03-review/recipes-3.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "structure": {
+          "source_file": "repairs-batch03-review/recipes-3.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "wearability": {
+          "source_file": "repairs-batch03-review/recipes-3.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "main_visual_slots": {
+          "source_file": "repairs-batch03-review/recipes-3.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "main_colors": {
+          "source_file": "repairs-batch03-review/recipes-3.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "conflicts": {
+          "source_file": "repairs-batch03-review/recipes-3.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": null
+        },
+        "silhouette": {
+          "source_file": "repairs-batch03-review/recipes-3.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "color_relation": {
+          "source_file": "repairs-batch03-review/recipes-3.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "persona_evidence": {
+          "source_file": "repairs-batch03-review/recipes-3.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        }
+      }
+    },
+    {
+      "outfit_id": "outfit_melt_master_02_v1__aw-repair-03",
+      "source_token": "o0648",
+      "status": "ai_candidate",
+      "record_fingerprint": "c04972e25ef4d0af7f6e9a1404504a01f9661c1bd5e4b485ded54bee69cf2af3",
+      "asset_sha256": "0a0b5469cae1ef0d0d0428e6c454b1187f972a9ce7d93cae5c9ff53b0f6c5d21",
+      "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/43370fc9e423cf5736dacd2d.webp",
+      "source_kind": "codex_visual_review",
+      "evidence": "不透蓝抽褶衬衫配浅蓝阔裤，花纱包集中浪漫点，灰褐长靴提供秋季重量。",
+      "observations": {
+        "axes": {},
+        "expression": "typical",
+        "formality": "smart_casual",
+        "layering": 1,
+        "persona_scores": {
+          "flou": 0.74,
+          "melt": 0.64,
+          "ease": 0.58
+        },
+        "scenes": [
+          "daily"
+        ],
+        "seasons": [
+          "autumn"
+        ],
+        "structure": "pants",
+        "wearability": "everyday",
+        "main_visual_slots": [
+          "pants"
+        ],
+        "main_colors": [
+          "ice_blue",
+          "pale_pink",
+          "taupe"
+        ],
+        "conflicts": null,
+        "silhouette": "reviewed_pants_composition",
+        "color_relation": "controlled_or_review_pending",
+        "persona_evidence": "不透蓝抽褶衬衫配浅蓝阔裤，花纱包集中浪漫点，灰褐长靴提供秋季重量。"
+      },
+      "confidence": 0.8,
+      "model": "current_codex_session",
+      "prompt_version": "aw-coverage-repair-native-v1",
+      "review_level": "individual_contact_sheet_judgment",
+      "evidence_scope": "nonblind_individual_visual_judgment",
+      "review_complete": true,
+      "field_status": {
+        "axes": "unknown",
+        "expression": "ai_observed",
+        "formality": "ai_observed",
+        "layering": "ai_observed",
+        "persona_scores": "ai_observed",
+        "scenes": "ai_observed",
+        "seasons": "ai_observed",
+        "structure": "ai_observed",
+        "wearability": "ai_observed",
+        "main_visual_slots": "ai_observed",
+        "main_colors": "ai_observed",
+        "conflicts": "unknown",
+        "silhouette": "ai_observed",
+        "color_relation": "ai_observed",
+        "persona_evidence": "ai_observed"
+      },
+      "field_provenance": {
+        "axes": {
+          "source_file": "repairs-batch03-review/recipes-3.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": null
+        },
+        "expression": {
+          "source_file": "repairs-batch03-review/recipes-3.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "formality": {
+          "source_file": "repairs-batch03-review/recipes-3.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "layering": {
+          "source_file": "repairs-batch03-review/recipes-3.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "persona_scores": {
+          "source_file": "repairs-batch03-review/recipes-3.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "scenes": {
+          "source_file": "repairs-batch03-review/recipes-3.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "seasons": {
+          "source_file": "repairs-batch03-review/recipes-3.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "structure": {
+          "source_file": "repairs-batch03-review/recipes-3.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "wearability": {
+          "source_file": "repairs-batch03-review/recipes-3.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "main_visual_slots": {
+          "source_file": "repairs-batch03-review/recipes-3.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "main_colors": {
+          "source_file": "repairs-batch03-review/recipes-3.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "conflicts": {
+          "source_file": "repairs-batch03-review/recipes-3.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": null
+        },
+        "silhouette": {
+          "source_file": "repairs-batch03-review/recipes-3.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "color_relation": {
+          "source_file": "repairs-batch03-review/recipes-3.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "persona_evidence": {
+          "source_file": "repairs-batch03-review/recipes-3.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        }
+      }
+    },
+    {
+      "outfit_id": "outfit_melt_master_12_v1__aw-repair-03",
+      "source_token": "o0668",
+      "status": "ai_candidate",
+      "record_fingerprint": "3c344b3ae38640df96ea3f82bfbac746d4b4aa97ff1204512765eca8d94e92f0",
+      "asset_sha256": "924806c5f95842d5273185631228cea7eef887509f0ce06b51972709c3bb059b",
+      "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/e986eedddff4233c61d591bb.webp",
+      "source_kind": "codex_visual_review",
+      "evidence": "不透蓝抽褶衬衫配奶油褶裙和粉白运动鞋，花纱包与裙的柔软线条呼应但不遮盖主结构。",
+      "observations": {
+        "axes": {},
+        "expression": "easy",
+        "formality": "smart_casual",
+        "layering": 1,
+        "persona_scores": {
+          "melt": 0.8,
+          "flou": 0.7,
+          "ease": 0.55
+        },
+        "scenes": [
+          "daily"
+        ],
+        "seasons": [
+          "autumn"
+        ],
+        "structure": "skirt",
+        "wearability": "everyday",
+        "main_visual_slots": [
+          "skirt"
+        ],
+        "main_colors": [
+          "ice_blue",
+          "ivory",
+          "pale_pink"
+        ],
+        "conflicts": null,
+        "silhouette": "reviewed_skirt_composition",
+        "color_relation": "controlled_or_review_pending",
+        "persona_evidence": "不透蓝抽褶衬衫配奶油褶裙和粉白运动鞋，花纱包与裙的柔软线条呼应但不遮盖主结构。"
+      },
+      "confidence": 0.8,
+      "model": "current_codex_session",
+      "prompt_version": "aw-coverage-repair-native-v1",
+      "review_level": "individual_contact_sheet_judgment",
+      "evidence_scope": "nonblind_individual_visual_judgment",
+      "review_complete": true,
+      "field_status": {
+        "axes": "unknown",
+        "expression": "ai_observed",
+        "formality": "ai_observed",
+        "layering": "ai_observed",
+        "persona_scores": "ai_observed",
+        "scenes": "ai_observed",
+        "seasons": "ai_observed",
+        "structure": "ai_observed",
+        "wearability": "ai_observed",
+        "main_visual_slots": "ai_observed",
+        "main_colors": "ai_observed",
+        "conflicts": "unknown",
+        "silhouette": "ai_observed",
+        "color_relation": "ai_observed",
+        "persona_evidence": "ai_observed"
+      },
+      "field_provenance": {
+        "axes": {
+          "source_file": "repairs-batch03-review/recipes-3.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": null
+        },
+        "expression": {
+          "source_file": "repairs-batch03-review/recipes-3.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "formality": {
+          "source_file": "repairs-batch03-review/recipes-3.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "layering": {
+          "source_file": "repairs-batch03-review/recipes-3.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "persona_scores": {
+          "source_file": "repairs-batch03-review/recipes-3.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "scenes": {
+          "source_file": "repairs-batch03-review/recipes-3.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "seasons": {
+          "source_file": "repairs-batch03-review/recipes-3.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "structure": {
+          "source_file": "repairs-batch03-review/recipes-3.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "wearability": {
+          "source_file": "repairs-batch03-review/recipes-3.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "main_visual_slots": {
+          "source_file": "repairs-batch03-review/recipes-3.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "main_colors": {
+          "source_file": "repairs-batch03-review/recipes-3.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "conflicts": {
+          "source_file": "repairs-batch03-review/recipes-3.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": null
+        },
+        "silhouette": {
+          "source_file": "repairs-batch03-review/recipes-3.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "color_relation": {
+          "source_file": "repairs-batch03-review/recipes-3.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "persona_evidence": {
+          "source_file": "repairs-batch03-review/recipes-3.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        }
+      }
+    },
+    {
+      "outfit_id": "outfit_melt_master_13_v1__aw-repair-03",
+      "source_token": "o0670",
+      "status": "ai_candidate",
+      "record_fingerprint": "8781119cb50f35f5f4c99001738995ba4aa05097f360f4a93f36726d584b03e3",
+      "asset_sha256": "e6f44772664125f4db5a6d3305d9c90399486a5f551856523229c228ad27eb2e",
+      "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/334156591f7aeaefcb58e1ab.webp",
+      "source_kind": "codex_visual_review",
+      "evidence": "不透米白船领上衣配蓝灰直中裙、灰褐短靴和奶油包，纵线和色块克制。",
+      "observations": {
+        "axes": {},
+        "expression": "easy",
+        "formality": "smart_casual",
+        "layering": 1,
+        "persona_scores": {
+          "iced": 0.78,
+          "mute": 0.72,
+          "heir": 0.62
+        },
+        "scenes": [
+          "daily"
+        ],
+        "seasons": [
+          "autumn"
+        ],
+        "structure": "skirt",
+        "wearability": "everyday",
+        "main_visual_slots": [
+          "skirt"
+        ],
+        "main_colors": [
+          "ivory",
+          "blue_gray",
+          "taupe"
+        ],
+        "conflicts": null,
+        "silhouette": "reviewed_skirt_composition",
+        "color_relation": "controlled_or_review_pending",
+        "persona_evidence": "不透米白船领上衣配蓝灰直中裙、灰褐短靴和奶油包，纵线和色块克制。"
+      },
+      "confidence": 0.8,
+      "model": "current_codex_session",
+      "prompt_version": "aw-coverage-repair-native-v1",
+      "review_level": "individual_contact_sheet_judgment",
+      "evidence_scope": "nonblind_individual_visual_judgment",
+      "review_complete": true,
+      "field_status": {
+        "axes": "unknown",
+        "expression": "ai_observed",
+        "formality": "ai_observed",
+        "layering": "ai_observed",
+        "persona_scores": "ai_observed",
+        "scenes": "ai_observed",
+        "seasons": "ai_observed",
+        "structure": "ai_observed",
+        "wearability": "ai_observed",
+        "main_visual_slots": "ai_observed",
+        "main_colors": "ai_observed",
+        "conflicts": "unknown",
+        "silhouette": "ai_observed",
+        "color_relation": "ai_observed",
+        "persona_evidence": "ai_observed"
+      },
+      "field_provenance": {
+        "axes": {
+          "source_file": "repairs-batch03-review/recipes-3.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": null
+        },
+        "expression": {
+          "source_file": "repairs-batch03-review/recipes-3.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "formality": {
+          "source_file": "repairs-batch03-review/recipes-3.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "layering": {
+          "source_file": "repairs-batch03-review/recipes-3.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "persona_scores": {
+          "source_file": "repairs-batch03-review/recipes-3.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "scenes": {
+          "source_file": "repairs-batch03-review/recipes-3.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "seasons": {
+          "source_file": "repairs-batch03-review/recipes-3.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "structure": {
+          "source_file": "repairs-batch03-review/recipes-3.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "wearability": {
+          "source_file": "repairs-batch03-review/recipes-3.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "main_visual_slots": {
+          "source_file": "repairs-batch03-review/recipes-3.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "main_colors": {
+          "source_file": "repairs-batch03-review/recipes-3.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "conflicts": {
+          "source_file": "repairs-batch03-review/recipes-3.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": null
+        },
+        "silhouette": {
+          "source_file": "repairs-batch03-review/recipes-3.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "color_relation": {
+          "source_file": "repairs-batch03-review/recipes-3.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "persona_evidence": {
+          "source_file": "repairs-batch03-review/recipes-3.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        }
+      }
+    },
+    {
+      "outfit_id": "outfit_melt_master_17_v1__aw-repair-03",
+      "source_token": "o0677",
+      "status": "needs_review",
+      "record_fingerprint": "b1d53d76d9a56513671e5f0404de7908a7aedd3bb818aaf40048da5693c28bc9",
+      "asset_sha256": "98696559fc22e1e4fefbfdb470be7a8e8a6fcb4979a151cc802382ebed5b61b2",
+      "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/0caecb59d16dbe57a460c4f5.webp",
+      "source_kind": "codex_visual_review",
+      "evidence": "不透粉针织、花纱长裙、花饰鞋和粉软包仍然同时抢焦点。",
+      "observations": {
+        "axes": {},
+        "expression": "typical",
+        "formality": "smart_casual",
+        "layering": 1,
+        "persona_scores": {
+          "flou": 0.72,
+          "melt": 0.68
+        },
+        "scenes": null,
+        "seasons": null,
+        "structure": "skirt",
+        "wearability": null,
+        "main_visual_slots": [
+          "skirt"
+        ],
+        "main_colors": [
+          "pale_pink",
+          "ivory",
+          "sage"
+        ],
+        "conflicts": [
+          "multiple_focal_competition"
+        ],
+        "silhouette": "reviewed_skirt_composition",
+        "color_relation": "controlled_or_review_pending",
+        "persona_evidence": "不透粉针织、花纱长裙、花饰鞋和粉软包仍然同时抢焦点。"
+      },
+      "confidence": 0.8,
+      "model": "current_codex_session",
+      "prompt_version": "aw-coverage-repair-native-v1",
+      "review_level": "individual_contact_sheet_judgment",
+      "evidence_scope": "nonblind_individual_visual_judgment",
+      "review_complete": true,
+      "field_status": {
+        "axes": "unknown",
+        "expression": "ai_observed",
+        "formality": "ai_observed",
+        "layering": "ai_observed",
+        "persona_scores": "ai_observed",
+        "scenes": "unknown",
+        "seasons": "unknown",
+        "structure": "ai_observed",
+        "wearability": "unknown",
+        "main_visual_slots": "ai_observed",
+        "main_colors": "ai_observed",
+        "conflicts": "ai_observed",
+        "silhouette": "ai_observed",
+        "color_relation": "ai_observed",
+        "persona_evidence": "ai_observed"
+      },
+      "field_provenance": {
+        "axes": {
+          "source_file": "repairs-batch03-review/recipes-4.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": null
+        },
+        "expression": {
+          "source_file": "repairs-batch03-review/recipes-4.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "formality": {
+          "source_file": "repairs-batch03-review/recipes-4.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "layering": {
+          "source_file": "repairs-batch03-review/recipes-4.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "persona_scores": {
+          "source_file": "repairs-batch03-review/recipes-4.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "scenes": {
+          "source_file": "repairs-batch03-review/recipes-4.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": null
+        },
+        "seasons": {
+          "source_file": "repairs-batch03-review/recipes-4.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": null
+        },
+        "structure": {
+          "source_file": "repairs-batch03-review/recipes-4.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "wearability": {
+          "source_file": "repairs-batch03-review/recipes-4.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": null
+        },
+        "main_visual_slots": {
+          "source_file": "repairs-batch03-review/recipes-4.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "main_colors": {
+          "source_file": "repairs-batch03-review/recipes-4.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "conflicts": {
+          "source_file": "repairs-batch03-review/recipes-4.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "silhouette": {
+          "source_file": "repairs-batch03-review/recipes-4.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "color_relation": {
+          "source_file": "repairs-batch03-review/recipes-4.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "persona_evidence": {
+          "source_file": "repairs-batch03-review/recipes-4.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        }
+      }
+    },
+    {
+      "outfit_id": "outfit_flou_master_01_v1__aw-repair-03",
+      "source_token": "o0736",
+      "status": "needs_review",
+      "record_fingerprint": "2ec2c72d6b5b8a9da18f0df8c73e30e4ba7c45a476b122c988862815f4774b42",
+      "asset_sha256": "cf8c1d55d35d692ffdc6a75ef06938040a9db4a9d70ead0d7653f220c707b498",
+      "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/1e653476da975995679d5bff.webp",
+      "source_kind": "codex_visual_review",
+      "evidence": "覆盖已修复，蓝衬衫与奶油裤易穿，但酒红繁饰结构包成为不必要第二焦点。",
+      "observations": {
+        "axes": {},
+        "expression": "easy",
+        "formality": "smart_casual",
+        "layering": 1,
+        "persona_scores": {
+          "flou": 0.65,
+          "heir": 0.58
+        },
+        "scenes": null,
+        "seasons": null,
+        "structure": "pants",
+        "wearability": null,
+        "main_visual_slots": [
+          "pants"
+        ],
+        "main_colors": [
+          "ice_blue",
+          "ivory",
+          "burgundy"
+        ],
+        "conflicts": [
+          "accessory_language_competition"
+        ],
+        "silhouette": "reviewed_pants_composition",
+        "color_relation": "controlled_or_review_pending",
+        "persona_evidence": "覆盖已修复，蓝衬衫与奶油裤易穿，但酒红繁饰结构包成为不必要第二焦点。"
+      },
+      "confidence": 0.8,
+      "model": "current_codex_session",
+      "prompt_version": "aw-coverage-repair-native-v1",
+      "review_level": "individual_contact_sheet_judgment",
+      "evidence_scope": "nonblind_individual_visual_judgment",
+      "review_complete": true,
+      "field_status": {
+        "axes": "unknown",
+        "expression": "ai_observed",
+        "formality": "ai_observed",
+        "layering": "ai_observed",
+        "persona_scores": "ai_observed",
+        "scenes": "unknown",
+        "seasons": "unknown",
+        "structure": "ai_observed",
+        "wearability": "unknown",
+        "main_visual_slots": "ai_observed",
+        "main_colors": "ai_observed",
+        "conflicts": "ai_observed",
+        "silhouette": "ai_observed",
+        "color_relation": "ai_observed",
+        "persona_evidence": "ai_observed"
+      },
+      "field_provenance": {
+        "axes": {
+          "source_file": "repairs-batch03-review/recipes-4.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": null
+        },
+        "expression": {
+          "source_file": "repairs-batch03-review/recipes-4.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "formality": {
+          "source_file": "repairs-batch03-review/recipes-4.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "layering": {
+          "source_file": "repairs-batch03-review/recipes-4.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "persona_scores": {
+          "source_file": "repairs-batch03-review/recipes-4.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "scenes": {
+          "source_file": "repairs-batch03-review/recipes-4.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": null
+        },
+        "seasons": {
+          "source_file": "repairs-batch03-review/recipes-4.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": null
+        },
+        "structure": {
+          "source_file": "repairs-batch03-review/recipes-4.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "wearability": {
+          "source_file": "repairs-batch03-review/recipes-4.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": null
+        },
+        "main_visual_slots": {
+          "source_file": "repairs-batch03-review/recipes-4.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "main_colors": {
+          "source_file": "repairs-batch03-review/recipes-4.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "conflicts": {
+          "source_file": "repairs-batch03-review/recipes-4.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "silhouette": {
+          "source_file": "repairs-batch03-review/recipes-4.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "color_relation": {
+          "source_file": "repairs-batch03-review/recipes-4.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "persona_evidence": {
+          "source_file": "repairs-batch03-review/recipes-4.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        }
+      }
+    },
+    {
+      "outfit_id": "outfit_flou_master_06_v1__aw-repair-03",
+      "source_token": "o0746",
+      "status": "ai_candidate",
+      "record_fingerprint": "e0c301ce17e8895ef21a216fb9b200dcbe5ef20cf6bdbfe6316663f6e6944545",
+      "asset_sha256": "255f8a4bae828596fbfd1a459e9e264833bf35e1025ff3aceb288081079389e2",
+      "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/2f4284107f25ddc3261dbb7f.webp",
+      "source_kind": "codex_visual_review",
+      "evidence": "不透蓝抽褶衬衫配奶油软裤，蓝托特和灰褐长靴保持低装饰，松量有下装收束。",
+      "observations": {
+        "axes": {},
+        "expression": "easy",
+        "formality": "smart_casual",
+        "layering": 1,
+        "persona_scores": {
+          "ease": 0.76,
+          "flou": 0.68,
+          "loop": 0.62
+        },
+        "scenes": [
+          "daily"
+        ],
+        "seasons": [
+          "autumn"
+        ],
+        "structure": "pants",
+        "wearability": "everyday",
+        "main_visual_slots": [
+          "pants"
+        ],
+        "main_colors": [
+          "ice_blue",
+          "ivory",
+          "taupe"
+        ],
+        "conflicts": null,
+        "silhouette": "reviewed_pants_composition",
+        "color_relation": "controlled_or_review_pending",
+        "persona_evidence": "不透蓝抽褶衬衫配奶油软裤，蓝托特和灰褐长靴保持低装饰，松量有下装收束。"
+      },
+      "confidence": 0.8,
+      "model": "current_codex_session",
+      "prompt_version": "aw-coverage-repair-native-v1",
+      "review_level": "individual_contact_sheet_judgment",
+      "evidence_scope": "nonblind_individual_visual_judgment",
+      "review_complete": true,
+      "field_status": {
+        "axes": "unknown",
+        "expression": "ai_observed",
+        "formality": "ai_observed",
+        "layering": "ai_observed",
+        "persona_scores": "ai_observed",
+        "scenes": "ai_observed",
+        "seasons": "ai_observed",
+        "structure": "ai_observed",
+        "wearability": "ai_observed",
+        "main_visual_slots": "ai_observed",
+        "main_colors": "ai_observed",
+        "conflicts": "unknown",
+        "silhouette": "ai_observed",
+        "color_relation": "ai_observed",
+        "persona_evidence": "ai_observed"
+      },
+      "field_provenance": {
+        "axes": {
+          "source_file": "repairs-batch03-review/recipes-4.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": null
+        },
+        "expression": {
+          "source_file": "repairs-batch03-review/recipes-4.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "formality": {
+          "source_file": "repairs-batch03-review/recipes-4.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "layering": {
+          "source_file": "repairs-batch03-review/recipes-4.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "persona_scores": {
+          "source_file": "repairs-batch03-review/recipes-4.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "scenes": {
+          "source_file": "repairs-batch03-review/recipes-4.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "seasons": {
+          "source_file": "repairs-batch03-review/recipes-4.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "structure": {
+          "source_file": "repairs-batch03-review/recipes-4.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "wearability": {
+          "source_file": "repairs-batch03-review/recipes-4.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "main_visual_slots": {
+          "source_file": "repairs-batch03-review/recipes-4.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "main_colors": {
+          "source_file": "repairs-batch03-review/recipes-4.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "conflicts": {
+          "source_file": "repairs-batch03-review/recipes-4.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": null
+        },
+        "silhouette": {
+          "source_file": "repairs-batch03-review/recipes-4.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "color_relation": {
+          "source_file": "repairs-batch03-review/recipes-4.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "persona_evidence": {
+          "source_file": "repairs-batch03-review/recipes-4.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        }
+      }
+    },
+    {
+      "outfit_id": "outfit_flou_master_11_v1__aw-repair-03",
+      "source_token": "o0756",
+      "status": "ai_candidate",
+      "record_fingerprint": "7a9f81e7f465eb4f6b51ae439a3981a4c7820809050f942c262e9482b80f30eb",
+      "asset_sha256": "d6054beca4de2123ec25052cd8038bb7ce765a2469c1caa470fe72bcf006dbbf",
+      "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/b3d324e563a289ffd25519ad.webp",
+      "source_kind": "codex_visual_review",
+      "evidence": "不透蓝抽褶衬衫配奶油 A 裙，素包和圆头玛丽珍鞋让流动领袖成为唯一柔软焦点。",
+      "observations": {
+        "axes": {},
+        "expression": "easy",
+        "formality": "smart_casual",
+        "layering": 1,
+        "persona_scores": {
+          "flou": 0.74,
+          "heir": 0.64,
+          "melt": 0.6
+        },
+        "scenes": [
+          "daily"
+        ],
+        "seasons": [
+          "autumn"
+        ],
+        "structure": "skirt",
+        "wearability": "everyday",
+        "main_visual_slots": [
+          "skirt"
+        ],
+        "main_colors": [
+          "ice_blue",
+          "ivory",
+          "burgundy"
+        ],
+        "conflicts": null,
+        "silhouette": "reviewed_skirt_composition",
+        "color_relation": "controlled_or_review_pending",
+        "persona_evidence": "不透蓝抽褶衬衫配奶油 A 裙，素包和圆头玛丽珍鞋让流动领袖成为唯一柔软焦点。"
+      },
+      "confidence": 0.8,
+      "model": "current_codex_session",
+      "prompt_version": "aw-coverage-repair-native-v1",
+      "review_level": "individual_contact_sheet_judgment",
+      "evidence_scope": "nonblind_individual_visual_judgment",
+      "review_complete": true,
+      "field_status": {
+        "axes": "unknown",
+        "expression": "ai_observed",
+        "formality": "ai_observed",
+        "layering": "ai_observed",
+        "persona_scores": "ai_observed",
+        "scenes": "ai_observed",
+        "seasons": "ai_observed",
+        "structure": "ai_observed",
+        "wearability": "ai_observed",
+        "main_visual_slots": "ai_observed",
+        "main_colors": "ai_observed",
+        "conflicts": "unknown",
+        "silhouette": "ai_observed",
+        "color_relation": "ai_observed",
+        "persona_evidence": "ai_observed"
+      },
+      "field_provenance": {
+        "axes": {
+          "source_file": "repairs-batch03-review/recipes-4.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": null
+        },
+        "expression": {
+          "source_file": "repairs-batch03-review/recipes-4.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "formality": {
+          "source_file": "repairs-batch03-review/recipes-4.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "layering": {
+          "source_file": "repairs-batch03-review/recipes-4.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "persona_scores": {
+          "source_file": "repairs-batch03-review/recipes-4.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "scenes": {
+          "source_file": "repairs-batch03-review/recipes-4.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "seasons": {
+          "source_file": "repairs-batch03-review/recipes-4.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "structure": {
+          "source_file": "repairs-batch03-review/recipes-4.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "wearability": {
+          "source_file": "repairs-batch03-review/recipes-4.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "main_visual_slots": {
+          "source_file": "repairs-batch03-review/recipes-4.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "main_colors": {
+          "source_file": "repairs-batch03-review/recipes-4.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "conflicts": {
+          "source_file": "repairs-batch03-review/recipes-4.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": null
+        },
+        "silhouette": {
+          "source_file": "repairs-batch03-review/recipes-4.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "color_relation": {
+          "source_file": "repairs-batch03-review/recipes-4.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "persona_evidence": {
+          "source_file": "repairs-batch03-review/recipes-4.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        }
+      }
+    },
+    {
+      "outfit_id": "outfit_flou_master_17_v1__aw-repair-03",
+      "source_token": "o0766",
+      "status": "needs_review",
+      "record_fingerprint": "ba1a78ac8c468d65eadb8b01e740731bafeddc5cf3a934bf475b402485e60a8e",
+      "asset_sha256": "8d099430fe336e3ba4619cbad85266727ea678b1ebef10b94589927d1617b579",
+      "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/84fab80998f80d0509785ee4.webp",
+      "source_kind": "codex_visual_review",
+      "evidence": "覆盖已修复，但粉针织、花纱裙、透明蓝包和花饰鞋仍过度集中浪漫细节。",
+      "observations": {
+        "axes": {},
+        "expression": "typical",
+        "formality": "smart_casual",
+        "layering": 1,
+        "persona_scores": {
+          "flou": 0.72,
+          "melt": 0.62
+        },
+        "scenes": null,
+        "seasons": null,
+        "structure": "skirt",
+        "wearability": null,
+        "main_visual_slots": [
+          "skirt"
+        ],
+        "main_colors": [
+          "pale_pink",
+          "ivory",
+          "sage",
+          "ice_blue"
+        ],
+        "conflicts": [
+          "multiple_focal_competition"
+        ],
+        "silhouette": "reviewed_skirt_composition",
+        "color_relation": "controlled_or_review_pending",
+        "persona_evidence": "覆盖已修复，但粉针织、花纱裙、透明蓝包和花饰鞋仍过度集中浪漫细节。"
+      },
+      "confidence": 0.8,
+      "model": "current_codex_session",
+      "prompt_version": "aw-coverage-repair-native-v1",
+      "review_level": "individual_contact_sheet_judgment",
+      "evidence_scope": "nonblind_individual_visual_judgment",
+      "review_complete": true,
+      "field_status": {
+        "axes": "unknown",
+        "expression": "ai_observed",
+        "formality": "ai_observed",
+        "layering": "ai_observed",
+        "persona_scores": "ai_observed",
+        "scenes": "unknown",
+        "seasons": "unknown",
+        "structure": "ai_observed",
+        "wearability": "unknown",
+        "main_visual_slots": "ai_observed",
+        "main_colors": "ai_observed",
+        "conflicts": "ai_observed",
+        "silhouette": "ai_observed",
+        "color_relation": "ai_observed",
+        "persona_evidence": "ai_observed"
+      },
+      "field_provenance": {
+        "axes": {
+          "source_file": "repairs-batch03-review/recipes-4.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": null
+        },
+        "expression": {
+          "source_file": "repairs-batch03-review/recipes-4.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "formality": {
+          "source_file": "repairs-batch03-review/recipes-4.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "layering": {
+          "source_file": "repairs-batch03-review/recipes-4.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "persona_scores": {
+          "source_file": "repairs-batch03-review/recipes-4.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "scenes": {
+          "source_file": "repairs-batch03-review/recipes-4.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": null
+        },
+        "seasons": {
+          "source_file": "repairs-batch03-review/recipes-4.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": null
+        },
+        "structure": {
+          "source_file": "repairs-batch03-review/recipes-4.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "wearability": {
+          "source_file": "repairs-batch03-review/recipes-4.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": null
+        },
+        "main_visual_slots": {
+          "source_file": "repairs-batch03-review/recipes-4.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "main_colors": {
+          "source_file": "repairs-batch03-review/recipes-4.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "conflicts": {
+          "source_file": "repairs-batch03-review/recipes-4.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "silhouette": {
+          "source_file": "repairs-batch03-review/recipes-4.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "color_relation": {
+          "source_file": "repairs-batch03-review/recipes-4.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "persona_evidence": {
+          "source_file": "repairs-batch03-review/recipes-4.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        }
+      }
+    },
+    {
+      "outfit_id": "outfit_bolt_master_04_v2__aw-repair-03",
+      "source_token": "o0875",
+      "status": "ai_candidate",
+      "record_fingerprint": "2126b26e72c882d5d93f96a180936ed28a6cf68f3c7c80c05c87e046dde7f1c9",
+      "asset_sha256": "fc8db18df2349edac46a2eba4e5bfcb50aed1f6e96f045fa8f5142eb0d8c7909",
+      "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/0f36932397781e083bc92711.webp",
+      "source_kind": "codex_visual_review",
+      "evidence": "不透蓝抽褶衬衫与浅蓝阔裤形成长线，粉包只作小面积柔和点，长靴增加秋季重量。",
+      "observations": {
+        "axes": {},
+        "expression": "easy",
+        "formality": "smart_casual",
+        "layering": 1,
+        "persona_scores": {
+          "iced": 0.74,
+          "melt": 0.64,
+          "loop": 0.58
+        },
+        "scenes": [
+          "daily"
+        ],
+        "seasons": [
+          "autumn"
+        ],
+        "structure": "pants",
+        "wearability": "everyday",
+        "main_visual_slots": [
+          "pants"
+        ],
+        "main_colors": [
+          "ice_blue",
+          "pale_pink",
+          "taupe"
+        ],
+        "conflicts": null,
+        "silhouette": "reviewed_pants_composition",
+        "color_relation": "controlled_or_review_pending",
+        "persona_evidence": "不透蓝抽褶衬衫与浅蓝阔裤形成长线，粉包只作小面积柔和点，长靴增加秋季重量。"
+      },
+      "confidence": 0.8,
+      "model": "current_codex_session",
+      "prompt_version": "aw-coverage-repair-native-v1",
+      "review_level": "individual_contact_sheet_judgment",
+      "evidence_scope": "nonblind_individual_visual_judgment",
+      "review_complete": true,
+      "field_status": {
+        "axes": "unknown",
+        "expression": "ai_observed",
+        "formality": "ai_observed",
+        "layering": "ai_observed",
+        "persona_scores": "ai_observed",
+        "scenes": "ai_observed",
+        "seasons": "ai_observed",
+        "structure": "ai_observed",
+        "wearability": "ai_observed",
+        "main_visual_slots": "ai_observed",
+        "main_colors": "ai_observed",
+        "conflicts": "unknown",
+        "silhouette": "ai_observed",
+        "color_relation": "ai_observed",
+        "persona_evidence": "ai_observed"
+      },
+      "field_provenance": {
+        "axes": {
+          "source_file": "repairs-batch03-review/recipes-4.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": null
+        },
+        "expression": {
+          "source_file": "repairs-batch03-review/recipes-4.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "formality": {
+          "source_file": "repairs-batch03-review/recipes-4.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "layering": {
+          "source_file": "repairs-batch03-review/recipes-4.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "persona_scores": {
+          "source_file": "repairs-batch03-review/recipes-4.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "scenes": {
+          "source_file": "repairs-batch03-review/recipes-4.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "seasons": {
+          "source_file": "repairs-batch03-review/recipes-4.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "structure": {
+          "source_file": "repairs-batch03-review/recipes-4.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "wearability": {
+          "source_file": "repairs-batch03-review/recipes-4.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "main_visual_slots": {
+          "source_file": "repairs-batch03-review/recipes-4.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "main_colors": {
+          "source_file": "repairs-batch03-review/recipes-4.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "conflicts": {
+          "source_file": "repairs-batch03-review/recipes-4.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": null
+        },
+        "silhouette": {
+          "source_file": "repairs-batch03-review/recipes-4.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "color_relation": {
+          "source_file": "repairs-batch03-review/recipes-4.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "persona_evidence": {
+          "source_file": "repairs-batch03-review/recipes-4.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        }
+      }
+    },
+    {
+      "outfit_id": "outfit_bolt_master_08_v2__aw-repair-03",
+      "source_token": "o0883",
+      "status": "needs_review",
+      "record_fingerprint": "4c01b2660cfc33e1273405c8e305f249fa4eaee488288d4063b000460767fd78",
+      "asset_sha256": "a8f55075ffe6f7f43720c02a8853b5677f9d2d61d193d39ba9632b49ed37ce8e",
+      "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/3f3d2b6a3c9a79ed7b26b0f8.webp",
+      "source_kind": "codex_visual_review",
+      "evidence": "米白不透上衣已解决覆盖，但花纱拼裤与花纱包重复复杂母题，须换素包。",
+      "observations": {
+        "axes": {},
+        "expression": "typical",
+        "formality": "smart_casual",
+        "layering": 1,
+        "persona_scores": {
+          "flou": 0.68,
+          "oops": 0.55
+        },
+        "scenes": null,
+        "seasons": null,
+        "structure": "pants",
+        "wearability": null,
+        "main_visual_slots": [
+          "pants"
+        ],
+        "main_colors": [
+          "ivory",
+          "pale_pink",
+          "sage"
+        ],
+        "conflicts": [
+          "accessory_language_competition"
+        ],
+        "silhouette": "reviewed_pants_composition",
+        "color_relation": "controlled_or_review_pending",
+        "persona_evidence": "米白不透上衣已解决覆盖，但花纱拼裤与花纱包重复复杂母题，须换素包。"
+      },
+      "confidence": 0.8,
+      "model": "current_codex_session",
+      "prompt_version": "aw-coverage-repair-native-v1",
+      "review_level": "individual_contact_sheet_judgment",
+      "evidence_scope": "nonblind_individual_visual_judgment",
+      "review_complete": true,
+      "field_status": {
+        "axes": "unknown",
+        "expression": "ai_observed",
+        "formality": "ai_observed",
+        "layering": "ai_observed",
+        "persona_scores": "ai_observed",
+        "scenes": "unknown",
+        "seasons": "unknown",
+        "structure": "ai_observed",
+        "wearability": "unknown",
+        "main_visual_slots": "ai_observed",
+        "main_colors": "ai_observed",
+        "conflicts": "ai_observed",
+        "silhouette": "ai_observed",
+        "color_relation": "ai_observed",
+        "persona_evidence": "ai_observed"
+      },
+      "field_provenance": {
+        "axes": {
+          "source_file": "repairs-batch03-review/recipes-5.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": null
+        },
+        "expression": {
+          "source_file": "repairs-batch03-review/recipes-5.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "formality": {
+          "source_file": "repairs-batch03-review/recipes-5.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "layering": {
+          "source_file": "repairs-batch03-review/recipes-5.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "persona_scores": {
+          "source_file": "repairs-batch03-review/recipes-5.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "scenes": {
+          "source_file": "repairs-batch03-review/recipes-5.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": null
+        },
+        "seasons": {
+          "source_file": "repairs-batch03-review/recipes-5.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": null
+        },
+        "structure": {
+          "source_file": "repairs-batch03-review/recipes-5.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "wearability": {
+          "source_file": "repairs-batch03-review/recipes-5.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": null
+        },
+        "main_visual_slots": {
+          "source_file": "repairs-batch03-review/recipes-5.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "main_colors": {
+          "source_file": "repairs-batch03-review/recipes-5.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "conflicts": {
+          "source_file": "repairs-batch03-review/recipes-5.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "silhouette": {
+          "source_file": "repairs-batch03-review/recipes-5.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "color_relation": {
+          "source_file": "repairs-batch03-review/recipes-5.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "persona_evidence": {
+          "source_file": "repairs-batch03-review/recipes-5.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        }
+      }
+    },
+    {
+      "outfit_id": "outfit_bolt_master_09_v2__aw-repair-03",
+      "source_token": "o0885",
+      "status": "ai_candidate",
+      "record_fingerprint": "42635d63f0540f4dd2e87cb8cefaefc8b70381020ca04ae6406c6bc3168715ef",
+      "asset_sha256": "faa568e4df1dcfc75428a21a16f0e67793b52a36f88ae13a33ee55268060b3cc",
+      "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/2079fd6c0e32c4804b556faa.webp",
+      "source_kind": "codex_visual_review",
+      "evidence": "不透蓝抽褶衬衫配直筒牛仔，粉包和酒红玛丽珍鞋提供受控暖色点，适合轻松日常。",
+      "observations": {
+        "axes": {},
+        "expression": "easy",
+        "formality": "smart_casual",
+        "layering": 1,
+        "persona_scores": {
+          "ease": 0.7,
+          "film": 0.64,
+          "flou": 0.58
+        },
+        "scenes": [
+          "daily"
+        ],
+        "seasons": [
+          "autumn"
+        ],
+        "structure": "pants",
+        "wearability": "everyday",
+        "main_visual_slots": [
+          "pants"
+        ],
+        "main_colors": [
+          "ice_blue",
+          "denim_blue",
+          "pale_pink",
+          "burgundy"
+        ],
+        "conflicts": null,
+        "silhouette": "reviewed_pants_composition",
+        "color_relation": "controlled_or_review_pending",
+        "persona_evidence": "不透蓝抽褶衬衫配直筒牛仔，粉包和酒红玛丽珍鞋提供受控暖色点，适合轻松日常。"
+      },
+      "confidence": 0.8,
+      "model": "current_codex_session",
+      "prompt_version": "aw-coverage-repair-native-v1",
+      "review_level": "individual_contact_sheet_judgment",
+      "evidence_scope": "nonblind_individual_visual_judgment",
+      "review_complete": true,
+      "field_status": {
+        "axes": "unknown",
+        "expression": "ai_observed",
+        "formality": "ai_observed",
+        "layering": "ai_observed",
+        "persona_scores": "ai_observed",
+        "scenes": "ai_observed",
+        "seasons": "ai_observed",
+        "structure": "ai_observed",
+        "wearability": "ai_observed",
+        "main_visual_slots": "ai_observed",
+        "main_colors": "ai_observed",
+        "conflicts": "unknown",
+        "silhouette": "ai_observed",
+        "color_relation": "ai_observed",
+        "persona_evidence": "ai_observed"
+      },
+      "field_provenance": {
+        "axes": {
+          "source_file": "repairs-batch03-review/recipes-5.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": null
+        },
+        "expression": {
+          "source_file": "repairs-batch03-review/recipes-5.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "formality": {
+          "source_file": "repairs-batch03-review/recipes-5.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "layering": {
+          "source_file": "repairs-batch03-review/recipes-5.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "persona_scores": {
+          "source_file": "repairs-batch03-review/recipes-5.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "scenes": {
+          "source_file": "repairs-batch03-review/recipes-5.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "seasons": {
+          "source_file": "repairs-batch03-review/recipes-5.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "structure": {
+          "source_file": "repairs-batch03-review/recipes-5.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "wearability": {
+          "source_file": "repairs-batch03-review/recipes-5.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "main_visual_slots": {
+          "source_file": "repairs-batch03-review/recipes-5.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "main_colors": {
+          "source_file": "repairs-batch03-review/recipes-5.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "conflicts": {
+          "source_file": "repairs-batch03-review/recipes-5.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": null
+        },
+        "silhouette": {
+          "source_file": "repairs-batch03-review/recipes-5.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "color_relation": {
+          "source_file": "repairs-batch03-review/recipes-5.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "persona_evidence": {
+          "source_file": "repairs-batch03-review/recipes-5.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        }
+      }
+    },
+    {
+      "outfit_id": "outfit_bolt_master_14_v2__aw-repair-03",
+      "source_token": "o0895",
+      "status": "ai_candidate",
+      "record_fingerprint": "8722ed8a6cf88445fbc816a6c651505bbe84f1d309c85a22615ab4caec4a2baa",
+      "asset_sha256": "a539863ba834379531ba38c78f850389950e61d2eefda5756518eb376ae12012",
+      "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/837b402bf11ac46ffa4002bd.webp",
+      "source_kind": "codex_visual_review",
+      "evidence": "不透蓝抽褶衬衫配蓝灰直中裙，粉包为小面积点色，灰褐短靴稳定纵线。",
+      "observations": {
+        "axes": {},
+        "expression": "easy",
+        "formality": "smart_casual",
+        "layering": 1,
+        "persona_scores": {
+          "iced": 0.74,
+          "mute": 0.7,
+          "flou": 0.58
+        },
+        "scenes": [
+          "daily"
+        ],
+        "seasons": [
+          "autumn"
+        ],
+        "structure": "skirt",
+        "wearability": "everyday",
+        "main_visual_slots": [
+          "skirt"
+        ],
+        "main_colors": [
+          "ice_blue",
+          "pale_pink",
+          "taupe"
+        ],
+        "conflicts": null,
+        "silhouette": "reviewed_skirt_composition",
+        "color_relation": "controlled_or_review_pending",
+        "persona_evidence": "不透蓝抽褶衬衫配蓝灰直中裙，粉包为小面积点色，灰褐短靴稳定纵线。"
+      },
+      "confidence": 0.8,
+      "model": "current_codex_session",
+      "prompt_version": "aw-coverage-repair-native-v1",
+      "review_level": "individual_contact_sheet_judgment",
+      "evidence_scope": "nonblind_individual_visual_judgment",
+      "review_complete": true,
+      "field_status": {
+        "axes": "unknown",
+        "expression": "ai_observed",
+        "formality": "ai_observed",
+        "layering": "ai_observed",
+        "persona_scores": "ai_observed",
+        "scenes": "ai_observed",
+        "seasons": "ai_observed",
+        "structure": "ai_observed",
+        "wearability": "ai_observed",
+        "main_visual_slots": "ai_observed",
+        "main_colors": "ai_observed",
+        "conflicts": "unknown",
+        "silhouette": "ai_observed",
+        "color_relation": "ai_observed",
+        "persona_evidence": "ai_observed"
+      },
+      "field_provenance": {
+        "axes": {
+          "source_file": "repairs-batch03-review/recipes-5.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": null
+        },
+        "expression": {
+          "source_file": "repairs-batch03-review/recipes-5.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "formality": {
+          "source_file": "repairs-batch03-review/recipes-5.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "layering": {
+          "source_file": "repairs-batch03-review/recipes-5.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "persona_scores": {
+          "source_file": "repairs-batch03-review/recipes-5.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "scenes": {
+          "source_file": "repairs-batch03-review/recipes-5.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "seasons": {
+          "source_file": "repairs-batch03-review/recipes-5.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "structure": {
+          "source_file": "repairs-batch03-review/recipes-5.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "wearability": {
+          "source_file": "repairs-batch03-review/recipes-5.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "main_visual_slots": {
+          "source_file": "repairs-batch03-review/recipes-5.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "main_colors": {
+          "source_file": "repairs-batch03-review/recipes-5.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "conflicts": {
+          "source_file": "repairs-batch03-review/recipes-5.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": null
+        },
+        "silhouette": {
+          "source_file": "repairs-batch03-review/recipes-5.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "color_relation": {
+          "source_file": "repairs-batch03-review/recipes-5.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "persona_evidence": {
+          "source_file": "repairs-batch03-review/recipes-5.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        }
+      }
+    },
+    {
+      "outfit_id": "outfit_bolt_master_22_v1__aw-repair-03",
+      "source_token": "o0903",
+      "status": "needs_review",
+      "record_fingerprint": "31d9018543ba193bb01ed353edb16f4b203a65a6d2578a63c6aa3e47b882a3be",
+      "asset_sha256": "3cf0f75d46ed9fa4b918da13456ef78b48e2d53bf28f4209ab51387c36607a36",
+      "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/192cc8274ea0b59c90933ee2.webp",
+      "source_kind": "codex_visual_review",
+      "evidence": "米白不透内层已补，但刺绣披肩外套、装饰裤和酒红鞋仍偏礼仪且多焦点。",
+      "observations": {
+        "axes": {},
+        "expression": "typical",
+        "formality": "smart_casual",
+        "layering": 2,
+        "persona_scores": {
+          "bolt": 0.72,
+          "heir": 0.6
+        },
+        "scenes": null,
+        "seasons": null,
+        "structure": "pants",
+        "wearability": null,
+        "main_visual_slots": [
+          "pants"
+        ],
+        "main_colors": [
+          "ivory",
+          "burgundy"
+        ],
+        "conflicts": [
+          "multiple_focal_occasion"
+        ],
+        "silhouette": "reviewed_pants_composition",
+        "color_relation": "controlled_or_review_pending",
+        "persona_evidence": "米白不透内层已补，但刺绣披肩外套、装饰裤和酒红鞋仍偏礼仪且多焦点。"
+      },
+      "confidence": 0.8,
+      "model": "current_codex_session",
+      "prompt_version": "aw-coverage-repair-native-v1",
+      "review_level": "individual_contact_sheet_judgment",
+      "evidence_scope": "nonblind_individual_visual_judgment",
+      "review_complete": true,
+      "field_status": {
+        "axes": "unknown",
+        "expression": "ai_observed",
+        "formality": "ai_observed",
+        "layering": "ai_observed",
+        "persona_scores": "ai_observed",
+        "scenes": "unknown",
+        "seasons": "unknown",
+        "structure": "ai_observed",
+        "wearability": "unknown",
+        "main_visual_slots": "ai_observed",
+        "main_colors": "ai_observed",
+        "conflicts": "ai_observed",
+        "silhouette": "ai_observed",
+        "color_relation": "ai_observed",
+        "persona_evidence": "ai_observed"
+      },
+      "field_provenance": {
+        "axes": {
+          "source_file": "repairs-batch03-review/recipes-5.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": null
+        },
+        "expression": {
+          "source_file": "repairs-batch03-review/recipes-5.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "formality": {
+          "source_file": "repairs-batch03-review/recipes-5.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "layering": {
+          "source_file": "repairs-batch03-review/recipes-5.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "persona_scores": {
+          "source_file": "repairs-batch03-review/recipes-5.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "scenes": {
+          "source_file": "repairs-batch03-review/recipes-5.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": null
+        },
+        "seasons": {
+          "source_file": "repairs-batch03-review/recipes-5.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": null
+        },
+        "structure": {
+          "source_file": "repairs-batch03-review/recipes-5.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "wearability": {
+          "source_file": "repairs-batch03-review/recipes-5.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": null
+        },
+        "main_visual_slots": {
+          "source_file": "repairs-batch03-review/recipes-5.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "main_colors": {
+          "source_file": "repairs-batch03-review/recipes-5.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "conflicts": {
+          "source_file": "repairs-batch03-review/recipes-5.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "silhouette": {
+          "source_file": "repairs-batch03-review/recipes-5.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "color_relation": {
+          "source_file": "repairs-batch03-review/recipes-5.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "persona_evidence": {
+          "source_file": "repairs-batch03-review/recipes-5.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        }
+      }
+    },
+    {
+      "outfit_id": "outfit_bolt_master_23_v1__aw-repair-03",
+      "source_token": "o0904",
+      "status": "needs_review",
+      "record_fingerprint": "1651e6a6ea97edc33ce3b4b0fd9d49fabd402a526feec5add8646326163370d8",
+      "asset_sha256": "b9d9f9872e3bc9291bdc2e435f589f128411a8d9bad960f8662d5d65e9457b18",
+      "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/cc1803f0dbc7b3d98502d7eb.webp",
+      "source_kind": "codex_visual_review",
+      "evidence": "覆盖已修复，但蓝蓬袖衬衫与收口短外套的袖量未知，花纱拼裤又是强焦点。",
+      "observations": {
+        "axes": {},
+        "expression": "typical",
+        "formality": "smart_casual",
+        "layering": 2,
+        "persona_scores": {
+          "flou": 0.65,
+          "oops": 0.58
+        },
+        "scenes": null,
+        "seasons": null,
+        "structure": "pants",
+        "wearability": null,
+        "main_visual_slots": [
+          "pants"
+        ],
+        "main_colors": [
+          "ivory",
+          "ice_blue",
+          "pale_pink",
+          "sage"
+        ],
+        "conflicts": [
+          "outer_inner_volume_unverified"
+        ],
+        "silhouette": "reviewed_pants_composition",
+        "color_relation": "controlled_or_review_pending",
+        "persona_evidence": "覆盖已修复，但蓝蓬袖衬衫与收口短外套的袖量未知，花纱拼裤又是强焦点。"
+      },
+      "confidence": 0.8,
+      "model": "current_codex_session",
+      "prompt_version": "aw-coverage-repair-native-v1",
+      "review_level": "individual_contact_sheet_judgment",
+      "evidence_scope": "nonblind_individual_visual_judgment",
+      "review_complete": true,
+      "field_status": {
+        "axes": "unknown",
+        "expression": "ai_observed",
+        "formality": "ai_observed",
+        "layering": "ai_observed",
+        "persona_scores": "ai_observed",
+        "scenes": "unknown",
+        "seasons": "unknown",
+        "structure": "ai_observed",
+        "wearability": "unknown",
+        "main_visual_slots": "ai_observed",
+        "main_colors": "ai_observed",
+        "conflicts": "ai_observed",
+        "silhouette": "ai_observed",
+        "color_relation": "ai_observed",
+        "persona_evidence": "ai_observed"
+      },
+      "field_provenance": {
+        "axes": {
+          "source_file": "repairs-batch03-review/recipes-5.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": null
+        },
+        "expression": {
+          "source_file": "repairs-batch03-review/recipes-5.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "formality": {
+          "source_file": "repairs-batch03-review/recipes-5.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "layering": {
+          "source_file": "repairs-batch03-review/recipes-5.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "persona_scores": {
+          "source_file": "repairs-batch03-review/recipes-5.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "scenes": {
+          "source_file": "repairs-batch03-review/recipes-5.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": null
+        },
+        "seasons": {
+          "source_file": "repairs-batch03-review/recipes-5.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": null
+        },
+        "structure": {
+          "source_file": "repairs-batch03-review/recipes-5.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "wearability": {
+          "source_file": "repairs-batch03-review/recipes-5.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": null
+        },
+        "main_visual_slots": {
+          "source_file": "repairs-batch03-review/recipes-5.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "main_colors": {
+          "source_file": "repairs-batch03-review/recipes-5.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "conflicts": {
+          "source_file": "repairs-batch03-review/recipes-5.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "silhouette": {
+          "source_file": "repairs-batch03-review/recipes-5.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "color_relation": {
+          "source_file": "repairs-batch03-review/recipes-5.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        },
+        "persona_evidence": {
+          "source_file": "repairs-batch03-review/recipes-5.jpg",
+          "version": "aw-coverage-repair-native-v1",
+          "confidence": 0.8
+        }
+      }
+    }
+  ],
+  "version": "aw-coverage-review-d845eca735d84e3e2a24"
+}

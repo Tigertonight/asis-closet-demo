@@ -1,0 +1,3520 @@
+{
+  "schema_version": 1,
+  "source_rendered_version": "aw-designed-rendered-89eee45aa3ca894fb975",
+  "independent_blind_review": false,
+  "winter_outdoor_reviewed": true,
+  "physical_warmth_verified": false,
+  "entries": [
+    {
+      "outfit_id": "outfit_iced_aw-targeted-12_01",
+      "status": "ai_candidate",
+      "record_fingerprint": "aaa43fd0218795fe2a5518ef18aa0297e4e4885517bf2a05587c3a5e5544594e",
+      "asset_sha256": "1642bf5583ce71c302223b8eac6be79aa0d09daf0e4a40abbec5a7315711b119",
+      "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/443ca581de5239b4688ffd47.webp",
+      "source_kind": "codex_visual_review",
+      "evidence": "ICED 的目标色和独立主衣家族形成主要证据；pants 支撑款低竞争，长外层、完整袖长和闭合鞋履关系在成图中可见。",
+      "observations": {
+        "axes": {},
+        "expression": "typical",
+        "formality": "smart_casual",
+        "layering": 2,
+        "persona_scores": {
+          "iced": 0.86
+        },
+        "scenes": [
+          "daily"
+        ],
+        "seasons": [
+          "winter"
+        ],
+        "structure": "pants",
+        "wearability": "everyday_with_statement",
+        "main_visual_slots": [
+          "outer",
+          "top",
+          "pants"
+        ],
+        "main_colors": [
+          "deep_petrol_blue",
+          "ice_blue",
+          "light_gray"
+        ],
+        "conflicts": null,
+        "silhouette": "reviewed_near_threshold_winter_pants",
+        "color_relation": "reviewed_coherent",
+        "persona_evidence": "ICED 的目标色和独立主衣家族形成主要证据；pants 支撑款低竞争，长外层、完整袖长和闭合鞋履关系在成图中可见。",
+        "winter_outdoor": "complete_layers_visually_reviewed"
+      },
+      "confidence": 0.86,
+      "model": "current_codex_session",
+      "prompt_version": "aw-targeted-12-native-v1",
+      "review_level": "individual_contact_sheet_judgment",
+      "evidence_scope": "nonblind individual visual judgment; no temperature, waterproof, snow, or comfort claim",
+      "review_complete": true,
+      "field_status": {
+        "axes": "ai_observed",
+        "expression": "ai_observed",
+        "formality": "ai_observed",
+        "layering": "ai_observed",
+        "persona_scores": "ai_observed",
+        "scenes": "ai_observed",
+        "seasons": "ai_observed",
+        "structure": "ai_observed",
+        "wearability": "ai_observed",
+        "main_visual_slots": "ai_observed",
+        "main_colors": "ai_observed",
+        "conflicts": "ai_observed",
+        "silhouette": "ai_observed",
+        "color_relation": "ai_observed",
+        "persona_evidence": "ai_observed",
+        "winter_outdoor": "ai_observed"
+      },
+      "field_provenance": {
+        "axes": {
+          "source_file": "targeted-batch12-review/recipes-1.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "expression": {
+          "source_file": "targeted-batch12-review/recipes-1.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "formality": {
+          "source_file": "targeted-batch12-review/recipes-1.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "layering": {
+          "source_file": "targeted-batch12-review/recipes-1.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "persona_scores": {
+          "source_file": "targeted-batch12-review/recipes-1.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "scenes": {
+          "source_file": "targeted-batch12-review/recipes-1.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "seasons": {
+          "source_file": "targeted-batch12-review/recipes-1.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "structure": {
+          "source_file": "targeted-batch12-review/recipes-1.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "wearability": {
+          "source_file": "targeted-batch12-review/recipes-1.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "main_visual_slots": {
+          "source_file": "targeted-batch12-review/recipes-1.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "main_colors": {
+          "source_file": "targeted-batch12-review/recipes-1.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "conflicts": {
+          "source_file": "targeted-batch12-review/recipes-1.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "silhouette": {
+          "source_file": "targeted-batch12-review/recipes-1.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "color_relation": {
+          "source_file": "targeted-batch12-review/recipes-1.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "persona_evidence": {
+          "source_file": "targeted-batch12-review/recipes-1.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "winter_outdoor": {
+          "source_file": "targeted-batch12-review/recipes-1.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        }
+      }
+    },
+    {
+      "outfit_id": "outfit_iced_aw-targeted-12_02",
+      "status": "ai_candidate",
+      "record_fingerprint": "471fe699ec3d7889843dc8ecd6d6334bdd75444f9301749d59b85aebfb1f2942",
+      "asset_sha256": "768644c35e61f27f8ad39686b34d72914d2c28483a7daf00963c275eaac71af7",
+      "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/b1d0d5040288bd0729e5c060.webp",
+      "source_kind": "codex_visual_review",
+      "evidence": "ICED 的目标色和独立主衣家族形成主要证据；skirt 支撑款低竞争，长外层、完整袖长和闭合鞋履关系在成图中可见。",
+      "observations": {
+        "axes": {},
+        "expression": "typical",
+        "formality": "smart_casual",
+        "layering": 2,
+        "persona_scores": {
+          "iced": 0.86
+        },
+        "scenes": [
+          "daily"
+        ],
+        "seasons": [
+          "winter"
+        ],
+        "structure": "skirt",
+        "wearability": "everyday_with_statement",
+        "main_visual_slots": [
+          "outer",
+          "top",
+          "skirt"
+        ],
+        "main_colors": [
+          "deep_petrol_blue",
+          "charcoal"
+        ],
+        "conflicts": null,
+        "silhouette": "reviewed_near_threshold_winter_skirt",
+        "color_relation": "reviewed_coherent",
+        "persona_evidence": "ICED 的目标色和独立主衣家族形成主要证据；skirt 支撑款低竞争，长外层、完整袖长和闭合鞋履关系在成图中可见。",
+        "winter_outdoor": "complete_layers_visually_reviewed"
+      },
+      "confidence": 0.86,
+      "model": "current_codex_session",
+      "prompt_version": "aw-targeted-12-native-v1",
+      "review_level": "individual_contact_sheet_judgment",
+      "evidence_scope": "nonblind individual visual judgment; no temperature, waterproof, snow, or comfort claim",
+      "review_complete": true,
+      "field_status": {
+        "axes": "ai_observed",
+        "expression": "ai_observed",
+        "formality": "ai_observed",
+        "layering": "ai_observed",
+        "persona_scores": "ai_observed",
+        "scenes": "ai_observed",
+        "seasons": "ai_observed",
+        "structure": "ai_observed",
+        "wearability": "ai_observed",
+        "main_visual_slots": "ai_observed",
+        "main_colors": "ai_observed",
+        "conflicts": "ai_observed",
+        "silhouette": "ai_observed",
+        "color_relation": "ai_observed",
+        "persona_evidence": "ai_observed",
+        "winter_outdoor": "ai_observed"
+      },
+      "field_provenance": {
+        "axes": {
+          "source_file": "targeted-batch12-review/recipes-1.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "expression": {
+          "source_file": "targeted-batch12-review/recipes-1.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "formality": {
+          "source_file": "targeted-batch12-review/recipes-1.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "layering": {
+          "source_file": "targeted-batch12-review/recipes-1.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "persona_scores": {
+          "source_file": "targeted-batch12-review/recipes-1.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "scenes": {
+          "source_file": "targeted-batch12-review/recipes-1.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "seasons": {
+          "source_file": "targeted-batch12-review/recipes-1.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "structure": {
+          "source_file": "targeted-batch12-review/recipes-1.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "wearability": {
+          "source_file": "targeted-batch12-review/recipes-1.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "main_visual_slots": {
+          "source_file": "targeted-batch12-review/recipes-1.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "main_colors": {
+          "source_file": "targeted-batch12-review/recipes-1.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "conflicts": {
+          "source_file": "targeted-batch12-review/recipes-1.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "silhouette": {
+          "source_file": "targeted-batch12-review/recipes-1.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "color_relation": {
+          "source_file": "targeted-batch12-review/recipes-1.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "persona_evidence": {
+          "source_file": "targeted-batch12-review/recipes-1.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "winter_outdoor": {
+          "source_file": "targeted-batch12-review/recipes-1.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        }
+      }
+    },
+    {
+      "outfit_id": "outfit_iced_aw-targeted-12_03",
+      "status": "ai_candidate",
+      "record_fingerprint": "2948ac500b94039763bc782b7aa7a54fa07009a3574ce3efb7a5aae4f3894488",
+      "asset_sha256": "d50d40538a703b65a3bb97261cbfb1aef12cb0bb5ac0604a2d79dfb9c81f92fc",
+      "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/89ccca1962fcab1f30af4f4b.webp",
+      "source_kind": "codex_visual_review",
+      "evidence": "ICED 的目标色和独立主衣家族形成主要证据；dress 支撑款低竞争，长外层、完整袖长和闭合鞋履关系在成图中可见。",
+      "observations": {
+        "axes": {},
+        "expression": "typical",
+        "formality": "smart_casual",
+        "layering": 2,
+        "persona_scores": {
+          "iced": 0.86
+        },
+        "scenes": [
+          "daily"
+        ],
+        "seasons": [
+          "winter"
+        ],
+        "structure": "dress",
+        "wearability": "everyday_with_statement",
+        "main_visual_slots": [
+          "outer",
+          "dress"
+        ],
+        "main_colors": [
+          "deep_petrol_blue",
+          "charcoal"
+        ],
+        "conflicts": null,
+        "silhouette": "reviewed_near_threshold_winter_dress",
+        "color_relation": "reviewed_coherent",
+        "persona_evidence": "ICED 的目标色和独立主衣家族形成主要证据；dress 支撑款低竞争，长外层、完整袖长和闭合鞋履关系在成图中可见。",
+        "winter_outdoor": "complete_layers_visually_reviewed"
+      },
+      "confidence": 0.86,
+      "model": "current_codex_session",
+      "prompt_version": "aw-targeted-12-native-v1",
+      "review_level": "individual_contact_sheet_judgment",
+      "evidence_scope": "nonblind individual visual judgment; no temperature, waterproof, snow, or comfort claim",
+      "review_complete": true,
+      "field_status": {
+        "axes": "ai_observed",
+        "expression": "ai_observed",
+        "formality": "ai_observed",
+        "layering": "ai_observed",
+        "persona_scores": "ai_observed",
+        "scenes": "ai_observed",
+        "seasons": "ai_observed",
+        "structure": "ai_observed",
+        "wearability": "ai_observed",
+        "main_visual_slots": "ai_observed",
+        "main_colors": "ai_observed",
+        "conflicts": "ai_observed",
+        "silhouette": "ai_observed",
+        "color_relation": "ai_observed",
+        "persona_evidence": "ai_observed",
+        "winter_outdoor": "ai_observed"
+      },
+      "field_provenance": {
+        "axes": {
+          "source_file": "targeted-batch12-review/recipes-1.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "expression": {
+          "source_file": "targeted-batch12-review/recipes-1.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "formality": {
+          "source_file": "targeted-batch12-review/recipes-1.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "layering": {
+          "source_file": "targeted-batch12-review/recipes-1.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "persona_scores": {
+          "source_file": "targeted-batch12-review/recipes-1.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "scenes": {
+          "source_file": "targeted-batch12-review/recipes-1.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "seasons": {
+          "source_file": "targeted-batch12-review/recipes-1.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "structure": {
+          "source_file": "targeted-batch12-review/recipes-1.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "wearability": {
+          "source_file": "targeted-batch12-review/recipes-1.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "main_visual_slots": {
+          "source_file": "targeted-batch12-review/recipes-1.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "main_colors": {
+          "source_file": "targeted-batch12-review/recipes-1.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "conflicts": {
+          "source_file": "targeted-batch12-review/recipes-1.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "silhouette": {
+          "source_file": "targeted-batch12-review/recipes-1.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "color_relation": {
+          "source_file": "targeted-batch12-review/recipes-1.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "persona_evidence": {
+          "source_file": "targeted-batch12-review/recipes-1.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "winter_outdoor": {
+          "source_file": "targeted-batch12-review/recipes-1.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        }
+      }
+    },
+    {
+      "outfit_id": "outfit_iced_aw-targeted-12_04",
+      "status": "ai_candidate",
+      "record_fingerprint": "229dcb2b347ddf65083b7e32b0bbfef08d611d6e4fbdcbd129cd9353a5357d05",
+      "asset_sha256": "2ca4dd4969a1e29fba7ba8e1a30b639daf304890bb7eece79b23b94530287b9c",
+      "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/a321c40a11c8bf19d0ab27b2.webp",
+      "source_kind": "codex_visual_review",
+      "evidence": "ICED 的目标色和独立主衣家族形成主要证据；pants 支撑款低竞争，长外层、完整袖长和闭合鞋履关系在成图中可见。",
+      "observations": {
+        "axes": {},
+        "expression": "typical",
+        "formality": "smart_casual",
+        "layering": 2,
+        "persona_scores": {
+          "iced": 0.86
+        },
+        "scenes": [
+          "daily"
+        ],
+        "seasons": [
+          "winter"
+        ],
+        "structure": "pants",
+        "wearability": "everyday_with_statement",
+        "main_visual_slots": [
+          "outer",
+          "top",
+          "pants"
+        ],
+        "main_colors": [
+          "pearl_blush_gray",
+          "ice_blue",
+          "light_gray"
+        ],
+        "conflicts": null,
+        "silhouette": "reviewed_near_threshold_winter_pants",
+        "color_relation": "reviewed_coherent",
+        "persona_evidence": "ICED 的目标色和独立主衣家族形成主要证据；pants 支撑款低竞争，长外层、完整袖长和闭合鞋履关系在成图中可见。",
+        "winter_outdoor": "complete_layers_visually_reviewed"
+      },
+      "confidence": 0.86,
+      "model": "current_codex_session",
+      "prompt_version": "aw-targeted-12-native-v1",
+      "review_level": "individual_contact_sheet_judgment",
+      "evidence_scope": "nonblind individual visual judgment; no temperature, waterproof, snow, or comfort claim",
+      "review_complete": true,
+      "field_status": {
+        "axes": "ai_observed",
+        "expression": "ai_observed",
+        "formality": "ai_observed",
+        "layering": "ai_observed",
+        "persona_scores": "ai_observed",
+        "scenes": "ai_observed",
+        "seasons": "ai_observed",
+        "structure": "ai_observed",
+        "wearability": "ai_observed",
+        "main_visual_slots": "ai_observed",
+        "main_colors": "ai_observed",
+        "conflicts": "ai_observed",
+        "silhouette": "ai_observed",
+        "color_relation": "ai_observed",
+        "persona_evidence": "ai_observed",
+        "winter_outdoor": "ai_observed"
+      },
+      "field_provenance": {
+        "axes": {
+          "source_file": "targeted-batch12-review/recipes-1.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "expression": {
+          "source_file": "targeted-batch12-review/recipes-1.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "formality": {
+          "source_file": "targeted-batch12-review/recipes-1.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "layering": {
+          "source_file": "targeted-batch12-review/recipes-1.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "persona_scores": {
+          "source_file": "targeted-batch12-review/recipes-1.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "scenes": {
+          "source_file": "targeted-batch12-review/recipes-1.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "seasons": {
+          "source_file": "targeted-batch12-review/recipes-1.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "structure": {
+          "source_file": "targeted-batch12-review/recipes-1.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "wearability": {
+          "source_file": "targeted-batch12-review/recipes-1.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "main_visual_slots": {
+          "source_file": "targeted-batch12-review/recipes-1.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "main_colors": {
+          "source_file": "targeted-batch12-review/recipes-1.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "conflicts": {
+          "source_file": "targeted-batch12-review/recipes-1.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "silhouette": {
+          "source_file": "targeted-batch12-review/recipes-1.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "color_relation": {
+          "source_file": "targeted-batch12-review/recipes-1.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "persona_evidence": {
+          "source_file": "targeted-batch12-review/recipes-1.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "winter_outdoor": {
+          "source_file": "targeted-batch12-review/recipes-1.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        }
+      }
+    },
+    {
+      "outfit_id": "outfit_iced_aw-targeted-12_05",
+      "status": "ai_candidate",
+      "record_fingerprint": "b6a14113397deac5865b54f6acca9774ea3c5abb02008bcbf9600640ffe2fe6c",
+      "asset_sha256": "66bb96962efba1a73376fab3e9682ce0cdc822712506e377abc5acef08806465",
+      "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/0c73ac4e3f6f0d29aa67b5ce.webp",
+      "source_kind": "codex_visual_review",
+      "evidence": "ICED 的目标色和独立主衣家族形成主要证据；skirt 支撑款低竞争，长外层、完整袖长和闭合鞋履关系在成图中可见。",
+      "observations": {
+        "axes": {},
+        "expression": "typical",
+        "formality": "smart_casual",
+        "layering": 2,
+        "persona_scores": {
+          "iced": 0.86
+        },
+        "scenes": [
+          "daily"
+        ],
+        "seasons": [
+          "winter"
+        ],
+        "structure": "skirt",
+        "wearability": "everyday_with_statement",
+        "main_visual_slots": [
+          "outer",
+          "top",
+          "skirt"
+        ],
+        "main_colors": [
+          "pearl_blush_gray",
+          "charcoal"
+        ],
+        "conflicts": null,
+        "silhouette": "reviewed_near_threshold_winter_skirt",
+        "color_relation": "reviewed_coherent",
+        "persona_evidence": "ICED 的目标色和独立主衣家族形成主要证据；skirt 支撑款低竞争，长外层、完整袖长和闭合鞋履关系在成图中可见。",
+        "winter_outdoor": "complete_layers_visually_reviewed"
+      },
+      "confidence": 0.86,
+      "model": "current_codex_session",
+      "prompt_version": "aw-targeted-12-native-v1",
+      "review_level": "individual_contact_sheet_judgment",
+      "evidence_scope": "nonblind individual visual judgment; no temperature, waterproof, snow, or comfort claim",
+      "review_complete": true,
+      "field_status": {
+        "axes": "ai_observed",
+        "expression": "ai_observed",
+        "formality": "ai_observed",
+        "layering": "ai_observed",
+        "persona_scores": "ai_observed",
+        "scenes": "ai_observed",
+        "seasons": "ai_observed",
+        "structure": "ai_observed",
+        "wearability": "ai_observed",
+        "main_visual_slots": "ai_observed",
+        "main_colors": "ai_observed",
+        "conflicts": "ai_observed",
+        "silhouette": "ai_observed",
+        "color_relation": "ai_observed",
+        "persona_evidence": "ai_observed",
+        "winter_outdoor": "ai_observed"
+      },
+      "field_provenance": {
+        "axes": {
+          "source_file": "targeted-batch12-review/recipes-1.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "expression": {
+          "source_file": "targeted-batch12-review/recipes-1.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "formality": {
+          "source_file": "targeted-batch12-review/recipes-1.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "layering": {
+          "source_file": "targeted-batch12-review/recipes-1.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "persona_scores": {
+          "source_file": "targeted-batch12-review/recipes-1.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "scenes": {
+          "source_file": "targeted-batch12-review/recipes-1.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "seasons": {
+          "source_file": "targeted-batch12-review/recipes-1.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "structure": {
+          "source_file": "targeted-batch12-review/recipes-1.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "wearability": {
+          "source_file": "targeted-batch12-review/recipes-1.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "main_visual_slots": {
+          "source_file": "targeted-batch12-review/recipes-1.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "main_colors": {
+          "source_file": "targeted-batch12-review/recipes-1.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "conflicts": {
+          "source_file": "targeted-batch12-review/recipes-1.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "silhouette": {
+          "source_file": "targeted-batch12-review/recipes-1.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "color_relation": {
+          "source_file": "targeted-batch12-review/recipes-1.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "persona_evidence": {
+          "source_file": "targeted-batch12-review/recipes-1.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "winter_outdoor": {
+          "source_file": "targeted-batch12-review/recipes-1.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        }
+      }
+    },
+    {
+      "outfit_id": "outfit_iced_aw-targeted-12_06",
+      "status": "ai_candidate",
+      "record_fingerprint": "101cb506c6ccd9b0175d0dd8a268dc7c03f95529fda0080ccfee2a28898dc20a",
+      "asset_sha256": "03dbafa4eb5a2f51f46cb31998ae7ba3a3bf66f0ebb7e834927e1f74c71a1a86",
+      "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/817b3f550b6d4cee5402e862.webp",
+      "source_kind": "codex_visual_review",
+      "evidence": "ICED 的目标色和独立主衣家族形成主要证据；dress 支撑款低竞争，长外层、完整袖长和闭合鞋履关系在成图中可见。",
+      "observations": {
+        "axes": {},
+        "expression": "typical",
+        "formality": "smart_casual",
+        "layering": 2,
+        "persona_scores": {
+          "iced": 0.86
+        },
+        "scenes": [
+          "daily"
+        ],
+        "seasons": [
+          "winter"
+        ],
+        "structure": "dress",
+        "wearability": "everyday_with_statement",
+        "main_visual_slots": [
+          "outer",
+          "dress"
+        ],
+        "main_colors": [
+          "pearl_blush_gray",
+          "charcoal"
+        ],
+        "conflicts": null,
+        "silhouette": "reviewed_near_threshold_winter_dress",
+        "color_relation": "reviewed_coherent",
+        "persona_evidence": "ICED 的目标色和独立主衣家族形成主要证据；dress 支撑款低竞争，长外层、完整袖长和闭合鞋履关系在成图中可见。",
+        "winter_outdoor": "complete_layers_visually_reviewed"
+      },
+      "confidence": 0.86,
+      "model": "current_codex_session",
+      "prompt_version": "aw-targeted-12-native-v1",
+      "review_level": "individual_contact_sheet_judgment",
+      "evidence_scope": "nonblind individual visual judgment; no temperature, waterproof, snow, or comfort claim",
+      "review_complete": true,
+      "field_status": {
+        "axes": "ai_observed",
+        "expression": "ai_observed",
+        "formality": "ai_observed",
+        "layering": "ai_observed",
+        "persona_scores": "ai_observed",
+        "scenes": "ai_observed",
+        "seasons": "ai_observed",
+        "structure": "ai_observed",
+        "wearability": "ai_observed",
+        "main_visual_slots": "ai_observed",
+        "main_colors": "ai_observed",
+        "conflicts": "ai_observed",
+        "silhouette": "ai_observed",
+        "color_relation": "ai_observed",
+        "persona_evidence": "ai_observed",
+        "winter_outdoor": "ai_observed"
+      },
+      "field_provenance": {
+        "axes": {
+          "source_file": "targeted-batch12-review/recipes-1.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "expression": {
+          "source_file": "targeted-batch12-review/recipes-1.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "formality": {
+          "source_file": "targeted-batch12-review/recipes-1.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "layering": {
+          "source_file": "targeted-batch12-review/recipes-1.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "persona_scores": {
+          "source_file": "targeted-batch12-review/recipes-1.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "scenes": {
+          "source_file": "targeted-batch12-review/recipes-1.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "seasons": {
+          "source_file": "targeted-batch12-review/recipes-1.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "structure": {
+          "source_file": "targeted-batch12-review/recipes-1.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "wearability": {
+          "source_file": "targeted-batch12-review/recipes-1.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "main_visual_slots": {
+          "source_file": "targeted-batch12-review/recipes-1.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "main_colors": {
+          "source_file": "targeted-batch12-review/recipes-1.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "conflicts": {
+          "source_file": "targeted-batch12-review/recipes-1.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "silhouette": {
+          "source_file": "targeted-batch12-review/recipes-1.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "color_relation": {
+          "source_file": "targeted-batch12-review/recipes-1.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "persona_evidence": {
+          "source_file": "targeted-batch12-review/recipes-1.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "winter_outdoor": {
+          "source_file": "targeted-batch12-review/recipes-1.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        }
+      }
+    },
+    {
+      "outfit_id": "outfit_jade_aw-targeted-12_07",
+      "status": "ai_candidate",
+      "record_fingerprint": "387c161420bda9605317d8f209fdd4a6e8d1cd028fc4a348a072246198d3aae6",
+      "asset_sha256": "6c7c20ffe79f979dc846fc399d71123420ef71824f47a6917ac12b4b800d84b7",
+      "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/c5f40367629d5ab17eab7612.webp",
+      "source_kind": "codex_visual_review",
+      "evidence": "JADE 的目标色和独立主衣家族形成主要证据；pants 支撑款低竞争，长外层、完整袖长和闭合鞋履关系在成图中可见。",
+      "observations": {
+        "axes": {},
+        "expression": "typical",
+        "formality": "smart_casual",
+        "layering": 2,
+        "persona_scores": {
+          "jade": 0.86
+        },
+        "scenes": [
+          "daily"
+        ],
+        "seasons": [
+          "winter"
+        ],
+        "structure": "pants",
+        "wearability": "everyday_with_statement",
+        "main_visual_slots": [
+          "outer",
+          "top",
+          "pants"
+        ],
+        "main_colors": [
+          "charcoal_black",
+          "ice_blue",
+          "light_gray"
+        ],
+        "conflicts": null,
+        "silhouette": "reviewed_near_threshold_winter_pants",
+        "color_relation": "reviewed_coherent",
+        "persona_evidence": "JADE 的目标色和独立主衣家族形成主要证据；pants 支撑款低竞争，长外层、完整袖长和闭合鞋履关系在成图中可见。",
+        "winter_outdoor": "complete_layers_visually_reviewed"
+      },
+      "confidence": 0.86,
+      "model": "current_codex_session",
+      "prompt_version": "aw-targeted-12-native-v1",
+      "review_level": "individual_contact_sheet_judgment",
+      "evidence_scope": "nonblind individual visual judgment; no temperature, waterproof, snow, or comfort claim",
+      "review_complete": true,
+      "field_status": {
+        "axes": "ai_observed",
+        "expression": "ai_observed",
+        "formality": "ai_observed",
+        "layering": "ai_observed",
+        "persona_scores": "ai_observed",
+        "scenes": "ai_observed",
+        "seasons": "ai_observed",
+        "structure": "ai_observed",
+        "wearability": "ai_observed",
+        "main_visual_slots": "ai_observed",
+        "main_colors": "ai_observed",
+        "conflicts": "ai_observed",
+        "silhouette": "ai_observed",
+        "color_relation": "ai_observed",
+        "persona_evidence": "ai_observed",
+        "winter_outdoor": "ai_observed"
+      },
+      "field_provenance": {
+        "axes": {
+          "source_file": "targeted-batch12-review/recipes-2.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "expression": {
+          "source_file": "targeted-batch12-review/recipes-2.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "formality": {
+          "source_file": "targeted-batch12-review/recipes-2.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "layering": {
+          "source_file": "targeted-batch12-review/recipes-2.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "persona_scores": {
+          "source_file": "targeted-batch12-review/recipes-2.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "scenes": {
+          "source_file": "targeted-batch12-review/recipes-2.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "seasons": {
+          "source_file": "targeted-batch12-review/recipes-2.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "structure": {
+          "source_file": "targeted-batch12-review/recipes-2.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "wearability": {
+          "source_file": "targeted-batch12-review/recipes-2.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "main_visual_slots": {
+          "source_file": "targeted-batch12-review/recipes-2.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "main_colors": {
+          "source_file": "targeted-batch12-review/recipes-2.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "conflicts": {
+          "source_file": "targeted-batch12-review/recipes-2.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "silhouette": {
+          "source_file": "targeted-batch12-review/recipes-2.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "color_relation": {
+          "source_file": "targeted-batch12-review/recipes-2.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "persona_evidence": {
+          "source_file": "targeted-batch12-review/recipes-2.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "winter_outdoor": {
+          "source_file": "targeted-batch12-review/recipes-2.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        }
+      }
+    },
+    {
+      "outfit_id": "outfit_jade_aw-targeted-12_08",
+      "status": "ai_candidate",
+      "record_fingerprint": "d8ab94d4b9774b82b9b73c4cef49fe90af5d8649caf9800cf1ac65154a7fe18d",
+      "asset_sha256": "23f006fa82b8f14b35a55db7c8e409bababc2f1b827c23bbe932b4a1163e8759",
+      "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/a498875c107d29ebf17c8e90.webp",
+      "source_kind": "codex_visual_review",
+      "evidence": "JADE 的目标色和独立主衣家族形成主要证据；skirt 支撑款低竞争，长外层、完整袖长和闭合鞋履关系在成图中可见。",
+      "observations": {
+        "axes": {},
+        "expression": "typical",
+        "formality": "smart_casual",
+        "layering": 2,
+        "persona_scores": {
+          "jade": 0.86
+        },
+        "scenes": [
+          "daily"
+        ],
+        "seasons": [
+          "winter"
+        ],
+        "structure": "skirt",
+        "wearability": "everyday_with_statement",
+        "main_visual_slots": [
+          "outer",
+          "top",
+          "skirt"
+        ],
+        "main_colors": [
+          "charcoal_black",
+          "charcoal"
+        ],
+        "conflicts": null,
+        "silhouette": "reviewed_near_threshold_winter_skirt",
+        "color_relation": "reviewed_coherent",
+        "persona_evidence": "JADE 的目标色和独立主衣家族形成主要证据；skirt 支撑款低竞争，长外层、完整袖长和闭合鞋履关系在成图中可见。",
+        "winter_outdoor": "complete_layers_visually_reviewed"
+      },
+      "confidence": 0.86,
+      "model": "current_codex_session",
+      "prompt_version": "aw-targeted-12-native-v1",
+      "review_level": "individual_contact_sheet_judgment",
+      "evidence_scope": "nonblind individual visual judgment; no temperature, waterproof, snow, or comfort claim",
+      "review_complete": true,
+      "field_status": {
+        "axes": "ai_observed",
+        "expression": "ai_observed",
+        "formality": "ai_observed",
+        "layering": "ai_observed",
+        "persona_scores": "ai_observed",
+        "scenes": "ai_observed",
+        "seasons": "ai_observed",
+        "structure": "ai_observed",
+        "wearability": "ai_observed",
+        "main_visual_slots": "ai_observed",
+        "main_colors": "ai_observed",
+        "conflicts": "ai_observed",
+        "silhouette": "ai_observed",
+        "color_relation": "ai_observed",
+        "persona_evidence": "ai_observed",
+        "winter_outdoor": "ai_observed"
+      },
+      "field_provenance": {
+        "axes": {
+          "source_file": "targeted-batch12-review/recipes-2.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "expression": {
+          "source_file": "targeted-batch12-review/recipes-2.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "formality": {
+          "source_file": "targeted-batch12-review/recipes-2.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "layering": {
+          "source_file": "targeted-batch12-review/recipes-2.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "persona_scores": {
+          "source_file": "targeted-batch12-review/recipes-2.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "scenes": {
+          "source_file": "targeted-batch12-review/recipes-2.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "seasons": {
+          "source_file": "targeted-batch12-review/recipes-2.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "structure": {
+          "source_file": "targeted-batch12-review/recipes-2.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "wearability": {
+          "source_file": "targeted-batch12-review/recipes-2.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "main_visual_slots": {
+          "source_file": "targeted-batch12-review/recipes-2.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "main_colors": {
+          "source_file": "targeted-batch12-review/recipes-2.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "conflicts": {
+          "source_file": "targeted-batch12-review/recipes-2.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "silhouette": {
+          "source_file": "targeted-batch12-review/recipes-2.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "color_relation": {
+          "source_file": "targeted-batch12-review/recipes-2.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "persona_evidence": {
+          "source_file": "targeted-batch12-review/recipes-2.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "winter_outdoor": {
+          "source_file": "targeted-batch12-review/recipes-2.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        }
+      }
+    },
+    {
+      "outfit_id": "outfit_jade_aw-targeted-12_09",
+      "status": "ai_candidate",
+      "record_fingerprint": "5abbf5421d0518ffbf09e71fb94f4a05688fa3babd052b73573e7a5aadef86bf",
+      "asset_sha256": "43837916f37aad15f2c302b76ed80a05eee39e82562aa71a64670246002ba3b8",
+      "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/8c4998b8259c3e77e7680fe1.webp",
+      "source_kind": "codex_visual_review",
+      "evidence": "JADE 的目标色和独立主衣家族形成主要证据；dress 支撑款低竞争，长外层、完整袖长和闭合鞋履关系在成图中可见。",
+      "observations": {
+        "axes": {},
+        "expression": "typical",
+        "formality": "smart_casual",
+        "layering": 2,
+        "persona_scores": {
+          "jade": 0.86
+        },
+        "scenes": [
+          "daily"
+        ],
+        "seasons": [
+          "winter"
+        ],
+        "structure": "dress",
+        "wearability": "everyday_with_statement",
+        "main_visual_slots": [
+          "outer",
+          "dress"
+        ],
+        "main_colors": [
+          "charcoal_black",
+          "charcoal"
+        ],
+        "conflicts": null,
+        "silhouette": "reviewed_near_threshold_winter_dress",
+        "color_relation": "reviewed_coherent",
+        "persona_evidence": "JADE 的目标色和独立主衣家族形成主要证据；dress 支撑款低竞争，长外层、完整袖长和闭合鞋履关系在成图中可见。",
+        "winter_outdoor": "complete_layers_visually_reviewed"
+      },
+      "confidence": 0.86,
+      "model": "current_codex_session",
+      "prompt_version": "aw-targeted-12-native-v1",
+      "review_level": "individual_contact_sheet_judgment",
+      "evidence_scope": "nonblind individual visual judgment; no temperature, waterproof, snow, or comfort claim",
+      "review_complete": true,
+      "field_status": {
+        "axes": "ai_observed",
+        "expression": "ai_observed",
+        "formality": "ai_observed",
+        "layering": "ai_observed",
+        "persona_scores": "ai_observed",
+        "scenes": "ai_observed",
+        "seasons": "ai_observed",
+        "structure": "ai_observed",
+        "wearability": "ai_observed",
+        "main_visual_slots": "ai_observed",
+        "main_colors": "ai_observed",
+        "conflicts": "ai_observed",
+        "silhouette": "ai_observed",
+        "color_relation": "ai_observed",
+        "persona_evidence": "ai_observed",
+        "winter_outdoor": "ai_observed"
+      },
+      "field_provenance": {
+        "axes": {
+          "source_file": "targeted-batch12-review/recipes-2.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "expression": {
+          "source_file": "targeted-batch12-review/recipes-2.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "formality": {
+          "source_file": "targeted-batch12-review/recipes-2.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "layering": {
+          "source_file": "targeted-batch12-review/recipes-2.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "persona_scores": {
+          "source_file": "targeted-batch12-review/recipes-2.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "scenes": {
+          "source_file": "targeted-batch12-review/recipes-2.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "seasons": {
+          "source_file": "targeted-batch12-review/recipes-2.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "structure": {
+          "source_file": "targeted-batch12-review/recipes-2.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "wearability": {
+          "source_file": "targeted-batch12-review/recipes-2.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "main_visual_slots": {
+          "source_file": "targeted-batch12-review/recipes-2.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "main_colors": {
+          "source_file": "targeted-batch12-review/recipes-2.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "conflicts": {
+          "source_file": "targeted-batch12-review/recipes-2.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "silhouette": {
+          "source_file": "targeted-batch12-review/recipes-2.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "color_relation": {
+          "source_file": "targeted-batch12-review/recipes-2.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "persona_evidence": {
+          "source_file": "targeted-batch12-review/recipes-2.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "winter_outdoor": {
+          "source_file": "targeted-batch12-review/recipes-2.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        }
+      }
+    },
+    {
+      "outfit_id": "outfit_melt_aw-targeted-12_10",
+      "status": "ai_candidate",
+      "record_fingerprint": "bee2136994df5dccac9b12d9f05691373352b555b5bb4c700231873ddd819dca",
+      "asset_sha256": "5088c0f3ce8a1f165f6367a69ae351c80fa7f18ee3cedafa842100e41e031276",
+      "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/46078a6ee89f20c8a7d8fbb7.webp",
+      "source_kind": "codex_visual_review",
+      "evidence": "MELT 的目标色和独立主衣家族形成主要证据；pants 支撑款低竞争，长外层、完整袖长和闭合鞋履关系在成图中可见。",
+      "observations": {
+        "axes": {},
+        "expression": "typical",
+        "formality": "smart_casual",
+        "layering": 2,
+        "persona_scores": {
+          "melt": 0.86
+        },
+        "scenes": [
+          "daily"
+        ],
+        "seasons": [
+          "winter"
+        ],
+        "structure": "pants",
+        "wearability": "everyday_with_statement",
+        "main_visual_slots": [
+          "outer",
+          "top",
+          "pants"
+        ],
+        "main_colors": [
+          "dove_gray",
+          "ice_blue",
+          "light_gray"
+        ],
+        "conflicts": null,
+        "silhouette": "reviewed_near_threshold_winter_pants",
+        "color_relation": "reviewed_coherent",
+        "persona_evidence": "MELT 的目标色和独立主衣家族形成主要证据；pants 支撑款低竞争，长外层、完整袖长和闭合鞋履关系在成图中可见。",
+        "winter_outdoor": "complete_layers_visually_reviewed"
+      },
+      "confidence": 0.86,
+      "model": "current_codex_session",
+      "prompt_version": "aw-targeted-12-native-v1",
+      "review_level": "individual_contact_sheet_judgment",
+      "evidence_scope": "nonblind individual visual judgment; no temperature, waterproof, snow, or comfort claim",
+      "review_complete": true,
+      "field_status": {
+        "axes": "ai_observed",
+        "expression": "ai_observed",
+        "formality": "ai_observed",
+        "layering": "ai_observed",
+        "persona_scores": "ai_observed",
+        "scenes": "ai_observed",
+        "seasons": "ai_observed",
+        "structure": "ai_observed",
+        "wearability": "ai_observed",
+        "main_visual_slots": "ai_observed",
+        "main_colors": "ai_observed",
+        "conflicts": "ai_observed",
+        "silhouette": "ai_observed",
+        "color_relation": "ai_observed",
+        "persona_evidence": "ai_observed",
+        "winter_outdoor": "ai_observed"
+      },
+      "field_provenance": {
+        "axes": {
+          "source_file": "targeted-batch12-review/recipes-2.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "expression": {
+          "source_file": "targeted-batch12-review/recipes-2.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "formality": {
+          "source_file": "targeted-batch12-review/recipes-2.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "layering": {
+          "source_file": "targeted-batch12-review/recipes-2.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "persona_scores": {
+          "source_file": "targeted-batch12-review/recipes-2.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "scenes": {
+          "source_file": "targeted-batch12-review/recipes-2.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "seasons": {
+          "source_file": "targeted-batch12-review/recipes-2.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "structure": {
+          "source_file": "targeted-batch12-review/recipes-2.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "wearability": {
+          "source_file": "targeted-batch12-review/recipes-2.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "main_visual_slots": {
+          "source_file": "targeted-batch12-review/recipes-2.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "main_colors": {
+          "source_file": "targeted-batch12-review/recipes-2.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "conflicts": {
+          "source_file": "targeted-batch12-review/recipes-2.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "silhouette": {
+          "source_file": "targeted-batch12-review/recipes-2.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "color_relation": {
+          "source_file": "targeted-batch12-review/recipes-2.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "persona_evidence": {
+          "source_file": "targeted-batch12-review/recipes-2.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "winter_outdoor": {
+          "source_file": "targeted-batch12-review/recipes-2.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        }
+      }
+    },
+    {
+      "outfit_id": "outfit_melt_aw-targeted-12_11",
+      "status": "ai_candidate",
+      "record_fingerprint": "682d460c056f897ca1f9e164d8069a26b1114577fe68c208ef722edbb2613a55",
+      "asset_sha256": "73fb6c4434b2bb851b3e7ae8b1b1dbe63d7f5d13cd6b6fa8133881816d84d0cb",
+      "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/05835c7fd188ff2a09fd8a6f.webp",
+      "source_kind": "codex_visual_review",
+      "evidence": "MELT 的目标色和独立主衣家族形成主要证据；skirt 支撑款低竞争，长外层、完整袖长和闭合鞋履关系在成图中可见。",
+      "observations": {
+        "axes": {},
+        "expression": "typical",
+        "formality": "smart_casual",
+        "layering": 2,
+        "persona_scores": {
+          "melt": 0.86
+        },
+        "scenes": [
+          "daily"
+        ],
+        "seasons": [
+          "winter"
+        ],
+        "structure": "skirt",
+        "wearability": "everyday_with_statement",
+        "main_visual_slots": [
+          "outer",
+          "top",
+          "skirt"
+        ],
+        "main_colors": [
+          "dove_gray",
+          "charcoal"
+        ],
+        "conflicts": null,
+        "silhouette": "reviewed_near_threshold_winter_skirt",
+        "color_relation": "reviewed_coherent",
+        "persona_evidence": "MELT 的目标色和独立主衣家族形成主要证据；skirt 支撑款低竞争，长外层、完整袖长和闭合鞋履关系在成图中可见。",
+        "winter_outdoor": "complete_layers_visually_reviewed"
+      },
+      "confidence": 0.86,
+      "model": "current_codex_session",
+      "prompt_version": "aw-targeted-12-native-v1",
+      "review_level": "individual_contact_sheet_judgment",
+      "evidence_scope": "nonblind individual visual judgment; no temperature, waterproof, snow, or comfort claim",
+      "review_complete": true,
+      "field_status": {
+        "axes": "ai_observed",
+        "expression": "ai_observed",
+        "formality": "ai_observed",
+        "layering": "ai_observed",
+        "persona_scores": "ai_observed",
+        "scenes": "ai_observed",
+        "seasons": "ai_observed",
+        "structure": "ai_observed",
+        "wearability": "ai_observed",
+        "main_visual_slots": "ai_observed",
+        "main_colors": "ai_observed",
+        "conflicts": "ai_observed",
+        "silhouette": "ai_observed",
+        "color_relation": "ai_observed",
+        "persona_evidence": "ai_observed",
+        "winter_outdoor": "ai_observed"
+      },
+      "field_provenance": {
+        "axes": {
+          "source_file": "targeted-batch12-review/recipes-2.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "expression": {
+          "source_file": "targeted-batch12-review/recipes-2.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "formality": {
+          "source_file": "targeted-batch12-review/recipes-2.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "layering": {
+          "source_file": "targeted-batch12-review/recipes-2.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "persona_scores": {
+          "source_file": "targeted-batch12-review/recipes-2.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "scenes": {
+          "source_file": "targeted-batch12-review/recipes-2.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "seasons": {
+          "source_file": "targeted-batch12-review/recipes-2.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "structure": {
+          "source_file": "targeted-batch12-review/recipes-2.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "wearability": {
+          "source_file": "targeted-batch12-review/recipes-2.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "main_visual_slots": {
+          "source_file": "targeted-batch12-review/recipes-2.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "main_colors": {
+          "source_file": "targeted-batch12-review/recipes-2.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "conflicts": {
+          "source_file": "targeted-batch12-review/recipes-2.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "silhouette": {
+          "source_file": "targeted-batch12-review/recipes-2.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "color_relation": {
+          "source_file": "targeted-batch12-review/recipes-2.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "persona_evidence": {
+          "source_file": "targeted-batch12-review/recipes-2.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "winter_outdoor": {
+          "source_file": "targeted-batch12-review/recipes-2.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        }
+      }
+    },
+    {
+      "outfit_id": "outfit_melt_aw-targeted-12_12",
+      "status": "ai_candidate",
+      "record_fingerprint": "6d3d71501e6fd54d036eae205a3b05e684a77318102547d78570443fc9c98dcc",
+      "asset_sha256": "e6915440ea7465a21046d00594908067dcf69de5d9e135b69b984ae8be64d8f1",
+      "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/5a61daf8130dc37fcc58c9fe.webp",
+      "source_kind": "codex_visual_review",
+      "evidence": "MELT 的目标色和独立主衣家族形成主要证据；dress 支撑款低竞争，长外层、完整袖长和闭合鞋履关系在成图中可见。",
+      "observations": {
+        "axes": {},
+        "expression": "typical",
+        "formality": "smart_casual",
+        "layering": 2,
+        "persona_scores": {
+          "melt": 0.86
+        },
+        "scenes": [
+          "daily"
+        ],
+        "seasons": [
+          "winter"
+        ],
+        "structure": "dress",
+        "wearability": "everyday_with_statement",
+        "main_visual_slots": [
+          "outer",
+          "dress"
+        ],
+        "main_colors": [
+          "dove_gray",
+          "charcoal"
+        ],
+        "conflicts": null,
+        "silhouette": "reviewed_near_threshold_winter_dress",
+        "color_relation": "reviewed_coherent",
+        "persona_evidence": "MELT 的目标色和独立主衣家族形成主要证据；dress 支撑款低竞争，长外层、完整袖长和闭合鞋履关系在成图中可见。",
+        "winter_outdoor": "complete_layers_visually_reviewed"
+      },
+      "confidence": 0.86,
+      "model": "current_codex_session",
+      "prompt_version": "aw-targeted-12-native-v1",
+      "review_level": "individual_contact_sheet_judgment",
+      "evidence_scope": "nonblind individual visual judgment; no temperature, waterproof, snow, or comfort claim",
+      "review_complete": true,
+      "field_status": {
+        "axes": "ai_observed",
+        "expression": "ai_observed",
+        "formality": "ai_observed",
+        "layering": "ai_observed",
+        "persona_scores": "ai_observed",
+        "scenes": "ai_observed",
+        "seasons": "ai_observed",
+        "structure": "ai_observed",
+        "wearability": "ai_observed",
+        "main_visual_slots": "ai_observed",
+        "main_colors": "ai_observed",
+        "conflicts": "ai_observed",
+        "silhouette": "ai_observed",
+        "color_relation": "ai_observed",
+        "persona_evidence": "ai_observed",
+        "winter_outdoor": "ai_observed"
+      },
+      "field_provenance": {
+        "axes": {
+          "source_file": "targeted-batch12-review/recipes-2.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "expression": {
+          "source_file": "targeted-batch12-review/recipes-2.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "formality": {
+          "source_file": "targeted-batch12-review/recipes-2.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "layering": {
+          "source_file": "targeted-batch12-review/recipes-2.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "persona_scores": {
+          "source_file": "targeted-batch12-review/recipes-2.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "scenes": {
+          "source_file": "targeted-batch12-review/recipes-2.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "seasons": {
+          "source_file": "targeted-batch12-review/recipes-2.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "structure": {
+          "source_file": "targeted-batch12-review/recipes-2.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "wearability": {
+          "source_file": "targeted-batch12-review/recipes-2.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "main_visual_slots": {
+          "source_file": "targeted-batch12-review/recipes-2.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "main_colors": {
+          "source_file": "targeted-batch12-review/recipes-2.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "conflicts": {
+          "source_file": "targeted-batch12-review/recipes-2.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "silhouette": {
+          "source_file": "targeted-batch12-review/recipes-2.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "color_relation": {
+          "source_file": "targeted-batch12-review/recipes-2.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "persona_evidence": {
+          "source_file": "targeted-batch12-review/recipes-2.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "winter_outdoor": {
+          "source_file": "targeted-batch12-review/recipes-2.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        }
+      }
+    },
+    {
+      "outfit_id": "outfit_mute_aw-targeted-12_13",
+      "status": "ai_candidate",
+      "record_fingerprint": "0c2786eaf0b194acf00b581e61dbf252523d5a3ac34ea0dacc295784a59dca41",
+      "asset_sha256": "984ec0d1431cc3b73a292bb67d444ce15449a74f0b78c812b384e8763f0dfdc0",
+      "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/ba544bdd397f43c8f7f1f883.webp",
+      "source_kind": "codex_visual_review",
+      "evidence": "MUTE 的目标色和独立主衣家族形成主要证据；pants 支撑款低竞争，长外层、完整袖长和闭合鞋履关系在成图中可见。",
+      "observations": {
+        "axes": {},
+        "expression": "typical",
+        "formality": "smart_casual",
+        "layering": 2,
+        "persona_scores": {
+          "mute": 0.86
+        },
+        "scenes": [
+          "daily"
+        ],
+        "seasons": [
+          "winter"
+        ],
+        "structure": "pants",
+        "wearability": "everyday_with_statement",
+        "main_visual_slots": [
+          "outer",
+          "top",
+          "pants"
+        ],
+        "main_colors": [
+          "deep_emerald",
+          "ice_blue",
+          "light_gray"
+        ],
+        "conflicts": null,
+        "silhouette": "reviewed_near_threshold_winter_pants",
+        "color_relation": "reviewed_coherent",
+        "persona_evidence": "MUTE 的目标色和独立主衣家族形成主要证据；pants 支撑款低竞争，长外层、完整袖长和闭合鞋履关系在成图中可见。",
+        "winter_outdoor": "complete_layers_visually_reviewed"
+      },
+      "confidence": 0.86,
+      "model": "current_codex_session",
+      "prompt_version": "aw-targeted-12-native-v1",
+      "review_level": "individual_contact_sheet_judgment",
+      "evidence_scope": "nonblind individual visual judgment; no temperature, waterproof, snow, or comfort claim",
+      "review_complete": true,
+      "field_status": {
+        "axes": "ai_observed",
+        "expression": "ai_observed",
+        "formality": "ai_observed",
+        "layering": "ai_observed",
+        "persona_scores": "ai_observed",
+        "scenes": "ai_observed",
+        "seasons": "ai_observed",
+        "structure": "ai_observed",
+        "wearability": "ai_observed",
+        "main_visual_slots": "ai_observed",
+        "main_colors": "ai_observed",
+        "conflicts": "ai_observed",
+        "silhouette": "ai_observed",
+        "color_relation": "ai_observed",
+        "persona_evidence": "ai_observed",
+        "winter_outdoor": "ai_observed"
+      },
+      "field_provenance": {
+        "axes": {
+          "source_file": "targeted-batch12-review/recipes-3.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "expression": {
+          "source_file": "targeted-batch12-review/recipes-3.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "formality": {
+          "source_file": "targeted-batch12-review/recipes-3.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "layering": {
+          "source_file": "targeted-batch12-review/recipes-3.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "persona_scores": {
+          "source_file": "targeted-batch12-review/recipes-3.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "scenes": {
+          "source_file": "targeted-batch12-review/recipes-3.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "seasons": {
+          "source_file": "targeted-batch12-review/recipes-3.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "structure": {
+          "source_file": "targeted-batch12-review/recipes-3.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "wearability": {
+          "source_file": "targeted-batch12-review/recipes-3.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "main_visual_slots": {
+          "source_file": "targeted-batch12-review/recipes-3.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "main_colors": {
+          "source_file": "targeted-batch12-review/recipes-3.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "conflicts": {
+          "source_file": "targeted-batch12-review/recipes-3.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "silhouette": {
+          "source_file": "targeted-batch12-review/recipes-3.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "color_relation": {
+          "source_file": "targeted-batch12-review/recipes-3.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "persona_evidence": {
+          "source_file": "targeted-batch12-review/recipes-3.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "winter_outdoor": {
+          "source_file": "targeted-batch12-review/recipes-3.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        }
+      }
+    },
+    {
+      "outfit_id": "outfit_mute_aw-targeted-12_14",
+      "status": "ai_candidate",
+      "record_fingerprint": "0518c2de284c8644d0d1ae5a5e75caa4c1191937b809c775ab780fa7742a0655",
+      "asset_sha256": "8a07489eb5cbde598c4219c24b8471635ed1c7a944e58fccf484eddab5153aea",
+      "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/b25481b42660134e12fc3f20.webp",
+      "source_kind": "codex_visual_review",
+      "evidence": "MUTE 的目标色和独立主衣家族形成主要证据；skirt 支撑款低竞争，长外层、完整袖长和闭合鞋履关系在成图中可见。",
+      "observations": {
+        "axes": {},
+        "expression": "typical",
+        "formality": "smart_casual",
+        "layering": 2,
+        "persona_scores": {
+          "mute": 0.86
+        },
+        "scenes": [
+          "daily"
+        ],
+        "seasons": [
+          "winter"
+        ],
+        "structure": "skirt",
+        "wearability": "everyday_with_statement",
+        "main_visual_slots": [
+          "outer",
+          "top",
+          "skirt"
+        ],
+        "main_colors": [
+          "deep_emerald",
+          "charcoal"
+        ],
+        "conflicts": null,
+        "silhouette": "reviewed_near_threshold_winter_skirt",
+        "color_relation": "reviewed_coherent",
+        "persona_evidence": "MUTE 的目标色和独立主衣家族形成主要证据；skirt 支撑款低竞争，长外层、完整袖长和闭合鞋履关系在成图中可见。",
+        "winter_outdoor": "complete_layers_visually_reviewed"
+      },
+      "confidence": 0.86,
+      "model": "current_codex_session",
+      "prompt_version": "aw-targeted-12-native-v1",
+      "review_level": "individual_contact_sheet_judgment",
+      "evidence_scope": "nonblind individual visual judgment; no temperature, waterproof, snow, or comfort claim",
+      "review_complete": true,
+      "field_status": {
+        "axes": "ai_observed",
+        "expression": "ai_observed",
+        "formality": "ai_observed",
+        "layering": "ai_observed",
+        "persona_scores": "ai_observed",
+        "scenes": "ai_observed",
+        "seasons": "ai_observed",
+        "structure": "ai_observed",
+        "wearability": "ai_observed",
+        "main_visual_slots": "ai_observed",
+        "main_colors": "ai_observed",
+        "conflicts": "ai_observed",
+        "silhouette": "ai_observed",
+        "color_relation": "ai_observed",
+        "persona_evidence": "ai_observed",
+        "winter_outdoor": "ai_observed"
+      },
+      "field_provenance": {
+        "axes": {
+          "source_file": "targeted-batch12-review/recipes-3.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "expression": {
+          "source_file": "targeted-batch12-review/recipes-3.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "formality": {
+          "source_file": "targeted-batch12-review/recipes-3.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "layering": {
+          "source_file": "targeted-batch12-review/recipes-3.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "persona_scores": {
+          "source_file": "targeted-batch12-review/recipes-3.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "scenes": {
+          "source_file": "targeted-batch12-review/recipes-3.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "seasons": {
+          "source_file": "targeted-batch12-review/recipes-3.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "structure": {
+          "source_file": "targeted-batch12-review/recipes-3.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "wearability": {
+          "source_file": "targeted-batch12-review/recipes-3.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "main_visual_slots": {
+          "source_file": "targeted-batch12-review/recipes-3.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "main_colors": {
+          "source_file": "targeted-batch12-review/recipes-3.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "conflicts": {
+          "source_file": "targeted-batch12-review/recipes-3.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "silhouette": {
+          "source_file": "targeted-batch12-review/recipes-3.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "color_relation": {
+          "source_file": "targeted-batch12-review/recipes-3.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "persona_evidence": {
+          "source_file": "targeted-batch12-review/recipes-3.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "winter_outdoor": {
+          "source_file": "targeted-batch12-review/recipes-3.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        }
+      }
+    },
+    {
+      "outfit_id": "outfit_mute_aw-targeted-12_15",
+      "status": "ai_candidate",
+      "record_fingerprint": "b5fc193bfd96a01af5e0fa829a99071b9b3d750a361c8756d7f71f0de8cabae2",
+      "asset_sha256": "13989bdfbb144c7de3fe546878876b014c93a3d0b539d7bf24e84bfaa458b987",
+      "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/6b8a28489a0fb15714c5cf1d.webp",
+      "source_kind": "codex_visual_review",
+      "evidence": "MUTE 的目标色和独立主衣家族形成主要证据；dress 支撑款低竞争，长外层、完整袖长和闭合鞋履关系在成图中可见。",
+      "observations": {
+        "axes": {},
+        "expression": "typical",
+        "formality": "smart_casual",
+        "layering": 2,
+        "persona_scores": {
+          "mute": 0.86
+        },
+        "scenes": [
+          "daily"
+        ],
+        "seasons": [
+          "winter"
+        ],
+        "structure": "dress",
+        "wearability": "everyday_with_statement",
+        "main_visual_slots": [
+          "outer",
+          "dress"
+        ],
+        "main_colors": [
+          "deep_emerald",
+          "charcoal"
+        ],
+        "conflicts": null,
+        "silhouette": "reviewed_near_threshold_winter_dress",
+        "color_relation": "reviewed_coherent",
+        "persona_evidence": "MUTE 的目标色和独立主衣家族形成主要证据；dress 支撑款低竞争，长外层、完整袖长和闭合鞋履关系在成图中可见。",
+        "winter_outdoor": "complete_layers_visually_reviewed"
+      },
+      "confidence": 0.86,
+      "model": "current_codex_session",
+      "prompt_version": "aw-targeted-12-native-v1",
+      "review_level": "individual_contact_sheet_judgment",
+      "evidence_scope": "nonblind individual visual judgment; no temperature, waterproof, snow, or comfort claim",
+      "review_complete": true,
+      "field_status": {
+        "axes": "ai_observed",
+        "expression": "ai_observed",
+        "formality": "ai_observed",
+        "layering": "ai_observed",
+        "persona_scores": "ai_observed",
+        "scenes": "ai_observed",
+        "seasons": "ai_observed",
+        "structure": "ai_observed",
+        "wearability": "ai_observed",
+        "main_visual_slots": "ai_observed",
+        "main_colors": "ai_observed",
+        "conflicts": "ai_observed",
+        "silhouette": "ai_observed",
+        "color_relation": "ai_observed",
+        "persona_evidence": "ai_observed",
+        "winter_outdoor": "ai_observed"
+      },
+      "field_provenance": {
+        "axes": {
+          "source_file": "targeted-batch12-review/recipes-3.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "expression": {
+          "source_file": "targeted-batch12-review/recipes-3.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "formality": {
+          "source_file": "targeted-batch12-review/recipes-3.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "layering": {
+          "source_file": "targeted-batch12-review/recipes-3.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "persona_scores": {
+          "source_file": "targeted-batch12-review/recipes-3.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "scenes": {
+          "source_file": "targeted-batch12-review/recipes-3.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "seasons": {
+          "source_file": "targeted-batch12-review/recipes-3.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "structure": {
+          "source_file": "targeted-batch12-review/recipes-3.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "wearability": {
+          "source_file": "targeted-batch12-review/recipes-3.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "main_visual_slots": {
+          "source_file": "targeted-batch12-review/recipes-3.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "main_colors": {
+          "source_file": "targeted-batch12-review/recipes-3.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "conflicts": {
+          "source_file": "targeted-batch12-review/recipes-3.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "silhouette": {
+          "source_file": "targeted-batch12-review/recipes-3.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "color_relation": {
+          "source_file": "targeted-batch12-review/recipes-3.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "persona_evidence": {
+          "source_file": "targeted-batch12-review/recipes-3.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "winter_outdoor": {
+          "source_file": "targeted-batch12-review/recipes-3.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        }
+      }
+    },
+    {
+      "outfit_id": "outfit_wabi_aw-targeted-12_16",
+      "status": "ai_candidate",
+      "record_fingerprint": "3ee38d87fa15d1bfe9698a9398254e0607c7e8cd960bd8e7f31ec57fc13ef5f4",
+      "asset_sha256": "e1271641fb1be9b8776652d93a8487f2e2768bb0a8b468434c260dc79972dcf3",
+      "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/8c9eba8cd5442d6f109a04ca.webp",
+      "source_kind": "codex_visual_review",
+      "evidence": "WABI 的目标色和独立主衣家族形成主要证据；pants 支撑款低竞争，长外层、完整袖长和闭合鞋履关系在成图中可见。",
+      "observations": {
+        "axes": {},
+        "expression": "typical",
+        "formality": "smart_casual",
+        "layering": 2,
+        "persona_scores": {
+          "wabi": 0.86
+        },
+        "scenes": [
+          "daily"
+        ],
+        "seasons": [
+          "winter"
+        ],
+        "structure": "pants",
+        "wearability": "everyday_with_statement",
+        "main_visual_slots": [
+          "outer",
+          "top",
+          "pants"
+        ],
+        "main_colors": [
+          "vivid_cobalt_blue",
+          "ice_blue",
+          "light_gray"
+        ],
+        "conflicts": null,
+        "silhouette": "reviewed_near_threshold_winter_pants",
+        "color_relation": "reviewed_coherent",
+        "persona_evidence": "WABI 的目标色和独立主衣家族形成主要证据；pants 支撑款低竞争，长外层、完整袖长和闭合鞋履关系在成图中可见。",
+        "winter_outdoor": "complete_layers_visually_reviewed"
+      },
+      "confidence": 0.86,
+      "model": "current_codex_session",
+      "prompt_version": "aw-targeted-12-native-v1",
+      "review_level": "individual_contact_sheet_judgment",
+      "evidence_scope": "nonblind individual visual judgment; no temperature, waterproof, snow, or comfort claim",
+      "review_complete": true,
+      "field_status": {
+        "axes": "ai_observed",
+        "expression": "ai_observed",
+        "formality": "ai_observed",
+        "layering": "ai_observed",
+        "persona_scores": "ai_observed",
+        "scenes": "ai_observed",
+        "seasons": "ai_observed",
+        "structure": "ai_observed",
+        "wearability": "ai_observed",
+        "main_visual_slots": "ai_observed",
+        "main_colors": "ai_observed",
+        "conflicts": "ai_observed",
+        "silhouette": "ai_observed",
+        "color_relation": "ai_observed",
+        "persona_evidence": "ai_observed",
+        "winter_outdoor": "ai_observed"
+      },
+      "field_provenance": {
+        "axes": {
+          "source_file": "targeted-batch12-review/recipes-3.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "expression": {
+          "source_file": "targeted-batch12-review/recipes-3.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "formality": {
+          "source_file": "targeted-batch12-review/recipes-3.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "layering": {
+          "source_file": "targeted-batch12-review/recipes-3.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "persona_scores": {
+          "source_file": "targeted-batch12-review/recipes-3.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "scenes": {
+          "source_file": "targeted-batch12-review/recipes-3.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "seasons": {
+          "source_file": "targeted-batch12-review/recipes-3.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "structure": {
+          "source_file": "targeted-batch12-review/recipes-3.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "wearability": {
+          "source_file": "targeted-batch12-review/recipes-3.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "main_visual_slots": {
+          "source_file": "targeted-batch12-review/recipes-3.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "main_colors": {
+          "source_file": "targeted-batch12-review/recipes-3.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "conflicts": {
+          "source_file": "targeted-batch12-review/recipes-3.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "silhouette": {
+          "source_file": "targeted-batch12-review/recipes-3.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "color_relation": {
+          "source_file": "targeted-batch12-review/recipes-3.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "persona_evidence": {
+          "source_file": "targeted-batch12-review/recipes-3.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "winter_outdoor": {
+          "source_file": "targeted-batch12-review/recipes-3.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        }
+      }
+    },
+    {
+      "outfit_id": "outfit_wabi_aw-targeted-12_17",
+      "status": "ai_candidate",
+      "record_fingerprint": "b9c86d6509eb5ce6d23cb1b57a947551d84ff9e25af65bfba4a4788a111be76f",
+      "asset_sha256": "37caffa60df1a696d02d2fd8791c7f613734ee7edfb3628734bc15fa2f85fa3a",
+      "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/e419f36af3b9251f6fa9ed3b.webp",
+      "source_kind": "codex_visual_review",
+      "evidence": "WABI 的目标色和独立主衣家族形成主要证据；skirt 支撑款低竞争，长外层、完整袖长和闭合鞋履关系在成图中可见。",
+      "observations": {
+        "axes": {},
+        "expression": "typical",
+        "formality": "smart_casual",
+        "layering": 2,
+        "persona_scores": {
+          "wabi": 0.86
+        },
+        "scenes": [
+          "daily"
+        ],
+        "seasons": [
+          "winter"
+        ],
+        "structure": "skirt",
+        "wearability": "everyday_with_statement",
+        "main_visual_slots": [
+          "outer",
+          "top",
+          "skirt"
+        ],
+        "main_colors": [
+          "vivid_cobalt_blue",
+          "charcoal"
+        ],
+        "conflicts": null,
+        "silhouette": "reviewed_near_threshold_winter_skirt",
+        "color_relation": "reviewed_coherent",
+        "persona_evidence": "WABI 的目标色和独立主衣家族形成主要证据；skirt 支撑款低竞争，长外层、完整袖长和闭合鞋履关系在成图中可见。",
+        "winter_outdoor": "complete_layers_visually_reviewed"
+      },
+      "confidence": 0.86,
+      "model": "current_codex_session",
+      "prompt_version": "aw-targeted-12-native-v1",
+      "review_level": "individual_contact_sheet_judgment",
+      "evidence_scope": "nonblind individual visual judgment; no temperature, waterproof, snow, or comfort claim",
+      "review_complete": true,
+      "field_status": {
+        "axes": "ai_observed",
+        "expression": "ai_observed",
+        "formality": "ai_observed",
+        "layering": "ai_observed",
+        "persona_scores": "ai_observed",
+        "scenes": "ai_observed",
+        "seasons": "ai_observed",
+        "structure": "ai_observed",
+        "wearability": "ai_observed",
+        "main_visual_slots": "ai_observed",
+        "main_colors": "ai_observed",
+        "conflicts": "ai_observed",
+        "silhouette": "ai_observed",
+        "color_relation": "ai_observed",
+        "persona_evidence": "ai_observed",
+        "winter_outdoor": "ai_observed"
+      },
+      "field_provenance": {
+        "axes": {
+          "source_file": "targeted-batch12-review/recipes-3.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "expression": {
+          "source_file": "targeted-batch12-review/recipes-3.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "formality": {
+          "source_file": "targeted-batch12-review/recipes-3.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "layering": {
+          "source_file": "targeted-batch12-review/recipes-3.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "persona_scores": {
+          "source_file": "targeted-batch12-review/recipes-3.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "scenes": {
+          "source_file": "targeted-batch12-review/recipes-3.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "seasons": {
+          "source_file": "targeted-batch12-review/recipes-3.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "structure": {
+          "source_file": "targeted-batch12-review/recipes-3.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "wearability": {
+          "source_file": "targeted-batch12-review/recipes-3.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "main_visual_slots": {
+          "source_file": "targeted-batch12-review/recipes-3.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "main_colors": {
+          "source_file": "targeted-batch12-review/recipes-3.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "conflicts": {
+          "source_file": "targeted-batch12-review/recipes-3.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "silhouette": {
+          "source_file": "targeted-batch12-review/recipes-3.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "color_relation": {
+          "source_file": "targeted-batch12-review/recipes-3.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "persona_evidence": {
+          "source_file": "targeted-batch12-review/recipes-3.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "winter_outdoor": {
+          "source_file": "targeted-batch12-review/recipes-3.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        }
+      }
+    },
+    {
+      "outfit_id": "outfit_wabi_aw-targeted-12_18",
+      "status": "ai_candidate",
+      "record_fingerprint": "bbdb2e552f9c2b47e9c09c99d2b19a903cf85ff89f976a50663d62b12f2e189a",
+      "asset_sha256": "1a6cd7af89f75d0bfc0a2420c52cd38da9e7105e6450a520f20476fcca4f1e14",
+      "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/683c5de1f15b963f44bdd3ed.webp",
+      "source_kind": "codex_visual_review",
+      "evidence": "WABI 的目标色和独立主衣家族形成主要证据；dress 支撑款低竞争，长外层、完整袖长和闭合鞋履关系在成图中可见。",
+      "observations": {
+        "axes": {},
+        "expression": "typical",
+        "formality": "smart_casual",
+        "layering": 2,
+        "persona_scores": {
+          "wabi": 0.86
+        },
+        "scenes": [
+          "daily"
+        ],
+        "seasons": [
+          "winter"
+        ],
+        "structure": "dress",
+        "wearability": "everyday_with_statement",
+        "main_visual_slots": [
+          "outer",
+          "dress"
+        ],
+        "main_colors": [
+          "vivid_cobalt_blue",
+          "charcoal"
+        ],
+        "conflicts": null,
+        "silhouette": "reviewed_near_threshold_winter_dress",
+        "color_relation": "reviewed_coherent",
+        "persona_evidence": "WABI 的目标色和独立主衣家族形成主要证据；dress 支撑款低竞争，长外层、完整袖长和闭合鞋履关系在成图中可见。",
+        "winter_outdoor": "complete_layers_visually_reviewed"
+      },
+      "confidence": 0.86,
+      "model": "current_codex_session",
+      "prompt_version": "aw-targeted-12-native-v1",
+      "review_level": "individual_contact_sheet_judgment",
+      "evidence_scope": "nonblind individual visual judgment; no temperature, waterproof, snow, or comfort claim",
+      "review_complete": true,
+      "field_status": {
+        "axes": "ai_observed",
+        "expression": "ai_observed",
+        "formality": "ai_observed",
+        "layering": "ai_observed",
+        "persona_scores": "ai_observed",
+        "scenes": "ai_observed",
+        "seasons": "ai_observed",
+        "structure": "ai_observed",
+        "wearability": "ai_observed",
+        "main_visual_slots": "ai_observed",
+        "main_colors": "ai_observed",
+        "conflicts": "ai_observed",
+        "silhouette": "ai_observed",
+        "color_relation": "ai_observed",
+        "persona_evidence": "ai_observed",
+        "winter_outdoor": "ai_observed"
+      },
+      "field_provenance": {
+        "axes": {
+          "source_file": "targeted-batch12-review/recipes-3.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "expression": {
+          "source_file": "targeted-batch12-review/recipes-3.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "formality": {
+          "source_file": "targeted-batch12-review/recipes-3.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "layering": {
+          "source_file": "targeted-batch12-review/recipes-3.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "persona_scores": {
+          "source_file": "targeted-batch12-review/recipes-3.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "scenes": {
+          "source_file": "targeted-batch12-review/recipes-3.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "seasons": {
+          "source_file": "targeted-batch12-review/recipes-3.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "structure": {
+          "source_file": "targeted-batch12-review/recipes-3.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "wearability": {
+          "source_file": "targeted-batch12-review/recipes-3.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "main_visual_slots": {
+          "source_file": "targeted-batch12-review/recipes-3.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "main_colors": {
+          "source_file": "targeted-batch12-review/recipes-3.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "conflicts": {
+          "source_file": "targeted-batch12-review/recipes-3.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "silhouette": {
+          "source_file": "targeted-batch12-review/recipes-3.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "color_relation": {
+          "source_file": "targeted-batch12-review/recipes-3.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "persona_evidence": {
+          "source_file": "targeted-batch12-review/recipes-3.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "winter_outdoor": {
+          "source_file": "targeted-batch12-review/recipes-3.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        }
+      }
+    },
+    {
+      "outfit_id": "outfit_wabi_aw-targeted-12_19",
+      "status": "ai_candidate",
+      "record_fingerprint": "3f64c5f866a7b0e997e8f0f92a3438354b9ed0f6ce52a9759ccdb06f205f0d78",
+      "asset_sha256": "b64f42eb9aa9fdf4454643038557da59f0cd00a31fa197a0992329079530bb48",
+      "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/78e7c3c766100bfeb956312e.webp",
+      "source_kind": "codex_visual_review",
+      "evidence": "WABI 的目标色和独立主衣家族形成主要证据；pants 支撑款低竞争，长外层、完整袖长和闭合鞋履关系在成图中可见。",
+      "observations": {
+        "axes": {},
+        "expression": "typical",
+        "formality": "smart_casual",
+        "layering": 2,
+        "persona_scores": {
+          "wabi": 0.86
+        },
+        "scenes": [
+          "daily"
+        ],
+        "seasons": [
+          "winter"
+        ],
+        "structure": "pants",
+        "wearability": "everyday_with_statement",
+        "main_visual_slots": [
+          "outer",
+          "top",
+          "pants"
+        ],
+        "main_colors": [
+          "indigo",
+          "muted_slate_blue",
+          "ice_blue",
+          "light_gray"
+        ],
+        "conflicts": null,
+        "silhouette": "reviewed_near_threshold_winter_pants",
+        "color_relation": "reviewed_coherent",
+        "persona_evidence": "WABI 的目标色和独立主衣家族形成主要证据；pants 支撑款低竞争，长外层、完整袖长和闭合鞋履关系在成图中可见。",
+        "winter_outdoor": "complete_layers_visually_reviewed"
+      },
+      "confidence": 0.86,
+      "model": "current_codex_session",
+      "prompt_version": "aw-targeted-12-native-v1",
+      "review_level": "individual_contact_sheet_judgment",
+      "evidence_scope": "nonblind individual visual judgment; no temperature, waterproof, snow, or comfort claim",
+      "review_complete": true,
+      "field_status": {
+        "axes": "ai_observed",
+        "expression": "ai_observed",
+        "formality": "ai_observed",
+        "layering": "ai_observed",
+        "persona_scores": "ai_observed",
+        "scenes": "ai_observed",
+        "seasons": "ai_observed",
+        "structure": "ai_observed",
+        "wearability": "ai_observed",
+        "main_visual_slots": "ai_observed",
+        "main_colors": "ai_observed",
+        "conflicts": "ai_observed",
+        "silhouette": "ai_observed",
+        "color_relation": "ai_observed",
+        "persona_evidence": "ai_observed",
+        "winter_outdoor": "ai_observed"
+      },
+      "field_provenance": {
+        "axes": {
+          "source_file": "targeted-batch12-review/recipes-4.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "expression": {
+          "source_file": "targeted-batch12-review/recipes-4.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "formality": {
+          "source_file": "targeted-batch12-review/recipes-4.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "layering": {
+          "source_file": "targeted-batch12-review/recipes-4.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "persona_scores": {
+          "source_file": "targeted-batch12-review/recipes-4.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "scenes": {
+          "source_file": "targeted-batch12-review/recipes-4.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "seasons": {
+          "source_file": "targeted-batch12-review/recipes-4.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "structure": {
+          "source_file": "targeted-batch12-review/recipes-4.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "wearability": {
+          "source_file": "targeted-batch12-review/recipes-4.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "main_visual_slots": {
+          "source_file": "targeted-batch12-review/recipes-4.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "main_colors": {
+          "source_file": "targeted-batch12-review/recipes-4.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "conflicts": {
+          "source_file": "targeted-batch12-review/recipes-4.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "silhouette": {
+          "source_file": "targeted-batch12-review/recipes-4.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "color_relation": {
+          "source_file": "targeted-batch12-review/recipes-4.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "persona_evidence": {
+          "source_file": "targeted-batch12-review/recipes-4.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "winter_outdoor": {
+          "source_file": "targeted-batch12-review/recipes-4.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        }
+      }
+    },
+    {
+      "outfit_id": "outfit_wabi_aw-targeted-12_20",
+      "status": "ai_candidate",
+      "record_fingerprint": "2eeae59c8072537c5a70843f8c11a52edf873b63adc5d027cbba806a8a19ab8b",
+      "asset_sha256": "8e9ebe24999d330282ec32f086cde9d263309c3b03405d3d17ba79b37d10255e",
+      "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/81ae6a2b6c53118cd74cf584.webp",
+      "source_kind": "codex_visual_review",
+      "evidence": "WABI 的目标色和独立主衣家族形成主要证据；skirt 支撑款低竞争，长外层、完整袖长和闭合鞋履关系在成图中可见。",
+      "observations": {
+        "axes": {},
+        "expression": "typical",
+        "formality": "smart_casual",
+        "layering": 2,
+        "persona_scores": {
+          "wabi": 0.86
+        },
+        "scenes": [
+          "daily"
+        ],
+        "seasons": [
+          "winter"
+        ],
+        "structure": "skirt",
+        "wearability": "everyday_with_statement",
+        "main_visual_slots": [
+          "outer",
+          "top",
+          "skirt"
+        ],
+        "main_colors": [
+          "indigo",
+          "muted_slate_blue",
+          "charcoal"
+        ],
+        "conflicts": null,
+        "silhouette": "reviewed_near_threshold_winter_skirt",
+        "color_relation": "reviewed_coherent",
+        "persona_evidence": "WABI 的目标色和独立主衣家族形成主要证据；skirt 支撑款低竞争，长外层、完整袖长和闭合鞋履关系在成图中可见。",
+        "winter_outdoor": "complete_layers_visually_reviewed"
+      },
+      "confidence": 0.86,
+      "model": "current_codex_session",
+      "prompt_version": "aw-targeted-12-native-v1",
+      "review_level": "individual_contact_sheet_judgment",
+      "evidence_scope": "nonblind individual visual judgment; no temperature, waterproof, snow, or comfort claim",
+      "review_complete": true,
+      "field_status": {
+        "axes": "ai_observed",
+        "expression": "ai_observed",
+        "formality": "ai_observed",
+        "layering": "ai_observed",
+        "persona_scores": "ai_observed",
+        "scenes": "ai_observed",
+        "seasons": "ai_observed",
+        "structure": "ai_observed",
+        "wearability": "ai_observed",
+        "main_visual_slots": "ai_observed",
+        "main_colors": "ai_observed",
+        "conflicts": "ai_observed",
+        "silhouette": "ai_observed",
+        "color_relation": "ai_observed",
+        "persona_evidence": "ai_observed",
+        "winter_outdoor": "ai_observed"
+      },
+      "field_provenance": {
+        "axes": {
+          "source_file": "targeted-batch12-review/recipes-4.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "expression": {
+          "source_file": "targeted-batch12-review/recipes-4.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "formality": {
+          "source_file": "targeted-batch12-review/recipes-4.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "layering": {
+          "source_file": "targeted-batch12-review/recipes-4.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "persona_scores": {
+          "source_file": "targeted-batch12-review/recipes-4.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "scenes": {
+          "source_file": "targeted-batch12-review/recipes-4.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "seasons": {
+          "source_file": "targeted-batch12-review/recipes-4.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "structure": {
+          "source_file": "targeted-batch12-review/recipes-4.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "wearability": {
+          "source_file": "targeted-batch12-review/recipes-4.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "main_visual_slots": {
+          "source_file": "targeted-batch12-review/recipes-4.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "main_colors": {
+          "source_file": "targeted-batch12-review/recipes-4.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "conflicts": {
+          "source_file": "targeted-batch12-review/recipes-4.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "silhouette": {
+          "source_file": "targeted-batch12-review/recipes-4.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "color_relation": {
+          "source_file": "targeted-batch12-review/recipes-4.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "persona_evidence": {
+          "source_file": "targeted-batch12-review/recipes-4.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "winter_outdoor": {
+          "source_file": "targeted-batch12-review/recipes-4.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        }
+      }
+    },
+    {
+      "outfit_id": "outfit_wabi_aw-targeted-12_21",
+      "status": "ai_candidate",
+      "record_fingerprint": "797684fa9cb8673ee11179f430784461da9469071e6d3c59dbd684a7b8192635",
+      "asset_sha256": "95d5ab2f2431e1736891b65662ba9b71f458b108b8bbd6d1d4ec29881d891908",
+      "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/b0bea1e12e627d8f285b8638.webp",
+      "source_kind": "codex_visual_review",
+      "evidence": "WABI 的目标色和独立主衣家族形成主要证据；dress 支撑款低竞争，长外层、完整袖长和闭合鞋履关系在成图中可见。",
+      "observations": {
+        "axes": {},
+        "expression": "typical",
+        "formality": "smart_casual",
+        "layering": 2,
+        "persona_scores": {
+          "wabi": 0.86
+        },
+        "scenes": [
+          "daily"
+        ],
+        "seasons": [
+          "winter"
+        ],
+        "structure": "dress",
+        "wearability": "everyday_with_statement",
+        "main_visual_slots": [
+          "outer",
+          "dress"
+        ],
+        "main_colors": [
+          "indigo",
+          "muted_slate_blue",
+          "charcoal"
+        ],
+        "conflicts": null,
+        "silhouette": "reviewed_near_threshold_winter_dress",
+        "color_relation": "reviewed_coherent",
+        "persona_evidence": "WABI 的目标色和独立主衣家族形成主要证据；dress 支撑款低竞争，长外层、完整袖长和闭合鞋履关系在成图中可见。",
+        "winter_outdoor": "complete_layers_visually_reviewed"
+      },
+      "confidence": 0.86,
+      "model": "current_codex_session",
+      "prompt_version": "aw-targeted-12-native-v1",
+      "review_level": "individual_contact_sheet_judgment",
+      "evidence_scope": "nonblind individual visual judgment; no temperature, waterproof, snow, or comfort claim",
+      "review_complete": true,
+      "field_status": {
+        "axes": "ai_observed",
+        "expression": "ai_observed",
+        "formality": "ai_observed",
+        "layering": "ai_observed",
+        "persona_scores": "ai_observed",
+        "scenes": "ai_observed",
+        "seasons": "ai_observed",
+        "structure": "ai_observed",
+        "wearability": "ai_observed",
+        "main_visual_slots": "ai_observed",
+        "main_colors": "ai_observed",
+        "conflicts": "ai_observed",
+        "silhouette": "ai_observed",
+        "color_relation": "ai_observed",
+        "persona_evidence": "ai_observed",
+        "winter_outdoor": "ai_observed"
+      },
+      "field_provenance": {
+        "axes": {
+          "source_file": "targeted-batch12-review/recipes-4.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "expression": {
+          "source_file": "targeted-batch12-review/recipes-4.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "formality": {
+          "source_file": "targeted-batch12-review/recipes-4.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "layering": {
+          "source_file": "targeted-batch12-review/recipes-4.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "persona_scores": {
+          "source_file": "targeted-batch12-review/recipes-4.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "scenes": {
+          "source_file": "targeted-batch12-review/recipes-4.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "seasons": {
+          "source_file": "targeted-batch12-review/recipes-4.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "structure": {
+          "source_file": "targeted-batch12-review/recipes-4.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "wearability": {
+          "source_file": "targeted-batch12-review/recipes-4.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "main_visual_slots": {
+          "source_file": "targeted-batch12-review/recipes-4.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "main_colors": {
+          "source_file": "targeted-batch12-review/recipes-4.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "conflicts": {
+          "source_file": "targeted-batch12-review/recipes-4.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "silhouette": {
+          "source_file": "targeted-batch12-review/recipes-4.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "color_relation": {
+          "source_file": "targeted-batch12-review/recipes-4.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "persona_evidence": {
+          "source_file": "targeted-batch12-review/recipes-4.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "winter_outdoor": {
+          "source_file": "targeted-batch12-review/recipes-4.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        }
+      }
+    },
+    {
+      "outfit_id": "outfit_film_aw-targeted-12_22",
+      "status": "ai_candidate",
+      "record_fingerprint": "5ebef704847a2b91a86d31eafc73f131c07e28c9f345447cb209218c0096f222",
+      "asset_sha256": "3b322753a6e5dc2a5c09f8e751fcd0ff67b31a6ef9571d6c83e98f3eb09f23ae",
+      "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/d51d1ca5e210d279a770d095.webp",
+      "source_kind": "codex_visual_review",
+      "evidence": "FILM 的目标色和独立主衣家族形成主要证据；pants 支撑款低竞争，长外层、完整袖长和闭合鞋履关系在成图中可见。",
+      "observations": {
+        "axes": {},
+        "expression": "typical",
+        "formality": "smart_casual",
+        "layering": 2,
+        "persona_scores": {
+          "film": 0.86
+        },
+        "scenes": [
+          "daily"
+        ],
+        "seasons": [
+          "winter"
+        ],
+        "structure": "pants",
+        "wearability": "everyday_with_statement",
+        "main_visual_slots": [
+          "outer",
+          "top",
+          "pants"
+        ],
+        "main_colors": [
+          "black",
+          "ivory",
+          "ice_blue",
+          "light_gray"
+        ],
+        "conflicts": null,
+        "silhouette": "reviewed_near_threshold_winter_pants",
+        "color_relation": "reviewed_coherent",
+        "persona_evidence": "FILM 的目标色和独立主衣家族形成主要证据；pants 支撑款低竞争，长外层、完整袖长和闭合鞋履关系在成图中可见。",
+        "winter_outdoor": "complete_layers_visually_reviewed"
+      },
+      "confidence": 0.86,
+      "model": "current_codex_session",
+      "prompt_version": "aw-targeted-12-native-v1",
+      "review_level": "individual_contact_sheet_judgment",
+      "evidence_scope": "nonblind individual visual judgment; no temperature, waterproof, snow, or comfort claim",
+      "review_complete": true,
+      "field_status": {
+        "axes": "ai_observed",
+        "expression": "ai_observed",
+        "formality": "ai_observed",
+        "layering": "ai_observed",
+        "persona_scores": "ai_observed",
+        "scenes": "ai_observed",
+        "seasons": "ai_observed",
+        "structure": "ai_observed",
+        "wearability": "ai_observed",
+        "main_visual_slots": "ai_observed",
+        "main_colors": "ai_observed",
+        "conflicts": "ai_observed",
+        "silhouette": "ai_observed",
+        "color_relation": "ai_observed",
+        "persona_evidence": "ai_observed",
+        "winter_outdoor": "ai_observed"
+      },
+      "field_provenance": {
+        "axes": {
+          "source_file": "targeted-batch12-review/recipes-4.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "expression": {
+          "source_file": "targeted-batch12-review/recipes-4.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "formality": {
+          "source_file": "targeted-batch12-review/recipes-4.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "layering": {
+          "source_file": "targeted-batch12-review/recipes-4.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "persona_scores": {
+          "source_file": "targeted-batch12-review/recipes-4.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "scenes": {
+          "source_file": "targeted-batch12-review/recipes-4.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "seasons": {
+          "source_file": "targeted-batch12-review/recipes-4.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "structure": {
+          "source_file": "targeted-batch12-review/recipes-4.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "wearability": {
+          "source_file": "targeted-batch12-review/recipes-4.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "main_visual_slots": {
+          "source_file": "targeted-batch12-review/recipes-4.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "main_colors": {
+          "source_file": "targeted-batch12-review/recipes-4.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "conflicts": {
+          "source_file": "targeted-batch12-review/recipes-4.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "silhouette": {
+          "source_file": "targeted-batch12-review/recipes-4.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "color_relation": {
+          "source_file": "targeted-batch12-review/recipes-4.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "persona_evidence": {
+          "source_file": "targeted-batch12-review/recipes-4.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "winter_outdoor": {
+          "source_file": "targeted-batch12-review/recipes-4.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        }
+      }
+    },
+    {
+      "outfit_id": "outfit_film_aw-targeted-12_23",
+      "status": "ai_candidate",
+      "record_fingerprint": "f2067ca1f7cfe140d1adb50792d300fb5d6156cb171268814c1b514916c3a447",
+      "asset_sha256": "843b730226115ed9b70e9986c184ff1c1190ab61883bf11738ce710daac53841",
+      "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/ba6e13286dbe10a5981eb0fb.webp",
+      "source_kind": "codex_visual_review",
+      "evidence": "FILM 的目标色和独立主衣家族形成主要证据；skirt 支撑款低竞争，长外层、完整袖长和闭合鞋履关系在成图中可见。",
+      "observations": {
+        "axes": {},
+        "expression": "typical",
+        "formality": "smart_casual",
+        "layering": 2,
+        "persona_scores": {
+          "film": 0.86
+        },
+        "scenes": [
+          "daily"
+        ],
+        "seasons": [
+          "winter"
+        ],
+        "structure": "skirt",
+        "wearability": "everyday_with_statement",
+        "main_visual_slots": [
+          "outer",
+          "top",
+          "skirt"
+        ],
+        "main_colors": [
+          "black",
+          "ivory",
+          "charcoal"
+        ],
+        "conflicts": null,
+        "silhouette": "reviewed_near_threshold_winter_skirt",
+        "color_relation": "reviewed_coherent",
+        "persona_evidence": "FILM 的目标色和独立主衣家族形成主要证据；skirt 支撑款低竞争，长外层、完整袖长和闭合鞋履关系在成图中可见。",
+        "winter_outdoor": "complete_layers_visually_reviewed"
+      },
+      "confidence": 0.86,
+      "model": "current_codex_session",
+      "prompt_version": "aw-targeted-12-native-v1",
+      "review_level": "individual_contact_sheet_judgment",
+      "evidence_scope": "nonblind individual visual judgment; no temperature, waterproof, snow, or comfort claim",
+      "review_complete": true,
+      "field_status": {
+        "axes": "ai_observed",
+        "expression": "ai_observed",
+        "formality": "ai_observed",
+        "layering": "ai_observed",
+        "persona_scores": "ai_observed",
+        "scenes": "ai_observed",
+        "seasons": "ai_observed",
+        "structure": "ai_observed",
+        "wearability": "ai_observed",
+        "main_visual_slots": "ai_observed",
+        "main_colors": "ai_observed",
+        "conflicts": "ai_observed",
+        "silhouette": "ai_observed",
+        "color_relation": "ai_observed",
+        "persona_evidence": "ai_observed",
+        "winter_outdoor": "ai_observed"
+      },
+      "field_provenance": {
+        "axes": {
+          "source_file": "targeted-batch12-review/recipes-4.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "expression": {
+          "source_file": "targeted-batch12-review/recipes-4.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "formality": {
+          "source_file": "targeted-batch12-review/recipes-4.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "layering": {
+          "source_file": "targeted-batch12-review/recipes-4.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "persona_scores": {
+          "source_file": "targeted-batch12-review/recipes-4.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "scenes": {
+          "source_file": "targeted-batch12-review/recipes-4.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "seasons": {
+          "source_file": "targeted-batch12-review/recipes-4.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "structure": {
+          "source_file": "targeted-batch12-review/recipes-4.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "wearability": {
+          "source_file": "targeted-batch12-review/recipes-4.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "main_visual_slots": {
+          "source_file": "targeted-batch12-review/recipes-4.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "main_colors": {
+          "source_file": "targeted-batch12-review/recipes-4.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "conflicts": {
+          "source_file": "targeted-batch12-review/recipes-4.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "silhouette": {
+          "source_file": "targeted-batch12-review/recipes-4.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "color_relation": {
+          "source_file": "targeted-batch12-review/recipes-4.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "persona_evidence": {
+          "source_file": "targeted-batch12-review/recipes-4.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "winter_outdoor": {
+          "source_file": "targeted-batch12-review/recipes-4.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        }
+      }
+    },
+    {
+      "outfit_id": "outfit_film_aw-targeted-12_24",
+      "status": "ai_candidate",
+      "record_fingerprint": "c0f60b7ca0be13367e6a115c6d5c7b1f1b1f6150972ebe71b59abe9db4944ebb",
+      "asset_sha256": "85a571d9b9b7121ce9e1e1644de538f4b5e02d7aaf2b51acba3fe00a6f440062",
+      "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/2c92c0ac520739ace133f9f5.webp",
+      "source_kind": "codex_visual_review",
+      "evidence": "FILM 的目标色和独立主衣家族形成主要证据；dress 支撑款低竞争，长外层、完整袖长和闭合鞋履关系在成图中可见。",
+      "observations": {
+        "axes": {},
+        "expression": "typical",
+        "formality": "smart_casual",
+        "layering": 2,
+        "persona_scores": {
+          "film": 0.86
+        },
+        "scenes": [
+          "daily"
+        ],
+        "seasons": [
+          "winter"
+        ],
+        "structure": "dress",
+        "wearability": "everyday_with_statement",
+        "main_visual_slots": [
+          "outer",
+          "dress"
+        ],
+        "main_colors": [
+          "black",
+          "ivory",
+          "charcoal"
+        ],
+        "conflicts": null,
+        "silhouette": "reviewed_near_threshold_winter_dress",
+        "color_relation": "reviewed_coherent",
+        "persona_evidence": "FILM 的目标色和独立主衣家族形成主要证据；dress 支撑款低竞争，长外层、完整袖长和闭合鞋履关系在成图中可见。",
+        "winter_outdoor": "complete_layers_visually_reviewed"
+      },
+      "confidence": 0.86,
+      "model": "current_codex_session",
+      "prompt_version": "aw-targeted-12-native-v1",
+      "review_level": "individual_contact_sheet_judgment",
+      "evidence_scope": "nonblind individual visual judgment; no temperature, waterproof, snow, or comfort claim",
+      "review_complete": true,
+      "field_status": {
+        "axes": "ai_observed",
+        "expression": "ai_observed",
+        "formality": "ai_observed",
+        "layering": "ai_observed",
+        "persona_scores": "ai_observed",
+        "scenes": "ai_observed",
+        "seasons": "ai_observed",
+        "structure": "ai_observed",
+        "wearability": "ai_observed",
+        "main_visual_slots": "ai_observed",
+        "main_colors": "ai_observed",
+        "conflicts": "ai_observed",
+        "silhouette": "ai_observed",
+        "color_relation": "ai_observed",
+        "persona_evidence": "ai_observed",
+        "winter_outdoor": "ai_observed"
+      },
+      "field_provenance": {
+        "axes": {
+          "source_file": "targeted-batch12-review/recipes-4.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "expression": {
+          "source_file": "targeted-batch12-review/recipes-4.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "formality": {
+          "source_file": "targeted-batch12-review/recipes-4.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "layering": {
+          "source_file": "targeted-batch12-review/recipes-4.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "persona_scores": {
+          "source_file": "targeted-batch12-review/recipes-4.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "scenes": {
+          "source_file": "targeted-batch12-review/recipes-4.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "seasons": {
+          "source_file": "targeted-batch12-review/recipes-4.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "structure": {
+          "source_file": "targeted-batch12-review/recipes-4.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "wearability": {
+          "source_file": "targeted-batch12-review/recipes-4.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "main_visual_slots": {
+          "source_file": "targeted-batch12-review/recipes-4.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "main_colors": {
+          "source_file": "targeted-batch12-review/recipes-4.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "conflicts": {
+          "source_file": "targeted-batch12-review/recipes-4.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "silhouette": {
+          "source_file": "targeted-batch12-review/recipes-4.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "color_relation": {
+          "source_file": "targeted-batch12-review/recipes-4.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "persona_evidence": {
+          "source_file": "targeted-batch12-review/recipes-4.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        },
+        "winter_outdoor": {
+          "source_file": "targeted-batch12-review/recipes-4.jpg",
+          "version": "aw-targeted-12-native-v1",
+          "confidence": 0.86
+        }
+      }
+    }
+  ],
+  "version": "aw-targeted-review-1a8e5f66f95aac23fd14"
+}

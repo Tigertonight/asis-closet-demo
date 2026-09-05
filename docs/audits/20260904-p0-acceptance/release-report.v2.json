@@ -1,0 +1,79 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-09-04T08:49:14.760258+00:00",
+  "release_decision": "do_not_release",
+  "releasable": false,
+  "versions": {
+    "git_commit": "b628f64bcc32b64d76da6aa8786eb62f69550c93",
+    "git_worktree_clean": false,
+    "content_version": "2026.09-v2-published1",
+    "content_sha256": "6b3387d7c97f78ffa57cf69b95ac5ce9a3008959bccc81343f18cd2c7c650bc9",
+    "visual_version": "codex-visual-16b18cdcdca36dbc306a",
+    "visual_sha256": "9905313a9837fa72436372afd478cb8245c30c34135172abdc4b43502eebe1c8",
+    "family_registry_sha256": "428a6a9234c0484b47098fef4172d5bfae69fe25303ed58c2d6c854484654bc9",
+    "anchor_manifest_sha256": "61435530b0333a6b94a81ecf735d808673b7fc4251d9c5e0502c1abb3e234e50",
+    "blind_result_sha256": null,
+    "browser_evidence_sha256": null,
+    "performance_evidence_sha256": null
+  },
+  "inventory": {
+    "anchor_rows": 152,
+    "current_four_gate_reviews": 0,
+    "visual_eligible_catalog": 952,
+    "visual_held_catalog": 217
+  },
+  "gates": {
+    "G0_traceability": {
+      "status": "Pass",
+      "errors": []
+    },
+    "G1_home_feed_stability": {
+      "status": "Not Run",
+      "errors": [
+        "evidence file is missing"
+      ]
+    },
+    "G2_content_admission": {
+      "status": "Fail",
+      "errors": [
+        "anchor count is 152, expected 160",
+        "current four-gate reviews are 0/160"
+      ]
+    },
+    "G3_anchor_completeness": {
+      "status": "Fail",
+      "errors": [
+        "anchor manifest must contain exactly 160 rows",
+        "film: anchor count must be 10",
+        "iced: anchor count must be 10",
+        "neon: anchor count must be 10",
+        "oops: anchor count must be 10",
+        "wabi: anchor count must be 10"
+      ]
+    },
+    "G4_persona_blind_review": {
+      "status": "Not Run",
+      "errors": [
+        "blind review result is missing"
+      ]
+    },
+    "G5_recommendation_quality": {
+      "status": "Not Run",
+      "errors": [
+        "evidence file is missing"
+      ]
+    },
+    "G6_end_to_end": {
+      "status": "Not Run",
+      "errors": [
+        "evidence file is missing"
+      ]
+    },
+    "G7_performance_and_regression": {
+      "status": "Not Run",
+      "errors": [
+        "evidence file is missing"
+      ]
+    }
+  }
+}

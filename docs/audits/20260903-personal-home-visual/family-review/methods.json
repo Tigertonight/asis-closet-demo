@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "reviewer": "Codex native vision (nonblind AI)",
+  "method": "explicit_group_based_native_visual_adjudication",
+  "sheets_viewed": ["family-components-01.jpg", "family-components-02.jpg", "family-components-03.jpg", "family-components-04.jpg", "family-components-05.jpg", "family-components-06.jpg", "family-components-07.jpg", "family-components-08.jpg", "family-components-09.jpg", "family-components-10.jpg", "family-components-11.jpg", "family-components-12.jpg", "family-components-13.jpg"],
+  "full_resolution_viewed": ["g0008", "g0354", "g0402", "g0418", "g0531", "g0596", "g0551", "g0599", "g0550", "g0598", "g0511", "g0527", "g0512", "g0528", "g0592", "g0514", "g0594", "g0095", "g0107", "g0157", "g0145", "g0151", "g0106", "g0100", "g0121", "g0085", "g0092", "g0128", "g0103", "g0097"],
+  "confidence_status": "subjective_uncalibrated",
+  "human_reviewed": false,
+  "independent_blind_review": false,
+  "production_approved": false,
+  "limitations": [
+    "All machine candidate members compared on 13 contain-fit sheets; only listed ambiguities inspected at original resolution. This is not 443 separate full-resolution pair inspections.",
+    "Pair outcomes are derived from explicitly recorded visual groups, never machine connectedness or prompt text. Shared group IDs across rows are deliberate native judgments.",
+    "A visual family describes repeat exposure, not identical SKU, pattern, physical fit, material composition or permission to promote QA state.",
+    "Distinct groups can still share materials and design language. Singletons mean no family confirmed in this candidate set, not globally unique across all possible garment pairs.",
+    "The existing 443-pair machine queue, historical native notes and six exact-descriptor groups are reviewed; exhaustive all-pairs recall for 600 garments is unknown. No claim that every similar pair has been found."
+  ]
+}

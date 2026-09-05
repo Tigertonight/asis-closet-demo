@@ -1,0 +1,1757 @@
+{
+  "schema_version": 1,
+  "batch_id": "aw-winter-04",
+  "source_visual_version": "codex-visual-16b18cdcdca36dbc306a",
+  "entries": [
+    {
+      "target_palette": "bright",
+      "hero": "n0005",
+      "new_record": {
+        "id": "outfit_neon_aw-winter-04_01",
+        "kind": "master",
+        "parent_outfit_id": null,
+        "recipe_version": "aw-winter-04",
+        "title": "NEON winter 日常设计 01",
+        "description": "品红短外套作唯一高彩块，白衬衫与黑长裤建立可日常复用的对比。",
+        "primary_persona": "NEON",
+        "secondary_personas": [],
+        "persona_affinity": {},
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "日常"
+        ],
+        "season_tags": [
+          "冬"
+        ],
+        "weather_tags": [],
+        "presentation": [
+          "feminine"
+        ],
+        "intensity": "entry",
+        "formality": 3,
+        "garment_ids": [
+          "garment_aw_winter03_outer_fuchsia_01",
+          "garment_jade_top_0108",
+          "garment_mute_bottom_0003",
+          "garment_edge_shoes_0043",
+          "garment_noir_bag_0070"
+        ],
+        "visible_slots": [
+          "outer",
+          "top",
+          "bottom",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_aw_winter03_outer_fuchsia_01": "hero",
+          "garment_jade_top_0108": "support",
+          "garment_mute_bottom_0003": "support",
+          "garment_edge_shoes_0043": "support",
+          "garment_noir_bag_0070": "support"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "未判断",
+          "saturation": "未判断",
+          "harmony": "未判断",
+          "palette": []
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/6bc15fd6cbeb39115285b61e.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source": "designer_recomposition",
+          "confidence": null,
+          "review_notes": [
+            "season, palette and persona are design targets pending whole-image review"
+          ]
+        }
+      },
+      "record_fingerprint": "a9db07b4eda35c221969f13b3d4960acabd76d15a14e8af378390601efd031ac",
+      "asset_sha256": "4095f50fb166022b4c93c053f5fc699c3f133958f5506e833f4f98da5a99df48",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/6bc15fd6cbeb39115285b61e.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_aw_winter03_outer_fuchsia_01",
+            "slot": "outer",
+            "box": [
+              70,
+              160,
+              420,
+              584
+            ]
+          },
+          {
+            "garment_id": "garment_jade_top_0108",
+            "slot": "top",
+            "box": [
+              450,
+              202,
+              800,
+              640
+            ]
+          },
+          {
+            "garment_id": "garment_mute_bottom_0003",
+            "slot": "bottom",
+            "box": [
+              491,
+              664,
+              759,
+              1330
+            ]
+          },
+          {
+            "garment_id": "garment_edge_shoes_0043",
+            "slot": "shoes",
+            "box": [
+              862,
+              880,
+              1107,
+              1080
+            ]
+          },
+          {
+            "garment_id": "garment_noir_bag_0070",
+            "slot": "bag",
+            "box": [
+              850,
+              441,
+              1130,
+              698
+            ]
+          }
+        ]
+      },
+      "status": "pending_native_review",
+      "review": null
+    },
+    {
+      "target_palette": "jewel",
+      "hero": "n0005",
+      "new_record": {
+        "id": "outfit_neon_aw-winter-04_02",
+        "kind": "master",
+        "parent_outfit_id": null,
+        "recipe_version": "aw-winter-04",
+        "title": "NEON winter 日常设计 02",
+        "description": "鲜品红短外套与黑针织、浅色斜裹长裙构成一处高彩及短长反差。",
+        "primary_persona": "NEON",
+        "secondary_personas": [],
+        "persona_affinity": {},
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "日常"
+        ],
+        "season_tags": [
+          "冬"
+        ],
+        "weather_tags": [],
+        "presentation": [
+          "feminine"
+        ],
+        "intensity": "entry",
+        "formality": 3,
+        "garment_ids": [
+          "garment_aw_winter03_outer_fuchsia_01",
+          "garment_mute_top_0337",
+          "garment_jade_skirt_0188",
+          "garment_noir_shoes_0254",
+          "garment_mute_bag_0513"
+        ],
+        "visible_slots": [
+          "outer",
+          "top",
+          "skirt",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_aw_winter03_outer_fuchsia_01": "hero",
+          "garment_mute_top_0337": "support",
+          "garment_jade_skirt_0188": "support",
+          "garment_noir_shoes_0254": "support",
+          "garment_mute_bag_0513": "support"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "未判断",
+          "saturation": "未判断",
+          "harmony": "未判断",
+          "palette": []
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/0b7c98f0525fdea3c5c2603f.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source": "designer_recomposition",
+          "confidence": null,
+          "review_notes": [
+            "season, palette and persona are design targets pending whole-image review"
+          ]
+        }
+      },
+      "record_fingerprint": "80d3256988408210f1fe19eda012f6b7627319ed9939f888fc38df3e65116344",
+      "asset_sha256": "16769b69fc9aa95e6497a112cb857dc89cbd0b986c5700d8ed15872c9bff9539",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/0b7c98f0525fdea3c5c2603f.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_aw_winter03_outer_fuchsia_01",
+            "slot": "outer",
+            "box": [
+              70,
+              160,
+              420,
+              584
+            ]
+          },
+          {
+            "garment_id": "garment_mute_top_0337",
+            "slot": "top",
+            "box": [
+              450,
+              239,
+              800,
+              640
+            ]
+          },
+          {
+            "garment_id": "garment_jade_skirt_0188",
+            "slot": "skirt",
+            "box": [
+              450,
+              664,
+              800,
+              1308
+            ]
+          },
+          {
+            "garment_id": "garment_noir_shoes_0254",
+            "slot": "shoes",
+            "box": [
+              895,
+              880,
+              1075,
+              1080
+            ]
+          },
+          {
+            "garment_id": "garment_mute_bag_0513",
+            "slot": "bag",
+            "box": [
+              853,
+              410,
+              1126,
+              730
+            ]
+          }
+        ]
+      },
+      "status": "pending_native_review",
+      "review": null
+    },
+    {
+      "target_palette": "bright",
+      "hero": "n0005",
+      "new_record": {
+        "id": "outfit_neon_aw-winter-04_03",
+        "kind": "master",
+        "parent_outfit_id": null,
+        "recipe_version": "aw-winter-04",
+        "title": "NEON winter 日常设计 03",
+        "description": "品红短外套叠在素色长衬衫裙上，保留鲜明比例而不使用戏剧内层。",
+        "primary_persona": "NEON",
+        "secondary_personas": [],
+        "persona_affinity": {},
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "日常"
+        ],
+        "season_tags": [
+          "冬"
+        ],
+        "weather_tags": [],
+        "presentation": [
+          "feminine"
+        ],
+        "intensity": "entry",
+        "formality": 3,
+        "garment_ids": [
+          "garment_aw_winter03_outer_fuchsia_01",
+          "garment_noir_dress_0222",
+          "garment_edge_shoes_0265",
+          "garment_mute_bag_0513"
+        ],
+        "visible_slots": [
+          "outer",
+          "dress",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_aw_winter03_outer_fuchsia_01": "hero",
+          "garment_noir_dress_0222": "support",
+          "garment_edge_shoes_0265": "support",
+          "garment_mute_bag_0513": "support"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "未判断",
+          "saturation": "未判断",
+          "harmony": "未判断",
+          "palette": []
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/e27c65e33ae23290f25dfe48.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source": "designer_recomposition",
+          "confidence": null,
+          "review_notes": [
+            "season, palette and persona are design targets pending whole-image review"
+          ]
+        }
+      },
+      "record_fingerprint": "a405a0777cd699ee60b7822004c693887314627a89adee2d7841bb1cc6ca3562",
+      "asset_sha256": "e33f15b3054c6d9c7fca20c9e8322ce6eb66a912961d11065c5ee5410a2337eb",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/e27c65e33ae23290f25dfe48.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_aw_winter03_outer_fuchsia_01",
+            "slot": "outer",
+            "box": [
+              70,
+              160,
+              420,
+              584
+            ]
+          },
+          {
+            "garment_id": "garment_noir_dress_0222",
+            "slot": "dress",
+            "box": [
+              450,
+              160,
+              800,
+              818
+            ]
+          },
+          {
+            "garment_id": "garment_edge_shoes_0265",
+            "slot": "shoes",
+            "box": [
+              875,
+              880,
+              1095,
+              1080
+            ]
+          },
+          {
+            "garment_id": "garment_mute_bag_0513",
+            "slot": "bag",
+            "box": [
+              853,
+              410,
+              1126,
+              730
+            ]
+          }
+        ]
+      },
+      "status": "pending_native_review",
+      "review": null
+    },
+    {
+      "target_palette": "bright",
+      "hero": "n0003",
+      "new_record": {
+        "id": "outfit_noir_aw-winter-04_04",
+        "kind": "master",
+        "parent_outfit_id": null,
+        "recipe_version": "aw-winter-04",
+        "title": "NOIR winter 日常设计 04",
+        "description": "钴蓝长外套的强肩长线与全黑内搭形成锐利边界，色彩鲜明但结构不消失。",
+        "primary_persona": "NOIR",
+        "secondary_personas": [],
+        "persona_affinity": {},
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "日常"
+        ],
+        "season_tags": [
+          "冬"
+        ],
+        "weather_tags": [],
+        "presentation": [
+          "feminine"
+        ],
+        "intensity": "entry",
+        "formality": 3,
+        "garment_ids": [
+          "garment_aw_winter02_outer_cobalt_01",
+          "garment_mute_top_0337",
+          "garment_noir_bottom_0068",
+          "garment_noir_shoes_0069",
+          "garment_noir_bag_0070"
+        ],
+        "visible_slots": [
+          "outer",
+          "top",
+          "bottom",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_aw_winter02_outer_cobalt_01": "hero",
+          "garment_mute_top_0337": "support",
+          "garment_noir_bottom_0068": "support",
+          "garment_noir_shoes_0069": "support",
+          "garment_noir_bag_0070": "support"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "未判断",
+          "saturation": "未判断",
+          "harmony": "未判断",
+          "palette": []
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/d00476f6bcc044ae7ac331ec.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source": "designer_recomposition",
+          "confidence": null,
+          "review_notes": [
+            "season, palette and persona are design targets pending whole-image review"
+          ]
+        }
+      },
+      "record_fingerprint": "28761ce1afb4b925350aecb09f2eddff4cad5c381de81eac8fb17d20af75b63f",
+      "asset_sha256": "2f4a23f8ebc4f8d670ca4ef38919e8f1fec9270b90a6567182040cd200227640",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/d00476f6bcc044ae7ac331ec.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_aw_winter02_outer_cobalt_01",
+            "slot": "outer",
+            "box": [
+              70,
+              160,
+              420,
+              762
+            ]
+          },
+          {
+            "garment_id": "garment_mute_top_0337",
+            "slot": "top",
+            "box": [
+              450,
+              239,
+              800,
+              640
+            ]
+          },
+          {
+            "garment_id": "garment_noir_bottom_0068",
+            "slot": "bottom",
+            "box": [
+              481,
+              664,
+              768,
+              1330
+            ]
+          },
+          {
+            "garment_id": "garment_noir_shoes_0069",
+            "slot": "shoes",
+            "box": [
+              921,
+              880,
+              1049,
+              1080
+            ]
+          },
+          {
+            "garment_id": "garment_noir_bag_0070",
+            "slot": "bag",
+            "box": [
+              850,
+              441,
+              1130,
+              698
+            ]
+          }
+        ]
+      },
+      "status": "pending_native_review",
+      "review": null
+    },
+    {
+      "target_palette": "bright",
+      "hero": "n0003",
+      "new_record": {
+        "id": "outfit_noir_aw-winter-04_05",
+        "kind": "master",
+        "parent_outfit_id": null,
+        "recipe_version": "aw-winter-04",
+        "title": "NOIR winter 日常设计 05",
+        "description": "钴蓝长外套与黑色短上身、锐利直裙形成稳定短长边界，鞋包不分散焦点。",
+        "primary_persona": "NOIR",
+        "secondary_personas": [],
+        "persona_affinity": {},
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "日常"
+        ],
+        "season_tags": [
+          "冬"
+        ],
+        "weather_tags": [],
+        "presentation": [
+          "feminine"
+        ],
+        "intensity": "entry",
+        "formality": 3,
+        "garment_ids": [
+          "garment_aw_winter02_outer_cobalt_01",
+          "garment_noir_top_0350",
+          "garment_noir_skirt_0446",
+          "garment_noir_shoes_0069",
+          "garment_noir_bag_0070"
+        ],
+        "visible_slots": [
+          "outer",
+          "top",
+          "skirt",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_aw_winter02_outer_cobalt_01": "hero",
+          "garment_noir_top_0350": "support",
+          "garment_noir_skirt_0446": "support",
+          "garment_noir_shoes_0069": "support",
+          "garment_noir_bag_0070": "support"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "未判断",
+          "saturation": "未判断",
+          "harmony": "未判断",
+          "palette": []
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/54d5f4edf0d317a77085fee5.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source": "designer_recomposition",
+          "confidence": null,
+          "review_notes": [
+            "season, palette and persona are design targets pending whole-image review"
+          ]
+        }
+      },
+      "record_fingerprint": "045505ba5922a8a03de8ca7eccefbb68432e4114f28a4889711cd032174ebc88",
+      "asset_sha256": "eb23533b0fd74e6bab0bc4f7ce0c34f1d7f3fc72e795ec4a83332674bcc28976",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/54d5f4edf0d317a77085fee5.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_aw_winter02_outer_cobalt_01",
+            "slot": "outer",
+            "box": [
+              70,
+              160,
+              420,
+              762
+            ]
+          },
+          {
+            "garment_id": "garment_noir_top_0350",
+            "slot": "top",
+            "box": [
+              450,
+              239,
+              800,
+              640
+            ]
+          },
+          {
+            "garment_id": "garment_noir_skirt_0446",
+            "slot": "skirt",
+            "box": [
+              482,
+              664,
+              768,
+              1330
+            ]
+          },
+          {
+            "garment_id": "garment_noir_shoes_0069",
+            "slot": "shoes",
+            "box": [
+              921,
+              880,
+              1049,
+              1080
+            ]
+          },
+          {
+            "garment_id": "garment_noir_bag_0070",
+            "slot": "bag",
+            "box": [
+              850,
+              441,
+              1130,
+              698
+            ]
+          }
+        ]
+      },
+      "status": "pending_native_review",
+      "review": null
+    },
+    {
+      "target_palette": "bright",
+      "hero": "n0003",
+      "new_record": {
+        "id": "outfit_noir_aw-winter-04_06",
+        "kind": "master",
+        "parent_outfit_id": null,
+        "recipe_version": "aw-winter-04",
+        "title": "NOIR winter 日常设计 06",
+        "description": "钴蓝强线外套覆盖灰色长衬衫裙，用黑色长靴和包延续边界。",
+        "primary_persona": "NOIR",
+        "secondary_personas": [],
+        "persona_affinity": {},
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "日常"
+        ],
+        "season_tags": [
+          "冬"
+        ],
+        "weather_tags": [],
+        "presentation": [
+          "feminine"
+        ],
+        "intensity": "entry",
+        "formality": 3,
+        "garment_ids": [
+          "garment_aw_winter02_outer_cobalt_01",
+          "garment_noir_dress_0222",
+          "garment_noir_shoes_0069",
+          "garment_noir_bag_0070"
+        ],
+        "visible_slots": [
+          "outer",
+          "dress",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_aw_winter02_outer_cobalt_01": "hero",
+          "garment_noir_dress_0222": "support",
+          "garment_noir_shoes_0069": "support",
+          "garment_noir_bag_0070": "support"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "未判断",
+          "saturation": "未判断",
+          "harmony": "未判断",
+          "palette": []
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/64a95f4ad7654749edc30649.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source": "designer_recomposition",
+          "confidence": null,
+          "review_notes": [
+            "season, palette and persona are design targets pending whole-image review"
+          ]
+        }
+      },
+      "record_fingerprint": "8b5ce0f4141191cd573e5533cba96164daf2c15bbd26635e1399668c26005968",
+      "asset_sha256": "0bd027d2102586221ff58845b810eb3b508d1e4ef837378e17610b3eff616a10",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/64a95f4ad7654749edc30649.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_aw_winter02_outer_cobalt_01",
+            "slot": "outer",
+            "box": [
+              70,
+              160,
+              420,
+              762
+            ]
+          },
+          {
+            "garment_id": "garment_noir_dress_0222",
+            "slot": "dress",
+            "box": [
+              450,
+              160,
+              800,
+              818
+            ]
+          },
+          {
+            "garment_id": "garment_noir_shoes_0069",
+            "slot": "shoes",
+            "box": [
+              921,
+              880,
+              1049,
+              1080
+            ]
+          },
+          {
+            "garment_id": "garment_noir_bag_0070",
+            "slot": "bag",
+            "box": [
+              850,
+              441,
+              1130,
+              698
+            ]
+          }
+        ]
+      },
+      "status": "pending_native_review",
+      "review": null
+    },
+    {
+      "target_palette": "bright",
+      "hero": "n0005",
+      "new_record": {
+        "id": "outfit_oops_aw-winter-04_07",
+        "kind": "master",
+        "parent_outfit_id": null,
+        "recipe_version": "aw-winter-04",
+        "title": "OOPS winter 日常设计 07",
+        "description": "错位门襟短外套与一处角度长裤共享线条，白衬衫作稳定支撑。",
+        "primary_persona": "OOPS",
+        "secondary_personas": [],
+        "persona_affinity": {},
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "日常"
+        ],
+        "season_tags": [
+          "冬"
+        ],
+        "weather_tags": [],
+        "presentation": [
+          "feminine"
+        ],
+        "intensity": "entry",
+        "formality": 3,
+        "garment_ids": [
+          "garment_aw_winter03_outer_fuchsia_01",
+          "garment_oops_top_0096",
+          "garment_noir_bottom_0398",
+          "garment_edge_shoes_0505",
+          "garment_noir_bag_0526"
+        ],
+        "visible_slots": [
+          "outer",
+          "top",
+          "bottom",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_aw_winter03_outer_fuchsia_01": "hero",
+          "garment_oops_top_0096": "support",
+          "garment_noir_bottom_0398": "support",
+          "garment_edge_shoes_0505": "support",
+          "garment_noir_bag_0526": "support"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "未判断",
+          "saturation": "未判断",
+          "harmony": "未判断",
+          "palette": []
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/8f51aca7407ac34f3c86ddd0.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source": "designer_recomposition",
+          "confidence": null,
+          "review_notes": [
+            "season, palette and persona are design targets pending whole-image review"
+          ]
+        }
+      },
+      "record_fingerprint": "6caf0dd7d8d0788593d6f513ffe0ed39aad83693f158cb51c175798466855e7f",
+      "asset_sha256": "1cc510eecffb22bc7e0c51d885d2ad4eee8b4ae71103d4511ede0cd929fd4c49",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/8f51aca7407ac34f3c86ddd0.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_aw_winter03_outer_fuchsia_01",
+            "slot": "outer",
+            "box": [
+              70,
+              160,
+              420,
+              584
+            ]
+          },
+          {
+            "garment_id": "garment_oops_top_0096",
+            "slot": "top",
+            "box": [
+              450,
+              237,
+              800,
+              640
+            ]
+          },
+          {
+            "garment_id": "garment_noir_bottom_0398",
+            "slot": "bottom",
+            "box": [
+              486,
+              664,
+              763,
+              1330
+            ]
+          },
+          {
+            "garment_id": "garment_edge_shoes_0505",
+            "slot": "shoes",
+            "box": [
+              886,
+              880,
+              1084,
+              1080
+            ]
+          },
+          {
+            "garment_id": "garment_noir_bag_0526",
+            "slot": "bag",
+            "box": [
+              850,
+              415,
+              1130,
+              724
+            ]
+          }
+        ]
+      },
+      "status": "pending_native_review",
+      "review": null
+    },
+    {
+      "target_palette": "bright",
+      "hero": "n0005",
+      "new_record": {
+        "id": "outfit_oops_aw-winter-04_08",
+        "kind": "master",
+        "parent_outfit_id": null,
+        "recipe_version": "aw-winter-04",
+        "title": "OOPS winter 日常设计 08",
+        "description": "错位短外套和斜裹长裙使用一个可解释的斜线母题，其余单品保持简单。",
+        "primary_persona": "OOPS",
+        "secondary_personas": [],
+        "persona_affinity": {},
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "日常"
+        ],
+        "season_tags": [
+          "冬"
+        ],
+        "weather_tags": [],
+        "presentation": [
+          "feminine"
+        ],
+        "intensity": "entry",
+        "formality": 3,
+        "garment_ids": [
+          "garment_aw_winter03_outer_fuchsia_01",
+          "garment_mute_top_0337",
+          "garment_jade_skirt_0188",
+          "garment_edge_shoes_0505",
+          "garment_mute_bag_0513"
+        ],
+        "visible_slots": [
+          "outer",
+          "top",
+          "skirt",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_aw_winter03_outer_fuchsia_01": "hero",
+          "garment_mute_top_0337": "support",
+          "garment_jade_skirt_0188": "support",
+          "garment_edge_shoes_0505": "support",
+          "garment_mute_bag_0513": "support"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "未判断",
+          "saturation": "未判断",
+          "harmony": "未判断",
+          "palette": []
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/6487a259dbd8c0aa9399f484.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source": "designer_recomposition",
+          "confidence": null,
+          "review_notes": [
+            "season, palette and persona are design targets pending whole-image review"
+          ]
+        }
+      },
+      "record_fingerprint": "9cbd6b1b7f0ef7983aef8cc657bf178c81aec7d7492753f9f2c3c7eaac0aea71",
+      "asset_sha256": "41b29ed4417031a5aa1c90eb5f0ae64c92221844acd30a43fe00939ea85c32cc",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/6487a259dbd8c0aa9399f484.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_aw_winter03_outer_fuchsia_01",
+            "slot": "outer",
+            "box": [
+              70,
+              160,
+              420,
+              584
+            ]
+          },
+          {
+            "garment_id": "garment_mute_top_0337",
+            "slot": "top",
+            "box": [
+              450,
+              239,
+              800,
+              640
+            ]
+          },
+          {
+            "garment_id": "garment_jade_skirt_0188",
+            "slot": "skirt",
+            "box": [
+              450,
+              664,
+              800,
+              1308
+            ]
+          },
+          {
+            "garment_id": "garment_edge_shoes_0505",
+            "slot": "shoes",
+            "box": [
+              886,
+              880,
+              1084,
+              1080
+            ]
+          },
+          {
+            "garment_id": "garment_mute_bag_0513",
+            "slot": "bag",
+            "box": [
+              853,
+              410,
+              1126,
+              730
+            ]
+          }
+        ]
+      },
+      "status": "pending_native_review",
+      "review": null
+    },
+    {
+      "target_palette": "bright",
+      "hero": "n0005",
+      "new_record": {
+        "id": "outfit_oops_aw-winter-04_09",
+        "kind": "master",
+        "parent_outfit_id": null,
+        "recipe_version": "aw-winter-04",
+        "title": "OOPS winter 日常设计 09",
+        "description": "鲜色错位短外套与长衬衫裙形成明确短长反差，不再叠加解构长裙。",
+        "primary_persona": "OOPS",
+        "secondary_personas": [],
+        "persona_affinity": {},
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "日常"
+        ],
+        "season_tags": [
+          "冬"
+        ],
+        "weather_tags": [],
+        "presentation": [
+          "feminine"
+        ],
+        "intensity": "entry",
+        "formality": 3,
+        "garment_ids": [
+          "garment_aw_winter03_outer_fuchsia_01",
+          "garment_noir_dress_0222",
+          "garment_edge_shoes_0505",
+          "garment_mute_bag_0513"
+        ],
+        "visible_slots": [
+          "outer",
+          "dress",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_aw_winter03_outer_fuchsia_01": "hero",
+          "garment_noir_dress_0222": "support",
+          "garment_edge_shoes_0505": "support",
+          "garment_mute_bag_0513": "support"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "未判断",
+          "saturation": "未判断",
+          "harmony": "未判断",
+          "palette": []
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/5d599514b679d53dc56c27cb.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source": "designer_recomposition",
+          "confidence": null,
+          "review_notes": [
+            "season, palette and persona are design targets pending whole-image review"
+          ]
+        }
+      },
+      "record_fingerprint": "dcca6fdb70e666d434dc016ca4c59be3dcd7bd09f936e0b65c3dbf3d65481d6a",
+      "asset_sha256": "c6b57c1aff7d652dbf97536becdf2079cf9fdafe4a4d2b378ed94011039bbc36",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/5d599514b679d53dc56c27cb.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_aw_winter03_outer_fuchsia_01",
+            "slot": "outer",
+            "box": [
+              70,
+              160,
+              420,
+              584
+            ]
+          },
+          {
+            "garment_id": "garment_noir_dress_0222",
+            "slot": "dress",
+            "box": [
+              450,
+              160,
+              800,
+              818
+            ]
+          },
+          {
+            "garment_id": "garment_edge_shoes_0505",
+            "slot": "shoes",
+            "box": [
+              886,
+              880,
+              1084,
+              1080
+            ]
+          },
+          {
+            "garment_id": "garment_mute_bag_0513",
+            "slot": "bag",
+            "box": [
+              853,
+              410,
+              1126,
+              730
+            ]
+          }
+        ]
+      },
+      "status": "pending_native_review",
+      "review": null
+    },
+    {
+      "target_palette": "bright",
+      "hero": "n0004",
+      "new_record": {
+        "id": "outfit_void_aw-winter-04_10",
+        "kind": "master",
+        "parent_outfit_id": null,
+        "recipe_version": "aw-winter-04",
+        "title": "VOID winter 日常设计 10",
+        "description": "珊瑚红茧形长外层建立包裹感，黑针织与一处错层长裤保留低负担日常表达。",
+        "primary_persona": "VOID",
+        "secondary_personas": [],
+        "persona_affinity": {},
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "日常"
+        ],
+        "season_tags": [
+          "冬"
+        ],
+        "weather_tags": [],
+        "presentation": [
+          "feminine"
+        ],
+        "intensity": "entry",
+        "formality": 3,
+        "garment_ids": [
+          "garment_aw_winter02_outer_coral_01",
+          "garment_mute_top_0337",
+          "garment_void_bottom_0415",
+          "garment_void_shoes_0591",
+          "garment_noir_bag_0526"
+        ],
+        "visible_slots": [
+          "outer",
+          "top",
+          "bottom",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_aw_winter02_outer_coral_01": "hero",
+          "garment_mute_top_0337": "support",
+          "garment_void_bottom_0415": "support",
+          "garment_void_shoes_0591": "support",
+          "garment_noir_bag_0526": "support"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "未判断",
+          "saturation": "未判断",
+          "harmony": "未判断",
+          "palette": []
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/d225537a99d8ec21332e9ae8.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source": "designer_recomposition",
+          "confidence": null,
+          "review_notes": [
+            "season, palette and persona are design targets pending whole-image review"
+          ]
+        }
+      },
+      "record_fingerprint": "ec29a7436b3b0378d4189483384337545bc408e6ebe86eb2f126867381d1f83e",
+      "asset_sha256": "912656dc7217bf8c0f38a1b02bd75e67baca4c437e930296a82cc26d6c34e6fc",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/d225537a99d8ec21332e9ae8.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_aw_winter02_outer_coral_01",
+            "slot": "outer",
+            "box": [
+              70,
+              160,
+              420,
+              686
+            ]
+          },
+          {
+            "garment_id": "garment_mute_top_0337",
+            "slot": "top",
+            "box": [
+              450,
+              239,
+              800,
+              640
+            ]
+          },
+          {
+            "garment_id": "garment_void_bottom_0415",
+            "slot": "bottom",
+            "box": [
+              450,
+              664,
+              800,
+              1221
+            ]
+          },
+          {
+            "garment_id": "garment_void_shoes_0591",
+            "slot": "shoes",
+            "box": [
+              840,
+              881,
+              1130,
+              1078
+            ]
+          },
+          {
+            "garment_id": "garment_noir_bag_0526",
+            "slot": "bag",
+            "box": [
+              850,
+              415,
+              1130,
+              724
+            ]
+          }
+        ]
+      },
+      "status": "pending_native_review",
+      "review": null
+    },
+    {
+      "target_palette": "bright",
+      "hero": "n0004",
+      "new_record": {
+        "id": "outfit_void_aw-winter-04_11",
+        "kind": "master",
+        "parent_outfit_id": null,
+        "recipe_version": "aw-winter-04",
+        "title": "VOID winter 日常设计 11",
+        "description": "茧形长外层与安静错层长裙构成一处包裹层次，运动鞋降低负担。",
+        "primary_persona": "VOID",
+        "secondary_personas": [],
+        "persona_affinity": {},
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "日常"
+        ],
+        "season_tags": [
+          "冬"
+        ],
+        "weather_tags": [],
+        "presentation": [
+          "feminine"
+        ],
+        "intensity": "entry",
+        "formality": 3,
+        "garment_ids": [
+          "garment_aw_winter02_outer_coral_01",
+          "garment_mute_top_0337",
+          "garment_mute_skirt_0449",
+          "garment_void_shoes_0591",
+          "garment_noir_bag_0526"
+        ],
+        "visible_slots": [
+          "outer",
+          "top",
+          "skirt",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_aw_winter02_outer_coral_01": "hero",
+          "garment_mute_top_0337": "support",
+          "garment_mute_skirt_0449": "support",
+          "garment_void_shoes_0591": "support",
+          "garment_noir_bag_0526": "support"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "未判断",
+          "saturation": "未判断",
+          "harmony": "未判断",
+          "palette": []
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/0f7538c60ad7f4faea4941c2.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source": "designer_recomposition",
+          "confidence": null,
+          "review_notes": [
+            "season, palette and persona are design targets pending whole-image review"
+          ]
+        }
+      },
+      "record_fingerprint": "73204deecd0e4f7bdfee8a0bf059b1fe78df120c73cdb16e5b64218378e32ca0",
+      "asset_sha256": "9bff5b169819277988a8bdc18493e3e4a60bd5f2b2c3f76747db272cd0097d7e",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/0f7538c60ad7f4faea4941c2.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_aw_winter02_outer_coral_01",
+            "slot": "outer",
+            "box": [
+              70,
+              160,
+              420,
+              686
+            ]
+          },
+          {
+            "garment_id": "garment_mute_top_0337",
+            "slot": "top",
+            "box": [
+              450,
+              239,
+              800,
+              640
+            ]
+          },
+          {
+            "garment_id": "garment_mute_skirt_0449",
+            "slot": "skirt",
+            "box": [
+              450,
+              664,
+              800,
+              1281
+            ]
+          },
+          {
+            "garment_id": "garment_void_shoes_0591",
+            "slot": "shoes",
+            "box": [
+              840,
+              881,
+              1130,
+              1078
+            ]
+          },
+          {
+            "garment_id": "garment_noir_bag_0526",
+            "slot": "bag",
+            "box": [
+              850,
+              415,
+              1130,
+              724
+            ]
+          }
+        ]
+      },
+      "status": "pending_native_review",
+      "review": null
+    },
+    {
+      "target_palette": "bright",
+      "hero": "n0004",
+      "new_record": {
+        "id": "outfit_void_aw-winter-04_12",
+        "kind": "master",
+        "parent_outfit_id": null,
+        "recipe_version": "aw-winter-04",
+        "title": "VOID winter 日常设计 12",
+        "description": "珊瑚红茧形外套覆盖素色长衬衫裙，以包裹轮廓而非破片堆叠表达 VOID。",
+        "primary_persona": "VOID",
+        "secondary_personas": [],
+        "persona_affinity": {},
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "日常"
+        ],
+        "season_tags": [
+          "冬"
+        ],
+        "weather_tags": [],
+        "presentation": [
+          "feminine"
+        ],
+        "intensity": "entry",
+        "formality": 3,
+        "garment_ids": [
+          "garment_aw_winter02_outer_coral_01",
+          "garment_noir_dress_0222",
+          "garment_void_shoes_0591",
+          "garment_noir_bag_0526"
+        ],
+        "visible_slots": [
+          "outer",
+          "dress",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_aw_winter02_outer_coral_01": "hero",
+          "garment_noir_dress_0222": "support",
+          "garment_void_shoes_0591": "support",
+          "garment_noir_bag_0526": "support"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "未判断",
+          "saturation": "未判断",
+          "harmony": "未判断",
+          "palette": []
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/b1d4e08412cce798db4b67a3.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source": "designer_recomposition",
+          "confidence": null,
+          "review_notes": [
+            "season, palette and persona are design targets pending whole-image review"
+          ]
+        }
+      },
+      "record_fingerprint": "2295899ea7343ac13153a90844605edced9c0141ea149f56fec75858e5386a4b",
+      "asset_sha256": "d0f50d3d8604e4f77ec6363bcaf655c85d4a2cf5b7f4dcf6573a3e1a2f598215",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/b1d4e08412cce798db4b67a3.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_aw_winter02_outer_coral_01",
+            "slot": "outer",
+            "box": [
+              70,
+              160,
+              420,
+              686
+            ]
+          },
+          {
+            "garment_id": "garment_noir_dress_0222",
+            "slot": "dress",
+            "box": [
+              450,
+              160,
+              800,
+              818
+            ]
+          },
+          {
+            "garment_id": "garment_void_shoes_0591",
+            "slot": "shoes",
+            "box": [
+              840,
+              881,
+              1130,
+              1078
+            ]
+          },
+          {
+            "garment_id": "garment_noir_bag_0526",
+            "slot": "bag",
+            "box": [
+              850,
+              415,
+              1130,
+              724
+            ]
+          }
+        ]
+      },
+      "status": "pending_native_review",
+      "review": null
+    }
+  ],
+  "production_approved": false,
+  "version": "aw-designed-rendered-3d24e7a85bce644b3361"
+}

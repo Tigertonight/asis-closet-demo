@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import io
 import itertools
+import json
 from pathlib import Path
 
 from fastapi.testclient import TestClient
@@ -33,7 +34,7 @@ def _png_bytes(image: Image.Image) -> bytes:
     return buf.getvalue()
 
 
-def _synthetic_top_image() -> Image.Image:
+def _synthetic_top_image(color: tuple[int, int, int] = (220, 60, 105)) -> Image.Image:
     image = Image.new("RGB", (720, 900), "#fffafa")
     pixels = image.load()
     for y in range(170, 770):
@@ -41,7 +42,7 @@ def _synthetic_top_image() -> Image.Image:
         left = 360 - width // 2
         right = 360 + width // 2
         for x in range(max(0, left), min(720, right)):
-            pixels[x, y] = (220, 60, 105)
+            pixels[x, y] = color
     return image
 
 
@@ -105,6 +106,23 @@ def test_closet_upload_import_creates_manifest_item(monkeypatch, tmp_path: Path)
     preview_path = closet._closet_disk_path(item["assets"]["preview_path"])
     assert preview_path is not None
     assert Image.open(preview_path).size == (900, 900)
+
+
+def test_extract_look_compatibility_route_uses_native_closet_pipeline(monkeypatch, tmp_path: Path) -> None:
+    _use_tmp_closet(monkeypatch, tmp_path)
+    client = _auth_client()
+
+    response = client.post(
+        "/api/extract-look",
+        files={"image": ("look.png", _png_bytes(_synthetic_top_image()), "image/png")},
+    )
+
+    assert response.status_code == 200
+    payload = response.json()
+    assert payload["request_id"].startswith("look_")
+    assert payload["prompt_version"] == closet.WARDROBE_EXTRACTION_PROMPT_VERSION
+    assert payload["items"]
+    assert client.get("/closet/items").json()["total"] == len(payload["items"])
     assert (tmp_path / "closet_manifest.json").exists()
 
 
@@ -272,6 +290,7 @@ def test_persona_recommendation_ranks_normalized_english_tags_and_colors() -> No
     loud_score = closet._score_outfit_for_persona(loud, persona)
 
     assert aligned_score["score"] > loud_score["score"]
+    assert aligned_score["primary_reason"] in aligned_score["reasons"]
     assert set(aligned_score["matched_style_tokens"]) >= {"minimal", "structured"}
     assert set(aligned_score["matched_color_tokens"]) == {"black", "white"}
 
@@ -346,6 +365,156 @@ def test_tryon_job_reports_progress_and_force_retries(monkeypatch, tmp_path: Pat
     assert client.get("/closet/tryon-records").json()["total"] == 1
 
 
+def test_tryon_preview_plan_marks_each_piece_by_visible_region(monkeypatch, tmp_path: Path) -> None:
+    _use_tmp_closet(monkeypatch, tmp_path)
+    client = _auth_client()
+    first = client.post(
+        "/closet/import/upload",
+        files=[("images", ("top.png", _png_bytes(_synthetic_top_image()), "image/png"))],
+    ).json()["items"][0]
+    first = client.patch(f"/closet/items/{first['item_id']}", json={"category": "top"}).json()
+    second = client.post(
+        "/closet/import/upload",
+        files=[("images", ("shoes.png", _png_bytes(_synthetic_top_image((55, 85, 160))), "image/png"))],
+    ).json()["items"][0]
+    shoes = client.patch(f"/closet/items/{second['item_id']}", json={"category": "shoes"}).json()
+    outfit = client.post(
+        "/closet/outfits",
+        json={"item_ids": [first["item_id"], shoes["item_id"]], "title": "半身照试穿"},
+    ).json()
+    monkeypatch.setattr(tryon, "_detect_person", lambda _image: {
+        "status": "pass",
+        "confidence": 0.9,
+        "evidence": {"primary_face": {"box": {"x": 220, "y": 100, "width": 300, "height": 300}}},
+        "issues": [],
+    })
+    person = (Path(__file__).resolve().parent / "fixtures" / "tryon_models" / "male_medium_1.png").read_bytes()
+
+    preview = client.post(
+        "/selfit/try-on/preview-plan",
+        files={"person_image": ("person.png", person, "image/png")},
+        data={"outfit_id": outfit["outfit_id"]},
+    ).json()
+
+    by_slot = {piece["slot"]: piece for piece in preview["pieces"]}
+    assert by_slot["top"]["status"] == "replaceable"
+    assert by_slot["top"]["selected"] is True
+    assert by_slot["shoes"]["status"] == "not_visible"
+    assert by_slot["shoes"]["selected"] is False
+    assert "脚部" in by_slot["shoes"]["reason"]
+    assert preview["replaceable_count"] == 1
+
+
+def test_tryon_job_respects_piece_selection_and_is_idempotent(monkeypatch, tmp_path: Path) -> None:
+    _use_tmp_closet(monkeypatch, tmp_path)
+    client = _auth_client()
+
+    class ImmediateExecutor:
+        def submit(self, fn, *args):
+            fn(*args)
+
+    monkeypatch.setattr(tryon, "TRYON_JOB_EXECUTOR", ImmediateExecutor())
+    monkeypatch.setattr(tryon, "_default_provider", lambda: tryon.MockTryOnProvider())
+    first = client.post(
+        "/closet/import/upload",
+        files=[("images", ("top-a.png", _png_bytes(_synthetic_top_image()), "image/png"))],
+    ).json()["items"][0]
+    second = client.post(
+        "/closet/import/upload",
+        files=[("images", ("top-b.png", _png_bytes(_synthetic_top_image((55, 85, 160))), "image/png"))],
+    ).json()["items"][0]
+    outfit = client.post(
+        "/closet/outfits",
+        json={"item_ids": [first["item_id"], second["item_id"]], "title": "选择一件试穿"},
+    ).json()
+    person = (Path(__file__).resolve().parent / "fixtures" / "tryon_models" / "male_medium_1.png").read_bytes()
+    request_data = {
+        "outfit_id": outfit["outfit_id"],
+        "selected_item_ids": json.dumps([first["item_id"]]),
+        "client_request_id": "same-confirmation-request",
+    }
+
+    created = client.post(
+        "/selfit/try-on/jobs",
+        files={"person_image": ("person.png", person, "image/png")},
+        data=request_data,
+    ).json()
+    duplicate = client.post(
+        "/selfit/try-on/jobs",
+        files={"person_image": ("person.png", person, "image/png")},
+        data=request_data,
+    ).json()
+    result = client.get(f"/selfit/try-on/jobs/{created['job_id']}").json()["result"]
+
+    assert duplicate["job_id"] == created["job_id"]
+    assert result["requested_item_ids"] == [first["item_id"]]
+    assert result["user_skipped_item_ids"] == [second["item_id"]]
+    piece_statuses = {piece["item_id"]: piece["status"] for piece in result["piece_results"]}
+    assert piece_statuses[first["item_id"]] == "applied"
+    assert piece_statuses[second["item_id"]] == "skipped_user"
+    assert result["summary"] == {"applied_count": 1, "review_count": 0, "skipped_count": 1}
+
+
+def test_completed_tryon_can_retry_one_piece(monkeypatch, tmp_path: Path) -> None:
+    _use_tmp_closet(monkeypatch, tmp_path)
+    client = _auth_client()
+
+    class ImmediateExecutor:
+        def submit(self, fn, *args):
+            fn(*args)
+
+    monkeypatch.setattr(tryon, "TRYON_JOB_EXECUTOR", ImmediateExecutor())
+    monkeypatch.setattr(tryon, "_default_provider", lambda: tryon.MockTryOnProvider())
+    item = client.post(
+        "/closet/import/upload",
+        files=[("images", ("top.png", _png_bytes(_synthetic_top_image()), "image/png"))],
+    ).json()["items"][0]
+    outfit = client.post("/closet/outfits", json={"item_ids": [item["item_id"]], "title": "单件重试"}).json()
+    person = (Path(__file__).resolve().parent / "fixtures" / "tryon_models" / "male_medium_1.png").read_bytes()
+    created = client.post(
+        "/selfit/try-on/jobs",
+        files={"person_image": ("person.png", person, "image/png")},
+        data={"outfit_id": outfit["outfit_id"], "selected_item_ids": json.dumps([item["item_id"]])},
+    ).json()
+
+    retried = client.post(
+        f"/selfit/try-on/jobs/{created['job_id']}/pieces/{item['item_id']}/retry",
+        json={"reason": "边缘不自然", "client_request_id": "piece-retry-1"},
+    ).json()
+    completed = client.get(f"/selfit/try-on/jobs/{retried['job_id']}").json()
+
+    assert retried["base_job_id"] == created["job_id"]
+    assert retried["retry_item_id"] == item["item_id"]
+    assert completed["status"] == "completed"
+    assert completed["result"]["requested_item_ids"] == [item["item_id"]]
+
+
+def test_piece_retry_keeps_other_piece_results_from_previous_version() -> None:
+    base = {
+        "version_id": "version-one",
+        "piece_results": [
+            {"item_id": "top-1", "status": "review", "message": "边缘需要检查"},
+            {"item_id": "bag-1", "status": "applied", "message": "已替换"},
+        ],
+    }
+    retry = {
+        "piece_results": [
+            {"item_id": "top-1", "status": "applied", "message": "已替换"},
+            {"item_id": "bag-1", "status": "skipped_user", "message": "本次保留原穿搭"},
+        ],
+    }
+
+    merged = tryon._merge_piece_retry_result(retry, base, "top-1", "边缘不自然")
+
+    assert merged["base_version_id"] == "version-one"
+    assert merged["retry_item_id"] == "top-1"
+    assert merged["piece_results"][0]["status"] == "applied"
+    assert merged["piece_results"][0]["retry_reason"] == "边缘不自然"
+    assert merged["piece_results"][1]["status"] == "applied"
+    assert merged["piece_results"][1]["message"] == "沿用上一版效果"
+    assert merged["summary"] == {"applied_count": 2, "review_count": 0, "skipped_count": 0}
+
+
 def test_tryon_job_status_polling_has_a_separate_rate_limit(monkeypatch, tmp_path: Path) -> None:
     _use_tmp_closet(monkeypatch, tmp_path)
     monkeypatch.setenv("SELFIT_DISABLE_RATE_LIMIT", "0")
@@ -371,8 +540,9 @@ def test_selfit_app_uses_ranked_refresh_and_category_aware_item_action() -> None
     response = TestClient(app).get("/wearwow/demo")
 
     assert response.status_code == 200
-    assert "function loadRankedOutfits(offset = 0)" in response.text
+    assert "function loadRankedOutfits(offset = 0, append = false)" in response.text
     assert 'fetchJSON("/closet/recommendations/outfits"' in response.text
+    assert "if (!state.outfits.length) return;" not in response.text
     assert "sort(() => Math.random() - 0.5)" not in response.text
     assert '["top", "bottom", "skirt", "dress"].includes(item.category) ? "试穿这件" : "搭配这件"' in response.text
     assert 'fetchJSON("/closet/import/jobs"' in response.text
@@ -387,12 +557,25 @@ def test_selfit_app_uses_ranked_refresh_and_category_aware_item_action() -> None
     assert '/static/selfit/assets/splash-signature@2x.png' in response.text
     assert 'id="tryonProgressBar"' in response.text
     assert 'function updateTryonGeneratingState(job = {})' in response.text
+    assert 'id="closetSearchInput"' in response.text
+    assert 'data-closet-filter="favorite"' in response.text
+    assert '/undo-adjustment' in response.text
+    assert '确认保存 ${selectedIds.length} 件' in response.text
     assert '正在让这套穿搭更像你' in response.text
     assert '/static/animations/tryon-generating.json' not in response.text
     assert 'error.retryAfterSeconds = Math.max(0' in response.text
     assert 'if (error.status !== 429) throw error;' in response.text
     assert '试穿任务还在继续' in response.text
     assert 'const pollDelay = attempt < 5 ? 1000 : attempt < 20 ? 1500 : 2500;' in response.text
+    assert 'id="page-tryon-confirm"' in response.text
+    assert 'id="tryonPieceList"' in response.text
+    assert 'fetchJSON("/selfit/try-on/preview-plan"' in response.text
+    assert 'body.append("selected_item_ids", JSON.stringify' in response.text
+    assert 'id="tryonResultPieces"' in response.text
+    assert 'data-retry-piece=' in response.text
+    assert 'id="tryonTaskBar"' in response.text
+    assert "返回继续逛" in response.text
+    assert "取消生成" not in response.text
 
 
 def test_inventory_candidate_normalization_deduplicates_overlapping_items() -> None:
@@ -404,6 +587,26 @@ def test_inventory_candidate_normalization_deduplicates_overlapping_items() -> N
 
     assert len(candidates) == 1
     assert candidates[0]["category"] == "bag"
+
+
+def test_inventory_candidate_keeps_handoff_metadata_and_skipped_reasons() -> None:
+    candidates = closet._normalize_inventory_candidates([{
+        "garment_name": "烟蓝色衬衫",
+        "category": "top",
+        "subtype": "shirt",
+        "bbox": {"x": 0.15, "y": 0.1, "width": 0.7, "height": 0.5},
+        "confidence": 0.91,
+        "fully_visible": True,
+        "visibility": "full",
+        "needs_approximate_reconstruction": False,
+        "evidence": ["翻领", "长袖"],
+    }])
+
+    assert candidates[0]["garment_name"] == "烟蓝色衬衫"
+    assert candidates[0]["subtype"] == "shirt"
+    assert candidates[0]["visibility"] == "full"
+    assert candidates[0]["evidence"] == ["翻领", "长袖"]
+    assert closet._normalize_skipped_inventory_items([{"name": "耳饰", "reason": "画面太小"}]) == [{"name": "耳饰", "reason": "画面太小"}]
 
 
 def test_inventory_candidate_normalization_accepts_gemini_1000_space_and_percentages() -> None:
@@ -597,6 +800,27 @@ def test_closet_preferences_persist_current_model(monkeypatch, tmp_path: Path) -
     assert preferences["current_stylist_session_id"] == "session_123"
 
 
+def test_closet_model_photo_persists_for_the_signed_in_user(monkeypatch, tmp_path: Path) -> None:
+    _use_tmp_closet(monkeypatch, tmp_path)
+    owner = _auth_client()
+    other = _auth_client()
+    photo = Image.new("RGB", (720, 1080), (238, 226, 222))
+
+    uploaded = owner.post(
+        "/closet/preferences/model-photo",
+        files={"image": ("body.png", _png_bytes(photo), "image/png")},
+    )
+
+    assert uploaded.status_code == 200
+    model_path = uploaded.json()["self_model_path"]
+    assert model_path.startswith("/user-assets/closet/profile/self_model.webp")
+    assert owner.get("/closet/preferences").json()["self_model_path"] == model_path
+    assert other.get("/closet/preferences").json()["self_model_path"] == ""
+    saved = closet._closet_disk_path(model_path)
+    assert saved is not None and saved.exists()
+    assert Image.open(saved).size == (720, 1080)
+
+
 def test_webpage_image_url_extraction() -> None:
     html = """
     <html>
@@ -651,11 +875,21 @@ def test_outfit_crud_uses_existing_closet_items(monkeypatch, tmp_path: Path) -> 
     assert outfit["title"] == "通勤套装"
     assert outfit["items"][0]["item_id"] == created["item_id"]
     assert outfit["cover_path"].startswith("/user-assets/closet/")
-    assert outfit["cover_path"].endswith("/flatlay.png")
+    assert outfit["cover_path"].endswith(f"/flatlay-{closet.OUTFIT_LAYOUT_VERSION}.png")
     assert outfit["layout_snapshot_path"] == outfit["cover_path"]
     assert outfit["layout_version"] == closet.OUTFIT_LAYOUT_VERSION
     assert outfit["layout_slots"][0]["item_id"] == created["item_id"]
+    assert outfit["layout_mode"] == "semantic-main-accessory-rail"
+    assert outfit["canvas"] == {"width": 1200, "height": 1500}
+    cover_path = closet._closet_disk_path(outfit["cover_path"])
+    assert cover_path is not None and Image.open(cover_path).size == (1200, 1500)
     assert client.get("/closet/outfits").json()["total"] == 1
+
+    collage_records = client.get("/api/collage-records").json()["records"]
+    assert collage_records[0]["outfitId"] == outfit["outfit_id"]
+    assert collage_records[0]["layoutMode"] == "semantic-main-accessory-rail"
+    assert collage_records[0]["width"] == 1200
+    assert collage_records[0]["height"] == 1500
 
     patched = client.patch(f"/closet/outfits/{outfit['outfit_id']}", json={"title": "周一通勤", "scene_tags": ["上班"], "favorite": True, "favorite_count": 99})
     assert patched.status_code == 200
@@ -666,6 +900,96 @@ def test_outfit_crud_uses_existing_closet_items(monkeypatch, tmp_path: Path) -> 
     deleted = client.delete(f"/closet/outfits/{outfit['outfit_id']}")
     assert deleted.status_code == 200
     assert client.get("/closet/outfits").json()["total"] == 0
+
+
+def test_outfit_layout_keeps_main_garments_left_and_accessories_on_right(monkeypatch, tmp_path: Path) -> None:
+    _use_tmp_closet(monkeypatch, tmp_path)
+    client = _auth_client()
+    top = _create_closet_item(client, "top.png", "top", (224, 220, 210))
+    skirt = _create_closet_item(client, "skirt.png", "skirt", (190, 120, 140))
+    bag = _create_closet_item(client, "bag.png", "bag", (160, 100, 70))
+    shoes = _create_closet_item(client, "shoes.png", "shoes", (40, 40, 40))
+
+    outfit = client.post(
+        "/closet/outfits",
+        json={"item_ids": [top["item_id"], skirt["item_id"], bag["item_id"], shoes["item_id"]]},
+    ).json()
+    slots = {entry["slot"]: entry for entry in outfit["layout_slots"]}
+
+    assert slots["top"]["column"] == 0
+    assert slots["skirt"]["column"] == 0
+    assert slots["bag"]["column"] == 1
+    assert slots["shoes"]["column"] == 1
+    assert slots["top"]["visual_area_ratio"] == round(2 / 3, 4)
+    assert slots["bag"]["visual_area_ratio"] == round(2 / 9, 4)
+    assert slots["top"]["optical_group"] == "main_outfit"
+    assert slots["bag"]["optical_group"] == "accessory_rail"
+    midpoint = closet.OUTFIT_CANVAS_SIZE[0] / 2
+    assert slots["top"]["source_box"]["x"] < midpoint
+    assert slots["skirt"]["source_box"]["x"] < midpoint
+    assert slots["bag"]["source_box"]["x"] > midpoint
+    assert slots["shoes"]["source_box"]["x"] > midpoint
+
+
+def test_outfit_layout_keeps_dress_left_and_accessory_rail_right(monkeypatch, tmp_path: Path) -> None:
+    _use_tmp_closet(monkeypatch, tmp_path)
+    client = _auth_client()
+    dress = _create_closet_item(client, "dress.png", "dress", (30, 45, 75))
+    bag = _create_closet_item(client, "bag.png", "bag", (150, 95, 70))
+    shoes = _create_closet_item(client, "shoes.png", "shoes", (35, 35, 35))
+
+    outfit = client.post(
+        "/closet/outfits",
+        json={"item_ids": [dress["item_id"], bag["item_id"], shoes["item_id"]]},
+    ).json()
+    slots = {entry["slot"]: entry for entry in outfit["layout_slots"]}
+
+    assert slots["dress"]["column"] == 0
+    assert slots["bag"]["column"] == 1
+    assert slots["shoes"]["column"] == 1
+
+
+def test_main_garments_are_compact_and_dress_matches_combined_length() -> None:
+    top = {"item": {}, "slot": "top", "image": Image.new("RGBA", (500, 350)), "aspect": 500 / 350}
+    lower = {"item": {}, "slot": "skirt", "image": Image.new("RGBA", (300, 600)), "aspect": .5}
+    dress = {"item": {}, "slot": "dress", "image": Image.new("RGBA", (300, 600)), "aspect": .5}
+    top_placement = closet._fit_flatlay_entry(
+        top, closet._flatlay_box("top", False), column=0, row=0, vertical_align="end"
+    )
+    lower_placement = closet._fit_flatlay_entry(
+        lower, closet._flatlay_box("skirt", False), column=0, row=1, vertical_align="start"
+    )
+    dress_placement = closet._fit_flatlay_entry(
+        dress, closet._flatlay_box("dress", True), column=0, row=0
+    )
+
+    gap = lower_placement["y"] - (top_placement["y"] + top_placement["height"])
+    combined_length = lower_placement["y"] + lower_placement["height"] - top_placement["y"]
+    assert 0 <= gap <= closet.OUTFIT_MAIN_GAP
+    assert dress_placement["height"] >= combined_length * .95
+
+
+def test_outfit_list_persists_legacy_layout_migration(monkeypatch, tmp_path: Path) -> None:
+    _use_tmp_closet(monkeypatch, tmp_path)
+    client = _auth_client()
+    top = _create_closet_item(client, "top.png", "top", (224, 220, 210))
+    bag = _create_closet_item(client, "bag.png", "bag", (160, 100, 70))
+    created = client.post(
+        "/closet/outfits",
+        json={"item_ids": [top["item_id"], bag["item_id"]]},
+    ).json()
+    manifest = closet._ensure_outfit_manifest()
+    manifest["outfits"][0]["layout_version"] = "legacy-layout"
+    manifest["outfits"][0]["layout_mode"] = "legacy-sequence"
+    closet._write_outfit_manifest(manifest)
+
+    response = client.get("/closet/outfits")
+
+    assert response.status_code == 200
+    migrated = closet._ensure_outfit_manifest()["outfits"][0]
+    assert migrated["outfit_id"] == created["outfit_id"]
+    assert migrated["layout_version"] == closet.OUTFIT_LAYOUT_VERSION
+    assert migrated["layout_mode"] == closet.OUTFIT_LAYOUT_MODE
 
 
 def test_outfit_list_reads_closet_manifest_once(monkeypatch, tmp_path: Path) -> None:
@@ -1107,7 +1431,7 @@ def test_wearwow_demo_route_keeps_selfit_compatibility(monkeypatch, tmp_path: Pa
     assert 'class="closet-skeleton"' in response.text
     assert "state.dataReady = true" in response.text
     assert "loadDeferredData();" in response.text
-    assert 'loading="lazy" decoding="async"><span>${item.category_label}</span>' in response.text
+    assert 'loading="lazy" decoding="async"></button>' in response.text
     assert 'class="home-intro"' not in response.text
     assert 'id="homeGreeting"' not in response.text
     assert 'id="homePersona"' not in response.text
@@ -1123,7 +1447,8 @@ def test_wearwow_demo_route_keeps_selfit_compatibility(monkeypatch, tmp_path: Pa
     assert '`${reportUrl}&from=app-profile`' in response.text
     assert '["home", "ai", "closet", "me"].includes(requestedTab)' in response.text
     assert 'function syncTabURL(tab, historyMode = "replace")' in response.text
-    assert 'setTab(btn.dataset.tab, { historyMode: "push" })' in response.text
+    assert 'handleNavigationTap(btn.dataset.tab)' in response.text
+    assert 'setTab(tab, { historyMode: "push" })' in response.text
     assert 'id="filterBtn"' not in response.text
     assert 'id="settingsBtn"' not in response.text
     assert 'id="floatingMatch" class="closet-compose" type="button">开始搭配' in response.text
@@ -1137,6 +1462,12 @@ def test_wearwow_demo_route_keeps_selfit_compatibility(monkeypatch, tmp_path: Pa
     assert response.text.count('id="detailItemsSection"') == 1
     assert "function smartItemRecommendations(anchor, limit = 6)" in response.text
     assert 'id="detailItemsTitle">穿搭单品' in response.text
+    assert 'id="builderSelection"' in response.text
+    assert 'id="builderCategories"' in response.text
+    assert 'data-preview-model="1"' in response.text
+    assert 'id="imageLightboxModel"' in response.text
+    assert 'function diverseHomeOutfits' in response.text
+    assert 'function humanizeRecommendationReason' in response.text
 
     styles = client.get("/static/selfit-app/app.css")
     assert styles.status_code == 200
@@ -1144,3 +1475,85 @@ def test_wearwow_demo_route_keeps_selfit_compatibility(monkeypatch, tmp_path: Pa
     assert ".category-row {\n  position: sticky;" in styles.text
     assert "transform: scale(1.16);" not in styles.text
     assert ".recommendation-tile small" in styles.text
+    assert ".builder-selection" in styles.text
+    assert ".image-lightbox-model" in styles.text
+
+
+def test_recommendation_feedback_is_idempotent_and_changes_ranking(monkeypatch, tmp_path: Path) -> None:
+    _use_tmp_closet(monkeypatch, tmp_path)
+    client = _auth_client()
+    first_top = _create_closet_item(client, "first-top.png", "top", (220, 60, 105))
+    first_bottom = _create_closet_item(client, "first-bottom.png", "bottom", (40, 60, 90))
+    second_top = _create_closet_item(client, "second-top.png", "top", (100, 160, 215))
+    second_skirt = _create_closet_item(client, "second-skirt.png", "skirt", (210, 190, 150))
+    first = client.post("/closet/outfits", json={"item_ids": [first_top["item_id"], first_bottom["item_id"]], "title": "第一套"}).json()
+    second = client.post("/closet/outfits", json={"item_ids": [second_top["item_id"], second_skirt["item_id"]], "title": "第二套"}).json()
+
+    payload = {"event_type": "dislike", "entity_type": "outfit", "entity_id": first["outfit_id"], "reason": "color", "client_event_id": "same-event"}
+    recorded = client.post("/closet/recommendations/feedback", json=payload)
+    duplicated = client.post("/closet/recommendations/feedback", json=payload)
+    ranked = client.post("/closet/recommendations/outfits", json={"persona": {}, "limit": 10}).json()["outfits"]
+
+    assert recorded.status_code == 200
+    assert duplicated.json()["deduplicated"] is True
+    assert [outfit["outfit_id"] for outfit in ranked].index(second["outfit_id"]) < [outfit["outfit_id"] for outfit in ranked].index(first["outfit_id"])
+
+
+def test_outfit_analysis_guides_completion_and_allows_outer_layer(monkeypatch, tmp_path: Path) -> None:
+    _use_tmp_closet(monkeypatch, tmp_path)
+    client = _auth_client()
+    top = _create_closet_item(client, "top.png", "top", (220, 60, 105))
+    outer = _create_closet_item(client, "outer.png", "top", (150, 120, 90))
+    bottom = _create_closet_item(client, "bottom.png", "bottom", (40, 60, 90))
+    client.patch(f"/closet/items/{outer['item_id']}", json={"style_tags": ["outer", "jacket"]})
+
+    incomplete = client.post("/closet/outfits/analyze-selection", json={"item_ids": [top["item_id"]]}).json()
+    layered = client.post("/closet/outfits/analyze-selection", json={"item_ids": [top["item_id"], outer["item_id"], bottom["item_id"]]}).json()
+
+    assert incomplete["status"] == "incomplete"
+    assert incomplete["missing_slots"] == ["lower"]
+    assert layered["status"] == "complete"
+    assert layered["conflicts"] == []
+    assert layered["missing_slots"] == ["shoes"]
+
+
+def test_cutout_review_supports_adjust_split_merge_and_batch_confirm(monkeypatch, tmp_path: Path) -> None:
+    _use_tmp_closet(monkeypatch, tmp_path)
+    client = _auth_client()
+    item = _create_closet_item(client, "review.png", "top", (220, 60, 105))
+
+    adjusted = client.post(f"/closet/items/{item['item_id']}/adjust", json={"action": "crop"})
+    assert adjusted.status_code == 200
+    assert adjusted.json()["asset_revision"] == 1
+    undone = client.post(f"/closet/items/{item['item_id']}/undo-adjustment")
+    assert undone.status_code == 200
+    assert undone.json()["asset_revision"] == 0
+    assert undone.json()["corrections"] == []
+    assert client.post(f"/closet/items/{item['item_id']}/undo-adjustment").status_code == 409
+
+    split = client.post(f"/closet/items/{item['item_id']}/split", json={"direction": "vertical"})
+    assert split.status_code == 200
+    pieces = split.json()["items"]
+    assert len(pieces) == 2
+
+    merged = client.post("/closet/items/merge", json={"item_ids": [piece["item_id"] for piece in pieces]})
+    assert merged.status_code == 200
+    merged_item = merged.json()["item"]
+    confirmed = client.patch("/closet/items/batch", json={"item_ids": [merged_item["item_id"]], "updates": {"import_state": "confirmed", "tryon_ready": False}})
+    assert confirmed.status_code == 200
+    assert confirmed.json()["items"][0]["import_state"] == "confirmed"
+    assert confirmed.json()["items"][0]["tryon_ready"] is False
+
+
+def test_tryon_plan_keeps_unready_item_as_reference_only(monkeypatch, tmp_path: Path) -> None:
+    _use_tmp_closet(monkeypatch, tmp_path)
+    client = _auth_client()
+    top = _create_closet_item(client, "top.png", "top", (220, 60, 105))
+    bag = _create_closet_item(client, "bag.png", "bag", (210, 190, 150))
+    client.patch(f"/closet/items/{bag['item_id']}", json={"tryon_ready": False})
+    outfit = client.post("/closet/outfits", json={"item_ids": [top["item_id"], bag["item_id"]], "title": "参考包袋"}).json()
+
+    plan, _ = closet.outfit_as_tryon_plan(outfit["outfit_id"])
+
+    assert [item["item_id"] for item in plan["items"]] == [top["item_id"]]
+    assert plan["reference_only_item_ids"] == [bag["item_id"]]

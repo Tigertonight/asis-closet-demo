@@ -113,10 +113,58 @@ def rewrite_runtime_urls(mapping: dict[str, str]) -> list[Path]:
     return changed
 
 
+def rewrite_structured_audit_urls(mapping: dict[str, str]) -> list[Path]:
+    changed: list[Path] = []
+    audit_root = ROOT / "docs/audits"
+    if not audit_root.exists():
+        return changed
+    for path in sorted(audit_root.rglob("*")):
+        if not path.is_file() or path.suffix.lower() not in {".json", ".jsonl", ".md", ".tsv"}:
+            continue
+        text = path.read_text(encoding="utf-8")
+        updated = text
+        for old, new in mapping.items():
+            updated = updated.replace(old, new)
+        if updated != text:
+            path.write_text(updated, encoding="utf-8")
+            changed.append(path)
+    return changed
+
+
 def write_json(path: Path, value: object) -> None:
     path.write_text(
         json.dumps(value, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
     )
+
+
+def refresh_audit_bindings(visual: dict) -> list[Path]:
+    changed: list[Path] = []
+    audit_root = ROOT / "docs/audits/20260903-personal-home-visual"
+    manifest_path = audit_root / "manifest.json"
+    if manifest_path.exists():
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+        for section in ("garments", "outfits"):
+            for record_id, entry in (manifest.get(section) or {}).items():
+                observation = (visual.get(section) or {}).get(record_id)
+                if not observation:
+                    continue
+                for key in ("record_fingerprint", "asset_sha256", "image_url"):
+                    entry[key] = observation[key]
+        write_json(manifest_path, manifest)
+        changed.append(manifest_path)
+
+    family_manifest_path = audit_root / "family-review/manifest.json"
+    if family_manifest_path.exists():
+        family_manifest = json.loads(family_manifest_path.read_text(encoding="utf-8"))
+        for member in family_manifest.get("members", []):
+            observation = (visual.get("garments") or {}).get(member.get("garment_id"))
+            if not observation:
+                continue
+            for key in ("record_fingerprint", "asset_sha256", "image_url"):
+                member[key] = observation[key]
+        write_json(family_manifest_path, family_manifest)
+        changed.append(family_manifest_path)
+    return changed
 
 
 def rebuild_outfit_covers(workers: int) -> dict[str, int]:
@@ -204,6 +252,7 @@ def refresh_revision_bound_metadata() -> list[Path]:
             observation["record_fingerprint"] = record_fingerprint(outfit)
         write_json(visual_path, visual)
         changed.append(visual_path)
+        changed.extend(refresh_audit_bindings(visual))
 
     family_paths = (
         ROOT / "app/data/garment-style-families.v1.json",
@@ -259,6 +308,7 @@ def main() -> None:
     if not args.no_rewrite_runtime:
         mapping = {public_url(path): public_url(path.with_suffix(".webp")) for path in sources}
         changed_files.extend(rewrite_runtime_urls(mapping))
+        changed_files.extend(rewrite_structured_audit_urls(mapping))
         if not args.no_rebuild_covers:
             cover_stats = rebuild_outfit_covers(args.workers)
         changed_files.extend(refresh_revision_bound_metadata())

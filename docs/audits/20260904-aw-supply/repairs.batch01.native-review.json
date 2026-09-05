@@ -1,0 +1,46 @@
+{
+  "schema_version": 1,
+  "batch_id": "aw-repair-01",
+  "source_manifest": "repairs.batch01.rendered.json",
+  "review_kind": "codex_visual_review",
+  "independent_blind_review": false,
+  "publication_authorized": false,
+  "entries": [
+    {
+      "source_token": "o0217",
+      "record_fingerprint": "164c48cc2998c38a1f990942545b022a00ac8ba76d55ca523bcf02a6f3bde0b5",
+      "asset_sha256": "e6e34437f1c0f2afccea943063cb82fdb4a654704cc34408c649d44043c332b1",
+      "evidence": "实际新成套图：浅蓝短袖贴合上衣、灰蓝粉多面料长阔裤、灰色素托特及灰色素尖头短靴各出现一次。靴子左右结构协调、边缘完整，装饰竞争减少。长裤仍同时包含蕾丝、拼接与抽褶面料，是强主视觉。",
+      "shoe_issue": "resolved_visually",
+      "disposition": "调整用途",
+      "suggested_use": ["creative", "social_statement"],
+      "persona_evidence": "主裤的错位拼接更支持 OOPS/EDGE；浅蓝颜色本身不能证明 NEON。",
+      "aw_daily_eligible": false,
+      "unresolved": ["旧 NEON 主人格与日常定位须重审", "不计入秋冬日常补齐", "新版本尚未编译进验证池"]
+    },
+    {
+      "source_token": "o0445",
+      "record_fingerprint": "85632fa0377907b77884a6e2ab3b46b006426323b6238ef5d17df61d2cb79f60",
+      "asset_sha256": "95bb8bc73eb7f454b2a8e20c1ccf250af0e054460691d3128b3ad68afc608169",
+      "evidence": "实际新成套图：浅蓝箱型口袋短袖、灰蓝直筒长裤、灰米色低帮运动鞋与拼接软包完整可见。鞋对结构一致、运动感与宽松上衣协调。主衣低装饰、直线清楚，解构只存在于包，不能支持强 OOPS 主衣表达。",
+      "shoe_issue": "resolved_visually",
+      "disposition": "保留待核",
+      "suggested_use": ["spring_daily", "summer_daily"],
+      "persona_evidence": "主衣更支持 LOOP/EASE 的简洁模块组合；不可靠拼接包冒充 OOPS。",
+      "aw_daily_eligible": false,
+      "unresolved": ["需修正主人格并做完整评分复核", "缺少秋冬外层", "新版本尚未编译进验证池"]
+    },
+    {
+      "source_token": "o0465",
+      "record_fingerprint": "d2dc493a1281000551fd7de2812dbe43c022da63b47bfd14f0c41e522c6d41e4",
+      "asset_sha256": "7696cef768d3d12cf623e700e60aeee1ab6f6b44b9c1ddb2909ed850a17c7b83",
+      "evidence": "实际新成套图：浅蓝 V 领排扣收腰短泡袖长裙、素灰手提包、蓝色单横带圆头玛丽珍鞋与蓝灰耳饰完整可见。鞋对协调且与主裙同色呼应，裙的收腰与整洁门襟是主视觉，不存在明显解构主衣。",
+      "shoe_issue": "resolved_visually",
+      "disposition": "保留待核",
+      "suggested_use": ["spring_daily", "summer_social"],
+      "persona_evidence": "经典收腰与柔和袖线更接近 HEIR/MELT，不能沿用 OOPS 高亲和度。",
+      "aw_daily_eligible": false,
+      "unresolved": ["需修正主人格并做完整评分复核", "秋冬增外层需验证泡袖与外套袖量", "新版本尚未编译进验证池"]
+    }
+  ]
+}

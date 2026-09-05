@@ -1,0 +1,462 @@
+{
+  "schema_version": 1,
+  "batch_id": "p0-visual-gap-01",
+  "source_visual_version": "codex-visual-16b18cdcdca36dbc306a",
+  "status": "designer_targets_pending_whole_image_review",
+  "source_backlog": "docs/audits/20260904-p0-acceptance/production-backlog.v1.json",
+  "source_anchor_manifest": "docs/audits/20260904-p0-acceptance/anchor-candidates.v12.json",
+  "new_garments": [],
+  "recipes": [
+    {
+      "task_id": "P0-CONTENT-BOLT-01",
+      "persona": "BOLT",
+      "palette": "evidence_first",
+      "season": "autumn",
+      "structure": "skirt",
+      "hero": "g0426",
+      "items": [
+        "g0426",
+        "g0002",
+        "g0004",
+        "g0005"
+      ],
+      "expression": "easy",
+      "intent": "在逃千金 easy / skirt：以“华丽焦点、戏剧轮廓、精致贵气”为人格证据，只保留一件主视觉，其余单品降低竞争并维持日常可穿。"
+    },
+    {
+      "task_id": "P0-CONTENT-BOLT-02",
+      "persona": "BOLT",
+      "palette": "evidence_first",
+      "season": "autumn",
+      "structure": "dress",
+      "hero": "g0476",
+      "items": [
+        "g0476",
+        "g0014",
+        "g0019"
+      ],
+      "expression": "easy",
+      "intent": "在逃千金 easy / dress：以“华丽焦点、戏剧轮廓、精致贵气”为人格证据，只保留一件主视觉，其余单品降低竞争并维持日常可穿。"
+    },
+    {
+      "task_id": "P0-CONTENT-BOLT-03",
+      "persona": "BOLT",
+      "palette": "evidence_first",
+      "season": "autumn",
+      "structure": "skirt",
+      "hero": "g0426",
+      "items": [
+        "g0426",
+        "g0006",
+        "g0020",
+        "g0270"
+      ],
+      "expression": "easy",
+      "intent": "在逃千金 easy / skirt：以“华丽焦点、戏剧轮廓、精致贵气”为人格证据，只保留一件主视觉，其余单品降低竞争并维持日常可穿。"
+    },
+    {
+      "task_id": "P0-CONTENT-BOLT-04",
+      "persona": "BOLT",
+      "palette": "evidence_first",
+      "season": "autumn",
+      "structure": "dress",
+      "hero": "g0478",
+      "items": [
+        "g0478",
+        "g0244",
+        "g0271"
+      ],
+      "expression": "easy",
+      "intent": "在逃千金 easy / dress：以“华丽焦点、戏剧轮廓、精致贵气”为人格证据，只保留一件主视觉，其余单品降低竞争并维持日常可穿。"
+    },
+    {
+      "task_id": "P0-CONTENT-BOLT-05",
+      "persona": "BOLT",
+      "palette": "evidence_first",
+      "season": "autumn",
+      "structure": "pants",
+      "hero": "g0410",
+      "items": [
+        "g0410",
+        "g0008",
+        "g0245",
+        "g0272"
+      ],
+      "expression": "typical",
+      "intent": "在逃千金 typical / pants：以“华丽焦点、戏剧轮廓、精致贵气”为人格证据，只保留一件主视觉，其余单品降低竞争并维持日常可穿。"
+    },
+    {
+      "task_id": "P0-CONTENT-BOLT-06",
+      "persona": "BOLT",
+      "palette": "evidence_first",
+      "season": "autumn",
+      "structure": "skirt",
+      "hero": "g0330",
+      "items": [
+        "g0330",
+        "g0186",
+        "g0246",
+        "g0273"
+      ],
+      "expression": "typical",
+      "intent": "在逃千金 typical / skirt：以“华丽焦点、戏剧轮廓、精致贵气”为人格证据，只保留一件主视觉，其余单品降低竞争并维持日常可穿。"
+    },
+    {
+      "task_id": "P0-CONTENT-BOLT-07",
+      "persona": "BOLT",
+      "palette": "evidence_first",
+      "season": "autumn",
+      "structure": "dress",
+      "hero": "g0476",
+      "items": [
+        "g0476",
+        "g0247",
+        "g0274"
+      ],
+      "expression": "typical",
+      "intent": "在逃千金 typical / dress：以“华丽焦点、戏剧轮廓、精致贵气”为人格证据，只保留一件主视觉，其余单品降低竞争并维持日常可穿。"
+    },
+    {
+      "task_id": "P0-CONTENT-BOLT-08",
+      "persona": "BOLT",
+      "palette": "evidence_first",
+      "season": "autumn",
+      "structure": "pants",
+      "hero": "g0346",
+      "items": [
+        "g0346",
+        "g0003",
+        "g0248",
+        "g0275"
+      ],
+      "expression": "explore",
+      "intent": "在逃千金 explore / pants：以“华丽焦点、戏剧轮廓、精致贵气”为人格证据，只保留一件主视觉，其余单品降低竞争并维持日常可穿。"
+    },
+    {
+      "task_id": "P0-CONTENT-EDGE-01",
+      "persona": "EDGE",
+      "palette": "evidence_first",
+      "season": "autumn",
+      "structure": "dress",
+      "hero": "g0239",
+      "items": [
+        "g0239",
+        "g0004",
+        "g0005"
+      ],
+      "expression": "easy",
+      "intent": "甜酷轻亚 easy / dress：以“甜辣对撞、锋芒感、露肤度”为人格证据，只保留一件主视觉，其余单品降低竞争并维持日常可穿。"
+    },
+    {
+      "task_id": "P0-CONTENT-EDGE-02",
+      "persona": "EDGE",
+      "palette": "evidence_first",
+      "season": "autumn",
+      "structure": "pants",
+      "hero": "g0334",
+      "items": [
+        "g0334",
+        "g0003",
+        "g0014",
+        "g0019"
+      ],
+      "expression": "easy",
+      "intent": "甜酷轻亚 easy / pants：以“甜辣对撞、锋芒感、露肤度”为人格证据，只保留一件主视觉，其余单品降低竞争并维持日常可穿。"
+    },
+    {
+      "task_id": "P0-CONTENT-EDGE-03",
+      "persona": "EDGE",
+      "palette": "evidence_first",
+      "season": "autumn",
+      "structure": "skirt",
+      "hero": "g0190",
+      "items": [
+        "g0190",
+        "g0002",
+        "g0020",
+        "g0270"
+      ],
+      "expression": "easy",
+      "intent": "甜酷轻亚 easy / skirt：以“甜辣对撞、锋芒感、露肤度”为人格证据，只保留一件主视觉，其余单品降低竞争并维持日常可穿。"
+    },
+    {
+      "task_id": "P0-CONTENT-EDGE-04",
+      "persona": "EDGE",
+      "palette": "evidence_first",
+      "season": "autumn",
+      "structure": "dress",
+      "hero": "g0462",
+      "items": [
+        "g0462",
+        "g0244",
+        "g0271"
+      ],
+      "expression": "easy",
+      "intent": "甜酷轻亚 easy / dress：以“甜辣对撞、锋芒感、露肤度”为人格证据，只保留一件主视觉，其余单品降低竞争并维持日常可穿。"
+    },
+    {
+      "task_id": "P0-CONTENT-EDGE-05",
+      "persona": "EDGE",
+      "palette": "evidence_first",
+      "season": "autumn",
+      "structure": "pants",
+      "hero": "g0077",
+      "items": [
+        "g0077",
+        "g0013",
+        "g0245",
+        "g0272"
+      ],
+      "expression": "explore",
+      "intent": "甜酷轻亚 explore / pants：以“甜辣对撞、锋芒感、露肤度”为人格证据，只保留一件主视觉，其余单品降低竞争并维持日常可穿。"
+    },
+    {
+      "task_id": "P0-CONTENT-JADE-01",
+      "persona": "JADE",
+      "palette": "evidence_first",
+      "season": "autumn",
+      "structure": "dress",
+      "hero": "g0460",
+      "items": [
+        "g0460",
+        "g0004",
+        "g0005"
+      ],
+      "expression": "easy",
+      "intent": "东方玉骨 easy / dress：以“东方线条、风骨自成、现代感”为人格证据，只保留一件主视觉，其余单品降低竞争并维持日常可穿。"
+    },
+    {
+      "task_id": "P0-CONTENT-JADE-02",
+      "persona": "JADE",
+      "palette": "evidence_first",
+      "season": "autumn",
+      "structure": "dress",
+      "hero": "g0476",
+      "items": [
+        "g0476",
+        "g0014",
+        "g0019"
+      ],
+      "expression": "easy",
+      "intent": "东方玉骨 easy / dress：以“东方线条、风骨自成、现代感”为人格证据，只保留一件主视觉，其余单品降低竞争并维持日常可穿。"
+    },
+    {
+      "task_id": "P0-CONTENT-JADE-03",
+      "persona": "JADE",
+      "palette": "evidence_first",
+      "season": "autumn",
+      "structure": "pants",
+      "hero": "g0084",
+      "items": [
+        "g0084",
+        "g0003",
+        "g0020",
+        "g0270"
+      ],
+      "expression": "easy",
+      "intent": "东方玉骨 easy / pants：以“东方线条、风骨自成、现代感”为人格证据，只保留一件主视觉，其余单品降低竞争并维持日常可穿。"
+    },
+    {
+      "task_id": "P0-CONTENT-NEON-01",
+      "persona": "NEON",
+      "palette": "evidence_first",
+      "season": "autumn",
+      "structure": "dress",
+      "hero": "g0456",
+      "items": [
+        "g0456",
+        "g0004",
+        "g0005"
+      ],
+      "expression": "easy",
+      "intent": "灵动吸睛 easy / dress：以“高能色彩、图案焦点、主动吸睛”为人格证据，只保留一件主视觉，其余单品降低竞争并维持日常可穿。"
+    },
+    {
+      "task_id": "P0-CONTENT-NEON-02",
+      "persona": "NEON",
+      "palette": "evidence_first",
+      "season": "autumn",
+      "structure": "pants",
+      "hero": "g0037",
+      "items": [
+        "g0037",
+        "g0002",
+        "g0014",
+        "g0019"
+      ],
+      "expression": "easy",
+      "intent": "灵动吸睛 easy / pants：以“高能色彩、图案焦点、主动吸睛”为人格证据，只保留一件主视觉，其余单品降低竞争并维持日常可穿。"
+    },
+    {
+      "task_id": "P0-CONTENT-NEON-03",
+      "persona": "NEON",
+      "palette": "evidence_first",
+      "season": "autumn",
+      "structure": "skirt",
+      "hero": "g0328",
+      "items": [
+        "g0328",
+        "g0186",
+        "g0020",
+        "g0270"
+      ],
+      "expression": "easy",
+      "intent": "灵动吸睛 easy / skirt：以“高能色彩、图案焦点、主动吸睛”为人格证据，只保留一件主视觉，其余单品降低竞争并维持日常可穿。"
+    },
+    {
+      "task_id": "P0-CONTENT-NEON-04",
+      "persona": "NEON",
+      "palette": "evidence_first",
+      "season": "autumn",
+      "structure": "dress",
+      "hero": "g0472",
+      "items": [
+        "g0472",
+        "g0244",
+        "g0271"
+      ],
+      "expression": "explore",
+      "intent": "灵动吸睛 explore / dress：以“高能色彩、图案焦点、主动吸睛”为人格证据，只保留一件主视觉，其余单品降低竞争并维持日常可穿。"
+    },
+    {
+      "task_id": "P0-CONTENT-NEON-05",
+      "persona": "NEON",
+      "palette": "evidence_first",
+      "season": "autumn",
+      "structure": "pants",
+      "hero": "g0568",
+      "items": [
+        "g0568",
+        "g0003",
+        "g0245",
+        "g0272"
+      ],
+      "expression": "explore",
+      "intent": "灵动吸睛 explore / pants：以“高能色彩、图案焦点、主动吸睛”为人格证据，只保留一件主视觉，其余单品降低竞争并维持日常可穿。"
+    },
+    {
+      "task_id": "P0-CONTENT-OOPS-01",
+      "persona": "OOPS",
+      "palette": "evidence_first",
+      "season": "autumn",
+      "structure": "dress",
+      "hero": "g0461",
+      "items": [
+        "g0461",
+        "g0004",
+        "g0005"
+      ],
+      "expression": "easy",
+      "intent": "搭配事故 easy / dress：以“主动冲突、异质拼接、失序有趣”为人格证据，只保留一件主视觉，其余单品降低竞争并维持日常可穿。"
+    },
+    {
+      "task_id": "P0-CONTENT-OOPS-02",
+      "persona": "OOPS",
+      "palette": "evidence_first",
+      "season": "autumn",
+      "structure": "skirt",
+      "hero": "g0038",
+      "items": [
+        "g0038",
+        "g0186",
+        "g0014",
+        "g0019"
+      ],
+      "expression": "easy",
+      "intent": "搭配事故 easy / skirt：以“主动冲突、异质拼接、失序有趣”为人格证据，只保留一件主视觉，其余单品降低竞争并维持日常可穿。"
+    },
+    {
+      "task_id": "P0-CONTENT-OOPS-03",
+      "persona": "OOPS",
+      "palette": "evidence_first",
+      "season": "autumn",
+      "structure": "dress",
+      "hero": "g0461",
+      "items": [
+        "g0461",
+        "g0020",
+        "g0270"
+      ],
+      "expression": "easy",
+      "intent": "搭配事故 easy / dress：以“主动冲突、异质拼接、失序有趣”为人格证据，只保留一件主视觉，其余单品降低竞争并维持日常可穿。"
+    },
+    {
+      "task_id": "P0-CONTENT-OOPS-04",
+      "persona": "OOPS",
+      "palette": "evidence_first",
+      "season": "autumn",
+      "structure": "skirt",
+      "hero": "g0077",
+      "items": [
+        "g0077",
+        "g0187",
+        "g0244",
+        "g0271"
+      ],
+      "expression": "easy",
+      "intent": "搭配事故 easy / skirt：以“主动冲突、异质拼接、失序有趣”为人格证据，只保留一件主视觉，其余单品降低竞争并维持日常可穿。"
+    },
+    {
+      "task_id": "P0-CONTENT-VOID-01",
+      "persona": "VOID",
+      "palette": "evidence_first",
+      "season": "autumn",
+      "structure": "dress",
+      "hero": "g0238",
+      "items": [
+        "g0238",
+        "g0004",
+        "g0005"
+      ],
+      "expression": "easy",
+      "intent": "人间失格 easy / dress：以“状态游离、拒绝定型、默认制服”为人格证据，只保留一件主视觉，其余单品降低竞争并维持日常可穿。"
+    },
+    {
+      "task_id": "P0-CONTENT-VOID-02",
+      "persona": "VOID",
+      "palette": "evidence_first",
+      "season": "autumn",
+      "structure": "skirt",
+      "hero": "g0094",
+      "items": [
+        "g0094",
+        "g0186",
+        "g0014",
+        "g0019"
+      ],
+      "expression": "easy",
+      "intent": "人间失格 easy / skirt：以“状态游离、拒绝定型、默认制服”为人格证据，只保留一件主视觉，其余单品降低竞争并维持日常可穿。"
+    },
+    {
+      "task_id": "P0-CONTENT-VOID-03",
+      "persona": "VOID",
+      "palette": "evidence_first",
+      "season": "autumn",
+      "structure": "dress",
+      "hero": "g0463",
+      "items": [
+        "g0463",
+        "g0020",
+        "g0270"
+      ],
+      "expression": "easy",
+      "intent": "人间失格 easy / dress：以“状态游离、拒绝定型、默认制服”为人格证据，只保留一件主视觉，其余单品降低竞争并维持日常可穿。"
+    },
+    {
+      "task_id": "P0-CONTENT-VOID-04",
+      "persona": "VOID",
+      "palette": "evidence_first",
+      "season": "autumn",
+      "structure": "skirt",
+      "hero": "g0127",
+      "items": [
+        "g0127",
+        "g0187",
+        "g0244",
+        "g0271"
+      ],
+      "expression": "easy",
+      "intent": "人间失格 easy / skirt：以“状态游离、拒绝定型、默认制服”为人格证据，只保留一件主视觉，其余单品降低竞争并维持日常可穿。"
+    }
+  ]
+}

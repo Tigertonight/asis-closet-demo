@@ -1,0 +1,24 @@
+{
+  "source": "docs/audits/20260904-aw-supply/generated-garments/batch02/raw/winter-jacket-bright-fuchsia-raw-v1.png",
+  "output": "docs/audits/20260904-aw-supply/generated-garments/batch02/prepared/winter-jacket-bright-fuchsia-v1.png",
+  "size": [
+    1200,
+    1200
+  ],
+  "meaningful_bbox": [
+    203,
+    120,
+    996,
+    1080
+  ],
+  "margins": {
+    "left": 0.1692,
+    "top": 0.1,
+    "right": 0.17,
+    "bottom": 0.1
+  },
+  "transparent_ratio": 0.6706,
+  "partial_alpha_ratio": 0.3275,
+  "alpha_noise_threshold": 8,
+  "passed": true
+}

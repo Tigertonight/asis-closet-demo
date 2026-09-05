@@ -1,0 +1,24 @@
+{
+  "source": "docs/audits/20260904-aw-supply/generated-garments/batch01/raw/winter-coat-bright-coral-raw-v1.png",
+  "output": "docs/audits/20260904-aw-supply/generated-garments/batch01/prepared/winter-coat-bright-coral-v1.png",
+  "size": [
+    1200,
+    1200
+  ],
+  "meaningful_bbox": [
+    280,
+    120,
+    919,
+    1080
+  ],
+  "margins": {
+    "left": 0.2333,
+    "top": 0.1,
+    "right": 0.2342,
+    "bottom": 0.1
+  },
+  "transparent_ratio": 0.7065,
+  "partial_alpha_ratio": 0.2923,
+  "alpha_noise_threshold": 8,
+  "passed": true
+}

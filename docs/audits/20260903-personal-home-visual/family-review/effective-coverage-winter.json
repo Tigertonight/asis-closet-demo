@@ -1,0 +1,5416 @@
+{
+  "schema_version": 1,
+  "visual_version": "codex-visual-16b18cdcdca36dbc306a",
+  "strategy_version": "personal_home_v3.2",
+  "scenario": {
+    "season": "winter",
+    "scene": "daily",
+    "palettes": {
+      "mono": "黑白灰",
+      "earth": "大地色",
+      "ocean": "海洋蓝",
+      "jewel": "宝石色",
+      "bright": "明亮色",
+      "pastel": "柔粉浅彩"
+    }
+  },
+  "family_registry": "native-family-29dfc79c909cff365924",
+  "offline_family_override": true,
+  "interpretation": "Revision-valid visual candidates include experimental expressions, not automatic daily eligibility. Conditions use the current greedy ranking, not maximum feasible supply. Pending review is not proof that an asset is unsuitable. No human or independent blind review.",
+  "counts": {
+    "garments": 600,
+    "active_outfits": 1169,
+    "visual_candidate_outfits": 952,
+    "held_outfits": 217,
+    "conditions": 96,
+    "qualified_first_ten": 0,
+    "qualified_browse_thirty": 0
+  },
+  "palette_differentiation": {
+    "comparable_pairs": 0,
+    "changed_at_least_three": 0,
+    "pass_fraction": null
+  },
+  "independent_top1": null,
+  "independent_top2": null,
+  "matrix": [
+    {
+      "persona": "bolt",
+      "palette": "mono",
+      "eligible": 0,
+      "parent_recipes": 0,
+      "main_garments": 0,
+      "style_families": 0,
+      "first_ten": 0,
+      "browse_thirty": 0,
+      "first_ten_structures": {},
+      "eligible_by_expression_structure": {},
+      "selected_ids": [],
+      "first_ten_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "browse_thirty_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "qualified_first_ten": false,
+      "qualified_browse_thirty": false,
+      "gaps": [
+        {
+          "position": 0,
+          "reason": "quality_expression_or_diversity_supply",
+          "required_expression": "easy"
+        }
+      ],
+      "rejected": {
+        "season": 894,
+        "experimental_requires_confirmed_nondaily_scene": 57,
+        "persona_visual_insufficient": 1
+      },
+      "required_next_action": "review_existing_images_then_recombine_unused_assets"
+    },
+    {
+      "persona": "bolt",
+      "palette": "earth",
+      "eligible": 0,
+      "parent_recipes": 0,
+      "main_garments": 0,
+      "style_families": 0,
+      "first_ten": 0,
+      "browse_thirty": 0,
+      "first_ten_structures": {},
+      "eligible_by_expression_structure": {},
+      "selected_ids": [],
+      "first_ten_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "browse_thirty_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "qualified_first_ten": false,
+      "qualified_browse_thirty": false,
+      "gaps": [
+        {
+          "position": 0,
+          "reason": "quality_expression_or_diversity_supply",
+          "required_expression": "easy"
+        }
+      ],
+      "rejected": {
+        "season": 894,
+        "experimental_requires_confirmed_nondaily_scene": 57,
+        "persona_visual_insufficient": 1
+      },
+      "required_next_action": "review_existing_images_then_recombine_unused_assets"
+    },
+    {
+      "persona": "bolt",
+      "palette": "ocean",
+      "eligible": 0,
+      "parent_recipes": 0,
+      "main_garments": 0,
+      "style_families": 0,
+      "first_ten": 0,
+      "browse_thirty": 0,
+      "first_ten_structures": {},
+      "eligible_by_expression_structure": {},
+      "selected_ids": [],
+      "first_ten_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "browse_thirty_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "qualified_first_ten": false,
+      "qualified_browse_thirty": false,
+      "gaps": [
+        {
+          "position": 0,
+          "reason": "quality_expression_or_diversity_supply",
+          "required_expression": "easy"
+        }
+      ],
+      "rejected": {
+        "season": 894,
+        "experimental_requires_confirmed_nondaily_scene": 57,
+        "persona_visual_insufficient": 1
+      },
+      "required_next_action": "review_existing_images_then_recombine_unused_assets"
+    },
+    {
+      "persona": "bolt",
+      "palette": "jewel",
+      "eligible": 0,
+      "parent_recipes": 0,
+      "main_garments": 0,
+      "style_families": 0,
+      "first_ten": 0,
+      "browse_thirty": 0,
+      "first_ten_structures": {},
+      "eligible_by_expression_structure": {},
+      "selected_ids": [],
+      "first_ten_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "browse_thirty_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "qualified_first_ten": false,
+      "qualified_browse_thirty": false,
+      "gaps": [
+        {
+          "position": 0,
+          "reason": "quality_expression_or_diversity_supply",
+          "required_expression": "easy"
+        }
+      ],
+      "rejected": {
+        "season": 894,
+        "experimental_requires_confirmed_nondaily_scene": 57,
+        "persona_visual_insufficient": 1
+      },
+      "required_next_action": "review_existing_images_then_recombine_unused_assets"
+    },
+    {
+      "persona": "bolt",
+      "palette": "bright",
+      "eligible": 0,
+      "parent_recipes": 0,
+      "main_garments": 0,
+      "style_families": 0,
+      "first_ten": 0,
+      "browse_thirty": 0,
+      "first_ten_structures": {},
+      "eligible_by_expression_structure": {},
+      "selected_ids": [],
+      "first_ten_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "browse_thirty_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "qualified_first_ten": false,
+      "qualified_browse_thirty": false,
+      "gaps": [
+        {
+          "position": 0,
+          "reason": "quality_expression_or_diversity_supply",
+          "required_expression": "easy"
+        }
+      ],
+      "rejected": {
+        "season": 894,
+        "experimental_requires_confirmed_nondaily_scene": 57,
+        "persona_visual_insufficient": 1
+      },
+      "required_next_action": "review_existing_images_then_recombine_unused_assets"
+    },
+    {
+      "persona": "bolt",
+      "palette": "pastel",
+      "eligible": 0,
+      "parent_recipes": 0,
+      "main_garments": 0,
+      "style_families": 0,
+      "first_ten": 0,
+      "browse_thirty": 0,
+      "first_ten_structures": {},
+      "eligible_by_expression_structure": {},
+      "selected_ids": [],
+      "first_ten_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "browse_thirty_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "qualified_first_ten": false,
+      "qualified_browse_thirty": false,
+      "gaps": [
+        {
+          "position": 0,
+          "reason": "quality_expression_or_diversity_supply",
+          "required_expression": "easy"
+        }
+      ],
+      "rejected": {
+        "season": 894,
+        "experimental_requires_confirmed_nondaily_scene": 57,
+        "persona_visual_insufficient": 1
+      },
+      "required_next_action": "review_existing_images_then_recombine_unused_assets"
+    },
+    {
+      "persona": "ease",
+      "palette": "mono",
+      "eligible": 0,
+      "parent_recipes": 0,
+      "main_garments": 0,
+      "style_families": 0,
+      "first_ten": 0,
+      "browse_thirty": 0,
+      "first_ten_structures": {},
+      "eligible_by_expression_structure": {},
+      "selected_ids": [],
+      "first_ten_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "browse_thirty_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "qualified_first_ten": false,
+      "qualified_browse_thirty": false,
+      "gaps": [
+        {
+          "position": 0,
+          "reason": "quality_expression_or_diversity_supply",
+          "required_expression": "easy"
+        }
+      ],
+      "rejected": {
+        "season": 894,
+        "experimental_requires_confirmed_nondaily_scene": 57,
+        "persona_visual_insufficient": 1
+      },
+      "required_next_action": "review_existing_images_then_recombine_unused_assets"
+    },
+    {
+      "persona": "ease",
+      "palette": "earth",
+      "eligible": 0,
+      "parent_recipes": 0,
+      "main_garments": 0,
+      "style_families": 0,
+      "first_ten": 0,
+      "browse_thirty": 0,
+      "first_ten_structures": {},
+      "eligible_by_expression_structure": {},
+      "selected_ids": [],
+      "first_ten_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "browse_thirty_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "qualified_first_ten": false,
+      "qualified_browse_thirty": false,
+      "gaps": [
+        {
+          "position": 0,
+          "reason": "quality_expression_or_diversity_supply",
+          "required_expression": "easy"
+        }
+      ],
+      "rejected": {
+        "season": 894,
+        "experimental_requires_confirmed_nondaily_scene": 57,
+        "persona_visual_insufficient": 1
+      },
+      "required_next_action": "review_existing_images_then_recombine_unused_assets"
+    },
+    {
+      "persona": "ease",
+      "palette": "ocean",
+      "eligible": 0,
+      "parent_recipes": 0,
+      "main_garments": 0,
+      "style_families": 0,
+      "first_ten": 0,
+      "browse_thirty": 0,
+      "first_ten_structures": {},
+      "eligible_by_expression_structure": {},
+      "selected_ids": [],
+      "first_ten_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "browse_thirty_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "qualified_first_ten": false,
+      "qualified_browse_thirty": false,
+      "gaps": [
+        {
+          "position": 0,
+          "reason": "quality_expression_or_diversity_supply",
+          "required_expression": "easy"
+        }
+      ],
+      "rejected": {
+        "season": 894,
+        "experimental_requires_confirmed_nondaily_scene": 57,
+        "persona_visual_insufficient": 1
+      },
+      "required_next_action": "review_existing_images_then_recombine_unused_assets"
+    },
+    {
+      "persona": "ease",
+      "palette": "jewel",
+      "eligible": 0,
+      "parent_recipes": 0,
+      "main_garments": 0,
+      "style_families": 0,
+      "first_ten": 0,
+      "browse_thirty": 0,
+      "first_ten_structures": {},
+      "eligible_by_expression_structure": {},
+      "selected_ids": [],
+      "first_ten_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "browse_thirty_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "qualified_first_ten": false,
+      "qualified_browse_thirty": false,
+      "gaps": [
+        {
+          "position": 0,
+          "reason": "quality_expression_or_diversity_supply",
+          "required_expression": "easy"
+        }
+      ],
+      "rejected": {
+        "season": 894,
+        "experimental_requires_confirmed_nondaily_scene": 57,
+        "persona_visual_insufficient": 1
+      },
+      "required_next_action": "review_existing_images_then_recombine_unused_assets"
+    },
+    {
+      "persona": "ease",
+      "palette": "bright",
+      "eligible": 0,
+      "parent_recipes": 0,
+      "main_garments": 0,
+      "style_families": 0,
+      "first_ten": 0,
+      "browse_thirty": 0,
+      "first_ten_structures": {},
+      "eligible_by_expression_structure": {},
+      "selected_ids": [],
+      "first_ten_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "browse_thirty_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "qualified_first_ten": false,
+      "qualified_browse_thirty": false,
+      "gaps": [
+        {
+          "position": 0,
+          "reason": "quality_expression_or_diversity_supply",
+          "required_expression": "easy"
+        }
+      ],
+      "rejected": {
+        "season": 894,
+        "experimental_requires_confirmed_nondaily_scene": 57,
+        "persona_visual_insufficient": 1
+      },
+      "required_next_action": "review_existing_images_then_recombine_unused_assets"
+    },
+    {
+      "persona": "ease",
+      "palette": "pastel",
+      "eligible": 0,
+      "parent_recipes": 0,
+      "main_garments": 0,
+      "style_families": 0,
+      "first_ten": 0,
+      "browse_thirty": 0,
+      "first_ten_structures": {},
+      "eligible_by_expression_structure": {},
+      "selected_ids": [],
+      "first_ten_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "browse_thirty_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "qualified_first_ten": false,
+      "qualified_browse_thirty": false,
+      "gaps": [
+        {
+          "position": 0,
+          "reason": "quality_expression_or_diversity_supply",
+          "required_expression": "easy"
+        }
+      ],
+      "rejected": {
+        "season": 894,
+        "experimental_requires_confirmed_nondaily_scene": 57,
+        "persona_visual_insufficient": 1
+      },
+      "required_next_action": "review_existing_images_then_recombine_unused_assets"
+    },
+    {
+      "persona": "edge",
+      "palette": "mono",
+      "eligible": 0,
+      "parent_recipes": 0,
+      "main_garments": 0,
+      "style_families": 0,
+      "first_ten": 0,
+      "browse_thirty": 0,
+      "first_ten_structures": {},
+      "eligible_by_expression_structure": {},
+      "selected_ids": [],
+      "first_ten_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "browse_thirty_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "qualified_first_ten": false,
+      "qualified_browse_thirty": false,
+      "gaps": [
+        {
+          "position": 0,
+          "reason": "quality_expression_or_diversity_supply",
+          "required_expression": "easy"
+        }
+      ],
+      "rejected": {
+        "season": 894,
+        "experimental_requires_confirmed_nondaily_scene": 57,
+        "persona_visual_insufficient": 1
+      },
+      "required_next_action": "review_existing_images_then_recombine_unused_assets"
+    },
+    {
+      "persona": "edge",
+      "palette": "earth",
+      "eligible": 0,
+      "parent_recipes": 0,
+      "main_garments": 0,
+      "style_families": 0,
+      "first_ten": 0,
+      "browse_thirty": 0,
+      "first_ten_structures": {},
+      "eligible_by_expression_structure": {},
+      "selected_ids": [],
+      "first_ten_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "browse_thirty_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "qualified_first_ten": false,
+      "qualified_browse_thirty": false,
+      "gaps": [
+        {
+          "position": 0,
+          "reason": "quality_expression_or_diversity_supply",
+          "required_expression": "easy"
+        }
+      ],
+      "rejected": {
+        "season": 894,
+        "experimental_requires_confirmed_nondaily_scene": 57,
+        "persona_visual_insufficient": 1
+      },
+      "required_next_action": "review_existing_images_then_recombine_unused_assets"
+    },
+    {
+      "persona": "edge",
+      "palette": "ocean",
+      "eligible": 0,
+      "parent_recipes": 0,
+      "main_garments": 0,
+      "style_families": 0,
+      "first_ten": 0,
+      "browse_thirty": 0,
+      "first_ten_structures": {},
+      "eligible_by_expression_structure": {},
+      "selected_ids": [],
+      "first_ten_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "browse_thirty_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "qualified_first_ten": false,
+      "qualified_browse_thirty": false,
+      "gaps": [
+        {
+          "position": 0,
+          "reason": "quality_expression_or_diversity_supply",
+          "required_expression": "easy"
+        }
+      ],
+      "rejected": {
+        "season": 894,
+        "experimental_requires_confirmed_nondaily_scene": 57,
+        "persona_visual_insufficient": 1
+      },
+      "required_next_action": "review_existing_images_then_recombine_unused_assets"
+    },
+    {
+      "persona": "edge",
+      "palette": "jewel",
+      "eligible": 0,
+      "parent_recipes": 0,
+      "main_garments": 0,
+      "style_families": 0,
+      "first_ten": 0,
+      "browse_thirty": 0,
+      "first_ten_structures": {},
+      "eligible_by_expression_structure": {},
+      "selected_ids": [],
+      "first_ten_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "browse_thirty_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "qualified_first_ten": false,
+      "qualified_browse_thirty": false,
+      "gaps": [
+        {
+          "position": 0,
+          "reason": "quality_expression_or_diversity_supply",
+          "required_expression": "easy"
+        }
+      ],
+      "rejected": {
+        "season": 894,
+        "experimental_requires_confirmed_nondaily_scene": 57,
+        "persona_visual_insufficient": 1
+      },
+      "required_next_action": "review_existing_images_then_recombine_unused_assets"
+    },
+    {
+      "persona": "edge",
+      "palette": "bright",
+      "eligible": 0,
+      "parent_recipes": 0,
+      "main_garments": 0,
+      "style_families": 0,
+      "first_ten": 0,
+      "browse_thirty": 0,
+      "first_ten_structures": {},
+      "eligible_by_expression_structure": {},
+      "selected_ids": [],
+      "first_ten_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "browse_thirty_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "qualified_first_ten": false,
+      "qualified_browse_thirty": false,
+      "gaps": [
+        {
+          "position": 0,
+          "reason": "quality_expression_or_diversity_supply",
+          "required_expression": "easy"
+        }
+      ],
+      "rejected": {
+        "season": 894,
+        "experimental_requires_confirmed_nondaily_scene": 57,
+        "persona_visual_insufficient": 1
+      },
+      "required_next_action": "review_existing_images_then_recombine_unused_assets"
+    },
+    {
+      "persona": "edge",
+      "palette": "pastel",
+      "eligible": 0,
+      "parent_recipes": 0,
+      "main_garments": 0,
+      "style_families": 0,
+      "first_ten": 0,
+      "browse_thirty": 0,
+      "first_ten_structures": {},
+      "eligible_by_expression_structure": {},
+      "selected_ids": [],
+      "first_ten_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "browse_thirty_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "qualified_first_ten": false,
+      "qualified_browse_thirty": false,
+      "gaps": [
+        {
+          "position": 0,
+          "reason": "quality_expression_or_diversity_supply",
+          "required_expression": "easy"
+        }
+      ],
+      "rejected": {
+        "season": 894,
+        "experimental_requires_confirmed_nondaily_scene": 57,
+        "persona_visual_insufficient": 1
+      },
+      "required_next_action": "review_existing_images_then_recombine_unused_assets"
+    },
+    {
+      "persona": "film",
+      "palette": "mono",
+      "eligible": 0,
+      "parent_recipes": 0,
+      "main_garments": 0,
+      "style_families": 0,
+      "first_ten": 0,
+      "browse_thirty": 0,
+      "first_ten_structures": {},
+      "eligible_by_expression_structure": {},
+      "selected_ids": [],
+      "first_ten_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "browse_thirty_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "qualified_first_ten": false,
+      "qualified_browse_thirty": false,
+      "gaps": [
+        {
+          "position": 0,
+          "reason": "quality_expression_or_diversity_supply",
+          "required_expression": "easy"
+        }
+      ],
+      "rejected": {
+        "season": 894,
+        "experimental_requires_confirmed_nondaily_scene": 57,
+        "persona_visual_insufficient": 1
+      },
+      "required_next_action": "review_existing_images_then_recombine_unused_assets"
+    },
+    {
+      "persona": "film",
+      "palette": "earth",
+      "eligible": 0,
+      "parent_recipes": 0,
+      "main_garments": 0,
+      "style_families": 0,
+      "first_ten": 0,
+      "browse_thirty": 0,
+      "first_ten_structures": {},
+      "eligible_by_expression_structure": {},
+      "selected_ids": [],
+      "first_ten_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "browse_thirty_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "qualified_first_ten": false,
+      "qualified_browse_thirty": false,
+      "gaps": [
+        {
+          "position": 0,
+          "reason": "quality_expression_or_diversity_supply",
+          "required_expression": "easy"
+        }
+      ],
+      "rejected": {
+        "season": 894,
+        "experimental_requires_confirmed_nondaily_scene": 57,
+        "persona_visual_insufficient": 1
+      },
+      "required_next_action": "review_existing_images_then_recombine_unused_assets"
+    },
+    {
+      "persona": "film",
+      "palette": "ocean",
+      "eligible": 0,
+      "parent_recipes": 0,
+      "main_garments": 0,
+      "style_families": 0,
+      "first_ten": 0,
+      "browse_thirty": 0,
+      "first_ten_structures": {},
+      "eligible_by_expression_structure": {},
+      "selected_ids": [],
+      "first_ten_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "browse_thirty_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "qualified_first_ten": false,
+      "qualified_browse_thirty": false,
+      "gaps": [
+        {
+          "position": 0,
+          "reason": "quality_expression_or_diversity_supply",
+          "required_expression": "easy"
+        }
+      ],
+      "rejected": {
+        "season": 894,
+        "experimental_requires_confirmed_nondaily_scene": 57,
+        "persona_visual_insufficient": 1
+      },
+      "required_next_action": "review_existing_images_then_recombine_unused_assets"
+    },
+    {
+      "persona": "film",
+      "palette": "jewel",
+      "eligible": 0,
+      "parent_recipes": 0,
+      "main_garments": 0,
+      "style_families": 0,
+      "first_ten": 0,
+      "browse_thirty": 0,
+      "first_ten_structures": {},
+      "eligible_by_expression_structure": {},
+      "selected_ids": [],
+      "first_ten_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "browse_thirty_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "qualified_first_ten": false,
+      "qualified_browse_thirty": false,
+      "gaps": [
+        {
+          "position": 0,
+          "reason": "quality_expression_or_diversity_supply",
+          "required_expression": "easy"
+        }
+      ],
+      "rejected": {
+        "season": 894,
+        "experimental_requires_confirmed_nondaily_scene": 57,
+        "persona_visual_insufficient": 1
+      },
+      "required_next_action": "review_existing_images_then_recombine_unused_assets"
+    },
+    {
+      "persona": "film",
+      "palette": "bright",
+      "eligible": 0,
+      "parent_recipes": 0,
+      "main_garments": 0,
+      "style_families": 0,
+      "first_ten": 0,
+      "browse_thirty": 0,
+      "first_ten_structures": {},
+      "eligible_by_expression_structure": {},
+      "selected_ids": [],
+      "first_ten_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "browse_thirty_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "qualified_first_ten": false,
+      "qualified_browse_thirty": false,
+      "gaps": [
+        {
+          "position": 0,
+          "reason": "quality_expression_or_diversity_supply",
+          "required_expression": "easy"
+        }
+      ],
+      "rejected": {
+        "season": 894,
+        "experimental_requires_confirmed_nondaily_scene": 57,
+        "persona_visual_insufficient": 1
+      },
+      "required_next_action": "review_existing_images_then_recombine_unused_assets"
+    },
+    {
+      "persona": "film",
+      "palette": "pastel",
+      "eligible": 0,
+      "parent_recipes": 0,
+      "main_garments": 0,
+      "style_families": 0,
+      "first_ten": 0,
+      "browse_thirty": 0,
+      "first_ten_structures": {},
+      "eligible_by_expression_structure": {},
+      "selected_ids": [],
+      "first_ten_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "browse_thirty_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "qualified_first_ten": false,
+      "qualified_browse_thirty": false,
+      "gaps": [
+        {
+          "position": 0,
+          "reason": "quality_expression_or_diversity_supply",
+          "required_expression": "easy"
+        }
+      ],
+      "rejected": {
+        "season": 894,
+        "experimental_requires_confirmed_nondaily_scene": 57,
+        "persona_visual_insufficient": 1
+      },
+      "required_next_action": "review_existing_images_then_recombine_unused_assets"
+    },
+    {
+      "persona": "flou",
+      "palette": "mono",
+      "eligible": 0,
+      "parent_recipes": 0,
+      "main_garments": 0,
+      "style_families": 0,
+      "first_ten": 0,
+      "browse_thirty": 0,
+      "first_ten_structures": {},
+      "eligible_by_expression_structure": {},
+      "selected_ids": [],
+      "first_ten_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "browse_thirty_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "qualified_first_ten": false,
+      "qualified_browse_thirty": false,
+      "gaps": [
+        {
+          "position": 0,
+          "reason": "quality_expression_or_diversity_supply",
+          "required_expression": "easy"
+        }
+      ],
+      "rejected": {
+        "season": 894,
+        "experimental_requires_confirmed_nondaily_scene": 57,
+        "persona_visual_insufficient": 1
+      },
+      "required_next_action": "review_existing_images_then_recombine_unused_assets"
+    },
+    {
+      "persona": "flou",
+      "palette": "earth",
+      "eligible": 0,
+      "parent_recipes": 0,
+      "main_garments": 0,
+      "style_families": 0,
+      "first_ten": 0,
+      "browse_thirty": 0,
+      "first_ten_structures": {},
+      "eligible_by_expression_structure": {},
+      "selected_ids": [],
+      "first_ten_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "browse_thirty_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "qualified_first_ten": false,
+      "qualified_browse_thirty": false,
+      "gaps": [
+        {
+          "position": 0,
+          "reason": "quality_expression_or_diversity_supply",
+          "required_expression": "easy"
+        }
+      ],
+      "rejected": {
+        "season": 894,
+        "experimental_requires_confirmed_nondaily_scene": 57,
+        "persona_visual_insufficient": 1
+      },
+      "required_next_action": "review_existing_images_then_recombine_unused_assets"
+    },
+    {
+      "persona": "flou",
+      "palette": "ocean",
+      "eligible": 0,
+      "parent_recipes": 0,
+      "main_garments": 0,
+      "style_families": 0,
+      "first_ten": 0,
+      "browse_thirty": 0,
+      "first_ten_structures": {},
+      "eligible_by_expression_structure": {},
+      "selected_ids": [],
+      "first_ten_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "browse_thirty_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "qualified_first_ten": false,
+      "qualified_browse_thirty": false,
+      "gaps": [
+        {
+          "position": 0,
+          "reason": "quality_expression_or_diversity_supply",
+          "required_expression": "easy"
+        }
+      ],
+      "rejected": {
+        "season": 894,
+        "experimental_requires_confirmed_nondaily_scene": 57,
+        "persona_visual_insufficient": 1
+      },
+      "required_next_action": "review_existing_images_then_recombine_unused_assets"
+    },
+    {
+      "persona": "flou",
+      "palette": "jewel",
+      "eligible": 0,
+      "parent_recipes": 0,
+      "main_garments": 0,
+      "style_families": 0,
+      "first_ten": 0,
+      "browse_thirty": 0,
+      "first_ten_structures": {},
+      "eligible_by_expression_structure": {},
+      "selected_ids": [],
+      "first_ten_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "browse_thirty_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "qualified_first_ten": false,
+      "qualified_browse_thirty": false,
+      "gaps": [
+        {
+          "position": 0,
+          "reason": "quality_expression_or_diversity_supply",
+          "required_expression": "easy"
+        }
+      ],
+      "rejected": {
+        "season": 894,
+        "experimental_requires_confirmed_nondaily_scene": 57,
+        "persona_visual_insufficient": 1
+      },
+      "required_next_action": "review_existing_images_then_recombine_unused_assets"
+    },
+    {
+      "persona": "flou",
+      "palette": "bright",
+      "eligible": 0,
+      "parent_recipes": 0,
+      "main_garments": 0,
+      "style_families": 0,
+      "first_ten": 0,
+      "browse_thirty": 0,
+      "first_ten_structures": {},
+      "eligible_by_expression_structure": {},
+      "selected_ids": [],
+      "first_ten_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "browse_thirty_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "qualified_first_ten": false,
+      "qualified_browse_thirty": false,
+      "gaps": [
+        {
+          "position": 0,
+          "reason": "quality_expression_or_diversity_supply",
+          "required_expression": "easy"
+        }
+      ],
+      "rejected": {
+        "season": 894,
+        "experimental_requires_confirmed_nondaily_scene": 57,
+        "persona_visual_insufficient": 1
+      },
+      "required_next_action": "review_existing_images_then_recombine_unused_assets"
+    },
+    {
+      "persona": "flou",
+      "palette": "pastel",
+      "eligible": 0,
+      "parent_recipes": 0,
+      "main_garments": 0,
+      "style_families": 0,
+      "first_ten": 0,
+      "browse_thirty": 0,
+      "first_ten_structures": {},
+      "eligible_by_expression_structure": {},
+      "selected_ids": [],
+      "first_ten_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "browse_thirty_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "qualified_first_ten": false,
+      "qualified_browse_thirty": false,
+      "gaps": [
+        {
+          "position": 0,
+          "reason": "quality_expression_or_diversity_supply",
+          "required_expression": "easy"
+        }
+      ],
+      "rejected": {
+        "season": 894,
+        "experimental_requires_confirmed_nondaily_scene": 57,
+        "persona_visual_insufficient": 1
+      },
+      "required_next_action": "review_existing_images_then_recombine_unused_assets"
+    },
+    {
+      "persona": "heir",
+      "palette": "mono",
+      "eligible": 0,
+      "parent_recipes": 0,
+      "main_garments": 0,
+      "style_families": 0,
+      "first_ten": 0,
+      "browse_thirty": 0,
+      "first_ten_structures": {},
+      "eligible_by_expression_structure": {},
+      "selected_ids": [],
+      "first_ten_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "browse_thirty_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "qualified_first_ten": false,
+      "qualified_browse_thirty": false,
+      "gaps": [
+        {
+          "position": 0,
+          "reason": "quality_expression_or_diversity_supply",
+          "required_expression": "easy"
+        }
+      ],
+      "rejected": {
+        "season": 894,
+        "experimental_requires_confirmed_nondaily_scene": 57,
+        "persona_visual_insufficient": 1
+      },
+      "required_next_action": "review_existing_images_then_recombine_unused_assets"
+    },
+    {
+      "persona": "heir",
+      "palette": "earth",
+      "eligible": 0,
+      "parent_recipes": 0,
+      "main_garments": 0,
+      "style_families": 0,
+      "first_ten": 0,
+      "browse_thirty": 0,
+      "first_ten_structures": {},
+      "eligible_by_expression_structure": {},
+      "selected_ids": [],
+      "first_ten_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "browse_thirty_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "qualified_first_ten": false,
+      "qualified_browse_thirty": false,
+      "gaps": [
+        {
+          "position": 0,
+          "reason": "quality_expression_or_diversity_supply",
+          "required_expression": "easy"
+        }
+      ],
+      "rejected": {
+        "season": 894,
+        "experimental_requires_confirmed_nondaily_scene": 57,
+        "persona_visual_insufficient": 1
+      },
+      "required_next_action": "review_existing_images_then_recombine_unused_assets"
+    },
+    {
+      "persona": "heir",
+      "palette": "ocean",
+      "eligible": 0,
+      "parent_recipes": 0,
+      "main_garments": 0,
+      "style_families": 0,
+      "first_ten": 0,
+      "browse_thirty": 0,
+      "first_ten_structures": {},
+      "eligible_by_expression_structure": {},
+      "selected_ids": [],
+      "first_ten_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "browse_thirty_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "qualified_first_ten": false,
+      "qualified_browse_thirty": false,
+      "gaps": [
+        {
+          "position": 0,
+          "reason": "quality_expression_or_diversity_supply",
+          "required_expression": "easy"
+        }
+      ],
+      "rejected": {
+        "season": 894,
+        "experimental_requires_confirmed_nondaily_scene": 57,
+        "persona_visual_insufficient": 1
+      },
+      "required_next_action": "review_existing_images_then_recombine_unused_assets"
+    },
+    {
+      "persona": "heir",
+      "palette": "jewel",
+      "eligible": 0,
+      "parent_recipes": 0,
+      "main_garments": 0,
+      "style_families": 0,
+      "first_ten": 0,
+      "browse_thirty": 0,
+      "first_ten_structures": {},
+      "eligible_by_expression_structure": {},
+      "selected_ids": [],
+      "first_ten_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "browse_thirty_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "qualified_first_ten": false,
+      "qualified_browse_thirty": false,
+      "gaps": [
+        {
+          "position": 0,
+          "reason": "quality_expression_or_diversity_supply",
+          "required_expression": "easy"
+        }
+      ],
+      "rejected": {
+        "season": 894,
+        "experimental_requires_confirmed_nondaily_scene": 57,
+        "persona_visual_insufficient": 1
+      },
+      "required_next_action": "review_existing_images_then_recombine_unused_assets"
+    },
+    {
+      "persona": "heir",
+      "palette": "bright",
+      "eligible": 0,
+      "parent_recipes": 0,
+      "main_garments": 0,
+      "style_families": 0,
+      "first_ten": 0,
+      "browse_thirty": 0,
+      "first_ten_structures": {},
+      "eligible_by_expression_structure": {},
+      "selected_ids": [],
+      "first_ten_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "browse_thirty_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "qualified_first_ten": false,
+      "qualified_browse_thirty": false,
+      "gaps": [
+        {
+          "position": 0,
+          "reason": "quality_expression_or_diversity_supply",
+          "required_expression": "easy"
+        }
+      ],
+      "rejected": {
+        "season": 894,
+        "experimental_requires_confirmed_nondaily_scene": 57,
+        "persona_visual_insufficient": 1
+      },
+      "required_next_action": "review_existing_images_then_recombine_unused_assets"
+    },
+    {
+      "persona": "heir",
+      "palette": "pastel",
+      "eligible": 0,
+      "parent_recipes": 0,
+      "main_garments": 0,
+      "style_families": 0,
+      "first_ten": 0,
+      "browse_thirty": 0,
+      "first_ten_structures": {},
+      "eligible_by_expression_structure": {},
+      "selected_ids": [],
+      "first_ten_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "browse_thirty_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "qualified_first_ten": false,
+      "qualified_browse_thirty": false,
+      "gaps": [
+        {
+          "position": 0,
+          "reason": "quality_expression_or_diversity_supply",
+          "required_expression": "easy"
+        }
+      ],
+      "rejected": {
+        "season": 894,
+        "experimental_requires_confirmed_nondaily_scene": 57,
+        "persona_visual_insufficient": 1
+      },
+      "required_next_action": "review_existing_images_then_recombine_unused_assets"
+    },
+    {
+      "persona": "iced",
+      "palette": "mono",
+      "eligible": 0,
+      "parent_recipes": 0,
+      "main_garments": 0,
+      "style_families": 0,
+      "first_ten": 0,
+      "browse_thirty": 0,
+      "first_ten_structures": {},
+      "eligible_by_expression_structure": {},
+      "selected_ids": [],
+      "first_ten_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "browse_thirty_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "qualified_first_ten": false,
+      "qualified_browse_thirty": false,
+      "gaps": [
+        {
+          "position": 0,
+          "reason": "quality_expression_or_diversity_supply",
+          "required_expression": "easy"
+        }
+      ],
+      "rejected": {
+        "season": 894,
+        "experimental_requires_confirmed_nondaily_scene": 57,
+        "persona_visual_insufficient": 1
+      },
+      "required_next_action": "review_existing_images_then_recombine_unused_assets"
+    },
+    {
+      "persona": "iced",
+      "palette": "earth",
+      "eligible": 0,
+      "parent_recipes": 0,
+      "main_garments": 0,
+      "style_families": 0,
+      "first_ten": 0,
+      "browse_thirty": 0,
+      "first_ten_structures": {},
+      "eligible_by_expression_structure": {},
+      "selected_ids": [],
+      "first_ten_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "browse_thirty_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "qualified_first_ten": false,
+      "qualified_browse_thirty": false,
+      "gaps": [
+        {
+          "position": 0,
+          "reason": "quality_expression_or_diversity_supply",
+          "required_expression": "easy"
+        }
+      ],
+      "rejected": {
+        "season": 894,
+        "experimental_requires_confirmed_nondaily_scene": 57,
+        "persona_visual_insufficient": 1
+      },
+      "required_next_action": "review_existing_images_then_recombine_unused_assets"
+    },
+    {
+      "persona": "iced",
+      "palette": "ocean",
+      "eligible": 0,
+      "parent_recipes": 0,
+      "main_garments": 0,
+      "style_families": 0,
+      "first_ten": 0,
+      "browse_thirty": 0,
+      "first_ten_structures": {},
+      "eligible_by_expression_structure": {},
+      "selected_ids": [],
+      "first_ten_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "browse_thirty_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "qualified_first_ten": false,
+      "qualified_browse_thirty": false,
+      "gaps": [
+        {
+          "position": 0,
+          "reason": "quality_expression_or_diversity_supply",
+          "required_expression": "easy"
+        }
+      ],
+      "rejected": {
+        "season": 894,
+        "experimental_requires_confirmed_nondaily_scene": 57,
+        "persona_visual_insufficient": 1
+      },
+      "required_next_action": "review_existing_images_then_recombine_unused_assets"
+    },
+    {
+      "persona": "iced",
+      "palette": "jewel",
+      "eligible": 0,
+      "parent_recipes": 0,
+      "main_garments": 0,
+      "style_families": 0,
+      "first_ten": 0,
+      "browse_thirty": 0,
+      "first_ten_structures": {},
+      "eligible_by_expression_structure": {},
+      "selected_ids": [],
+      "first_ten_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "browse_thirty_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "qualified_first_ten": false,
+      "qualified_browse_thirty": false,
+      "gaps": [
+        {
+          "position": 0,
+          "reason": "quality_expression_or_diversity_supply",
+          "required_expression": "easy"
+        }
+      ],
+      "rejected": {
+        "season": 894,
+        "experimental_requires_confirmed_nondaily_scene": 57,
+        "persona_visual_insufficient": 1
+      },
+      "required_next_action": "review_existing_images_then_recombine_unused_assets"
+    },
+    {
+      "persona": "iced",
+      "palette": "bright",
+      "eligible": 0,
+      "parent_recipes": 0,
+      "main_garments": 0,
+      "style_families": 0,
+      "first_ten": 0,
+      "browse_thirty": 0,
+      "first_ten_structures": {},
+      "eligible_by_expression_structure": {},
+      "selected_ids": [],
+      "first_ten_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "browse_thirty_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "qualified_first_ten": false,
+      "qualified_browse_thirty": false,
+      "gaps": [
+        {
+          "position": 0,
+          "reason": "quality_expression_or_diversity_supply",
+          "required_expression": "easy"
+        }
+      ],
+      "rejected": {
+        "season": 894,
+        "experimental_requires_confirmed_nondaily_scene": 57,
+        "persona_visual_insufficient": 1
+      },
+      "required_next_action": "review_existing_images_then_recombine_unused_assets"
+    },
+    {
+      "persona": "iced",
+      "palette": "pastel",
+      "eligible": 0,
+      "parent_recipes": 0,
+      "main_garments": 0,
+      "style_families": 0,
+      "first_ten": 0,
+      "browse_thirty": 0,
+      "first_ten_structures": {},
+      "eligible_by_expression_structure": {},
+      "selected_ids": [],
+      "first_ten_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "browse_thirty_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "qualified_first_ten": false,
+      "qualified_browse_thirty": false,
+      "gaps": [
+        {
+          "position": 0,
+          "reason": "quality_expression_or_diversity_supply",
+          "required_expression": "easy"
+        }
+      ],
+      "rejected": {
+        "season": 894,
+        "experimental_requires_confirmed_nondaily_scene": 57,
+        "persona_visual_insufficient": 1
+      },
+      "required_next_action": "review_existing_images_then_recombine_unused_assets"
+    },
+    {
+      "persona": "jade",
+      "palette": "mono",
+      "eligible": 0,
+      "parent_recipes": 0,
+      "main_garments": 0,
+      "style_families": 0,
+      "first_ten": 0,
+      "browse_thirty": 0,
+      "first_ten_structures": {},
+      "eligible_by_expression_structure": {},
+      "selected_ids": [],
+      "first_ten_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "browse_thirty_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "qualified_first_ten": false,
+      "qualified_browse_thirty": false,
+      "gaps": [
+        {
+          "position": 0,
+          "reason": "quality_expression_or_diversity_supply",
+          "required_expression": "easy"
+        }
+      ],
+      "rejected": {
+        "season": 894,
+        "experimental_requires_confirmed_nondaily_scene": 57,
+        "persona_visual_insufficient": 1
+      },
+      "required_next_action": "review_existing_images_then_recombine_unused_assets"
+    },
+    {
+      "persona": "jade",
+      "palette": "earth",
+      "eligible": 0,
+      "parent_recipes": 0,
+      "main_garments": 0,
+      "style_families": 0,
+      "first_ten": 0,
+      "browse_thirty": 0,
+      "first_ten_structures": {},
+      "eligible_by_expression_structure": {},
+      "selected_ids": [],
+      "first_ten_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "browse_thirty_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "qualified_first_ten": false,
+      "qualified_browse_thirty": false,
+      "gaps": [
+        {
+          "position": 0,
+          "reason": "quality_expression_or_diversity_supply",
+          "required_expression": "easy"
+        }
+      ],
+      "rejected": {
+        "season": 894,
+        "experimental_requires_confirmed_nondaily_scene": 57,
+        "persona_visual_insufficient": 1
+      },
+      "required_next_action": "review_existing_images_then_recombine_unused_assets"
+    },
+    {
+      "persona": "jade",
+      "palette": "ocean",
+      "eligible": 0,
+      "parent_recipes": 0,
+      "main_garments": 0,
+      "style_families": 0,
+      "first_ten": 0,
+      "browse_thirty": 0,
+      "first_ten_structures": {},
+      "eligible_by_expression_structure": {},
+      "selected_ids": [],
+      "first_ten_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "browse_thirty_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "qualified_first_ten": false,
+      "qualified_browse_thirty": false,
+      "gaps": [
+        {
+          "position": 0,
+          "reason": "quality_expression_or_diversity_supply",
+          "required_expression": "easy"
+        }
+      ],
+      "rejected": {
+        "season": 894,
+        "experimental_requires_confirmed_nondaily_scene": 57,
+        "persona_visual_insufficient": 1
+      },
+      "required_next_action": "review_existing_images_then_recombine_unused_assets"
+    },
+    {
+      "persona": "jade",
+      "palette": "jewel",
+      "eligible": 0,
+      "parent_recipes": 0,
+      "main_garments": 0,
+      "style_families": 0,
+      "first_ten": 0,
+      "browse_thirty": 0,
+      "first_ten_structures": {},
+      "eligible_by_expression_structure": {},
+      "selected_ids": [],
+      "first_ten_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "browse_thirty_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "qualified_first_ten": false,
+      "qualified_browse_thirty": false,
+      "gaps": [
+        {
+          "position": 0,
+          "reason": "quality_expression_or_diversity_supply",
+          "required_expression": "easy"
+        }
+      ],
+      "rejected": {
+        "season": 894,
+        "experimental_requires_confirmed_nondaily_scene": 57,
+        "persona_visual_insufficient": 1
+      },
+      "required_next_action": "review_existing_images_then_recombine_unused_assets"
+    },
+    {
+      "persona": "jade",
+      "palette": "bright",
+      "eligible": 0,
+      "parent_recipes": 0,
+      "main_garments": 0,
+      "style_families": 0,
+      "first_ten": 0,
+      "browse_thirty": 0,
+      "first_ten_structures": {},
+      "eligible_by_expression_structure": {},
+      "selected_ids": [],
+      "first_ten_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "browse_thirty_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "qualified_first_ten": false,
+      "qualified_browse_thirty": false,
+      "gaps": [
+        {
+          "position": 0,
+          "reason": "quality_expression_or_diversity_supply",
+          "required_expression": "easy"
+        }
+      ],
+      "rejected": {
+        "season": 894,
+        "experimental_requires_confirmed_nondaily_scene": 57,
+        "persona_visual_insufficient": 1
+      },
+      "required_next_action": "review_existing_images_then_recombine_unused_assets"
+    },
+    {
+      "persona": "jade",
+      "palette": "pastel",
+      "eligible": 0,
+      "parent_recipes": 0,
+      "main_garments": 0,
+      "style_families": 0,
+      "first_ten": 0,
+      "browse_thirty": 0,
+      "first_ten_structures": {},
+      "eligible_by_expression_structure": {},
+      "selected_ids": [],
+      "first_ten_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "browse_thirty_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "qualified_first_ten": false,
+      "qualified_browse_thirty": false,
+      "gaps": [
+        {
+          "position": 0,
+          "reason": "quality_expression_or_diversity_supply",
+          "required_expression": "easy"
+        }
+      ],
+      "rejected": {
+        "season": 894,
+        "experimental_requires_confirmed_nondaily_scene": 57,
+        "persona_visual_insufficient": 1
+      },
+      "required_next_action": "review_existing_images_then_recombine_unused_assets"
+    },
+    {
+      "persona": "loop",
+      "palette": "mono",
+      "eligible": 0,
+      "parent_recipes": 0,
+      "main_garments": 0,
+      "style_families": 0,
+      "first_ten": 0,
+      "browse_thirty": 0,
+      "first_ten_structures": {},
+      "eligible_by_expression_structure": {},
+      "selected_ids": [],
+      "first_ten_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "browse_thirty_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "qualified_first_ten": false,
+      "qualified_browse_thirty": false,
+      "gaps": [
+        {
+          "position": 0,
+          "reason": "quality_expression_or_diversity_supply",
+          "required_expression": "easy"
+        }
+      ],
+      "rejected": {
+        "season": 894,
+        "experimental_requires_confirmed_nondaily_scene": 57,
+        "persona_visual_insufficient": 1
+      },
+      "required_next_action": "review_existing_images_then_recombine_unused_assets"
+    },
+    {
+      "persona": "loop",
+      "palette": "earth",
+      "eligible": 0,
+      "parent_recipes": 0,
+      "main_garments": 0,
+      "style_families": 0,
+      "first_ten": 0,
+      "browse_thirty": 0,
+      "first_ten_structures": {},
+      "eligible_by_expression_structure": {},
+      "selected_ids": [],
+      "first_ten_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "browse_thirty_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "qualified_first_ten": false,
+      "qualified_browse_thirty": false,
+      "gaps": [
+        {
+          "position": 0,
+          "reason": "quality_expression_or_diversity_supply",
+          "required_expression": "easy"
+        }
+      ],
+      "rejected": {
+        "season": 894,
+        "experimental_requires_confirmed_nondaily_scene": 57,
+        "persona_visual_insufficient": 1
+      },
+      "required_next_action": "review_existing_images_then_recombine_unused_assets"
+    },
+    {
+      "persona": "loop",
+      "palette": "ocean",
+      "eligible": 0,
+      "parent_recipes": 0,
+      "main_garments": 0,
+      "style_families": 0,
+      "first_ten": 0,
+      "browse_thirty": 0,
+      "first_ten_structures": {},
+      "eligible_by_expression_structure": {},
+      "selected_ids": [],
+      "first_ten_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "browse_thirty_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "qualified_first_ten": false,
+      "qualified_browse_thirty": false,
+      "gaps": [
+        {
+          "position": 0,
+          "reason": "quality_expression_or_diversity_supply",
+          "required_expression": "easy"
+        }
+      ],
+      "rejected": {
+        "season": 894,
+        "experimental_requires_confirmed_nondaily_scene": 57,
+        "persona_visual_insufficient": 1
+      },
+      "required_next_action": "review_existing_images_then_recombine_unused_assets"
+    },
+    {
+      "persona": "loop",
+      "palette": "jewel",
+      "eligible": 0,
+      "parent_recipes": 0,
+      "main_garments": 0,
+      "style_families": 0,
+      "first_ten": 0,
+      "browse_thirty": 0,
+      "first_ten_structures": {},
+      "eligible_by_expression_structure": {},
+      "selected_ids": [],
+      "first_ten_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "browse_thirty_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "qualified_first_ten": false,
+      "qualified_browse_thirty": false,
+      "gaps": [
+        {
+          "position": 0,
+          "reason": "quality_expression_or_diversity_supply",
+          "required_expression": "easy"
+        }
+      ],
+      "rejected": {
+        "season": 894,
+        "experimental_requires_confirmed_nondaily_scene": 57,
+        "persona_visual_insufficient": 1
+      },
+      "required_next_action": "review_existing_images_then_recombine_unused_assets"
+    },
+    {
+      "persona": "loop",
+      "palette": "bright",
+      "eligible": 0,
+      "parent_recipes": 0,
+      "main_garments": 0,
+      "style_families": 0,
+      "first_ten": 0,
+      "browse_thirty": 0,
+      "first_ten_structures": {},
+      "eligible_by_expression_structure": {},
+      "selected_ids": [],
+      "first_ten_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "browse_thirty_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "qualified_first_ten": false,
+      "qualified_browse_thirty": false,
+      "gaps": [
+        {
+          "position": 0,
+          "reason": "quality_expression_or_diversity_supply",
+          "required_expression": "easy"
+        }
+      ],
+      "rejected": {
+        "season": 894,
+        "experimental_requires_confirmed_nondaily_scene": 57,
+        "persona_visual_insufficient": 1
+      },
+      "required_next_action": "review_existing_images_then_recombine_unused_assets"
+    },
+    {
+      "persona": "loop",
+      "palette": "pastel",
+      "eligible": 0,
+      "parent_recipes": 0,
+      "main_garments": 0,
+      "style_families": 0,
+      "first_ten": 0,
+      "browse_thirty": 0,
+      "first_ten_structures": {},
+      "eligible_by_expression_structure": {},
+      "selected_ids": [],
+      "first_ten_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "browse_thirty_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "qualified_first_ten": false,
+      "qualified_browse_thirty": false,
+      "gaps": [
+        {
+          "position": 0,
+          "reason": "quality_expression_or_diversity_supply",
+          "required_expression": "easy"
+        }
+      ],
+      "rejected": {
+        "season": 894,
+        "experimental_requires_confirmed_nondaily_scene": 57,
+        "persona_visual_insufficient": 1
+      },
+      "required_next_action": "review_existing_images_then_recombine_unused_assets"
+    },
+    {
+      "persona": "melt",
+      "palette": "mono",
+      "eligible": 0,
+      "parent_recipes": 0,
+      "main_garments": 0,
+      "style_families": 0,
+      "first_ten": 0,
+      "browse_thirty": 0,
+      "first_ten_structures": {},
+      "eligible_by_expression_structure": {},
+      "selected_ids": [],
+      "first_ten_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "browse_thirty_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "qualified_first_ten": false,
+      "qualified_browse_thirty": false,
+      "gaps": [
+        {
+          "position": 0,
+          "reason": "quality_expression_or_diversity_supply",
+          "required_expression": "easy"
+        }
+      ],
+      "rejected": {
+        "season": 894,
+        "experimental_requires_confirmed_nondaily_scene": 57,
+        "persona_visual_insufficient": 1
+      },
+      "required_next_action": "review_existing_images_then_recombine_unused_assets"
+    },
+    {
+      "persona": "melt",
+      "palette": "earth",
+      "eligible": 0,
+      "parent_recipes": 0,
+      "main_garments": 0,
+      "style_families": 0,
+      "first_ten": 0,
+      "browse_thirty": 0,
+      "first_ten_structures": {},
+      "eligible_by_expression_structure": {},
+      "selected_ids": [],
+      "first_ten_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "browse_thirty_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "qualified_first_ten": false,
+      "qualified_browse_thirty": false,
+      "gaps": [
+        {
+          "position": 0,
+          "reason": "quality_expression_or_diversity_supply",
+          "required_expression": "easy"
+        }
+      ],
+      "rejected": {
+        "season": 894,
+        "experimental_requires_confirmed_nondaily_scene": 57,
+        "persona_visual_insufficient": 1
+      },
+      "required_next_action": "review_existing_images_then_recombine_unused_assets"
+    },
+    {
+      "persona": "melt",
+      "palette": "ocean",
+      "eligible": 0,
+      "parent_recipes": 0,
+      "main_garments": 0,
+      "style_families": 0,
+      "first_ten": 0,
+      "browse_thirty": 0,
+      "first_ten_structures": {},
+      "eligible_by_expression_structure": {},
+      "selected_ids": [],
+      "first_ten_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "browse_thirty_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "qualified_first_ten": false,
+      "qualified_browse_thirty": false,
+      "gaps": [
+        {
+          "position": 0,
+          "reason": "quality_expression_or_diversity_supply",
+          "required_expression": "easy"
+        }
+      ],
+      "rejected": {
+        "season": 894,
+        "experimental_requires_confirmed_nondaily_scene": 57,
+        "persona_visual_insufficient": 1
+      },
+      "required_next_action": "review_existing_images_then_recombine_unused_assets"
+    },
+    {
+      "persona": "melt",
+      "palette": "jewel",
+      "eligible": 0,
+      "parent_recipes": 0,
+      "main_garments": 0,
+      "style_families": 0,
+      "first_ten": 0,
+      "browse_thirty": 0,
+      "first_ten_structures": {},
+      "eligible_by_expression_structure": {},
+      "selected_ids": [],
+      "first_ten_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "browse_thirty_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "qualified_first_ten": false,
+      "qualified_browse_thirty": false,
+      "gaps": [
+        {
+          "position": 0,
+          "reason": "quality_expression_or_diversity_supply",
+          "required_expression": "easy"
+        }
+      ],
+      "rejected": {
+        "season": 894,
+        "experimental_requires_confirmed_nondaily_scene": 57,
+        "persona_visual_insufficient": 1
+      },
+      "required_next_action": "review_existing_images_then_recombine_unused_assets"
+    },
+    {
+      "persona": "melt",
+      "palette": "bright",
+      "eligible": 0,
+      "parent_recipes": 0,
+      "main_garments": 0,
+      "style_families": 0,
+      "first_ten": 0,
+      "browse_thirty": 0,
+      "first_ten_structures": {},
+      "eligible_by_expression_structure": {},
+      "selected_ids": [],
+      "first_ten_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "browse_thirty_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "qualified_first_ten": false,
+      "qualified_browse_thirty": false,
+      "gaps": [
+        {
+          "position": 0,
+          "reason": "quality_expression_or_diversity_supply",
+          "required_expression": "easy"
+        }
+      ],
+      "rejected": {
+        "season": 894,
+        "experimental_requires_confirmed_nondaily_scene": 57,
+        "persona_visual_insufficient": 1
+      },
+      "required_next_action": "review_existing_images_then_recombine_unused_assets"
+    },
+    {
+      "persona": "melt",
+      "palette": "pastel",
+      "eligible": 0,
+      "parent_recipes": 0,
+      "main_garments": 0,
+      "style_families": 0,
+      "first_ten": 0,
+      "browse_thirty": 0,
+      "first_ten_structures": {},
+      "eligible_by_expression_structure": {},
+      "selected_ids": [],
+      "first_ten_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "browse_thirty_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "qualified_first_ten": false,
+      "qualified_browse_thirty": false,
+      "gaps": [
+        {
+          "position": 0,
+          "reason": "quality_expression_or_diversity_supply",
+          "required_expression": "easy"
+        }
+      ],
+      "rejected": {
+        "season": 894,
+        "experimental_requires_confirmed_nondaily_scene": 57,
+        "persona_visual_insufficient": 1
+      },
+      "required_next_action": "review_existing_images_then_recombine_unused_assets"
+    },
+    {
+      "persona": "mute",
+      "palette": "mono",
+      "eligible": 0,
+      "parent_recipes": 0,
+      "main_garments": 0,
+      "style_families": 0,
+      "first_ten": 0,
+      "browse_thirty": 0,
+      "first_ten_structures": {},
+      "eligible_by_expression_structure": {},
+      "selected_ids": [],
+      "first_ten_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "browse_thirty_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "qualified_first_ten": false,
+      "qualified_browse_thirty": false,
+      "gaps": [
+        {
+          "position": 0,
+          "reason": "quality_expression_or_diversity_supply",
+          "required_expression": "easy"
+        }
+      ],
+      "rejected": {
+        "season": 894,
+        "experimental_requires_confirmed_nondaily_scene": 57,
+        "persona_visual_insufficient": 1
+      },
+      "required_next_action": "review_existing_images_then_recombine_unused_assets"
+    },
+    {
+      "persona": "mute",
+      "palette": "earth",
+      "eligible": 0,
+      "parent_recipes": 0,
+      "main_garments": 0,
+      "style_families": 0,
+      "first_ten": 0,
+      "browse_thirty": 0,
+      "first_ten_structures": {},
+      "eligible_by_expression_structure": {},
+      "selected_ids": [],
+      "first_ten_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "browse_thirty_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "qualified_first_ten": false,
+      "qualified_browse_thirty": false,
+      "gaps": [
+        {
+          "position": 0,
+          "reason": "quality_expression_or_diversity_supply",
+          "required_expression": "easy"
+        }
+      ],
+      "rejected": {
+        "season": 894,
+        "experimental_requires_confirmed_nondaily_scene": 57,
+        "persona_visual_insufficient": 1
+      },
+      "required_next_action": "review_existing_images_then_recombine_unused_assets"
+    },
+    {
+      "persona": "mute",
+      "palette": "ocean",
+      "eligible": 0,
+      "parent_recipes": 0,
+      "main_garments": 0,
+      "style_families": 0,
+      "first_ten": 0,
+      "browse_thirty": 0,
+      "first_ten_structures": {},
+      "eligible_by_expression_structure": {},
+      "selected_ids": [],
+      "first_ten_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "browse_thirty_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "qualified_first_ten": false,
+      "qualified_browse_thirty": false,
+      "gaps": [
+        {
+          "position": 0,
+          "reason": "quality_expression_or_diversity_supply",
+          "required_expression": "easy"
+        }
+      ],
+      "rejected": {
+        "season": 894,
+        "experimental_requires_confirmed_nondaily_scene": 57,
+        "persona_visual_insufficient": 1
+      },
+      "required_next_action": "review_existing_images_then_recombine_unused_assets"
+    },
+    {
+      "persona": "mute",
+      "palette": "jewel",
+      "eligible": 0,
+      "parent_recipes": 0,
+      "main_garments": 0,
+      "style_families": 0,
+      "first_ten": 0,
+      "browse_thirty": 0,
+      "first_ten_structures": {},
+      "eligible_by_expression_structure": {},
+      "selected_ids": [],
+      "first_ten_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "browse_thirty_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "qualified_first_ten": false,
+      "qualified_browse_thirty": false,
+      "gaps": [
+        {
+          "position": 0,
+          "reason": "quality_expression_or_diversity_supply",
+          "required_expression": "easy"
+        }
+      ],
+      "rejected": {
+        "season": 894,
+        "experimental_requires_confirmed_nondaily_scene": 57,
+        "persona_visual_insufficient": 1
+      },
+      "required_next_action": "review_existing_images_then_recombine_unused_assets"
+    },
+    {
+      "persona": "mute",
+      "palette": "bright",
+      "eligible": 0,
+      "parent_recipes": 0,
+      "main_garments": 0,
+      "style_families": 0,
+      "first_ten": 0,
+      "browse_thirty": 0,
+      "first_ten_structures": {},
+      "eligible_by_expression_structure": {},
+      "selected_ids": [],
+      "first_ten_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "browse_thirty_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "qualified_first_ten": false,
+      "qualified_browse_thirty": false,
+      "gaps": [
+        {
+          "position": 0,
+          "reason": "quality_expression_or_diversity_supply",
+          "required_expression": "easy"
+        }
+      ],
+      "rejected": {
+        "season": 894,
+        "experimental_requires_confirmed_nondaily_scene": 57,
+        "persona_visual_insufficient": 1
+      },
+      "required_next_action": "review_existing_images_then_recombine_unused_assets"
+    },
+    {
+      "persona": "mute",
+      "palette": "pastel",
+      "eligible": 0,
+      "parent_recipes": 0,
+      "main_garments": 0,
+      "style_families": 0,
+      "first_ten": 0,
+      "browse_thirty": 0,
+      "first_ten_structures": {},
+      "eligible_by_expression_structure": {},
+      "selected_ids": [],
+      "first_ten_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "browse_thirty_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "qualified_first_ten": false,
+      "qualified_browse_thirty": false,
+      "gaps": [
+        {
+          "position": 0,
+          "reason": "quality_expression_or_diversity_supply",
+          "required_expression": "easy"
+        }
+      ],
+      "rejected": {
+        "season": 894,
+        "experimental_requires_confirmed_nondaily_scene": 57,
+        "persona_visual_insufficient": 1
+      },
+      "required_next_action": "review_existing_images_then_recombine_unused_assets"
+    },
+    {
+      "persona": "neon",
+      "palette": "mono",
+      "eligible": 0,
+      "parent_recipes": 0,
+      "main_garments": 0,
+      "style_families": 0,
+      "first_ten": 0,
+      "browse_thirty": 0,
+      "first_ten_structures": {},
+      "eligible_by_expression_structure": {},
+      "selected_ids": [],
+      "first_ten_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "browse_thirty_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "qualified_first_ten": false,
+      "qualified_browse_thirty": false,
+      "gaps": [
+        {
+          "position": 0,
+          "reason": "quality_expression_or_diversity_supply",
+          "required_expression": "easy"
+        }
+      ],
+      "rejected": {
+        "season": 894,
+        "experimental_requires_confirmed_nondaily_scene": 57,
+        "persona_visual_insufficient": 1
+      },
+      "required_next_action": "review_existing_images_then_recombine_unused_assets"
+    },
+    {
+      "persona": "neon",
+      "palette": "earth",
+      "eligible": 0,
+      "parent_recipes": 0,
+      "main_garments": 0,
+      "style_families": 0,
+      "first_ten": 0,
+      "browse_thirty": 0,
+      "first_ten_structures": {},
+      "eligible_by_expression_structure": {},
+      "selected_ids": [],
+      "first_ten_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "browse_thirty_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "qualified_first_ten": false,
+      "qualified_browse_thirty": false,
+      "gaps": [
+        {
+          "position": 0,
+          "reason": "quality_expression_or_diversity_supply",
+          "required_expression": "easy"
+        }
+      ],
+      "rejected": {
+        "season": 894,
+        "experimental_requires_confirmed_nondaily_scene": 57,
+        "persona_visual_insufficient": 1
+      },
+      "required_next_action": "review_existing_images_then_recombine_unused_assets"
+    },
+    {
+      "persona": "neon",
+      "palette": "ocean",
+      "eligible": 0,
+      "parent_recipes": 0,
+      "main_garments": 0,
+      "style_families": 0,
+      "first_ten": 0,
+      "browse_thirty": 0,
+      "first_ten_structures": {},
+      "eligible_by_expression_structure": {},
+      "selected_ids": [],
+      "first_ten_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "browse_thirty_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "qualified_first_ten": false,
+      "qualified_browse_thirty": false,
+      "gaps": [
+        {
+          "position": 0,
+          "reason": "quality_expression_or_diversity_supply",
+          "required_expression": "easy"
+        }
+      ],
+      "rejected": {
+        "season": 894,
+        "experimental_requires_confirmed_nondaily_scene": 57,
+        "persona_visual_insufficient": 1
+      },
+      "required_next_action": "review_existing_images_then_recombine_unused_assets"
+    },
+    {
+      "persona": "neon",
+      "palette": "jewel",
+      "eligible": 0,
+      "parent_recipes": 0,
+      "main_garments": 0,
+      "style_families": 0,
+      "first_ten": 0,
+      "browse_thirty": 0,
+      "first_ten_structures": {},
+      "eligible_by_expression_structure": {},
+      "selected_ids": [],
+      "first_ten_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "browse_thirty_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "qualified_first_ten": false,
+      "qualified_browse_thirty": false,
+      "gaps": [
+        {
+          "position": 0,
+          "reason": "quality_expression_or_diversity_supply",
+          "required_expression": "easy"
+        }
+      ],
+      "rejected": {
+        "season": 894,
+        "experimental_requires_confirmed_nondaily_scene": 57,
+        "persona_visual_insufficient": 1
+      },
+      "required_next_action": "review_existing_images_then_recombine_unused_assets"
+    },
+    {
+      "persona": "neon",
+      "palette": "bright",
+      "eligible": 0,
+      "parent_recipes": 0,
+      "main_garments": 0,
+      "style_families": 0,
+      "first_ten": 0,
+      "browse_thirty": 0,
+      "first_ten_structures": {},
+      "eligible_by_expression_structure": {},
+      "selected_ids": [],
+      "first_ten_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "browse_thirty_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "qualified_first_ten": false,
+      "qualified_browse_thirty": false,
+      "gaps": [
+        {
+          "position": 0,
+          "reason": "quality_expression_or_diversity_supply",
+          "required_expression": "easy"
+        }
+      ],
+      "rejected": {
+        "season": 894,
+        "experimental_requires_confirmed_nondaily_scene": 57,
+        "persona_visual_insufficient": 1
+      },
+      "required_next_action": "review_existing_images_then_recombine_unused_assets"
+    },
+    {
+      "persona": "neon",
+      "palette": "pastel",
+      "eligible": 0,
+      "parent_recipes": 0,
+      "main_garments": 0,
+      "style_families": 0,
+      "first_ten": 0,
+      "browse_thirty": 0,
+      "first_ten_structures": {},
+      "eligible_by_expression_structure": {},
+      "selected_ids": [],
+      "first_ten_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "browse_thirty_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "qualified_first_ten": false,
+      "qualified_browse_thirty": false,
+      "gaps": [
+        {
+          "position": 0,
+          "reason": "quality_expression_or_diversity_supply",
+          "required_expression": "easy"
+        }
+      ],
+      "rejected": {
+        "season": 894,
+        "experimental_requires_confirmed_nondaily_scene": 57,
+        "persona_visual_insufficient": 1
+      },
+      "required_next_action": "review_existing_images_then_recombine_unused_assets"
+    },
+    {
+      "persona": "noir",
+      "palette": "mono",
+      "eligible": 0,
+      "parent_recipes": 0,
+      "main_garments": 0,
+      "style_families": 0,
+      "first_ten": 0,
+      "browse_thirty": 0,
+      "first_ten_structures": {},
+      "eligible_by_expression_structure": {},
+      "selected_ids": [],
+      "first_ten_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "browse_thirty_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "qualified_first_ten": false,
+      "qualified_browse_thirty": false,
+      "gaps": [
+        {
+          "position": 0,
+          "reason": "quality_expression_or_diversity_supply",
+          "required_expression": "easy"
+        }
+      ],
+      "rejected": {
+        "season": 894,
+        "experimental_requires_confirmed_nondaily_scene": 57,
+        "persona_visual_insufficient": 1
+      },
+      "required_next_action": "review_existing_images_then_recombine_unused_assets"
+    },
+    {
+      "persona": "noir",
+      "palette": "earth",
+      "eligible": 0,
+      "parent_recipes": 0,
+      "main_garments": 0,
+      "style_families": 0,
+      "first_ten": 0,
+      "browse_thirty": 0,
+      "first_ten_structures": {},
+      "eligible_by_expression_structure": {},
+      "selected_ids": [],
+      "first_ten_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "browse_thirty_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "qualified_first_ten": false,
+      "qualified_browse_thirty": false,
+      "gaps": [
+        {
+          "position": 0,
+          "reason": "quality_expression_or_diversity_supply",
+          "required_expression": "easy"
+        }
+      ],
+      "rejected": {
+        "season": 894,
+        "experimental_requires_confirmed_nondaily_scene": 57,
+        "persona_visual_insufficient": 1
+      },
+      "required_next_action": "review_existing_images_then_recombine_unused_assets"
+    },
+    {
+      "persona": "noir",
+      "palette": "ocean",
+      "eligible": 0,
+      "parent_recipes": 0,
+      "main_garments": 0,
+      "style_families": 0,
+      "first_ten": 0,
+      "browse_thirty": 0,
+      "first_ten_structures": {},
+      "eligible_by_expression_structure": {},
+      "selected_ids": [],
+      "first_ten_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "browse_thirty_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "qualified_first_ten": false,
+      "qualified_browse_thirty": false,
+      "gaps": [
+        {
+          "position": 0,
+          "reason": "quality_expression_or_diversity_supply",
+          "required_expression": "easy"
+        }
+      ],
+      "rejected": {
+        "season": 894,
+        "experimental_requires_confirmed_nondaily_scene": 57,
+        "persona_visual_insufficient": 1
+      },
+      "required_next_action": "review_existing_images_then_recombine_unused_assets"
+    },
+    {
+      "persona": "noir",
+      "palette": "jewel",
+      "eligible": 0,
+      "parent_recipes": 0,
+      "main_garments": 0,
+      "style_families": 0,
+      "first_ten": 0,
+      "browse_thirty": 0,
+      "first_ten_structures": {},
+      "eligible_by_expression_structure": {},
+      "selected_ids": [],
+      "first_ten_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "browse_thirty_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "qualified_first_ten": false,
+      "qualified_browse_thirty": false,
+      "gaps": [
+        {
+          "position": 0,
+          "reason": "quality_expression_or_diversity_supply",
+          "required_expression": "easy"
+        }
+      ],
+      "rejected": {
+        "season": 894,
+        "experimental_requires_confirmed_nondaily_scene": 57,
+        "persona_visual_insufficient": 1
+      },
+      "required_next_action": "review_existing_images_then_recombine_unused_assets"
+    },
+    {
+      "persona": "noir",
+      "palette": "bright",
+      "eligible": 0,
+      "parent_recipes": 0,
+      "main_garments": 0,
+      "style_families": 0,
+      "first_ten": 0,
+      "browse_thirty": 0,
+      "first_ten_structures": {},
+      "eligible_by_expression_structure": {},
+      "selected_ids": [],
+      "first_ten_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "browse_thirty_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "qualified_first_ten": false,
+      "qualified_browse_thirty": false,
+      "gaps": [
+        {
+          "position": 0,
+          "reason": "quality_expression_or_diversity_supply",
+          "required_expression": "easy"
+        }
+      ],
+      "rejected": {
+        "season": 894,
+        "experimental_requires_confirmed_nondaily_scene": 57,
+        "persona_visual_insufficient": 1
+      },
+      "required_next_action": "review_existing_images_then_recombine_unused_assets"
+    },
+    {
+      "persona": "noir",
+      "palette": "pastel",
+      "eligible": 0,
+      "parent_recipes": 0,
+      "main_garments": 0,
+      "style_families": 0,
+      "first_ten": 0,
+      "browse_thirty": 0,
+      "first_ten_structures": {},
+      "eligible_by_expression_structure": {},
+      "selected_ids": [],
+      "first_ten_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "browse_thirty_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "qualified_first_ten": false,
+      "qualified_browse_thirty": false,
+      "gaps": [
+        {
+          "position": 0,
+          "reason": "quality_expression_or_diversity_supply",
+          "required_expression": "easy"
+        }
+      ],
+      "rejected": {
+        "season": 894,
+        "experimental_requires_confirmed_nondaily_scene": 57,
+        "persona_visual_insufficient": 1
+      },
+      "required_next_action": "review_existing_images_then_recombine_unused_assets"
+    },
+    {
+      "persona": "oops",
+      "palette": "mono",
+      "eligible": 0,
+      "parent_recipes": 0,
+      "main_garments": 0,
+      "style_families": 0,
+      "first_ten": 0,
+      "browse_thirty": 0,
+      "first_ten_structures": {},
+      "eligible_by_expression_structure": {},
+      "selected_ids": [],
+      "first_ten_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "browse_thirty_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "qualified_first_ten": false,
+      "qualified_browse_thirty": false,
+      "gaps": [
+        {
+          "position": 0,
+          "reason": "quality_expression_or_diversity_supply",
+          "required_expression": "easy"
+        }
+      ],
+      "rejected": {
+        "season": 894,
+        "experimental_requires_confirmed_nondaily_scene": 57,
+        "persona_visual_insufficient": 1
+      },
+      "required_next_action": "review_existing_images_then_recombine_unused_assets"
+    },
+    {
+      "persona": "oops",
+      "palette": "earth",
+      "eligible": 0,
+      "parent_recipes": 0,
+      "main_garments": 0,
+      "style_families": 0,
+      "first_ten": 0,
+      "browse_thirty": 0,
+      "first_ten_structures": {},
+      "eligible_by_expression_structure": {},
+      "selected_ids": [],
+      "first_ten_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "browse_thirty_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "qualified_first_ten": false,
+      "qualified_browse_thirty": false,
+      "gaps": [
+        {
+          "position": 0,
+          "reason": "quality_expression_or_diversity_supply",
+          "required_expression": "easy"
+        }
+      ],
+      "rejected": {
+        "season": 894,
+        "experimental_requires_confirmed_nondaily_scene": 57,
+        "persona_visual_insufficient": 1
+      },
+      "required_next_action": "review_existing_images_then_recombine_unused_assets"
+    },
+    {
+      "persona": "oops",
+      "palette": "ocean",
+      "eligible": 0,
+      "parent_recipes": 0,
+      "main_garments": 0,
+      "style_families": 0,
+      "first_ten": 0,
+      "browse_thirty": 0,
+      "first_ten_structures": {},
+      "eligible_by_expression_structure": {},
+      "selected_ids": [],
+      "first_ten_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "browse_thirty_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "qualified_first_ten": false,
+      "qualified_browse_thirty": false,
+      "gaps": [
+        {
+          "position": 0,
+          "reason": "quality_expression_or_diversity_supply",
+          "required_expression": "easy"
+        }
+      ],
+      "rejected": {
+        "season": 894,
+        "experimental_requires_confirmed_nondaily_scene": 57,
+        "persona_visual_insufficient": 1
+      },
+      "required_next_action": "review_existing_images_then_recombine_unused_assets"
+    },
+    {
+      "persona": "oops",
+      "palette": "jewel",
+      "eligible": 0,
+      "parent_recipes": 0,
+      "main_garments": 0,
+      "style_families": 0,
+      "first_ten": 0,
+      "browse_thirty": 0,
+      "first_ten_structures": {},
+      "eligible_by_expression_structure": {},
+      "selected_ids": [],
+      "first_ten_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "browse_thirty_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "qualified_first_ten": false,
+      "qualified_browse_thirty": false,
+      "gaps": [
+        {
+          "position": 0,
+          "reason": "quality_expression_or_diversity_supply",
+          "required_expression": "easy"
+        }
+      ],
+      "rejected": {
+        "season": 894,
+        "experimental_requires_confirmed_nondaily_scene": 57,
+        "persona_visual_insufficient": 1
+      },
+      "required_next_action": "review_existing_images_then_recombine_unused_assets"
+    },
+    {
+      "persona": "oops",
+      "palette": "bright",
+      "eligible": 0,
+      "parent_recipes": 0,
+      "main_garments": 0,
+      "style_families": 0,
+      "first_ten": 0,
+      "browse_thirty": 0,
+      "first_ten_structures": {},
+      "eligible_by_expression_structure": {},
+      "selected_ids": [],
+      "first_ten_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "browse_thirty_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "qualified_first_ten": false,
+      "qualified_browse_thirty": false,
+      "gaps": [
+        {
+          "position": 0,
+          "reason": "quality_expression_or_diversity_supply",
+          "required_expression": "easy"
+        }
+      ],
+      "rejected": {
+        "season": 894,
+        "experimental_requires_confirmed_nondaily_scene": 57,
+        "persona_visual_insufficient": 1
+      },
+      "required_next_action": "review_existing_images_then_recombine_unused_assets"
+    },
+    {
+      "persona": "oops",
+      "palette": "pastel",
+      "eligible": 0,
+      "parent_recipes": 0,
+      "main_garments": 0,
+      "style_families": 0,
+      "first_ten": 0,
+      "browse_thirty": 0,
+      "first_ten_structures": {},
+      "eligible_by_expression_structure": {},
+      "selected_ids": [],
+      "first_ten_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "browse_thirty_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "qualified_first_ten": false,
+      "qualified_browse_thirty": false,
+      "gaps": [
+        {
+          "position": 0,
+          "reason": "quality_expression_or_diversity_supply",
+          "required_expression": "easy"
+        }
+      ],
+      "rejected": {
+        "season": 894,
+        "experimental_requires_confirmed_nondaily_scene": 57,
+        "persona_visual_insufficient": 1
+      },
+      "required_next_action": "review_existing_images_then_recombine_unused_assets"
+    },
+    {
+      "persona": "void",
+      "palette": "mono",
+      "eligible": 1,
+      "parent_recipes": 1,
+      "main_garments": 3,
+      "style_families": 3,
+      "first_ten": 0,
+      "browse_thirty": 0,
+      "first_ten_structures": {},
+      "eligible_by_expression_structure": {
+        "typical:pants": 1
+      },
+      "selected_ids": [],
+      "first_ten_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "browse_thirty_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "qualified_first_ten": false,
+      "qualified_browse_thirty": false,
+      "gaps": [
+        {
+          "position": 0,
+          "reason": "quality_expression_or_diversity_supply",
+          "required_expression": "easy"
+        }
+      ],
+      "rejected": {
+        "season": 894,
+        "experimental_requires_confirmed_nondaily_scene": 57
+      },
+      "required_next_action": "review_existing_images_then_recombine_unused_assets"
+    },
+    {
+      "persona": "void",
+      "palette": "earth",
+      "eligible": 0,
+      "parent_recipes": 0,
+      "main_garments": 0,
+      "style_families": 0,
+      "first_ten": 0,
+      "browse_thirty": 0,
+      "first_ten_structures": {},
+      "eligible_by_expression_structure": {},
+      "selected_ids": [],
+      "first_ten_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "browse_thirty_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "qualified_first_ten": false,
+      "qualified_browse_thirty": false,
+      "gaps": [
+        {
+          "position": 0,
+          "reason": "quality_expression_or_diversity_supply",
+          "required_expression": "easy"
+        }
+      ],
+      "rejected": {
+        "season": 894,
+        "experimental_requires_confirmed_nondaily_scene": 57,
+        "color_preference": 1
+      },
+      "required_next_action": "review_existing_images_then_recombine_unused_assets"
+    },
+    {
+      "persona": "void",
+      "palette": "ocean",
+      "eligible": 0,
+      "parent_recipes": 0,
+      "main_garments": 0,
+      "style_families": 0,
+      "first_ten": 0,
+      "browse_thirty": 0,
+      "first_ten_structures": {},
+      "eligible_by_expression_structure": {},
+      "selected_ids": [],
+      "first_ten_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "browse_thirty_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "qualified_first_ten": false,
+      "qualified_browse_thirty": false,
+      "gaps": [
+        {
+          "position": 0,
+          "reason": "quality_expression_or_diversity_supply",
+          "required_expression": "easy"
+        }
+      ],
+      "rejected": {
+        "season": 894,
+        "experimental_requires_confirmed_nondaily_scene": 57,
+        "color_preference": 1
+      },
+      "required_next_action": "review_existing_images_then_recombine_unused_assets"
+    },
+    {
+      "persona": "void",
+      "palette": "jewel",
+      "eligible": 0,
+      "parent_recipes": 0,
+      "main_garments": 0,
+      "style_families": 0,
+      "first_ten": 0,
+      "browse_thirty": 0,
+      "first_ten_structures": {},
+      "eligible_by_expression_structure": {},
+      "selected_ids": [],
+      "first_ten_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "browse_thirty_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "qualified_first_ten": false,
+      "qualified_browse_thirty": false,
+      "gaps": [
+        {
+          "position": 0,
+          "reason": "quality_expression_or_diversity_supply",
+          "required_expression": "easy"
+        }
+      ],
+      "rejected": {
+        "season": 894,
+        "experimental_requires_confirmed_nondaily_scene": 57,
+        "color_preference": 1
+      },
+      "required_next_action": "review_existing_images_then_recombine_unused_assets"
+    },
+    {
+      "persona": "void",
+      "palette": "bright",
+      "eligible": 0,
+      "parent_recipes": 0,
+      "main_garments": 0,
+      "style_families": 0,
+      "first_ten": 0,
+      "browse_thirty": 0,
+      "first_ten_structures": {},
+      "eligible_by_expression_structure": {},
+      "selected_ids": [],
+      "first_ten_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "browse_thirty_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "qualified_first_ten": false,
+      "qualified_browse_thirty": false,
+      "gaps": [
+        {
+          "position": 0,
+          "reason": "quality_expression_or_diversity_supply",
+          "required_expression": "easy"
+        }
+      ],
+      "rejected": {
+        "season": 894,
+        "experimental_requires_confirmed_nondaily_scene": 57,
+        "color_preference": 1
+      },
+      "required_next_action": "review_existing_images_then_recombine_unused_assets"
+    },
+    {
+      "persona": "void",
+      "palette": "pastel",
+      "eligible": 0,
+      "parent_recipes": 0,
+      "main_garments": 0,
+      "style_families": 0,
+      "first_ten": 0,
+      "browse_thirty": 0,
+      "first_ten_structures": {},
+      "eligible_by_expression_structure": {},
+      "selected_ids": [],
+      "first_ten_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "browse_thirty_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "qualified_first_ten": false,
+      "qualified_browse_thirty": false,
+      "gaps": [
+        {
+          "position": 0,
+          "reason": "quality_expression_or_diversity_supply",
+          "required_expression": "easy"
+        }
+      ],
+      "rejected": {
+        "season": 894,
+        "experimental_requires_confirmed_nondaily_scene": 57,
+        "color_preference": 1
+      },
+      "required_next_action": "review_existing_images_then_recombine_unused_assets"
+    },
+    {
+      "persona": "wabi",
+      "palette": "mono",
+      "eligible": 1,
+      "parent_recipes": 1,
+      "main_garments": 3,
+      "style_families": 3,
+      "first_ten": 0,
+      "browse_thirty": 0,
+      "first_ten_structures": {},
+      "eligible_by_expression_structure": {
+        "typical:pants": 1
+      },
+      "selected_ids": [],
+      "first_ten_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "browse_thirty_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "qualified_first_ten": false,
+      "qualified_browse_thirty": false,
+      "gaps": [
+        {
+          "position": 0,
+          "reason": "quality_expression_or_diversity_supply",
+          "required_expression": "easy"
+        }
+      ],
+      "rejected": {
+        "season": 894,
+        "experimental_requires_confirmed_nondaily_scene": 57
+      },
+      "required_next_action": "review_existing_images_then_recombine_unused_assets"
+    },
+    {
+      "persona": "wabi",
+      "palette": "earth",
+      "eligible": 0,
+      "parent_recipes": 0,
+      "main_garments": 0,
+      "style_families": 0,
+      "first_ten": 0,
+      "browse_thirty": 0,
+      "first_ten_structures": {},
+      "eligible_by_expression_structure": {},
+      "selected_ids": [],
+      "first_ten_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "browse_thirty_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "qualified_first_ten": false,
+      "qualified_browse_thirty": false,
+      "gaps": [
+        {
+          "position": 0,
+          "reason": "quality_expression_or_diversity_supply",
+          "required_expression": "easy"
+        }
+      ],
+      "rejected": {
+        "season": 894,
+        "experimental_requires_confirmed_nondaily_scene": 57,
+        "color_preference": 1
+      },
+      "required_next_action": "review_existing_images_then_recombine_unused_assets"
+    },
+    {
+      "persona": "wabi",
+      "palette": "ocean",
+      "eligible": 0,
+      "parent_recipes": 0,
+      "main_garments": 0,
+      "style_families": 0,
+      "first_ten": 0,
+      "browse_thirty": 0,
+      "first_ten_structures": {},
+      "eligible_by_expression_structure": {},
+      "selected_ids": [],
+      "first_ten_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "browse_thirty_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "qualified_first_ten": false,
+      "qualified_browse_thirty": false,
+      "gaps": [
+        {
+          "position": 0,
+          "reason": "quality_expression_or_diversity_supply",
+          "required_expression": "easy"
+        }
+      ],
+      "rejected": {
+        "season": 894,
+        "experimental_requires_confirmed_nondaily_scene": 57,
+        "color_preference": 1
+      },
+      "required_next_action": "review_existing_images_then_recombine_unused_assets"
+    },
+    {
+      "persona": "wabi",
+      "palette": "jewel",
+      "eligible": 0,
+      "parent_recipes": 0,
+      "main_garments": 0,
+      "style_families": 0,
+      "first_ten": 0,
+      "browse_thirty": 0,
+      "first_ten_structures": {},
+      "eligible_by_expression_structure": {},
+      "selected_ids": [],
+      "first_ten_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "browse_thirty_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "qualified_first_ten": false,
+      "qualified_browse_thirty": false,
+      "gaps": [
+        {
+          "position": 0,
+          "reason": "quality_expression_or_diversity_supply",
+          "required_expression": "easy"
+        }
+      ],
+      "rejected": {
+        "season": 894,
+        "experimental_requires_confirmed_nondaily_scene": 57,
+        "color_preference": 1
+      },
+      "required_next_action": "review_existing_images_then_recombine_unused_assets"
+    },
+    {
+      "persona": "wabi",
+      "palette": "bright",
+      "eligible": 0,
+      "parent_recipes": 0,
+      "main_garments": 0,
+      "style_families": 0,
+      "first_ten": 0,
+      "browse_thirty": 0,
+      "first_ten_structures": {},
+      "eligible_by_expression_structure": {},
+      "selected_ids": [],
+      "first_ten_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "browse_thirty_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "qualified_first_ten": false,
+      "qualified_browse_thirty": false,
+      "gaps": [
+        {
+          "position": 0,
+          "reason": "quality_expression_or_diversity_supply",
+          "required_expression": "easy"
+        }
+      ],
+      "rejected": {
+        "season": 894,
+        "experimental_requires_confirmed_nondaily_scene": 57,
+        "color_preference": 1
+      },
+      "required_next_action": "review_existing_images_then_recombine_unused_assets"
+    },
+    {
+      "persona": "wabi",
+      "palette": "pastel",
+      "eligible": 0,
+      "parent_recipes": 0,
+      "main_garments": 0,
+      "style_families": 0,
+      "first_ten": 0,
+      "browse_thirty": 0,
+      "first_ten_structures": {},
+      "eligible_by_expression_structure": {},
+      "selected_ids": [],
+      "first_ten_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "browse_thirty_diagnostics": {
+        "count": 0,
+        "main_items": 0,
+        "main_families": 0,
+        "structures": {},
+        "silhouettes": {},
+        "layer_counts": {},
+        "color_appearance_counts": {},
+        "highest_color_appearance_share": null,
+        "most_used_shoes_and_bags": [],
+        "mean_pairwise_main_family_jaccard": null,
+        "constraint_violations": [],
+        "interpretation": "Color counts are reviewed semantic labels, not pixel area; family similarity is not calibrated perception. Short feeds are not a richness pass."
+      },
+      "qualified_first_ten": false,
+      "qualified_browse_thirty": false,
+      "gaps": [
+        {
+          "position": 0,
+          "reason": "quality_expression_or_diversity_supply",
+          "required_expression": "easy"
+        }
+      ],
+      "rejected": {
+        "season": 894,
+        "experimental_requires_confirmed_nondaily_scene": 57,
+        "color_preference": 1
+      },
+      "required_next_action": "review_existing_images_then_recombine_unused_assets"
+    }
+  ]
+}

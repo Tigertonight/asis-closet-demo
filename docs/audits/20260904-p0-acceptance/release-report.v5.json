@@ -1,0 +1,207 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-09-04T09:18:19.125181+00:00",
+  "release_decision": "do_not_release",
+  "releasable": false,
+  "versions": {
+    "git_commit": "b628f64bcc32b64d76da6aa8786eb62f69550c93",
+    "git_worktree_clean": false,
+    "content_version": "2026.09-v2-published1",
+    "content_sha256": "6b3387d7c97f78ffa57cf69b95ac5ce9a3008959bccc81343f18cd2c7c650bc9",
+    "visual_version": "codex-visual-16b18cdcdca36dbc306a",
+    "visual_sha256": "9905313a9837fa72436372afd478cb8245c30c34135172abdc4b43502eebe1c8",
+    "family_registry_sha256": "428a6a9234c0484b47098fef4172d5bfae69fe25303ed58c2d6c854484654bc9",
+    "anchor_manifest_sha256": "6b4d2ef2d64e9213566d2c3ac90242ec2ec9432f938c3e0ef98d2a2d7796e228",
+    "blind_result_sha256": null,
+    "browser_evidence_sha256": "0252f8e045555aa354401a456187b611ec368a32dbf085d60e6795ef66b0871d",
+    "performance_evidence_sha256": null
+  },
+  "inventory": {
+    "anchor_rows": 153,
+    "current_four_gate_reviews": 0,
+    "visual_eligible_catalog": 952,
+    "visual_held_catalog": 217
+  },
+  "gates": {
+    "G0_traceability": {
+      "status": "Fail",
+      "errors": [
+        "git worktree is not frozen/clean"
+      ]
+    },
+    "G1_home_feed_stability": {
+      "status": "Fail",
+      "errors": [
+        "non-passing cases: FEED-001, FEED-002, FEED-003, FEED-004, FEED-005, FEED-006, FEED-007, FEED-008, FEED-009, FEED-010, FEED-011, FEED-013, FEED-014"
+      ],
+      "cases": {
+        "FEED-001": "Not Run",
+        "FEED-002": "Not Run",
+        "FEED-003": "Not Run",
+        "FEED-004": "Not Run",
+        "FEED-005": "Not Run",
+        "FEED-006": "Not Run",
+        "FEED-007": "Not Run",
+        "FEED-008": "Not Run",
+        "FEED-009": "Not Run",
+        "FEED-010": "Not Run",
+        "FEED-011": "Not Run",
+        "FEED-012": "Pass",
+        "FEED-013": "Not Run",
+        "FEED-014": "Not Run",
+        "REC-001": "Not Run",
+        "REC-002": "Not Run",
+        "REC-003": "Not Run",
+        "REC-004": "Not Run",
+        "REC-005": "Not Run",
+        "REC-006": "Not Run",
+        "REC-007": "Not Run",
+        "REC-008": "Not Run",
+        "REC-009": "Not Run",
+        "REC-010": "Not Run",
+        "REC-011": "Not Run",
+        "REC-012": "Not Run",
+        "REC-013": "Not Run",
+        "REC-014": "Not Run",
+        "E2E-001": "Not Run",
+        "E2E-002": "Not Run",
+        "E2E-003": "Not Run",
+        "E2E-004": "Not Run",
+        "E2E-005": "Not Run",
+        "E2E-006": "Not Run",
+        "E2E-007": "Not Run",
+        "E2E-008": "Not Run",
+        "E2E-009": "Not Run",
+        "E2E-010": "Not Run",
+        "E2E-011": "Not Run",
+        "E2E-012": "Not Run"
+      }
+    },
+    "G2_content_admission": {
+      "status": "Fail",
+      "errors": [
+        "anchor count is 153, expected 160",
+        "current four-gate reviews are 0/160"
+      ]
+    },
+    "G3_anchor_completeness": {
+      "status": "Fail",
+      "errors": [
+        "anchor manifest must contain exactly 160 rows",
+        "film: anchor count must be 10",
+        "iced: anchor count must be 10",
+        "neon: anchor count must be 10",
+        "oops: anchor count must be 10",
+        "wabi: anchor count must be 10"
+      ]
+    },
+    "G4_persona_blind_review": {
+      "status": "Not Run",
+      "errors": [
+        "blind review result is missing"
+      ]
+    },
+    "G5_recommendation_quality": {
+      "status": "Fail",
+      "errors": [
+        "non-passing cases: REC-001, REC-002, REC-003, REC-004, REC-005, REC-006, REC-007, REC-008, REC-009, REC-010, REC-011, REC-012, REC-013, REC-014"
+      ],
+      "cases": {
+        "FEED-001": "Not Run",
+        "FEED-002": "Not Run",
+        "FEED-003": "Not Run",
+        "FEED-004": "Not Run",
+        "FEED-005": "Not Run",
+        "FEED-006": "Not Run",
+        "FEED-007": "Not Run",
+        "FEED-008": "Not Run",
+        "FEED-009": "Not Run",
+        "FEED-010": "Not Run",
+        "FEED-011": "Not Run",
+        "FEED-012": "Pass",
+        "FEED-013": "Not Run",
+        "FEED-014": "Not Run",
+        "REC-001": "Not Run",
+        "REC-002": "Not Run",
+        "REC-003": "Not Run",
+        "REC-004": "Not Run",
+        "REC-005": "Not Run",
+        "REC-006": "Not Run",
+        "REC-007": "Not Run",
+        "REC-008": "Not Run",
+        "REC-009": "Not Run",
+        "REC-010": "Not Run",
+        "REC-011": "Not Run",
+        "REC-012": "Not Run",
+        "REC-013": "Not Run",
+        "REC-014": "Not Run",
+        "E2E-001": "Not Run",
+        "E2E-002": "Not Run",
+        "E2E-003": "Not Run",
+        "E2E-004": "Not Run",
+        "E2E-005": "Not Run",
+        "E2E-006": "Not Run",
+        "E2E-007": "Not Run",
+        "E2E-008": "Not Run",
+        "E2E-009": "Not Run",
+        "E2E-010": "Not Run",
+        "E2E-011": "Not Run",
+        "E2E-012": "Not Run"
+      }
+    },
+    "G6_end_to_end": {
+      "status": "Fail",
+      "errors": [
+        "non-passing cases: E2E-001, E2E-002, E2E-003, E2E-004, E2E-005, E2E-006, E2E-007, E2E-008, E2E-009, E2E-010, E2E-011, E2E-012"
+      ],
+      "cases": {
+        "FEED-001": "Not Run",
+        "FEED-002": "Not Run",
+        "FEED-003": "Not Run",
+        "FEED-004": "Not Run",
+        "FEED-005": "Not Run",
+        "FEED-006": "Not Run",
+        "FEED-007": "Not Run",
+        "FEED-008": "Not Run",
+        "FEED-009": "Not Run",
+        "FEED-010": "Not Run",
+        "FEED-011": "Not Run",
+        "FEED-012": "Pass",
+        "FEED-013": "Not Run",
+        "FEED-014": "Not Run",
+        "REC-001": "Not Run",
+        "REC-002": "Not Run",
+        "REC-003": "Not Run",
+        "REC-004": "Not Run",
+        "REC-005": "Not Run",
+        "REC-006": "Not Run",
+        "REC-007": "Not Run",
+        "REC-008": "Not Run",
+        "REC-009": "Not Run",
+        "REC-010": "Not Run",
+        "REC-011": "Not Run",
+        "REC-012": "Not Run",
+        "REC-013": "Not Run",
+        "REC-014": "Not Run",
+        "E2E-001": "Not Run",
+        "E2E-002": "Not Run",
+        "E2E-003": "Not Run",
+        "E2E-004": "Not Run",
+        "E2E-005": "Not Run",
+        "E2E-006": "Not Run",
+        "E2E-007": "Not Run",
+        "E2E-008": "Not Run",
+        "E2E-009": "Not Run",
+        "E2E-010": "Not Run",
+        "E2E-011": "Not Run",
+        "E2E-012": "Not Run"
+      }
+    },
+    "G7_performance_and_regression": {
+      "status": "Not Run",
+      "errors": [
+        "evidence file is missing"
+      ]
+    }
+  }
+}

@@ -1,0 +1,1394 @@
+{
+  "schema_version": 1,
+  "batch_id": "aw-targeted-05",
+  "source_visual_version": "codex-visual-16b18cdcdca36dbc306a",
+  "status": "designer_targets_pending_whole_image_review",
+  "new_garments": [
+    {
+      "id": "garment_aw_targeted05_outer_iced_pastel_01",
+      "category": "outer",
+      "subcategory": "冰雾蓝收净立领长大衣",
+      "silhouette": [
+        "narrow_long_column",
+        "stand_collar",
+        "clean_vertical"
+      ],
+      "fit": "合体",
+      "materials": [],
+      "details": [
+        "original_gap_fill",
+        "pastel",
+        "visually_reviewed_cutout"
+      ],
+      "season_tags": [
+        "秋",
+        "冬"
+      ],
+      "scene_tags": [
+        "日常",
+        "通勤",
+        "旅行"
+      ],
+      "weather_tags": [],
+      "presentation": [
+        "feminine",
+        "neutral"
+      ],
+      "layer_role": "outer",
+      "tryon_slot": "outer",
+      "persona_affinity": {
+        "ICED": 0.96,
+        "MUTE": 0.88,
+        "JADE": 0.8,
+        "LOOP": 0.72
+      },
+      "color": {
+        "temperature": "未判断",
+        "lightness": "浅色",
+        "saturation": "低饱和",
+        "harmony": "未判断",
+        "palette": [
+          "#8ea2ba",
+          "#9aaec6",
+          "#75889e",
+          "#a2b6cc",
+          "#aabcd2"
+        ]
+      },
+      "assets": {
+        "image_url": "/static/selfit/assets/content_v2_drafts/aw-targeted-05/garments/winter-coat-pastel-iced-blue-v1.png",
+        "source_url": "",
+        "width": 1200,
+        "height": 1200,
+        "alpha_verified": true,
+        "rights_status": "owned"
+      },
+      "production": {
+        "source_kind": "generated_original",
+        "generation_job_id": "aw-generated-garments-07-n0034",
+        "prompt_version": "selfit-aw-threshold-winter-v1",
+        "reference_ids": [],
+        "qa_status": "approved",
+        "phash": "30b0b2707170b210-92a5bc"
+      },
+      "annotation": {
+        "status": "designer_reviewed",
+        "source": "designer",
+        "confidence": 0.92,
+        "review_notes": [
+          "Cutout and visible silhouette reviewed in current Codex session; outfit use remains draft."
+        ]
+      },
+      "color_evidence": {
+        "source": "opaque_pixel_quantization_v1",
+        "status": "measured_not_semantic_review",
+        "asset_sha256": "82116f0e2fb5d7fd3438c6f5a09c0d728d21283e632246c6de0b14ced293ace3",
+        "swatches": [
+          {
+            "hex": "#8ea2ba",
+            "weight": 0.2894,
+            "family": "蓝"
+          },
+          {
+            "hex": "#9aaec6",
+            "weight": 0.2303,
+            "family": "蓝"
+          },
+          {
+            "hex": "#75889e",
+            "weight": 0.1665,
+            "family": "蓝"
+          },
+          {
+            "hex": "#a2b6cc",
+            "weight": 0.1606,
+            "family": "蓝"
+          },
+          {
+            "hex": "#aabcd2",
+            "weight": 0.1532,
+            "family": "蓝"
+          }
+        ],
+        "palette_names": [
+          "蓝"
+        ],
+        "color": {
+          "temperature": "未判断",
+          "lightness": "浅色",
+          "saturation": "低饱和",
+          "harmony": "未判断",
+          "palette": [
+            "#8ea2ba",
+            "#9aaec6",
+            "#75889e",
+            "#a2b6cc",
+            "#aabcd2"
+          ]
+        },
+        "limitations": "渲染光照会影响色值；不据此推断面料成分、真实冷暖或人体适配。"
+      }
+    },
+    {
+      "id": "garment_aw_targeted05_outer_wabi_jewel_02",
+      "category": "outer",
+      "subcategory": "深青错位包裹茧形大衣",
+      "silhouette": [
+        "sculptural_cocoon",
+        "single_asymmetric_wrap",
+        "rounded_volume"
+      ],
+      "fit": "宽松",
+      "materials": [],
+      "details": [
+        "original_gap_fill",
+        "jewel",
+        "visually_reviewed_cutout"
+      ],
+      "season_tags": [
+        "秋",
+        "冬"
+      ],
+      "scene_tags": [
+        "日常",
+        "通勤",
+        "旅行"
+      ],
+      "weather_tags": [],
+      "presentation": [
+        "feminine",
+        "neutral"
+      ],
+      "layer_role": "outer",
+      "tryon_slot": "outer",
+      "persona_affinity": {
+        "WABI": 0.96,
+        "VOID": 0.88,
+        "EASE": 0.8,
+        "LOOP": 0.72
+      },
+      "color": {
+        "temperature": "未判断",
+        "lightness": "深色",
+        "saturation": "高饱和",
+        "harmony": "未判断",
+        "palette": [
+          "#082f35",
+          "#0b343b",
+          "#0d3940",
+          "#052226",
+          "#13444c"
+        ]
+      },
+      "assets": {
+        "image_url": "/static/selfit/assets/content_v2_drafts/aw-targeted-05/garments/winter-coat-jewel-wabi-wrap-v1.png",
+        "source_url": "",
+        "width": 1200,
+        "height": 1200,
+        "alpha_verified": true,
+        "rights_status": "owned"
+      },
+      "production": {
+        "source_kind": "generated_original",
+        "generation_job_id": "aw-generated-garments-07-n0035",
+        "prompt_version": "selfit-aw-threshold-winter-v1",
+        "reference_ids": [],
+        "qa_status": "approved",
+        "phash": "3878786869783010-0a3238"
+      },
+      "annotation": {
+        "status": "designer_reviewed",
+        "source": "designer",
+        "confidence": 0.92,
+        "review_notes": [
+          "Cutout and visible silhouette reviewed in current Codex session; outfit use remains draft."
+        ]
+      },
+      "color_evidence": {
+        "source": "opaque_pixel_quantization_v1",
+        "status": "measured_not_semantic_review",
+        "asset_sha256": "8171b5362bfa57ace184a1e55f9c0e01805df5786b936e6bc4474fbf156f2dd3",
+        "swatches": [
+          {
+            "hex": "#082f35",
+            "weight": 0.332,
+            "family": "蓝"
+          },
+          {
+            "hex": "#0b343b",
+            "weight": 0.2303,
+            "family": "蓝"
+          },
+          {
+            "hex": "#0d3940",
+            "weight": 0.1672,
+            "family": "蓝"
+          },
+          {
+            "hex": "#052226",
+            "weight": 0.157,
+            "family": "黑"
+          },
+          {
+            "hex": "#13444c",
+            "weight": 0.1135,
+            "family": "蓝"
+          }
+        ],
+        "palette_names": [
+          "蓝",
+          "黑"
+        ],
+        "color": {
+          "temperature": "未判断",
+          "lightness": "深色",
+          "saturation": "高饱和",
+          "harmony": "未判断",
+          "palette": [
+            "#082f35",
+            "#0b343b",
+            "#0d3940",
+            "#052226",
+            "#13444c"
+          ]
+        },
+        "limitations": "渲染光照会影响色值；不据此推断面料成分、真实冷暖或人体适配。"
+      }
+    },
+    {
+      "id": "garment_aw_targeted05_outer_iced_mono_01",
+      "category": "outer",
+      "subcategory": "冷墨灰无领纵线长大衣",
+      "silhouette": [
+        "precise_long_column",
+        "collarless",
+        "shaped_seams"
+      ],
+      "fit": "合体",
+      "materials": [],
+      "details": [
+        "original_gap_fill",
+        "mono",
+        "visually_reviewed_cutout"
+      ],
+      "season_tags": [
+        "秋",
+        "冬"
+      ],
+      "scene_tags": [
+        "日常",
+        "通勤",
+        "旅行"
+      ],
+      "weather_tags": [],
+      "presentation": [
+        "feminine",
+        "neutral"
+      ],
+      "layer_role": "outer",
+      "tryon_slot": "outer",
+      "persona_affinity": {
+        "ICED": 0.96,
+        "MUTE": 0.88,
+        "NOIR": 0.8,
+        "JADE": 0.72
+      },
+      "color": {
+        "temperature": "未判断",
+        "lightness": "深色",
+        "saturation": "无彩",
+        "harmony": "未判断",
+        "palette": [
+          "#333234",
+          "#373738",
+          "#3c3b3d",
+          "#424243",
+          "#282728"
+        ]
+      },
+      "assets": {
+        "image_url": "/static/selfit/assets/content_v2_drafts/aw-targeted-05/garments/winter-coat-mono-iced-graphite-v1.png",
+        "source_url": "",
+        "width": 1200,
+        "height": 1200,
+        "alpha_verified": true,
+        "rights_status": "owned"
+      },
+      "production": {
+        "source_kind": "generated_original",
+        "generation_job_id": "aw-generated-garments-07-n0036",
+        "prompt_version": "selfit-aw-threshold-winter-v1",
+        "reference_ids": [],
+        "qa_status": "approved",
+        "phash": "707030b27070b230-363537"
+      },
+      "annotation": {
+        "status": "designer_reviewed",
+        "source": "designer",
+        "confidence": 0.92,
+        "review_notes": [
+          "Cutout and visible silhouette reviewed in current Codex session; outfit use remains draft."
+        ]
+      },
+      "color_evidence": {
+        "source": "opaque_pixel_quantization_v1",
+        "status": "measured_not_semantic_review",
+        "asset_sha256": "9d8c97ddd4d8b59145826c6231921a532c214fa2a05d286c265a2fbfcec0361e",
+        "swatches": [
+          {
+            "hex": "#333234",
+            "weight": 0.3801,
+            "family": "灰"
+          },
+          {
+            "hex": "#373738",
+            "weight": 0.2036,
+            "family": "灰"
+          },
+          {
+            "hex": "#3c3b3d",
+            "weight": 0.1922,
+            "family": "灰"
+          },
+          {
+            "hex": "#424243",
+            "weight": 0.1226,
+            "family": "灰"
+          },
+          {
+            "hex": "#282728",
+            "weight": 0.1015,
+            "family": "黑"
+          }
+        ],
+        "palette_names": [
+          "灰"
+        ],
+        "color": {
+          "temperature": "未判断",
+          "lightness": "深色",
+          "saturation": "无彩",
+          "harmony": "未判断",
+          "palette": [
+            "#333234",
+            "#373738",
+            "#3c3b3d",
+            "#424243",
+            "#282728"
+          ]
+        },
+        "limitations": "渲染光照会影响色值；不据此推断面料成分、真实冷暖或人体适配。"
+      }
+    },
+    {
+      "id": "garment_aw_targeted05_outer_ease_mono_01",
+      "category": "outer",
+      "subcategory": "炭黑松弛翻领中长大衣",
+      "silhouette": [
+        "soft_tailored",
+        "gentle_dropped_shoulder",
+        "controlled_straight"
+      ],
+      "fit": "宽松",
+      "materials": [],
+      "details": [
+        "original_gap_fill",
+        "mono",
+        "visually_reviewed_cutout"
+      ],
+      "season_tags": [
+        "秋",
+        "冬"
+      ],
+      "scene_tags": [
+        "日常",
+        "通勤",
+        "旅行"
+      ],
+      "weather_tags": [],
+      "presentation": [
+        "feminine",
+        "neutral"
+      ],
+      "layer_role": "outer",
+      "tryon_slot": "outer",
+      "persona_affinity": {
+        "EASE": 0.96,
+        "LOOP": 0.88,
+        "MUTE": 0.8,
+        "HEIR": 0.72
+      },
+      "color": {
+        "temperature": "未判断",
+        "lightness": "深色",
+        "saturation": "无彩",
+        "harmony": "未判断",
+        "palette": [
+          "#2a2a2b",
+          "#303031",
+          "#363638",
+          "#1d1d1e",
+          "#3e3e40"
+        ]
+      },
+      "assets": {
+        "image_url": "/static/selfit/assets/content_v2_drafts/aw-targeted-05/garments/winter-coat-mono-ease-charcoal-v1.png",
+        "source_url": "",
+        "width": 1200,
+        "height": 1200,
+        "alpha_verified": true,
+        "rights_status": "owned"
+      },
+      "production": {
+        "source_kind": "generated_original",
+        "generation_job_id": "aw-generated-garments-07-n0037",
+        "prompt_version": "selfit-aw-threshold-winter-v1",
+        "reference_ids": [],
+        "qa_status": "approved",
+        "phash": "3078307179783010-2d2d2e"
+      },
+      "annotation": {
+        "status": "designer_reviewed",
+        "source": "designer",
+        "confidence": 0.92,
+        "review_notes": [
+          "Cutout and visible silhouette reviewed in current Codex session; outfit use remains draft."
+        ]
+      },
+      "color_evidence": {
+        "source": "opaque_pixel_quantization_v1",
+        "status": "measured_not_semantic_review",
+        "asset_sha256": "91b20e8e9cf1ef42099e09c9ea03ae608b907226b9abf58f6b3af9bf5e86e0c0",
+        "swatches": [
+          {
+            "hex": "#2a2a2b",
+            "weight": 0.3379,
+            "family": "黑"
+          },
+          {
+            "hex": "#303031",
+            "weight": 0.2213,
+            "family": "灰"
+          },
+          {
+            "hex": "#363638",
+            "weight": 0.1742,
+            "family": "灰"
+          },
+          {
+            "hex": "#1d1d1e",
+            "weight": 0.1452,
+            "family": "黑"
+          },
+          {
+            "hex": "#3e3e40",
+            "weight": 0.1214,
+            "family": "灰"
+          }
+        ],
+        "palette_names": [
+          "黑",
+          "灰"
+        ],
+        "color": {
+          "temperature": "未判断",
+          "lightness": "深色",
+          "saturation": "无彩",
+          "harmony": "未判断",
+          "palette": [
+            "#2a2a2b",
+            "#303031",
+            "#363638",
+            "#1d1d1e",
+            "#3e3e40"
+          ]
+        },
+        "limitations": "渲染光照会影响色值；不据此推断面料成分、真实冷暖或人体适配。"
+      }
+    },
+    {
+      "id": "garment_aw_targeted05_outer_heir_pastel_01",
+      "category": "outer",
+      "subcategory": "灰玫瑰经典收腰长大衣",
+      "silhouette": [
+        "classic_tailored",
+        "defined_waist",
+        "clean_shoulder"
+      ],
+      "fit": "合体",
+      "materials": [],
+      "details": [
+        "original_gap_fill",
+        "pastel",
+        "visually_reviewed_cutout"
+      ],
+      "season_tags": [
+        "秋",
+        "冬"
+      ],
+      "scene_tags": [
+        "日常",
+        "通勤",
+        "旅行"
+      ],
+      "weather_tags": [],
+      "presentation": [
+        "feminine",
+        "neutral"
+      ],
+      "layer_role": "outer",
+      "tryon_slot": "outer",
+      "persona_affinity": {
+        "HEIR": 0.96,
+        "BOLT": 0.88,
+        "MUTE": 0.8,
+        "LOOP": 0.72
+      },
+      "color": {
+        "temperature": "未判断",
+        "lightness": "中等",
+        "saturation": "中饱和",
+        "harmony": "未判断",
+        "palette": [
+          "#b68282",
+          "#bd8889",
+          "#c28e8f",
+          "#9d6a6a",
+          "#ca9898"
+        ]
+      },
+      "assets": {
+        "image_url": "/static/selfit/assets/content_v2_drafts/aw-targeted-05/garments/winter-coat-pastel-heir-rose-v1.png",
+        "source_url": "",
+        "width": 1200,
+        "height": 1200,
+        "alpha_verified": true,
+        "rights_status": "owned"
+      },
+      "production": {
+        "source_kind": "generated_original",
+        "generation_job_id": "aw-generated-garments-07-n0038",
+        "prompt_version": "selfit-aw-threshold-winter-v1",
+        "reference_ids": [],
+        "qa_status": "approved",
+        "phash": "7070b2707171b210-b68383"
+      },
+      "annotation": {
+        "status": "designer_reviewed",
+        "source": "designer",
+        "confidence": 0.92,
+        "review_notes": [
+          "Cutout and visible silhouette reviewed in current Codex session; outfit use remains draft."
+        ]
+      },
+      "color_evidence": {
+        "source": "opaque_pixel_quantization_v1",
+        "status": "measured_not_semantic_review",
+        "asset_sha256": "ac020212f419727744905da70e855740b07a5bf939d6fcf4d9ac9a81cb9796c9",
+        "swatches": [
+          {
+            "hex": "#b68282",
+            "weight": 0.3366,
+            "family": "粉"
+          },
+          {
+            "hex": "#bd8889",
+            "weight": 0.2482,
+            "family": "粉"
+          },
+          {
+            "hex": "#c28e8f",
+            "weight": 0.1687,
+            "family": "粉"
+          },
+          {
+            "hex": "#9d6a6a",
+            "weight": 0.1355,
+            "family": "红"
+          },
+          {
+            "hex": "#ca9898",
+            "weight": 0.111,
+            "family": "粉"
+          }
+        ],
+        "palette_names": [
+          "粉",
+          "红"
+        ],
+        "color": {
+          "temperature": "未判断",
+          "lightness": "中等",
+          "saturation": "中饱和",
+          "harmony": "未判断",
+          "palette": [
+            "#b68282",
+            "#bd8889",
+            "#c28e8f",
+            "#9d6a6a",
+            "#ca9898"
+          ]
+        },
+        "limitations": "渲染光照会影响色值；不据此推断面料成分、真实冷暖或人体适配。"
+      }
+    },
+    {
+      "id": "garment_aw_targeted05_outer_heir_ocean_01",
+      "category": "outer",
+      "subcategory": "深海蓝系带经典长大衣",
+      "silhouette": [
+        "classic_belted",
+        "clean_shoulder",
+        "long_vertical"
+      ],
+      "fit": "合体",
+      "materials": [],
+      "details": [
+        "original_gap_fill",
+        "ocean",
+        "visually_reviewed_cutout"
+      ],
+      "season_tags": [
+        "秋",
+        "冬"
+      ],
+      "scene_tags": [
+        "日常",
+        "通勤",
+        "旅行"
+      ],
+      "weather_tags": [],
+      "presentation": [
+        "feminine",
+        "neutral"
+      ],
+      "layer_role": "outer",
+      "tryon_slot": "outer",
+      "persona_affinity": {
+        "HEIR": 0.96,
+        "MUTE": 0.88,
+        "NOIR": 0.8,
+        "LOOP": 0.72
+      },
+      "color": {
+        "temperature": "未判断",
+        "lightness": "深色",
+        "saturation": "高饱和",
+        "harmony": "未判断",
+        "palette": [
+          "#121a2f",
+          "#161e36",
+          "#19223d",
+          "#202945",
+          "#0c1223"
+        ]
+      },
+      "assets": {
+        "image_url": "/static/selfit/assets/content_v2_drafts/aw-targeted-05/garments/winter-coat-ocean-heir-navy-v1.png",
+        "source_url": "",
+        "width": 1200,
+        "height": 1200,
+        "alpha_verified": true,
+        "rights_status": "owned"
+      },
+      "production": {
+        "source_kind": "generated_original",
+        "generation_job_id": "aw-generated-garments-07-n0039",
+        "prompt_version": "selfit-aw-threshold-winter-v1",
+        "reference_ids": [],
+        "qa_status": "approved",
+        "phash": "3078307078703010-151d34"
+      },
+      "annotation": {
+        "status": "designer_reviewed",
+        "source": "designer",
+        "confidence": 0.92,
+        "review_notes": [
+          "Cutout and visible silhouette reviewed in current Codex session; outfit use remains draft."
+        ]
+      },
+      "color_evidence": {
+        "source": "opaque_pixel_quantization_v1",
+        "status": "measured_not_semantic_review",
+        "asset_sha256": "827d624184bb350f6c87c615a31420a9319322e9d6c06f99217d173d0e4d31c2",
+        "swatches": [
+          {
+            "hex": "#121a2f",
+            "weight": 0.3478,
+            "family": "黑"
+          },
+          {
+            "hex": "#161e36",
+            "weight": 0.2023,
+            "family": "蓝"
+          },
+          {
+            "hex": "#19223d",
+            "weight": 0.1742,
+            "family": "蓝"
+          },
+          {
+            "hex": "#202945",
+            "weight": 0.1411,
+            "family": "蓝"
+          },
+          {
+            "hex": "#0c1223",
+            "weight": 0.1346,
+            "family": "黑"
+          }
+        ],
+        "palette_names": [
+          "黑",
+          "蓝"
+        ],
+        "color": {
+          "temperature": "未判断",
+          "lightness": "深色",
+          "saturation": "高饱和",
+          "harmony": "未判断",
+          "palette": [
+            "#121a2f",
+            "#161e36",
+            "#19223d",
+            "#202945",
+            "#0c1223"
+          ]
+        },
+        "limitations": "渲染光照会影响色值；不据此推断面料成分、真实冷暖或人体适配。"
+      }
+    },
+    {
+      "id": "garment_aw_targeted05_outer_heir_jewel_01",
+      "category": "outer",
+      "subcategory": "祖母绿经典双排扣长大衣",
+      "silhouette": [
+        "classic_double_breasted",
+        "crisp_shoulder",
+        "long_straight"
+      ],
+      "fit": "合体",
+      "materials": [],
+      "details": [
+        "original_gap_fill",
+        "jewel",
+        "visually_reviewed_cutout"
+      ],
+      "season_tags": [
+        "秋",
+        "冬"
+      ],
+      "scene_tags": [
+        "日常",
+        "通勤",
+        "旅行"
+      ],
+      "weather_tags": [],
+      "presentation": [
+        "feminine",
+        "neutral"
+      ],
+      "layer_role": "outer",
+      "tryon_slot": "outer",
+      "persona_affinity": {
+        "HEIR": 0.96,
+        "NOIR": 0.88,
+        "JADE": 0.8,
+        "BOLT": 0.72
+      },
+      "color": {
+        "temperature": "未判断",
+        "lightness": "深色",
+        "saturation": "高饱和",
+        "harmony": "未判断",
+        "palette": [
+          "#053124",
+          "#07392b",
+          "#022218",
+          "#0a3e2f",
+          "#114537"
+        ]
+      },
+      "assets": {
+        "image_url": "/static/selfit/assets/content_v2_drafts/aw-targeted-05/garments/winter-coat-jewel-heir-emerald-v1.png",
+        "source_url": "",
+        "width": 1200,
+        "height": 1200,
+        "alpha_verified": true,
+        "rights_status": "owned"
+      },
+      "production": {
+        "source_kind": "generated_original",
+        "generation_job_id": "aw-generated-garments-07-n0040",
+        "prompt_version": "selfit-aw-threshold-winter-v1",
+        "reference_ids": [],
+        "qa_status": "approved",
+        "phash": "3070307079783010-083527"
+      },
+      "annotation": {
+        "status": "designer_reviewed",
+        "source": "designer",
+        "confidence": 0.92,
+        "review_notes": [
+          "Cutout and visible silhouette reviewed in current Codex session; outfit use remains draft."
+        ]
+      },
+      "color_evidence": {
+        "source": "opaque_pixel_quantization_v1",
+        "status": "measured_not_semantic_review",
+        "asset_sha256": "45af0dff66e69b2d9478ef272150f48fed4648daa802df49918cae760aa65b55",
+        "swatches": [
+          {
+            "hex": "#053124",
+            "weight": 0.2791,
+            "family": "绿"
+          },
+          {
+            "hex": "#07392b",
+            "weight": 0.2106,
+            "family": "绿"
+          },
+          {
+            "hex": "#022218",
+            "weight": 0.2067,
+            "family": "黑"
+          },
+          {
+            "hex": "#0a3e2f",
+            "weight": 0.1728,
+            "family": "绿"
+          },
+          {
+            "hex": "#114537",
+            "weight": 0.1308,
+            "family": "绿"
+          }
+        ],
+        "palette_names": [
+          "绿",
+          "黑"
+        ],
+        "color": {
+          "temperature": "未判断",
+          "lightness": "深色",
+          "saturation": "高饱和",
+          "harmony": "未判断",
+          "palette": [
+            "#053124",
+            "#07392b",
+            "#022218",
+            "#0a3e2f",
+            "#114537"
+          ]
+        },
+        "limitations": "渲染光照会影响色值；不据此推断面料成分、真实冷暖或人体适配。"
+      }
+    },
+    {
+      "id": "garment_aw_targeted05_outer_ease_earth_01",
+      "category": "outer",
+      "subcategory": "暖驼松弛系带长大衣",
+      "silhouette": [
+        "relaxed_belted",
+        "gentle_dropped_shoulder",
+        "long_soft_line"
+      ],
+      "fit": "宽松",
+      "materials": [],
+      "details": [
+        "original_gap_fill",
+        "earth",
+        "visually_reviewed_cutout"
+      ],
+      "season_tags": [
+        "秋",
+        "冬"
+      ],
+      "scene_tags": [
+        "日常",
+        "通勤",
+        "旅行"
+      ],
+      "weather_tags": [],
+      "presentation": [
+        "feminine",
+        "neutral"
+      ],
+      "layer_role": "outer",
+      "tryon_slot": "outer",
+      "persona_affinity": {
+        "EASE": 0.96,
+        "HEIR": 0.88,
+        "LOOP": 0.8,
+        "MELT": 0.72
+      },
+      "color": {
+        "temperature": "未判断",
+        "lightness": "中等",
+        "saturation": "中饱和",
+        "harmony": "未判断",
+        "palette": [
+          "#c79870",
+          "#b98961",
+          "#a47551",
+          "#af7f59",
+          "#845a3b"
+        ]
+      },
+      "assets": {
+        "image_url": "/static/selfit/assets/content_v2_drafts/aw-targeted-05/garments/winter-coat-earth-ease-camel-v1.png",
+        "source_url": "",
+        "width": 1200,
+        "height": 1200,
+        "alpha_verified": true,
+        "rights_status": "owned"
+      },
+      "production": {
+        "source_kind": "generated_original",
+        "generation_job_id": "aw-generated-garments-07-n0041",
+        "prompt_version": "selfit-aw-threshold-winter-v1",
+        "reference_ids": [],
+        "qa_status": "approved",
+        "phash": "3070b2706979b210-ac7f5a"
+      },
+      "annotation": {
+        "status": "designer_reviewed",
+        "source": "designer",
+        "confidence": 0.92,
+        "review_notes": [
+          "Cutout and visible silhouette reviewed in current Codex session; outfit use remains draft."
+        ]
+      },
+      "color_evidence": {
+        "source": "opaque_pixel_quantization_v1",
+        "status": "measured_not_semantic_review",
+        "asset_sha256": "c07190b1cef7ff4f5bd009fe2b7e707cebb8daa5ca5664cd4a81c18e76e0ded2",
+        "swatches": [
+          {
+            "hex": "#c79870",
+            "weight": 0.2458,
+            "family": "黄"
+          },
+          {
+            "hex": "#b98961",
+            "weight": 0.2299,
+            "family": "棕"
+          },
+          {
+            "hex": "#a47551",
+            "weight": 0.1978,
+            "family": "棕"
+          },
+          {
+            "hex": "#af7f59",
+            "weight": 0.1779,
+            "family": "棕"
+          },
+          {
+            "hex": "#845a3b",
+            "weight": 0.1486,
+            "family": "棕"
+          }
+        ],
+        "palette_names": [
+          "黄",
+          "棕"
+        ],
+        "color": {
+          "temperature": "未判断",
+          "lightness": "中等",
+          "saturation": "中饱和",
+          "harmony": "未判断",
+          "palette": [
+            "#c79870",
+            "#b98961",
+            "#a47551",
+            "#af7f59",
+            "#845a3b"
+          ]
+        },
+        "limitations": "渲染光照会影响色值；不据此推断面料成分、真实冷暖或人体适配。"
+      }
+    }
+  ],
+  "new_garment_manifest": "generated-garments/batch07/manifest.json",
+  "new_garment_version": "aw-generated-garments-e6e175dc3f361a52900e",
+  "recipes": [
+    {
+      "persona": "ICED",
+      "palette": "pastel",
+      "season": "winter",
+      "structure": "pants",
+      "hero": "n0034",
+      "items": [
+        "n0034",
+        "g0114",
+        "g0172",
+        "g0258",
+        "g0289"
+      ],
+      "expression": "entry",
+      "intent": "ICED×pastel 冬季临界缺口的 pants 主结构；主色由外层承担。"
+    },
+    {
+      "persona": "ICED",
+      "palette": "pastel",
+      "season": "winter",
+      "structure": "skirt",
+      "hero": "n0034",
+      "items": [
+        "n0034",
+        "g0337",
+        "g0429",
+        "g0069",
+        "g0070"
+      ],
+      "expression": "entry",
+      "intent": "ICED×pastel 冬季临界缺口的 skirt 主结构；主色由外层承担。"
+    },
+    {
+      "persona": "ICED",
+      "palette": "pastel",
+      "season": "winter",
+      "structure": "dress",
+      "hero": "n0034",
+      "items": [
+        "n0034",
+        "g0222",
+        "g0265",
+        "g0513"
+      ],
+      "expression": "entry",
+      "intent": "ICED×pastel 冬季临界缺口的 dress 主结构；主色由外层承担。"
+    },
+    {
+      "persona": "WABI",
+      "palette": "jewel",
+      "season": "winter",
+      "structure": "pants",
+      "hero": "n0035",
+      "items": [
+        "n0035",
+        "g0114",
+        "g0172",
+        "g0258",
+        "g0289"
+      ],
+      "expression": "entry",
+      "intent": "WABI×jewel 冬季临界缺口的 pants 主结构；主色由外层承担。"
+    },
+    {
+      "persona": "WABI",
+      "palette": "jewel",
+      "season": "winter",
+      "structure": "skirt",
+      "hero": "n0035",
+      "items": [
+        "n0035",
+        "g0337",
+        "g0429",
+        "g0069",
+        "g0070"
+      ],
+      "expression": "entry",
+      "intent": "WABI×jewel 冬季临界缺口的 skirt 主结构；主色由外层承担。"
+    },
+    {
+      "persona": "WABI",
+      "palette": "jewel",
+      "season": "winter",
+      "structure": "dress",
+      "hero": "n0035",
+      "items": [
+        "n0035",
+        "g0222",
+        "g0265",
+        "g0513"
+      ],
+      "expression": "entry",
+      "intent": "WABI×jewel 冬季临界缺口的 dress 主结构；主色由外层承担。"
+    },
+    {
+      "persona": "ICED",
+      "palette": "mono",
+      "season": "winter",
+      "structure": "pants",
+      "hero": "n0036",
+      "items": [
+        "n0036",
+        "g0114",
+        "g0172",
+        "g0258",
+        "g0289"
+      ],
+      "expression": "entry",
+      "intent": "ICED×mono 冬季临界缺口的 pants 主结构；主色由外层承担。"
+    },
+    {
+      "persona": "ICED",
+      "palette": "mono",
+      "season": "winter",
+      "structure": "skirt",
+      "hero": "n0036",
+      "items": [
+        "n0036",
+        "g0337",
+        "g0429",
+        "g0069",
+        "g0070"
+      ],
+      "expression": "entry",
+      "intent": "ICED×mono 冬季临界缺口的 skirt 主结构；主色由外层承担。"
+    },
+    {
+      "persona": "ICED",
+      "palette": "mono",
+      "season": "winter",
+      "structure": "dress",
+      "hero": "n0036",
+      "items": [
+        "n0036",
+        "g0222",
+        "g0265",
+        "g0513"
+      ],
+      "expression": "entry",
+      "intent": "ICED×mono 冬季临界缺口的 dress 主结构；主色由外层承担。"
+    },
+    {
+      "persona": "EASE",
+      "palette": "mono",
+      "season": "winter",
+      "structure": "pants",
+      "hero": "n0037",
+      "items": [
+        "n0037",
+        "g0114",
+        "g0172",
+        "g0258",
+        "g0289"
+      ],
+      "expression": "entry",
+      "intent": "EASE×mono 冬季临界缺口的 pants 主结构；主色由外层承担。"
+    },
+    {
+      "persona": "EASE",
+      "palette": "mono",
+      "season": "winter",
+      "structure": "skirt",
+      "hero": "n0037",
+      "items": [
+        "n0037",
+        "g0337",
+        "g0429",
+        "g0069",
+        "g0070"
+      ],
+      "expression": "entry",
+      "intent": "EASE×mono 冬季临界缺口的 skirt 主结构；主色由外层承担。"
+    },
+    {
+      "persona": "EASE",
+      "palette": "mono",
+      "season": "winter",
+      "structure": "dress",
+      "hero": "n0037",
+      "items": [
+        "n0037",
+        "g0222",
+        "g0265",
+        "g0513"
+      ],
+      "expression": "entry",
+      "intent": "EASE×mono 冬季临界缺口的 dress 主结构；主色由外层承担。"
+    },
+    {
+      "persona": "HEIR",
+      "palette": "pastel",
+      "season": "winter",
+      "structure": "pants",
+      "hero": "n0038",
+      "items": [
+        "n0038",
+        "g0114",
+        "g0172",
+        "g0258",
+        "g0289"
+      ],
+      "expression": "entry",
+      "intent": "HEIR×pastel 冬季临界缺口的 pants 主结构；主色由外层承担。"
+    },
+    {
+      "persona": "HEIR",
+      "palette": "pastel",
+      "season": "winter",
+      "structure": "skirt",
+      "hero": "n0038",
+      "items": [
+        "n0038",
+        "g0337",
+        "g0429",
+        "g0069",
+        "g0070"
+      ],
+      "expression": "entry",
+      "intent": "HEIR×pastel 冬季临界缺口的 skirt 主结构；主色由外层承担。"
+    },
+    {
+      "persona": "HEIR",
+      "palette": "pastel",
+      "season": "winter",
+      "structure": "dress",
+      "hero": "n0038",
+      "items": [
+        "n0038",
+        "g0222",
+        "g0265",
+        "g0513"
+      ],
+      "expression": "entry",
+      "intent": "HEIR×pastel 冬季临界缺口的 dress 主结构；主色由外层承担。"
+    },
+    {
+      "persona": "HEIR",
+      "palette": "ocean",
+      "season": "winter",
+      "structure": "pants",
+      "hero": "n0039",
+      "items": [
+        "n0039",
+        "g0114",
+        "g0172",
+        "g0258",
+        "g0289"
+      ],
+      "expression": "entry",
+      "intent": "HEIR×ocean 冬季临界缺口的 pants 主结构；主色由外层承担。"
+    },
+    {
+      "persona": "HEIR",
+      "palette": "ocean",
+      "season": "winter",
+      "structure": "skirt",
+      "hero": "n0039",
+      "items": [
+        "n0039",
+        "g0337",
+        "g0429",
+        "g0069",
+        "g0070"
+      ],
+      "expression": "entry",
+      "intent": "HEIR×ocean 冬季临界缺口的 skirt 主结构；主色由外层承担。"
+    },
+    {
+      "persona": "HEIR",
+      "palette": "ocean",
+      "season": "winter",
+      "structure": "dress",
+      "hero": "n0039",
+      "items": [
+        "n0039",
+        "g0222",
+        "g0265",
+        "g0513"
+      ],
+      "expression": "entry",
+      "intent": "HEIR×ocean 冬季临界缺口的 dress 主结构；主色由外层承担。"
+    },
+    {
+      "persona": "HEIR",
+      "palette": "jewel",
+      "season": "winter",
+      "structure": "pants",
+      "hero": "n0040",
+      "items": [
+        "n0040",
+        "g0114",
+        "g0172",
+        "g0258",
+        "g0289"
+      ],
+      "expression": "entry",
+      "intent": "HEIR×jewel 冬季临界缺口的 pants 主结构；主色由外层承担。"
+    },
+    {
+      "persona": "HEIR",
+      "palette": "jewel",
+      "season": "winter",
+      "structure": "skirt",
+      "hero": "n0040",
+      "items": [
+        "n0040",
+        "g0337",
+        "g0429",
+        "g0069",
+        "g0070"
+      ],
+      "expression": "entry",
+      "intent": "HEIR×jewel 冬季临界缺口的 skirt 主结构；主色由外层承担。"
+    },
+    {
+      "persona": "HEIR",
+      "palette": "jewel",
+      "season": "winter",
+      "structure": "dress",
+      "hero": "n0040",
+      "items": [
+        "n0040",
+        "g0222",
+        "g0265",
+        "g0513"
+      ],
+      "expression": "entry",
+      "intent": "HEIR×jewel 冬季临界缺口的 dress 主结构；主色由外层承担。"
+    },
+    {
+      "persona": "EASE",
+      "palette": "earth",
+      "season": "winter",
+      "structure": "pants",
+      "hero": "n0041",
+      "items": [
+        "n0041",
+        "g0114",
+        "g0172",
+        "g0258",
+        "g0289"
+      ],
+      "expression": "entry",
+      "intent": "EASE×earth 冬季临界缺口的 pants 主结构；主色由外层承担。"
+    },
+    {
+      "persona": "EASE",
+      "palette": "earth",
+      "season": "winter",
+      "structure": "skirt",
+      "hero": "n0041",
+      "items": [
+        "n0041",
+        "g0337",
+        "g0429",
+        "g0069",
+        "g0070"
+      ],
+      "expression": "entry",
+      "intent": "EASE×earth 冬季临界缺口的 skirt 主结构；主色由外层承担。"
+    },
+    {
+      "persona": "EASE",
+      "palette": "earth",
+      "season": "winter",
+      "structure": "dress",
+      "hero": "n0041",
+      "items": [
+        "n0041",
+        "g0222",
+        "g0265",
+        "g0513"
+      ],
+      "expression": "entry",
+      "intent": "EASE×earth 冬季临界缺口的 dress 主结构；主色由外层承担。"
+    }
+  ]
+}

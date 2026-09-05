@@ -1,0 +1,9 @@
+{
+  "schema_version": 1,
+  "manifest": "manifest.json",
+  "status": "rejected_manifest",
+  "production_approved": false,
+  "reason": "Four assets were bound to metadata by concurrent completion time instead of inspected image content.",
+  "action": "Do not load this manifest or its rendered recipe batch. Corrected immutable records are produced in batch06.",
+  "affected_original_tokens": ["n0020", "n0022", "n0023", "n0024"]
+}

@@ -1,0 +1,1653 @@
+{
+  "schema_version": 1,
+  "batch_id": "aw-targeted-06",
+  "source_visual_version": "codex-visual-16b18cdcdca36dbc306a",
+  "entries": [
+    {
+      "target_palette": "pastel",
+      "hero": "n0042",
+      "new_record": {
+        "id": "outfit_iced_aw-targeted-06_01",
+        "kind": "master",
+        "parent_outfit_id": null,
+        "recipe_version": "aw-targeted-06",
+        "title": "ICED winter 日常设计 01",
+        "description": "ICED×pastel 新连衣装家族，与不同现有外层建立可出门冬季关系。",
+        "primary_persona": "ICED",
+        "secondary_personas": [],
+        "persona_affinity": {},
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "日常"
+        ],
+        "season_tags": [
+          "冬"
+        ],
+        "weather_tags": [],
+        "presentation": [
+          "feminine"
+        ],
+        "intensity": "entry",
+        "formality": 3,
+        "garment_ids": [
+          "garment_aw_targeted06_dress_iced_pastel_01",
+          "garment_void_outer_0143",
+          "garment_noir_shoes_0069",
+          "garment_iced_bag_0010"
+        ],
+        "visible_slots": [
+          "dress",
+          "outer",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_aw_targeted06_dress_iced_pastel_01": "hero",
+          "garment_void_outer_0143": "support",
+          "garment_noir_shoes_0069": "support",
+          "garment_iced_bag_0010": "support"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "未判断",
+          "saturation": "未判断",
+          "harmony": "未判断",
+          "palette": []
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/02ae90e4eab578195b66d095.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source": "designer_recomposition",
+          "confidence": null,
+          "review_notes": [
+            "season, palette and persona are design targets pending whole-image review"
+          ]
+        }
+      },
+      "record_fingerprint": "d168d57a64e2ba10b59363916f1dc6fd9266ba868e0eb0f44b770843195db4b7",
+      "asset_sha256": "f1bce82715b774d8503891dd72b480cde8ed9d756addd36ddb85337c045fdc51",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/02ae90e4eab578195b66d095.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_aw_targeted06_dress_iced_pastel_01",
+            "slot": "dress",
+            "box": [
+              450,
+              160,
+              800,
+              1037
+            ]
+          },
+          {
+            "garment_id": "garment_void_outer_0143",
+            "slot": "outer",
+            "box": [
+              70,
+              160,
+              420,
+              720
+            ]
+          },
+          {
+            "garment_id": "garment_noir_shoes_0069",
+            "slot": "shoes",
+            "box": [
+              921,
+              880,
+              1049,
+              1080
+            ]
+          },
+          {
+            "garment_id": "garment_iced_bag_0010",
+            "slot": "bag",
+            "box": [
+              888,
+              410,
+              1091,
+              730
+            ]
+          }
+        ]
+      },
+      "status": "pending_native_review",
+      "review": null
+    },
+    {
+      "target_palette": "pastel",
+      "hero": "n0042",
+      "new_record": {
+        "id": "outfit_iced_aw-targeted-06_02",
+        "kind": "master",
+        "parent_outfit_id": null,
+        "recipe_version": "aw-targeted-06",
+        "title": "ICED winter 日常设计 02",
+        "description": "ICED×pastel 新连衣装家族，与不同现有外层建立可出门冬季关系。",
+        "primary_persona": "ICED",
+        "secondary_personas": [],
+        "persona_affinity": {},
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "日常"
+        ],
+        "season_tags": [
+          "冬"
+        ],
+        "weather_tags": [],
+        "presentation": [
+          "feminine"
+        ],
+        "intensity": "entry",
+        "formality": 3,
+        "garment_ids": [
+          "garment_aw_targeted06_dress_iced_pastel_01",
+          "garment_heir_outer_0131",
+          "garment_flou_shoes_0247",
+          "garment_iced_bag_0274"
+        ],
+        "visible_slots": [
+          "dress",
+          "outer",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_aw_targeted06_dress_iced_pastel_01": "hero",
+          "garment_heir_outer_0131": "support",
+          "garment_flou_shoes_0247": "support",
+          "garment_iced_bag_0274": "support"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "未判断",
+          "saturation": "未判断",
+          "harmony": "未判断",
+          "palette": []
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/e6f512061f326846c1e62b29.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source": "designer_recomposition",
+          "confidence": null,
+          "review_notes": [
+            "season, palette and persona are design targets pending whole-image review"
+          ]
+        }
+      },
+      "record_fingerprint": "cdc97d78772fe878f7d2c83581801d548d197a2681f9659d1a68f8ee0c28debd",
+      "asset_sha256": "726e8539d5ff69559b6702c205cefcbc675f2d1ff63990786a77122a1bb3f5a1",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/e6f512061f326846c1e62b29.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_aw_targeted06_dress_iced_pastel_01",
+            "slot": "dress",
+            "box": [
+              450,
+              160,
+              800,
+              1037
+            ]
+          },
+          {
+            "garment_id": "garment_heir_outer_0131",
+            "slot": "outer",
+            "box": [
+              70,
+              160,
+              420,
+              633
+            ]
+          },
+          {
+            "garment_id": "garment_flou_shoes_0247",
+            "slot": "shoes",
+            "box": [
+              879,
+              880,
+              1091,
+              1080
+            ]
+          },
+          {
+            "garment_id": "garment_iced_bag_0274",
+            "slot": "bag",
+            "box": [
+              883,
+              410,
+              1096,
+              730
+            ]
+          }
+        ]
+      },
+      "status": "pending_native_review",
+      "review": null
+    },
+    {
+      "target_palette": "jewel",
+      "hero": "n0043",
+      "new_record": {
+        "id": "outfit_wabi_aw-targeted-06_03",
+        "kind": "master",
+        "parent_outfit_id": null,
+        "recipe_version": "aw-targeted-06",
+        "title": "WABI winter 日常设计 03",
+        "description": "WABI×jewel 新连衣装家族，与不同现有外层建立可出门冬季关系。",
+        "primary_persona": "WABI",
+        "secondary_personas": [],
+        "persona_affinity": {},
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "日常"
+        ],
+        "season_tags": [
+          "冬"
+        ],
+        "weather_tags": [],
+        "presentation": [
+          "feminine"
+        ],
+        "intensity": "entry",
+        "formality": 3,
+        "garment_ids": [
+          "garment_aw_targeted06_dress_wabi_jewel_01",
+          "garment_edge_outer_0137",
+          "garment_wabi_shoes_0030",
+          "garment_wabi_bag_0029"
+        ],
+        "visible_slots": [
+          "dress",
+          "outer",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_aw_targeted06_dress_wabi_jewel_01": "hero",
+          "garment_edge_outer_0137": "support",
+          "garment_wabi_shoes_0030": "support",
+          "garment_wabi_bag_0029": "support"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "未判断",
+          "saturation": "未判断",
+          "harmony": "未判断",
+          "palette": []
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/c1ef4942f796e714eb18d99a.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source": "designer_recomposition",
+          "confidence": null,
+          "review_notes": [
+            "season, palette and persona are design targets pending whole-image review"
+          ]
+        }
+      },
+      "record_fingerprint": "6f3f31af2995fbf11d7fc87a7bb5cd0d11a30c9742b21be5be9019b2bae066ac",
+      "asset_sha256": "a249b6cf4a2f5a13154afb3573bb33bcd291e81610a9118c272ec8578f936bbf",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/c1ef4942f796e714eb18d99a.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_aw_targeted06_dress_wabi_jewel_01",
+            "slot": "dress",
+            "box": [
+              450,
+              160,
+              800,
+              810
+            ]
+          },
+          {
+            "garment_id": "garment_edge_outer_0137",
+            "slot": "outer",
+            "box": [
+              70,
+              160,
+              420,
+              498
+            ]
+          },
+          {
+            "garment_id": "garment_wabi_shoes_0030",
+            "slot": "shoes",
+            "box": [
+              862,
+              880,
+              1107,
+              1080
+            ]
+          },
+          {
+            "garment_id": "garment_wabi_bag_0029",
+            "slot": "bag",
+            "box": [
+              875,
+              410,
+              1104,
+              730
+            ]
+          }
+        ]
+      },
+      "status": "pending_native_review",
+      "review": null
+    },
+    {
+      "target_palette": "jewel",
+      "hero": "n0043",
+      "new_record": {
+        "id": "outfit_wabi_aw-targeted-06_04",
+        "kind": "master",
+        "parent_outfit_id": null,
+        "recipe_version": "aw-targeted-06",
+        "title": "WABI winter 日常设计 04",
+        "description": "WABI×jewel 新连衣装家族，与不同现有外层建立可出门冬季关系。",
+        "primary_persona": "WABI",
+        "secondary_personas": [],
+        "persona_affinity": {},
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "日常"
+        ],
+        "season_tags": [
+          "冬"
+        ],
+        "weather_tags": [],
+        "presentation": [
+          "feminine"
+        ],
+        "intensity": "entry",
+        "formality": 3,
+        "garment_ids": [
+          "garment_aw_targeted06_dress_wabi_jewel_01",
+          "garment_film_outer_0155",
+          "garment_melt_shoes_0245",
+          "garment_wabi_bag_0278"
+        ],
+        "visible_slots": [
+          "dress",
+          "outer",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_aw_targeted06_dress_wabi_jewel_01": "hero",
+          "garment_film_outer_0155": "support",
+          "garment_melt_shoes_0245": "support",
+          "garment_wabi_bag_0278": "support"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "未判断",
+          "saturation": "未判断",
+          "harmony": "未判断",
+          "palette": []
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/65714547514c7da2e2b21197.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source": "designer_recomposition",
+          "confidence": null,
+          "review_notes": [
+            "season, palette and persona are design targets pending whole-image review"
+          ]
+        }
+      },
+      "record_fingerprint": "6998adb3ba269d944c4728f0ff4e52e46c17dac889f93982e59bdb5faa4974d9",
+      "asset_sha256": "4407a22fe30c1fe7b45bda69f331887f3c0446b8eb20829ea7228b2c3ea71ecf",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/65714547514c7da2e2b21197.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_aw_targeted06_dress_wabi_jewel_01",
+            "slot": "dress",
+            "box": [
+              450,
+              160,
+              800,
+              810
+            ]
+          },
+          {
+            "garment_id": "garment_film_outer_0155",
+            "slot": "outer",
+            "box": [
+              70,
+              160,
+              420,
+              675
+            ]
+          },
+          {
+            "garment_id": "garment_melt_shoes_0245",
+            "slot": "shoes",
+            "box": [
+              930,
+              880,
+              1040,
+              1080
+            ]
+          },
+          {
+            "garment_id": "garment_wabi_bag_0278",
+            "slot": "bag",
+            "box": [
+              892,
+              410,
+              1088,
+              730
+            ]
+          }
+        ]
+      },
+      "status": "pending_native_review",
+      "review": null
+    },
+    {
+      "target_palette": "jewel",
+      "hero": "n0044",
+      "new_record": {
+        "id": "outfit_heir_aw-targeted-06_05",
+        "kind": "master",
+        "parent_outfit_id": null,
+        "recipe_version": "aw-targeted-06",
+        "title": "HEIR winter 日常设计 05",
+        "description": "HEIR×jewel 新连衣装家族，与不同现有外层建立可出门冬季关系。",
+        "primary_persona": "HEIR",
+        "secondary_personas": [],
+        "persona_affinity": {},
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "日常"
+        ],
+        "season_tags": [
+          "冬"
+        ],
+        "weather_tags": [],
+        "presentation": [
+          "feminine"
+        ],
+        "intensity": "entry",
+        "formality": 3,
+        "garment_ids": [
+          "garment_aw_targeted06_dress_heir_jewel_01",
+          "garment_heir_outer_0131",
+          "garment_mute_shoes_0004",
+          "garment_noir_bag_0270"
+        ],
+        "visible_slots": [
+          "dress",
+          "outer",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_aw_targeted06_dress_heir_jewel_01": "hero",
+          "garment_heir_outer_0131": "support",
+          "garment_mute_shoes_0004": "support",
+          "garment_noir_bag_0270": "support"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "未判断",
+          "saturation": "未判断",
+          "harmony": "未判断",
+          "palette": []
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/9e1f67836c22a539b2ffd9e8.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source": "designer_recomposition",
+          "confidence": null,
+          "review_notes": [
+            "season, palette and persona are design targets pending whole-image review"
+          ]
+        }
+      },
+      "record_fingerprint": "0db5928c913c5b3f829e822b04dae3e5693d095a96c0439106acbac9fd1de1a0",
+      "asset_sha256": "cdc2548c95b3c44a144fd4a71877712bf408d9e75adc6594043edef838d213ab",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/9e1f67836c22a539b2ffd9e8.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_aw_targeted06_dress_heir_jewel_01",
+            "slot": "dress",
+            "box": [
+              450,
+              160,
+              800,
+              907
+            ]
+          },
+          {
+            "garment_id": "garment_heir_outer_0131",
+            "slot": "outer",
+            "box": [
+              70,
+              160,
+              420,
+              633
+            ]
+          },
+          {
+            "garment_id": "garment_mute_shoes_0004",
+            "slot": "shoes",
+            "box": [
+              891,
+              880,
+              1078,
+              1080
+            ]
+          },
+          {
+            "garment_id": "garment_noir_bag_0270",
+            "slot": "bag",
+            "box": [
+              865,
+              410,
+              1114,
+              730
+            ]
+          }
+        ]
+      },
+      "status": "pending_native_review",
+      "review": null
+    },
+    {
+      "target_palette": "jewel",
+      "hero": "n0044",
+      "new_record": {
+        "id": "outfit_heir_aw-targeted-06_06",
+        "kind": "master",
+        "parent_outfit_id": null,
+        "recipe_version": "aw-targeted-06",
+        "title": "HEIR winter 日常设计 06",
+        "description": "HEIR×jewel 新连衣装家族，与不同现有外层建立可出门冬季关系。",
+        "primary_persona": "HEIR",
+        "secondary_personas": [],
+        "persona_affinity": {},
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "日常"
+        ],
+        "season_tags": [
+          "冬"
+        ],
+        "weather_tags": [],
+        "presentation": [
+          "feminine"
+        ],
+        "intensity": "entry",
+        "formality": 3,
+        "garment_ids": [
+          "garment_aw_targeted06_dress_heir_jewel_01",
+          "garment_void_outer_0143",
+          "garment_flou_shoes_0247",
+          "garment_heir_bag_0275"
+        ],
+        "visible_slots": [
+          "dress",
+          "outer",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_aw_targeted06_dress_heir_jewel_01": "hero",
+          "garment_void_outer_0143": "support",
+          "garment_flou_shoes_0247": "support",
+          "garment_heir_bag_0275": "support"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "未判断",
+          "saturation": "未判断",
+          "harmony": "未判断",
+          "palette": []
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/60514df601adf42523e810d9.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source": "designer_recomposition",
+          "confidence": null,
+          "review_notes": [
+            "season, palette and persona are design targets pending whole-image review"
+          ]
+        }
+      },
+      "record_fingerprint": "6dfef753353b027f36334ee5290d29ad8dc426270c42a7434c5d73cc31b52dcb",
+      "asset_sha256": "99969f1b93fe994c587092c98fb64a21eec34f97fd7968c47ba7c74bf5b6dc60",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/60514df601adf42523e810d9.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_aw_targeted06_dress_heir_jewel_01",
+            "slot": "dress",
+            "box": [
+              450,
+              160,
+              800,
+              907
+            ]
+          },
+          {
+            "garment_id": "garment_void_outer_0143",
+            "slot": "outer",
+            "box": [
+              70,
+              160,
+              420,
+              720
+            ]
+          },
+          {
+            "garment_id": "garment_flou_shoes_0247",
+            "slot": "shoes",
+            "box": [
+              879,
+              880,
+              1091,
+              1080
+            ]
+          },
+          {
+            "garment_id": "garment_heir_bag_0275",
+            "slot": "bag",
+            "box": [
+              864,
+              410,
+              1116,
+              730
+            ]
+          }
+        ]
+      },
+      "status": "pending_native_review",
+      "review": null
+    },
+    {
+      "target_palette": "pastel",
+      "hero": "n0045",
+      "new_record": {
+        "id": "outfit_heir_aw-targeted-06_07",
+        "kind": "master",
+        "parent_outfit_id": null,
+        "recipe_version": "aw-targeted-06",
+        "title": "HEIR winter 日常设计 07",
+        "description": "HEIR×pastel 新连衣装家族，与不同现有外层建立可出门冬季关系。",
+        "primary_persona": "HEIR",
+        "secondary_personas": [],
+        "persona_affinity": {},
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "日常"
+        ],
+        "season_tags": [
+          "冬"
+        ],
+        "weather_tags": [],
+        "presentation": [
+          "feminine"
+        ],
+        "intensity": "entry",
+        "formality": 3,
+        "garment_ids": [
+          "garment_aw_targeted06_dress_heir_pastel_01",
+          "garment_heir_outer_0131",
+          "garment_ease_shoes_0244",
+          "garment_heir_bag_0275"
+        ],
+        "visible_slots": [
+          "dress",
+          "outer",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_aw_targeted06_dress_heir_pastel_01": "hero",
+          "garment_heir_outer_0131": "support",
+          "garment_ease_shoes_0244": "support",
+          "garment_heir_bag_0275": "support"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "未判断",
+          "saturation": "未判断",
+          "harmony": "未判断",
+          "palette": []
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/51bf2b448e786d293d714e1f.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source": "designer_recomposition",
+          "confidence": null,
+          "review_notes": [
+            "season, palette and persona are design targets pending whole-image review"
+          ]
+        }
+      },
+      "record_fingerprint": "21097abeef26b2de897aba6b93ad329f77d29885dfec0056e123da75d339fd27",
+      "asset_sha256": "b28315f07d2589efa331488e958ea861f8c5e2a63a1d933851d5f77b18a596e6",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/51bf2b448e786d293d714e1f.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_aw_targeted06_dress_heir_pastel_01",
+            "slot": "dress",
+            "box": [
+              450,
+              160,
+              800,
+              894
+            ]
+          },
+          {
+            "garment_id": "garment_heir_outer_0131",
+            "slot": "outer",
+            "box": [
+              70,
+              160,
+              420,
+              633
+            ]
+          },
+          {
+            "garment_id": "garment_ease_shoes_0244",
+            "slot": "shoes",
+            "box": [
+              840,
+              886,
+              1130,
+              1074
+            ]
+          },
+          {
+            "garment_id": "garment_heir_bag_0275",
+            "slot": "bag",
+            "box": [
+              864,
+              410,
+              1116,
+              730
+            ]
+          }
+        ]
+      },
+      "status": "pending_native_review",
+      "review": null
+    },
+    {
+      "target_palette": "pastel",
+      "hero": "n0045",
+      "new_record": {
+        "id": "outfit_heir_aw-targeted-06_08",
+        "kind": "master",
+        "parent_outfit_id": null,
+        "recipe_version": "aw-targeted-06",
+        "title": "HEIR winter 日常设计 08",
+        "description": "HEIR×pastel 新连衣装家族，与不同现有外层建立可出门冬季关系。",
+        "primary_persona": "HEIR",
+        "secondary_personas": [],
+        "persona_affinity": {},
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "日常"
+        ],
+        "season_tags": [
+          "冬"
+        ],
+        "weather_tags": [],
+        "presentation": [
+          "feminine"
+        ],
+        "intensity": "entry",
+        "formality": 3,
+        "garment_ids": [
+          "garment_aw_targeted06_dress_heir_pastel_01",
+          "garment_void_outer_0143",
+          "garment_loop_shoes_0253",
+          "garment_noir_bag_0270"
+        ],
+        "visible_slots": [
+          "dress",
+          "outer",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_aw_targeted06_dress_heir_pastel_01": "hero",
+          "garment_void_outer_0143": "support",
+          "garment_loop_shoes_0253": "support",
+          "garment_noir_bag_0270": "support"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "未判断",
+          "saturation": "未判断",
+          "harmony": "未判断",
+          "palette": []
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/5c9bd4d90476c0bf5c2ac789.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source": "designer_recomposition",
+          "confidence": null,
+          "review_notes": [
+            "season, palette and persona are design targets pending whole-image review"
+          ]
+        }
+      },
+      "record_fingerprint": "f01b0ef99866371f94fb19d0f531a7e4e0af891c812fb72f5b52d85725b2080d",
+      "asset_sha256": "4b2387c1d0d58fc4ab9c17c7bb6927b39359d99e74220cb16a148a7da0d039dd",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/5c9bd4d90476c0bf5c2ac789.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_aw_targeted06_dress_heir_pastel_01",
+            "slot": "dress",
+            "box": [
+              450,
+              160,
+              800,
+              894
+            ]
+          },
+          {
+            "garment_id": "garment_void_outer_0143",
+            "slot": "outer",
+            "box": [
+              70,
+              160,
+              420,
+              720
+            ]
+          },
+          {
+            "garment_id": "garment_loop_shoes_0253",
+            "slot": "shoes",
+            "box": [
+              883,
+              880,
+              1086,
+              1080
+            ]
+          },
+          {
+            "garment_id": "garment_noir_bag_0270",
+            "slot": "bag",
+            "box": [
+              865,
+              410,
+              1114,
+              730
+            ]
+          }
+        ]
+      },
+      "status": "pending_native_review",
+      "review": null
+    },
+    {
+      "target_palette": "ocean",
+      "hero": "n0046",
+      "new_record": {
+        "id": "outfit_heir_aw-targeted-06_09",
+        "kind": "master",
+        "parent_outfit_id": null,
+        "recipe_version": "aw-targeted-06",
+        "title": "HEIR winter 日常设计 09",
+        "description": "HEIR×ocean 新连衣装家族，与不同现有外层建立可出门冬季关系。",
+        "primary_persona": "HEIR",
+        "secondary_personas": [],
+        "persona_affinity": {},
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "日常"
+        ],
+        "season_tags": [
+          "冬"
+        ],
+        "weather_tags": [],
+        "presentation": [
+          "feminine"
+        ],
+        "intensity": "entry",
+        "formality": 3,
+        "garment_ids": [
+          "garment_aw_targeted06_dress_heir_ocean_01",
+          "garment_void_outer_0143",
+          "garment_mute_shoes_0004",
+          "garment_heir_bag_0275"
+        ],
+        "visible_slots": [
+          "dress",
+          "outer",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_aw_targeted06_dress_heir_ocean_01": "hero",
+          "garment_void_outer_0143": "support",
+          "garment_mute_shoes_0004": "support",
+          "garment_heir_bag_0275": "support"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "未判断",
+          "saturation": "未判断",
+          "harmony": "未判断",
+          "palette": []
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/464b0a777aed3a5b4315590a.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source": "designer_recomposition",
+          "confidence": null,
+          "review_notes": [
+            "season, palette and persona are design targets pending whole-image review"
+          ]
+        }
+      },
+      "record_fingerprint": "7cf2bd2412bb2f97af45bac4d898d10ba6869322614147878436a0d425e0f391",
+      "asset_sha256": "41de11c0015006942f74511fe05799ea9e5453ad3ca2de2a797a92fb20284efa",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/464b0a777aed3a5b4315590a.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_aw_targeted06_dress_heir_ocean_01",
+            "slot": "dress",
+            "box": [
+              450,
+              160,
+              800,
+              924
+            ]
+          },
+          {
+            "garment_id": "garment_void_outer_0143",
+            "slot": "outer",
+            "box": [
+              70,
+              160,
+              420,
+              720
+            ]
+          },
+          {
+            "garment_id": "garment_mute_shoes_0004",
+            "slot": "shoes",
+            "box": [
+              891,
+              880,
+              1078,
+              1080
+            ]
+          },
+          {
+            "garment_id": "garment_heir_bag_0275",
+            "slot": "bag",
+            "box": [
+              864,
+              410,
+              1116,
+              730
+            ]
+          }
+        ]
+      },
+      "status": "pending_native_review",
+      "review": null
+    },
+    {
+      "target_palette": "ocean",
+      "hero": "n0046",
+      "new_record": {
+        "id": "outfit_heir_aw-targeted-06_10",
+        "kind": "master",
+        "parent_outfit_id": null,
+        "recipe_version": "aw-targeted-06",
+        "title": "HEIR winter 日常设计 10",
+        "description": "HEIR×ocean 新连衣装家族，与不同现有外层建立可出门冬季关系。",
+        "primary_persona": "HEIR",
+        "secondary_personas": [],
+        "persona_affinity": {},
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "日常"
+        ],
+        "season_tags": [
+          "冬"
+        ],
+        "weather_tags": [],
+        "presentation": [
+          "feminine"
+        ],
+        "intensity": "entry",
+        "formality": 3,
+        "garment_ids": [
+          "garment_aw_targeted06_dress_heir_ocean_01",
+          "garment_heir_outer_0131",
+          "garment_flou_shoes_0247",
+          "garment_noir_bag_0270"
+        ],
+        "visible_slots": [
+          "dress",
+          "outer",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_aw_targeted06_dress_heir_ocean_01": "hero",
+          "garment_heir_outer_0131": "support",
+          "garment_flou_shoes_0247": "support",
+          "garment_noir_bag_0270": "support"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "未判断",
+          "saturation": "未判断",
+          "harmony": "未判断",
+          "palette": []
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/14665aebd3379402674466fe.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source": "designer_recomposition",
+          "confidence": null,
+          "review_notes": [
+            "season, palette and persona are design targets pending whole-image review"
+          ]
+        }
+      },
+      "record_fingerprint": "bdf3991eeb71a8d878f7381eb35cb7579a7a7540d921ab5a20537ade5ed495e2",
+      "asset_sha256": "715ebb9bc9687ec643df31bfcd493f706839780d95918abcb4d3aca4876a7a78",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/14665aebd3379402674466fe.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_aw_targeted06_dress_heir_ocean_01",
+            "slot": "dress",
+            "box": [
+              450,
+              160,
+              800,
+              924
+            ]
+          },
+          {
+            "garment_id": "garment_heir_outer_0131",
+            "slot": "outer",
+            "box": [
+              70,
+              160,
+              420,
+              633
+            ]
+          },
+          {
+            "garment_id": "garment_flou_shoes_0247",
+            "slot": "shoes",
+            "box": [
+              879,
+              880,
+              1091,
+              1080
+            ]
+          },
+          {
+            "garment_id": "garment_noir_bag_0270",
+            "slot": "bag",
+            "box": [
+              865,
+              410,
+              1114,
+              730
+            ]
+          }
+        ]
+      },
+      "status": "pending_native_review",
+      "review": null
+    },
+    {
+      "target_palette": "earth",
+      "hero": "n0047",
+      "new_record": {
+        "id": "outfit_ease_aw-targeted-06_11",
+        "kind": "master",
+        "parent_outfit_id": null,
+        "recipe_version": "aw-targeted-06",
+        "title": "EASE winter 日常设计 11",
+        "description": "EASE×earth 新连衣装家族，与不同现有外层建立可出门冬季关系。",
+        "primary_persona": "EASE",
+        "secondary_personas": [],
+        "persona_affinity": {},
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "日常"
+        ],
+        "season_tags": [
+          "冬"
+        ],
+        "weather_tags": [],
+        "presentation": [
+          "feminine"
+        ],
+        "intensity": "entry",
+        "formality": 3,
+        "garment_ids": [
+          "garment_aw_targeted06_dress_ease_earth_01",
+          "garment_film_outer_0155",
+          "garment_melt_shoes_0245",
+          "garment_ease_bag_0276"
+        ],
+        "visible_slots": [
+          "dress",
+          "outer",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_aw_targeted06_dress_ease_earth_01": "hero",
+          "garment_film_outer_0155": "support",
+          "garment_melt_shoes_0245": "support",
+          "garment_ease_bag_0276": "support"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "未判断",
+          "saturation": "未判断",
+          "harmony": "未判断",
+          "palette": []
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/3c175da27b0068967ae808be.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source": "designer_recomposition",
+          "confidence": null,
+          "review_notes": [
+            "season, palette and persona are design targets pending whole-image review"
+          ]
+        }
+      },
+      "record_fingerprint": "6b61ef5310c0378382a20ac12b59c66e892ba476ed109d6dec3e13b89f7724df",
+      "asset_sha256": "a3d5b435d2cd12dced14177c5d121dff87d94aeeeeb2cb82fd68f15f20c0db35",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/3c175da27b0068967ae808be.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_aw_targeted06_dress_ease_earth_01",
+            "slot": "dress",
+            "box": [
+              450,
+              160,
+              800,
+              890
+            ]
+          },
+          {
+            "garment_id": "garment_film_outer_0155",
+            "slot": "outer",
+            "box": [
+              70,
+              160,
+              420,
+              675
+            ]
+          },
+          {
+            "garment_id": "garment_melt_shoes_0245",
+            "slot": "shoes",
+            "box": [
+              930,
+              880,
+              1040,
+              1080
+            ]
+          },
+          {
+            "garment_id": "garment_ease_bag_0276",
+            "slot": "bag",
+            "box": [
+              866,
+              410,
+              1114,
+              730
+            ]
+          }
+        ]
+      },
+      "status": "pending_native_review",
+      "review": null
+    },
+    {
+      "target_palette": "earth",
+      "hero": "n0047",
+      "new_record": {
+        "id": "outfit_ease_aw-targeted-06_12",
+        "kind": "master",
+        "parent_outfit_id": null,
+        "recipe_version": "aw-targeted-06",
+        "title": "EASE winter 日常设计 12",
+        "description": "EASE×earth 新连衣装家族，与不同现有外层建立可出门冬季关系。",
+        "primary_persona": "EASE",
+        "secondary_personas": [],
+        "persona_affinity": {},
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "日常"
+        ],
+        "season_tags": [
+          "冬"
+        ],
+        "weather_tags": [],
+        "presentation": [
+          "feminine"
+        ],
+        "intensity": "entry",
+        "formality": 3,
+        "garment_ids": [
+          "garment_aw_targeted06_dress_ease_earth_01",
+          "garment_edge_outer_0137",
+          "garment_loop_shoes_0253",
+          "garment_void_bag_0271"
+        ],
+        "visible_slots": [
+          "dress",
+          "outer",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_aw_targeted06_dress_ease_earth_01": "hero",
+          "garment_edge_outer_0137": "support",
+          "garment_loop_shoes_0253": "support",
+          "garment_void_bag_0271": "support"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "未判断",
+          "saturation": "未判断",
+          "harmony": "未判断",
+          "palette": []
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/cdab8318cdf3029271edc0fe.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source": "designer_recomposition",
+          "confidence": null,
+          "review_notes": [
+            "season, palette and persona are design targets pending whole-image review"
+          ]
+        }
+      },
+      "record_fingerprint": "b7e8ab468f9f15429f338dc6e224c39f53deb8597b146f21442067df72071278",
+      "asset_sha256": "b448f382d00274640dac434976eab0dffb9653cd16c6a669b1546e5e3b7b3666",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/cdab8318cdf3029271edc0fe.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_aw_targeted06_dress_ease_earth_01",
+            "slot": "dress",
+            "box": [
+              450,
+              160,
+              800,
+              890
+            ]
+          },
+          {
+            "garment_id": "garment_edge_outer_0137",
+            "slot": "outer",
+            "box": [
+              70,
+              160,
+              420,
+              498
+            ]
+          },
+          {
+            "garment_id": "garment_loop_shoes_0253",
+            "slot": "shoes",
+            "box": [
+              883,
+              880,
+              1086,
+              1080
+            ]
+          },
+          {
+            "garment_id": "garment_void_bag_0271",
+            "slot": "bag",
+            "box": [
+              865,
+              410,
+              1115,
+              730
+            ]
+          }
+        ]
+      },
+      "status": "pending_native_review",
+      "review": null
+    }
+  ],
+  "production_approved": false,
+  "version": "aw-designed-rendered-bda347267bdee0703cb0"
+}

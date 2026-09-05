@@ -1,0 +1,154 @@
+{
+  "generatedAt": "2026-09-02T09:07:46.002312+00:00",
+  "source": "app/static/selfit/data/content-pool.v1.json",
+  "totalOutfits": 157,
+  "totalGarments": 4,
+  "generatedCapsules": [
+    "app/static/selfit/data/capsules/mute-01.json"
+  ],
+  "personaCoverage": {
+    "MUTE": {
+      "outfits": 10,
+      "with_visible_slots": 10,
+      "with_body_types": 9,
+      "with_regional_styles": 10,
+      "with_season_tags": 4,
+      "with_presentation": 3,
+      "with_scene_tags": 1
+    },
+    "ICED": {
+      "outfits": 10,
+      "with_scene_tags": 1,
+      "with_visible_slots": 10,
+      "with_body_types": 9,
+      "with_regional_styles": 10,
+      "with_season_tags": 1,
+      "with_presentation": 1
+    },
+    "HEIR": {
+      "outfits": 10,
+      "with_season_tags": 4,
+      "with_visible_slots": 10,
+      "with_body_types": 10,
+      "with_regional_styles": 10,
+      "with_presentation": 2,
+      "with_scene_tags": 2
+    },
+    "EASE": {
+      "outfits": 10,
+      "with_scene_tags": 3,
+      "with_visible_slots": 10,
+      "with_body_types": 9,
+      "with_regional_styles": 10,
+      "with_season_tags": 4,
+      "with_presentation": 3
+    },
+    "MELT": {
+      "outfits": 8,
+      "with_season_tags": 5,
+      "with_visible_slots": 8,
+      "with_body_types": 7,
+      "with_regional_styles": 8,
+      "with_presentation": 3
+    },
+    "WABI": {
+      "outfits": 7,
+      "with_season_tags": 1,
+      "with_visible_slots": 7,
+      "with_body_types": 6,
+      "with_regional_styles": 7
+    },
+    "FLOU": {
+      "outfits": 18,
+      "with_visible_slots": 17,
+      "with_regional_styles": 18,
+      "with_body_types": 15,
+      "with_season_tags": 7,
+      "with_presentation": 7
+    },
+    "NEON": {
+      "outfits": 10,
+      "with_season_tags": 4,
+      "with_presentation": 3,
+      "with_visible_slots": 10,
+      "with_body_types": 5,
+      "with_regional_styles": 10,
+      "with_scene_tags": 2
+    },
+    "EDGE": {
+      "outfits": 14,
+      "with_season_tags": 3,
+      "with_presentation": 2,
+      "with_visible_slots": 14,
+      "with_body_types": 10,
+      "with_regional_styles": 14,
+      "with_scene_tags": 1
+    },
+    "BOLT": {
+      "outfits": 9,
+      "with_scene_tags": 3,
+      "with_visible_slots": 9,
+      "with_body_types": 9,
+      "with_regional_styles": 9,
+      "with_season_tags": 5,
+      "with_presentation": 4
+    },
+    "FILM": {
+      "outfits": 8,
+      "with_visible_slots": 8,
+      "with_regional_styles": 8,
+      "with_body_types": 7,
+      "with_season_tags": 4,
+      "with_presentation": 4
+    },
+    "JADE": {
+      "outfits": 12,
+      "with_visible_slots": 12,
+      "with_body_types": 10,
+      "with_regional_styles": 12
+    },
+    "LOOP": {
+      "outfits": 8,
+      "with_scene_tags": 8,
+      "with_visible_slots": 8
+    },
+    "NOIR": {
+      "outfits": 7,
+      "with_visible_slots": 7,
+      "with_body_types": 7,
+      "with_regional_styles": 7,
+      "with_season_tags": 3,
+      "with_presentation": 3
+    },
+    "VOID": {
+      "outfits": 11,
+      "with_visible_slots": 11,
+      "with_regional_styles": 11,
+      "with_scene_tags": 2
+    },
+    "OOPS": {
+      "outfits": 5,
+      "with_season_tags": 1,
+      "with_presentation": 1,
+      "with_visible_slots": 4,
+      "with_body_types": 4,
+      "with_regional_styles": 5,
+      "with_scene_tags": 2
+    }
+  },
+  "globalCoverage": {
+    "scene_tags": 25,
+    "season_tags": 46,
+    "presentation": 36,
+    "visible_slots": 155,
+    "body_types": 117,
+    "regional_styles": 149,
+    "garment_ids": 1
+  },
+  "publishBlockers": [
+    "all structure and color fields require visual designer review",
+    "existing outfit images have not been decomposed into garment_ids",
+    "asset rights must be confirmed beyond recording source URLs",
+    "scene, season, presentation and visible-slot heuristics require spot checks"
+  ]
+}

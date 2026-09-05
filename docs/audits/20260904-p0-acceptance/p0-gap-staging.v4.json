@@ -1,0 +1,5036 @@
+{
+  "schema_version": 1,
+  "status": "staging_pending_four_gate_review",
+  "base_content_version": "2026.09-v2-published1",
+  "visual_version": "codex-visual-16b18cdcdca36dbc306a",
+  "family_registry_sha256": "428a6a9234c0484b47098fef4172d5bfae69fe25303ed58c2d6c854484654bc9",
+  "staged_garments": [
+    {
+      "record": {
+        "id": "garment_aw_winter03_outer_fuchsia_01",
+        "category": "outer",
+        "subcategory": "品红锐肩短结构外套",
+        "silhouette": [
+          "cropped",
+          "sharp_shoulder",
+          "defined_waist"
+        ],
+        "fit": "合体",
+        "materials": [],
+        "details": [
+          "original_gap_fill",
+          "bright",
+          "visually_reviewed_cutout"
+        ],
+        "season_tags": [
+          "秋",
+          "冬"
+        ],
+        "scene_tags": [
+          "日常",
+          "通勤",
+          "旅行"
+        ],
+        "weather_tags": [],
+        "presentation": [
+          "feminine",
+          "neutral"
+        ],
+        "layer_role": "outer",
+        "tryon_slot": "outer",
+        "persona_affinity": {
+          "BOLT": 0.96,
+          "EDGE": 0.88,
+          "NEON": 0.8,
+          "OOPS": 0.72
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "中等",
+          "saturation": "高饱和",
+          "harmony": "未判断",
+          "palette": [
+            "#b40855",
+            "#bc0c5c",
+            "#ce186b",
+            "#c51064",
+            "#930440"
+          ]
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2_drafts/aw-winter-03/garments/winter-jacket-bright-fuchsia-v1.png",
+          "source_url": "",
+          "width": 1200,
+          "height": 1200,
+          "alpha_verified": true,
+          "rights_status": "owned"
+        },
+        "production": {
+          "source_kind": "generated_original",
+          "generation_job_id": "aw-generated-garments-02-n0005",
+          "prompt_version": "selfit-aw-winter-gap-v1",
+          "reference_ids": [],
+          "qa_status": "approved",
+          "phash": "d4c4d4d0f0e87110-b50c58"
+        },
+        "annotation": {
+          "status": "designer_reviewed",
+          "source": "designer",
+          "confidence": 0.92,
+          "review_notes": [
+            "Cutout and visible silhouette reviewed in current Codex session; outfit use remains draft."
+          ]
+        },
+        "color_evidence": {
+          "source": "opaque_pixel_quantization_v1",
+          "status": "measured_not_semantic_review",
+          "asset_sha256": "1e95961744f45c82cb1833cc2caa33ffe9d2424685282681cc1affdbd91696bb",
+          "swatches": [
+            {
+              "hex": "#b40855",
+              "weight": 0.3076,
+              "family": "紫"
+            },
+            {
+              "hex": "#bc0c5c",
+              "weight": 0.2536,
+              "family": "紫"
+            },
+            {
+              "hex": "#ce186b",
+              "weight": 0.1558,
+              "family": "紫"
+            },
+            {
+              "hex": "#c51064",
+              "weight": 0.1498,
+              "family": "紫"
+            },
+            {
+              "hex": "#930440",
+              "weight": 0.1333,
+              "family": "紫"
+            }
+          ],
+          "palette_names": [
+            "紫"
+          ],
+          "color": {
+            "temperature": "未判断",
+            "lightness": "中等",
+            "saturation": "高饱和",
+            "harmony": "未判断",
+            "palette": [
+              "#b40855",
+              "#bc0c5c",
+              "#ce186b",
+              "#c51064",
+              "#930440"
+            ]
+          },
+          "limitations": "渲染光照会影响色值；不据此推断面料成分、真实冷暖或人体适配。"
+        }
+      },
+      "record_fingerprint": "1751339efa570ab79e397e17bc5ef1950679ee64e23a2fcc33912fb1a8ded8db",
+      "visual_observation": {
+        "token": "n0005",
+        "status": "ai_candidate",
+        "record_fingerprint": "1751339efa570ab79e397e17bc5ef1950679ee64e23a2fcc33912fb1a8ded8db",
+        "asset_sha256": "1e95961744f45c82cb1833cc2caa33ffe9d2424685282681cc1affdbd91696bb",
+        "image_url": "/static/selfit/assets/content_v2_drafts/aw-winter-03/garments/winter-jacket-bright-fuchsia-v1.png",
+        "source_kind": "codex_visual_review",
+        "evidence": "鲜品红短外套以锐肩、高腰截止和一处错位门襟建立强边界，除单颗扣外没有额外繁复装饰。",
+        "observations": {
+          "category": "outer",
+          "subcategory": "cropped_asymmetric_jacket",
+          "neckline": "asymmetric_stand",
+          "sleeve": "long",
+          "length": "hip",
+          "volume": "fitted",
+          "construction": "offset_front_princess_seams",
+          "pattern": "solid",
+          "decoration": "medium",
+          "material_appearance": "dense_matte_wool_like",
+          "main_colors": [
+            "vivid_fuchsia"
+          ],
+          "visual_personas": [
+            "bolt",
+            "edge",
+            "neon",
+            "oops"
+          ],
+          "usage_limits": null
+        },
+        "confidence": 0.9,
+        "model": "current_codex_session",
+        "prompt_version": "aw-generated-garment-review-v1",
+        "review_level": "individual_full_resolution_judgment",
+        "review_complete": true,
+        "confidence_basis": "Non-calibrated AI visual judgment; material appearance is visual only and warmth is not claimed."
+      },
+      "source_manifest": "docs/audits/20260904-aw-supply/generated-garments/batch02/manifest.json"
+    }
+  ],
+  "entries": [
+    {
+      "outfit_id": "outfit_neon_aw-winter-04_02",
+      "raw_record": {
+        "id": "outfit_neon_aw-winter-04_02",
+        "kind": "master",
+        "parent_outfit_id": null,
+        "recipe_version": "aw-winter-04",
+        "title": "NEON winter 日常设计 02",
+        "description": "鲜品红短外套与黑针织、浅色斜裹长裙构成一处高彩及短长反差。",
+        "primary_persona": "NEON",
+        "secondary_personas": [],
+        "persona_affinity": {},
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "日常"
+        ],
+        "season_tags": [
+          "冬"
+        ],
+        "weather_tags": [],
+        "presentation": [
+          "feminine"
+        ],
+        "intensity": "entry",
+        "formality": 3,
+        "garment_ids": [
+          "garment_aw_winter03_outer_fuchsia_01",
+          "garment_mute_top_0337",
+          "garment_jade_skirt_0188",
+          "garment_noir_shoes_0254",
+          "garment_mute_bag_0513"
+        ],
+        "visible_slots": [
+          "outer",
+          "top",
+          "skirt",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [
+          {
+            "inner": "garment_mute_top_0337",
+            "outer": "garment_aw_winter03_outer_fuchsia_01"
+          }
+        ],
+        "slot_roles": {
+          "garment_aw_winter03_outer_fuchsia_01": "hero",
+          "garment_mute_top_0337": "support",
+          "garment_jade_skirt_0188": "support",
+          "garment_noir_shoes_0254": "support",
+          "garment_mute_bag_0513": "support"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "未判断",
+          "saturation": "未判断",
+          "harmony": "未判断",
+          "palette": []
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/0b7c98f0525fdea3c5c2603f.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source": "designer_recomposition",
+          "confidence": null,
+          "review_notes": [
+            "season, palette and persona are design targets pending whole-image review"
+          ]
+        }
+      },
+      "catalog_record": {
+        "outfit_id": "outfit_neon_aw-winter-04_02",
+        "title": "NEON winter 日常设计 02",
+        "description": "鲜品红短外套与黑针织、浅色斜裹长裙构成一处高彩及短长反差。",
+        "item_ids": [
+          "garment_aw_winter03_outer_fuchsia_01",
+          "garment_mute_top_0337",
+          "garment_jade_skirt_0188",
+          "garment_noir_shoes_0254",
+          "garment_mute_bag_0513"
+        ],
+        "items": [
+          {
+            "item_id": "garment_aw_winter03_outer_fuchsia_01",
+            "style_family_id": "item:garment_aw_winter03_outer_fuchsia_01",
+            "image_id": "garment_aw_winter03_outer_fuchsia_01",
+            "outfit_role": "hero",
+            "category": "top",
+            "category_label": "outer",
+            "subcategory": "品红锐肩短结构外套",
+            "slot": "outer",
+            "title": "品红锐肩短结构外套",
+            "assets": {
+              "cutout_path": "/static/selfit/assets/content_v2_drafts/aw-winter-03/garments/winter-jacket-bright-fuchsia-v1.png",
+              "preview_path": "/static/selfit/assets/content_v2_drafts/aw-winter-03/garments/winter-jacket-bright-fuchsia-v1.png"
+            },
+            "attributes": {
+              "colors": [
+                "紫"
+              ],
+              "color_hex": [
+                "#b40855",
+                "#bc0c5c",
+                "#ce186b",
+                "#c51064",
+                "#930440"
+              ],
+              "style_tags": [
+                "original_gap_fill",
+                "bright",
+                "visually_reviewed_cutout"
+              ],
+              "scene_tags": [
+                "日常",
+                "通勤",
+                "旅行"
+              ],
+              "season_tags": [
+                "秋",
+                "冬"
+              ]
+            },
+            "quality": {
+              "status": "usable",
+              "score": 1.0,
+              "reasons": [
+                "bound_visual_review"
+              ]
+            },
+            "source": {
+              "type": "aw_reviewed_draft",
+              "content_version": "aw-designed-rendered-3d24e7a85bce644b3361"
+            },
+            "tryon_ready": true,
+            "favorite": false,
+            "deleted": false,
+            "visual": {
+              "category": "outer",
+              "subcategory": "cropped_asymmetric_jacket",
+              "neckline": "asymmetric_stand",
+              "sleeve": "long",
+              "length": "hip",
+              "volume": "fitted",
+              "construction": "offset_front_princess_seams",
+              "pattern": "solid",
+              "decoration": "medium",
+              "material_appearance": "dense_matte_wool_like",
+              "main_colors": [
+                "vivid_fuchsia"
+              ],
+              "visual_personas": [
+                "bolt",
+                "edge",
+                "neon",
+                "oops"
+              ],
+              "usage_limits": null
+            },
+            "color_evidence": {
+              "source": "opaque_pixel_quantization_v1",
+              "status": "measured_not_semantic_review",
+              "asset_sha256": "1e95961744f45c82cb1833cc2caa33ffe9d2424685282681cc1affdbd91696bb",
+              "swatches": [
+                {
+                  "hex": "#b40855",
+                  "weight": 0.3076,
+                  "family": "紫"
+                },
+                {
+                  "hex": "#bc0c5c",
+                  "weight": 0.2536,
+                  "family": "紫"
+                },
+                {
+                  "hex": "#ce186b",
+                  "weight": 0.1558,
+                  "family": "紫"
+                },
+                {
+                  "hex": "#c51064",
+                  "weight": 0.1498,
+                  "family": "紫"
+                },
+                {
+                  "hex": "#930440",
+                  "weight": 0.1333,
+                  "family": "紫"
+                }
+              ],
+              "palette_names": [
+                "紫"
+              ],
+              "color": {
+                "temperature": "未判断",
+                "lightness": "中等",
+                "saturation": "高饱和",
+                "harmony": "未判断",
+                "palette": [
+                  "#b40855",
+                  "#bc0c5c",
+                  "#ce186b",
+                  "#c51064",
+                  "#930440"
+                ]
+              },
+              "limitations": "渲染光照会影响色值；不据此推断面料成分、真实冷暖或人体适配。"
+            }
+          },
+          {
+            "item_id": "garment_mute_top_0337",
+            "style_family_id": "item:garment_mute_top_0337",
+            "image_id": "garment_mute_top_0337",
+            "outfit_role": "support",
+            "category": "top",
+            "category_label": "top",
+            "subcategory": "静音时髦细针织上衣",
+            "slot": null,
+            "title": "静音时髦细针织上衣",
+            "assets": {
+              "cutout_path": "/static/selfit/assets/content_v2/mute/garments/mute-top-0337-v1.webp",
+              "preview_path": "/static/selfit/assets/content_v2/mute/garments/mute-top-0337-v1.webp"
+            },
+            "attributes": {
+              "colors": [
+                "黑",
+                "灰"
+              ],
+              "color_hex": [
+                "#2d2d2f",
+                "#303032",
+                "#343436",
+                "#38383b",
+                "#272729"
+              ],
+              "style_tags": [
+                "variant原创款"
+              ],
+              "scene_tags": [
+                "约会社交",
+                "正式活动"
+              ],
+              "season_tags": [
+                "秋",
+                "冬"
+              ]
+            },
+            "quality": {
+              "status": "usable",
+              "score": 1.0,
+              "reasons": [
+                "bound_visual_review"
+              ]
+            },
+            "source": {
+              "type": "aw_reviewed_draft",
+              "content_version": "aw-designed-rendered-3d24e7a85bce644b3361"
+            },
+            "tryon_ready": true,
+            "favorite": false,
+            "deleted": false,
+            "visual": {
+              "category": "top",
+              "construction": "rib_cuffs_hem",
+              "decoration": "low",
+              "length": "hip",
+              "material_appearance": "fine_knit",
+              "neckline": "crew",
+              "pattern": "plain",
+              "sleeve": "long_straight",
+              "subcategory": "plain_crew_knit",
+              "volume": "regular",
+              "main_colors": [
+                "charcoal"
+              ],
+              "visual_personas": [
+                "mute",
+                "loop",
+                "ease"
+              ],
+              "usage_limits": null
+            },
+            "color_evidence": {
+              "source": "opaque_pixel_quantization_v1",
+              "status": "measured_not_semantic_review",
+              "asset_sha256": "0de48971472b5b3aca76e2f8378dc54957e10f65a10cd4f6ef3f3797803f2e91",
+              "swatches": [
+                {
+                  "hex": "#2d2d2f",
+                  "weight": 0.338,
+                  "family": "黑"
+                },
+                {
+                  "hex": "#303032",
+                  "weight": 0.2318,
+                  "family": "灰"
+                },
+                {
+                  "hex": "#343436",
+                  "weight": 0.1725,
+                  "family": "灰"
+                },
+                {
+                  "hex": "#38383b",
+                  "weight": 0.1354,
+                  "family": "灰"
+                },
+                {
+                  "hex": "#272729",
+                  "weight": 0.1223,
+                  "family": "黑"
+                }
+              ],
+              "palette_names": [
+                "黑",
+                "灰"
+              ],
+              "color": {
+                "temperature": "未判断",
+                "lightness": "深色",
+                "saturation": "无彩",
+                "harmony": "未判断",
+                "palette": [
+                  "#2d2d2f",
+                  "#303032",
+                  "#343436",
+                  "#38383b",
+                  "#272729"
+                ]
+              },
+              "limitations": "渲染光照会影响色值；不据此推断面料成分、真实冷暖或人体适配。"
+            }
+          },
+          {
+            "item_id": "garment_jade_skirt_0188",
+            "style_family_id": "item:garment_jade_skirt_0188",
+            "image_id": "garment_jade_skirt_0188",
+            "outfit_role": "support",
+            "category": "skirt",
+            "category_label": "skirt",
+            "subcategory": "东方玉骨斜裁中长裙",
+            "slot": null,
+            "title": "东方玉骨斜裁中长裙",
+            "assets": {
+              "cutout_path": "/static/selfit/assets/content_v2/jade/garments/jade-skirt-0188-v1.webp",
+              "preview_path": "/static/selfit/assets/content_v2/jade/garments/jade-skirt-0188-v1.webp"
+            },
+            "attributes": {
+              "colors": [
+                "灰",
+                "白"
+              ],
+              "color_hex": [
+                "#b9afa2",
+                "#d7d0c7",
+                "#cac2b9",
+                "#e0dad1",
+                "#e9e4dc"
+              ],
+              "style_tags": [
+                "shared原创款"
+              ],
+              "scene_tags": [
+                "通勤",
+                "日常",
+                "约会社交",
+                "正式活动",
+                "旅行",
+                "创意表达"
+              ],
+              "season_tags": [
+                "四季"
+              ]
+            },
+            "quality": {
+              "status": "usable",
+              "score": 1.0,
+              "reasons": [
+                "bound_visual_review"
+              ]
+            },
+            "source": {
+              "type": "aw_reviewed_draft",
+              "content_version": "aw-designed-rendered-3d24e7a85bce644b3361"
+            },
+            "tryon_ready": true,
+            "favorite": false,
+            "deleted": false,
+            "visual": {
+              "category": "skirt",
+              "construction": "asymmetric_wrap_hip_drape",
+              "decoration": "low",
+              "length": "midi",
+              "material_appearance": "soft_satin_look",
+              "neckline": null,
+              "pattern": "plain",
+              "sleeve": null,
+              "subcategory": "wrap_draped_skirt",
+              "volume": "soft_a",
+              "main_colors": [
+                "ivory"
+              ],
+              "visual_personas": [
+                "flou",
+                "melt",
+                "iced"
+              ],
+              "usage_limits": [
+                "wrap_coverage_unverified"
+              ]
+            },
+            "color_evidence": {
+              "source": "opaque_pixel_quantization_v1",
+              "status": "measured_not_semantic_review",
+              "asset_sha256": "57e3d631f0ca6ece1e52515f6c64c3ef9522cdbc7f8c79cb4d1c60202d56af23",
+              "swatches": [
+                {
+                  "hex": "#b9afa2",
+                  "weight": 0.2503,
+                  "family": "灰"
+                },
+                {
+                  "hex": "#d7d0c7",
+                  "weight": 0.2383,
+                  "family": "白"
+                },
+                {
+                  "hex": "#cac2b9",
+                  "weight": 0.2106,
+                  "family": "灰"
+                },
+                {
+                  "hex": "#e0dad1",
+                  "weight": 0.1711,
+                  "family": "白"
+                },
+                {
+                  "hex": "#e9e4dc",
+                  "weight": 0.1297,
+                  "family": "白"
+                }
+              ],
+              "palette_names": [
+                "灰",
+                "白"
+              ],
+              "color": {
+                "temperature": "未判断",
+                "lightness": "浅色",
+                "saturation": "低饱和",
+                "harmony": "未判断",
+                "palette": [
+                  "#b9afa2",
+                  "#d7d0c7",
+                  "#cac2b9",
+                  "#e0dad1",
+                  "#e9e4dc"
+                ]
+              },
+              "limitations": "渲染光照会影响色值；不据此推断面料成分、真实冷暖或人体适配。"
+            }
+          },
+          {
+            "item_id": "garment_noir_shoes_0254",
+            "style_family_id": "item:garment_noir_shoes_0254",
+            "image_id": "garment_noir_shoes_0254",
+            "outfit_role": "support",
+            "category": "shoes",
+            "category_label": "shoes",
+            "subcategory": "暗黑肃杀圆头玛丽珍鞋",
+            "slot": null,
+            "title": "暗黑肃杀圆头玛丽珍鞋",
+            "assets": {
+              "cutout_path": "/static/selfit/assets/content_v2/noir/garments/noir-shoes-0254-v1.webp",
+              "preview_path": "/static/selfit/assets/content_v2/noir/garments/noir-shoes-0254-v1.webp"
+            },
+            "attributes": {
+              "colors": [
+                "黑",
+                "灰"
+              ],
+              "color_hex": [
+                "#2e2c2d",
+                "#3d3b3c",
+                "#1a1918",
+                "#4a4848",
+                "#676567"
+              ],
+              "style_tags": [
+                "shared原创款"
+              ],
+              "scene_tags": [
+                "通勤",
+                "日常",
+                "约会社交",
+                "正式活动",
+                "旅行",
+                "创意表达"
+              ],
+              "season_tags": [
+                "四季"
+              ]
+            },
+            "quality": {
+              "status": "usable",
+              "score": 1.0,
+              "reasons": [
+                "bound_visual_review"
+              ]
+            },
+            "source": {
+              "type": "aw_reviewed_draft",
+              "content_version": "aw-designed-rendered-3d24e7a85bce644b3361"
+            },
+            "tryon_ready": true,
+            "favorite": false,
+            "deleted": false,
+            "visual": {
+              "category": "shoes",
+              "construction": "round_toe_single_buckle_strap",
+              "decoration": "low",
+              "length": "flat",
+              "material_appearance": "smooth_leather_look",
+              "neckline": null,
+              "pattern": "plain",
+              "sleeve": null,
+              "subcategory": "mary_jane_flats",
+              "volume": null,
+              "main_colors": [
+                "black"
+              ],
+              "visual_personas": [
+                "heir",
+                "melt",
+                "loop"
+              ],
+              "usage_limits": [
+                "walking_comfort_unknown"
+              ]
+            },
+            "color_evidence": {
+              "source": "opaque_pixel_quantization_v1",
+              "status": "measured_not_semantic_review",
+              "asset_sha256": "4c26ebfc25794865c5433b42015047eda81a29cb8a1e1182657b7307e82d4276",
+              "swatches": [
+                {
+                  "hex": "#2e2c2d",
+                  "weight": 0.2751,
+                  "family": "黑"
+                },
+                {
+                  "hex": "#3d3b3c",
+                  "weight": 0.236,
+                  "family": "灰"
+                },
+                {
+                  "hex": "#1a1918",
+                  "weight": 0.2192,
+                  "family": "黑"
+                },
+                {
+                  "hex": "#4a4848",
+                  "weight": 0.1821,
+                  "family": "灰"
+                },
+                {
+                  "hex": "#676567",
+                  "weight": 0.0875,
+                  "family": "灰"
+                }
+              ],
+              "palette_names": [
+                "黑",
+                "灰"
+              ],
+              "color": {
+                "temperature": "未判断",
+                "lightness": "深色",
+                "saturation": "无彩",
+                "harmony": "未判断",
+                "palette": [
+                  "#2e2c2d",
+                  "#3d3b3c",
+                  "#1a1918",
+                  "#4a4848",
+                  "#676567"
+                ]
+              },
+              "limitations": "渲染光照会影响色值；不据此推断面料成分、真实冷暖或人体适配。"
+            }
+          },
+          {
+            "item_id": "garment_mute_bag_0513",
+            "style_family_id": "item:garment_mute_bag_0513",
+            "image_id": "garment_mute_bag_0513",
+            "outfit_role": "support",
+            "category": "bag",
+            "category_label": "bag",
+            "subcategory": "静音时髦小型腋下包",
+            "slot": null,
+            "title": "静音时髦小型腋下包",
+            "assets": {
+              "cutout_path": "/static/selfit/assets/content_v2/mute/garments/mute-bag-0513-v1.webp",
+              "preview_path": "/static/selfit/assets/content_v2/mute/garments/mute-bag-0513-v1.webp"
+            },
+            "attributes": {
+              "colors": [
+                "灰",
+                "黑"
+              ],
+              "color_hex": [
+                "#434141",
+                "#504d4d",
+                "#3c3a3a",
+                "#282626",
+                "#383636"
+              ],
+              "style_tags": [
+                "variant原创款"
+              ],
+              "scene_tags": [
+                "通勤",
+                "日常"
+              ],
+              "season_tags": [
+                "春",
+                "夏"
+              ]
+            },
+            "quality": {
+              "status": "usable",
+              "score": 1.0,
+              "reasons": [
+                "bound_visual_review"
+              ]
+            },
+            "source": {
+              "type": "aw_reviewed_draft",
+              "content_version": "aw-designed-rendered-3d24e7a85bce644b3361"
+            },
+            "tryon_ready": true,
+            "favorite": false,
+            "deleted": false,
+            "visual": {
+              "category": "bag",
+              "construction": "short_adjustable_strap_two_front_darts",
+              "decoration": "low",
+              "length": null,
+              "material_appearance": "grained_leather_look",
+              "neckline": null,
+              "pattern": "plain",
+              "sleeve": null,
+              "subcategory": "plain_short_shoulder_baguette",
+              "volume": "wide_low_rectangle",
+              "main_colors": [
+                "black"
+              ],
+              "visual_personas": [
+                "mute",
+                "loop",
+                "noir"
+              ],
+              "usage_limits": [
+                "capacity_unknown"
+              ]
+            },
+            "color_evidence": {
+              "source": "opaque_pixel_quantization_v1",
+              "status": "measured_not_semantic_review",
+              "asset_sha256": "4698c5e22c7aba734dae8887f8e3bf2b2f3394b50c9d88ae0402b1badcfe623d",
+              "swatches": [
+                {
+                  "hex": "#434141",
+                  "weight": 0.2544,
+                  "family": "灰"
+                },
+                {
+                  "hex": "#504d4d",
+                  "weight": 0.2216,
+                  "family": "灰"
+                },
+                {
+                  "hex": "#3c3a3a",
+                  "weight": 0.1841,
+                  "family": "灰"
+                },
+                {
+                  "hex": "#282626",
+                  "weight": 0.1707,
+                  "family": "黑"
+                },
+                {
+                  "hex": "#383636",
+                  "weight": 0.1692,
+                  "family": "灰"
+                }
+              ],
+              "palette_names": [
+                "灰",
+                "黑"
+              ],
+              "color": {
+                "temperature": "未判断",
+                "lightness": "深色",
+                "saturation": "无彩",
+                "harmony": "未判断",
+                "palette": [
+                  "#434141",
+                  "#504d4d",
+                  "#3c3a3a",
+                  "#282626",
+                  "#383636"
+                ]
+              },
+              "limitations": "渲染光照会影响色值；不据此推断面料成分、真实冷暖或人体适配。"
+            }
+          }
+        ],
+        "scene_tags": [
+          "日常"
+        ],
+        "season_tags": [
+          "冬"
+        ],
+        "primary_persona": "NEON",
+        "parent_outfit_id": "outfit_neon_aw-winter-04_02",
+        "recipe_kind": "master",
+        "secondary_personas": [],
+        "cover_path": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/0b7c98f0525fdea3c5c2603f.webp",
+        "layout_snapshot_path": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/0b7c98f0525fdea3c5c2603f.webp",
+        "layout_version": "unified-flatlay-v1",
+        "layout_mode": "canonical_flatlay",
+        "canvas": {
+          "width": 1200,
+          "height": 1500
+        },
+        "display_item_ids": [
+          "garment_aw_winter03_outer_fuchsia_01",
+          "garment_mute_top_0337",
+          "garment_jade_skirt_0188",
+          "garment_noir_shoes_0254",
+          "garment_mute_bag_0513"
+        ],
+        "overflow_items": [],
+        "warnings": [],
+        "source": "aw_reviewed_draft",
+        "content_version": "aw-designed-rendered-3d24e7a85bce644b3361",
+        "curation": {},
+        "favorite_count": 0,
+        "favorite": false,
+        "tryon_ready": true,
+        "created_at": "",
+        "updated_at": "",
+        "deleted": false,
+        "visual": {
+          "axes": {},
+          "expression": "typical",
+          "formality": "smart_casual",
+          "layering": 2,
+          "persona_scores": {
+            "neon": 0.88,
+            "melt": 0.58
+          },
+          "scenes": [
+            "daily"
+          ],
+          "seasons": [
+            "winter"
+          ],
+          "structure": "skirt",
+          "wearability": "everyday_with_statement",
+          "main_visual_slots": [
+            "outer",
+            "top",
+            "skirt"
+          ],
+          "main_colors": [
+            "vivid_fuchsia",
+            "charcoal",
+            "ivory"
+          ],
+          "conflicts": null,
+          "silhouette": "reviewed_winter_skirt_composition",
+          "color_relation": "reviewed_coherent",
+          "persona_evidence": "鲜品红短外套与黑针织、浅色斜裹长裙构成单一高彩及短长反差。",
+          "winter_outdoor": "complete_layers_visually_reviewed"
+        },
+        "visual_evidence": "鲜品红短外套与黑针织、浅色斜裹长裙构成单一高彩及短长反差。",
+        "visual_confidence": 0.86
+      },
+      "record_fingerprint": "5d331b97cca22c9132b0170161d5e08c247891f19689474070e6d18258d4c0fa",
+      "source_rendered": "docs/audits/20260904-aw-supply/winter-recipes.batch04.rendered.json",
+      "source_review_bundle": "aw-recomposition-index-20260904-25",
+      "staging_normalization": [
+        "explicit_outer_over_main_layer_graph_added"
+      ],
+      "four_gate_status": "pending"
+    },
+    {
+      "outfit_id": "outfit_neon_master_09_v2__aw-repair-05",
+      "raw_record": {
+        "id": "outfit_neon_master_09_v2__aw-repair-05",
+        "kind": "variant",
+        "parent_outfit_id": "outfit_neon_master_09",
+        "recipe_version": "aw-repair-05",
+        "title": "NEON 日常 09 · 替换 2",
+        "description": "NEON 人格的夏日常原创穿搭配方。",
+        "primary_persona": "OOPS",
+        "secondary_personas": [
+          "EDGE",
+          "OOPS"
+        ],
+        "persona_affinity": {
+          "NEON": 0.96,
+          "EDGE": 0.65,
+          "OOPS": 0.55
+        },
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "日常"
+        ],
+        "season_tags": [
+          "夏"
+        ],
+        "weather_tags": [
+          "晴",
+          "室内"
+        ],
+        "presentation": [
+          "feminine"
+        ],
+        "intensity": "entry",
+        "formality": 3,
+        "garment_ids": [
+          "garment_oops_top_0336",
+          "garment_edge_bottom_0185",
+          "garment_mute_shoes_0004",
+          "garment_mute_bag_0005"
+        ],
+        "visible_slots": [
+          "top",
+          "bottom",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_oops_top_0336": "hero",
+          "garment_edge_bottom_0185": "support",
+          "garment_mute_shoes_0004": "support",
+          "garment_mute_bag_0005": "accent"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "中等",
+          "saturation": "低饱和",
+          "harmony": "未判断",
+          "palette": [
+            "#c4d0ed",
+            "#74869d",
+            "#2a2976",
+            "#6e8197"
+          ]
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/a34499242f0ef182e52ff5a3.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source_outfit_id": "outfit_neon_master_09_v2"
+        },
+        "design_intent": "保留原主服装，以低装饰 dark 鞋包替换竞争性配件；仅降低配件噪音，主服装之间是否仍冲突必须重新看整套图。"
+      },
+      "catalog_record": {
+        "outfit_id": "outfit_neon_master_09_v2__aw-repair-05",
+        "title": "NEON 日常 09 · 替换 2",
+        "description": "NEON 人格的夏日常原创穿搭配方。",
+        "item_ids": [
+          "garment_oops_top_0336",
+          "garment_edge_bottom_0185",
+          "garment_mute_shoes_0004",
+          "garment_mute_bag_0005"
+        ],
+        "items": [
+          {
+            "item_id": "garment_oops_top_0336",
+            "style_family_id": "item:garment_oops_top_0336",
+            "image_id": "garment_oops_top_0336",
+            "outfit_role": "hero",
+            "category": "top",
+            "category_label": "top",
+            "subcategory": "搭配事故直线府绸衬衫",
+            "slot": null,
+            "title": "搭配事故直线府绸衬衫",
+            "assets": {
+              "cutout_path": "/static/selfit/assets/content_v2/oops/garments/oops-top-0336-v1.webp",
+              "preview_path": "/static/selfit/assets/content_v2/oops/garments/oops-top-0336-v1.webp"
+            },
+            "attributes": {
+              "colors": [
+                "蓝"
+              ],
+              "color_hex": [
+                "#c4d0ed",
+                "#495467",
+                "#a7b6d5",
+                "#65758f",
+                "#858f9e"
+              ],
+              "style_tags": [
+                "variant原创款"
+              ],
+              "scene_tags": [
+                "通勤",
+                "日常"
+              ],
+              "season_tags": [
+                "春",
+                "夏"
+              ]
+            },
+            "quality": {
+              "status": "usable",
+              "score": 1.0,
+              "reasons": [
+                "bound_visual_review"
+              ]
+            },
+            "source": {
+              "type": "aw_reviewed_draft",
+              "content_version": "aw-repair-05"
+            },
+            "tryon_ready": true,
+            "favorite": false,
+            "deleted": false,
+            "visual": {
+              "category": "top",
+              "construction": "pleated_waist_patch_pocket_lace_panels",
+              "decoration": "high",
+              "length": "hip",
+              "material_appearance": "woven_denim_lace_satin_look",
+              "neckline": "point_collar",
+              "pattern": "floral_colorblock",
+              "sleeve": "long_mismatched",
+              "subcategory": "asymmetric_mixed_shirt",
+              "volume": "asymmetric",
+              "main_colors": [
+                "ice_blue",
+                "ivory",
+                "charcoal",
+                "cobalt"
+              ],
+              "visual_personas": [
+                "oops",
+                "edge"
+              ],
+              "usage_limits": [
+                "experimental"
+              ]
+            },
+            "color_evidence": {
+              "source": "opaque_pixel_quantization_v1",
+              "status": "measured_not_semantic_review",
+              "asset_sha256": "1821c10ed2197f87cc4b8081a27a398f55c874c8c93e1577b2f187adf618432a",
+              "swatches": [
+                {
+                  "hex": "#c4d0ed",
+                  "weight": 0.2859,
+                  "family": "蓝"
+                },
+                {
+                  "hex": "#495467",
+                  "weight": 0.2271,
+                  "family": "蓝"
+                },
+                {
+                  "hex": "#a7b6d5",
+                  "weight": 0.2143,
+                  "family": "蓝"
+                },
+                {
+                  "hex": "#65758f",
+                  "weight": 0.1452,
+                  "family": "蓝"
+                },
+                {
+                  "hex": "#858f9e",
+                  "weight": 0.1275,
+                  "family": "蓝"
+                }
+              ],
+              "palette_names": [
+                "蓝"
+              ],
+              "color": {
+                "temperature": "未判断",
+                "lightness": "中等",
+                "saturation": "低饱和",
+                "harmony": "未判断",
+                "palette": [
+                  "#c4d0ed",
+                  "#495467",
+                  "#a7b6d5",
+                  "#65758f",
+                  "#858f9e"
+                ]
+              },
+              "limitations": "渲染光照会影响色值；不据此推断面料成分、真实冷暖或人体适配。"
+            }
+          },
+          {
+            "item_id": "garment_edge_bottom_0185",
+            "style_family_id": "item:garment_edge_bottom_0185",
+            "image_id": "garment_edge_bottom_0185",
+            "outfit_role": "support",
+            "category": "bottom",
+            "category_label": "bottom",
+            "subcategory": "甜酷轻亚水洗牛仔裤",
+            "slot": null,
+            "title": "甜酷轻亚水洗牛仔裤",
+            "assets": {
+              "cutout_path": "/static/selfit/assets/content_v2/edge/garments/edge-bottom-0185-v1.webp",
+              "preview_path": "/static/selfit/assets/content_v2/edge/garments/edge-bottom-0185-v1.webp"
+            },
+            "attributes": {
+              "colors": [
+                "蓝"
+              ],
+              "color_hex": [
+                "#74869d",
+                "#8292a6",
+                "#98a5b4",
+                "#798a9f",
+                "#6c7c91"
+              ],
+              "style_tags": [
+                "shared原创款"
+              ],
+              "scene_tags": [
+                "通勤",
+                "日常",
+                "约会社交",
+                "正式活动",
+                "旅行",
+                "创意表达"
+              ],
+              "season_tags": [
+                "四季"
+              ]
+            },
+            "quality": {
+              "status": "usable",
+              "score": 1.0,
+              "reasons": [
+                "bound_visual_review"
+              ]
+            },
+            "source": {
+              "type": "aw_reviewed_draft",
+              "content_version": "aw-repair-05"
+            },
+            "tryon_ready": true,
+            "favorite": false,
+            "deleted": false,
+            "visual": {
+              "category": "bottom",
+              "construction": "five_pockets_belt_loops_fly",
+              "decoration": "low",
+              "length": "full",
+              "material_appearance": "denim",
+              "neckline": null,
+              "pattern": "washed",
+              "sleeve": null,
+              "subcategory": "straight_jeans",
+              "volume": "straight",
+              "main_colors": [
+                "washed_blue"
+              ],
+              "visual_personas": [
+                "loop",
+                "ease",
+                "film"
+              ],
+              "usage_limits": null
+            },
+            "color_evidence": {
+              "source": "opaque_pixel_quantization_v1",
+              "status": "measured_not_semantic_review",
+              "asset_sha256": "b55c75b4ab9bc5e7ab5f243db43124cf1a148e71eb1b6d4991fef77bb7f0a917",
+              "swatches": [
+                {
+                  "hex": "#74869d",
+                  "weight": 0.2494,
+                  "family": "蓝"
+                },
+                {
+                  "hex": "#8292a6",
+                  "weight": 0.2375,
+                  "family": "蓝"
+                },
+                {
+                  "hex": "#98a5b4",
+                  "weight": 0.2199,
+                  "family": "蓝"
+                },
+                {
+                  "hex": "#798a9f",
+                  "weight": 0.1802,
+                  "family": "蓝"
+                },
+                {
+                  "hex": "#6c7c91",
+                  "weight": 0.1131,
+                  "family": "蓝"
+                }
+              ],
+              "palette_names": [
+                "蓝"
+              ],
+              "color": {
+                "temperature": "未判断",
+                "lightness": "中等",
+                "saturation": "低饱和",
+                "harmony": "未判断",
+                "palette": [
+                  "#74869d",
+                  "#8292a6",
+                  "#98a5b4",
+                  "#798a9f",
+                  "#6c7c91"
+                ]
+              },
+              "limitations": "渲染光照会影响色值；不据此推断面料成分、真实冷暖或人体适配。"
+            }
+          },
+          {
+            "item_id": "garment_mute_shoes_0004",
+            "style_family_id": "item:garment_mute_shoes_0004",
+            "image_id": "garment_mute_shoes_0004",
+            "outfit_role": "support",
+            "category": "shoes",
+            "category_label": "shoes",
+            "subcategory": "极简乐福鞋",
+            "slot": null,
+            "title": "极简乐福鞋",
+            "assets": {
+              "cutout_path": "/static/selfit/assets/content_v2/mute/garments/mute-shoes-0004-v1.webp",
+              "preview_path": "/static/selfit/assets/content_v2/mute/garments/mute-shoes-0004-v1.webp"
+            },
+            "attributes": {
+              "colors": [
+                "黑",
+                "灰"
+              ],
+              "color_hex": [
+                "#282625",
+                "#383736",
+                "#141414",
+                "#4a4847",
+                "#716a66"
+              ],
+              "style_tags": [
+                "signature原创款"
+              ],
+              "scene_tags": [
+                "约会社交",
+                "正式活动"
+              ],
+              "season_tags": [
+                "秋",
+                "冬"
+              ]
+            },
+            "quality": {
+              "status": "usable",
+              "score": 1.0,
+              "reasons": [
+                "bound_visual_review"
+              ]
+            },
+            "source": {
+              "type": "aw_reviewed_draft",
+              "content_version": "aw-repair-05"
+            },
+            "tryon_ready": true,
+            "favorite": false,
+            "deleted": false,
+            "visual": {
+              "category": "shoes",
+              "construction": "penny_strap",
+              "decoration": "low",
+              "length": null,
+              "material_appearance": "smooth_leather_look",
+              "neckline": null,
+              "pattern": "solid",
+              "sleeve": null,
+              "subcategory": "loafers",
+              "volume": null,
+              "main_colors": [
+                "black"
+              ],
+              "visual_personas": [
+                "mute",
+                "heir",
+                "loop"
+              ],
+              "usage_limits": null
+            },
+            "color_evidence": {
+              "source": "opaque_pixel_quantization_v1",
+              "status": "measured_not_semantic_review",
+              "asset_sha256": "fa1379a14d7553382c95f1e8deba4e0bc11f731b1d074edfb5c25b580362f485",
+              "swatches": [
+                {
+                  "hex": "#282625",
+                  "weight": 0.2696,
+                  "family": "黑"
+                },
+                {
+                  "hex": "#383736",
+                  "weight": 0.2519,
+                  "family": "灰"
+                },
+                {
+                  "hex": "#141414",
+                  "weight": 0.2231,
+                  "family": "黑"
+                },
+                {
+                  "hex": "#4a4847",
+                  "weight": 0.1451,
+                  "family": "灰"
+                },
+                {
+                  "hex": "#716a66",
+                  "weight": 0.1104,
+                  "family": "灰"
+                }
+              ],
+              "palette_names": [
+                "黑",
+                "灰"
+              ],
+              "color": {
+                "temperature": "未判断",
+                "lightness": "深色",
+                "saturation": "无彩",
+                "harmony": "未判断",
+                "palette": [
+                  "#282625",
+                  "#383736",
+                  "#141414",
+                  "#4a4847",
+                  "#716a66"
+                ]
+              },
+              "limitations": "渲染光照会影响色值；不据此推断面料成分、真实冷暖或人体适配。"
+            }
+          },
+          {
+            "item_id": "garment_mute_bag_0005",
+            "style_family_id": "item:garment_mute_bag_0005",
+            "image_id": "garment_mute_bag_0005",
+            "outfit_role": "accent",
+            "category": "bag",
+            "category_label": "bag",
+            "subcategory": "几何托特包",
+            "slot": null,
+            "title": "几何托特包",
+            "assets": {
+              "cutout_path": "/static/selfit/assets/content_v2/mute/garments/mute-bag-0005-v1.webp",
+              "preview_path": "/static/selfit/assets/content_v2/mute/garments/mute-bag-0005-v1.webp"
+            },
+            "attributes": {
+              "colors": [
+                "灰"
+              ],
+              "color_hex": [
+                "#3d3c3d",
+                "#434243",
+                "#333232",
+                "#474648",
+                "#525052"
+              ],
+              "style_tags": [
+                "signature原创款"
+              ],
+              "scene_tags": [
+                "旅行",
+                "创意表达"
+              ],
+              "season_tags": [
+                "四季"
+              ]
+            },
+            "quality": {
+              "status": "usable",
+              "score": 1.0,
+              "reasons": [
+                "bound_visual_review"
+              ]
+            },
+            "source": {
+              "type": "aw_reviewed_draft",
+              "content_version": "aw-repair-05"
+            },
+            "tryon_ready": true,
+            "favorite": false,
+            "deleted": false,
+            "visual": {
+              "category": "bag",
+              "construction": "geometric_panel_pockets",
+              "decoration": "low",
+              "length": null,
+              "material_appearance": "matte_leather_look",
+              "neckline": null,
+              "pattern": "solid",
+              "sleeve": null,
+              "subcategory": "tote",
+              "volume": "structured",
+              "main_colors": [
+                "black"
+              ],
+              "visual_personas": [
+                "mute",
+                "loop"
+              ],
+              "usage_limits": null
+            },
+            "color_evidence": {
+              "source": "opaque_pixel_quantization_v1",
+              "status": "measured_not_semantic_review",
+              "asset_sha256": "6cd9f8784c46a9890498e06925d98287ecd80df25771dca145d05e5e664e5d0f",
+              "swatches": [
+                {
+                  "hex": "#3d3c3d",
+                  "weight": 0.2788,
+                  "family": "灰"
+                },
+                {
+                  "hex": "#434243",
+                  "weight": 0.2146,
+                  "family": "灰"
+                },
+                {
+                  "hex": "#333232",
+                  "weight": 0.1982,
+                  "family": "灰"
+                },
+                {
+                  "hex": "#474648",
+                  "weight": 0.1969,
+                  "family": "灰"
+                },
+                {
+                  "hex": "#525052",
+                  "weight": 0.1116,
+                  "family": "灰"
+                }
+              ],
+              "palette_names": [
+                "灰"
+              ],
+              "color": {
+                "temperature": "未判断",
+                "lightness": "深色",
+                "saturation": "无彩",
+                "harmony": "未判断",
+                "palette": [
+                  "#3d3c3d",
+                  "#434243",
+                  "#333232",
+                  "#474648",
+                  "#525052"
+                ]
+              },
+              "limitations": "渲染光照会影响色值；不据此推断面料成分、真实冷暖或人体适配。"
+            }
+          }
+        ],
+        "scene_tags": [
+          "日常"
+        ],
+        "season_tags": [
+          "夏"
+        ],
+        "primary_persona": "OOPS",
+        "parent_outfit_id": "outfit_neon_master_09",
+        "recipe_kind": "variant",
+        "secondary_personas": [
+          "EDGE",
+          "OOPS"
+        ],
+        "cover_path": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/a34499242f0ef182e52ff5a3.webp",
+        "layout_snapshot_path": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/a34499242f0ef182e52ff5a3.webp",
+        "layout_version": "unified-flatlay-v1",
+        "layout_mode": "canonical_flatlay",
+        "canvas": {
+          "width": 1200,
+          "height": 1500
+        },
+        "display_item_ids": [
+          "garment_oops_top_0336",
+          "garment_edge_bottom_0185",
+          "garment_mute_shoes_0004",
+          "garment_mute_bag_0005"
+        ],
+        "overflow_items": [],
+        "warnings": [],
+        "source": "aw_reviewed_draft",
+        "content_version": "aw-repair-05",
+        "curation": {},
+        "favorite_count": 0,
+        "favorite": false,
+        "tryon_ready": true,
+        "created_at": "",
+        "updated_at": "",
+        "deleted": false,
+        "visual": {
+          "axes": {},
+          "expression": "typical",
+          "formality": "smart_casual",
+          "layering": 1,
+          "persona_scores": {
+            "oops": 0.82,
+            "edge": 0.68
+          },
+          "scenes": [
+            "daily"
+          ],
+          "seasons": [
+            "autumn"
+          ],
+          "structure": "pants",
+          "wearability": "everyday_with_statement",
+          "main_visual_slots": [
+            "top",
+            "pants"
+          ],
+          "main_colors": [
+            "ice_blue",
+            "ivory",
+            "charcoal",
+            "cobalt",
+            "washed_blue"
+          ],
+          "conflicts": null,
+          "silhouette": "reviewed_focal_pants_composition",
+          "color_relation": "controlled_after_accessory_simplification",
+          "persona_evidence": "蓝灰错位衬衫作为唯一解构焦点，直筒牛仔与黑鞋包提供稳定基底。"
+        },
+        "visual_evidence": "蓝灰错位衬衫作为唯一解构焦点，直筒牛仔与黑鞋包提供稳定基底。",
+        "visual_confidence": 0.8
+      },
+      "record_fingerprint": "81cd676cbf84e3720e9bddc676297747c6120ae16c5e910530e20baa694eac5f",
+      "source_rendered": "docs/audits/20260904-aw-supply/repairs.batch05.rendered.json",
+      "source_review_bundle": "aw-recomposition-index-20260904-25",
+      "staging_normalization": [
+        "primary_persona_aligned_to_current_whole-image_observation"
+      ],
+      "four_gate_status": "pending"
+    },
+    {
+      "outfit_id": "outfit_oops_aw-winter-04_09",
+      "raw_record": {
+        "id": "outfit_oops_aw-winter-04_09",
+        "kind": "master",
+        "parent_outfit_id": null,
+        "recipe_version": "aw-winter-04",
+        "title": "OOPS winter 日常设计 09",
+        "description": "鲜色错位短外套与长衬衫裙形成明确短长反差，不再叠加解构长裙。",
+        "primary_persona": "OOPS",
+        "secondary_personas": [],
+        "persona_affinity": {},
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "日常"
+        ],
+        "season_tags": [
+          "冬"
+        ],
+        "weather_tags": [],
+        "presentation": [
+          "feminine"
+        ],
+        "intensity": "entry",
+        "formality": 3,
+        "garment_ids": [
+          "garment_aw_winter03_outer_fuchsia_01",
+          "garment_noir_dress_0222",
+          "garment_edge_shoes_0505",
+          "garment_mute_bag_0513"
+        ],
+        "visible_slots": [
+          "outer",
+          "dress",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [
+          {
+            "inner": "garment_noir_dress_0222",
+            "outer": "garment_aw_winter03_outer_fuchsia_01"
+          }
+        ],
+        "slot_roles": {
+          "garment_aw_winter03_outer_fuchsia_01": "hero",
+          "garment_noir_dress_0222": "support",
+          "garment_edge_shoes_0505": "support",
+          "garment_mute_bag_0513": "support"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "未判断",
+          "saturation": "未判断",
+          "harmony": "未判断",
+          "palette": []
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/5d599514b679d53dc56c27cb.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source": "designer_recomposition",
+          "confidence": null,
+          "review_notes": [
+            "season, palette and persona are design targets pending whole-image review"
+          ]
+        }
+      },
+      "catalog_record": {
+        "outfit_id": "outfit_oops_aw-winter-04_09",
+        "title": "OOPS winter 日常设计 09",
+        "description": "鲜色错位短外套与长衬衫裙形成明确短长反差，不再叠加解构长裙。",
+        "item_ids": [
+          "garment_aw_winter03_outer_fuchsia_01",
+          "garment_noir_dress_0222",
+          "garment_edge_shoes_0505",
+          "garment_mute_bag_0513"
+        ],
+        "items": [
+          {
+            "item_id": "garment_aw_winter03_outer_fuchsia_01",
+            "style_family_id": "item:garment_aw_winter03_outer_fuchsia_01",
+            "image_id": "garment_aw_winter03_outer_fuchsia_01",
+            "outfit_role": "hero",
+            "category": "top",
+            "category_label": "outer",
+            "subcategory": "品红锐肩短结构外套",
+            "slot": "outer",
+            "title": "品红锐肩短结构外套",
+            "assets": {
+              "cutout_path": "/static/selfit/assets/content_v2_drafts/aw-winter-03/garments/winter-jacket-bright-fuchsia-v1.png",
+              "preview_path": "/static/selfit/assets/content_v2_drafts/aw-winter-03/garments/winter-jacket-bright-fuchsia-v1.png"
+            },
+            "attributes": {
+              "colors": [
+                "紫"
+              ],
+              "color_hex": [
+                "#b40855",
+                "#bc0c5c",
+                "#ce186b",
+                "#c51064",
+                "#930440"
+              ],
+              "style_tags": [
+                "original_gap_fill",
+                "bright",
+                "visually_reviewed_cutout"
+              ],
+              "scene_tags": [
+                "日常",
+                "通勤",
+                "旅行"
+              ],
+              "season_tags": [
+                "秋",
+                "冬"
+              ]
+            },
+            "quality": {
+              "status": "usable",
+              "score": 1.0,
+              "reasons": [
+                "bound_visual_review"
+              ]
+            },
+            "source": {
+              "type": "aw_reviewed_draft",
+              "content_version": "aw-designed-rendered-3d24e7a85bce644b3361"
+            },
+            "tryon_ready": true,
+            "favorite": false,
+            "deleted": false,
+            "visual": {
+              "category": "outer",
+              "subcategory": "cropped_asymmetric_jacket",
+              "neckline": "asymmetric_stand",
+              "sleeve": "long",
+              "length": "hip",
+              "volume": "fitted",
+              "construction": "offset_front_princess_seams",
+              "pattern": "solid",
+              "decoration": "medium",
+              "material_appearance": "dense_matte_wool_like",
+              "main_colors": [
+                "vivid_fuchsia"
+              ],
+              "visual_personas": [
+                "bolt",
+                "edge",
+                "neon",
+                "oops"
+              ],
+              "usage_limits": null
+            },
+            "color_evidence": {
+              "source": "opaque_pixel_quantization_v1",
+              "status": "measured_not_semantic_review",
+              "asset_sha256": "1e95961744f45c82cb1833cc2caa33ffe9d2424685282681cc1affdbd91696bb",
+              "swatches": [
+                {
+                  "hex": "#b40855",
+                  "weight": 0.3076,
+                  "family": "紫"
+                },
+                {
+                  "hex": "#bc0c5c",
+                  "weight": 0.2536,
+                  "family": "紫"
+                },
+                {
+                  "hex": "#ce186b",
+                  "weight": 0.1558,
+                  "family": "紫"
+                },
+                {
+                  "hex": "#c51064",
+                  "weight": 0.1498,
+                  "family": "紫"
+                },
+                {
+                  "hex": "#930440",
+                  "weight": 0.1333,
+                  "family": "紫"
+                }
+              ],
+              "palette_names": [
+                "紫"
+              ],
+              "color": {
+                "temperature": "未判断",
+                "lightness": "中等",
+                "saturation": "高饱和",
+                "harmony": "未判断",
+                "palette": [
+                  "#b40855",
+                  "#bc0c5c",
+                  "#ce186b",
+                  "#c51064",
+                  "#930440"
+                ]
+              },
+              "limitations": "渲染光照会影响色值；不据此推断面料成分、真实冷暖或人体适配。"
+            }
+          },
+          {
+            "item_id": "garment_noir_dress_0222",
+            "style_family_id": "item:garment_noir_dress_0222",
+            "image_id": "garment_noir_dress_0222",
+            "outfit_role": "support",
+            "category": "dress",
+            "category_label": "dress",
+            "subcategory": "暗黑肃杀纵向衬衫裙",
+            "slot": null,
+            "title": "暗黑肃杀纵向衬衫裙",
+            "assets": {
+              "cutout_path": "/static/selfit/assets/content_v2/noir/garments/noir-dress-0222-v1.webp",
+              "preview_path": "/static/selfit/assets/content_v2/noir/garments/noir-dress-0222-v1.webp"
+            },
+            "attributes": {
+              "colors": [
+                "灰"
+              ],
+              "color_hex": [
+                "#4a484d",
+                "#504e54",
+                "#39373b",
+                "#565459",
+                "#5b595f"
+              ],
+              "style_tags": [
+                "shared原创款"
+              ],
+              "scene_tags": [
+                "通勤",
+                "日常",
+                "约会社交",
+                "正式活动",
+                "旅行",
+                "创意表达"
+              ],
+              "season_tags": [
+                "四季"
+              ]
+            },
+            "quality": {
+              "status": "usable",
+              "score": 1.0,
+              "reasons": [
+                "bound_visual_review"
+              ]
+            },
+            "source": {
+              "type": "aw_reviewed_draft",
+              "content_version": "aw-designed-rendered-3d24e7a85bce644b3361"
+            },
+            "tryon_ready": true,
+            "favorite": false,
+            "deleted": false,
+            "visual": {
+              "category": "dress",
+              "construction": "button_front_tie_belt_curved_hem",
+              "decoration": "low",
+              "length": "midi",
+              "material_appearance": "matte_woven",
+              "neckline": "point_collar",
+              "pattern": "plain",
+              "sleeve": "long_straight",
+              "subcategory": "belted_straight_shirt_dress",
+              "volume": "straight",
+              "main_colors": [
+                "charcoal"
+              ],
+              "visual_personas": [
+                "mute",
+                "loop",
+                "heir"
+              ],
+              "usage_limits": null
+            },
+            "color_evidence": {
+              "source": "opaque_pixel_quantization_v1",
+              "status": "measured_not_semantic_review",
+              "asset_sha256": "f3b1f4859bc8835ed3d708f8b3f5b58fe145fd983bbe7e637aff6a17ee5f6792",
+              "swatches": [
+                {
+                  "hex": "#4a484d",
+                  "weight": 0.2703,
+                  "family": "灰"
+                },
+                {
+                  "hex": "#504e54",
+                  "weight": 0.2377,
+                  "family": "灰"
+                },
+                {
+                  "hex": "#39373b",
+                  "weight": 0.1802,
+                  "family": "灰"
+                },
+                {
+                  "hex": "#565459",
+                  "weight": 0.1784,
+                  "family": "灰"
+                },
+                {
+                  "hex": "#5b595f",
+                  "weight": 0.1334,
+                  "family": "灰"
+                }
+              ],
+              "palette_names": [
+                "灰"
+              ],
+              "color": {
+                "temperature": "未判断",
+                "lightness": "深色",
+                "saturation": "无彩",
+                "harmony": "未判断",
+                "palette": [
+                  "#4a484d",
+                  "#504e54",
+                  "#39373b",
+                  "#565459",
+                  "#5b595f"
+                ]
+              },
+              "limitations": "渲染光照会影响色值；不据此推断面料成分、真实冷暖或人体适配。"
+            }
+          },
+          {
+            "item_id": "garment_edge_shoes_0505",
+            "style_family_id": "item:garment_edge_shoes_0505",
+            "image_id": "garment_edge_shoes_0505",
+            "outfit_role": "support",
+            "category": "shoes",
+            "category_label": "shoes",
+            "subcategory": "甜酷轻亚尖头短靴",
+            "slot": null,
+            "title": "甜酷轻亚尖头短靴",
+            "assets": {
+              "cutout_path": "/static/selfit/assets/content_v2/edge/garments/edge-shoes-0505-v1.webp",
+              "preview_path": "/static/selfit/assets/content_v2/edge/garments/edge-shoes-0505-v1.webp"
+            },
+            "attributes": {
+              "colors": [
+                "灰",
+                "黑"
+              ],
+              "color_hex": [
+                "#b9acb1",
+                "#676266",
+                "#171616",
+                "#282627",
+                "#373435"
+              ],
+              "style_tags": [
+                "variant原创款"
+              ],
+              "scene_tags": [
+                "约会社交",
+                "正式活动"
+              ],
+              "season_tags": [
+                "秋",
+                "冬"
+              ]
+            },
+            "quality": {
+              "status": "usable",
+              "score": 1.0,
+              "reasons": [
+                "bound_visual_review"
+              ]
+            },
+            "source": {
+              "type": "aw_reviewed_draft",
+              "content_version": "aw-designed-rendered-3d24e7a85bce644b3361"
+            },
+            "tryon_ready": true,
+            "favorite": false,
+            "deleted": false,
+            "visual": {
+              "category": "shoes",
+              "construction": "laceup_front_two_buckle_straps_block_heel_side_ribbons",
+              "decoration": "high",
+              "length": "mid_calf",
+              "material_appearance": "leather_denim_ribbon_look",
+              "neckline": null,
+              "pattern": "patchwork",
+              "sleeve": null,
+              "subcategory": "pointed_laceup_buckle_mid_boots",
+              "volume": "slim",
+              "main_colors": [
+                "black",
+                "washed_blue",
+                "pale_pink"
+              ],
+              "visual_personas": [
+                "edge",
+                "oops"
+              ],
+              "usage_limits": [
+                "comfort_unknown"
+              ]
+            },
+            "color_evidence": {
+              "source": "opaque_pixel_quantization_v1",
+              "status": "measured_not_semantic_review",
+              "asset_sha256": "511f0f01ad682dd36ccbe1da3e25686e7d1b2e2789c2ae992f0bf733ac94c1ca",
+              "swatches": [
+                {
+                  "hex": "#b9acb1",
+                  "weight": 0.2463,
+                  "family": "灰"
+                },
+                {
+                  "hex": "#676266",
+                  "weight": 0.2097,
+                  "family": "灰"
+                },
+                {
+                  "hex": "#171616",
+                  "weight": 0.2029,
+                  "family": "黑"
+                },
+                {
+                  "hex": "#282627",
+                  "weight": 0.1778,
+                  "family": "黑"
+                },
+                {
+                  "hex": "#373435",
+                  "weight": 0.1633,
+                  "family": "灰"
+                }
+              ],
+              "palette_names": [
+                "灰",
+                "黑"
+              ],
+              "color": {
+                "temperature": "未判断",
+                "lightness": "中等",
+                "saturation": "低饱和",
+                "harmony": "未判断",
+                "palette": [
+                  "#b9acb1",
+                  "#676266",
+                  "#171616",
+                  "#282627",
+                  "#373435"
+                ]
+              },
+              "limitations": "渲染光照会影响色值；不据此推断面料成分、真实冷暖或人体适配。"
+            }
+          },
+          {
+            "item_id": "garment_mute_bag_0513",
+            "style_family_id": "item:garment_mute_bag_0513",
+            "image_id": "garment_mute_bag_0513",
+            "outfit_role": "support",
+            "category": "bag",
+            "category_label": "bag",
+            "subcategory": "静音时髦小型腋下包",
+            "slot": null,
+            "title": "静音时髦小型腋下包",
+            "assets": {
+              "cutout_path": "/static/selfit/assets/content_v2/mute/garments/mute-bag-0513-v1.webp",
+              "preview_path": "/static/selfit/assets/content_v2/mute/garments/mute-bag-0513-v1.webp"
+            },
+            "attributes": {
+              "colors": [
+                "灰",
+                "黑"
+              ],
+              "color_hex": [
+                "#434141",
+                "#504d4d",
+                "#3c3a3a",
+                "#282626",
+                "#383636"
+              ],
+              "style_tags": [
+                "variant原创款"
+              ],
+              "scene_tags": [
+                "通勤",
+                "日常"
+              ],
+              "season_tags": [
+                "春",
+                "夏"
+              ]
+            },
+            "quality": {
+              "status": "usable",
+              "score": 1.0,
+              "reasons": [
+                "bound_visual_review"
+              ]
+            },
+            "source": {
+              "type": "aw_reviewed_draft",
+              "content_version": "aw-designed-rendered-3d24e7a85bce644b3361"
+            },
+            "tryon_ready": true,
+            "favorite": false,
+            "deleted": false,
+            "visual": {
+              "category": "bag",
+              "construction": "short_adjustable_strap_two_front_darts",
+              "decoration": "low",
+              "length": null,
+              "material_appearance": "grained_leather_look",
+              "neckline": null,
+              "pattern": "plain",
+              "sleeve": null,
+              "subcategory": "plain_short_shoulder_baguette",
+              "volume": "wide_low_rectangle",
+              "main_colors": [
+                "black"
+              ],
+              "visual_personas": [
+                "mute",
+                "loop",
+                "noir"
+              ],
+              "usage_limits": [
+                "capacity_unknown"
+              ]
+            },
+            "color_evidence": {
+              "source": "opaque_pixel_quantization_v1",
+              "status": "measured_not_semantic_review",
+              "asset_sha256": "4698c5e22c7aba734dae8887f8e3bf2b2f3394b50c9d88ae0402b1badcfe623d",
+              "swatches": [
+                {
+                  "hex": "#434141",
+                  "weight": 0.2544,
+                  "family": "灰"
+                },
+                {
+                  "hex": "#504d4d",
+                  "weight": 0.2216,
+                  "family": "灰"
+                },
+                {
+                  "hex": "#3c3a3a",
+                  "weight": 0.1841,
+                  "family": "灰"
+                },
+                {
+                  "hex": "#282626",
+                  "weight": 0.1707,
+                  "family": "黑"
+                },
+                {
+                  "hex": "#383636",
+                  "weight": 0.1692,
+                  "family": "灰"
+                }
+              ],
+              "palette_names": [
+                "灰",
+                "黑"
+              ],
+              "color": {
+                "temperature": "未判断",
+                "lightness": "深色",
+                "saturation": "无彩",
+                "harmony": "未判断",
+                "palette": [
+                  "#434141",
+                  "#504d4d",
+                  "#3c3a3a",
+                  "#282626",
+                  "#383636"
+                ]
+              },
+              "limitations": "渲染光照会影响色值；不据此推断面料成分、真实冷暖或人体适配。"
+            }
+          }
+        ],
+        "scene_tags": [
+          "日常"
+        ],
+        "season_tags": [
+          "冬"
+        ],
+        "primary_persona": "OOPS",
+        "parent_outfit_id": "outfit_oops_aw-winter-04_09",
+        "recipe_kind": "master",
+        "secondary_personas": [],
+        "cover_path": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/5d599514b679d53dc56c27cb.webp",
+        "layout_snapshot_path": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/5d599514b679d53dc56c27cb.webp",
+        "layout_version": "unified-flatlay-v1",
+        "layout_mode": "canonical_flatlay",
+        "canvas": {
+          "width": 1200,
+          "height": 1500
+        },
+        "display_item_ids": [
+          "garment_aw_winter03_outer_fuchsia_01",
+          "garment_noir_dress_0222",
+          "garment_edge_shoes_0505",
+          "garment_mute_bag_0513"
+        ],
+        "overflow_items": [],
+        "warnings": [],
+        "source": "aw_reviewed_draft",
+        "content_version": "aw-designed-rendered-3d24e7a85bce644b3361",
+        "curation": {},
+        "favorite_count": 0,
+        "favorite": false,
+        "tryon_ready": true,
+        "created_at": "",
+        "updated_at": "",
+        "deleted": false,
+        "visual": {
+          "axes": {},
+          "expression": "easy",
+          "formality": "smart_casual",
+          "layering": 2,
+          "persona_scores": {
+            "oops": 0.82,
+            "neon": 0.6
+          },
+          "scenes": [
+            "daily"
+          ],
+          "seasons": [
+            "winter"
+          ],
+          "structure": "dress",
+          "wearability": "everyday",
+          "main_visual_slots": [
+            "outer",
+            "dress"
+          ],
+          "main_colors": [
+            "vivid_fuchsia",
+            "charcoal"
+          ],
+          "conflicts": null,
+          "silhouette": "reviewed_winter_dress_composition",
+          "color_relation": "reviewed_coherent",
+          "persona_evidence": "错位品红短外套与素灰长衬衫裙形成明确短长对比，没有额外破片堆叠。",
+          "winter_outdoor": "complete_layers_visually_reviewed"
+        },
+        "visual_evidence": "错位品红短外套与素灰长衬衫裙形成明确短长对比，没有额外破片堆叠。",
+        "visual_confidence": 0.86
+      },
+      "record_fingerprint": "d4eb500a5490f68725360133fc1f105a75fa323f1aeabbc65aa2010921656f95",
+      "source_rendered": "docs/audits/20260904-aw-supply/winter-recipes.batch04.rendered.json",
+      "source_review_bundle": "aw-recomposition-index-20260904-25",
+      "staging_normalization": [
+        "explicit_outer_over_main_layer_graph_added"
+      ],
+      "four_gate_status": "pending"
+    },
+    {
+      "outfit_id": "outfit_iced_p0-gap-01_02",
+      "raw_record": {
+        "id": "outfit_iced_p0-gap-01_02",
+        "kind": "master",
+        "parent_outfit_id": null,
+        "recipe_version": "p0-gap-01",
+        "title": "ICED autumn 日常设计 02",
+        "description": "ICED 轻探索：斜向结构背心作唯一主视觉，窄长裙和低跟乐福鞋维持冷静纵向线条。",
+        "primary_persona": "ICED",
+        "secondary_personas": [],
+        "persona_affinity": {},
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "日常"
+        ],
+        "season_tags": [
+          "秋"
+        ],
+        "weather_tags": [],
+        "presentation": [
+          "feminine"
+        ],
+        "intensity": "explore",
+        "formality": 3,
+        "garment_ids": [
+          "garment_iced_top_0562",
+          "garment_mute_skirt_0433",
+          "garment_iced_shoes_0258",
+          "garment_iced_bag_0290"
+        ],
+        "visible_slots": [
+          "top",
+          "skirt",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_iced_top_0562": "hero",
+          "garment_mute_skirt_0433": "support",
+          "garment_iced_shoes_0258": "support",
+          "garment_iced_bag_0290": "support"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "未判断",
+          "saturation": "未判断",
+          "harmony": "未判断",
+          "palette": []
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/4ceefff3cb2aa3a696711215.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source": "designer_recomposition",
+          "confidence": null,
+          "review_notes": [
+            "season, palette and persona are design targets pending whole-image review"
+          ]
+        }
+      },
+      "catalog_record": {
+        "outfit_id": "outfit_iced_p0-gap-01_02",
+        "title": "ICED autumn 日常设计 02",
+        "description": "ICED 轻探索：斜向结构背心作唯一主视觉，窄长裙和低跟乐福鞋维持冷静纵向线条。",
+        "item_ids": [
+          "garment_iced_top_0562",
+          "garment_mute_skirt_0433",
+          "garment_iced_shoes_0258",
+          "garment_iced_bag_0290"
+        ],
+        "items": [
+          {
+            "item_id": "garment_iced_top_0562",
+            "style_family_id": "item:garment_iced_top_0562",
+            "image_id": "garment_iced_top_0562",
+            "outfit_role": "hero",
+            "category": "top",
+            "category_label": "top",
+            "subcategory": "冷感冰面无袖背心",
+            "slot": null,
+            "title": "冷感冰面无袖背心",
+            "assets": {
+              "cutout_path": "/static/selfit/assets/content_v2/iced/garments/iced-top-0562-v1.webp",
+              "preview_path": "/static/selfit/assets/content_v2/iced/garments/iced-top-0562-v1.webp"
+            },
+            "attributes": {
+              "colors": [
+                "蓝"
+              ],
+              "color_hex": [
+                "#9ca9c2",
+                "#afbad0",
+                "#7f8ca7",
+                "#bcc6da",
+                "#c6d3e6"
+              ],
+              "style_tags": [
+                "signature原创款"
+              ],
+              "scene_tags": [
+                "约会社交",
+                "正式活动"
+              ],
+              "season_tags": [
+                "秋",
+                "冬"
+              ]
+            },
+            "quality": {
+              "status": "usable",
+              "score": 1.0,
+              "reasons": [
+                "bound_visual_review"
+              ]
+            },
+            "source": {
+              "type": "aw_reviewed_draft",
+              "content_version": "aw-designed-rendered-6ba6ef463192d1d19876"
+            },
+            "tryon_ready": true,
+            "favorite": false,
+            "deleted": false,
+            "visual": {
+              "category": "top",
+              "construction": "sheer_upper_yoke_opaque_diagonal_front_side_gathers",
+              "decoration": "medium",
+              "length": "hip",
+              "material_appearance": "satin_mesh_look",
+              "neckline": "round",
+              "pattern": "plain",
+              "sleeve": "sleeveless",
+              "subcategory": "asymmetric_ruched_sheer_yoke_tank",
+              "volume": "fitted",
+              "main_colors": [
+                "ice_blue"
+              ],
+              "visual_personas": [
+                "iced",
+                "flou",
+                "loop"
+              ],
+              "usage_limits": [
+                "fit_unknown"
+              ]
+            },
+            "color_evidence": {
+              "source": "opaque_pixel_quantization_v1",
+              "status": "measured_not_semantic_review",
+              "asset_sha256": "ff88f6acebbcab54fa89fefdcf05b973bc3bb3912969aa81c5628f7f5fcacf3f",
+              "swatches": [
+                {
+                  "hex": "#9ca9c2",
+                  "weight": 0.2962,
+                  "family": "蓝"
+                },
+                {
+                  "hex": "#afbad0",
+                  "weight": 0.2177,
+                  "family": "蓝"
+                },
+                {
+                  "hex": "#7f8ca7",
+                  "weight": 0.1976,
+                  "family": "蓝"
+                },
+                {
+                  "hex": "#bcc6da",
+                  "weight": 0.173,
+                  "family": "蓝"
+                },
+                {
+                  "hex": "#c6d3e6",
+                  "weight": 0.1155,
+                  "family": "蓝"
+                }
+              ],
+              "palette_names": [
+                "蓝"
+              ],
+              "color": {
+                "temperature": "未判断",
+                "lightness": "浅色",
+                "saturation": "低饱和",
+                "harmony": "未判断",
+                "palette": [
+                  "#9ca9c2",
+                  "#afbad0",
+                  "#7f8ca7",
+                  "#bcc6da",
+                  "#c6d3e6"
+                ]
+              },
+              "limitations": "渲染光照会影响色值；不据此推断面料成分、真实冷暖或人体适配。"
+            }
+          },
+          {
+            "item_id": "garment_mute_skirt_0433",
+            "style_family_id": "item:garment_mute_skirt_0433",
+            "image_id": "garment_mute_skirt_0433",
+            "outfit_role": "support",
+            "category": "skirt",
+            "category_label": "skirt",
+            "subcategory": "静音时髦窄长半裙",
+            "slot": null,
+            "title": "静音时髦窄长半裙",
+            "assets": {
+              "cutout_path": "/static/selfit/assets/content_v2/mute/garments/mute-skirt-0433-v1.webp",
+              "preview_path": "/static/selfit/assets/content_v2/mute/garments/mute-skirt-0433-v1.webp"
+            },
+            "attributes": {
+              "colors": [
+                "灰"
+              ],
+              "color_hex": [
+                "#3d3c3e",
+                "#404042",
+                "#3a393c",
+                "#333234",
+                "#373739"
+              ],
+              "style_tags": [
+                "variant原创款"
+              ],
+              "scene_tags": [
+                "约会社交",
+                "正式活动"
+              ],
+              "season_tags": [
+                "秋",
+                "冬"
+              ]
+            },
+            "quality": {
+              "status": "usable",
+              "score": 1.0,
+              "reasons": [
+                "bound_visual_review"
+              ]
+            },
+            "source": {
+              "type": "aw_reviewed_draft",
+              "content_version": "aw-designed-rendered-6ba6ef463192d1d19876"
+            },
+            "tryon_ready": true,
+            "favorite": false,
+            "deleted": false,
+            "visual": {
+              "category": "skirt",
+              "construction": "belt_loops_clean_waist_slant_pockets",
+              "decoration": "low",
+              "length": "midi",
+              "material_appearance": "matte_suiting_look",
+              "neckline": null,
+              "pattern": "plain",
+              "sleeve": null,
+              "subcategory": "plain_straight_midi_skirt",
+              "volume": "straight",
+              "main_colors": [
+                "charcoal"
+              ],
+              "visual_personas": [
+                "mute",
+                "loop",
+                "heir"
+              ],
+              "usage_limits": [
+                "walking_ease_unknown"
+              ]
+            },
+            "color_evidence": {
+              "source": "opaque_pixel_quantization_v1",
+              "status": "measured_not_semantic_review",
+              "asset_sha256": "57e67e35bde5587a20afc25f3a98943c36daf6c610028c99ec27111ce4268c57",
+              "swatches": [
+                {
+                  "hex": "#3d3c3e",
+                  "weight": 0.2913,
+                  "family": "灰"
+                },
+                {
+                  "hex": "#404042",
+                  "weight": 0.2333,
+                  "family": "灰"
+                },
+                {
+                  "hex": "#3a393c",
+                  "weight": 0.163,
+                  "family": "灰"
+                },
+                {
+                  "hex": "#333234",
+                  "weight": 0.1599,
+                  "family": "灰"
+                },
+                {
+                  "hex": "#373739",
+                  "weight": 0.1526,
+                  "family": "灰"
+                }
+              ],
+              "palette_names": [
+                "灰"
+              ],
+              "color": {
+                "temperature": "未判断",
+                "lightness": "深色",
+                "saturation": "无彩",
+                "harmony": "未判断",
+                "palette": [
+                  "#3d3c3e",
+                  "#404042",
+                  "#3a393c",
+                  "#333234",
+                  "#373739"
+                ]
+              },
+              "limitations": "渲染光照会影响色值；不据此推断面料成分、真实冷暖或人体适配。"
+            }
+          },
+          {
+            "item_id": "garment_iced_shoes_0258",
+            "style_family_id": "item:garment_iced_shoes_0258",
+            "image_id": "garment_iced_shoes_0258",
+            "outfit_role": "support",
+            "category": "shoes",
+            "category_label": "shoes",
+            "subcategory": "冷感冰面低跟乐福鞋",
+            "slot": null,
+            "title": "冷感冰面低跟乐福鞋",
+            "assets": {
+              "cutout_path": "/static/selfit/assets/content_v2/iced/garments/iced-shoes-0258-v1.webp",
+              "preview_path": "/static/selfit/assets/content_v2/iced/garments/iced-shoes-0258-v1.webp"
+            },
+            "attributes": {
+              "colors": [
+                "灰",
+                "棕"
+              ],
+              "color_hex": [
+                "#b0b3bd",
+                "#a3a1a6",
+                "#7d6a5e",
+                "#b6bdc9",
+                "#c2c4cd"
+              ],
+              "style_tags": [
+                "shared原创款"
+              ],
+              "scene_tags": [
+                "通勤",
+                "日常",
+                "约会社交",
+                "正式活动",
+                "旅行",
+                "创意表达"
+              ],
+              "season_tags": [
+                "四季"
+              ]
+            },
+            "quality": {
+              "status": "usable",
+              "score": 1.0,
+              "reasons": [
+                "bound_visual_review"
+              ]
+            },
+            "source": {
+              "type": "aw_reviewed_draft",
+              "content_version": "aw-designed-rendered-6ba6ef463192d1d19876"
+            },
+            "tryon_ready": true,
+            "favorite": false,
+            "deleted": false,
+            "visual": {
+              "category": "shoes",
+              "construction": "square_toe_apron_seam_penny_band",
+              "decoration": "low",
+              "length": "flat",
+              "material_appearance": "smooth_leather_look",
+              "neckline": null,
+              "pattern": "plain",
+              "sleeve": null,
+              "subcategory": "square_toe_loafers",
+              "volume": null,
+              "main_colors": [
+                "ice_blue"
+              ],
+              "visual_personas": [
+                "iced",
+                "loop",
+                "heir"
+              ],
+              "usage_limits": [
+                "walking_comfort_unknown"
+              ]
+            },
+            "color_evidence": {
+              "source": "opaque_pixel_quantization_v1",
+              "status": "measured_not_semantic_review",
+              "asset_sha256": "f6fbbc257db84cfd72592e0762d3c3d207b9a9162914121d8787a91bd1ae6de2",
+              "swatches": [
+                {
+                  "hex": "#b0b3bd",
+                  "weight": 0.3033,
+                  "family": "灰"
+                },
+                {
+                  "hex": "#a3a1a6",
+                  "weight": 0.2463,
+                  "family": "灰"
+                },
+                {
+                  "hex": "#7d6a5e",
+                  "weight": 0.1931,
+                  "family": "棕"
+                },
+                {
+                  "hex": "#b6bdc9",
+                  "weight": 0.1385,
+                  "family": "灰"
+                },
+                {
+                  "hex": "#c2c4cd",
+                  "weight": 0.1189,
+                  "family": "白"
+                }
+              ],
+              "palette_names": [
+                "灰",
+                "棕"
+              ],
+              "color": {
+                "temperature": "未判断",
+                "lightness": "中等",
+                "saturation": "低饱和",
+                "harmony": "未判断",
+                "palette": [
+                  "#b0b3bd",
+                  "#a3a1a6",
+                  "#7d6a5e",
+                  "#b6bdc9",
+                  "#c2c4cd"
+                ]
+              },
+              "limitations": "渲染光照会影响色值；不据此推断面料成分、真实冷暖或人体适配。"
+            }
+          },
+          {
+            "item_id": "garment_iced_bag_0290",
+            "style_family_id": "item:garment_iced_bag_0290",
+            "image_id": "garment_iced_bag_0290",
+            "outfit_role": "support",
+            "category": "bag",
+            "category_label": "bag",
+            "subcategory": "冷感冰面几何托特包",
+            "slot": null,
+            "title": "冷感冰面几何托特包",
+            "assets": {
+              "cutout_path": "/static/selfit/assets/content_v2/iced/garments/iced-bag-0290-v1.webp",
+              "preview_path": "/static/selfit/assets/content_v2/iced/garments/iced-bag-0290-v1.webp"
+            },
+            "attributes": {
+              "colors": [
+                "灰",
+                "蓝",
+                "白"
+              ],
+              "color_hex": [
+                "#aab5c3",
+                "#b4becc",
+                "#99a4b3",
+                "#b9c3d1",
+                "#bfc9d6"
+              ],
+              "style_tags": [
+                "shared原创款"
+              ],
+              "scene_tags": [
+                "通勤",
+                "日常",
+                "约会社交",
+                "正式活动",
+                "旅行",
+                "创意表达"
+              ],
+              "season_tags": [
+                "四季"
+              ]
+            },
+            "quality": {
+              "status": "usable",
+              "score": 1.0,
+              "reasons": [
+                "bound_visual_review"
+              ]
+            },
+            "source": {
+              "type": "aw_reviewed_draft",
+              "content_version": "aw-designed-rendered-6ba6ef463192d1d19876"
+            },
+            "tryon_ready": true,
+            "favorite": false,
+            "deleted": false,
+            "visual": {
+              "category": "bag",
+              "construction": "open_top_two_handles",
+              "decoration": "low",
+              "length": null,
+              "material_appearance": "matte_leather_look",
+              "neckline": null,
+              "pattern": "plain",
+              "sleeve": null,
+              "subcategory": "open_tote",
+              "volume": "flat_trapezoid",
+              "main_colors": [
+                "ice_blue"
+              ],
+              "visual_personas": [
+                "iced",
+                "loop",
+                "mute"
+              ],
+              "usage_limits": [
+                "capacity_unknown"
+              ]
+            },
+            "color_evidence": {
+              "source": "opaque_pixel_quantization_v1",
+              "status": "measured_not_semantic_review",
+              "asset_sha256": "31ea18c4de35f6ffa394ee14a671c97c255db851f905c28460e078ede33f6310",
+              "swatches": [
+                {
+                  "hex": "#aab5c3",
+                  "weight": 0.2711,
+                  "family": "灰"
+                },
+                {
+                  "hex": "#b4becc",
+                  "weight": 0.2297,
+                  "family": "灰"
+                },
+                {
+                  "hex": "#99a4b3",
+                  "weight": 0.1995,
+                  "family": "蓝"
+                },
+                {
+                  "hex": "#b9c3d1",
+                  "weight": 0.1918,
+                  "family": "白"
+                },
+                {
+                  "hex": "#bfc9d6",
+                  "weight": 0.1078,
+                  "family": "白"
+                }
+              ],
+              "palette_names": [
+                "灰",
+                "蓝",
+                "白"
+              ],
+              "color": {
+                "temperature": "未判断",
+                "lightness": "浅色",
+                "saturation": "低饱和",
+                "harmony": "未判断",
+                "palette": [
+                  "#aab5c3",
+                  "#b4becc",
+                  "#99a4b3",
+                  "#b9c3d1",
+                  "#bfc9d6"
+                ]
+              },
+              "limitations": "渲染光照会影响色值；不据此推断面料成分、真实冷暖或人体适配。"
+            }
+          }
+        ],
+        "scene_tags": [
+          "日常"
+        ],
+        "season_tags": [
+          "秋"
+        ],
+        "primary_persona": "ICED",
+        "parent_outfit_id": "outfit_iced_p0-gap-01_02",
+        "recipe_kind": "master",
+        "secondary_personas": [],
+        "cover_path": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/4ceefff3cb2aa3a696711215.webp",
+        "layout_snapshot_path": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/4ceefff3cb2aa3a696711215.webp",
+        "layout_version": "unified-flatlay-v1",
+        "layout_mode": "canonical_flatlay",
+        "canvas": {
+          "width": 1200,
+          "height": 1500
+        },
+        "display_item_ids": [
+          "garment_iced_top_0562",
+          "garment_mute_skirt_0433",
+          "garment_iced_shoes_0258",
+          "garment_iced_bag_0290"
+        ],
+        "overflow_items": [],
+        "warnings": [],
+        "source": "aw_reviewed_draft",
+        "content_version": "aw-designed-rendered-6ba6ef463192d1d19876",
+        "curation": {},
+        "favorite_count": 0,
+        "favorite": false,
+        "tryon_ready": true,
+        "created_at": "",
+        "updated_at": "",
+        "deleted": false,
+        "visual": {
+          "axes": {},
+          "expression": "explore",
+          "formality": "smart_casual",
+          "layering": 1,
+          "persona_scores": {
+            "iced": 0.9
+          },
+          "scenes": [
+            "daily",
+            "commute"
+          ],
+          "seasons": [
+            "autumn"
+          ],
+          "structure": "skirt",
+          "wearability": "everyday_with_statement",
+          "main_visual_slots": [
+            "top",
+            "skirt"
+          ],
+          "main_colors": [],
+          "conflicts": null,
+          "silhouette": "single_focal_daily_exploration",
+          "color_relation": "low_competition_supports",
+          "persona_evidence": "斜向抽褶冰蓝背心为唯一主视觉，炭灰窄裙、乐福鞋与托特包都保持冷静线条，达到日常轻探索。"
+        },
+        "visual_evidence": "斜向抽褶冰蓝背心为唯一主视觉，炭灰窄裙、乐福鞋与托特包都保持冷静线条，达到日常轻探索。",
+        "visual_confidence": 0.86
+      },
+      "record_fingerprint": "64f45231b2f51e5ca69513483aaef05ac4374bef10fc4a7bb31a6445383474c9",
+      "source_rendered": "docs/audits/20260904-p0-acceptance/gap-recipes.batch01.rendered.json",
+      "source_review_bundle": "p0-gap-01-visual-review-v1",
+      "four_gate_status": "pending"
+    },
+    {
+      "outfit_id": "outfit_wabi_p0-gap-01_03",
+      "raw_record": {
+        "id": "outfit_wabi_p0-gap-01_03",
+        "kind": "master",
+        "parent_outfit_id": null,
+        "recipe_version": "p0-gap-01",
+        "title": "WABI autumn 日常设计 03",
+        "description": "WABI 轻探索裤装：不对称针织上衣承担肌理焦点，九分锥形裤与素色配件留出呼吸感。",
+        "primary_persona": "WABI",
+        "secondary_personas": [],
+        "persona_affinity": {},
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "日常"
+        ],
+        "season_tags": [
+          "秋"
+        ],
+        "weather_tags": [],
+        "presentation": [
+          "feminine"
+        ],
+        "intensity": "explore",
+        "formality": 3,
+        "garment_ids": [
+          "garment_void_top_0367",
+          "garment_wabi_bottom_0182",
+          "garment_ease_shoes_0244",
+          "garment_jade_bag_0284"
+        ],
+        "visible_slots": [
+          "top",
+          "bottom",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_void_top_0367": "hero",
+          "garment_wabi_bottom_0182": "support",
+          "garment_ease_shoes_0244": "support",
+          "garment_jade_bag_0284": "support"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "未判断",
+          "saturation": "未判断",
+          "harmony": "未判断",
+          "palette": []
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/cd2156a587d8047c66ee5054.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source": "designer_recomposition",
+          "confidence": null,
+          "review_notes": [
+            "season, palette and persona are design targets pending whole-image review"
+          ]
+        }
+      },
+      "catalog_record": {
+        "outfit_id": "outfit_wabi_p0-gap-01_03",
+        "title": "WABI autumn 日常设计 03",
+        "description": "WABI 轻探索裤装：不对称针织上衣承担肌理焦点，九分锥形裤与素色配件留出呼吸感。",
+        "item_ids": [
+          "garment_void_top_0367",
+          "garment_wabi_bottom_0182",
+          "garment_ease_shoes_0244",
+          "garment_jade_bag_0284"
+        ],
+        "items": [
+          {
+            "item_id": "garment_void_top_0367",
+            "style_family_id": "item:garment_void_top_0367",
+            "image_id": "garment_void_top_0367",
+            "outfit_role": "hero",
+            "category": "top",
+            "category_label": "top",
+            "subcategory": "人间失格细针织上衣",
+            "slot": null,
+            "title": "人间失格细针织上衣",
+            "assets": {
+              "cutout_path": "/static/selfit/assets/content_v2/void/garments/void-top-0367-v1.webp",
+              "preview_path": "/static/selfit/assets/content_v2/void/garments/void-top-0367-v1.webp"
+            },
+            "attributes": {
+              "colors": [
+                "灰",
+                "黑"
+              ],
+              "color_hex": [
+                "#39363c",
+                "#474145",
+                "#29272a",
+                "#5d5251",
+                "#7b7373"
+              ],
+              "style_tags": [
+                "variant原创款"
+              ],
+              "scene_tags": [
+                "约会社交",
+                "正式活动"
+              ],
+              "season_tags": [
+                "秋",
+                "冬"
+              ]
+            },
+            "quality": {
+              "status": "usable",
+              "score": 1.0,
+              "reasons": [
+                "bound_visual_review"
+              ]
+            },
+            "source": {
+              "type": "aw_reviewed_draft",
+              "content_version": "aw-designed-rendered-6ba6ef463192d1d19876"
+            },
+            "tryon_ready": true,
+            "favorite": false,
+            "deleted": false,
+            "visual": {
+              "category": "top",
+              "construction": "raw_edge_panels_uneven_sleeves",
+              "decoration": "high",
+              "length": "hip",
+              "material_appearance": "washed_knit_woven_look",
+              "neckline": "cowl",
+              "pattern": "patchwork",
+              "sleeve": "long_fitted",
+              "subcategory": "fitted_displaced_layer_top",
+              "volume": "fitted",
+              "main_colors": [
+                "charcoal",
+                "brown",
+                "washed_blue"
+              ],
+              "visual_personas": [
+                "void",
+                "film",
+                "edge"
+              ],
+              "usage_limits": [
+                "experimental"
+              ]
+            },
+            "color_evidence": {
+              "source": "opaque_pixel_quantization_v1",
+              "status": "measured_not_semantic_review",
+              "asset_sha256": "0e5c7e506cbcc1354cce2be5b3b360d5590cd714a219cba5131ddf6ea1baf1a0",
+              "swatches": [
+                {
+                  "hex": "#39363c",
+                  "weight": 0.299,
+                  "family": "灰"
+                },
+                {
+                  "hex": "#474145",
+                  "weight": 0.2434,
+                  "family": "灰"
+                },
+                {
+                  "hex": "#29272a",
+                  "weight": 0.1898,
+                  "family": "黑"
+                },
+                {
+                  "hex": "#5d5251",
+                  "weight": 0.1423,
+                  "family": "灰"
+                },
+                {
+                  "hex": "#7b7373",
+                  "weight": 0.1254,
+                  "family": "灰"
+                }
+              ],
+              "palette_names": [
+                "灰",
+                "黑"
+              ],
+              "color": {
+                "temperature": "未判断",
+                "lightness": "深色",
+                "saturation": "低饱和",
+                "harmony": "未判断",
+                "palette": [
+                  "#39363c",
+                  "#474145",
+                  "#29272a",
+                  "#5d5251",
+                  "#7b7373"
+                ]
+              },
+              "limitations": "渲染光照会影响色值；不据此推断面料成分、真实冷暖或人体适配。"
+            }
+          },
+          {
+            "item_id": "garment_wabi_bottom_0182",
+            "style_family_id": "item:garment_wabi_bottom_0182",
+            "image_id": "garment_wabi_bottom_0182",
+            "outfit_role": "support",
+            "category": "bottom",
+            "category_label": "bottom",
+            "subcategory": "手作侘寂九分锥形裤",
+            "slot": null,
+            "title": "手作侘寂九分锥形裤",
+            "assets": {
+              "cutout_path": "/static/selfit/assets/content_v2/wabi/garments/wabi-bottom-0182-v1.webp",
+              "preview_path": "/static/selfit/assets/content_v2/wabi/garments/wabi-bottom-0182-v1.webp"
+            },
+            "attributes": {
+              "colors": [
+                "棕"
+              ],
+              "color_hex": [
+                "#786e65",
+                "#81776e",
+                "#6b6159",
+                "#877d75",
+                "#8f857d"
+              ],
+              "style_tags": [
+                "shared原创款"
+              ],
+              "scene_tags": [
+                "通勤",
+                "日常",
+                "约会社交",
+                "正式活动",
+                "旅行",
+                "创意表达"
+              ],
+              "season_tags": [
+                "四季"
+              ]
+            },
+            "quality": {
+              "status": "usable",
+              "score": 1.0,
+              "reasons": [
+                "bound_visual_review"
+              ]
+            },
+            "source": {
+              "type": "aw_reviewed_draft",
+              "content_version": "aw-designed-rendered-6ba6ef463192d1d19876"
+            },
+            "tryon_ready": true,
+            "favorite": false,
+            "deleted": false,
+            "visual": {
+              "category": "bottom",
+              "construction": "concealed_fly_belt_loops_crease",
+              "decoration": "low",
+              "length": "ankle",
+              "material_appearance": "matte_tailoring",
+              "neckline": null,
+              "pattern": "plain",
+              "sleeve": null,
+              "subcategory": "straight_pressed_trousers",
+              "volume": "straight",
+              "main_colors": [
+                "dark_taupe"
+              ],
+              "visual_personas": [
+                "mute",
+                "loop",
+                "heir"
+              ],
+              "usage_limits": null
+            },
+            "color_evidence": {
+              "source": "opaque_pixel_quantization_v1",
+              "status": "measured_not_semantic_review",
+              "asset_sha256": "0493aca77528090903798aced50f035fe613455f4991e86ff77bfd9068299284",
+              "swatches": [
+                {
+                  "hex": "#786e65",
+                  "weight": 0.2675,
+                  "family": "棕"
+                },
+                {
+                  "hex": "#81776e",
+                  "weight": 0.2349,
+                  "family": "棕"
+                },
+                {
+                  "hex": "#6b6159",
+                  "weight": 0.195,
+                  "family": "棕"
+                },
+                {
+                  "hex": "#877d75",
+                  "weight": 0.1881,
+                  "family": "棕"
+                },
+                {
+                  "hex": "#8f857d",
+                  "weight": 0.1146,
+                  "family": "灰"
+                }
+              ],
+              "palette_names": [
+                "棕"
+              ],
+              "color": {
+                "temperature": "未判断",
+                "lightness": "中等",
+                "saturation": "低饱和",
+                "harmony": "未判断",
+                "palette": [
+                  "#786e65",
+                  "#81776e",
+                  "#6b6159",
+                  "#877d75",
+                  "#8f857d"
+                ]
+              },
+              "limitations": "渲染光照会影响色值；不据此推断面料成分、真实冷暖或人体适配。"
+            }
+          },
+          {
+            "item_id": "garment_ease_shoes_0244",
+            "style_family_id": "item:garment_ease_shoes_0244",
+            "image_id": "garment_ease_shoes_0244",
+            "outfit_role": "support",
+            "category": "shoes",
+            "category_label": "shoes",
+            "subcategory": "松弛讲究细带低跟鞋",
+            "slot": null,
+            "title": "松弛讲究细带低跟鞋",
+            "assets": {
+              "cutout_path": "/static/selfit/assets/content_v2/ease/garments/ease-shoes-0244-v1.webp",
+              "preview_path": "/static/selfit/assets/content_v2/ease/garments/ease-shoes-0244-v1.webp"
+            },
+            "attributes": {
+              "colors": [
+                "棕",
+                "奶油白"
+              ],
+              "color_hex": [
+                "#bda493",
+                "#e6cebc",
+                "#6c5648",
+                "#846b5b",
+                "#9b7f6c"
+              ],
+              "style_tags": [
+                "shared原创款"
+              ],
+              "scene_tags": [
+                "通勤",
+                "日常",
+                "约会社交",
+                "正式活动",
+                "旅行",
+                "创意表达"
+              ],
+              "season_tags": [
+                "四季"
+              ]
+            },
+            "quality": {
+              "status": "usable",
+              "score": 1.0,
+              "reasons": [
+                "bound_visual_review"
+              ]
+            },
+            "source": {
+              "type": "aw_reviewed_draft",
+              "content_version": "aw-designed-rendered-6ba6ef463192d1d19876"
+            },
+            "tryon_ready": true,
+            "favorite": false,
+            "deleted": false,
+            "visual": {
+              "category": "shoes",
+              "construction": "pointed_toe_thin_backstrap",
+              "decoration": "low",
+              "length": "low_heel",
+              "material_appearance": "smooth_leather_look",
+              "neckline": null,
+              "pattern": "plain",
+              "sleeve": null,
+              "subcategory": "pointed_slingbacks",
+              "volume": null,
+              "main_colors": [
+                "taupe"
+              ],
+              "visual_personas": [
+                "heir",
+                "iced",
+                "mute"
+              ],
+              "usage_limits": [
+                "walking_comfort_unknown"
+              ]
+            },
+            "color_evidence": {
+              "source": "opaque_pixel_quantization_v1",
+              "status": "measured_not_semantic_review",
+              "asset_sha256": "f7b498f4c7e2856613c4a7bc098d89bcedc74c058542c60c9bc36b9b8571ea6f",
+              "swatches": [
+                {
+                  "hex": "#bda493",
+                  "weight": 0.2395,
+                  "family": "棕"
+                },
+                {
+                  "hex": "#e6cebc",
+                  "weight": 0.2362,
+                  "family": "奶油白"
+                },
+                {
+                  "hex": "#6c5648",
+                  "weight": 0.21,
+                  "family": "棕"
+                },
+                {
+                  "hex": "#846b5b",
+                  "weight": 0.1655,
+                  "family": "棕"
+                },
+                {
+                  "hex": "#9b7f6c",
+                  "weight": 0.1488,
+                  "family": "棕"
+                }
+              ],
+              "palette_names": [
+                "棕",
+                "奶油白"
+              ],
+              "color": {
+                "temperature": "未判断",
+                "lightness": "中等",
+                "saturation": "低饱和",
+                "harmony": "未判断",
+                "palette": [
+                  "#bda493",
+                  "#e6cebc",
+                  "#6c5648",
+                  "#846b5b",
+                  "#9b7f6c"
+                ]
+              },
+              "limitations": "渲染光照会影响色值；不据此推断面料成分、真实冷暖或人体适配。"
+            }
+          },
+          {
+            "item_id": "garment_jade_bag_0284",
+            "style_family_id": "item:garment_jade_bag_0284",
+            "image_id": "garment_jade_bag_0284",
+            "outfit_role": "support",
+            "category": "bag",
+            "category_label": "bag",
+            "subcategory": "东方玉骨几何托特包",
+            "slot": null,
+            "title": "东方玉骨几何托特包",
+            "assets": {
+              "cutout_path": "/static/selfit/assets/content_v2/jade/garments/jade-bag-0284-v1.webp",
+              "preview_path": "/static/selfit/assets/content_v2/jade/garments/jade-bag-0284-v1.webp"
+            },
+            "attributes": {
+              "colors": [
+                "灰"
+              ],
+              "color_hex": [
+                "#858a80",
+                "#949890",
+                "#696a60",
+                "#9ca199",
+                "#a6aaa2"
+              ],
+              "style_tags": [
+                "shared原创款"
+              ],
+              "scene_tags": [
+                "通勤",
+                "日常",
+                "约会社交",
+                "正式活动",
+                "旅行",
+                "创意表达"
+              ],
+              "season_tags": [
+                "四季"
+              ]
+            },
+            "quality": {
+              "status": "usable",
+              "score": 1.0,
+              "reasons": [
+                "bound_visual_review"
+              ]
+            },
+            "source": {
+              "type": "aw_reviewed_draft",
+              "content_version": "aw-designed-rendered-6ba6ef463192d1d19876"
+            },
+            "tryon_ready": true,
+            "favorite": false,
+            "deleted": false,
+            "visual": {
+              "category": "bag",
+              "construction": "two_handles_zip_detachable_strap",
+              "decoration": "low",
+              "length": null,
+              "material_appearance": "canvas_look",
+              "neckline": null,
+              "pattern": "plain",
+              "sleeve": null,
+              "subcategory": "fabric_zip_tote",
+              "volume": "flat_trapezoid",
+              "main_colors": [
+                "sage",
+                "tan"
+              ],
+              "visual_personas": [
+                "loop",
+                "ease",
+                "wabi"
+              ],
+              "usage_limits": [
+                "capacity_unknown"
+              ]
+            },
+            "color_evidence": {
+              "source": "opaque_pixel_quantization_v1",
+              "status": "measured_not_semantic_review",
+              "asset_sha256": "8fe1b8fe7a5926c0de68702c4ae871bd8ce729224219482d8b961a197db043d7",
+              "swatches": [
+                {
+                  "hex": "#858a80",
+                  "weight": 0.2828,
+                  "family": "灰"
+                },
+                {
+                  "hex": "#949890",
+                  "weight": 0.2053,
+                  "family": "灰"
+                },
+                {
+                  "hex": "#696a60",
+                  "weight": 0.2011,
+                  "family": "灰"
+                },
+                {
+                  "hex": "#9ca199",
+                  "weight": 0.1898,
+                  "family": "灰"
+                },
+                {
+                  "hex": "#a6aaa2",
+                  "weight": 0.1209,
+                  "family": "灰"
+                }
+              ],
+              "palette_names": [
+                "灰"
+              ],
+              "color": {
+                "temperature": "未判断",
+                "lightness": "中等",
+                "saturation": "低饱和",
+                "harmony": "未判断",
+                "palette": [
+                  "#858a80",
+                  "#949890",
+                  "#696a60",
+                  "#9ca199",
+                  "#a6aaa2"
+                ]
+              },
+              "limitations": "渲染光照会影响色值；不据此推断面料成分、真实冷暖或人体适配。"
+            }
+          }
+        ],
+        "scene_tags": [
+          "日常"
+        ],
+        "season_tags": [
+          "秋"
+        ],
+        "primary_persona": "WABI",
+        "parent_outfit_id": "outfit_wabi_p0-gap-01_03",
+        "recipe_kind": "master",
+        "secondary_personas": [],
+        "cover_path": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/cd2156a587d8047c66ee5054.webp",
+        "layout_snapshot_path": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/cd2156a587d8047c66ee5054.webp",
+        "layout_version": "unified-flatlay-v1",
+        "layout_mode": "canonical_flatlay",
+        "canvas": {
+          "width": 1200,
+          "height": 1500
+        },
+        "display_item_ids": [
+          "garment_void_top_0367",
+          "garment_wabi_bottom_0182",
+          "garment_ease_shoes_0244",
+          "garment_jade_bag_0284"
+        ],
+        "overflow_items": [],
+        "warnings": [],
+        "source": "aw_reviewed_draft",
+        "content_version": "aw-designed-rendered-6ba6ef463192d1d19876",
+        "curation": {},
+        "favorite_count": 0,
+        "favorite": false,
+        "tryon_ready": true,
+        "created_at": "",
+        "updated_at": "",
+        "deleted": false,
+        "visual": {
+          "axes": {},
+          "expression": "explore",
+          "formality": "smart_casual",
+          "layering": 1,
+          "persona_scores": {
+            "wabi": 0.9
+          },
+          "scenes": [
+            "daily",
+            "commute"
+          ],
+          "seasons": [
+            "autumn"
+          ],
+          "structure": "pants",
+          "wearability": "everyday_with_statement",
+          "main_visual_slots": [
+            "top",
+            "pants"
+          ],
+          "main_colors": [],
+          "conflicts": null,
+          "silhouette": "single_focal_daily_exploration",
+          "color_relation": "low_competition_supports",
+          "persona_evidence": "手作拼片上衣集中肌理和不对称证据，锥形裤与低饱和配件收敛，是可日常化的 WABI 轻探索。"
+        },
+        "visual_evidence": "手作拼片上衣集中肌理和不对称证据，锥形裤与低饱和配件收敛，是可日常化的 WABI 轻探索。",
+        "visual_confidence": 0.86
+      },
+      "record_fingerprint": "5675cc6147f06f4c5e176f6da85e91f5d615b66c42f0d2ae4ee8da2dc70f8420",
+      "source_rendered": "docs/audits/20260904-p0-acceptance/gap-recipes.batch01.rendered.json",
+      "source_review_bundle": "p0-gap-01-visual-review-v1",
+      "four_gate_status": "pending"
+    },
+    {
+      "outfit_id": "outfit_film_p0-gap-02_01",
+      "raw_record": {
+        "id": "outfit_film_p0-gap-02_01",
+        "kind": "master",
+        "parent_outfit_id": null,
+        "recipe_version": "p0-gap-02",
+        "title": "FILM autumn 日常设计 01",
+        "description": "FILM 轻探索修复：做旧牛仔束腰上衣是唯一复古焦点，低腰宽裤与素色鞋包支撑日常可穿性。",
+        "primary_persona": "FILM",
+        "secondary_personas": [],
+        "persona_affinity": {},
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "日常"
+        ],
+        "season_tags": [
+          "秋"
+        ],
+        "weather_tags": [],
+        "presentation": [
+          "feminine"
+        ],
+        "intensity": "explore",
+        "formality": 3,
+        "garment_ids": [
+          "garment_film_top_0053",
+          "garment_film_bottom_0171",
+          "garment_bolt_shoes_0266",
+          "garment_film_bag_0283"
+        ],
+        "visible_slots": [
+          "top",
+          "bottom",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_film_top_0053": "hero",
+          "garment_film_bottom_0171": "support",
+          "garment_bolt_shoes_0266": "support",
+          "garment_film_bag_0283": "support"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "未判断",
+          "saturation": "未判断",
+          "harmony": "未判断",
+          "palette": []
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/03676f9faa5e7b5a940ff688.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source": "designer_recomposition",
+          "confidence": null,
+          "review_notes": [
+            "season, palette and persona are design targets pending whole-image review"
+          ]
+        }
+      },
+      "catalog_record": {
+        "outfit_id": "outfit_film_p0-gap-02_01",
+        "title": "FILM autumn 日常设计 01",
+        "description": "FILM 轻探索修复：做旧牛仔束腰上衣是唯一复古焦点，低腰宽裤与素色鞋包支撑日常可穿性。",
+        "item_ids": [
+          "garment_film_top_0053",
+          "garment_film_bottom_0171",
+          "garment_bolt_shoes_0266",
+          "garment_film_bag_0283"
+        ],
+        "items": [
+          {
+            "item_id": "garment_film_top_0053",
+            "style_family_id": "item:garment_film_top_0053",
+            "image_id": "garment_film_top_0053",
+            "outfit_role": "hero",
+            "category": "top",
+            "category_label": "top",
+            "subcategory": "旧感牛仔",
+            "slot": null,
+            "title": "旧感牛仔",
+            "assets": {
+              "cutout_path": "/static/selfit/assets/content_v2/film/garments/film-top-0053-v1.webp",
+              "preview_path": "/static/selfit/assets/content_v2/film/garments/film-top-0053-v1.webp"
+            },
+            "attributes": {
+              "colors": [
+                "灰",
+                "黑"
+              ],
+              "color_hex": [
+                "#46423e",
+                "#524f4d",
+                "#2f2b26",
+                "#5b5a58",
+                "#6e6f6e"
+              ],
+              "style_tags": [
+                "signature原创款"
+              ],
+              "scene_tags": [
+                "旅行",
+                "创意表达"
+              ],
+              "season_tags": [
+                "四季"
+              ]
+            },
+            "quality": {
+              "status": "usable",
+              "score": 1.0,
+              "reasons": [
+                "bound_visual_review"
+              ]
+            },
+            "source": {
+              "type": "aw_reviewed_draft",
+              "content_version": "aw-designed-rendered-162e2d2940a68ab9fe5e"
+            },
+            "tryon_ready": true,
+            "favorite": false,
+            "deleted": false,
+            "visual": {
+              "category": "top",
+              "construction": "button_front_pointed_hem",
+              "decoration": "medium",
+              "length": "cropped_hip",
+              "material_appearance": "denim_corduroy_look",
+              "neckline": "scoop_tie",
+              "pattern": "patchwork",
+              "sleeve": "balloon_long",
+              "subcategory": "retro_waisted_blouse",
+              "volume": "waisted",
+              "main_colors": [
+                "washed_blue",
+                "tobacco"
+              ],
+              "visual_personas": [
+                "film"
+              ],
+              "usage_limits": null
+            },
+            "color_evidence": {
+              "source": "opaque_pixel_quantization_v1",
+              "status": "measured_not_semantic_review",
+              "asset_sha256": "aa1a5d74a96388c5668eba2fce0118b58573f04c5e01c5743de4333a462ea240",
+              "swatches": [
+                {
+                  "hex": "#46423e",
+                  "weight": 0.2857,
+                  "family": "灰"
+                },
+                {
+                  "hex": "#524f4d",
+                  "weight": 0.2372,
+                  "family": "灰"
+                },
+                {
+                  "hex": "#2f2b26",
+                  "weight": 0.1952,
+                  "family": "黑"
+                },
+                {
+                  "hex": "#5b5a58",
+                  "weight": 0.1765,
+                  "family": "灰"
+                },
+                {
+                  "hex": "#6e6f6e",
+                  "weight": 0.1054,
+                  "family": "灰"
+                }
+              ],
+              "palette_names": [
+                "灰",
+                "黑"
+              ],
+              "color": {
+                "temperature": "未判断",
+                "lightness": "深色",
+                "saturation": "低饱和",
+                "harmony": "未判断",
+                "palette": [
+                  "#46423e",
+                  "#524f4d",
+                  "#2f2b26",
+                  "#5b5a58",
+                  "#6e6f6e"
+                ]
+              },
+              "limitations": "渲染光照会影响色值；不据此推断面料成分、真实冷暖或人体适配。"
+            }
+          },
+          {
+            "item_id": "garment_film_bottom_0171",
+            "style_family_id": "item:garment_film_bottom_0171",
+            "image_id": "garment_film_bottom_0171",
+            "outfit_role": "support",
+            "category": "bottom",
+            "category_label": "bottom",
+            "subcategory": "虚焦胶片低腰宽裤",
+            "slot": null,
+            "title": "虚焦胶片低腰宽裤",
+            "assets": {
+              "cutout_path": "/static/selfit/assets/content_v2/film/garments/film-bottom-0171-v1.webp",
+              "preview_path": "/static/selfit/assets/content_v2/film/garments/film-bottom-0171-v1.webp"
+            },
+            "attributes": {
+              "colors": [
+                "棕"
+              ],
+              "color_hex": [
+                "#655850",
+                "#6f6259",
+                "#574b43",
+                "#796b62",
+                "#84756b"
+              ],
+              "style_tags": [
+                "shared原创款"
+              ],
+              "scene_tags": [
+                "通勤",
+                "日常",
+                "约会社交",
+                "正式活动",
+                "旅行",
+                "创意表达"
+              ],
+              "season_tags": [
+                "四季"
+              ]
+            },
+            "quality": {
+              "status": "usable",
+              "score": 1.0,
+              "reasons": [
+                "bound_visual_review"
+              ]
+            },
+            "source": {
+              "type": "aw_reviewed_draft",
+              "content_version": "aw-designed-rendered-162e2d2940a68ab9fe5e"
+            },
+            "tryon_ready": true,
+            "favorite": false,
+            "deleted": false,
+            "visual": {
+              "category": "bottom",
+              "construction": "five_pockets_belt_loops_button",
+              "decoration": "low",
+              "length": "full",
+              "material_appearance": "washed_cotton_look",
+              "neckline": null,
+              "pattern": "plain",
+              "sleeve": null,
+              "subcategory": "wide_jeans",
+              "volume": "wide",
+              "main_colors": [
+                "brown"
+              ],
+              "visual_personas": [
+                "ease",
+                "film",
+                "loop"
+              ],
+              "usage_limits": null
+            },
+            "color_evidence": {
+              "source": "opaque_pixel_quantization_v1",
+              "status": "measured_not_semantic_review",
+              "asset_sha256": "a5ccabf97ef6013d1a8f63ce05339e63ebdccfd9d8828d190715c5490df3dfbf",
+              "swatches": [
+                {
+                  "hex": "#655850",
+                  "weight": 0.2915,
+                  "family": "棕"
+                },
+                {
+                  "hex": "#6f6259",
+                  "weight": 0.2072,
+                  "family": "棕"
+                },
+                {
+                  "hex": "#574b43",
+                  "weight": 0.2036,
+                  "family": "棕"
+                },
+                {
+                  "hex": "#796b62",
+                  "weight": 0.1749,
+                  "family": "棕"
+                },
+                {
+                  "hex": "#84756b",
+                  "weight": 0.1228,
+                  "family": "棕"
+                }
+              ],
+              "palette_names": [
+                "棕"
+              ],
+              "color": {
+                "temperature": "未判断",
+                "lightness": "中等",
+                "saturation": "低饱和",
+                "harmony": "未判断",
+                "palette": [
+                  "#655850",
+                  "#6f6259",
+                  "#574b43",
+                  "#796b62",
+                  "#84756b"
+                ]
+              },
+              "limitations": "渲染光照会影响色值；不据此推断面料成分、真实冷暖或人体适配。"
+            }
+          },
+          {
+            "item_id": "garment_bolt_shoes_0266",
+            "style_family_id": "item:garment_bolt_shoes_0266",
+            "image_id": "garment_bolt_shoes_0266",
+            "outfit_role": "support",
+            "category": "shoes",
+            "category_label": "shoes",
+            "subcategory": "在逃千金圆头玛丽珍鞋",
+            "slot": null,
+            "title": "在逃千金圆头玛丽珍鞋",
+            "assets": {
+              "cutout_path": "/static/selfit/assets/content_v2/bolt/garments/bolt-shoes-0266-v1.webp",
+              "preview_path": "/static/selfit/assets/content_v2/bolt/garments/bolt-shoes-0266-v1.webp"
+            },
+            "attributes": {
+              "colors": [
+                "黄",
+                "红",
+                "棕"
+              ],
+              "color_hex": [
+                "#c5a790",
+                "#3c1519",
+                "#8a6958",
+                "#5c3336",
+                "#482c2c"
+              ],
+              "style_tags": [
+                "shared原创款"
+              ],
+              "scene_tags": [
+                "通勤",
+                "日常",
+                "约会社交",
+                "正式活动",
+                "旅行",
+                "创意表达"
+              ],
+              "season_tags": [
+                "四季"
+              ]
+            },
+            "quality": {
+              "status": "usable",
+              "score": 1.0,
+              "reasons": [
+                "bound_visual_review"
+              ]
+            },
+            "source": {
+              "type": "aw_reviewed_draft",
+              "content_version": "aw-designed-rendered-162e2d2940a68ab9fe5e"
+            },
+            "tryon_ready": true,
+            "favorite": false,
+            "deleted": false,
+            "visual": {
+              "category": "shoes",
+              "construction": "round_toe_single_buckle_strap",
+              "decoration": "low",
+              "length": "flat",
+              "material_appearance": "smooth_leather_look",
+              "neckline": null,
+              "pattern": "plain",
+              "sleeve": null,
+              "subcategory": "mary_jane_flats",
+              "volume": null,
+              "main_colors": [
+                "burgundy"
+              ],
+              "visual_personas": [
+                "heir",
+                "melt",
+                "film"
+              ],
+              "usage_limits": [
+                "walking_comfort_unknown"
+              ]
+            },
+            "color_evidence": {
+              "source": "opaque_pixel_quantization_v1",
+              "status": "measured_not_semantic_review",
+              "asset_sha256": "55363f261d6bfede2aeb0ecfdf881abebfea6e82ebbe2fd74deaaf89a228c673",
+              "swatches": [
+                {
+                  "hex": "#c5a790",
+                  "weight": 0.2732,
+                  "family": "黄"
+                },
+                {
+                  "hex": "#3c1519",
+                  "weight": 0.203,
+                  "family": "红"
+                },
+                {
+                  "hex": "#8a6958",
+                  "weight": 0.1811,
+                  "family": "棕"
+                },
+                {
+                  "hex": "#5c3336",
+                  "weight": 0.1778,
+                  "family": "红"
+                },
+                {
+                  "hex": "#482c2c",
+                  "weight": 0.165,
+                  "family": "红"
+                }
+              ],
+              "palette_names": [
+                "黄",
+                "红",
+                "棕"
+              ],
+              "color": {
+                "temperature": "未判断",
+                "lightness": "中等",
+                "saturation": "中饱和",
+                "harmony": "未判断",
+                "palette": [
+                  "#c5a790",
+                  "#3c1519",
+                  "#8a6958",
+                  "#5c3336",
+                  "#482c2c"
+                ]
+              },
+              "limitations": "渲染光照会影响色值；不据此推断面料成分、真实冷暖或人体适配。"
+            }
+          },
+          {
+            "item_id": "garment_film_bag_0283",
+            "style_family_id": "item:garment_film_bag_0283",
+            "image_id": "garment_film_bag_0283",
+            "outfit_role": "support",
+            "category": "bag",
+            "category_label": "bag",
+            "subcategory": "虚焦胶片柔软肩背包",
+            "slot": null,
+            "title": "虚焦胶片柔软肩背包",
+            "assets": {
+              "cutout_path": "/static/selfit/assets/content_v2/film/garments/film-bag-0283-v1.webp",
+              "preview_path": "/static/selfit/assets/content_v2/film/garments/film-bag-0283-v1.webp"
+            },
+            "attributes": {
+              "colors": [
+                "棕"
+              ],
+              "color_hex": [
+                "#59493f",
+                "#493c33",
+                "#67574c",
+                "#726157",
+                "#817167"
+              ],
+              "style_tags": [
+                "shared原创款"
+              ],
+              "scene_tags": [
+                "通勤",
+                "日常",
+                "约会社交",
+                "正式活动",
+                "旅行",
+                "创意表达"
+              ],
+              "season_tags": [
+                "四季"
+              ]
+            },
+            "quality": {
+              "status": "usable",
+              "score": 1.0,
+              "reasons": [
+                "bound_visual_review"
+              ]
+            },
+            "source": {
+              "type": "aw_reviewed_draft",
+              "content_version": "aw-designed-rendered-162e2d2940a68ab9fe5e"
+            },
+            "tryon_ready": true,
+            "favorite": false,
+            "deleted": false,
+            "visual": {
+              "category": "bag",
+              "construction": "single_strap_panel_seams",
+              "decoration": "low",
+              "length": null,
+              "material_appearance": "soft_leather_look",
+              "neckline": null,
+              "pattern": "plain",
+              "sleeve": null,
+              "subcategory": "draped_hobo",
+              "volume": "soft_crescent",
+              "main_colors": [
+                "brown"
+              ],
+              "visual_personas": [
+                "ease",
+                "film",
+                "wabi"
+              ],
+              "usage_limits": [
+                "capacity_unknown"
+              ]
+            },
+            "color_evidence": {
+              "source": "opaque_pixel_quantization_v1",
+              "status": "measured_not_semantic_review",
+              "asset_sha256": "3ae3315b652c1109aa83388dd47849cfaf0aa0059b22ee87db3d4a5be2ef4762",
+              "swatches": [
+                {
+                  "hex": "#59493f",
+                  "weight": 0.2819,
+                  "family": "棕"
+                },
+                {
+                  "hex": "#493c33",
+                  "weight": 0.2185,
+                  "family": "棕"
+                },
+                {
+                  "hex": "#67574c",
+                  "weight": 0.2096,
+                  "family": "棕"
+                },
+                {
+                  "hex": "#726157",
+                  "weight": 0.1778,
+                  "family": "棕"
+                },
+                {
+                  "hex": "#817167",
+                  "weight": 0.1122,
+                  "family": "棕"
+                }
+              ],
+              "palette_names": [
+                "棕"
+              ],
+              "color": {
+                "temperature": "未判断",
+                "lightness": "中等",
+                "saturation": "低饱和",
+                "harmony": "未判断",
+                "palette": [
+                  "#59493f",
+                  "#493c33",
+                  "#67574c",
+                  "#726157",
+                  "#817167"
+                ]
+              },
+              "limitations": "渲染光照会影响色值；不据此推断面料成分、真实冷暖或人体适配。"
+            }
+          }
+        ],
+        "scene_tags": [
+          "日常"
+        ],
+        "season_tags": [
+          "秋"
+        ],
+        "primary_persona": "FILM",
+        "parent_outfit_id": "outfit_film_p0-gap-02_01",
+        "recipe_kind": "master",
+        "secondary_personas": [],
+        "cover_path": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/03676f9faa5e7b5a940ff688.webp",
+        "layout_snapshot_path": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/03676f9faa5e7b5a940ff688.webp",
+        "layout_version": "unified-flatlay-v1",
+        "layout_mode": "canonical_flatlay",
+        "canvas": {
+          "width": 1200,
+          "height": 1500
+        },
+        "display_item_ids": [
+          "garment_film_top_0053",
+          "garment_film_bottom_0171",
+          "garment_bolt_shoes_0266",
+          "garment_film_bag_0283"
+        ],
+        "overflow_items": [],
+        "warnings": [],
+        "source": "aw_reviewed_draft",
+        "content_version": "aw-designed-rendered-162e2d2940a68ab9fe5e",
+        "curation": {},
+        "favorite_count": 0,
+        "favorite": false,
+        "tryon_ready": true,
+        "created_at": "",
+        "updated_at": "",
+        "deleted": false,
+        "visual": {
+          "axes": {},
+          "expression": "explore",
+          "formality": "smart_casual",
+          "layering": 1,
+          "persona_scores": {
+            "film": 0.9
+          },
+          "scenes": [
+            "daily",
+            "commute"
+          ],
+          "seasons": [
+            "autumn"
+          ],
+          "structure": "pants",
+          "wearability": "everyday_with_statement",
+          "main_visual_slots": [
+            "top",
+            "pants"
+          ],
+          "main_colors": [],
+          "conflicts": null,
+          "silhouette": "single_focal_daily_exploration",
+          "color_relation": "low_competition_supports",
+          "persona_evidence": "做旧牛仔束腰上衣提供明确胶片复古证据，宽裤与素色鞋包不抢焦点，轻探索且可日常。"
+        },
+        "visual_evidence": "做旧牛仔束腰上衣提供明确胶片复古证据，宽裤与素色鞋包不抢焦点，轻探索且可日常。",
+        "visual_confidence": 0.86
+      },
+      "record_fingerprint": "fad65595218987b767d8252538f93730888f49f02d6b342890b487ba04a46a8c",
+      "source_rendered": "docs/audits/20260904-p0-acceptance/gap-recipes.batch02.rendered.json",
+      "source_review_bundle": "p0-gap-02-visual-review-v1",
+      "four_gate_status": "pending"
+    },
+    {
+      "outfit_id": "outfit_wabi_p0-gap-02_02",
+      "raw_record": {
+        "id": "outfit_wabi_p0-gap-02_02",
+        "kind": "master",
+        "parent_outfit_id": null,
+        "recipe_version": "p0-gap-02",
+        "title": "WABI autumn 日常设计 02",
+        "description": "WABI 轻探索修复：亚麻质感不对称上衣承担主视觉，素色窄长裙、低跟鞋和低饱和包收敛。",
+        "primary_persona": "WABI",
+        "secondary_personas": [],
+        "persona_affinity": {},
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "日常"
+        ],
+        "season_tags": [
+          "秋"
+        ],
+        "weather_tags": [],
+        "presentation": [
+          "feminine"
+        ],
+        "intensity": "explore",
+        "formality": 3,
+        "garment_ids": [
+          "garment_wabi_top_0566",
+          "garment_mute_skirt_0433",
+          "garment_ease_shoes_0244",
+          "garment_jade_bag_0284"
+        ],
+        "visible_slots": [
+          "top",
+          "skirt",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_wabi_top_0566": "hero",
+          "garment_mute_skirt_0433": "support",
+          "garment_ease_shoes_0244": "support",
+          "garment_jade_bag_0284": "support"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "未判断",
+          "saturation": "未判断",
+          "harmony": "未判断",
+          "palette": []
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/594b3f69f3f6518625ea458d.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source": "designer_recomposition",
+          "confidence": null,
+          "review_notes": [
+            "season, palette and persona are design targets pending whole-image review"
+          ]
+        }
+      },
+      "catalog_record": {
+        "outfit_id": "outfit_wabi_p0-gap-02_02",
+        "title": "WABI autumn 日常设计 02",
+        "description": "WABI 轻探索修复：亚麻质感不对称上衣承担主视觉，素色窄长裙、低跟鞋和低饱和包收敛。",
+        "item_ids": [
+          "garment_wabi_top_0566",
+          "garment_mute_skirt_0433",
+          "garment_ease_shoes_0244",
+          "garment_jade_bag_0284"
+        ],
+        "items": [
+          {
+            "item_id": "garment_wabi_top_0566",
+            "style_family_id": "item:garment_wabi_top_0566",
+            "image_id": "garment_wabi_top_0566",
+            "outfit_role": "hero",
+            "category": "top",
+            "category_label": "top",
+            "subcategory": "手作侘寂短款圆领上衣",
+            "slot": null,
+            "title": "手作侘寂短款圆领上衣",
+            "assets": {
+              "cutout_path": "/static/selfit/assets/content_v2/wabi/garments/wabi-top-0566-v1.webp",
+              "preview_path": "/static/selfit/assets/content_v2/wabi/garments/wabi-top-0566-v1.webp"
+            },
+            "attributes": {
+              "colors": [
+                "棕",
+                "灰"
+              ],
+              "color_hex": [
+                "#62574c",
+                "#3d352c",
+                "#8c7f75",
+                "#a59b92",
+                "#b9b0a7"
+              ],
+              "style_tags": [
+                "signature原创款"
+              ],
+              "scene_tags": [
+                "旅行",
+                "创意表达"
+              ],
+              "season_tags": [
+                "四季"
+              ]
+            },
+            "quality": {
+              "status": "usable",
+              "score": 1.0,
+              "reasons": [
+                "bound_visual_review"
+              ]
+            },
+            "source": {
+              "type": "aw_reviewed_draft",
+              "content_version": "aw-designed-rendered-162e2d2940a68ab9fe5e"
+            },
+            "tryon_ready": true,
+            "favorite": false,
+            "deleted": false,
+            "visual": {
+              "category": "top",
+              "construction": "wide_sleeves_diagonal_front_panels_uneven_layer_hem",
+              "decoration": "medium",
+              "length": "hip",
+              "material_appearance": "coarse_woven_look",
+              "neckline": "round",
+              "pattern": "tonal_patchwork",
+              "sleeve": "three_quarter",
+              "subcategory": "natural_asymmetric_panel_tunic",
+              "volume": "oversized",
+              "main_colors": [
+                "taupe",
+                "olive",
+                "brown"
+              ],
+              "visual_personas": [
+                "wabi",
+                "void",
+                "ease"
+              ],
+              "usage_limits": null
+            },
+            "color_evidence": {
+              "source": "opaque_pixel_quantization_v1",
+              "status": "measured_not_semantic_review",
+              "asset_sha256": "78d8b5ebeac5fe5951fe9e87b4a1e9f1bafdd80f9f39a695c1c27bebc4eda8e1",
+              "swatches": [
+                {
+                  "hex": "#62574c",
+                  "weight": 0.2841,
+                  "family": "棕"
+                },
+                {
+                  "hex": "#3d352c",
+                  "weight": 0.2231,
+                  "family": "棕"
+                },
+                {
+                  "hex": "#8c7f75",
+                  "weight": 0.199,
+                  "family": "棕"
+                },
+                {
+                  "hex": "#a59b92",
+                  "weight": 0.1738,
+                  "family": "灰"
+                },
+                {
+                  "hex": "#b9b0a7",
+                  "weight": 0.12,
+                  "family": "灰"
+                }
+              ],
+              "palette_names": [
+                "棕",
+                "灰"
+              ],
+              "color": {
+                "temperature": "未判断",
+                "lightness": "中等",
+                "saturation": "低饱和",
+                "harmony": "未判断",
+                "palette": [
+                  "#62574c",
+                  "#3d352c",
+                  "#8c7f75",
+                  "#a59b92",
+                  "#b9b0a7"
+                ]
+              },
+              "limitations": "渲染光照会影响色值；不据此推断面料成分、真实冷暖或人体适配。"
+            }
+          },
+          {
+            "item_id": "garment_mute_skirt_0433",
+            "style_family_id": "item:garment_mute_skirt_0433",
+            "image_id": "garment_mute_skirt_0433",
+            "outfit_role": "support",
+            "category": "skirt",
+            "category_label": "skirt",
+            "subcategory": "静音时髦窄长半裙",
+            "slot": null,
+            "title": "静音时髦窄长半裙",
+            "assets": {
+              "cutout_path": "/static/selfit/assets/content_v2/mute/garments/mute-skirt-0433-v1.webp",
+              "preview_path": "/static/selfit/assets/content_v2/mute/garments/mute-skirt-0433-v1.webp"
+            },
+            "attributes": {
+              "colors": [
+                "灰"
+              ],
+              "color_hex": [
+                "#3d3c3e",
+                "#404042",
+                "#3a393c",
+                "#333234",
+                "#373739"
+              ],
+              "style_tags": [
+                "variant原创款"
+              ],
+              "scene_tags": [
+                "约会社交",
+                "正式活动"
+              ],
+              "season_tags": [
+                "秋",
+                "冬"
+              ]
+            },
+            "quality": {
+              "status": "usable",
+              "score": 1.0,
+              "reasons": [
+                "bound_visual_review"
+              ]
+            },
+            "source": {
+              "type": "aw_reviewed_draft",
+              "content_version": "aw-designed-rendered-162e2d2940a68ab9fe5e"
+            },
+            "tryon_ready": true,
+            "favorite": false,
+            "deleted": false,
+            "visual": {
+              "category": "skirt",
+              "construction": "belt_loops_clean_waist_slant_pockets",
+              "decoration": "low",
+              "length": "midi",
+              "material_appearance": "matte_suiting_look",
+              "neckline": null,
+              "pattern": "plain",
+              "sleeve": null,
+              "subcategory": "plain_straight_midi_skirt",
+              "volume": "straight",
+              "main_colors": [
+                "charcoal"
+              ],
+              "visual_personas": [
+                "mute",
+                "loop",
+                "heir"
+              ],
+              "usage_limits": [
+                "walking_ease_unknown"
+              ]
+            },
+            "color_evidence": {
+              "source": "opaque_pixel_quantization_v1",
+              "status": "measured_not_semantic_review",
+              "asset_sha256": "57e67e35bde5587a20afc25f3a98943c36daf6c610028c99ec27111ce4268c57",
+              "swatches": [
+                {
+                  "hex": "#3d3c3e",
+                  "weight": 0.2913,
+                  "family": "灰"
+                },
+                {
+                  "hex": "#404042",
+                  "weight": 0.2333,
+                  "family": "灰"
+                },
+                {
+                  "hex": "#3a393c",
+                  "weight": 0.163,
+                  "family": "灰"
+                },
+                {
+                  "hex": "#333234",
+                  "weight": 0.1599,
+                  "family": "灰"
+                },
+                {
+                  "hex": "#373739",
+                  "weight": 0.1526,
+                  "family": "灰"
+                }
+              ],
+              "palette_names": [
+                "灰"
+              ],
+              "color": {
+                "temperature": "未判断",
+                "lightness": "深色",
+                "saturation": "无彩",
+                "harmony": "未判断",
+                "palette": [
+                  "#3d3c3e",
+                  "#404042",
+                  "#3a393c",
+                  "#333234",
+                  "#373739"
+                ]
+              },
+              "limitations": "渲染光照会影响色值；不据此推断面料成分、真实冷暖或人体适配。"
+            }
+          },
+          {
+            "item_id": "garment_ease_shoes_0244",
+            "style_family_id": "item:garment_ease_shoes_0244",
+            "image_id": "garment_ease_shoes_0244",
+            "outfit_role": "support",
+            "category": "shoes",
+            "category_label": "shoes",
+            "subcategory": "松弛讲究细带低跟鞋",
+            "slot": null,
+            "title": "松弛讲究细带低跟鞋",
+            "assets": {
+              "cutout_path": "/static/selfit/assets/content_v2/ease/garments/ease-shoes-0244-v1.webp",
+              "preview_path": "/static/selfit/assets/content_v2/ease/garments/ease-shoes-0244-v1.webp"
+            },
+            "attributes": {
+              "colors": [
+                "棕",
+                "奶油白"
+              ],
+              "color_hex": [
+                "#bda493",
+                "#e6cebc",
+                "#6c5648",
+                "#846b5b",
+                "#9b7f6c"
+              ],
+              "style_tags": [
+                "shared原创款"
+              ],
+              "scene_tags": [
+                "通勤",
+                "日常",
+                "约会社交",
+                "正式活动",
+                "旅行",
+                "创意表达"
+              ],
+              "season_tags": [
+                "四季"
+              ]
+            },
+            "quality": {
+              "status": "usable",
+              "score": 1.0,
+              "reasons": [
+                "bound_visual_review"
+              ]
+            },
+            "source": {
+              "type": "aw_reviewed_draft",
+              "content_version": "aw-designed-rendered-162e2d2940a68ab9fe5e"
+            },
+            "tryon_ready": true,
+            "favorite": false,
+            "deleted": false,
+            "visual": {
+              "category": "shoes",
+              "construction": "pointed_toe_thin_backstrap",
+              "decoration": "low",
+              "length": "low_heel",
+              "material_appearance": "smooth_leather_look",
+              "neckline": null,
+              "pattern": "plain",
+              "sleeve": null,
+              "subcategory": "pointed_slingbacks",
+              "volume": null,
+              "main_colors": [
+                "taupe"
+              ],
+              "visual_personas": [
+                "heir",
+                "iced",
+                "mute"
+              ],
+              "usage_limits": [
+                "walking_comfort_unknown"
+              ]
+            },
+            "color_evidence": {
+              "source": "opaque_pixel_quantization_v1",
+              "status": "measured_not_semantic_review",
+              "asset_sha256": "f7b498f4c7e2856613c4a7bc098d89bcedc74c058542c60c9bc36b9b8571ea6f",
+              "swatches": [
+                {
+                  "hex": "#bda493",
+                  "weight": 0.2395,
+                  "family": "棕"
+                },
+                {
+                  "hex": "#e6cebc",
+                  "weight": 0.2362,
+                  "family": "奶油白"
+                },
+                {
+                  "hex": "#6c5648",
+                  "weight": 0.21,
+                  "family": "棕"
+                },
+                {
+                  "hex": "#846b5b",
+                  "weight": 0.1655,
+                  "family": "棕"
+                },
+                {
+                  "hex": "#9b7f6c",
+                  "weight": 0.1488,
+                  "family": "棕"
+                }
+              ],
+              "palette_names": [
+                "棕",
+                "奶油白"
+              ],
+              "color": {
+                "temperature": "未判断",
+                "lightness": "中等",
+                "saturation": "低饱和",
+                "harmony": "未判断",
+                "palette": [
+                  "#bda493",
+                  "#e6cebc",
+                  "#6c5648",
+                  "#846b5b",
+                  "#9b7f6c"
+                ]
+              },
+              "limitations": "渲染光照会影响色值；不据此推断面料成分、真实冷暖或人体适配。"
+            }
+          },
+          {
+            "item_id": "garment_jade_bag_0284",
+            "style_family_id": "item:garment_jade_bag_0284",
+            "image_id": "garment_jade_bag_0284",
+            "outfit_role": "support",
+            "category": "bag",
+            "category_label": "bag",
+            "subcategory": "东方玉骨几何托特包",
+            "slot": null,
+            "title": "东方玉骨几何托特包",
+            "assets": {
+              "cutout_path": "/static/selfit/assets/content_v2/jade/garments/jade-bag-0284-v1.webp",
+              "preview_path": "/static/selfit/assets/content_v2/jade/garments/jade-bag-0284-v1.webp"
+            },
+            "attributes": {
+              "colors": [
+                "灰"
+              ],
+              "color_hex": [
+                "#858a80",
+                "#949890",
+                "#696a60",
+                "#9ca199",
+                "#a6aaa2"
+              ],
+              "style_tags": [
+                "shared原创款"
+              ],
+              "scene_tags": [
+                "通勤",
+                "日常",
+                "约会社交",
+                "正式活动",
+                "旅行",
+                "创意表达"
+              ],
+              "season_tags": [
+                "四季"
+              ]
+            },
+            "quality": {
+              "status": "usable",
+              "score": 1.0,
+              "reasons": [
+                "bound_visual_review"
+              ]
+            },
+            "source": {
+              "type": "aw_reviewed_draft",
+              "content_version": "aw-designed-rendered-162e2d2940a68ab9fe5e"
+            },
+            "tryon_ready": true,
+            "favorite": false,
+            "deleted": false,
+            "visual": {
+              "category": "bag",
+              "construction": "two_handles_zip_detachable_strap",
+              "decoration": "low",
+              "length": null,
+              "material_appearance": "canvas_look",
+              "neckline": null,
+              "pattern": "plain",
+              "sleeve": null,
+              "subcategory": "fabric_zip_tote",
+              "volume": "flat_trapezoid",
+              "main_colors": [
+                "sage",
+                "tan"
+              ],
+              "visual_personas": [
+                "loop",
+                "ease",
+                "wabi"
+              ],
+              "usage_limits": [
+                "capacity_unknown"
+              ]
+            },
+            "color_evidence": {
+              "source": "opaque_pixel_quantization_v1",
+              "status": "measured_not_semantic_review",
+              "asset_sha256": "8fe1b8fe7a5926c0de68702c4ae871bd8ce729224219482d8b961a197db043d7",
+              "swatches": [
+                {
+                  "hex": "#858a80",
+                  "weight": 0.2828,
+                  "family": "灰"
+                },
+                {
+                  "hex": "#949890",
+                  "weight": 0.2053,
+                  "family": "灰"
+                },
+                {
+                  "hex": "#696a60",
+                  "weight": 0.2011,
+                  "family": "灰"
+                },
+                {
+                  "hex": "#9ca199",
+                  "weight": 0.1898,
+                  "family": "灰"
+                },
+                {
+                  "hex": "#a6aaa2",
+                  "weight": 0.1209,
+                  "family": "灰"
+                }
+              ],
+              "palette_names": [
+                "灰"
+              ],
+              "color": {
+                "temperature": "未判断",
+                "lightness": "中等",
+                "saturation": "低饱和",
+                "harmony": "未判断",
+                "palette": [
+                  "#858a80",
+                  "#949890",
+                  "#696a60",
+                  "#9ca199",
+                  "#a6aaa2"
+                ]
+              },
+              "limitations": "渲染光照会影响色值；不据此推断面料成分、真实冷暖或人体适配。"
+            }
+          }
+        ],
+        "scene_tags": [
+          "日常"
+        ],
+        "season_tags": [
+          "秋"
+        ],
+        "primary_persona": "WABI",
+        "parent_outfit_id": "outfit_wabi_p0-gap-02_02",
+        "recipe_kind": "master",
+        "secondary_personas": [],
+        "cover_path": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/594b3f69f3f6518625ea458d.webp",
+        "layout_snapshot_path": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/594b3f69f3f6518625ea458d.webp",
+        "layout_version": "unified-flatlay-v1",
+        "layout_mode": "canonical_flatlay",
+        "canvas": {
+          "width": 1200,
+          "height": 1500
+        },
+        "display_item_ids": [
+          "garment_wabi_top_0566",
+          "garment_mute_skirt_0433",
+          "garment_ease_shoes_0244",
+          "garment_jade_bag_0284"
+        ],
+        "overflow_items": [],
+        "warnings": [],
+        "source": "aw_reviewed_draft",
+        "content_version": "aw-designed-rendered-162e2d2940a68ab9fe5e",
+        "curation": {},
+        "favorite_count": 0,
+        "favorite": false,
+        "tryon_ready": true,
+        "created_at": "",
+        "updated_at": "",
+        "deleted": false,
+        "visual": {
+          "axes": {},
+          "expression": "explore",
+          "formality": "smart_casual",
+          "layering": 1,
+          "persona_scores": {
+            "wabi": 0.9
+          },
+          "scenes": [
+            "daily",
+            "commute"
+          ],
+          "seasons": [
+            "autumn"
+          ],
+          "structure": "skirt",
+          "wearability": "everyday_with_statement",
+          "main_visual_slots": [
+            "top",
+            "skirt"
+          ],
+          "main_colors": [],
+          "conflicts": null,
+          "silhouette": "single_focal_daily_exploration",
+          "color_relation": "low_competition_supports",
+          "persona_evidence": "低饱和亚麻感不对称上衣为唯一主视觉，素色窄裙和简洁配件保留日常性。"
+        },
+        "visual_evidence": "低饱和亚麻感不对称上衣为唯一主视觉，素色窄裙和简洁配件保留日常性。",
+        "visual_confidence": 0.86
+      },
+      "record_fingerprint": "d760088dfd18b577d191407550293c0791d337605fa4ec884cd49a2584bff19b",
+      "source_rendered": "docs/audits/20260904-p0-acceptance/gap-recipes.batch02.rendered.json",
+      "source_review_bundle": "p0-gap-02-visual-review-v1",
+      "four_gate_status": "pending"
+    }
+  ],
+  "version": "p0-gap-staging-2109b487929a61152ff7"
+}

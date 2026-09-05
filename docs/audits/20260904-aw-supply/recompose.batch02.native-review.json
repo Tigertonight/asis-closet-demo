@@ -1,0 +1,290 @@
+{
+  "schema_version": 1,
+  "source_rendered_version": "aw-recompose-rendered-d388773a8502c6c6ff61",
+  "independent_blind_review": false,
+  "winter_outdoor_reviewed": false,
+  "entries": [
+    {
+      "outfit_id": "outfit_mute_aw-recompose-02_01",
+      "hero": "g0465",
+      "status": "ai_candidate",
+      "record_fingerprint": "77c70a1d69d7d3601c66d46c5643d2f6d0f4ca170d9b8955939e10621ac35eff",
+      "asset_sha256": "26b602fe34522ec367b417795e944c463901822810b74fb0d6edc04b622c7628",
+      "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/4051025388f105fa707afa83.webp",
+      "source_kind": "codex_visual_review",
+      "evidence": "炭灰短开衫、直筒中长裙、尖头短靴和黑包组成低装饰纵线；同色但衣长与开衩有清楚变化，MUTE 日常成立。",
+      "observations": {
+        "axes": {},
+        "expression": "easy",
+        "formality": "smart_casual",
+        "layering": 2,
+        "persona_scores": {
+          "mute": 0.86,
+          "loop": 0.68,
+          "noir": 0.5
+        },
+        "scenes": [
+          "daily"
+        ],
+        "seasons": [
+          "autumn"
+        ],
+        "structure": "dress",
+        "wearability": "everyday",
+        "main_visual_slots": [
+          "dress"
+        ],
+        "main_colors": [
+          "charcoal",
+          "black"
+        ],
+        "conflicts": null,
+        "silhouette": "short_plain_cardigan_straight_midi_dress",
+        "color_relation": "controlled_tonal",
+        "persona_evidence": "炭灰短开衫、直筒中长裙、尖头短靴和黑包组成低装饰纵线；同色但衣长与开衩有清楚变化，MUTE 日常成立。"
+      },
+      "confidence": 0.8,
+      "model": "current_codex_session",
+      "prompt_version": "aw-recompose-native-v1",
+      "review_level": "individual_contact_sheet_judgment",
+      "evidence_scope": "nonblind_individual_visual_judgment",
+      "review_complete": true,
+      "field_status": {
+        "axes": "unknown",
+        "expression": "ai_observed",
+        "formality": "ai_observed",
+        "layering": "ai_observed",
+        "persona_scores": "ai_observed",
+        "scenes": "ai_observed",
+        "seasons": "ai_observed",
+        "structure": "ai_observed",
+        "wearability": "ai_observed",
+        "main_visual_slots": "ai_observed",
+        "main_colors": "ai_observed",
+        "conflicts": "ai_observed",
+        "silhouette": "ai_observed",
+        "color_relation": "ai_observed",
+        "persona_evidence": "ai_observed"
+      },
+      "field_provenance": {
+        "axes": {
+          "source_file": "recompose-batch02-review/recipes-1.jpg",
+          "version": "aw-recompose-native-v1",
+          "confidence": null
+        },
+        "expression": {
+          "source_file": "recompose-batch02-review/recipes-1.jpg",
+          "version": "aw-recompose-native-v1",
+          "confidence": 0.8
+        },
+        "formality": {
+          "source_file": "recompose-batch02-review/recipes-1.jpg",
+          "version": "aw-recompose-native-v1",
+          "confidence": 0.8
+        },
+        "layering": {
+          "source_file": "recompose-batch02-review/recipes-1.jpg",
+          "version": "aw-recompose-native-v1",
+          "confidence": 0.8
+        },
+        "persona_scores": {
+          "source_file": "recompose-batch02-review/recipes-1.jpg",
+          "version": "aw-recompose-native-v1",
+          "confidence": 0.8
+        },
+        "scenes": {
+          "source_file": "recompose-batch02-review/recipes-1.jpg",
+          "version": "aw-recompose-native-v1",
+          "confidence": 0.8
+        },
+        "seasons": {
+          "source_file": "recompose-batch02-review/recipes-1.jpg",
+          "version": "aw-recompose-native-v1",
+          "confidence": 0.8
+        },
+        "structure": {
+          "source_file": "recompose-batch02-review/recipes-1.jpg",
+          "version": "aw-recompose-native-v1",
+          "confidence": 0.8
+        },
+        "wearability": {
+          "source_file": "recompose-batch02-review/recipes-1.jpg",
+          "version": "aw-recompose-native-v1",
+          "confidence": 0.8
+        },
+        "main_visual_slots": {
+          "source_file": "recompose-batch02-review/recipes-1.jpg",
+          "version": "aw-recompose-native-v1",
+          "confidence": 0.8
+        },
+        "main_colors": {
+          "source_file": "recompose-batch02-review/recipes-1.jpg",
+          "version": "aw-recompose-native-v1",
+          "confidence": 0.8
+        },
+        "conflicts": {
+          "source_file": "recompose-batch02-review/recipes-1.jpg",
+          "version": "aw-recompose-native-v1",
+          "confidence": 0.8
+        },
+        "silhouette": {
+          "source_file": "recompose-batch02-review/recipes-1.jpg",
+          "version": "aw-recompose-native-v1",
+          "confidence": 0.8
+        },
+        "color_relation": {
+          "source_file": "recompose-batch02-review/recipes-1.jpg",
+          "version": "aw-recompose-native-v1",
+          "confidence": 0.8
+        },
+        "persona_evidence": {
+          "source_file": "recompose-batch02-review/recipes-1.jpg",
+          "version": "aw-recompose-native-v1",
+          "confidence": 0.8
+        }
+      }
+    },
+    {
+      "outfit_id": "outfit_melt_aw-recompose-02_02",
+      "hero": "g0581",
+      "status": "ai_candidate",
+      "record_fingerprint": "38dc93264edb36c56dd8ada0d5b32c4a6de4f6571897e613347d4bf7bb264331",
+      "asset_sha256": "cbb4a9959f61129a33d03a65c802a4ef1c9f93e21fcc052b2a2a44262cfc7c96",
+      "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/90b4ff9ce351fd7dac48e9ac.webp",
+      "source_kind": "codex_visual_review",
+      "evidence": "粉色贴身长袖上衣和粉白绒感层裙形成柔和同类色，炭灰开衫压住甜度，软运动鞋与米白托特使其明显区别于黑玛丽珍版本。",
+      "observations": {
+        "axes": {},
+        "expression": "easy",
+        "formality": "smart_casual",
+        "layering": 2,
+        "persona_scores": {
+          "melt": 0.84,
+          "ease": 0.58,
+          "loop": 0.5
+        },
+        "scenes": [
+          "daily"
+        ],
+        "seasons": [
+          "autumn"
+        ],
+        "structure": "skirt",
+        "wearability": "everyday",
+        "main_visual_slots": [
+          "skirt"
+        ],
+        "main_colors": [
+          "pale_pink",
+          "ivory",
+          "charcoal"
+        ],
+        "conflicts": null,
+        "silhouette": "short_plain_cardigan_fitted_top_soft_tiered_midi_skirt",
+        "color_relation": "controlled_tonal",
+        "persona_evidence": "粉色贴身长袖上衣和粉白绒感层裙形成柔和同类色，炭灰开衫压住甜度，软运动鞋与米白托特使其明显区别于黑玛丽珍版本。"
+      },
+      "confidence": 0.8,
+      "model": "current_codex_session",
+      "prompt_version": "aw-recompose-native-v1",
+      "review_level": "individual_contact_sheet_judgment",
+      "evidence_scope": "nonblind_individual_visual_judgment",
+      "review_complete": true,
+      "field_status": {
+        "axes": "unknown",
+        "expression": "ai_observed",
+        "formality": "ai_observed",
+        "layering": "ai_observed",
+        "persona_scores": "ai_observed",
+        "scenes": "ai_observed",
+        "seasons": "ai_observed",
+        "structure": "ai_observed",
+        "wearability": "ai_observed",
+        "main_visual_slots": "ai_observed",
+        "main_colors": "ai_observed",
+        "conflicts": "ai_observed",
+        "silhouette": "ai_observed",
+        "color_relation": "ai_observed",
+        "persona_evidence": "ai_observed"
+      },
+      "field_provenance": {
+        "axes": {
+          "source_file": "recompose-batch02-review/recipes-1.jpg",
+          "version": "aw-recompose-native-v1",
+          "confidence": null
+        },
+        "expression": {
+          "source_file": "recompose-batch02-review/recipes-1.jpg",
+          "version": "aw-recompose-native-v1",
+          "confidence": 0.8
+        },
+        "formality": {
+          "source_file": "recompose-batch02-review/recipes-1.jpg",
+          "version": "aw-recompose-native-v1",
+          "confidence": 0.8
+        },
+        "layering": {
+          "source_file": "recompose-batch02-review/recipes-1.jpg",
+          "version": "aw-recompose-native-v1",
+          "confidence": 0.8
+        },
+        "persona_scores": {
+          "source_file": "recompose-batch02-review/recipes-1.jpg",
+          "version": "aw-recompose-native-v1",
+          "confidence": 0.8
+        },
+        "scenes": {
+          "source_file": "recompose-batch02-review/recipes-1.jpg",
+          "version": "aw-recompose-native-v1",
+          "confidence": 0.8
+        },
+        "seasons": {
+          "source_file": "recompose-batch02-review/recipes-1.jpg",
+          "version": "aw-recompose-native-v1",
+          "confidence": 0.8
+        },
+        "structure": {
+          "source_file": "recompose-batch02-review/recipes-1.jpg",
+          "version": "aw-recompose-native-v1",
+          "confidence": 0.8
+        },
+        "wearability": {
+          "source_file": "recompose-batch02-review/recipes-1.jpg",
+          "version": "aw-recompose-native-v1",
+          "confidence": 0.8
+        },
+        "main_visual_slots": {
+          "source_file": "recompose-batch02-review/recipes-1.jpg",
+          "version": "aw-recompose-native-v1",
+          "confidence": 0.8
+        },
+        "main_colors": {
+          "source_file": "recompose-batch02-review/recipes-1.jpg",
+          "version": "aw-recompose-native-v1",
+          "confidence": 0.8
+        },
+        "conflicts": {
+          "source_file": "recompose-batch02-review/recipes-1.jpg",
+          "version": "aw-recompose-native-v1",
+          "confidence": 0.8
+        },
+        "silhouette": {
+          "source_file": "recompose-batch02-review/recipes-1.jpg",
+          "version": "aw-recompose-native-v1",
+          "confidence": 0.8
+        },
+        "color_relation": {
+          "source_file": "recompose-batch02-review/recipes-1.jpg",
+          "version": "aw-recompose-native-v1",
+          "confidence": 0.8
+        },
+        "persona_evidence": {
+          "source_file": "recompose-batch02-review/recipes-1.jpg",
+          "version": "aw-recompose-native-v1",
+          "confidence": 0.8
+        }
+      }
+    }
+  ],
+  "version": "aw-recompose-review-727ff2e9bcb668c4e365"
+}

@@ -1,0 +1,761 @@
+{
+  "schema_version": 1,
+  "batch_id": "aw-winter-01",
+  "source_visual_version": "codex-visual-16b18cdcdca36dbc306a",
+  "status": "designer_targets_pending_whole_image_review",
+  "new_garments": [],
+  "recipes": [
+    {
+      "persona": "BOLT",
+      "palette": "mono",
+      "season": "winter",
+      "structure": "pants",
+      "hero": "g0396",
+      "items": [
+        "g0396",
+        "g0096",
+        "g0410",
+        "g0506",
+        "g0522"
+      ],
+      "expression": "entry",
+      "intent": "冬季日常目标：BOLT × mono × pants；外层、内层、主结构与封闭鞋履完整，待整图复核。"
+    },
+    {
+      "persona": "BOLT",
+      "palette": "earth",
+      "season": "winter",
+      "structure": "skirt",
+      "hero": "g0394",
+      "items": [
+        "g0394",
+        "g0564",
+        "g0426",
+        "g0506",
+        "g0049"
+      ],
+      "expression": "entry",
+      "intent": "冬季日常目标：BOLT × earth × skirt；外层、内层、主结构与封闭鞋履完整，待整图复核。"
+    },
+    {
+      "persona": "BOLT",
+      "palette": "ocean",
+      "season": "winter",
+      "structure": "dress",
+      "hero": "g0478",
+      "items": [
+        "g0570",
+        "g0478",
+        "g0506",
+        "g0015"
+      ],
+      "expression": "entry",
+      "intent": "冬季日常目标：BOLT × ocean × dress；外层、内层、主结构与封闭鞋履完整，待整图复核。"
+    },
+    {
+      "persona": "EASE",
+      "palette": "earth",
+      "season": "winter",
+      "structure": "pants",
+      "hero": "g0571",
+      "items": [
+        "g0571",
+        "g0091",
+        "g0404",
+        "g0500",
+        "g0019"
+      ],
+      "expression": "entry",
+      "intent": "冬季日常目标：EASE × earth × pants；外层、内层、主结构与封闭鞋履完整，待整图复核。"
+    },
+    {
+      "persona": "EASE",
+      "palette": "ocean",
+      "season": "winter",
+      "structure": "skirt",
+      "hero": "g0127",
+      "items": [
+        "g0152",
+        "g0127",
+        "g0206",
+        "g0255",
+        "g0281"
+      ],
+      "expression": "entry",
+      "intent": "冬季日常目标：EASE × ocean × skirt；外层、内层、主结构与封闭鞋履完整，待整图复核。"
+    },
+    {
+      "persona": "EASE",
+      "palette": "pastel",
+      "season": "winter",
+      "structure": "dress",
+      "hero": "g0136",
+      "items": [
+        "g0136",
+        "g0468",
+        "g0501",
+        "g0277"
+      ],
+      "expression": "entry",
+      "intent": "冬季日常目标：EASE × pastel × dress；外层、内层、主结构与封闭鞋履完整，待整图复核。"
+    },
+    {
+      "persona": "EDGE",
+      "palette": "ocean",
+      "season": "winter",
+      "structure": "pants",
+      "hero": "g0336",
+      "items": [
+        "g0384",
+        "g0336",
+        "g0042",
+        "g0494",
+        "g0044"
+      ],
+      "expression": "entry",
+      "intent": "冬季日常目标：EDGE × ocean × pants；外层、内层、主结构与封闭鞋履完整，待整图复核。"
+    },
+    {
+      "persona": "EDGE",
+      "palette": "pastel",
+      "season": "winter",
+      "structure": "skirt",
+      "hero": "g0349",
+      "items": [
+        "g0368",
+        "g0349",
+        "g0432",
+        "g0489",
+        "g0521"
+      ],
+      "expression": "entry",
+      "intent": "冬季日常目标：EDGE × pastel × skirt；外层、内层、主结构与封闭鞋履完整，待整图复核。"
+    },
+    {
+      "persona": "EDGE",
+      "palette": "mono",
+      "season": "winter",
+      "structure": "dress",
+      "hero": "g0041",
+      "items": [
+        "g0041",
+        "g0462",
+        "g0043",
+        "g0526"
+      ],
+      "expression": "entry",
+      "intent": "冬季日常目标：EDGE × mono × dress；外层、内层、主结构与封闭鞋履完整，待整图复核。"
+    },
+    {
+      "persona": "FILM",
+      "palette": "pastel",
+      "season": "winter",
+      "structure": "pants",
+      "hero": "g0161",
+      "items": [
+        "g0388",
+        "g0125",
+        "g0161",
+        "g0267",
+        "g0019"
+      ],
+      "expression": "entry",
+      "intent": "冬季日常目标：FILM × pastel × pants；外层、内层、主结构与封闭鞋履完整，待整图复核。"
+    },
+    {
+      "persona": "FILM",
+      "palette": "mono",
+      "season": "winter",
+      "structure": "skirt",
+      "hero": "g0089",
+      "items": [
+        "g0383",
+        "g0089",
+        "g0447",
+        "g0591",
+        "g0527"
+      ],
+      "expression": "entry",
+      "intent": "冬季日常目标：FILM × mono × skirt；外层、内层、主结构与封闭鞋履完整，待整图复核。"
+    },
+    {
+      "persona": "FILM",
+      "palette": "earth",
+      "season": "winter",
+      "structure": "dress",
+      "hero": "g0379",
+      "items": [
+        "g0379",
+        "g0219",
+        "g0491",
+        "g0283"
+      ],
+      "expression": "entry",
+      "intent": "冬季日常目标：FILM × earth × dress；外层、内层、主结构与封闭鞋履完整，待整图复核。"
+    },
+    {
+      "persona": "FLOU",
+      "palette": "mono",
+      "season": "winter",
+      "structure": "pants",
+      "hero": "g0321",
+      "items": [
+        "g0386",
+        "g0321",
+        "g0181",
+        "g0265",
+        "g0035"
+      ],
+      "expression": "entry",
+      "intent": "冬季日常目标：FLOU × mono × pants；外层、内层、主结构与封闭鞋履完整，待整图复核。"
+    },
+    {
+      "persona": "FLOU",
+      "palette": "earth",
+      "season": "winter",
+      "structure": "skirt",
+      "hero": "g0452",
+      "items": [
+        "g0374",
+        "g0117",
+        "g0452",
+        "g0260",
+        "g0519"
+      ],
+      "expression": "entry",
+      "intent": "冬季日常目标：FLOU × earth × skirt；外层、内层、主结构与封闭鞋履完整，待整图复核。"
+    },
+    {
+      "persona": "FLOU",
+      "palette": "ocean",
+      "season": "winter",
+      "structure": "dress",
+      "hero": "g0386",
+      "items": [
+        "g0386",
+        "g0220",
+        "g0498",
+        "g0010"
+      ],
+      "expression": "entry",
+      "intent": "冬季日常目标：FLOU × ocean × dress；外层、内层、主结构与封闭鞋履完整，待整图复核。"
+    },
+    {
+      "persona": "HEIR",
+      "palette": "earth",
+      "season": "winter",
+      "structure": "pants",
+      "hero": "g0131",
+      "items": [
+        "g0131",
+        "g0324",
+        "g0164",
+        "g0259",
+        "g0276"
+      ],
+      "expression": "entry",
+      "intent": "冬季日常目标：HEIR × earth × pants；外层、内层、主结构与封闭鞋履完整，待整图复核。"
+    },
+    {
+      "persona": "HEIR",
+      "palette": "ocean",
+      "season": "winter",
+      "structure": "skirt",
+      "hero": "g0451",
+      "items": [
+        "g0138",
+        "g0115",
+        "g0451",
+        "g0482",
+        "g0275"
+      ],
+      "expression": "entry",
+      "intent": "冬季日常目标：HEIR × ocean × skirt；外层、内层、主结构与封闭鞋履完整，待整图复核。"
+    },
+    {
+      "persona": "HEIR",
+      "palette": "pastel",
+      "season": "winter",
+      "structure": "dress",
+      "hero": "g0373",
+      "items": [
+        "g0373",
+        "g0234",
+        "g0252",
+        "g0282"
+      ],
+      "expression": "entry",
+      "intent": "冬季日常目标：HEIR × pastel × dress；外层、内层、主结构与封闭鞋履完整，待整图复核。"
+    },
+    {
+      "persona": "ICED",
+      "palette": "ocean",
+      "season": "winter",
+      "structure": "pants",
+      "hero": "g0121",
+      "items": [
+        "g0130",
+        "g0121",
+        "g0168",
+        "g0264",
+        "g0280"
+      ],
+      "expression": "entry",
+      "intent": "冬季日常目标：ICED × ocean × pants；外层、内层、主结构与封闭鞋履完整，待整图复核。"
+    },
+    {
+      "persona": "ICED",
+      "palette": "pastel",
+      "season": "winter",
+      "structure": "skirt",
+      "hero": "g0120",
+      "items": [
+        "g0133",
+        "g0120",
+        "g0216",
+        "g0249",
+        "g0290"
+      ],
+      "expression": "entry",
+      "intent": "冬季日常目标：ICED × pastel × skirt；外层、内层、主结构与封闭鞋履完整，待整图复核。"
+    },
+    {
+      "persona": "ICED",
+      "palette": "mono",
+      "season": "winter",
+      "structure": "dress",
+      "hero": "g0154",
+      "items": [
+        "g0154",
+        "g0218",
+        "g0258",
+        "g0274"
+      ],
+      "expression": "entry",
+      "intent": "冬季日常目标：ICED × mono × dress；外层、内层、主结构与封闭鞋履完整，待整图复核。"
+    },
+    {
+      "persona": "JADE",
+      "palette": "pastel",
+      "season": "winter",
+      "structure": "pants",
+      "hero": "g0084",
+      "items": [
+        "g0572",
+        "g0084",
+        "g0412",
+        "g0492",
+        "g0524"
+      ],
+      "expression": "entry",
+      "intent": "冬季日常目标：JADE × pastel × pants；外层、内层、主结构与封闭鞋履完整，待整图复核。"
+    },
+    {
+      "persona": "JADE",
+      "palette": "mono",
+      "season": "winter",
+      "structure": "skirt",
+      "hero": "g0111",
+      "items": [
+        "g0380",
+        "g0111",
+        "g0444",
+        "g0492",
+        "g0060"
+      ],
+      "expression": "entry",
+      "intent": "冬季日常目标：JADE × mono × skirt；外层、内层、主结构与封闭鞋履完整，待整图复核。"
+    },
+    {
+      "persona": "JADE",
+      "palette": "earth",
+      "season": "winter",
+      "structure": "dress",
+      "hero": "g0572",
+      "items": [
+        "g0572",
+        "g0228",
+        "g0588",
+        "g0524"
+      ],
+      "expression": "entry",
+      "intent": "冬季日常目标：JADE × earth × dress；外层、内层、主结构与封闭鞋履完整，待整图复核。"
+    },
+    {
+      "persona": "LOOP",
+      "palette": "mono",
+      "season": "winter",
+      "structure": "pants",
+      "hero": "g0160",
+      "items": [
+        "g0385",
+        "g0108",
+        "g0160",
+        "g0254",
+        "g0005"
+      ],
+      "expression": "entry",
+      "intent": "冬季日常目标：LOOP × mono × pants；外层、内层、主结构与封闭鞋履完整，待整图复核。"
+    },
+    {
+      "persona": "LOOP",
+      "palette": "earth",
+      "season": "winter",
+      "structure": "skirt",
+      "hero": "g0212",
+      "items": [
+        "g0134",
+        "g0102",
+        "g0212",
+        "g0246",
+        "g0516"
+      ],
+      "expression": "entry",
+      "intent": "冬季日常目标：LOOP × earth × skirt；外层、内层、主结构与封闭鞋履完整，待整图复核。"
+    },
+    {
+      "persona": "LOOP",
+      "palette": "ocean",
+      "season": "winter",
+      "structure": "dress",
+      "hero": "g0371",
+      "items": [
+        "g0371",
+        "g0217",
+        "g0497",
+        "g0281"
+      ],
+      "expression": "entry",
+      "intent": "冬季日常目标：LOOP × ocean × dress；外层、内层、主结构与封闭鞋履完整，待整图复核。"
+    },
+    {
+      "persona": "MELT",
+      "palette": "earth",
+      "season": "winter",
+      "structure": "pants",
+      "hero": "g0421",
+      "items": [
+        "g0149",
+        "g0325",
+        "g0421",
+        "g0261",
+        "g0517"
+      ],
+      "expression": "entry",
+      "intent": "冬季日常目标：MELT × earth × pants；外层、内层、主结构与封闭鞋履完整，待整图复核。"
+    },
+    {
+      "persona": "MELT",
+      "palette": "ocean",
+      "season": "winter",
+      "structure": "skirt",
+      "hero": "g0200",
+      "items": [
+        "g0389",
+        "g0103",
+        "g0200",
+        "g0248",
+        "g0275"
+      ],
+      "expression": "entry",
+      "intent": "冬季日常目标：MELT × ocean × skirt；外层、内层、主结构与封闭鞋履完整，待整图复核。"
+    },
+    {
+      "persona": "MELT",
+      "palette": "pastel",
+      "season": "winter",
+      "structure": "dress",
+      "hero": "g0373",
+      "items": [
+        "g0373",
+        "g0218",
+        "g0485",
+        "g0025"
+      ],
+      "expression": "entry",
+      "intent": "冬季日常目标：MELT × pastel × dress；外层、内层、主结构与封闭鞋履完整，待整图复核。"
+    },
+    {
+      "persona": "MUTE",
+      "palette": "ocean",
+      "season": "winter",
+      "structure": "pants",
+      "hero": "g0403",
+      "items": [
+        "g0143",
+        "g0105",
+        "g0403",
+        "g0497",
+        "g0529"
+      ],
+      "expression": "entry",
+      "intent": "冬季日常目标：MUTE × ocean × pants；外层、内层、主结构与封闭鞋履完整，待整图复核。"
+    },
+    {
+      "persona": "MUTE",
+      "palette": "pastel",
+      "season": "winter",
+      "structure": "skirt",
+      "hero": "g0114",
+      "items": [
+        "g0140",
+        "g0114",
+        "g0205",
+        "g0250",
+        "g0285"
+      ],
+      "expression": "entry",
+      "intent": "冬季日常目标：MUTE × pastel × skirt；外层、内层、主结构与封闭鞋履完整，待整图复核。"
+    },
+    {
+      "persona": "MUTE",
+      "palette": "mono",
+      "season": "winter",
+      "structure": "dress",
+      "hero": "g0001",
+      "items": [
+        "g0001",
+        "g0222",
+        "g0004",
+        "g0287"
+      ],
+      "expression": "entry",
+      "intent": "冬季日常目标：MUTE × mono × dress；外层、内层、主结构与封闭鞋履完整，待整图复核。"
+    },
+    {
+      "persona": "NEON",
+      "palette": "pastel",
+      "season": "winter",
+      "structure": "pants",
+      "hero": "g0360",
+      "items": [
+        "g0376",
+        "g0360",
+        "g0037",
+        "g0488",
+        "g0512"
+      ],
+      "expression": "entry",
+      "intent": "冬季日常目标：NEON × pastel × pants；外层、内层、主结构与封闭鞋履完整，待整图复核。"
+    },
+    {
+      "persona": "NEON",
+      "palette": "mono",
+      "season": "winter",
+      "structure": "skirt",
+      "hero": "g0344",
+      "items": [
+        "g0392",
+        "g0344",
+        "g0440",
+        "g0039",
+        "g0592"
+      ],
+      "expression": "entry",
+      "intent": "冬季日常目标：NEON × mono × skirt；外层、内层、主结构与封闭鞋履完整，待整图复核。"
+    },
+    {
+      "persona": "NEON",
+      "palette": "earth",
+      "season": "winter",
+      "structure": "dress",
+      "hero": "g0392",
+      "items": [
+        "g0392",
+        "g0219",
+        "g0504",
+        "g0040"
+      ],
+      "expression": "entry",
+      "intent": "冬季日常目标：NEON × earth × dress；外层、内层、主结构与封闭鞋履完整，待整图复核。"
+    },
+    {
+      "persona": "NOIR",
+      "palette": "mono",
+      "season": "winter",
+      "structure": "pants",
+      "hero": "g0158",
+      "items": [
+        "g0158",
+        "g0350",
+        "g0174",
+        "g0069",
+        "g0513"
+      ],
+      "expression": "entry",
+      "intent": "冬季日常目标：NOIR × mono × pants；外层、内层、主结构与封闭鞋履完整，待整图复核。"
+    },
+    {
+      "persona": "NOIR",
+      "palette": "earth",
+      "season": "winter",
+      "structure": "skirt",
+      "hero": "g0429",
+      "items": [
+        "g0067",
+        "g0366",
+        "g0429",
+        "g0493",
+        "g0070"
+      ],
+      "expression": "entry",
+      "intent": "冬季日常目标：NOIR × earth × skirt；外层、内层、主结构与封闭鞋履完整，待整图复核。"
+    },
+    {
+      "persona": "NOIR",
+      "palette": "ocean",
+      "season": "winter",
+      "structure": "dress",
+      "hero": "g0143",
+      "items": [
+        "g0143",
+        "g0478",
+        "g0499",
+        "g0510"
+      ],
+      "expression": "entry",
+      "intent": "冬季日常目标：NOIR × ocean × dress；外层、内层、主结构与封闭鞋履完整，待整图复核。"
+    },
+    {
+      "persona": "OOPS",
+      "palette": "earth",
+      "season": "winter",
+      "structure": "pants",
+      "hero": "g0028",
+      "items": [
+        "g0368",
+        "g0344",
+        "g0028",
+        "g0504",
+        "g0528"
+      ],
+      "expression": "entry",
+      "intent": "冬季日常目标：OOPS × earth × pants；外层、内层、主结构与封闭鞋履完整，待整图复核。"
+    },
+    {
+      "persona": "OOPS",
+      "palette": "ocean",
+      "season": "winter",
+      "structure": "skirt",
+      "hero": "g0360",
+      "items": [
+        "g0376",
+        "g0360",
+        "g0440",
+        "g0039",
+        "g0520"
+      ],
+      "expression": "entry",
+      "intent": "冬季日常目标：OOPS × ocean × skirt；外层、内层、主结构与封闭鞋履完整，待整图复核。"
+    },
+    {
+      "persona": "OOPS",
+      "palette": "pastel",
+      "season": "winter",
+      "structure": "dress",
+      "hero": "g0569",
+      "items": [
+        "g0569",
+        "g0234",
+        "g0505",
+        "g0512"
+      ],
+      "expression": "entry",
+      "intent": "冬季日常目标：OOPS × pastel × dress；外层、内层、主结构与封闭鞋履完整，待整图复核。"
+    },
+    {
+      "persona": "VOID",
+      "palette": "ocean",
+      "season": "winter",
+      "structure": "pants",
+      "hero": "g0142",
+      "items": [
+        "g0142",
+        "g0127",
+        "g0073",
+        "g0495",
+        "g0286"
+      ],
+      "expression": "entry",
+      "intent": "冬季日常目标：VOID × ocean × pants；外层、内层、主结构与封闭鞋履完整，待整图复核。"
+    },
+    {
+      "persona": "VOID",
+      "palette": "pastel",
+      "season": "winter",
+      "structure": "skirt",
+      "hero": "g0445",
+      "items": [
+        "g0390",
+        "g0333",
+        "g0445",
+        "g0495",
+        "g0518"
+      ],
+      "expression": "entry",
+      "intent": "冬季日常目标：VOID × pastel × skirt；外层、内层、主结构与封闭鞋履完整，待整图复核。"
+    },
+    {
+      "persona": "VOID",
+      "palette": "mono",
+      "season": "winter",
+      "structure": "dress",
+      "hero": "g0142",
+      "items": [
+        "g0142",
+        "g0217",
+        "g0591",
+        "g0286"
+      ],
+      "expression": "entry",
+      "intent": "冬季日常目标：VOID × mono × dress；外层、内层、主结构与封闭鞋履完整，待整图复核。"
+    },
+    {
+      "persona": "WABI",
+      "palette": "pastel",
+      "season": "winter",
+      "structure": "pants",
+      "hero": "g0018",
+      "items": [
+        "g0155",
+        "g0342",
+        "g0018",
+        "g0507",
+        "g0516"
+      ],
+      "expression": "entry",
+      "intent": "冬季日常目标：WABI × pastel × pants；外层、内层、主结构与封闭鞋履完整，待整图复核。"
+    },
+    {
+      "persona": "WABI",
+      "palette": "mono",
+      "season": "winter",
+      "structure": "skirt",
+      "hero": "g0204",
+      "items": [
+        "g0137",
+        "g0071",
+        "g0204",
+        "g0591",
+        "g0284"
+      ],
+      "expression": "entry",
+      "intent": "冬季日常目标：WABI × mono × skirt；外层、内层、主结构与封闭鞋履完整，待整图复核。"
+    },
+    {
+      "persona": "WABI",
+      "palette": "earth",
+      "season": "winter",
+      "structure": "dress",
+      "hero": "g0571",
+      "items": [
+        "g0571",
+        "g0468",
+        "g0491",
+        "g0523"
+      ],
+      "expression": "entry",
+      "intent": "冬季日常目标：WABI × earth × dress；外层、内层、主结构与封闭鞋履完整，待整图复核。"
+    }
+  ]
+}

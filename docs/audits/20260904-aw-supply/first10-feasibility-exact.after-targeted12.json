@@ -1,0 +1,132 @@
+{
+  "schema_version": 1,
+  "scope": "audit_only_exact_first10_for_search_unmet_conditions",
+  "hard_constraints": {
+    "all_structures": [
+      "pants",
+      "skirt",
+      "dress"
+    ],
+    "max_one_structure": 5,
+    "same_main_item_or_family_in_rolling_10": 2,
+    "same_parent_minimum_distance": 8
+  },
+  "quality_gate": {
+    "expressions": [
+      "easy",
+      "explore",
+      "typical"
+    ],
+    "wearability": [
+      "everyday",
+      "everyday_with_statement"
+    ],
+    "winter_outdoor": "complete_layers_visually_reviewed"
+  },
+  "bundle": {
+    "strategy": "personal_home_aw_v2",
+    "visual": "codex-visual-16b18cdcdca36dbc306a",
+    "families": "native-family-29dfc79c909cff365924",
+    "supplemental": "aw-recomposition-index-20260904-25",
+    "content": "2e2c3532f3874c4864daa2ab70a6abe302bdde56529d956fd38ddbf372fb217a"
+  },
+  "results": [
+    {
+      "status": "infeasible_proven",
+      "nodes": 92378,
+      "node_cap": 2000000,
+      "candidate_count": 19,
+      "method": "exact_10_row_combination_enumeration_then_parent_distance_ordering",
+      "selected_ids": [],
+      "structures": {},
+      "season": "winter",
+      "persona": "iced",
+      "palette": "ocean",
+      "rank_rejected": {
+        "season": 1098,
+        "experimental_requires_confirmed_nondaily_scene": 57,
+        "persona_visual_insufficient": 248,
+        "color_preference": 18
+      },
+      "daily_rejected": {}
+    },
+    {
+      "status": "infeasible_proven",
+      "nodes": 184756,
+      "node_cap": 2000000,
+      "candidate_count": 20,
+      "method": "exact_10_row_combination_enumeration_then_parent_distance_ordering",
+      "selected_ids": [],
+      "structures": {},
+      "season": "winter",
+      "persona": "iced",
+      "palette": "pastel",
+      "rank_rejected": {
+        "season": 1098,
+        "experimental_requires_confirmed_nondaily_scene": 57,
+        "persona_visual_insufficient": 248,
+        "color_preference": 17
+      },
+      "daily_rejected": {}
+    },
+    {
+      "status": "infeasible_proven",
+      "nodes": 8008,
+      "node_cap": 2000000,
+      "candidate_count": 16,
+      "method": "exact_10_row_combination_enumeration_then_parent_distance_ordering",
+      "selected_ids": [],
+      "structures": {},
+      "season": "winter",
+      "persona": "mute",
+      "palette": "jewel",
+      "rank_rejected": {
+        "season": 1098,
+        "experimental_requires_confirmed_nondaily_scene": 57,
+        "persona_visual_insufficient": 263,
+        "color_preference": 6
+      },
+      "daily_rejected": {}
+    },
+    {
+      "status": "infeasible_proven",
+      "nodes": 1001,
+      "node_cap": 2000000,
+      "candidate_count": 14,
+      "method": "exact_10_row_combination_enumeration_then_parent_distance_ordering",
+      "selected_ids": [],
+      "structures": {},
+      "season": "winter",
+      "persona": "wabi",
+      "palette": "bright",
+      "rank_rejected": {
+        "season": 1098,
+        "experimental_requires_confirmed_nondaily_scene": 57,
+        "color_preference": 35,
+        "persona_visual_insufficient": 236
+      },
+      "daily_rejected": {}
+    },
+    {
+      "status": "infeasible_proven",
+      "nodes": 43758,
+      "node_cap": 2000000,
+      "candidate_count": 18,
+      "method": "exact_10_row_combination_enumeration_then_parent_distance_ordering",
+      "selected_ids": [],
+      "structures": {},
+      "season": "winter",
+      "persona": "wabi",
+      "palette": "ocean",
+      "rank_rejected": {
+        "season": 1098,
+        "experimental_requires_confirmed_nondaily_scene": 57,
+        "color_preference": 31,
+        "persona_visual_insufficient": 236
+      },
+      "daily_rejected": {}
+    }
+  ],
+  "production_approved": false,
+  "interpretation": "Feasible proves the current bounded selector missed a valid ordering. Infeasible_proven applies only to this revision-bound eligible candidate set and these explicit first-10 constraints."
+}

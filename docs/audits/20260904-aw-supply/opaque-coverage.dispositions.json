@@ -1,0 +1,486 @@
+{
+  "schema_version": 1,
+  "source_ledger_version": "aw-repairs-095c65a758884479d2a6",
+  "review_version": "aw-coverage-review-d845eca735d84e3e2a24",
+  "entries": [
+    {
+      "outfit_id": "outfit_mute_master_23",
+      "token": "o0023",
+      "source_record_fingerprint": "09f71d5c881bb49982483cfa9c5b9663bb39e009a7f564a5e76115101cbe6cfb",
+      "decision": "route_layer_structure",
+      "revision_batch": "aw-repair-03",
+      "evidence": "不透蓝衬衫已替换，但蓬袖内层与短收口外套的袖量仍需结构复核。",
+      "counts_as_aw_daily_supply": false,
+      "original_preserved": true
+    },
+    {
+      "outfit_id": "outfit_iced_master_01",
+      "token": "o0031",
+      "source_record_fingerprint": "5eefac4c68db2d2cbe8bbee20a92bb10c0c0e4a56ddff9a953e067fcf2b13e9c",
+      "decision": "repair_candidate",
+      "revision_batch": "aw-repair-03",
+      "evidence": "不透冰蓝长袖衬衫配同色宽裤、蓝包和银色尖头鞋，长线收净且主次清楚。",
+      "counts_as_aw_daily_supply": true,
+      "original_preserved": true
+    },
+    {
+      "outfit_id": "outfit_iced_master_11",
+      "token": "o0041",
+      "source_record_fingerprint": "d976f1b8cb3bcb543690508644f03e65607e9c420bb00a7763f53b83963ff376",
+      "decision": "repair_candidate",
+      "revision_batch": "aw-repair-03",
+      "evidence": "不透冰蓝衬衫配斜向光泽长裙和银色尖头鞋，黑包压住亮度；冷感来自长线与材质观感。",
+      "counts_as_aw_daily_supply": true,
+      "original_preserved": true
+    },
+    {
+      "outfit_id": "outfit_iced_master_14",
+      "token": "o0044",
+      "source_record_fingerprint": "4eac9c2a36c780ea1082df4748a0233014eed2085106323cd4d66ef09be92cf3",
+      "decision": "repair_candidate",
+      "revision_batch": "aw-repair-03",
+      "evidence": "不透抽褶蓝衬衫配灰褐直中裙、长靴和蓝托特，色块安静，长度适合秋季日常。",
+      "counts_as_aw_daily_supply": true,
+      "original_preserved": true
+    },
+    {
+      "outfit_id": "outfit_iced_master_24",
+      "token": "o0054",
+      "source_record_fingerprint": "68cc9c8f31bd03c9fcd4aa240ac9ecf3b523b9d671bf4134866f1fc012c8d4cb",
+      "decision": "route_layer_structure",
+      "revision_batch": "aw-repair-03",
+      "evidence": "覆盖已修复，但抽褶蓬袖衬衫与合体西装外套的袖量没有穿着证据。",
+      "counts_as_aw_daily_supply": false,
+      "original_preserved": true
+    },
+    {
+      "outfit_id": "outfit_melt_master_05",
+      "token": "o0123",
+      "source_record_fingerprint": "93cbac49121eb66b39d167dc7f5264000edbc84f5948fc20745c75e0cb5d8b97",
+      "decision": "repair_candidate",
+      "revision_batch": "aw-repair-03",
+      "evidence": "不透抽褶蓝衬衫配奶油软裤，花纱包为小面积浪漫点，酒红玛丽珍鞋稳定下盘。",
+      "counts_as_aw_daily_supply": true,
+      "original_preserved": true
+    },
+    {
+      "outfit_id": "outfit_melt_master_10",
+      "token": "o0128",
+      "source_record_fingerprint": "28e16582c9dd59a6a95960ff451393413f75731df90d451c563dbdbe7776e29f",
+      "decision": "route_focal_recomposition",
+      "revision_batch": null,
+      "evidence": "覆盖之外仍有多焦点竞争",
+      "counts_as_aw_daily_supply": false,
+      "original_preserved": true
+    },
+    {
+      "outfit_id": "outfit_melt_master_16",
+      "token": "o0134",
+      "source_record_fingerprint": "2e05e246f49a149fed2e7b315240afa7539bffa460bc3059557ce7b2b6ec1831",
+      "decision": "route_focal_recomposition",
+      "revision_batch": "aw-repair-03",
+      "evidence": "不透粉针织已替换，但花纱裙、珍珠软包和花饰鞋同时为焦点，不进默认日常。",
+      "counts_as_aw_daily_supply": false,
+      "original_preserved": true
+    },
+    {
+      "outfit_id": "outfit_melt_master_22",
+      "token": "o0140",
+      "source_record_fingerprint": "15111eba44162e8e960f8f782f28e50f637a2f473d674302438dd1cdebe3222c",
+      "decision": "exit_default",
+      "revision_batch": null,
+      "evidence": "缺内层且多焦点过载",
+      "counts_as_aw_daily_supply": false,
+      "original_preserved": true
+    },
+    {
+      "outfit_id": "outfit_melt_master_23",
+      "token": "o0141",
+      "source_record_fingerprint": "89c0120f17ff22a7ad6d03e475e5f5d7348418069c6880a3b1baf404e947e567",
+      "decision": "route_layer_structure",
+      "revision_batch": null,
+      "evidence": "透感内层和外套袖量同时未证实",
+      "counts_as_aw_daily_supply": false,
+      "original_preserved": true
+    },
+    {
+      "outfit_id": "outfit_flou_master_03",
+      "token": "o0181",
+      "source_record_fingerprint": "63636b7aa32f82107eab23b94d16f53c485fc4ad75faa36f88fee41dacf627d2",
+      "decision": "repair_candidate",
+      "revision_batch": "aw-repair-03",
+      "evidence": "不透抽褶蓝衬衫配粉白软裤，花纱包和酒红玛丽珍鞋体量受控，柔软圆线清楚。",
+      "counts_as_aw_daily_supply": true,
+      "original_preserved": true
+    },
+    {
+      "outfit_id": "outfit_flou_master_08",
+      "token": "o0186",
+      "source_record_fingerprint": "03baa5f0868fb338e4e4354a45447942d5986dcdb17dc50b460fb06c9a1fd4ff",
+      "decision": "repair_candidate",
+      "revision_batch": "aw-repair-03",
+      "evidence": "不透冰蓝衬衫、锥裤、蓝低跟鞋和奶油包构成清楚同类色，覆盖与主次均成立。",
+      "counts_as_aw_daily_supply": true,
+      "original_preserved": true
+    },
+    {
+      "outfit_id": "outfit_flou_master_16",
+      "token": "o0194",
+      "source_record_fingerprint": "cee4a1a4735e54d0c578d4f6bf265e0cb7a8e5e24b34271f6df3f5749afc5490",
+      "decision": "route_focal_recomposition",
+      "revision_batch": null,
+      "evidence": "覆盖之外仍有多焦点竞争",
+      "counts_as_aw_daily_supply": false,
+      "original_preserved": true
+    },
+    {
+      "outfit_id": "outfit_flou_master_23",
+      "token": "o0201",
+      "source_record_fingerprint": "9a24b904374e4b40af7bb718e368c18e516c206b9ae115ee31682f21a60fb248",
+      "decision": "exit_default",
+      "revision_batch": null,
+      "evidence": "缺内层且多焦点过载",
+      "counts_as_aw_daily_supply": false,
+      "original_preserved": true
+    },
+    {
+      "outfit_id": "outfit_flou_master_24",
+      "token": "o0202",
+      "source_record_fingerprint": "ac9c070f9740bdf3a7b5cf553a67a25ccb108b803c66bdc648c8d715521bd619",
+      "decision": "route_layer_structure",
+      "revision_batch": null,
+      "evidence": "透感内层和外套袖量同时未证实",
+      "counts_as_aw_daily_supply": false,
+      "original_preserved": true
+    },
+    {
+      "outfit_id": "outfit_bolt_master_02",
+      "token": "o0269",
+      "source_record_fingerprint": "122744e2d5bb4d52814f0099b76a43adf8eb3a33e8e3b14395f1d295fd023e7f",
+      "decision": "route_focal_recomposition",
+      "revision_batch": null,
+      "evidence": "透感和多焦点须一并重组",
+      "counts_as_aw_daily_supply": false,
+      "original_preserved": true
+    },
+    {
+      "outfit_id": "outfit_bolt_master_05",
+      "token": "o0272",
+      "source_record_fingerprint": "591572412ad9bda1e8bccb585c4e5d7b9d2e186b13fbf776fdd6cb86c542b211",
+      "decision": "route_focal_recomposition",
+      "revision_batch": null,
+      "evidence": "覆盖照明与多焦点须一并重组",
+      "counts_as_aw_daily_supply": false,
+      "original_preserved": true
+    },
+    {
+      "outfit_id": "outfit_bolt_master_12",
+      "token": "o0279",
+      "source_record_fingerprint": "6ac555fd034d96175f9341d9db135e9ce8e5e3541e391515acfa56d37c78d795",
+      "decision": "route_focal_recomposition",
+      "revision_batch": "aw-repair-03",
+      "evidence": "蓝抽褶衬衫与奶油 A 裙协调，但与 o0756 主衣鞋结构近似，只换包不能算独立供给。",
+      "counts_as_aw_daily_supply": false,
+      "original_preserved": true
+    },
+    {
+      "outfit_id": "outfit_bolt_master_15",
+      "token": "o0282",
+      "source_record_fingerprint": "d909de9227ccf868533772788a15112f944eda8d697faf2afe0e64003da1f0ec",
+      "decision": "exit_default_recompose_items",
+      "revision_batch": null,
+      "evidence": "原建议排除，单品拆开配置不透结构",
+      "counts_as_aw_daily_supply": false,
+      "original_preserved": true
+    },
+    {
+      "outfit_id": "outfit_bolt_master_17",
+      "token": "o0283",
+      "source_record_fingerprint": "f2385fcbdfe0713454b61534987eeb5fc3bf8b1b546b5ac36cfb4fb54ea88778",
+      "decision": "route_focal_recomposition",
+      "revision_batch": null,
+      "evidence": "透感上衣与配件语汇竞争",
+      "counts_as_aw_daily_supply": false,
+      "original_preserved": true
+    },
+    {
+      "outfit_id": "outfit_bolt_master_22",
+      "token": "o0288",
+      "source_record_fingerprint": "12f91d17318244c45bb5424efb2ac15a1f1da5e91f1a4b9b230390d9b25f13e9",
+      "decision": "route_layer_structure",
+      "revision_batch": null,
+      "evidence": "透感内层和外套袖量同时未证实",
+      "counts_as_aw_daily_supply": false,
+      "original_preserved": true
+    },
+    {
+      "outfit_id": "outfit_noir_master_15",
+      "token": "o0396",
+      "source_record_fingerprint": "b5cfd0a542a974031d6f7d86593fe3f7967fdd9e7f32f7e8a7664d99a93035dc",
+      "decision": "route_focal_recomposition",
+      "revision_batch": "aw-repair-03",
+      "evidence": "不透炭灰中裙已修复覆盖，但黑粉多带包仍与清简上下装竞争，须换素包。",
+      "counts_as_aw_daily_supply": false,
+      "original_preserved": true
+    },
+    {
+      "outfit_id": "outfit_mute_master_06_v2",
+      "token": "o0480",
+      "source_record_fingerprint": "0db82b55140e06d746de0a8691f8f88c07e4e4b731369f3c6f2ea6d0aa36c9f8",
+      "decision": "repair_candidate",
+      "revision_batch": "aw-repair-03",
+      "evidence": "不透冰蓝衬衫与同色直裤组成收净长线，灰绿托特和米白后绊鞋低装饰。",
+      "counts_as_aw_daily_supply": true,
+      "original_preserved": true
+    },
+    {
+      "outfit_id": "outfit_iced_master_02_v1",
+      "token": "o0516",
+      "source_record_fingerprint": "fa1e3fcdf7242a6959371deb121783e5f87053d0011217f557c3509153dd4823",
+      "decision": "route_focal_recomposition",
+      "revision_batch": "aw-repair-03",
+      "evidence": "成套本身清楚，但与 o0186 的冰蓝衬衫裤装、蓝鞋包几乎同构，不能作为独立新增。",
+      "counts_as_aw_daily_supply": false,
+      "original_preserved": true
+    },
+    {
+      "outfit_id": "outfit_iced_master_07_v1",
+      "token": "o0526",
+      "source_record_fingerprint": "ad5bcc984caf008cca96b1dbcd16d1bcd9df74cb95c2f8f0ade706cf9bf7b8b5",
+      "decision": "repair_candidate",
+      "revision_batch": "aw-repair-03",
+      "evidence": "不透冰蓝衬衫配黑阔裤和黑托特，银尖头鞋形成小面积冷亮点，主次明确。",
+      "counts_as_aw_daily_supply": true,
+      "original_preserved": true
+    },
+    {
+      "outfit_id": "outfit_iced_master_12_v1",
+      "token": "o0536",
+      "source_record_fingerprint": "6a70664f292d5d63a9f4335eea03dc88a790e792bde6020b550a03d8c6c8a885",
+      "decision": "repair_candidate",
+      "revision_batch": "aw-repair-03",
+      "evidence": "不透冰蓝衬衫、蓝 A 裙、蓝包鞋同类色完整，衬衫直线和裙摆提供结构区别。",
+      "counts_as_aw_daily_supply": true,
+      "original_preserved": true
+    },
+    {
+      "outfit_id": "outfit_melt_master_02_v1",
+      "token": "o0648",
+      "source_record_fingerprint": "bd0734519bb8002c35d4439fc1eb7585f3f0a7f87d7464096119bad62c7b9c29",
+      "decision": "repair_candidate",
+      "revision_batch": "aw-repair-03",
+      "evidence": "不透蓝抽褶衬衫配浅蓝阔裤，花纱包集中浪漫点，灰褐长靴提供秋季重量。",
+      "counts_as_aw_daily_supply": true,
+      "original_preserved": true
+    },
+    {
+      "outfit_id": "outfit_melt_master_05_v2",
+      "token": "o0655",
+      "source_record_fingerprint": "77554a839bd137cd3f4c216b62c6a1c8791d9c0bf1afdc2a3f800439cc4edd0f",
+      "decision": "superseded_parent_variant",
+      "revision_batch": null,
+      "evidence": "同父配方已用 o0123 建立覆盖修订",
+      "counts_as_aw_daily_supply": false,
+      "original_preserved": true
+    },
+    {
+      "outfit_id": "outfit_melt_master_07_v1",
+      "token": "o0658",
+      "source_record_fingerprint": "1e873eca33c3293ebfd0f7758dcf72e71e979035c6587a5c9a849397b66d2260",
+      "decision": "route_focal_recomposition",
+      "revision_batch": null,
+      "evidence": "透感和多焦点须一并重组",
+      "counts_as_aw_daily_supply": false,
+      "original_preserved": true
+    },
+    {
+      "outfit_id": "outfit_melt_master_12_v1",
+      "token": "o0668",
+      "source_record_fingerprint": "424c77b00cad5effac37ca9cdf508e1942616466ae81e2fbe7c12e8296abe21a",
+      "decision": "repair_candidate",
+      "revision_batch": "aw-repair-03",
+      "evidence": "不透蓝抽褶衬衫配奶油褶裙和粉白运动鞋，花纱包与裙的柔软线条呼应但不遮盖主结构。",
+      "counts_as_aw_daily_supply": true,
+      "original_preserved": true
+    },
+    {
+      "outfit_id": "outfit_melt_master_13_v1",
+      "token": "o0670",
+      "source_record_fingerprint": "fb312eabacad425728606f316f5cc270a024a78fee4f74a954bc1002ae5f60d8",
+      "decision": "repair_candidate",
+      "revision_batch": "aw-repair-03",
+      "evidence": "不透米白船领上衣配蓝灰直中裙、灰褐短靴和奶油包，纵线和色块克制。",
+      "counts_as_aw_daily_supply": true,
+      "original_preserved": true
+    },
+    {
+      "outfit_id": "outfit_melt_master_13_v2",
+      "token": "o0671",
+      "source_record_fingerprint": "2f38561be2b208195af60533fda5403fc073cef98fc02c139be4919e059a1d60",
+      "decision": "superseded_parent_variant",
+      "revision_batch": null,
+      "evidence": "同父配方已用 o0670 建立覆盖修订",
+      "counts_as_aw_daily_supply": false,
+      "original_preserved": true
+    },
+    {
+      "outfit_id": "outfit_melt_master_17_v1",
+      "token": "o0677",
+      "source_record_fingerprint": "f292332fb1100bba2276a6a1cb56f247a123198eb107525f0852857f87122420",
+      "decision": "route_focal_recomposition",
+      "revision_batch": "aw-repair-03",
+      "evidence": "不透粉针织、花纱长裙、花饰鞋和粉软包仍然同时抢焦点。",
+      "counts_as_aw_daily_supply": false,
+      "original_preserved": true
+    },
+    {
+      "outfit_id": "outfit_melt_master_22_v1",
+      "token": "o0682",
+      "source_record_fingerprint": "c4cd16bb66f14f500839248a2e3ad905930f97d13cc7bf997577ff44b3b9f4ed",
+      "decision": "exit_default",
+      "revision_batch": null,
+      "evidence": "透感、外层体量和多焦点过载",
+      "counts_as_aw_daily_supply": false,
+      "original_preserved": true
+    },
+    {
+      "outfit_id": "outfit_melt_master_24_v1",
+      "token": "o0684",
+      "source_record_fingerprint": "ef8d3623dc0f044b15979b1cd87cb309620033f1a4db938a99621a48f4226907",
+      "decision": "route_layer_structure",
+      "revision_batch": null,
+      "evidence": "透感与外层袖量同时未证实",
+      "counts_as_aw_daily_supply": false,
+      "original_preserved": true
+    },
+    {
+      "outfit_id": "outfit_flou_master_01_v1",
+      "token": "o0736",
+      "source_record_fingerprint": "2fa48f7154322e1042eb062bd70ea5de0e3f286e7ceab51d5124c4bf881d5b73",
+      "decision": "route_focal_recomposition",
+      "revision_batch": "aw-repair-03",
+      "evidence": "覆盖已修复，蓝衬衫与奶油裤易穿，但酒红繁饰结构包成为不必要第二焦点。",
+      "counts_as_aw_daily_supply": false,
+      "original_preserved": true
+    },
+    {
+      "outfit_id": "outfit_flou_master_06_v1",
+      "token": "o0746",
+      "source_record_fingerprint": "80286440dd0e351727fd9c8f65a1851902706924c9ad923a925219713cccee09",
+      "decision": "repair_candidate",
+      "revision_batch": "aw-repair-03",
+      "evidence": "不透蓝抽褶衬衫配奶油软裤，蓝托特和灰褐长靴保持低装饰，松量有下装收束。",
+      "counts_as_aw_daily_supply": true,
+      "original_preserved": true
+    },
+    {
+      "outfit_id": "outfit_flou_master_11_v1",
+      "token": "o0756",
+      "source_record_fingerprint": "ea2829d64d24aa6fed9a90d65b0fa2c4c7bf192457370d3a0f15b110436fa45f",
+      "decision": "repair_candidate",
+      "revision_batch": "aw-repair-03",
+      "evidence": "不透蓝抽褶衬衫配奶油 A 裙，素包和圆头玛丽珍鞋让流动领袖成为唯一柔软焦点。",
+      "counts_as_aw_daily_supply": true,
+      "original_preserved": true
+    },
+    {
+      "outfit_id": "outfit_flou_master_17_v1",
+      "token": "o0766",
+      "source_record_fingerprint": "2bc5b7e4ff720379da4cda72f43153a76104a6db75bb93d134d0d6d6bdcfac48",
+      "decision": "route_focal_recomposition",
+      "revision_batch": "aw-repair-03",
+      "evidence": "覆盖已修复，但粉针织、花纱裙、透明蓝包和花饰鞋仍过度集中浪漫细节。",
+      "counts_as_aw_daily_supply": false,
+      "original_preserved": true
+    },
+    {
+      "outfit_id": "outfit_bolt_master_04_v2",
+      "token": "o0875",
+      "source_record_fingerprint": "c34ba40f4cc3d60becd9a52eff972eee5e569cabcdd3fd8d30197af7f89f1cbd",
+      "decision": "repair_candidate",
+      "revision_batch": "aw-repair-03",
+      "evidence": "不透蓝抽褶衬衫与浅蓝阔裤形成长线，粉包只作小面积柔和点，长靴增加秋季重量。",
+      "counts_as_aw_daily_supply": true,
+      "original_preserved": true
+    },
+    {
+      "outfit_id": "outfit_bolt_master_08_v2",
+      "token": "o0883",
+      "source_record_fingerprint": "f4f498800ce71d1787085ce4831cf5ea0d04e78ae1c29b88897bc0a7a10a278b",
+      "decision": "route_focal_recomposition",
+      "revision_batch": "aw-repair-03",
+      "evidence": "米白不透上衣已解决覆盖，但花纱拼裤与花纱包重复复杂母题，须换素包。",
+      "counts_as_aw_daily_supply": false,
+      "original_preserved": true
+    },
+    {
+      "outfit_id": "outfit_bolt_master_09_v2",
+      "token": "o0885",
+      "source_record_fingerprint": "a545061eccc8952236c0067d28b87f21ff2d6d14d6be2872bd563e3e80e4080f",
+      "decision": "repair_candidate",
+      "revision_batch": "aw-repair-03",
+      "evidence": "不透蓝抽褶衬衫配直筒牛仔，粉包和酒红玛丽珍鞋提供受控暖色点，适合轻松日常。",
+      "counts_as_aw_daily_supply": true,
+      "original_preserved": true
+    },
+    {
+      "outfit_id": "outfit_bolt_master_14_v2",
+      "token": "o0895",
+      "source_record_fingerprint": "f5fab9743dd17342a5003d8142b1935074a6f39cf24910b6ebf6b8c9adc90e1a",
+      "decision": "repair_candidate",
+      "revision_batch": "aw-repair-03",
+      "evidence": "不透蓝抽褶衬衫配蓝灰直中裙，粉包为小面积点色，灰褐短靴稳定纵线。",
+      "counts_as_aw_daily_supply": true,
+      "original_preserved": true
+    },
+    {
+      "outfit_id": "outfit_bolt_master_22_v1",
+      "token": "o0903",
+      "source_record_fingerprint": "1fa47e22606db7a4566cb18668726e702e0e3a39f8b428e45b008213d38bea47",
+      "decision": "route_focal_recomposition",
+      "revision_batch": "aw-repair-03",
+      "evidence": "米白不透内层已补，但刺绣披肩外套、装饰裤和酒红鞋仍偏礼仪且多焦点。",
+      "counts_as_aw_daily_supply": false,
+      "original_preserved": true
+    },
+    {
+      "outfit_id": "outfit_bolt_master_23_v1",
+      "token": "o0904",
+      "source_record_fingerprint": "3e9ece08f569bc125309247639f170e923453bcc38dff6971cb5c5a63276e839",
+      "decision": "route_layer_structure",
+      "revision_batch": "aw-repair-03",
+      "evidence": "覆盖已修复，但蓝蓬袖衬衫与收口短外套的袖量未知，花纱拼裤又是强焦点。",
+      "counts_as_aw_daily_supply": false,
+      "original_preserved": true
+    },
+    {
+      "outfit_id": "outfit_noir_master_15_v1",
+      "token": "o1067",
+      "source_record_fingerprint": "33445984200a47f16f1bfd33df2c13fb33fca35fea3ed7a88986787bd9904ac7",
+      "decision": "superseded_parent_variant",
+      "revision_batch": null,
+      "evidence": "同父配方覆盖修订仍待换素包，不重复造近似版本",
+      "counts_as_aw_daily_supply": false,
+      "original_preserved": true
+    },
+    {
+      "outfit_id": "outfit_noir_master_15_v2",
+      "token": "o1068",
+      "source_record_fingerprint": "9fe5de4702a23c79f0bca4228ee78f2126eb11c6f6231a3340c82ee99e0024d0",
+      "decision": "superseded_parent_variant",
+      "revision_batch": null,
+      "evidence": "同父配方覆盖修订仍待换素包，不重复造近似版本",
+      "counts_as_aw_daily_supply": false,
+      "original_preserved": true
+    }
+  ],
+  "counts": {
+    "route_layer_structure": 7,
+    "repair_candidate": 17,
+    "route_focal_recomposition": 15,
+    "exit_default": 3,
+    "exit_default_recompose_items": 1,
+    "superseded_parent_variant": 4
+  },
+  "version": "aw-coverage-dispositions-e590ab81b97825465958"
+}

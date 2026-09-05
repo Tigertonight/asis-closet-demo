@@ -1,0 +1,75 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-09-04T09:26:58.514297+00:00",
+  "release_decision": "do_not_release",
+  "releasable": false,
+  "versions": {
+    "git_commit": "b628f64bcc32b64d76da6aa8786eb62f69550c93",
+    "git_worktree_clean": false,
+    "content_version": "2026.09-v2-published1",
+    "content_sha256": "6b3387d7c97f78ffa57cf69b95ac5ce9a3008959bccc81343f18cd2c7c650bc9",
+    "visual_version": "codex-visual-16b18cdcdca36dbc306a",
+    "visual_sha256": "9905313a9837fa72436372afd478cb8245c30c34135172abdc4b43502eebe1c8",
+    "family_registry_sha256": "428a6a9234c0484b47098fef4172d5bfae69fe25303ed58c2d6c854484654bc9",
+    "anchor_manifest_sha256": "c2ef5c348175726fe02bd8e3cdc66af0696bf5f4c76bed37c809066d09eae88b",
+    "blind_result_sha256": null,
+    "browser_evidence_sha256": null,
+    "performance_evidence_sha256": null,
+    "staging_version": "p0-gap-staging-2109b487929a61152ff7",
+    "staging_sha256": "8b6d71a8dcd74c62bc9cda6dc3997aece85838249bce7e0e090951c42e03edc2"
+  },
+  "inventory": {
+    "anchor_rows": 160,
+    "current_four_gate_reviews": 0,
+    "visual_eligible_catalog": 959,
+    "visual_held_catalog": 217
+  },
+  "gates": {
+    "G0_traceability": {
+      "status": "Fail",
+      "errors": [
+        "git worktree is not frozen/clean"
+      ]
+    },
+    "G1_home_feed_stability": {
+      "status": "Not Run",
+      "errors": [
+        "evidence file is missing"
+      ]
+    },
+    "G2_content_admission": {
+      "status": "Fail",
+      "errors": [
+        "current four-gate reviews are 0/160"
+      ]
+    },
+    "G3_anchor_completeness": {
+      "status": "Pass",
+      "errors": []
+    },
+    "G4_persona_blind_review": {
+      "status": "Not Run",
+      "errors": [
+        "blind review result is missing"
+      ]
+    },
+    "G5_recommendation_quality": {
+      "status": "Not Run",
+      "errors": [
+        "evidence file is missing"
+      ]
+    },
+    "G6_end_to_end": {
+      "status": "Not Run",
+      "errors": [
+        "evidence file is missing"
+      ]
+    },
+    "G7_performance_and_regression": {
+      "status": "Not Run",
+      "errors": [
+        "evidence file is missing"
+      ]
+    }
+  }
+}

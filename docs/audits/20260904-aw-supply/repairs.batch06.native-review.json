@@ -1,0 +1,1281 @@
+{
+  "schema_version": 1,
+  "source_rendered_version": "aw-repair-06",
+  "independent_blind_review": false,
+  "winter_outdoor_reviewed": false,
+  "entries": [
+    {
+      "outfit_id": "outfit_void_master_07_v1__aw-repair-06",
+      "source_token": "o1095",
+      "status": "ai_candidate",
+      "record_fingerprint": "40d58df2f9d7da3b0dc2333ee9b84a85616d60bb358f1d15dd62767fe0f84621",
+      "asset_sha256": "ef24df7e16582db3cc0e081c90a37dcae849cef172be8a309459b3822b3c3027",
+      "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/0279b0ca78d72c017610fc54.webp",
+      "source_kind": "codex_visual_review",
+      "evidence": "灰绿错层衬衫搭做旧直裤，结构集中在上衣和裤侧层片，黑鞋包降低噪音。",
+      "observations": {
+        "axes": {},
+        "expression": "typical",
+        "formality": "smart_casual",
+        "layering": 1,
+        "persona_scores": {
+          "void": 0.84,
+          "wabi": 0.74
+        },
+        "scenes": [
+          "daily"
+        ],
+        "seasons": [
+          "autumn"
+        ],
+        "structure": "pants",
+        "wearability": "everyday_with_statement",
+        "main_visual_slots": [
+          "top",
+          "pants"
+        ],
+        "main_colors": [
+          "gray_brown",
+          "olive",
+          "cream",
+          "washed_blue",
+          "brown",
+          "charcoal"
+        ],
+        "conflicts": null,
+        "silhouette": "reviewed_focal_pants_composition",
+        "color_relation": "controlled_after_accessory_simplification",
+        "persona_evidence": "灰绿错层衬衫搭做旧直裤，结构集中在上衣和裤侧层片，黑鞋包降低噪音。"
+      },
+      "confidence": 0.8,
+      "model": "current_codex_session",
+      "prompt_version": "aw-focal-repair-06-native-v1",
+      "review_level": "individual_contact_sheet_judgment",
+      "evidence_scope": "nonblind_individual_visual_judgment",
+      "review_complete": true,
+      "field_status": {
+        "axes": "ai_observed",
+        "expression": "ai_observed",
+        "formality": "ai_observed",
+        "layering": "ai_observed",
+        "persona_scores": "ai_observed",
+        "scenes": "ai_observed",
+        "seasons": "ai_observed",
+        "structure": "ai_observed",
+        "wearability": "ai_observed",
+        "main_visual_slots": "ai_observed",
+        "main_colors": "ai_observed",
+        "conflicts": "unknown",
+        "silhouette": "ai_observed",
+        "color_relation": "ai_observed",
+        "persona_evidence": "ai_observed"
+      },
+      "field_provenance": {
+        "axes": {
+          "source_file": "repairs-batch06-review/recipes-1.jpg",
+          "version": "aw-focal-repair-06-native-v1",
+          "confidence": 0.8
+        },
+        "expression": {
+          "source_file": "repairs-batch06-review/recipes-1.jpg",
+          "version": "aw-focal-repair-06-native-v1",
+          "confidence": 0.8
+        },
+        "formality": {
+          "source_file": "repairs-batch06-review/recipes-1.jpg",
+          "version": "aw-focal-repair-06-native-v1",
+          "confidence": 0.8
+        },
+        "layering": {
+          "source_file": "repairs-batch06-review/recipes-1.jpg",
+          "version": "aw-focal-repair-06-native-v1",
+          "confidence": 0.8
+        },
+        "persona_scores": {
+          "source_file": "repairs-batch06-review/recipes-1.jpg",
+          "version": "aw-focal-repair-06-native-v1",
+          "confidence": 0.8
+        },
+        "scenes": {
+          "source_file": "repairs-batch06-review/recipes-1.jpg",
+          "version": "aw-focal-repair-06-native-v1",
+          "confidence": 0.8
+        },
+        "seasons": {
+          "source_file": "repairs-batch06-review/recipes-1.jpg",
+          "version": "aw-focal-repair-06-native-v1",
+          "confidence": 0.8
+        },
+        "structure": {
+          "source_file": "repairs-batch06-review/recipes-1.jpg",
+          "version": "aw-focal-repair-06-native-v1",
+          "confidence": 0.8
+        },
+        "wearability": {
+          "source_file": "repairs-batch06-review/recipes-1.jpg",
+          "version": "aw-focal-repair-06-native-v1",
+          "confidence": 0.8
+        },
+        "main_visual_slots": {
+          "source_file": "repairs-batch06-review/recipes-1.jpg",
+          "version": "aw-focal-repair-06-native-v1",
+          "confidence": 0.8
+        },
+        "main_colors": {
+          "source_file": "repairs-batch06-review/recipes-1.jpg",
+          "version": "aw-focal-repair-06-native-v1",
+          "confidence": 0.8
+        },
+        "conflicts": {
+          "source_file": "repairs-batch06-review/recipes-1.jpg",
+          "version": "aw-focal-repair-06-native-v1",
+          "confidence": null
+        },
+        "silhouette": {
+          "source_file": "repairs-batch06-review/recipes-1.jpg",
+          "version": "aw-focal-repair-06-native-v1",
+          "confidence": 0.8
+        },
+        "color_relation": {
+          "source_file": "repairs-batch06-review/recipes-1.jpg",
+          "version": "aw-focal-repair-06-native-v1",
+          "confidence": 0.8
+        },
+        "persona_evidence": {
+          "source_file": "repairs-batch06-review/recipes-1.jpg",
+          "version": "aw-focal-repair-06-native-v1",
+          "confidence": 0.8
+        }
+      }
+    },
+    {
+      "outfit_id": "outfit_void_master_10_v2__aw-repair-06",
+      "source_token": "o1102",
+      "status": "ai_candidate",
+      "record_fingerprint": "190131445b5524cef3ced6dc717e134d88203ddbc05cd1765c7ed409130766b0",
+      "asset_sha256": "72b462b393da22620822df130e947e37c44ac0551e63b626747443bad7084b3c",
+      "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/b2e803c191e87a211b4bc8fc.webp",
+      "source_kind": "codex_visual_review",
+      "evidence": "灰褐宽短上衣与深灰拼片裤形成一松一垂的包裹轮廓，配件保持克制。",
+      "observations": {
+        "axes": {},
+        "expression": "typical",
+        "formality": "smart_casual",
+        "layering": 1,
+        "persona_scores": {
+          "void": 0.86,
+          "wabi": 0.78
+        },
+        "scenes": [
+          "daily"
+        ],
+        "seasons": [
+          "autumn"
+        ],
+        "structure": "pants",
+        "wearability": "everyday_with_statement",
+        "main_visual_slots": [
+          "top",
+          "pants"
+        ],
+        "main_colors": [
+          "taupe",
+          "olive",
+          "charcoal",
+          "brown"
+        ],
+        "conflicts": null,
+        "silhouette": "reviewed_focal_pants_composition",
+        "color_relation": "controlled_after_accessory_simplification",
+        "persona_evidence": "灰褐宽短上衣与深灰拼片裤形成一松一垂的包裹轮廓，配件保持克制。"
+      },
+      "confidence": 0.8,
+      "model": "current_codex_session",
+      "prompt_version": "aw-focal-repair-06-native-v1",
+      "review_level": "individual_contact_sheet_judgment",
+      "evidence_scope": "nonblind_individual_visual_judgment",
+      "review_complete": true,
+      "field_status": {
+        "axes": "ai_observed",
+        "expression": "ai_observed",
+        "formality": "ai_observed",
+        "layering": "ai_observed",
+        "persona_scores": "ai_observed",
+        "scenes": "ai_observed",
+        "seasons": "ai_observed",
+        "structure": "ai_observed",
+        "wearability": "ai_observed",
+        "main_visual_slots": "ai_observed",
+        "main_colors": "ai_observed",
+        "conflicts": "unknown",
+        "silhouette": "ai_observed",
+        "color_relation": "ai_observed",
+        "persona_evidence": "ai_observed"
+      },
+      "field_provenance": {
+        "axes": {
+          "source_file": "repairs-batch06-review/recipes-1.jpg",
+          "version": "aw-focal-repair-06-native-v1",
+          "confidence": 0.8
+        },
+        "expression": {
+          "source_file": "repairs-batch06-review/recipes-1.jpg",
+          "version": "aw-focal-repair-06-native-v1",
+          "confidence": 0.8
+        },
+        "formality": {
+          "source_file": "repairs-batch06-review/recipes-1.jpg",
+          "version": "aw-focal-repair-06-native-v1",
+          "confidence": 0.8
+        },
+        "layering": {
+          "source_file": "repairs-batch06-review/recipes-1.jpg",
+          "version": "aw-focal-repair-06-native-v1",
+          "confidence": 0.8
+        },
+        "persona_scores": {
+          "source_file": "repairs-batch06-review/recipes-1.jpg",
+          "version": "aw-focal-repair-06-native-v1",
+          "confidence": 0.8
+        },
+        "scenes": {
+          "source_file": "repairs-batch06-review/recipes-1.jpg",
+          "version": "aw-focal-repair-06-native-v1",
+          "confidence": 0.8
+        },
+        "seasons": {
+          "source_file": "repairs-batch06-review/recipes-1.jpg",
+          "version": "aw-focal-repair-06-native-v1",
+          "confidence": 0.8
+        },
+        "structure": {
+          "source_file": "repairs-batch06-review/recipes-1.jpg",
+          "version": "aw-focal-repair-06-native-v1",
+          "confidence": 0.8
+        },
+        "wearability": {
+          "source_file": "repairs-batch06-review/recipes-1.jpg",
+          "version": "aw-focal-repair-06-native-v1",
+          "confidence": 0.8
+        },
+        "main_visual_slots": {
+          "source_file": "repairs-batch06-review/recipes-1.jpg",
+          "version": "aw-focal-repair-06-native-v1",
+          "confidence": 0.8
+        },
+        "main_colors": {
+          "source_file": "repairs-batch06-review/recipes-1.jpg",
+          "version": "aw-focal-repair-06-native-v1",
+          "confidence": 0.8
+        },
+        "conflicts": {
+          "source_file": "repairs-batch06-review/recipes-1.jpg",
+          "version": "aw-focal-repair-06-native-v1",
+          "confidence": null
+        },
+        "silhouette": {
+          "source_file": "repairs-batch06-review/recipes-1.jpg",
+          "version": "aw-focal-repair-06-native-v1",
+          "confidence": 0.8
+        },
+        "color_relation": {
+          "source_file": "repairs-batch06-review/recipes-1.jpg",
+          "version": "aw-focal-repair-06-native-v1",
+          "confidence": 0.8
+        },
+        "persona_evidence": {
+          "source_file": "repairs-batch06-review/recipes-1.jpg",
+          "version": "aw-focal-repair-06-native-v1",
+          "confidence": 0.8
+        }
+      }
+    },
+    {
+      "outfit_id": "outfit_void_master_12_v1__aw-repair-06",
+      "source_token": "o1105",
+      "status": "needs_review",
+      "record_fingerprint": "508a934cc2bfabb47923ff22bac8c55df015f3b36eb33c52c7c36915df69f546",
+      "asset_sha256": "519e16e9c6afab6269852737353536c933f6f1431df6cf41a13f550de108c625",
+      "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/431cfe8e9cecc2a01861c046.webp",
+      "source_kind": "codex_visual_review",
+      "evidence": "低装饰鞋包已降低配件噪音，但主服装仍存在多个竞争焦点；不进入秋冬日常候选。",
+      "observations": {
+        "axes": {},
+        "expression": "typical",
+        "formality": "smart_casual",
+        "layering": 1,
+        "persona_scores": {},
+        "scenes": null,
+        "seasons": null,
+        "structure": "skirt",
+        "wearability": null,
+        "main_visual_slots": [
+          "top",
+          "skirt"
+        ],
+        "main_colors": [
+          "gray_brown",
+          "olive",
+          "cream",
+          "taupe"
+        ],
+        "conflicts": [
+          "main_garment_competition_remaining"
+        ],
+        "silhouette": "reviewed_focal_skirt_composition",
+        "color_relation": "unresolved",
+        "persona_evidence": "低装饰鞋包已降低配件噪音，但主服装仍存在多个竞争焦点；不进入秋冬日常候选。"
+      },
+      "confidence": 0.8,
+      "model": "current_codex_session",
+      "prompt_version": "aw-focal-repair-06-native-v1",
+      "review_level": "individual_contact_sheet_judgment",
+      "evidence_scope": "nonblind_individual_visual_judgment",
+      "review_complete": true,
+      "field_status": {
+        "axes": "ai_observed",
+        "expression": "ai_observed",
+        "formality": "ai_observed",
+        "layering": "ai_observed",
+        "persona_scores": "ai_observed",
+        "scenes": "unknown",
+        "seasons": "unknown",
+        "structure": "ai_observed",
+        "wearability": "unknown",
+        "main_visual_slots": "ai_observed",
+        "main_colors": "ai_observed",
+        "conflicts": "ai_observed",
+        "silhouette": "ai_observed",
+        "color_relation": "ai_observed",
+        "persona_evidence": "ai_observed"
+      },
+      "field_provenance": {
+        "axes": {
+          "source_file": "repairs-batch06-review/recipes-1.jpg",
+          "version": "aw-focal-repair-06-native-v1",
+          "confidence": 0.8
+        },
+        "expression": {
+          "source_file": "repairs-batch06-review/recipes-1.jpg",
+          "version": "aw-focal-repair-06-native-v1",
+          "confidence": 0.8
+        },
+        "formality": {
+          "source_file": "repairs-batch06-review/recipes-1.jpg",
+          "version": "aw-focal-repair-06-native-v1",
+          "confidence": 0.8
+        },
+        "layering": {
+          "source_file": "repairs-batch06-review/recipes-1.jpg",
+          "version": "aw-focal-repair-06-native-v1",
+          "confidence": 0.8
+        },
+        "persona_scores": {
+          "source_file": "repairs-batch06-review/recipes-1.jpg",
+          "version": "aw-focal-repair-06-native-v1",
+          "confidence": 0.8
+        },
+        "scenes": {
+          "source_file": "repairs-batch06-review/recipes-1.jpg",
+          "version": "aw-focal-repair-06-native-v1",
+          "confidence": null
+        },
+        "seasons": {
+          "source_file": "repairs-batch06-review/recipes-1.jpg",
+          "version": "aw-focal-repair-06-native-v1",
+          "confidence": null
+        },
+        "structure": {
+          "source_file": "repairs-batch06-review/recipes-1.jpg",
+          "version": "aw-focal-repair-06-native-v1",
+          "confidence": 0.8
+        },
+        "wearability": {
+          "source_file": "repairs-batch06-review/recipes-1.jpg",
+          "version": "aw-focal-repair-06-native-v1",
+          "confidence": null
+        },
+        "main_visual_slots": {
+          "source_file": "repairs-batch06-review/recipes-1.jpg",
+          "version": "aw-focal-repair-06-native-v1",
+          "confidence": 0.8
+        },
+        "main_colors": {
+          "source_file": "repairs-batch06-review/recipes-1.jpg",
+          "version": "aw-focal-repair-06-native-v1",
+          "confidence": 0.8
+        },
+        "conflicts": {
+          "source_file": "repairs-batch06-review/recipes-1.jpg",
+          "version": "aw-focal-repair-06-native-v1",
+          "confidence": 0.8
+        },
+        "silhouette": {
+          "source_file": "repairs-batch06-review/recipes-1.jpg",
+          "version": "aw-focal-repair-06-native-v1",
+          "confidence": 0.8
+        },
+        "color_relation": {
+          "source_file": "repairs-batch06-review/recipes-1.jpg",
+          "version": "aw-focal-repair-06-native-v1",
+          "confidence": 0.8
+        },
+        "persona_evidence": {
+          "source_file": "repairs-batch06-review/recipes-1.jpg",
+          "version": "aw-focal-repair-06-native-v1",
+          "confidence": 0.8
+        }
+      }
+    },
+    {
+      "outfit_id": "outfit_void_master_22_v1__aw-repair-06",
+      "source_token": "o1119",
+      "status": "ai_candidate",
+      "record_fingerprint": "39f00619cf4a178dfab80d0dd9ae652bc06676f84bd72c1aca3e2ad9bbfa50e2",
+      "asset_sha256": "e51c1befd2976263629cb30ce863f1b133c05c36723bcac72defaac3b71fde68",
+      "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/7f58df4f2b6faee22b59159d.webp",
+      "source_kind": "codex_visual_review",
+      "evidence": "深灰软外套、简洁内层和弧线裤构成完整三层关系，配件不参与竞争。",
+      "observations": {
+        "axes": {},
+        "expression": "easy",
+        "formality": "smart_casual",
+        "layering": 2,
+        "persona_scores": {
+          "void": 0.78,
+          "wabi": 0.7,
+          "ease": 0.58
+        },
+        "scenes": [
+          "daily"
+        ],
+        "seasons": [
+          "autumn"
+        ],
+        "structure": "pants",
+        "wearability": "everyday",
+        "main_visual_slots": [
+          "top",
+          "pants"
+        ],
+        "main_colors": [
+          "taupe",
+          "olive",
+          "brown",
+          "charcoal",
+          "washed_blue"
+        ],
+        "conflicts": null,
+        "silhouette": "reviewed_focal_pants_composition",
+        "color_relation": "controlled_after_accessory_simplification",
+        "persona_evidence": "深灰软外套、简洁内层和弧线裤构成完整三层关系，配件不参与竞争。"
+      },
+      "confidence": 0.8,
+      "model": "current_codex_session",
+      "prompt_version": "aw-focal-repair-06-native-v1",
+      "review_level": "individual_contact_sheet_judgment",
+      "evidence_scope": "nonblind_individual_visual_judgment",
+      "review_complete": true,
+      "field_status": {
+        "axes": "ai_observed",
+        "expression": "ai_observed",
+        "formality": "ai_observed",
+        "layering": "ai_observed",
+        "persona_scores": "ai_observed",
+        "scenes": "ai_observed",
+        "seasons": "ai_observed",
+        "structure": "ai_observed",
+        "wearability": "ai_observed",
+        "main_visual_slots": "ai_observed",
+        "main_colors": "ai_observed",
+        "conflicts": "unknown",
+        "silhouette": "ai_observed",
+        "color_relation": "ai_observed",
+        "persona_evidence": "ai_observed"
+      },
+      "field_provenance": {
+        "axes": {
+          "source_file": "repairs-batch06-review/recipes-1.jpg",
+          "version": "aw-focal-repair-06-native-v1",
+          "confidence": 0.8
+        },
+        "expression": {
+          "source_file": "repairs-batch06-review/recipes-1.jpg",
+          "version": "aw-focal-repair-06-native-v1",
+          "confidence": 0.8
+        },
+        "formality": {
+          "source_file": "repairs-batch06-review/recipes-1.jpg",
+          "version": "aw-focal-repair-06-native-v1",
+          "confidence": 0.8
+        },
+        "layering": {
+          "source_file": "repairs-batch06-review/recipes-1.jpg",
+          "version": "aw-focal-repair-06-native-v1",
+          "confidence": 0.8
+        },
+        "persona_scores": {
+          "source_file": "repairs-batch06-review/recipes-1.jpg",
+          "version": "aw-focal-repair-06-native-v1",
+          "confidence": 0.8
+        },
+        "scenes": {
+          "source_file": "repairs-batch06-review/recipes-1.jpg",
+          "version": "aw-focal-repair-06-native-v1",
+          "confidence": 0.8
+        },
+        "seasons": {
+          "source_file": "repairs-batch06-review/recipes-1.jpg",
+          "version": "aw-focal-repair-06-native-v1",
+          "confidence": 0.8
+        },
+        "structure": {
+          "source_file": "repairs-batch06-review/recipes-1.jpg",
+          "version": "aw-focal-repair-06-native-v1",
+          "confidence": 0.8
+        },
+        "wearability": {
+          "source_file": "repairs-batch06-review/recipes-1.jpg",
+          "version": "aw-focal-repair-06-native-v1",
+          "confidence": 0.8
+        },
+        "main_visual_slots": {
+          "source_file": "repairs-batch06-review/recipes-1.jpg",
+          "version": "aw-focal-repair-06-native-v1",
+          "confidence": 0.8
+        },
+        "main_colors": {
+          "source_file": "repairs-batch06-review/recipes-1.jpg",
+          "version": "aw-focal-repair-06-native-v1",
+          "confidence": 0.8
+        },
+        "conflicts": {
+          "source_file": "repairs-batch06-review/recipes-1.jpg",
+          "version": "aw-focal-repair-06-native-v1",
+          "confidence": null
+        },
+        "silhouette": {
+          "source_file": "repairs-batch06-review/recipes-1.jpg",
+          "version": "aw-focal-repair-06-native-v1",
+          "confidence": 0.8
+        },
+        "color_relation": {
+          "source_file": "repairs-batch06-review/recipes-1.jpg",
+          "version": "aw-focal-repair-06-native-v1",
+          "confidence": 0.8
+        },
+        "persona_evidence": {
+          "source_file": "repairs-batch06-review/recipes-1.jpg",
+          "version": "aw-focal-repair-06-native-v1",
+          "confidence": 0.8
+        }
+      }
+    },
+    {
+      "outfit_id": "outfit_oops_master_01_v2__aw-repair-06",
+      "source_token": "o1129",
+      "status": "ai_candidate",
+      "record_fingerprint": "b3a6de774b266b450c079bade6469465cf57a836b0609d074aaea9ef2c1979c6",
+      "asset_sha256": "3620bed2543043e1922136fd7040ec05d029b2490050b745545359a9f4ab39ff",
+      "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/6425f89125e22ec9ece426b1.webp",
+      "source_kind": "codex_visual_review",
+      "evidence": "白衬衫稳定黑灰粉错层裤，错位只发生在下装，黑鞋包延续清楚边界。",
+      "observations": {
+        "axes": {},
+        "expression": "typical",
+        "formality": "smart_casual",
+        "layering": 1,
+        "persona_scores": {
+          "oops": 0.84,
+          "edge": 0.6
+        },
+        "scenes": [
+          "daily"
+        ],
+        "seasons": [
+          "autumn"
+        ],
+        "structure": "pants",
+        "wearability": "everyday_with_statement",
+        "main_visual_slots": [
+          "top",
+          "pants"
+        ],
+        "main_colors": [
+          "white",
+          "charcoal",
+          "washed_blue",
+          "pale_pink"
+        ],
+        "conflicts": null,
+        "silhouette": "reviewed_focal_pants_composition",
+        "color_relation": "controlled_after_accessory_simplification",
+        "persona_evidence": "白衬衫稳定黑灰粉错层裤，错位只发生在下装，黑鞋包延续清楚边界。"
+      },
+      "confidence": 0.8,
+      "model": "current_codex_session",
+      "prompt_version": "aw-focal-repair-06-native-v1",
+      "review_level": "individual_contact_sheet_judgment",
+      "evidence_scope": "nonblind_individual_visual_judgment",
+      "review_complete": true,
+      "field_status": {
+        "axes": "ai_observed",
+        "expression": "ai_observed",
+        "formality": "ai_observed",
+        "layering": "ai_observed",
+        "persona_scores": "ai_observed",
+        "scenes": "ai_observed",
+        "seasons": "ai_observed",
+        "structure": "ai_observed",
+        "wearability": "ai_observed",
+        "main_visual_slots": "ai_observed",
+        "main_colors": "ai_observed",
+        "conflicts": "unknown",
+        "silhouette": "ai_observed",
+        "color_relation": "ai_observed",
+        "persona_evidence": "ai_observed"
+      },
+      "field_provenance": {
+        "axes": {
+          "source_file": "repairs-batch06-review/recipes-1.jpg",
+          "version": "aw-focal-repair-06-native-v1",
+          "confidence": 0.8
+        },
+        "expression": {
+          "source_file": "repairs-batch06-review/recipes-1.jpg",
+          "version": "aw-focal-repair-06-native-v1",
+          "confidence": 0.8
+        },
+        "formality": {
+          "source_file": "repairs-batch06-review/recipes-1.jpg",
+          "version": "aw-focal-repair-06-native-v1",
+          "confidence": 0.8
+        },
+        "layering": {
+          "source_file": "repairs-batch06-review/recipes-1.jpg",
+          "version": "aw-focal-repair-06-native-v1",
+          "confidence": 0.8
+        },
+        "persona_scores": {
+          "source_file": "repairs-batch06-review/recipes-1.jpg",
+          "version": "aw-focal-repair-06-native-v1",
+          "confidence": 0.8
+        },
+        "scenes": {
+          "source_file": "repairs-batch06-review/recipes-1.jpg",
+          "version": "aw-focal-repair-06-native-v1",
+          "confidence": 0.8
+        },
+        "seasons": {
+          "source_file": "repairs-batch06-review/recipes-1.jpg",
+          "version": "aw-focal-repair-06-native-v1",
+          "confidence": 0.8
+        },
+        "structure": {
+          "source_file": "repairs-batch06-review/recipes-1.jpg",
+          "version": "aw-focal-repair-06-native-v1",
+          "confidence": 0.8
+        },
+        "wearability": {
+          "source_file": "repairs-batch06-review/recipes-1.jpg",
+          "version": "aw-focal-repair-06-native-v1",
+          "confidence": 0.8
+        },
+        "main_visual_slots": {
+          "source_file": "repairs-batch06-review/recipes-1.jpg",
+          "version": "aw-focal-repair-06-native-v1",
+          "confidence": 0.8
+        },
+        "main_colors": {
+          "source_file": "repairs-batch06-review/recipes-1.jpg",
+          "version": "aw-focal-repair-06-native-v1",
+          "confidence": 0.8
+        },
+        "conflicts": {
+          "source_file": "repairs-batch06-review/recipes-1.jpg",
+          "version": "aw-focal-repair-06-native-v1",
+          "confidence": null
+        },
+        "silhouette": {
+          "source_file": "repairs-batch06-review/recipes-1.jpg",
+          "version": "aw-focal-repair-06-native-v1",
+          "confidence": 0.8
+        },
+        "color_relation": {
+          "source_file": "repairs-batch06-review/recipes-1.jpg",
+          "version": "aw-focal-repair-06-native-v1",
+          "confidence": 0.8
+        },
+        "persona_evidence": {
+          "source_file": "repairs-batch06-review/recipes-1.jpg",
+          "version": "aw-focal-repair-06-native-v1",
+          "confidence": 0.8
+        }
+      }
+    },
+    {
+      "outfit_id": "outfit_oops_master_02_v1__aw-repair-06",
+      "source_token": "o1130",
+      "status": "needs_review",
+      "record_fingerprint": "226a0d8f625fd8ace9ce3eafe992436f0b0c265376ad99605d74df2e192185a5",
+      "asset_sha256": "04f848feaf1eb5b97347747369aeccf4df4edab1794a019fa1ce04e850a4c43b",
+      "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/281b98b7b28c64cb6049adf5.webp",
+      "source_kind": "codex_visual_review",
+      "evidence": "低装饰鞋包已降低配件噪音，但主服装仍存在多个竞争焦点；不进入秋冬日常候选。",
+      "observations": {
+        "axes": {},
+        "expression": "typical",
+        "formality": "smart_casual",
+        "layering": 1,
+        "persona_scores": {},
+        "scenes": null,
+        "seasons": null,
+        "structure": "pants",
+        "wearability": null,
+        "main_visual_slots": [
+          "top",
+          "pants"
+        ],
+        "main_colors": [
+          "ice_blue",
+          "ivory",
+          "charcoal",
+          "cobalt",
+          "washed_blue",
+          "pale_pink",
+          "lilac"
+        ],
+        "conflicts": [
+          "main_garment_competition_remaining"
+        ],
+        "silhouette": "reviewed_focal_pants_composition",
+        "color_relation": "unresolved",
+        "persona_evidence": "低装饰鞋包已降低配件噪音，但主服装仍存在多个竞争焦点；不进入秋冬日常候选。"
+      },
+      "confidence": 0.8,
+      "model": "current_codex_session",
+      "prompt_version": "aw-focal-repair-06-native-v1",
+      "review_level": "individual_contact_sheet_judgment",
+      "evidence_scope": "nonblind_individual_visual_judgment",
+      "review_complete": true,
+      "field_status": {
+        "axes": "ai_observed",
+        "expression": "ai_observed",
+        "formality": "ai_observed",
+        "layering": "ai_observed",
+        "persona_scores": "ai_observed",
+        "scenes": "unknown",
+        "seasons": "unknown",
+        "structure": "ai_observed",
+        "wearability": "unknown",
+        "main_visual_slots": "ai_observed",
+        "main_colors": "ai_observed",
+        "conflicts": "ai_observed",
+        "silhouette": "ai_observed",
+        "color_relation": "ai_observed",
+        "persona_evidence": "ai_observed"
+      },
+      "field_provenance": {
+        "axes": {
+          "source_file": "repairs-batch06-review/recipes-1.jpg",
+          "version": "aw-focal-repair-06-native-v1",
+          "confidence": 0.8
+        },
+        "expression": {
+          "source_file": "repairs-batch06-review/recipes-1.jpg",
+          "version": "aw-focal-repair-06-native-v1",
+          "confidence": 0.8
+        },
+        "formality": {
+          "source_file": "repairs-batch06-review/recipes-1.jpg",
+          "version": "aw-focal-repair-06-native-v1",
+          "confidence": 0.8
+        },
+        "layering": {
+          "source_file": "repairs-batch06-review/recipes-1.jpg",
+          "version": "aw-focal-repair-06-native-v1",
+          "confidence": 0.8
+        },
+        "persona_scores": {
+          "source_file": "repairs-batch06-review/recipes-1.jpg",
+          "version": "aw-focal-repair-06-native-v1",
+          "confidence": 0.8
+        },
+        "scenes": {
+          "source_file": "repairs-batch06-review/recipes-1.jpg",
+          "version": "aw-focal-repair-06-native-v1",
+          "confidence": null
+        },
+        "seasons": {
+          "source_file": "repairs-batch06-review/recipes-1.jpg",
+          "version": "aw-focal-repair-06-native-v1",
+          "confidence": null
+        },
+        "structure": {
+          "source_file": "repairs-batch06-review/recipes-1.jpg",
+          "version": "aw-focal-repair-06-native-v1",
+          "confidence": 0.8
+        },
+        "wearability": {
+          "source_file": "repairs-batch06-review/recipes-1.jpg",
+          "version": "aw-focal-repair-06-native-v1",
+          "confidence": null
+        },
+        "main_visual_slots": {
+          "source_file": "repairs-batch06-review/recipes-1.jpg",
+          "version": "aw-focal-repair-06-native-v1",
+          "confidence": 0.8
+        },
+        "main_colors": {
+          "source_file": "repairs-batch06-review/recipes-1.jpg",
+          "version": "aw-focal-repair-06-native-v1",
+          "confidence": 0.8
+        },
+        "conflicts": {
+          "source_file": "repairs-batch06-review/recipes-1.jpg",
+          "version": "aw-focal-repair-06-native-v1",
+          "confidence": 0.8
+        },
+        "silhouette": {
+          "source_file": "repairs-batch06-review/recipes-1.jpg",
+          "version": "aw-focal-repair-06-native-v1",
+          "confidence": 0.8
+        },
+        "color_relation": {
+          "source_file": "repairs-batch06-review/recipes-1.jpg",
+          "version": "aw-focal-repair-06-native-v1",
+          "confidence": 0.8
+        },
+        "persona_evidence": {
+          "source_file": "repairs-batch06-review/recipes-1.jpg",
+          "version": "aw-focal-repair-06-native-v1",
+          "confidence": 0.8
+        }
+      }
+    },
+    {
+      "outfit_id": "outfit_oops_master_07_v1__aw-repair-06",
+      "source_token": "o1138",
+      "status": "needs_review",
+      "record_fingerprint": "c802dd5b304b31716bc0dbbbb419e4c77ec839e265a8d045a79155e62f98503b",
+      "asset_sha256": "dc4f2042ed59f31f0a6100a84448e1ad401ac57691349ca3ef73fcd1582969eb",
+      "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/68f2f49857bd5a33678d1b6d.webp",
+      "source_kind": "codex_visual_review",
+      "evidence": "低装饰鞋包已降低配件噪音，但主服装仍存在多个竞争焦点；不进入秋冬日常候选。",
+      "observations": {
+        "axes": {},
+        "expression": "typical",
+        "formality": "smart_casual",
+        "layering": 1,
+        "persona_scores": {},
+        "scenes": null,
+        "seasons": null,
+        "structure": "pants",
+        "wearability": null,
+        "main_visual_slots": [
+          "top",
+          "pants"
+        ],
+        "main_colors": [
+          "ice_blue",
+          "ivory",
+          "charcoal",
+          "cobalt",
+          "blue",
+          "orange",
+          "lime",
+          "pink"
+        ],
+        "conflicts": [
+          "main_garment_competition_remaining"
+        ],
+        "silhouette": "reviewed_focal_pants_composition",
+        "color_relation": "unresolved",
+        "persona_evidence": "低装饰鞋包已降低配件噪音，但主服装仍存在多个竞争焦点；不进入秋冬日常候选。"
+      },
+      "confidence": 0.8,
+      "model": "current_codex_session",
+      "prompt_version": "aw-focal-repair-06-native-v1",
+      "review_level": "individual_contact_sheet_judgment",
+      "evidence_scope": "nonblind_individual_visual_judgment",
+      "review_complete": true,
+      "field_status": {
+        "axes": "ai_observed",
+        "expression": "ai_observed",
+        "formality": "ai_observed",
+        "layering": "ai_observed",
+        "persona_scores": "ai_observed",
+        "scenes": "unknown",
+        "seasons": "unknown",
+        "structure": "ai_observed",
+        "wearability": "unknown",
+        "main_visual_slots": "ai_observed",
+        "main_colors": "ai_observed",
+        "conflicts": "ai_observed",
+        "silhouette": "ai_observed",
+        "color_relation": "ai_observed",
+        "persona_evidence": "ai_observed"
+      },
+      "field_provenance": {
+        "axes": {
+          "source_file": "repairs-batch06-review/recipes-2.jpg",
+          "version": "aw-focal-repair-06-native-v1",
+          "confidence": 0.8
+        },
+        "expression": {
+          "source_file": "repairs-batch06-review/recipes-2.jpg",
+          "version": "aw-focal-repair-06-native-v1",
+          "confidence": 0.8
+        },
+        "formality": {
+          "source_file": "repairs-batch06-review/recipes-2.jpg",
+          "version": "aw-focal-repair-06-native-v1",
+          "confidence": 0.8
+        },
+        "layering": {
+          "source_file": "repairs-batch06-review/recipes-2.jpg",
+          "version": "aw-focal-repair-06-native-v1",
+          "confidence": 0.8
+        },
+        "persona_scores": {
+          "source_file": "repairs-batch06-review/recipes-2.jpg",
+          "version": "aw-focal-repair-06-native-v1",
+          "confidence": 0.8
+        },
+        "scenes": {
+          "source_file": "repairs-batch06-review/recipes-2.jpg",
+          "version": "aw-focal-repair-06-native-v1",
+          "confidence": null
+        },
+        "seasons": {
+          "source_file": "repairs-batch06-review/recipes-2.jpg",
+          "version": "aw-focal-repair-06-native-v1",
+          "confidence": null
+        },
+        "structure": {
+          "source_file": "repairs-batch06-review/recipes-2.jpg",
+          "version": "aw-focal-repair-06-native-v1",
+          "confidence": 0.8
+        },
+        "wearability": {
+          "source_file": "repairs-batch06-review/recipes-2.jpg",
+          "version": "aw-focal-repair-06-native-v1",
+          "confidence": null
+        },
+        "main_visual_slots": {
+          "source_file": "repairs-batch06-review/recipes-2.jpg",
+          "version": "aw-focal-repair-06-native-v1",
+          "confidence": 0.8
+        },
+        "main_colors": {
+          "source_file": "repairs-batch06-review/recipes-2.jpg",
+          "version": "aw-focal-repair-06-native-v1",
+          "confidence": 0.8
+        },
+        "conflicts": {
+          "source_file": "repairs-batch06-review/recipes-2.jpg",
+          "version": "aw-focal-repair-06-native-v1",
+          "confidence": 0.8
+        },
+        "silhouette": {
+          "source_file": "repairs-batch06-review/recipes-2.jpg",
+          "version": "aw-focal-repair-06-native-v1",
+          "confidence": 0.8
+        },
+        "color_relation": {
+          "source_file": "repairs-batch06-review/recipes-2.jpg",
+          "version": "aw-focal-repair-06-native-v1",
+          "confidence": 0.8
+        },
+        "persona_evidence": {
+          "source_file": "repairs-batch06-review/recipes-2.jpg",
+          "version": "aw-focal-repair-06-native-v1",
+          "confidence": 0.8
+        }
+      }
+    },
+    {
+      "outfit_id": "outfit_oops_master_11_v2__aw-repair-06",
+      "source_token": "o1147",
+      "status": "ai_candidate",
+      "record_fingerprint": "b0b4b0faf11aa9a7d26aa96d0809f23c105c20f261d77d8aa31c0c56fe974c0a",
+      "asset_sha256": "3c9e3850e1503169a467b2941b7a507ff0ab3272ff085a32e41992d798ce0eab",
+      "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/64e451607fdaaa4eb36d5220.webp",
+      "source_kind": "codex_visual_review",
+      "evidence": "白衬衫稳定灰蓝黄不对称层裙，单一解构下装成为焦点，黑鞋包保持安静。",
+      "observations": {
+        "axes": {},
+        "expression": "typical",
+        "formality": "smart_casual",
+        "layering": 1,
+        "persona_scores": {
+          "oops": 0.82,
+          "flou": 0.58
+        },
+        "scenes": [
+          "daily"
+        ],
+        "seasons": [
+          "autumn"
+        ],
+        "structure": "skirt",
+        "wearability": "everyday_with_statement",
+        "main_visual_slots": [
+          "top",
+          "skirt"
+        ],
+        "main_colors": [
+          "white",
+          "charcoal",
+          "denim_blue",
+          "yellow",
+          "ivory",
+          "silver"
+        ],
+        "conflicts": null,
+        "silhouette": "reviewed_focal_skirt_composition",
+        "color_relation": "controlled_after_accessory_simplification",
+        "persona_evidence": "白衬衫稳定灰蓝黄不对称层裙，单一解构下装成为焦点，黑鞋包保持安静。"
+      },
+      "confidence": 0.8,
+      "model": "current_codex_session",
+      "prompt_version": "aw-focal-repair-06-native-v1",
+      "review_level": "individual_contact_sheet_judgment",
+      "evidence_scope": "nonblind_individual_visual_judgment",
+      "review_complete": true,
+      "field_status": {
+        "axes": "ai_observed",
+        "expression": "ai_observed",
+        "formality": "ai_observed",
+        "layering": "ai_observed",
+        "persona_scores": "ai_observed",
+        "scenes": "ai_observed",
+        "seasons": "ai_observed",
+        "structure": "ai_observed",
+        "wearability": "ai_observed",
+        "main_visual_slots": "ai_observed",
+        "main_colors": "ai_observed",
+        "conflicts": "unknown",
+        "silhouette": "ai_observed",
+        "color_relation": "ai_observed",
+        "persona_evidence": "ai_observed"
+      },
+      "field_provenance": {
+        "axes": {
+          "source_file": "repairs-batch06-review/recipes-2.jpg",
+          "version": "aw-focal-repair-06-native-v1",
+          "confidence": 0.8
+        },
+        "expression": {
+          "source_file": "repairs-batch06-review/recipes-2.jpg",
+          "version": "aw-focal-repair-06-native-v1",
+          "confidence": 0.8
+        },
+        "formality": {
+          "source_file": "repairs-batch06-review/recipes-2.jpg",
+          "version": "aw-focal-repair-06-native-v1",
+          "confidence": 0.8
+        },
+        "layering": {
+          "source_file": "repairs-batch06-review/recipes-2.jpg",
+          "version": "aw-focal-repair-06-native-v1",
+          "confidence": 0.8
+        },
+        "persona_scores": {
+          "source_file": "repairs-batch06-review/recipes-2.jpg",
+          "version": "aw-focal-repair-06-native-v1",
+          "confidence": 0.8
+        },
+        "scenes": {
+          "source_file": "repairs-batch06-review/recipes-2.jpg",
+          "version": "aw-focal-repair-06-native-v1",
+          "confidence": 0.8
+        },
+        "seasons": {
+          "source_file": "repairs-batch06-review/recipes-2.jpg",
+          "version": "aw-focal-repair-06-native-v1",
+          "confidence": 0.8
+        },
+        "structure": {
+          "source_file": "repairs-batch06-review/recipes-2.jpg",
+          "version": "aw-focal-repair-06-native-v1",
+          "confidence": 0.8
+        },
+        "wearability": {
+          "source_file": "repairs-batch06-review/recipes-2.jpg",
+          "version": "aw-focal-repair-06-native-v1",
+          "confidence": 0.8
+        },
+        "main_visual_slots": {
+          "source_file": "repairs-batch06-review/recipes-2.jpg",
+          "version": "aw-focal-repair-06-native-v1",
+          "confidence": 0.8
+        },
+        "main_colors": {
+          "source_file": "repairs-batch06-review/recipes-2.jpg",
+          "version": "aw-focal-repair-06-native-v1",
+          "confidence": 0.8
+        },
+        "conflicts": {
+          "source_file": "repairs-batch06-review/recipes-2.jpg",
+          "version": "aw-focal-repair-06-native-v1",
+          "confidence": null
+        },
+        "silhouette": {
+          "source_file": "repairs-batch06-review/recipes-2.jpg",
+          "version": "aw-focal-repair-06-native-v1",
+          "confidence": 0.8
+        },
+        "color_relation": {
+          "source_file": "repairs-batch06-review/recipes-2.jpg",
+          "version": "aw-focal-repair-06-native-v1",
+          "confidence": 0.8
+        },
+        "persona_evidence": {
+          "source_file": "repairs-batch06-review/recipes-2.jpg",
+          "version": "aw-focal-repair-06-native-v1",
+          "confidence": 0.8
+        }
+      }
+    },
+    {
+      "outfit_id": "outfit_oops_master_30_v1__aw-repair-06",
+      "source_token": "o1169",
+      "status": "needs_review",
+      "record_fingerprint": "0f567bf829ea4e0f364d774c4a883cde771a3b4a1b64c3911a67830af122f99a",
+      "asset_sha256": "efb3f36cb2099849280d8bd85d0bba492922899b9247c6a6c1f494f07df23e66",
+      "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/6197ab7e02ee2f5d19db99de.webp",
+      "source_kind": "codex_visual_review",
+      "evidence": "低装饰鞋包已降低配件噪音，但主服装仍存在多个竞争焦点；不进入秋冬日常候选。",
+      "observations": {
+        "axes": {},
+        "expression": "typical",
+        "formality": "smart_casual",
+        "layering": 1,
+        "persona_scores": {},
+        "scenes": null,
+        "seasons": null,
+        "structure": "dress",
+        "wearability": null,
+        "main_visual_slots": [
+          "dress"
+        ],
+        "main_colors": [
+          "charcoal",
+          "denim_blue",
+          "pink",
+          "ivory",
+          "navy",
+          "silver"
+        ],
+        "conflicts": [
+          "main_garment_competition_remaining"
+        ],
+        "silhouette": "reviewed_focal_dress_composition",
+        "color_relation": "unresolved",
+        "persona_evidence": "低装饰鞋包已降低配件噪音，但主服装仍存在多个竞争焦点；不进入秋冬日常候选。"
+      },
+      "confidence": 0.8,
+      "model": "current_codex_session",
+      "prompt_version": "aw-focal-repair-06-native-v1",
+      "review_level": "individual_contact_sheet_judgment",
+      "evidence_scope": "nonblind_individual_visual_judgment",
+      "review_complete": true,
+      "field_status": {
+        "axes": "ai_observed",
+        "expression": "ai_observed",
+        "formality": "ai_observed",
+        "layering": "ai_observed",
+        "persona_scores": "ai_observed",
+        "scenes": "unknown",
+        "seasons": "unknown",
+        "structure": "ai_observed",
+        "wearability": "unknown",
+        "main_visual_slots": "ai_observed",
+        "main_colors": "ai_observed",
+        "conflicts": "ai_observed",
+        "silhouette": "ai_observed",
+        "color_relation": "ai_observed",
+        "persona_evidence": "ai_observed"
+      },
+      "field_provenance": {
+        "axes": {
+          "source_file": "repairs-batch06-review/recipes-2.jpg",
+          "version": "aw-focal-repair-06-native-v1",
+          "confidence": 0.8
+        },
+        "expression": {
+          "source_file": "repairs-batch06-review/recipes-2.jpg",
+          "version": "aw-focal-repair-06-native-v1",
+          "confidence": 0.8
+        },
+        "formality": {
+          "source_file": "repairs-batch06-review/recipes-2.jpg",
+          "version": "aw-focal-repair-06-native-v1",
+          "confidence": 0.8
+        },
+        "layering": {
+          "source_file": "repairs-batch06-review/recipes-2.jpg",
+          "version": "aw-focal-repair-06-native-v1",
+          "confidence": 0.8
+        },
+        "persona_scores": {
+          "source_file": "repairs-batch06-review/recipes-2.jpg",
+          "version": "aw-focal-repair-06-native-v1",
+          "confidence": 0.8
+        },
+        "scenes": {
+          "source_file": "repairs-batch06-review/recipes-2.jpg",
+          "version": "aw-focal-repair-06-native-v1",
+          "confidence": null
+        },
+        "seasons": {
+          "source_file": "repairs-batch06-review/recipes-2.jpg",
+          "version": "aw-focal-repair-06-native-v1",
+          "confidence": null
+        },
+        "structure": {
+          "source_file": "repairs-batch06-review/recipes-2.jpg",
+          "version": "aw-focal-repair-06-native-v1",
+          "confidence": 0.8
+        },
+        "wearability": {
+          "source_file": "repairs-batch06-review/recipes-2.jpg",
+          "version": "aw-focal-repair-06-native-v1",
+          "confidence": null
+        },
+        "main_visual_slots": {
+          "source_file": "repairs-batch06-review/recipes-2.jpg",
+          "version": "aw-focal-repair-06-native-v1",
+          "confidence": 0.8
+        },
+        "main_colors": {
+          "source_file": "repairs-batch06-review/recipes-2.jpg",
+          "version": "aw-focal-repair-06-native-v1",
+          "confidence": 0.8
+        },
+        "conflicts": {
+          "source_file": "repairs-batch06-review/recipes-2.jpg",
+          "version": "aw-focal-repair-06-native-v1",
+          "confidence": 0.8
+        },
+        "silhouette": {
+          "source_file": "repairs-batch06-review/recipes-2.jpg",
+          "version": "aw-focal-repair-06-native-v1",
+          "confidence": 0.8
+        },
+        "color_relation": {
+          "source_file": "repairs-batch06-review/recipes-2.jpg",
+          "version": "aw-focal-repair-06-native-v1",
+          "confidence": 0.8
+        },
+        "persona_evidence": {
+          "source_file": "repairs-batch06-review/recipes-2.jpg",
+          "version": "aw-focal-repair-06-native-v1",
+          "confidence": 0.8
+        }
+      }
+    }
+  ],
+  "version": "aw-focal-review-06-53688defeb3f5fb54dfb"
+}

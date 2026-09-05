@@ -1,0 +1,1438 @@
+{
+  "schema_version": 1,
+  "batch_id": "aw-generated-garments-09",
+  "prompt_version": "selfit-aw-colour-axis-outer-v1",
+  "status": "internal_candidate",
+  "production_approved": false,
+  "generation": [
+    {
+      "garment_id": "garment_aw_targeted07_outer_ocean_precise_01",
+      "token": "n0048",
+      "source_output": "/Users/yuanzexiang/.codex/generated_images/01a056c3-ad43-77d1-aed3-35866995a6d6/exec-8446c661-0a78-4b35-9f97-a9007cbbfa35.png",
+      "raw_path": "raw/winter-coat-ocean-precise-raw-v1.png",
+      "prepared_path": "prepared/winter-coat-ocean-precise-v1.png",
+      "qa_path": "qa/winter-coat-ocean-precise-v1.json",
+      "final_prompt": "深海蓝立领纵线长大衣，原创无品牌透明背景冬季主外层。 Photorealistic premium fashion e-commerce product cutout, exactly one original unbranded garment, front-facing and naturally shaped as if invisibly supported, genuinely transparent alpha background, centered square canvas, complete silhouette with 12% clear padding on every side. No person, mannequin, hanger, stand, accessories, text, label, logo, watermark, floor shadow, white halo, duplicate item or clipped edge.",
+      "target_conditions": [
+        "MUTE×ocean×winter",
+        "ICED×ocean×winter",
+        "JADE×ocean×winter",
+        "BOLT×ocean×winter"
+      ]
+    },
+    {
+      "garment_id": "garment_aw_targeted07_outer_ocean_soft_01",
+      "token": "n0049",
+      "source_output": "/Users/yuanzexiang/.codex/generated_images/01a056c3-ad43-77d1-aed3-35866995a6d6/exec-373b60a9-456f-4ec9-b9b8-db69e01c54d7.png",
+      "raw_path": "raw/winter-coat-ocean-soft-raw-v1.png",
+      "prepared_path": "prepared/winter-coat-ocean-soft-v1.png",
+      "qa_path": "qa/winter-coat-ocean-soft-v1.json",
+      "final_prompt": "雾海蓝柔和系带A线大衣，原创无品牌透明背景冬季主外层。 Photorealistic premium fashion e-commerce product cutout, exactly one original unbranded garment, front-facing and naturally shaped as if invisibly supported, genuinely transparent alpha background, centered square canvas, complete silhouette with 12% clear padding on every side. No person, mannequin, hanger, stand, accessories, text, label, logo, watermark, floor shadow, white halo, duplicate item or clipped edge.",
+      "target_conditions": [
+        "FLOU×ocean×winter",
+        "MELT×ocean×winter",
+        "EASE×ocean×winter",
+        "WABI×ocean×winter"
+      ]
+    },
+    {
+      "garment_id": "garment_aw_targeted07_outer_earth_precise_01",
+      "token": "n0050",
+      "source_output": "/Users/yuanzexiang/.codex/generated_images/01a056c3-ad43-77d1-aed3-35866995a6d6/exec-e67238d2-d081-4e8a-a173-980f816819bb.png",
+      "raw_path": "raw/winter-coat-earth-precise-raw-v1.png",
+      "prepared_path": "prepared/winter-coat-earth-precise-v1.png",
+      "qa_path": "qa/winter-coat-earth-precise-v1.json",
+      "final_prompt": "冷蕈褐立领收净长大衣，原创无品牌透明背景冬季主外层。 Photorealistic premium fashion e-commerce product cutout, exactly one original unbranded garment, front-facing and naturally shaped as if invisibly supported, genuinely transparent alpha background, centered square canvas, complete silhouette with 12% clear padding on every side. No person, mannequin, hanger, stand, accessories, text, label, logo, watermark, floor shadow, white halo, duplicate item or clipped edge.",
+      "target_conditions": [
+        "ICED×earth×winter",
+        "MUTE×earth×winter",
+        "JADE×earth×winter",
+        "HEIR×earth×winter"
+      ]
+    },
+    {
+      "garment_id": "garment_aw_targeted07_outer_earth_soft_01",
+      "token": "n0051",
+      "source_output": "/Users/yuanzexiang/.codex/generated_images/01a056c3-ad43-77d1-aed3-35866995a6d6/exec-597ba771-0d28-4db0-92c2-cf142a7be7d1.png",
+      "raw_path": "raw/winter-coat-earth-soft-raw-v1.png",
+      "prepared_path": "prepared/winter-coat-earth-soft-v1.png",
+      "qa_path": "qa/winter-coat-earth-soft-v1.json",
+      "final_prompt": "暖陶褐弧线茧形长大衣，原创无品牌透明背景冬季主外层。 Photorealistic premium fashion e-commerce product cutout, exactly one original unbranded garment, front-facing and naturally shaped as if invisibly supported, genuinely transparent alpha background, centered square canvas, complete silhouette with 12% clear padding on every side. No person, mannequin, hanger, stand, accessories, text, label, logo, watermark, floor shadow, white halo, duplicate item or clipped edge.",
+      "target_conditions": [
+        "WABI×earth×winter",
+        "VOID×earth×winter",
+        "MELT×earth×winter",
+        "EASE×earth×winter"
+      ]
+    },
+    {
+      "garment_id": "garment_aw_targeted07_outer_bright_sharp_01",
+      "token": "n0052",
+      "source_output": "/Users/yuanzexiang/.codex/generated_images/01a056c3-ad43-77d1-aed3-35866995a6d6/exec-3957580d-9f8c-4952-aea6-c6654397b74f.png",
+      "raw_path": "raw/winter-coat-bright-sharp-raw-v1.png",
+      "prepared_path": "prepared/winter-coat-bright-sharp-v1.png",
+      "qa_path": "qa/winter-coat-bright-sharp-v1.json",
+      "final_prompt": "钴蓝斜领锐线中长大衣，原创无品牌透明背景冬季主外层。 Photorealistic premium fashion e-commerce product cutout, exactly one original unbranded garment, front-facing and naturally shaped as if invisibly supported, genuinely transparent alpha background, centered square canvas, complete silhouette with 12% clear padding on every side. No person, mannequin, hanger, stand, accessories, text, label, logo, watermark, floor shadow, white halo, duplicate item or clipped edge.",
+      "target_conditions": [
+        "EDGE×bright×winter",
+        "NEON×bright×winter",
+        "JADE×bright×winter",
+        "NOIR×bright×winter"
+      ]
+    },
+    {
+      "garment_id": "garment_aw_targeted07_outer_bright_soft_01",
+      "token": "n0053",
+      "source_output": "/Users/yuanzexiang/.codex/generated_images/01a056c3-ad43-77d1-aed3-35866995a6d6/exec-24c58983-c74b-4c3e-8932-6e1afea7f4c0.png",
+      "raw_path": "raw/winter-coat-bright-soft-raw-v1.png",
+      "prepared_path": "prepared/winter-coat-bright-soft-v1.png",
+      "qa_path": "qa/winter-coat-bright-soft-v1.json",
+      "final_prompt": "万寿菊黄无领茧形长大衣，原创无品牌透明背景冬季主外层。 Photorealistic premium fashion e-commerce product cutout, exactly one original unbranded garment, front-facing and naturally shaped as if invisibly supported, genuinely transparent alpha background, centered square canvas, complete silhouette with 12% clear padding on every side. No person, mannequin, hanger, stand, accessories, text, label, logo, watermark, floor shadow, white halo, duplicate item or clipped edge.",
+      "target_conditions": [
+        "WABI×bright×winter",
+        "MELT×bright×winter",
+        "EASE×bright×winter",
+        "LOOP×bright×winter"
+      ]
+    },
+    {
+      "garment_id": "garment_aw_targeted07_outer_jewel_sharp_01",
+      "token": "n0054",
+      "source_output": "/Users/yuanzexiang/.codex/generated_images/01a056c3-ad43-77d1-aed3-35866995a6d6/exec-3653ad7a-b171-4ee9-9613-7d9026e45496.png",
+      "raw_path": "raw/winter-coat-jewel-sharp-raw-v1.png",
+      "prepared_path": "prepared/winter-coat-jewel-sharp-v1.png",
+      "qa_path": "qa/winter-coat-jewel-sharp-v1.json",
+      "final_prompt": "深红宝石强肩收腰长大衣，原创无品牌透明背景冬季主外层。 Photorealistic premium fashion e-commerce product cutout, exactly one original unbranded garment, front-facing and naturally shaped as if invisibly supported, genuinely transparent alpha background, centered square canvas, complete silhouette with 12% clear padding on every side. No person, mannequin, hanger, stand, accessories, text, label, logo, watermark, floor shadow, white halo, duplicate item or clipped edge.",
+      "target_conditions": [
+        "BOLT×jewel×winter",
+        "EDGE×jewel×winter",
+        "NOIR×jewel×winter",
+        "HEIR×jewel×winter"
+      ]
+    },
+    {
+      "garment_id": "garment_aw_targeted07_outer_jewel_soft_01",
+      "token": "n0055",
+      "source_output": "/Users/yuanzexiang/.codex/generated_images/01a056c3-ad43-77d1-aed3-35866995a6d6/exec-79db1481-009d-4d27-9f47-a07477a5fbfc.png",
+      "raw_path": "raw/winter-coat-jewel-soft-raw-v1.png",
+      "prepared_path": "prepared/winter-coat-jewel-soft-v1.png",
+      "qa_path": "qa/winter-coat-jewel-soft-v1.json",
+      "final_prompt": "深紫晶包裹茧形长大衣，原创无品牌透明背景冬季主外层。 Photorealistic premium fashion e-commerce product cutout, exactly one original unbranded garment, front-facing and naturally shaped as if invisibly supported, genuinely transparent alpha background, centered square canvas, complete silhouette with 12% clear padding on every side. No person, mannequin, hanger, stand, accessories, text, label, logo, watermark, floor shadow, white halo, duplicate item or clipped edge.",
+      "target_conditions": [
+        "MELT×jewel×winter",
+        "FLOU×jewel×winter",
+        "VOID×jewel×winter",
+        "WABI×jewel×winter"
+      ]
+    }
+  ],
+  "garments": [
+    {
+      "id": "garment_aw_targeted07_outer_ocean_precise_01",
+      "category": "outer",
+      "subcategory": "深海蓝立领纵线长大衣",
+      "silhouette": [
+        "precise_shoulder",
+        "stand_collar",
+        "long_column"
+      ],
+      "fit": "合体",
+      "materials": [],
+      "details": [
+        "original_gap_fill",
+        "ocean",
+        "visually_reviewed_cutout"
+      ],
+      "season_tags": [
+        "秋",
+        "冬"
+      ],
+      "scene_tags": [
+        "日常",
+        "通勤",
+        "旅行"
+      ],
+      "weather_tags": [],
+      "presentation": [
+        "feminine",
+        "neutral"
+      ],
+      "layer_role": "outer",
+      "tryon_slot": "outer",
+      "persona_affinity": {
+        "MUTE": 0.96,
+        "ICED": 0.88,
+        "JADE": 0.8,
+        "BOLT": 0.72
+      },
+      "color": {
+        "temperature": "未判断",
+        "lightness": "深色",
+        "saturation": "高饱和",
+        "harmony": "未判断",
+        "palette": [
+          "#082641",
+          "#0c2c48",
+          "#0f314e",
+          "#03192f",
+          "#133655"
+        ]
+      },
+      "assets": {
+        "image_url": "/static/selfit/assets/content_v2_drafts/aw-targeted-07/garments/winter-coat-ocean-precise-v1.png",
+        "source_url": "",
+        "width": 1200,
+        "height": 1200,
+        "alpha_verified": true,
+        "rights_status": "owned"
+      },
+      "production": {
+        "source_kind": "generated_original",
+        "generation_job_id": "aw-generated-garments-09-n0048",
+        "prompt_version": "selfit-aw-colour-axis-outer-v1",
+        "reference_ids": [],
+        "qa_status": "approved",
+        "phash": "3030307070703010-0b2944"
+      },
+      "annotation": {
+        "status": "designer_reviewed",
+        "source": "designer",
+        "confidence": 0.92,
+        "review_notes": [
+          "Cutout and visible silhouette reviewed in current Codex session; outfit use remains draft."
+        ]
+      },
+      "color_evidence": {
+        "source": "opaque_pixel_quantization_v1",
+        "status": "measured_not_semantic_review",
+        "asset_sha256": "7124e64c2169a3cfa1fa800bcb38a578dd3b522bca7dfb64a535f272cd1ea3e2",
+        "swatches": [
+          {
+            "hex": "#082641",
+            "weight": 0.295,
+            "family": "蓝"
+          },
+          {
+            "hex": "#0c2c48",
+            "weight": 0.2193,
+            "family": "蓝"
+          },
+          {
+            "hex": "#0f314e",
+            "weight": 0.1871,
+            "family": "蓝"
+          },
+          {
+            "hex": "#03192f",
+            "weight": 0.1752,
+            "family": "黑"
+          },
+          {
+            "hex": "#133655",
+            "weight": 0.1234,
+            "family": "蓝"
+          }
+        ],
+        "palette_names": [
+          "蓝",
+          "黑"
+        ],
+        "color": {
+          "temperature": "未判断",
+          "lightness": "深色",
+          "saturation": "高饱和",
+          "harmony": "未判断",
+          "palette": [
+            "#082641",
+            "#0c2c48",
+            "#0f314e",
+            "#03192f",
+            "#133655"
+          ]
+        },
+        "limitations": "渲染光照会影响色值；不据此推断面料成分、真实冷暖或人体适配。"
+      }
+    },
+    {
+      "id": "garment_aw_targeted07_outer_ocean_soft_01",
+      "category": "outer",
+      "subcategory": "雾海蓝柔和系带A线大衣",
+      "silhouette": [
+        "soft_rounded_shoulder",
+        "controlled_wrap",
+        "flowing_a_line"
+      ],
+      "fit": "宽松",
+      "materials": [],
+      "details": [
+        "original_gap_fill",
+        "ocean",
+        "visually_reviewed_cutout"
+      ],
+      "season_tags": [
+        "秋",
+        "冬"
+      ],
+      "scene_tags": [
+        "日常",
+        "通勤",
+        "旅行"
+      ],
+      "weather_tags": [],
+      "presentation": [
+        "feminine",
+        "neutral"
+      ],
+      "layer_role": "outer",
+      "tryon_slot": "outer",
+      "persona_affinity": {
+        "FLOU": 0.96,
+        "MELT": 0.88,
+        "EASE": 0.8,
+        "WABI": 0.72
+      },
+      "color": {
+        "temperature": "未判断",
+        "lightness": "中等",
+        "saturation": "中饱和",
+        "harmony": "未判断",
+        "palette": [
+          "#4c627e",
+          "#566d8b",
+          "#3a4c62",
+          "#637a9a",
+          "#6f87a6"
+        ]
+      },
+      "assets": {
+        "image_url": "/static/selfit/assets/content_v2_drafts/aw-targeted-07/garments/winter-coat-ocean-soft-v1.png",
+        "source_url": "",
+        "width": 1200,
+        "height": 1200,
+        "alpha_verified": true,
+        "rights_status": "owned"
+      },
+      "production": {
+        "source_kind": "generated_original",
+        "generation_job_id": "aw-generated-garments-09-n0049",
+        "prompt_version": "selfit-aw-colour-axis-outer-v1",
+        "reference_ids": [],
+        "qa_status": "approved",
+        "phash": "707970f07970b230-546985"
+      },
+      "annotation": {
+        "status": "designer_reviewed",
+        "source": "designer",
+        "confidence": 0.92,
+        "review_notes": [
+          "Cutout and visible silhouette reviewed in current Codex session; outfit use remains draft."
+        ]
+      },
+      "color_evidence": {
+        "source": "opaque_pixel_quantization_v1",
+        "status": "measured_not_semantic_review",
+        "asset_sha256": "1a01281aa2f1007faf870ea0f4e747656f1713800de230231ee634f4eebefb03",
+        "swatches": [
+          {
+            "hex": "#4c627e",
+            "weight": 0.33,
+            "family": "蓝"
+          },
+          {
+            "hex": "#566d8b",
+            "weight": 0.2404,
+            "family": "蓝"
+          },
+          {
+            "hex": "#3a4c62",
+            "weight": 0.1528,
+            "family": "蓝"
+          },
+          {
+            "hex": "#637a9a",
+            "weight": 0.1461,
+            "family": "蓝"
+          },
+          {
+            "hex": "#6f87a6",
+            "weight": 0.1307,
+            "family": "蓝"
+          }
+        ],
+        "palette_names": [
+          "蓝"
+        ],
+        "color": {
+          "temperature": "未判断",
+          "lightness": "中等",
+          "saturation": "中饱和",
+          "harmony": "未判断",
+          "palette": [
+            "#4c627e",
+            "#566d8b",
+            "#3a4c62",
+            "#637a9a",
+            "#6f87a6"
+          ]
+        },
+        "limitations": "渲染光照会影响色值；不据此推断面料成分、真实冷暖或人体适配。"
+      }
+    },
+    {
+      "id": "garment_aw_targeted07_outer_earth_precise_01",
+      "category": "outer",
+      "subcategory": "冷蕈褐立领收净长大衣",
+      "silhouette": [
+        "disciplined_shoulder",
+        "stand_collar",
+        "narrow_column"
+      ],
+      "fit": "合体",
+      "materials": [],
+      "details": [
+        "original_gap_fill",
+        "earth",
+        "visually_reviewed_cutout"
+      ],
+      "season_tags": [
+        "秋",
+        "冬"
+      ],
+      "scene_tags": [
+        "日常",
+        "通勤",
+        "旅行"
+      ],
+      "weather_tags": [],
+      "presentation": [
+        "feminine",
+        "neutral"
+      ],
+      "layer_role": "outer",
+      "tryon_slot": "outer",
+      "persona_affinity": {
+        "ICED": 0.96,
+        "MUTE": 0.88,
+        "JADE": 0.8,
+        "HEIR": 0.72
+      },
+      "color": {
+        "temperature": "未判断",
+        "lightness": "中等",
+        "saturation": "低饱和",
+        "harmony": "未判断",
+        "palette": [
+          "#867366",
+          "#917e71",
+          "#6c5b4f",
+          "#9b877a",
+          "#a39084"
+        ]
+      },
+      "assets": {
+        "image_url": "/static/selfit/assets/content_v2_drafts/aw-targeted-07/garments/winter-coat-earth-precise-v1.png",
+        "source_url": "",
+        "width": 1200,
+        "height": 1200,
+        "alpha_verified": true,
+        "rights_status": "owned"
+      },
+      "production": {
+        "source_kind": "generated_original",
+        "generation_job_id": "aw-generated-garments-09-n0050",
+        "prompt_version": "selfit-aw-colour-axis-outer-v1",
+        "reference_ids": [],
+        "qa_status": "approved",
+        "phash": "30b2b2f07170b210-89766a"
+      },
+      "annotation": {
+        "status": "designer_reviewed",
+        "source": "designer",
+        "confidence": 0.92,
+        "review_notes": [
+          "Cutout and visible silhouette reviewed in current Codex session; outfit use remains draft."
+        ]
+      },
+      "color_evidence": {
+        "source": "opaque_pixel_quantization_v1",
+        "status": "measured_not_semantic_review",
+        "asset_sha256": "7e0a4854f0f68d7ad77581fb230f16bcb0ee7cbc2f51e7841c15dd2aa3d0b04f",
+        "swatches": [
+          {
+            "hex": "#867366",
+            "weight": 0.2664,
+            "family": "棕"
+          },
+          {
+            "hex": "#917e71",
+            "weight": 0.2467,
+            "family": "棕"
+          },
+          {
+            "hex": "#6c5b4f",
+            "weight": 0.2072,
+            "family": "棕"
+          },
+          {
+            "hex": "#9b877a",
+            "weight": 0.1433,
+            "family": "棕"
+          },
+          {
+            "hex": "#a39084",
+            "weight": 0.1364,
+            "family": "棕"
+          }
+        ],
+        "palette_names": [
+          "棕"
+        ],
+        "color": {
+          "temperature": "未判断",
+          "lightness": "中等",
+          "saturation": "低饱和",
+          "harmony": "未判断",
+          "palette": [
+            "#867366",
+            "#917e71",
+            "#6c5b4f",
+            "#9b877a",
+            "#a39084"
+          ]
+        },
+        "limitations": "渲染光照会影响色值；不据此推断面料成分、真实冷暖或人体适配。"
+      }
+    },
+    {
+      "id": "garment_aw_targeted07_outer_earth_soft_01",
+      "category": "outer",
+      "subcategory": "暖陶褐弧线茧形长大衣",
+      "silhouette": [
+        "rounded_cocoon",
+        "dropped_shoulder",
+        "quiet_curved_seam"
+      ],
+      "fit": "宽松",
+      "materials": [],
+      "details": [
+        "original_gap_fill",
+        "earth",
+        "visually_reviewed_cutout"
+      ],
+      "season_tags": [
+        "秋",
+        "冬"
+      ],
+      "scene_tags": [
+        "日常",
+        "通勤",
+        "旅行"
+      ],
+      "weather_tags": [],
+      "presentation": [
+        "feminine",
+        "neutral"
+      ],
+      "layer_role": "outer",
+      "tryon_slot": "outer",
+      "persona_affinity": {
+        "WABI": 0.96,
+        "VOID": 0.88,
+        "MELT": 0.8,
+        "EASE": 0.72
+      },
+      "color": {
+        "temperature": "未判断",
+        "lightness": "中等",
+        "saturation": "中饱和",
+        "harmony": "未判断",
+        "palette": [
+          "#7b6152",
+          "#85695a",
+          "#8c7061",
+          "#5e483b",
+          "#977b6b"
+        ]
+      },
+      "assets": {
+        "image_url": "/static/selfit/assets/content_v2_drafts/aw-targeted-07/garments/winter-coat-earth-soft-v1.png",
+        "source_url": "",
+        "width": 1200,
+        "height": 1200,
+        "alpha_verified": true,
+        "rights_status": "owned"
+      },
+      "production": {
+        "source_kind": "generated_original",
+        "generation_job_id": "aw-generated-garments-09-n0051",
+        "prompt_version": "selfit-aw-colour-axis-outer-v1",
+        "reference_ids": [],
+        "qa_status": "approved",
+        "phash": "307079f87879b010-7e6455"
+      },
+      "annotation": {
+        "status": "designer_reviewed",
+        "source": "designer",
+        "confidence": 0.92,
+        "review_notes": [
+          "Cutout and visible silhouette reviewed in current Codex session; outfit use remains draft."
+        ]
+      },
+      "color_evidence": {
+        "source": "opaque_pixel_quantization_v1",
+        "status": "measured_not_semantic_review",
+        "asset_sha256": "4442a507e68be7057b0e2765a4631b9088a8c8f086c841df1f4c81d6bb88ff4b",
+        "swatches": [
+          {
+            "hex": "#7b6152",
+            "weight": 0.3104,
+            "family": "棕"
+          },
+          {
+            "hex": "#85695a",
+            "weight": 0.2437,
+            "family": "棕"
+          },
+          {
+            "hex": "#8c7061",
+            "weight": 0.181,
+            "family": "棕"
+          },
+          {
+            "hex": "#5e483b",
+            "weight": 0.1508,
+            "family": "棕"
+          },
+          {
+            "hex": "#977b6b",
+            "weight": 0.1142,
+            "family": "棕"
+          }
+        ],
+        "palette_names": [
+          "棕"
+        ],
+        "color": {
+          "temperature": "未判断",
+          "lightness": "中等",
+          "saturation": "中饱和",
+          "harmony": "未判断",
+          "palette": [
+            "#7b6152",
+            "#85695a",
+            "#8c7061",
+            "#5e483b",
+            "#977b6b"
+          ]
+        },
+        "limitations": "渲染光照会影响色值；不据此推断面料成分、真实冷暖或人体适配。"
+      }
+    },
+    {
+      "id": "garment_aw_targeted07_outer_bright_sharp_01",
+      "category": "outer",
+      "subcategory": "钴蓝斜领锐线中长大衣",
+      "silhouette": [
+        "crisp_shoulder",
+        "single_asymmetric_lapel",
+        "sharp_mid_length"
+      ],
+      "fit": "合体",
+      "materials": [],
+      "details": [
+        "original_gap_fill",
+        "bright",
+        "visually_reviewed_cutout"
+      ],
+      "season_tags": [
+        "秋",
+        "冬"
+      ],
+      "scene_tags": [
+        "日常",
+        "通勤",
+        "旅行"
+      ],
+      "weather_tags": [],
+      "presentation": [
+        "feminine",
+        "neutral"
+      ],
+      "layer_role": "outer",
+      "tryon_slot": "outer",
+      "persona_affinity": {
+        "EDGE": 0.96,
+        "NEON": 0.88,
+        "JADE": 0.8,
+        "NOIR": 0.72
+      },
+      "color": {
+        "temperature": "未判断",
+        "lightness": "中等",
+        "saturation": "高饱和",
+        "harmony": "未判断",
+        "palette": [
+          "#0123a1",
+          "#0126aa",
+          "#022ab2",
+          "#00187d",
+          "#0532c3"
+        ]
+      },
+      "assets": {
+        "image_url": "/static/selfit/assets/content_v2_drafts/aw-targeted-07/garments/winter-coat-bright-sharp-v1.png",
+        "source_url": "",
+        "width": 1200,
+        "height": 1200,
+        "alpha_verified": true,
+        "rights_status": "owned"
+      },
+      "production": {
+        "source_kind": "generated_original",
+        "generation_job_id": "aw-generated-garments-09-n0052",
+        "prompt_version": "selfit-aw-colour-axis-outer-v1",
+        "reference_ids": [],
+        "qa_status": "approved",
+        "phash": "7069f8f071797010-0225a4"
+      },
+      "annotation": {
+        "status": "designer_reviewed",
+        "source": "designer",
+        "confidence": 0.92,
+        "review_notes": [
+          "Cutout and visible silhouette reviewed in current Codex session; outfit use remains draft."
+        ]
+      },
+      "color_evidence": {
+        "source": "opaque_pixel_quantization_v1",
+        "status": "measured_not_semantic_review",
+        "asset_sha256": "40d54ab368b6b47b73a5b9b85f09443d0b035c8c4f11ed07c567a579ba560451",
+        "swatches": [
+          {
+            "hex": "#0123a1",
+            "weight": 0.3558,
+            "family": "蓝"
+          },
+          {
+            "hex": "#0126aa",
+            "weight": 0.2466,
+            "family": "蓝"
+          },
+          {
+            "hex": "#022ab2",
+            "weight": 0.1451,
+            "family": "蓝"
+          },
+          {
+            "hex": "#00187d",
+            "weight": 0.1286,
+            "family": "蓝"
+          },
+          {
+            "hex": "#0532c3",
+            "weight": 0.1239,
+            "family": "蓝"
+          }
+        ],
+        "palette_names": [
+          "蓝"
+        ],
+        "color": {
+          "temperature": "未判断",
+          "lightness": "中等",
+          "saturation": "高饱和",
+          "harmony": "未判断",
+          "palette": [
+            "#0123a1",
+            "#0126aa",
+            "#022ab2",
+            "#00187d",
+            "#0532c3"
+          ]
+        },
+        "limitations": "渲染光照会影响色值；不据此推断面料成分、真实冷暖或人体适配。"
+      }
+    },
+    {
+      "id": "garment_aw_targeted07_outer_bright_soft_01",
+      "category": "outer",
+      "subcategory": "万寿菊黄无领茧形长大衣",
+      "silhouette": [
+        "soft_cocoon",
+        "collarless",
+        "gentle_dropped_shoulder"
+      ],
+      "fit": "宽松",
+      "materials": [],
+      "details": [
+        "original_gap_fill",
+        "bright",
+        "visually_reviewed_cutout"
+      ],
+      "season_tags": [
+        "秋",
+        "冬"
+      ],
+      "scene_tags": [
+        "日常",
+        "通勤",
+        "旅行"
+      ],
+      "weather_tags": [],
+      "presentation": [
+        "feminine",
+        "neutral"
+      ],
+      "layer_role": "outer",
+      "tryon_slot": "outer",
+      "persona_affinity": {
+        "WABI": 0.96,
+        "MELT": 0.88,
+        "EASE": 0.8,
+        "LOOP": 0.72
+      },
+      "color": {
+        "temperature": "未判断",
+        "lightness": "浅色",
+        "saturation": "高饱和",
+        "harmony": "未判断",
+        "palette": [
+          "#f0b90b",
+          "#f4be0f",
+          "#f8c415",
+          "#d59b04",
+          "#fac91a"
+        ]
+      },
+      "assets": {
+        "image_url": "/static/selfit/assets/content_v2_drafts/aw-targeted-07/garments/winter-coat-bright-soft-v1.png",
+        "source_url": "",
+        "width": 1200,
+        "height": 1200,
+        "alpha_verified": true,
+        "rights_status": "owned"
+      },
+      "production": {
+        "source_kind": "generated_original",
+        "generation_job_id": "aw-generated-garments-09-n0053",
+        "prompt_version": "selfit-aw-colour-axis-outer-v1",
+        "reference_ids": [],
+        "qa_status": "approved",
+        "phash": "30f031716979b0b2-eeb70f"
+      },
+      "annotation": {
+        "status": "designer_reviewed",
+        "source": "designer",
+        "confidence": 0.92,
+        "review_notes": [
+          "Cutout and visible silhouette reviewed in current Codex session; outfit use remains draft."
+        ]
+      },
+      "color_evidence": {
+        "source": "opaque_pixel_quantization_v1",
+        "status": "measured_not_semantic_review",
+        "asset_sha256": "7b79e3556293468dffaeb1bad9089cfaebf66269f9ce51d3d9fca2fbeacec3b8",
+        "swatches": [
+          {
+            "hex": "#f0b90b",
+            "weight": 0.3701,
+            "family": "黄"
+          },
+          {
+            "hex": "#f4be0f",
+            "weight": 0.2227,
+            "family": "黄"
+          },
+          {
+            "hex": "#f8c415",
+            "weight": 0.159,
+            "family": "黄"
+          },
+          {
+            "hex": "#d59b04",
+            "weight": 0.1256,
+            "family": "黄"
+          },
+          {
+            "hex": "#fac91a",
+            "weight": 0.1226,
+            "family": "黄"
+          }
+        ],
+        "palette_names": [
+          "黄"
+        ],
+        "color": {
+          "temperature": "未判断",
+          "lightness": "浅色",
+          "saturation": "高饱和",
+          "harmony": "未判断",
+          "palette": [
+            "#f0b90b",
+            "#f4be0f",
+            "#f8c415",
+            "#d59b04",
+            "#fac91a"
+          ]
+        },
+        "limitations": "渲染光照会影响色值；不据此推断面料成分、真实冷暖或人体适配。"
+      }
+    },
+    {
+      "id": "garment_aw_targeted07_outer_jewel_sharp_01",
+      "category": "outer",
+      "subcategory": "深红宝石强肩收腰长大衣",
+      "silhouette": [
+        "sculpted_shoulder",
+        "defined_waist",
+        "long_straight"
+      ],
+      "fit": "合体",
+      "materials": [],
+      "details": [
+        "original_gap_fill",
+        "jewel",
+        "visually_reviewed_cutout"
+      ],
+      "season_tags": [
+        "秋",
+        "冬"
+      ],
+      "scene_tags": [
+        "日常",
+        "通勤",
+        "旅行"
+      ],
+      "weather_tags": [],
+      "presentation": [
+        "feminine",
+        "neutral"
+      ],
+      "layer_role": "outer",
+      "tryon_slot": "outer",
+      "persona_affinity": {
+        "BOLT": 0.96,
+        "EDGE": 0.88,
+        "NOIR": 0.8,
+        "HEIR": 0.72
+      },
+      "color": {
+        "temperature": "未判断",
+        "lightness": "中等",
+        "saturation": "高饱和",
+        "harmony": "未判断",
+        "palette": [
+          "#5c0712",
+          "#650a16",
+          "#6e0e1b",
+          "#42030a",
+          "#791421"
+        ]
+      },
+      "assets": {
+        "image_url": "/static/selfit/assets/content_v2_drafts/aw-targeted-07/garments/winter-coat-jewel-sharp-v1.png",
+        "source_url": "",
+        "width": 1200,
+        "height": 1200,
+        "alpha_verified": true,
+        "rights_status": "owned"
+      },
+      "production": {
+        "source_kind": "generated_original",
+        "generation_job_id": "aw-generated-garments-09-n0054",
+        "prompt_version": "selfit-aw-colour-axis-outer-v1",
+        "reference_ids": [],
+        "qa_status": "approved",
+        "phash": "3078307070703010-600a15"
+      },
+      "annotation": {
+        "status": "designer_reviewed",
+        "source": "designer",
+        "confidence": 0.92,
+        "review_notes": [
+          "Cutout and visible silhouette reviewed in current Codex session; outfit use remains draft."
+        ]
+      },
+      "color_evidence": {
+        "source": "opaque_pixel_quantization_v1",
+        "status": "measured_not_semantic_review",
+        "asset_sha256": "fea4c3275253f92dcbde8a802f87f09618aa78cc057047488f5deac14d86fd11",
+        "swatches": [
+          {
+            "hex": "#5c0712",
+            "weight": 0.3361,
+            "family": "红"
+          },
+          {
+            "hex": "#650a16",
+            "weight": 0.2043,
+            "family": "红"
+          },
+          {
+            "hex": "#6e0e1b",
+            "weight": 0.1764,
+            "family": "红"
+          },
+          {
+            "hex": "#42030a",
+            "weight": 0.159,
+            "family": "红"
+          },
+          {
+            "hex": "#791421",
+            "weight": 0.1242,
+            "family": "红"
+          }
+        ],
+        "palette_names": [
+          "红"
+        ],
+        "color": {
+          "temperature": "未判断",
+          "lightness": "中等",
+          "saturation": "高饱和",
+          "harmony": "未判断",
+          "palette": [
+            "#5c0712",
+            "#650a16",
+            "#6e0e1b",
+            "#42030a",
+            "#791421"
+          ]
+        },
+        "limitations": "渲染光照会影响色值；不据此推断面料成分、真实冷暖或人体适配。"
+      }
+    },
+    {
+      "id": "garment_aw_targeted07_outer_jewel_soft_01",
+      "category": "outer",
+      "subcategory": "深紫晶包裹茧形长大衣",
+      "silhouette": [
+        "soft_wrap_cocoon",
+        "rounded_shoulder",
+        "single_diagonal_closure"
+      ],
+      "fit": "宽松",
+      "materials": [],
+      "details": [
+        "original_gap_fill",
+        "jewel",
+        "visually_reviewed_cutout"
+      ],
+      "season_tags": [
+        "秋",
+        "冬"
+      ],
+      "scene_tags": [
+        "日常",
+        "通勤",
+        "旅行"
+      ],
+      "weather_tags": [],
+      "presentation": [
+        "feminine",
+        "neutral"
+      ],
+      "layer_role": "outer",
+      "tryon_slot": "outer",
+      "persona_affinity": {
+        "MELT": 0.96,
+        "FLOU": 0.88,
+        "VOID": 0.8,
+        "WABI": 0.72
+      },
+      "color": {
+        "temperature": "未判断",
+        "lightness": "深色",
+        "saturation": "高饱和",
+        "harmony": "未判断",
+        "palette": [
+          "#34142a",
+          "#3c1932",
+          "#411d38",
+          "#230b1b",
+          "#49233f"
+        ]
+      },
+      "assets": {
+        "image_url": "/static/selfit/assets/content_v2_drafts/aw-targeted-07/garments/winter-coat-jewel-soft-v1.png",
+        "source_url": "",
+        "width": 1200,
+        "height": 1200,
+        "alpha_verified": true,
+        "rights_status": "owned"
+      },
+      "production": {
+        "source_kind": "generated_original",
+        "generation_job_id": "aw-generated-garments-09-n0055",
+        "prompt_version": "selfit-aw-colour-axis-outer-v1",
+        "reference_ids": [],
+        "qa_status": "approved",
+        "phash": "3038307079783010-38182f"
+      },
+      "annotation": {
+        "status": "designer_reviewed",
+        "source": "designer",
+        "confidence": 0.92,
+        "review_notes": [
+          "Cutout and visible silhouette reviewed in current Codex session; outfit use remains draft."
+        ]
+      },
+      "color_evidence": {
+        "source": "opaque_pixel_quantization_v1",
+        "status": "measured_not_semantic_review",
+        "asset_sha256": "58c3301f7af14fb95c85bc35614a16654db48dc117871382a10e96230e318afa",
+        "swatches": [
+          {
+            "hex": "#34142a",
+            "weight": 0.3216,
+            "family": "紫"
+          },
+          {
+            "hex": "#3c1932",
+            "weight": 0.216,
+            "family": "紫"
+          },
+          {
+            "hex": "#411d38",
+            "weight": 0.1997,
+            "family": "紫"
+          },
+          {
+            "hex": "#230b1b",
+            "weight": 0.1491,
+            "family": "黑"
+          },
+          {
+            "hex": "#49233f",
+            "weight": 0.1136,
+            "family": "紫"
+          }
+        ],
+        "palette_names": [
+          "紫",
+          "黑"
+        ],
+        "color": {
+          "temperature": "未判断",
+          "lightness": "深色",
+          "saturation": "高饱和",
+          "harmony": "未判断",
+          "palette": [
+            "#34142a",
+            "#3c1932",
+            "#411d38",
+            "#230b1b",
+            "#49233f"
+          ]
+        },
+        "limitations": "渲染光照会影响色值；不据此推断面料成分、真实冷暖或人体适配。"
+      }
+    }
+  ],
+  "visual": {
+    "garment_aw_targeted07_outer_ocean_precise_01": {
+      "token": "n0048",
+      "status": "ai_candidate",
+      "record_fingerprint": "5de94f2c00070b8eff18fe24d76ef667f780cb2a1f4c20cd81331e1e0a13c4ea",
+      "asset_sha256": "7124e64c2169a3cfa1fa800bcb38a578dd3b522bca7dfb64a535f272cd1ea3e2",
+      "image_url": "/static/selfit/assets/content_v2_drafts/aw-targeted-07/garments/winter-coat-ocean-precise-v1.png",
+      "source_kind": "codex_visual_review",
+      "evidence": "深海蓝长外层以立领、精确肩线和暗门襟形成清楚纵向边界。",
+      "observations": {
+        "category": "outer",
+        "subcategory": "stand_collar_precise_long_coat",
+        "neckline": "stand_or_wrap_as_observed",
+        "sleeve": "long",
+        "length": "maxi",
+        "volume": "shaped_straight",
+        "construction": "single_clear_closing_line",
+        "pattern": "solid",
+        "decoration": "minimal",
+        "material_appearance": "dense_matte_wool_like",
+        "main_colors": [
+          "deep_ocean_blue"
+        ],
+        "visual_personas": [
+          "mute",
+          "iced",
+          "jade",
+          "bolt"
+        ],
+        "usage_limits": null
+      },
+      "confidence": 0.9,
+      "model": "current_codex_session",
+      "prompt_version": "aw-generated-garment-review-v1",
+      "review_level": "individual_full_resolution_judgment",
+      "review_complete": true,
+      "confidence_basis": "Non-calibrated AI visual judgment; material appearance is visual only and warmth is not claimed."
+    },
+    "garment_aw_targeted07_outer_ocean_soft_01": {
+      "token": "n0049",
+      "status": "ai_candidate",
+      "record_fingerprint": "e0f0e56325196f33d2dd0250eb97703937f3c3f3c7607b37c356ebd06c51c3df",
+      "asset_sha256": "1a01281aa2f1007faf870ea0f4e747656f1713800de230231ee634f4eebefb03",
+      "image_url": "/static/selfit/assets/content_v2_drafts/aw-targeted-07/garments/winter-coat-ocean-soft-v1.png",
+      "source_kind": "codex_visual_review",
+      "evidence": "雾海蓝外层以圆肩、受控系带和流动 A 线形成柔和但完整的冬季外层。",
+      "observations": {
+        "category": "outer",
+        "subcategory": "soft_wrap_a_line_long_coat",
+        "neckline": "stand_or_wrap_as_observed",
+        "sleeve": "long",
+        "length": "maxi",
+        "volume": "soft_cocoon",
+        "construction": "single_clear_closing_line",
+        "pattern": "solid",
+        "decoration": "minimal",
+        "material_appearance": "dense_matte_wool_like",
+        "main_colors": [
+          "muted_ocean_blue"
+        ],
+        "visual_personas": [
+          "flou",
+          "melt",
+          "ease",
+          "wabi"
+        ],
+        "usage_limits": null
+      },
+      "confidence": 0.9,
+      "model": "current_codex_session",
+      "prompt_version": "aw-generated-garment-review-v1",
+      "review_level": "individual_full_resolution_judgment",
+      "review_complete": true,
+      "confidence_basis": "Non-calibrated AI visual judgment; material appearance is visual only and warmth is not claimed."
+    },
+    "garment_aw_targeted07_outer_earth_precise_01": {
+      "token": "n0050",
+      "status": "ai_candidate",
+      "record_fingerprint": "4cb05d5f69a1432891a66192c52142049d4d1bf4a0b89a79ebd4c3419d9df1e4",
+      "asset_sha256": "7e0a4854f0f68d7ad77581fb230f16bcb0ee7cbc2f51e7841c15dd2aa3d0b04f",
+      "image_url": "/static/selfit/assets/content_v2_drafts/aw-targeted-07/garments/winter-coat-earth-precise-v1.png",
+      "source_kind": "codex_visual_review",
+      "evidence": "冷蕈褐长外层以小立领、精确肩线和窄长轮廓表达克制结构。",
+      "observations": {
+        "category": "outer",
+        "subcategory": "stand_collar_narrow_long_coat",
+        "neckline": "stand_or_wrap_as_observed",
+        "sleeve": "long",
+        "length": "maxi",
+        "volume": "shaped_straight",
+        "construction": "single_clear_closing_line",
+        "pattern": "solid",
+        "decoration": "minimal",
+        "material_appearance": "dense_matte_wool_like",
+        "main_colors": [
+          "cool_mushroom_taupe"
+        ],
+        "visual_personas": [
+          "iced",
+          "mute",
+          "jade",
+          "heir"
+        ],
+        "usage_limits": null
+      },
+      "confidence": 0.9,
+      "model": "current_codex_session",
+      "prompt_version": "aw-generated-garment-review-v1",
+      "review_level": "individual_full_resolution_judgment",
+      "review_complete": true,
+      "confidence_basis": "Non-calibrated AI visual judgment; material appearance is visual only and warmth is not claimed."
+    },
+    "garment_aw_targeted07_outer_earth_soft_01": {
+      "token": "n0051",
+      "status": "ai_candidate",
+      "record_fingerprint": "f6c17798c33fbcd7d8eac5f22d7af601ffe348e4aa38953d36de347ef32123ce",
+      "asset_sha256": "4442a507e68be7057b0e2765a4631b9088a8c8f086c841df1f4c81d6bb88ff4b",
+      "image_url": "/static/selfit/assets/content_v2_drafts/aw-targeted-07/garments/winter-coat-earth-soft-v1.png",
+      "source_kind": "codex_visual_review",
+      "evidence": "暖陶褐外层用一处弧线、落肩和完整茧形表达自然包裹感。",
+      "observations": {
+        "category": "outer",
+        "subcategory": "curved_seam_cocoon_long_coat",
+        "neckline": "stand_or_wrap_as_observed",
+        "sleeve": "long",
+        "length": "maxi",
+        "volume": "soft_cocoon",
+        "construction": "single_clear_closing_line",
+        "pattern": "solid",
+        "decoration": "minimal",
+        "material_appearance": "dense_matte_wool_like",
+        "main_colors": [
+          "warm_clay_taupe"
+        ],
+        "visual_personas": [
+          "wabi",
+          "void",
+          "melt",
+          "ease"
+        ],
+        "usage_limits": null
+      },
+      "confidence": 0.9,
+      "model": "current_codex_session",
+      "prompt_version": "aw-generated-garment-review-v1",
+      "review_level": "individual_full_resolution_judgment",
+      "review_complete": true,
+      "confidence_basis": "Non-calibrated AI visual judgment; material appearance is visual only and warmth is not claimed."
+    },
+    "garment_aw_targeted07_outer_bright_sharp_01": {
+      "token": "n0052",
+      "status": "ai_candidate",
+      "record_fingerprint": "4283c24def2ac4496024a79aa1812929be7c41347dd87803a6f352ffd0f71612",
+      "asset_sha256": "40d54ab368b6b47b73a5b9b85f09443d0b035c8c4f11ed07c567a579ba560451",
+      "image_url": "/static/selfit/assets/content_v2_drafts/aw-targeted-07/garments/winter-coat-bright-sharp-v1.png",
+      "source_kind": "codex_visual_review",
+      "evidence": "钴蓝主衣仅以一条斜领线和清楚肩腰边界形成高彩锐感。",
+      "observations": {
+        "category": "outer",
+        "subcategory": "single_asymmetric_lapel_coat",
+        "neckline": "stand_or_wrap_as_observed",
+        "sleeve": "long",
+        "length": "maxi",
+        "volume": "shaped_straight",
+        "construction": "single_clear_closing_line",
+        "pattern": "solid",
+        "decoration": "minimal",
+        "material_appearance": "dense_matte_wool_like",
+        "main_colors": [
+          "vivid_cobalt"
+        ],
+        "visual_personas": [
+          "edge",
+          "neon",
+          "jade",
+          "noir"
+        ],
+        "usage_limits": null
+      },
+      "confidence": 0.9,
+      "model": "current_codex_session",
+      "prompt_version": "aw-generated-garment-review-v1",
+      "review_level": "individual_full_resolution_judgment",
+      "review_complete": true,
+      "confidence_basis": "Non-calibrated AI visual judgment; material appearance is visual only and warmth is not claimed."
+    },
+    "garment_aw_targeted07_outer_bright_soft_01": {
+      "token": "n0053",
+      "status": "ai_candidate",
+      "record_fingerprint": "a92385a68510ada514c07d7537f79586cbb56b6c744f5ea7667869b87e9bc40f",
+      "asset_sha256": "7b79e3556293468dffaeb1bad9089cfaebf66269f9ce51d3d9fca2fbeacec3b8",
+      "image_url": "/static/selfit/assets/content_v2_drafts/aw-targeted-07/garments/winter-coat-bright-soft-v1.png",
+      "source_kind": "codex_visual_review",
+      "evidence": "万寿菊黄集中在低装饰圆量外层，颜色鲜明但结构保持单纯。",
+      "observations": {
+        "category": "outer",
+        "subcategory": "collarless_soft_cocoon_long_coat",
+        "neckline": "stand_or_wrap_as_observed",
+        "sleeve": "long",
+        "length": "maxi",
+        "volume": "soft_cocoon",
+        "construction": "single_clear_closing_line",
+        "pattern": "solid",
+        "decoration": "minimal",
+        "material_appearance": "dense_matte_wool_like",
+        "main_colors": [
+          "vivid_marigold"
+        ],
+        "visual_personas": [
+          "wabi",
+          "melt",
+          "ease",
+          "loop"
+        ],
+        "usage_limits": null
+      },
+      "confidence": 0.9,
+      "model": "current_codex_session",
+      "prompt_version": "aw-generated-garment-review-v1",
+      "review_level": "individual_full_resolution_judgment",
+      "review_complete": true,
+      "confidence_basis": "Non-calibrated AI visual judgment; material appearance is visual only and warmth is not claimed."
+    },
+    "garment_aw_targeted07_outer_jewel_sharp_01": {
+      "token": "n0054",
+      "status": "ai_candidate",
+      "record_fingerprint": "ec0c135a06b4e535c8f5d184f0070e96661efe89ed69b82c9b016a7167e1199f",
+      "asset_sha256": "fea4c3275253f92dcbde8a802f87f09618aa78cc057047488f5deac14d86fd11",
+      "image_url": "/static/selfit/assets/content_v2_drafts/aw-targeted-07/garments/winter-coat-jewel-sharp-v1.png",
+      "source_kind": "codex_visual_review",
+      "evidence": "深红宝石大衣以雕塑肩线、克制高领口和收腰纵线形成精致力量感。",
+      "observations": {
+        "category": "outer",
+        "subcategory": "sculpted_shoulder_jewel_long_coat",
+        "neckline": "stand_or_wrap_as_observed",
+        "sleeve": "long",
+        "length": "maxi",
+        "volume": "shaped_straight",
+        "construction": "single_clear_closing_line",
+        "pattern": "solid",
+        "decoration": "minimal",
+        "material_appearance": "dense_matte_wool_like",
+        "main_colors": [
+          "deep_ruby_red"
+        ],
+        "visual_personas": [
+          "bolt",
+          "edge",
+          "noir",
+          "heir"
+        ],
+        "usage_limits": null
+      },
+      "confidence": 0.9,
+      "model": "current_codex_session",
+      "prompt_version": "aw-generated-garment-review-v1",
+      "review_level": "individual_full_resolution_judgment",
+      "review_complete": true,
+      "confidence_basis": "Non-calibrated AI visual judgment; material appearance is visual only and warmth is not claimed."
+    },
+    "garment_aw_targeted07_outer_jewel_soft_01": {
+      "token": "n0055",
+      "status": "ai_candidate",
+      "record_fingerprint": "ae6782e98d26e00f3291a747932fc08b0734355a79e7191f0a94f94908b6a7a8",
+      "asset_sha256": "58c3301f7af14fb95c85bc35614a16654db48dc117871382a10e96230e318afa",
+      "image_url": "/static/selfit/assets/content_v2_drafts/aw-targeted-07/garments/winter-coat-jewel-soft-v1.png",
+      "source_kind": "codex_visual_review",
+      "evidence": "深紫晶外层以圆肩、单一斜向闭合和受控茧形形成柔和包裹感。",
+      "observations": {
+        "category": "outer",
+        "subcategory": "amethyst_wrap_cocoon_long_coat",
+        "neckline": "stand_or_wrap_as_observed",
+        "sleeve": "long",
+        "length": "maxi",
+        "volume": "soft_cocoon",
+        "construction": "single_clear_closing_line",
+        "pattern": "solid",
+        "decoration": "minimal",
+        "material_appearance": "dense_matte_wool_like",
+        "main_colors": [
+          "deep_amethyst"
+        ],
+        "visual_personas": [
+          "melt",
+          "flou",
+          "void",
+          "wabi"
+        ],
+        "usage_limits": null
+      },
+      "confidence": 0.9,
+      "model": "current_codex_session",
+      "prompt_version": "aw-generated-garment-review-v1",
+      "review_level": "individual_full_resolution_judgment",
+      "review_complete": true,
+      "confidence_basis": "Non-calibrated AI visual judgment; material appearance is visual only and warmth is not claimed."
+    }
+  },
+  "limitations": [
+    "AI visual review is not independent blind review.",
+    "Dense or wool-like appearance does not prove warmth, fiber, waterproofing or comfort.",
+    "No garment is in the published pool."
+  ],
+  "version": "aw-generated-garments-21cea8c24cdbd7b53daa",
+  "binding_method": "individual_order_binding_verified_by_contact_sheet"
+}

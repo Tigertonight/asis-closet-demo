@@ -1,0 +1,4317 @@
+{
+  "schema_version": 1,
+  "visual_version": "codex-visual-16b18cdcdca36dbc306a",
+  "family_version": "native-family-29dfc79c909cff365924",
+  "strategy_version": "personal_home_v3.2",
+  "production_approved": false,
+  "season_results": {
+    "spring": {
+      "counts": {
+        "garments": 600,
+        "active_outfits": 1169,
+        "visual_candidate_outfits": 952,
+        "held_outfits": 217,
+        "conditions": 96,
+        "qualified_first_ten": 24,
+        "qualified_browse_thirty": 22
+      },
+      "palette_differentiation": {
+        "comparable_pairs": 28,
+        "changed_at_least_three": 28,
+        "pass_fraction": 1.0
+      }
+    },
+    "summer": {
+      "counts": {
+        "garments": 600,
+        "active_outfits": 1169,
+        "visual_candidate_outfits": 952,
+        "held_outfits": 217,
+        "conditions": 96,
+        "qualified_first_ten": 7,
+        "qualified_browse_thirty": 3
+      },
+      "palette_differentiation": {
+        "comparable_pairs": 2,
+        "changed_at_least_three": 2,
+        "pass_fraction": 1.0
+      }
+    },
+    "autumn": {
+      "counts": {
+        "garments": 600,
+        "active_outfits": 1169,
+        "visual_candidate_outfits": 952,
+        "held_outfits": 217,
+        "conditions": 96,
+        "qualified_first_ten": 15,
+        "qualified_browse_thirty": 14
+      },
+      "palette_differentiation": {
+        "comparable_pairs": 13,
+        "changed_at_least_three": 13,
+        "pass_fraction": 1.0
+      }
+    },
+    "winter": {
+      "counts": {
+        "garments": 600,
+        "active_outfits": 1169,
+        "visual_candidate_outfits": 952,
+        "held_outfits": 217,
+        "conditions": 96,
+        "qualified_first_ten": 0,
+        "qualified_browse_thirty": 0
+      },
+      "palette_differentiation": {
+        "comparable_pairs": 0,
+        "changed_at_least_three": 0,
+        "pass_fraction": null
+      }
+    }
+  },
+  "autumn_changed_conditions": [
+    {
+      "persona": "ease",
+      "palette": "mono",
+      "before": [
+        "outfit_edge_master_08_v2",
+        "outfit_neon_master_06_v1",
+        "outfit_iced_master_15_v1",
+        "outfit_heir_master_07_v1",
+        "outfit_jade_master_13",
+        "outfit_jade_master_01_v1",
+        "outfit_mute_master_07_v1",
+        "outfit_wabi_master_28_v1",
+        "outfit_neon_master_14_v2",
+        "outfit_neon_master_30_v1",
+        "outfit_ease_master_08",
+        "outfit_wabi_master_04",
+        "outfit_film_master_01_v2",
+        "outfit_flou_master_05",
+        "outfit_noir_master_09_v1",
+        "outfit_jade_master_04_v2",
+        "outfit_jade_master_10_v1",
+        "outfit_iced_master_13",
+        "outfit_noir_master_04_v1",
+        "outfit_film_master_07",
+        "outfit_jade_master_25_v1",
+        "outfit_jade_master_30_v1",
+        "outfit_void_master_05_v2",
+        "outfit_edge_master_28_v1",
+        "outfit_edge_master_14_v2",
+        "outfit_jade_master_06_v1",
+        "outfit_mute_master_04_v1",
+        "outfit_heir_master_07",
+        "outfit_ease_master_14",
+        "outfit_edge_master_26_v1"
+      ],
+      "after": [
+        "outfit_edge_master_08_v2",
+        "outfit_neon_master_06_v1",
+        "outfit_iced_master_15_v1",
+        "outfit_neon_master_14_v2",
+        "outfit_mute_master_07_v1",
+        "outfit_ease_master_08",
+        "outfit_wabi_master_28_v1",
+        "outfit_noir_master_09_v1",
+        "outfit_flou_master_14_v1",
+        "outfit_neon_master_30_v1",
+        "outfit_jade_master_13",
+        "outfit_wabi_master_04",
+        "outfit_mute_master_04_v1",
+        "outfit_iced_master_13",
+        "outfit_film_master_01_v2",
+        "outfit_flou_master_05",
+        "outfit_heir_master_07_v1",
+        "outfit_jade_master_25_v1",
+        "outfit_jade_master_30_v1",
+        "outfit_edge_master_28_v1",
+        "outfit_jade_master_15_v1",
+        "outfit_ease_master_14",
+        "outfit_jade_master_18_v1",
+        "outfit_edge_master_26_v1",
+        "outfit_noir_master_04_v1",
+        "outfit_void_master_05_v2",
+        "outfit_heir_master_07",
+        "outfit_iced_master_23",
+        "outfit_noir_master_25_v1",
+        "outfit_mute_master_04"
+      ]
+    },
+    {
+      "persona": "ease",
+      "palette": "earth",
+      "before": [
+        "outfit_ease_master_26",
+        "outfit_film_master_25_v1",
+        "outfit_ease_master_09",
+        "outfit_wabi_master_09_v1",
+        "outfit_ease_master_04",
+        "outfit_ease_master_08",
+        "outfit_heir_master_06",
+        "outfit_ease_master_11",
+        "outfit_heir_master_18",
+        "outfit_loop_master_28_v1",
+        "outfit_film_master_28",
+        "outfit_ease_master_29_v1",
+        "outfit_ease_master_10",
+        "outfit_wabi_master_09",
+        "outfit_heir_master_07",
+        "outfit_ease_master_13",
+        "outfit_ease_master_04_v1",
+        "outfit_ease_master_03",
+        "outfit_void_master_02",
+        "outfit_heir_master_18_v1",
+        "outfit_ease_master_15",
+        "outfit_ease_master_14_v1",
+        "outfit_film_master_12_v2",
+        "outfit_void_master_08_v1",
+        "outfit_wabi_master_10_v1",
+        "outfit_ease_master_09_v2",
+        "outfit_film_master_13",
+        "outfit_ease_master_08_v2",
+        "outfit_ease_master_21",
+        "outfit_melt_master_15_v1"
+      ],
+      "after": [
+        "outfit_ease_master_26",
+        "outfit_film_master_25_v1",
+        "outfit_ease_master_09",
+        "outfit_wabi_master_09_v1",
+        "outfit_ease_master_04",
+        "outfit_ease_master_11",
+        "outfit_ease_master_10",
+        "outfit_heir_master_07",
+        "outfit_heir_master_18",
+        "outfit_loop_master_28_v1",
+        "outfit_film_master_28",
+        "outfit_ease_master_29_v1",
+        "outfit_ease_master_08",
+        "outfit_heir_master_06",
+        "outfit_ease_master_13",
+        "outfit_ease_master_04_v1",
+        "outfit_ease_master_03",
+        "outfit_void_master_02",
+        "outfit_heir_master_18_v1",
+        "outfit_ease_master_15",
+        "outfit_ease_master_14_v1",
+        "outfit_film_master_12_v2",
+        "outfit_wabi_master_09",
+        "outfit_void_master_08_v1",
+        "outfit_ease_master_09_v2",
+        "outfit_film_master_13",
+        "outfit_ease_master_21",
+        "outfit_wabi_master_10_v1",
+        "outfit_melt_master_15_v1",
+        "outfit_ease_master_15_v2"
+      ]
+    },
+    {
+      "persona": "ease",
+      "palette": "ocean",
+      "before": [
+        "outfit_heir_master_20",
+        "outfit_noir_master_05_v1",
+        "outfit_void_master_04_v2",
+        "outfit_bolt_master_03",
+        "outfit_wabi_master_02",
+        "outfit_loop_master_27_v1",
+        "outfit_loop_master_15_v1",
+        "outfit_film_master_30_v1",
+        "outfit_flou_master_13_v1",
+        "outfit_bolt_master_25_v1",
+        "outfit_noir_master_04_v2",
+        "outfit_loop_master_05_v2",
+        "outfit_film_master_15_v2",
+        "outfit_flou_master_04",
+        "outfit_void_master_14_v2",
+        "outfit_neon_master_15_v2",
+        "outfit_flou_master_09",
+        "outfit_oops_master_15_v1",
+        "outfit_melt_master_01",
+        "outfit_mute_master_03_v2",
+        "outfit_heir_master_02_v2",
+        "outfit_flou_master_05_v2",
+        "outfit_film_master_05",
+        "outfit_noir_master_09",
+        "outfit_loop_master_06_v1",
+        "outfit_loop_master_15_v2",
+        "outfit_loop_master_02",
+        "outfit_edge_master_12_v1",
+        "outfit_iced_master_13_v2",
+        "outfit_bolt_master_03_v1"
+      ],
+      "after": [
+        "outfit_heir_master_20",
+        "outfit_noir_master_05_v1",
+        "outfit_void_master_04_v2",
+        "outfit_bolt_master_03",
+        "outfit_wabi_master_02",
+        "outfit_loop_master_27_v1",
+        "outfit_loop_master_15_v1",
+        "outfit_film_master_30_v1",
+        "outfit_flou_master_13_v1",
+        "outfit_bolt_master_25_v1",
+        "outfit_noir_master_04_v2",
+        "outfit_loop_master_05_v2",
+        "outfit_film_master_15_v2",
+        "outfit_flou_master_04",
+        "outfit_void_master_14_v2",
+        "outfit_neon_master_15_v2",
+        "outfit_flou_master_09",
+        "outfit_oops_master_15_v1",
+        "outfit_melt_master_01",
+        "outfit_mute_master_03_v2",
+        "outfit_flou_master_05_v2",
+        "outfit_heir_master_02_v2",
+        "outfit_film_master_05",
+        "outfit_noir_master_09",
+        "outfit_loop_master_06_v1",
+        "outfit_loop_master_15_v2",
+        "outfit_edge_master_12_v1",
+        "outfit_iced_master_13_v2",
+        "outfit_bolt_master_03_v1",
+        "outfit_loop_master_02"
+      ]
+    },
+    {
+      "persona": "ease",
+      "palette": "pastel",
+      "before": [
+        "outfit_flou_master_06_v2",
+        "outfit_melt_master_15_v1",
+        "outfit_flou_master_15_v2",
+        "outfit_melt_master_04_v2",
+        "outfit_ease_master_08",
+        "outfit_heir_master_07",
+        "outfit_ease_master_14",
+        "outfit_bolt_master_12_v2",
+        "outfit_flou_master_14_v1",
+        "outfit_bolt_master_25_v1",
+        "outfit_flou_master_11_v2",
+        "outfit_loop_master_27_v1",
+        "outfit_flou_master_09_v1",
+        "outfit_wabi_master_09",
+        "outfit_oops_master_15_v1",
+        "outfit_flou_master_05",
+        "outfit_melt_master_14_v2",
+        "outfit_bolt_master_07_v2",
+        "outfit_wabi_master_28_v1",
+        "outfit_melt_master_04",
+        "outfit_flou_master_01_v2",
+        "outfit_ease_master_14_v1",
+        "outfit_melt_master_09_v2",
+        "outfit_mute_master_04",
+        "outfit_oops_master_21_v1",
+        "outfit_flou_master_04_v1",
+        "outfit_melt_master_06",
+        "outfit_ease_master_03_v2",
+        "outfit_mute_master_15_v2",
+        "outfit_loop_master_15_v1"
+      ],
+      "after": [
+        "outfit_flou_master_06_v2",
+        "outfit_melt_master_15_v1",
+        "outfit_flou_master_15_v2",
+        "outfit_melt_master_04_v2",
+        "outfit_ease_master_08",
+        "outfit_heir_master_07",
+        "outfit_ease_master_14",
+        "outfit_bolt_master_12_v2",
+        "outfit_flou_master_14_v1",
+        "outfit_bolt_master_25_v1",
+        "outfit_flou_master_11_v2",
+        "outfit_loop_master_27_v1",
+        "outfit_flou_master_09_v1",
+        "outfit_wabi_master_09",
+        "outfit_flou_master_05",
+        "outfit_melt_master_14_v2",
+        "outfit_wabi_master_28_v1",
+        "outfit_bolt_master_07_v2",
+        "outfit_oops_master_15_v1",
+        "outfit_melt_master_04",
+        "outfit_ease_master_14_v1",
+        "outfit_mute_master_04",
+        "outfit_flou_master_01_v2",
+        "outfit_melt_master_09_v2",
+        "outfit_flou_master_04_v1",
+        "outfit_melt_master_06",
+        "outfit_ease_master_03_v2",
+        "outfit_oops_master_21_v1",
+        "outfit_mute_master_15_v2",
+        "outfit_loop_master_15_v1"
+      ]
+    },
+    {
+      "persona": "film",
+      "palette": "mono",
+      "before": [
+        "outfit_noir_master_04_v1",
+        "outfit_noir_master_09_v1",
+        "outfit_noir_master_13_v2",
+        "outfit_iced_master_23",
+        "outfit_iced_master_09",
+        "outfit_void_master_13_v1",
+        "outfit_bolt_master_09",
+        "outfit_film_master_15_v1",
+        "outfit_flou_master_14_v2"
+      ],
+      "after": [
+        "outfit_noir_master_04_v1",
+        "outfit_noir_master_09_v1",
+        "outfit_noir_master_13_v2",
+        "outfit_iced_master_23",
+        "outfit_iced_master_09",
+        "outfit_void_master_13_v1",
+        "outfit_bolt_master_09",
+        "outfit_film_master_15_v1",
+        "outfit_ease_master_12"
+      ]
+    },
+    {
+      "persona": "film",
+      "palette": "pastel",
+      "before": [
+        "outfit_ease_master_03_v2",
+        "outfit_ease_master_08_v2",
+        "outfit_bolt_master_09",
+        "outfit_flou_master_14_v2",
+        "outfit_flou_master_05_v1",
+        "outfit_heir_master_12",
+        "outfit_noir_master_04_v1",
+        "outfit_void_master_13_v1",
+        "outfit_ease_master_12"
+      ],
+      "after": [
+        "outfit_ease_master_03_v2",
+        "outfit_ease_master_08_v2",
+        "outfit_noir_master_04_v1",
+        "outfit_iced_master_23",
+        "outfit_noir_master_24_v1",
+        "outfit_void_master_13_v1"
+      ]
+    },
+    {
+      "persona": "flou",
+      "palette": "mono",
+      "before": [
+        "outfit_ease_master_14",
+        "outfit_mute_master_15",
+        "outfit_iced_master_13",
+        "outfit_melt_master_14",
+        "outfit_ease_master_08",
+        "outfit_jade_master_05",
+        "outfit_melt_master_01",
+        "outfit_jade_master_15",
+        "outfit_melt_master_06"
+      ],
+      "after": [
+        "outfit_ease_master_14",
+        "outfit_mute_master_15",
+        "outfit_iced_master_13",
+        "outfit_melt_master_14",
+        "outfit_jade_master_05",
+        "outfit_melt_master_01",
+        "outfit_jade_master_15",
+        "outfit_ease_master_04",
+        "outfit_melt_master_06"
+      ]
+    },
+    {
+      "persona": "flou",
+      "palette": "pastel",
+      "before": [
+        "outfit_ease_master_14",
+        "outfit_mute_master_15",
+        "outfit_iced_master_13",
+        "outfit_melt_master_06",
+        "outfit_ease_master_08",
+        "outfit_melt_master_04",
+        "outfit_jade_master_15",
+        "outfit_jade_master_05",
+        "outfit_melt_master_15"
+      ],
+      "after": [
+        "outfit_ease_master_14",
+        "outfit_mute_master_15",
+        "outfit_iced_master_13",
+        "outfit_melt_master_06",
+        "outfit_ease_master_08",
+        "outfit_jade_master_15",
+        "outfit_melt_master_01",
+        "outfit_ease_master_04",
+        "outfit_melt_master_15"
+      ]
+    },
+    {
+      "persona": "heir",
+      "palette": "mono",
+      "before": [
+        "outfit_neon_master_14",
+        "outfit_wabi_master_28_v1",
+        "outfit_edge_master_08_v2",
+        "outfit_iced_master_06",
+        "outfit_heir_master_27",
+        "outfit_flou_master_15",
+        "outfit_mute_master_30",
+        "outfit_jade_master_25_v1",
+        "outfit_heir_master_07_v1",
+        "outfit_edge_master_14",
+        "outfit_jade_master_13",
+        "outfit_jade_master_30_v1",
+        "outfit_edge_master_28_v1",
+        "outfit_jade_master_09",
+        "outfit_flou_master_26",
+        "outfit_flou_master_29_v1",
+        "outfit_wabi_master_14",
+        "outfit_edge_master_14_v2",
+        "outfit_heir_master_06",
+        "outfit_film_master_15",
+        "outfit_jade_master_03",
+        "outfit_ease_master_14",
+        "outfit_ease_master_13",
+        "outfit_jade_master_15_v1",
+        "outfit_edge_master_26_v1",
+        "outfit_neon_master_03",
+        "outfit_bolt_master_12_v2",
+        "outfit_ease_master_08",
+        "outfit_flou_master_13",
+        "outfit_heir_master_05_v1"
+      ],
+      "after": [
+        "outfit_neon_master_14",
+        "outfit_wabi_master_28_v1",
+        "outfit_edge_master_08_v2",
+        "outfit_iced_master_06",
+        "outfit_heir_master_27",
+        "outfit_mute_master_30",
+        "outfit_jade_master_25_v1",
+        "outfit_edge_master_28_v1",
+        "outfit_heir_master_07_v1",
+        "outfit_edge_master_14",
+        "outfit_flou_master_15",
+        "outfit_jade_master_30_v1",
+        "outfit_jade_master_13",
+        "outfit_flou_master_26",
+        "outfit_flou_master_29_v1",
+        "outfit_wabi_master_14",
+        "outfit_heir_master_06",
+        "outfit_film_master_15",
+        "outfit_ease_master_14",
+        "outfit_ease_master_13",
+        "outfit_edge_master_14_v2",
+        "outfit_edge_master_26_v1",
+        "outfit_jade_master_09",
+        "outfit_heir_master_05_v1",
+        "outfit_melt_master_12_v2",
+        "outfit_flou_master_13_v2",
+        "outfit_edge_master_30",
+        "outfit_heir_master_07",
+        "outfit_heir_master_29_v1",
+        "outfit_ease_master_08"
+      ]
+    },
+    {
+      "persona": "heir",
+      "palette": "earth",
+      "before": [
+        "outfit_ease_master_26",
+        "outfit_ease_master_29_v1",
+        "outfit_heir_master_06",
+        "outfit_heir_master_18",
+        "outfit_ease_master_13",
+        "outfit_heir_master_29_v1",
+        "outfit_ease_master_03",
+        "outfit_heir_master_05_v1",
+        "outfit_heir_master_23",
+        "outfit_mute_master_11_v1",
+        "outfit_film_master_25_v1",
+        "outfit_wabi_master_09",
+        "outfit_ease_master_11",
+        "outfit_ease_master_09",
+        "outfit_iced_master_14_v1",
+        "outfit_heir_master_05_v2",
+        "outfit_ease_master_08",
+        "outfit_ease_master_13_v1",
+        "outfit_heir_master_07",
+        "outfit_wabi_master_28_v1",
+        "outfit_flou_master_15_v2",
+        "outfit_jade_master_25_v1",
+        "outfit_jade_master_15_v1",
+        "outfit_jade_master_18_v1",
+        "outfit_melt_master_20"
+      ],
+      "after": [
+        "outfit_ease_master_26",
+        "outfit_ease_master_29_v1",
+        "outfit_heir_master_06",
+        "outfit_heir_master_18",
+        "outfit_ease_master_13",
+        "outfit_heir_master_29_v1",
+        "outfit_ease_master_03",
+        "outfit_heir_master_05_v1",
+        "outfit_heir_master_23",
+        "outfit_mute_master_11_v1",
+        "outfit_film_master_25_v1",
+        "outfit_wabi_master_09",
+        "outfit_ease_master_11",
+        "outfit_ease_master_09",
+        "outfit_ease_master_13_v1",
+        "outfit_heir_master_05_v2",
+        "outfit_heir_master_07",
+        "outfit_wabi_master_28_v1",
+        "outfit_flou_master_15_v2",
+        "outfit_iced_master_14_v1",
+        "outfit_jade_master_25_v1",
+        "outfit_ease_master_08",
+        "outfit_jade_master_15_v1",
+        "outfit_jade_master_18_v1",
+        "outfit_melt_master_20"
+      ]
+    },
+    {
+      "persona": "heir",
+      "palette": "pastel",
+      "before": [
+        "outfit_heir_master_27",
+        "outfit_flou_master_15",
+        "outfit_flou_master_26",
+        "outfit_melt_master_11_v2",
+        "outfit_heir_master_06",
+        "outfit_loop_master_26",
+        "outfit_bolt_master_12_v2",
+        "outfit_ease_master_14",
+        "outfit_iced_master_06",
+        "outfit_neon_master_30",
+        "outfit_loop_master_27_v1",
+        "outfit_melt_master_11",
+        "outfit_flou_master_11_v2",
+        "outfit_heir_master_05_v1",
+        "outfit_wabi_master_28_v1",
+        "outfit_flou_master_15_v2",
+        "outfit_heir_master_07_v2",
+        "outfit_oops_master_15",
+        "outfit_wabi_master_09",
+        "outfit_flou_master_13",
+        "outfit_jade_master_25_v1",
+        "outfit_heir_master_05_v2",
+        "outfit_ease_master_08",
+        "outfit_flou_master_01_v2",
+        "outfit_jade_master_30_v1",
+        "outfit_melt_master_20",
+        "outfit_heir_master_07",
+        "outfit_melt_master_11_v1",
+        "outfit_bolt_master_25_v1",
+        "outfit_melt_master_12_v2"
+      ],
+      "after": [
+        "outfit_heir_master_27",
+        "outfit_flou_master_15",
+        "outfit_flou_master_26",
+        "outfit_melt_master_11_v2",
+        "outfit_heir_master_06",
+        "outfit_loop_master_26",
+        "outfit_bolt_master_12_v2",
+        "outfit_ease_master_14",
+        "outfit_iced_master_06",
+        "outfit_neon_master_30",
+        "outfit_loop_master_27_v1",
+        "outfit_melt_master_11",
+        "outfit_flou_master_11_v2",
+        "outfit_heir_master_05_v1",
+        "outfit_wabi_master_28_v1",
+        "outfit_flou_master_15_v2",
+        "outfit_heir_master_07_v2",
+        "outfit_wabi_master_09",
+        "outfit_jade_master_25_v1",
+        "outfit_ease_master_08",
+        "outfit_bolt_master_25_v1",
+        "outfit_heir_master_05_v2",
+        "outfit_oops_master_15",
+        "outfit_melt_master_11_v1",
+        "outfit_heir_master_07",
+        "outfit_jade_master_30_v1",
+        "outfit_flou_master_13",
+        "outfit_melt_master_20",
+        "outfit_melt_master_12_v2",
+        "outfit_flou_master_29_v1"
+      ]
+    },
+    {
+      "persona": "iced",
+      "palette": "mono",
+      "before": [
+        "outfit_mute_master_13",
+        "outfit_iced_master_04",
+        "outfit_neon_master_03",
+        "outfit_iced_master_06",
+        "outfit_melt_master_09",
+        "outfit_melt_master_13",
+        "outfit_iced_master_17",
+        "outfit_neon_master_14",
+        "outfit_mute_master_10"
+      ],
+      "after": [
+        "outfit_mute_master_13",
+        "outfit_iced_master_04",
+        "outfit_neon_master_03",
+        "outfit_iced_master_06",
+        "outfit_melt_master_09",
+        "outfit_melt_master_13",
+        "outfit_iced_master_17",
+        "outfit_flou_master_26",
+        "outfit_mute_master_10",
+        "outfit_edge_master_14",
+        "outfit_iced_master_20",
+        "outfit_iced_master_06_v2",
+        "outfit_neon_master_14",
+        "outfit_mute_master_15",
+        "outfit_flou_master_09",
+        "outfit_iced_master_21",
+        "outfit_iced_master_18_v1",
+        "outfit_heir_master_27",
+        "outfit_iced_master_20_v1",
+        "outfit_iced_master_13",
+        "outfit_iced_master_10",
+        "outfit_iced_master_05",
+        "outfit_flou_master_13",
+        "outfit_iced_master_09",
+        "outfit_flou_master_05",
+        "outfit_flou_master_14",
+        "outfit_iced_master_08",
+        "outfit_iced_master_03",
+        "outfit_bolt_master_14",
+        "outfit_loop_master_15"
+      ]
+    },
+    {
+      "persona": "iced",
+      "palette": "pastel",
+      "before": [
+        "outfit_flou_master_26",
+        "outfit_heir_master_27",
+        "outfit_iced_master_10",
+        "outfit_iced_master_06",
+        "outfit_mute_master_13",
+        "outfit_flou_master_15",
+        "outfit_melt_master_09",
+        "outfit_iced_master_05",
+        "outfit_flou_master_14",
+        "outfit_neon_master_02",
+        "outfit_oops_master_15_v1",
+        "outfit_iced_master_08_v1",
+        "outfit_iced_master_02_v2",
+        "outfit_iced_master_06_v2",
+        "outfit_flou_master_09",
+        "outfit_loop_master_26",
+        "outfit_iced_master_23_v1",
+        "outfit_loop_master_13",
+        "outfit_oops_master_05",
+        "outfit_mute_master_15",
+        "outfit_flou_master_04",
+        "outfit_flou_master_13",
+        "outfit_iced_master_13_v1",
+        "outfit_neon_master_03",
+        "outfit_melt_master_13",
+        "outfit_flou_master_05",
+        "outfit_melt_master_11",
+        "outfit_iced_master_08_v2",
+        "outfit_iced_master_06_v1",
+        "outfit_mute_master_10_v2"
+      ],
+      "after": [
+        "outfit_flou_master_26",
+        "outfit_heir_master_27",
+        "outfit_iced_master_10",
+        "outfit_iced_master_06",
+        "outfit_mute_master_13",
+        "outfit_melt_master_09",
+        "outfit_iced_master_05",
+        "outfit_flou_master_09",
+        "outfit_flou_master_14",
+        "outfit_oops_master_15_v1",
+        "outfit_neon_master_02",
+        "outfit_iced_master_06_v2",
+        "outfit_flou_master_15",
+        "outfit_loop_master_26",
+        "outfit_iced_master_08_v1",
+        "outfit_iced_master_23_v1",
+        "outfit_loop_master_13",
+        "outfit_mute_master_15",
+        "outfit_melt_master_13",
+        "outfit_flou_master_05",
+        "outfit_iced_master_13",
+        "outfit_melt_master_11",
+        "outfit_iced_master_02_v2",
+        "outfit_iced_master_06_v1",
+        "outfit_flou_master_13",
+        "outfit_mute_master_10_v2",
+        "outfit_oops_master_21",
+        "outfit_melt_master_14",
+        "outfit_bolt_master_14",
+        "outfit_bolt_master_04"
+      ]
+    },
+    {
+      "persona": "loop",
+      "palette": "mono",
+      "before": [
+        "outfit_neon_master_14",
+        "outfit_mute_master_01_v2",
+        "outfit_mute_master_04_v1",
+        "outfit_mute_master_22",
+        "outfit_iced_master_04",
+        "outfit_jade_master_03",
+        "outfit_iced_master_17",
+        "outfit_mute_master_16",
+        "outfit_loop_master_11_v1",
+        "outfit_neon_master_26",
+        "outfit_neon_master_03",
+        "outfit_mute_master_01_v1",
+        "outfit_jade_master_09",
+        "outfit_edge_master_01",
+        "outfit_flou_master_05",
+        "outfit_mute_master_07_v2",
+        "outfit_mute_master_13",
+        "outfit_iced_master_15_v2",
+        "outfit_mute_master_30",
+        "outfit_mute_master_01",
+        "outfit_iced_master_20",
+        "outfit_mute_master_10",
+        "outfit_jade_master_13",
+        "outfit_heir_master_08_v1",
+        "outfit_bolt_master_14",
+        "outfit_loop_master_15",
+        "outfit_edge_master_30",
+        "outfit_iced_master_09",
+        "outfit_mute_master_04_v2",
+        "outfit_iced_master_04_v1"
+      ],
+      "after": [
+        "outfit_neon_master_14",
+        "outfit_mute_master_01_v2",
+        "outfit_mute_master_04_v1",
+        "outfit_loop_master_11_v1",
+        "outfit_iced_master_04",
+        "outfit_iced_master_17",
+        "outfit_mute_master_07_v2",
+        "outfit_flou_master_05",
+        "outfit_loop_master_15",
+        "outfit_neon_master_26",
+        "outfit_mute_master_22",
+        "outfit_mute_master_01_v1",
+        "outfit_neon_master_03",
+        "outfit_mute_master_30",
+        "outfit_edge_master_01",
+        "outfit_mute_master_16",
+        "outfit_bolt_master_14",
+        "outfit_edge_master_30",
+        "outfit_iced_master_09",
+        "outfit_mute_master_04_v2",
+        "outfit_jade_master_03",
+        "outfit_mute_master_01",
+        "outfit_jade_master_09",
+        "outfit_iced_master_06",
+        "outfit_mute_master_10",
+        "outfit_loop_master_13_v1",
+        "outfit_iced_master_21",
+        "outfit_iced_master_05_v1",
+        "outfit_iced_master_15_v1",
+        "outfit_bolt_master_09"
+      ]
+    },
+    {
+      "persona": "loop",
+      "palette": "ocean",
+      "before": [
+        "outfit_heir_master_20",
+        "outfit_neon_master_13",
+        "outfit_mute_master_08_v2",
+        "outfit_bolt_master_03",
+        "outfit_heir_master_02_v2",
+        "outfit_loop_master_03",
+        "outfit_heir_master_13_v1",
+        "outfit_loop_master_13",
+        "outfit_edge_master_15",
+        "outfit_neon_master_30",
+        "outfit_heir_master_20_v1",
+        "outfit_loop_master_02",
+        "outfit_loop_master_12",
+        "outfit_neon_master_15",
+        "outfit_flou_master_04",
+        "outfit_mute_master_03_v2",
+        "outfit_flou_master_26",
+        "outfit_heir_master_19",
+        "outfit_wabi_master_02",
+        "outfit_mute_master_14_v1",
+        "outfit_loop_master_26",
+        "outfit_noir_master_24",
+        "outfit_iced_master_05",
+        "outfit_loop_master_02_v2",
+        "outfit_loop_master_05",
+        "outfit_heir_master_27",
+        "outfit_iced_master_10",
+        "outfit_neon_master_02",
+        "outfit_iced_master_03_v2",
+        "outfit_iced_master_13_v1"
+      ],
+      "after": [
+        "outfit_heir_master_20",
+        "outfit_neon_master_13",
+        "outfit_mute_master_08_v2",
+        "outfit_bolt_master_03",
+        "outfit_heir_master_02_v2",
+        "outfit_loop_master_03",
+        "outfit_heir_master_13_v1",
+        "outfit_loop_master_13"
+      ]
+    },
+    {
+      "persona": "loop",
+      "palette": "pastel",
+      "before": [
+        "outfit_flou_master_15",
+        "outfit_flou_master_26",
+        "outfit_heir_master_07_v2",
+        "outfit_iced_master_06",
+        "outfit_melt_master_05_v1",
+        "outfit_loop_master_26",
+        "outfit_heir_master_27",
+        "outfit_loop_master_13",
+        "outfit_melt_master_20",
+        "outfit_neon_master_02",
+        "outfit_oops_master_05",
+        "outfit_flou_master_04",
+        "outfit_iced_master_13_v1",
+        "outfit_flou_master_05",
+        "outfit_heir_master_07",
+        "outfit_oops_master_21",
+        "outfit_melt_master_09",
+        "outfit_iced_master_08_v1",
+        "outfit_mute_master_13",
+        "outfit_mute_master_04",
+        "outfit_iced_master_10_v1",
+        "outfit_mute_master_10_v2",
+        "outfit_mute_master_05",
+        "outfit_jade_master_03",
+        "outfit_neon_master_03",
+        "outfit_oops_master_15",
+        "outfit_bolt_master_04",
+        "outfit_iced_master_02_v2",
+        "outfit_mute_master_04_v1",
+        "outfit_mute_master_15_v2"
+      ],
+      "after": [
+        "outfit_flou_master_15",
+        "outfit_flou_master_26",
+        "outfit_heir_master_07_v2",
+        "outfit_iced_master_06",
+        "outfit_melt_master_05_v1",
+        "outfit_loop_master_26",
+        "outfit_heir_master_27",
+        "outfit_loop_master_13",
+        "outfit_melt_master_20",
+        "outfit_neon_master_02",
+        "outfit_oops_master_05",
+        "outfit_flou_master_05",
+        "outfit_flou_master_04",
+        "outfit_heir_master_07",
+        "outfit_oops_master_21",
+        "outfit_melt_master_09",
+        "outfit_mute_master_04",
+        "outfit_mute_master_15_v2",
+        "outfit_bolt_master_14",
+        "outfit_iced_master_10_v1",
+        "outfit_iced_master_13_v1",
+        "outfit_mute_master_10_v2",
+        "outfit_iced_master_08_v1",
+        "outfit_bolt_master_04",
+        "outfit_mute_master_03_v2",
+        "outfit_melt_master_09_v2",
+        "outfit_jade_master_20",
+        "outfit_mute_master_04_v2",
+        "outfit_ease_master_03_v1",
+        "outfit_iced_master_05_v1"
+      ]
+    },
+    {
+      "persona": "melt",
+      "palette": "mono",
+      "before": [
+        "outfit_mute_master_13_v2",
+        "outfit_melt_master_11",
+        "outfit_melt_master_04",
+        "outfit_melt_master_14",
+        "outfit_iced_master_15_v1",
+        "outfit_melt_master_01",
+        "outfit_ease_master_14",
+        "outfit_mute_master_04_v2",
+        "outfit_melt_master_20",
+        "outfit_neon_master_30",
+        "outfit_melt_master_15",
+        "outfit_melt_master_14_v1",
+        "outfit_melt_master_06",
+        "outfit_flou_master_14",
+        "outfit_melt_master_11_v1",
+        "outfit_iced_master_10_v2",
+        "outfit_ease_master_21",
+        "outfit_mute_master_10_v1",
+        "outfit_bolt_master_09",
+        "outfit_bolt_master_10_v2",
+        "outfit_jade_master_02_v1",
+        "outfit_melt_master_08",
+        "outfit_melt_master_09",
+        "outfit_flou_master_09",
+        "outfit_iced_master_06_v2",
+        "outfit_iced_master_18_v1",
+        "outfit_bolt_master_07",
+        "outfit_ease_master_14_v1",
+        "outfit_melt_master_11_v2",
+        "outfit_bolt_master_15_v2"
+      ],
+      "after": [
+        "outfit_mute_master_13_v2",
+        "outfit_melt_master_11",
+        "outfit_melt_master_04",
+        "outfit_melt_master_14",
+        "outfit_iced_master_15_v1",
+        "outfit_melt_master_01",
+        "outfit_ease_master_14",
+        "outfit_mute_master_04_v2",
+        "outfit_melt_master_06",
+        "outfit_neon_master_30",
+        "outfit_flou_master_14",
+        "outfit_melt_master_11_v1",
+        "outfit_melt_master_20",
+        "outfit_melt_master_14_v1",
+        "outfit_melt_master_15",
+        "outfit_iced_master_10_v2",
+        "outfit_ease_master_21",
+        "outfit_mute_master_10_v1",
+        "outfit_jade_master_02_v1",
+        "outfit_melt_master_08",
+        "outfit_melt_master_09",
+        "outfit_flou_master_09",
+        "outfit_melt_master_11_v2",
+        "outfit_bolt_master_09",
+        "outfit_iced_master_06_v2",
+        "outfit_iced_master_18_v1",
+        "outfit_bolt_master_07",
+        "outfit_flou_master_14_v1",
+        "outfit_bolt_master_04",
+        "outfit_melt_master_23_v1"
+      ]
+    },
+    {
+      "persona": "melt",
+      "palette": "pastel",
+      "before": [
+        "outfit_melt_master_11",
+        "outfit_melt_master_04",
+        "outfit_mute_master_13_v2",
+        "outfit_melt_master_06",
+        "outfit_ease_master_14",
+        "outfit_flou_master_15_v2",
+        "outfit_melt_master_09",
+        "outfit_melt_master_15_v1",
+        "outfit_melt_master_20",
+        "outfit_neon_master_30",
+        "outfit_melt_master_11_v1",
+        "outfit_melt_master_04_v2",
+        "outfit_flou_master_14",
+        "outfit_melt_master_08_v2",
+        "outfit_melt_master_14",
+        "outfit_melt_master_15",
+        "outfit_flou_master_15",
+        "outfit_ease_master_16_v1",
+        "outfit_melt_master_11_v2",
+        "outfit_melt_master_04_v1",
+        "outfit_flou_master_09",
+        "outfit_melt_master_08",
+        "outfit_melt_master_14_v2",
+        "outfit_iced_master_06_v2",
+        "outfit_melt_master_01",
+        "outfit_flou_master_14_v1",
+        "outfit_ease_master_21",
+        "outfit_ease_master_09_v2",
+        "outfit_ease_master_14_v1",
+        "outfit_melt_master_06_v1"
+      ],
+      "after": [
+        "outfit_melt_master_11",
+        "outfit_melt_master_04",
+        "outfit_mute_master_13_v2",
+        "outfit_melt_master_06",
+        "outfit_ease_master_14",
+        "outfit_flou_master_15_v2",
+        "outfit_melt_master_09",
+        "outfit_melt_master_15_v1",
+        "outfit_melt_master_20",
+        "outfit_neon_master_30",
+        "outfit_melt_master_11_v1",
+        "outfit_melt_master_04_v2",
+        "outfit_flou_master_14",
+        "outfit_melt_master_08_v2",
+        "outfit_melt_master_14",
+        "outfit_melt_master_15",
+        "outfit_flou_master_15",
+        "outfit_ease_master_16_v1",
+        "outfit_flou_master_09",
+        "outfit_melt_master_04_v1",
+        "outfit_iced_master_06_v2",
+        "outfit_melt_master_08",
+        "outfit_melt_master_14_v2",
+        "outfit_melt_master_01",
+        "outfit_melt_master_11_v2",
+        "outfit_flou_master_14_v1",
+        "outfit_ease_master_21",
+        "outfit_ease_master_09_v2",
+        "outfit_ease_master_14_v1",
+        "outfit_melt_master_06_v1"
+      ]
+    },
+    {
+      "persona": "mute",
+      "palette": "mono",
+      "before": [
+        "outfit_iced_master_04",
+        "outfit_mute_master_16",
+        "outfit_iced_master_17",
+        "outfit_mute_master_10",
+        "outfit_mute_master_01",
+        "outfit_mute_master_13",
+        "outfit_mute_master_30",
+        "outfit_iced_master_09",
+        "outfit_edge_master_01",
+        "outfit_noir_master_12",
+        "outfit_heir_master_08_v1",
+        "outfit_edge_master_08_v2",
+        "outfit_jade_master_03",
+        "outfit_void_master_05_v2",
+        "outfit_mute_master_01_v1",
+        "outfit_mute_master_09",
+        "outfit_neon_master_06_v1",
+        "outfit_edge_master_30",
+        "outfit_mute_master_04_v2",
+        "outfit_edge_master_01_v1",
+        "outfit_iced_master_04_v1",
+        "outfit_iced_master_20",
+        "outfit_jade_master_01_v1",
+        "outfit_mute_master_22",
+        "outfit_mute_master_01_v2",
+        "outfit_iced_master_03",
+        "outfit_neon_master_14",
+        "outfit_jade_master_04_v2",
+        "outfit_noir_master_11_v2",
+        "outfit_noir_master_13_v2"
+      ],
+      "after": [
+        "outfit_iced_master_04",
+        "outfit_mute_master_16",
+        "outfit_iced_master_17",
+        "outfit_mute_master_10",
+        "outfit_mute_master_13",
+        "outfit_mute_master_30",
+        "outfit_iced_master_09",
+        "outfit_edge_master_08_v2",
+        "outfit_bolt_master_28",
+        "outfit_noir_master_26",
+        "outfit_mute_master_01",
+        "outfit_void_master_05_v2",
+        "outfit_edge_master_30",
+        "outfit_edge_master_01",
+        "outfit_jade_master_03",
+        "outfit_mute_master_04_v2",
+        "outfit_iced_master_03",
+        "outfit_mute_master_09",
+        "outfit_noir_master_11_v2",
+        "outfit_melt_master_13",
+        "outfit_mute_master_01_v1",
+        "outfit_film_master_15",
+        "outfit_mute_master_07_v2",
+        "outfit_iced_master_04_v1",
+        "outfit_iced_master_20",
+        "outfit_noir_master_25_v1",
+        "outfit_noir_master_11_v1",
+        "outfit_neon_master_06_v1",
+        "outfit_wabi_master_04",
+        "outfit_loop_master_27"
+      ]
+    },
+    {
+      "persona": "mute",
+      "palette": "earth",
+      "before": [
+        "outfit_ease_master_03",
+        "outfit_loop_master_27",
+        "outfit_ease_master_13_v1",
+        "outfit_heir_master_23",
+        "outfit_ease_master_02_v2",
+        "outfit_mute_master_13",
+        "outfit_film_master_12_v2",
+        "outfit_iced_master_14_v1"
+      ],
+      "after": [
+        "outfit_ease_master_03",
+        "outfit_loop_master_27",
+        "outfit_ease_master_13_v1",
+        "outfit_heir_master_23",
+        "outfit_ease_master_02_v2",
+        "outfit_mute_master_13",
+        "outfit_film_master_12_v2",
+        "outfit_ease_master_10"
+      ]
+    },
+    {
+      "persona": "mute",
+      "palette": "ocean",
+      "before": [
+        "outfit_heir_master_20",
+        "outfit_edge_master_12_v1",
+        "outfit_mute_master_09",
+        "outfit_heir_master_19",
+        "outfit_neon_master_07_v1",
+        "outfit_iced_master_10",
+        "outfit_neon_master_13",
+        "outfit_mute_master_14_v1",
+        "outfit_edge_master_15"
+      ],
+      "after": [
+        "outfit_heir_master_20",
+        "outfit_edge_master_12_v1",
+        "outfit_mute_master_09",
+        "outfit_heir_master_19",
+        "outfit_iced_master_10",
+        "outfit_neon_master_13",
+        "outfit_mute_master_08_v2",
+        "outfit_film_master_15_v2",
+        "outfit_iced_master_18_v1"
+      ]
+    },
+    {
+      "persona": "mute",
+      "palette": "pastel",
+      "before": [
+        "outfit_mute_master_13",
+        "outfit_flou_master_06_v2",
+        "outfit_melt_master_05_v1",
+        "outfit_bolt_master_28",
+        "outfit_iced_master_03",
+        "outfit_iced_master_10",
+        "outfit_heir_master_07",
+        "outfit_melt_master_15_v1",
+        "outfit_iced_master_18_v1",
+        "outfit_neon_master_15_v2",
+        "outfit_mute_master_04_v2",
+        "outfit_mute_master_13_v2",
+        "outfit_jade_master_03",
+        "outfit_jade_master_01_v1",
+        "outfit_bolt_master_07_v2",
+        "outfit_melt_master_13",
+        "outfit_loop_master_15_v1",
+        "outfit_heir_master_05_v1",
+        "outfit_mute_master_04",
+        "outfit_flou_master_05_v2",
+        "outfit_iced_master_02_v2",
+        "outfit_neon_master_03",
+        "outfit_jade_master_15_v1",
+        "outfit_jade_master_18_v1",
+        "outfit_jade_master_02_v2",
+        "outfit_jade_master_07_v1",
+        "outfit_bolt_master_14",
+        "outfit_jade_master_25_v1",
+        "outfit_jade_master_30_v1",
+        "outfit_flou_master_13"
+      ],
+      "after": [
+        "outfit_mute_master_13",
+        "outfit_flou_master_06_v2",
+        "outfit_melt_master_05_v1",
+        "outfit_bolt_master_28",
+        "outfit_iced_master_03",
+        "outfit_heir_master_07",
+        "outfit_mute_master_04_v2",
+        "outfit_melt_master_15_v1",
+        "outfit_iced_master_18_v1",
+        "outfit_neon_master_15_v2",
+        "outfit_iced_master_10",
+        "outfit_mute_master_13_v2",
+        "outfit_jade_master_03",
+        "outfit_melt_master_13",
+        "outfit_mute_master_04",
+        "outfit_loop_master_15_v1",
+        "outfit_heir_master_05_v1",
+        "outfit_jade_master_02_v2",
+        "outfit_bolt_master_14",
+        "outfit_jade_master_25_v1",
+        "outfit_jade_master_15_v1",
+        "outfit_jade_master_30_v1",
+        "outfit_jade_master_01_v1",
+        "outfit_iced_master_13",
+        "outfit_flou_master_29_v1",
+        "outfit_iced_master_05",
+        "outfit_mute_master_15",
+        "outfit_jade_master_07_v1",
+        "outfit_flou_master_09_v2",
+        "outfit_iced_master_21"
+      ]
+    },
+    {
+      "persona": "noir",
+      "palette": "mono",
+      "before": [
+        "outfit_mute_master_16",
+        "outfit_mute_master_01",
+        "outfit_iced_master_17",
+        "outfit_noir_master_22",
+        "outfit_noir_master_11_v1",
+        "outfit_edge_master_30",
+        "outfit_neon_master_07_v1",
+        "outfit_edge_master_12_v1"
+      ],
+      "after": [
+        "outfit_mute_master_16",
+        "outfit_mute_master_01",
+        "outfit_iced_master_17",
+        "outfit_noir_master_22",
+        "outfit_edge_master_30",
+        "outfit_neon_master_07_v1"
+      ]
+    }
+  ],
+  "autumn_supply_requirements": [
+    {
+      "persona": "bolt",
+      "palette": "mono",
+      "season": "autumn",
+      "scene": "daily",
+      "eligible_before_sequence": 0,
+      "selected_count": 0,
+      "stopped_position": 0,
+      "required_expression": "easy",
+      "structures_missing_from_current_prefix": [
+        "dress",
+        "pants",
+        "skirt"
+      ],
+      "eligible_by_expression_structure": {},
+      "priority": "first_screen",
+      "required_design_change": "Add a reviewed, persona-evidenced main silhouette in this palette and required expression; shoes/bag-only or title changes do not close a structure gap.",
+      "action_order": [
+        "review_recombinations_of_unused_main_garments",
+        "review_new_recipes_using_existing_assets",
+        "generate_only_unresolved_new_shapes"
+      ],
+      "not_proven": "A greedy stop is not proof of zero feasible combinations or a precise number of new garments required."
+    },
+    {
+      "persona": "bolt",
+      "palette": "earth",
+      "season": "autumn",
+      "scene": "daily",
+      "eligible_before_sequence": 0,
+      "selected_count": 0,
+      "stopped_position": 0,
+      "required_expression": "easy",
+      "structures_missing_from_current_prefix": [
+        "dress",
+        "pants",
+        "skirt"
+      ],
+      "eligible_by_expression_structure": {},
+      "priority": "first_screen",
+      "required_design_change": "Add a reviewed, persona-evidenced main silhouette in this palette and required expression; shoes/bag-only or title changes do not close a structure gap.",
+      "action_order": [
+        "review_recombinations_of_unused_main_garments",
+        "review_new_recipes_using_existing_assets",
+        "generate_only_unresolved_new_shapes"
+      ],
+      "not_proven": "A greedy stop is not proof of zero feasible combinations or a precise number of new garments required."
+    },
+    {
+      "persona": "bolt",
+      "palette": "ocean",
+      "season": "autumn",
+      "scene": "daily",
+      "eligible_before_sequence": 0,
+      "selected_count": 0,
+      "stopped_position": 0,
+      "required_expression": "easy",
+      "structures_missing_from_current_prefix": [
+        "dress",
+        "pants",
+        "skirt"
+      ],
+      "eligible_by_expression_structure": {},
+      "priority": "first_screen",
+      "required_design_change": "Add a reviewed, persona-evidenced main silhouette in this palette and required expression; shoes/bag-only or title changes do not close a structure gap.",
+      "action_order": [
+        "review_recombinations_of_unused_main_garments",
+        "review_new_recipes_using_existing_assets",
+        "generate_only_unresolved_new_shapes"
+      ],
+      "not_proven": "A greedy stop is not proof of zero feasible combinations or a precise number of new garments required."
+    },
+    {
+      "persona": "bolt",
+      "palette": "jewel",
+      "season": "autumn",
+      "scene": "daily",
+      "eligible_before_sequence": 0,
+      "selected_count": 0,
+      "stopped_position": 0,
+      "required_expression": "easy",
+      "structures_missing_from_current_prefix": [
+        "dress",
+        "pants",
+        "skirt"
+      ],
+      "eligible_by_expression_structure": {},
+      "priority": "first_screen",
+      "required_design_change": "Add a reviewed, persona-evidenced main silhouette in this palette and required expression; shoes/bag-only or title changes do not close a structure gap.",
+      "action_order": [
+        "review_recombinations_of_unused_main_garments",
+        "review_new_recipes_using_existing_assets",
+        "generate_only_unresolved_new_shapes"
+      ],
+      "not_proven": "A greedy stop is not proof of zero feasible combinations or a precise number of new garments required."
+    },
+    {
+      "persona": "bolt",
+      "palette": "bright",
+      "season": "autumn",
+      "scene": "daily",
+      "eligible_before_sequence": 0,
+      "selected_count": 0,
+      "stopped_position": 0,
+      "required_expression": "easy",
+      "structures_missing_from_current_prefix": [
+        "dress",
+        "pants",
+        "skirt"
+      ],
+      "eligible_by_expression_structure": {},
+      "priority": "first_screen",
+      "required_design_change": "Add a reviewed, persona-evidenced main silhouette in this palette and required expression; shoes/bag-only or title changes do not close a structure gap.",
+      "action_order": [
+        "review_recombinations_of_unused_main_garments",
+        "review_new_recipes_using_existing_assets",
+        "generate_only_unresolved_new_shapes"
+      ],
+      "not_proven": "A greedy stop is not proof of zero feasible combinations or a precise number of new garments required."
+    },
+    {
+      "persona": "bolt",
+      "palette": "pastel",
+      "season": "autumn",
+      "scene": "daily",
+      "eligible_before_sequence": 0,
+      "selected_count": 0,
+      "stopped_position": 0,
+      "required_expression": "easy",
+      "structures_missing_from_current_prefix": [
+        "dress",
+        "pants",
+        "skirt"
+      ],
+      "eligible_by_expression_structure": {},
+      "priority": "first_screen",
+      "required_design_change": "Add a reviewed, persona-evidenced main silhouette in this palette and required expression; shoes/bag-only or title changes do not close a structure gap.",
+      "action_order": [
+        "review_recombinations_of_unused_main_garments",
+        "review_new_recipes_using_existing_assets",
+        "generate_only_unresolved_new_shapes"
+      ],
+      "not_proven": "A greedy stop is not proof of zero feasible combinations or a precise number of new garments required."
+    },
+    {
+      "persona": "ease",
+      "palette": "jewel",
+      "season": "autumn",
+      "scene": "daily",
+      "eligible_before_sequence": 4,
+      "selected_count": 2,
+      "stopped_position": 2,
+      "required_expression": "easy",
+      "structures_missing_from_current_prefix": [
+        "pants",
+        "skirt"
+      ],
+      "eligible_by_expression_structure": {
+        "easy:dress": 3,
+        "typical:dress": 1
+      },
+      "priority": "first_screen",
+      "required_design_change": "Add a reviewed, persona-evidenced main silhouette in this palette and required expression; shoes/bag-only or title changes do not close a structure gap.",
+      "action_order": [
+        "review_recombinations_of_unused_main_garments",
+        "review_new_recipes_using_existing_assets",
+        "generate_only_unresolved_new_shapes"
+      ],
+      "not_proven": "A greedy stop is not proof of zero feasible combinations or a precise number of new garments required."
+    },
+    {
+      "persona": "ease",
+      "palette": "bright",
+      "season": "autumn",
+      "scene": "daily",
+      "eligible_before_sequence": 0,
+      "selected_count": 0,
+      "stopped_position": 0,
+      "required_expression": "easy",
+      "structures_missing_from_current_prefix": [
+        "dress",
+        "pants",
+        "skirt"
+      ],
+      "eligible_by_expression_structure": {},
+      "priority": "first_screen",
+      "required_design_change": "Add a reviewed, persona-evidenced main silhouette in this palette and required expression; shoes/bag-only or title changes do not close a structure gap.",
+      "action_order": [
+        "review_recombinations_of_unused_main_garments",
+        "review_new_recipes_using_existing_assets",
+        "generate_only_unresolved_new_shapes"
+      ],
+      "not_proven": "A greedy stop is not proof of zero feasible combinations or a precise number of new garments required."
+    },
+    {
+      "persona": "edge",
+      "palette": "mono",
+      "season": "autumn",
+      "scene": "daily",
+      "eligible_before_sequence": 3,
+      "selected_count": 0,
+      "stopped_position": 0,
+      "required_expression": "easy",
+      "structures_missing_from_current_prefix": [
+        "dress",
+        "pants",
+        "skirt"
+      ],
+      "eligible_by_expression_structure": {
+        "typical:pants": 3
+      },
+      "priority": "first_screen",
+      "required_design_change": "Add a reviewed, persona-evidenced main silhouette in this palette and required expression; shoes/bag-only or title changes do not close a structure gap.",
+      "action_order": [
+        "review_recombinations_of_unused_main_garments",
+        "review_new_recipes_using_existing_assets",
+        "generate_only_unresolved_new_shapes"
+      ],
+      "not_proven": "A greedy stop is not proof of zero feasible combinations or a precise number of new garments required."
+    },
+    {
+      "persona": "edge",
+      "palette": "earth",
+      "season": "autumn",
+      "scene": "daily",
+      "eligible_before_sequence": 0,
+      "selected_count": 0,
+      "stopped_position": 0,
+      "required_expression": "easy",
+      "structures_missing_from_current_prefix": [
+        "dress",
+        "pants",
+        "skirt"
+      ],
+      "eligible_by_expression_structure": {},
+      "priority": "first_screen",
+      "required_design_change": "Add a reviewed, persona-evidenced main silhouette in this palette and required expression; shoes/bag-only or title changes do not close a structure gap.",
+      "action_order": [
+        "review_recombinations_of_unused_main_garments",
+        "review_new_recipes_using_existing_assets",
+        "generate_only_unresolved_new_shapes"
+      ],
+      "not_proven": "A greedy stop is not proof of zero feasible combinations or a precise number of new garments required."
+    },
+    {
+      "persona": "edge",
+      "palette": "ocean",
+      "season": "autumn",
+      "scene": "daily",
+      "eligible_before_sequence": 0,
+      "selected_count": 0,
+      "stopped_position": 0,
+      "required_expression": "easy",
+      "structures_missing_from_current_prefix": [
+        "dress",
+        "pants",
+        "skirt"
+      ],
+      "eligible_by_expression_structure": {},
+      "priority": "first_screen",
+      "required_design_change": "Add a reviewed, persona-evidenced main silhouette in this palette and required expression; shoes/bag-only or title changes do not close a structure gap.",
+      "action_order": [
+        "review_recombinations_of_unused_main_garments",
+        "review_new_recipes_using_existing_assets",
+        "generate_only_unresolved_new_shapes"
+      ],
+      "not_proven": "A greedy stop is not proof of zero feasible combinations or a precise number of new garments required."
+    },
+    {
+      "persona": "edge",
+      "palette": "jewel",
+      "season": "autumn",
+      "scene": "daily",
+      "eligible_before_sequence": 0,
+      "selected_count": 0,
+      "stopped_position": 0,
+      "required_expression": "easy",
+      "structures_missing_from_current_prefix": [
+        "dress",
+        "pants",
+        "skirt"
+      ],
+      "eligible_by_expression_structure": {},
+      "priority": "first_screen",
+      "required_design_change": "Add a reviewed, persona-evidenced main silhouette in this palette and required expression; shoes/bag-only or title changes do not close a structure gap.",
+      "action_order": [
+        "review_recombinations_of_unused_main_garments",
+        "review_new_recipes_using_existing_assets",
+        "generate_only_unresolved_new_shapes"
+      ],
+      "not_proven": "A greedy stop is not proof of zero feasible combinations or a precise number of new garments required."
+    },
+    {
+      "persona": "edge",
+      "palette": "bright",
+      "season": "autumn",
+      "scene": "daily",
+      "eligible_before_sequence": 0,
+      "selected_count": 0,
+      "stopped_position": 0,
+      "required_expression": "easy",
+      "structures_missing_from_current_prefix": [
+        "dress",
+        "pants",
+        "skirt"
+      ],
+      "eligible_by_expression_structure": {},
+      "priority": "first_screen",
+      "required_design_change": "Add a reviewed, persona-evidenced main silhouette in this palette and required expression; shoes/bag-only or title changes do not close a structure gap.",
+      "action_order": [
+        "review_recombinations_of_unused_main_garments",
+        "review_new_recipes_using_existing_assets",
+        "generate_only_unresolved_new_shapes"
+      ],
+      "not_proven": "A greedy stop is not proof of zero feasible combinations or a precise number of new garments required."
+    },
+    {
+      "persona": "edge",
+      "palette": "pastel",
+      "season": "autumn",
+      "scene": "daily",
+      "eligible_before_sequence": 1,
+      "selected_count": 0,
+      "stopped_position": 0,
+      "required_expression": "easy",
+      "structures_missing_from_current_prefix": [
+        "dress",
+        "pants",
+        "skirt"
+      ],
+      "eligible_by_expression_structure": {
+        "typical:pants": 1
+      },
+      "priority": "first_screen",
+      "required_design_change": "Add a reviewed, persona-evidenced main silhouette in this palette and required expression; shoes/bag-only or title changes do not close a structure gap.",
+      "action_order": [
+        "review_recombinations_of_unused_main_garments",
+        "review_new_recipes_using_existing_assets",
+        "generate_only_unresolved_new_shapes"
+      ],
+      "not_proven": "A greedy stop is not proof of zero feasible combinations or a precise number of new garments required."
+    },
+    {
+      "persona": "film",
+      "palette": "mono",
+      "season": "autumn",
+      "scene": "daily",
+      "eligible_before_sequence": 48,
+      "selected_count": 9,
+      "stopped_position": 9,
+      "required_expression": "explore",
+      "structures_missing_from_current_prefix": [
+        "dress"
+      ],
+      "eligible_by_expression_structure": {
+        "typical:pants": 19,
+        "easy:pants": 11,
+        "typical:skirt": 5,
+        "easy:skirt": 10,
+        "explore:pants": 1,
+        "explore:skirt": 1,
+        "typical:dress": 1
+      },
+      "priority": "first_screen",
+      "required_design_change": "Add a reviewed, persona-evidenced main silhouette in this palette and required expression; shoes/bag-only or title changes do not close a structure gap.",
+      "action_order": [
+        "review_recombinations_of_unused_main_garments",
+        "review_new_recipes_using_existing_assets",
+        "generate_only_unresolved_new_shapes"
+      ],
+      "not_proven": "A greedy stop is not proof of zero feasible combinations or a precise number of new garments required."
+    },
+    {
+      "persona": "film",
+      "palette": "earth",
+      "season": "autumn",
+      "scene": "daily",
+      "eligible_before_sequence": 14,
+      "selected_count": 2,
+      "stopped_position": 2,
+      "required_expression": "easy",
+      "structures_missing_from_current_prefix": [
+        "dress"
+      ],
+      "eligible_by_expression_structure": {
+        "typical:dress": 1,
+        "typical:pants": 8,
+        "typical:skirt": 1,
+        "explore:skirt": 1,
+        "easy:skirt": 1,
+        "easy:pants": 2
+      },
+      "priority": "first_screen",
+      "required_design_change": "Add a reviewed, persona-evidenced main silhouette in this palette and required expression; shoes/bag-only or title changes do not close a structure gap.",
+      "action_order": [
+        "review_recombinations_of_unused_main_garments",
+        "review_new_recipes_using_existing_assets",
+        "generate_only_unresolved_new_shapes"
+      ],
+      "not_proven": "A greedy stop is not proof of zero feasible combinations or a precise number of new garments required."
+    },
+    {
+      "persona": "film",
+      "palette": "ocean",
+      "season": "autumn",
+      "scene": "daily",
+      "eligible_before_sequence": 3,
+      "selected_count": 2,
+      "stopped_position": 2,
+      "required_expression": "easy",
+      "structures_missing_from_current_prefix": [
+        "dress"
+      ],
+      "eligible_by_expression_structure": {
+        "easy:pants": 2,
+        "easy:skirt": 1
+      },
+      "priority": "first_screen",
+      "required_design_change": "Add a reviewed, persona-evidenced main silhouette in this palette and required expression; shoes/bag-only or title changes do not close a structure gap.",
+      "action_order": [
+        "review_recombinations_of_unused_main_garments",
+        "review_new_recipes_using_existing_assets",
+        "generate_only_unresolved_new_shapes"
+      ],
+      "not_proven": "A greedy stop is not proof of zero feasible combinations or a precise number of new garments required."
+    },
+    {
+      "persona": "film",
+      "palette": "jewel",
+      "season": "autumn",
+      "scene": "daily",
+      "eligible_before_sequence": 1,
+      "selected_count": 0,
+      "stopped_position": 0,
+      "required_expression": "easy",
+      "structures_missing_from_current_prefix": [
+        "dress",
+        "pants",
+        "skirt"
+      ],
+      "eligible_by_expression_structure": {
+        "typical:dress": 1
+      },
+      "priority": "first_screen",
+      "required_design_change": "Add a reviewed, persona-evidenced main silhouette in this palette and required expression; shoes/bag-only or title changes do not close a structure gap.",
+      "action_order": [
+        "review_recombinations_of_unused_main_garments",
+        "review_new_recipes_using_existing_assets",
+        "generate_only_unresolved_new_shapes"
+      ],
+      "not_proven": "A greedy stop is not proof of zero feasible combinations or a precise number of new garments required."
+    },
+    {
+      "persona": "film",
+      "palette": "bright",
+      "season": "autumn",
+      "scene": "daily",
+      "eligible_before_sequence": 0,
+      "selected_count": 0,
+      "stopped_position": 0,
+      "required_expression": "easy",
+      "structures_missing_from_current_prefix": [
+        "dress",
+        "pants",
+        "skirt"
+      ],
+      "eligible_by_expression_structure": {},
+      "priority": "first_screen",
+      "required_design_change": "Add a reviewed, persona-evidenced main silhouette in this palette and required expression; shoes/bag-only or title changes do not close a structure gap.",
+      "action_order": [
+        "review_recombinations_of_unused_main_garments",
+        "review_new_recipes_using_existing_assets",
+        "generate_only_unresolved_new_shapes"
+      ],
+      "not_proven": "A greedy stop is not proof of zero feasible combinations or a precise number of new garments required."
+    },
+    {
+      "persona": "film",
+      "palette": "pastel",
+      "season": "autumn",
+      "scene": "daily",
+      "eligible_before_sequence": 20,
+      "selected_count": 6,
+      "stopped_position": 6,
+      "required_expression": "easy",
+      "structures_missing_from_current_prefix": [
+        "dress"
+      ],
+      "eligible_by_expression_structure": {
+        "typical:skirt": 3,
+        "easy:pants": 6,
+        "typical:pants": 5,
+        "easy:skirt": 5,
+        "explore:skirt": 1
+      },
+      "priority": "first_screen",
+      "required_design_change": "Add a reviewed, persona-evidenced main silhouette in this palette and required expression; shoes/bag-only or title changes do not close a structure gap.",
+      "action_order": [
+        "review_recombinations_of_unused_main_garments",
+        "review_new_recipes_using_existing_assets",
+        "generate_only_unresolved_new_shapes"
+      ],
+      "not_proven": "A greedy stop is not proof of zero feasible combinations or a precise number of new garments required."
+    },
+    {
+      "persona": "flou",
+      "palette": "mono",
+      "season": "autumn",
+      "scene": "daily",
+      "eligible_before_sequence": 36,
+      "selected_count": 9,
+      "stopped_position": 9,
+      "required_expression": "explore",
+      "structures_missing_from_current_prefix": [
+        "dress"
+      ],
+      "eligible_by_expression_structure": {
+        "typical:skirt": 11,
+        "easy:skirt": 6,
+        "typical:pants": 10,
+        "explore:skirt": 2,
+        "easy:pants": 6,
+        "explore:pants": 1
+      },
+      "priority": "first_screen",
+      "required_design_change": "Add a reviewed, persona-evidenced main silhouette in this palette and required expression; shoes/bag-only or title changes do not close a structure gap.",
+      "action_order": [
+        "review_recombinations_of_unused_main_garments",
+        "review_new_recipes_using_existing_assets",
+        "generate_only_unresolved_new_shapes"
+      ],
+      "not_proven": "A greedy stop is not proof of zero feasible combinations or a precise number of new garments required."
+    },
+    {
+      "persona": "flou",
+      "palette": "earth",
+      "season": "autumn",
+      "scene": "daily",
+      "eligible_before_sequence": 17,
+      "selected_count": 6,
+      "stopped_position": 6,
+      "required_expression": "easy",
+      "structures_missing_from_current_prefix": [
+        "dress"
+      ],
+      "eligible_by_expression_structure": {
+        "typical:skirt": 4,
+        "typical:pants": 8,
+        "easy:pants": 3,
+        "easy:skirt": 2
+      },
+      "priority": "first_screen",
+      "required_design_change": "Add a reviewed, persona-evidenced main silhouette in this palette and required expression; shoes/bag-only or title changes do not close a structure gap.",
+      "action_order": [
+        "review_recombinations_of_unused_main_garments",
+        "review_new_recipes_using_existing_assets",
+        "generate_only_unresolved_new_shapes"
+      ],
+      "not_proven": "A greedy stop is not proof of zero feasible combinations or a precise number of new garments required."
+    },
+    {
+      "persona": "flou",
+      "palette": "ocean",
+      "season": "autumn",
+      "scene": "daily",
+      "eligible_before_sequence": 3,
+      "selected_count": 2,
+      "stopped_position": 2,
+      "required_expression": "easy",
+      "structures_missing_from_current_prefix": [
+        "dress",
+        "skirt"
+      ],
+      "eligible_by_expression_structure": {
+        "typical:skirt": 1,
+        "easy:pants": 2
+      },
+      "priority": "first_screen",
+      "required_design_change": "Add a reviewed, persona-evidenced main silhouette in this palette and required expression; shoes/bag-only or title changes do not close a structure gap.",
+      "action_order": [
+        "review_recombinations_of_unused_main_garments",
+        "review_new_recipes_using_existing_assets",
+        "generate_only_unresolved_new_shapes"
+      ],
+      "not_proven": "A greedy stop is not proof of zero feasible combinations or a precise number of new garments required."
+    },
+    {
+      "persona": "flou",
+      "palette": "jewel",
+      "season": "autumn",
+      "scene": "daily",
+      "eligible_before_sequence": 0,
+      "selected_count": 0,
+      "stopped_position": 0,
+      "required_expression": "easy",
+      "structures_missing_from_current_prefix": [
+        "dress",
+        "pants",
+        "skirt"
+      ],
+      "eligible_by_expression_structure": {},
+      "priority": "first_screen",
+      "required_design_change": "Add a reviewed, persona-evidenced main silhouette in this palette and required expression; shoes/bag-only or title changes do not close a structure gap.",
+      "action_order": [
+        "review_recombinations_of_unused_main_garments",
+        "review_new_recipes_using_existing_assets",
+        "generate_only_unresolved_new_shapes"
+      ],
+      "not_proven": "A greedy stop is not proof of zero feasible combinations or a precise number of new garments required."
+    },
+    {
+      "persona": "flou",
+      "palette": "bright",
+      "season": "autumn",
+      "scene": "daily",
+      "eligible_before_sequence": 0,
+      "selected_count": 0,
+      "stopped_position": 0,
+      "required_expression": "easy",
+      "structures_missing_from_current_prefix": [
+        "dress",
+        "pants",
+        "skirt"
+      ],
+      "eligible_by_expression_structure": {},
+      "priority": "first_screen",
+      "required_design_change": "Add a reviewed, persona-evidenced main silhouette in this palette and required expression; shoes/bag-only or title changes do not close a structure gap.",
+      "action_order": [
+        "review_recombinations_of_unused_main_garments",
+        "review_new_recipes_using_existing_assets",
+        "generate_only_unresolved_new_shapes"
+      ],
+      "not_proven": "A greedy stop is not proof of zero feasible combinations or a precise number of new garments required."
+    },
+    {
+      "persona": "flou",
+      "palette": "pastel",
+      "season": "autumn",
+      "scene": "daily",
+      "eligible_before_sequence": 35,
+      "selected_count": 9,
+      "stopped_position": 9,
+      "required_expression": "explore",
+      "structures_missing_from_current_prefix": [
+        "dress"
+      ],
+      "eligible_by_expression_structure": {
+        "typical:pants": 10,
+        "typical:skirt": 11,
+        "easy:skirt": 6,
+        "easy:pants": 5,
+        "explore:skirt": 2,
+        "explore:pants": 1
+      },
+      "priority": "first_screen",
+      "required_design_change": "Add a reviewed, persona-evidenced main silhouette in this palette and required expression; shoes/bag-only or title changes do not close a structure gap.",
+      "action_order": [
+        "review_recombinations_of_unused_main_garments",
+        "review_new_recipes_using_existing_assets",
+        "generate_only_unresolved_new_shapes"
+      ],
+      "not_proven": "A greedy stop is not proof of zero feasible combinations or a precise number of new garments required."
+    },
+    {
+      "persona": "heir",
+      "palette": "earth",
+      "season": "autumn",
+      "scene": "daily",
+      "eligible_before_sequence": 29,
+      "selected_count": 25,
+      "stopped_position": 25,
+      "required_expression": null,
+      "structures_missing_from_current_prefix": [],
+      "eligible_by_expression_structure": {
+        "easy:dress": 7,
+        "easy:pants": 10,
+        "typical:skirt": 1,
+        "easy:skirt": 7,
+        "explore:skirt": 1,
+        "typical:pants": 3
+      },
+      "priority": "continuous_browsing",
+      "required_design_change": "Add a reviewed, persona-evidenced main silhouette in this palette and required expression; shoes/bag-only or title changes do not close a structure gap.",
+      "action_order": [
+        "review_recombinations_of_unused_main_garments",
+        "review_new_recipes_using_existing_assets",
+        "generate_only_unresolved_new_shapes"
+      ],
+      "not_proven": "A greedy stop is not proof of zero feasible combinations or a precise number of new garments required."
+    },
+    {
+      "persona": "heir",
+      "palette": "ocean",
+      "season": "autumn",
+      "scene": "daily",
+      "eligible_before_sequence": 20,
+      "selected_count": 8,
+      "stopped_position": 8,
+      "required_expression": "typical",
+      "structures_missing_from_current_prefix": [],
+      "eligible_by_expression_structure": {
+        "easy:pants": 3,
+        "easy:skirt": 7,
+        "typical:pants": 1,
+        "easy:dress": 5,
+        "explore:skirt": 2,
+        "explore:dress": 2
+      },
+      "priority": "first_screen",
+      "required_design_change": "Add a reviewed, persona-evidenced main silhouette in this palette and required expression; shoes/bag-only or title changes do not close a structure gap.",
+      "action_order": [
+        "review_recombinations_of_unused_main_garments",
+        "review_new_recipes_using_existing_assets",
+        "generate_only_unresolved_new_shapes"
+      ],
+      "not_proven": "A greedy stop is not proof of zero feasible combinations or a precise number of new garments required."
+    },
+    {
+      "persona": "heir",
+      "palette": "jewel",
+      "season": "autumn",
+      "scene": "daily",
+      "eligible_before_sequence": 3,
+      "selected_count": 2,
+      "stopped_position": 2,
+      "required_expression": "easy",
+      "structures_missing_from_current_prefix": [
+        "pants",
+        "skirt"
+      ],
+      "eligible_by_expression_structure": {
+        "easy:dress": 3
+      },
+      "priority": "first_screen",
+      "required_design_change": "Add a reviewed, persona-evidenced main silhouette in this palette and required expression; shoes/bag-only or title changes do not close a structure gap.",
+      "action_order": [
+        "review_recombinations_of_unused_main_garments",
+        "review_new_recipes_using_existing_assets",
+        "generate_only_unresolved_new_shapes"
+      ],
+      "not_proven": "A greedy stop is not proof of zero feasible combinations or a precise number of new garments required."
+    },
+    {
+      "persona": "heir",
+      "palette": "bright",
+      "season": "autumn",
+      "scene": "daily",
+      "eligible_before_sequence": 0,
+      "selected_count": 0,
+      "stopped_position": 0,
+      "required_expression": "easy",
+      "structures_missing_from_current_prefix": [
+        "dress",
+        "pants",
+        "skirt"
+      ],
+      "eligible_by_expression_structure": {},
+      "priority": "first_screen",
+      "required_design_change": "Add a reviewed, persona-evidenced main silhouette in this palette and required expression; shoes/bag-only or title changes do not close a structure gap.",
+      "action_order": [
+        "review_recombinations_of_unused_main_garments",
+        "review_new_recipes_using_existing_assets",
+        "generate_only_unresolved_new_shapes"
+      ],
+      "not_proven": "A greedy stop is not proof of zero feasible combinations or a precise number of new garments required."
+    },
+    {
+      "persona": "iced",
+      "palette": "earth",
+      "season": "autumn",
+      "scene": "daily",
+      "eligible_before_sequence": 1,
+      "selected_count": 1,
+      "stopped_position": 1,
+      "required_expression": "easy",
+      "structures_missing_from_current_prefix": [
+        "dress",
+        "pants"
+      ],
+      "eligible_by_expression_structure": {
+        "easy:skirt": 1
+      },
+      "priority": "first_screen",
+      "required_design_change": "Add a reviewed, persona-evidenced main silhouette in this palette and required expression; shoes/bag-only or title changes do not close a structure gap.",
+      "action_order": [
+        "review_recombinations_of_unused_main_garments",
+        "review_new_recipes_using_existing_assets",
+        "generate_only_unresolved_new_shapes"
+      ],
+      "not_proven": "A greedy stop is not proof of zero feasible combinations or a precise number of new garments required."
+    },
+    {
+      "persona": "iced",
+      "palette": "ocean",
+      "season": "autumn",
+      "scene": "daily",
+      "eligible_before_sequence": 26,
+      "selected_count": 8,
+      "stopped_position": 8,
+      "required_expression": "typical",
+      "structures_missing_from_current_prefix": [],
+      "eligible_by_expression_structure": {
+        "easy:skirt": 5,
+        "easy:pants": 12,
+        "easy:dress": 3,
+        "explore:pants": 2,
+        "explore:skirt": 3,
+        "typical:skirt": 1
+      },
+      "priority": "first_screen",
+      "required_design_change": "Add a reviewed, persona-evidenced main silhouette in this palette and required expression; shoes/bag-only or title changes do not close a structure gap.",
+      "action_order": [
+        "review_recombinations_of_unused_main_garments",
+        "review_new_recipes_using_existing_assets",
+        "generate_only_unresolved_new_shapes"
+      ],
+      "not_proven": "A greedy stop is not proof of zero feasible combinations or a precise number of new garments required."
+    },
+    {
+      "persona": "iced",
+      "palette": "jewel",
+      "season": "autumn",
+      "scene": "daily",
+      "eligible_before_sequence": 0,
+      "selected_count": 0,
+      "stopped_position": 0,
+      "required_expression": "easy",
+      "structures_missing_from_current_prefix": [
+        "dress",
+        "pants",
+        "skirt"
+      ],
+      "eligible_by_expression_structure": {},
+      "priority": "first_screen",
+      "required_design_change": "Add a reviewed, persona-evidenced main silhouette in this palette and required expression; shoes/bag-only or title changes do not close a structure gap.",
+      "action_order": [
+        "review_recombinations_of_unused_main_garments",
+        "review_new_recipes_using_existing_assets",
+        "generate_only_unresolved_new_shapes"
+      ],
+      "not_proven": "A greedy stop is not proof of zero feasible combinations or a precise number of new garments required."
+    },
+    {
+      "persona": "iced",
+      "palette": "bright",
+      "season": "autumn",
+      "scene": "daily",
+      "eligible_before_sequence": 0,
+      "selected_count": 0,
+      "stopped_position": 0,
+      "required_expression": "easy",
+      "structures_missing_from_current_prefix": [
+        "dress",
+        "pants",
+        "skirt"
+      ],
+      "eligible_by_expression_structure": {},
+      "priority": "first_screen",
+      "required_design_change": "Add a reviewed, persona-evidenced main silhouette in this palette and required expression; shoes/bag-only or title changes do not close a structure gap.",
+      "action_order": [
+        "review_recombinations_of_unused_main_garments",
+        "review_new_recipes_using_existing_assets",
+        "generate_only_unresolved_new_shapes"
+      ],
+      "not_proven": "A greedy stop is not proof of zero feasible combinations or a precise number of new garments required."
+    },
+    {
+      "persona": "jade",
+      "palette": "mono",
+      "season": "autumn",
+      "scene": "daily",
+      "eligible_before_sequence": 13,
+      "selected_count": 4,
+      "stopped_position": 4,
+      "required_expression": "easy",
+      "structures_missing_from_current_prefix": [
+        "dress"
+      ],
+      "eligible_by_expression_structure": {
+        "typical:pants": 6,
+        "explore:pants": 4,
+        "easy:pants": 2,
+        "easy:skirt": 1
+      },
+      "priority": "first_screen",
+      "required_design_change": "Add a reviewed, persona-evidenced main silhouette in this palette and required expression; shoes/bag-only or title changes do not close a structure gap.",
+      "action_order": [
+        "review_recombinations_of_unused_main_garments",
+        "review_new_recipes_using_existing_assets",
+        "generate_only_unresolved_new_shapes"
+      ],
+      "not_proven": "A greedy stop is not proof of zero feasible combinations or a precise number of new garments required."
+    },
+    {
+      "persona": "jade",
+      "palette": "earth",
+      "season": "autumn",
+      "scene": "daily",
+      "eligible_before_sequence": 12,
+      "selected_count": 4,
+      "stopped_position": 4,
+      "required_expression": "easy",
+      "structures_missing_from_current_prefix": [
+        "dress"
+      ],
+      "eligible_by_expression_structure": {
+        "typical:pants": 6,
+        "explore:pants": 3,
+        "easy:skirt": 1,
+        "easy:pants": 2
+      },
+      "priority": "first_screen",
+      "required_design_change": "Add a reviewed, persona-evidenced main silhouette in this palette and required expression; shoes/bag-only or title changes do not close a structure gap.",
+      "action_order": [
+        "review_recombinations_of_unused_main_garments",
+        "review_new_recipes_using_existing_assets",
+        "generate_only_unresolved_new_shapes"
+      ],
+      "not_proven": "A greedy stop is not proof of zero feasible combinations or a precise number of new garments required."
+    },
+    {
+      "persona": "jade",
+      "palette": "ocean",
+      "season": "autumn",
+      "scene": "daily",
+      "eligible_before_sequence": 0,
+      "selected_count": 0,
+      "stopped_position": 0,
+      "required_expression": "easy",
+      "structures_missing_from_current_prefix": [
+        "dress",
+        "pants",
+        "skirt"
+      ],
+      "eligible_by_expression_structure": {},
+      "priority": "first_screen",
+      "required_design_change": "Add a reviewed, persona-evidenced main silhouette in this palette and required expression; shoes/bag-only or title changes do not close a structure gap.",
+      "action_order": [
+        "review_recombinations_of_unused_main_garments",
+        "review_new_recipes_using_existing_assets",
+        "generate_only_unresolved_new_shapes"
+      ],
+      "not_proven": "A greedy stop is not proof of zero feasible combinations or a precise number of new garments required."
+    },
+    {
+      "persona": "jade",
+      "palette": "jewel",
+      "season": "autumn",
+      "scene": "daily",
+      "eligible_before_sequence": 0,
+      "selected_count": 0,
+      "stopped_position": 0,
+      "required_expression": "easy",
+      "structures_missing_from_current_prefix": [
+        "dress",
+        "pants",
+        "skirt"
+      ],
+      "eligible_by_expression_structure": {},
+      "priority": "first_screen",
+      "required_design_change": "Add a reviewed, persona-evidenced main silhouette in this palette and required expression; shoes/bag-only or title changes do not close a structure gap.",
+      "action_order": [
+        "review_recombinations_of_unused_main_garments",
+        "review_new_recipes_using_existing_assets",
+        "generate_only_unresolved_new_shapes"
+      ],
+      "not_proven": "A greedy stop is not proof of zero feasible combinations or a precise number of new garments required."
+    },
+    {
+      "persona": "jade",
+      "palette": "bright",
+      "season": "autumn",
+      "scene": "daily",
+      "eligible_before_sequence": 0,
+      "selected_count": 0,
+      "stopped_position": 0,
+      "required_expression": "easy",
+      "structures_missing_from_current_prefix": [
+        "dress",
+        "pants",
+        "skirt"
+      ],
+      "eligible_by_expression_structure": {},
+      "priority": "first_screen",
+      "required_design_change": "Add a reviewed, persona-evidenced main silhouette in this palette and required expression; shoes/bag-only or title changes do not close a structure gap.",
+      "action_order": [
+        "review_recombinations_of_unused_main_garments",
+        "review_new_recipes_using_existing_assets",
+        "generate_only_unresolved_new_shapes"
+      ],
+      "not_proven": "A greedy stop is not proof of zero feasible combinations or a precise number of new garments required."
+    },
+    {
+      "persona": "jade",
+      "palette": "pastel",
+      "season": "autumn",
+      "scene": "daily",
+      "eligible_before_sequence": 13,
+      "selected_count": 4,
+      "stopped_position": 4,
+      "required_expression": "easy",
+      "structures_missing_from_current_prefix": [
+        "dress"
+      ],
+      "eligible_by_expression_structure": {
+        "typical:pants": 6,
+        "easy:skirt": 1,
+        "explore:pants": 4,
+        "easy:pants": 2
+      },
+      "priority": "first_screen",
+      "required_design_change": "Add a reviewed, persona-evidenced main silhouette in this palette and required expression; shoes/bag-only or title changes do not close a structure gap.",
+      "action_order": [
+        "review_recombinations_of_unused_main_garments",
+        "review_new_recipes_using_existing_assets",
+        "generate_only_unresolved_new_shapes"
+      ],
+      "not_proven": "A greedy stop is not proof of zero feasible combinations or a precise number of new garments required."
+    },
+    {
+      "persona": "loop",
+      "palette": "earth",
+      "season": "autumn",
+      "scene": "daily",
+      "eligible_before_sequence": 46,
+      "selected_count": 9,
+      "stopped_position": 9,
+      "required_expression": "explore",
+      "structures_missing_from_current_prefix": [],
+      "eligible_by_expression_structure": {
+        "easy:dress": 2,
+        "typical:dress": 1,
+        "easy:pants": 20,
+        "easy:skirt": 8,
+        "typical:skirt": 1,
+        "typical:pants": 13,
+        "explore:pants": 1
+      },
+      "priority": "first_screen",
+      "required_design_change": "Add a reviewed, persona-evidenced main silhouette in this palette and required expression; shoes/bag-only or title changes do not close a structure gap.",
+      "action_order": [
+        "review_recombinations_of_unused_main_garments",
+        "review_new_recipes_using_existing_assets",
+        "generate_only_unresolved_new_shapes"
+      ],
+      "not_proven": "A greedy stop is not proof of zero feasible combinations or a precise number of new garments required."
+    },
+    {
+      "persona": "loop",
+      "palette": "ocean",
+      "season": "autumn",
+      "scene": "daily",
+      "eligible_before_sequence": 52,
+      "selected_count": 8,
+      "stopped_position": 8,
+      "required_expression": "typical",
+      "structures_missing_from_current_prefix": [
+        "dress"
+      ],
+      "eligible_by_expression_structure": {
+        "easy:pants": 24,
+        "easy:skirt": 10,
+        "typical:pants": 3,
+        "explore:skirt": 3,
+        "easy:dress": 3,
+        "typical:skirt": 1,
+        "explore:pants": 7,
+        "explore:dress": 1
+      },
+      "priority": "first_screen",
+      "required_design_change": "Add a reviewed, persona-evidenced main silhouette in this palette and required expression; shoes/bag-only or title changes do not close a structure gap.",
+      "action_order": [
+        "review_recombinations_of_unused_main_garments",
+        "review_new_recipes_using_existing_assets",
+        "generate_only_unresolved_new_shapes"
+      ],
+      "not_proven": "A greedy stop is not proof of zero feasible combinations or a precise number of new garments required."
+    },
+    {
+      "persona": "loop",
+      "palette": "jewel",
+      "season": "autumn",
+      "scene": "daily",
+      "eligible_before_sequence": 2,
+      "selected_count": 1,
+      "stopped_position": 1,
+      "required_expression": "easy",
+      "structures_missing_from_current_prefix": [
+        "pants",
+        "skirt"
+      ],
+      "eligible_by_expression_structure": {
+        "easy:dress": 1,
+        "typical:dress": 1
+      },
+      "priority": "first_screen",
+      "required_design_change": "Add a reviewed, persona-evidenced main silhouette in this palette and required expression; shoes/bag-only or title changes do not close a structure gap.",
+      "action_order": [
+        "review_recombinations_of_unused_main_garments",
+        "review_new_recipes_using_existing_assets",
+        "generate_only_unresolved_new_shapes"
+      ],
+      "not_proven": "A greedy stop is not proof of zero feasible combinations or a precise number of new garments required."
+    },
+    {
+      "persona": "loop",
+      "palette": "bright",
+      "season": "autumn",
+      "scene": "daily",
+      "eligible_before_sequence": 0,
+      "selected_count": 0,
+      "stopped_position": 0,
+      "required_expression": "easy",
+      "structures_missing_from_current_prefix": [
+        "dress",
+        "pants",
+        "skirt"
+      ],
+      "eligible_by_expression_structure": {},
+      "priority": "first_screen",
+      "required_design_change": "Add a reviewed, persona-evidenced main silhouette in this palette and required expression; shoes/bag-only or title changes do not close a structure gap.",
+      "action_order": [
+        "review_recombinations_of_unused_main_garments",
+        "review_new_recipes_using_existing_assets",
+        "generate_only_unresolved_new_shapes"
+      ],
+      "not_proven": "A greedy stop is not proof of zero feasible combinations or a precise number of new garments required."
+    },
+    {
+      "persona": "melt",
+      "palette": "earth",
+      "season": "autumn",
+      "scene": "daily",
+      "eligible_before_sequence": 26,
+      "selected_count": 7,
+      "stopped_position": 7,
+      "required_expression": "easy",
+      "structures_missing_from_current_prefix": [
+        "dress"
+      ],
+      "eligible_by_expression_structure": {
+        "typical:skirt": 5,
+        "typical:pants": 9,
+        "easy:skirt": 9,
+        "explore:skirt": 1,
+        "easy:pants": 2
+      },
+      "priority": "first_screen",
+      "required_design_change": "Add a reviewed, persona-evidenced main silhouette in this palette and required expression; shoes/bag-only or title changes do not close a structure gap.",
+      "action_order": [
+        "review_recombinations_of_unused_main_garments",
+        "review_new_recipes_using_existing_assets",
+        "generate_only_unresolved_new_shapes"
+      ],
+      "not_proven": "A greedy stop is not proof of zero feasible combinations or a precise number of new garments required."
+    },
+    {
+      "persona": "melt",
+      "palette": "ocean",
+      "season": "autumn",
+      "scene": "daily",
+      "eligible_before_sequence": 6,
+      "selected_count": 4,
+      "stopped_position": 4,
+      "required_expression": "easy",
+      "structures_missing_from_current_prefix": [
+        "dress"
+      ],
+      "eligible_by_expression_structure": {
+        "explore:dress": 1,
+        "easy:pants": 3,
+        "typical:skirt": 2
+      },
+      "priority": "first_screen",
+      "required_design_change": "Add a reviewed, persona-evidenced main silhouette in this palette and required expression; shoes/bag-only or title changes do not close a structure gap.",
+      "action_order": [
+        "review_recombinations_of_unused_main_garments",
+        "review_new_recipes_using_existing_assets",
+        "generate_only_unresolved_new_shapes"
+      ],
+      "not_proven": "A greedy stop is not proof of zero feasible combinations or a precise number of new garments required."
+    },
+    {
+      "persona": "melt",
+      "palette": "jewel",
+      "season": "autumn",
+      "scene": "daily",
+      "eligible_before_sequence": 0,
+      "selected_count": 0,
+      "stopped_position": 0,
+      "required_expression": "easy",
+      "structures_missing_from_current_prefix": [
+        "dress",
+        "pants",
+        "skirt"
+      ],
+      "eligible_by_expression_structure": {},
+      "priority": "first_screen",
+      "required_design_change": "Add a reviewed, persona-evidenced main silhouette in this palette and required expression; shoes/bag-only or title changes do not close a structure gap.",
+      "action_order": [
+        "review_recombinations_of_unused_main_garments",
+        "review_new_recipes_using_existing_assets",
+        "generate_only_unresolved_new_shapes"
+      ],
+      "not_proven": "A greedy stop is not proof of zero feasible combinations or a precise number of new garments required."
+    },
+    {
+      "persona": "melt",
+      "palette": "bright",
+      "season": "autumn",
+      "scene": "daily",
+      "eligible_before_sequence": 0,
+      "selected_count": 0,
+      "stopped_position": 0,
+      "required_expression": "easy",
+      "structures_missing_from_current_prefix": [
+        "dress",
+        "pants",
+        "skirt"
+      ],
+      "eligible_by_expression_structure": {},
+      "priority": "first_screen",
+      "required_design_change": "Add a reviewed, persona-evidenced main silhouette in this palette and required expression; shoes/bag-only or title changes do not close a structure gap.",
+      "action_order": [
+        "review_recombinations_of_unused_main_garments",
+        "review_new_recipes_using_existing_assets",
+        "generate_only_unresolved_new_shapes"
+      ],
+      "not_proven": "A greedy stop is not proof of zero feasible combinations or a precise number of new garments required."
+    },
+    {
+      "persona": "mute",
+      "palette": "earth",
+      "season": "autumn",
+      "scene": "daily",
+      "eligible_before_sequence": 43,
+      "selected_count": 8,
+      "stopped_position": 8,
+      "required_expression": "typical",
+      "structures_missing_from_current_prefix": [],
+      "eligible_by_expression_structure": {
+        "easy:pants": 24,
+        "easy:dress": 5,
+        "easy:skirt": 11,
+        "explore:skirt": 1,
+        "explore:dress": 1,
+        "typical:pants": 1
+      },
+      "priority": "first_screen",
+      "required_design_change": "Add a reviewed, persona-evidenced main silhouette in this palette and required expression; shoes/bag-only or title changes do not close a structure gap.",
+      "action_order": [
+        "review_recombinations_of_unused_main_garments",
+        "review_new_recipes_using_existing_assets",
+        "generate_only_unresolved_new_shapes"
+      ],
+      "not_proven": "A greedy stop is not proof of zero feasible combinations or a precise number of new garments required."
+    },
+    {
+      "persona": "mute",
+      "palette": "ocean",
+      "season": "autumn",
+      "scene": "daily",
+      "eligible_before_sequence": 33,
+      "selected_count": 9,
+      "stopped_position": 9,
+      "required_expression": "explore",
+      "structures_missing_from_current_prefix": [
+        "dress"
+      ],
+      "eligible_by_expression_structure": {
+        "easy:pants": 17,
+        "easy:skirt": 9,
+        "explore:pants": 2,
+        "typical:pants": 1,
+        "explore:skirt": 2,
+        "typical:skirt": 2
+      },
+      "priority": "first_screen",
+      "required_design_change": "Add a reviewed, persona-evidenced main silhouette in this palette and required expression; shoes/bag-only or title changes do not close a structure gap.",
+      "action_order": [
+        "review_recombinations_of_unused_main_garments",
+        "review_new_recipes_using_existing_assets",
+        "generate_only_unresolved_new_shapes"
+      ],
+      "not_proven": "A greedy stop is not proof of zero feasible combinations or a precise number of new garments required."
+    },
+    {
+      "persona": "mute",
+      "palette": "jewel",
+      "season": "autumn",
+      "scene": "daily",
+      "eligible_before_sequence": 0,
+      "selected_count": 0,
+      "stopped_position": 0,
+      "required_expression": "easy",
+      "structures_missing_from_current_prefix": [
+        "dress",
+        "pants",
+        "skirt"
+      ],
+      "eligible_by_expression_structure": {},
+      "priority": "first_screen",
+      "required_design_change": "Add a reviewed, persona-evidenced main silhouette in this palette and required expression; shoes/bag-only or title changes do not close a structure gap.",
+      "action_order": [
+        "review_recombinations_of_unused_main_garments",
+        "review_new_recipes_using_existing_assets",
+        "generate_only_unresolved_new_shapes"
+      ],
+      "not_proven": "A greedy stop is not proof of zero feasible combinations or a precise number of new garments required."
+    },
+    {
+      "persona": "mute",
+      "palette": "bright",
+      "season": "autumn",
+      "scene": "daily",
+      "eligible_before_sequence": 0,
+      "selected_count": 0,
+      "stopped_position": 0,
+      "required_expression": "easy",
+      "structures_missing_from_current_prefix": [
+        "dress",
+        "pants",
+        "skirt"
+      ],
+      "eligible_by_expression_structure": {},
+      "priority": "first_screen",
+      "required_design_change": "Add a reviewed, persona-evidenced main silhouette in this palette and required expression; shoes/bag-only or title changes do not close a structure gap.",
+      "action_order": [
+        "review_recombinations_of_unused_main_garments",
+        "review_new_recipes_using_existing_assets",
+        "generate_only_unresolved_new_shapes"
+      ],
+      "not_proven": "A greedy stop is not proof of zero feasible combinations or a precise number of new garments required."
+    },
+    {
+      "persona": "neon",
+      "palette": "mono",
+      "season": "autumn",
+      "scene": "daily",
+      "eligible_before_sequence": 1,
+      "selected_count": 0,
+      "stopped_position": 0,
+      "required_expression": "easy",
+      "structures_missing_from_current_prefix": [
+        "dress",
+        "pants",
+        "skirt"
+      ],
+      "eligible_by_expression_structure": {
+        "typical:pants": 1
+      },
+      "priority": "first_screen",
+      "required_design_change": "Add a reviewed, persona-evidenced main silhouette in this palette and required expression; shoes/bag-only or title changes do not close a structure gap.",
+      "action_order": [
+        "review_recombinations_of_unused_main_garments",
+        "review_new_recipes_using_existing_assets",
+        "generate_only_unresolved_new_shapes"
+      ],
+      "not_proven": "A greedy stop is not proof of zero feasible combinations or a precise number of new garments required."
+    },
+    {
+      "persona": "neon",
+      "palette": "earth",
+      "season": "autumn",
+      "scene": "daily",
+      "eligible_before_sequence": 0,
+      "selected_count": 0,
+      "stopped_position": 0,
+      "required_expression": "easy",
+      "structures_missing_from_current_prefix": [
+        "dress",
+        "pants",
+        "skirt"
+      ],
+      "eligible_by_expression_structure": {},
+      "priority": "first_screen",
+      "required_design_change": "Add a reviewed, persona-evidenced main silhouette in this palette and required expression; shoes/bag-only or title changes do not close a structure gap.",
+      "action_order": [
+        "review_recombinations_of_unused_main_garments",
+        "review_new_recipes_using_existing_assets",
+        "generate_only_unresolved_new_shapes"
+      ],
+      "not_proven": "A greedy stop is not proof of zero feasible combinations or a precise number of new garments required."
+    },
+    {
+      "persona": "neon",
+      "palette": "ocean",
+      "season": "autumn",
+      "scene": "daily",
+      "eligible_before_sequence": 0,
+      "selected_count": 0,
+      "stopped_position": 0,
+      "required_expression": "easy",
+      "structures_missing_from_current_prefix": [
+        "dress",
+        "pants",
+        "skirt"
+      ],
+      "eligible_by_expression_structure": {},
+      "priority": "first_screen",
+      "required_design_change": "Add a reviewed, persona-evidenced main silhouette in this palette and required expression; shoes/bag-only or title changes do not close a structure gap.",
+      "action_order": [
+        "review_recombinations_of_unused_main_garments",
+        "review_new_recipes_using_existing_assets",
+        "generate_only_unresolved_new_shapes"
+      ],
+      "not_proven": "A greedy stop is not proof of zero feasible combinations or a precise number of new garments required."
+    },
+    {
+      "persona": "neon",
+      "palette": "jewel",
+      "season": "autumn",
+      "scene": "daily",
+      "eligible_before_sequence": 1,
+      "selected_count": 0,
+      "stopped_position": 0,
+      "required_expression": "easy",
+      "structures_missing_from_current_prefix": [
+        "dress",
+        "pants",
+        "skirt"
+      ],
+      "eligible_by_expression_structure": {
+        "typical:pants": 1
+      },
+      "priority": "first_screen",
+      "required_design_change": "Add a reviewed, persona-evidenced main silhouette in this palette and required expression; shoes/bag-only or title changes do not close a structure gap.",
+      "action_order": [
+        "review_recombinations_of_unused_main_garments",
+        "review_new_recipes_using_existing_assets",
+        "generate_only_unresolved_new_shapes"
+      ],
+      "not_proven": "A greedy stop is not proof of zero feasible combinations or a precise number of new garments required."
+    },
+    {
+      "persona": "neon",
+      "palette": "bright",
+      "season": "autumn",
+      "scene": "daily",
+      "eligible_before_sequence": 1,
+      "selected_count": 0,
+      "stopped_position": 0,
+      "required_expression": "easy",
+      "structures_missing_from_current_prefix": [
+        "dress",
+        "pants",
+        "skirt"
+      ],
+      "eligible_by_expression_structure": {
+        "typical:pants": 1
+      },
+      "priority": "first_screen",
+      "required_design_change": "Add a reviewed, persona-evidenced main silhouette in this palette and required expression; shoes/bag-only or title changes do not close a structure gap.",
+      "action_order": [
+        "review_recombinations_of_unused_main_garments",
+        "review_new_recipes_using_existing_assets",
+        "generate_only_unresolved_new_shapes"
+      ],
+      "not_proven": "A greedy stop is not proof of zero feasible combinations or a precise number of new garments required."
+    },
+    {
+      "persona": "neon",
+      "palette": "pastel",
+      "season": "autumn",
+      "scene": "daily",
+      "eligible_before_sequence": 1,
+      "selected_count": 0,
+      "stopped_position": 0,
+      "required_expression": "easy",
+      "structures_missing_from_current_prefix": [
+        "dress",
+        "pants",
+        "skirt"
+      ],
+      "eligible_by_expression_structure": {
+        "typical:pants": 1
+      },
+      "priority": "first_screen",
+      "required_design_change": "Add a reviewed, persona-evidenced main silhouette in this palette and required expression; shoes/bag-only or title changes do not close a structure gap.",
+      "action_order": [
+        "review_recombinations_of_unused_main_garments",
+        "review_new_recipes_using_existing_assets",
+        "generate_only_unresolved_new_shapes"
+      ],
+      "not_proven": "A greedy stop is not proof of zero feasible combinations or a precise number of new garments required."
+    },
+    {
+      "persona": "noir",
+      "palette": "mono",
+      "season": "autumn",
+      "scene": "daily",
+      "eligible_before_sequence": 9,
+      "selected_count": 6,
+      "stopped_position": 6,
+      "required_expression": "easy",
+      "structures_missing_from_current_prefix": [],
+      "eligible_by_expression_structure": {
+        "typical:pants": 1,
+        "easy:skirt": 4,
+        "easy:pants": 2,
+        "explore:pants": 1,
+        "easy:dress": 1
+      },
+      "priority": "first_screen",
+      "required_design_change": "Add a reviewed, persona-evidenced main silhouette in this palette and required expression; shoes/bag-only or title changes do not close a structure gap.",
+      "action_order": [
+        "review_recombinations_of_unused_main_garments",
+        "review_new_recipes_using_existing_assets",
+        "generate_only_unresolved_new_shapes"
+      ],
+      "not_proven": "A greedy stop is not proof of zero feasible combinations or a precise number of new garments required."
+    },
+    {
+      "persona": "noir",
+      "palette": "earth",
+      "season": "autumn",
+      "scene": "daily",
+      "eligible_before_sequence": 0,
+      "selected_count": 0,
+      "stopped_position": 0,
+      "required_expression": "easy",
+      "structures_missing_from_current_prefix": [
+        "dress",
+        "pants",
+        "skirt"
+      ],
+      "eligible_by_expression_structure": {},
+      "priority": "first_screen",
+      "required_design_change": "Add a reviewed, persona-evidenced main silhouette in this palette and required expression; shoes/bag-only or title changes do not close a structure gap.",
+      "action_order": [
+        "review_recombinations_of_unused_main_garments",
+        "review_new_recipes_using_existing_assets",
+        "generate_only_unresolved_new_shapes"
+      ],
+      "not_proven": "A greedy stop is not proof of zero feasible combinations or a precise number of new garments required."
+    },
+    {
+      "persona": "noir",
+      "palette": "ocean",
+      "season": "autumn",
+      "scene": "daily",
+      "eligible_before_sequence": 2,
+      "selected_count": 2,
+      "stopped_position": 2,
+      "required_expression": "easy",
+      "structures_missing_from_current_prefix": [
+        "dress"
+      ],
+      "eligible_by_expression_structure": {
+        "easy:skirt": 1,
+        "easy:pants": 1
+      },
+      "priority": "first_screen",
+      "required_design_change": "Add a reviewed, persona-evidenced main silhouette in this palette and required expression; shoes/bag-only or title changes do not close a structure gap.",
+      "action_order": [
+        "review_recombinations_of_unused_main_garments",
+        "review_new_recipes_using_existing_assets",
+        "generate_only_unresolved_new_shapes"
+      ],
+      "not_proven": "A greedy stop is not proof of zero feasible combinations or a precise number of new garments required."
+    },
+    {
+      "persona": "noir",
+      "palette": "jewel",
+      "season": "autumn",
+      "scene": "daily",
+      "eligible_before_sequence": 0,
+      "selected_count": 0,
+      "stopped_position": 0,
+      "required_expression": "easy",
+      "structures_missing_from_current_prefix": [
+        "dress",
+        "pants",
+        "skirt"
+      ],
+      "eligible_by_expression_structure": {},
+      "priority": "first_screen",
+      "required_design_change": "Add a reviewed, persona-evidenced main silhouette in this palette and required expression; shoes/bag-only or title changes do not close a structure gap.",
+      "action_order": [
+        "review_recombinations_of_unused_main_garments",
+        "review_new_recipes_using_existing_assets",
+        "generate_only_unresolved_new_shapes"
+      ],
+      "not_proven": "A greedy stop is not proof of zero feasible combinations or a precise number of new garments required."
+    },
+    {
+      "persona": "noir",
+      "palette": "bright",
+      "season": "autumn",
+      "scene": "daily",
+      "eligible_before_sequence": 0,
+      "selected_count": 0,
+      "stopped_position": 0,
+      "required_expression": "easy",
+      "structures_missing_from_current_prefix": [
+        "dress",
+        "pants",
+        "skirt"
+      ],
+      "eligible_by_expression_structure": {},
+      "priority": "first_screen",
+      "required_design_change": "Add a reviewed, persona-evidenced main silhouette in this palette and required expression; shoes/bag-only or title changes do not close a structure gap.",
+      "action_order": [
+        "review_recombinations_of_unused_main_garments",
+        "review_new_recipes_using_existing_assets",
+        "generate_only_unresolved_new_shapes"
+      ],
+      "not_proven": "A greedy stop is not proof of zero feasible combinations or a precise number of new garments required."
+    },
+    {
+      "persona": "noir",
+      "palette": "pastel",
+      "season": "autumn",
+      "scene": "daily",
+      "eligible_before_sequence": 0,
+      "selected_count": 0,
+      "stopped_position": 0,
+      "required_expression": "easy",
+      "structures_missing_from_current_prefix": [
+        "dress",
+        "pants",
+        "skirt"
+      ],
+      "eligible_by_expression_structure": {},
+      "priority": "first_screen",
+      "required_design_change": "Add a reviewed, persona-evidenced main silhouette in this palette and required expression; shoes/bag-only or title changes do not close a structure gap.",
+      "action_order": [
+        "review_recombinations_of_unused_main_garments",
+        "review_new_recipes_using_existing_assets",
+        "generate_only_unresolved_new_shapes"
+      ],
+      "not_proven": "A greedy stop is not proof of zero feasible combinations or a precise number of new garments required."
+    },
+    {
+      "persona": "oops",
+      "palette": "mono",
+      "season": "autumn",
+      "scene": "daily",
+      "eligible_before_sequence": 14,
+      "selected_count": 0,
+      "stopped_position": 0,
+      "required_expression": "easy",
+      "structures_missing_from_current_prefix": [
+        "dress",
+        "pants",
+        "skirt"
+      ],
+      "eligible_by_expression_structure": {
+        "typical:pants": 7,
+        "typical:skirt": 4,
+        "explore:skirt": 1,
+        "explore:pants": 2
+      },
+      "priority": "first_screen",
+      "required_design_change": "Add a reviewed, persona-evidenced main silhouette in this palette and required expression; shoes/bag-only or title changes do not close a structure gap.",
+      "action_order": [
+        "review_recombinations_of_unused_main_garments",
+        "review_new_recipes_using_existing_assets",
+        "generate_only_unresolved_new_shapes"
+      ],
+      "not_proven": "A greedy stop is not proof of zero feasible combinations or a precise number of new garments required."
+    },
+    {
+      "persona": "oops",
+      "palette": "earth",
+      "season": "autumn",
+      "scene": "daily",
+      "eligible_before_sequence": 4,
+      "selected_count": 0,
+      "stopped_position": 0,
+      "required_expression": "easy",
+      "structures_missing_from_current_prefix": [
+        "dress",
+        "pants",
+        "skirt"
+      ],
+      "eligible_by_expression_structure": {
+        "typical:skirt": 2,
+        "typical:pants": 2
+      },
+      "priority": "first_screen",
+      "required_design_change": "Add a reviewed, persona-evidenced main silhouette in this palette and required expression; shoes/bag-only or title changes do not close a structure gap.",
+      "action_order": [
+        "review_recombinations_of_unused_main_garments",
+        "review_new_recipes_using_existing_assets",
+        "generate_only_unresolved_new_shapes"
+      ],
+      "not_proven": "A greedy stop is not proof of zero feasible combinations or a precise number of new garments required."
+    },
+    {
+      "persona": "oops",
+      "palette": "ocean",
+      "season": "autumn",
+      "scene": "daily",
+      "eligible_before_sequence": 1,
+      "selected_count": 0,
+      "stopped_position": 0,
+      "required_expression": "easy",
+      "structures_missing_from_current_prefix": [
+        "dress",
+        "pants",
+        "skirt"
+      ],
+      "eligible_by_expression_structure": {
+        "explore:pants": 1
+      },
+      "priority": "first_screen",
+      "required_design_change": "Add a reviewed, persona-evidenced main silhouette in this palette and required expression; shoes/bag-only or title changes do not close a structure gap.",
+      "action_order": [
+        "review_recombinations_of_unused_main_garments",
+        "review_new_recipes_using_existing_assets",
+        "generate_only_unresolved_new_shapes"
+      ],
+      "not_proven": "A greedy stop is not proof of zero feasible combinations or a precise number of new garments required."
+    },
+    {
+      "persona": "oops",
+      "palette": "jewel",
+      "season": "autumn",
+      "scene": "daily",
+      "eligible_before_sequence": 1,
+      "selected_count": 0,
+      "stopped_position": 0,
+      "required_expression": "easy",
+      "structures_missing_from_current_prefix": [
+        "dress",
+        "pants",
+        "skirt"
+      ],
+      "eligible_by_expression_structure": {
+        "typical:pants": 1
+      },
+      "priority": "first_screen",
+      "required_design_change": "Add a reviewed, persona-evidenced main silhouette in this palette and required expression; shoes/bag-only or title changes do not close a structure gap.",
+      "action_order": [
+        "review_recombinations_of_unused_main_garments",
+        "review_new_recipes_using_existing_assets",
+        "generate_only_unresolved_new_shapes"
+      ],
+      "not_proven": "A greedy stop is not proof of zero feasible combinations or a precise number of new garments required."
+    },
+    {
+      "persona": "oops",
+      "palette": "bright",
+      "season": "autumn",
+      "scene": "daily",
+      "eligible_before_sequence": 1,
+      "selected_count": 0,
+      "stopped_position": 0,
+      "required_expression": "easy",
+      "structures_missing_from_current_prefix": [
+        "dress",
+        "pants",
+        "skirt"
+      ],
+      "eligible_by_expression_structure": {
+        "typical:pants": 1
+      },
+      "priority": "first_screen",
+      "required_design_change": "Add a reviewed, persona-evidenced main silhouette in this palette and required expression; shoes/bag-only or title changes do not close a structure gap.",
+      "action_order": [
+        "review_recombinations_of_unused_main_garments",
+        "review_new_recipes_using_existing_assets",
+        "generate_only_unresolved_new_shapes"
+      ],
+      "not_proven": "A greedy stop is not proof of zero feasible combinations or a precise number of new garments required."
+    },
+    {
+      "persona": "oops",
+      "palette": "pastel",
+      "season": "autumn",
+      "scene": "daily",
+      "eligible_before_sequence": 9,
+      "selected_count": 0,
+      "stopped_position": 0,
+      "required_expression": "easy",
+      "structures_missing_from_current_prefix": [
+        "dress",
+        "pants",
+        "skirt"
+      ],
+      "eligible_by_expression_structure": {
+        "explore:pants": 2,
+        "explore:skirt": 1,
+        "typical:skirt": 2,
+        "typical:pants": 4
+      },
+      "priority": "first_screen",
+      "required_design_change": "Add a reviewed, persona-evidenced main silhouette in this palette and required expression; shoes/bag-only or title changes do not close a structure gap.",
+      "action_order": [
+        "review_recombinations_of_unused_main_garments",
+        "review_new_recipes_using_existing_assets",
+        "generate_only_unresolved_new_shapes"
+      ],
+      "not_proven": "A greedy stop is not proof of zero feasible combinations or a precise number of new garments required."
+    },
+    {
+      "persona": "void",
+      "palette": "mono",
+      "season": "autumn",
+      "scene": "daily",
+      "eligible_before_sequence": 34,
+      "selected_count": 0,
+      "stopped_position": 0,
+      "required_expression": "easy",
+      "structures_missing_from_current_prefix": [
+        "dress",
+        "pants",
+        "skirt"
+      ],
+      "eligible_by_expression_structure": {
+        "typical:pants": 23,
+        "typical:skirt": 9,
+        "explore:pants": 2
+      },
+      "priority": "first_screen",
+      "required_design_change": "Add a reviewed, persona-evidenced main silhouette in this palette and required expression; shoes/bag-only or title changes do not close a structure gap.",
+      "action_order": [
+        "review_recombinations_of_unused_main_garments",
+        "review_new_recipes_using_existing_assets",
+        "generate_only_unresolved_new_shapes"
+      ],
+      "not_proven": "A greedy stop is not proof of zero feasible combinations or a precise number of new garments required."
+    },
+    {
+      "persona": "void",
+      "palette": "earth",
+      "season": "autumn",
+      "scene": "daily",
+      "eligible_before_sequence": 18,
+      "selected_count": 0,
+      "stopped_position": 0,
+      "required_expression": "easy",
+      "structures_missing_from_current_prefix": [
+        "dress",
+        "pants",
+        "skirt"
+      ],
+      "eligible_by_expression_structure": {
+        "typical:pants": 11,
+        "typical:skirt": 5,
+        "explore:pants": 2
+      },
+      "priority": "first_screen",
+      "required_design_change": "Add a reviewed, persona-evidenced main silhouette in this palette and required expression; shoes/bag-only or title changes do not close a structure gap.",
+      "action_order": [
+        "review_recombinations_of_unused_main_garments",
+        "review_new_recipes_using_existing_assets",
+        "generate_only_unresolved_new_shapes"
+      ],
+      "not_proven": "A greedy stop is not proof of zero feasible combinations or a precise number of new garments required."
+    },
+    {
+      "persona": "void",
+      "palette": "ocean",
+      "season": "autumn",
+      "scene": "daily",
+      "eligible_before_sequence": 1,
+      "selected_count": 0,
+      "stopped_position": 0,
+      "required_expression": "easy",
+      "structures_missing_from_current_prefix": [
+        "dress",
+        "pants",
+        "skirt"
+      ],
+      "eligible_by_expression_structure": {
+        "typical:pants": 1
+      },
+      "priority": "first_screen",
+      "required_design_change": "Add a reviewed, persona-evidenced main silhouette in this palette and required expression; shoes/bag-only or title changes do not close a structure gap.",
+      "action_order": [
+        "review_recombinations_of_unused_main_garments",
+        "review_new_recipes_using_existing_assets",
+        "generate_only_unresolved_new_shapes"
+      ],
+      "not_proven": "A greedy stop is not proof of zero feasible combinations or a precise number of new garments required."
+    },
+    {
+      "persona": "void",
+      "palette": "jewel",
+      "season": "autumn",
+      "scene": "daily",
+      "eligible_before_sequence": 0,
+      "selected_count": 0,
+      "stopped_position": 0,
+      "required_expression": "easy",
+      "structures_missing_from_current_prefix": [
+        "dress",
+        "pants",
+        "skirt"
+      ],
+      "eligible_by_expression_structure": {},
+      "priority": "first_screen",
+      "required_design_change": "Add a reviewed, persona-evidenced main silhouette in this palette and required expression; shoes/bag-only or title changes do not close a structure gap.",
+      "action_order": [
+        "review_recombinations_of_unused_main_garments",
+        "review_new_recipes_using_existing_assets",
+        "generate_only_unresolved_new_shapes"
+      ],
+      "not_proven": "A greedy stop is not proof of zero feasible combinations or a precise number of new garments required."
+    },
+    {
+      "persona": "void",
+      "palette": "bright",
+      "season": "autumn",
+      "scene": "daily",
+      "eligible_before_sequence": 0,
+      "selected_count": 0,
+      "stopped_position": 0,
+      "required_expression": "easy",
+      "structures_missing_from_current_prefix": [
+        "dress",
+        "pants",
+        "skirt"
+      ],
+      "eligible_by_expression_structure": {},
+      "priority": "first_screen",
+      "required_design_change": "Add a reviewed, persona-evidenced main silhouette in this palette and required expression; shoes/bag-only or title changes do not close a structure gap.",
+      "action_order": [
+        "review_recombinations_of_unused_main_garments",
+        "review_new_recipes_using_existing_assets",
+        "generate_only_unresolved_new_shapes"
+      ],
+      "not_proven": "A greedy stop is not proof of zero feasible combinations or a precise number of new garments required."
+    },
+    {
+      "persona": "void",
+      "palette": "pastel",
+      "season": "autumn",
+      "scene": "daily",
+      "eligible_before_sequence": 14,
+      "selected_count": 0,
+      "stopped_position": 0,
+      "required_expression": "easy",
+      "structures_missing_from_current_prefix": [
+        "dress",
+        "pants",
+        "skirt"
+      ],
+      "eligible_by_expression_structure": {
+        "typical:pants": 10,
+        "explore:pants": 2,
+        "typical:skirt": 2
+      },
+      "priority": "first_screen",
+      "required_design_change": "Add a reviewed, persona-evidenced main silhouette in this palette and required expression; shoes/bag-only or title changes do not close a structure gap.",
+      "action_order": [
+        "review_recombinations_of_unused_main_garments",
+        "review_new_recipes_using_existing_assets",
+        "generate_only_unresolved_new_shapes"
+      ],
+      "not_proven": "A greedy stop is not proof of zero feasible combinations or a precise number of new garments required."
+    },
+    {
+      "persona": "wabi",
+      "palette": "mono",
+      "season": "autumn",
+      "scene": "daily",
+      "eligible_before_sequence": 52,
+      "selected_count": 7,
+      "stopped_position": 7,
+      "required_expression": "easy",
+      "structures_missing_from_current_prefix": [
+        "dress"
+      ],
+      "eligible_by_expression_structure": {
+        "typical:pants": 27,
+        "typical:skirt": 14,
+        "easy:pants": 4,
+        "explore:pants": 4,
+        "easy:skirt": 3
+      },
+      "priority": "first_screen",
+      "required_design_change": "Add a reviewed, persona-evidenced main silhouette in this palette and required expression; shoes/bag-only or title changes do not close a structure gap.",
+      "action_order": [
+        "review_recombinations_of_unused_main_garments",
+        "review_new_recipes_using_existing_assets",
+        "generate_only_unresolved_new_shapes"
+      ],
+      "not_proven": "A greedy stop is not proof of zero feasible combinations or a precise number of new garments required."
+    },
+    {
+      "persona": "wabi",
+      "palette": "earth",
+      "season": "autumn",
+      "scene": "daily",
+      "eligible_before_sequence": 33,
+      "selected_count": 5,
+      "stopped_position": 5,
+      "required_expression": "easy",
+      "structures_missing_from_current_prefix": [
+        "dress"
+      ],
+      "eligible_by_expression_structure": {
+        "typical:pants": 15,
+        "typical:skirt": 9,
+        "explore:pants": 4,
+        "easy:pants": 3,
+        "easy:skirt": 2
+      },
+      "priority": "first_screen",
+      "required_design_change": "Add a reviewed, persona-evidenced main silhouette in this palette and required expression; shoes/bag-only or title changes do not close a structure gap.",
+      "action_order": [
+        "review_recombinations_of_unused_main_garments",
+        "review_new_recipes_using_existing_assets",
+        "generate_only_unresolved_new_shapes"
+      ],
+      "not_proven": "A greedy stop is not proof of zero feasible combinations or a precise number of new garments required."
+    },
+    {
+      "persona": "wabi",
+      "palette": "ocean",
+      "season": "autumn",
+      "scene": "daily",
+      "eligible_before_sequence": 0,
+      "selected_count": 0,
+      "stopped_position": 0,
+      "required_expression": "easy",
+      "structures_missing_from_current_prefix": [
+        "dress",
+        "pants",
+        "skirt"
+      ],
+      "eligible_by_expression_structure": {},
+      "priority": "first_screen",
+      "required_design_change": "Add a reviewed, persona-evidenced main silhouette in this palette and required expression; shoes/bag-only or title changes do not close a structure gap.",
+      "action_order": [
+        "review_recombinations_of_unused_main_garments",
+        "review_new_recipes_using_existing_assets",
+        "generate_only_unresolved_new_shapes"
+      ],
+      "not_proven": "A greedy stop is not proof of zero feasible combinations or a precise number of new garments required."
+    },
+    {
+      "persona": "wabi",
+      "palette": "jewel",
+      "season": "autumn",
+      "scene": "daily",
+      "eligible_before_sequence": 0,
+      "selected_count": 0,
+      "stopped_position": 0,
+      "required_expression": "easy",
+      "structures_missing_from_current_prefix": [
+        "dress",
+        "pants",
+        "skirt"
+      ],
+      "eligible_by_expression_structure": {},
+      "priority": "first_screen",
+      "required_design_change": "Add a reviewed, persona-evidenced main silhouette in this palette and required expression; shoes/bag-only or title changes do not close a structure gap.",
+      "action_order": [
+        "review_recombinations_of_unused_main_garments",
+        "review_new_recipes_using_existing_assets",
+        "generate_only_unresolved_new_shapes"
+      ],
+      "not_proven": "A greedy stop is not proof of zero feasible combinations or a precise number of new garments required."
+    },
+    {
+      "persona": "wabi",
+      "palette": "bright",
+      "season": "autumn",
+      "scene": "daily",
+      "eligible_before_sequence": 0,
+      "selected_count": 0,
+      "stopped_position": 0,
+      "required_expression": "easy",
+      "structures_missing_from_current_prefix": [
+        "dress",
+        "pants",
+        "skirt"
+      ],
+      "eligible_by_expression_structure": {},
+      "priority": "first_screen",
+      "required_design_change": "Add a reviewed, persona-evidenced main silhouette in this palette and required expression; shoes/bag-only or title changes do not close a structure gap.",
+      "action_order": [
+        "review_recombinations_of_unused_main_garments",
+        "review_new_recipes_using_existing_assets",
+        "generate_only_unresolved_new_shapes"
+      ],
+      "not_proven": "A greedy stop is not proof of zero feasible combinations or a precise number of new garments required."
+    },
+    {
+      "persona": "wabi",
+      "palette": "pastel",
+      "season": "autumn",
+      "scene": "daily",
+      "eligible_before_sequence": 21,
+      "selected_count": 5,
+      "stopped_position": 5,
+      "required_expression": "easy",
+      "structures_missing_from_current_prefix": [
+        "dress"
+      ],
+      "eligible_by_expression_structure": {
+        "typical:pants": 8,
+        "typical:skirt": 5,
+        "easy:pants": 3,
+        "explore:pants": 3,
+        "easy:skirt": 2
+      },
+      "priority": "first_screen",
+      "required_design_change": "Add a reviewed, persona-evidenced main silhouette in this palette and required expression; shoes/bag-only or title changes do not close a structure gap.",
+      "action_order": [
+        "review_recombinations_of_unused_main_garments",
+        "review_new_recipes_using_existing_assets",
+        "generate_only_unresolved_new_shapes"
+      ],
+      "not_proven": "A greedy stop is not proof of zero feasible combinations or a precise number of new garments required."
+    }
+  ],
+  "autumn_per_persona": [
+    {
+      "persona": "bolt",
+      "first_ten_by_palette": {
+        "mono": 0,
+        "earth": 0,
+        "ocean": 0,
+        "jewel": 0,
+        "bright": 0,
+        "pastel": 0
+      },
+      "browse_thirty_by_palette": {
+        "mono": 0,
+        "earth": 0,
+        "ocean": 0,
+        "jewel": 0,
+        "bright": 0,
+        "pastel": 0
+      },
+      "stops": {
+        "easy": 6
+      }
+    },
+    {
+      "persona": "ease",
+      "first_ten_by_palette": {
+        "mono": 10,
+        "earth": 10,
+        "ocean": 10,
+        "jewel": 2,
+        "bright": 0,
+        "pastel": 10
+      },
+      "browse_thirty_by_palette": {
+        "mono": 30,
+        "earth": 30,
+        "ocean": 30,
+        "jewel": 2,
+        "bright": 0,
+        "pastel": 30
+      },
+      "stops": {
+        "easy": 2
+      }
+    },
+    {
+      "persona": "edge",
+      "first_ten_by_palette": {
+        "mono": 0,
+        "earth": 0,
+        "ocean": 0,
+        "jewel": 0,
+        "bright": 0,
+        "pastel": 0
+      },
+      "browse_thirty_by_palette": {
+        "mono": 0,
+        "earth": 0,
+        "ocean": 0,
+        "jewel": 0,
+        "bright": 0,
+        "pastel": 0
+      },
+      "stops": {
+        "easy": 6
+      }
+    },
+    {
+      "persona": "film",
+      "first_ten_by_palette": {
+        "mono": 9,
+        "earth": 2,
+        "ocean": 2,
+        "jewel": 0,
+        "bright": 0,
+        "pastel": 6
+      },
+      "browse_thirty_by_palette": {
+        "mono": 9,
+        "earth": 2,
+        "ocean": 2,
+        "jewel": 0,
+        "bright": 0,
+        "pastel": 6
+      },
+      "stops": {
+        "explore": 1,
+        "easy": 5
+      }
+    },
+    {
+      "persona": "flou",
+      "first_ten_by_palette": {
+        "mono": 9,
+        "earth": 6,
+        "ocean": 2,
+        "jewel": 0,
+        "bright": 0,
+        "pastel": 9
+      },
+      "browse_thirty_by_palette": {
+        "mono": 9,
+        "earth": 6,
+        "ocean": 2,
+        "jewel": 0,
+        "bright": 0,
+        "pastel": 9
+      },
+      "stops": {
+        "explore": 2,
+        "easy": 4
+      }
+    },
+    {
+      "persona": "heir",
+      "first_ten_by_palette": {
+        "mono": 10,
+        "earth": 10,
+        "ocean": 8,
+        "jewel": 2,
+        "bright": 0,
+        "pastel": 10
+      },
+      "browse_thirty_by_palette": {
+        "mono": 30,
+        "earth": 25,
+        "ocean": 8,
+        "jewel": 2,
+        "bright": 0,
+        "pastel": 30
+      },
+      "stops": {
+        "later_diversity": 1,
+        "typical": 1,
+        "easy": 2
+      }
+    },
+    {
+      "persona": "iced",
+      "first_ten_by_palette": {
+        "mono": 10,
+        "earth": 1,
+        "ocean": 8,
+        "jewel": 0,
+        "bright": 0,
+        "pastel": 10
+      },
+      "browse_thirty_by_palette": {
+        "mono": 30,
+        "earth": 1,
+        "ocean": 8,
+        "jewel": 0,
+        "bright": 0,
+        "pastel": 30
+      },
+      "stops": {
+        "easy": 3,
+        "typical": 1
+      }
+    },
+    {
+      "persona": "jade",
+      "first_ten_by_palette": {
+        "mono": 4,
+        "earth": 4,
+        "ocean": 0,
+        "jewel": 0,
+        "bright": 0,
+        "pastel": 4
+      },
+      "browse_thirty_by_palette": {
+        "mono": 4,
+        "earth": 4,
+        "ocean": 0,
+        "jewel": 0,
+        "bright": 0,
+        "pastel": 4
+      },
+      "stops": {
+        "easy": 6
+      }
+    },
+    {
+      "persona": "loop",
+      "first_ten_by_palette": {
+        "mono": 10,
+        "earth": 9,
+        "ocean": 8,
+        "jewel": 1,
+        "bright": 0,
+        "pastel": 10
+      },
+      "browse_thirty_by_palette": {
+        "mono": 30,
+        "earth": 9,
+        "ocean": 8,
+        "jewel": 1,
+        "bright": 0,
+        "pastel": 30
+      },
+      "stops": {
+        "explore": 1,
+        "typical": 1,
+        "easy": 2
+      }
+    },
+    {
+      "persona": "melt",
+      "first_ten_by_palette": {
+        "mono": 10,
+        "earth": 7,
+        "ocean": 4,
+        "jewel": 0,
+        "bright": 0,
+        "pastel": 10
+      },
+      "browse_thirty_by_palette": {
+        "mono": 30,
+        "earth": 7,
+        "ocean": 4,
+        "jewel": 0,
+        "bright": 0,
+        "pastel": 30
+      },
+      "stops": {
+        "easy": 4
+      }
+    },
+    {
+      "persona": "mute",
+      "first_ten_by_palette": {
+        "mono": 10,
+        "earth": 8,
+        "ocean": 9,
+        "jewel": 0,
+        "bright": 0,
+        "pastel": 10
+      },
+      "browse_thirty_by_palette": {
+        "mono": 30,
+        "earth": 8,
+        "ocean": 9,
+        "jewel": 0,
+        "bright": 0,
+        "pastel": 30
+      },
+      "stops": {
+        "typical": 1,
+        "explore": 1,
+        "easy": 2
+      }
+    },
+    {
+      "persona": "neon",
+      "first_ten_by_palette": {
+        "mono": 0,
+        "earth": 0,
+        "ocean": 0,
+        "jewel": 0,
+        "bright": 0,
+        "pastel": 0
+      },
+      "browse_thirty_by_palette": {
+        "mono": 0,
+        "earth": 0,
+        "ocean": 0,
+        "jewel": 0,
+        "bright": 0,
+        "pastel": 0
+      },
+      "stops": {
+        "easy": 6
+      }
+    },
+    {
+      "persona": "noir",
+      "first_ten_by_palette": {
+        "mono": 6,
+        "earth": 0,
+        "ocean": 2,
+        "jewel": 0,
+        "bright": 0,
+        "pastel": 0
+      },
+      "browse_thirty_by_palette": {
+        "mono": 6,
+        "earth": 0,
+        "ocean": 2,
+        "jewel": 0,
+        "bright": 0,
+        "pastel": 0
+      },
+      "stops": {
+        "easy": 6
+      }
+    },
+    {
+      "persona": "oops",
+      "first_ten_by_palette": {
+        "mono": 0,
+        "earth": 0,
+        "ocean": 0,
+        "jewel": 0,
+        "bright": 0,
+        "pastel": 0
+      },
+      "browse_thirty_by_palette": {
+        "mono": 0,
+        "earth": 0,
+        "ocean": 0,
+        "jewel": 0,
+        "bright": 0,
+        "pastel": 0
+      },
+      "stops": {
+        "easy": 6
+      }
+    },
+    {
+      "persona": "void",
+      "first_ten_by_palette": {
+        "mono": 0,
+        "earth": 0,
+        "ocean": 0,
+        "jewel": 0,
+        "bright": 0,
+        "pastel": 0
+      },
+      "browse_thirty_by_palette": {
+        "mono": 0,
+        "earth": 0,
+        "ocean": 0,
+        "jewel": 0,
+        "bright": 0,
+        "pastel": 0
+      },
+      "stops": {
+        "easy": 6
+      }
+    },
+    {
+      "persona": "wabi",
+      "first_ten_by_palette": {
+        "mono": 7,
+        "earth": 5,
+        "ocean": 0,
+        "jewel": 0,
+        "bright": 0,
+        "pastel": 5
+      },
+      "browse_thirty_by_palette": {
+        "mono": 7,
+        "earth": 5,
+        "ocean": 0,
+        "jewel": 0,
+        "bright": 0,
+        "pastel": 5
+      },
+      "stops": {
+        "easy": 6
+      }
+    }
+  ],
+  "unused_main_garment_candidates": [
+    {
+      "garment_id": "garment_melt_outer_0021",
+      "token": "g0021",
+      "status": "ai_candidate",
+      "category": "outer",
+      "visual_personas": [
+        "melt"
+      ],
+      "main_colors": [
+        "pale_pink"
+      ],
+      "evidence": "浅粉短开衫有柔绒、门襟绞花、蓬袖与贴袋；按开襟针织外搭归 outer，圆润短比例而非仅浅色支持 MELT。"
+    },
+    {
+      "garment_id": "garment_melt_skirt_0023",
+      "token": "g0023",
+      "status": "ai_candidate",
+      "category": "skirt",
+      "visual_personas": [
+        "melt"
+      ],
+      "main_colors": [
+        "cream",
+        "pale_pink"
+      ],
+      "evidence": "奶油粉 A 字短针织裙，粉侧片、圆绒球抽绳、圆贴袋；可作甜味焦点但非极简基础裙。"
+    },
+    {
+      "garment_id": "garment_flou_dress_0033",
+      "token": "g0033",
+      "status": "ai_candidate",
+      "category": "dress",
+      "visual_personas": [
+        "flou"
+      ],
+      "main_colors": [
+        "cream",
+        "pale_pink",
+        "sage"
+      ],
+      "evidence": "细吊带垂领花卉长裙，收腰、斜向流线与渐扩摆，浪漫语汇清楚，适合暖季或社交。"
+    },
+    {
+      "garment_id": "garment_neon_outer_0036",
+      "token": "g0036",
+      "status": "ai_candidate",
+      "category": "outer",
+      "visual_personas": [
+        "neon",
+        "oops"
+      ],
+      "main_colors": [
+        "cobalt",
+        "orange",
+        "lime",
+        "hot_pink"
+      ],
+      "evidence": "蓝橙酸绿亮粉短夹克，巨型袖体积、拉链与拼色切分，短长反差和科技亮面是主视觉依据。"
+    },
+    {
+      "garment_id": "garment_bolt_dress_0048",
+      "token": "g0048",
+      "status": "ai_candidate",
+      "category": "dress",
+      "visual_personas": [
+        "bolt"
+      ],
+      "main_colors": [
+        "burgundy",
+        "cream"
+      ],
+      "evidence": "酒红奶油束腰裙有巨泡袖、胸腰大结、花绣与层层蕾丝裙摆；接近戏剧服，不能当日常典型。"
+    },
+    {
+      "garment_id": "garment_film_outer_0051",
+      "token": "g0051",
+      "status": "ai_candidate",
+      "category": "outer",
+      "visual_personas": [
+        "film",
+        "wabi"
+      ],
+      "main_colors": [
+        "washed_blue",
+        "tobacco"
+      ],
+      "evidence": "褪色蓝与烟草棕短夹克，灯芯绒观感翻领、胸袋和弹力下摆，复古工作服短箱形比例明确。"
+    },
+    {
+      "garment_id": "garment_jade_outer_0057",
+      "token": "g0057",
+      "status": "ai_candidate",
+      "category": "outer",
+      "visual_personas": [
+        "jade"
+      ],
+      "main_colors": [
+        "black",
+        "ivory",
+        "burgundy"
+      ],
+      "evidence": "黑色斜襟外套，米白交领边和宽袖口、暗花与红系带，东方结构清楚，但整组叠搭易传统服装化。"
+    },
+    {
+      "garment_id": "garment_noir_outer_0066",
+      "token": "g0066",
+      "status": "ai_candidate",
+      "category": "outer",
+      "visual_personas": [
+        "noir"
+      ],
+      "main_colors": [
+        "black"
+      ],
+      "evidence": "黑亮皮观感长风衣，尖驳领、强肩、腰带与长开衩前片，暗黑依据是锐利材质与纵线而非黑色本身。"
+    },
+    {
+      "garment_id": "garment_mute_outer_0369",
+      "token": "g0369",
+      "status": "ai_candidate",
+      "category": "outer",
+      "visual_personas": [
+        "mute",
+        "ease",
+        "loop"
+      ],
+      "main_colors": [
+        "charcoal"
+      ],
+      "evidence": "炭灰V领开衫有扣门襟、两个贴袋和罗纹边，袖身宽松；跨人格低装饰基础型，与其他素开衫需做家族近似控制。"
+    },
+    {
+      "garment_id": "garment_ease_outer_0372",
+      "token": "g0372",
+      "status": "ai_candidate",
+      "category": "outer",
+      "visual_personas": [
+        "ease",
+        "film",
+        "loop"
+      ],
+      "main_colors": [
+        "ivory",
+        "brown"
+      ],
+      "evidence": "奶白短夹克配棕色领、大袋盖、鼓袖及抽绳下摆，温暖休闲语汇明确；与普通素拉链运动夹克有袋和领型差异。"
+    },
+    {
+      "garment_id": "garment_flou_outer_0375",
+      "token": "g0375",
+      "status": "ai_candidate",
+      "category": "outer",
+      "visual_personas": [
+        "flou",
+        "melt"
+      ],
+      "main_colors": [
+        "pale_pink",
+        "sage",
+        "ivory"
+      ],
+      "evidence": "粉绿花纱开襟罩衫以胸前细绳固定、宽钟袖和不等长荷叶摆，透视明显；作为外搭保留，但必须明确不透明内层，不能当单穿上衣。"
+    },
+    {
+      "garment_id": "garment_bolt_outer_0378",
+      "token": "g0378",
+      "status": "ai_candidate",
+      "category": "outer",
+      "visual_personas": [
+        "bolt",
+        "heir"
+      ],
+      "main_colors": [
+        "ivory",
+        "burgundy"
+      ],
+      "evidence": "乳白粗织短西装有酒红大翻领、花饰肩片、收腰和巨泡袖，袖口也有繁复饰边；比普通学院短外套明显场合化。"
+    },
+    {
+      "garment_id": "garment_loop_outer_0381",
+      "token": "g0381",
+      "status": "ai_candidate",
+      "category": "outer",
+      "visual_personas": [
+        "melt",
+        "ease",
+        "loop"
+      ],
+      "main_colors": [
+        "ivory",
+        "gray"
+      ],
+      "evidence": "奶白宽开衫配灰门襟宽边和袖口小系带，贴袋、低落肩及蓬袖明显；柔软舒适但叠其他窄袖外套需核对松量。"
+    },
+    {
+      "garment_id": "garment_oops_outer_0384",
+      "token": "g0384",
+      "status": "ai_candidate",
+      "category": "outer",
+      "visual_personas": [
+        "oops",
+        "edge"
+      ],
+      "main_colors": [
+        "denim_blue",
+        "charcoal",
+        "dusty_pink"
+      ],
+      "evidence": "短外套灰西装领与丹宁袋片拼粉蕾丝，左右袖量和破边不同、抽绳很多；有意反差但高密度，需单一素下装而非全套堆叠。"
+    },
+    {
+      "garment_id": "garment_heir_outer_0387",
+      "token": "g0387",
+      "status": "ai_candidate",
+      "category": "outer",
+      "visual_personas": [
+        "heir",
+        "loop",
+        "mute"
+      ],
+      "main_colors": [
+        "navy",
+        "ivory"
+      ],
+      "evidence": "藏蓝圆领开衫以奶油边框围领口门襟袖口及下摆，金色圆扣和两贴袋。规整短比例与学院细节明确，非依靠复杂图案表达。"
+    },
+    {
+      "garment_id": "garment_wabi_outer_0390",
+      "token": "g0390",
+      "status": "ai_candidate",
+      "category": "outer",
+      "visual_personas": [
+        "wabi",
+        "void",
+        "film"
+      ],
+      "main_colors": [
+        "taupe",
+        "olive",
+        "brown"
+      ],
+      "evidence": "灰褐橄榄拼料夹克有错位翻领、斜扣、不齐摆和侧鼓袖，局部纤维皱感明显。自然粗织与不规则量结合，不是所有灰褐单品都自动WABI。"
+    },
+    {
+      "garment_id": "garment_edge_outer_0393",
+      "token": "g0393",
+      "status": "ai_candidate",
+      "category": "outer",
+      "visual_personas": [
+        "edge",
+        "oops"
+      ],
+      "main_colors": [
+        "black",
+        "denim_blue",
+        "dusty_pink"
+      ],
+      "evidence": "黑针织短V开衫配丹宁粉花边、口袋、上臂双带扣与下袖交叉绑带，喇叭袖口层边。黑硬带扣与粉软边支持甜酷，合体身与复杂袖要分开考虑。"
+    },
+    {
+      "garment_id": "garment_jade_outer_0396",
+      "token": "g0396",
+      "status": "ai_candidate",
+      "category": "outer",
+      "visual_personas": [
+        "jade",
+        "flou",
+        "bolt"
+      ],
+      "main_colors": [
+        "ivory",
+        "charcoal",
+        "red"
+      ],
+      "evidence": "乳白交叠翻领收腰外套有炭灰领片、竹枝墨纹与小红穗，长袖末端黑白层片垂下。JADE线条和墨枝成立，袖量与装饰强度较高，不作极简基础外套。"
+    },
+    {
+      "garment_id": "garment_melt_skirt_0437",
+      "token": "g0437",
+      "status": "ai_candidate",
+      "category": "skirt",
+      "visual_personas": [
+        "melt",
+        "flou"
+      ],
+      "main_colors": [
+        "ivory",
+        "pale_pink"
+      ],
+      "evidence": "奶油浅粉长横层裙有腰抽绳毛球、小荷叶边和蕾丝带，整体圆软。MELT装饰虽多但温和，主裙之外应搭素上衣。"
+    },
+    {
+      "garment_id": "garment_mute_skirt_0449",
+      "token": "g0449",
+      "status": "ai_candidate",
+      "category": "skirt",
+      "visual_personas": [
+        "mute",
+        "void",
+        "loop"
+      ],
+      "main_colors": [
+        "charcoal",
+        "taupe",
+        "black"
+      ],
+      "evidence": "炭灰长裹片下露灰褐和黑两层软摆，腰袢门襟规整、无链扣印花。层次克制，可用长度和材质层面给低彩人格变化。"
+    },
+    {
+      "garment_id": "garment_ease_skirt_0452",
+      "token": "g0452",
+      "status": "ai_candidate",
+      "category": "skirt",
+      "visual_personas": [
+        "ease",
+        "flou",
+        "wabi"
+      ],
+      "main_colors": [
+        "beige"
+      ],
+      "evidence": "米色长裙腰下斜接线向一侧集中细褶，裙摆柔软开阔。自然纹理和单处收褶低负担，可为EASE增裙型而不强加装饰。"
+    },
+    {
+      "garment_id": "garment_neon_dress_0456",
+      "token": "g0456",
+      "status": "ai_candidate",
+      "category": "dress",
+      "visual_personas": [
+        "neon",
+        "oops"
+      ],
+      "main_colors": [
+        "blue",
+        "orange",
+        "lime",
+        "pink"
+      ],
+      "evidence": "无袖蓝翻领门襟与腰带维持衬衫裙结构，橙绿粉网面亮片层摆不对称。高彩加运动材质结构支持NEON，不能作为低表达日常。"
+    },
+    {
+      "garment_id": "garment_film_dress_0459",
+      "token": "g0459",
+      "status": "ai_candidate",
+      "category": "dress",
+      "visual_personas": [
+        "film",
+        "wabi",
+        "ease"
+      ],
+      "main_colors": [
+        "brown",
+        "washed_blue",
+        "olive"
+      ],
+      "evidence": "棕色钮扣胸片与蓝棕橄榄纵向拼布延展长裙，下摆一道宽褶。复古材料观感和规整收腰结合，非任意灰褐破边堆积。"
+    },
+    {
+      "garment_id": "garment_noir_dress_0462",
+      "token": "g0462",
+      "status": "ai_candidate",
+      "category": "dress",
+      "visual_personas": [
+        "noir",
+        "edge"
+      ],
+      "main_colors": [
+        "black",
+        "burgundy"
+      ],
+      "evidence": "黑色长袖衬衫裙收腰尖肩，正中门襟贯穿，下摆黑尖片露酒红内层。锐利长线支持NOIR，不仅因为色域暗。"
+    },
+    {
+      "garment_id": "garment_mute_dress_0465",
+      "token": "g0465",
+      "status": "ai_candidate",
+      "category": "dress",
+      "visual_personas": [
+        "mute",
+        "loop",
+        "heir"
+      ],
+      "main_colors": [
+        "charcoal"
+      ],
+      "evidence": "炭灰圆领短袖直中长裙，以细侧腰带轻收腰、前开衩提供活动口。低装饰H线清楚，适合基础轮廓复用，不靠标题判断新款。"
+    },
+    {
+      "garment_id": "garment_ease_dress_0468",
+      "token": "g0468",
+      "status": "ai_candidate",
+      "category": "dress",
+      "visual_personas": [
+        "ease",
+        "loop",
+        "wabi"
+      ],
+      "main_colors": [
+        "beige"
+      ],
+      "evidence": "米色自然细纹衬衫长裙有腰带、纽扣门襟和卷袖，裙摆柔松。EASE日常线索充分，不从织纹断言亚麻成分。"
+    },
+    {
+      "garment_id": "garment_flou_dress_0471",
+      "token": "g0471",
+      "status": "ai_candidate",
+      "category": "dress",
+      "visual_personas": [
+        "flou",
+        "melt"
+      ],
+      "main_colors": [
+        "pale_pink",
+        "sage",
+        "ivory"
+      ],
+      "evidence": "粉绿淡花细肩带长裙用胸前垂褶和腰侧花结固定斜裹长层，整体细长柔软。和g0455同方向但裙长不同，应记录家族关系及长度变化。"
+    },
+    {
+      "garment_id": "garment_bolt_dress_0474",
+      "token": "g0474",
+      "status": "ai_candidate",
+      "category": "dress",
+      "visual_personas": [
+        "bolt",
+        "heir"
+      ],
+      "main_colors": [
+        "ivory",
+        "burgundy"
+      ],
+      "evidence": "奶油刺绣衬衫式礼服有披肩片鼓袖、酒红腰蝴蝶结和深色插片长摆。礼仪体量强，只有相邻经典元素，不当普通HEIR通勤款。"
+    },
+    {
+      "garment_id": "garment_film_dress_0475",
+      "token": "g0475",
+      "status": "ai_candidate",
+      "category": "dress",
+      "visual_personas": [
+        "film",
+        "wabi",
+        "void"
+      ],
+      "main_colors": [
+        "brown",
+        "washed_blue",
+        "beige",
+        "olive"
+      ],
+      "evidence": "棕细肩带钮扣胸片收腰，旧丹宁和褐绿粗织斜层裙片下垂。复古软层次与自然色关联，比几何规整拼片更飘，面料成分未知。"
+    },
+    {
+      "garment_id": "garment_loop_dress_0477",
+      "token": "g0477",
+      "status": "ai_candidate",
+      "category": "dress",
+      "visual_personas": [
+        "loop",
+        "iced"
+      ],
+      "main_colors": [
+        "ivory",
+        "gray",
+        "blue_gray"
+      ],
+      "evidence": "乳白无袖圆领长裙在侧腰抽结，灰盖袋与蓝灰内褶从长开片露出。模块和纵线兼具，可为低彩人格增加结构差异。"
+    },
+    {
+      "garment_id": "garment_oops_dress_0480",
+      "token": "g0480",
+      "status": "ai_candidate",
+      "category": "dress",
+      "visual_personas": [
+        "oops",
+        "edge"
+      ],
+      "main_colors": [
+        "ice_blue",
+        "charcoal",
+        "ivory",
+        "blue",
+        "yellow"
+      ],
+      "evidence": "浅蓝翻领一侧短泡袖、一侧露肩白蕾丝长泡袖，收腰下接灰西装、蓝褶和黄蓝花片。错位结构强，需低装饰配件，不可按浅蓝直接匹配清简人格。"
+    },
+    {
+      "garment_id": "garment_bolt_outer_0570",
+      "token": "g0570",
+      "status": "ai_candidate",
+      "category": "outer",
+      "visual_personas": [
+        "bolt",
+        "heir"
+      ],
+      "main_colors": [
+        "ivory",
+        "burgundy",
+        "gold"
+      ],
+      "evidence": "奶油合腰短夹克配酒红绒翻领、花纹袖口，大肩片鼓袖外垂，金扣。戏剧礼仪结构而非普通学院外套，限制日常首屏。"
+    },
+    {
+      "garment_id": "garment_loop_outer_0573",
+      "token": "g0573",
+      "status": "needs_review",
+      "category": "outer",
+      "visual_personas": [
+        "loop",
+        "ease",
+        "wabi"
+      ],
+      "main_colors": [
+        "light_gray"
+      ],
+      "evidence": "原图同时出现外层披领开衫与里层V领纽扣开衫两道独立门襟、两层摆。可能连体假两件也可能多件打包；在单品定义与拆款结构确认前保留待核，不能直接当一件基础外套。"
+    },
+    {
+      "garment_id": "garment_melt_skirt_0581",
+      "token": "g0581",
+      "status": "ai_candidate",
+      "category": "skirt",
+      "visual_personas": [
+        "melt",
+        "flou"
+      ],
+      "main_colors": [
+        "ivory",
+        "pale_pink"
+      ],
+      "evidence": "奶油粉层层针织绒感中长裙，抽绳毛球与不等层宽，外形蓬软。明确软体积，不能仅因粉色与轻薄夏裙视为同季节重量。"
+    },
+    {
+      "garment_id": "garment_edge_dress_0585",
+      "token": "g0585",
+      "status": "ai_candidate",
+      "category": "dress",
+      "visual_personas": [
+        "edge",
+        "oops"
+      ],
+      "main_colors": [
+        "black",
+        "washed_blue",
+        "pale_pink"
+      ],
+      "evidence": "黑洗蓝束胸肩带中长裙、腰带链条与不对称扣眼牛仔片，下摆粉黑网纱。硬软甜酷有明确主件，鞋包宜简。"
+    }
+  ],
+  "total_conditions_checked": 384,
+  "constraint_violations": 0,
+  "independent_top1": null,
+  "independent_top2": null,
+  "limitations": [
+    "Nonblind native AI review, not human fitting or user-study validation.",
+    "Exact-descriptor synonyms, shade aliases and undiscovered family pairs limit recall.",
+    "384 conditions are four seasons x daily x 16 personas x six palettes, not all scenes.",
+    "Zero violations can coincide with an empty feed. Coverage and meaningful sample sizes are reported separately."
+  ]
+}

@@ -1,0 +1,294 @@
+{
+  "schema_version": 1,
+  "batch_id": "aw-recompose-02",
+  "source_idle_review": "aw-idle-main-1fdd6d3183c4cde4ce65",
+  "source_visual_version": "codex-visual-16b18cdcdca36dbc306a",
+  "entries": [
+    {
+      "hero": "g0465",
+      "new_record": {
+        "id": "outfit_mute_aw-recompose-02_01",
+        "kind": "master",
+        "parent_outfit_id": null,
+        "recipe_version": "aw-recompose-02",
+        "title": "MUTE 秋季日常重组 01",
+        "description": "炭灰直筒裙搭低装饰同色开衫和短靴，以衣长与直线制造变化",
+        "primary_persona": "MUTE",
+        "secondary_personas": [],
+        "persona_affinity": {},
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "日常"
+        ],
+        "season_tags": [
+          "秋"
+        ],
+        "weather_tags": [],
+        "presentation": [
+          "feminine"
+        ],
+        "intensity": "entry",
+        "formality": 3,
+        "garment_ids": [
+          "garment_mute_dress_0465",
+          "garment_mute_outer_0369",
+          "garment_edge_shoes_0265",
+          "garment_mute_bag_0513"
+        ],
+        "visible_slots": [
+          "dress",
+          "outer",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_mute_dress_0465": "hero",
+          "garment_mute_outer_0369": "support",
+          "garment_edge_shoes_0265": "support",
+          "garment_mute_bag_0513": "support"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "未判断",
+          "saturation": "未判断",
+          "harmony": "未判断",
+          "palette": []
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/4051025388f105fa707afa83.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source": "designer_recomposition",
+          "confidence": null,
+          "review_notes": [
+            "season and persona are design targets pending native review"
+          ]
+        }
+      },
+      "record_fingerprint": "77c70a1d69d7d3601c66d46c5643d2f6d0f4ca170d9b8955939e10621ac35eff",
+      "asset_sha256": "26b602fe34522ec367b417795e944c463901822810b74fb0d6edc04b622c7628",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/4051025388f105fa707afa83.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_mute_dress_0465",
+            "slot": "dress",
+            "box": [
+              450,
+              160,
+              800,
+              897
+            ]
+          },
+          {
+            "garment_id": "garment_mute_outer_0369",
+            "slot": "outer",
+            "box": [
+              70,
+              160,
+              420,
+              548
+            ]
+          },
+          {
+            "garment_id": "garment_edge_shoes_0265",
+            "slot": "shoes",
+            "box": [
+              875,
+              880,
+              1095,
+              1080
+            ]
+          },
+          {
+            "garment_id": "garment_mute_bag_0513",
+            "slot": "bag",
+            "box": [
+              853,
+              410,
+              1126,
+              730
+            ]
+          }
+        ]
+      },
+      "status": "pending_native_review",
+      "review": null
+    },
+    {
+      "hero": "g0581",
+      "new_record": {
+        "id": "outfit_melt_aw-recompose-02_02",
+        "kind": "master",
+        "parent_outfit_id": null,
+        "recipe_version": "aw-recompose-02",
+        "title": "MELT 秋季日常重组 02",
+        "description": "粉色贴身上衣和软运动鞋降低层裙的仪式感，深开衫建立日常边界",
+        "primary_persona": "MELT",
+        "secondary_personas": [],
+        "persona_affinity": {},
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "日常"
+        ],
+        "season_tags": [
+          "秋"
+        ],
+        "weather_tags": [],
+        "presentation": [
+          "feminine"
+        ],
+        "intensity": "entry",
+        "formality": 3,
+        "garment_ids": [
+          "garment_melt_skirt_0581",
+          "garment_flou_top_0103",
+          "garment_mute_outer_0369",
+          "garment_melt_shoes_0501",
+          "garment_oops_bag_0272"
+        ],
+        "visible_slots": [
+          "skirt",
+          "top",
+          "outer",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_melt_skirt_0581": "hero",
+          "garment_flou_top_0103": "support",
+          "garment_mute_outer_0369": "support",
+          "garment_melt_shoes_0501": "support",
+          "garment_oops_bag_0272": "support"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "未判断",
+          "saturation": "未判断",
+          "harmony": "未判断",
+          "palette": []
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/90b4ff9ce351fd7dac48e9ac.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source": "designer_recomposition",
+          "confidence": null,
+          "review_notes": [
+            "season and persona are design targets pending native review"
+          ]
+        }
+      },
+      "record_fingerprint": "38dc93264edb36c56dd8ada0d5b32c4a6de4f6571897e613347d4bf7bb264331",
+      "asset_sha256": "cbb4a9959f61129a33d03a65c802a4ef1c9f93e21fcc052b2a2a44262cfc7c96",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/90b4ff9ce351fd7dac48e9ac.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_melt_skirt_0581",
+            "slot": "skirt",
+            "box": [
+              450,
+              664,
+              800,
+              1078
+            ]
+          },
+          {
+            "garment_id": "garment_flou_top_0103",
+            "slot": "top",
+            "box": [
+              450,
+              207,
+              800,
+              640
+            ]
+          },
+          {
+            "garment_id": "garment_mute_outer_0369",
+            "slot": "outer",
+            "box": [
+              70,
+              160,
+              420,
+              548
+            ]
+          },
+          {
+            "garment_id": "garment_melt_shoes_0501",
+            "slot": "shoes",
+            "box": [
+              866,
+              880,
+              1104,
+              1080
+            ]
+          },
+          {
+            "garment_id": "garment_oops_bag_0272",
+            "slot": "bag",
+            "box": [
+              876,
+              410,
+              1104,
+              730
+            ]
+          }
+        ]
+      },
+      "status": "pending_native_review",
+      "review": null
+    }
+  ],
+  "version": "aw-recompose-rendered-d388773a8502c6c6ff61"
+}

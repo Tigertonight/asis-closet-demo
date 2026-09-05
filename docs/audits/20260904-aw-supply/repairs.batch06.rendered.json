@@ -1,0 +1,1408 @@
+{
+  "schema_version": 1,
+  "batch_id": "aw-repair-06",
+  "source_visual_version": "codex-visual-16b18cdcdca36dbc306a",
+  "entries": [
+    {
+      "source_outfit_id": "outfit_void_master_07_v1",
+      "source_token": "o1095",
+      "source_record_fingerprint": "2803d8997b9cb6054a962ecd9d89bd4b568c4e6fec8a9eade44bb1e88fe3e9b4",
+      "new_record": {
+        "id": "outfit_void_master_07_v1__aw-repair-06",
+        "kind": "variant",
+        "parent_outfit_id": "outfit_void_master_07",
+        "recipe_version": "aw-repair-06",
+        "title": "VOID 日常 07 · 替换 1",
+        "description": "VOID 人格的春日常原创穿搭配方。",
+        "primary_persona": "VOID",
+        "secondary_personas": [
+          "WABI",
+          "FILM"
+        ],
+        "persona_affinity": {
+          "VOID": 0.96,
+          "WABI": 0.65,
+          "FILM": 0.55
+        },
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "日常"
+        ],
+        "season_tags": [
+          "春"
+        ],
+        "weather_tags": [
+          "晴",
+          "室内"
+        ],
+        "presentation": [
+          "feminine"
+        ],
+        "intensity": "entry",
+        "formality": 3,
+        "garment_ids": [
+          "garment_wabi_top_0027",
+          "garment_void_bottom_0575",
+          "garment_mute_shoes_0004",
+          "garment_mute_bag_0005"
+        ],
+        "visible_slots": [
+          "top",
+          "bottom",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_wabi_top_0027": "hero",
+          "garment_void_bottom_0575": "support",
+          "garment_mute_shoes_0004": "support",
+          "garment_mute_bag_0005": "accent"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "中等",
+          "saturation": "低饱和",
+          "harmony": "未判断",
+          "palette": [
+            "#706558",
+            "#504c4c",
+            "#696e76",
+            "#3a3739"
+          ]
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/0279b0ca78d72c017610fc54.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source_outfit_id": "outfit_void_master_07_v1"
+        },
+        "design_intent": "保留原主服装，以低装饰 dark 鞋包替换竞争性配件；仅降低配件噪音，主服装之间是否仍冲突必须重新看整套图。"
+      },
+      "record_fingerprint": "40d58df2f9d7da3b0dc2333ee9b84a85616d60bb358f1d15dd62767fe0f84621",
+      "asset_sha256": "ef24df7e16582db3cc0e081c90a37dcae849cef172be8a309459b3822b3c3027",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/0279b0ca78d72c017610fc54.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_wabi_top_0027",
+            "slot": "top",
+            "box": [
+              247,
+              160,
+              653,
+              620
+            ]
+          },
+          {
+            "garment_id": "garment_void_bottom_0575",
+            "slot": "bottom",
+            "box": [
+              245,
+              644,
+              654,
+              1330
+            ]
+          },
+          {
+            "garment_id": "garment_mute_shoes_0004",
+            "slot": "shoes",
+            "box": [
+              891,
+              880,
+              1078,
+              1080
+            ]
+          },
+          {
+            "garment_id": "garment_mute_bag_0005",
+            "slot": "bag",
+            "box": [
+              851,
+              410,
+              1129,
+              730
+            ]
+          }
+        ]
+      },
+      "replacements": {
+        "garment_void_shoes_0255": "garment_mute_shoes_0004",
+        "garment_void_bag_0527": "garment_mute_bag_0005"
+      },
+      "status": "pending_native_review",
+      "review": null
+    },
+    {
+      "source_outfit_id": "outfit_void_master_10_v2",
+      "source_token": "o1102",
+      "source_record_fingerprint": "8e42f168ccc2418ce860a615cbd58729c2523f8316894cf6a36bebb939c44eca",
+      "new_record": {
+        "id": "outfit_void_master_10_v2__aw-repair-06",
+        "kind": "variant",
+        "parent_outfit_id": "outfit_void_master_10",
+        "recipe_version": "aw-repair-06",
+        "title": "VOID 日常 10 · 替换 2",
+        "description": "VOID 人格的夏日常原创穿搭配方。",
+        "primary_persona": "VOID",
+        "secondary_personas": [
+          "WABI",
+          "FILM"
+        ],
+        "persona_affinity": {
+          "VOID": 0.96,
+          "WABI": 0.65,
+          "FILM": 0.55
+        },
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "日常"
+        ],
+        "season_tags": [
+          "夏"
+        ],
+        "weather_tags": [
+          "晴",
+          "室内"
+        ],
+        "presentation": [
+          "feminine"
+        ],
+        "intensity": "entry",
+        "formality": 3,
+        "garment_ids": [
+          "garment_wabi_top_0326",
+          "garment_void_bottom_0399",
+          "garment_noir_shoes_0254",
+          "garment_noir_bag_0270"
+        ],
+        "visible_slots": [
+          "top",
+          "bottom",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_wabi_top_0326": "hero",
+          "garment_void_bottom_0399": "support",
+          "garment_noir_shoes_0254": "support",
+          "garment_noir_bag_0270": "accent"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "中等",
+          "saturation": "低饱和",
+          "harmony": "未判断",
+          "palette": [
+            "#736759",
+            "#454242",
+            "#514c4a",
+            "#4f4c4c"
+          ]
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/b2e803c191e87a211b4bc8fc.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source_outfit_id": "outfit_void_master_10_v2"
+        },
+        "design_intent": "保留原主服装，以低装饰 dark 鞋包替换竞争性配件；仅降低配件噪音，主服装之间是否仍冲突必须重新看整套图。"
+      },
+      "record_fingerprint": "190131445b5524cef3ced6dc717e134d88203ddbc05cd1765c7ed409130766b0",
+      "asset_sha256": "72b462b393da22620822df130e947e37c44ac0551e63b626747443bad7084b3c",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/b2e803c191e87a211b4bc8fc.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_wabi_top_0326",
+            "slot": "top",
+            "box": [
+              160,
+              160,
+              740,
+              620
+            ]
+          },
+          {
+            "garment_id": "garment_void_bottom_0399",
+            "slot": "bottom",
+            "box": [
+              257,
+              644,
+              643,
+              1330
+            ]
+          },
+          {
+            "garment_id": "garment_noir_shoes_0254",
+            "slot": "shoes",
+            "box": [
+              895,
+              880,
+              1075,
+              1080
+            ]
+          },
+          {
+            "garment_id": "garment_noir_bag_0270",
+            "slot": "bag",
+            "box": [
+              865,
+              410,
+              1114,
+              730
+            ]
+          }
+        ]
+      },
+      "replacements": {
+        "garment_void_shoes_0591": "garment_noir_shoes_0254",
+        "garment_void_bag_0271": "garment_noir_bag_0270"
+      },
+      "status": "pending_native_review",
+      "review": null
+    },
+    {
+      "source_outfit_id": "outfit_void_master_12_v1",
+      "source_token": "o1105",
+      "source_record_fingerprint": "12785bc94b20fad0bf44e11a90cb03e7533409b5809324426c8c63f0c0ee096b",
+      "new_record": {
+        "id": "outfit_void_master_12_v1__aw-repair-06",
+        "kind": "variant",
+        "parent_outfit_id": "outfit_void_master_12",
+        "recipe_version": "aw-repair-06",
+        "title": "VOID 日常 12 · 替换 1",
+        "description": "VOID 人格的夏日常原创穿搭配方。",
+        "primary_persona": "VOID",
+        "secondary_personas": [
+          "WABI",
+          "FILM"
+        ],
+        "persona_affinity": {
+          "VOID": 0.96,
+          "WABI": 0.65,
+          "FILM": 0.55
+        },
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "日常"
+        ],
+        "season_tags": [
+          "夏"
+        ],
+        "weather_tags": [
+          "晴",
+          "室内"
+        ],
+        "presentation": [
+          "feminine"
+        ],
+        "intensity": "entry",
+        "formality": 3,
+        "garment_ids": [
+          "garment_wabi_top_0027",
+          "garment_wabi_skirt_0438",
+          "garment_wabi_shoes_0262",
+          "garment_film_bag_0283"
+        ],
+        "visible_slots": [
+          "top",
+          "skirt",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_wabi_top_0027": "hero",
+          "garment_wabi_skirt_0438": "support",
+          "garment_wabi_shoes_0262": "support",
+          "garment_film_bag_0283": "accent"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "中等",
+          "saturation": "低饱和",
+          "harmony": "未判断",
+          "palette": [
+            "#706558",
+            "#5b4f42",
+            "#554e4a",
+            "#766658"
+          ]
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/431cfe8e9cecc2a01861c046.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source_outfit_id": "outfit_void_master_12_v1"
+        },
+        "design_intent": "保留原主服装，以低装饰 earth 鞋包替换竞争性配件；仅降低配件噪音，主服装之间是否仍冲突必须重新看整套图。"
+      },
+      "record_fingerprint": "508a934cc2bfabb47923ff22bac8c55df015f3b36eb33c52c7c36915df69f546",
+      "asset_sha256": "519e16e9c6afab6269852737353536c933f6f1431df6cf41a13f550de108c625",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/431cfe8e9cecc2a01861c046.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_wabi_top_0027",
+            "slot": "top",
+            "box": [
+              247,
+              160,
+              653,
+              620
+            ]
+          },
+          {
+            "garment_id": "garment_wabi_skirt_0438",
+            "slot": "skirt",
+            "box": [
+              180,
+              644,
+              720,
+              1330
+            ]
+          },
+          {
+            "garment_id": "garment_wabi_shoes_0262",
+            "slot": "shoes",
+            "box": [
+              857,
+              880,
+              1113,
+              1080
+            ]
+          },
+          {
+            "garment_id": "garment_film_bag_0283",
+            "slot": "bag",
+            "box": [
+              871,
+              410,
+              1108,
+              730
+            ]
+          }
+        ]
+      },
+      "replacements": {
+        "garment_void_shoes_0495": "garment_wabi_shoes_0262",
+        "garment_wabi_bag_0278": "garment_film_bag_0283"
+      },
+      "status": "pending_native_review",
+      "review": null
+    },
+    {
+      "source_outfit_id": "outfit_void_master_22_v1",
+      "source_token": "o1119",
+      "source_record_fingerprint": "bae052123a88079b057e5fb3d120d6237124ed6a6aa645947cd4088bf3de7fc4",
+      "new_record": {
+        "id": "outfit_void_master_22_v1__aw-repair-06",
+        "kind": "variant",
+        "parent_outfit_id": "outfit_void_master_22",
+        "recipe_version": "aw-repair-06",
+        "title": "VOID 旅行 22 · 替换 1",
+        "description": "VOID 人格的秋旅行原创穿搭配方。",
+        "primary_persona": "VOID",
+        "secondary_personas": [
+          "WABI",
+          "FILM"
+        ],
+        "persona_affinity": {
+          "VOID": 0.96,
+          "WABI": 0.65,
+          "FILM": 0.55
+        },
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "旅行"
+        ],
+        "season_tags": [
+          "秋"
+        ],
+        "weather_tags": [
+          "晴",
+          "室内"
+        ],
+        "presentation": [
+          "neutral"
+        ],
+        "intensity": "signature",
+        "formality": 3,
+        "garment_ids": [
+          "garment_wabi_top_0566",
+          "garment_wabi_bottom_0422",
+          "garment_void_outer_0383",
+          "garment_mute_shoes_0004",
+          "garment_mute_bag_0529"
+        ],
+        "visible_slots": [
+          "top",
+          "bottom",
+          "outer",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_wabi_top_0566": "hero",
+          "garment_wabi_bottom_0422": "support",
+          "garment_void_outer_0383": "support",
+          "garment_mute_shoes_0004": "support",
+          "garment_mute_bag_0529": "accent"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "中等",
+          "saturation": "低饱和",
+          "harmony": "未判断",
+          "palette": [
+            "#62574c",
+            "#5c534a",
+            "#3d3b3d",
+            "#69574c",
+            "#5b5044"
+          ]
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/7f58df4f2b6faee22b59159d.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source_outfit_id": "outfit_void_master_22_v1"
+        },
+        "design_intent": "保留原主服装，以低装饰 dark 鞋包替换竞争性配件；仅降低配件噪音，主服装之间是否仍冲突必须重新看整套图。"
+      },
+      "record_fingerprint": "39f00619cf4a178dfab80d0dd9ae652bc06676f84bd72c1aca3e2ad9bbfa50e2",
+      "asset_sha256": "e51c1befd2976263629cb30ce863f1b133c05c36723bcac72defaac3b71fde68",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/7f58df4f2b6faee22b59159d.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_wabi_top_0566",
+            "slot": "top",
+            "box": [
+              450,
+              326,
+              800,
+              640
+            ]
+          },
+          {
+            "garment_id": "garment_wabi_bottom_0422",
+            "slot": "bottom",
+            "box": [
+              450,
+              664,
+              800,
+              1255
+            ]
+          },
+          {
+            "garment_id": "garment_void_outer_0383",
+            "slot": "outer",
+            "box": [
+              70,
+              160,
+              420,
+              629
+            ]
+          },
+          {
+            "garment_id": "garment_mute_shoes_0004",
+            "slot": "shoes",
+            "box": [
+              891,
+              880,
+              1078,
+              1080
+            ]
+          },
+          {
+            "garment_id": "garment_mute_bag_0529",
+            "slot": "bag",
+            "box": [
+              873,
+              410,
+              1107,
+              730
+            ]
+          }
+        ]
+      },
+      "replacements": {
+        "garment_wabi_shoes_0246": "garment_mute_shoes_0004",
+        "garment_wabi_bag_0029": "garment_mute_bag_0529"
+      },
+      "status": "pending_native_review",
+      "review": null
+    },
+    {
+      "source_outfit_id": "outfit_oops_master_01_v2",
+      "source_token": "o1129",
+      "source_record_fingerprint": "eba49303089828574867a0c0daeae365655449f54414b1fd7ea168a2783df06a",
+      "new_record": {
+        "id": "outfit_oops_master_01_v2__aw-repair-06",
+        "kind": "variant",
+        "parent_outfit_id": "outfit_oops_master_01",
+        "recipe_version": "aw-repair-06",
+        "title": "OOPS 通勤 01 · 替换 2",
+        "description": "OOPS 人格的春通勤原创穿搭配方。",
+        "primary_persona": "OOPS",
+        "secondary_personas": [
+          "NEON",
+          "EDGE"
+        ],
+        "persona_affinity": {
+          "OOPS": 0.96,
+          "NEON": 0.65,
+          "EDGE": 0.55
+        },
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "通勤"
+        ],
+        "season_tags": [
+          "春"
+        ],
+        "weather_tags": [
+          "晴",
+          "室内"
+        ],
+        "presentation": [
+          "feminine"
+        ],
+        "intensity": "entry",
+        "formality": 4,
+        "garment_ids": [
+          "garment_oops_top_0096",
+          "garment_oops_bottom_0078",
+          "garment_noir_shoes_0254",
+          "garment_mute_bag_0005"
+        ],
+        "visible_slots": [
+          "top",
+          "bottom",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_oops_top_0096": "hero",
+          "garment_oops_bottom_0078": "support",
+          "garment_noir_shoes_0254": "support",
+          "garment_mute_bag_0005": "accent"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "浅色",
+          "saturation": "无彩",
+          "harmony": "未判断",
+          "palette": [
+            "#d8d8db",
+            "#6a636e",
+            "#1d3471",
+            "#4c5055"
+          ]
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/6425f89125e22ec9ece426b1.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source_outfit_id": "outfit_oops_master_01_v2"
+        },
+        "design_intent": "保留原主服装，以低装饰 dark 鞋包替换竞争性配件；仅降低配件噪音，主服装之间是否仍冲突必须重新看整套图。"
+      },
+      "record_fingerprint": "b3a6de774b266b450c079bade6469465cf57a836b0609d074aaea9ef2c1979c6",
+      "asset_sha256": "3620bed2543043e1922136fd7040ec05d029b2490050b745545359a9f4ab39ff",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/6425f89125e22ec9ece426b1.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_oops_top_0096",
+            "slot": "top",
+            "box": [
+              250,
+              160,
+              650,
+              620
+            ]
+          },
+          {
+            "garment_id": "garment_oops_bottom_0078",
+            "slot": "bottom",
+            "box": [
+              196,
+              644,
+              703,
+              1330
+            ]
+          },
+          {
+            "garment_id": "garment_noir_shoes_0254",
+            "slot": "shoes",
+            "box": [
+              895,
+              880,
+              1075,
+              1080
+            ]
+          },
+          {
+            "garment_id": "garment_mute_bag_0005",
+            "slot": "bag",
+            "box": [
+              851,
+              410,
+              1129,
+              730
+            ]
+          }
+        ]
+      },
+      "replacements": {
+        "garment_neon_shoes_0039": "garment_noir_shoes_0254",
+        "garment_oops_bag_0528": "garment_mute_bag_0005"
+      },
+      "status": "pending_native_review",
+      "review": null
+    },
+    {
+      "source_outfit_id": "outfit_oops_master_02_v1",
+      "source_token": "o1130",
+      "source_record_fingerprint": "60d94e783e877dc2948564ae2e7beafb3345fc9857b201fa7cc69d2c30e77fb8",
+      "new_record": {
+        "id": "outfit_oops_master_02_v1__aw-repair-06",
+        "kind": "variant",
+        "parent_outfit_id": "outfit_oops_master_02",
+        "recipe_version": "aw-repair-06",
+        "title": "OOPS 通勤 02 · 替换 1",
+        "description": "OOPS 人格的春通勤原创穿搭配方。",
+        "primary_persona": "OOPS",
+        "secondary_personas": [
+          "NEON",
+          "EDGE"
+        ],
+        "persona_affinity": {
+          "OOPS": 0.96,
+          "NEON": 0.65,
+          "EDGE": 0.55
+        },
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "通勤"
+        ],
+        "season_tags": [
+          "春"
+        ],
+        "weather_tags": [
+          "晴",
+          "室内"
+        ],
+        "presentation": [
+          "feminine"
+        ],
+        "intensity": "entry",
+        "formality": 4,
+        "garment_ids": [
+          "garment_oops_top_0336",
+          "garment_oops_bottom_0576",
+          "garment_edge_shoes_0265",
+          "garment_noir_bag_0270"
+        ],
+        "visible_slots": [
+          "top",
+          "bottom",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_oops_top_0336": "hero",
+          "garment_oops_bottom_0576": "support",
+          "garment_edge_shoes_0265": "support",
+          "garment_noir_bag_0270": "accent"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "中等",
+          "saturation": "低饱和",
+          "harmony": "未判断",
+          "palette": [
+            "#c4d0ed",
+            "#5a5d69",
+            "#1f3972",
+            "#5a544f"
+          ]
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/281b98b7b28c64cb6049adf5.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source_outfit_id": "outfit_oops_master_02_v1"
+        },
+        "design_intent": "保留原主服装，以低装饰 dark 鞋包替换竞争性配件；仅降低配件噪音，主服装之间是否仍冲突必须重新看整套图。"
+      },
+      "record_fingerprint": "226a0d8f625fd8ace9ce3eafe992436f0b0c265376ad99605d74df2e192185a5",
+      "asset_sha256": "04f848feaf1eb5b97347747369aeccf4df4edab1794a019fa1ce04e850a4c43b",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/281b98b7b28c64cb6049adf5.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_oops_top_0336",
+            "slot": "top",
+            "box": [
+              252,
+              160,
+              648,
+              620
+            ]
+          },
+          {
+            "garment_id": "garment_oops_bottom_0576",
+            "slot": "bottom",
+            "box": [
+              251,
+              644,
+              648,
+              1330
+            ]
+          },
+          {
+            "garment_id": "garment_edge_shoes_0265",
+            "slot": "shoes",
+            "box": [
+              875,
+              880,
+              1095,
+              1080
+            ]
+          },
+          {
+            "garment_id": "garment_noir_bag_0270",
+            "slot": "bag",
+            "box": [
+              865,
+              410,
+              1114,
+              730
+            ]
+          }
+        ]
+      },
+      "replacements": {
+        "garment_neon_shoes_0504": "garment_edge_shoes_0265",
+        "garment_oops_bag_0288": "garment_noir_bag_0270"
+      },
+      "status": "pending_native_review",
+      "review": null
+    },
+    {
+      "source_outfit_id": "outfit_oops_master_07_v1",
+      "source_token": "o1138",
+      "source_record_fingerprint": "2a9814f90c298ed1b64fae582f6aa8e977fee18ff0660d62442d440f6d58d0ab",
+      "new_record": {
+        "id": "outfit_oops_master_07_v1__aw-repair-06",
+        "kind": "variant",
+        "parent_outfit_id": "outfit_oops_master_07",
+        "recipe_version": "aw-repair-06",
+        "title": "OOPS 日常 07 · 替换 1",
+        "description": "OOPS 人格的春日常原创穿搭配方。",
+        "primary_persona": "OOPS",
+        "secondary_personas": [
+          "NEON",
+          "EDGE"
+        ],
+        "persona_affinity": {
+          "OOPS": 0.96,
+          "NEON": 0.65,
+          "EDGE": 0.55
+        },
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "日常"
+        ],
+        "season_tags": [
+          "春"
+        ],
+        "weather_tags": [
+          "晴",
+          "室内"
+        ],
+        "presentation": [
+          "feminine"
+        ],
+        "intensity": "entry",
+        "formality": 3,
+        "garment_ids": [
+          "garment_oops_top_0336",
+          "garment_neon_bottom_0408",
+          "garment_mute_shoes_0004",
+          "garment_mute_bag_0513"
+        ],
+        "visible_slots": [
+          "top",
+          "bottom",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_oops_top_0336": "hero",
+          "garment_neon_bottom_0408": "support",
+          "garment_mute_shoes_0004": "support",
+          "garment_mute_bag_0513": "accent"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "中等",
+          "saturation": "低饱和",
+          "harmony": "未判断",
+          "palette": [
+            "#c4d0ed",
+            "#0132c2",
+            "#2a2976",
+            "#5a544f"
+          ]
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/68f2f49857bd5a33678d1b6d.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source_outfit_id": "outfit_oops_master_07_v1"
+        },
+        "design_intent": "保留原主服装，以低装饰 dark 鞋包替换竞争性配件；仅降低配件噪音，主服装之间是否仍冲突必须重新看整套图。"
+      },
+      "record_fingerprint": "c802dd5b304b31716bc0dbbbb419e4c77ec839e265a8d045a79155e62f98503b",
+      "asset_sha256": "dc4f2042ed59f31f0a6100a84448e1ad401ac57691349ca3ef73fcd1582969eb",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/68f2f49857bd5a33678d1b6d.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_oops_top_0336",
+            "slot": "top",
+            "box": [
+              252,
+              160,
+              648,
+              620
+            ]
+          },
+          {
+            "garment_id": "garment_neon_bottom_0408",
+            "slot": "bottom",
+            "box": [
+              252,
+              644,
+              648,
+              1330
+            ]
+          },
+          {
+            "garment_id": "garment_mute_shoes_0004",
+            "slot": "shoes",
+            "box": [
+              891,
+              880,
+              1078,
+              1080
+            ]
+          },
+          {
+            "garment_id": "garment_mute_bag_0513",
+            "slot": "bag",
+            "box": [
+              853,
+              410,
+              1126,
+              730
+            ]
+          }
+        ]
+      },
+      "replacements": {
+        "garment_neon_shoes_0488": "garment_mute_shoes_0004",
+        "garment_oops_bag_0288": "garment_mute_bag_0513"
+      },
+      "status": "pending_native_review",
+      "review": null
+    },
+    {
+      "source_outfit_id": "outfit_oops_master_11_v2",
+      "source_token": "o1147",
+      "source_record_fingerprint": "191fd8a97bb663e4297dd73441b4253e45c018b718a74209b7373234dc264353",
+      "new_record": {
+        "id": "outfit_oops_master_11_v2__aw-repair-06",
+        "kind": "variant",
+        "parent_outfit_id": "outfit_oops_master_11",
+        "recipe_version": "aw-repair-06",
+        "title": "OOPS 日常 11 · 替换 2",
+        "description": "OOPS 人格的夏日常原创穿搭配方。",
+        "primary_persona": "OOPS",
+        "secondary_personas": [
+          "NEON",
+          "EDGE"
+        ],
+        "persona_affinity": {
+          "OOPS": 0.96,
+          "NEON": 0.65,
+          "EDGE": 0.55
+        },
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "日常"
+        ],
+        "season_tags": [
+          "夏"
+        ],
+        "weather_tags": [
+          "晴",
+          "室内"
+        ],
+        "presentation": [
+          "feminine"
+        ],
+        "intensity": "entry",
+        "formality": 3,
+        "garment_ids": [
+          "garment_oops_top_0096",
+          "garment_oops_skirt_0432",
+          "garment_noir_shoes_0254",
+          "garment_mute_bag_0529"
+        ],
+        "visible_slots": [
+          "top",
+          "skirt",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_oops_top_0096": "hero",
+          "garment_oops_skirt_0432": "support",
+          "garment_noir_shoes_0254": "support",
+          "garment_mute_bag_0529": "accent"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "浅色",
+          "saturation": "无彩",
+          "harmony": "未判断",
+          "palette": [
+            "#d8d8db",
+            "#d5c8a4",
+            "#1d3471",
+            "#4c5055"
+          ]
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/64e451607fdaaa4eb36d5220.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source_outfit_id": "outfit_oops_master_11_v2"
+        },
+        "design_intent": "保留原主服装，以低装饰 dark 鞋包替换竞争性配件；仅降低配件噪音，主服装之间是否仍冲突必须重新看整套图。"
+      },
+      "record_fingerprint": "b0b4b0faf11aa9a7d26aa96d0809f23c105c20f261d77d8aa31c0c56fe974c0a",
+      "asset_sha256": "3c9e3850e1503169a467b2941b7a507ff0ab3272ff085a32e41992d798ce0eab",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/64e451607fdaaa4eb36d5220.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_oops_top_0096",
+            "slot": "top",
+            "box": [
+              250,
+              160,
+              650,
+              620
+            ]
+          },
+          {
+            "garment_id": "garment_oops_skirt_0432",
+            "slot": "skirt",
+            "box": [
+              169,
+              644,
+              730,
+              1330
+            ]
+          },
+          {
+            "garment_id": "garment_noir_shoes_0254",
+            "slot": "shoes",
+            "box": [
+              895,
+              880,
+              1075,
+              1080
+            ]
+          },
+          {
+            "garment_id": "garment_mute_bag_0529",
+            "slot": "bag",
+            "box": [
+              873,
+              410,
+              1107,
+              730
+            ]
+          }
+        ]
+      },
+      "replacements": {
+        "garment_neon_shoes_0039": "garment_noir_shoes_0254",
+        "garment_oops_bag_0528": "garment_mute_bag_0529"
+      },
+      "status": "pending_native_review",
+      "review": null
+    },
+    {
+      "source_outfit_id": "outfit_oops_master_30_v1",
+      "source_token": "o1169",
+      "source_record_fingerprint": "7f9784bec7e69f791d7f4f5a17f971263c799fcefd421fcc19b592c6128eed80",
+      "new_record": {
+        "id": "outfit_oops_master_30_v1__aw-repair-06",
+        "kind": "variant",
+        "parent_outfit_id": "outfit_oops_master_30",
+        "recipe_version": "aw-repair-06",
+        "title": "OOPS 创意表达 30 · 替换 1",
+        "description": "OOPS 人格的冬创意表达原创穿搭配方。",
+        "primary_persona": "OOPS",
+        "secondary_personas": [
+          "NEON",
+          "EDGE"
+        ],
+        "persona_affinity": {
+          "OOPS": 0.96,
+          "NEON": 0.65,
+          "EDGE": 0.55
+        },
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "创意表达"
+        ],
+        "season_tags": [
+          "冬"
+        ],
+        "weather_tags": [
+          "晴",
+          "室内"
+        ],
+        "presentation": [
+          "neutral"
+        ],
+        "intensity": "experimental",
+        "formality": 3,
+        "garment_ids": [
+          "garment_oops_dress_0464",
+          "garment_edge_shoes_0265",
+          "garment_mute_bag_0005",
+          "garment_oops_accessory_0320"
+        ],
+        "visible_slots": [
+          "dress",
+          "shoes",
+          "bag",
+          "accessory"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_oops_dress_0464": "hero",
+          "garment_edge_shoes_0265": "support",
+          "garment_mute_bag_0005": "support",
+          "garment_oops_accessory_0320": "accent"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "中等",
+          "saturation": "中饱和",
+          "harmony": "未判断",
+          "palette": [
+            "#364151",
+            "#87756b",
+            "#0b349b",
+            "#434f67"
+          ]
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/6197ab7e02ee2f5d19db99de.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source_outfit_id": "outfit_oops_master_30_v1"
+        },
+        "design_intent": "保留原主服装，以低装饰 dark 鞋包替换竞争性配件；仅降低配件噪音，主服装之间是否仍冲突必须重新看整套图。"
+      },
+      "record_fingerprint": "0f567bf829ea4e0f364d774c4a883cde771a3b4a1b64c3911a67830af122f99a",
+      "asset_sha256": "efb3f36cb2099849280d8bd85d0bba492922899b9247c6a6c1f494f07df23e66",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/6197ab7e02ee2f5d19db99de.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_oops_dress_0464",
+            "slot": "dress",
+            "box": [
+              121,
+              160,
+              778,
+              1330
+            ]
+          },
+          {
+            "garment_id": "garment_edge_shoes_0265",
+            "slot": "shoes",
+            "box": [
+              875,
+              880,
+              1095,
+              1080
+            ]
+          },
+          {
+            "garment_id": "garment_mute_bag_0005",
+            "slot": "bag",
+            "box": [
+              851,
+              410,
+              1129,
+              730
+            ]
+          },
+          {
+            "garment_id": "garment_oops_accessory_0320",
+            "slot": "accessory_1",
+            "box": [
+              932,
+              750,
+              1047,
+              850
+            ]
+          }
+        ]
+      },
+      "replacements": {
+        "garment_oops_shoes_0256": "garment_edge_shoes_0265",
+        "garment_neon_bag_0040": "garment_mute_bag_0005"
+      },
+      "status": "pending_native_review",
+      "review": null
+    }
+  ],
+  "production_approved": false
+}

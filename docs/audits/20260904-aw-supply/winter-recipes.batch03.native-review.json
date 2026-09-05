@@ -1,0 +1,1774 @@
+{
+  "schema_version": 1,
+  "source_rendered_version": "aw-designed-rendered-abde3afaa8103c41bce8",
+  "independent_blind_review": false,
+  "winter_outdoor_reviewed": true,
+  "physical_warmth_verified": false,
+  "entries": [
+    {
+      "outfit_id": "outfit_bolt_aw-winter-03_01",
+      "status": "ai_candidate",
+      "record_fingerprint": "a0a9fb8168a00fbfde0068c17954b66426e16ffc930c53c897788d4b0684f796",
+      "asset_sha256": "32becabbc0dbd16437bee47386f79f0f265bf414c89b28aa21d6f22cb0d9520a",
+      "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/10b28f3d21206e7727d5d55f.webp",
+      "source_kind": "codex_visual_review",
+      "evidence": "品红短外套的锐肩与收腰是唯一戏剧点，白衬衫、黑长裤与踝靴将它稳定在日常比例。",
+      "observations": {
+        "axes": {},
+        "expression": "typical",
+        "formality": "smart_casual",
+        "layering": 2,
+        "persona_scores": {
+          "bolt": 0.9,
+          "edge": 0.62
+        },
+        "scenes": [
+          "daily"
+        ],
+        "seasons": [
+          "winter"
+        ],
+        "structure": "pants",
+        "wearability": "everyday_with_statement",
+        "main_visual_slots": [
+          "outer",
+          "top",
+          "pants"
+        ],
+        "main_colors": [
+          "vivid_fuchsia",
+          "white",
+          "black"
+        ],
+        "conflicts": null,
+        "silhouette": "reviewed_winter_pants_composition",
+        "color_relation": "reviewed_coherent",
+        "persona_evidence": "品红短外套的锐肩与收腰是唯一戏剧点，白衬衫、黑长裤与踝靴将它稳定在日常比例。",
+        "winter_outdoor": "complete_layers_visually_reviewed"
+      },
+      "confidence": 0.86,
+      "model": "current_codex_session",
+      "prompt_version": "aw-winter-03-native-v1",
+      "review_level": "individual_contact_sheet_judgment",
+      "evidence_scope": "nonblind_individual_visual_judgment; no temperature/waterproof claim",
+      "review_complete": true,
+      "field_status": {
+        "axes": "ai_observed",
+        "expression": "ai_observed",
+        "formality": "ai_observed",
+        "layering": "ai_observed",
+        "persona_scores": "ai_observed",
+        "scenes": "ai_observed",
+        "seasons": "ai_observed",
+        "structure": "ai_observed",
+        "wearability": "ai_observed",
+        "main_visual_slots": "ai_observed",
+        "main_colors": "ai_observed",
+        "conflicts": "unknown",
+        "silhouette": "ai_observed",
+        "color_relation": "ai_observed",
+        "persona_evidence": "ai_observed",
+        "winter_outdoor": "ai_observed"
+      },
+      "field_provenance": {
+        "axes": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        },
+        "expression": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        },
+        "formality": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        },
+        "layering": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        },
+        "persona_scores": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        },
+        "scenes": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        },
+        "seasons": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        },
+        "structure": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        },
+        "wearability": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        },
+        "main_visual_slots": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        },
+        "main_colors": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        },
+        "conflicts": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": null
+        },
+        "silhouette": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        },
+        "color_relation": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        },
+        "persona_evidence": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        },
+        "winter_outdoor": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        }
+      }
+    },
+    {
+      "outfit_id": "outfit_edge_aw-winter-03_02",
+      "status": "needs_review",
+      "record_fingerprint": "f5a597f60375aa1e44950a1c0fdb050be7ec91cd9e6e2f647f3e29dd967cb210",
+      "asset_sha256": "ee33ca0f34d4a25ad5bae5a4c07ad24d9c10d500f00d16bdf31541506507cc3e",
+      "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/51f5a393c9b314bb7b0d71e8.webp",
+      "source_kind": "codex_visual_review",
+      "evidence": "品红短外套与黑色解构上装、复杂裙装或戏剧长裙同时抢焦点，只保留场合/创意草稿。",
+      "observations": {
+        "axes": {},
+        "expression": "typical",
+        "formality": "smart_casual",
+        "layering": 2,
+        "persona_scores": {},
+        "scenes": null,
+        "seasons": null,
+        "structure": "skirt",
+        "wearability": null,
+        "main_visual_slots": [
+          "outer",
+          "top",
+          "skirt"
+        ],
+        "main_colors": [
+          "vivid_fuchsia",
+          "black",
+          "burgundy",
+          "light_gray",
+          "charcoal"
+        ],
+        "conflicts": [
+          "occasion_or_competing_focal_points"
+        ],
+        "silhouette": "reviewed_winter_skirt_composition",
+        "color_relation": "unresolved",
+        "persona_evidence": "品红短外套与黑色解构上装、复杂裙装或戏剧长裙同时抢焦点，只保留场合/创意草稿。",
+        "winter_outdoor": null
+      },
+      "confidence": 0.86,
+      "model": "current_codex_session",
+      "prompt_version": "aw-winter-03-native-v1",
+      "review_level": "individual_contact_sheet_judgment",
+      "evidence_scope": "nonblind_individual_visual_judgment; no temperature/waterproof claim",
+      "review_complete": true,
+      "field_status": {
+        "axes": "ai_observed",
+        "expression": "ai_observed",
+        "formality": "ai_observed",
+        "layering": "ai_observed",
+        "persona_scores": "ai_observed",
+        "scenes": "unknown",
+        "seasons": "unknown",
+        "structure": "ai_observed",
+        "wearability": "unknown",
+        "main_visual_slots": "ai_observed",
+        "main_colors": "ai_observed",
+        "conflicts": "ai_observed",
+        "silhouette": "ai_observed",
+        "color_relation": "ai_observed",
+        "persona_evidence": "ai_observed",
+        "winter_outdoor": "unknown"
+      },
+      "field_provenance": {
+        "axes": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        },
+        "expression": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        },
+        "formality": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        },
+        "layering": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        },
+        "persona_scores": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        },
+        "scenes": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": null
+        },
+        "seasons": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": null
+        },
+        "structure": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        },
+        "wearability": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": null
+        },
+        "main_visual_slots": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        },
+        "main_colors": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        },
+        "conflicts": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        },
+        "silhouette": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        },
+        "color_relation": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        },
+        "persona_evidence": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        },
+        "winter_outdoor": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": null
+        }
+      }
+    },
+    {
+      "outfit_id": "outfit_neon_aw-winter-03_03",
+      "status": "needs_review",
+      "record_fingerprint": "fb341662c6ec1101645c3a4594669ee31c2d7584458616c5758825ecb585cb3d",
+      "asset_sha256": "1840235b2b2f61eac467f9669c77c2688184c530856c3ab564c261956bfff0ca",
+      "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/97d11aba8c8ce0874ce51e0b.webp",
+      "source_kind": "codex_visual_review",
+      "evidence": "品红短外套与黑色解构上装、复杂裙装或戏剧长裙同时抢焦点，只保留场合/创意草稿。",
+      "observations": {
+        "axes": {},
+        "expression": "typical",
+        "formality": "smart_casual",
+        "layering": 2,
+        "persona_scores": {},
+        "scenes": null,
+        "seasons": null,
+        "structure": "dress",
+        "wearability": null,
+        "main_visual_slots": [
+          "outer",
+          "dress"
+        ],
+        "main_colors": [
+          "vivid_fuchsia",
+          "black",
+          "burgundy"
+        ],
+        "conflicts": [
+          "occasion_or_competing_focal_points"
+        ],
+        "silhouette": "reviewed_winter_dress_composition",
+        "color_relation": "unresolved",
+        "persona_evidence": "品红短外套与黑色解构上装、复杂裙装或戏剧长裙同时抢焦点，只保留场合/创意草稿。",
+        "winter_outdoor": null
+      },
+      "confidence": 0.86,
+      "model": "current_codex_session",
+      "prompt_version": "aw-winter-03-native-v1",
+      "review_level": "individual_contact_sheet_judgment",
+      "evidence_scope": "nonblind_individual_visual_judgment; no temperature/waterproof claim",
+      "review_complete": true,
+      "field_status": {
+        "axes": "ai_observed",
+        "expression": "ai_observed",
+        "formality": "ai_observed",
+        "layering": "ai_observed",
+        "persona_scores": "ai_observed",
+        "scenes": "unknown",
+        "seasons": "unknown",
+        "structure": "ai_observed",
+        "wearability": "unknown",
+        "main_visual_slots": "ai_observed",
+        "main_colors": "ai_observed",
+        "conflicts": "ai_observed",
+        "silhouette": "ai_observed",
+        "color_relation": "ai_observed",
+        "persona_evidence": "ai_observed",
+        "winter_outdoor": "unknown"
+      },
+      "field_provenance": {
+        "axes": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        },
+        "expression": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        },
+        "formality": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        },
+        "layering": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        },
+        "persona_scores": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        },
+        "scenes": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": null
+        },
+        "seasons": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": null
+        },
+        "structure": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        },
+        "wearability": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": null
+        },
+        "main_visual_slots": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        },
+        "main_colors": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        },
+        "conflicts": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        },
+        "silhouette": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        },
+        "color_relation": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        },
+        "persona_evidence": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        },
+        "winter_outdoor": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": null
+        }
+      }
+    },
+    {
+      "outfit_id": "outfit_void_aw-winter-03_04",
+      "status": "ai_candidate",
+      "record_fingerprint": "88bb5a75e1bcd2cbe1d1a886266a447da6d0914ea04a7c8a5626f8f5b352352b",
+      "asset_sha256": "130ea7783c621a28ff13d86165bd7ece855e988d56e250eb28e299fabf96ed55",
+      "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/80f1b827999a712ed509e34a.webp",
+      "source_kind": "codex_visual_review",
+      "evidence": "紫晶包裹长外套与深色针织、一处错层长裤形成保护性层次，运动鞋降低负担。",
+      "observations": {
+        "axes": {},
+        "expression": "typical",
+        "formality": "smart_casual",
+        "layering": 2,
+        "persona_scores": {
+          "void": 0.88,
+          "wabi": 0.62
+        },
+        "scenes": [
+          "daily"
+        ],
+        "seasons": [
+          "winter"
+        ],
+        "structure": "pants",
+        "wearability": "everyday_with_statement",
+        "main_visual_slots": [
+          "outer",
+          "top",
+          "pants"
+        ],
+        "main_colors": [
+          "deep_amethyst",
+          "charcoal",
+          "brown",
+          "washed_blue"
+        ],
+        "conflicts": null,
+        "silhouette": "reviewed_winter_pants_composition",
+        "color_relation": "reviewed_coherent",
+        "persona_evidence": "紫晶包裹长外套与深色针织、一处错层长裤形成保护性层次，运动鞋降低负担。",
+        "winter_outdoor": "complete_layers_visually_reviewed"
+      },
+      "confidence": 0.86,
+      "model": "current_codex_session",
+      "prompt_version": "aw-winter-03-native-v1",
+      "review_level": "individual_contact_sheet_judgment",
+      "evidence_scope": "nonblind_individual_visual_judgment; no temperature/waterproof claim",
+      "review_complete": true,
+      "field_status": {
+        "axes": "ai_observed",
+        "expression": "ai_observed",
+        "formality": "ai_observed",
+        "layering": "ai_observed",
+        "persona_scores": "ai_observed",
+        "scenes": "ai_observed",
+        "seasons": "ai_observed",
+        "structure": "ai_observed",
+        "wearability": "ai_observed",
+        "main_visual_slots": "ai_observed",
+        "main_colors": "ai_observed",
+        "conflicts": "unknown",
+        "silhouette": "ai_observed",
+        "color_relation": "ai_observed",
+        "persona_evidence": "ai_observed",
+        "winter_outdoor": "ai_observed"
+      },
+      "field_provenance": {
+        "axes": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        },
+        "expression": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        },
+        "formality": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        },
+        "layering": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        },
+        "persona_scores": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        },
+        "scenes": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        },
+        "seasons": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        },
+        "structure": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        },
+        "wearability": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        },
+        "main_visual_slots": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        },
+        "main_colors": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        },
+        "conflicts": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": null
+        },
+        "silhouette": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        },
+        "color_relation": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        },
+        "persona_evidence": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        },
+        "winter_outdoor": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        }
+      }
+    },
+    {
+      "outfit_id": "outfit_oops_aw-winter-03_05",
+      "status": "ai_candidate",
+      "record_fingerprint": "2303c4527e1c8639a48d6ed42f9dedaf3a7bdbc56f530c5c57850a6046ef410b",
+      "asset_sha256": "ad60221241af61fd44ddc8619d97ec03bc69dbb0b04c16a93d7abc21aad8c17f",
+      "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/94476417e68aaa2333061316.webp",
+      "source_kind": "codex_visual_review",
+      "evidence": "错位包裹外套与斜裹长裙重复同一斜线母题，素色针织让解构可解释。",
+      "observations": {
+        "axes": {},
+        "expression": "typical",
+        "formality": "smart_casual",
+        "layering": 2,
+        "persona_scores": {
+          "oops": 0.86,
+          "edge": 0.6
+        },
+        "scenes": [
+          "daily"
+        ],
+        "seasons": [
+          "winter"
+        ],
+        "structure": "skirt",
+        "wearability": "everyday_with_statement",
+        "main_visual_slots": [
+          "outer",
+          "top",
+          "skirt"
+        ],
+        "main_colors": [
+          "deep_amethyst",
+          "charcoal",
+          "ivory"
+        ],
+        "conflicts": null,
+        "silhouette": "reviewed_winter_skirt_composition",
+        "color_relation": "reviewed_coherent",
+        "persona_evidence": "错位包裹外套与斜裹长裙重复同一斜线母题，素色针织让解构可解释。",
+        "winter_outdoor": "complete_layers_visually_reviewed"
+      },
+      "confidence": 0.86,
+      "model": "current_codex_session",
+      "prompt_version": "aw-winter-03-native-v1",
+      "review_level": "individual_contact_sheet_judgment",
+      "evidence_scope": "nonblind_individual_visual_judgment; no temperature/waterproof claim",
+      "review_complete": true,
+      "field_status": {
+        "axes": "ai_observed",
+        "expression": "ai_observed",
+        "formality": "ai_observed",
+        "layering": "ai_observed",
+        "persona_scores": "ai_observed",
+        "scenes": "ai_observed",
+        "seasons": "ai_observed",
+        "structure": "ai_observed",
+        "wearability": "ai_observed",
+        "main_visual_slots": "ai_observed",
+        "main_colors": "ai_observed",
+        "conflicts": "unknown",
+        "silhouette": "ai_observed",
+        "color_relation": "ai_observed",
+        "persona_evidence": "ai_observed",
+        "winter_outdoor": "ai_observed"
+      },
+      "field_provenance": {
+        "axes": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        },
+        "expression": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        },
+        "formality": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        },
+        "layering": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        },
+        "persona_scores": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        },
+        "scenes": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        },
+        "seasons": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        },
+        "structure": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        },
+        "wearability": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        },
+        "main_visual_slots": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        },
+        "main_colors": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        },
+        "conflicts": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": null
+        },
+        "silhouette": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        },
+        "color_relation": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        },
+        "persona_evidence": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        },
+        "winter_outdoor": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        }
+      }
+    },
+    {
+      "outfit_id": "outfit_wabi_aw-winter-03_06",
+      "status": "ai_candidate",
+      "record_fingerprint": "fe6279183d08c9aec42910f98f7db970dfd57b227c2556b755cf2a04c24e7445",
+      "asset_sha256": "d9c158c59bf6fb56d30fee9e75cb71cca2bf70387e77adebb672e08b80c6cd86",
+      "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/ba14a1b00b0306a9b835905a.webp",
+      "source_kind": "codex_visual_review",
+      "evidence": "紫色包裹长外套覆盖自然腰长衬衫裙，长靴与软包保持完整且低负担的冬日长线。",
+      "observations": {
+        "axes": {},
+        "expression": "typical",
+        "formality": "smart_casual",
+        "layering": 2,
+        "persona_scores": {
+          "wabi": 0.82,
+          "void": 0.68
+        },
+        "scenes": [
+          "daily"
+        ],
+        "seasons": [
+          "winter"
+        ],
+        "structure": "dress",
+        "wearability": "everyday_with_statement",
+        "main_visual_slots": [
+          "outer",
+          "dress"
+        ],
+        "main_colors": [
+          "deep_amethyst",
+          "beige"
+        ],
+        "conflicts": null,
+        "silhouette": "reviewed_winter_dress_composition",
+        "color_relation": "reviewed_coherent",
+        "persona_evidence": "紫色包裹长外套覆盖自然腰长衬衫裙，长靴与软包保持完整且低负担的冬日长线。",
+        "winter_outdoor": "complete_layers_visually_reviewed"
+      },
+      "confidence": 0.86,
+      "model": "current_codex_session",
+      "prompt_version": "aw-winter-03-native-v1",
+      "review_level": "individual_contact_sheet_judgment",
+      "evidence_scope": "nonblind_individual_visual_judgment; no temperature/waterproof claim",
+      "review_complete": true,
+      "field_status": {
+        "axes": "ai_observed",
+        "expression": "ai_observed",
+        "formality": "ai_observed",
+        "layering": "ai_observed",
+        "persona_scores": "ai_observed",
+        "scenes": "ai_observed",
+        "seasons": "ai_observed",
+        "structure": "ai_observed",
+        "wearability": "ai_observed",
+        "main_visual_slots": "ai_observed",
+        "main_colors": "ai_observed",
+        "conflicts": "unknown",
+        "silhouette": "ai_observed",
+        "color_relation": "ai_observed",
+        "persona_evidence": "ai_observed",
+        "winter_outdoor": "ai_observed"
+      },
+      "field_provenance": {
+        "axes": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        },
+        "expression": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        },
+        "formality": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        },
+        "layering": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        },
+        "persona_scores": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        },
+        "scenes": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        },
+        "seasons": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        },
+        "structure": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        },
+        "wearability": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        },
+        "main_visual_slots": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        },
+        "main_colors": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        },
+        "conflicts": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": null
+        },
+        "silhouette": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        },
+        "color_relation": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        },
+        "persona_evidence": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        },
+        "winter_outdoor": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        }
+      }
+    },
+    {
+      "outfit_id": "outfit_film_aw-winter-03_07",
+      "status": "ai_candidate",
+      "record_fingerprint": "b184788ef83a91c05fc261eca92493c9680dd3fc7b6b168932b4a6bdb6627424",
+      "asset_sha256": "47e97da9d7c60a9a6273b3cbee7b0d5bfeb3e592cac704872abedb5a9ab39a6e",
+      "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/25664b1b0dd90cf732fe0b37.webp",
+      "source_kind": "codex_visual_review",
+      "evidence": "祖母绿圆领 A 形外套、浅花衬衫和浅色褶裤建立清楚复古比例，平底鞋保持日常。",
+      "observations": {
+        "axes": {},
+        "expression": "easy",
+        "formality": "smart_casual",
+        "layering": 2,
+        "persona_scores": {
+          "film": 0.88,
+          "heir": 0.66
+        },
+        "scenes": [
+          "daily"
+        ],
+        "seasons": [
+          "winter"
+        ],
+        "structure": "pants",
+        "wearability": "everyday",
+        "main_visual_slots": [
+          "outer",
+          "top",
+          "pants"
+        ],
+        "main_colors": [
+          "deep_emerald",
+          "ivory",
+          "pale_blue"
+        ],
+        "conflicts": null,
+        "silhouette": "reviewed_winter_pants_composition",
+        "color_relation": "reviewed_coherent",
+        "persona_evidence": "祖母绿圆领 A 形外套、浅花衬衫和浅色褶裤建立清楚复古比例，平底鞋保持日常。",
+        "winter_outdoor": "complete_layers_visually_reviewed"
+      },
+      "confidence": 0.86,
+      "model": "current_codex_session",
+      "prompt_version": "aw-winter-03-native-v1",
+      "review_level": "individual_contact_sheet_judgment",
+      "evidence_scope": "nonblind_individual_visual_judgment; no temperature/waterproof claim",
+      "review_complete": true,
+      "field_status": {
+        "axes": "ai_observed",
+        "expression": "ai_observed",
+        "formality": "ai_observed",
+        "layering": "ai_observed",
+        "persona_scores": "ai_observed",
+        "scenes": "ai_observed",
+        "seasons": "ai_observed",
+        "structure": "ai_observed",
+        "wearability": "ai_observed",
+        "main_visual_slots": "ai_observed",
+        "main_colors": "ai_observed",
+        "conflicts": "unknown",
+        "silhouette": "ai_observed",
+        "color_relation": "ai_observed",
+        "persona_evidence": "ai_observed",
+        "winter_outdoor": "ai_observed"
+      },
+      "field_provenance": {
+        "axes": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        },
+        "expression": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        },
+        "formality": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        },
+        "layering": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        },
+        "persona_scores": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        },
+        "scenes": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        },
+        "seasons": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        },
+        "structure": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        },
+        "wearability": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        },
+        "main_visual_slots": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        },
+        "main_colors": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        },
+        "conflicts": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": null
+        },
+        "silhouette": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        },
+        "color_relation": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        },
+        "persona_evidence": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        },
+        "winter_outdoor": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        }
+      }
+    },
+    {
+      "outfit_id": "outfit_jade_aw-winter-03_08",
+      "status": "ai_candidate",
+      "record_fingerprint": "46053606fb720237304fe850a7c556a69e72d2a664605bfdffe62ac03338f01f",
+      "asset_sha256": "7ba09e569131f7d74ee34725d6516b9ea20e7f48db3983c7ccf24cfd15ddae5d",
+      "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/c54b21fa2e54959d34315ee0.webp",
+      "source_kind": "codex_visual_review",
+      "evidence": "祖母绿收腰外套与水墨内搭、黑色斜裁长裙构成克制纵线，线条母题连续。",
+      "observations": {
+        "axes": {},
+        "expression": "typical",
+        "formality": "smart_casual",
+        "layering": 2,
+        "persona_scores": {
+          "jade": 0.86,
+          "film": 0.6
+        },
+        "scenes": [
+          "daily"
+        ],
+        "seasons": [
+          "winter"
+        ],
+        "structure": "skirt",
+        "wearability": "everyday_with_statement",
+        "main_visual_slots": [
+          "outer",
+          "top",
+          "skirt"
+        ],
+        "main_colors": [
+          "deep_emerald",
+          "ivory",
+          "gray",
+          "charcoal"
+        ],
+        "conflicts": null,
+        "silhouette": "reviewed_winter_skirt_composition",
+        "color_relation": "reviewed_coherent",
+        "persona_evidence": "祖母绿收腰外套与水墨内搭、黑色斜裁长裙构成克制纵线，线条母题连续。",
+        "winter_outdoor": "complete_layers_visually_reviewed"
+      },
+      "confidence": 0.86,
+      "model": "current_codex_session",
+      "prompt_version": "aw-winter-03-native-v1",
+      "review_level": "individual_contact_sheet_judgment",
+      "evidence_scope": "nonblind_individual_visual_judgment; no temperature/waterproof claim",
+      "review_complete": true,
+      "field_status": {
+        "axes": "ai_observed",
+        "expression": "ai_observed",
+        "formality": "ai_observed",
+        "layering": "ai_observed",
+        "persona_scores": "ai_observed",
+        "scenes": "ai_observed",
+        "seasons": "ai_observed",
+        "structure": "ai_observed",
+        "wearability": "ai_observed",
+        "main_visual_slots": "ai_observed",
+        "main_colors": "ai_observed",
+        "conflicts": "unknown",
+        "silhouette": "ai_observed",
+        "color_relation": "ai_observed",
+        "persona_evidence": "ai_observed",
+        "winter_outdoor": "ai_observed"
+      },
+      "field_provenance": {
+        "axes": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        },
+        "expression": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        },
+        "formality": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        },
+        "layering": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        },
+        "persona_scores": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        },
+        "scenes": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        },
+        "seasons": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        },
+        "structure": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        },
+        "wearability": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        },
+        "main_visual_slots": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        },
+        "main_colors": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        },
+        "conflicts": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": null
+        },
+        "silhouette": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        },
+        "color_relation": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        },
+        "persona_evidence": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        },
+        "winter_outdoor": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        }
+      }
+    },
+    {
+      "outfit_id": "outfit_bolt_aw-winter-03_09",
+      "status": "ai_candidate",
+      "record_fingerprint": "5385d47106813e8bea6e7055c0aeb42407081504712459ec5253b0dfbc41ac19",
+      "asset_sha256": "4d7b8f97dcb82675f462568cb0f9fee202df4365e4b52801a85ba870df8f8238",
+      "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/3fac5caac9d07ed0f1712058.webp",
+      "source_kind": "codex_visual_review",
+      "evidence": "祖母绿外套的锐肩、收腰和 A 形下摆构成精致主视觉，灰长裙和长靴不抢焦点。",
+      "observations": {
+        "axes": {},
+        "expression": "typical",
+        "formality": "smart_casual",
+        "layering": 2,
+        "persona_scores": {
+          "bolt": 0.84,
+          "heir": 0.72
+        },
+        "scenes": [
+          "daily"
+        ],
+        "seasons": [
+          "winter"
+        ],
+        "structure": "dress",
+        "wearability": "everyday_with_statement",
+        "main_visual_slots": [
+          "outer",
+          "dress"
+        ],
+        "main_colors": [
+          "deep_emerald",
+          "charcoal"
+        ],
+        "conflicts": null,
+        "silhouette": "reviewed_winter_dress_composition",
+        "color_relation": "reviewed_coherent",
+        "persona_evidence": "祖母绿外套的锐肩、收腰和 A 形下摆构成精致主视觉，灰长裙和长靴不抢焦点。",
+        "winter_outdoor": "complete_layers_visually_reviewed"
+      },
+      "confidence": 0.86,
+      "model": "current_codex_session",
+      "prompt_version": "aw-winter-03-native-v1",
+      "review_level": "individual_contact_sheet_judgment",
+      "evidence_scope": "nonblind_individual_visual_judgment; no temperature/waterproof claim",
+      "review_complete": true,
+      "field_status": {
+        "axes": "ai_observed",
+        "expression": "ai_observed",
+        "formality": "ai_observed",
+        "layering": "ai_observed",
+        "persona_scores": "ai_observed",
+        "scenes": "ai_observed",
+        "seasons": "ai_observed",
+        "structure": "ai_observed",
+        "wearability": "ai_observed",
+        "main_visual_slots": "ai_observed",
+        "main_colors": "ai_observed",
+        "conflicts": "unknown",
+        "silhouette": "ai_observed",
+        "color_relation": "ai_observed",
+        "persona_evidence": "ai_observed",
+        "winter_outdoor": "ai_observed"
+      },
+      "field_provenance": {
+        "axes": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        },
+        "expression": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        },
+        "formality": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        },
+        "layering": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        },
+        "persona_scores": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        },
+        "scenes": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        },
+        "seasons": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        },
+        "structure": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        },
+        "wearability": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        },
+        "main_visual_slots": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        },
+        "main_colors": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        },
+        "conflicts": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": null
+        },
+        "silhouette": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        },
+        "color_relation": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        },
+        "persona_evidence": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        },
+        "winter_outdoor": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        }
+      }
+    },
+    {
+      "outfit_id": "outfit_mute_aw-winter-03_10",
+      "status": "ai_candidate",
+      "record_fingerprint": "8f0c9d7b1cf255bf3754761d26db3731edf3e0a20f191761db8bf78c5c3c25de",
+      "asset_sha256": "5eada8d7ff5e16cf9aa11649cfd7236fa1346cf80e4839a4940837a594c0a2a7",
+      "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/4e82f5449134de21373553a1.webp",
+      "source_kind": "codex_visual_review",
+      "evidence": "万寿菊黄是唯一高彩主色，无领长外套、白衬衫、灰直裤与黑鞋包保持清晰低装饰。",
+      "observations": {
+        "axes": {},
+        "expression": "easy",
+        "formality": "smart_casual",
+        "layering": 2,
+        "persona_scores": {
+          "mute": 0.88,
+          "loop": 0.64
+        },
+        "scenes": [
+          "daily"
+        ],
+        "seasons": [
+          "winter"
+        ],
+        "structure": "pants",
+        "wearability": "everyday",
+        "main_visual_slots": [
+          "outer",
+          "top",
+          "pants"
+        ],
+        "main_colors": [
+          "vivid_marigold",
+          "white",
+          "light_gray"
+        ],
+        "conflicts": null,
+        "silhouette": "reviewed_winter_pants_composition",
+        "color_relation": "reviewed_coherent",
+        "persona_evidence": "万寿菊黄是唯一高彩主色，无领长外套、白衬衫、灰直裤与黑鞋包保持清晰低装饰。",
+        "winter_outdoor": "complete_layers_visually_reviewed"
+      },
+      "confidence": 0.86,
+      "model": "current_codex_session",
+      "prompt_version": "aw-winter-03-native-v1",
+      "review_level": "individual_contact_sheet_judgment",
+      "evidence_scope": "nonblind_individual_visual_judgment; no temperature/waterproof claim",
+      "review_complete": true,
+      "field_status": {
+        "axes": "ai_observed",
+        "expression": "ai_observed",
+        "formality": "ai_observed",
+        "layering": "ai_observed",
+        "persona_scores": "ai_observed",
+        "scenes": "ai_observed",
+        "seasons": "ai_observed",
+        "structure": "ai_observed",
+        "wearability": "ai_observed",
+        "main_visual_slots": "ai_observed",
+        "main_colors": "ai_observed",
+        "conflicts": "unknown",
+        "silhouette": "ai_observed",
+        "color_relation": "ai_observed",
+        "persona_evidence": "ai_observed",
+        "winter_outdoor": "ai_observed"
+      },
+      "field_provenance": {
+        "axes": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        },
+        "expression": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        },
+        "formality": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        },
+        "layering": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        },
+        "persona_scores": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        },
+        "scenes": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        },
+        "seasons": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        },
+        "structure": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        },
+        "wearability": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        },
+        "main_visual_slots": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        },
+        "main_colors": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        },
+        "conflicts": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": null
+        },
+        "silhouette": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        },
+        "color_relation": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        },
+        "persona_evidence": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        },
+        "winter_outdoor": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        }
+      }
+    },
+    {
+      "outfit_id": "outfit_jade_aw-winter-03_11",
+      "status": "ai_candidate",
+      "record_fingerprint": "38e34aeb6342fbeba7dae08c11df13acbabcc3562d1f1dd6808078aa3c83b41c",
+      "asset_sha256": "37b5553196047d87a33095719f9948e6212e30095eaa999dea2bdc3fe862b2c4",
+      "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/864b537ebe5a78fb1a5f48bc.webp",
+      "source_kind": "codex_visual_review",
+      "evidence": "鲜黄长直外套与水墨内搭、黑长裙形成一明一暗的克制交叠，焦点明确。",
+      "observations": {
+        "axes": {},
+        "expression": "typical",
+        "formality": "smart_casual",
+        "layering": 2,
+        "persona_scores": {
+          "jade": 0.82,
+          "film": 0.62
+        },
+        "scenes": [
+          "daily"
+        ],
+        "seasons": [
+          "winter"
+        ],
+        "structure": "skirt",
+        "wearability": "everyday_with_statement",
+        "main_visual_slots": [
+          "outer",
+          "top",
+          "skirt"
+        ],
+        "main_colors": [
+          "vivid_marigold",
+          "ivory",
+          "gray",
+          "charcoal"
+        ],
+        "conflicts": null,
+        "silhouette": "reviewed_winter_skirt_composition",
+        "color_relation": "reviewed_coherent",
+        "persona_evidence": "鲜黄长直外套与水墨内搭、黑长裙形成一明一暗的克制交叠，焦点明确。",
+        "winter_outdoor": "complete_layers_visually_reviewed"
+      },
+      "confidence": 0.86,
+      "model": "current_codex_session",
+      "prompt_version": "aw-winter-03-native-v1",
+      "review_level": "individual_contact_sheet_judgment",
+      "evidence_scope": "nonblind_individual_visual_judgment; no temperature/waterproof claim",
+      "review_complete": true,
+      "field_status": {
+        "axes": "ai_observed",
+        "expression": "ai_observed",
+        "formality": "ai_observed",
+        "layering": "ai_observed",
+        "persona_scores": "ai_observed",
+        "scenes": "ai_observed",
+        "seasons": "ai_observed",
+        "structure": "ai_observed",
+        "wearability": "ai_observed",
+        "main_visual_slots": "ai_observed",
+        "main_colors": "ai_observed",
+        "conflicts": "unknown",
+        "silhouette": "ai_observed",
+        "color_relation": "ai_observed",
+        "persona_evidence": "ai_observed",
+        "winter_outdoor": "ai_observed"
+      },
+      "field_provenance": {
+        "axes": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        },
+        "expression": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        },
+        "formality": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        },
+        "layering": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        },
+        "persona_scores": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        },
+        "scenes": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        },
+        "seasons": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        },
+        "structure": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        },
+        "wearability": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        },
+        "main_visual_slots": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        },
+        "main_colors": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        },
+        "conflicts": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": null
+        },
+        "silhouette": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        },
+        "color_relation": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        },
+        "persona_evidence": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        },
+        "winter_outdoor": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        }
+      }
+    },
+    {
+      "outfit_id": "outfit_film_aw-winter-03_12",
+      "status": "ai_candidate",
+      "record_fingerprint": "da1e1c336a4710be1edc28f950a70ca2d7f03100207e64315128e594dc42d493",
+      "asset_sha256": "f139ad585e00265ec70710b31c958d547bb70f4aed3e5c3720db6207af28ecb5",
+      "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/c2476bed89cf9d6c90a5eaad.webp",
+      "source_kind": "codex_visual_review",
+      "evidence": "万寿菊黄长外套、棕色长衬衫裙和长靴形成暖色复古长线，软包不增加新焦点。",
+      "observations": {
+        "axes": {},
+        "expression": "easy",
+        "formality": "smart_casual",
+        "layering": 2,
+        "persona_scores": {
+          "film": 0.88,
+          "wabi": 0.6
+        },
+        "scenes": [
+          "daily"
+        ],
+        "seasons": [
+          "winter"
+        ],
+        "structure": "dress",
+        "wearability": "everyday",
+        "main_visual_slots": [
+          "outer",
+          "dress"
+        ],
+        "main_colors": [
+          "vivid_marigold",
+          "brown"
+        ],
+        "conflicts": null,
+        "silhouette": "reviewed_winter_dress_composition",
+        "color_relation": "reviewed_coherent",
+        "persona_evidence": "万寿菊黄长外套、棕色长衬衫裙和长靴形成暖色复古长线，软包不增加新焦点。",
+        "winter_outdoor": "complete_layers_visually_reviewed"
+      },
+      "confidence": 0.86,
+      "model": "current_codex_session",
+      "prompt_version": "aw-winter-03-native-v1",
+      "review_level": "individual_contact_sheet_judgment",
+      "evidence_scope": "nonblind_individual_visual_judgment; no temperature/waterproof claim",
+      "review_complete": true,
+      "field_status": {
+        "axes": "ai_observed",
+        "expression": "ai_observed",
+        "formality": "ai_observed",
+        "layering": "ai_observed",
+        "persona_scores": "ai_observed",
+        "scenes": "ai_observed",
+        "seasons": "ai_observed",
+        "structure": "ai_observed",
+        "wearability": "ai_observed",
+        "main_visual_slots": "ai_observed",
+        "main_colors": "ai_observed",
+        "conflicts": "unknown",
+        "silhouette": "ai_observed",
+        "color_relation": "ai_observed",
+        "persona_evidence": "ai_observed",
+        "winter_outdoor": "ai_observed"
+      },
+      "field_provenance": {
+        "axes": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        },
+        "expression": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        },
+        "formality": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        },
+        "layering": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        },
+        "persona_scores": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        },
+        "scenes": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        },
+        "seasons": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        },
+        "structure": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        },
+        "wearability": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        },
+        "main_visual_slots": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        },
+        "main_colors": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        },
+        "conflicts": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": null
+        },
+        "silhouette": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        },
+        "color_relation": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        },
+        "persona_evidence": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        },
+        "winter_outdoor": {
+          "source_file": "winter-batch03-review/contact-sheet.jpg",
+          "version": "aw-winter-03-native-v1",
+          "confidence": 0.86
+        }
+      }
+    }
+  ],
+  "version": "aw-winter-review-3d167a748667c736470a"
+}

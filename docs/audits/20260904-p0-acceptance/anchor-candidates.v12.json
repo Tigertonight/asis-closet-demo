@@ -1,0 +1,1349 @@
+{
+  "schema_version": 1,
+  "status": "candidate",
+  "version": "selfit-p0-anchor-candidates-20260904-v1",
+  "content_version": "2026.09-v2-published1",
+  "visual_version": "codex-visual-16b18cdcdca36dbc306a",
+  "family_registry_sha256": "428a6a9234c0484b47098fef4172d5bfae69fe25303ed58c2d6c854484654bc9",
+  "blind_review_package_id": null,
+  "staging_version": "p0-gap-staging-2109b487929a61152ff7",
+  "persona_signal": "visual",
+  "anchors": [
+    {
+      "outfit_id": "outfit_heir_master_10",
+      "persona": "bolt",
+      "expression": "typical",
+      "structure": "pants",
+      "user_title": "在逃千金 · 轻松出门",
+      "record_fingerprint": "1dfba50a95f0220e0ffef1c83c607051faf4b7bcb46f8d4314a02868d888bbd9",
+      "four_gate_current": false
+    },
+    {
+      "outfit_id": "outfit_bolt_master_05_v1",
+      "persona": "bolt",
+      "expression": "explore",
+      "structure": "pants",
+      "user_title": "在逃千金 · 日常有序",
+      "record_fingerprint": "a327f0e440c3fa74eade485246bc5092148a033d4a48e0b02647663cc5ef6604",
+      "four_gate_current": false
+    },
+    {
+      "outfit_id": "outfit_bolt_master_10_v1",
+      "persona": "ease",
+      "expression": "explore",
+      "structure": "pants",
+      "user_title": "松弛讲究 · 轻松出门",
+      "record_fingerprint": "5d2385a9057e14b0be2a957414204ac145ed4632929d23eabbb29c81bb0aed96",
+      "four_gate_current": false
+    },
+    {
+      "outfit_id": "outfit_neon_master_15_v2",
+      "persona": "ease",
+      "expression": "explore",
+      "structure": "skirt",
+      "user_title": "松弛讲究 · 日常有序",
+      "record_fingerprint": "ac968aedbbaf84472442dff55456a5d26c9253a6aefeefcc4ea6af53bda7e1df",
+      "four_gate_current": false
+    },
+    {
+      "outfit_id": "outfit_flou_master_30_v1",
+      "persona": "ease",
+      "expression": "typical",
+      "structure": "dress",
+      "user_title": "松弛讲究 · 柔和转场",
+      "record_fingerprint": "f8b9f3c76fde602a968f18bdc60b79eee5c80187dc844ff36de374325f33b9a8",
+      "four_gate_current": false
+    },
+    {
+      "outfit_id": "outfit_wabi_master_09_v1",
+      "persona": "ease",
+      "expression": "typical",
+      "structure": "pants",
+      "user_title": "松弛讲究 · 比例游戏",
+      "record_fingerprint": "c02cfe6dfba682de9581a039335e416064a84c9aa451a0c2507f0b0c7885ae9e",
+      "four_gate_current": false
+    },
+    {
+      "outfit_id": "outfit_ease_master_06",
+      "persona": "ease",
+      "expression": "typical",
+      "structure": "pants",
+      "user_title": "松弛讲究 · 一件成型",
+      "record_fingerprint": "2bb2f6659aa30bd2449511627cafc3884ea8e3eb4a8ecec1377c8902dd815d71",
+      "four_gate_current": false
+    },
+    {
+      "outfit_id": "outfit_ease_master_15",
+      "persona": "ease",
+      "expression": "typical",
+      "structure": "skirt",
+      "user_title": "松弛讲究 · 层次呼吸",
+      "record_fingerprint": "951cc3997a73e66c2b6a15c373831dd69810d247eea2587002552da7e7f7d9f1",
+      "four_gate_current": false
+    },
+    {
+      "outfit_id": "outfit_mute_master_08",
+      "persona": "ease",
+      "expression": "easy",
+      "structure": "pants",
+      "user_title": "松弛讲究 · 利落收束",
+      "record_fingerprint": "21ea560d85b37ffc20a798ec54039fc6380045c52555123a69eeaecc0b54f2a4",
+      "four_gate_current": false
+    },
+    {
+      "outfit_id": "outfit_heir_master_07",
+      "persona": "ease",
+      "expression": "easy",
+      "structure": "pants",
+      "user_title": "松弛讲究 · 细节聚焦",
+      "record_fingerprint": "394e262fcc7eedff830ca9a3cb2bed6d721a2b94d15d7582188e18dbb559af55",
+      "four_gate_current": false
+    },
+    {
+      "outfit_id": "outfit_ease_master_26",
+      "persona": "ease",
+      "expression": "easy",
+      "structure": "dress",
+      "user_title": "松弛讲究 · 周末漫游",
+      "record_fingerprint": "c090dd7d57b8b68e24efb75cba1ee68913b5edcd2001c1f2630cb0e0956ffe3e",
+      "four_gate_current": false
+    },
+    {
+      "outfit_id": "outfit_iced_master_13",
+      "persona": "ease",
+      "expression": "easy",
+      "structure": "skirt",
+      "user_title": "松弛讲究 · 小幅冒险",
+      "record_fingerprint": "34eff1f62ab648f46839522aa0bee6f4231f05e164154c68e065105dd3ccf1f7",
+      "four_gate_current": false
+    },
+    {
+      "outfit_id": "outfit_noir_master_09_v2",
+      "persona": "edge",
+      "expression": "typical",
+      "structure": "pants",
+      "user_title": "甜酷轻亚 · 轻松出门",
+      "record_fingerprint": "db0e2b12abd2860d694cbd311218895be7ccf9b27183968d7e0eba9dce2d33be",
+      "four_gate_current": false
+    },
+    {
+      "outfit_id": "outfit_noir_master_12_v2",
+      "persona": "edge",
+      "expression": "typical",
+      "structure": "skirt",
+      "user_title": "甜酷轻亚 · 日常有序",
+      "record_fingerprint": "8401b586788b26439df2b693bcd20e2a41ca414ffa09fa074bf9ef11de31ad7a",
+      "four_gate_current": false
+    },
+    {
+      "outfit_id": "outfit_wabi_master_27",
+      "persona": "edge",
+      "expression": "typical",
+      "structure": "dress",
+      "user_title": "甜酷轻亚 · 柔和转场",
+      "record_fingerprint": "de20b34a73259d93d158d4d50c2cc71ad7de6396983ee4076571a0f90980bc72",
+      "four_gate_current": false
+    },
+    {
+      "outfit_id": "outfit_noir_master_03",
+      "persona": "edge",
+      "expression": "typical",
+      "structure": "pants",
+      "user_title": "甜酷轻亚 · 比例游戏",
+      "record_fingerprint": "bf8c6cb5d8cbe0fd7cecfd1155459747411c2d080cf1238e6688e4290279540b",
+      "four_gate_current": false
+    },
+    {
+      "outfit_id": "outfit_noir_master_18_v1",
+      "persona": "edge",
+      "expression": "explore",
+      "structure": "skirt",
+      "user_title": "甜酷轻亚 · 一件成型",
+      "record_fingerprint": "b3a32a205affcce6e14d7f14241368830d7bccf8bc22b44d2982a4d638108fce",
+      "four_gate_current": false
+    },
+    {
+      "outfit_id": "outfit_film_p0-gap-02_01",
+      "persona": "film",
+      "expression": "explore",
+      "structure": "pants",
+      "user_title": "虚焦胶片 · 轻松出门",
+      "record_fingerprint": "fad65595218987b767d8252538f93730888f49f02d6b342890b487ba04a46a8c",
+      "four_gate_current": false
+    },
+    {
+      "outfit_id": "outfit_oops_master_25_v1",
+      "persona": "film",
+      "expression": "explore",
+      "structure": "dress",
+      "user_title": "虚焦胶片 · 日常有序",
+      "record_fingerprint": "dbad015c5da737fdff1e811ee602d0e6250600eae67cee6886266b95e5db6b4b",
+      "four_gate_current": false
+    },
+    {
+      "outfit_id": "outfit_wabi_master_18",
+      "persona": "film",
+      "expression": "typical",
+      "structure": "skirt",
+      "user_title": "虚焦胶片 · 柔和转场",
+      "record_fingerprint": "95259ded67d4abc05334eab5c641cc9b17d87f78d175df9c7b4308878e30655e",
+      "four_gate_current": false
+    },
+    {
+      "outfit_id": "outfit_film_master_03",
+      "persona": "film",
+      "expression": "typical",
+      "structure": "pants",
+      "user_title": "虚焦胶片 · 比例游戏",
+      "record_fingerprint": "136bb47bdeea45c2f9cb1b778bc392f1b4364418727a9e07fd21c53fb55e1957",
+      "four_gate_current": false
+    },
+    {
+      "outfit_id": "outfit_film_master_05_v2",
+      "persona": "film",
+      "expression": "typical",
+      "structure": "pants",
+      "user_title": "虚焦胶片 · 一件成型",
+      "record_fingerprint": "85642466b69a2f0e429a49998b18c78988f404682c17ec7988ad402f49cc5fe9",
+      "four_gate_current": false
+    },
+    {
+      "outfit_id": "outfit_film_master_06",
+      "persona": "film",
+      "expression": "typical",
+      "structure": "pants",
+      "user_title": "虚焦胶片 · 层次呼吸",
+      "record_fingerprint": "4da93668ccc6a08fb9087881257db27b4c4e6b63e91bc1f75bf01ab5960ea6ff",
+      "four_gate_current": false
+    },
+    {
+      "outfit_id": "outfit_heir_master_12",
+      "persona": "film",
+      "expression": "easy",
+      "structure": "skirt",
+      "user_title": "虚焦胶片 · 利落收束",
+      "record_fingerprint": "2e6788fa4419268d685703eb45f9f198d45a1d743d51dccdc4335e95b25541b1",
+      "four_gate_current": false
+    },
+    {
+      "outfit_id": "outfit_void_master_15_v1",
+      "persona": "film",
+      "expression": "easy",
+      "structure": "skirt",
+      "user_title": "虚焦胶片 · 细节聚焦",
+      "record_fingerprint": "e4e7c6b3ebda2467e6b63af4086490929be5a5b5948066c20c92ce87d048abe1",
+      "four_gate_current": false
+    },
+    {
+      "outfit_id": "outfit_heir_master_02",
+      "persona": "film",
+      "expression": "easy",
+      "structure": "pants",
+      "user_title": "虚焦胶片 · 周末漫游",
+      "record_fingerprint": "c96eb23a6dd4f10db2664e757e80eff0369536ec3ee3e3a5f919161cb1548048",
+      "four_gate_current": false
+    },
+    {
+      "outfit_id": "outfit_noir_master_13_v2",
+      "persona": "film",
+      "expression": "easy",
+      "structure": "skirt",
+      "user_title": "虚焦胶片 · 小幅冒险",
+      "record_fingerprint": "b93137f953d5b7165b3a2d4ccb69d75dd6d97cc7dbcdcfa8378ce7a7f244f0a5",
+      "four_gate_current": false
+    },
+    {
+      "outfit_id": "outfit_oops_master_29_v1",
+      "persona": "flou",
+      "expression": "explore",
+      "structure": "dress",
+      "user_title": "造梦浪漫 · 轻松出门",
+      "record_fingerprint": "5fd368716170c46118749cfd93016e70952e7b39e34e3cbbba35924c4381e014",
+      "four_gate_current": false
+    },
+    {
+      "outfit_id": "outfit_neon_master_08",
+      "persona": "flou",
+      "expression": "explore",
+      "structure": "pants",
+      "user_title": "造梦浪漫 · 日常有序",
+      "record_fingerprint": "b463a51f3cdd83653bee5587c8049294c587ed095e98628ee24d0f89d99f9fa8",
+      "four_gate_current": false
+    },
+    {
+      "outfit_id": "outfit_melt_master_14",
+      "persona": "flou",
+      "expression": "typical",
+      "structure": "skirt",
+      "user_title": "造梦浪漫 · 柔和转场",
+      "record_fingerprint": "70584a0ceb7b3f9ea5610ab864b12397e603badb0c760fd3df63e470acb7fe49",
+      "four_gate_current": false
+    },
+    {
+      "outfit_id": "outfit_melt_master_02",
+      "persona": "flou",
+      "expression": "typical",
+      "structure": "pants",
+      "user_title": "造梦浪漫 · 比例游戏",
+      "record_fingerprint": "6aa83ad215154ce26eb513c1d5c29c30c02c923d30a0f7bdcae2a47530d73f80",
+      "four_gate_current": false
+    },
+    {
+      "outfit_id": "outfit_iced_master_25",
+      "persona": "flou",
+      "expression": "typical",
+      "structure": "dress",
+      "user_title": "造梦浪漫 · 一件成型",
+      "record_fingerprint": "0e29cbfc9376085264d0cbc8f543e697bc33ac7193f00240225417f62f4c2f2d",
+      "four_gate_current": false
+    },
+    {
+      "outfit_id": "outfit_iced_master_15",
+      "persona": "flou",
+      "expression": "typical",
+      "structure": "skirt",
+      "user_title": "造梦浪漫 · 层次呼吸",
+      "record_fingerprint": "6ed37b2ef85c04ba5156ab39f76af6fb47dad94b65072e81efcbf8376a2d3975",
+      "four_gate_current": false
+    },
+    {
+      "outfit_id": "outfit_ease_master_14",
+      "persona": "flou",
+      "expression": "easy",
+      "structure": "skirt",
+      "user_title": "造梦浪漫 · 利落收束",
+      "record_fingerprint": "6c9b6c143172d47f0bc1ae36c5b320772a8046fd861562e600961b878d86acec",
+      "four_gate_current": false
+    },
+    {
+      "outfit_id": "outfit_mute_master_15",
+      "persona": "flou",
+      "expression": "easy",
+      "structure": "skirt",
+      "user_title": "造梦浪漫 · 细节聚焦",
+      "record_fingerprint": "b261370c5d96bd282346d506976e5786d92a9fd7169462e30cd2aba401e54ece",
+      "four_gate_current": false
+    },
+    {
+      "outfit_id": "outfit_jade_master_30",
+      "persona": "flou",
+      "expression": "easy",
+      "structure": "dress",
+      "user_title": "造梦浪漫 · 周末漫游",
+      "record_fingerprint": "1b8e8d94f0f37dc03ba87722f0ce1a275bb8b0745f589d1b62174ee4644e62d0",
+      "four_gate_current": false
+    },
+    {
+      "outfit_id": "outfit_wabi_master_13",
+      "persona": "flou",
+      "expression": "easy",
+      "structure": "skirt",
+      "user_title": "造梦浪漫 · 小幅冒险",
+      "record_fingerprint": "8528de93a3ac035871c20fb680fa18fc73d4509647be43e23285574ef219bb93",
+      "four_gate_current": false
+    },
+    {
+      "outfit_id": "outfit_heir_master_17_v1",
+      "persona": "heir",
+      "expression": "explore",
+      "structure": "skirt",
+      "user_title": "老钱新穿 · 轻松出门",
+      "record_fingerprint": "71fcf1159b709f7cdbfe801bb93388feb2ad5e9c301cfcd5c1cfb91800849cab",
+      "four_gate_current": false
+    },
+    {
+      "outfit_id": "outfit_heir_master_26_v1",
+      "persona": "heir",
+      "expression": "explore",
+      "structure": "dress",
+      "user_title": "老钱新穿 · 日常有序",
+      "record_fingerprint": "d584b03266c68d412259a54c01cfef56fbe3677a5bee150f9e1d8b15df38c4e5",
+      "four_gate_current": false
+    },
+    {
+      "outfit_id": "outfit_heir_master_04",
+      "persona": "heir",
+      "expression": "typical",
+      "structure": "pants",
+      "user_title": "老钱新穿 · 柔和转场",
+      "record_fingerprint": "f6f1659bd7b744f711cb3448254666fbd07d1c3559c7a606d127ce743e799895",
+      "four_gate_current": false
+    },
+    {
+      "outfit_id": "outfit_heir_master_25",
+      "persona": "heir",
+      "expression": "typical",
+      "structure": "dress",
+      "user_title": "老钱新穿 · 比例游戏",
+      "record_fingerprint": "5542c44c32718b0a73678be3a8cc4a93ed4d0965ff575049de2d8c259eb90aee",
+      "four_gate_current": false
+    },
+    {
+      "outfit_id": "outfit_heir_master_14",
+      "persona": "heir",
+      "expression": "typical",
+      "structure": "skirt",
+      "user_title": "老钱新穿 · 一件成型",
+      "record_fingerprint": "76565e2e66ac15c63dfafb058c4b25fff100b6d9fa8314a96cfa663dd05796e9",
+      "four_gate_current": false
+    },
+    {
+      "outfit_id": "outfit_heir_master_09",
+      "persona": "heir",
+      "expression": "typical",
+      "structure": "pants",
+      "user_title": "老钱新穿 · 层次呼吸",
+      "record_fingerprint": "60b4d6295aa124bab60e33c77d5f9907b179021b59e29f1560ed377ec852f9ad",
+      "four_gate_current": false
+    },
+    {
+      "outfit_id": "outfit_heir_master_06",
+      "persona": "heir",
+      "expression": "easy",
+      "structure": "pants",
+      "user_title": "老钱新穿 · 利落收束",
+      "record_fingerprint": "71bdfa02e8cce68a84938e32426d1990096a4a083f2f0d90466595eaba5372f1",
+      "four_gate_current": false
+    },
+    {
+      "outfit_id": "outfit_heir_master_15",
+      "persona": "heir",
+      "expression": "easy",
+      "structure": "skirt",
+      "user_title": "老钱新穿 · 细节聚焦",
+      "record_fingerprint": "e9fdf34f02626813e003d478d58528505e4db4d15363cafb78eca8b3518fbd04",
+      "four_gate_current": false
+    },
+    {
+      "outfit_id": "outfit_heir_master_16",
+      "persona": "heir",
+      "expression": "easy",
+      "structure": "skirt",
+      "user_title": "老钱新穿 · 周末漫游",
+      "record_fingerprint": "491b983acaeaea1f3a34f8c36d487bd38a0a496f93cb67fe2a55a121911ad1f0",
+      "four_gate_current": false
+    },
+    {
+      "outfit_id": "outfit_heir_master_27",
+      "persona": "heir",
+      "expression": "easy",
+      "structure": "dress",
+      "user_title": "老钱新穿 · 小幅冒险",
+      "record_fingerprint": "3949f0deef1016b59e908d4d42493bd07a1b98726c3ad52a84cad7a5d075f372",
+      "four_gate_current": false
+    },
+    {
+      "outfit_id": "outfit_iced_p0-gap-01_02",
+      "persona": "iced",
+      "expression": "explore",
+      "structure": "skirt",
+      "user_title": "冷感冰面 · 轻松出门",
+      "record_fingerprint": "64f45231b2f51e5ca69513483aaef05ac4374bef10fc4a7bb31a6445383474c9",
+      "four_gate_current": false
+    },
+    {
+      "outfit_id": "outfit_iced_master_06_v2",
+      "persona": "iced",
+      "expression": "explore",
+      "structure": "pants",
+      "user_title": "冷感冰面 · 日常有序",
+      "record_fingerprint": "9ee909ccb86e6107aa3c01eec49ea59ca1545e64bd4d7396b7fb9f9fec3ba6fa",
+      "four_gate_current": false
+    },
+    {
+      "outfit_id": "outfit_mute_master_27",
+      "persona": "iced",
+      "expression": "typical",
+      "structure": "dress",
+      "user_title": "冷感冰面 · 柔和转场",
+      "record_fingerprint": "240ebc898ff841c8e2b19b9a00ad3d85b9ab2cd40d21727d27b1ae756eb0ba55",
+      "four_gate_current": false
+    },
+    {
+      "outfit_id": "outfit_iced_master_18",
+      "persona": "iced",
+      "expression": "typical",
+      "structure": "skirt",
+      "user_title": "冷感冰面 · 比例游戏",
+      "record_fingerprint": "10aceeed3cc2f67ff56a73c91ad4f668dc3da0ea62b7cac418b58a24915b73bf",
+      "four_gate_current": false
+    },
+    {
+      "outfit_id": "outfit_mute_master_02",
+      "persona": "iced",
+      "expression": "typical",
+      "structure": "pants",
+      "user_title": "冷感冰面 · 一件成型",
+      "record_fingerprint": "0c55f2da9ea6908971b6ad631cc1432a23906f02cc94c40754ea00667315b54f",
+      "four_gate_current": false
+    },
+    {
+      "outfit_id": "outfit_mute_master_10",
+      "persona": "iced",
+      "expression": "typical",
+      "structure": "pants",
+      "user_title": "冷感冰面 · 层次呼吸",
+      "record_fingerprint": "ace5c0082cf3c648f4dc862a5ce9118a14de3f2f457e4e2f34ea9eb2c4015133",
+      "four_gate_current": false
+    },
+    {
+      "outfit_id": "outfit_iced_master_05",
+      "persona": "iced",
+      "expression": "easy",
+      "structure": "pants",
+      "user_title": "冷感冰面 · 利落收束",
+      "record_fingerprint": "c1ed331c3abb84a088ff0f455f45c580424fde1fb4b3eaa52f5a2780ba8c7ffc",
+      "four_gate_current": false
+    },
+    {
+      "outfit_id": "outfit_edge_master_27",
+      "persona": "iced",
+      "expression": "easy",
+      "structure": "dress",
+      "user_title": "冷感冰面 · 细节聚焦",
+      "record_fingerprint": "0051794b17a8f68201a5bf060ee118c6bfa40087317599ad8632823629af0398",
+      "four_gate_current": false
+    },
+    {
+      "outfit_id": "outfit_iced_master_02",
+      "persona": "iced",
+      "expression": "easy",
+      "structure": "pants",
+      "user_title": "冷感冰面 · 周末漫游",
+      "record_fingerprint": "1f4b6fae4b92cb767fd21fd110c1cc35ff9e37e384ea362f99018891df763006",
+      "four_gate_current": false
+    },
+    {
+      "outfit_id": "outfit_flou_master_26",
+      "persona": "iced",
+      "expression": "easy",
+      "structure": "dress",
+      "user_title": "冷感冰面 · 小幅冒险",
+      "record_fingerprint": "a7fd6933a1d0234545b005f614a78c255523623b6648a8cc519f8bf80444fd41",
+      "four_gate_current": false
+    },
+    {
+      "outfit_id": "outfit_jade_master_09_v1",
+      "persona": "jade",
+      "expression": "explore",
+      "structure": "pants",
+      "user_title": "东方玉骨 · 轻松出门",
+      "record_fingerprint": "36f991ac9c84c29ac095ee29d9fbbdd142d564badd4c98cf7ce90d26f10cebeb",
+      "four_gate_current": false
+    },
+    {
+      "outfit_id": "outfit_jade_master_04_v1",
+      "persona": "jade",
+      "expression": "explore",
+      "structure": "pants",
+      "user_title": "东方玉骨 · 日常有序",
+      "record_fingerprint": "48f6c7a52a4ca522a44caaf7027ebf0091e9f85a33592de931f36f744f19e9fc",
+      "four_gate_current": false
+    },
+    {
+      "outfit_id": "outfit_jade_master_12_v2",
+      "persona": "jade",
+      "expression": "typical",
+      "structure": "skirt",
+      "user_title": "东方玉骨 · 柔和转场",
+      "record_fingerprint": "9fc19ce6c8e859854dac94ee0994475c5c9a77ef07720616b93eb1746b73631e",
+      "four_gate_current": false
+    },
+    {
+      "outfit_id": "outfit_jade_master_11_v1",
+      "persona": "jade",
+      "expression": "typical",
+      "structure": "skirt",
+      "user_title": "东方玉骨 · 比例游戏",
+      "record_fingerprint": "401f3b7353bc0bfd379c8b19ab42be26f1d9dfce42ebbd6fc46d4cc6cc71ffb1",
+      "four_gate_current": false
+    },
+    {
+      "outfit_id": "outfit_jade_master_16",
+      "persona": "jade",
+      "expression": "typical",
+      "structure": "skirt",
+      "user_title": "东方玉骨 · 一件成型",
+      "record_fingerprint": "6036e8de859fc2fbfac3d730651ae114c0e98bd52c32571ddc759b97d62a51ca",
+      "four_gate_current": false
+    },
+    {
+      "outfit_id": "outfit_jade_master_14_v2",
+      "persona": "jade",
+      "expression": "typical",
+      "structure": "skirt",
+      "user_title": "东方玉骨 · 层次呼吸",
+      "record_fingerprint": "933bea152245f6a2ca4f13bd9249ed48a7f50414fa6754bb0625631a951e9978",
+      "four_gate_current": false
+    },
+    {
+      "outfit_id": "outfit_jade_master_15",
+      "persona": "jade",
+      "expression": "easy",
+      "structure": "skirt",
+      "user_title": "东方玉骨 · 利落收束",
+      "record_fingerprint": "f167c57df5ae6202d34a9eb8fbdfbd942d36c96d49b0255fffaf29d79e4dea5c",
+      "four_gate_current": false
+    },
+    {
+      "outfit_id": "outfit_edge_master_05",
+      "persona": "loop",
+      "expression": "explore",
+      "structure": "pants",
+      "user_title": "无限重启 · 轻松出门",
+      "record_fingerprint": "fd40535fab11781a20948d50cfa169d37f88da8e67df44300e73d4a4d0ed9fdf",
+      "four_gate_current": false
+    },
+    {
+      "outfit_id": "outfit_neon_master_12",
+      "persona": "loop",
+      "expression": "explore",
+      "structure": "skirt",
+      "user_title": "无限重启 · 日常有序",
+      "record_fingerprint": "7bf922b38bf67d13d35746247795084e46ee5e6a4a572a84d7a9a3396c36f304",
+      "four_gate_current": false
+    },
+    {
+      "outfit_id": "outfit_film_master_28",
+      "persona": "loop",
+      "expression": "typical",
+      "structure": "dress",
+      "user_title": "无限重启 · 柔和转场",
+      "record_fingerprint": "2f5fca68b8e12ba6b9dd85e9267cb3617b2407082575cb523e60141fb0a66e6c",
+      "four_gate_current": false
+    },
+    {
+      "outfit_id": "outfit_loop_master_11_v1",
+      "persona": "loop",
+      "expression": "typical",
+      "structure": "skirt",
+      "user_title": "无限重启 · 比例游戏",
+      "record_fingerprint": "2952d1d65fc621ad69a1db49c5f4c278f7a92403f4f60c3796145ad62167564b",
+      "four_gate_current": false
+    },
+    {
+      "outfit_id": "outfit_loop_master_04_v2",
+      "persona": "loop",
+      "expression": "typical",
+      "structure": "pants",
+      "user_title": "无限重启 · 一件成型",
+      "record_fingerprint": "5a95ff8631e59ccbacb1f83efaa5a7e77172c428ba895f2d8bf40ecce21a217f",
+      "four_gate_current": false
+    },
+    {
+      "outfit_id": "outfit_loop_master_05",
+      "persona": "loop",
+      "expression": "typical",
+      "structure": "pants",
+      "user_title": "无限重启 · 层次呼吸",
+      "record_fingerprint": "1c7338e12568613f876614bc1dd9732a52093960b89c770afbebc051c5e291eb",
+      "four_gate_current": false
+    },
+    {
+      "outfit_id": "outfit_neon_master_03",
+      "persona": "loop",
+      "expression": "easy",
+      "structure": "pants",
+      "user_title": "无限重启 · 利落收束",
+      "record_fingerprint": "34a580f16396028a76a2c86ba23b38e00cc86c1c87e77f2eb76667c8bbec3960",
+      "four_gate_current": false
+    },
+    {
+      "outfit_id": "outfit_neon_master_13",
+      "persona": "loop",
+      "expression": "easy",
+      "structure": "skirt",
+      "user_title": "无限重启 · 细节聚焦",
+      "record_fingerprint": "871e55b4ec5b5676ea9eb42f02cb0d2c9a9fe9489bccc7e3d5bf9e7666b2d707",
+      "four_gate_current": false
+    },
+    {
+      "outfit_id": "outfit_flou_master_04",
+      "persona": "loop",
+      "expression": "easy",
+      "structure": "pants",
+      "user_title": "无限重启 · 周末漫游",
+      "record_fingerprint": "b9bba317b772737f46a8715ea68f601a723d69b0aa04f128613f205cd18c1297",
+      "four_gate_current": false
+    },
+    {
+      "outfit_id": "outfit_bolt_master_14",
+      "persona": "loop",
+      "expression": "easy",
+      "structure": "skirt",
+      "user_title": "无限重启 · 小幅冒险",
+      "record_fingerprint": "aee0dd162b68ca791fd2e967504f16c5a923da864ddd4ee1a9847fc2b421ea27",
+      "four_gate_current": false
+    },
+    {
+      "outfit_id": "outfit_ease_master_18_v1",
+      "persona": "melt",
+      "expression": "explore",
+      "structure": "skirt",
+      "user_title": "奶油治愈 · 轻松出门",
+      "record_fingerprint": "362af82d4e3d1359bb1acfbddc87bfb3343d80b91ecce046a47bfecf046a9d1f",
+      "four_gate_current": false
+    },
+    {
+      "outfit_id": "outfit_ease_master_30_v1",
+      "persona": "melt",
+      "expression": "explore",
+      "structure": "dress",
+      "user_title": "奶油治愈 · 日常有序",
+      "record_fingerprint": "bdac7a48405e815990d64e6264e8e92bcb0f912aa7aa78427393da3fa5dd8eee",
+      "four_gate_current": false
+    },
+    {
+      "outfit_id": "outfit_melt_master_06",
+      "persona": "melt",
+      "expression": "typical",
+      "structure": "pants",
+      "user_title": "奶油治愈 · 柔和转场",
+      "record_fingerprint": "006a04687c5bbf6e8bde79c7fef86653c9c4258381414169a76ca0b6c39e4494",
+      "four_gate_current": false
+    },
+    {
+      "outfit_id": "outfit_melt_master_15",
+      "persona": "melt",
+      "expression": "typical",
+      "structure": "skirt",
+      "user_title": "奶油治愈 · 比例游戏",
+      "record_fingerprint": "0ec4ddb408c3247665f653d6c52238d6a596a65fd63317b6e799ea9e3ede7709",
+      "four_gate_current": false
+    },
+    {
+      "outfit_id": "outfit_melt_master_18",
+      "persona": "melt",
+      "expression": "typical",
+      "structure": "skirt",
+      "user_title": "奶油治愈 · 一件成型",
+      "record_fingerprint": "d63657f7bcf0d620497ef2a0c379416e1930985b1d5af4ece0ef636b643855f0",
+      "four_gate_current": false
+    },
+    {
+      "outfit_id": "outfit_melt_master_12",
+      "persona": "melt",
+      "expression": "typical",
+      "structure": "skirt",
+      "user_title": "奶油治愈 · 层次呼吸",
+      "record_fingerprint": "5ff7073bdc67f3db07632786d42c0b756744e000bb2db1f79f4933eb0952138c",
+      "four_gate_current": false
+    },
+    {
+      "outfit_id": "outfit_melt_master_11",
+      "persona": "melt",
+      "expression": "easy",
+      "structure": "skirt",
+      "user_title": "奶油治愈 · 利落收束",
+      "record_fingerprint": "cfb46bb7cbb259ba8d4410aa38ec1cf70426a478278bf165c77c5e88dfa212b0",
+      "four_gate_current": false
+    },
+    {
+      "outfit_id": "outfit_melt_master_04",
+      "persona": "melt",
+      "expression": "easy",
+      "structure": "pants",
+      "user_title": "奶油治愈 · 细节聚焦",
+      "record_fingerprint": "d920004f1d75d6d985fe518cbaa24a69eae7fade43739e7bc83666bc5d3d486c",
+      "four_gate_current": false
+    },
+    {
+      "outfit_id": "outfit_melt_master_25",
+      "persona": "melt",
+      "expression": "easy",
+      "structure": "dress",
+      "user_title": "奶油治愈 · 周末漫游",
+      "record_fingerprint": "d99d37312b0c5639d1863ef1a26db1dca8d46a92f1dc6cd19831296daf9c5eab",
+      "four_gate_current": false
+    },
+    {
+      "outfit_id": "outfit_ease_master_25",
+      "persona": "melt",
+      "expression": "easy",
+      "structure": "dress",
+      "user_title": "奶油治愈 · 小幅冒险",
+      "record_fingerprint": "ef42a47eed41d33f681ab7707eae0afe29446933a71454ae019dcdd621555d01",
+      "four_gate_current": false
+    },
+    {
+      "outfit_id": "outfit_mute_master_11_v1",
+      "persona": "mute",
+      "expression": "explore",
+      "structure": "skirt",
+      "user_title": "静音时髦 · 轻松出门",
+      "record_fingerprint": "259dd18267e4901e5351e973f8f72a7261e5b95c7450e6e176247ba8a50cd50c",
+      "four_gate_current": false
+    },
+    {
+      "outfit_id": "outfit_noir_master_02",
+      "persona": "mute",
+      "expression": "explore",
+      "structure": "pants",
+      "user_title": "静音时髦 · 日常有序",
+      "record_fingerprint": "7178318a188e3859b89315675778a74231a38dbe293cb3df6a7787c171eae520",
+      "four_gate_current": false
+    },
+    {
+      "outfit_id": "outfit_bolt_master_28",
+      "persona": "mute",
+      "expression": "typical",
+      "structure": "dress",
+      "user_title": "静音时髦 · 柔和转场",
+      "record_fingerprint": "af365c479a6554994525054fed722ef3330be396866d8c13cf4d64ec76fb2380",
+      "four_gate_current": false
+    },
+    {
+      "outfit_id": "outfit_iced_master_07",
+      "persona": "mute",
+      "expression": "typical",
+      "structure": "pants",
+      "user_title": "静音时髦 · 比例游戏",
+      "record_fingerprint": "edeb8325f81930a86f637a1cd5a2711f3fc6e6eb6a4d17aecb1bdb224f2d57c7",
+      "four_gate_current": false
+    },
+    {
+      "outfit_id": "outfit_iced_master_29_v1",
+      "persona": "mute",
+      "expression": "typical",
+      "structure": "dress",
+      "user_title": "静音时髦 · 一件成型",
+      "record_fingerprint": "093cf464d65ac9ea742aa6f1977659c1ef09da019177b44d0d7b20c5242f01bd",
+      "four_gate_current": false
+    },
+    {
+      "outfit_id": "outfit_iced_master_26_v1",
+      "persona": "mute",
+      "expression": "typical",
+      "structure": "dress",
+      "user_title": "静音时髦 · 层次呼吸",
+      "record_fingerprint": "e1bac1de08dc23014e342fa42900ebecfd8f15aa0c5e44d90003c71d2a5b3f6d",
+      "four_gate_current": false
+    },
+    {
+      "outfit_id": "outfit_iced_master_04",
+      "persona": "mute",
+      "expression": "easy",
+      "structure": "pants",
+      "user_title": "静音时髦 · 利落收束",
+      "record_fingerprint": "aad63e98b43af47ed6a764e0fa9c1eaa625c21650bc0cd5a104553a81e3a8d48",
+      "four_gate_current": false
+    },
+    {
+      "outfit_id": "outfit_iced_master_17",
+      "persona": "mute",
+      "expression": "easy",
+      "structure": "skirt",
+      "user_title": "静音时髦 · 细节聚焦",
+      "record_fingerprint": "61aa7238ef94590beb38eb6da073e6ff33fba4e39b4fe87dbcc4710d803effb8",
+      "four_gate_current": false
+    },
+    {
+      "outfit_id": "outfit_heir_master_29",
+      "persona": "mute",
+      "expression": "easy",
+      "structure": "dress",
+      "user_title": "静音时髦 · 周末漫游",
+      "record_fingerprint": "59bdba8b7247cf149e2ab919bf78387f489c74deffcc06b13fcf7393dbabc7bb",
+      "four_gate_current": false
+    },
+    {
+      "outfit_id": "outfit_mute_master_13",
+      "persona": "mute",
+      "expression": "easy",
+      "structure": "skirt",
+      "user_title": "静音时髦 · 小幅冒险",
+      "record_fingerprint": "82d217cf7889b967616cbf29d3d28d84bc51e65bb70a6a15288abf9e04b420b1",
+      "four_gate_current": false
+    },
+    {
+      "outfit_id": "outfit_oops_aw-winter-04_09",
+      "persona": "neon",
+      "expression": "easy",
+      "structure": "dress",
+      "user_title": "灵动吸睛 · 轻松出门",
+      "record_fingerprint": "d4eb500a5490f68725360133fc1f105a75fa323f1aeabbc65aa2010921656f95",
+      "four_gate_current": false
+    },
+    {
+      "outfit_id": "outfit_oops_master_07_v2",
+      "persona": "neon",
+      "expression": "typical",
+      "structure": "pants",
+      "user_title": "灵动吸睛 · 日常有序",
+      "record_fingerprint": "6780bbc3692fac224c82212f59a86201b5f117a9935e778f6f0b940d81d20e68",
+      "four_gate_current": false
+    },
+    {
+      "outfit_id": "outfit_oops_master_15_v2",
+      "persona": "neon",
+      "expression": "typical",
+      "structure": "skirt",
+      "user_title": "灵动吸睛 · 柔和转场",
+      "record_fingerprint": "cd66df0ee027100339d9cb5495933017ac14b2d5aceca14bb7a4a810b6df37f7",
+      "four_gate_current": false
+    },
+    {
+      "outfit_id": "outfit_oops_master_13_v2",
+      "persona": "neon",
+      "expression": "typical",
+      "structure": "skirt",
+      "user_title": "灵动吸睛 · 比例游戏",
+      "record_fingerprint": "3d7a01c777d989aca749de8a86010ec8189e59642bfa9b8e28722bf7d05878ff",
+      "four_gate_current": false
+    },
+    {
+      "outfit_id": "outfit_edge_master_08",
+      "persona": "neon",
+      "expression": "typical",
+      "structure": "pants",
+      "user_title": "灵动吸睛 · 一件成型",
+      "record_fingerprint": "869fffa20e6ebc883bcbbb3a19bd319e6ef3b53f0dd56a533bb03d2077829795",
+      "four_gate_current": false
+    },
+    {
+      "outfit_id": "outfit_noir_master_08",
+      "persona": "noir",
+      "expression": "explore",
+      "structure": "pants",
+      "user_title": "暗黑肃杀 · 轻松出门",
+      "record_fingerprint": "4980cdd511494397a063f01dde6bdf4076e52cc412657f6d5bda9284acbb11ca",
+      "four_gate_current": false
+    },
+    {
+      "outfit_id": "outfit_edge_master_01_v1",
+      "persona": "noir",
+      "expression": "explore",
+      "structure": "pants",
+      "user_title": "暗黑肃杀 · 日常有序",
+      "record_fingerprint": "c371683cedbfce5398b9f982706d9c33bbbb48754873a10354320961400cae0d",
+      "four_gate_current": false
+    },
+    {
+      "outfit_id": "outfit_noir_master_11",
+      "persona": "noir",
+      "expression": "typical",
+      "structure": "skirt",
+      "user_title": "暗黑肃杀 · 柔和转场",
+      "record_fingerprint": "5884b95e6106340087ba8e42cb48b61550ea2819da65f963a2a9034382199738",
+      "four_gate_current": false
+    },
+    {
+      "outfit_id": "outfit_iced_master_30",
+      "persona": "noir",
+      "expression": "typical",
+      "structure": "dress",
+      "user_title": "暗黑肃杀 · 比例游戏",
+      "record_fingerprint": "561d7f53d27fa6946f19bb5df8e50229dfdf6c31c2df0f54e4fd57881afc346f",
+      "four_gate_current": false
+    },
+    {
+      "outfit_id": "outfit_noir_master_17_v1",
+      "persona": "noir",
+      "expression": "typical",
+      "structure": "skirt",
+      "user_title": "暗黑肃杀 · 一件成型",
+      "record_fingerprint": "6bc7ed5bb9da51d2c70a6e5ceb57757b77e5aa51c90ad1cc58ab38276f23ba63",
+      "four_gate_current": false
+    },
+    {
+      "outfit_id": "outfit_noir_master_05_v2",
+      "persona": "noir",
+      "expression": "typical",
+      "structure": "pants",
+      "user_title": "暗黑肃杀 · 层次呼吸",
+      "record_fingerprint": "ada7e3e594fe056ddca9a55fa382e865513fba990741a6ec9ccecdf3017b486c",
+      "four_gate_current": false
+    },
+    {
+      "outfit_id": "outfit_mute_master_16",
+      "persona": "noir",
+      "expression": "easy",
+      "structure": "skirt",
+      "user_title": "暗黑肃杀 · 利落收束",
+      "record_fingerprint": "275d65389740b3ae91947139b5eba5b91be9c626e51fea8959e38aef73e7f160",
+      "four_gate_current": false
+    },
+    {
+      "outfit_id": "outfit_mute_master_01",
+      "persona": "noir",
+      "expression": "easy",
+      "structure": "pants",
+      "user_title": "暗黑肃杀 · 细节聚焦",
+      "record_fingerprint": "36803ff9fb60f2292259eeb29fa4580236d404e69cb72b74a547efaaead0a6dc",
+      "four_gate_current": false
+    },
+    {
+      "outfit_id": "outfit_neon_master_07_v1",
+      "persona": "noir",
+      "expression": "easy",
+      "structure": "pants",
+      "user_title": "暗黑肃杀 · 周末漫游",
+      "record_fingerprint": "8ec836852da948ac58309ec901c3c0134b83ced864d5185a31f802dd9fe86b51",
+      "four_gate_current": false
+    },
+    {
+      "outfit_id": "outfit_edge_master_30",
+      "persona": "noir",
+      "expression": "easy",
+      "structure": "dress",
+      "user_title": "暗黑肃杀 · 小幅冒险",
+      "record_fingerprint": "bd644052fda32804581d3ac18569e68dc4a28fadbff251dbf9b3231b78b32cc8",
+      "four_gate_current": false
+    },
+    {
+      "outfit_id": "outfit_neon_master_09_v2__aw-repair-05",
+      "persona": "oops",
+      "expression": "typical",
+      "structure": "pants",
+      "user_title": "搭配事故 · 轻松出门",
+      "record_fingerprint": "81cd676cbf84e3720e9bddc676297747c6120ae16c5e910530e20baa694eac5f",
+      "four_gate_current": false
+    },
+    {
+      "outfit_id": "outfit_loop_master_13_v2",
+      "persona": "oops",
+      "expression": "typical",
+      "structure": "skirt",
+      "user_title": "搭配事故 · 日常有序",
+      "record_fingerprint": "97040eca9ad4794a5a93798ba68d5af2d650cc0123a02080176aaea2cb166308",
+      "four_gate_current": false
+    },
+    {
+      "outfit_id": "outfit_loop_master_01_v1",
+      "persona": "oops",
+      "expression": "typical",
+      "structure": "pants",
+      "user_title": "搭配事故 · 柔和转场",
+      "record_fingerprint": "d8a246ea2f1f1749ebbb5b7e95a96f7295515b180fe673b1be29fe045ddfa889",
+      "four_gate_current": false
+    },
+    {
+      "outfit_id": "outfit_film_master_04_v2",
+      "persona": "oops",
+      "expression": "typical",
+      "structure": "pants",
+      "user_title": "搭配事故 · 比例游戏",
+      "record_fingerprint": "f75de3a02564b42cb41b4bcccfc325e2d86f82a86555c08524c921eaa02591d8",
+      "four_gate_current": false
+    },
+    {
+      "outfit_id": "outfit_loop_master_02_v2",
+      "persona": "oops",
+      "expression": "explore",
+      "structure": "pants",
+      "user_title": "搭配事故 · 一件成型",
+      "record_fingerprint": "95c8db5002ec7f599f2ccf58e1fddf71a4b542bc5f6b08fa1a10d6a704df405c",
+      "four_gate_current": false
+    },
+    {
+      "outfit_id": "outfit_mute_master_05",
+      "persona": "oops",
+      "expression": "explore",
+      "structure": "pants",
+      "user_title": "搭配事故 · 层次呼吸",
+      "record_fingerprint": "d937c8afd05e527cee9d5842503908e3107d3fe366ecb7d2c8455edd22f7854f",
+      "four_gate_current": false
+    },
+    {
+      "outfit_id": "outfit_wabi_master_02_v1",
+      "persona": "void",
+      "expression": "typical",
+      "structure": "pants",
+      "user_title": "人间失格 · 轻松出门",
+      "record_fingerprint": "0160876f685e9621f29c80769d3ae2f280d17b62570bc80ae299a7fbff6d6aac",
+      "four_gate_current": false
+    },
+    {
+      "outfit_id": "outfit_void_master_18_v1",
+      "persona": "void",
+      "expression": "typical",
+      "structure": "skirt",
+      "user_title": "人间失格 · 日常有序",
+      "record_fingerprint": "00759bf6cdf2630760e59e67a685e5af898f3bea75de9b4cb78592c47ca059a5",
+      "four_gate_current": false
+    },
+    {
+      "outfit_id": "outfit_void_master_08_v2",
+      "persona": "void",
+      "expression": "typical",
+      "structure": "pants",
+      "user_title": "人间失格 · 柔和转场",
+      "record_fingerprint": "666ca188733457bb2cec50d3bcc9d6eef577e5167e67425b6ee6f6e5f5bbafff",
+      "four_gate_current": false
+    },
+    {
+      "outfit_id": "outfit_void_master_03_v1",
+      "persona": "void",
+      "expression": "typical",
+      "structure": "pants",
+      "user_title": "人间失格 · 比例游戏",
+      "record_fingerprint": "f490182457d9b2bf04d701780dabcd64157eb045c5a7a8ee1c7b644a368ece91",
+      "four_gate_current": false
+    },
+    {
+      "outfit_id": "outfit_ease_master_05_v1",
+      "persona": "void",
+      "expression": "explore",
+      "structure": "pants",
+      "user_title": "人间失格 · 一件成型",
+      "record_fingerprint": "41e7915a6b3631f883b8feceba0379af04bbcd6267b5699cc72f3960ce6750e2",
+      "four_gate_current": false
+    },
+    {
+      "outfit_id": "outfit_ease_master_10_v1",
+      "persona": "void",
+      "expression": "explore",
+      "structure": "pants",
+      "user_title": "人间失格 · 层次呼吸",
+      "record_fingerprint": "cd3b7a0e5723ac39d55adfe265439922f63b5736619d9bca7fb29cf7d47be113",
+      "four_gate_current": false
+    },
+    {
+      "outfit_id": "outfit_wabi_p0-gap-01_03",
+      "persona": "wabi",
+      "expression": "explore",
+      "structure": "pants",
+      "user_title": "手作侘寂 · 轻松出门",
+      "record_fingerprint": "5675cc6147f06f4c5e176f6da85e91f5d615b66c42f0d2ae4ee8da2dc70f8420",
+      "four_gate_current": false
+    },
+    {
+      "outfit_id": "outfit_wabi_p0-gap-02_02",
+      "persona": "wabi",
+      "expression": "explore",
+      "structure": "skirt",
+      "user_title": "手作侘寂 · 日常有序",
+      "record_fingerprint": "d760088dfd18b577d191407550293c0791d337605fa4ec884cd49a2584bff19b",
+      "four_gate_current": false
+    },
+    {
+      "outfit_id": "outfit_void_master_25_v1",
+      "persona": "wabi",
+      "expression": "typical",
+      "structure": "dress",
+      "user_title": "手作侘寂 · 柔和转场",
+      "record_fingerprint": "72d404fcaded37a0d3423880710449d7747c4531839f0e7694c4ec64180742c2",
+      "four_gate_current": false
+    },
+    {
+      "outfit_id": "outfit_ease_master_01",
+      "persona": "wabi",
+      "expression": "typical",
+      "structure": "pants",
+      "user_title": "手作侘寂 · 比例游戏",
+      "record_fingerprint": "7c24c29beb17b03984e64325210b1aee0cc5416fd9c74d5ffd97cfa1b6ae638c",
+      "four_gate_current": false
+    },
+    {
+      "outfit_id": "outfit_wabi_master_08",
+      "persona": "wabi",
+      "expression": "typical",
+      "structure": "pants",
+      "user_title": "手作侘寂 · 一件成型",
+      "record_fingerprint": "0ab981aef8693ea90e2fadc3f665f5228c397b8b686ae935d2381f2207f59be7",
+      "four_gate_current": false
+    },
+    {
+      "outfit_id": "outfit_wabi_master_16_v1",
+      "persona": "wabi",
+      "expression": "typical",
+      "structure": "skirt",
+      "user_title": "手作侘寂 · 层次呼吸",
+      "record_fingerprint": "e20cb483256348a0b2a5e34e5670636ee0d3aaec87d90b511e2cc49a11f753dd",
+      "four_gate_current": false
+    },
+    {
+      "outfit_id": "outfit_ease_master_04",
+      "persona": "wabi",
+      "expression": "easy",
+      "structure": "pants",
+      "user_title": "手作侘寂 · 利落收束",
+      "record_fingerprint": "f5dcd4931a5f950caae19714573437ee758332ae81a449dd4c89b08dffbb8e88",
+      "four_gate_current": false
+    },
+    {
+      "outfit_id": "outfit_ease_master_11",
+      "persona": "wabi",
+      "expression": "easy",
+      "structure": "skirt",
+      "user_title": "手作侘寂 · 细节聚焦",
+      "record_fingerprint": "b3c280d973e0c89dfb4c293829b2a2134ff3c7810a43e79fd7080e8faab2cc4f",
+      "four_gate_current": false
+    },
+    {
+      "outfit_id": "outfit_ease_master_09",
+      "persona": "wabi",
+      "expression": "easy",
+      "structure": "pants",
+      "user_title": "手作侘寂 · 周末漫游",
+      "record_fingerprint": "25db8cbc911191bf463819d38ff6665f098d8210895dc3a49106212bc9abafac",
+      "four_gate_current": false
+    },
+    {
+      "outfit_id": "outfit_wabi_master_15",
+      "persona": "wabi",
+      "expression": "easy",
+      "structure": "skirt",
+      "user_title": "手作侘寂 · 小幅冒险",
+      "record_fingerprint": "ea49dd747a9b21a4873aedc32cde92b4d0e904a7350554be0a4c180edabdbf53",
+      "four_gate_current": false
+    }
+  ],
+  "readiness": {
+    "selected": 131,
+    "required": 160,
+    "current_four_gate_reviews": 0,
+    "visual_catalog_candidates": 959,
+    "visual_catalog_held": 217,
+    "staging_candidates": 7,
+    "gaps": [
+      {
+        "persona": "bolt",
+        "required": {
+          "easy": 4,
+          "typical": 4,
+          "explore": 2
+        },
+        "eligible_supply": {
+          "easy": 0,
+          "typical": 1,
+          "explore": 1
+        },
+        "selected_mix": {
+          "typical": 1,
+          "explore": 1
+        },
+        "missing_by_expression": {
+          "easy": 4,
+          "typical": 3,
+          "explore": 1
+        },
+        "selected": 2,
+        "missing": 8
+      },
+      {
+        "persona": "edge",
+        "required": {
+          "easy": 4,
+          "typical": 4,
+          "explore": 2
+        },
+        "eligible_supply": {
+          "easy": 0,
+          "typical": 14,
+          "explore": 1
+        },
+        "selected_mix": {
+          "typical": 4,
+          "explore": 1
+        },
+        "missing_by_expression": {
+          "easy": 4,
+          "typical": 0,
+          "explore": 1
+        },
+        "selected": 5,
+        "missing": 5
+      },
+      {
+        "persona": "jade",
+        "required": {
+          "easy": 4,
+          "typical": 4,
+          "explore": 2
+        },
+        "eligible_supply": {
+          "easy": 3,
+          "typical": 14,
+          "explore": 3
+        },
+        "selected_mix": {
+          "explore": 2,
+          "typical": 4,
+          "easy": 1
+        },
+        "missing_by_expression": {
+          "easy": 3,
+          "typical": 0,
+          "explore": 0
+        },
+        "selected": 7,
+        "missing": 3
+      },
+      {
+        "persona": "neon",
+        "required": {
+          "easy": 4,
+          "typical": 4,
+          "explore": 2
+        },
+        "eligible_supply": {
+          "easy": 1,
+          "typical": 6,
+          "explore": 0
+        },
+        "selected_mix": {
+          "easy": 1,
+          "typical": 4
+        },
+        "missing_by_expression": {
+          "easy": 3,
+          "typical": 0,
+          "explore": 2
+        },
+        "selected": 5,
+        "missing": 5
+      },
+      {
+        "persona": "oops",
+        "required": {
+          "easy": 4,
+          "typical": 4,
+          "explore": 2
+        },
+        "eligible_supply": {
+          "easy": 0,
+          "typical": 34,
+          "explore": 3
+        },
+        "selected_mix": {
+          "typical": 4,
+          "explore": 2
+        },
+        "missing_by_expression": {
+          "easy": 4,
+          "typical": 0,
+          "explore": 0
+        },
+        "selected": 6,
+        "missing": 4
+      },
+      {
+        "persona": "void",
+        "required": {
+          "easy": 4,
+          "typical": 4,
+          "explore": 2
+        },
+        "eligible_supply": {
+          "easy": 0,
+          "typical": 49,
+          "explore": 2
+        },
+        "selected_mix": {
+          "typical": 4,
+          "explore": 2
+        },
+        "missing_by_expression": {
+          "easy": 4,
+          "typical": 0,
+          "explore": 0
+        },
+        "selected": 6,
+        "missing": 4
+      }
+    ],
+    "release_ready": false,
+    "note": "AI visual candidates are not editorial approval or independent blind review."
+  }
+}

@@ -1,0 +1,1986 @@
+{
+  "schema_version": 1,
+  "status": "editorial_attention_required",
+  "anchor_manifest_sha256": "e0fd39c4b4cb099afaf2c3296d42a7871810fa2875cab96f74ca0e69ea41c866",
+  "staging_sha256": "8b6d71a8dcd74c62bc9cda6dc3997aece85838249bce7e0e090951c42e03edc2",
+  "threshold": {
+    "persona_score": 0.55,
+    "wearability": [
+      "everyday",
+      "everyday_with_statement"
+    ],
+    "scene": "daily_or_unspecified"
+  },
+  "summary": {
+    "samples": 117,
+    "preflight_both_pass": 117,
+    "preflight_attention": 0,
+    "by_persona": {
+      "ease": {
+        "total": 10,
+        "persona_signal_pass": 10,
+        "daily_context_pass": 10,
+        "both_pass": 10
+      },
+      "edge": {
+        "total": 3,
+        "persona_signal_pass": 3,
+        "daily_context_pass": 3,
+        "both_pass": 3
+      },
+      "film": {
+        "total": 10,
+        "persona_signal_pass": 10,
+        "daily_context_pass": 10,
+        "both_pass": 10
+      },
+      "flou": {
+        "total": 10,
+        "persona_signal_pass": 10,
+        "daily_context_pass": 10,
+        "both_pass": 10
+      },
+      "heir": {
+        "total": 10,
+        "persona_signal_pass": 10,
+        "daily_context_pass": 10,
+        "both_pass": 10
+      },
+      "iced": {
+        "total": 10,
+        "persona_signal_pass": 10,
+        "daily_context_pass": 10,
+        "both_pass": 10
+      },
+      "jade": {
+        "total": 4,
+        "persona_signal_pass": 4,
+        "daily_context_pass": 4,
+        "both_pass": 4
+      },
+      "loop": {
+        "total": 10,
+        "persona_signal_pass": 10,
+        "daily_context_pass": 10,
+        "both_pass": 10
+      },
+      "melt": {
+        "total": 10,
+        "persona_signal_pass": 10,
+        "daily_context_pass": 10,
+        "both_pass": 10
+      },
+      "mute": {
+        "total": 8,
+        "persona_signal_pass": 8,
+        "daily_context_pass": 8,
+        "both_pass": 8
+      },
+      "neon": {
+        "total": 3,
+        "persona_signal_pass": 3,
+        "daily_context_pass": 3,
+        "both_pass": 3
+      },
+      "noir": {
+        "total": 7,
+        "persona_signal_pass": 7,
+        "daily_context_pass": 7,
+        "both_pass": 7
+      },
+      "oops": {
+        "total": 6,
+        "persona_signal_pass": 6,
+        "daily_context_pass": 6,
+        "both_pass": 6
+      },
+      "void": {
+        "total": 6,
+        "persona_signal_pass": 6,
+        "daily_context_pass": 6,
+        "both_pass": 6
+      },
+      "wabi": {
+        "total": 10,
+        "persona_signal_pass": 10,
+        "daily_context_pass": 10,
+        "both_pass": 10
+      }
+    }
+  },
+  "rows": [
+    {
+      "outfit_id": "outfit_bolt_master_10_v1",
+      "persona": "ease",
+      "expression": "explore",
+      "structure": "pants",
+      "observed_persona_score": 0.75,
+      "observed_scenes": [
+        "daily",
+        "social"
+      ],
+      "observed_wearability": "everyday_with_statement",
+      "persona_signal_pass": true,
+      "daily_context_pass": true,
+      "status": "candidate",
+      "note": "AI preflight is triage only; it cannot pass or fail the four-gate editorial review."
+    },
+    {
+      "outfit_id": "outfit_melt_master_12_v2",
+      "persona": "ease",
+      "expression": "explore",
+      "structure": "skirt",
+      "observed_persona_score": 0.72,
+      "observed_scenes": [
+        "daily",
+        "social"
+      ],
+      "observed_wearability": "everyday_with_statement",
+      "persona_signal_pass": true,
+      "daily_context_pass": true,
+      "status": "candidate",
+      "note": "AI preflight is triage only; it cannot pass or fail the four-gate editorial review."
+    },
+    {
+      "outfit_id": "outfit_ease_master_06",
+      "persona": "ease",
+      "expression": "typical",
+      "structure": "pants",
+      "observed_persona_score": 0.76,
+      "observed_scenes": [
+        "daily",
+        "social"
+      ],
+      "observed_wearability": "everyday_with_statement",
+      "persona_signal_pass": true,
+      "daily_context_pass": true,
+      "status": "candidate",
+      "note": "AI preflight is triage only; it cannot pass or fail the four-gate editorial review."
+    },
+    {
+      "outfit_id": "outfit_ease_master_15",
+      "persona": "ease",
+      "expression": "typical",
+      "structure": "skirt",
+      "observed_persona_score": 0.75,
+      "observed_scenes": [
+        "daily",
+        "social"
+      ],
+      "observed_wearability": "everyday_with_statement",
+      "persona_signal_pass": true,
+      "daily_context_pass": true,
+      "status": "candidate",
+      "note": "AI preflight is triage only; it cannot pass or fail the four-gate editorial review."
+    },
+    {
+      "outfit_id": "outfit_heir_master_13_v2",
+      "persona": "ease",
+      "expression": "typical",
+      "structure": "skirt",
+      "observed_persona_score": 0.66,
+      "observed_scenes": [
+        "daily",
+        "social"
+      ],
+      "observed_wearability": "everyday_with_statement",
+      "persona_signal_pass": true,
+      "daily_context_pass": true,
+      "status": "candidate",
+      "note": "AI preflight is triage only; it cannot pass or fail the four-gate editorial review."
+    },
+    {
+      "outfit_id": "outfit_melt_master_08",
+      "persona": "ease",
+      "expression": "typical",
+      "structure": "pants",
+      "observed_persona_score": 0.66,
+      "observed_scenes": [
+        "daily",
+        "social"
+      ],
+      "observed_wearability": "everyday_with_statement",
+      "persona_signal_pass": true,
+      "daily_context_pass": true,
+      "status": "candidate",
+      "note": "AI preflight is triage only; it cannot pass or fail the four-gate editorial review."
+    },
+    {
+      "outfit_id": "outfit_wabi_master_28_v1",
+      "persona": "ease",
+      "expression": "easy",
+      "structure": "dress",
+      "observed_persona_score": 0.75,
+      "observed_scenes": [
+        "daily",
+        "social"
+      ],
+      "observed_wearability": "everyday",
+      "persona_signal_pass": true,
+      "daily_context_pass": true,
+      "status": "candidate",
+      "note": "AI preflight is triage only; it cannot pass or fail the four-gate editorial review."
+    },
+    {
+      "outfit_id": "outfit_mute_master_08",
+      "persona": "ease",
+      "expression": "easy",
+      "structure": "pants",
+      "observed_persona_score": 0.83,
+      "observed_scenes": [
+        "daily"
+      ],
+      "observed_wearability": "everyday",
+      "persona_signal_pass": true,
+      "daily_context_pass": true,
+      "status": "candidate",
+      "note": "AI preflight is triage only; it cannot pass or fail the four-gate editorial review."
+    },
+    {
+      "outfit_id": "outfit_heir_master_01",
+      "persona": "ease",
+      "expression": "easy",
+      "structure": "pants",
+      "observed_persona_score": 0.8,
+      "observed_scenes": [
+        "daily",
+        "travel"
+      ],
+      "observed_wearability": "everyday",
+      "persona_signal_pass": true,
+      "daily_context_pass": true,
+      "status": "candidate",
+      "note": "AI preflight is triage only; it cannot pass or fail the four-gate editorial review."
+    },
+    {
+      "outfit_id": "outfit_iced_master_13",
+      "persona": "ease",
+      "expression": "easy",
+      "structure": "skirt",
+      "observed_persona_score": 0.79,
+      "observed_scenes": [
+        "daily",
+        "social"
+      ],
+      "observed_wearability": "everyday",
+      "persona_signal_pass": true,
+      "daily_context_pass": true,
+      "status": "candidate",
+      "note": "AI preflight is triage only; it cannot pass or fail the four-gate editorial review."
+    },
+    {
+      "outfit_id": "outfit_wabi_master_27",
+      "persona": "edge",
+      "expression": "typical",
+      "structure": "dress",
+      "observed_persona_score": 0.69,
+      "observed_scenes": [
+        "daily",
+        "social"
+      ],
+      "observed_wearability": "everyday_with_statement",
+      "persona_signal_pass": true,
+      "daily_context_pass": true,
+      "status": "candidate",
+      "note": "AI preflight is triage only; it cannot pass or fail the four-gate editorial review."
+    },
+    {
+      "outfit_id": "outfit_neon_master_09_v2__aw-repair-05",
+      "persona": "edge",
+      "expression": "typical",
+      "structure": "pants",
+      "observed_persona_score": 0.68,
+      "observed_scenes": [
+        "daily"
+      ],
+      "observed_wearability": "everyday_with_statement",
+      "persona_signal_pass": true,
+      "daily_context_pass": true,
+      "status": "candidate",
+      "note": "AI preflight is triage only; it cannot pass or fail the four-gate editorial review."
+    },
+    {
+      "outfit_id": "outfit_noir_master_18_v1",
+      "persona": "edge",
+      "expression": "explore",
+      "structure": "skirt",
+      "observed_persona_score": 0.55,
+      "observed_scenes": [
+        "daily",
+        "social"
+      ],
+      "observed_wearability": "everyday_with_statement",
+      "persona_signal_pass": true,
+      "daily_context_pass": true,
+      "status": "candidate",
+      "note": "AI preflight is triage only; it cannot pass or fail the four-gate editorial review."
+    },
+    {
+      "outfit_id": "outfit_film_p0-gap-02_01",
+      "persona": "film",
+      "expression": "explore",
+      "structure": "pants",
+      "observed_persona_score": 0.9,
+      "observed_scenes": [
+        "commute",
+        "daily"
+      ],
+      "observed_wearability": "everyday_with_statement",
+      "persona_signal_pass": true,
+      "daily_context_pass": true,
+      "status": "candidate",
+      "note": "AI preflight is triage only; it cannot pass or fail the four-gate editorial review."
+    },
+    {
+      "outfit_id": "outfit_oops_master_25_v1",
+      "persona": "film",
+      "expression": "explore",
+      "structure": "dress",
+      "observed_persona_score": 0.64,
+      "observed_scenes": [
+        "daily",
+        "social"
+      ],
+      "observed_wearability": "everyday",
+      "persona_signal_pass": true,
+      "daily_context_pass": true,
+      "status": "candidate",
+      "note": "AI preflight is triage only; it cannot pass or fail the four-gate editorial review."
+    },
+    {
+      "outfit_id": "outfit_film_master_13_v2",
+      "persona": "film",
+      "expression": "typical",
+      "structure": "skirt",
+      "observed_persona_score": 0.66,
+      "observed_scenes": [
+        "daily",
+        "social"
+      ],
+      "observed_wearability": "everyday_with_statement",
+      "persona_signal_pass": true,
+      "daily_context_pass": true,
+      "status": "candidate",
+      "note": "AI preflight is triage only; it cannot pass or fail the four-gate editorial review."
+    },
+    {
+      "outfit_id": "outfit_film_master_03",
+      "persona": "film",
+      "expression": "typical",
+      "structure": "pants",
+      "observed_persona_score": 0.76,
+      "observed_scenes": [
+        "daily",
+        "social"
+      ],
+      "observed_wearability": "everyday_with_statement",
+      "persona_signal_pass": true,
+      "daily_context_pass": true,
+      "status": "candidate",
+      "note": "AI preflight is triage only; it cannot pass or fail the four-gate editorial review."
+    },
+    {
+      "outfit_id": "outfit_ease_master_12",
+      "persona": "film",
+      "expression": "typical",
+      "structure": "skirt",
+      "observed_persona_score": 0.65,
+      "observed_scenes": [
+        "creative",
+        "daily"
+      ],
+      "observed_wearability": "everyday_with_statement",
+      "persona_signal_pass": true,
+      "daily_context_pass": true,
+      "status": "candidate",
+      "note": "AI preflight is triage only; it cannot pass or fail the four-gate editorial review."
+    },
+    {
+      "outfit_id": "outfit_neon_master_14_v2",
+      "persona": "film",
+      "expression": "typical",
+      "structure": "skirt",
+      "observed_persona_score": 0.65,
+      "observed_scenes": [
+        "daily",
+        "social"
+      ],
+      "observed_wearability": "everyday_with_statement",
+      "persona_signal_pass": true,
+      "daily_context_pass": true,
+      "status": "candidate",
+      "note": "AI preflight is triage only; it cannot pass or fail the four-gate editorial review."
+    },
+    {
+      "outfit_id": "outfit_heir_master_12",
+      "persona": "film",
+      "expression": "easy",
+      "structure": "skirt",
+      "observed_persona_score": 0.74,
+      "observed_scenes": [
+        "daily",
+        "social"
+      ],
+      "observed_wearability": "everyday",
+      "persona_signal_pass": true,
+      "daily_context_pass": true,
+      "status": "candidate",
+      "note": "AI preflight is triage only; it cannot pass or fail the four-gate editorial review."
+    },
+    {
+      "outfit_id": "outfit_void_master_15_v1",
+      "persona": "film",
+      "expression": "easy",
+      "structure": "skirt",
+      "observed_persona_score": 0.74,
+      "observed_scenes": [
+        "commute",
+        "daily"
+      ],
+      "observed_wearability": "everyday",
+      "persona_signal_pass": true,
+      "daily_context_pass": true,
+      "status": "candidate",
+      "note": "AI preflight is triage only; it cannot pass or fail the four-gate editorial review."
+    },
+    {
+      "outfit_id": "outfit_heir_master_02",
+      "persona": "film",
+      "expression": "easy",
+      "structure": "pants",
+      "observed_persona_score": 0.71,
+      "observed_scenes": [
+        "daily",
+        "travel"
+      ],
+      "observed_wearability": "everyday",
+      "persona_signal_pass": true,
+      "daily_context_pass": true,
+      "status": "candidate",
+      "note": "AI preflight is triage only; it cannot pass or fail the four-gate editorial review."
+    },
+    {
+      "outfit_id": "outfit_bolt_master_09",
+      "persona": "film",
+      "expression": "easy",
+      "structure": "pants",
+      "observed_persona_score": 0.61,
+      "observed_scenes": [
+        "commute",
+        "daily",
+        "social"
+      ],
+      "observed_wearability": "everyday",
+      "persona_signal_pass": true,
+      "daily_context_pass": true,
+      "status": "candidate",
+      "note": "AI preflight is triage only; it cannot pass or fail the four-gate editorial review."
+    },
+    {
+      "outfit_id": "outfit_neon_master_08",
+      "persona": "flou",
+      "expression": "explore",
+      "structure": "pants",
+      "observed_persona_score": 0.68,
+      "observed_scenes": [
+        "creative",
+        "daily"
+      ],
+      "observed_wearability": "everyday_with_statement",
+      "persona_signal_pass": true,
+      "daily_context_pass": true,
+      "status": "candidate",
+      "note": "AI preflight is triage only; it cannot pass or fail the four-gate editorial review."
+    },
+    {
+      "outfit_id": "outfit_neon_master_11",
+      "persona": "flou",
+      "expression": "explore",
+      "structure": "skirt",
+      "observed_persona_score": 0.68,
+      "observed_scenes": [
+        "daily",
+        "social"
+      ],
+      "observed_wearability": "everyday_with_statement",
+      "persona_signal_pass": true,
+      "daily_context_pass": true,
+      "status": "candidate",
+      "note": "AI preflight is triage only; it cannot pass or fail the four-gate editorial review."
+    },
+    {
+      "outfit_id": "outfit_neon_master_29",
+      "persona": "flou",
+      "expression": "typical",
+      "structure": "dress",
+      "observed_persona_score": 0.76,
+      "observed_scenes": [
+        "daily",
+        "social",
+        "travel"
+      ],
+      "observed_wearability": "everyday_with_statement",
+      "persona_signal_pass": true,
+      "daily_context_pass": true,
+      "status": "candidate",
+      "note": "AI preflight is triage only; it cannot pass or fail the four-gate editorial review."
+    },
+    {
+      "outfit_id": "outfit_melt_master_14",
+      "persona": "flou",
+      "expression": "typical",
+      "structure": "skirt",
+      "observed_persona_score": 0.81,
+      "observed_scenes": [
+        "daily",
+        "social"
+      ],
+      "observed_wearability": "everyday_with_statement",
+      "persona_signal_pass": true,
+      "daily_context_pass": true,
+      "status": "candidate",
+      "note": "AI preflight is triage only; it cannot pass or fail the four-gate editorial review."
+    },
+    {
+      "outfit_id": "outfit_iced_master_15",
+      "persona": "flou",
+      "expression": "typical",
+      "structure": "skirt",
+      "observed_persona_score": 0.8,
+      "observed_scenes": [
+        "daily",
+        "social"
+      ],
+      "observed_wearability": "everyday_with_statement",
+      "persona_signal_pass": true,
+      "daily_context_pass": true,
+      "status": "candidate",
+      "note": "AI preflight is triage only; it cannot pass or fail the four-gate editorial review."
+    },
+    {
+      "outfit_id": "outfit_melt_master_06",
+      "persona": "flou",
+      "expression": "typical",
+      "structure": "pants",
+      "observed_persona_score": 0.78,
+      "observed_scenes": [
+        "daily",
+        "social"
+      ],
+      "observed_wearability": "everyday_with_statement",
+      "persona_signal_pass": true,
+      "daily_context_pass": true,
+      "status": "candidate",
+      "note": "AI preflight is triage only; it cannot pass or fail the four-gate editorial review."
+    },
+    {
+      "outfit_id": "outfit_ease_master_14",
+      "persona": "flou",
+      "expression": "easy",
+      "structure": "skirt",
+      "observed_persona_score": 0.79,
+      "observed_scenes": [
+        "daily",
+        "social"
+      ],
+      "observed_wearability": "everyday",
+      "persona_signal_pass": true,
+      "daily_context_pass": true,
+      "status": "candidate",
+      "note": "AI preflight is triage only; it cannot pass or fail the four-gate editorial review."
+    },
+    {
+      "outfit_id": "outfit_mute_master_15",
+      "persona": "flou",
+      "expression": "easy",
+      "structure": "skirt",
+      "observed_persona_score": 0.74,
+      "observed_scenes": [
+        "daily",
+        "social"
+      ],
+      "observed_wearability": "everyday",
+      "persona_signal_pass": true,
+      "daily_context_pass": true,
+      "status": "candidate",
+      "note": "AI preflight is triage only; it cannot pass or fail the four-gate editorial review."
+    },
+    {
+      "outfit_id": "outfit_jade_master_30",
+      "persona": "flou",
+      "expression": "easy",
+      "structure": "dress",
+      "observed_persona_score": 0.73,
+      "observed_scenes": [
+        "daily",
+        "social"
+      ],
+      "observed_wearability": "everyday",
+      "persona_signal_pass": true,
+      "daily_context_pass": true,
+      "status": "candidate",
+      "note": "AI preflight is triage only; it cannot pass or fail the four-gate editorial review."
+    },
+    {
+      "outfit_id": "outfit_ease_master_08",
+      "persona": "flou",
+      "expression": "easy",
+      "structure": "pants",
+      "observed_persona_score": 0.67,
+      "observed_scenes": [
+        "daily",
+        "travel"
+      ],
+      "observed_wearability": "everyday",
+      "persona_signal_pass": true,
+      "daily_context_pass": true,
+      "status": "candidate",
+      "note": "AI preflight is triage only; it cannot pass or fail the four-gate editorial review."
+    },
+    {
+      "outfit_id": "outfit_edge_master_14",
+      "persona": "heir",
+      "expression": "explore",
+      "structure": "skirt",
+      "observed_persona_score": 0.74,
+      "observed_scenes": [
+        "commute",
+        "daily"
+      ],
+      "observed_wearability": "everyday_with_statement",
+      "persona_signal_pass": true,
+      "daily_context_pass": true,
+      "status": "candidate",
+      "note": "AI preflight is triage only; it cannot pass or fail the four-gate editorial review."
+    },
+    {
+      "outfit_id": "outfit_mute_master_11_v1",
+      "persona": "heir",
+      "expression": "explore",
+      "structure": "skirt",
+      "observed_persona_score": 0.66,
+      "observed_scenes": [
+        "commute",
+        "daily",
+        "social"
+      ],
+      "observed_wearability": "everyday_with_statement",
+      "persona_signal_pass": true,
+      "daily_context_pass": true,
+      "status": "candidate",
+      "note": "AI preflight is triage only; it cannot pass or fail the four-gate editorial review."
+    },
+    {
+      "outfit_id": "outfit_heir_master_07_v1",
+      "persona": "heir",
+      "expression": "typical",
+      "structure": "pants",
+      "observed_persona_score": 0.61,
+      "observed_scenes": [
+        "daily",
+        "social"
+      ],
+      "observed_wearability": "everyday_with_statement",
+      "persona_signal_pass": true,
+      "daily_context_pass": true,
+      "status": "candidate",
+      "note": "AI preflight is triage only; it cannot pass or fail the four-gate editorial review."
+    },
+    {
+      "outfit_id": "outfit_heir_master_15_v1",
+      "persona": "heir",
+      "expression": "typical",
+      "structure": "skirt",
+      "observed_persona_score": 0.76,
+      "observed_scenes": [
+        "daily",
+        "social"
+      ],
+      "observed_wearability": "everyday",
+      "persona_signal_pass": true,
+      "daily_context_pass": true,
+      "status": "candidate",
+      "note": "AI preflight is triage only; it cannot pass or fail the four-gate editorial review."
+    },
+    {
+      "outfit_id": "outfit_flou_master_12",
+      "persona": "heir",
+      "expression": "typical",
+      "structure": "skirt",
+      "observed_persona_score": 0.74,
+      "observed_scenes": [
+        "daily",
+        "social"
+      ],
+      "observed_wearability": "everyday_with_statement",
+      "persona_signal_pass": true,
+      "daily_context_pass": true,
+      "status": "candidate",
+      "note": "AI preflight is triage only; it cannot pass or fail the four-gate editorial review."
+    },
+    {
+      "outfit_id": "outfit_melt_master_11_v2",
+      "persona": "heir",
+      "expression": "typical",
+      "structure": "skirt",
+      "observed_persona_score": 0.62,
+      "observed_scenes": [
+        "daily",
+        "social"
+      ],
+      "observed_wearability": "everyday_with_statement",
+      "persona_signal_pass": true,
+      "daily_context_pass": true,
+      "status": "candidate",
+      "note": "AI preflight is triage only; it cannot pass or fail the four-gate editorial review."
+    },
+    {
+      "outfit_id": "outfit_ease_master_29",
+      "persona": "heir",
+      "expression": "easy",
+      "structure": "dress",
+      "observed_persona_score": 0.78,
+      "observed_scenes": [
+        "daily",
+        "social"
+      ],
+      "observed_wearability": "everyday",
+      "persona_signal_pass": true,
+      "daily_context_pass": true,
+      "status": "candidate",
+      "note": "AI preflight is triage only; it cannot pass or fail the four-gate editorial review."
+    },
+    {
+      "outfit_id": "outfit_heir_master_06",
+      "persona": "heir",
+      "expression": "easy",
+      "structure": "pants",
+      "observed_persona_score": 0.81,
+      "observed_scenes": [
+        "commute",
+        "daily"
+      ],
+      "observed_wearability": "everyday",
+      "persona_signal_pass": true,
+      "daily_context_pass": true,
+      "status": "candidate",
+      "note": "AI preflight is triage only; it cannot pass or fail the four-gate editorial review."
+    },
+    {
+      "outfit_id": "outfit_mute_master_07",
+      "persona": "heir",
+      "expression": "easy",
+      "structure": "pants",
+      "observed_persona_score": 0.8,
+      "observed_scenes": [
+        "daily"
+      ],
+      "observed_wearability": "everyday",
+      "persona_signal_pass": true,
+      "daily_context_pass": true,
+      "status": "candidate",
+      "note": "AI preflight is triage only; it cannot pass or fail the four-gate editorial review."
+    },
+    {
+      "outfit_id": "outfit_ease_master_26",
+      "persona": "heir",
+      "expression": "easy",
+      "structure": "dress",
+      "observed_persona_score": 0.77,
+      "observed_scenes": [
+        "commute",
+        "daily"
+      ],
+      "observed_wearability": "everyday",
+      "persona_signal_pass": true,
+      "daily_context_pass": true,
+      "status": "candidate",
+      "note": "AI preflight is triage only; it cannot pass or fail the four-gate editorial review."
+    },
+    {
+      "outfit_id": "outfit_iced_p0-gap-01_02",
+      "persona": "iced",
+      "expression": "explore",
+      "structure": "skirt",
+      "observed_persona_score": 0.9,
+      "observed_scenes": [
+        "commute",
+        "daily"
+      ],
+      "observed_wearability": "everyday_with_statement",
+      "persona_signal_pass": true,
+      "daily_context_pass": true,
+      "status": "candidate",
+      "note": "AI preflight is triage only; it cannot pass or fail the four-gate editorial review."
+    },
+    {
+      "outfit_id": "outfit_iced_master_06_v2",
+      "persona": "iced",
+      "expression": "explore",
+      "structure": "pants",
+      "observed_persona_score": 0.74,
+      "observed_scenes": [
+        "daily",
+        "social"
+      ],
+      "observed_wearability": "everyday_with_statement",
+      "persona_signal_pass": true,
+      "daily_context_pass": true,
+      "status": "candidate",
+      "note": "AI preflight is triage only; it cannot pass or fail the four-gate editorial review."
+    },
+    {
+      "outfit_id": "outfit_iced_master_25_v1",
+      "persona": "iced",
+      "expression": "typical",
+      "structure": "dress",
+      "observed_persona_score": 0.73,
+      "observed_scenes": [
+        "daily",
+        "social"
+      ],
+      "observed_wearability": "everyday_with_statement",
+      "persona_signal_pass": true,
+      "daily_context_pass": true,
+      "status": "candidate",
+      "note": "AI preflight is triage only; it cannot pass or fail the four-gate editorial review."
+    },
+    {
+      "outfit_id": "outfit_mute_master_10",
+      "persona": "iced",
+      "expression": "typical",
+      "structure": "pants",
+      "observed_persona_score": 0.77,
+      "observed_scenes": [
+        "daily",
+        "social"
+      ],
+      "observed_wearability": "everyday",
+      "persona_signal_pass": true,
+      "daily_context_pass": true,
+      "status": "candidate",
+      "note": "AI preflight is triage only; it cannot pass or fail the four-gate editorial review."
+    },
+    {
+      "outfit_id": "outfit_iced_master_18_v1",
+      "persona": "iced",
+      "expression": "typical",
+      "structure": "skirt",
+      "observed_persona_score": 0.75,
+      "observed_scenes": [
+        "daily",
+        "social"
+      ],
+      "observed_wearability": "everyday_with_statement",
+      "persona_signal_pass": true,
+      "daily_context_pass": true,
+      "status": "candidate",
+      "note": "AI preflight is triage only; it cannot pass or fail the four-gate editorial review."
+    },
+    {
+      "outfit_id": "outfit_flou_master_14",
+      "persona": "iced",
+      "expression": "typical",
+      "structure": "skirt",
+      "observed_persona_score": 0.73,
+      "observed_scenes": [
+        "daily",
+        "social"
+      ],
+      "observed_wearability": "everyday_with_statement",
+      "persona_signal_pass": true,
+      "daily_context_pass": true,
+      "status": "candidate",
+      "note": "AI preflight is triage only; it cannot pass or fail the four-gate editorial review."
+    },
+    {
+      "outfit_id": "outfit_iced_master_05",
+      "persona": "iced",
+      "expression": "easy",
+      "structure": "pants",
+      "observed_persona_score": 0.84,
+      "observed_scenes": [
+        "daily"
+      ],
+      "observed_wearability": "everyday",
+      "persona_signal_pass": true,
+      "daily_context_pass": true,
+      "status": "candidate",
+      "note": "AI preflight is triage only; it cannot pass or fail the four-gate editorial review."
+    },
+    {
+      "outfit_id": "outfit_iced_master_02",
+      "persona": "iced",
+      "expression": "easy",
+      "structure": "pants",
+      "observed_persona_score": 0.82,
+      "observed_scenes": [
+        "commute",
+        "daily"
+      ],
+      "observed_wearability": "everyday",
+      "persona_signal_pass": true,
+      "daily_context_pass": true,
+      "status": "candidate",
+      "note": "AI preflight is triage only; it cannot pass or fail the four-gate editorial review."
+    },
+    {
+      "outfit_id": "outfit_flou_master_26",
+      "persona": "iced",
+      "expression": "easy",
+      "structure": "dress",
+      "observed_persona_score": 0.8,
+      "observed_scenes": [
+        "commute",
+        "daily",
+        "social"
+      ],
+      "observed_wearability": "everyday",
+      "persona_signal_pass": true,
+      "daily_context_pass": true,
+      "status": "candidate",
+      "note": "AI preflight is triage only; it cannot pass or fail the four-gate editorial review."
+    },
+    {
+      "outfit_id": "outfit_edge_master_09",
+      "persona": "iced",
+      "expression": "easy",
+      "structure": "pants",
+      "observed_persona_score": 0.78,
+      "observed_scenes": [
+        "commute",
+        "daily"
+      ],
+      "observed_wearability": "everyday_with_statement",
+      "persona_signal_pass": true,
+      "daily_context_pass": true,
+      "status": "candidate",
+      "note": "AI preflight is triage only; it cannot pass or fail the four-gate editorial review."
+    },
+    {
+      "outfit_id": "outfit_jade_master_05",
+      "persona": "jade",
+      "expression": "easy",
+      "structure": "pants",
+      "observed_persona_score": 0.65,
+      "observed_scenes": [
+        "daily",
+        "social"
+      ],
+      "observed_wearability": "everyday",
+      "persona_signal_pass": true,
+      "daily_context_pass": true,
+      "status": "candidate",
+      "note": "AI preflight is triage only; it cannot pass or fail the four-gate editorial review."
+    },
+    {
+      "outfit_id": "outfit_jade_master_15",
+      "persona": "jade",
+      "expression": "easy",
+      "structure": "skirt",
+      "observed_persona_score": 0.63,
+      "observed_scenes": [
+        "daily",
+        "social"
+      ],
+      "observed_wearability": "everyday",
+      "persona_signal_pass": true,
+      "daily_context_pass": true,
+      "status": "candidate",
+      "note": "AI preflight is triage only; it cannot pass or fail the four-gate editorial review."
+    },
+    {
+      "outfit_id": "outfit_wabi_master_06",
+      "persona": "jade",
+      "expression": "typical",
+      "structure": "pants",
+      "observed_persona_score": 0.76,
+      "observed_scenes": [
+        "daily",
+        "social"
+      ],
+      "observed_wearability": "everyday_with_statement",
+      "persona_signal_pass": true,
+      "daily_context_pass": true,
+      "status": "candidate",
+      "note": "AI preflight is triage only; it cannot pass or fail the four-gate editorial review."
+    },
+    {
+      "outfit_id": "outfit_jade_master_01",
+      "persona": "jade",
+      "expression": "typical",
+      "structure": "pants",
+      "observed_persona_score": 0.73,
+      "observed_scenes": [
+        "daily",
+        "social"
+      ],
+      "observed_wearability": "everyday_with_statement",
+      "persona_signal_pass": true,
+      "daily_context_pass": true,
+      "status": "candidate",
+      "note": "AI preflight is triage only; it cannot pass or fail the four-gate editorial review."
+    },
+    {
+      "outfit_id": "outfit_edge_master_05",
+      "persona": "loop",
+      "expression": "explore",
+      "structure": "pants",
+      "observed_persona_score": 0.77,
+      "observed_scenes": [
+        "daily",
+        "travel"
+      ],
+      "observed_wearability": "everyday_with_statement",
+      "persona_signal_pass": true,
+      "daily_context_pass": true,
+      "status": "candidate",
+      "note": "AI preflight is triage only; it cannot pass or fail the four-gate editorial review."
+    },
+    {
+      "outfit_id": "outfit_neon_master_12",
+      "persona": "loop",
+      "expression": "explore",
+      "structure": "skirt",
+      "observed_persona_score": 0.74,
+      "observed_scenes": [
+        "daily",
+        "social"
+      ],
+      "observed_wearability": "everyday_with_statement",
+      "persona_signal_pass": true,
+      "daily_context_pass": true,
+      "status": "candidate",
+      "note": "AI preflight is triage only; it cannot pass or fail the four-gate editorial review."
+    },
+    {
+      "outfit_id": "outfit_loop_master_15",
+      "persona": "loop",
+      "expression": "typical",
+      "structure": "skirt",
+      "observed_persona_score": 0.78,
+      "observed_scenes": [
+        "daily",
+        "social"
+      ],
+      "observed_wearability": "everyday_with_statement",
+      "persona_signal_pass": true,
+      "daily_context_pass": true,
+      "status": "candidate",
+      "note": "AI preflight is triage only; it cannot pass or fail the four-gate editorial review."
+    },
+    {
+      "outfit_id": "outfit_loop_master_06",
+      "persona": "loop",
+      "expression": "typical",
+      "structure": "pants",
+      "observed_persona_score": 0.75,
+      "observed_scenes": [
+        "daily",
+        "social"
+      ],
+      "observed_wearability": "everyday_with_statement",
+      "persona_signal_pass": true,
+      "daily_context_pass": true,
+      "status": "candidate",
+      "note": "AI preflight is triage only; it cannot pass or fail the four-gate editorial review."
+    },
+    {
+      "outfit_id": "outfit_bolt_master_03",
+      "persona": "loop",
+      "expression": "typical",
+      "structure": "pants",
+      "observed_persona_score": 0.74,
+      "observed_scenes": [
+        "daily",
+        "social"
+      ],
+      "observed_wearability": "everyday_with_statement",
+      "persona_signal_pass": true,
+      "daily_context_pass": true,
+      "status": "candidate",
+      "note": "AI preflight is triage only; it cannot pass or fail the four-gate editorial review."
+    },
+    {
+      "outfit_id": "outfit_loop_master_04",
+      "persona": "loop",
+      "expression": "typical",
+      "structure": "pants",
+      "observed_persona_score": 0.69,
+      "observed_scenes": [
+        "daily",
+        "social"
+      ],
+      "observed_wearability": "everyday_with_statement",
+      "persona_signal_pass": true,
+      "daily_context_pass": true,
+      "status": "candidate",
+      "note": "AI preflight is triage only; it cannot pass or fail the four-gate editorial review."
+    },
+    {
+      "outfit_id": "outfit_iced_master_28",
+      "persona": "loop",
+      "expression": "easy",
+      "structure": "dress",
+      "observed_persona_score": 0.74,
+      "observed_scenes": [
+        "commute",
+        "daily"
+      ],
+      "observed_wearability": "everyday",
+      "persona_signal_pass": true,
+      "daily_context_pass": true,
+      "status": "candidate",
+      "note": "AI preflight is triage only; it cannot pass or fail the four-gate editorial review."
+    },
+    {
+      "outfit_id": "outfit_neon_master_03",
+      "persona": "loop",
+      "expression": "easy",
+      "structure": "pants",
+      "observed_persona_score": 0.84,
+      "observed_scenes": [
+        "commute",
+        "daily",
+        "travel"
+      ],
+      "observed_wearability": "everyday",
+      "persona_signal_pass": true,
+      "daily_context_pass": true,
+      "status": "candidate",
+      "note": "AI preflight is triage only; it cannot pass or fail the four-gate editorial review."
+    },
+    {
+      "outfit_id": "outfit_neon_master_13",
+      "persona": "loop",
+      "expression": "easy",
+      "structure": "skirt",
+      "observed_persona_score": 0.82,
+      "observed_scenes": [
+        "commute",
+        "daily",
+        "travel"
+      ],
+      "observed_wearability": "everyday",
+      "persona_signal_pass": true,
+      "daily_context_pass": true,
+      "status": "candidate",
+      "note": "AI preflight is triage only; it cannot pass or fail the four-gate editorial review."
+    },
+    {
+      "outfit_id": "outfit_flou_master_15",
+      "persona": "loop",
+      "expression": "easy",
+      "structure": "skirt",
+      "observed_persona_score": 0.79,
+      "observed_scenes": [
+        "commute",
+        "daily",
+        "travel"
+      ],
+      "observed_wearability": "everyday",
+      "persona_signal_pass": true,
+      "daily_context_pass": true,
+      "status": "candidate",
+      "note": "AI preflight is triage only; it cannot pass or fail the four-gate editorial review."
+    },
+    {
+      "outfit_id": "outfit_heir_master_14_v1",
+      "persona": "melt",
+      "expression": "explore",
+      "structure": "skirt",
+      "observed_persona_score": 0.64,
+      "observed_scenes": [
+        "daily",
+        "social"
+      ],
+      "observed_wearability": "everyday_with_statement",
+      "persona_signal_pass": true,
+      "daily_context_pass": true,
+      "status": "candidate",
+      "note": "AI preflight is triage only; it cannot pass or fail the four-gate editorial review."
+    },
+    {
+      "outfit_id": "outfit_melt_master_02_v2",
+      "persona": "melt",
+      "expression": "explore",
+      "structure": "pants",
+      "observed_persona_score": 0.59,
+      "observed_scenes": [
+        "daily",
+        "social"
+      ],
+      "observed_wearability": "everyday_with_statement",
+      "persona_signal_pass": true,
+      "daily_context_pass": true,
+      "status": "candidate",
+      "note": "AI preflight is triage only; it cannot pass or fail the four-gate editorial review."
+    },
+    {
+      "outfit_id": "outfit_heir_master_25",
+      "persona": "melt",
+      "expression": "typical",
+      "structure": "dress",
+      "observed_persona_score": 0.74,
+      "observed_scenes": [
+        "daily",
+        "social"
+      ],
+      "observed_wearability": "everyday_with_statement",
+      "persona_signal_pass": true,
+      "daily_context_pass": true,
+      "status": "candidate",
+      "note": "AI preflight is triage only; it cannot pass or fail the four-gate editorial review."
+    },
+    {
+      "outfit_id": "outfit_melt_master_15",
+      "persona": "melt",
+      "expression": "typical",
+      "structure": "skirt",
+      "observed_persona_score": 0.8,
+      "observed_scenes": [
+        "daily",
+        "social"
+      ],
+      "observed_wearability": "everyday_with_statement",
+      "persona_signal_pass": true,
+      "daily_context_pass": true,
+      "status": "candidate",
+      "note": "AI preflight is triage only; it cannot pass or fail the four-gate editorial review."
+    },
+    {
+      "outfit_id": "outfit_heir_master_18",
+      "persona": "melt",
+      "expression": "typical",
+      "structure": "skirt",
+      "observed_persona_score": 0.78,
+      "observed_scenes": [
+        "daily",
+        "social"
+      ],
+      "observed_wearability": "everyday_with_statement",
+      "persona_signal_pass": true,
+      "daily_context_pass": true,
+      "status": "candidate",
+      "note": "AI preflight is triage only; it cannot pass or fail the four-gate editorial review."
+    },
+    {
+      "outfit_id": "outfit_ease_master_16_v1",
+      "persona": "melt",
+      "expression": "typical",
+      "structure": "skirt",
+      "observed_persona_score": 0.76,
+      "observed_scenes": [
+        "daily",
+        "social"
+      ],
+      "observed_wearability": "everyday_with_statement",
+      "persona_signal_pass": true,
+      "daily_context_pass": true,
+      "status": "candidate",
+      "note": "AI preflight is triage only; it cannot pass or fail the four-gate editorial review."
+    },
+    {
+      "outfit_id": "outfit_melt_master_04",
+      "persona": "melt",
+      "expression": "easy",
+      "structure": "pants",
+      "observed_persona_score": 0.79,
+      "observed_scenes": [
+        "daily",
+        "social"
+      ],
+      "observed_wearability": "everyday",
+      "persona_signal_pass": true,
+      "daily_context_pass": true,
+      "status": "candidate",
+      "note": "AI preflight is triage only; it cannot pass or fail the four-gate editorial review."
+    },
+    {
+      "outfit_id": "outfit_mute_master_12",
+      "persona": "melt",
+      "expression": "easy",
+      "structure": "skirt",
+      "observed_persona_score": 0.74,
+      "observed_scenes": [
+        "daily"
+      ],
+      "observed_wearability": "everyday",
+      "persona_signal_pass": true,
+      "daily_context_pass": true,
+      "status": "candidate",
+      "note": "AI preflight is triage only; it cannot pass or fail the four-gate editorial review."
+    },
+    {
+      "outfit_id": "outfit_melt_master_25",
+      "persona": "melt",
+      "expression": "easy",
+      "structure": "dress",
+      "observed_persona_score": 0.68,
+      "observed_scenes": [
+        "daily",
+        "social"
+      ],
+      "observed_wearability": "everyday",
+      "persona_signal_pass": true,
+      "daily_context_pass": true,
+      "status": "candidate",
+      "note": "AI preflight is triage only; it cannot pass or fail the four-gate editorial review."
+    },
+    {
+      "outfit_id": "outfit_ease_master_25",
+      "persona": "melt",
+      "expression": "easy",
+      "structure": "dress",
+      "observed_persona_score": 0.67,
+      "observed_scenes": [
+        "daily",
+        "social"
+      ],
+      "observed_wearability": "everyday",
+      "persona_signal_pass": true,
+      "daily_context_pass": true,
+      "status": "candidate",
+      "note": "AI preflight is triage only; it cannot pass or fail the four-gate editorial review."
+    },
+    {
+      "outfit_id": "outfit_iced_master_04",
+      "persona": "mute",
+      "expression": "easy",
+      "structure": "pants",
+      "observed_persona_score": 0.84,
+      "observed_scenes": [
+        "commute",
+        "daily"
+      ],
+      "observed_wearability": "everyday",
+      "persona_signal_pass": true,
+      "daily_context_pass": true,
+      "status": "candidate",
+      "note": "AI preflight is triage only; it cannot pass or fail the four-gate editorial review."
+    },
+    {
+      "outfit_id": "outfit_heir_master_29",
+      "persona": "mute",
+      "expression": "easy",
+      "structure": "dress",
+      "observed_persona_score": 0.83,
+      "observed_scenes": [
+        "commute",
+        "daily"
+      ],
+      "observed_wearability": "everyday",
+      "persona_signal_pass": true,
+      "daily_context_pass": true,
+      "status": "candidate",
+      "note": "AI preflight is triage only; it cannot pass or fail the four-gate editorial review."
+    },
+    {
+      "outfit_id": "outfit_mute_master_13",
+      "persona": "mute",
+      "expression": "easy",
+      "structure": "skirt",
+      "observed_persona_score": 0.81,
+      "observed_scenes": [
+        "commute",
+        "daily"
+      ],
+      "observed_wearability": "everyday",
+      "persona_signal_pass": true,
+      "daily_context_pass": true,
+      "status": "candidate",
+      "note": "AI preflight is triage only; it cannot pass or fail the four-gate editorial review."
+    },
+    {
+      "outfit_id": "outfit_mute_master_09",
+      "persona": "mute",
+      "expression": "easy",
+      "structure": "pants",
+      "observed_persona_score": 0.84,
+      "observed_scenes": [
+        "commute",
+        "daily"
+      ],
+      "observed_wearability": "everyday",
+      "persona_signal_pass": true,
+      "daily_context_pass": true,
+      "status": "candidate",
+      "note": "AI preflight is triage only; it cannot pass or fail the four-gate editorial review."
+    },
+    {
+      "outfit_id": "outfit_iced_master_29_v1",
+      "persona": "mute",
+      "expression": "typical",
+      "structure": "dress",
+      "observed_persona_score": 0.66,
+      "observed_scenes": [
+        "daily",
+        "social"
+      ],
+      "observed_wearability": "everyday_with_statement",
+      "persona_signal_pass": true,
+      "daily_context_pass": true,
+      "status": "candidate",
+      "note": "AI preflight is triage only; it cannot pass or fail the four-gate editorial review."
+    },
+    {
+      "outfit_id": "outfit_edge_master_15",
+      "persona": "mute",
+      "expression": "typical",
+      "structure": "skirt",
+      "observed_persona_score": 0.6,
+      "observed_scenes": [
+        "daily",
+        "social"
+      ],
+      "observed_wearability": "everyday_with_statement",
+      "persona_signal_pass": true,
+      "daily_context_pass": true,
+      "status": "candidate",
+      "note": "AI preflight is triage only; it cannot pass or fail the four-gate editorial review."
+    },
+    {
+      "outfit_id": "outfit_noir_master_09",
+      "persona": "mute",
+      "expression": "explore",
+      "structure": "pants",
+      "observed_persona_score": 0.69,
+      "observed_scenes": [
+        "daily",
+        "social"
+      ],
+      "observed_wearability": "everyday_with_statement",
+      "persona_signal_pass": true,
+      "daily_context_pass": true,
+      "status": "candidate",
+      "note": "AI preflight is triage only; it cannot pass or fail the four-gate editorial review."
+    },
+    {
+      "outfit_id": "outfit_neon_master_15",
+      "persona": "mute",
+      "expression": "explore",
+      "structure": "skirt",
+      "observed_persona_score": 0.63,
+      "observed_scenes": [
+        "daily",
+        "social"
+      ],
+      "observed_wearability": "everyday_with_statement",
+      "persona_signal_pass": true,
+      "daily_context_pass": true,
+      "status": "candidate",
+      "note": "AI preflight is triage only; it cannot pass or fail the four-gate editorial review."
+    },
+    {
+      "outfit_id": "outfit_oops_aw-winter-04_09",
+      "persona": "neon",
+      "expression": "easy",
+      "structure": "dress",
+      "observed_persona_score": 0.6,
+      "observed_scenes": [
+        "daily"
+      ],
+      "observed_wearability": "everyday",
+      "persona_signal_pass": true,
+      "daily_context_pass": true,
+      "status": "candidate",
+      "note": "AI preflight is triage only; it cannot pass or fail the four-gate editorial review."
+    },
+    {
+      "outfit_id": "outfit_edge_master_08",
+      "persona": "neon",
+      "expression": "typical",
+      "structure": "pants",
+      "observed_persona_score": 0.81,
+      "observed_scenes": [
+        "creative",
+        "daily"
+      ],
+      "observed_wearability": "everyday_with_statement",
+      "persona_signal_pass": true,
+      "daily_context_pass": true,
+      "status": "candidate",
+      "note": "AI preflight is triage only; it cannot pass or fail the four-gate editorial review."
+    },
+    {
+      "outfit_id": "outfit_neon_aw-winter-04_02",
+      "persona": "neon",
+      "expression": "typical",
+      "structure": "skirt",
+      "observed_persona_score": 0.88,
+      "observed_scenes": [
+        "daily"
+      ],
+      "observed_wearability": "everyday_with_statement",
+      "persona_signal_pass": true,
+      "daily_context_pass": true,
+      "status": "candidate",
+      "note": "AI preflight is triage only; it cannot pass or fail the four-gate editorial review."
+    },
+    {
+      "outfit_id": "outfit_mute_master_16",
+      "persona": "noir",
+      "expression": "easy",
+      "structure": "skirt",
+      "observed_persona_score": 0.63,
+      "observed_scenes": [
+        "commute",
+        "daily"
+      ],
+      "observed_wearability": "everyday",
+      "persona_signal_pass": true,
+      "daily_context_pass": true,
+      "status": "candidate",
+      "note": "AI preflight is triage only; it cannot pass or fail the four-gate editorial review."
+    },
+    {
+      "outfit_id": "outfit_mute_master_01",
+      "persona": "noir",
+      "expression": "easy",
+      "structure": "pants",
+      "observed_persona_score": 0.6,
+      "observed_scenes": [
+        "commute",
+        "daily"
+      ],
+      "observed_wearability": "everyday",
+      "persona_signal_pass": true,
+      "daily_context_pass": true,
+      "status": "candidate",
+      "note": "AI preflight is triage only; it cannot pass or fail the four-gate editorial review."
+    },
+    {
+      "outfit_id": "outfit_edge_master_30",
+      "persona": "noir",
+      "expression": "easy",
+      "structure": "dress",
+      "observed_persona_score": 0.57,
+      "observed_scenes": [
+        "commute",
+        "daily",
+        "social"
+      ],
+      "observed_wearability": "everyday",
+      "persona_signal_pass": true,
+      "daily_context_pass": true,
+      "status": "candidate",
+      "note": "AI preflight is triage only; it cannot pass or fail the four-gate editorial review."
+    },
+    {
+      "outfit_id": "outfit_neon_master_07_v1",
+      "persona": "noir",
+      "expression": "easy",
+      "structure": "pants",
+      "observed_persona_score": 0.6,
+      "observed_scenes": [
+        "commute",
+        "daily"
+      ],
+      "observed_wearability": "everyday",
+      "persona_signal_pass": true,
+      "daily_context_pass": true,
+      "status": "candidate",
+      "note": "AI preflight is triage only; it cannot pass or fail the four-gate editorial review."
+    },
+    {
+      "outfit_id": "outfit_noir_master_14",
+      "persona": "noir",
+      "expression": "typical",
+      "structure": "skirt",
+      "observed_persona_score": 0.63,
+      "observed_scenes": [
+        "daily",
+        "social"
+      ],
+      "observed_wearability": "everyday_with_statement",
+      "persona_signal_pass": true,
+      "daily_context_pass": true,
+      "status": "candidate",
+      "note": "AI preflight is triage only; it cannot pass or fail the four-gate editorial review."
+    },
+    {
+      "outfit_id": "outfit_edge_master_27_v1",
+      "persona": "noir",
+      "expression": "typical",
+      "structure": "dress",
+      "observed_persona_score": 0.6,
+      "observed_scenes": [
+        "daily",
+        "social"
+      ],
+      "observed_wearability": "everyday_with_statement",
+      "persona_signal_pass": true,
+      "daily_context_pass": true,
+      "status": "candidate",
+      "note": "AI preflight is triage only; it cannot pass or fail the four-gate editorial review."
+    },
+    {
+      "outfit_id": "outfit_edge_master_01_v1",
+      "persona": "noir",
+      "expression": "explore",
+      "structure": "pants",
+      "observed_persona_score": 0.56,
+      "observed_scenes": [
+        "daily",
+        "social"
+      ],
+      "observed_wearability": "everyday_with_statement",
+      "persona_signal_pass": true,
+      "daily_context_pass": true,
+      "status": "candidate",
+      "note": "AI preflight is triage only; it cannot pass or fail the four-gate editorial review."
+    },
+    {
+      "outfit_id": "outfit_film_master_04_v2",
+      "persona": "oops",
+      "expression": "typical",
+      "structure": "pants",
+      "observed_persona_score": 0.67,
+      "observed_scenes": [
+        "creative",
+        "daily"
+      ],
+      "observed_wearability": "everyday_with_statement",
+      "persona_signal_pass": true,
+      "daily_context_pass": true,
+      "status": "candidate",
+      "note": "AI preflight is triage only; it cannot pass or fail the four-gate editorial review."
+    },
+    {
+      "outfit_id": "outfit_film_master_11_v2",
+      "persona": "oops",
+      "expression": "typical",
+      "structure": "skirt",
+      "observed_persona_score": 0.6,
+      "observed_scenes": [
+        "creative",
+        "daily"
+      ],
+      "observed_wearability": "everyday_with_statement",
+      "persona_signal_pass": true,
+      "daily_context_pass": true,
+      "status": "candidate",
+      "note": "AI preflight is triage only; it cannot pass or fail the four-gate editorial review."
+    },
+    {
+      "outfit_id": "outfit_film_master_02_v2",
+      "persona": "oops",
+      "expression": "typical",
+      "structure": "pants",
+      "observed_persona_score": 0.61,
+      "observed_scenes": [
+        "creative",
+        "daily"
+      ],
+      "observed_wearability": "everyday_with_statement",
+      "persona_signal_pass": true,
+      "daily_context_pass": true,
+      "status": "candidate",
+      "note": "AI preflight is triage only; it cannot pass or fail the four-gate editorial review."
+    },
+    {
+      "outfit_id": "outfit_loop_master_11_v1",
+      "persona": "oops",
+      "expression": "typical",
+      "structure": "skirt",
+      "observed_persona_score": 0.6,
+      "observed_scenes": [
+        "daily",
+        "social"
+      ],
+      "observed_wearability": "everyday_with_statement",
+      "persona_signal_pass": true,
+      "daily_context_pass": true,
+      "status": "candidate",
+      "note": "AI preflight is triage only; it cannot pass or fail the four-gate editorial review."
+    },
+    {
+      "outfit_id": "outfit_loop_master_02_v2",
+      "persona": "oops",
+      "expression": "explore",
+      "structure": "pants",
+      "observed_persona_score": 0.67,
+      "observed_scenes": [
+        "daily",
+        "social"
+      ],
+      "observed_wearability": "everyday_with_statement",
+      "persona_signal_pass": true,
+      "daily_context_pass": true,
+      "status": "candidate",
+      "note": "AI preflight is triage only; it cannot pass or fail the four-gate editorial review."
+    },
+    {
+      "outfit_id": "outfit_mute_master_05",
+      "persona": "oops",
+      "expression": "explore",
+      "structure": "pants",
+      "observed_persona_score": 0.67,
+      "observed_scenes": [
+        "creative",
+        "daily"
+      ],
+      "observed_wearability": "everyday_with_statement",
+      "persona_signal_pass": true,
+      "daily_context_pass": true,
+      "status": "candidate",
+      "note": "AI preflight is triage only; it cannot pass or fail the four-gate editorial review."
+    },
+    {
+      "outfit_id": "outfit_wabi_master_02_v1",
+      "persona": "void",
+      "expression": "typical",
+      "structure": "pants",
+      "observed_persona_score": 0.87,
+      "observed_scenes": [
+        "creative",
+        "daily"
+      ],
+      "observed_wearability": "everyday_with_statement",
+      "persona_signal_pass": true,
+      "daily_context_pass": true,
+      "status": "candidate",
+      "note": "AI preflight is triage only; it cannot pass or fail the four-gate editorial review."
+    },
+    {
+      "outfit_id": "outfit_film_master_14",
+      "persona": "void",
+      "expression": "typical",
+      "structure": "skirt",
+      "observed_persona_score": 0.64,
+      "observed_scenes": [
+        "daily",
+        "social"
+      ],
+      "observed_wearability": "everyday_with_statement",
+      "persona_signal_pass": true,
+      "daily_context_pass": true,
+      "status": "candidate",
+      "note": "AI preflight is triage only; it cannot pass or fail the four-gate editorial review."
+    },
+    {
+      "outfit_id": "outfit_wabi_master_03_v1",
+      "persona": "void",
+      "expression": "typical",
+      "structure": "pants",
+      "observed_persona_score": 0.78,
+      "observed_scenes": [
+        "creative",
+        "daily"
+      ],
+      "observed_wearability": "everyday_with_statement",
+      "persona_signal_pass": true,
+      "daily_context_pass": true,
+      "status": "candidate",
+      "note": "AI preflight is triage only; it cannot pass or fail the four-gate editorial review."
+    },
+    {
+      "outfit_id": "outfit_film_master_06_v2",
+      "persona": "void",
+      "expression": "typical",
+      "structure": "pants",
+      "observed_persona_score": 0.76,
+      "observed_scenes": [
+        "creative",
+        "daily"
+      ],
+      "observed_wearability": "everyday_with_statement",
+      "persona_signal_pass": true,
+      "daily_context_pass": true,
+      "status": "candidate",
+      "note": "AI preflight is triage only; it cannot pass or fail the four-gate editorial review."
+    },
+    {
+      "outfit_id": "outfit_ease_master_05_v1",
+      "persona": "void",
+      "expression": "explore",
+      "structure": "pants",
+      "observed_persona_score": 0.61,
+      "observed_scenes": [
+        "creative",
+        "daily"
+      ],
+      "observed_wearability": "everyday_with_statement",
+      "persona_signal_pass": true,
+      "daily_context_pass": true,
+      "status": "candidate",
+      "note": "AI preflight is triage only; it cannot pass or fail the four-gate editorial review."
+    },
+    {
+      "outfit_id": "outfit_ease_master_10_v1",
+      "persona": "void",
+      "expression": "explore",
+      "structure": "pants",
+      "observed_persona_score": 0.61,
+      "observed_scenes": [
+        "creative",
+        "daily"
+      ],
+      "observed_wearability": "everyday_with_statement",
+      "persona_signal_pass": true,
+      "daily_context_pass": true,
+      "status": "candidate",
+      "note": "AI preflight is triage only; it cannot pass or fail the four-gate editorial review."
+    },
+    {
+      "outfit_id": "outfit_ease_master_04",
+      "persona": "wabi",
+      "expression": "easy",
+      "structure": "pants",
+      "observed_persona_score": 0.65,
+      "observed_scenes": [
+        "daily",
+        "travel"
+      ],
+      "observed_wearability": "everyday",
+      "persona_signal_pass": true,
+      "daily_context_pass": true,
+      "status": "candidate",
+      "note": "AI preflight is triage only; it cannot pass or fail the four-gate editorial review."
+    },
+    {
+      "outfit_id": "outfit_ease_master_11",
+      "persona": "wabi",
+      "expression": "easy",
+      "structure": "skirt",
+      "observed_persona_score": 0.61,
+      "observed_scenes": [
+        "daily",
+        "travel"
+      ],
+      "observed_wearability": "everyday",
+      "persona_signal_pass": true,
+      "daily_context_pass": true,
+      "status": "candidate",
+      "note": "AI preflight is triage only; it cannot pass or fail the four-gate editorial review."
+    },
+    {
+      "outfit_id": "outfit_wabi_master_04",
+      "persona": "wabi",
+      "expression": "easy",
+      "structure": "pants",
+      "observed_persona_score": 0.62,
+      "observed_scenes": [
+        "daily",
+        "travel"
+      ],
+      "observed_wearability": "everyday",
+      "persona_signal_pass": true,
+      "daily_context_pass": true,
+      "status": "candidate",
+      "note": "AI preflight is triage only; it cannot pass or fail the four-gate editorial review."
+    },
+    {
+      "outfit_id": "outfit_ease_master_09",
+      "persona": "wabi",
+      "expression": "easy",
+      "structure": "pants",
+      "observed_persona_score": 0.56,
+      "observed_scenes": [
+        "daily",
+        "travel"
+      ],
+      "observed_wearability": "everyday",
+      "persona_signal_pass": true,
+      "daily_context_pass": true,
+      "status": "candidate",
+      "note": "AI preflight is triage only; it cannot pass or fail the four-gate editorial review."
+    },
+    {
+      "outfit_id": "outfit_wabi_master_08",
+      "persona": "wabi",
+      "expression": "typical",
+      "structure": "pants",
+      "observed_persona_score": 0.81,
+      "observed_scenes": [
+        "creative",
+        "daily"
+      ],
+      "observed_wearability": "everyday_with_statement",
+      "persona_signal_pass": true,
+      "daily_context_pass": true,
+      "status": "candidate",
+      "note": "AI preflight is triage only; it cannot pass or fail the four-gate editorial review."
+    },
+    {
+      "outfit_id": "outfit_wabi_master_11_v1",
+      "persona": "wabi",
+      "expression": "typical",
+      "structure": "skirt",
+      "observed_persona_score": 0.79,
+      "observed_scenes": [
+        "creative",
+        "daily"
+      ],
+      "observed_wearability": "everyday_with_statement",
+      "persona_signal_pass": true,
+      "daily_context_pass": true,
+      "status": "candidate",
+      "note": "AI preflight is triage only; it cannot pass or fail the four-gate editorial review."
+    },
+    {
+      "outfit_id": "outfit_wabi_master_12_v2",
+      "persona": "wabi",
+      "expression": "typical",
+      "structure": "skirt",
+      "observed_persona_score": 0.79,
+      "observed_scenes": [
+        "creative",
+        "daily"
+      ],
+      "observed_wearability": "everyday_with_statement",
+      "persona_signal_pass": true,
+      "daily_context_pass": true,
+      "status": "candidate",
+      "note": "AI preflight is triage only; it cannot pass or fail the four-gate editorial review."
+    },
+    {
+      "outfit_id": "outfit_wabi_master_09_v2",
+      "persona": "wabi",
+      "expression": "typical",
+      "structure": "pants",
+      "observed_persona_score": 0.77,
+      "observed_scenes": [
+        "creative",
+        "daily"
+      ],
+      "observed_wearability": "everyday_with_statement",
+      "persona_signal_pass": true,
+      "daily_context_pass": true,
+      "status": "candidate",
+      "note": "AI preflight is triage only; it cannot pass or fail the four-gate editorial review."
+    },
+    {
+      "outfit_id": "outfit_wabi_p0-gap-02_02",
+      "persona": "wabi",
+      "expression": "explore",
+      "structure": "skirt",
+      "observed_persona_score": 0.9,
+      "observed_scenes": [
+        "commute",
+        "daily"
+      ],
+      "observed_wearability": "everyday_with_statement",
+      "persona_signal_pass": true,
+      "daily_context_pass": true,
+      "status": "candidate",
+      "note": "AI preflight is triage only; it cannot pass or fail the four-gate editorial review."
+    },
+    {
+      "outfit_id": "outfit_void_master_14_v1",
+      "persona": "wabi",
+      "expression": "explore",
+      "structure": "skirt",
+      "observed_persona_score": 0.72,
+      "observed_scenes": [
+        "daily",
+        "social"
+      ],
+      "observed_wearability": "everyday_with_statement",
+      "persona_signal_pass": true,
+      "daily_context_pass": true,
+      "status": "candidate",
+      "note": "AI preflight is triage only; it cannot pass or fail the four-gate editorial review."
+    }
+  ]
+}

@@ -1,0 +1,702 @@
+{
+  "schema_version": 1,
+  "batch_id": "aw-winter-03",
+  "source_visual_version": "codex-visual-16b18cdcdca36dbc306a",
+  "status": "designer_targets_pending_whole_image_review",
+  "new_garments": [
+    {
+      "id": "garment_aw_winter03_outer_fuchsia_01",
+      "category": "outer",
+      "subcategory": "品红锐肩短结构外套",
+      "silhouette": [
+        "cropped",
+        "sharp_shoulder",
+        "defined_waist"
+      ],
+      "fit": "合体",
+      "materials": [],
+      "details": [
+        "original_gap_fill",
+        "bright",
+        "visually_reviewed_cutout"
+      ],
+      "season_tags": [
+        "秋",
+        "冬"
+      ],
+      "scene_tags": [
+        "日常",
+        "通勤",
+        "旅行"
+      ],
+      "weather_tags": [],
+      "presentation": [
+        "feminine",
+        "neutral"
+      ],
+      "layer_role": "outer",
+      "tryon_slot": "outer",
+      "persona_affinity": {
+        "BOLT": 0.96,
+        "EDGE": 0.88,
+        "NEON": 0.8,
+        "OOPS": 0.72
+      },
+      "color": {
+        "temperature": "未判断",
+        "lightness": "中等",
+        "saturation": "高饱和",
+        "harmony": "未判断",
+        "palette": [
+          "#b40855",
+          "#bc0c5c",
+          "#ce186b",
+          "#c51064",
+          "#930440"
+        ]
+      },
+      "assets": {
+        "image_url": "/static/selfit/assets/content_v2_drafts/aw-winter-03/garments/winter-jacket-bright-fuchsia-v1.png",
+        "source_url": "",
+        "width": 1200,
+        "height": 1200,
+        "alpha_verified": true,
+        "rights_status": "owned"
+      },
+      "production": {
+        "source_kind": "generated_original",
+        "generation_job_id": "aw-generated-garments-02-n0005",
+        "prompt_version": "selfit-aw-winter-gap-v1",
+        "reference_ids": [],
+        "qa_status": "approved",
+        "phash": "d4c4d4d0f0e87110-b50c58"
+      },
+      "annotation": {
+        "status": "designer_reviewed",
+        "source": "designer",
+        "confidence": 0.92,
+        "review_notes": [
+          "Cutout and visible silhouette reviewed in current Codex session; outfit use remains draft."
+        ]
+      },
+      "color_evidence": {
+        "source": "opaque_pixel_quantization_v1",
+        "status": "measured_not_semantic_review",
+        "asset_sha256": "1e95961744f45c82cb1833cc2caa33ffe9d2424685282681cc1affdbd91696bb",
+        "swatches": [
+          {
+            "hex": "#b40855",
+            "weight": 0.3076,
+            "family": "紫"
+          },
+          {
+            "hex": "#bc0c5c",
+            "weight": 0.2536,
+            "family": "紫"
+          },
+          {
+            "hex": "#ce186b",
+            "weight": 0.1558,
+            "family": "紫"
+          },
+          {
+            "hex": "#c51064",
+            "weight": 0.1498,
+            "family": "紫"
+          },
+          {
+            "hex": "#930440",
+            "weight": 0.1333,
+            "family": "紫"
+          }
+        ],
+        "palette_names": [
+          "紫"
+        ],
+        "color": {
+          "temperature": "未判断",
+          "lightness": "中等",
+          "saturation": "高饱和",
+          "harmony": "未判断",
+          "palette": [
+            "#b40855",
+            "#bc0c5c",
+            "#ce186b",
+            "#c51064",
+            "#930440"
+          ]
+        },
+        "limitations": "渲染光照会影响色值；不据此推断面料成分、真实冷暖或人体适配。"
+      }
+    },
+    {
+      "id": "garment_aw_winter03_outer_amethyst_01",
+      "category": "outer",
+      "subcategory": "紫晶错位包裹长外套",
+      "silhouette": [
+        "wrap",
+        "soft_cocoon",
+        "asymmetric_overlap"
+      ],
+      "fit": "宽松",
+      "materials": [],
+      "details": [
+        "original_gap_fill",
+        "jewel",
+        "visually_reviewed_cutout"
+      ],
+      "season_tags": [
+        "秋",
+        "冬"
+      ],
+      "scene_tags": [
+        "日常",
+        "通勤",
+        "旅行"
+      ],
+      "weather_tags": [],
+      "presentation": [
+        "feminine",
+        "neutral"
+      ],
+      "layer_role": "outer",
+      "tryon_slot": "outer",
+      "persona_affinity": {
+        "VOID": 0.96,
+        "OOPS": 0.88,
+        "EDGE": 0.8,
+        "WABI": 0.72
+      },
+      "color": {
+        "temperature": "未判断",
+        "lightness": "深色",
+        "saturation": "高饱和",
+        "harmony": "未判断",
+        "palette": [
+          "#301633",
+          "#361a39",
+          "#3c1e3e",
+          "#220e24",
+          "#432545"
+        ]
+      },
+      "assets": {
+        "image_url": "/static/selfit/assets/content_v2_drafts/aw-winter-03/garments/winter-coat-jewel-amethyst-v1.png",
+        "source_url": "",
+        "width": 1200,
+        "height": 1200,
+        "alpha_verified": true,
+        "rights_status": "owned"
+      },
+      "production": {
+        "source_kind": "generated_original",
+        "generation_job_id": "aw-generated-garments-02-n0006",
+        "prompt_version": "selfit-aw-winter-gap-v1",
+        "reference_ids": [],
+        "qa_status": "approved",
+        "phash": "3070307179703010-331936"
+      },
+      "annotation": {
+        "status": "designer_reviewed",
+        "source": "designer",
+        "confidence": 0.92,
+        "review_notes": [
+          "Cutout and visible silhouette reviewed in current Codex session; outfit use remains draft."
+        ]
+      },
+      "color_evidence": {
+        "source": "opaque_pixel_quantization_v1",
+        "status": "measured_not_semantic_review",
+        "asset_sha256": "8e835a2a37159c4f8575fb758ab3b993809a8508df93422410ed7e10e9c973ab",
+        "swatches": [
+          {
+            "hex": "#301633",
+            "weight": 0.3588,
+            "family": "紫"
+          },
+          {
+            "hex": "#361a39",
+            "weight": 0.2047,
+            "family": "紫"
+          },
+          {
+            "hex": "#3c1e3e",
+            "weight": 0.1612,
+            "family": "紫"
+          },
+          {
+            "hex": "#220e24",
+            "weight": 0.1439,
+            "family": "黑"
+          },
+          {
+            "hex": "#432545",
+            "weight": 0.1314,
+            "family": "紫"
+          }
+        ],
+        "palette_names": [
+          "紫",
+          "黑"
+        ],
+        "color": {
+          "temperature": "未判断",
+          "lightness": "深色",
+          "saturation": "高饱和",
+          "harmony": "未判断",
+          "palette": [
+            "#301633",
+            "#361a39",
+            "#3c1e3e",
+            "#220e24",
+            "#432545"
+          ]
+        },
+        "limitations": "渲染光照会影响色值；不据此推断面料成分、真实冷暖或人体适配。"
+      }
+    },
+    {
+      "id": "garment_aw_winter03_outer_emerald_01",
+      "category": "outer",
+      "subcategory": "祖母绿复古收腰长外套",
+      "silhouette": [
+        "vintage_a_line",
+        "defined_waist",
+        "mid_calf"
+      ],
+      "fit": "合体",
+      "materials": [],
+      "details": [
+        "original_gap_fill",
+        "jewel",
+        "visually_reviewed_cutout"
+      ],
+      "season_tags": [
+        "秋",
+        "冬"
+      ],
+      "scene_tags": [
+        "日常",
+        "通勤",
+        "旅行"
+      ],
+      "weather_tags": [],
+      "presentation": [
+        "feminine",
+        "neutral"
+      ],
+      "layer_role": "outer",
+      "tryon_slot": "outer",
+      "persona_affinity": {
+        "FILM": 0.96,
+        "JADE": 0.88,
+        "BOLT": 0.8,
+        "HEIR": 0.72
+      },
+      "color": {
+        "temperature": "未判断",
+        "lightness": "深色",
+        "saturation": "高饱和",
+        "harmony": "未判断",
+        "palette": [
+          "#083529",
+          "#0b3b2f",
+          "#0e4135",
+          "#05281e",
+          "#144a3d"
+        ]
+      },
+      "assets": {
+        "image_url": "/static/selfit/assets/content_v2_drafts/aw-winter-03/garments/winter-coat-jewel-emerald-v1.png",
+        "source_url": "",
+        "width": 1200,
+        "height": 1200,
+        "alpha_verified": true,
+        "rights_status": "owned"
+      },
+      "production": {
+        "source_kind": "generated_original",
+        "generation_job_id": "aw-generated-garments-02-n0007",
+        "prompt_version": "selfit-aw-winter-gap-v1",
+        "reference_ids": [],
+        "qa_status": "approved",
+        "phash": "7069787871703010-0a382c"
+      },
+      "annotation": {
+        "status": "designer_reviewed",
+        "source": "designer",
+        "confidence": 0.92,
+        "review_notes": [
+          "Cutout and visible silhouette reviewed in current Codex session; outfit use remains draft."
+        ]
+      },
+      "color_evidence": {
+        "source": "opaque_pixel_quantization_v1",
+        "status": "measured_not_semantic_review",
+        "asset_sha256": "ebf939388e22fe59dd11cbe791022eca8a05d4a90ad44d2ecb8cdc179766ad7d",
+        "swatches": [
+          {
+            "hex": "#083529",
+            "weight": 0.3716,
+            "family": "绿"
+          },
+          {
+            "hex": "#0b3b2f",
+            "weight": 0.2053,
+            "family": "绿"
+          },
+          {
+            "hex": "#0e4135",
+            "weight": 0.1629,
+            "family": "绿"
+          },
+          {
+            "hex": "#05281e",
+            "weight": 0.1528,
+            "family": "黑"
+          },
+          {
+            "hex": "#144a3d",
+            "weight": 0.1075,
+            "family": "绿"
+          }
+        ],
+        "palette_names": [
+          "绿",
+          "黑"
+        ],
+        "color": {
+          "temperature": "未判断",
+          "lightness": "深色",
+          "saturation": "高饱和",
+          "harmony": "未判断",
+          "palette": [
+            "#083529",
+            "#0b3b2f",
+            "#0e4135",
+            "#05281e",
+            "#144a3d"
+          ]
+        },
+        "limitations": "渲染光照会影响色值；不据此推断面料成分、真实冷暖或人体适配。"
+      }
+    },
+    {
+      "id": "garment_aw_winter03_outer_marigold_01",
+      "category": "outer",
+      "subcategory": "万寿菊黄克制长直外套",
+      "silhouette": [
+        "long_column",
+        "collarless",
+        "clean_vertical_line"
+      ],
+      "fit": "合体",
+      "materials": [],
+      "details": [
+        "original_gap_fill",
+        "bright",
+        "visually_reviewed_cutout"
+      ],
+      "season_tags": [
+        "秋",
+        "冬"
+      ],
+      "scene_tags": [
+        "日常",
+        "通勤",
+        "旅行"
+      ],
+      "weather_tags": [],
+      "presentation": [
+        "feminine",
+        "neutral"
+      ],
+      "layer_role": "outer",
+      "tryon_slot": "outer",
+      "persona_affinity": {
+        "MUTE": 0.96,
+        "JADE": 0.88,
+        "FILM": 0.8,
+        "WABI": 0.72
+      },
+      "color": {
+        "temperature": "未判断",
+        "lightness": "浅色",
+        "saturation": "高饱和",
+        "harmony": "未判断",
+        "palette": [
+          "#e8a80a",
+          "#f2b412",
+          "#f6bb1a",
+          "#cf8b03",
+          "#fac224"
+        ]
+      },
+      "assets": {
+        "image_url": "/static/selfit/assets/content_v2_drafts/aw-winter-03/garments/winter-coat-bright-marigold-v1.png",
+        "source_url": "",
+        "width": 1200,
+        "height": 1200,
+        "alpha_verified": true,
+        "rights_status": "owned"
+      },
+      "production": {
+        "source_kind": "generated_original",
+        "generation_job_id": "aw-generated-garments-02-n0008",
+        "prompt_version": "selfit-aw-winter-gap-v1",
+        "reference_ids": [],
+        "qa_status": "approved",
+        "phash": "7070307179717130-e9aa11"
+      },
+      "annotation": {
+        "status": "designer_reviewed",
+        "source": "designer",
+        "confidence": 0.92,
+        "review_notes": [
+          "Cutout and visible silhouette reviewed in current Codex session; outfit use remains draft."
+        ]
+      },
+      "color_evidence": {
+        "source": "opaque_pixel_quantization_v1",
+        "status": "measured_not_semantic_review",
+        "asset_sha256": "e15bd1d269c01888ca142aee644cda52f0e7a866da08c9fc0dce78776daace9f",
+        "swatches": [
+          {
+            "hex": "#e8a80a",
+            "weight": 0.2692,
+            "family": "黄"
+          },
+          {
+            "hex": "#f2b412",
+            "weight": 0.2575,
+            "family": "黄"
+          },
+          {
+            "hex": "#f6bb1a",
+            "weight": 0.1791,
+            "family": "黄"
+          },
+          {
+            "hex": "#cf8b03",
+            "weight": 0.1725,
+            "family": "黄"
+          },
+          {
+            "hex": "#fac224",
+            "weight": 0.1217,
+            "family": "黄"
+          }
+        ],
+        "palette_names": [
+          "黄"
+        ],
+        "color": {
+          "temperature": "未判断",
+          "lightness": "浅色",
+          "saturation": "高饱和",
+          "harmony": "未判断",
+          "palette": [
+            "#e8a80a",
+            "#f2b412",
+            "#f6bb1a",
+            "#cf8b03",
+            "#fac224"
+          ]
+        },
+        "limitations": "渲染光照会影响色值；不据此推断面料成分、真实冷暖或人体适配。"
+      }
+    }
+  ],
+  "new_garment_manifest": "generated-garments/batch02/manifest.json",
+  "new_garment_version": "aw-generated-garments-885160852e88e2efb24f",
+  "recipes": [
+    {
+      "persona": "BOLT",
+      "palette": "bright",
+      "season": "winter",
+      "structure": "pants",
+      "hero": "n0005",
+      "items": [
+        "n0005",
+        "g0108",
+        "g0003",
+        "g0265",
+        "g0513"
+      ],
+      "expression": "entry",
+      "intent": "品红锐肩短外套作唯一戏剧点，白衬衫与黑直裤稳定日常比例。"
+    },
+    {
+      "persona": "EDGE",
+      "palette": "bright",
+      "season": "winter",
+      "structure": "skirt",
+      "hero": "n0005",
+      "items": [
+        "n0005",
+        "g0350",
+        "g0429",
+        "g0265",
+        "g0526"
+      ],
+      "expression": "entry",
+      "intent": "短外套与不对称中长裙建立锐利短长对比，黑色支撑款控制高彩。"
+    },
+    {
+      "persona": "NEON",
+      "palette": "bright",
+      "season": "winter",
+      "structure": "dress",
+      "hero": "n0005",
+      "items": [
+        "n0005",
+        "g0462",
+        "g0043",
+        "g0070"
+      ],
+      "expression": "entry",
+      "intent": "品红短外套覆在黑色长衬衫裙上，以一处高彩和明确短长反差表达。"
+    },
+    {
+      "persona": "VOID",
+      "palette": "jewel",
+      "season": "winter",
+      "structure": "pants",
+      "hero": "n0006",
+      "items": [
+        "n0006",
+        "g0337",
+        "g0415",
+        "g0591",
+        "g0526"
+      ],
+      "expression": "entry",
+      "intent": "紫晶包裹外套配简洁针织与一处错层长裤，不叠加多余破片。"
+    },
+    {
+      "persona": "OOPS",
+      "palette": "jewel",
+      "season": "winter",
+      "structure": "skirt",
+      "hero": "n0006",
+      "items": [
+        "n0006",
+        "g0337",
+        "g0188",
+        "g0505",
+        "g0521"
+      ],
+      "expression": "entry",
+      "intent": "错位包裹外套与斜裹长裙共享同一线条母题，内层保持简单。"
+    },
+    {
+      "persona": "WABI",
+      "palette": "jewel",
+      "season": "winter",
+      "structure": "dress",
+      "hero": "n0006",
+      "items": [
+        "n0006",
+        "g0468",
+        "g0497",
+        "g0284"
+      ],
+      "expression": "entry",
+      "intent": "包裹长外套与自然色长衬衫裙统一松紧层次，鞋包保持低负担。"
+    },
+    {
+      "persona": "FILM",
+      "palette": "jewel",
+      "season": "winter",
+      "structure": "pants",
+      "hero": "n0007",
+      "items": [
+        "n0007",
+        "g0101",
+        "g0176",
+        "g0258",
+        "g0270"
+      ],
+      "expression": "entry",
+      "intent": "祖母绿圆领 A 形外套与微花卉衬衫、褶裤建立可辨识的复古日常比例。"
+    },
+    {
+      "persona": "JADE",
+      "palette": "jewel",
+      "season": "winter",
+      "structure": "skirt",
+      "hero": "n0007",
+      "items": [
+        "n0007",
+        "g0365",
+        "g0206",
+        "g0258",
+        "g0289"
+      ],
+      "expression": "entry",
+      "intent": "祖母绿收腰外套与水墨内搭、斜裁长裙共享克制纵向线条。"
+    },
+    {
+      "persona": "BOLT",
+      "palette": "jewel",
+      "season": "winter",
+      "structure": "dress",
+      "hero": "n0007",
+      "items": [
+        "n0007",
+        "g0222",
+        "g0069",
+        "g0070"
+      ],
+      "expression": "entry",
+      "intent": "收腰祖母绿外套作精致主视觉，长衬衫裙和长靴延续整洁长线。"
+    },
+    {
+      "persona": "MUTE",
+      "palette": "bright",
+      "season": "winter",
+      "structure": "pants",
+      "hero": "n0008",
+      "items": [
+        "n0008",
+        "g0096",
+        "g0160",
+        "g0004",
+        "g0513"
+      ],
+      "expression": "entry",
+      "intent": "万寿菊黄长外套是唯一色彩焦点，其余用低装饰衬衫、直裤和乐福鞋维持克制。"
+    },
+    {
+      "persona": "JADE",
+      "palette": "bright",
+      "season": "winter",
+      "structure": "skirt",
+      "hero": "n0008",
+      "items": [
+        "n0008",
+        "g0365",
+        "g0206",
+        "g0258",
+        "g0289"
+      ],
+      "expression": "entry",
+      "intent": "鲜黄长直外套与水墨内搭、斜裁长裙形成主次明确的克制交叠。"
+    },
+    {
+      "persona": "FILM",
+      "palette": "bright",
+      "season": "winter",
+      "structure": "dress",
+      "hero": "n0008",
+      "items": [
+        "n0008",
+        "g0219",
+        "g0497",
+        "g0271"
+      ],
+      "expression": "entry",
+      "intent": "万寿菊黄长外套与棕色长衬衫裙建立暖色复古比例，长靴完成外出层次。"
+    }
+  ]
+}

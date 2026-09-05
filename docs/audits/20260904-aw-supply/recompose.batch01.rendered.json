@@ -1,0 +1,2613 @@
+{
+  "schema_version": 1,
+  "batch_id": "aw-recompose-01",
+  "source_idle_review": "aw-idle-main-1fdd6d3183c4cde4ce65",
+  "source_visual_version": "codex-visual-16b18cdcdca36dbc306a",
+  "entries": [
+    {
+      "hero": "g0021",
+      "new_record": {
+        "id": "outfit_melt_aw-recompose-01_01",
+        "kind": "master",
+        "parent_outfit_id": null,
+        "recipe_version": "aw-recompose-01",
+        "title": "MELT 秋季日常重组 01",
+        "description": "柔软短开衫配直线裤，粉色只保留一个装饰焦点",
+        "primary_persona": "MELT",
+        "secondary_personas": [],
+        "persona_affinity": {},
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "日常"
+        ],
+        "season_tags": [
+          "秋"
+        ],
+        "weather_tags": [],
+        "presentation": [
+          "feminine"
+        ],
+        "intensity": "entry",
+        "formality": 3,
+        "garment_ids": [
+          "garment_melt_outer_0021",
+          "garment_loop_top_0109",
+          "garment_wabi_bottom_0166",
+          "garment_noir_shoes_0254",
+          "garment_mute_bag_0289"
+        ],
+        "visible_slots": [
+          "outer",
+          "top",
+          "bottom",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_melt_outer_0021": "hero",
+          "garment_loop_top_0109": "support",
+          "garment_wabi_bottom_0166": "support",
+          "garment_noir_shoes_0254": "support",
+          "garment_mute_bag_0289": "support"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "未判断",
+          "saturation": "未判断",
+          "harmony": "未判断",
+          "palette": []
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/61bf70a1f38689a854c00f82.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source": "designer_recomposition",
+          "confidence": null,
+          "review_notes": [
+            "season and persona are design targets pending native review"
+          ]
+        }
+      },
+      "record_fingerprint": "454a8710f1ecc0cd441ae3165a48d15eeb7956b09e7d4c8e5c0f4bb18df4fb51",
+      "asset_sha256": "1eedd0a0971ff2e30ddc6c9682ebfef540aa81b598addf98b83cc1074c8ab753",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/61bf70a1f38689a854c00f82.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_melt_outer_0021",
+            "slot": "outer",
+            "box": [
+              70,
+              160,
+              420,
+              477
+            ]
+          },
+          {
+            "garment_id": "garment_loop_top_0109",
+            "slot": "top",
+            "box": [
+              450,
+              190,
+              800,
+              640
+            ]
+          },
+          {
+            "garment_id": "garment_wabi_bottom_0166",
+            "slot": "bottom",
+            "box": [
+              485,
+              664,
+              765,
+              1330
+            ]
+          },
+          {
+            "garment_id": "garment_noir_shoes_0254",
+            "slot": "shoes",
+            "box": [
+              895,
+              880,
+              1075,
+              1080
+            ]
+          },
+          {
+            "garment_id": "garment_mute_bag_0289",
+            "slot": "bag",
+            "box": [
+              862,
+              410,
+              1118,
+              730
+            ]
+          }
+        ]
+      },
+      "status": "pending_native_review",
+      "review": null
+    },
+    {
+      "hero": "g0051",
+      "new_record": {
+        "id": "outfit_film_aw-recompose-01_02",
+        "kind": "master",
+        "parent_outfit_id": null,
+        "recipe_version": "aw-recompose-01",
+        "title": "FILM 秋季日常重组 02",
+        "description": "复古工作夹克配素衬衫和直筒裤，避免全身做旧",
+        "primary_persona": "FILM",
+        "secondary_personas": [],
+        "persona_affinity": {},
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "日常"
+        ],
+        "season_tags": [
+          "秋"
+        ],
+        "weather_tags": [],
+        "presentation": [
+          "feminine"
+        ],
+        "intensity": "entry",
+        "formality": 3,
+        "garment_ids": [
+          "garment_film_outer_0051",
+          "garment_jade_top_0108",
+          "garment_wabi_bottom_0166",
+          "garment_film_shoes_0267",
+          "garment_film_bag_0283"
+        ],
+        "visible_slots": [
+          "outer",
+          "top",
+          "bottom",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_film_outer_0051": "hero",
+          "garment_jade_top_0108": "support",
+          "garment_wabi_bottom_0166": "support",
+          "garment_film_shoes_0267": "support",
+          "garment_film_bag_0283": "support"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "未判断",
+          "saturation": "未判断",
+          "harmony": "未判断",
+          "palette": []
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/2575a15dc3588f1df30e0df9.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source": "designer_recomposition",
+          "confidence": null,
+          "review_notes": [
+            "season and persona are design targets pending native review"
+          ]
+        }
+      },
+      "record_fingerprint": "c79f5e01b19e25c9e55e27d50c29f8daaf214f0d6bce5ce0424dbc25d6863eb3",
+      "asset_sha256": "e9e001e50c95ee6cf3a984cb85b498a0bde9700054d24acb12f171cc71a41976",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/2575a15dc3588f1df30e0df9.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_film_outer_0051",
+            "slot": "outer",
+            "box": [
+              70,
+              160,
+              420,
+              479
+            ]
+          },
+          {
+            "garment_id": "garment_jade_top_0108",
+            "slot": "top",
+            "box": [
+              450,
+              202,
+              800,
+              640
+            ]
+          },
+          {
+            "garment_id": "garment_wabi_bottom_0166",
+            "slot": "bottom",
+            "box": [
+              485,
+              664,
+              765,
+              1330
+            ]
+          },
+          {
+            "garment_id": "garment_film_shoes_0267",
+            "slot": "shoes",
+            "box": [
+              840,
+              883,
+              1130,
+              1077
+            ]
+          },
+          {
+            "garment_id": "garment_film_bag_0283",
+            "slot": "bag",
+            "box": [
+              871,
+              410,
+              1108,
+              730
+            ]
+          }
+        ]
+      },
+      "status": "pending_native_review",
+      "review": null
+    },
+    {
+      "hero": "g0057",
+      "new_record": {
+        "id": "outfit_jade_aw-recompose-01_03",
+        "kind": "master",
+        "parent_outfit_id": null,
+        "recipe_version": "aw-recompose-01",
+        "title": "JADE 秋季日常重组 03",
+        "description": "交领外套配无装饰内层与素阔裤，以纵线而非传统套装表达",
+        "primary_persona": "JADE",
+        "secondary_personas": [],
+        "persona_affinity": {},
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "日常"
+        ],
+        "season_tags": [
+          "秋"
+        ],
+        "weather_tags": [],
+        "presentation": [
+          "feminine"
+        ],
+        "intensity": "entry",
+        "formality": 3,
+        "garment_ids": [
+          "garment_jade_outer_0057",
+          "garment_melt_top_0085",
+          "garment_mute_bottom_0417",
+          "garment_mute_shoes_0004",
+          "garment_noir_bag_0270"
+        ],
+        "visible_slots": [
+          "outer",
+          "top",
+          "bottom",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_jade_outer_0057": "hero",
+          "garment_melt_top_0085": "support",
+          "garment_mute_bottom_0417": "support",
+          "garment_mute_shoes_0004": "support",
+          "garment_noir_bag_0270": "support"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "未判断",
+          "saturation": "未判断",
+          "harmony": "未判断",
+          "palette": []
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/5585c459fb6d2cd95576c12a.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source": "designer_recomposition",
+          "confidence": null,
+          "review_notes": [
+            "season and persona are design targets pending native review"
+          ]
+        }
+      },
+      "record_fingerprint": "b3b3a02a2cf535367afc41b9d5a8b2b051fd7a80bd42803432117d98c710880d",
+      "asset_sha256": "b009c012ae749ec9d0f1dc57454d687980918d5da6cfc461740d643008167f78",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/5585c459fb6d2cd95576c12a.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_jade_outer_0057",
+            "slot": "outer",
+            "box": [
+              70,
+              160,
+              420,
+              530
+            ]
+          },
+          {
+            "garment_id": "garment_melt_top_0085",
+            "slot": "top",
+            "box": [
+              450,
+              180,
+              800,
+              640
+            ]
+          },
+          {
+            "garment_id": "garment_mute_bottom_0417",
+            "slot": "bottom",
+            "box": [
+              450,
+              664,
+              800,
+              1277
+            ]
+          },
+          {
+            "garment_id": "garment_mute_shoes_0004",
+            "slot": "shoes",
+            "box": [
+              891,
+              880,
+              1078,
+              1080
+            ]
+          },
+          {
+            "garment_id": "garment_noir_bag_0270",
+            "slot": "bag",
+            "box": [
+              865,
+              410,
+              1114,
+              730
+            ]
+          }
+        ]
+      },
+      "status": "pending_native_review",
+      "review": null
+    },
+    {
+      "hero": "g0066",
+      "new_record": {
+        "id": "outfit_noir_aw-recompose-01_04",
+        "kind": "master",
+        "parent_outfit_id": null,
+        "recipe_version": "aw-recompose-01",
+        "title": "NOIR 秋季日常重组 04",
+        "description": "强肩长风衣配克制内层、纵向长裤和尖头短靴",
+        "primary_persona": "NOIR",
+        "secondary_personas": [],
+        "persona_affinity": {},
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "日常"
+        ],
+        "season_tags": [
+          "秋"
+        ],
+        "weather_tags": [],
+        "presentation": [
+          "feminine"
+        ],
+        "intensity": "entry",
+        "formality": 3,
+        "garment_ids": [
+          "garment_noir_outer_0066",
+          "garment_melt_top_0085",
+          "garment_mute_bottom_0577",
+          "garment_edge_shoes_0265",
+          "garment_mute_bag_0513"
+        ],
+        "visible_slots": [
+          "outer",
+          "top",
+          "bottom",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_noir_outer_0066": "hero",
+          "garment_melt_top_0085": "support",
+          "garment_mute_bottom_0577": "support",
+          "garment_edge_shoes_0265": "support",
+          "garment_mute_bag_0513": "support"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "未判断",
+          "saturation": "未判断",
+          "harmony": "未判断",
+          "palette": []
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/ece51a1c3b8dcc90729698c2.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source": "designer_recomposition",
+          "confidence": null,
+          "review_notes": [
+            "season and persona are design targets pending native review"
+          ]
+        }
+      },
+      "record_fingerprint": "a8fd6dc999aa2c3f11ac077fd0c8b975aeebe60e800a99e2b9363f2a9947be82",
+      "asset_sha256": "93b3c48bc617a9819509c96fed1714d0f67c199d86a5170c374336a6d06a2d93",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/ece51a1c3b8dcc90729698c2.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_noir_outer_0066",
+            "slot": "outer",
+            "box": [
+              70,
+              160,
+              420,
+              1099
+            ]
+          },
+          {
+            "garment_id": "garment_melt_top_0085",
+            "slot": "top",
+            "box": [
+              450,
+              180,
+              800,
+              640
+            ]
+          },
+          {
+            "garment_id": "garment_mute_bottom_0577",
+            "slot": "bottom",
+            "box": [
+              450,
+              664,
+              800,
+              1293
+            ]
+          },
+          {
+            "garment_id": "garment_edge_shoes_0265",
+            "slot": "shoes",
+            "box": [
+              875,
+              880,
+              1095,
+              1080
+            ]
+          },
+          {
+            "garment_id": "garment_mute_bag_0513",
+            "slot": "bag",
+            "box": [
+              853,
+              410,
+              1126,
+              730
+            ]
+          }
+        ]
+      },
+      "status": "pending_native_review",
+      "review": null
+    },
+    {
+      "hero": "g0369",
+      "new_record": {
+        "id": "outfit_mute_aw-recompose-01_05",
+        "kind": "master",
+        "parent_outfit_id": null,
+        "recipe_version": "aw-recompose-01",
+        "title": "MUTE 秋季日常重组 05",
+        "description": "低装饰开衫以蓝灰裤和鞋包形成安静同类色",
+        "primary_persona": "MUTE",
+        "secondary_personas": [],
+        "persona_affinity": {},
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "日常"
+        ],
+        "season_tags": [
+          "秋"
+        ],
+        "weather_tags": [],
+        "presentation": [
+          "feminine"
+        ],
+        "intensity": "entry",
+        "formality": 3,
+        "garment_ids": [
+          "garment_mute_outer_0369",
+          "garment_loop_top_0109",
+          "garment_iced_bottom_0162",
+          "garment_neon_shoes_0264",
+          "garment_iced_bag_0290"
+        ],
+        "visible_slots": [
+          "outer",
+          "top",
+          "bottom",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_mute_outer_0369": "hero",
+          "garment_loop_top_0109": "support",
+          "garment_iced_bottom_0162": "support",
+          "garment_neon_shoes_0264": "support",
+          "garment_iced_bag_0290": "support"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "未判断",
+          "saturation": "未判断",
+          "harmony": "未判断",
+          "palette": []
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/c7308b93c32429f1e2b6f139.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source": "designer_recomposition",
+          "confidence": null,
+          "review_notes": [
+            "season and persona are design targets pending native review"
+          ]
+        }
+      },
+      "record_fingerprint": "ef5ba7c2d33ed16560564813a3e567ab597275e3d8ace90a4b25e32e99047cb6",
+      "asset_sha256": "0cc77379c302dafadccc62744d88e48104f789170a1459008a816cd5086bad41",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/c7308b93c32429f1e2b6f139.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_mute_outer_0369",
+            "slot": "outer",
+            "box": [
+              70,
+              160,
+              420,
+              548
+            ]
+          },
+          {
+            "garment_id": "garment_loop_top_0109",
+            "slot": "top",
+            "box": [
+              450,
+              190,
+              800,
+              640
+            ]
+          },
+          {
+            "garment_id": "garment_iced_bottom_0162",
+            "slot": "bottom",
+            "box": [
+              498,
+              664,
+              752,
+              1330
+            ]
+          },
+          {
+            "garment_id": "garment_neon_shoes_0264",
+            "slot": "shoes",
+            "box": [
+              840,
+              882,
+              1130,
+              1078
+            ]
+          },
+          {
+            "garment_id": "garment_iced_bag_0290",
+            "slot": "bag",
+            "box": [
+              865,
+              410,
+              1114,
+              730
+            ]
+          }
+        ]
+      },
+      "status": "pending_native_review",
+      "review": null
+    },
+    {
+      "hero": "g0372",
+      "new_record": {
+        "id": "outfit_ease_aw-recompose-01_06",
+        "kind": "master",
+        "parent_outfit_id": null,
+        "recipe_version": "aw-recompose-01",
+        "title": "EASE 秋季日常重组 06",
+        "description": "短休闲夹克配贴身素内层和直筒牛仔裤，保持松紧平衡",
+        "primary_persona": "EASE",
+        "secondary_personas": [],
+        "persona_affinity": {},
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "日常"
+        ],
+        "season_tags": [
+          "秋"
+        ],
+        "weather_tags": [],
+        "presentation": [
+          "feminine"
+        ],
+        "intensity": "entry",
+        "formality": 3,
+        "garment_ids": [
+          "garment_ease_outer_0372",
+          "garment_mute_top_0097",
+          "garment_heir_bottom_0419",
+          "garment_film_shoes_0267",
+          "garment_film_bag_0283"
+        ],
+        "visible_slots": [
+          "outer",
+          "top",
+          "bottom",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_ease_outer_0372": "hero",
+          "garment_mute_top_0097": "support",
+          "garment_heir_bottom_0419": "support",
+          "garment_film_shoes_0267": "support",
+          "garment_film_bag_0283": "support"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "未判断",
+          "saturation": "未判断",
+          "harmony": "未判断",
+          "palette": []
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/2e2cccc60162feeb419c402f.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source": "designer_recomposition",
+          "confidence": null,
+          "review_notes": [
+            "season and persona are design targets pending native review"
+          ]
+        }
+      },
+      "record_fingerprint": "a7ef24a57c55c6ca35965e83c5fd79bf39a715870137b4050010a54b17421a86",
+      "asset_sha256": "b956dd7554c7267cba4b6c78306ff9166fd526763a96f6a973ece9b9feb645ad",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/2e2cccc60162feeb419c402f.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_ease_outer_0372",
+            "slot": "outer",
+            "box": [
+              70,
+              160,
+              420,
+              491
+            ]
+          },
+          {
+            "garment_id": "garment_mute_top_0097",
+            "slot": "top",
+            "box": [
+              450,
+              241,
+              800,
+              640
+            ]
+          },
+          {
+            "garment_id": "garment_heir_bottom_0419",
+            "slot": "bottom",
+            "box": [
+              466,
+              664,
+              784,
+              1330
+            ]
+          },
+          {
+            "garment_id": "garment_film_shoes_0267",
+            "slot": "shoes",
+            "box": [
+              840,
+              883,
+              1130,
+              1077
+            ]
+          },
+          {
+            "garment_id": "garment_film_bag_0283",
+            "slot": "bag",
+            "box": [
+              871,
+              410,
+              1108,
+              730
+            ]
+          }
+        ]
+      },
+      "status": "pending_native_review",
+      "review": null
+    },
+    {
+      "hero": "g0381",
+      "new_record": {
+        "id": "outfit_loop_aw-recompose-01_07",
+        "kind": "master",
+        "parent_outfit_id": null,
+        "recipe_version": "aw-recompose-01",
+        "title": "LOOP 秋季日常重组 07",
+        "description": "宽松开衫、贴身内层与素阔裤组成可复用模块",
+        "primary_persona": "LOOP",
+        "secondary_personas": [],
+        "persona_affinity": {},
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "日常"
+        ],
+        "season_tags": [
+          "秋"
+        ],
+        "weather_tags": [],
+        "presentation": [
+          "feminine"
+        ],
+        "intensity": "entry",
+        "formality": 3,
+        "garment_ids": [
+          "garment_loop_outer_0381",
+          "garment_noir_top_0094",
+          "garment_edge_bottom_0169",
+          "garment_bolt_shoes_0250",
+          "garment_wabi_bag_0278"
+        ],
+        "visible_slots": [
+          "outer",
+          "top",
+          "bottom",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_loop_outer_0381": "hero",
+          "garment_noir_top_0094": "support",
+          "garment_edge_bottom_0169": "support",
+          "garment_bolt_shoes_0250": "support",
+          "garment_wabi_bag_0278": "support"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "未判断",
+          "saturation": "未判断",
+          "harmony": "未判断",
+          "palette": []
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/7452e9843c0e5a4680234547.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source": "designer_recomposition",
+          "confidence": null,
+          "review_notes": [
+            "season and persona are design targets pending native review"
+          ]
+        }
+      },
+      "record_fingerprint": "f26c1b92c10bf84bd087776bd1e00658c06f588a50592ef6f70cdd0aa865bc1a",
+      "asset_sha256": "e14c656cc0f9abe8e4e6753f620ebb6604b3ba80577445c30b449fe307537e93",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/7452e9843c0e5a4680234547.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_loop_outer_0381",
+            "slot": "outer",
+            "box": [
+              70,
+              160,
+              420,
+              524
+            ]
+          },
+          {
+            "garment_id": "garment_noir_top_0094",
+            "slot": "top",
+            "box": [
+              475,
+              160,
+              775,
+              640
+            ]
+          },
+          {
+            "garment_id": "garment_edge_bottom_0169",
+            "slot": "bottom",
+            "box": [
+              464,
+              664,
+              785,
+              1330
+            ]
+          },
+          {
+            "garment_id": "garment_bolt_shoes_0250",
+            "slot": "shoes",
+            "box": [
+              893,
+              880,
+              1077,
+              1080
+            ]
+          },
+          {
+            "garment_id": "garment_wabi_bag_0278",
+            "slot": "bag",
+            "box": [
+              892,
+              410,
+              1088,
+              730
+            ]
+          }
+        ]
+      },
+      "status": "pending_native_review",
+      "review": null
+    },
+    {
+      "hero": "g0387",
+      "new_record": {
+        "id": "outfit_heir_aw-recompose-01_08",
+        "kind": "master",
+        "parent_outfit_id": null,
+        "recipe_version": "aw-recompose-01",
+        "title": "HEIR 秋季日常重组 08",
+        "description": "规整短开衫配中长直裙和乐福鞋，建立经典日常比例",
+        "primary_persona": "HEIR",
+        "secondary_personas": [],
+        "persona_affinity": {},
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "日常"
+        ],
+        "season_tags": [
+          "秋"
+        ],
+        "weather_tags": [],
+        "presentation": [
+          "feminine"
+        ],
+        "intensity": "entry",
+        "formality": 3,
+        "garment_ids": [
+          "garment_heir_outer_0387",
+          "garment_melt_top_0085",
+          "garment_film_skirt_0187",
+          "garment_bolt_shoes_0250",
+          "garment_oops_bag_0288"
+        ],
+        "visible_slots": [
+          "outer",
+          "top",
+          "skirt",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_heir_outer_0387": "hero",
+          "garment_melt_top_0085": "support",
+          "garment_film_skirt_0187": "support",
+          "garment_bolt_shoes_0250": "support",
+          "garment_oops_bag_0288": "support"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "未判断",
+          "saturation": "未判断",
+          "harmony": "未判断",
+          "palette": []
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/1626a5fa5f920e4579109a89.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source": "designer_recomposition",
+          "confidence": null,
+          "review_notes": [
+            "season and persona are design targets pending native review"
+          ]
+        }
+      },
+      "record_fingerprint": "4159b15523ac64f8f7359b8f6ad2e46b395a5263304715d4f252d33ece0bfbc5",
+      "asset_sha256": "a06dfffdfa3130ab1e58f7a06a1e95fc516079b3efb05e7b4b5bd28be550653a",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/1626a5fa5f920e4579109a89.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_heir_outer_0387",
+            "slot": "outer",
+            "box": [
+              70,
+              160,
+              420,
+              526
+            ]
+          },
+          {
+            "garment_id": "garment_melt_top_0085",
+            "slot": "top",
+            "box": [
+              450,
+              180,
+              800,
+              640
+            ]
+          },
+          {
+            "garment_id": "garment_film_skirt_0187",
+            "slot": "skirt",
+            "box": [
+              468,
+              664,
+              782,
+              1330
+            ]
+          },
+          {
+            "garment_id": "garment_bolt_shoes_0250",
+            "slot": "shoes",
+            "box": [
+              893,
+              880,
+              1077,
+              1080
+            ]
+          },
+          {
+            "garment_id": "garment_oops_bag_0288",
+            "slot": "bag",
+            "box": [
+              850,
+              444,
+              1130,
+              695
+            ]
+          }
+        ]
+      },
+      "status": "pending_native_review",
+      "review": null
+    },
+    {
+      "hero": "g0390",
+      "new_record": {
+        "id": "outfit_wabi_aw-recompose-01_09",
+        "kind": "master",
+        "parent_outfit_id": null,
+        "recipe_version": "aw-recompose-01",
+        "title": "WABI 秋季日常重组 09",
+        "description": "错位茧型外层只配自然色素裤和低装饰配件",
+        "primary_persona": "WABI",
+        "secondary_personas": [],
+        "persona_affinity": {},
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "日常"
+        ],
+        "season_tags": [
+          "秋"
+        ],
+        "weather_tags": [],
+        "presentation": [
+          "feminine"
+        ],
+        "intensity": "entry",
+        "formality": 3,
+        "garment_ids": [
+          "garment_wabi_outer_0390",
+          "garment_mute_top_0097",
+          "garment_ease_bottom_0420",
+          "garment_loop_shoes_0253",
+          "garment_film_bag_0283"
+        ],
+        "visible_slots": [
+          "outer",
+          "top",
+          "bottom",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_wabi_outer_0390": "hero",
+          "garment_mute_top_0097": "support",
+          "garment_ease_bottom_0420": "support",
+          "garment_loop_shoes_0253": "support",
+          "garment_film_bag_0283": "support"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "未判断",
+          "saturation": "未判断",
+          "harmony": "未判断",
+          "palette": []
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/27e6060068d6f84fda6567d3.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source": "designer_recomposition",
+          "confidence": null,
+          "review_notes": [
+            "season and persona are design targets pending native review"
+          ]
+        }
+      },
+      "record_fingerprint": "8c28ee437699b2498c28f312ad937457b6e1e0b0b74cbf650aac6b4260a72872",
+      "asset_sha256": "3fe5a1471f2f3ed844a3335f2f930d578190691e711266ab3fd16b58e274cc2e",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/27e6060068d6f84fda6567d3.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_wabi_outer_0390",
+            "slot": "outer",
+            "box": [
+              70,
+              160,
+              420,
+              522
+            ]
+          },
+          {
+            "garment_id": "garment_mute_top_0097",
+            "slot": "top",
+            "box": [
+              450,
+              241,
+              800,
+              640
+            ]
+          },
+          {
+            "garment_id": "garment_ease_bottom_0420",
+            "slot": "bottom",
+            "box": [
+              476,
+              664,
+              774,
+              1330
+            ]
+          },
+          {
+            "garment_id": "garment_loop_shoes_0253",
+            "slot": "shoes",
+            "box": [
+              883,
+              880,
+              1086,
+              1080
+            ]
+          },
+          {
+            "garment_id": "garment_film_bag_0283",
+            "slot": "bag",
+            "box": [
+              871,
+              410,
+              1108,
+              730
+            ]
+          }
+        ]
+      },
+      "status": "pending_native_review",
+      "review": null
+    },
+    {
+      "hero": "g0437",
+      "new_record": {
+        "id": "outfit_melt_aw-recompose-01_10",
+        "kind": "master",
+        "parent_outfit_id": null,
+        "recipe_version": "aw-recompose-01",
+        "title": "MELT 秋季日常重组 10",
+        "description": "柔软层裙作为唯一甜味焦点，上衣和鞋保持素净",
+        "primary_persona": "MELT",
+        "secondary_personas": [],
+        "persona_affinity": {},
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "日常"
+        ],
+        "season_tags": [
+          "秋"
+        ],
+        "weather_tags": [],
+        "presentation": [
+          "feminine"
+        ],
+        "intensity": "entry",
+        "formality": 3,
+        "garment_ids": [
+          "garment_melt_skirt_0437",
+          "garment_loop_top_0109",
+          "garment_mute_outer_0369",
+          "garment_noir_shoes_0254",
+          "garment_flou_bag_0279"
+        ],
+        "visible_slots": [
+          "skirt",
+          "top",
+          "outer",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_melt_skirt_0437": "hero",
+          "garment_loop_top_0109": "support",
+          "garment_mute_outer_0369": "support",
+          "garment_noir_shoes_0254": "support",
+          "garment_flou_bag_0279": "support"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "未判断",
+          "saturation": "未判断",
+          "harmony": "未判断",
+          "palette": []
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/2526ffedc1f7828e504bdcf2.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source": "designer_recomposition",
+          "confidence": null,
+          "review_notes": [
+            "season and persona are design targets pending native review"
+          ]
+        }
+      },
+      "record_fingerprint": "77059a74fa9436f1f6443f0bfd17f7f231fe022021f40998e70ca9e06a52ba9b",
+      "asset_sha256": "3e80e924d142e6e63821170067b6c42fb5b25d75a45258714895d5ab0e8f6519",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/2526ffedc1f7828e504bdcf2.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_melt_skirt_0437",
+            "slot": "skirt",
+            "box": [
+              450,
+              664,
+              800,
+              1067
+            ]
+          },
+          {
+            "garment_id": "garment_loop_top_0109",
+            "slot": "top",
+            "box": [
+              450,
+              190,
+              800,
+              640
+            ]
+          },
+          {
+            "garment_id": "garment_mute_outer_0369",
+            "slot": "outer",
+            "box": [
+              70,
+              160,
+              420,
+              548
+            ]
+          },
+          {
+            "garment_id": "garment_noir_shoes_0254",
+            "slot": "shoes",
+            "box": [
+              895,
+              880,
+              1075,
+              1080
+            ]
+          },
+          {
+            "garment_id": "garment_flou_bag_0279",
+            "slot": "bag",
+            "box": [
+              893,
+              410,
+              1087,
+              730
+            ]
+          }
+        ]
+      },
+      "status": "pending_native_review",
+      "review": null
+    },
+    {
+      "hero": "g0449",
+      "new_record": {
+        "id": "outfit_void_aw-recompose-01_11",
+        "kind": "master",
+        "parent_outfit_id": null,
+        "recipe_version": "aw-recompose-01",
+        "title": "VOID 秋季日常重组 11",
+        "description": "克制错层长裙配直线针织和短靴，保留包裹感而不堆碎片",
+        "primary_persona": "VOID",
+        "secondary_personas": [],
+        "persona_affinity": {},
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "日常"
+        ],
+        "season_tags": [
+          "秋"
+        ],
+        "weather_tags": [],
+        "presentation": [
+          "feminine"
+        ],
+        "intensity": "entry",
+        "formality": 3,
+        "garment_ids": [
+          "garment_mute_skirt_0449",
+          "garment_loop_top_0109",
+          "garment_mute_outer_0369",
+          "garment_edge_shoes_0265",
+          "garment_mute_bag_0513"
+        ],
+        "visible_slots": [
+          "skirt",
+          "top",
+          "outer",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_mute_skirt_0449": "hero",
+          "garment_loop_top_0109": "support",
+          "garment_mute_outer_0369": "support",
+          "garment_edge_shoes_0265": "support",
+          "garment_mute_bag_0513": "support"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "未判断",
+          "saturation": "未判断",
+          "harmony": "未判断",
+          "palette": []
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/28a20e4daea12e53ecc46a0f.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source": "designer_recomposition",
+          "confidence": null,
+          "review_notes": [
+            "season and persona are design targets pending native review"
+          ]
+        }
+      },
+      "record_fingerprint": "cb7cf44f97eaf0448dc659e430d319d5068a5b033033bf63fdda028a3b6dce4a",
+      "asset_sha256": "6cc29a3a89ab26bb80e7877a0b8e2bf94b1c90261183c2ea3af1a017aa3e2239",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/28a20e4daea12e53ecc46a0f.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_mute_skirt_0449",
+            "slot": "skirt",
+            "box": [
+              450,
+              664,
+              800,
+              1281
+            ]
+          },
+          {
+            "garment_id": "garment_loop_top_0109",
+            "slot": "top",
+            "box": [
+              450,
+              190,
+              800,
+              640
+            ]
+          },
+          {
+            "garment_id": "garment_mute_outer_0369",
+            "slot": "outer",
+            "box": [
+              70,
+              160,
+              420,
+              548
+            ]
+          },
+          {
+            "garment_id": "garment_edge_shoes_0265",
+            "slot": "shoes",
+            "box": [
+              875,
+              880,
+              1095,
+              1080
+            ]
+          },
+          {
+            "garment_id": "garment_mute_bag_0513",
+            "slot": "bag",
+            "box": [
+              853,
+              410,
+              1126,
+              730
+            ]
+          }
+        ]
+      },
+      "status": "pending_native_review",
+      "review": null
+    },
+    {
+      "hero": "g0452",
+      "new_record": {
+        "id": "outfit_ease_aw-recompose-01_12",
+        "kind": "master",
+        "parent_outfit_id": null,
+        "recipe_version": "aw-recompose-01",
+        "title": "EASE 秋季日常重组 12",
+        "description": "流动长裙与短工作夹克形成有收束的松弛比例",
+        "primary_persona": "EASE",
+        "secondary_personas": [],
+        "persona_affinity": {},
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "日常"
+        ],
+        "season_tags": [
+          "秋"
+        ],
+        "weather_tags": [],
+        "presentation": [
+          "feminine"
+        ],
+        "intensity": "entry",
+        "formality": 3,
+        "garment_ids": [
+          "garment_ease_skirt_0452",
+          "garment_film_top_0091",
+          "garment_film_outer_0051",
+          "garment_film_shoes_0267",
+          "garment_film_bag_0283"
+        ],
+        "visible_slots": [
+          "skirt",
+          "top",
+          "outer",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_ease_skirt_0452": "hero",
+          "garment_film_top_0091": "support",
+          "garment_film_outer_0051": "support",
+          "garment_film_shoes_0267": "support",
+          "garment_film_bag_0283": "support"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "未判断",
+          "saturation": "未判断",
+          "harmony": "未判断",
+          "palette": []
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/235313ce8ee306de7e1a7b32.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source": "designer_recomposition",
+          "confidence": null,
+          "review_notes": [
+            "season and persona are design targets pending native review"
+          ]
+        }
+      },
+      "record_fingerprint": "b346f400732f65d10d64433f9e4ed8f4ded2f87a87152b74b68c5636c3055f04",
+      "asset_sha256": "cd8e8e051b84e07c81092acd8ef73b8d978c6a26abf3c691a449ada1a5221e5f",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/235313ce8ee306de7e1a7b32.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_ease_skirt_0452",
+            "slot": "skirt",
+            "box": [
+              450,
+              664,
+              800,
+              1174
+            ]
+          },
+          {
+            "garment_id": "garment_film_top_0091",
+            "slot": "top",
+            "box": [
+              450,
+              239,
+              800,
+              640
+            ]
+          },
+          {
+            "garment_id": "garment_film_outer_0051",
+            "slot": "outer",
+            "box": [
+              70,
+              160,
+              420,
+              479
+            ]
+          },
+          {
+            "garment_id": "garment_film_shoes_0267",
+            "slot": "shoes",
+            "box": [
+              840,
+              883,
+              1130,
+              1077
+            ]
+          },
+          {
+            "garment_id": "garment_film_bag_0283",
+            "slot": "bag",
+            "box": [
+              871,
+              410,
+              1108,
+              730
+            ]
+          }
+        ]
+      },
+      "status": "pending_native_review",
+      "review": null
+    },
+    {
+      "hero": "g0459",
+      "new_record": {
+        "id": "outfit_film_aw-recompose-01_13",
+        "kind": "master",
+        "parent_outfit_id": null,
+        "recipe_version": "aw-recompose-01",
+        "title": "FILM 秋季日常重组 13",
+        "description": "复古纵拼长裙配素开衫和长靴，以剪裁而非全身做旧表达",
+        "primary_persona": "FILM",
+        "secondary_personas": [],
+        "persona_affinity": {},
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "日常"
+        ],
+        "season_tags": [
+          "秋"
+        ],
+        "weather_tags": [],
+        "presentation": [
+          "feminine"
+        ],
+        "intensity": "entry",
+        "formality": 3,
+        "garment_ids": [
+          "garment_film_dress_0459",
+          "garment_mute_outer_0369",
+          "garment_film_shoes_0251",
+          "garment_film_bag_0283"
+        ],
+        "visible_slots": [
+          "dress",
+          "outer",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_film_dress_0459": "hero",
+          "garment_mute_outer_0369": "support",
+          "garment_film_shoes_0251": "support",
+          "garment_film_bag_0283": "support"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "未判断",
+          "saturation": "未判断",
+          "harmony": "未判断",
+          "palette": []
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/ebc40202f04bfa72d1a0ae99.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source": "designer_recomposition",
+          "confidence": null,
+          "review_notes": [
+            "season and persona are design targets pending native review"
+          ]
+        }
+      },
+      "record_fingerprint": "fbfffb46a9a129f2e10ef85414c47445b2ff9c12e07562df7d10114d47009100",
+      "asset_sha256": "1679f1e074730139796ad70f745f86c648c42247f8f4a2628352bd4739f0fdfc",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/ebc40202f04bfa72d1a0ae99.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_film_dress_0459",
+            "slot": "dress",
+            "box": [
+              450,
+              160,
+              800,
+              707
+            ]
+          },
+          {
+            "garment_id": "garment_mute_outer_0369",
+            "slot": "outer",
+            "box": [
+              70,
+              160,
+              420,
+              548
+            ]
+          },
+          {
+            "garment_id": "garment_film_shoes_0251",
+            "slot": "shoes",
+            "box": [
+              929,
+              880,
+              1041,
+              1080
+            ]
+          },
+          {
+            "garment_id": "garment_film_bag_0283",
+            "slot": "bag",
+            "box": [
+              871,
+              410,
+              1108,
+              730
+            ]
+          }
+        ]
+      },
+      "status": "pending_native_review",
+      "review": null
+    },
+    {
+      "hero": "g0462",
+      "new_record": {
+        "id": "outfit_noir_aw-recompose-01_14",
+        "kind": "master",
+        "parent_outfit_id": null,
+        "recipe_version": "aw-recompose-01",
+        "title": "NOIR 秋季日常重组 14",
+        "description": "长袖强肩衬衫裙直接作为完整主线，配件保持暗色克制",
+        "primary_persona": "NOIR",
+        "secondary_personas": [],
+        "persona_affinity": {},
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "日常"
+        ],
+        "season_tags": [
+          "秋"
+        ],
+        "weather_tags": [],
+        "presentation": [
+          "feminine"
+        ],
+        "intensity": "entry",
+        "formality": 3,
+        "garment_ids": [
+          "garment_noir_dress_0462",
+          "garment_heir_shoes_0499",
+          "garment_mute_bag_0513"
+        ],
+        "visible_slots": [
+          "dress",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_noir_dress_0462": "hero",
+          "garment_heir_shoes_0499": "support",
+          "garment_mute_bag_0513": "support"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "未判断",
+          "saturation": "未判断",
+          "harmony": "未判断",
+          "palette": []
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/46b278a31b400d79c48b8ba7.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source": "designer_recomposition",
+          "confidence": null,
+          "review_notes": [
+            "season and persona are design targets pending native review"
+          ]
+        }
+      },
+      "record_fingerprint": "9488bc1ae81a22c538edfdca33a89d5e8dfebeb8483215c91a02bb4128d4421c",
+      "asset_sha256": "a08528459f906bb03be2d5f897fb6d983fb42821dec9fb96f6db8c45f62aabb2",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/46b278a31b400d79c48b8ba7.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_noir_dress_0462",
+            "slot": "dress",
+            "box": [
+              226,
+              160,
+              674,
+              1330
+            ]
+          },
+          {
+            "garment_id": "garment_heir_shoes_0499",
+            "slot": "shoes",
+            "box": [
+              870,
+              880,
+              1100,
+              1080
+            ]
+          },
+          {
+            "garment_id": "garment_mute_bag_0513",
+            "slot": "bag",
+            "box": [
+              853,
+              410,
+              1126,
+              730
+            ]
+          }
+        ]
+      },
+      "status": "pending_native_review",
+      "review": null
+    },
+    {
+      "hero": "g0465",
+      "new_record": {
+        "id": "outfit_mute_aw-recompose-01_15",
+        "kind": "master",
+        "parent_outfit_id": null,
+        "recipe_version": "aw-recompose-01",
+        "title": "MUTE 秋季日常重组 15",
+        "description": "直筒中长裙搭规整短开衫，用品类变化替代装饰变化",
+        "primary_persona": "MUTE",
+        "secondary_personas": [],
+        "persona_affinity": {},
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "日常"
+        ],
+        "season_tags": [
+          "秋"
+        ],
+        "weather_tags": [],
+        "presentation": [
+          "feminine"
+        ],
+        "intensity": "entry",
+        "formality": 3,
+        "garment_ids": [
+          "garment_mute_dress_0465",
+          "garment_heir_outer_0387",
+          "garment_edge_shoes_0265",
+          "garment_oops_bag_0288"
+        ],
+        "visible_slots": [
+          "dress",
+          "outer",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_mute_dress_0465": "hero",
+          "garment_heir_outer_0387": "support",
+          "garment_edge_shoes_0265": "support",
+          "garment_oops_bag_0288": "support"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "未判断",
+          "saturation": "未判断",
+          "harmony": "未判断",
+          "palette": []
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/fdc9ff967cadef0a6c343f89.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source": "designer_recomposition",
+          "confidence": null,
+          "review_notes": [
+            "season and persona are design targets pending native review"
+          ]
+        }
+      },
+      "record_fingerprint": "4d8b2670a0d4a2bf7dd4278a67dc6c753e51c2522c077ef285c6fd769a1b5863",
+      "asset_sha256": "a12314911a01ebc1a9db51f3b6d2e9f1b0bfb84d4d38de72a808434bd4d61f64",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/fdc9ff967cadef0a6c343f89.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_mute_dress_0465",
+            "slot": "dress",
+            "box": [
+              450,
+              160,
+              800,
+              897
+            ]
+          },
+          {
+            "garment_id": "garment_heir_outer_0387",
+            "slot": "outer",
+            "box": [
+              70,
+              160,
+              420,
+              526
+            ]
+          },
+          {
+            "garment_id": "garment_edge_shoes_0265",
+            "slot": "shoes",
+            "box": [
+              875,
+              880,
+              1095,
+              1080
+            ]
+          },
+          {
+            "garment_id": "garment_oops_bag_0288",
+            "slot": "bag",
+            "box": [
+              850,
+              444,
+              1130,
+              695
+            ]
+          }
+        ]
+      },
+      "status": "pending_native_review",
+      "review": null
+    },
+    {
+      "hero": "g0468",
+      "new_record": {
+        "id": "outfit_ease_aw-recompose-01_16",
+        "kind": "master",
+        "parent_outfit_id": null,
+        "recipe_version": "aw-recompose-01",
+        "title": "EASE 秋季日常重组 16",
+        "description": "柔松衬衫长裙配素开衫和长靴，腰带提供单一收束",
+        "primary_persona": "EASE",
+        "secondary_personas": [],
+        "persona_affinity": {},
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "日常"
+        ],
+        "season_tags": [
+          "秋"
+        ],
+        "weather_tags": [],
+        "presentation": [
+          "feminine"
+        ],
+        "intensity": "entry",
+        "formality": 3,
+        "garment_ids": [
+          "garment_ease_dress_0468",
+          "garment_mute_outer_0369",
+          "garment_film_shoes_0251",
+          "garment_film_bag_0283"
+        ],
+        "visible_slots": [
+          "dress",
+          "outer",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_ease_dress_0468": "hero",
+          "garment_mute_outer_0369": "support",
+          "garment_film_shoes_0251": "support",
+          "garment_film_bag_0283": "support"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "未判断",
+          "saturation": "未判断",
+          "harmony": "未判断",
+          "palette": []
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/c60431ed66c98dc9f482ea12.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source": "designer_recomposition",
+          "confidence": null,
+          "review_notes": [
+            "season and persona are design targets pending native review"
+          ]
+        }
+      },
+      "record_fingerprint": "90f52f3752ea63a77a9e39f8de1b203759c63f70b6bc41ffb862070f685a2f9f",
+      "asset_sha256": "22e2fd6d41eb103f5beb0041777aa57ef8cc4fe37518082a702a0f12ffbb48d6",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/c60431ed66c98dc9f482ea12.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_ease_dress_0468",
+            "slot": "dress",
+            "box": [
+              450,
+              160,
+              800,
+              1056
+            ]
+          },
+          {
+            "garment_id": "garment_mute_outer_0369",
+            "slot": "outer",
+            "box": [
+              70,
+              160,
+              420,
+              548
+            ]
+          },
+          {
+            "garment_id": "garment_film_shoes_0251",
+            "slot": "shoes",
+            "box": [
+              929,
+              880,
+              1041,
+              1080
+            ]
+          },
+          {
+            "garment_id": "garment_film_bag_0283",
+            "slot": "bag",
+            "box": [
+              871,
+              410,
+              1108,
+              730
+            ]
+          }
+        ]
+      },
+      "status": "pending_native_review",
+      "review": null
+    },
+    {
+      "hero": "g0477",
+      "new_record": {
+        "id": "outfit_loop_aw-recompose-01_17",
+        "kind": "master",
+        "parent_outfit_id": null,
+        "recipe_version": "aw-recompose-01",
+        "title": "LOOP 秋季日常重组 17",
+        "description": "模块无袖长裙配短开衫，强化可复用的短长比例",
+        "primary_persona": "LOOP",
+        "secondary_personas": [],
+        "persona_affinity": {},
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "日常"
+        ],
+        "season_tags": [
+          "秋"
+        ],
+        "weather_tags": [],
+        "presentation": [
+          "feminine"
+        ],
+        "intensity": "entry",
+        "formality": 3,
+        "garment_ids": [
+          "garment_loop_dress_0477",
+          "garment_heir_outer_0387",
+          "garment_neon_shoes_0264",
+          "garment_iced_bag_0290"
+        ],
+        "visible_slots": [
+          "dress",
+          "outer",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_loop_dress_0477": "hero",
+          "garment_heir_outer_0387": "support",
+          "garment_neon_shoes_0264": "support",
+          "garment_iced_bag_0290": "support"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "未判断",
+          "saturation": "未判断",
+          "harmony": "未判断",
+          "palette": []
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/6120ce3e5f23b1ed1dbe23d3.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source": "designer_recomposition",
+          "confidence": null,
+          "review_notes": [
+            "season and persona are design targets pending native review"
+          ]
+        }
+      },
+      "record_fingerprint": "742a0b1ffec00be07bbfbb2de53a60fd6430a87a2f59087fa9f7e880d1cde1e0",
+      "asset_sha256": "342b0ddf209570b69f48122859edef96133d68f170b99e6e1623dcf4c6e5f68d",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/6120ce3e5f23b1ed1dbe23d3.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_loop_dress_0477",
+            "slot": "dress",
+            "box": [
+              450,
+              160,
+              800,
+              998
+            ]
+          },
+          {
+            "garment_id": "garment_heir_outer_0387",
+            "slot": "outer",
+            "box": [
+              70,
+              160,
+              420,
+              526
+            ]
+          },
+          {
+            "garment_id": "garment_neon_shoes_0264",
+            "slot": "shoes",
+            "box": [
+              840,
+              882,
+              1130,
+              1078
+            ]
+          },
+          {
+            "garment_id": "garment_iced_bag_0290",
+            "slot": "bag",
+            "box": [
+              865,
+              410,
+              1114,
+              730
+            ]
+          }
+        ]
+      },
+      "status": "pending_native_review",
+      "review": null
+    },
+    {
+      "hero": "g0581",
+      "new_record": {
+        "id": "outfit_melt_aw-recompose-01_18",
+        "kind": "master",
+        "parent_outfit_id": null,
+        "recipe_version": "aw-recompose-01",
+        "title": "MELT 秋季日常重组 18",
+        "description": "绒感层裙为唯一体量，搭深色素开衫和基础鞋包",
+        "primary_persona": "MELT",
+        "secondary_personas": [],
+        "persona_affinity": {},
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "日常"
+        ],
+        "season_tags": [
+          "秋"
+        ],
+        "weather_tags": [],
+        "presentation": [
+          "feminine"
+        ],
+        "intensity": "entry",
+        "formality": 3,
+        "garment_ids": [
+          "garment_melt_skirt_0581",
+          "garment_loop_top_0109",
+          "garment_mute_outer_0369",
+          "garment_noir_shoes_0254",
+          "garment_noir_bag_0270"
+        ],
+        "visible_slots": [
+          "skirt",
+          "top",
+          "outer",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_melt_skirt_0581": "hero",
+          "garment_loop_top_0109": "support",
+          "garment_mute_outer_0369": "support",
+          "garment_noir_shoes_0254": "support",
+          "garment_noir_bag_0270": "support"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "未判断",
+          "saturation": "未判断",
+          "harmony": "未判断",
+          "palette": []
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/e194aca0e2c3f80a595b0dd1.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source": "designer_recomposition",
+          "confidence": null,
+          "review_notes": [
+            "season and persona are design targets pending native review"
+          ]
+        }
+      },
+      "record_fingerprint": "8cad05b3281252903ac1ebbb1f0d1baabcce3117d7c728d02f049ab97ed4f18a",
+      "asset_sha256": "90cb4c5bb509d15338bab9b875ef0a3af000953daf6ee523646ed1716d24857c",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/e194aca0e2c3f80a595b0dd1.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_melt_skirt_0581",
+            "slot": "skirt",
+            "box": [
+              450,
+              664,
+              800,
+              1078
+            ]
+          },
+          {
+            "garment_id": "garment_loop_top_0109",
+            "slot": "top",
+            "box": [
+              450,
+              190,
+              800,
+              640
+            ]
+          },
+          {
+            "garment_id": "garment_mute_outer_0369",
+            "slot": "outer",
+            "box": [
+              70,
+              160,
+              420,
+              548
+            ]
+          },
+          {
+            "garment_id": "garment_noir_shoes_0254",
+            "slot": "shoes",
+            "box": [
+              895,
+              880,
+              1075,
+              1080
+            ]
+          },
+          {
+            "garment_id": "garment_noir_bag_0270",
+            "slot": "bag",
+            "box": [
+              865,
+              410,
+              1114,
+              730
+            ]
+          }
+        ]
+      },
+      "status": "pending_native_review",
+      "review": null
+    }
+  ],
+  "version": "aw-recompose-rendered-267fbfd3d453b1f666c5"
+}

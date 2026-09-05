@@ -1,0 +1,4501 @@
+{
+  "schema_version": 1,
+  "batch_id": "aw-repair-03",
+  "source_visual_version": "codex-visual-16b18cdcdca36dbc306a",
+  "entries": [
+    {
+      "source_outfit_id": "outfit_mute_master_23",
+      "source_token": "o0023",
+      "source_record_fingerprint": "09f71d5c881bb49982483cfa9c5b9663bb39e009a7f564a5e76115101cbe6cfb",
+      "new_record": {
+        "id": "outfit_mute_master_23__aw-repair-03",
+        "kind": "master",
+        "parent_outfit_id": "outfit_mute_master_23",
+        "recipe_version": "aw-repair-03",
+        "title": "MUTE 旅行 23",
+        "description": "MUTE 人格的秋旅行原创穿搭配方。",
+        "primary_persona": "MUTE",
+        "secondary_personas": [
+          "ICED",
+          "HEIR"
+        ],
+        "persona_affinity": {
+          "MUTE": 0.96,
+          "ICED": 0.65,
+          "HEIR": 0.55
+        },
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "旅行"
+        ],
+        "season_tags": [
+          "秋"
+        ],
+        "weather_tags": [
+          "晴",
+          "室内"
+        ],
+        "presentation": [
+          "neutral"
+        ],
+        "intensity": "signature",
+        "formality": 3,
+        "garment_ids": [
+          "garment_flou_top_0087",
+          "garment_loop_bottom_0413",
+          "garment_iced_outer_0130",
+          "garment_iced_shoes_0482",
+          "garment_mute_bag_0593"
+        ],
+        "visible_slots": [
+          "top",
+          "bottom",
+          "outer",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_flou_top_0087": "hero",
+          "garment_loop_bottom_0413": "support",
+          "garment_iced_outer_0130": "support",
+          "garment_iced_shoes_0482": "support",
+          "garment_mute_bag_0593": "accent"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "浅色",
+          "saturation": "低饱和",
+          "harmony": "未判断",
+          "palette": [
+            "#aeb1c1",
+            "#57606d",
+            "#b6bdca",
+            "#b0b7c6",
+            "#474241"
+          ]
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/2d27265016cb45923c70be2b.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source_outfit_id": "outfit_mute_master_23"
+        },
+        "design_intent": "用已审核不透款 g0087 替换覆盖未证实的 g0008；仅解除覆盖问题，整套仍须重新看图"
+      },
+      "record_fingerprint": "9887eeb685fce3ac2facaee7a80680f4f98530413b42d7d7d6cea81380cf2a84",
+      "asset_sha256": "84f1bf58b68ec24c468d72e38bea31c311cd30c6d9158b8b95f02bd23111e8e3",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/2d27265016cb45923c70be2b.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_flou_top_0087",
+            "slot": "top",
+            "box": [
+              450,
+              286,
+              800,
+              640
+            ]
+          },
+          {
+            "garment_id": "garment_loop_bottom_0413",
+            "slot": "bottom",
+            "box": [
+              450,
+              664,
+              800,
+              1247
+            ]
+          },
+          {
+            "garment_id": "garment_iced_outer_0130",
+            "slot": "outer",
+            "box": [
+              70,
+              160,
+              420,
+              501
+            ]
+          },
+          {
+            "garment_id": "garment_iced_shoes_0482",
+            "slot": "shoes",
+            "box": [
+              915,
+              880,
+              1055,
+              1080
+            ]
+          },
+          {
+            "garment_id": "garment_mute_bag_0593",
+            "slot": "bag",
+            "box": [
+              883,
+              410,
+              1097,
+              730
+            ]
+          }
+        ]
+      },
+      "replacements": {
+        "garment_iced_top_0008": "garment_flou_top_0087"
+      },
+      "status": "pending_native_review",
+      "review": null
+    },
+    {
+      "source_outfit_id": "outfit_iced_master_01",
+      "source_token": "o0031",
+      "source_record_fingerprint": "5eefac4c68db2d2cbe8bbee20a92bb10c0c0e4a56ddff9a953e067fcf2b13e9c",
+      "new_record": {
+        "id": "outfit_iced_master_01__aw-repair-03",
+        "kind": "master",
+        "parent_outfit_id": "outfit_iced_master_01",
+        "recipe_version": "aw-repair-03",
+        "title": "ICED 通勤 01",
+        "description": "ICED 人格的春通勤原创穿搭配方。",
+        "primary_persona": "ICED",
+        "secondary_personas": [
+          "MUTE",
+          "FLOU"
+        ],
+        "persona_affinity": {
+          "ICED": 0.96,
+          "MUTE": 0.65,
+          "FLOU": 0.55
+        },
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "通勤"
+        ],
+        "season_tags": [
+          "春"
+        ],
+        "weather_tags": [
+          "晴",
+          "室内"
+        ],
+        "presentation": [
+          "feminine"
+        ],
+        "intensity": "entry",
+        "formality": 4,
+        "garment_ids": [
+          "garment_bolt_top_0090",
+          "garment_iced_bottom_0402",
+          "garment_iced_shoes_0009",
+          "garment_iced_bag_0594"
+        ],
+        "visible_slots": [
+          "top",
+          "bottom",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_bolt_top_0090": "hero",
+          "garment_iced_bottom_0402": "support",
+          "garment_iced_shoes_0009": "support",
+          "garment_iced_bag_0594": "accent"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "浅色",
+          "saturation": "低饱和",
+          "harmony": "未判断",
+          "palette": [
+            "#b2b7c7",
+            "#abb5c6",
+            "#aaaebc",
+            "#959db3"
+          ]
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/86a9039b88ee51b9fed78997.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source_outfit_id": "outfit_iced_master_01"
+        },
+        "design_intent": "用已审核不透款 g0090 替换覆盖未证实的 g0354；仅解除覆盖问题，整套仍须重新看图"
+      },
+      "record_fingerprint": "9823c01b9636a4603090b83972976b77c3f72c01dc3588f3c3ab4af0f9b6365f",
+      "asset_sha256": "fec4cbedab067fb9476d108d33fcf9c142db7ce7fe9cff7263fe749edde0634c",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/86a9039b88ee51b9fed78997.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_bolt_top_0090",
+            "slot": "top",
+            "box": [
+              219,
+              160,
+              681,
+              620
+            ]
+          },
+          {
+            "garment_id": "garment_iced_bottom_0402",
+            "slot": "bottom",
+            "box": [
+              332,
+              644,
+              568,
+              1330
+            ]
+          },
+          {
+            "garment_id": "garment_iced_shoes_0009",
+            "slot": "shoes",
+            "box": [
+              876,
+              880,
+              1093,
+              1080
+            ]
+          },
+          {
+            "garment_id": "garment_iced_bag_0594",
+            "slot": "bag",
+            "box": [
+              871,
+              410,
+              1109,
+              730
+            ]
+          }
+        ]
+      },
+      "replacements": {
+        "garment_iced_top_0354": "garment_bolt_top_0090"
+      },
+      "status": "pending_native_review",
+      "review": null
+    },
+    {
+      "source_outfit_id": "outfit_iced_master_11",
+      "source_token": "o0041",
+      "source_record_fingerprint": "d976f1b8cb3bcb543690508644f03e65607e9c420bb00a7763f53b83963ff376",
+      "new_record": {
+        "id": "outfit_iced_master_11__aw-repair-03",
+        "kind": "master",
+        "parent_outfit_id": "outfit_iced_master_11",
+        "recipe_version": "aw-repair-03",
+        "title": "ICED 日常 11",
+        "description": "ICED 人格的夏日常原创穿搭配方。",
+        "primary_persona": "ICED",
+        "secondary_personas": [
+          "MUTE",
+          "FLOU"
+        ],
+        "persona_affinity": {
+          "ICED": 0.96,
+          "MUTE": 0.65,
+          "FLOU": 0.55
+        },
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "日常"
+        ],
+        "season_tags": [
+          "夏"
+        ],
+        "weather_tags": [
+          "晴",
+          "室内"
+        ],
+        "presentation": [
+          "feminine"
+        ],
+        "intensity": "entry",
+        "formality": 3,
+        "garment_ids": [
+          "garment_bolt_top_0090",
+          "garment_iced_skirt_0450",
+          "garment_iced_shoes_0009",
+          "garment_mute_bag_0513"
+        ],
+        "visible_slots": [
+          "top",
+          "skirt",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_bolt_top_0090": "hero",
+          "garment_iced_skirt_0450": "support",
+          "garment_iced_shoes_0009": "support",
+          "garment_mute_bag_0513": "accent"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "浅色",
+          "saturation": "低饱和",
+          "harmony": "未判断",
+          "palette": [
+            "#b2b7c7",
+            "#a1abc2",
+            "#aaaebc",
+            "#434141"
+          ]
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/7ba766882be1e56cf6659114.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source_outfit_id": "outfit_iced_master_11"
+        },
+        "design_intent": "用已审核不透款 g0090 替换覆盖未证实的 g0354；仅解除覆盖问题，整套仍须重新看图"
+      },
+      "record_fingerprint": "a1d87dabc57a72cefaecf9aae20ecf2f72418b934768ff4b42b2990d8cb4157b",
+      "asset_sha256": "20cd65ea85735c8f5dafbee37e5d0bcdcc77defdea244141903d094cde43f3d1",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/7ba766882be1e56cf6659114.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_bolt_top_0090",
+            "slot": "top",
+            "box": [
+              219,
+              160,
+              681,
+              620
+            ]
+          },
+          {
+            "garment_id": "garment_iced_skirt_0450",
+            "slot": "skirt",
+            "box": [
+              233,
+              644,
+              667,
+              1330
+            ]
+          },
+          {
+            "garment_id": "garment_iced_shoes_0009",
+            "slot": "shoes",
+            "box": [
+              876,
+              880,
+              1093,
+              1080
+            ]
+          },
+          {
+            "garment_id": "garment_mute_bag_0513",
+            "slot": "bag",
+            "box": [
+              853,
+              410,
+              1126,
+              730
+            ]
+          }
+        ]
+      },
+      "replacements": {
+        "garment_iced_top_0354": "garment_bolt_top_0090"
+      },
+      "status": "pending_native_review",
+      "review": null
+    },
+    {
+      "source_outfit_id": "outfit_iced_master_14",
+      "source_token": "o0044",
+      "source_record_fingerprint": "4eac9c2a36c780ea1082df4748a0233014eed2085106323cd4d66ef09be92cf3",
+      "new_record": {
+        "id": "outfit_iced_master_14__aw-repair-03",
+        "kind": "master",
+        "parent_outfit_id": "outfit_iced_master_14",
+        "recipe_version": "aw-repair-03",
+        "title": "ICED 约会社交 14",
+        "description": "ICED 人格的夏约会社交原创穿搭配方。",
+        "primary_persona": "ICED",
+        "secondary_personas": [
+          "MUTE",
+          "FLOU"
+        ],
+        "persona_affinity": {
+          "ICED": 0.96,
+          "MUTE": 0.65,
+          "FLOU": 0.55
+        },
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "约会社交"
+        ],
+        "season_tags": [
+          "夏"
+        ],
+        "weather_tags": [
+          "晴",
+          "室内"
+        ],
+        "presentation": [
+          "feminine"
+        ],
+        "intensity": "signature",
+        "formality": 3,
+        "garment_ids": [
+          "garment_flou_top_0087",
+          "garment_mute_skirt_0193",
+          "garment_mute_shoes_0257",
+          "garment_iced_bag_0290"
+        ],
+        "visible_slots": [
+          "top",
+          "skirt",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_flou_top_0087": "hero",
+          "garment_mute_skirt_0193": "support",
+          "garment_mute_shoes_0257": "support",
+          "garment_iced_bag_0290": "accent"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "浅色",
+          "saturation": "低饱和",
+          "harmony": "未判断",
+          "palette": [
+            "#aeb1c1",
+            "#6c6059",
+            "#63564e",
+            "#aab5c3"
+          ]
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/12d38db81fd026e02b862e8d.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source_outfit_id": "outfit_iced_master_14"
+        },
+        "design_intent": "用已审核不透款 g0087 替换覆盖未证实的 g0008；仅解除覆盖问题，整套仍须重新看图"
+      },
+      "record_fingerprint": "bfd35420389fea36083eb7bacdc0af1ff32c8b5e803ef419580545e108956393",
+      "asset_sha256": "222eed616ac39cd4dcee7f8fbd59a3141b0e5284ff1d4334916b191d9f554373",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/12d38db81fd026e02b862e8d.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_flou_top_0087",
+            "slot": "top",
+            "box": [
+              222,
+              160,
+              677,
+              620
+            ]
+          },
+          {
+            "garment_id": "garment_mute_skirt_0193",
+            "slot": "skirt",
+            "box": [
+              301,
+              644,
+              598,
+              1330
+            ]
+          },
+          {
+            "garment_id": "garment_mute_shoes_0257",
+            "slot": "shoes",
+            "box": [
+              919,
+              880,
+              1051,
+              1080
+            ]
+          },
+          {
+            "garment_id": "garment_iced_bag_0290",
+            "slot": "bag",
+            "box": [
+              865,
+              410,
+              1114,
+              730
+            ]
+          }
+        ]
+      },
+      "replacements": {
+        "garment_iced_top_0008": "garment_flou_top_0087"
+      },
+      "status": "pending_native_review",
+      "review": null
+    },
+    {
+      "source_outfit_id": "outfit_iced_master_24",
+      "source_token": "o0054",
+      "source_record_fingerprint": "68cc9c8f31bd03c9fcd4aa240ac9ecf3b523b9d671bf4134866f1fc012c8d4cb",
+      "new_record": {
+        "id": "outfit_iced_master_24__aw-repair-03",
+        "kind": "master",
+        "parent_outfit_id": "outfit_iced_master_24",
+        "recipe_version": "aw-repair-03",
+        "title": "ICED 旅行 24",
+        "description": "ICED 人格的冬旅行原创穿搭配方。",
+        "primary_persona": "ICED",
+        "secondary_personas": [
+          "MUTE",
+          "FLOU"
+        ],
+        "persona_affinity": {
+          "ICED": 0.96,
+          "MUTE": 0.65,
+          "FLOU": 0.55
+        },
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "旅行"
+        ],
+        "season_tags": [
+          "冬"
+        ],
+        "weather_tags": [
+          "晴",
+          "室内"
+        ],
+        "presentation": [
+          "neutral"
+        ],
+        "intensity": "signature",
+        "formality": 3,
+        "garment_ids": [
+          "garment_flou_top_0087",
+          "garment_mute_bottom_0161",
+          "garment_mute_outer_0145",
+          "garment_mute_shoes_0257",
+          "garment_iced_bag_0290"
+        ],
+        "visible_slots": [
+          "top",
+          "bottom",
+          "outer",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_flou_top_0087": "hero",
+          "garment_mute_bottom_0161": "support",
+          "garment_mute_outer_0145": "support",
+          "garment_mute_shoes_0257": "support",
+          "garment_iced_bag_0290": "accent"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "浅色",
+          "saturation": "低饱和",
+          "harmony": "未判断",
+          "palette": [
+            "#aeb1c1",
+            "#8897a7",
+            "#9e958d",
+            "#63564e",
+            "#aab5c3"
+          ]
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/b6b2eeb5dcadae24335c9dfe.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source_outfit_id": "outfit_iced_master_24"
+        },
+        "design_intent": "用已审核不透款 g0087 替换覆盖未证实的 g0008；仅解除覆盖问题，整套仍须重新看图"
+      },
+      "record_fingerprint": "7b7fafaed3123e727ae2f4fe0dbfa2ec58fdf0117dd2e0bb4993bb1f3e1d1604",
+      "asset_sha256": "67e164b44ee89e950b1c2f00944afd30d39c99c6e2189f73c32d7c7a4cbc7010",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/b6b2eeb5dcadae24335c9dfe.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_flou_top_0087",
+            "slot": "top",
+            "box": [
+              450,
+              286,
+              800,
+              640
+            ]
+          },
+          {
+            "garment_id": "garment_mute_bottom_0161",
+            "slot": "bottom",
+            "box": [
+              468,
+              664,
+              782,
+              1330
+            ]
+          },
+          {
+            "garment_id": "garment_mute_outer_0145",
+            "slot": "outer",
+            "box": [
+              70,
+              160,
+              420,
+              520
+            ]
+          },
+          {
+            "garment_id": "garment_mute_shoes_0257",
+            "slot": "shoes",
+            "box": [
+              919,
+              880,
+              1051,
+              1080
+            ]
+          },
+          {
+            "garment_id": "garment_iced_bag_0290",
+            "slot": "bag",
+            "box": [
+              865,
+              410,
+              1114,
+              730
+            ]
+          }
+        ]
+      },
+      "replacements": {
+        "garment_iced_top_0008": "garment_flou_top_0087"
+      },
+      "status": "pending_native_review",
+      "review": null
+    },
+    {
+      "source_outfit_id": "outfit_melt_master_05",
+      "source_token": "o0123",
+      "source_record_fingerprint": "93cbac49121eb66b39d167dc7f5264000edbc84f5948fc20745c75e0cb5d8b97",
+      "new_record": {
+        "id": "outfit_melt_master_05__aw-repair-03",
+        "kind": "master",
+        "parent_outfit_id": "outfit_melt_master_05",
+        "recipe_version": "aw-repair-03",
+        "title": "MELT 通勤 05",
+        "description": "MELT 人格的春通勤原创穿搭配方。",
+        "primary_persona": "MELT",
+        "secondary_personas": [
+          "FLOU",
+          "EASE"
+        ],
+        "persona_affinity": {
+          "MELT": 0.96,
+          "FLOU": 0.65,
+          "EASE": 0.55
+        },
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "通勤"
+        ],
+        "season_tags": [
+          "春"
+        ],
+        "weather_tags": [
+          "晴",
+          "室内"
+        ],
+        "presentation": [
+          "feminine"
+        ],
+        "intensity": "entry",
+        "formality": 4,
+        "garment_ids": [
+          "garment_flou_top_0087",
+          "garment_melt_bottom_0165",
+          "garment_melt_shoes_0261",
+          "garment_flou_bag_0279"
+        ],
+        "visible_slots": [
+          "top",
+          "bottom",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_flou_top_0087": "hero",
+          "garment_melt_bottom_0165": "support",
+          "garment_melt_shoes_0261": "support",
+          "garment_flou_bag_0279": "accent"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "浅色",
+          "saturation": "低饱和",
+          "harmony": "未判断",
+          "palette": [
+            "#c5b0a6",
+            "#dbd0c4",
+            "#ccbfb5",
+            "#b09492"
+          ]
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/7a264901e942170c90d71e37.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source_outfit_id": "outfit_melt_master_05"
+        },
+        "design_intent": "用已审核不透款 g0087 替换覆盖未证实的 g0567；仅解除覆盖问题，整套仍须重新看图"
+      },
+      "record_fingerprint": "ffe853e31d9d5ab97cf71d3504464b18d85fcb8346c5348888c1e418c30acd84",
+      "asset_sha256": "5cc43f8659ca8108d275be5f163571979bcb007c0188e94750ccefaa7a3eb485",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/7a264901e942170c90d71e37.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_flou_top_0087",
+            "slot": "top",
+            "box": [
+              222,
+              160,
+              677,
+              620
+            ]
+          },
+          {
+            "garment_id": "garment_melt_bottom_0165",
+            "slot": "bottom",
+            "box": [
+              278,
+              644,
+              622,
+              1330
+            ]
+          },
+          {
+            "garment_id": "garment_melt_shoes_0261",
+            "slot": "shoes",
+            "box": [
+              850,
+              880,
+              1120,
+              1080
+            ]
+          },
+          {
+            "garment_id": "garment_flou_bag_0279",
+            "slot": "bag",
+            "box": [
+              893,
+              410,
+              1087,
+              730
+            ]
+          }
+        ]
+      },
+      "replacements": {
+        "garment_flou_top_0567": "garment_flou_top_0087"
+      },
+      "status": "pending_native_review",
+      "review": null
+    },
+    {
+      "source_outfit_id": "outfit_melt_master_16",
+      "source_token": "o0134",
+      "source_record_fingerprint": "2e05e246f49a149fed2e7b315240afa7539bffa460bc3059557ce7b2b6ec1831",
+      "new_record": {
+        "id": "outfit_melt_master_16__aw-repair-03",
+        "kind": "master",
+        "parent_outfit_id": "outfit_melt_master_16",
+        "recipe_version": "aw-repair-03",
+        "title": "MELT 约会社交 16",
+        "description": "MELT 人格的秋约会社交原创穿搭配方。",
+        "primary_persona": "MELT",
+        "secondary_personas": [
+          "FLOU",
+          "EASE"
+        ],
+        "persona_affinity": {
+          "MELT": 0.96,
+          "FLOU": 0.65,
+          "EASE": 0.55
+        },
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "约会社交"
+        ],
+        "season_tags": [
+          "秋"
+        ],
+        "weather_tags": [
+          "晴",
+          "室内"
+        ],
+        "presentation": [
+          "feminine"
+        ],
+        "intensity": "signature",
+        "formality": 3,
+        "garment_ids": [
+          "garment_flou_top_0103",
+          "garment_flou_skirt_0031",
+          "garment_flou_shoes_0034",
+          "garment_melt_bag_0025"
+        ],
+        "visible_slots": [
+          "top",
+          "skirt",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_flou_top_0103": "hero",
+          "garment_flou_skirt_0031": "support",
+          "garment_flou_shoes_0034": "support",
+          "garment_melt_bag_0025": "accent"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "浅色",
+          "saturation": "低饱和",
+          "harmony": "未判断",
+          "palette": [
+            "#beb1ab",
+            "#bbaa9f",
+            "#c7b6a9",
+            "#d7bfb3"
+          ]
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/5a92a28179b23ee8d2cb730e.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source_outfit_id": "outfit_melt_master_16"
+        },
+        "design_intent": "用已审核不透款 g0103 替换覆盖未证实的 g0343；仅解除覆盖问题，整套仍须重新看图"
+      },
+      "record_fingerprint": "f94ad14aa67926527aea775d8614cfce3a2b9d0a11516ed2337d772557defc3f",
+      "asset_sha256": "a27b2e111786b645ec4a2520b2014d7dc32b2574e7468954ca0c776a4c1bf8f9",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/5a92a28179b23ee8d2cb730e.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_flou_top_0103",
+            "slot": "top",
+            "box": [
+              264,
+              160,
+              636,
+              620
+            ]
+          },
+          {
+            "garment_id": "garment_flou_skirt_0031",
+            "slot": "skirt",
+            "box": [
+              260,
+              644,
+              639,
+              1330
+            ]
+          },
+          {
+            "garment_id": "garment_flou_shoes_0034",
+            "slot": "shoes",
+            "box": [
+              874,
+              880,
+              1096,
+              1080
+            ]
+          },
+          {
+            "garment_id": "garment_melt_bag_0025",
+            "slot": "bag",
+            "box": [
+              856,
+              410,
+              1123,
+              730
+            ]
+          }
+        ]
+      },
+      "replacements": {
+        "garment_flou_top_0343": "garment_flou_top_0103"
+      },
+      "status": "pending_native_review",
+      "review": null
+    },
+    {
+      "source_outfit_id": "outfit_flou_master_03",
+      "source_token": "o0181",
+      "source_record_fingerprint": "63636b7aa32f82107eab23b94d16f53c485fc4ad75faa36f88fee41dacf627d2",
+      "new_record": {
+        "id": "outfit_flou_master_03__aw-repair-03",
+        "kind": "master",
+        "parent_outfit_id": "outfit_flou_master_03",
+        "recipe_version": "aw-repair-03",
+        "title": "FLOU 通勤 03",
+        "description": "FLOU 人格的春通勤原创穿搭配方。",
+        "primary_persona": "FLOU",
+        "secondary_personas": [
+          "MELT",
+          "BOLT"
+        ],
+        "persona_affinity": {
+          "FLOU": 0.96,
+          "MELT": 0.65,
+          "BOLT": 0.55
+        },
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "通勤"
+        ],
+        "season_tags": [
+          "春"
+        ],
+        "weather_tags": [
+          "晴",
+          "室内"
+        ],
+        "presentation": [
+          "feminine"
+        ],
+        "intensity": "entry",
+        "formality": 4,
+        "garment_ids": [
+          "garment_flou_top_0087",
+          "garment_melt_bottom_0405",
+          "garment_bolt_shoes_0266",
+          "garment_flou_bag_0519"
+        ],
+        "visible_slots": [
+          "top",
+          "bottom",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_flou_top_0087": "hero",
+          "garment_melt_bottom_0405": "support",
+          "garment_bolt_shoes_0266": "support",
+          "garment_flou_bag_0519": "accent"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "浅色",
+          "saturation": "低饱和",
+          "harmony": "未判断",
+          "palette": [
+            "#c5b0a6",
+            "#d5bdb5",
+            "#c5a790",
+            "#b8aca0"
+          ]
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/ec9690b7bdb490caadd4def5.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source_outfit_id": "outfit_flou_master_03"
+        },
+        "design_intent": "用已审核不透款 g0087 替换覆盖未证实的 g0567；仅解除覆盖问题，整套仍须重新看图"
+      },
+      "record_fingerprint": "e387607590542c35a26ef8ecabb5a9c94c7291155f0b76fbec7be9327a71ac49",
+      "asset_sha256": "9fca772c6b21972fc06d5c6820b3abd33221df4773d710380857e5c015d13c13",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/ec9690b7bdb490caadd4def5.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_flou_top_0087",
+            "slot": "top",
+            "box": [
+              222,
+              160,
+              677,
+              620
+            ]
+          },
+          {
+            "garment_id": "garment_melt_bottom_0405",
+            "slot": "bottom",
+            "box": [
+              235,
+              644,
+              664,
+              1330
+            ]
+          },
+          {
+            "garment_id": "garment_bolt_shoes_0266",
+            "slot": "shoes",
+            "box": [
+              878,
+              880,
+              1091,
+              1080
+            ]
+          },
+          {
+            "garment_id": "garment_flou_bag_0519",
+            "slot": "bag",
+            "box": [
+              869,
+              410,
+              1110,
+              730
+            ]
+          }
+        ]
+      },
+      "replacements": {
+        "garment_flou_top_0567": "garment_flou_top_0087"
+      },
+      "status": "pending_native_review",
+      "review": null
+    },
+    {
+      "source_outfit_id": "outfit_flou_master_08",
+      "source_token": "o0186",
+      "source_record_fingerprint": "03baa5f0868fb338e4e4354a45447942d5986dcdb17dc50b460fb06c9a1fd4ff",
+      "new_record": {
+        "id": "outfit_flou_master_08__aw-repair-03",
+        "kind": "master",
+        "parent_outfit_id": "outfit_flou_master_08",
+        "recipe_version": "aw-repair-03",
+        "title": "FLOU 日常 08",
+        "description": "FLOU 人格的夏日常原创穿搭配方。",
+        "primary_persona": "FLOU",
+        "secondary_personas": [
+          "MELT",
+          "BOLT"
+        ],
+        "persona_affinity": {
+          "FLOU": 0.96,
+          "MELT": 0.65,
+          "BOLT": 0.55
+        },
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "日常"
+        ],
+        "season_tags": [
+          "夏"
+        ],
+        "weather_tags": [
+          "晴",
+          "室内"
+        ],
+        "presentation": [
+          "feminine"
+        ],
+        "intensity": "entry",
+        "formality": 3,
+        "garment_ids": [
+          "garment_bolt_top_0090",
+          "garment_iced_bottom_0162",
+          "garment_iced_shoes_0498",
+          "garment_melt_bag_0277"
+        ],
+        "visible_slots": [
+          "top",
+          "bottom",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_bolt_top_0090": "hero",
+          "garment_iced_bottom_0162": "support",
+          "garment_iced_shoes_0498": "support",
+          "garment_melt_bag_0277": "accent"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "浅色",
+          "saturation": "低饱和",
+          "harmony": "未判断",
+          "palette": [
+            "#b2b7c7",
+            "#9ca2b0",
+            "#99a5b5",
+            "#c4b7a9"
+          ]
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/d69a1a942e1406c242b78dbb.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source_outfit_id": "outfit_flou_master_08"
+        },
+        "design_intent": "用已审核不透款 g0090 替换覆盖未证实的 g0354；仅解除覆盖问题，整套仍须重新看图"
+      },
+      "record_fingerprint": "93d54edf8a264a4607b769661037ffb273a247e53159eb83ef9163a1c1e0d57c",
+      "asset_sha256": "1ec6d22c5e5b58988d7d6e189482abf75ad21700367853ee1cb04c123ebae038",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/d69a1a942e1406c242b78dbb.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_bolt_top_0090",
+            "slot": "top",
+            "box": [
+              219,
+              160,
+              681,
+              620
+            ]
+          },
+          {
+            "garment_id": "garment_iced_bottom_0162",
+            "slot": "bottom",
+            "box": [
+              319,
+              644,
+              581,
+              1330
+            ]
+          },
+          {
+            "garment_id": "garment_iced_shoes_0498",
+            "slot": "shoes",
+            "box": [
+              858,
+              880,
+              1112,
+              1080
+            ]
+          },
+          {
+            "garment_id": "garment_melt_bag_0277",
+            "slot": "bag",
+            "box": [
+              898,
+              410,
+              1082,
+              730
+            ]
+          }
+        ]
+      },
+      "replacements": {
+        "garment_iced_top_0354": "garment_bolt_top_0090"
+      },
+      "status": "pending_native_review",
+      "review": null
+    },
+    {
+      "source_outfit_id": "outfit_bolt_master_12",
+      "source_token": "o0279",
+      "source_record_fingerprint": "6ac555fd034d96175f9341d9db135e9ce8e5e3541e391515acfa56d37c78d795",
+      "new_record": {
+        "id": "outfit_bolt_master_12__aw-repair-03",
+        "kind": "master",
+        "parent_outfit_id": "outfit_bolt_master_12",
+        "recipe_version": "aw-repair-03",
+        "title": "BOLT 日常 12",
+        "description": "BOLT 人格的夏日常原创穿搭配方。",
+        "primary_persona": "BOLT",
+        "secondary_personas": [
+          "FLOU",
+          "HEIR"
+        ],
+        "persona_affinity": {
+          "BOLT": 0.96,
+          "FLOU": 0.65,
+          "HEIR": 0.55
+        },
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "日常"
+        ],
+        "season_tags": [
+          "夏"
+        ],
+        "weather_tags": [
+          "晴",
+          "室内"
+        ],
+        "presentation": [
+          "feminine"
+        ],
+        "intensity": "entry",
+        "formality": 3,
+        "garment_ids": [
+          "garment_flou_top_0087",
+          "garment_bolt_skirt_0186",
+          "garment_bolt_shoes_0266",
+          "garment_bolt_bag_0282"
+        ],
+        "visible_slots": [
+          "top",
+          "skirt",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_flou_top_0087": "hero",
+          "garment_bolt_skirt_0186": "support",
+          "garment_bolt_shoes_0266": "support",
+          "garment_bolt_bag_0282": "accent"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "浅色",
+          "saturation": "低饱和",
+          "harmony": "未判断",
+          "palette": [
+            "#c5b0a6",
+            "#ded9d1",
+            "#c5a790",
+            "#c8bfb4"
+          ]
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/0b08b6ae4b6922c9ab12064a.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source_outfit_id": "outfit_bolt_master_12"
+        },
+        "design_intent": "用已审核不透款 g0087 替换覆盖未证实的 g0567；仅解除覆盖问题，整套仍须重新看图"
+      },
+      "record_fingerprint": "65c3d65096a680a175e7fddafb2922e7590a75eca62683286e94efe8d7cf905a",
+      "asset_sha256": "2f57857da4c4fb76a410a9a4910e0bddf98596808e13598c4f2dfcf6f450343e",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/0b08b6ae4b6922c9ab12064a.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_flou_top_0087",
+            "slot": "top",
+            "box": [
+              222,
+              160,
+              677,
+              620
+            ]
+          },
+          {
+            "garment_id": "garment_bolt_skirt_0186",
+            "slot": "skirt",
+            "box": [
+              216,
+              644,
+              683,
+              1330
+            ]
+          },
+          {
+            "garment_id": "garment_bolt_shoes_0266",
+            "slot": "shoes",
+            "box": [
+              878,
+              880,
+              1091,
+              1080
+            ]
+          },
+          {
+            "garment_id": "garment_bolt_bag_0282",
+            "slot": "bag",
+            "box": [
+              850,
+              470,
+              1130,
+              670
+            ]
+          }
+        ]
+      },
+      "replacements": {
+        "garment_flou_top_0567": "garment_flou_top_0087"
+      },
+      "status": "pending_native_review",
+      "review": null
+    },
+    {
+      "source_outfit_id": "outfit_noir_master_15",
+      "source_token": "o0396",
+      "source_record_fingerprint": "b5cfd0a542a974031d6f7d86593fe3f7967fdd9e7f32f7e8a7664d99a93035dc",
+      "new_record": {
+        "id": "outfit_noir_master_15__aw-repair-03",
+        "kind": "master",
+        "parent_outfit_id": "outfit_noir_master_15",
+        "recipe_version": "aw-repair-03",
+        "title": "NOIR 约会社交 15",
+        "description": "NOIR 人格的夏约会社交原创穿搭配方。",
+        "primary_persona": "NOIR",
+        "secondary_personas": [
+          "EDGE",
+          "MUTE"
+        ],
+        "persona_affinity": {
+          "NOIR": 0.96,
+          "EDGE": 0.65,
+          "MUTE": 0.55
+        },
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "约会社交"
+        ],
+        "season_tags": [
+          "夏"
+        ],
+        "weather_tags": [
+          "晴",
+          "室内"
+        ],
+        "presentation": [
+          "feminine"
+        ],
+        "intensity": "signature",
+        "formality": 3,
+        "garment_ids": [
+          "garment_noir_top_0110",
+          "garment_noir_skirt_0190",
+          "garment_edge_shoes_0265",
+          "garment_edge_bag_0521"
+        ],
+        "visible_slots": [
+          "top",
+          "skirt",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_noir_top_0110": "hero",
+          "garment_noir_skirt_0190": "support",
+          "garment_edge_shoes_0265": "support",
+          "garment_edge_bag_0521": "accent"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "深色",
+          "saturation": "无彩",
+          "harmony": "未判断",
+          "palette": [
+            "#4b4a4e",
+            "#55565f",
+            "#4d4b4b",
+            "#302f33"
+          ]
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/e0d8d9cade29ffd577a1387a.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source_outfit_id": "outfit_noir_master_15"
+        },
+        "design_intent": "用已审核不透款 g0190 替换覆盖未证实的 g0425；仅解除覆盖问题，整套仍须重新看图"
+      },
+      "record_fingerprint": "34b150809f29528975abe035e2d2c42172a9515c497e1091bef7913a372b0f89",
+      "asset_sha256": "d8712308696415cd1abed0ab00913da00da931ef991b5c5070b970b5df46c9b8",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/e0d8d9cade29ffd577a1387a.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_noir_top_0110",
+            "slot": "top",
+            "box": [
+              150,
+              160,
+              750,
+              620
+            ]
+          },
+          {
+            "garment_id": "garment_noir_skirt_0190",
+            "slot": "skirt",
+            "box": [
+              270,
+              644,
+              629,
+              1330
+            ]
+          },
+          {
+            "garment_id": "garment_edge_shoes_0265",
+            "slot": "shoes",
+            "box": [
+              875,
+              880,
+              1095,
+              1080
+            ]
+          },
+          {
+            "garment_id": "garment_edge_bag_0521",
+            "slot": "bag",
+            "box": [
+              859,
+              410,
+              1120,
+              730
+            ]
+          }
+        ]
+      },
+      "replacements": {
+        "garment_edge_skirt_0425": "garment_noir_skirt_0190"
+      },
+      "status": "pending_native_review",
+      "review": null
+    },
+    {
+      "source_outfit_id": "outfit_mute_master_06_v2",
+      "source_token": "o0480",
+      "source_record_fingerprint": "0db82b55140e06d746de0a8691f8f88c07e4e4b731369f3c6f2ea6d0aa36c9f8",
+      "new_record": {
+        "id": "outfit_mute_master_06_v2__aw-repair-03",
+        "kind": "variant",
+        "parent_outfit_id": "outfit_mute_master_06",
+        "recipe_version": "aw-repair-03",
+        "title": "MUTE 通勤 06 · 替换 2",
+        "description": "MUTE 人格的春通勤原创穿搭配方。",
+        "primary_persona": "MUTE",
+        "secondary_personas": [
+          "ICED",
+          "HEIR"
+        ],
+        "persona_affinity": {
+          "MUTE": 0.96,
+          "ICED": 0.65,
+          "HEIR": 0.55
+        },
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "通勤"
+        ],
+        "season_tags": [
+          "春"
+        ],
+        "weather_tags": [
+          "晴",
+          "室内"
+        ],
+        "presentation": [
+          "feminine"
+        ],
+        "intensity": "entry",
+        "formality": 4,
+        "garment_ids": [
+          "garment_bolt_top_0090",
+          "garment_iced_bottom_0162",
+          "garment_jade_shoes_0268",
+          "garment_jade_bag_0284"
+        ],
+        "visible_slots": [
+          "top",
+          "bottom",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_bolt_top_0090": "hero",
+          "garment_iced_bottom_0162": "support",
+          "garment_jade_shoes_0268": "support",
+          "garment_jade_bag_0284": "accent"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "浅色",
+          "saturation": "低饱和",
+          "harmony": "未判断",
+          "palette": [
+            "#b2b7c7",
+            "#9ca2b0",
+            "#baa897",
+            "#858a80"
+          ]
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/0dcae395325ff3555c363fd3.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source_outfit_id": "outfit_mute_master_06_v2"
+        },
+        "design_intent": "用已审核不透款 g0090 替换覆盖未证实的 g0354；仅解除覆盖问题，整套仍须重新看图"
+      },
+      "record_fingerprint": "897e9d0b5e3f8e65e018ec409659874b5564d36e65fdc066bd7138cbef6d70c6",
+      "asset_sha256": "f3b0eb66b38ed73a9719088cc4f1000010dfcabd2ced921a62ccc21c170e310f",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/0dcae395325ff3555c363fd3.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_bolt_top_0090",
+            "slot": "top",
+            "box": [
+              219,
+              160,
+              681,
+              620
+            ]
+          },
+          {
+            "garment_id": "garment_iced_bottom_0162",
+            "slot": "bottom",
+            "box": [
+              319,
+              644,
+              581,
+              1330
+            ]
+          },
+          {
+            "garment_id": "garment_jade_shoes_0268",
+            "slot": "shoes",
+            "box": [
+              846,
+              880,
+              1124,
+              1080
+            ]
+          },
+          {
+            "garment_id": "garment_jade_bag_0284",
+            "slot": "bag",
+            "box": [
+              850,
+              414,
+              1130,
+              725
+            ]
+          }
+        ]
+      },
+      "replacements": {
+        "garment_iced_top_0354": "garment_bolt_top_0090"
+      },
+      "status": "pending_native_review",
+      "review": null
+    },
+    {
+      "source_outfit_id": "outfit_iced_master_02_v1",
+      "source_token": "o0516",
+      "source_record_fingerprint": "fa1e3fcdf7242a6959371deb121783e5f87053d0011217f557c3509153dd4823",
+      "new_record": {
+        "id": "outfit_iced_master_02_v1__aw-repair-03",
+        "kind": "variant",
+        "parent_outfit_id": "outfit_iced_master_02",
+        "recipe_version": "aw-repair-03",
+        "title": "ICED 通勤 02 · 替换 1",
+        "description": "ICED 人格的春通勤原创穿搭配方。",
+        "primary_persona": "ICED",
+        "secondary_personas": [
+          "MUTE",
+          "FLOU"
+        ],
+        "persona_affinity": {
+          "ICED": 0.96,
+          "MUTE": 0.65,
+          "FLOU": 0.55
+        },
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "通勤"
+        ],
+        "season_tags": [
+          "春"
+        ],
+        "weather_tags": [
+          "晴",
+          "室内"
+        ],
+        "presentation": [
+          "feminine"
+        ],
+        "intensity": "entry",
+        "formality": 4,
+        "garment_ids": [
+          "garment_bolt_top_0090",
+          "garment_iced_bottom_0162",
+          "garment_iced_shoes_0498",
+          "garment_iced_bag_0290"
+        ],
+        "visible_slots": [
+          "top",
+          "bottom",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_bolt_top_0090": "hero",
+          "garment_iced_bottom_0162": "support",
+          "garment_iced_shoes_0498": "support",
+          "garment_iced_bag_0290": "accent"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "浅色",
+          "saturation": "低饱和",
+          "harmony": "未判断",
+          "palette": [
+            "#b2b7c7",
+            "#9ca2b0",
+            "#99a5b5",
+            "#aab5c3"
+          ]
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/aff846e2757d71ef0296f514.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source_outfit_id": "outfit_iced_master_02_v1"
+        },
+        "design_intent": "用已审核不透款 g0090 替换覆盖未证实的 g0354；仅解除覆盖问题，整套仍须重新看图"
+      },
+      "record_fingerprint": "a9900d969dc90e88163738d5ef875f285e064cd90c5ea25d32e45316e7e1381e",
+      "asset_sha256": "907cb1994e7ba5b4b7f9a03af65f75e37863f9070700809fc55078b6c102ff3d",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/aff846e2757d71ef0296f514.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_bolt_top_0090",
+            "slot": "top",
+            "box": [
+              219,
+              160,
+              681,
+              620
+            ]
+          },
+          {
+            "garment_id": "garment_iced_bottom_0162",
+            "slot": "bottom",
+            "box": [
+              319,
+              644,
+              581,
+              1330
+            ]
+          },
+          {
+            "garment_id": "garment_iced_shoes_0498",
+            "slot": "shoes",
+            "box": [
+              858,
+              880,
+              1112,
+              1080
+            ]
+          },
+          {
+            "garment_id": "garment_iced_bag_0290",
+            "slot": "bag",
+            "box": [
+              865,
+              410,
+              1114,
+              730
+            ]
+          }
+        ]
+      },
+      "replacements": {
+        "garment_iced_top_0354": "garment_bolt_top_0090"
+      },
+      "status": "pending_native_review",
+      "review": null
+    },
+    {
+      "source_outfit_id": "outfit_iced_master_07_v1",
+      "source_token": "o0526",
+      "source_record_fingerprint": "ad5bcc984caf008cca96b1dbcd16d1bcd9df74cb95c2f8f0ade706cf9bf7b8b5",
+      "new_record": {
+        "id": "outfit_iced_master_07_v1__aw-repair-03",
+        "kind": "variant",
+        "parent_outfit_id": "outfit_iced_master_07",
+        "recipe_version": "aw-repair-03",
+        "title": "ICED 日常 07 · 替换 1",
+        "description": "ICED 人格的春日常原创穿搭配方。",
+        "primary_persona": "ICED",
+        "secondary_personas": [
+          "MUTE",
+          "FLOU"
+        ],
+        "persona_affinity": {
+          "ICED": 0.96,
+          "MUTE": 0.65,
+          "FLOU": 0.55
+        },
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "日常"
+        ],
+        "season_tags": [
+          "春"
+        ],
+        "weather_tags": [
+          "晴",
+          "室内"
+        ],
+        "presentation": [
+          "feminine"
+        ],
+        "intensity": "entry",
+        "formality": 3,
+        "garment_ids": [
+          "garment_bolt_top_0090",
+          "garment_mute_bottom_0417",
+          "garment_iced_shoes_0009",
+          "garment_mute_bag_0005"
+        ],
+        "visible_slots": [
+          "top",
+          "bottom",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_bolt_top_0090": "hero",
+          "garment_mute_bottom_0417": "support",
+          "garment_iced_shoes_0009": "support",
+          "garment_mute_bag_0005": "accent"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "浅色",
+          "saturation": "低饱和",
+          "harmony": "未判断",
+          "palette": [
+            "#b2b7c7",
+            "#2e2e2f",
+            "#aaaebc",
+            "#3d3c3d"
+          ]
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/785625a8086aa2c21706394a.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source_outfit_id": "outfit_iced_master_07_v1"
+        },
+        "design_intent": "用已审核不透款 g0090 替换覆盖未证实的 g0354；仅解除覆盖问题，整套仍须重新看图"
+      },
+      "record_fingerprint": "c4f89ee208fd2d3a701625db025a18c75dae3cc99dcd8c8d2c122bccfa534151",
+      "asset_sha256": "1e78c134543ab0ab895a59fc91463d1d83ad2d17fcb6836bbbbf85a43f7d698e",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/785625a8086aa2c21706394a.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_bolt_top_0090",
+            "slot": "top",
+            "box": [
+              219,
+              160,
+              681,
+              620
+            ]
+          },
+          {
+            "garment_id": "garment_mute_bottom_0417",
+            "slot": "bottom",
+            "box": [
+              254,
+              644,
+              646,
+              1330
+            ]
+          },
+          {
+            "garment_id": "garment_iced_shoes_0009",
+            "slot": "shoes",
+            "box": [
+              876,
+              880,
+              1093,
+              1080
+            ]
+          },
+          {
+            "garment_id": "garment_mute_bag_0005",
+            "slot": "bag",
+            "box": [
+              851,
+              410,
+              1129,
+              730
+            ]
+          }
+        ]
+      },
+      "replacements": {
+        "garment_iced_top_0354": "garment_bolt_top_0090"
+      },
+      "status": "pending_native_review",
+      "review": null
+    },
+    {
+      "source_outfit_id": "outfit_iced_master_12_v1",
+      "source_token": "o0536",
+      "source_record_fingerprint": "6a70664f292d5d63a9f4335eea03dc88a790e792bde6020b550a03d8c6c8a885",
+      "new_record": {
+        "id": "outfit_iced_master_12_v1__aw-repair-03",
+        "kind": "variant",
+        "parent_outfit_id": "outfit_iced_master_12",
+        "recipe_version": "aw-repair-03",
+        "title": "ICED 日常 12 · 替换 1",
+        "description": "ICED 人格的夏日常原创穿搭配方。",
+        "primary_persona": "ICED",
+        "secondary_personas": [
+          "MUTE",
+          "FLOU"
+        ],
+        "persona_affinity": {
+          "ICED": 0.96,
+          "MUTE": 0.65,
+          "FLOU": 0.55
+        },
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "日常"
+        ],
+        "season_tags": [
+          "夏"
+        ],
+        "weather_tags": [
+          "晴",
+          "室内"
+        ],
+        "presentation": [
+          "feminine"
+        ],
+        "intensity": "entry",
+        "formality": 3,
+        "garment_ids": [
+          "garment_bolt_top_0090",
+          "garment_iced_skirt_0210",
+          "garment_iced_shoes_0498",
+          "garment_iced_bag_0594"
+        ],
+        "visible_slots": [
+          "top",
+          "skirt",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_bolt_top_0090": "hero",
+          "garment_iced_skirt_0210": "support",
+          "garment_iced_shoes_0498": "support",
+          "garment_iced_bag_0594": "accent"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "浅色",
+          "saturation": "低饱和",
+          "harmony": "未判断",
+          "palette": [
+            "#b2b7c7",
+            "#acb6c7",
+            "#99a5b5",
+            "#959db3"
+          ]
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/1cf21e643c4f4f994545e90e.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source_outfit_id": "outfit_iced_master_12_v1"
+        },
+        "design_intent": "用已审核不透款 g0090 替换覆盖未证实的 g0354；仅解除覆盖问题，整套仍须重新看图"
+      },
+      "record_fingerprint": "327f24ce312214ca06c890bad498b9566d113509b5750d9942bd32819214f84e",
+      "asset_sha256": "e98452e3fc00a967e9f49f08502354383eab632ba75fa8b007d7403a6e53588b",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/1cf21e643c4f4f994545e90e.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_bolt_top_0090",
+            "slot": "top",
+            "box": [
+              219,
+              160,
+              681,
+              620
+            ]
+          },
+          {
+            "garment_id": "garment_iced_skirt_0210",
+            "slot": "skirt",
+            "box": [
+              156,
+              644,
+              744,
+              1330
+            ]
+          },
+          {
+            "garment_id": "garment_iced_shoes_0498",
+            "slot": "shoes",
+            "box": [
+              858,
+              880,
+              1112,
+              1080
+            ]
+          },
+          {
+            "garment_id": "garment_iced_bag_0594",
+            "slot": "bag",
+            "box": [
+              871,
+              410,
+              1109,
+              730
+            ]
+          }
+        ]
+      },
+      "replacements": {
+        "garment_iced_top_0354": "garment_bolt_top_0090"
+      },
+      "status": "pending_native_review",
+      "review": null
+    },
+    {
+      "source_outfit_id": "outfit_melt_master_02_v1",
+      "source_token": "o0648",
+      "source_record_fingerprint": "bd0734519bb8002c35d4439fc1eb7585f3f0a7f87d7464096119bad62c7b9c29",
+      "new_record": {
+        "id": "outfit_melt_master_02_v1__aw-repair-03",
+        "kind": "variant",
+        "parent_outfit_id": "outfit_melt_master_02",
+        "recipe_version": "aw-repair-03",
+        "title": "MELT 通勤 02 · 替换 1",
+        "description": "MELT 人格的春通勤原创穿搭配方。",
+        "primary_persona": "MELT",
+        "secondary_personas": [
+          "FLOU",
+          "EASE"
+        ],
+        "persona_affinity": {
+          "MELT": 0.96,
+          "FLOU": 0.65,
+          "EASE": 0.55
+        },
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "通勤"
+        ],
+        "season_tags": [
+          "春"
+        ],
+        "weather_tags": [
+          "晴",
+          "室内"
+        ],
+        "presentation": [
+          "feminine"
+        ],
+        "intensity": "entry",
+        "formality": 4,
+        "garment_ids": [
+          "garment_flou_top_0087",
+          "garment_flou_bottom_0183",
+          "garment_flou_shoes_0263",
+          "garment_flou_bag_0519"
+        ],
+        "visible_slots": [
+          "top",
+          "bottom",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_flou_top_0087": "hero",
+          "garment_flou_bottom_0183": "support",
+          "garment_flou_shoes_0263": "support",
+          "garment_flou_bag_0519": "accent"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "浅色",
+          "saturation": "低饱和",
+          "harmony": "未判断",
+          "palette": [
+            "#c5b0a6",
+            "#aab3bc",
+            "#6d5f58",
+            "#b8aca0"
+          ]
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/43370fc9e423cf5736dacd2d.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source_outfit_id": "outfit_melt_master_02_v1"
+        },
+        "design_intent": "用已审核不透款 g0087 替换覆盖未证实的 g0567；仅解除覆盖问题，整套仍须重新看图"
+      },
+      "record_fingerprint": "c04972e25ef4d0af7f6e9a1404504a01f9661c1bd5e4b485ded54bee69cf2af3",
+      "asset_sha256": "0a0b5469cae1ef0d0d0428e6c454b1187f972a9ce7d93cae5c9ff53b0f6c5d21",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/43370fc9e423cf5736dacd2d.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_flou_top_0087",
+            "slot": "top",
+            "box": [
+              222,
+              160,
+              677,
+              620
+            ]
+          },
+          {
+            "garment_id": "garment_flou_bottom_0183",
+            "slot": "bottom",
+            "box": [
+              257,
+              644,
+              643,
+              1330
+            ]
+          },
+          {
+            "garment_id": "garment_flou_shoes_0263",
+            "slot": "shoes",
+            "box": [
+              931,
+              880,
+              1039,
+              1080
+            ]
+          },
+          {
+            "garment_id": "garment_flou_bag_0519",
+            "slot": "bag",
+            "box": [
+              869,
+              410,
+              1110,
+              730
+            ]
+          }
+        ]
+      },
+      "replacements": {
+        "garment_flou_top_0567": "garment_flou_top_0087"
+      },
+      "status": "pending_native_review",
+      "review": null
+    },
+    {
+      "source_outfit_id": "outfit_melt_master_12_v1",
+      "source_token": "o0668",
+      "source_record_fingerprint": "424c77b00cad5effac37ca9cdf508e1942616466ae81e2fbe7c12e8296abe21a",
+      "new_record": {
+        "id": "outfit_melt_master_12_v1__aw-repair-03",
+        "kind": "variant",
+        "parent_outfit_id": "outfit_melt_master_12",
+        "recipe_version": "aw-repair-03",
+        "title": "MELT 日常 12 · 替换 1",
+        "description": "MELT 人格的夏日常原创穿搭配方。",
+        "primary_persona": "MELT",
+        "secondary_personas": [
+          "FLOU",
+          "EASE"
+        ],
+        "persona_affinity": {
+          "MELT": 0.96,
+          "FLOU": 0.65,
+          "EASE": 0.55
+        },
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "日常"
+        ],
+        "season_tags": [
+          "夏"
+        ],
+        "weather_tags": [
+          "晴",
+          "室内"
+        ],
+        "presentation": [
+          "feminine"
+        ],
+        "intensity": "entry",
+        "formality": 3,
+        "garment_ids": [
+          "garment_flou_top_0087",
+          "garment_melt_skirt_0213",
+          "garment_melt_shoes_0501",
+          "garment_flou_bag_0519"
+        ],
+        "visible_slots": [
+          "top",
+          "skirt",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_flou_top_0087": "hero",
+          "garment_melt_skirt_0213": "support",
+          "garment_melt_shoes_0501": "support",
+          "garment_flou_bag_0519": "accent"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "浅色",
+          "saturation": "低饱和",
+          "harmony": "未判断",
+          "palette": [
+            "#c5b0a6",
+            "#d9d2ca",
+            "#cfb3a6",
+            "#b8aca0"
+          ]
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/e986eedddff4233c61d591bb.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source_outfit_id": "outfit_melt_master_12_v1"
+        },
+        "design_intent": "用已审核不透款 g0087 替换覆盖未证实的 g0567；仅解除覆盖问题，整套仍须重新看图"
+      },
+      "record_fingerprint": "3c344b3ae38640df96ea3f82bfbac746d4b4aa97ff1204512765eca8d94e92f0",
+      "asset_sha256": "924806c5f95842d5273185631228cea7eef887509f0ce06b51972709c3bb059b",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/e986eedddff4233c61d591bb.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_flou_top_0087",
+            "slot": "top",
+            "box": [
+              222,
+              160,
+              677,
+              620
+            ]
+          },
+          {
+            "garment_id": "garment_melt_skirt_0213",
+            "slot": "skirt",
+            "box": [
+              130,
+              644,
+              770,
+              1217
+            ]
+          },
+          {
+            "garment_id": "garment_melt_shoes_0501",
+            "slot": "shoes",
+            "box": [
+              866,
+              880,
+              1104,
+              1080
+            ]
+          },
+          {
+            "garment_id": "garment_flou_bag_0519",
+            "slot": "bag",
+            "box": [
+              869,
+              410,
+              1110,
+              730
+            ]
+          }
+        ]
+      },
+      "replacements": {
+        "garment_flou_top_0567": "garment_flou_top_0087"
+      },
+      "status": "pending_native_review",
+      "review": null
+    },
+    {
+      "source_outfit_id": "outfit_melt_master_13_v1",
+      "source_token": "o0670",
+      "source_record_fingerprint": "fb312eabacad425728606f316f5cc270a024a78fee4f74a954bc1002ae5f60d8",
+      "new_record": {
+        "id": "outfit_melt_master_13_v1__aw-repair-03",
+        "kind": "variant",
+        "parent_outfit_id": "outfit_melt_master_13",
+        "recipe_version": "aw-repair-03",
+        "title": "MELT 约会社交 13 · 替换 1",
+        "description": "MELT 人格的夏约会社交原创穿搭配方。",
+        "primary_persona": "MELT",
+        "secondary_personas": [
+          "FLOU",
+          "EASE"
+        ],
+        "persona_affinity": {
+          "MELT": 0.96,
+          "FLOU": 0.65,
+          "EASE": 0.55
+        },
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "约会社交"
+        ],
+        "season_tags": [
+          "夏"
+        ],
+        "weather_tags": [
+          "晴",
+          "室内"
+        ],
+        "presentation": [
+          "feminine"
+        ],
+        "intensity": "signature",
+        "formality": 3,
+        "garment_ids": [
+          "garment_heir_top_0099",
+          "garment_flou_skirt_0199",
+          "garment_flou_shoes_0247",
+          "garment_melt_bag_0277"
+        ],
+        "visible_slots": [
+          "top",
+          "skirt",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_heir_top_0099": "hero",
+          "garment_flou_skirt_0199": "support",
+          "garment_flou_shoes_0247": "support",
+          "garment_melt_bag_0277": "accent"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "浅色",
+          "saturation": "低饱和",
+          "harmony": "未判断",
+          "palette": [
+            "#c0b2a9",
+            "#9ca2ad",
+            "#958279",
+            "#c4b7a9"
+          ]
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/334156591f7aeaefcb58e1ab.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source_outfit_id": "outfit_melt_master_13_v1"
+        },
+        "design_intent": "用已审核不透款 g0099 替换覆盖未证实的 g0032；仅解除覆盖问题，整套仍须重新看图"
+      },
+      "record_fingerprint": "8781119cb50f35f5f4c99001738995ba4aa05097f360f4a93f36726d584b03e3",
+      "asset_sha256": "e6f44772664125f4db5a6d3305d9c90399486a5f551856523229c228ad27eb2e",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/334156591f7aeaefcb58e1ab.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_heir_top_0099",
+            "slot": "top",
+            "box": [
+              209,
+              160,
+              691,
+              620
+            ]
+          },
+          {
+            "garment_id": "garment_flou_skirt_0199",
+            "slot": "skirt",
+            "box": [
+              307,
+              644,
+              593,
+              1330
+            ]
+          },
+          {
+            "garment_id": "garment_flou_shoes_0247",
+            "slot": "shoes",
+            "box": [
+              879,
+              880,
+              1091,
+              1080
+            ]
+          },
+          {
+            "garment_id": "garment_melt_bag_0277",
+            "slot": "bag",
+            "box": [
+              898,
+              410,
+              1082,
+              730
+            ]
+          }
+        ]
+      },
+      "replacements": {
+        "garment_flou_top_0032": "garment_heir_top_0099"
+      },
+      "status": "pending_native_review",
+      "review": null
+    },
+    {
+      "source_outfit_id": "outfit_melt_master_17_v1",
+      "source_token": "o0677",
+      "source_record_fingerprint": "f292332fb1100bba2276a6a1cb56f247a123198eb107525f0852857f87122420",
+      "new_record": {
+        "id": "outfit_melt_master_17_v1__aw-repair-03",
+        "kind": "variant",
+        "parent_outfit_id": "outfit_melt_master_17",
+        "recipe_version": "aw-repair-03",
+        "title": "MELT 约会社交 17 · 替换 1",
+        "description": "MELT 人格的秋约会社交原创穿搭配方。",
+        "primary_persona": "MELT",
+        "secondary_personas": [
+          "FLOU",
+          "EASE"
+        ],
+        "persona_affinity": {
+          "MELT": 0.96,
+          "FLOU": 0.65,
+          "EASE": 0.55
+        },
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "约会社交"
+        ],
+        "season_tags": [
+          "秋"
+        ],
+        "weather_tags": [
+          "晴",
+          "室内"
+        ],
+        "presentation": [
+          "feminine"
+        ],
+        "intensity": "signature",
+        "formality": 3,
+        "garment_ids": [
+          "garment_flou_top_0103",
+          "garment_flou_skirt_0439",
+          "garment_flou_shoes_0487",
+          "garment_melt_bag_0517"
+        ],
+        "visible_slots": [
+          "top",
+          "skirt",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_flou_top_0103": "hero",
+          "garment_flou_skirt_0439": "support",
+          "garment_flou_shoes_0487": "support",
+          "garment_melt_bag_0517": "accent"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "浅色",
+          "saturation": "低饱和",
+          "harmony": "未判断",
+          "palette": [
+            "#beb1ab",
+            "#c2b0a5",
+            "#b7a296",
+            "#dabfad"
+          ]
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/0caecb59d16dbe57a460c4f5.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source_outfit_id": "outfit_melt_master_17_v1"
+        },
+        "design_intent": "用已审核不透款 g0103 替换覆盖未证实的 g0343；仅解除覆盖问题，整套仍须重新看图"
+      },
+      "record_fingerprint": "b1d53d76d9a56513671e5f0404de7908a7aedd3bb818aaf40048da5693c28bc9",
+      "asset_sha256": "98696559fc22e1e4fefbfdb470be7a8e8a6fcb4979a151cc802382ebed5b61b2",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/0caecb59d16dbe57a460c4f5.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_flou_top_0103",
+            "slot": "top",
+            "box": [
+              264,
+              160,
+              636,
+              620
+            ]
+          },
+          {
+            "garment_id": "garment_flou_skirt_0439",
+            "slot": "skirt",
+            "box": [
+              225,
+              644,
+              674,
+              1330
+            ]
+          },
+          {
+            "garment_id": "garment_flou_shoes_0487",
+            "slot": "shoes",
+            "box": [
+              892,
+              880,
+              1077,
+              1080
+            ]
+          },
+          {
+            "garment_id": "garment_melt_bag_0517",
+            "slot": "bag",
+            "box": [
+              863,
+              410,
+              1117,
+              730
+            ]
+          }
+        ]
+      },
+      "replacements": {
+        "garment_flou_top_0343": "garment_flou_top_0103"
+      },
+      "status": "pending_native_review",
+      "review": null
+    },
+    {
+      "source_outfit_id": "outfit_flou_master_01_v1",
+      "source_token": "o0736",
+      "source_record_fingerprint": "2fa48f7154322e1042eb062bd70ea5de0e3f286e7ceab51d5124c4bf881d5b73",
+      "new_record": {
+        "id": "outfit_flou_master_01_v1__aw-repair-03",
+        "kind": "variant",
+        "parent_outfit_id": "outfit_flou_master_01",
+        "recipe_version": "aw-repair-03",
+        "title": "FLOU 通勤 01 · 替换 1",
+        "description": "FLOU 人格的春通勤原创穿搭配方。",
+        "primary_persona": "FLOU",
+        "secondary_personas": [
+          "MELT",
+          "BOLT"
+        ],
+        "persona_affinity": {
+          "FLOU": 0.96,
+          "MELT": 0.65,
+          "BOLT": 0.55
+        },
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "通勤"
+        ],
+        "season_tags": [
+          "春"
+        ],
+        "weather_tags": [
+          "晴",
+          "室内"
+        ],
+        "presentation": [
+          "feminine"
+        ],
+        "intensity": "entry",
+        "formality": 4,
+        "garment_ids": [
+          "garment_flou_top_0087",
+          "garment_bolt_bottom_0170",
+          "garment_melt_shoes_0024",
+          "garment_bolt_bag_0522"
+        ],
+        "visible_slots": [
+          "top",
+          "bottom",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_flou_top_0087": "hero",
+          "garment_bolt_bottom_0170": "support",
+          "garment_melt_shoes_0024": "support",
+          "garment_bolt_bag_0522": "accent"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "浅色",
+          "saturation": "低饱和",
+          "harmony": "未判断",
+          "palette": [
+            "#c5b0a6",
+            "#d6d0c7",
+            "#bfac9c",
+            "#2e060a"
+          ]
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/1e653476da975995679d5bff.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source_outfit_id": "outfit_flou_master_01_v1"
+        },
+        "design_intent": "用已审核不透款 g0087 替换覆盖未证实的 g0567；仅解除覆盖问题，整套仍须重新看图"
+      },
+      "record_fingerprint": "2ec2c72d6b5b8a9da18f0df8c73e30e4ba7c45a476b122c988862815f4774b42",
+      "asset_sha256": "cf8c1d55d35d692ffdc6a75ef06938040a9db4a9d70ead0d7653f220c707b498",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/1e653476da975995679d5bff.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_flou_top_0087",
+            "slot": "top",
+            "box": [
+              222,
+              160,
+              677,
+              620
+            ]
+          },
+          {
+            "garment_id": "garment_bolt_bottom_0170",
+            "slot": "bottom",
+            "box": [
+              299,
+              644,
+              601,
+              1330
+            ]
+          },
+          {
+            "garment_id": "garment_melt_shoes_0024",
+            "slot": "shoes",
+            "box": [
+              857,
+              880,
+              1112,
+              1080
+            ]
+          },
+          {
+            "garment_id": "garment_bolt_bag_0522",
+            "slot": "bag",
+            "box": [
+              850,
+              446,
+              1130,
+              693
+            ]
+          }
+        ]
+      },
+      "replacements": {
+        "garment_flou_top_0567": "garment_flou_top_0087"
+      },
+      "status": "pending_native_review",
+      "review": null
+    },
+    {
+      "source_outfit_id": "outfit_flou_master_06_v1",
+      "source_token": "o0746",
+      "source_record_fingerprint": "80286440dd0e351727fd9c8f65a1851902706924c9ad923a925219713cccee09",
+      "new_record": {
+        "id": "outfit_flou_master_06_v1__aw-repair-03",
+        "kind": "variant",
+        "parent_outfit_id": "outfit_flou_master_06",
+        "recipe_version": "aw-repair-03",
+        "title": "FLOU 通勤 06 · 替换 1",
+        "description": "FLOU 人格的春通勤原创穿搭配方。",
+        "primary_persona": "FLOU",
+        "secondary_personas": [
+          "MELT",
+          "BOLT"
+        ],
+        "persona_affinity": {
+          "FLOU": 0.96,
+          "MELT": 0.65,
+          "BOLT": 0.55
+        },
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "通勤"
+        ],
+        "season_tags": [
+          "春"
+        ],
+        "weather_tags": [
+          "晴",
+          "室内"
+        ],
+        "presentation": [
+          "feminine"
+        ],
+        "intensity": "entry",
+        "formality": 4,
+        "garment_ids": [
+          "garment_flou_top_0087",
+          "garment_melt_bottom_0165",
+          "garment_flou_shoes_0263",
+          "garment_iced_bag_0290"
+        ],
+        "visible_slots": [
+          "top",
+          "bottom",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_flou_top_0087": "hero",
+          "garment_melt_bottom_0165": "support",
+          "garment_flou_shoes_0263": "support",
+          "garment_iced_bag_0290": "accent"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "浅色",
+          "saturation": "低饱和",
+          "harmony": "未判断",
+          "palette": [
+            "#c5b0a6",
+            "#dbd0c4",
+            "#6d5f58",
+            "#aab5c3"
+          ]
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/2f4284107f25ddc3261dbb7f.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source_outfit_id": "outfit_flou_master_06_v1"
+        },
+        "design_intent": "用已审核不透款 g0087 替换覆盖未证实的 g0567；仅解除覆盖问题，整套仍须重新看图"
+      },
+      "record_fingerprint": "e0c301ce17e8895ef21a216fb9b200dcbe5ef20cf6bdbfe6316663f6e6944545",
+      "asset_sha256": "255f8a4bae828596fbfd1a459e9e264833bf35e1025ff3aceb288081079389e2",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/2f4284107f25ddc3261dbb7f.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_flou_top_0087",
+            "slot": "top",
+            "box": [
+              222,
+              160,
+              677,
+              620
+            ]
+          },
+          {
+            "garment_id": "garment_melt_bottom_0165",
+            "slot": "bottom",
+            "box": [
+              278,
+              644,
+              622,
+              1330
+            ]
+          },
+          {
+            "garment_id": "garment_flou_shoes_0263",
+            "slot": "shoes",
+            "box": [
+              931,
+              880,
+              1039,
+              1080
+            ]
+          },
+          {
+            "garment_id": "garment_iced_bag_0290",
+            "slot": "bag",
+            "box": [
+              865,
+              410,
+              1114,
+              730
+            ]
+          }
+        ]
+      },
+      "replacements": {
+        "garment_flou_top_0567": "garment_flou_top_0087"
+      },
+      "status": "pending_native_review",
+      "review": null
+    },
+    {
+      "source_outfit_id": "outfit_flou_master_11_v1",
+      "source_token": "o0756",
+      "source_record_fingerprint": "ea2829d64d24aa6fed9a90d65b0fa2c4c7bf192457370d3a0f15b110436fa45f",
+      "new_record": {
+        "id": "outfit_flou_master_11_v1__aw-repair-03",
+        "kind": "variant",
+        "parent_outfit_id": "outfit_flou_master_11",
+        "recipe_version": "aw-repair-03",
+        "title": "FLOU 日常 11 · 替换 1",
+        "description": "FLOU 人格的夏日常原创穿搭配方。",
+        "primary_persona": "FLOU",
+        "secondary_personas": [
+          "MELT",
+          "BOLT"
+        ],
+        "persona_affinity": {
+          "FLOU": 0.96,
+          "MELT": 0.65,
+          "BOLT": 0.55
+        },
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "日常"
+        ],
+        "season_tags": [
+          "夏"
+        ],
+        "weather_tags": [
+          "晴",
+          "室内"
+        ],
+        "presentation": [
+          "feminine"
+        ],
+        "intensity": "entry",
+        "formality": 3,
+        "garment_ids": [
+          "garment_flou_top_0087",
+          "garment_bolt_skirt_0186",
+          "garment_melt_shoes_0024",
+          "garment_bolt_bag_0282"
+        ],
+        "visible_slots": [
+          "top",
+          "skirt",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_flou_top_0087": "hero",
+          "garment_bolt_skirt_0186": "support",
+          "garment_melt_shoes_0024": "support",
+          "garment_bolt_bag_0282": "accent"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "浅色",
+          "saturation": "低饱和",
+          "harmony": "未判断",
+          "palette": [
+            "#c5b0a6",
+            "#ded9d1",
+            "#bfac9c",
+            "#c8bfb4"
+          ]
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/b3d324e563a289ffd25519ad.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source_outfit_id": "outfit_flou_master_11_v1"
+        },
+        "design_intent": "用已审核不透款 g0087 替换覆盖未证实的 g0567；仅解除覆盖问题，整套仍须重新看图"
+      },
+      "record_fingerprint": "7a9f81e7f465eb4f6b51ae439a3981a4c7820809050f942c262e9482b80f30eb",
+      "asset_sha256": "d6054beca4de2123ec25052cd8038bb7ce765a2469c1caa470fe72bcf006dbbf",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/b3d324e563a289ffd25519ad.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_flou_top_0087",
+            "slot": "top",
+            "box": [
+              222,
+              160,
+              677,
+              620
+            ]
+          },
+          {
+            "garment_id": "garment_bolt_skirt_0186",
+            "slot": "skirt",
+            "box": [
+              216,
+              644,
+              683,
+              1330
+            ]
+          },
+          {
+            "garment_id": "garment_melt_shoes_0024",
+            "slot": "shoes",
+            "box": [
+              857,
+              880,
+              1112,
+              1080
+            ]
+          },
+          {
+            "garment_id": "garment_bolt_bag_0282",
+            "slot": "bag",
+            "box": [
+              850,
+              470,
+              1130,
+              670
+            ]
+          }
+        ]
+      },
+      "replacements": {
+        "garment_flou_top_0567": "garment_flou_top_0087"
+      },
+      "status": "pending_native_review",
+      "review": null
+    },
+    {
+      "source_outfit_id": "outfit_flou_master_17_v1",
+      "source_token": "o0766",
+      "source_record_fingerprint": "2bc5b7e4ff720379da4cda72f43153a76104a6db75bb93d134d0d6d6bdcfac48",
+      "new_record": {
+        "id": "outfit_flou_master_17_v1__aw-repair-03",
+        "kind": "variant",
+        "parent_outfit_id": "outfit_flou_master_17",
+        "recipe_version": "aw-repair-03",
+        "title": "FLOU 约会社交 17 · 替换 1",
+        "description": "FLOU 人格的秋约会社交原创穿搭配方。",
+        "primary_persona": "FLOU",
+        "secondary_personas": [
+          "MELT",
+          "BOLT"
+        ],
+        "persona_affinity": {
+          "FLOU": 0.96,
+          "MELT": 0.65,
+          "BOLT": 0.55
+        },
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "约会社交"
+        ],
+        "season_tags": [
+          "秋"
+        ],
+        "weather_tags": [
+          "晴",
+          "室内"
+        ],
+        "presentation": [
+          "feminine"
+        ],
+        "intensity": "signature",
+        "formality": 3,
+        "garment_ids": [
+          "garment_flou_top_0103",
+          "garment_flou_skirt_0031",
+          "garment_flou_shoes_0034",
+          "garment_iced_bag_0010"
+        ],
+        "visible_slots": [
+          "top",
+          "skirt",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_flou_top_0103": "hero",
+          "garment_flou_skirt_0031": "support",
+          "garment_flou_shoes_0034": "support",
+          "garment_iced_bag_0010": "accent"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "浅色",
+          "saturation": "低饱和",
+          "harmony": "未判断",
+          "palette": [
+            "#beb1ab",
+            "#bbaa9f",
+            "#c7b6a9",
+            "#adb8cf"
+          ]
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/84fab80998f80d0509785ee4.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source_outfit_id": "outfit_flou_master_17_v1"
+        },
+        "design_intent": "用已审核不透款 g0103 替换覆盖未证实的 g0343；仅解除覆盖问题，整套仍须重新看图"
+      },
+      "record_fingerprint": "ba1a78ac8c468d65eadb8b01e740731bafeddc5cf3a934bf475b402485e60a8e",
+      "asset_sha256": "8d099430fe336e3ba4619cbad85266727ea678b1ebef10b94589927d1617b579",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/84fab80998f80d0509785ee4.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_flou_top_0103",
+            "slot": "top",
+            "box": [
+              264,
+              160,
+              636,
+              620
+            ]
+          },
+          {
+            "garment_id": "garment_flou_skirt_0031",
+            "slot": "skirt",
+            "box": [
+              260,
+              644,
+              639,
+              1330
+            ]
+          },
+          {
+            "garment_id": "garment_flou_shoes_0034",
+            "slot": "shoes",
+            "box": [
+              874,
+              880,
+              1096,
+              1080
+            ]
+          },
+          {
+            "garment_id": "garment_iced_bag_0010",
+            "slot": "bag",
+            "box": [
+              888,
+              410,
+              1091,
+              730
+            ]
+          }
+        ]
+      },
+      "replacements": {
+        "garment_flou_top_0343": "garment_flou_top_0103"
+      },
+      "status": "pending_native_review",
+      "review": null
+    },
+    {
+      "source_outfit_id": "outfit_bolt_master_04_v2",
+      "source_token": "o0875",
+      "source_record_fingerprint": "c34ba40f4cc3d60becd9a52eff972eee5e569cabcdd3fd8d30197af7f89f1cbd",
+      "new_record": {
+        "id": "outfit_bolt_master_04_v2__aw-repair-03",
+        "kind": "variant",
+        "parent_outfit_id": "outfit_bolt_master_04",
+        "recipe_version": "aw-repair-03",
+        "title": "BOLT 通勤 04 · 替换 2",
+        "description": "BOLT 人格的春通勤原创穿搭配方。",
+        "primary_persona": "BOLT",
+        "secondary_personas": [
+          "FLOU",
+          "HEIR"
+        ],
+        "persona_affinity": {
+          "BOLT": 0.96,
+          "FLOU": 0.65,
+          "HEIR": 0.55
+        },
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "通勤"
+        ],
+        "season_tags": [
+          "春"
+        ],
+        "weather_tags": [
+          "晴",
+          "室内"
+        ],
+        "presentation": [
+          "feminine"
+        ],
+        "intensity": "entry",
+        "formality": 4,
+        "garment_ids": [
+          "garment_flou_top_0087",
+          "garment_flou_bottom_0183",
+          "garment_flou_shoes_0263",
+          "garment_flou_bag_0279"
+        ],
+        "visible_slots": [
+          "top",
+          "bottom",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_flou_top_0087": "hero",
+          "garment_flou_bottom_0183": "support",
+          "garment_flou_shoes_0263": "support",
+          "garment_flou_bag_0279": "accent"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "浅色",
+          "saturation": "低饱和",
+          "harmony": "未判断",
+          "palette": [
+            "#c5b0a6",
+            "#aab3bc",
+            "#6d5f58",
+            "#b09492"
+          ]
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/0f36932397781e083bc92711.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source_outfit_id": "outfit_bolt_master_04_v2"
+        },
+        "design_intent": "用已审核不透款 g0087 替换覆盖未证实的 g0567；仅解除覆盖问题，整套仍须重新看图"
+      },
+      "record_fingerprint": "2126b26e72c882d5d93f96a180936ed28a6cf68f3c7c80c05c87e046dde7f1c9",
+      "asset_sha256": "fc8db18df2349edac46a2eba4e5bfcb50aed1f6e96f045fa8f5142eb0d8c7909",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/0f36932397781e083bc92711.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_flou_top_0087",
+            "slot": "top",
+            "box": [
+              222,
+              160,
+              677,
+              620
+            ]
+          },
+          {
+            "garment_id": "garment_flou_bottom_0183",
+            "slot": "bottom",
+            "box": [
+              257,
+              644,
+              643,
+              1330
+            ]
+          },
+          {
+            "garment_id": "garment_flou_shoes_0263",
+            "slot": "shoes",
+            "box": [
+              931,
+              880,
+              1039,
+              1080
+            ]
+          },
+          {
+            "garment_id": "garment_flou_bag_0279",
+            "slot": "bag",
+            "box": [
+              893,
+              410,
+              1087,
+              730
+            ]
+          }
+        ]
+      },
+      "replacements": {
+        "garment_flou_top_0567": "garment_flou_top_0087"
+      },
+      "status": "pending_native_review",
+      "review": null
+    },
+    {
+      "source_outfit_id": "outfit_bolt_master_08_v2",
+      "source_token": "o0883",
+      "source_record_fingerprint": "f4f498800ce71d1787085ce4831cf5ea0d04e78ae1c29b88897bc0a7a10a278b",
+      "new_record": {
+        "id": "outfit_bolt_master_08_v2__aw-repair-03",
+        "kind": "variant",
+        "parent_outfit_id": "outfit_bolt_master_08",
+        "recipe_version": "aw-repair-03",
+        "title": "BOLT 日常 08 · 替换 2",
+        "description": "BOLT 人格的夏日常原创穿搭配方。",
+        "primary_persona": "BOLT",
+        "secondary_personas": [
+          "FLOU",
+          "HEIR"
+        ],
+        "persona_affinity": {
+          "BOLT": 0.96,
+          "FLOU": 0.65,
+          "HEIR": 0.55
+        },
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "日常"
+        ],
+        "season_tags": [
+          "夏"
+        ],
+        "weather_tags": [
+          "晴",
+          "室内"
+        ],
+        "presentation": [
+          "feminine"
+        ],
+        "intensity": "entry",
+        "formality": 3,
+        "garment_ids": [
+          "garment_heir_top_0099",
+          "garment_flou_bottom_0423",
+          "garment_bolt_shoes_0250",
+          "garment_flou_bag_0519"
+        ],
+        "visible_slots": [
+          "top",
+          "bottom",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_heir_top_0099": "hero",
+          "garment_flou_bottom_0423": "support",
+          "garment_bolt_shoes_0250": "support",
+          "garment_flou_bag_0519": "accent"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "浅色",
+          "saturation": "低饱和",
+          "harmony": "未判断",
+          "palette": [
+            "#c0b2a9",
+            "#baaca2",
+            "#8e7d72",
+            "#b8aca0"
+          ]
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/3f3d2b6a3c9a79ed7b26b0f8.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source_outfit_id": "outfit_bolt_master_08_v2"
+        },
+        "design_intent": "用已审核不透款 g0099 替换覆盖未证实的 g0032；仅解除覆盖问题，整套仍须重新看图"
+      },
+      "record_fingerprint": "4c01b2660cfc33e1273405c8e305f249fa4eaee488288d4063b000460767fd78",
+      "asset_sha256": "a8f55075ffe6f7f43720c02a8853b5677f9d2d61d193d39ba9632b49ed37ce8e",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/3f3d2b6a3c9a79ed7b26b0f8.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_heir_top_0099",
+            "slot": "top",
+            "box": [
+              209,
+              160,
+              691,
+              620
+            ]
+          },
+          {
+            "garment_id": "garment_flou_bottom_0423",
+            "slot": "bottom",
+            "box": [
+              217,
+              644,
+              682,
+              1330
+            ]
+          },
+          {
+            "garment_id": "garment_bolt_shoes_0250",
+            "slot": "shoes",
+            "box": [
+              893,
+              880,
+              1077,
+              1080
+            ]
+          },
+          {
+            "garment_id": "garment_flou_bag_0519",
+            "slot": "bag",
+            "box": [
+              869,
+              410,
+              1110,
+              730
+            ]
+          }
+        ]
+      },
+      "replacements": {
+        "garment_flou_top_0032": "garment_heir_top_0099"
+      },
+      "status": "pending_native_review",
+      "review": null
+    },
+    {
+      "source_outfit_id": "outfit_bolt_master_09_v2",
+      "source_token": "o0885",
+      "source_record_fingerprint": "a545061eccc8952236c0067d28b87f21ff2d6d14d6be2872bd563e3e80e4080f",
+      "new_record": {
+        "id": "outfit_bolt_master_09_v2__aw-repair-03",
+        "kind": "variant",
+        "parent_outfit_id": "outfit_bolt_master_09",
+        "recipe_version": "aw-repair-03",
+        "title": "BOLT 日常 09 · 替换 2",
+        "description": "BOLT 人格的夏日常原创穿搭配方。",
+        "primary_persona": "BOLT",
+        "secondary_personas": [
+          "FLOU",
+          "HEIR"
+        ],
+        "persona_affinity": {
+          "BOLT": 0.96,
+          "FLOU": 0.65,
+          "HEIR": 0.55
+        },
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "日常"
+        ],
+        "season_tags": [
+          "夏"
+        ],
+        "weather_tags": [
+          "晴",
+          "室内"
+        ],
+        "presentation": [
+          "feminine"
+        ],
+        "intensity": "entry",
+        "formality": 3,
+        "garment_ids": [
+          "garment_flou_top_0087",
+          "garment_flou_bottom_0167",
+          "garment_bolt_shoes_0266",
+          "garment_flou_bag_0279"
+        ],
+        "visible_slots": [
+          "top",
+          "bottom",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_flou_top_0087": "hero",
+          "garment_flou_bottom_0167": "support",
+          "garment_bolt_shoes_0266": "support",
+          "garment_flou_bag_0279": "accent"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "浅色",
+          "saturation": "低饱和",
+          "harmony": "未判断",
+          "palette": [
+            "#c5b0a6",
+            "#9ba6b0",
+            "#c5a790",
+            "#b09492"
+          ]
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/2079fd6c0e32c4804b556faa.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source_outfit_id": "outfit_bolt_master_09_v2"
+        },
+        "design_intent": "用已审核不透款 g0087 替换覆盖未证实的 g0567；仅解除覆盖问题，整套仍须重新看图"
+      },
+      "record_fingerprint": "42635d63f0540f4dd2e87cb8cefaefc8b70381020ca04ae6406c6bc3168715ef",
+      "asset_sha256": "faa568e4df1dcfc75428a21a16f0e67793b52a36f88ae13a33ee55268060b3cc",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/2079fd6c0e32c4804b556faa.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_flou_top_0087",
+            "slot": "top",
+            "box": [
+              222,
+              160,
+              677,
+              620
+            ]
+          },
+          {
+            "garment_id": "garment_flou_bottom_0167",
+            "slot": "bottom",
+            "box": [
+              299,
+              644,
+              601,
+              1330
+            ]
+          },
+          {
+            "garment_id": "garment_bolt_shoes_0266",
+            "slot": "shoes",
+            "box": [
+              878,
+              880,
+              1091,
+              1080
+            ]
+          },
+          {
+            "garment_id": "garment_flou_bag_0279",
+            "slot": "bag",
+            "box": [
+              893,
+              410,
+              1087,
+              730
+            ]
+          }
+        ]
+      },
+      "replacements": {
+        "garment_flou_top_0567": "garment_flou_top_0087"
+      },
+      "status": "pending_native_review",
+      "review": null
+    },
+    {
+      "source_outfit_id": "outfit_bolt_master_14_v2",
+      "source_token": "o0895",
+      "source_record_fingerprint": "f5fab9743dd17342a5003d8142b1935074a6f39cf24910b6ebf6b8c9adc90e1a",
+      "new_record": {
+        "id": "outfit_bolt_master_14_v2__aw-repair-03",
+        "kind": "variant",
+        "parent_outfit_id": "outfit_bolt_master_14",
+        "recipe_version": "aw-repair-03",
+        "title": "BOLT 约会社交 14 · 替换 2",
+        "description": "BOLT 人格的夏约会社交原创穿搭配方。",
+        "primary_persona": "BOLT",
+        "secondary_personas": [
+          "FLOU",
+          "HEIR"
+        ],
+        "persona_affinity": {
+          "BOLT": 0.96,
+          "FLOU": 0.65,
+          "HEIR": 0.55
+        },
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "约会社交"
+        ],
+        "season_tags": [
+          "夏"
+        ],
+        "weather_tags": [
+          "晴",
+          "室内"
+        ],
+        "presentation": [
+          "feminine"
+        ],
+        "intensity": "signature",
+        "formality": 3,
+        "garment_ids": [
+          "garment_flou_top_0087",
+          "garment_flou_skirt_0199",
+          "garment_flou_shoes_0247",
+          "garment_flou_bag_0279"
+        ],
+        "visible_slots": [
+          "top",
+          "skirt",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_flou_top_0087": "hero",
+          "garment_flou_skirt_0199": "support",
+          "garment_flou_shoes_0247": "support",
+          "garment_flou_bag_0279": "accent"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "浅色",
+          "saturation": "低饱和",
+          "harmony": "未判断",
+          "palette": [
+            "#c1afa7",
+            "#9ca2ad",
+            "#958279",
+            "#b09492"
+          ]
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/837b402bf11ac46ffa4002bd.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source_outfit_id": "outfit_bolt_master_14_v2"
+        },
+        "design_intent": "用已审核不透款 g0087 替换覆盖未证实的 g0359；仅解除覆盖问题，整套仍须重新看图"
+      },
+      "record_fingerprint": "8722ed8a6cf88445fbc816a6c651505bbe84f1d309c85a22615ab4caec4a2baa",
+      "asset_sha256": "a539863ba834379531ba38c78f850389950e61d2eefda5756518eb376ae12012",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/837b402bf11ac46ffa4002bd.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_flou_top_0087",
+            "slot": "top",
+            "box": [
+              222,
+              160,
+              677,
+              620
+            ]
+          },
+          {
+            "garment_id": "garment_flou_skirt_0199",
+            "slot": "skirt",
+            "box": [
+              307,
+              644,
+              593,
+              1330
+            ]
+          },
+          {
+            "garment_id": "garment_flou_shoes_0247",
+            "slot": "shoes",
+            "box": [
+              879,
+              880,
+              1091,
+              1080
+            ]
+          },
+          {
+            "garment_id": "garment_flou_bag_0279",
+            "slot": "bag",
+            "box": [
+              893,
+              410,
+              1087,
+              730
+            ]
+          }
+        ]
+      },
+      "replacements": {
+        "garment_flou_top_0359": "garment_flou_top_0087"
+      },
+      "status": "pending_native_review",
+      "review": null
+    },
+    {
+      "source_outfit_id": "outfit_bolt_master_22_v1",
+      "source_token": "o0903",
+      "source_record_fingerprint": "1fa47e22606db7a4566cb18668726e702e0e3a39f8b428e45b008213d38bea47",
+      "new_record": {
+        "id": "outfit_bolt_master_22_v1__aw-repair-03",
+        "kind": "variant",
+        "parent_outfit_id": "outfit_bolt_master_22",
+        "recipe_version": "aw-repair-03",
+        "title": "BOLT 旅行 22 · 替换 1",
+        "description": "BOLT 人格的秋旅行原创穿搭配方。",
+        "primary_persona": "BOLT",
+        "secondary_personas": [
+          "FLOU",
+          "HEIR"
+        ],
+        "persona_affinity": {
+          "BOLT": 0.96,
+          "FLOU": 0.65,
+          "HEIR": 0.55
+        },
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "旅行"
+        ],
+        "season_tags": [
+          "秋"
+        ],
+        "weather_tags": [
+          "晴",
+          "室内"
+        ],
+        "presentation": [
+          "neutral"
+        ],
+        "intensity": "signature",
+        "formality": 3,
+        "garment_ids": [
+          "garment_heir_top_0099",
+          "garment_bolt_bottom_0410",
+          "garment_bolt_outer_0047",
+          "garment_bolt_shoes_0266",
+          "garment_bolt_bag_0282"
+        ],
+        "visible_slots": [
+          "top",
+          "bottom",
+          "outer",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_heir_top_0099": "hero",
+          "garment_bolt_bottom_0410": "support",
+          "garment_bolt_outer_0047": "support",
+          "garment_bolt_shoes_0266": "support",
+          "garment_bolt_bag_0282": "accent"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "浅色",
+          "saturation": "低饱和",
+          "harmony": "未判断",
+          "palette": [
+            "#c0b2a9",
+            "#d5cabc",
+            "#beae9f",
+            "#c5a790",
+            "#c8bfb4"
+          ]
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/192cc8274ea0b59c90933ee2.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source_outfit_id": "outfit_bolt_master_22_v1"
+        },
+        "design_intent": "用已审核不透款 g0099 替换覆盖未证实的 g0032；仅解除覆盖问题，整套仍须重新看图"
+      },
+      "record_fingerprint": "31d9018543ba193bb01ed353edb16f4b203a65a6d2578a63c6aa3e47b882a3be",
+      "asset_sha256": "3cf0f75d46ed9fa4b918da13456ef78b48e2d53bf28f4209ab51387c36607a36",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/192cc8274ea0b59c90933ee2.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_heir_top_0099",
+            "slot": "top",
+            "box": [
+              450,
+              306,
+              800,
+              640
+            ]
+          },
+          {
+            "garment_id": "garment_bolt_bottom_0410",
+            "slot": "bottom",
+            "box": [
+              487,
+              664,
+              763,
+              1330
+            ]
+          },
+          {
+            "garment_id": "garment_bolt_outer_0047",
+            "slot": "outer",
+            "box": [
+              70,
+              160,
+              420,
+              546
+            ]
+          },
+          {
+            "garment_id": "garment_bolt_shoes_0266",
+            "slot": "shoes",
+            "box": [
+              878,
+              880,
+              1091,
+              1080
+            ]
+          },
+          {
+            "garment_id": "garment_bolt_bag_0282",
+            "slot": "bag",
+            "box": [
+              850,
+              470,
+              1130,
+              670
+            ]
+          }
+        ]
+      },
+      "replacements": {
+        "garment_flou_top_0032": "garment_heir_top_0099"
+      },
+      "status": "pending_native_review",
+      "review": null
+    },
+    {
+      "source_outfit_id": "outfit_bolt_master_23_v1",
+      "source_token": "o0904",
+      "source_record_fingerprint": "3e9ece08f569bc125309247639f170e923453bcc38dff6971cb5c5a63276e839",
+      "new_record": {
+        "id": "outfit_bolt_master_23_v1__aw-repair-03",
+        "kind": "variant",
+        "parent_outfit_id": "outfit_bolt_master_23",
+        "recipe_version": "aw-repair-03",
+        "title": "BOLT 旅行 23 · 替换 1",
+        "description": "BOLT 人格的秋旅行原创穿搭配方。",
+        "primary_persona": "BOLT",
+        "secondary_personas": [
+          "FLOU",
+          "HEIR"
+        ],
+        "persona_affinity": {
+          "BOLT": 0.96,
+          "FLOU": 0.65,
+          "HEIR": 0.55
+        },
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "旅行"
+        ],
+        "season_tags": [
+          "秋"
+        ],
+        "weather_tags": [
+          "晴",
+          "室内"
+        ],
+        "presentation": [
+          "neutral"
+        ],
+        "intensity": "signature",
+        "formality": 3,
+        "garment_ids": [
+          "garment_flou_top_0087",
+          "garment_flou_bottom_0407",
+          "garment_bolt_outer_0154",
+          "garment_flou_shoes_0263",
+          "garment_bolt_bag_0282"
+        ],
+        "visible_slots": [
+          "top",
+          "bottom",
+          "outer",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_flou_top_0087": "hero",
+          "garment_flou_bottom_0407": "support",
+          "garment_bolt_outer_0154": "support",
+          "garment_flou_shoes_0263": "support",
+          "garment_bolt_bag_0282": "accent"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "浅色",
+          "saturation": "低饱和",
+          "harmony": "未判断",
+          "palette": [
+            "#c1afa7",
+            "#aea29a",
+            "#d6d3ce",
+            "#6d5f58",
+            "#c8bfb4"
+          ]
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/cc1803f0dbc7b3d98502d7eb.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source_outfit_id": "outfit_bolt_master_23_v1"
+        },
+        "design_intent": "用已审核不透款 g0087 替换覆盖未证实的 g0359；仅解除覆盖问题，整套仍须重新看图"
+      },
+      "record_fingerprint": "1651e6a6ea97edc33ce3b4b0fd9d49fabd402a526feec5add8646326163370d8",
+      "asset_sha256": "b9d9f9872e3bc9291bdc2e435f589f128411a8d9bad960f8662d5d65e9457b18",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/cc1803f0dbc7b3d98502d7eb.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_flou_top_0087",
+            "slot": "top",
+            "box": [
+              450,
+              286,
+              800,
+              640
+            ]
+          },
+          {
+            "garment_id": "garment_flou_bottom_0407",
+            "slot": "bottom",
+            "box": [
+              450,
+              664,
+              800,
+              1206
+            ]
+          },
+          {
+            "garment_id": "garment_bolt_outer_0154",
+            "slot": "outer",
+            "box": [
+              70,
+              160,
+              420,
+              498
+            ]
+          },
+          {
+            "garment_id": "garment_flou_shoes_0263",
+            "slot": "shoes",
+            "box": [
+              931,
+              880,
+              1039,
+              1080
+            ]
+          },
+          {
+            "garment_id": "garment_bolt_bag_0282",
+            "slot": "bag",
+            "box": [
+              850,
+              470,
+              1130,
+              670
+            ]
+          }
+        ]
+      },
+      "replacements": {
+        "garment_flou_top_0359": "garment_flou_top_0087"
+      },
+      "status": "pending_native_review",
+      "review": null
+    }
+  ],
+  "production_approved": false
+}

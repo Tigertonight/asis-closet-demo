@@ -1,0 +1,214 @@
+{
+  "generated_at": "2026-09-02T17:59:31.096951+00:00",
+  "plan": "app/static/selfit/data/content-production-plan.v2.json",
+  "publish_ready": true,
+  "garments": {
+    "target": 600,
+    "approved": 600,
+    "remaining": 0,
+    "status_counts": {
+      "approved": 600
+    },
+    "approved_by_category": {
+      "accessory": 20,
+      "bag": 60,
+      "bottom": 70,
+      "dress": 60,
+      "hat": 30,
+      "outer": 80,
+      "scarf": 20,
+      "shoes": 70,
+      "skirt": 70,
+      "top": 120
+    },
+    "approved_by_persona": {
+      "BOLT": {
+        "accessory": 2,
+        "bag": 3,
+        "bottom": 2,
+        "dress": 6,
+        "hat": 2,
+        "outer": 7,
+        "shoes": 5,
+        "skirt": 4,
+        "top": 6
+      },
+      "EASE": {
+        "bag": 3,
+        "bottom": 5,
+        "dress": 2,
+        "hat": 3,
+        "outer": 5,
+        "scarf": 2,
+        "shoes": 5,
+        "skirt": 5,
+        "top": 8
+      },
+      "EDGE": {
+        "accessory": 2,
+        "bag": 3,
+        "bottom": 4,
+        "dress": 5,
+        "hat": 2,
+        "outer": 6,
+        "shoes": 5,
+        "skirt": 3,
+        "top": 7
+      },
+      "FILM": {
+        "accessory": 2,
+        "bag": 3,
+        "bottom": 2,
+        "dress": 5,
+        "hat": 2,
+        "outer": 6,
+        "shoes": 5,
+        "skirt": 4,
+        "top": 8
+      },
+      "FLOU": {
+        "bag": 3,
+        "bottom": 4,
+        "dress": 4,
+        "hat": 2,
+        "outer": 4,
+        "scarf": 3,
+        "shoes": 5,
+        "skirt": 5,
+        "top": 8
+      },
+      "HEIR": {
+        "bag": 4,
+        "bottom": 5,
+        "dress": 3,
+        "hat": 2,
+        "outer": 5,
+        "scarf": 2,
+        "shoes": 4,
+        "skirt": 5,
+        "top": 8
+      },
+      "ICED": {
+        "bag": 5,
+        "bottom": 5,
+        "dress": 3,
+        "hat": 1,
+        "outer": 4,
+        "scarf": 2,
+        "shoes": 4,
+        "skirt": 5,
+        "top": 9
+      },
+      "JADE": {
+        "accessory": 3,
+        "bag": 3,
+        "bottom": 3,
+        "dress": 4,
+        "hat": 2,
+        "outer": 6,
+        "shoes": 5,
+        "skirt": 4,
+        "top": 7
+      },
+      "LOOP": {
+        "accessory": 3,
+        "bag": 3,
+        "bottom": 4,
+        "dress": 4,
+        "hat": 2,
+        "outer": 6,
+        "shoes": 4,
+        "skirt": 4,
+        "top": 7
+      },
+      "MELT": {
+        "bag": 3,
+        "bottom": 4,
+        "dress": 2,
+        "hat": 3,
+        "outer": 5,
+        "scarf": 2,
+        "shoes": 5,
+        "skirt": 6,
+        "top": 8
+      },
+      "MUTE": {
+        "bag": 6,
+        "bottom": 6,
+        "dress": 4,
+        "outer": 5,
+        "scarf": 2,
+        "shoes": 3,
+        "skirt": 4,
+        "top": 8
+      },
+      "NEON": {
+        "accessory": 2,
+        "bag": 3,
+        "bottom": 4,
+        "dress": 4,
+        "hat": 2,
+        "outer": 5,
+        "scarf": 1,
+        "shoes": 5,
+        "skirt": 4,
+        "top": 8
+      },
+      "NOIR": {
+        "accessory": 2,
+        "bag": 5,
+        "bottom": 5,
+        "dress": 4,
+        "hat": 2,
+        "outer": 5,
+        "shoes": 4,
+        "skirt": 4,
+        "top": 6
+      },
+      "OOPS": {
+        "accessory": 2,
+        "bag": 5,
+        "bottom": 6,
+        "dress": 4,
+        "hat": 1,
+        "outer": 4,
+        "scarf": 2,
+        "shoes": 3,
+        "skirt": 4,
+        "top": 6
+      },
+      "VOID": {
+        "accessory": 2,
+        "bag": 5,
+        "bottom": 6,
+        "dress": 4,
+        "hat": 2,
+        "outer": 2,
+        "scarf": 1,
+        "shoes": 3,
+        "skirt": 4,
+        "top": 8
+      },
+      "WABI": {
+        "bag": 3,
+        "bottom": 5,
+        "dress": 2,
+        "hat": 2,
+        "outer": 5,
+        "scarf": 3,
+        "shoes": 5,
+        "skirt": 5,
+        "top": 8
+      }
+    },
+    "missing_approved_assets": []
+  },
+  "outfits": {
+    "target": 1200,
+    "master_recipes": 480,
+    "variant_recipes": 720,
+    "rendered": 1200,
+    "designer_reviewed": 1200,
+    "remaining_to_render": 0
+  }
+}

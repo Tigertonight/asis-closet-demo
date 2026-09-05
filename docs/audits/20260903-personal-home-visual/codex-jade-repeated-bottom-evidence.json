@@ -1,0 +1,145 @@
+{
+  "schema_version": 1,
+  "review_kind": "native_codex_nonblind_visual_and_catalog_crosscheck",
+  "visual_version": "codex-visual-8b868f544803e72ab7c4",
+  "source_files": [
+    "manifest.json",
+    "codex-semantic-outfits-937-960.tsv",
+    "codex-semantic-outfits-961-984.tsv"
+  ],
+  "production_change": false,
+  "finding": "20个已看图组合、10个父配方均复用同条奶白宽裤，父配方去重不等于主单品或轮廓多样性。",
+  "garment_id": "garment_jade_bottom_0172",
+  "outfit_count": 20,
+  "parent_count": 10,
+  "members": [
+    {
+      "id": "outfit_jade_master_01_v1",
+      "token": "o0957",
+      "record_fingerprint": "84a9bc106371f21239802063fceaa477f8df4448874e03902788bd044e679baa",
+      "asset_sha256": "a950aa195022ba6a004c93e9980ea1ed706ea66e9e20fad0d023f8976b73a77e"
+    },
+    {
+      "id": "outfit_jade_master_01_v2",
+      "token": "o0958",
+      "record_fingerprint": "43bc77b1502a1537b8b1e0466436df018d5ffdf559da71cc2e0edfb22f49a45e",
+      "asset_sha256": "8e3df24a3ae2f128987a8d07ce8e7e0f82c6716312ec94e64664c811b8d969de"
+    },
+    {
+      "id": "outfit_jade_master_02_v1",
+      "token": "o0959",
+      "record_fingerprint": "e822cca35d2353cd63ddb58b14efa95a8e5670d90a86d472df1756bfa8e1a990",
+      "asset_sha256": "695bb0820ea6fa5d9995943b77c6922c8d0bb0e68a1bcbdae3a7f05d40e94182"
+    },
+    {
+      "id": "outfit_jade_master_02_v2",
+      "token": "o0960",
+      "record_fingerprint": "0b47b330f8e03e15d0de11912a4223b27ef7d0b35743a8213c8af59c9502df8c",
+      "asset_sha256": "7d4a49b6de99db9415087bb63d46cdace21cbcb986226fff1ff56eb1cd08ac06"
+    },
+    {
+      "id": "outfit_jade_master_03_v1",
+      "token": "o0961",
+      "record_fingerprint": "4de970c075ae843a565c2d5a210b15b9757848b1435014cc97b0bf799e81b31c",
+      "asset_sha256": "ae448df3996fd4cc04b7b8782d0c6dd795db5f85e048e7fdd75cdb9fddc3b021"
+    },
+    {
+      "id": "outfit_jade_master_03_v2",
+      "token": "o0962",
+      "record_fingerprint": "eb9a31a7b288217de4cfeece0f8e5fa32a12b7ae6134ce9dae019f70f33af7f7",
+      "asset_sha256": "b144e2bf6af47ae76b071dace6c007ab9d56a4a09e01786717b654a397184ffc"
+    },
+    {
+      "id": "outfit_jade_master_04_v1",
+      "token": "o0963",
+      "record_fingerprint": "48f6c7a52a4ca522a44caaf7027ebf0091e9f85a33592de931f36f744f19e9fc",
+      "asset_sha256": "ae0525029fde100811fc5a5c50189a64a2b50804be0e7a0fb31bb3ed91a870f9"
+    },
+    {
+      "id": "outfit_jade_master_04_v2",
+      "token": "o0964",
+      "record_fingerprint": "6f2818c32440819d7d735a877102be6b61b567d6fad6e27de591353e9dc473b3",
+      "asset_sha256": "f06305bc46cbaa0b4cc68be9232478607b7f5ab08404edeba9c3f50bd135c58a"
+    },
+    {
+      "id": "outfit_jade_master_05_v1",
+      "token": "o0965",
+      "record_fingerprint": "9abc0e59adcdb937c0ceb36feec7bb80663be8460577adf60dc5b074d3569596",
+      "asset_sha256": "73fcc9c51e36dafc697e0d9a1303e9836f5c6d5d38423e88d02cd2af971d759e"
+    },
+    {
+      "id": "outfit_jade_master_05_v2",
+      "token": "o0966",
+      "record_fingerprint": "278eb41444df7621ec55df67e4c0d3f46e2e8605dfa9391270c9ae392d2307fb",
+      "asset_sha256": "c261bf4e6bb6ad86a137ec5972a7bc5389f04196fcffa6334c6638cfc7aa1767"
+    },
+    {
+      "id": "outfit_jade_master_06_v1",
+      "token": "o0967",
+      "record_fingerprint": "99db541170be785e697a59fde25cb53d42847ebefb428eee169dc161d1127c47",
+      "asset_sha256": "f727d4920b9fa37f055a9d84c768a4bff3b1b8763171bdf5feabe309affecccb"
+    },
+    {
+      "id": "outfit_jade_master_06_v2",
+      "token": "o0968",
+      "record_fingerprint": "1d0e39a8f59b8a20199889cee1c2fe4623ed85eb62d78dd2243f086b279e3a23",
+      "asset_sha256": "bc0578a45e7a303b46b570c005231b27e85fb2db265f883978b844454af06b74"
+    },
+    {
+      "id": "outfit_jade_master_07_v1",
+      "token": "o0969",
+      "record_fingerprint": "2271aaefaf7bf24d6b41c903938989ad803b7ea5881686caf498f019480b96d7",
+      "asset_sha256": "b531f6de69a0e27c6b48d1ff7cc027b283eec932d9eccba0fe037d712d87bb43"
+    },
+    {
+      "id": "outfit_jade_master_07_v2",
+      "token": "o0970",
+      "record_fingerprint": "eee895ccc34245aab252d6a9e53ac267bac59176020ac710e275b40e8a0ae08a",
+      "asset_sha256": "7084e6ce66a4bc152f80f5c2dc6a47086d49c4b38aa06cd49d13ff02d3b9393a"
+    },
+    {
+      "id": "outfit_jade_master_08_v1",
+      "token": "o0971",
+      "record_fingerprint": "4341a889cd644a412c8afb2f48b0471061b4a1263398715efaab74487c9ce8d1",
+      "asset_sha256": "e375df6aa2a0d7e59910bf9981ef838ee9d9f197d3a81221781bb9270852f82a"
+    },
+    {
+      "id": "outfit_jade_master_08_v2",
+      "token": "o0972",
+      "record_fingerprint": "8157e842170a6af62048ce225b8a696186fbf16c133ab96dd6364b88eefae62f",
+      "asset_sha256": "d1c6a993f6e61881c0177849aa0506947d36c2df3886772f0d19021cec6de692"
+    },
+    {
+      "id": "outfit_jade_master_09_v1",
+      "token": "o0973",
+      "record_fingerprint": "36f991ac9c84c29ac095ee29d9fbbdd142d564badd4c98cf7ce90d26f10cebeb",
+      "asset_sha256": "6e52a797f8cd035a17dcfe527d8b6cd4b0b5ce4d7b7dbe1be23e854cd280def2"
+    },
+    {
+      "id": "outfit_jade_master_09_v2",
+      "token": "o0974",
+      "record_fingerprint": "51fdd75ee6b28c86d16359511eb1754c1a45180eed85c9eb6984502a89180d61",
+      "asset_sha256": "c827ac0c27dbf2238164d04c67689c63c8c8765cf587c170bf378e265314c113"
+    },
+    {
+      "id": "outfit_jade_master_10_v1",
+      "token": "o0975",
+      "record_fingerprint": "2ea8757094e6bf64004573b13f6259a405b5a1fa14da49ff6c5885b425561e58",
+      "asset_sha256": "358302fe3a13148793c82a816d0c4c46406302b39f553d8546be8fdfc029ae5c"
+    },
+    {
+      "id": "outfit_jade_master_10_v2",
+      "token": "o0976",
+      "record_fingerprint": "e5116e581868321b2fe262cc6b8ebe795d77d1162ad4b57aa4df8d63dbbd0853",
+      "asset_sha256": "88049ed0045d7c74c9c8628637374fca0f40ee556d5cee94744f6044f928baa2"
+    }
+  ],
+  "visual_evidence": [
+    "主下装均为奶白普通高腰宽裤，未见不同长度、裤量、细部或色系。",
+    "多数版本仅变化普通素衫、无袖衫、短袖及鞋包；仅个别盘扣或竹纹上衣有明确JADE主衣证据。",
+    "以上属于同一主单品重复，不需要等候phash相似判断；不能算成20个不同下装家族。"
+  ],
+  "priority": "high",
+  "recommendation": "先重组不同下装长度、松量及结构，并使真实人格证据进入主衣。保留已有连续10套同主单品最多2次约束，不放宽上限补足页数。",
+  "caveat": "仅对列出的20套作直接证据声明，未声称全人格供给审计已完成。"
+}

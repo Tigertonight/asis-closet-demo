@@ -1,0 +1,193 @@
+{
+  "schema_version": 1,
+  "batch_id": "aw-generated-garments-04",
+  "prompt_version": "selfit-aw-autumn-exact-gap-v1",
+  "status": "internal_candidate",
+  "production_approved": false,
+  "generation": [
+    {
+      "garment_id": "garment_aw_autumn02_outer_film_red_01",
+      "token": "n0017",
+      "source_output": "/Users/yuanzexiang/.codex/generated_images/01a056c3-ad43-77d1-aed3-35866995a6d6/exec-9067e92c-81ee-412f-847d-ef290530e41d.png",
+      "raw_path": "raw/autumn-jacket-bright-film-red-raw-v1.png",
+      "prepared_path": "prepared/autumn-jacket-bright-film-red-v1.png",
+      "qa_path": "qa/autumn-jacket-bright-film-red-v1.json",
+      "final_prompt": "Create a vivid cherry-red cropped corduroy jacket with late-1970s wide pointed collar, shaped waist, clean patch pockets and long sleeves. Photorealistic premium fashion e-commerce product cutout, exactly one original unbranded garment, front-facing and naturally shaped as if invisibly supported, genuinely transparent alpha background, centered square canvas, complete silhouette with 12% clear padding on every side. No person, mannequin, hanger, stand, accessories, text, label, logo, watermark, floor shadow, white halo, duplicate item or clipped edge.",
+      "target_conditions": [
+        "FILM×bright×autumn"
+      ]
+    }
+  ],
+  "garments": [
+    {
+      "id": "garment_aw_autumn02_outer_film_red_01",
+      "category": "outer",
+      "subcategory": "樱桃红七十年代灯芯绒短外套",
+      "silhouette": [
+        "cropped_1970s",
+        "defined_waist",
+        "wide_point_collar"
+      ],
+      "fit": "合体",
+      "materials": [],
+      "details": [
+        "original_gap_fill",
+        "bright",
+        "visually_reviewed_cutout"
+      ],
+      "season_tags": [
+        "秋",
+        "冬"
+      ],
+      "scene_tags": [
+        "日常",
+        "通勤",
+        "旅行"
+      ],
+      "weather_tags": [],
+      "presentation": [
+        "feminine",
+        "neutral"
+      ],
+      "layer_role": "outer",
+      "tryon_slot": "outer",
+      "persona_affinity": {
+        "FILM": 0.96,
+        "BOLT": 0.88,
+        "LOOP": 0.8,
+        "HEIR": 0.72
+      },
+      "color": {
+        "temperature": "未判断",
+        "lightness": "中等",
+        "saturation": "高饱和",
+        "harmony": "未判断",
+        "palette": [
+          "#aa020d",
+          "#ba0c17",
+          "#880107",
+          "#730004",
+          "#8c090f"
+        ]
+      },
+      "assets": {
+        "image_url": "/static/selfit/assets/content_v2_drafts/aw-autumn-02/garments/autumn-jacket-bright-film-red-v1.png",
+        "source_url": "",
+        "width": 1200,
+        "height": 1200,
+        "alpha_verified": true,
+        "rights_status": "owned"
+      },
+      "production": {
+        "source_kind": "generated_original",
+        "generation_job_id": "aw-generated-garments-04-n0017",
+        "prompt_version": "selfit-aw-autumn-exact-gap-v1",
+        "reference_ids": [],
+        "qa_status": "approved",
+        "phash": "4cdcc4e4e4687010-9e060f"
+      },
+      "annotation": {
+        "status": "designer_reviewed",
+        "source": "designer",
+        "confidence": 0.92,
+        "review_notes": [
+          "Cutout and visible silhouette reviewed in current Codex session; outfit use remains draft."
+        ]
+      },
+      "color_evidence": {
+        "source": "opaque_pixel_quantization_v1",
+        "status": "measured_not_semantic_review",
+        "asset_sha256": "c92e77a0716b873b898f6c514343fddfbd7512e5866fea5ad3a6b9931b1828e9",
+        "swatches": [
+          {
+            "hex": "#aa020d",
+            "weight": 0.3984,
+            "family": "红"
+          },
+          {
+            "hex": "#ba0c17",
+            "weight": 0.2229,
+            "family": "红"
+          },
+          {
+            "hex": "#880107",
+            "weight": 0.1586,
+            "family": "红"
+          },
+          {
+            "hex": "#730004",
+            "weight": 0.127,
+            "family": "红"
+          },
+          {
+            "hex": "#8c090f",
+            "weight": 0.0931,
+            "family": "红"
+          }
+        ],
+        "palette_names": [
+          "红"
+        ],
+        "color": {
+          "temperature": "未判断",
+          "lightness": "中等",
+          "saturation": "高饱和",
+          "harmony": "未判断",
+          "palette": [
+            "#aa020d",
+            "#ba0c17",
+            "#880107",
+            "#730004",
+            "#8c090f"
+          ]
+        },
+        "limitations": "渲染光照会影响色值；不据此推断面料成分、真实冷暖或人体适配。"
+      }
+    }
+  ],
+  "visual": {
+    "garment_aw_autumn02_outer_film_red_01": {
+      "token": "n0017",
+      "status": "ai_candidate",
+      "record_fingerprint": "4cc0f0cae482d0e852153a9e6e4387b808a73f158edcfc53d4e06d74348d2826",
+      "asset_sha256": "c92e77a0716b873b898f6c514343fddfbd7512e5866fea5ad3a6b9931b1828e9",
+      "image_url": "/static/selfit/assets/content_v2_drafts/aw-autumn-02/garments/autumn-jacket-bright-film-red-v1.png",
+      "source_kind": "codex_visual_review",
+      "evidence": "樱桃红灯芯绒短外套以七十年代宽尖领、收腰和贴袋比例形成可辨识复古剪裁，未依赖做旧或配件。",
+      "observations": {
+        "category": "outer",
+        "subcategory": "1970s_corduroy_cropped_jacket",
+        "neckline": "wide_point_collar",
+        "sleeve": "long",
+        "length": "hip",
+        "volume": "fitted",
+        "construction": "button_front_patch_pockets_princess_seams",
+        "pattern": "solid",
+        "decoration": "low",
+        "material_appearance": "corduroy_like",
+        "main_colors": [
+          "vivid_cherry_red"
+        ],
+        "visual_personas": [
+          "film",
+          "bolt",
+          "loop",
+          "heir"
+        ],
+        "usage_limits": null
+      },
+      "confidence": 0.9,
+      "model": "current_codex_session",
+      "prompt_version": "aw-generated-garment-review-v1",
+      "review_level": "individual_full_resolution_judgment",
+      "review_complete": true,
+      "confidence_basis": "Non-calibrated AI visual judgment; material appearance is visual only and warmth is not claimed."
+    }
+  },
+  "limitations": [
+    "AI visual review is not independent blind review.",
+    "Dense or wool-like appearance does not prove warmth, fiber, waterproofing or comfort.",
+    "No garment is in the published pool."
+  ],
+  "version": "aw-generated-garments-2111affcabaa080373a5"
+}

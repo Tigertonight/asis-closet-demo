@@ -1,0 +1,761 @@
+{
+  "schema_version": 1,
+  "batch_id": "aw-winter-05",
+  "source_visual_version": "codex-visual-16b18cdcdca36dbc306a",
+  "status": "designer_targets_pending_whole_image_review",
+  "new_garments": [],
+  "recipes": [
+    {
+      "persona": "BOLT",
+      "palette": "earth",
+      "season": "winter",
+      "structure": "pants",
+      "hero": "g0394",
+      "items": [
+        "g0394",
+        "g0108",
+        "g0003",
+        "g0265",
+        "g0270"
+      ],
+      "expression": "entry",
+      "intent": "BOLT × earth 冬季日常 pants；使用独立外层主衣、封闭鞋履和低竞争支撑款，待整图复核。"
+    },
+    {
+      "persona": "BOLT",
+      "palette": "earth",
+      "season": "winter",
+      "structure": "skirt",
+      "hero": "g0570",
+      "items": [
+        "g0570",
+        "g0337",
+        "g0207",
+        "g0254",
+        "g0270"
+      ],
+      "expression": "entry",
+      "intent": "BOLT × earth 冬季日常 skirt；使用独立外层主衣、封闭鞋履和低竞争支撑款，待整图复核。"
+    },
+    {
+      "persona": "BOLT",
+      "palette": "earth",
+      "season": "winter",
+      "structure": "dress",
+      "hero": "g0378",
+      "items": [
+        "g0378",
+        "g0222",
+        "g0069",
+        "g0070"
+      ],
+      "expression": "entry",
+      "intent": "BOLT × earth 冬季日常 dress；使用独立外层主衣、封闭鞋履和低竞争支撑款，待整图复核。"
+    },
+    {
+      "persona": "BOLT",
+      "palette": "pastel",
+      "season": "winter",
+      "structure": "pants",
+      "hero": "g0394",
+      "items": [
+        "g0394",
+        "g0108",
+        "g0003",
+        "g0265",
+        "g0270"
+      ],
+      "expression": "entry",
+      "intent": "BOLT × pastel 冬季日常 pants；使用独立外层主衣、封闭鞋履和低竞争支撑款，待整图复核。"
+    },
+    {
+      "persona": "BOLT",
+      "palette": "pastel",
+      "season": "winter",
+      "structure": "skirt",
+      "hero": "g0570",
+      "items": [
+        "g0570",
+        "g0337",
+        "g0207",
+        "g0254",
+        "g0270"
+      ],
+      "expression": "entry",
+      "intent": "BOLT × pastel 冬季日常 skirt；使用独立外层主衣、封闭鞋履和低竞争支撑款，待整图复核。"
+    },
+    {
+      "persona": "BOLT",
+      "palette": "pastel",
+      "season": "winter",
+      "structure": "dress",
+      "hero": "g0373",
+      "items": [
+        "g0373",
+        "g0222",
+        "g0069",
+        "g0070"
+      ],
+      "expression": "entry",
+      "intent": "BOLT × pastel 冬季日常 dress；使用独立外层主衣、封闭鞋履和低竞争支撑款，待整图复核。"
+    },
+    {
+      "persona": "EDGE",
+      "palette": "earth",
+      "season": "winter",
+      "structure": "pants",
+      "hero": "g0368",
+      "items": [
+        "g0368",
+        "g0350",
+        "g0398",
+        "g0043",
+        "g0526"
+      ],
+      "expression": "entry",
+      "intent": "EDGE × earth 冬季日常 pants；使用独立外层主衣、封闭鞋履和低竞争支撑款，待整图复核。"
+    },
+    {
+      "persona": "EDGE",
+      "palette": "earth",
+      "season": "winter",
+      "structure": "skirt",
+      "hero": "g0390",
+      "items": [
+        "g0390",
+        "g0337",
+        "g0429",
+        "g0265",
+        "g0513"
+      ],
+      "expression": "entry",
+      "intent": "EDGE × earth 冬季日常 skirt；使用独立外层主衣、封闭鞋履和低竞争支撑款，待整图复核。"
+    },
+    {
+      "persona": "EDGE",
+      "palette": "earth",
+      "season": "winter",
+      "structure": "dress",
+      "hero": "g0051",
+      "items": [
+        "g0051",
+        "g0462",
+        "g0265",
+        "g0513"
+      ],
+      "expression": "entry",
+      "intent": "EDGE × earth 冬季日常 dress；使用独立外层主衣、封闭鞋履和低竞争支撑款，待整图复核。"
+    },
+    {
+      "persona": "EDGE",
+      "palette": "pastel",
+      "season": "winter",
+      "structure": "pants",
+      "hero": "g0384",
+      "items": [
+        "g0384",
+        "g0350",
+        "g0398",
+        "g0043",
+        "g0526"
+      ],
+      "expression": "entry",
+      "intent": "EDGE × pastel 冬季日常 pants；使用独立外层主衣、封闭鞋履和低竞争支撑款，待整图复核。"
+    },
+    {
+      "persona": "EDGE",
+      "palette": "pastel",
+      "season": "winter",
+      "structure": "skirt",
+      "hero": "g0569",
+      "items": [
+        "g0569",
+        "g0337",
+        "g0429",
+        "g0265",
+        "g0513"
+      ],
+      "expression": "entry",
+      "intent": "EDGE × pastel 冬季日常 skirt；使用独立外层主衣、封闭鞋履和低竞争支撑款，待整图复核。"
+    },
+    {
+      "persona": "EDGE",
+      "palette": "pastel",
+      "season": "winter",
+      "structure": "dress",
+      "hero": "g0377",
+      "items": [
+        "g0377",
+        "g0462",
+        "g0265",
+        "g0513"
+      ],
+      "expression": "entry",
+      "intent": "EDGE × pastel 冬季日常 dress；使用独立外层主衣、封闭鞋履和低竞争支撑款，待整图复核。"
+    },
+    {
+      "persona": "ICED",
+      "palette": "earth",
+      "season": "winter",
+      "structure": "pants",
+      "hero": "g0157",
+      "items": [
+        "g0157",
+        "g0365",
+        "g0172",
+        "g0265",
+        "g0513"
+      ],
+      "expression": "entry",
+      "intent": "ICED × earth 冬季日常 pants；使用独立外层主衣、封闭鞋履和低竞争支撑款，待整图复核。"
+    },
+    {
+      "persona": "ICED",
+      "palette": "earth",
+      "season": "winter",
+      "structure": "skirt",
+      "hero": "g0134",
+      "items": [
+        "g0134",
+        "g0337",
+        "g0206",
+        "g0258",
+        "g0289"
+      ],
+      "expression": "entry",
+      "intent": "ICED × earth 冬季日常 skirt；使用独立外层主衣、封闭鞋履和低竞争支撑款，待整图复核。"
+    },
+    {
+      "persona": "ICED",
+      "palette": "earth",
+      "season": "winter",
+      "structure": "dress",
+      "hero": "g0131",
+      "items": [
+        "g0131",
+        "g0234",
+        "g0265",
+        "g0513"
+      ],
+      "expression": "entry",
+      "intent": "ICED × earth 冬季日常 dress；使用独立外层主衣、封闭鞋履和低竞争支撑款，待整图复核。"
+    },
+    {
+      "persona": "NEON",
+      "palette": "earth",
+      "season": "winter",
+      "structure": "pants",
+      "hero": "g0368",
+      "items": [
+        "g0368",
+        "g0108",
+        "g0003",
+        "g0043",
+        "g0070"
+      ],
+      "expression": "entry",
+      "intent": "NEON × earth 冬季日常 pants；使用独立外层主衣、封闭鞋履和低竞争支撑款，待整图复核。"
+    },
+    {
+      "persona": "NEON",
+      "palette": "earth",
+      "season": "winter",
+      "structure": "skirt",
+      "hero": "g0392",
+      "items": [
+        "g0392",
+        "g0337",
+        "g0188",
+        "g0254",
+        "g0513"
+      ],
+      "expression": "entry",
+      "intent": "NEON × earth 冬季日常 skirt；使用独立外层主衣、封闭鞋履和低竞争支撑款，待整图复核。"
+    },
+    {
+      "persona": "NEON",
+      "palette": "earth",
+      "season": "winter",
+      "structure": "dress",
+      "hero": "g0051",
+      "items": [
+        "g0051",
+        "g0222",
+        "g0265",
+        "g0513"
+      ],
+      "expression": "entry",
+      "intent": "NEON × earth 冬季日常 dress；使用独立外层主衣、封闭鞋履和低竞争支撑款，待整图复核。"
+    },
+    {
+      "persona": "NEON",
+      "palette": "ocean",
+      "season": "winter",
+      "structure": "pants",
+      "hero": "g0376",
+      "items": [
+        "g0376",
+        "g0108",
+        "g0003",
+        "g0043",
+        "g0070"
+      ],
+      "expression": "entry",
+      "intent": "NEON × ocean 冬季日常 pants；使用独立外层主衣、封闭鞋履和低竞争支撑款，待整图复核。"
+    },
+    {
+      "persona": "NEON",
+      "palette": "ocean",
+      "season": "winter",
+      "structure": "skirt",
+      "hero": "g0392",
+      "items": [
+        "g0392",
+        "g0337",
+        "g0188",
+        "g0254",
+        "g0513"
+      ],
+      "expression": "entry",
+      "intent": "NEON × ocean 冬季日常 skirt；使用独立外层主衣、封闭鞋履和低竞争支撑款，待整图复核。"
+    },
+    {
+      "persona": "NEON",
+      "palette": "ocean",
+      "season": "winter",
+      "structure": "dress",
+      "hero": "g0384",
+      "items": [
+        "g0384",
+        "g0222",
+        "g0265",
+        "g0513"
+      ],
+      "expression": "entry",
+      "intent": "NEON × ocean 冬季日常 dress；使用独立外层主衣、封闭鞋履和低竞争支撑款，待整图复核。"
+    },
+    {
+      "persona": "NEON",
+      "palette": "pastel",
+      "season": "winter",
+      "structure": "pants",
+      "hero": "g0376",
+      "items": [
+        "g0376",
+        "g0108",
+        "g0003",
+        "g0043",
+        "g0070"
+      ],
+      "expression": "entry",
+      "intent": "NEON × pastel 冬季日常 pants；使用独立外层主衣、封闭鞋履和低竞争支撑款，待整图复核。"
+    },
+    {
+      "persona": "NEON",
+      "palette": "pastel",
+      "season": "winter",
+      "structure": "skirt",
+      "hero": "g0384",
+      "items": [
+        "g0384",
+        "g0337",
+        "g0188",
+        "g0254",
+        "g0513"
+      ],
+      "expression": "entry",
+      "intent": "NEON × pastel 冬季日常 skirt；使用独立外层主衣、封闭鞋履和低竞争支撑款，待整图复核。"
+    },
+    {
+      "persona": "NEON",
+      "palette": "pastel",
+      "season": "winter",
+      "structure": "dress",
+      "hero": "g0569",
+      "items": [
+        "g0569",
+        "g0222",
+        "g0265",
+        "g0513"
+      ],
+      "expression": "entry",
+      "intent": "NEON × pastel 冬季日常 dress；使用独立外层主衣、封闭鞋履和低竞争支撑款，待整图复核。"
+    },
+    {
+      "persona": "NOIR",
+      "palette": "earth",
+      "season": "winter",
+      "structure": "pants",
+      "hero": "g0157",
+      "items": [
+        "g0157",
+        "g0337",
+        "g0068",
+        "g0069",
+        "g0070"
+      ],
+      "expression": "entry",
+      "intent": "NOIR × earth 冬季日常 pants；使用独立外层主衣、封闭鞋履和低竞争支撑款，待整图复核。"
+    },
+    {
+      "persona": "NOIR",
+      "palette": "earth",
+      "season": "winter",
+      "structure": "skirt",
+      "hero": "g0131",
+      "items": [
+        "g0131",
+        "g0350",
+        "g0446",
+        "g0069",
+        "g0070"
+      ],
+      "expression": "entry",
+      "intent": "NOIR × earth 冬季日常 skirt；使用独立外层主衣、封闭鞋履和低竞争支撑款，待整图复核。"
+    },
+    {
+      "persona": "NOIR",
+      "palette": "earth",
+      "season": "winter",
+      "structure": "dress",
+      "hero": "g0395",
+      "items": [
+        "g0395",
+        "g0462",
+        "g0069",
+        "g0070"
+      ],
+      "expression": "entry",
+      "intent": "NOIR × earth 冬季日常 dress；使用独立外层主衣、封闭鞋履和低竞争支撑款，待整图复核。"
+    },
+    {
+      "persona": "NOIR",
+      "palette": "pastel",
+      "season": "winter",
+      "structure": "pants",
+      "hero": "g0133",
+      "items": [
+        "g0133",
+        "g0337",
+        "g0068",
+        "g0069",
+        "g0070"
+      ],
+      "expression": "entry",
+      "intent": "NOIR × pastel 冬季日常 pants；使用独立外层主衣、封闭鞋履和低竞争支撑款，待整图复核。"
+    },
+    {
+      "persona": "NOIR",
+      "palette": "pastel",
+      "season": "winter",
+      "structure": "skirt",
+      "hero": "g0140",
+      "items": [
+        "g0140",
+        "g0350",
+        "g0446",
+        "g0069",
+        "g0070"
+      ],
+      "expression": "entry",
+      "intent": "NOIR × pastel 冬季日常 skirt；使用独立外层主衣、封闭鞋履和低竞争支撑款，待整图复核。"
+    },
+    {
+      "persona": "NOIR",
+      "palette": "pastel",
+      "season": "winter",
+      "structure": "dress",
+      "hero": "g0156",
+      "items": [
+        "g0156",
+        "g0462",
+        "g0069",
+        "g0070"
+      ],
+      "expression": "entry",
+      "intent": "NOIR × pastel 冬季日常 dress；使用独立外层主衣、封闭鞋履和低竞争支撑款，待整图复核。"
+    },
+    {
+      "persona": "OOPS",
+      "palette": "earth",
+      "season": "winter",
+      "structure": "pants",
+      "hero": "g0368",
+      "items": [
+        "g0368",
+        "g0096",
+        "g0398",
+        "g0505",
+        "g0526"
+      ],
+      "expression": "entry",
+      "intent": "OOPS × earth 冬季日常 pants；使用独立外层主衣、封闭鞋履和低竞争支撑款，待整图复核。"
+    },
+    {
+      "persona": "OOPS",
+      "palette": "earth",
+      "season": "winter",
+      "structure": "skirt",
+      "hero": "g0390",
+      "items": [
+        "g0390",
+        "g0337",
+        "g0188",
+        "g0505",
+        "g0513"
+      ],
+      "expression": "entry",
+      "intent": "OOPS × earth 冬季日常 skirt；使用独立外层主衣、封闭鞋履和低竞争支撑款，待整图复核。"
+    },
+    {
+      "persona": "OOPS",
+      "palette": "earth",
+      "season": "winter",
+      "structure": "dress",
+      "hero": "g0395",
+      "items": [
+        "g0395",
+        "g0222",
+        "g0505",
+        "g0513"
+      ],
+      "expression": "entry",
+      "intent": "OOPS × earth 冬季日常 dress；使用独立外层主衣、封闭鞋履和低竞争支撑款，待整图复核。"
+    },
+    {
+      "persona": "OOPS",
+      "palette": "ocean",
+      "season": "winter",
+      "structure": "pants",
+      "hero": "g0376",
+      "items": [
+        "g0376",
+        "g0096",
+        "g0398",
+        "g0505",
+        "g0526"
+      ],
+      "expression": "entry",
+      "intent": "OOPS × ocean 冬季日常 pants；使用独立外层主衣、封闭鞋履和低竞争支撑款，待整图复核。"
+    },
+    {
+      "persona": "OOPS",
+      "palette": "ocean",
+      "season": "winter",
+      "structure": "skirt",
+      "hero": "g0392",
+      "items": [
+        "g0392",
+        "g0337",
+        "g0188",
+        "g0505",
+        "g0513"
+      ],
+      "expression": "entry",
+      "intent": "OOPS × ocean 冬季日常 skirt；使用独立外层主衣、封闭鞋履和低竞争支撑款，待整图复核。"
+    },
+    {
+      "persona": "OOPS",
+      "palette": "ocean",
+      "season": "winter",
+      "structure": "dress",
+      "hero": "g0384",
+      "items": [
+        "g0384",
+        "g0222",
+        "g0505",
+        "g0513"
+      ],
+      "expression": "entry",
+      "intent": "OOPS × ocean 冬季日常 dress；使用独立外层主衣、封闭鞋履和低竞争支撑款，待整图复核。"
+    },
+    {
+      "persona": "OOPS",
+      "palette": "pastel",
+      "season": "winter",
+      "structure": "pants",
+      "hero": "g0384",
+      "items": [
+        "g0384",
+        "g0096",
+        "g0398",
+        "g0505",
+        "g0526"
+      ],
+      "expression": "entry",
+      "intent": "OOPS × pastel 冬季日常 pants；使用独立外层主衣、封闭鞋履和低竞争支撑款，待整图复核。"
+    },
+    {
+      "persona": "OOPS",
+      "palette": "pastel",
+      "season": "winter",
+      "structure": "skirt",
+      "hero": "g0569",
+      "items": [
+        "g0569",
+        "g0337",
+        "g0188",
+        "g0505",
+        "g0513"
+      ],
+      "expression": "entry",
+      "intent": "OOPS × pastel 冬季日常 skirt；使用独立外层主衣、封闭鞋履和低竞争支撑款，待整图复核。"
+    },
+    {
+      "persona": "OOPS",
+      "palette": "pastel",
+      "season": "winter",
+      "structure": "dress",
+      "hero": "g0377",
+      "items": [
+        "g0377",
+        "g0222",
+        "g0505",
+        "g0513"
+      ],
+      "expression": "entry",
+      "intent": "OOPS × pastel 冬季日常 dress；使用独立外层主衣、封闭鞋履和低竞争支撑款，待整图复核。"
+    },
+    {
+      "persona": "VOID",
+      "palette": "earth",
+      "season": "winter",
+      "structure": "pants",
+      "hero": "g0374",
+      "items": [
+        "g0374",
+        "g0337",
+        "g0415",
+        "g0591",
+        "g0526"
+      ],
+      "expression": "entry",
+      "intent": "VOID × earth 冬季日常 pants；使用独立外层主衣、封闭鞋履和低竞争支撑款，待整图复核。"
+    },
+    {
+      "persona": "VOID",
+      "palette": "earth",
+      "season": "winter",
+      "structure": "skirt",
+      "hero": "g0390",
+      "items": [
+        "g0390",
+        "g0337",
+        "g0449",
+        "g0591",
+        "g0526"
+      ],
+      "expression": "entry",
+      "intent": "VOID × earth 冬季日常 skirt；使用独立外层主衣、封闭鞋履和低竞争支撑款，待整图复核。"
+    },
+    {
+      "persona": "VOID",
+      "palette": "earth",
+      "season": "winter",
+      "structure": "dress",
+      "hero": "g0395",
+      "items": [
+        "g0395",
+        "g0222",
+        "g0591",
+        "g0526"
+      ],
+      "expression": "entry",
+      "intent": "VOID × earth 冬季日常 dress；使用独立外层主衣、封闭鞋履和低竞争支撑款，待整图复核。"
+    },
+    {
+      "persona": "VOID",
+      "palette": "ocean",
+      "season": "winter",
+      "structure": "pants",
+      "hero": "g0383",
+      "items": [
+        "g0383",
+        "g0337",
+        "g0415",
+        "g0591",
+        "g0526"
+      ],
+      "expression": "entry",
+      "intent": "VOID × ocean 冬季日常 pants；使用独立外层主衣、封闭鞋履和低竞争支撑款，待整图复核。"
+    },
+    {
+      "persona": "VOID",
+      "palette": "ocean",
+      "season": "winter",
+      "structure": "skirt",
+      "hero": "g0384",
+      "items": [
+        "g0384",
+        "g0337",
+        "g0449",
+        "g0591",
+        "g0526"
+      ],
+      "expression": "entry",
+      "intent": "VOID × ocean 冬季日常 skirt；使用独立外层主衣、封闭鞋履和低竞争支撑款，待整图复核。"
+    },
+    {
+      "persona": "VOID",
+      "palette": "ocean",
+      "season": "winter",
+      "structure": "dress",
+      "hero": "g0152",
+      "items": [
+        "g0152",
+        "g0222",
+        "g0591",
+        "g0526"
+      ],
+      "expression": "entry",
+      "intent": "VOID × ocean 冬季日常 dress；使用独立外层主衣、封闭鞋履和低竞争支撑款，待整图复核。"
+    },
+    {
+      "persona": "WABI",
+      "palette": "ocean",
+      "season": "winter",
+      "structure": "pants",
+      "hero": "g0051",
+      "items": [
+        "g0051",
+        "g0337",
+        "g0415",
+        "g0591",
+        "g0284"
+      ],
+      "expression": "entry",
+      "intent": "WABI × ocean 冬季日常 pants；使用独立外层主衣、封闭鞋履和低竞争支撑款，待整图复核。"
+    },
+    {
+      "persona": "WABI",
+      "palette": "ocean",
+      "season": "winter",
+      "structure": "skirt",
+      "hero": "g0383",
+      "items": [
+        "g0383",
+        "g0337",
+        "g0447",
+        "g0591",
+        "g0284"
+      ],
+      "expression": "entry",
+      "intent": "WABI × ocean 冬季日常 skirt；使用独立外层主衣、封闭鞋履和低竞争支撑款，待整图复核。"
+    },
+    {
+      "persona": "WABI",
+      "palette": "ocean",
+      "season": "winter",
+      "structure": "dress",
+      "hero": "g0152",
+      "items": [
+        "g0152",
+        "g0468",
+        "g0497",
+        "g0284"
+      ],
+      "expression": "entry",
+      "intent": "WABI × ocean 冬季日常 dress；使用独立外层主衣、封闭鞋履和低竞争支撑款，待整图复核。"
+    }
+  ]
+}

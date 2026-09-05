@@ -1,0 +1,24 @@
+{
+  "source": "docs/audits/20260904-aw-supply/generated-garments/batch01/raw/winter-coat-jewel-burgundy-raw-v1.png",
+  "output": "docs/audits/20260904-aw-supply/generated-garments/batch01/prepared/winter-coat-jewel-burgundy-v1.png",
+  "size": [
+    1200,
+    1200
+  ],
+  "meaningful_bbox": [
+    343,
+    120,
+    857,
+    1080
+  ],
+  "margins": {
+    "left": 0.2858,
+    "top": 0.1,
+    "right": 0.2858,
+    "bottom": 0.1
+  },
+  "transparent_ratio": 0.7481,
+  "partial_alpha_ratio": 0.2503,
+  "alpha_noise_threshold": 8,
+  "passed": true
+}

@@ -1,0 +1,34 @@
+{
+  "schema_version": 1,
+  "status": "partial",
+  "anchor_manifest_sha256": "61435530b0333a6b94a81ecf735d808673b7fc4251d9c5e0502c1abb3e234e50",
+  "environment": {
+    "url": "http://10.23.81.48:8000/wearwow/demo?tab=home",
+    "viewport": "1280x720",
+    "account_persona": "mute",
+    "note": "Local development evidence only; required 390/393/430/1440 matrix has not run."
+  },
+  "observations": [
+    "Fresh navigation rendered 6 recommendation cards with no horizontal overflow.",
+    "After 30 seconds idle the card count remained 6 and no recommendation request was emitted.",
+    "One dislike removed the card and loaded one replacement page: 6 cards became 11.",
+    "Server log showed exactly one feedback POST and one recommendation POST for that action.",
+    "Fresh console log query returned no entries."
+  ],
+  "cases": {
+    "FEED-001": "Not Run", "FEED-002": "Not Run", "FEED-003": "Not Run",
+    "FEED-004": "Not Run", "FEED-005": "Not Run", "FEED-006": "Not Run",
+    "FEED-007": "Not Run", "FEED-008": "Not Run", "FEED-009": "Not Run",
+    "FEED-010": "Not Run", "FEED-011": "Not Run", "FEED-012": "Pass",
+    "FEED-013": "Not Run", "FEED-014": "Not Run",
+    "REC-001": "Not Run", "REC-002": "Not Run", "REC-003": "Not Run",
+    "REC-004": "Not Run", "REC-005": "Not Run", "REC-006": "Not Run",
+    "REC-007": "Not Run", "REC-008": "Not Run", "REC-009": "Not Run",
+    "REC-010": "Not Run", "REC-011": "Not Run", "REC-012": "Not Run",
+    "REC-013": "Not Run", "REC-014": "Not Run",
+    "E2E-001": "Not Run", "E2E-002": "Not Run", "E2E-003": "Not Run",
+    "E2E-004": "Not Run", "E2E-005": "Not Run", "E2E-006": "Not Run",
+    "E2E-007": "Not Run", "E2E-008": "Not Run", "E2E-009": "Not Run",
+    "E2E-010": "Not Run", "E2E-011": "Not Run", "E2E-012": "Not Run"
+  }
+}

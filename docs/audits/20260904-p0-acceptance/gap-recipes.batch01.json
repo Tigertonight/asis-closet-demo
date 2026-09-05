@@ -1,0 +1,68 @@
+{
+  "schema_version": 1,
+  "batch_id": "p0-gap-01",
+  "source_visual_version": "codex-visual-16b18cdcdca36dbc306a",
+  "status": "designer_targets_pending_whole_image_review",
+  "new_garments": [],
+  "recipes": [
+    {
+      "persona": "FILM",
+      "palette": "earth",
+      "season": "autumn",
+      "structure": "pants",
+      "hero": "g0367",
+      "items": [
+        "g0367",
+        "g0171",
+        "g0266",
+        "g0283"
+      ],
+      "expression": "explore",
+      "intent": "FILM 轻探索：把手作边缘感集中在上衣，用低腰宽裤与素色鞋包收敛，保留日常可穿性。"
+    },
+    {
+      "persona": "ICED",
+      "palette": "ocean",
+      "season": "autumn",
+      "structure": "skirt",
+      "hero": "g0562",
+      "items": [
+        "g0562",
+        "g0433",
+        "g0258",
+        "g0290"
+      ],
+      "expression": "explore",
+      "intent": "ICED 轻探索：斜向结构背心作唯一主视觉，窄长裙和低跟乐福鞋维持冷静纵向线条。"
+    },
+    {
+      "persona": "WABI",
+      "palette": "earth",
+      "season": "autumn",
+      "structure": "pants",
+      "hero": "g0367",
+      "items": [
+        "g0367",
+        "g0182",
+        "g0244",
+        "g0284"
+      ],
+      "expression": "explore",
+      "intent": "WABI 轻探索裤装：不对称针织上衣承担肌理焦点，九分锥形裤与素色配件留出呼吸感。"
+    },
+    {
+      "persona": "WABI",
+      "palette": "earth",
+      "season": "autumn",
+      "structure": "dress",
+      "hero": "g0470",
+      "items": [
+        "g0470",
+        "g0244",
+        "g0283"
+      ],
+      "expression": "explore",
+      "intent": "WABI 轻探索连衣装：曲线层片只集中在主裙，鞋包保持低装饰和中性棕色，避免多焦点。"
+    }
+  ]
+}

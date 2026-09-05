@@ -1,0 +1,261 @@
+{
+  "schema_version": 1,
+  "batch_id": "aw-targeted-08",
+  "source_visual_version": "codex-visual-16b18cdcdca36dbc306a",
+  "status": "designer_targets_pending_whole_image_review",
+  "new_garments": [],
+  "new_garment_manifest": "generated-garments/batch09/manifest.json",
+  "new_garment_version": "aw-generated-garments-21cea8c24cdbd7b53daa",
+  "recipes": [
+    {
+      "persona": "BOLT",
+      "palette": "ocean",
+      "season": "winter",
+      "structure": "pants",
+      "hero": "n0048",
+      "items": [
+        "n0048",
+        "g0002",
+        "g0003",
+        "g0004",
+        "g0005"
+      ],
+      "expression": "entry",
+      "intent": "盘活 n0048 已有视觉亲和中的 BOLT×ocean，补 pants 结构。"
+    },
+    {
+      "persona": "BOLT",
+      "palette": "ocean",
+      "season": "winter",
+      "structure": "skirt",
+      "hero": "n0048",
+      "items": [
+        "n0048",
+        "g0337",
+        "g0190",
+        "g0069",
+        "g0070"
+      ],
+      "expression": "entry",
+      "intent": "盘活 n0048 已有视觉亲和中的 BOLT×ocean，补 skirt 结构。"
+    },
+    {
+      "persona": "WABI",
+      "palette": "ocean",
+      "season": "winter",
+      "structure": "pants",
+      "hero": "n0049",
+      "items": [
+        "n0049",
+        "g0084",
+        "g0164",
+        "g0253",
+        "g0276"
+      ],
+      "expression": "entry",
+      "intent": "盘活 n0049 已有视觉亲和中的 WABI×ocean，补 pants 结构。"
+    },
+    {
+      "persona": "WABI",
+      "palette": "ocean",
+      "season": "winter",
+      "structure": "dress",
+      "hero": "n0049",
+      "items": [
+        "n0049",
+        "g0230",
+        "g0245",
+        "g0276"
+      ],
+      "expression": "entry",
+      "intent": "盘活 n0049 已有视觉亲和中的 WABI×ocean，补 dress 结构。"
+    },
+    {
+      "persona": "HEIR",
+      "palette": "earth",
+      "season": "winter",
+      "structure": "pants",
+      "hero": "n0050",
+      "items": [
+        "n0050",
+        "g0114",
+        "g0172",
+        "g0258",
+        "g0289"
+      ],
+      "expression": "entry",
+      "intent": "盘活 n0050 已有视觉亲和中的 HEIR×earth，补 pants 结构。"
+    },
+    {
+      "persona": "HEIR",
+      "palette": "earth",
+      "season": "winter",
+      "structure": "dress",
+      "hero": "n0050",
+      "items": [
+        "n0050",
+        "g0217",
+        "g0004",
+        "g0270"
+      ],
+      "expression": "entry",
+      "intent": "盘活 n0050 已有视觉亲和中的 HEIR×earth，补 dress 结构。"
+    },
+    {
+      "persona": "EASE",
+      "palette": "earth",
+      "season": "winter",
+      "structure": "skirt",
+      "hero": "n0051",
+      "items": [
+        "n0051",
+        "g0086",
+        "g0198",
+        "g0246",
+        "g0278"
+      ],
+      "expression": "entry",
+      "intent": "盘活 n0051 已有视觉亲和中的 EASE×earth，补 skirt 结构。"
+    },
+    {
+      "persona": "EASE",
+      "palette": "earth",
+      "season": "winter",
+      "structure": "dress",
+      "hero": "n0051",
+      "items": [
+        "n0051",
+        "g0230",
+        "g0245",
+        "g0276"
+      ],
+      "expression": "entry",
+      "intent": "盘活 n0051 已有视觉亲和中的 EASE×earth，补 dress 结构。"
+    },
+    {
+      "persona": "NEON",
+      "palette": "bright",
+      "season": "winter",
+      "structure": "pants",
+      "hero": "n0052",
+      "items": [
+        "n0052",
+        "g0002",
+        "g0003",
+        "g0004",
+        "g0005"
+      ],
+      "expression": "entry",
+      "intent": "盘活 n0052 已有视觉亲和中的 NEON×bright，补 pants 结构。"
+    },
+    {
+      "persona": "NEON",
+      "palette": "bright",
+      "season": "winter",
+      "structure": "dress",
+      "hero": "n0052",
+      "items": [
+        "n0052",
+        "g0217",
+        "g0004",
+        "g0270"
+      ],
+      "expression": "entry",
+      "intent": "盘活 n0052 已有视觉亲和中的 NEON×bright，补 dress 结构。"
+    },
+    {
+      "persona": "LOOP",
+      "palette": "bright",
+      "season": "winter",
+      "structure": "skirt",
+      "hero": "n0053",
+      "items": [
+        "n0053",
+        "g0086",
+        "g0198",
+        "g0246",
+        "g0278"
+      ],
+      "expression": "entry",
+      "intent": "盘活 n0053 已有视觉亲和中的 LOOP×bright，补 skirt 结构。"
+    },
+    {
+      "persona": "LOOP",
+      "palette": "bright",
+      "season": "winter",
+      "structure": "dress",
+      "hero": "n0053",
+      "items": [
+        "n0053",
+        "g0230",
+        "g0245",
+        "g0276"
+      ],
+      "expression": "entry",
+      "intent": "盘活 n0053 已有视觉亲和中的 LOOP×bright，补 dress 结构。"
+    },
+    {
+      "persona": "HEIR",
+      "palette": "jewel",
+      "season": "winter",
+      "structure": "skirt",
+      "hero": "n0054",
+      "items": [
+        "n0054",
+        "g0337",
+        "g0190",
+        "g0069",
+        "g0070"
+      ],
+      "expression": "entry",
+      "intent": "盘活 n0054 已有视觉亲和中的 HEIR×jewel，补 skirt 结构。"
+    },
+    {
+      "persona": "HEIR",
+      "palette": "jewel",
+      "season": "winter",
+      "structure": "pants",
+      "hero": "n0054",
+      "items": [
+        "n0054",
+        "g0002",
+        "g0003",
+        "g0004",
+        "g0005"
+      ],
+      "expression": "entry",
+      "intent": "盘活 n0054 已有视觉亲和中的 HEIR×jewel，补 pants 结构。"
+    },
+    {
+      "persona": "WABI",
+      "palette": "jewel",
+      "season": "winter",
+      "structure": "skirt",
+      "hero": "n0055",
+      "items": [
+        "n0055",
+        "g0086",
+        "g0198",
+        "g0246",
+        "g0278"
+      ],
+      "expression": "entry",
+      "intent": "盘活 n0055 已有视觉亲和中的 WABI×jewel，补 skirt 结构。"
+    },
+    {
+      "persona": "WABI",
+      "palette": "jewel",
+      "season": "winter",
+      "structure": "dress",
+      "hero": "n0055",
+      "items": [
+        "n0055",
+        "g0230",
+        "g0245",
+        "g0276"
+      ],
+      "expression": "entry",
+      "intent": "盘活 n0055 已有视觉亲和中的 WABI×jewel，补 dress 结构。"
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "review_kind":"codex_nonblind_semantic_candidate",
+  "scope":"小样验证；AI 初版判断，非人工、非独立盲审。数字亲和度是可修改的非校准判断。",
+  "outfits": {
+    "o0001":{"structure":"pants","expression":"easy","layering":1,"seasons":["spring","autumn"],"scenes":["daily","commute"],"formality":"smart_casual","wearability":"everyday","persona_scores":{"mute":0.82,"loop":0.7,"noir":0.6},"evidence":"宽松黑垂褶上衣接黑宽裤，灰褐低跟长靴和黑包压低装饰；以清楚纵线而非仅黑色支持 MUTE。"},
+    "o0003":{"structure":"pants","expression":"easy","layering":1,"seasons":["summer"],"scenes":["daily","commute"],"formality":"casual","wearability":"everyday","persona_scores":{"mute":0.73,"iced":0.8,"loop":0.72},"evidence":"浅蓝收腰无袖领衫配直腿牛仔，白色乐福与肩包简洁；收净上身、直腿比例支持清爽轻日常。"},
+    "o0005":{"structure":"pants","expression":"explore","layering":1,"seasons":["spring","autumn"],"scenes":["daily","creative"],"formality":"casual","wearability":"everyday_with_statement","persona_scores":{"loop":0.84,"mute":0.58},"evidence":"基础蓝衬衫、低跟蓝鞋和素包承接一条米灰模块裤，变化集中在下装分片；适合作为 LOOP 单焦点探索，不能称为极简典型。"},
+    "o0007":{"structure":"pants","expression":"easy","layering":1,"seasons":["spring","autumn"],"scenes":["daily"],"formality":"smart_casual","wearability":"everyday","persona_scores":{"heir":0.8,"mute":0.74,"loop":0.73},"evidence":"合体藏蓝 Polo 配米白宽短裤，灰褐长靴延续纵线，米白包克制；经典领型支持 HEIR，也可作为 MUTE 基础日常。"},
+    "o0008":{"structure":"pants","expression":"easy","layering":1,"seasons":["spring","summer"],"scenes":["daily"],"formality":"casual","wearability":"everyday","persona_scores":{"ease":0.83,"mute":0.71,"loop":0.72},"evidence":"松弛米白船领上衣配宽牛仔，浅蓝托特和低跟鞋维持生活化；宽松但没有双重复杂层叠。"},
+    "o0009":{"structure":"pants","expression":"easy","layering":1,"seasons":["spring","autumn"],"scenes":["daily","commute"],"formality":"smart_casual","wearability":"everyday","persona_scores":{"mute":0.84,"iced":0.73,"loop":0.75},"evidence":"炭灰衬衫接蓝灰直裤，冰蓝乐福与米白包为小面积光泽；主服装直线、低装饰，非仅鞋包建立风格。"},
+    "o0010":{"structure":"pants","expression":"typical","layering":1,"seasons":["spring","autumn"],"scenes":["daily","social"],"formality":"smart_casual","wearability":"everyday","persona_scores":{"mute":0.86,"iced":0.77,"loop":0.79},"evidence":"黑侧垂褶上衣与浅蓝柔垂长裤形成黑浅对比，以不对称垂褶提供克制设计感，精巧低跟鞋与冰蓝包不抢主视觉。"},
+    "o0011":{"structure":"skirt","expression":"typical","layering":1,"seasons":["spring","autumn"],"scenes":["commute","social"],"formality":"smart_casual","wearability":"everyday_with_statement","persona_scores":{"mute":0.72,"heir":0.76,"iced":0.69,"loop":0.74},"evidence":"蓝灰细纹领衫、灰褐开衩直裙保持窄长线，黑尖头长靴和酒红锁扣包提升正式度；不是休闲运动场景。"},
+    "o0012":{"structure":"skirt","expression":"easy","layering":1,"seasons":["summer"],"scenes":["daily"],"formality":"casual","wearability":"everyday","persona_scores":{"melt":0.74,"ease":0.73,"mute":0.63,"loop":0.68},"evidence":"奶油白圆领 T 配米白分层裙，黑平底玛丽珍与黑小包收住重心；柔软 A 型比严格直线更接近 MELT/EASE。"},
+    "o0013":{"structure":"skirt","expression":"easy","layering":1,"seasons":["spring","autumn"],"scenes":["daily","commute"],"formality":"smart_casual","wearability":"everyday","persona_scores":{"mute":0.81,"iced":0.78,"loop":0.74},"evidence":"白色经典衬衫配米白斜向缎感裹裙，灰褐粗跟短靴稳住下身；材质光泽与一处斜褶增加变化，没有多物件装饰堆叠。"},
+    "o0016":{"structure":"skirt","expression":"easy","layering":1,"seasons":["spring","autumn"],"scenes":["daily","commute"],"formality":"smart_casual","wearability":"everyday","persona_scores":{"mute":0.86,"noir":0.63,"loop":0.7},"evidence":"黑圆领修身针织接炭灰直裙，平底乐福和黑月牙包低装饰；属于克制窄直线，不因全黑就等同强肩皮感 NOIR。"},
+    "o0022":{"structure":"pants","expression":"typical","layering":2,"seasons":["autumn"],"scenes":["daily","commute"],"formality":"smart_casual","wearability":"everyday","persona_scores":{"loop":0.86,"mute":0.8,"film":0.61},"evidence":"米灰西装、炭灰领衫、深色阔腿牛仔构成有序叠穿，黑托特与厚底深靴延续轮廓；以剪裁与丹宁组合而非过量拼接体现 LOOP。"},
+    "o0023":{"structure":"pants","expression":"typical","layering":2,"seasons":["spring","autumn"],"scenes":["daily"],"formality":"casual","wearability":"requires_inner_layer_check","persona_scores":{"iced":0.85,"loop":0.82,"mute":0.71},"evidence":"浅蓝短夹克、透明感蓝衬衫与弧线牛仔有短长比例和轻透层次，冰蓝平底鞋呼应；衬衫透明度所需内搭未在配方明确，保留复核。","status":"needs_review"},
+    "o0025":{"structure":"dress","expression":"easy","layering":1,"seasons":["summer"],"scenes":["daily"],"formality":"casual","wearability":"everyday","persona_scores":{"mute":0.68,"jade":0.56,"loop":0.67},"evidence":"灰褐短袖直身裙主体朴素，黑厚底玛丽珍增加重量，墨花包和小巾只属配件；东方语汇较弱，不用包的花纹证明整套典型 JADE。"},
+    "o0028":{"structure":"dress","expression":"easy","layering":1,"seasons":["summer"],"scenes":["daily"],"formality":"casual","wearability":"everyday","persona_scores":{"mute":0.76,"ease":0.73,"loop":0.7},"evidence":"灰褐无袖直身裙、白后空低跟、蓝色休闲翻盖包与细银项链，窄长主体清楚，装饰低，日常而非正式礼服。"},
+    "o0030":{"structure":"dress","expression":"easy","layering":1,"seasons":["spring","autumn"],"scenes":["daily","commute"],"formality":"smart_casual","wearability":"everyday","persona_scores":{"mute":0.81,"loop":0.76,"heir":0.65},"evidence":"炭灰系腰衬衫长裙配黑平底玛丽珍、白软包及小胸针，衣领、腰线与直身比例清楚，没有高强度装饰。"}
+  },
+  "detail_exclusions": {
+    "o0144":{"reason":"season_and_wearability_conflict","evidence":"已看 1200×1500 大图：细吊带薄纱花卉短裙配厚绒口粉色雪地靴，没有保暖外层。颜色一致不能消除日常季节冲突。建议退出默认日常验证池，保留历史和实验造型访问。"},
+    "o0203":{"reason":"formality_conflict","evidence":"已看 1200×1500 大图：酒红丝绒观感、束腰、泡袖和大花裙摆的欧式长礼服，配浅蓝宽带休闲翻盖包与普通乐福鞋。正式度和使用语境不一致；不作为默认日常推荐。"},
+    "o1161":{"reason":"layering_and_focal_overload","evidence":"已看 1200×1500 大图：蕾丝丹宁拼接长风衣叠高彩夸张袖短上衣，再配多材质非对称裤及拼接靴，四件均强主视觉，宽袖能否进外套也未确认。只保留实验复核，不作为日常或轻探索。"}
+  }
+}

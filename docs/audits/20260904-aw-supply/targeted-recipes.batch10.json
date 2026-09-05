@@ -1,0 +1,1758 @@
+{
+  "schema_version": 1,
+  "batch_id": "aw-targeted-10",
+  "source_visual_version": "codex-visual-16b18cdcdca36dbc306a",
+  "status": "designer_targets_pending_whole_image_review",
+  "new_garments": [
+    {
+      "id": "garment_aw_targeted09_outer_flou_earth_01",
+      "category": "outer",
+      "subcategory": "蕈褐流动系带长大衣",
+      "silhouette": [
+        "soft_drop_shoulder",
+        "wrap_waist",
+        "sweeping_a_line"
+      ],
+      "fit": "宽松",
+      "materials": [],
+      "details": [
+        "original_gap_fill",
+        "earth",
+        "visually_reviewed_cutout"
+      ],
+      "season_tags": [
+        "秋",
+        "冬"
+      ],
+      "scene_tags": [
+        "日常",
+        "通勤",
+        "旅行"
+      ],
+      "weather_tags": [],
+      "presentation": [
+        "feminine",
+        "neutral"
+      ],
+      "layer_role": "outer",
+      "tryon_slot": "outer",
+      "persona_affinity": {
+        "FLOU": 0.96,
+        "MELT": 0.88,
+        "EASE": 0.8
+      },
+      "color": {
+        "temperature": "未判断",
+        "lightness": "中等",
+        "saturation": "中饱和",
+        "harmony": "未判断",
+        "palette": [
+          "#7a6659",
+          "#8d776a",
+          "#574539",
+          "#998376",
+          "#a79183"
+        ]
+      },
+      "assets": {
+        "image_url": "/static/selfit/assets/content_v2_drafts/aw-targeted-09/garments/aw-main-flou-earth-v1.png",
+        "source_url": "",
+        "width": 1200,
+        "height": 1200,
+        "alpha_verified": true,
+        "rights_status": "owned"
+      },
+      "production": {
+        "source_kind": "generated_original",
+        "generation_job_id": "aw-generated-garments-11-n0064",
+        "prompt_version": "selfit-aw-lowest-condition-long-outer-v1",
+        "reference_ids": [],
+        "qa_status": "approved",
+        "phash": "306961f06171b230-816d5f"
+      },
+      "annotation": {
+        "status": "designer_reviewed",
+        "source": "designer",
+        "confidence": 0.92,
+        "review_notes": [
+          "Cutout and visible silhouette reviewed in current Codex session; outfit use remains draft."
+        ]
+      },
+      "color_evidence": {
+        "source": "opaque_pixel_quantization_v1",
+        "status": "measured_not_semantic_review",
+        "asset_sha256": "94c430900cb124176d75ea10275074f0160c427b9a28ecde759be1b9ee6648a9",
+        "swatches": [
+          {
+            "hex": "#7a6659",
+            "weight": 0.2698,
+            "family": "棕"
+          },
+          {
+            "hex": "#8d776a",
+            "weight": 0.2498,
+            "family": "棕"
+          },
+          {
+            "hex": "#574539",
+            "weight": 0.2034,
+            "family": "棕"
+          },
+          {
+            "hex": "#998376",
+            "weight": 0.1615,
+            "family": "棕"
+          },
+          {
+            "hex": "#a79183",
+            "weight": 0.1156,
+            "family": "棕"
+          }
+        ],
+        "palette_names": [
+          "棕"
+        ],
+        "color": {
+          "temperature": "未判断",
+          "lightness": "中等",
+          "saturation": "中饱和",
+          "harmony": "未判断",
+          "palette": [
+            "#7a6659",
+            "#8d776a",
+            "#574539",
+            "#998376",
+            "#a79183"
+          ]
+        },
+        "limitations": "渲染光照会影响色值；不据此推断面料成分、真实冷暖或人体适配。"
+      }
+    },
+    {
+      "id": "garment_aw_targeted09_outer_mute_bright_01",
+      "category": "outer",
+      "subcategory": "番茄红无领直线长大衣",
+      "silhouette": [
+        "quiet_shoulder",
+        "collarless",
+        "straight_column"
+      ],
+      "fit": "合体",
+      "materials": [],
+      "details": [
+        "original_gap_fill",
+        "bright",
+        "visually_reviewed_cutout"
+      ],
+      "season_tags": [
+        "秋",
+        "冬"
+      ],
+      "scene_tags": [
+        "日常",
+        "通勤",
+        "旅行"
+      ],
+      "weather_tags": [],
+      "presentation": [
+        "feminine",
+        "neutral"
+      ],
+      "layer_role": "outer",
+      "tryon_slot": "outer",
+      "persona_affinity": {
+        "MUTE": 0.96,
+        "ICED": 0.88,
+        "LOOP": 0.8
+      },
+      "color": {
+        "temperature": "未判断",
+        "lightness": "浅色",
+        "saturation": "高饱和",
+        "harmony": "未判断",
+        "palette": [
+          "#c20813",
+          "#bb0410",
+          "#bd0711",
+          "#cc0d17",
+          "#a8030b"
+        ]
+      },
+      "assets": {
+        "image_url": "/static/selfit/assets/content_v2_drafts/aw-targeted-09/garments/aw-main-mute-bright-v1.png",
+        "source_url": "",
+        "width": 1200,
+        "height": 1200,
+        "alpha_verified": true,
+        "rights_status": "owned"
+      },
+      "production": {
+        "source_kind": "generated_original",
+        "generation_job_id": "aw-generated-garments-11-n0065",
+        "prompt_version": "selfit-aw-lowest-condition-long-outer-v1",
+        "reference_ids": [],
+        "qa_status": "approved",
+        "phash": "3070307171717030-bd0812"
+      },
+      "annotation": {
+        "status": "designer_reviewed",
+        "source": "designer",
+        "confidence": 0.92,
+        "review_notes": [
+          "Cutout and visible silhouette reviewed in current Codex session; outfit use remains draft."
+        ]
+      },
+      "color_evidence": {
+        "source": "opaque_pixel_quantization_v1",
+        "status": "measured_not_semantic_review",
+        "asset_sha256": "e7d32f637d549ec0c34522d2388c083830f33633672e0e4953188ba7b2638b2a",
+        "swatches": [
+          {
+            "hex": "#c20813",
+            "weight": 0.2695,
+            "family": "红"
+          },
+          {
+            "hex": "#bb0410",
+            "weight": 0.2288,
+            "family": "红"
+          },
+          {
+            "hex": "#bd0711",
+            "weight": 0.2045,
+            "family": "红"
+          },
+          {
+            "hex": "#cc0d17",
+            "weight": 0.1802,
+            "family": "红"
+          },
+          {
+            "hex": "#a8030b",
+            "weight": 0.1171,
+            "family": "红"
+          }
+        ],
+        "palette_names": [
+          "红"
+        ],
+        "color": {
+          "temperature": "未判断",
+          "lightness": "浅色",
+          "saturation": "高饱和",
+          "harmony": "未判断",
+          "palette": [
+            "#c20813",
+            "#bb0410",
+            "#bd0711",
+            "#cc0d17",
+            "#a8030b"
+          ]
+        },
+        "limitations": "渲染光照会影响色值；不据此推断面料成分、真实冷暖或人体适配。"
+      }
+    },
+    {
+      "id": "garment_aw_targeted09_outer_noir_earth_01",
+      "category": "outer",
+      "subcategory": "深驼强肩长直大衣",
+      "silhouette": [
+        "strong_square_shoulder",
+        "narrow_peak_lapel",
+        "long_power_column"
+      ],
+      "fit": "合体",
+      "materials": [],
+      "details": [
+        "original_gap_fill",
+        "earth",
+        "visually_reviewed_cutout"
+      ],
+      "season_tags": [
+        "秋",
+        "冬"
+      ],
+      "scene_tags": [
+        "日常",
+        "通勤",
+        "旅行"
+      ],
+      "weather_tags": [],
+      "presentation": [
+        "feminine",
+        "neutral"
+      ],
+      "layer_role": "outer",
+      "tryon_slot": "outer",
+      "persona_affinity": {
+        "NOIR": 0.96,
+        "HEIR": 0.88,
+        "EDGE": 0.8
+      },
+      "color": {
+        "temperature": "未判断",
+        "lightness": "中等",
+        "saturation": "高饱和",
+        "harmony": "未判断",
+        "palette": [
+          "#814d2c",
+          "#8b5432",
+          "#925b37",
+          "#6a3e20",
+          "#9b633d"
+        ]
+      },
+      "assets": {
+        "image_url": "/static/selfit/assets/content_v2_drafts/aw-targeted-09/garments/aw-main-noir-earth-v1.png",
+        "source_url": "",
+        "width": 1200,
+        "height": 1200,
+        "alpha_verified": true,
+        "rights_status": "owned"
+      },
+      "production": {
+        "source_kind": "generated_original",
+        "generation_job_id": "aw-generated-garments-11-n0066",
+        "prompt_version": "selfit-aw-lowest-condition-long-outer-v1",
+        "reference_ids": [],
+        "qa_status": "approved",
+        "phash": "3030b27071703030-84512f"
+      },
+      "annotation": {
+        "status": "designer_reviewed",
+        "source": "designer",
+        "confidence": 0.92,
+        "review_notes": [
+          "Cutout and visible silhouette reviewed in current Codex session; outfit use remains draft."
+        ]
+      },
+      "color_evidence": {
+        "source": "opaque_pixel_quantization_v1",
+        "status": "measured_not_semantic_review",
+        "asset_sha256": "7883a6e9fb1e387db2486b8417f23650be0069c5b840c95d428594be3e2a26a8",
+        "swatches": [
+          {
+            "hex": "#814d2c",
+            "weight": 0.3255,
+            "family": "棕"
+          },
+          {
+            "hex": "#8b5432",
+            "weight": 0.2067,
+            "family": "棕"
+          },
+          {
+            "hex": "#925b37",
+            "weight": 0.1813,
+            "family": "棕"
+          },
+          {
+            "hex": "#6a3e20",
+            "weight": 0.164,
+            "family": "棕"
+          },
+          {
+            "hex": "#9b633d",
+            "weight": 0.1224,
+            "family": "棕"
+          }
+        ],
+        "palette_names": [
+          "棕"
+        ],
+        "color": {
+          "temperature": "未判断",
+          "lightness": "中等",
+          "saturation": "高饱和",
+          "harmony": "未判断",
+          "palette": [
+            "#814d2c",
+            "#8b5432",
+            "#925b37",
+            "#6a3e20",
+            "#9b633d"
+          ]
+        },
+        "limitations": "渲染光照会影响色值；不据此推断面料成分、真实冷暖或人体适配。"
+      }
+    },
+    {
+      "id": "garment_aw_targeted09_outer_void_pastel_01",
+      "category": "outer",
+      "subcategory": "雾紫包裹茧形长羽绒",
+      "silhouette": [
+        "protective_wrap_collar",
+        "dropped_shoulder",
+        "padded_cocoon"
+      ],
+      "fit": "宽松",
+      "materials": [],
+      "details": [
+        "original_gap_fill",
+        "pastel",
+        "visually_reviewed_cutout"
+      ],
+      "season_tags": [
+        "秋",
+        "冬"
+      ],
+      "scene_tags": [
+        "日常",
+        "通勤",
+        "旅行"
+      ],
+      "weather_tags": [],
+      "presentation": [
+        "feminine",
+        "neutral"
+      ],
+      "layer_role": "outer",
+      "tryon_slot": "outer",
+      "persona_affinity": {
+        "VOID": 0.96,
+        "WABI": 0.88,
+        "MELT": 0.8
+      },
+      "color": {
+        "temperature": "未判断",
+        "lightness": "中等",
+        "saturation": "低饱和",
+        "harmony": "未判断",
+        "palette": [
+          "#aa9aac",
+          "#b1a0b3",
+          "#b4a4b6",
+          "#968598",
+          "#b9a8ba"
+        ]
+      },
+      "assets": {
+        "image_url": "/static/selfit/assets/content_v2_drafts/aw-targeted-09/garments/aw-main-void-pastel-v1.png",
+        "source_url": "",
+        "width": 1200,
+        "height": 1200,
+        "alpha_verified": true,
+        "rights_status": "owned"
+      },
+      "production": {
+        "source_kind": "generated_original",
+        "generation_job_id": "aw-generated-garments-11-n0067",
+        "prompt_version": "selfit-aw-lowest-condition-long-outer-v1",
+        "reference_ids": [],
+        "qa_status": "approved",
+        "phash": "307031716971b270-aa99ac"
+      },
+      "annotation": {
+        "status": "designer_reviewed",
+        "source": "designer",
+        "confidence": 0.92,
+        "review_notes": [
+          "Cutout and visible silhouette reviewed in current Codex session; outfit use remains draft."
+        ]
+      },
+      "color_evidence": {
+        "source": "opaque_pixel_quantization_v1",
+        "status": "measured_not_semantic_review",
+        "asset_sha256": "33d3464c62b77668a545b039a0ed0c2d07ab046ab7030b667f1712cc2c5fc496",
+        "swatches": [
+          {
+            "hex": "#aa9aac",
+            "weight": 0.31,
+            "family": "灰"
+          },
+          {
+            "hex": "#b1a0b3",
+            "weight": 0.2196,
+            "family": "灰"
+          },
+          {
+            "hex": "#b4a4b6",
+            "weight": 0.1737,
+            "family": "灰"
+          },
+          {
+            "hex": "#968598",
+            "weight": 0.1636,
+            "family": "灰"
+          },
+          {
+            "hex": "#b9a8ba",
+            "weight": 0.1331,
+            "family": "灰"
+          }
+        ],
+        "palette_names": [
+          "灰"
+        ],
+        "color": {
+          "temperature": "未判断",
+          "lightness": "中等",
+          "saturation": "低饱和",
+          "harmony": "未判断",
+          "palette": [
+            "#aa9aac",
+            "#b1a0b3",
+            "#b4a4b6",
+            "#968598",
+            "#b9a8ba"
+          ]
+        },
+        "limitations": "渲染光照会影响色值；不据此推断面料成分、真实冷暖或人体适配。"
+      }
+    },
+    {
+      "id": "garment_aw_targeted09_outer_neon_earth_01",
+      "category": "outer",
+      "subcategory": "焦橙几何拼线长羽绒",
+      "silhouette": [
+        "high_collar",
+        "straight_padded_column",
+        "single_graphic_diagonal"
+      ],
+      "fit": "合体",
+      "materials": [],
+      "details": [
+        "original_gap_fill",
+        "earth",
+        "visually_reviewed_cutout"
+      ],
+      "season_tags": [
+        "秋",
+        "冬"
+      ],
+      "scene_tags": [
+        "日常",
+        "通勤",
+        "旅行"
+      ],
+      "weather_tags": [],
+      "presentation": [
+        "feminine",
+        "neutral"
+      ],
+      "layer_role": "outer",
+      "tryon_slot": "outer",
+      "persona_affinity": {
+        "NEON": 0.96,
+        "OOPS": 0.88,
+        "EDGE": 0.8
+      },
+      "color": {
+        "temperature": "未判断",
+        "lightness": "浅色",
+        "saturation": "高饱和",
+        "harmony": "未判断",
+        "palette": [
+          "#ca420f",
+          "#da4d15",
+          "#a93208",
+          "#e45618",
+          "#eb5d1c"
+        ]
+      },
+      "assets": {
+        "image_url": "/static/selfit/assets/content_v2_drafts/aw-targeted-09/garments/aw-main-neon-earth-v1.png",
+        "source_url": "",
+        "width": 1200,
+        "height": 1200,
+        "alpha_verified": true,
+        "rights_status": "owned"
+      },
+      "production": {
+        "source_kind": "generated_original",
+        "generation_job_id": "aw-generated-garments-11-n0068",
+        "prompt_version": "selfit-aw-lowest-condition-long-outer-v1",
+        "reference_ids": [],
+        "qa_status": "approved",
+        "phash": "707030717971b210-ce4712"
+      },
+      "annotation": {
+        "status": "designer_reviewed",
+        "source": "designer",
+        "confidence": 0.92,
+        "review_notes": [
+          "Cutout and visible silhouette reviewed in current Codex session; outfit use remains draft."
+        ]
+      },
+      "color_evidence": {
+        "source": "opaque_pixel_quantization_v1",
+        "status": "measured_not_semantic_review",
+        "asset_sha256": "80e81f8c8c0f8455bf09df625692e9029b59aa8d37d48b443a2513d7924cf7b8",
+        "swatches": [
+          {
+            "hex": "#ca420f",
+            "weight": 0.294,
+            "family": "红"
+          },
+          {
+            "hex": "#da4d15",
+            "weight": 0.2311,
+            "family": "红"
+          },
+          {
+            "hex": "#a93208",
+            "weight": 0.1757,
+            "family": "红"
+          },
+          {
+            "hex": "#e45618",
+            "weight": 0.1648,
+            "family": "黄"
+          },
+          {
+            "hex": "#eb5d1c",
+            "weight": 0.1343,
+            "family": "黄"
+          }
+        ],
+        "palette_names": [
+          "红",
+          "黄"
+        ],
+        "color": {
+          "temperature": "未判断",
+          "lightness": "浅色",
+          "saturation": "高饱和",
+          "harmony": "未判断",
+          "palette": [
+            "#ca420f",
+            "#da4d15",
+            "#a93208",
+            "#e45618",
+            "#eb5d1c"
+          ]
+        },
+        "limitations": "渲染光照会影响色值；不据此推断面料成分、真实冷暖或人体适配。"
+      }
+    },
+    {
+      "id": "garment_aw_targeted09_outer_wabi_bright_01",
+      "category": "outer",
+      "subcategory": "藏红花黄自然茧形长大衣",
+      "silhouette": [
+        "rounded_drop_shoulder",
+        "quiet_curved_seam",
+        "organic_cocoon"
+      ],
+      "fit": "宽松",
+      "materials": [],
+      "details": [
+        "original_gap_fill",
+        "bright",
+        "visually_reviewed_cutout"
+      ],
+      "season_tags": [
+        "秋",
+        "冬"
+      ],
+      "scene_tags": [
+        "日常",
+        "通勤",
+        "旅行"
+      ],
+      "weather_tags": [],
+      "presentation": [
+        "feminine",
+        "neutral"
+      ],
+      "layer_role": "outer",
+      "tryon_slot": "outer",
+      "persona_affinity": {
+        "WABI": 0.96,
+        "MELT": 0.88,
+        "EASE": 0.8
+      },
+      "color": {
+        "temperature": "未判断",
+        "lightness": "浅色",
+        "saturation": "高饱和",
+        "harmony": "未判断",
+        "palette": [
+          "#cd8808",
+          "#d8920c",
+          "#b26f04",
+          "#e09a10",
+          "#eba518"
+        ]
+      },
+      "assets": {
+        "image_url": "/static/selfit/assets/content_v2_drafts/aw-targeted-09/garments/aw-main-wabi-bright-v1.png",
+        "source_url": "",
+        "width": 1200,
+        "height": 1200,
+        "alpha_verified": true,
+        "rights_status": "owned"
+      },
+      "production": {
+        "source_kind": "generated_original",
+        "generation_job_id": "aw-generated-garments-11-n0069",
+        "prompt_version": "selfit-aw-lowest-condition-long-outer-v1",
+        "reference_ids": [],
+        "qa_status": "approved",
+        "phash": "30b030f06979b210-d08b0c"
+      },
+      "annotation": {
+        "status": "designer_reviewed",
+        "source": "designer",
+        "confidence": 0.92,
+        "review_notes": [
+          "Cutout and visible silhouette reviewed in current Codex session; outfit use remains draft."
+        ]
+      },
+      "color_evidence": {
+        "source": "opaque_pixel_quantization_v1",
+        "status": "measured_not_semantic_review",
+        "asset_sha256": "92ae2e63ad74141c420985867a666aa1c5a814479a4c0e4a191bcbb95b1ff067",
+        "swatches": [
+          {
+            "hex": "#cd8808",
+            "weight": 0.3227,
+            "family": "黄"
+          },
+          {
+            "hex": "#d8920c",
+            "weight": 0.2267,
+            "family": "黄"
+          },
+          {
+            "hex": "#b26f04",
+            "weight": 0.1672,
+            "family": "棕"
+          },
+          {
+            "hex": "#e09a10",
+            "weight": 0.167,
+            "family": "黄"
+          },
+          {
+            "hex": "#eba518",
+            "weight": 0.1164,
+            "family": "黄"
+          }
+        ],
+        "palette_names": [
+          "黄",
+          "棕"
+        ],
+        "color": {
+          "temperature": "未判断",
+          "lightness": "浅色",
+          "saturation": "高饱和",
+          "harmony": "未判断",
+          "palette": [
+            "#cd8808",
+            "#d8920c",
+            "#b26f04",
+            "#e09a10",
+            "#eba518"
+          ]
+        },
+        "limitations": "渲染光照会影响色值；不据此推断面料成分、真实冷暖或人体适配。"
+      }
+    },
+    {
+      "id": "garment_aw_targeted09_outer_oops_earth_01",
+      "category": "outer",
+      "subcategory": "陶褐错位门襟长大衣",
+      "silhouette": [
+        "offset_collar",
+        "asymmetric_placket",
+        "stable_long_column"
+      ],
+      "fit": "合体",
+      "materials": [],
+      "details": [
+        "original_gap_fill",
+        "earth",
+        "visually_reviewed_cutout"
+      ],
+      "season_tags": [
+        "秋",
+        "冬"
+      ],
+      "scene_tags": [
+        "日常",
+        "通勤",
+        "旅行"
+      ],
+      "weather_tags": [],
+      "presentation": [
+        "feminine",
+        "neutral"
+      ],
+      "layer_role": "outer",
+      "tryon_slot": "outer",
+      "persona_affinity": {
+        "OOPS": 0.96,
+        "EDGE": 0.88,
+        "VOID": 0.8
+      },
+      "color": {
+        "temperature": "未判断",
+        "lightness": "中等",
+        "saturation": "高饱和",
+        "harmony": "未判断",
+        "palette": [
+          "#712f1a",
+          "#78341e",
+          "#813821",
+          "#592311",
+          "#8b3e26"
+        ]
+      },
+      "assets": {
+        "image_url": "/static/selfit/assets/content_v2_drafts/aw-targeted-09/garments/aw-main-oops-earth-v1.png",
+        "source_url": "",
+        "width": 1200,
+        "height": 1200,
+        "alpha_verified": true,
+        "rights_status": "owned"
+      },
+      "production": {
+        "source_kind": "generated_original",
+        "generation_job_id": "aw-generated-garments-11-n0070",
+        "prompt_version": "selfit-aw-lowest-condition-long-outer-v1",
+        "reference_ids": [],
+        "qa_status": "approved",
+        "phash": "3070b2f07170b210-73311b"
+      },
+      "annotation": {
+        "status": "designer_reviewed",
+        "source": "designer",
+        "confidence": 0.92,
+        "review_notes": [
+          "Cutout and visible silhouette reviewed in current Codex session; outfit use remains draft."
+        ]
+      },
+      "color_evidence": {
+        "source": "opaque_pixel_quantization_v1",
+        "status": "measured_not_semantic_review",
+        "asset_sha256": "5feea478398b5225d9381cb0c1ae760db5528518dd755a4d55a811515bb43c6f",
+        "swatches": [
+          {
+            "hex": "#712f1a",
+            "weight": 0.3479,
+            "family": "红"
+          },
+          {
+            "hex": "#78341e",
+            "weight": 0.247,
+            "family": "红"
+          },
+          {
+            "hex": "#813821",
+            "weight": 0.1425,
+            "family": "红"
+          },
+          {
+            "hex": "#592311",
+            "weight": 0.1379,
+            "family": "红"
+          },
+          {
+            "hex": "#8b3e26",
+            "weight": 0.1246,
+            "family": "红"
+          }
+        ],
+        "palette_names": [
+          "红"
+        ],
+        "color": {
+          "temperature": "未判断",
+          "lightness": "中等",
+          "saturation": "高饱和",
+          "harmony": "未判断",
+          "palette": [
+            "#712f1a",
+            "#78341e",
+            "#813821",
+            "#592311",
+            "#8b3e26"
+          ]
+        },
+        "limitations": "渲染光照会影响色值；不据此推断面料成分、真实冷暖或人体适配。"
+      }
+    },
+    {
+      "id": "garment_aw_targeted09_outer_edge_pastel_01",
+      "category": "outer",
+      "subcategory": "冰粉锐线不对称长大衣",
+      "silhouette": [
+        "crisp_shoulder",
+        "defined_waist",
+        "asymmetric_long_hem"
+      ],
+      "fit": "合体",
+      "materials": [],
+      "details": [
+        "original_gap_fill",
+        "pastel",
+        "visually_reviewed_cutout"
+      ],
+      "season_tags": [
+        "秋",
+        "冬"
+      ],
+      "scene_tags": [
+        "日常",
+        "通勤",
+        "旅行"
+      ],
+      "weather_tags": [],
+      "presentation": [
+        "feminine",
+        "neutral"
+      ],
+      "layer_role": "outer",
+      "tryon_slot": "outer",
+      "persona_affinity": {
+        "EDGE": 0.96,
+        "BOLT": 0.88,
+        "HEIR": 0.8
+      },
+      "color": {
+        "temperature": "未判断",
+        "lightness": "浅色",
+        "saturation": "低饱和",
+        "harmony": "未判断",
+        "palette": [
+          "#edcccf",
+          "#e5c1c4",
+          "#deb9bc",
+          "#e1bcbf",
+          "#cb9fa3"
+        ]
+      },
+      "assets": {
+        "image_url": "/static/selfit/assets/content_v2_drafts/aw-targeted-09/garments/aw-main-edge-pastel-v1.png",
+        "source_url": "",
+        "width": 1200,
+        "height": 1200,
+        "alpha_verified": true,
+        "rights_status": "owned"
+      },
+      "production": {
+        "source_kind": "generated_original",
+        "generation_job_id": "aw-generated-garments-11-n0071",
+        "prompt_version": "selfit-aw-lowest-condition-long-outer-v1",
+        "reference_ids": [],
+        "qa_status": "approved",
+        "phash": "0869b0f07170b230-e1bbbf"
+      },
+      "annotation": {
+        "status": "designer_reviewed",
+        "source": "designer",
+        "confidence": 0.92,
+        "review_notes": [
+          "Cutout and visible silhouette reviewed in current Codex session; outfit use remains draft."
+        ]
+      },
+      "color_evidence": {
+        "source": "opaque_pixel_quantization_v1",
+        "status": "measured_not_semantic_review",
+        "asset_sha256": "99592684817e50f171615fd966b1dc3a009b3acc1018aef07c8376d340c97b45",
+        "swatches": [
+          {
+            "hex": "#edcccf",
+            "weight": 0.2384,
+            "family": "粉"
+          },
+          {
+            "hex": "#e5c1c4",
+            "weight": 0.2283,
+            "family": "粉"
+          },
+          {
+            "hex": "#deb9bc",
+            "weight": 0.212,
+            "family": "粉"
+          },
+          {
+            "hex": "#e1bcbf",
+            "weight": 0.2013,
+            "family": "粉"
+          },
+          {
+            "hex": "#cb9fa3",
+            "weight": 0.12,
+            "family": "粉"
+          }
+        ],
+        "palette_names": [
+          "粉"
+        ],
+        "color": {
+          "temperature": "未判断",
+          "lightness": "浅色",
+          "saturation": "低饱和",
+          "harmony": "未判断",
+          "palette": [
+            "#edcccf",
+            "#e5c1c4",
+            "#deb9bc",
+            "#e1bcbf",
+            "#cb9fa3"
+          ]
+        },
+        "limitations": "渲染光照会影响色值；不据此推断面料成分、真实冷暖或人体适配。"
+      }
+    }
+  ],
+  "new_garment_manifest": "generated-garments/batch11/manifest.json",
+  "new_garment_version": "aw-generated-garments-383ae366068ac3c8af81",
+  "recipes": [
+    {
+      "persona": "FLOU",
+      "palette": "earth",
+      "season": "autumn",
+      "structure": "pants",
+      "hero": "n0064",
+      "items": [
+        "n0064",
+        "g0114",
+        "g0172",
+        "g0258",
+        "g0289"
+      ],
+      "expression": "entry",
+      "intent": "FLOU×earth×autumn 的低供给 pants 结构；新长外层承担偏好色与人格证据。"
+    },
+    {
+      "persona": "FLOU",
+      "palette": "earth",
+      "season": "autumn",
+      "structure": "skirt",
+      "hero": "n0064",
+      "items": [
+        "n0064",
+        "g0337",
+        "g0190",
+        "g0069",
+        "g0070"
+      ],
+      "expression": "entry",
+      "intent": "FLOU×earth×autumn 的低供给 skirt 结构；新长外层承担偏好色与人格证据。"
+    },
+    {
+      "persona": "FLOU",
+      "palette": "earth",
+      "season": "autumn",
+      "structure": "dress",
+      "hero": "n0064",
+      "items": [
+        "n0064",
+        "g0217",
+        "g0004",
+        "g0270"
+      ],
+      "expression": "entry",
+      "intent": "FLOU×earth×autumn 的低供给 dress 结构；新长外层承担偏好色与人格证据。"
+    },
+    {
+      "persona": "FLOU",
+      "palette": "earth",
+      "season": "winter",
+      "structure": "pants",
+      "hero": "n0064",
+      "items": [
+        "n0064",
+        "g0114",
+        "g0172",
+        "g0258",
+        "g0289"
+      ],
+      "expression": "entry",
+      "intent": "FLOU×earth×winter 的低供给 pants 结构；新长外层承担偏好色与人格证据。"
+    },
+    {
+      "persona": "FLOU",
+      "palette": "earth",
+      "season": "winter",
+      "structure": "skirt",
+      "hero": "n0064",
+      "items": [
+        "n0064",
+        "g0337",
+        "g0190",
+        "g0069",
+        "g0070"
+      ],
+      "expression": "entry",
+      "intent": "FLOU×earth×winter 的低供给 skirt 结构；新长外层承担偏好色与人格证据。"
+    },
+    {
+      "persona": "FLOU",
+      "palette": "earth",
+      "season": "winter",
+      "structure": "dress",
+      "hero": "n0064",
+      "items": [
+        "n0064",
+        "g0217",
+        "g0004",
+        "g0270"
+      ],
+      "expression": "entry",
+      "intent": "FLOU×earth×winter 的低供给 dress 结构；新长外层承担偏好色与人格证据。"
+    },
+    {
+      "persona": "MUTE",
+      "palette": "bright",
+      "season": "autumn",
+      "structure": "pants",
+      "hero": "n0065",
+      "items": [
+        "n0065",
+        "g0114",
+        "g0172",
+        "g0258",
+        "g0289"
+      ],
+      "expression": "entry",
+      "intent": "MUTE×bright×autumn 的低供给 pants 结构；新长外层承担偏好色与人格证据。"
+    },
+    {
+      "persona": "MUTE",
+      "palette": "bright",
+      "season": "autumn",
+      "structure": "skirt",
+      "hero": "n0065",
+      "items": [
+        "n0065",
+        "g0337",
+        "g0190",
+        "g0069",
+        "g0070"
+      ],
+      "expression": "entry",
+      "intent": "MUTE×bright×autumn 的低供给 skirt 结构；新长外层承担偏好色与人格证据。"
+    },
+    {
+      "persona": "MUTE",
+      "palette": "bright",
+      "season": "autumn",
+      "structure": "dress",
+      "hero": "n0065",
+      "items": [
+        "n0065",
+        "g0217",
+        "g0004",
+        "g0270"
+      ],
+      "expression": "entry",
+      "intent": "MUTE×bright×autumn 的低供给 dress 结构；新长外层承担偏好色与人格证据。"
+    },
+    {
+      "persona": "MUTE",
+      "palette": "bright",
+      "season": "winter",
+      "structure": "pants",
+      "hero": "n0065",
+      "items": [
+        "n0065",
+        "g0114",
+        "g0172",
+        "g0258",
+        "g0289"
+      ],
+      "expression": "entry",
+      "intent": "MUTE×bright×winter 的低供给 pants 结构；新长外层承担偏好色与人格证据。"
+    },
+    {
+      "persona": "MUTE",
+      "palette": "bright",
+      "season": "winter",
+      "structure": "skirt",
+      "hero": "n0065",
+      "items": [
+        "n0065",
+        "g0337",
+        "g0190",
+        "g0069",
+        "g0070"
+      ],
+      "expression": "entry",
+      "intent": "MUTE×bright×winter 的低供给 skirt 结构；新长外层承担偏好色与人格证据。"
+    },
+    {
+      "persona": "MUTE",
+      "palette": "bright",
+      "season": "winter",
+      "structure": "dress",
+      "hero": "n0065",
+      "items": [
+        "n0065",
+        "g0217",
+        "g0004",
+        "g0270"
+      ],
+      "expression": "entry",
+      "intent": "MUTE×bright×winter 的低供给 dress 结构；新长外层承担偏好色与人格证据。"
+    },
+    {
+      "persona": "NOIR",
+      "palette": "earth",
+      "season": "autumn",
+      "structure": "pants",
+      "hero": "n0066",
+      "items": [
+        "n0066",
+        "g0114",
+        "g0172",
+        "g0258",
+        "g0289"
+      ],
+      "expression": "entry",
+      "intent": "NOIR×earth×autumn 的低供给 pants 结构；新长外层承担偏好色与人格证据。"
+    },
+    {
+      "persona": "NOIR",
+      "palette": "earth",
+      "season": "autumn",
+      "structure": "skirt",
+      "hero": "n0066",
+      "items": [
+        "n0066",
+        "g0337",
+        "g0190",
+        "g0069",
+        "g0070"
+      ],
+      "expression": "entry",
+      "intent": "NOIR×earth×autumn 的低供给 skirt 结构；新长外层承担偏好色与人格证据。"
+    },
+    {
+      "persona": "NOIR",
+      "palette": "earth",
+      "season": "autumn",
+      "structure": "dress",
+      "hero": "n0066",
+      "items": [
+        "n0066",
+        "g0217",
+        "g0004",
+        "g0270"
+      ],
+      "expression": "entry",
+      "intent": "NOIR×earth×autumn 的低供给 dress 结构；新长外层承担偏好色与人格证据。"
+    },
+    {
+      "persona": "NOIR",
+      "palette": "earth",
+      "season": "winter",
+      "structure": "pants",
+      "hero": "n0066",
+      "items": [
+        "n0066",
+        "g0114",
+        "g0172",
+        "g0258",
+        "g0289"
+      ],
+      "expression": "entry",
+      "intent": "NOIR×earth×winter 的低供给 pants 结构；新长外层承担偏好色与人格证据。"
+    },
+    {
+      "persona": "NOIR",
+      "palette": "earth",
+      "season": "winter",
+      "structure": "skirt",
+      "hero": "n0066",
+      "items": [
+        "n0066",
+        "g0337",
+        "g0190",
+        "g0069",
+        "g0070"
+      ],
+      "expression": "entry",
+      "intent": "NOIR×earth×winter 的低供给 skirt 结构；新长外层承担偏好色与人格证据。"
+    },
+    {
+      "persona": "NOIR",
+      "palette": "earth",
+      "season": "winter",
+      "structure": "dress",
+      "hero": "n0066",
+      "items": [
+        "n0066",
+        "g0217",
+        "g0004",
+        "g0270"
+      ],
+      "expression": "entry",
+      "intent": "NOIR×earth×winter 的低供给 dress 结构；新长外层承担偏好色与人格证据。"
+    },
+    {
+      "persona": "VOID",
+      "palette": "pastel",
+      "season": "autumn",
+      "structure": "pants",
+      "hero": "n0067",
+      "items": [
+        "n0067",
+        "g0114",
+        "g0172",
+        "g0258",
+        "g0289"
+      ],
+      "expression": "entry",
+      "intent": "VOID×pastel×autumn 的低供给 pants 结构；新长外层承担偏好色与人格证据。"
+    },
+    {
+      "persona": "VOID",
+      "palette": "pastel",
+      "season": "autumn",
+      "structure": "skirt",
+      "hero": "n0067",
+      "items": [
+        "n0067",
+        "g0337",
+        "g0190",
+        "g0069",
+        "g0070"
+      ],
+      "expression": "entry",
+      "intent": "VOID×pastel×autumn 的低供给 skirt 结构；新长外层承担偏好色与人格证据。"
+    },
+    {
+      "persona": "VOID",
+      "palette": "pastel",
+      "season": "autumn",
+      "structure": "dress",
+      "hero": "n0067",
+      "items": [
+        "n0067",
+        "g0217",
+        "g0004",
+        "g0270"
+      ],
+      "expression": "entry",
+      "intent": "VOID×pastel×autumn 的低供给 dress 结构；新长外层承担偏好色与人格证据。"
+    },
+    {
+      "persona": "VOID",
+      "palette": "pastel",
+      "season": "winter",
+      "structure": "pants",
+      "hero": "n0067",
+      "items": [
+        "n0067",
+        "g0114",
+        "g0172",
+        "g0258",
+        "g0289"
+      ],
+      "expression": "entry",
+      "intent": "VOID×pastel×winter 的低供给 pants 结构；新长外层承担偏好色与人格证据。"
+    },
+    {
+      "persona": "VOID",
+      "palette": "pastel",
+      "season": "winter",
+      "structure": "skirt",
+      "hero": "n0067",
+      "items": [
+        "n0067",
+        "g0337",
+        "g0190",
+        "g0069",
+        "g0070"
+      ],
+      "expression": "entry",
+      "intent": "VOID×pastel×winter 的低供给 skirt 结构；新长外层承担偏好色与人格证据。"
+    },
+    {
+      "persona": "VOID",
+      "palette": "pastel",
+      "season": "winter",
+      "structure": "dress",
+      "hero": "n0067",
+      "items": [
+        "n0067",
+        "g0217",
+        "g0004",
+        "g0270"
+      ],
+      "expression": "entry",
+      "intent": "VOID×pastel×winter 的低供给 dress 结构；新长外层承担偏好色与人格证据。"
+    },
+    {
+      "persona": "NEON",
+      "palette": "earth",
+      "season": "autumn",
+      "structure": "pants",
+      "hero": "n0068",
+      "items": [
+        "n0068",
+        "g0114",
+        "g0172",
+        "g0258",
+        "g0289"
+      ],
+      "expression": "entry",
+      "intent": "NEON×earth×autumn 的低供给 pants 结构；新长外层承担偏好色与人格证据。"
+    },
+    {
+      "persona": "NEON",
+      "palette": "earth",
+      "season": "autumn",
+      "structure": "skirt",
+      "hero": "n0068",
+      "items": [
+        "n0068",
+        "g0337",
+        "g0190",
+        "g0069",
+        "g0070"
+      ],
+      "expression": "entry",
+      "intent": "NEON×earth×autumn 的低供给 skirt 结构；新长外层承担偏好色与人格证据。"
+    },
+    {
+      "persona": "NEON",
+      "palette": "earth",
+      "season": "autumn",
+      "structure": "dress",
+      "hero": "n0068",
+      "items": [
+        "n0068",
+        "g0217",
+        "g0004",
+        "g0270"
+      ],
+      "expression": "entry",
+      "intent": "NEON×earth×autumn 的低供给 dress 结构；新长外层承担偏好色与人格证据。"
+    },
+    {
+      "persona": "NEON",
+      "palette": "earth",
+      "season": "winter",
+      "structure": "pants",
+      "hero": "n0068",
+      "items": [
+        "n0068",
+        "g0114",
+        "g0172",
+        "g0258",
+        "g0289"
+      ],
+      "expression": "entry",
+      "intent": "NEON×earth×winter 的低供给 pants 结构；新长外层承担偏好色与人格证据。"
+    },
+    {
+      "persona": "NEON",
+      "palette": "earth",
+      "season": "winter",
+      "structure": "skirt",
+      "hero": "n0068",
+      "items": [
+        "n0068",
+        "g0337",
+        "g0190",
+        "g0069",
+        "g0070"
+      ],
+      "expression": "entry",
+      "intent": "NEON×earth×winter 的低供给 skirt 结构；新长外层承担偏好色与人格证据。"
+    },
+    {
+      "persona": "NEON",
+      "palette": "earth",
+      "season": "winter",
+      "structure": "dress",
+      "hero": "n0068",
+      "items": [
+        "n0068",
+        "g0217",
+        "g0004",
+        "g0270"
+      ],
+      "expression": "entry",
+      "intent": "NEON×earth×winter 的低供给 dress 结构；新长外层承担偏好色与人格证据。"
+    },
+    {
+      "persona": "WABI",
+      "palette": "bright",
+      "season": "autumn",
+      "structure": "pants",
+      "hero": "n0069",
+      "items": [
+        "n0069",
+        "g0114",
+        "g0172",
+        "g0258",
+        "g0289"
+      ],
+      "expression": "entry",
+      "intent": "WABI×bright×autumn 的低供给 pants 结构；新长外层承担偏好色与人格证据。"
+    },
+    {
+      "persona": "WABI",
+      "palette": "bright",
+      "season": "autumn",
+      "structure": "skirt",
+      "hero": "n0069",
+      "items": [
+        "n0069",
+        "g0337",
+        "g0190",
+        "g0069",
+        "g0070"
+      ],
+      "expression": "entry",
+      "intent": "WABI×bright×autumn 的低供给 skirt 结构；新长外层承担偏好色与人格证据。"
+    },
+    {
+      "persona": "WABI",
+      "palette": "bright",
+      "season": "autumn",
+      "structure": "dress",
+      "hero": "n0069",
+      "items": [
+        "n0069",
+        "g0217",
+        "g0004",
+        "g0270"
+      ],
+      "expression": "entry",
+      "intent": "WABI×bright×autumn 的低供给 dress 结构；新长外层承担偏好色与人格证据。"
+    },
+    {
+      "persona": "WABI",
+      "palette": "bright",
+      "season": "winter",
+      "structure": "pants",
+      "hero": "n0069",
+      "items": [
+        "n0069",
+        "g0114",
+        "g0172",
+        "g0258",
+        "g0289"
+      ],
+      "expression": "entry",
+      "intent": "WABI×bright×winter 的低供给 pants 结构；新长外层承担偏好色与人格证据。"
+    },
+    {
+      "persona": "WABI",
+      "palette": "bright",
+      "season": "winter",
+      "structure": "skirt",
+      "hero": "n0069",
+      "items": [
+        "n0069",
+        "g0337",
+        "g0190",
+        "g0069",
+        "g0070"
+      ],
+      "expression": "entry",
+      "intent": "WABI×bright×winter 的低供给 skirt 结构；新长外层承担偏好色与人格证据。"
+    },
+    {
+      "persona": "WABI",
+      "palette": "bright",
+      "season": "winter",
+      "structure": "dress",
+      "hero": "n0069",
+      "items": [
+        "n0069",
+        "g0217",
+        "g0004",
+        "g0270"
+      ],
+      "expression": "entry",
+      "intent": "WABI×bright×winter 的低供给 dress 结构；新长外层承担偏好色与人格证据。"
+    },
+    {
+      "persona": "OOPS",
+      "palette": "earth",
+      "season": "autumn",
+      "structure": "pants",
+      "hero": "n0070",
+      "items": [
+        "n0070",
+        "g0114",
+        "g0172",
+        "g0258",
+        "g0289"
+      ],
+      "expression": "entry",
+      "intent": "OOPS×earth×autumn 的低供给 pants 结构；新长外层承担偏好色与人格证据。"
+    },
+    {
+      "persona": "OOPS",
+      "palette": "earth",
+      "season": "autumn",
+      "structure": "skirt",
+      "hero": "n0070",
+      "items": [
+        "n0070",
+        "g0337",
+        "g0190",
+        "g0069",
+        "g0070"
+      ],
+      "expression": "entry",
+      "intent": "OOPS×earth×autumn 的低供给 skirt 结构；新长外层承担偏好色与人格证据。"
+    },
+    {
+      "persona": "OOPS",
+      "palette": "earth",
+      "season": "autumn",
+      "structure": "dress",
+      "hero": "n0070",
+      "items": [
+        "n0070",
+        "g0217",
+        "g0004",
+        "g0270"
+      ],
+      "expression": "entry",
+      "intent": "OOPS×earth×autumn 的低供给 dress 结构；新长外层承担偏好色与人格证据。"
+    },
+    {
+      "persona": "OOPS",
+      "palette": "earth",
+      "season": "winter",
+      "structure": "pants",
+      "hero": "n0070",
+      "items": [
+        "n0070",
+        "g0114",
+        "g0172",
+        "g0258",
+        "g0289"
+      ],
+      "expression": "entry",
+      "intent": "OOPS×earth×winter 的低供给 pants 结构；新长外层承担偏好色与人格证据。"
+    },
+    {
+      "persona": "OOPS",
+      "palette": "earth",
+      "season": "winter",
+      "structure": "skirt",
+      "hero": "n0070",
+      "items": [
+        "n0070",
+        "g0337",
+        "g0190",
+        "g0069",
+        "g0070"
+      ],
+      "expression": "entry",
+      "intent": "OOPS×earth×winter 的低供给 skirt 结构；新长外层承担偏好色与人格证据。"
+    },
+    {
+      "persona": "OOPS",
+      "palette": "earth",
+      "season": "winter",
+      "structure": "dress",
+      "hero": "n0070",
+      "items": [
+        "n0070",
+        "g0217",
+        "g0004",
+        "g0270"
+      ],
+      "expression": "entry",
+      "intent": "OOPS×earth×winter 的低供给 dress 结构；新长外层承担偏好色与人格证据。"
+    },
+    {
+      "persona": "EDGE",
+      "palette": "pastel",
+      "season": "autumn",
+      "structure": "pants",
+      "hero": "n0071",
+      "items": [
+        "n0071",
+        "g0114",
+        "g0172",
+        "g0258",
+        "g0289"
+      ],
+      "expression": "entry",
+      "intent": "EDGE×pastel×autumn 的低供给 pants 结构；新长外层承担偏好色与人格证据。"
+    },
+    {
+      "persona": "EDGE",
+      "palette": "pastel",
+      "season": "autumn",
+      "structure": "skirt",
+      "hero": "n0071",
+      "items": [
+        "n0071",
+        "g0337",
+        "g0190",
+        "g0069",
+        "g0070"
+      ],
+      "expression": "entry",
+      "intent": "EDGE×pastel×autumn 的低供给 skirt 结构；新长外层承担偏好色与人格证据。"
+    },
+    {
+      "persona": "EDGE",
+      "palette": "pastel",
+      "season": "autumn",
+      "structure": "dress",
+      "hero": "n0071",
+      "items": [
+        "n0071",
+        "g0217",
+        "g0004",
+        "g0270"
+      ],
+      "expression": "entry",
+      "intent": "EDGE×pastel×autumn 的低供给 dress 结构；新长外层承担偏好色与人格证据。"
+    },
+    {
+      "persona": "EDGE",
+      "palette": "pastel",
+      "season": "winter",
+      "structure": "pants",
+      "hero": "n0071",
+      "items": [
+        "n0071",
+        "g0114",
+        "g0172",
+        "g0258",
+        "g0289"
+      ],
+      "expression": "entry",
+      "intent": "EDGE×pastel×winter 的低供给 pants 结构；新长外层承担偏好色与人格证据。"
+    },
+    {
+      "persona": "EDGE",
+      "palette": "pastel",
+      "season": "winter",
+      "structure": "skirt",
+      "hero": "n0071",
+      "items": [
+        "n0071",
+        "g0337",
+        "g0190",
+        "g0069",
+        "g0070"
+      ],
+      "expression": "entry",
+      "intent": "EDGE×pastel×winter 的低供给 skirt 结构；新长外层承担偏好色与人格证据。"
+    },
+    {
+      "persona": "EDGE",
+      "palette": "pastel",
+      "season": "winter",
+      "structure": "dress",
+      "hero": "n0071",
+      "items": [
+        "n0071",
+        "g0217",
+        "g0004",
+        "g0270"
+      ],
+      "expression": "entry",
+      "intent": "EDGE×pastel×winter 的低供给 dress 结构；新长外层承担偏好色与人格证据。"
+    }
+  ]
+}

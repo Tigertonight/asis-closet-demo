@@ -1,0 +1,1763 @@
+{
+  "schema_version": 1,
+  "batch_id": "aw-targeted-07",
+  "source_visual_version": "codex-visual-16b18cdcdca36dbc306a",
+  "status": "designer_targets_pending_whole_image_review",
+  "new_garments": [
+    {
+      "id": "garment_aw_targeted07_outer_ocean_precise_01",
+      "category": "outer",
+      "subcategory": "深海蓝立领纵线长大衣",
+      "silhouette": [
+        "precise_shoulder",
+        "stand_collar",
+        "long_column"
+      ],
+      "fit": "合体",
+      "materials": [],
+      "details": [
+        "original_gap_fill",
+        "ocean",
+        "visually_reviewed_cutout"
+      ],
+      "season_tags": [
+        "秋",
+        "冬"
+      ],
+      "scene_tags": [
+        "日常",
+        "通勤",
+        "旅行"
+      ],
+      "weather_tags": [],
+      "presentation": [
+        "feminine",
+        "neutral"
+      ],
+      "layer_role": "outer",
+      "tryon_slot": "outer",
+      "persona_affinity": {
+        "MUTE": 0.96,
+        "ICED": 0.88,
+        "JADE": 0.8,
+        "BOLT": 0.72
+      },
+      "color": {
+        "temperature": "未判断",
+        "lightness": "深色",
+        "saturation": "高饱和",
+        "harmony": "未判断",
+        "palette": [
+          "#082641",
+          "#0c2c48",
+          "#0f314e",
+          "#03192f",
+          "#133655"
+        ]
+      },
+      "assets": {
+        "image_url": "/static/selfit/assets/content_v2_drafts/aw-targeted-07/garments/winter-coat-ocean-precise-v1.png",
+        "source_url": "",
+        "width": 1200,
+        "height": 1200,
+        "alpha_verified": true,
+        "rights_status": "owned"
+      },
+      "production": {
+        "source_kind": "generated_original",
+        "generation_job_id": "aw-generated-garments-09-n0048",
+        "prompt_version": "selfit-aw-colour-axis-outer-v1",
+        "reference_ids": [],
+        "qa_status": "approved",
+        "phash": "3030307070703010-0b2944"
+      },
+      "annotation": {
+        "status": "designer_reviewed",
+        "source": "designer",
+        "confidence": 0.92,
+        "review_notes": [
+          "Cutout and visible silhouette reviewed in current Codex session; outfit use remains draft."
+        ]
+      },
+      "color_evidence": {
+        "source": "opaque_pixel_quantization_v1",
+        "status": "measured_not_semantic_review",
+        "asset_sha256": "7124e64c2169a3cfa1fa800bcb38a578dd3b522bca7dfb64a535f272cd1ea3e2",
+        "swatches": [
+          {
+            "hex": "#082641",
+            "weight": 0.295,
+            "family": "蓝"
+          },
+          {
+            "hex": "#0c2c48",
+            "weight": 0.2193,
+            "family": "蓝"
+          },
+          {
+            "hex": "#0f314e",
+            "weight": 0.1871,
+            "family": "蓝"
+          },
+          {
+            "hex": "#03192f",
+            "weight": 0.1752,
+            "family": "黑"
+          },
+          {
+            "hex": "#133655",
+            "weight": 0.1234,
+            "family": "蓝"
+          }
+        ],
+        "palette_names": [
+          "蓝",
+          "黑"
+        ],
+        "color": {
+          "temperature": "未判断",
+          "lightness": "深色",
+          "saturation": "高饱和",
+          "harmony": "未判断",
+          "palette": [
+            "#082641",
+            "#0c2c48",
+            "#0f314e",
+            "#03192f",
+            "#133655"
+          ]
+        },
+        "limitations": "渲染光照会影响色值；不据此推断面料成分、真实冷暖或人体适配。"
+      }
+    },
+    {
+      "id": "garment_aw_targeted07_outer_ocean_soft_01",
+      "category": "outer",
+      "subcategory": "雾海蓝柔和系带A线大衣",
+      "silhouette": [
+        "soft_rounded_shoulder",
+        "controlled_wrap",
+        "flowing_a_line"
+      ],
+      "fit": "宽松",
+      "materials": [],
+      "details": [
+        "original_gap_fill",
+        "ocean",
+        "visually_reviewed_cutout"
+      ],
+      "season_tags": [
+        "秋",
+        "冬"
+      ],
+      "scene_tags": [
+        "日常",
+        "通勤",
+        "旅行"
+      ],
+      "weather_tags": [],
+      "presentation": [
+        "feminine",
+        "neutral"
+      ],
+      "layer_role": "outer",
+      "tryon_slot": "outer",
+      "persona_affinity": {
+        "FLOU": 0.96,
+        "MELT": 0.88,
+        "EASE": 0.8,
+        "WABI": 0.72
+      },
+      "color": {
+        "temperature": "未判断",
+        "lightness": "中等",
+        "saturation": "中饱和",
+        "harmony": "未判断",
+        "palette": [
+          "#4c627e",
+          "#566d8b",
+          "#3a4c62",
+          "#637a9a",
+          "#6f87a6"
+        ]
+      },
+      "assets": {
+        "image_url": "/static/selfit/assets/content_v2_drafts/aw-targeted-07/garments/winter-coat-ocean-soft-v1.png",
+        "source_url": "",
+        "width": 1200,
+        "height": 1200,
+        "alpha_verified": true,
+        "rights_status": "owned"
+      },
+      "production": {
+        "source_kind": "generated_original",
+        "generation_job_id": "aw-generated-garments-09-n0049",
+        "prompt_version": "selfit-aw-colour-axis-outer-v1",
+        "reference_ids": [],
+        "qa_status": "approved",
+        "phash": "707970f07970b230-546985"
+      },
+      "annotation": {
+        "status": "designer_reviewed",
+        "source": "designer",
+        "confidence": 0.92,
+        "review_notes": [
+          "Cutout and visible silhouette reviewed in current Codex session; outfit use remains draft."
+        ]
+      },
+      "color_evidence": {
+        "source": "opaque_pixel_quantization_v1",
+        "status": "measured_not_semantic_review",
+        "asset_sha256": "1a01281aa2f1007faf870ea0f4e747656f1713800de230231ee634f4eebefb03",
+        "swatches": [
+          {
+            "hex": "#4c627e",
+            "weight": 0.33,
+            "family": "蓝"
+          },
+          {
+            "hex": "#566d8b",
+            "weight": 0.2404,
+            "family": "蓝"
+          },
+          {
+            "hex": "#3a4c62",
+            "weight": 0.1528,
+            "family": "蓝"
+          },
+          {
+            "hex": "#637a9a",
+            "weight": 0.1461,
+            "family": "蓝"
+          },
+          {
+            "hex": "#6f87a6",
+            "weight": 0.1307,
+            "family": "蓝"
+          }
+        ],
+        "palette_names": [
+          "蓝"
+        ],
+        "color": {
+          "temperature": "未判断",
+          "lightness": "中等",
+          "saturation": "中饱和",
+          "harmony": "未判断",
+          "palette": [
+            "#4c627e",
+            "#566d8b",
+            "#3a4c62",
+            "#637a9a",
+            "#6f87a6"
+          ]
+        },
+        "limitations": "渲染光照会影响色值；不据此推断面料成分、真实冷暖或人体适配。"
+      }
+    },
+    {
+      "id": "garment_aw_targeted07_outer_earth_precise_01",
+      "category": "outer",
+      "subcategory": "冷蕈褐立领收净长大衣",
+      "silhouette": [
+        "disciplined_shoulder",
+        "stand_collar",
+        "narrow_column"
+      ],
+      "fit": "合体",
+      "materials": [],
+      "details": [
+        "original_gap_fill",
+        "earth",
+        "visually_reviewed_cutout"
+      ],
+      "season_tags": [
+        "秋",
+        "冬"
+      ],
+      "scene_tags": [
+        "日常",
+        "通勤",
+        "旅行"
+      ],
+      "weather_tags": [],
+      "presentation": [
+        "feminine",
+        "neutral"
+      ],
+      "layer_role": "outer",
+      "tryon_slot": "outer",
+      "persona_affinity": {
+        "ICED": 0.96,
+        "MUTE": 0.88,
+        "JADE": 0.8,
+        "HEIR": 0.72
+      },
+      "color": {
+        "temperature": "未判断",
+        "lightness": "中等",
+        "saturation": "低饱和",
+        "harmony": "未判断",
+        "palette": [
+          "#867366",
+          "#917e71",
+          "#6c5b4f",
+          "#9b877a",
+          "#a39084"
+        ]
+      },
+      "assets": {
+        "image_url": "/static/selfit/assets/content_v2_drafts/aw-targeted-07/garments/winter-coat-earth-precise-v1.png",
+        "source_url": "",
+        "width": 1200,
+        "height": 1200,
+        "alpha_verified": true,
+        "rights_status": "owned"
+      },
+      "production": {
+        "source_kind": "generated_original",
+        "generation_job_id": "aw-generated-garments-09-n0050",
+        "prompt_version": "selfit-aw-colour-axis-outer-v1",
+        "reference_ids": [],
+        "qa_status": "approved",
+        "phash": "30b2b2f07170b210-89766a"
+      },
+      "annotation": {
+        "status": "designer_reviewed",
+        "source": "designer",
+        "confidence": 0.92,
+        "review_notes": [
+          "Cutout and visible silhouette reviewed in current Codex session; outfit use remains draft."
+        ]
+      },
+      "color_evidence": {
+        "source": "opaque_pixel_quantization_v1",
+        "status": "measured_not_semantic_review",
+        "asset_sha256": "7e0a4854f0f68d7ad77581fb230f16bcb0ee7cbc2f51e7841c15dd2aa3d0b04f",
+        "swatches": [
+          {
+            "hex": "#867366",
+            "weight": 0.2664,
+            "family": "棕"
+          },
+          {
+            "hex": "#917e71",
+            "weight": 0.2467,
+            "family": "棕"
+          },
+          {
+            "hex": "#6c5b4f",
+            "weight": 0.2072,
+            "family": "棕"
+          },
+          {
+            "hex": "#9b877a",
+            "weight": 0.1433,
+            "family": "棕"
+          },
+          {
+            "hex": "#a39084",
+            "weight": 0.1364,
+            "family": "棕"
+          }
+        ],
+        "palette_names": [
+          "棕"
+        ],
+        "color": {
+          "temperature": "未判断",
+          "lightness": "中等",
+          "saturation": "低饱和",
+          "harmony": "未判断",
+          "palette": [
+            "#867366",
+            "#917e71",
+            "#6c5b4f",
+            "#9b877a",
+            "#a39084"
+          ]
+        },
+        "limitations": "渲染光照会影响色值；不据此推断面料成分、真实冷暖或人体适配。"
+      }
+    },
+    {
+      "id": "garment_aw_targeted07_outer_earth_soft_01",
+      "category": "outer",
+      "subcategory": "暖陶褐弧线茧形长大衣",
+      "silhouette": [
+        "rounded_cocoon",
+        "dropped_shoulder",
+        "quiet_curved_seam"
+      ],
+      "fit": "宽松",
+      "materials": [],
+      "details": [
+        "original_gap_fill",
+        "earth",
+        "visually_reviewed_cutout"
+      ],
+      "season_tags": [
+        "秋",
+        "冬"
+      ],
+      "scene_tags": [
+        "日常",
+        "通勤",
+        "旅行"
+      ],
+      "weather_tags": [],
+      "presentation": [
+        "feminine",
+        "neutral"
+      ],
+      "layer_role": "outer",
+      "tryon_slot": "outer",
+      "persona_affinity": {
+        "WABI": 0.96,
+        "VOID": 0.88,
+        "MELT": 0.8,
+        "EASE": 0.72
+      },
+      "color": {
+        "temperature": "未判断",
+        "lightness": "中等",
+        "saturation": "中饱和",
+        "harmony": "未判断",
+        "palette": [
+          "#7b6152",
+          "#85695a",
+          "#8c7061",
+          "#5e483b",
+          "#977b6b"
+        ]
+      },
+      "assets": {
+        "image_url": "/static/selfit/assets/content_v2_drafts/aw-targeted-07/garments/winter-coat-earth-soft-v1.png",
+        "source_url": "",
+        "width": 1200,
+        "height": 1200,
+        "alpha_verified": true,
+        "rights_status": "owned"
+      },
+      "production": {
+        "source_kind": "generated_original",
+        "generation_job_id": "aw-generated-garments-09-n0051",
+        "prompt_version": "selfit-aw-colour-axis-outer-v1",
+        "reference_ids": [],
+        "qa_status": "approved",
+        "phash": "307079f87879b010-7e6455"
+      },
+      "annotation": {
+        "status": "designer_reviewed",
+        "source": "designer",
+        "confidence": 0.92,
+        "review_notes": [
+          "Cutout and visible silhouette reviewed in current Codex session; outfit use remains draft."
+        ]
+      },
+      "color_evidence": {
+        "source": "opaque_pixel_quantization_v1",
+        "status": "measured_not_semantic_review",
+        "asset_sha256": "4442a507e68be7057b0e2765a4631b9088a8c8f086c841df1f4c81d6bb88ff4b",
+        "swatches": [
+          {
+            "hex": "#7b6152",
+            "weight": 0.3104,
+            "family": "棕"
+          },
+          {
+            "hex": "#85695a",
+            "weight": 0.2437,
+            "family": "棕"
+          },
+          {
+            "hex": "#8c7061",
+            "weight": 0.181,
+            "family": "棕"
+          },
+          {
+            "hex": "#5e483b",
+            "weight": 0.1508,
+            "family": "棕"
+          },
+          {
+            "hex": "#977b6b",
+            "weight": 0.1142,
+            "family": "棕"
+          }
+        ],
+        "palette_names": [
+          "棕"
+        ],
+        "color": {
+          "temperature": "未判断",
+          "lightness": "中等",
+          "saturation": "中饱和",
+          "harmony": "未判断",
+          "palette": [
+            "#7b6152",
+            "#85695a",
+            "#8c7061",
+            "#5e483b",
+            "#977b6b"
+          ]
+        },
+        "limitations": "渲染光照会影响色值；不据此推断面料成分、真实冷暖或人体适配。"
+      }
+    },
+    {
+      "id": "garment_aw_targeted07_outer_bright_sharp_01",
+      "category": "outer",
+      "subcategory": "钴蓝斜领锐线中长大衣",
+      "silhouette": [
+        "crisp_shoulder",
+        "single_asymmetric_lapel",
+        "sharp_mid_length"
+      ],
+      "fit": "合体",
+      "materials": [],
+      "details": [
+        "original_gap_fill",
+        "bright",
+        "visually_reviewed_cutout"
+      ],
+      "season_tags": [
+        "秋",
+        "冬"
+      ],
+      "scene_tags": [
+        "日常",
+        "通勤",
+        "旅行"
+      ],
+      "weather_tags": [],
+      "presentation": [
+        "feminine",
+        "neutral"
+      ],
+      "layer_role": "outer",
+      "tryon_slot": "outer",
+      "persona_affinity": {
+        "EDGE": 0.96,
+        "NEON": 0.88,
+        "JADE": 0.8,
+        "NOIR": 0.72
+      },
+      "color": {
+        "temperature": "未判断",
+        "lightness": "中等",
+        "saturation": "高饱和",
+        "harmony": "未判断",
+        "palette": [
+          "#0123a1",
+          "#0126aa",
+          "#022ab2",
+          "#00187d",
+          "#0532c3"
+        ]
+      },
+      "assets": {
+        "image_url": "/static/selfit/assets/content_v2_drafts/aw-targeted-07/garments/winter-coat-bright-sharp-v1.png",
+        "source_url": "",
+        "width": 1200,
+        "height": 1200,
+        "alpha_verified": true,
+        "rights_status": "owned"
+      },
+      "production": {
+        "source_kind": "generated_original",
+        "generation_job_id": "aw-generated-garments-09-n0052",
+        "prompt_version": "selfit-aw-colour-axis-outer-v1",
+        "reference_ids": [],
+        "qa_status": "approved",
+        "phash": "7069f8f071797010-0225a4"
+      },
+      "annotation": {
+        "status": "designer_reviewed",
+        "source": "designer",
+        "confidence": 0.92,
+        "review_notes": [
+          "Cutout and visible silhouette reviewed in current Codex session; outfit use remains draft."
+        ]
+      },
+      "color_evidence": {
+        "source": "opaque_pixel_quantization_v1",
+        "status": "measured_not_semantic_review",
+        "asset_sha256": "40d54ab368b6b47b73a5b9b85f09443d0b035c8c4f11ed07c567a579ba560451",
+        "swatches": [
+          {
+            "hex": "#0123a1",
+            "weight": 0.3558,
+            "family": "蓝"
+          },
+          {
+            "hex": "#0126aa",
+            "weight": 0.2466,
+            "family": "蓝"
+          },
+          {
+            "hex": "#022ab2",
+            "weight": 0.1451,
+            "family": "蓝"
+          },
+          {
+            "hex": "#00187d",
+            "weight": 0.1286,
+            "family": "蓝"
+          },
+          {
+            "hex": "#0532c3",
+            "weight": 0.1239,
+            "family": "蓝"
+          }
+        ],
+        "palette_names": [
+          "蓝"
+        ],
+        "color": {
+          "temperature": "未判断",
+          "lightness": "中等",
+          "saturation": "高饱和",
+          "harmony": "未判断",
+          "palette": [
+            "#0123a1",
+            "#0126aa",
+            "#022ab2",
+            "#00187d",
+            "#0532c3"
+          ]
+        },
+        "limitations": "渲染光照会影响色值；不据此推断面料成分、真实冷暖或人体适配。"
+      }
+    },
+    {
+      "id": "garment_aw_targeted07_outer_bright_soft_01",
+      "category": "outer",
+      "subcategory": "万寿菊黄无领茧形长大衣",
+      "silhouette": [
+        "soft_cocoon",
+        "collarless",
+        "gentle_dropped_shoulder"
+      ],
+      "fit": "宽松",
+      "materials": [],
+      "details": [
+        "original_gap_fill",
+        "bright",
+        "visually_reviewed_cutout"
+      ],
+      "season_tags": [
+        "秋",
+        "冬"
+      ],
+      "scene_tags": [
+        "日常",
+        "通勤",
+        "旅行"
+      ],
+      "weather_tags": [],
+      "presentation": [
+        "feminine",
+        "neutral"
+      ],
+      "layer_role": "outer",
+      "tryon_slot": "outer",
+      "persona_affinity": {
+        "WABI": 0.96,
+        "MELT": 0.88,
+        "EASE": 0.8,
+        "LOOP": 0.72
+      },
+      "color": {
+        "temperature": "未判断",
+        "lightness": "浅色",
+        "saturation": "高饱和",
+        "harmony": "未判断",
+        "palette": [
+          "#f0b90b",
+          "#f4be0f",
+          "#f8c415",
+          "#d59b04",
+          "#fac91a"
+        ]
+      },
+      "assets": {
+        "image_url": "/static/selfit/assets/content_v2_drafts/aw-targeted-07/garments/winter-coat-bright-soft-v1.png",
+        "source_url": "",
+        "width": 1200,
+        "height": 1200,
+        "alpha_verified": true,
+        "rights_status": "owned"
+      },
+      "production": {
+        "source_kind": "generated_original",
+        "generation_job_id": "aw-generated-garments-09-n0053",
+        "prompt_version": "selfit-aw-colour-axis-outer-v1",
+        "reference_ids": [],
+        "qa_status": "approved",
+        "phash": "30f031716979b0b2-eeb70f"
+      },
+      "annotation": {
+        "status": "designer_reviewed",
+        "source": "designer",
+        "confidence": 0.92,
+        "review_notes": [
+          "Cutout and visible silhouette reviewed in current Codex session; outfit use remains draft."
+        ]
+      },
+      "color_evidence": {
+        "source": "opaque_pixel_quantization_v1",
+        "status": "measured_not_semantic_review",
+        "asset_sha256": "7b79e3556293468dffaeb1bad9089cfaebf66269f9ce51d3d9fca2fbeacec3b8",
+        "swatches": [
+          {
+            "hex": "#f0b90b",
+            "weight": 0.3701,
+            "family": "黄"
+          },
+          {
+            "hex": "#f4be0f",
+            "weight": 0.2227,
+            "family": "黄"
+          },
+          {
+            "hex": "#f8c415",
+            "weight": 0.159,
+            "family": "黄"
+          },
+          {
+            "hex": "#d59b04",
+            "weight": 0.1256,
+            "family": "黄"
+          },
+          {
+            "hex": "#fac91a",
+            "weight": 0.1226,
+            "family": "黄"
+          }
+        ],
+        "palette_names": [
+          "黄"
+        ],
+        "color": {
+          "temperature": "未判断",
+          "lightness": "浅色",
+          "saturation": "高饱和",
+          "harmony": "未判断",
+          "palette": [
+            "#f0b90b",
+            "#f4be0f",
+            "#f8c415",
+            "#d59b04",
+            "#fac91a"
+          ]
+        },
+        "limitations": "渲染光照会影响色值；不据此推断面料成分、真实冷暖或人体适配。"
+      }
+    },
+    {
+      "id": "garment_aw_targeted07_outer_jewel_sharp_01",
+      "category": "outer",
+      "subcategory": "深红宝石强肩收腰长大衣",
+      "silhouette": [
+        "sculpted_shoulder",
+        "defined_waist",
+        "long_straight"
+      ],
+      "fit": "合体",
+      "materials": [],
+      "details": [
+        "original_gap_fill",
+        "jewel",
+        "visually_reviewed_cutout"
+      ],
+      "season_tags": [
+        "秋",
+        "冬"
+      ],
+      "scene_tags": [
+        "日常",
+        "通勤",
+        "旅行"
+      ],
+      "weather_tags": [],
+      "presentation": [
+        "feminine",
+        "neutral"
+      ],
+      "layer_role": "outer",
+      "tryon_slot": "outer",
+      "persona_affinity": {
+        "BOLT": 0.96,
+        "EDGE": 0.88,
+        "NOIR": 0.8,
+        "HEIR": 0.72
+      },
+      "color": {
+        "temperature": "未判断",
+        "lightness": "中等",
+        "saturation": "高饱和",
+        "harmony": "未判断",
+        "palette": [
+          "#5c0712",
+          "#650a16",
+          "#6e0e1b",
+          "#42030a",
+          "#791421"
+        ]
+      },
+      "assets": {
+        "image_url": "/static/selfit/assets/content_v2_drafts/aw-targeted-07/garments/winter-coat-jewel-sharp-v1.png",
+        "source_url": "",
+        "width": 1200,
+        "height": 1200,
+        "alpha_verified": true,
+        "rights_status": "owned"
+      },
+      "production": {
+        "source_kind": "generated_original",
+        "generation_job_id": "aw-generated-garments-09-n0054",
+        "prompt_version": "selfit-aw-colour-axis-outer-v1",
+        "reference_ids": [],
+        "qa_status": "approved",
+        "phash": "3078307070703010-600a15"
+      },
+      "annotation": {
+        "status": "designer_reviewed",
+        "source": "designer",
+        "confidence": 0.92,
+        "review_notes": [
+          "Cutout and visible silhouette reviewed in current Codex session; outfit use remains draft."
+        ]
+      },
+      "color_evidence": {
+        "source": "opaque_pixel_quantization_v1",
+        "status": "measured_not_semantic_review",
+        "asset_sha256": "fea4c3275253f92dcbde8a802f87f09618aa78cc057047488f5deac14d86fd11",
+        "swatches": [
+          {
+            "hex": "#5c0712",
+            "weight": 0.3361,
+            "family": "红"
+          },
+          {
+            "hex": "#650a16",
+            "weight": 0.2043,
+            "family": "红"
+          },
+          {
+            "hex": "#6e0e1b",
+            "weight": 0.1764,
+            "family": "红"
+          },
+          {
+            "hex": "#42030a",
+            "weight": 0.159,
+            "family": "红"
+          },
+          {
+            "hex": "#791421",
+            "weight": 0.1242,
+            "family": "红"
+          }
+        ],
+        "palette_names": [
+          "红"
+        ],
+        "color": {
+          "temperature": "未判断",
+          "lightness": "中等",
+          "saturation": "高饱和",
+          "harmony": "未判断",
+          "palette": [
+            "#5c0712",
+            "#650a16",
+            "#6e0e1b",
+            "#42030a",
+            "#791421"
+          ]
+        },
+        "limitations": "渲染光照会影响色值；不据此推断面料成分、真实冷暖或人体适配。"
+      }
+    },
+    {
+      "id": "garment_aw_targeted07_outer_jewel_soft_01",
+      "category": "outer",
+      "subcategory": "深紫晶包裹茧形长大衣",
+      "silhouette": [
+        "soft_wrap_cocoon",
+        "rounded_shoulder",
+        "single_diagonal_closure"
+      ],
+      "fit": "宽松",
+      "materials": [],
+      "details": [
+        "original_gap_fill",
+        "jewel",
+        "visually_reviewed_cutout"
+      ],
+      "season_tags": [
+        "秋",
+        "冬"
+      ],
+      "scene_tags": [
+        "日常",
+        "通勤",
+        "旅行"
+      ],
+      "weather_tags": [],
+      "presentation": [
+        "feminine",
+        "neutral"
+      ],
+      "layer_role": "outer",
+      "tryon_slot": "outer",
+      "persona_affinity": {
+        "MELT": 0.96,
+        "FLOU": 0.88,
+        "VOID": 0.8,
+        "WABI": 0.72
+      },
+      "color": {
+        "temperature": "未判断",
+        "lightness": "深色",
+        "saturation": "高饱和",
+        "harmony": "未判断",
+        "palette": [
+          "#34142a",
+          "#3c1932",
+          "#411d38",
+          "#230b1b",
+          "#49233f"
+        ]
+      },
+      "assets": {
+        "image_url": "/static/selfit/assets/content_v2_drafts/aw-targeted-07/garments/winter-coat-jewel-soft-v1.png",
+        "source_url": "",
+        "width": 1200,
+        "height": 1200,
+        "alpha_verified": true,
+        "rights_status": "owned"
+      },
+      "production": {
+        "source_kind": "generated_original",
+        "generation_job_id": "aw-generated-garments-09-n0055",
+        "prompt_version": "selfit-aw-colour-axis-outer-v1",
+        "reference_ids": [],
+        "qa_status": "approved",
+        "phash": "3038307079783010-38182f"
+      },
+      "annotation": {
+        "status": "designer_reviewed",
+        "source": "designer",
+        "confidence": 0.92,
+        "review_notes": [
+          "Cutout and visible silhouette reviewed in current Codex session; outfit use remains draft."
+        ]
+      },
+      "color_evidence": {
+        "source": "opaque_pixel_quantization_v1",
+        "status": "measured_not_semantic_review",
+        "asset_sha256": "58c3301f7af14fb95c85bc35614a16654db48dc117871382a10e96230e318afa",
+        "swatches": [
+          {
+            "hex": "#34142a",
+            "weight": 0.3216,
+            "family": "紫"
+          },
+          {
+            "hex": "#3c1932",
+            "weight": 0.216,
+            "family": "紫"
+          },
+          {
+            "hex": "#411d38",
+            "weight": 0.1997,
+            "family": "紫"
+          },
+          {
+            "hex": "#230b1b",
+            "weight": 0.1491,
+            "family": "黑"
+          },
+          {
+            "hex": "#49233f",
+            "weight": 0.1136,
+            "family": "紫"
+          }
+        ],
+        "palette_names": [
+          "紫",
+          "黑"
+        ],
+        "color": {
+          "temperature": "未判断",
+          "lightness": "深色",
+          "saturation": "高饱和",
+          "harmony": "未判断",
+          "palette": [
+            "#34142a",
+            "#3c1932",
+            "#411d38",
+            "#230b1b",
+            "#49233f"
+          ]
+        },
+        "limitations": "渲染光照会影响色值；不据此推断面料成分、真实冷暖或人体适配。"
+      }
+    }
+  ],
+  "new_garment_manifest": "generated-garments/batch09/manifest.json",
+  "new_garment_version": "aw-generated-garments-21cea8c24cdbd7b53daa",
+  "recipes": [
+    {
+      "persona": "MUTE",
+      "palette": "ocean",
+      "season": "winter",
+      "structure": "skirt",
+      "hero": "n0048",
+      "items": [
+        "n0048",
+        "g0337",
+        "g0190",
+        "g0069",
+        "g0070"
+      ],
+      "expression": "entry",
+      "intent": "MUTE×ocean 冬季真实缺口的 skirt 结构；新主外层家族承担偏好色。"
+    },
+    {
+      "persona": "MUTE",
+      "palette": "ocean",
+      "season": "winter",
+      "structure": "dress",
+      "hero": "n0048",
+      "items": [
+        "n0048",
+        "g0222",
+        "g0265",
+        "g0513"
+      ],
+      "expression": "entry",
+      "intent": "MUTE×ocean 冬季真实缺口的 dress 结构；新主外层家族承担偏好色。"
+    },
+    {
+      "persona": "ICED",
+      "palette": "ocean",
+      "season": "winter",
+      "structure": "pants",
+      "hero": "n0048",
+      "items": [
+        "n0048",
+        "g0114",
+        "g0172",
+        "g0258",
+        "g0289"
+      ],
+      "expression": "entry",
+      "intent": "ICED×ocean 冬季真实缺口的 pants 结构；新主外层家族承担偏好色。"
+    },
+    {
+      "persona": "ICED",
+      "palette": "ocean",
+      "season": "winter",
+      "structure": "dress",
+      "hero": "n0048",
+      "items": [
+        "n0048",
+        "g0217",
+        "g0004",
+        "g0270"
+      ],
+      "expression": "entry",
+      "intent": "ICED×ocean 冬季真实缺口的 dress 结构；新主外层家族承担偏好色。"
+    },
+    {
+      "persona": "JADE",
+      "palette": "ocean",
+      "season": "winter",
+      "structure": "pants",
+      "hero": "n0048",
+      "items": [
+        "n0048",
+        "g0114",
+        "g0172",
+        "g0258",
+        "g0289"
+      ],
+      "expression": "entry",
+      "intent": "JADE×ocean 冬季真实缺口的 pants 结构；新主外层家族承担偏好色。"
+    },
+    {
+      "persona": "JADE",
+      "palette": "ocean",
+      "season": "winter",
+      "structure": "dress",
+      "hero": "n0048",
+      "items": [
+        "n0048",
+        "g0217",
+        "g0004",
+        "g0270"
+      ],
+      "expression": "entry",
+      "intent": "JADE×ocean 冬季真实缺口的 dress 结构；新主外层家族承担偏好色。"
+    },
+    {
+      "persona": "FLOU",
+      "palette": "ocean",
+      "season": "winter",
+      "structure": "pants",
+      "hero": "n0049",
+      "items": [
+        "n0049",
+        "g0084",
+        "g0164",
+        "g0253",
+        "g0276"
+      ],
+      "expression": "entry",
+      "intent": "FLOU×ocean 冬季真实缺口的 pants 结构；新主外层家族承担偏好色。"
+    },
+    {
+      "persona": "FLOU",
+      "palette": "ocean",
+      "season": "winter",
+      "structure": "dress",
+      "hero": "n0049",
+      "items": [
+        "n0049",
+        "g0230",
+        "g0245",
+        "g0276"
+      ],
+      "expression": "entry",
+      "intent": "FLOU×ocean 冬季真实缺口的 dress 结构；新主外层家族承担偏好色。"
+    },
+    {
+      "persona": "MELT",
+      "palette": "ocean",
+      "season": "winter",
+      "structure": "pants",
+      "hero": "n0049",
+      "items": [
+        "n0049",
+        "g0084",
+        "g0164",
+        "g0253",
+        "g0276"
+      ],
+      "expression": "entry",
+      "intent": "MELT×ocean 冬季真实缺口的 pants 结构；新主外层家族承担偏好色。"
+    },
+    {
+      "persona": "MELT",
+      "palette": "ocean",
+      "season": "winter",
+      "structure": "dress",
+      "hero": "n0049",
+      "items": [
+        "n0049",
+        "g0230",
+        "g0245",
+        "g0276"
+      ],
+      "expression": "entry",
+      "intent": "MELT×ocean 冬季真实缺口的 dress 结构；新主外层家族承担偏好色。"
+    },
+    {
+      "persona": "EASE",
+      "palette": "ocean",
+      "season": "winter",
+      "structure": "dress",
+      "hero": "n0049",
+      "items": [
+        "n0049",
+        "g0230",
+        "g0245",
+        "g0276"
+      ],
+      "expression": "entry",
+      "intent": "EASE×ocean 冬季真实缺口的 dress 结构；新主外层家族承担偏好色。"
+    },
+    {
+      "persona": "EASE",
+      "palette": "ocean",
+      "season": "winter",
+      "structure": "skirt",
+      "hero": "n0049",
+      "items": [
+        "n0049",
+        "g0086",
+        "g0198",
+        "g0246",
+        "g0278"
+      ],
+      "expression": "entry",
+      "intent": "EASE×ocean 冬季真实缺口的 skirt 结构；新主外层家族承担偏好色。"
+    },
+    {
+      "persona": "ICED",
+      "palette": "earth",
+      "season": "winter",
+      "structure": "pants",
+      "hero": "n0050",
+      "items": [
+        "n0050",
+        "g0114",
+        "g0172",
+        "g0258",
+        "g0289"
+      ],
+      "expression": "entry",
+      "intent": "ICED×earth 冬季真实缺口的 pants 结构；新主外层家族承担偏好色。"
+    },
+    {
+      "persona": "ICED",
+      "palette": "earth",
+      "season": "winter",
+      "structure": "skirt",
+      "hero": "n0050",
+      "items": [
+        "n0050",
+        "g0006",
+        "g0194",
+        "g0248",
+        "g0010"
+      ],
+      "expression": "entry",
+      "intent": "ICED×earth 冬季真实缺口的 skirt 结构；新主外层家族承担偏好色。"
+    },
+    {
+      "persona": "MUTE",
+      "palette": "earth",
+      "season": "winter",
+      "structure": "skirt",
+      "hero": "n0050",
+      "items": [
+        "n0050",
+        "g0337",
+        "g0190",
+        "g0069",
+        "g0070"
+      ],
+      "expression": "entry",
+      "intent": "MUTE×earth 冬季真实缺口的 skirt 结构；新主外层家族承担偏好色。"
+    },
+    {
+      "persona": "MUTE",
+      "palette": "earth",
+      "season": "winter",
+      "structure": "dress",
+      "hero": "n0050",
+      "items": [
+        "n0050",
+        "g0222",
+        "g0265",
+        "g0513"
+      ],
+      "expression": "entry",
+      "intent": "MUTE×earth 冬季真实缺口的 dress 结构；新主外层家族承担偏好色。"
+    },
+    {
+      "persona": "JADE",
+      "palette": "earth",
+      "season": "winter",
+      "structure": "pants",
+      "hero": "n0050",
+      "items": [
+        "n0050",
+        "g0084",
+        "g0164",
+        "g0253",
+        "g0276"
+      ],
+      "expression": "entry",
+      "intent": "JADE×earth 冬季真实缺口的 pants 结构；新主外层家族承担偏好色。"
+    },
+    {
+      "persona": "JADE",
+      "palette": "earth",
+      "season": "winter",
+      "structure": "dress",
+      "hero": "n0050",
+      "items": [
+        "n0050",
+        "g0217",
+        "g0004",
+        "g0270"
+      ],
+      "expression": "entry",
+      "intent": "JADE×earth 冬季真实缺口的 dress 结构；新主外层家族承担偏好色。"
+    },
+    {
+      "persona": "WABI",
+      "palette": "earth",
+      "season": "winter",
+      "structure": "pants",
+      "hero": "n0051",
+      "items": [
+        "n0051",
+        "g0084",
+        "g0164",
+        "g0253",
+        "g0276"
+      ],
+      "expression": "entry",
+      "intent": "WABI×earth 冬季真实缺口的 pants 结构；新主外层家族承担偏好色。"
+    },
+    {
+      "persona": "WABI",
+      "palette": "earth",
+      "season": "winter",
+      "structure": "skirt",
+      "hero": "n0051",
+      "items": [
+        "n0051",
+        "g0086",
+        "g0198",
+        "g0246",
+        "g0278"
+      ],
+      "expression": "entry",
+      "intent": "WABI×earth 冬季真实缺口的 skirt 结构；新主外层家族承担偏好色。"
+    },
+    {
+      "persona": "VOID",
+      "palette": "earth",
+      "season": "winter",
+      "structure": "pants",
+      "hero": "n0051",
+      "items": [
+        "n0051",
+        "g0002",
+        "g0003",
+        "g0004",
+        "g0005"
+      ],
+      "expression": "entry",
+      "intent": "VOID×earth 冬季真实缺口的 pants 结构；新主外层家族承担偏好色。"
+    },
+    {
+      "persona": "VOID",
+      "palette": "earth",
+      "season": "winter",
+      "structure": "dress",
+      "hero": "n0051",
+      "items": [
+        "n0051",
+        "g0222",
+        "g0265",
+        "g0513"
+      ],
+      "expression": "entry",
+      "intent": "VOID×earth 冬季真实缺口的 dress 结构；新主外层家族承担偏好色。"
+    },
+    {
+      "persona": "MELT",
+      "palette": "earth",
+      "season": "winter",
+      "structure": "dress",
+      "hero": "n0051",
+      "items": [
+        "n0051",
+        "g0230",
+        "g0245",
+        "g0276"
+      ],
+      "expression": "entry",
+      "intent": "MELT×earth 冬季真实缺口的 dress 结构；新主外层家族承担偏好色。"
+    },
+    {
+      "persona": "MELT",
+      "palette": "earth",
+      "season": "winter",
+      "structure": "skirt",
+      "hero": "n0051",
+      "items": [
+        "n0051",
+        "g0086",
+        "g0198",
+        "g0246",
+        "g0278"
+      ],
+      "expression": "entry",
+      "intent": "MELT×earth 冬季真实缺口的 skirt 结构；新主外层家族承担偏好色。"
+    },
+    {
+      "persona": "EDGE",
+      "palette": "bright",
+      "season": "winter",
+      "structure": "skirt",
+      "hero": "n0052",
+      "items": [
+        "n0052",
+        "g0337",
+        "g0190",
+        "g0069",
+        "g0070"
+      ],
+      "expression": "entry",
+      "intent": "EDGE×bright 冬季真实缺口的 skirt 结构；新主外层家族承担偏好色。"
+    },
+    {
+      "persona": "EDGE",
+      "palette": "bright",
+      "season": "winter",
+      "structure": "dress",
+      "hero": "n0052",
+      "items": [
+        "n0052",
+        "g0217",
+        "g0004",
+        "g0270"
+      ],
+      "expression": "entry",
+      "intent": "EDGE×bright 冬季真实缺口的 dress 结构；新主外层家族承担偏好色。"
+    },
+    {
+      "persona": "JADE",
+      "palette": "bright",
+      "season": "winter",
+      "structure": "pants",
+      "hero": "n0052",
+      "items": [
+        "n0052",
+        "g0114",
+        "g0172",
+        "g0258",
+        "g0289"
+      ],
+      "expression": "entry",
+      "intent": "JADE×bright 冬季真实缺口的 pants 结构；新主外层家族承担偏好色。"
+    },
+    {
+      "persona": "JADE",
+      "palette": "bright",
+      "season": "winter",
+      "structure": "dress",
+      "hero": "n0052",
+      "items": [
+        "n0052",
+        "g0217",
+        "g0004",
+        "g0270"
+      ],
+      "expression": "entry",
+      "intent": "JADE×bright 冬季真实缺口的 dress 结构；新主外层家族承担偏好色。"
+    },
+    {
+      "persona": "NOIR",
+      "palette": "bright",
+      "season": "winter",
+      "structure": "skirt",
+      "hero": "n0052",
+      "items": [
+        "n0052",
+        "g0337",
+        "g0190",
+        "g0069",
+        "g0070"
+      ],
+      "expression": "entry",
+      "intent": "NOIR×bright 冬季真实缺口的 skirt 结构；新主外层家族承担偏好色。"
+    },
+    {
+      "persona": "NOIR",
+      "palette": "bright",
+      "season": "winter",
+      "structure": "pants",
+      "hero": "n0052",
+      "items": [
+        "n0052",
+        "g0002",
+        "g0003",
+        "g0004",
+        "g0005"
+      ],
+      "expression": "entry",
+      "intent": "NOIR×bright 冬季真实缺口的 pants 结构；新主外层家族承担偏好色。"
+    },
+    {
+      "persona": "WABI",
+      "palette": "bright",
+      "season": "winter",
+      "structure": "pants",
+      "hero": "n0053",
+      "items": [
+        "n0053",
+        "g0084",
+        "g0164",
+        "g0253",
+        "g0276"
+      ],
+      "expression": "entry",
+      "intent": "WABI×bright 冬季真实缺口的 pants 结构；新主外层家族承担偏好色。"
+    },
+    {
+      "persona": "WABI",
+      "palette": "bright",
+      "season": "winter",
+      "structure": "skirt",
+      "hero": "n0053",
+      "items": [
+        "n0053",
+        "g0086",
+        "g0198",
+        "g0246",
+        "g0278"
+      ],
+      "expression": "entry",
+      "intent": "WABI×bright 冬季真实缺口的 skirt 结构；新主外层家族承担偏好色。"
+    },
+    {
+      "persona": "MELT",
+      "palette": "bright",
+      "season": "winter",
+      "structure": "pants",
+      "hero": "n0053",
+      "items": [
+        "n0053",
+        "g0084",
+        "g0164",
+        "g0253",
+        "g0276"
+      ],
+      "expression": "entry",
+      "intent": "MELT×bright 冬季真实缺口的 pants 结构；新主外层家族承担偏好色。"
+    },
+    {
+      "persona": "MELT",
+      "palette": "bright",
+      "season": "winter",
+      "structure": "dress",
+      "hero": "n0053",
+      "items": [
+        "n0053",
+        "g0230",
+        "g0245",
+        "g0276"
+      ],
+      "expression": "entry",
+      "intent": "MELT×bright 冬季真实缺口的 dress 结构；新主外层家族承担偏好色。"
+    },
+    {
+      "persona": "EASE",
+      "palette": "bright",
+      "season": "winter",
+      "structure": "skirt",
+      "hero": "n0053",
+      "items": [
+        "n0053",
+        "g0086",
+        "g0198",
+        "g0246",
+        "g0278"
+      ],
+      "expression": "entry",
+      "intent": "EASE×bright 冬季真实缺口的 skirt 结构；新主外层家族承担偏好色。"
+    },
+    {
+      "persona": "EASE",
+      "palette": "bright",
+      "season": "winter",
+      "structure": "dress",
+      "hero": "n0053",
+      "items": [
+        "n0053",
+        "g0230",
+        "g0245",
+        "g0276"
+      ],
+      "expression": "entry",
+      "intent": "EASE×bright 冬季真实缺口的 dress 结构；新主外层家族承担偏好色。"
+    },
+    {
+      "persona": "BOLT",
+      "palette": "jewel",
+      "season": "winter",
+      "structure": "skirt",
+      "hero": "n0054",
+      "items": [
+        "n0054",
+        "g0337",
+        "g0190",
+        "g0069",
+        "g0070"
+      ],
+      "expression": "entry",
+      "intent": "BOLT×jewel 冬季真实缺口的 skirt 结构；新主外层家族承担偏好色。"
+    },
+    {
+      "persona": "BOLT",
+      "palette": "jewel",
+      "season": "winter",
+      "structure": "dress",
+      "hero": "n0054",
+      "items": [
+        "n0054",
+        "g0217",
+        "g0004",
+        "g0270"
+      ],
+      "expression": "entry",
+      "intent": "BOLT×jewel 冬季真实缺口的 dress 结构；新主外层家族承担偏好色。"
+    },
+    {
+      "persona": "EDGE",
+      "palette": "jewel",
+      "season": "winter",
+      "structure": "dress",
+      "hero": "n0054",
+      "items": [
+        "n0054",
+        "g0217",
+        "g0004",
+        "g0270"
+      ],
+      "expression": "entry",
+      "intent": "EDGE×jewel 冬季真实缺口的 dress 结构；新主外层家族承担偏好色。"
+    },
+    {
+      "persona": "EDGE",
+      "palette": "jewel",
+      "season": "winter",
+      "structure": "pants",
+      "hero": "n0054",
+      "items": [
+        "n0054",
+        "g0002",
+        "g0003",
+        "g0004",
+        "g0005"
+      ],
+      "expression": "entry",
+      "intent": "EDGE×jewel 冬季真实缺口的 pants 结构；新主外层家族承担偏好色。"
+    },
+    {
+      "persona": "NOIR",
+      "palette": "jewel",
+      "season": "winter",
+      "structure": "skirt",
+      "hero": "n0054",
+      "items": [
+        "n0054",
+        "g0337",
+        "g0190",
+        "g0069",
+        "g0070"
+      ],
+      "expression": "entry",
+      "intent": "NOIR×jewel 冬季真实缺口的 skirt 结构；新主外层家族承担偏好色。"
+    },
+    {
+      "persona": "NOIR",
+      "palette": "jewel",
+      "season": "winter",
+      "structure": "pants",
+      "hero": "n0054",
+      "items": [
+        "n0054",
+        "g0002",
+        "g0003",
+        "g0004",
+        "g0005"
+      ],
+      "expression": "entry",
+      "intent": "NOIR×jewel 冬季真实缺口的 pants 结构；新主外层家族承担偏好色。"
+    },
+    {
+      "persona": "FLOU",
+      "palette": "jewel",
+      "season": "winter",
+      "structure": "pants",
+      "hero": "n0055",
+      "items": [
+        "n0055",
+        "g0084",
+        "g0164",
+        "g0253",
+        "g0276"
+      ],
+      "expression": "entry",
+      "intent": "FLOU×jewel 冬季真实缺口的 pants 结构；新主外层家族承担偏好色。"
+    },
+    {
+      "persona": "FLOU",
+      "palette": "jewel",
+      "season": "winter",
+      "structure": "dress",
+      "hero": "n0055",
+      "items": [
+        "n0055",
+        "g0230",
+        "g0245",
+        "g0276"
+      ],
+      "expression": "entry",
+      "intent": "FLOU×jewel 冬季真实缺口的 dress 结构；新主外层家族承担偏好色。"
+    },
+    {
+      "persona": "MELT",
+      "palette": "jewel",
+      "season": "winter",
+      "structure": "pants",
+      "hero": "n0055",
+      "items": [
+        "n0055",
+        "g0084",
+        "g0164",
+        "g0253",
+        "g0276"
+      ],
+      "expression": "entry",
+      "intent": "MELT×jewel 冬季真实缺口的 pants 结构；新主外层家族承担偏好色。"
+    },
+    {
+      "persona": "MELT",
+      "palette": "jewel",
+      "season": "winter",
+      "structure": "dress",
+      "hero": "n0055",
+      "items": [
+        "n0055",
+        "g0230",
+        "g0245",
+        "g0276"
+      ],
+      "expression": "entry",
+      "intent": "MELT×jewel 冬季真实缺口的 dress 结构；新主外层家族承担偏好色。"
+    },
+    {
+      "persona": "VOID",
+      "palette": "jewel",
+      "season": "winter",
+      "structure": "skirt",
+      "hero": "n0055",
+      "items": [
+        "n0055",
+        "g0086",
+        "g0198",
+        "g0246",
+        "g0278"
+      ],
+      "expression": "entry",
+      "intent": "VOID×jewel 冬季真实缺口的 skirt 结构；新主外层家族承担偏好色。"
+    },
+    {
+      "persona": "VOID",
+      "palette": "jewel",
+      "season": "winter",
+      "structure": "dress",
+      "hero": "n0055",
+      "items": [
+        "n0055",
+        "g0222",
+        "g0265",
+        "g0513"
+      ],
+      "expression": "entry",
+      "intent": "VOID×jewel 冬季真实缺口的 dress 结构；新主外层家族承担偏好色。"
+    }
+  ]
+}

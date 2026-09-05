@@ -1,0 +1,940 @@
+{
+  "schema_version": 1,
+  "batch_id": "aw-targeted-06",
+  "source_visual_version": "codex-visual-16b18cdcdca36dbc306a",
+  "status": "designer_targets_pending_whole_image_review",
+  "new_garments": [
+    {
+      "id": "garment_aw_targeted06_dress_iced_pastel_01",
+      "category": "dress",
+      "subcategory": "冰雾蓝窄长针织裙",
+      "silhouette": [
+        "narrow_column",
+        "clean_vertical",
+        "high_coverage"
+      ],
+      "fit": "合体",
+      "materials": [],
+      "details": [
+        "original_gap_fill",
+        "pastel",
+        "visually_reviewed_cutout"
+      ],
+      "season_tags": [
+        "秋",
+        "冬"
+      ],
+      "scene_tags": [
+        "日常",
+        "通勤",
+        "旅行"
+      ],
+      "weather_tags": [],
+      "presentation": [
+        "feminine",
+        "neutral"
+      ],
+      "layer_role": "single",
+      "tryon_slot": "dress",
+      "persona_affinity": {
+        "ICED": 0.96,
+        "MUTE": 0.88,
+        "LOOP": 0.8
+      },
+      "color": {
+        "temperature": "未判断",
+        "lightness": "浅色",
+        "saturation": "低饱和",
+        "harmony": "未判断",
+        "palette": [
+          "#a3b7cf",
+          "#a6bad2",
+          "#abbed6",
+          "#b3c4dc",
+          "#9aaec7"
+        ]
+      },
+      "assets": {
+        "image_url": "/static/selfit/assets/content_v2_drafts/aw-targeted-06/garments/winter-dress-pastel-iced-v1.png",
+        "source_url": "",
+        "width": 1200,
+        "height": 1200,
+        "alpha_verified": true,
+        "rights_status": "owned"
+      },
+      "production": {
+        "source_kind": "generated_original",
+        "generation_job_id": "aw-generated-garments-08-n0042",
+        "prompt_version": "selfit-aw-winter-dress-family-v1",
+        "reference_ids": [],
+        "qa_status": "approved",
+        "phash": "30b2b2b27030b230-a5b8d1"
+      },
+      "annotation": {
+        "status": "designer_reviewed",
+        "source": "designer",
+        "confidence": 0.92,
+        "review_notes": [
+          "Cutout and visible silhouette reviewed in current Codex session; outfit use remains draft."
+        ]
+      },
+      "color_evidence": {
+        "source": "opaque_pixel_quantization_v1",
+        "status": "measured_not_semantic_review",
+        "asset_sha256": "cb4aa840830bca0f2470f45961ba5ab7ab9c03ba57a67c9f04590ebf693f21b0",
+        "swatches": [
+          {
+            "hex": "#a3b7cf",
+            "weight": 0.3473,
+            "family": "蓝"
+          },
+          {
+            "hex": "#a6bad2",
+            "weight": 0.2193,
+            "family": "蓝"
+          },
+          {
+            "hex": "#abbed6",
+            "weight": 0.183,
+            "family": "蓝"
+          },
+          {
+            "hex": "#b3c4dc",
+            "weight": 0.1333,
+            "family": "蓝"
+          },
+          {
+            "hex": "#9aaec7",
+            "weight": 0.1172,
+            "family": "蓝"
+          }
+        ],
+        "palette_names": [
+          "蓝"
+        ],
+        "color": {
+          "temperature": "未判断",
+          "lightness": "浅色",
+          "saturation": "低饱和",
+          "harmony": "未判断",
+          "palette": [
+            "#a3b7cf",
+            "#a6bad2",
+            "#abbed6",
+            "#b3c4dc",
+            "#9aaec7"
+          ]
+        },
+        "limitations": "渲染光照会影响色值；不据此推断面料成分、真实冷暖或人体适配。"
+      }
+    },
+    {
+      "id": "garment_aw_targeted06_dress_wabi_jewel_01",
+      "category": "dress",
+      "subcategory": "深青弧线茧形针织裙",
+      "silhouette": [
+        "gentle_cocoon",
+        "quiet_curved_seam",
+        "covered_column"
+      ],
+      "fit": "宽松",
+      "materials": [],
+      "details": [
+        "original_gap_fill",
+        "jewel",
+        "visually_reviewed_cutout"
+      ],
+      "season_tags": [
+        "秋",
+        "冬"
+      ],
+      "scene_tags": [
+        "日常",
+        "通勤",
+        "旅行"
+      ],
+      "weather_tags": [],
+      "presentation": [
+        "feminine",
+        "neutral"
+      ],
+      "layer_role": "single",
+      "tryon_slot": "dress",
+      "persona_affinity": {
+        "WABI": 0.96,
+        "VOID": 0.88,
+        "EASE": 0.8
+      },
+      "color": {
+        "temperature": "未判断",
+        "lightness": "深色",
+        "saturation": "高饱和",
+        "harmony": "未判断",
+        "palette": [
+          "#083038",
+          "#0b373f",
+          "#04252b",
+          "#0e3d46",
+          "#134752"
+        ]
+      },
+      "assets": {
+        "image_url": "/static/selfit/assets/content_v2_drafts/aw-targeted-06/garments/winter-dress-jewel-wabi-v1.png",
+        "source_url": "",
+        "width": 1200,
+        "height": 1200,
+        "alpha_verified": true,
+        "rights_status": "owned"
+      },
+      "production": {
+        "source_kind": "generated_original",
+        "generation_job_id": "aw-generated-garments-08-n0043",
+        "prompt_version": "selfit-aw-winter-dress-family-v1",
+        "reference_ids": [],
+        "qa_status": "approved",
+        "phash": "30b2307071703030-0b343d"
+      },
+      "annotation": {
+        "status": "designer_reviewed",
+        "source": "designer",
+        "confidence": 0.92,
+        "review_notes": [
+          "Cutout and visible silhouette reviewed in current Codex session; outfit use remains draft."
+        ]
+      },
+      "color_evidence": {
+        "source": "opaque_pixel_quantization_v1",
+        "status": "measured_not_semantic_review",
+        "asset_sha256": "7cb6b477e2a731ecdbb42851574231c6821d9ce25460ee204c7c95b0a2b0fe80",
+        "swatches": [
+          {
+            "hex": "#083038",
+            "weight": 0.2926,
+            "family": "蓝"
+          },
+          {
+            "hex": "#0b373f",
+            "weight": 0.2078,
+            "family": "蓝"
+          },
+          {
+            "hex": "#04252b",
+            "weight": 0.1975,
+            "family": "黑"
+          },
+          {
+            "hex": "#0e3d46",
+            "weight": 0.1964,
+            "family": "蓝"
+          },
+          {
+            "hex": "#134752",
+            "weight": 0.1057,
+            "family": "蓝"
+          }
+        ],
+        "palette_names": [
+          "蓝",
+          "黑"
+        ],
+        "color": {
+          "temperature": "未判断",
+          "lightness": "深色",
+          "saturation": "高饱和",
+          "harmony": "未判断",
+          "palette": [
+            "#083038",
+            "#0b373f",
+            "#04252b",
+            "#0e3d46",
+            "#134752"
+          ]
+        },
+        "limitations": "渲染光照会影响色值；不据此推断面料成分、真实冷暖或人体适配。"
+      }
+    },
+    {
+      "id": "garment_aw_targeted06_dress_heir_jewel_01",
+      "category": "dress",
+      "subcategory": "祖母绿经典衬衫裙",
+      "silhouette": [
+        "defined_waist",
+        "clean_shoulder",
+        "straight_a_line"
+      ],
+      "fit": "合体",
+      "materials": [],
+      "details": [
+        "original_gap_fill",
+        "jewel",
+        "visually_reviewed_cutout"
+      ],
+      "season_tags": [
+        "秋",
+        "冬"
+      ],
+      "scene_tags": [
+        "日常",
+        "通勤",
+        "旅行"
+      ],
+      "weather_tags": [],
+      "presentation": [
+        "feminine",
+        "neutral"
+      ],
+      "layer_role": "single",
+      "tryon_slot": "dress",
+      "persona_affinity": {
+        "HEIR": 0.96,
+        "JADE": 0.88,
+        "BOLT": 0.8
+      },
+      "color": {
+        "temperature": "未判断",
+        "lightness": "深色",
+        "saturation": "高饱和",
+        "harmony": "未判断",
+        "palette": [
+          "#083024",
+          "#0a3428",
+          "#0c382b",
+          "#05271c",
+          "#103e31"
+        ]
+      },
+      "assets": {
+        "image_url": "/static/selfit/assets/content_v2_drafts/aw-targeted-06/garments/winter-dress-jewel-heir-v1.png",
+        "source_url": "",
+        "width": 1200,
+        "height": 1200,
+        "alpha_verified": true,
+        "rights_status": "owned"
+      },
+      "production": {
+        "source_kind": "generated_original",
+        "generation_job_id": "aw-generated-garments-08-n0044",
+        "prompt_version": "selfit-aw-winter-dress-family-v1",
+        "reference_ids": [],
+        "qa_status": "approved",
+        "phash": "7070707070703010-0a3327"
+      },
+      "annotation": {
+        "status": "designer_reviewed",
+        "source": "designer",
+        "confidence": 0.92,
+        "review_notes": [
+          "Cutout and visible silhouette reviewed in current Codex session; outfit use remains draft."
+        ]
+      },
+      "color_evidence": {
+        "source": "opaque_pixel_quantization_v1",
+        "status": "measured_not_semantic_review",
+        "asset_sha256": "a5420d780e66e0a5a93f6f914a09b48ebccf0848ff759aabe95cce4c7f7027eb",
+        "swatches": [
+          {
+            "hex": "#083024",
+            "weight": 0.2811,
+            "family": "黑"
+          },
+          {
+            "hex": "#0a3428",
+            "weight": 0.2688,
+            "family": "绿"
+          },
+          {
+            "hex": "#0c382b",
+            "weight": 0.1865,
+            "family": "绿"
+          },
+          {
+            "hex": "#05271c",
+            "weight": 0.135,
+            "family": "黑"
+          },
+          {
+            "hex": "#103e31",
+            "weight": 0.1287,
+            "family": "绿"
+          }
+        ],
+        "palette_names": [
+          "黑",
+          "绿"
+        ],
+        "color": {
+          "temperature": "未判断",
+          "lightness": "深色",
+          "saturation": "高饱和",
+          "harmony": "未判断",
+          "palette": [
+            "#083024",
+            "#0a3428",
+            "#0c382b",
+            "#05271c",
+            "#103e31"
+          ]
+        },
+        "limitations": "渲染光照会影响色值；不据此推断面料成分、真实冷暖或人体适配。"
+      }
+    },
+    {
+      "id": "garment_aw_targeted06_dress_heir_pastel_01",
+      "category": "dress",
+      "subcategory": "灰玫瑰简洁收腰针织裙",
+      "silhouette": [
+        "defined_waist",
+        "modest_v",
+        "soft_straight"
+      ],
+      "fit": "合体",
+      "materials": [],
+      "details": [
+        "original_gap_fill",
+        "pastel",
+        "visually_reviewed_cutout"
+      ],
+      "season_tags": [
+        "秋",
+        "冬"
+      ],
+      "scene_tags": [
+        "日常",
+        "通勤",
+        "旅行"
+      ],
+      "weather_tags": [],
+      "presentation": [
+        "feminine",
+        "neutral"
+      ],
+      "layer_role": "single",
+      "tryon_slot": "dress",
+      "persona_affinity": {
+        "HEIR": 0.96,
+        "MELT": 0.88,
+        "MUTE": 0.8
+      },
+      "color": {
+        "temperature": "未判断",
+        "lightness": "中等",
+        "saturation": "中饱和",
+        "harmony": "未判断",
+        "palette": [
+          "#a87679",
+          "#af7c80",
+          "#9b696c",
+          "#b38185",
+          "#b8868a"
+        ]
+      },
+      "assets": {
+        "image_url": "/static/selfit/assets/content_v2_drafts/aw-targeted-06/garments/winter-dress-pastel-heir-v1.png",
+        "source_url": "",
+        "width": 1200,
+        "height": 1200,
+        "alpha_verified": true,
+        "rights_status": "owned"
+      },
+      "production": {
+        "source_kind": "generated_original",
+        "generation_job_id": "aw-generated-garments-08-n0045",
+        "prompt_version": "selfit-aw-winter-dress-family-v1",
+        "reference_ids": [],
+        "qa_status": "approved",
+        "phash": "7071b0f07171b030-aa797c"
+      },
+      "annotation": {
+        "status": "designer_reviewed",
+        "source": "designer",
+        "confidence": 0.92,
+        "review_notes": [
+          "Cutout and visible silhouette reviewed in current Codex session; outfit use remains draft."
+        ]
+      },
+      "color_evidence": {
+        "source": "opaque_pixel_quantization_v1",
+        "status": "measured_not_semantic_review",
+        "asset_sha256": "9f3992dd6336ea539b336f672b842ab192ce2604fd8eaee911dfc29647d8b36d",
+        "swatches": [
+          {
+            "hex": "#a87679",
+            "weight": 0.2659,
+            "family": "粉"
+          },
+          {
+            "hex": "#af7c80",
+            "weight": 0.2177,
+            "family": "粉"
+          },
+          {
+            "hex": "#9b696c",
+            "weight": 0.214,
+            "family": "红"
+          },
+          {
+            "hex": "#b38185",
+            "weight": 0.1664,
+            "family": "粉"
+          },
+          {
+            "hex": "#b8868a",
+            "weight": 0.1359,
+            "family": "粉"
+          }
+        ],
+        "palette_names": [
+          "粉",
+          "红"
+        ],
+        "color": {
+          "temperature": "未判断",
+          "lightness": "中等",
+          "saturation": "中饱和",
+          "harmony": "未判断",
+          "palette": [
+            "#a87679",
+            "#af7c80",
+            "#9b696c",
+            "#b38185",
+            "#b8868a"
+          ]
+        },
+        "limitations": "渲染光照会影响色值；不据此推断面料成分、真实冷暖或人体适配。"
+      }
+    },
+    {
+      "id": "garment_aw_targeted06_dress_heir_ocean_01",
+      "category": "dress",
+      "subcategory": "深海蓝暗门襟经典衬衫裙",
+      "silhouette": [
+        "clean_defined_waist",
+        "long_vertical",
+        "classic_shirt"
+      ],
+      "fit": "合体",
+      "materials": [],
+      "details": [
+        "original_gap_fill",
+        "ocean",
+        "visually_reviewed_cutout"
+      ],
+      "season_tags": [
+        "秋",
+        "冬"
+      ],
+      "scene_tags": [
+        "日常",
+        "通勤",
+        "旅行"
+      ],
+      "weather_tags": [],
+      "presentation": [
+        "feminine",
+        "neutral"
+      ],
+      "layer_role": "single",
+      "tryon_slot": "dress",
+      "persona_affinity": {
+        "HEIR": 0.96,
+        "MUTE": 0.88,
+        "ICED": 0.8
+      },
+      "color": {
+        "temperature": "未判断",
+        "lightness": "深色",
+        "saturation": "高饱和",
+        "harmony": "未判断",
+        "palette": [
+          "#151e36",
+          "#18213a",
+          "#1a233d",
+          "#1e2741",
+          "#11192f"
+        ]
+      },
+      "assets": {
+        "image_url": "/static/selfit/assets/content_v2_drafts/aw-targeted-06/garments/winter-dress-ocean-heir-v1.png",
+        "source_url": "",
+        "width": 1200,
+        "height": 1200,
+        "alpha_verified": true,
+        "rights_status": "owned"
+      },
+      "production": {
+        "source_kind": "generated_original",
+        "generation_job_id": "aw-generated-garments-08-n0046",
+        "prompt_version": "selfit-aw-winter-dress-family-v1",
+        "reference_ids": [],
+        "qa_status": "approved",
+        "phash": "3030307070703030-172039"
+      },
+      "annotation": {
+        "status": "designer_reviewed",
+        "source": "designer",
+        "confidence": 0.92,
+        "review_notes": [
+          "Cutout and visible silhouette reviewed in current Codex session; outfit use remains draft."
+        ]
+      },
+      "color_evidence": {
+        "source": "opaque_pixel_quantization_v1",
+        "status": "measured_not_semantic_review",
+        "asset_sha256": "82024ceca0cc64271fb34726739cc1952ae3a5224bacac6d70cf57b20cf7df48",
+        "swatches": [
+          {
+            "hex": "#151e36",
+            "weight": 0.3071,
+            "family": "蓝"
+          },
+          {
+            "hex": "#18213a",
+            "weight": 0.2073,
+            "family": "蓝"
+          },
+          {
+            "hex": "#1a233d",
+            "weight": 0.1807,
+            "family": "蓝"
+          },
+          {
+            "hex": "#1e2741",
+            "weight": 0.1805,
+            "family": "蓝"
+          },
+          {
+            "hex": "#11192f",
+            "weight": 0.1243,
+            "family": "黑"
+          }
+        ],
+        "palette_names": [
+          "蓝",
+          "黑"
+        ],
+        "color": {
+          "temperature": "未判断",
+          "lightness": "深色",
+          "saturation": "高饱和",
+          "harmony": "未判断",
+          "palette": [
+            "#151e36",
+            "#18213a",
+            "#1a233d",
+            "#1e2741",
+            "#11192f"
+          ]
+        },
+        "limitations": "渲染光照会影响色值；不据此推断面料成分、真实冷暖或人体适配。"
+      }
+    },
+    {
+      "id": "garment_aw_targeted06_dress_ease_earth_01",
+      "category": "dress",
+      "subcategory": "暖驼抽绳松弛针织裙",
+      "silhouette": [
+        "soft_dropped_shoulder",
+        "subtle_draw_in",
+        "long_relaxed"
+      ],
+      "fit": "宽松",
+      "materials": [],
+      "details": [
+        "original_gap_fill",
+        "earth",
+        "visually_reviewed_cutout"
+      ],
+      "season_tags": [
+        "秋",
+        "冬"
+      ],
+      "scene_tags": [
+        "日常",
+        "通勤",
+        "旅行"
+      ],
+      "weather_tags": [],
+      "presentation": [
+        "feminine",
+        "neutral"
+      ],
+      "layer_role": "single",
+      "tryon_slot": "dress",
+      "persona_affinity": {
+        "EASE": 0.96,
+        "LOOP": 0.88,
+        "MELT": 0.8
+      },
+      "color": {
+        "temperature": "未判断",
+        "lightness": "中等",
+        "saturation": "高饱和",
+        "harmony": "未判断",
+        "palette": [
+          "#a16943",
+          "#b27950",
+          "#945f3b",
+          "#9a623d",
+          "#814f2e"
+        ]
+      },
+      "assets": {
+        "image_url": "/static/selfit/assets/content_v2_drafts/aw-targeted-06/garments/winter-dress-earth-ease-v1.png",
+        "source_url": "",
+        "width": 1200,
+        "height": 1200,
+        "alpha_verified": true,
+        "rights_status": "owned"
+      },
+      "production": {
+        "source_kind": "generated_original",
+        "generation_job_id": "aw-generated-garments-08-n0047",
+        "prompt_version": "selfit-aw-winter-dress-family-v1",
+        "reference_ids": [],
+        "qa_status": "approved",
+        "phash": "30b2b2f07971b230-9c6741"
+      },
+      "annotation": {
+        "status": "designer_reviewed",
+        "source": "designer",
+        "confidence": 0.92,
+        "review_notes": [
+          "Cutout and visible silhouette reviewed in current Codex session; outfit use remains draft."
+        ]
+      },
+      "color_evidence": {
+        "source": "opaque_pixel_quantization_v1",
+        "status": "measured_not_semantic_review",
+        "asset_sha256": "676fdf292cd6bff65dd54cbccc61645e1db4920a8fd448b47803d0300bad9968",
+        "swatches": [
+          {
+            "hex": "#a16943",
+            "weight": 0.2387,
+            "family": "棕"
+          },
+          {
+            "hex": "#b27950",
+            "weight": 0.2337,
+            "family": "棕"
+          },
+          {
+            "hex": "#945f3b",
+            "weight": 0.2126,
+            "family": "棕"
+          },
+          {
+            "hex": "#9a623d",
+            "weight": 0.1899,
+            "family": "棕"
+          },
+          {
+            "hex": "#814f2e",
+            "weight": 0.1251,
+            "family": "棕"
+          }
+        ],
+        "palette_names": [
+          "棕"
+        ],
+        "color": {
+          "temperature": "未判断",
+          "lightness": "中等",
+          "saturation": "高饱和",
+          "harmony": "未判断",
+          "palette": [
+            "#a16943",
+            "#b27950",
+            "#945f3b",
+            "#9a623d",
+            "#814f2e"
+          ]
+        },
+        "limitations": "渲染光照会影响色值；不据此推断面料成分、真实冷暖或人体适配。"
+      }
+    }
+  ],
+  "new_garment_manifest": "generated-garments/batch08/manifest.json",
+  "new_garment_version": "aw-generated-garments-84fe1288a341aee886b5",
+  "recipes": [
+    {
+      "persona": "ICED",
+      "palette": "pastel",
+      "season": "winter",
+      "structure": "dress",
+      "hero": "n0042",
+      "items": [
+        "n0042",
+        "g0143",
+        "g0069",
+        "g0010"
+      ],
+      "expression": "entry",
+      "intent": "ICED×pastel 新连衣装家族，与不同现有外层建立可出门冬季关系。"
+    },
+    {
+      "persona": "ICED",
+      "palette": "pastel",
+      "season": "winter",
+      "structure": "dress",
+      "hero": "n0042",
+      "items": [
+        "n0042",
+        "g0131",
+        "g0247",
+        "g0274"
+      ],
+      "expression": "entry",
+      "intent": "ICED×pastel 新连衣装家族，与不同现有外层建立可出门冬季关系。"
+    },
+    {
+      "persona": "WABI",
+      "palette": "jewel",
+      "season": "winter",
+      "structure": "dress",
+      "hero": "n0043",
+      "items": [
+        "n0043",
+        "g0137",
+        "g0030",
+        "g0029"
+      ],
+      "expression": "entry",
+      "intent": "WABI×jewel 新连衣装家族，与不同现有外层建立可出门冬季关系。"
+    },
+    {
+      "persona": "WABI",
+      "palette": "jewel",
+      "season": "winter",
+      "structure": "dress",
+      "hero": "n0043",
+      "items": [
+        "n0043",
+        "g0155",
+        "g0245",
+        "g0278"
+      ],
+      "expression": "entry",
+      "intent": "WABI×jewel 新连衣装家族，与不同现有外层建立可出门冬季关系。"
+    },
+    {
+      "persona": "HEIR",
+      "palette": "jewel",
+      "season": "winter",
+      "structure": "dress",
+      "hero": "n0044",
+      "items": [
+        "n0044",
+        "g0131",
+        "g0004",
+        "g0270"
+      ],
+      "expression": "entry",
+      "intent": "HEIR×jewel 新连衣装家族，与不同现有外层建立可出门冬季关系。"
+    },
+    {
+      "persona": "HEIR",
+      "palette": "jewel",
+      "season": "winter",
+      "structure": "dress",
+      "hero": "n0044",
+      "items": [
+        "n0044",
+        "g0143",
+        "g0247",
+        "g0275"
+      ],
+      "expression": "entry",
+      "intent": "HEIR×jewel 新连衣装家族，与不同现有外层建立可出门冬季关系。"
+    },
+    {
+      "persona": "HEIR",
+      "palette": "pastel",
+      "season": "winter",
+      "structure": "dress",
+      "hero": "n0045",
+      "items": [
+        "n0045",
+        "g0131",
+        "g0244",
+        "g0275"
+      ],
+      "expression": "entry",
+      "intent": "HEIR×pastel 新连衣装家族，与不同现有外层建立可出门冬季关系。"
+    },
+    {
+      "persona": "HEIR",
+      "palette": "pastel",
+      "season": "winter",
+      "structure": "dress",
+      "hero": "n0045",
+      "items": [
+        "n0045",
+        "g0143",
+        "g0253",
+        "g0270"
+      ],
+      "expression": "entry",
+      "intent": "HEIR×pastel 新连衣装家族，与不同现有外层建立可出门冬季关系。"
+    },
+    {
+      "persona": "HEIR",
+      "palette": "ocean",
+      "season": "winter",
+      "structure": "dress",
+      "hero": "n0046",
+      "items": [
+        "n0046",
+        "g0143",
+        "g0004",
+        "g0275"
+      ],
+      "expression": "entry",
+      "intent": "HEIR×ocean 新连衣装家族，与不同现有外层建立可出门冬季关系。"
+    },
+    {
+      "persona": "HEIR",
+      "palette": "ocean",
+      "season": "winter",
+      "structure": "dress",
+      "hero": "n0046",
+      "items": [
+        "n0046",
+        "g0131",
+        "g0247",
+        "g0270"
+      ],
+      "expression": "entry",
+      "intent": "HEIR×ocean 新连衣装家族，与不同现有外层建立可出门冬季关系。"
+    },
+    {
+      "persona": "EASE",
+      "palette": "earth",
+      "season": "winter",
+      "structure": "dress",
+      "hero": "n0047",
+      "items": [
+        "n0047",
+        "g0155",
+        "g0245",
+        "g0276"
+      ],
+      "expression": "entry",
+      "intent": "EASE×earth 新连衣装家族，与不同现有外层建立可出门冬季关系。"
+    },
+    {
+      "persona": "EASE",
+      "palette": "earth",
+      "season": "winter",
+      "structure": "dress",
+      "hero": "n0047",
+      "items": [
+        "n0047",
+        "g0137",
+        "g0253",
+        "g0271"
+      ],
+      "expression": "entry",
+      "intent": "EASE×earth 新连衣装家族，与不同现有外层建立可出门冬季关系。"
+    }
+  ]
+}

@@ -1,0 +1,197 @@
+{
+  "schema_version": 1,
+  "version": "aw-recomposition-index-20260904-25",
+  "status": "internal_validation_only",
+  "batches": [
+    {
+      "rendered": "recompose.batch01.rendered.json",
+      "rendered_version": "aw-recompose-rendered-267fbfd3d453b1f666c5",
+      "review": "recompose.batch01.native-review.json",
+      "review_version": "aw-recompose-review-0b368787650797c07a20"
+    },
+    {
+      "rendered": "recompose.batch02.rendered.json",
+      "rendered_version": "aw-recompose-rendered-d388773a8502c6c6ff61",
+      "review": "recompose.batch02.native-review.json",
+      "review_version": "aw-recompose-review-727ff2e9bcb668c4e365"
+    },
+    {
+      "rendered": "repairs.batch02.rendered.json",
+      "rendered_version": "aw-repair-02",
+      "review": "repairs.batch02.native-review.json",
+      "review_version": "aw-repair-review-3d3d6047e40f2886f88d"
+    },
+    {
+      "rendered": "repairs.batch03.rendered.json",
+      "rendered_version": "aw-repair-03",
+      "review": "repairs.batch03.native-review.json",
+      "review_version": "aw-coverage-review-d845eca735d84e3e2a24"
+    },
+    {
+      "rendered": "repairs.batch04.rendered.json",
+      "rendered_version": "aw-repair-04",
+      "review": "repairs.batch04.native-review.json",
+      "review_version": "aw-layer-review-4f238ab44f272153ada4"
+    },
+    {
+      "rendered": "repairs.batch05.rendered.json",
+      "rendered_version": "aw-repair-05",
+      "review": "repairs.batch05.native-review.json",
+      "review_version": "aw-focal-review-05-9f229aba85d4398bf601"
+    },
+    {
+      "rendered": "repairs.batch06.rendered.json",
+      "rendered_version": "aw-repair-06",
+      "review": "repairs.batch06.native-review.json",
+      "review_version": "aw-focal-review-06-53688defeb3f5fb54dfb"
+    },
+    {
+      "rendered": "winter-recipes.batch01.rendered.json",
+      "rendered_version": "aw-designed-rendered-ec6c0225d5cb95a70c45",
+      "review": "winter-recipes.batch01.native-review.json",
+      "review_version": "aw-winter-review-88517a0b616c9b77afe0"
+    },
+    {
+      "rendered": "winter-recipes.batch02.rendered.json",
+      "rendered_version": "aw-designed-rendered-b5cab423f36d91998a91",
+      "review": "winter-recipes.batch02.native-review.json",
+      "review_version": "aw-winter-review-efe4b1b305c2497687d0",
+      "garment_manifest": "generated-garments/batch01/manifest.json",
+      "garment_manifest_version": "aw-generated-garments-55164212ad74f86d47f0"
+    },
+    {
+      "rendered": "winter-recipes.batch03.rendered.json",
+      "rendered_version": "aw-designed-rendered-abde3afaa8103c41bce8",
+      "review": "winter-recipes.batch03.native-review.json",
+      "review_version": "aw-winter-review-3d167a748667c736470a",
+      "garment_manifest": "generated-garments/batch02/manifest.json",
+      "garment_manifest_version": "aw-generated-garments-885160852e88e2efb24f"
+    },
+    {
+      "rendered": "winter-recipes.batch04.rendered.json",
+      "rendered_version": "aw-designed-rendered-3d24e7a85bce644b3361",
+      "review": "winter-recipes.batch04.native-review.json",
+      "review_version": "aw-winter-review-d61dcd2a21b63afb2dad",
+      "garment_manifest": "generated-garments/combined-manifest.json",
+      "garment_manifest_version": "aw-generated-garments-combined-6e4c062bd1211181b2af"
+    },
+    {
+      "rendered": "winter-recipes.batch05.rendered.json",
+      "rendered_version": "aw-designed-rendered-267b523de610ab34810c",
+      "review": "winter-recipes.batch05.native-review.json",
+      "review_version": "aw-winter-review-3974546331d7ca213d93"
+    },
+    {
+      "rendered": "winter-recipes.batch06.rendered.json",
+      "rendered_version": "aw-designed-rendered-3ecea363b57204b59af8",
+      "review": "winter-recipes.batch06.native-review.json",
+      "review_version": "aw-winter-review-1bf611ede7c33aac6261",
+      "garment_manifest": "generated-garments/batch03/manifest.json",
+      "garment_manifest_version": "aw-generated-garments-d9ba5f384f45bf8924b6"
+    },
+    {
+      "rendered": "autumn-recipes.batch01.rendered.json",
+      "rendered_version": "aw-designed-rendered-215d60a93f7442c9dba4",
+      "review": "autumn-recipes.batch01.native-review.json",
+      "review_version": "aw-autumn-review-04c13318fecfa91e08a4",
+      "garment_manifest": "generated-garments/combined-manifest-v2.json",
+      "garment_manifest_version": "aw-generated-garments-combined-79faf5e894fdc7956969"
+    },
+    {
+      "rendered": "autumn-recipes.batch02.rendered.json",
+      "rendered_version": "aw-designed-rendered-2d194ccc90a4a98958c5",
+      "review": "autumn-recipes.batch02.native-review.json",
+      "review_version": "aw-autumn-review-f91bfc6c848524dea447",
+      "garment_manifest": "generated-garments/combined-manifest-v3.json",
+      "garment_manifest_version": "aw-generated-garments-combined-fdb6b6b325d1afe53f26"
+    },
+    {
+      "rendered": "near-threshold-recipes.batch01.rendered.json",
+      "rendered_version": "aw-designed-rendered-e0e83e9d54c5d9c8e07a",
+      "review": "near-threshold-recipes.batch01.native-review.json",
+      "review_version": "aw-near-threshold-review-a01ad2094f9fa6cf6089",
+      "garment_manifest": "generated-garments/combined-manifest-v3.json",
+      "garment_manifest_version": "aw-generated-garments-combined-fdb6b6b325d1afe53f26"
+    },
+    {
+      "rendered": "targeted-recipes.batch03.rendered.json",
+      "rendered_version": "aw-designed-rendered-7a9453ff792f7cbf04fa",
+      "review": "targeted-recipes.batch03.native-review.json",
+      "review_version": "aw-targeted-review-79f88f713dd34db470f0",
+      "garment_manifest": "generated-garments/batch06/manifest.json",
+      "garment_manifest_version": "aw-generated-garments-ad977b46a1c2d1a102fe"
+    },
+    {
+      "rendered": "targeted-recipes.batch04.rendered.json",
+      "rendered_version": "aw-designed-rendered-ce9dacc7ab03e40401a3",
+      "review": "targeted-recipes.batch04.native-review.json",
+      "review_version": "aw-targeted-review-fe566cff8cee23d99522",
+      "garment_manifest": "generated-garments/batch06/manifest.json",
+      "garment_manifest_version": "aw-generated-garments-ad977b46a1c2d1a102fe"
+    },
+    {
+      "rendered": "targeted-recipes.batch05.rendered.json",
+      "rendered_version": "aw-designed-rendered-9770342967b91d389b56",
+      "review": "targeted-recipes.batch05.native-review.json",
+      "review_version": "aw-targeted-review-6af3887f67a85fd678e6",
+      "garment_manifest": "generated-garments/batch07/manifest.json",
+      "garment_manifest_version": "aw-generated-garments-e6e175dc3f361a52900e"
+    },
+    {
+      "rendered": "targeted-recipes.batch06.rendered.json",
+      "rendered_version": "aw-designed-rendered-bda347267bdee0703cb0",
+      "review": "targeted-recipes.batch06.native-review.json",
+      "review_version": "aw-targeted-review-03d93c888063c12817f3",
+      "garment_manifest": "generated-garments/batch08/manifest.json",
+      "garment_manifest_version": "aw-generated-garments-84fe1288a341aee886b5"
+    },
+    {
+      "rendered": "targeted-recipes.batch07.rendered.json",
+      "rendered_version": "aw-designed-rendered-50b4a99bc5dd687f185a",
+      "review": "targeted-recipes.batch07.native-review.json",
+      "review_version": "aw-targeted-review-db07febf108f5ff39af4",
+      "garment_manifest": "generated-garments/batch09/manifest.json",
+      "garment_manifest_version": "aw-generated-garments-21cea8c24cdbd7b53daa"
+    },
+    {
+      "rendered": "targeted-recipes.batch08.rendered.json",
+      "rendered_version": "aw-designed-rendered-b33c7d1e8adfd7e922ea",
+      "review": "targeted-recipes.batch08.native-review.json",
+      "review_version": "aw-targeted-review-5e0f74b180ad9268cca8",
+      "garment_manifest": "generated-garments/batch09/manifest.json",
+      "garment_manifest_version": "aw-generated-garments-21cea8c24cdbd7b53daa"
+    },
+    {
+      "rendered": "targeted-recipes.batch09.rendered.json",
+      "rendered_version": "aw-designed-rendered-21903732096388b34538",
+      "review": "targeted-recipes.batch09.native-review.json",
+      "review_version": "aw-targeted-review-fb387d59438d69ee3801",
+      "garment_manifest": "generated-garments/batch10/manifest.json",
+      "garment_manifest_version": "aw-generated-garments-37c8b2b1c6b6a508cd92"
+    },
+    {
+      "rendered": "targeted-recipes.batch10.rendered.json",
+      "rendered_version": "aw-designed-rendered-b95e96d785530237ee04",
+      "review": "targeted-recipes.batch10.native-review.json",
+      "review_version": "aw-targeted-review-85329d756fafb00dcefa",
+      "garment_manifest": "generated-garments/batch11/manifest.json",
+      "garment_manifest_version": "aw-generated-garments-383ae366068ac3c8af81"
+    },
+    {
+      "rendered": "targeted-recipes.batch11.rendered.json",
+      "rendered_version": "aw-designed-rendered-fe2648072032573e2466",
+      "review": "targeted-recipes.batch11.native-review.json",
+      "review_version": "aw-targeted-review-7fb9585a1aa2c982f7a6",
+      "garment_manifest": "generated-garments/batch12/manifest.json",
+      "garment_manifest_version": "aw-generated-garments-15e52d2e82af01c64f15"
+    },
+    {
+      "rendered": "targeted-recipes.batch12.rendered.json",
+      "rendered_version": "aw-designed-rendered-89eee45aa3ca894fb975",
+      "review": "targeted-recipes.batch12.native-review.json",
+      "review_version": "aw-targeted-review-1a8e5f66f95aac23fd14",
+      "garment_manifest": "generated-garments/batch13/manifest.json",
+      "garment_manifest_version": "aw-generated-garments-f1e45ce71345319a4c4e"
+    }
+  ]
+}

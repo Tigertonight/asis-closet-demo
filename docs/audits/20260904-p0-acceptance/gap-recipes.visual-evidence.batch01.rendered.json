@@ -1,0 +1,3813 @@
+{
+  "schema_version": 1,
+  "batch_id": "p0-visual-gap-01",
+  "source_visual_version": "codex-visual-16b18cdcdca36dbc306a",
+  "entries": [
+    {
+      "target_palette": "evidence_first",
+      "hero": "g0426",
+      "new_record": {
+        "id": "outfit_bolt_p0-visual-gap-01_01",
+        "kind": "master",
+        "parent_outfit_id": null,
+        "recipe_version": "p0-visual-gap-01",
+        "title": "BOLT autumn 日常设计 01",
+        "description": "在逃千金 easy / skirt：以“华丽焦点、戏剧轮廓、精致贵气”为人格证据，只保留一件主视觉，其余单品降低竞争并维持日常可穿。",
+        "primary_persona": "BOLT",
+        "secondary_personas": [],
+        "persona_affinity": {},
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "日常"
+        ],
+        "season_tags": [
+          "秋"
+        ],
+        "weather_tags": [],
+        "presentation": [
+          "feminine"
+        ],
+        "intensity": "easy",
+        "formality": 3,
+        "garment_ids": [
+          "garment_bolt_skirt_0426",
+          "garment_mute_top_0002",
+          "garment_mute_shoes_0004",
+          "garment_mute_bag_0005"
+        ],
+        "visible_slots": [
+          "skirt",
+          "top",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_bolt_skirt_0426": "hero",
+          "garment_mute_top_0002": "support",
+          "garment_mute_shoes_0004": "support",
+          "garment_mute_bag_0005": "support"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "未判断",
+          "saturation": "未判断",
+          "harmony": "未判断",
+          "palette": []
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/0a70446c8ff54cc8b7de4182.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source": "designer_recomposition",
+          "confidence": null,
+          "review_notes": [
+            "season, palette and persona are design targets pending whole-image review"
+          ]
+        }
+      },
+      "record_fingerprint": "886329546f6d70264752d6eec4becb9e75339c0c8a8e6464d6787a441c69abe1",
+      "asset_sha256": "383652c63ff666666566bb81c67a2a6d39d46ff3ad361127833a96b9eff30843",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/0a70446c8ff54cc8b7de4182.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_bolt_skirt_0426",
+            "slot": "skirt",
+            "box": [
+              149,
+              644,
+              751,
+              1330
+            ]
+          },
+          {
+            "garment_id": "garment_mute_top_0002",
+            "slot": "top",
+            "box": [
+              232,
+              160,
+              668,
+              620
+            ]
+          },
+          {
+            "garment_id": "garment_mute_shoes_0004",
+            "slot": "shoes",
+            "box": [
+              891,
+              880,
+              1078,
+              1080
+            ]
+          },
+          {
+            "garment_id": "garment_mute_bag_0005",
+            "slot": "bag",
+            "box": [
+              851,
+              410,
+              1129,
+              730
+            ]
+          }
+        ]
+      },
+      "status": "pending_native_review",
+      "review": null
+    },
+    {
+      "target_palette": "evidence_first",
+      "hero": "g0476",
+      "new_record": {
+        "id": "outfit_bolt_p0-visual-gap-01_02",
+        "kind": "master",
+        "parent_outfit_id": null,
+        "recipe_version": "p0-visual-gap-01",
+        "title": "BOLT autumn 日常设计 02",
+        "description": "在逃千金 easy / dress：以“华丽焦点、戏剧轮廓、精致贵气”为人格证据，只保留一件主视觉，其余单品降低竞争并维持日常可穿。",
+        "primary_persona": "BOLT",
+        "secondary_personas": [],
+        "persona_affinity": {},
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "日常"
+        ],
+        "season_tags": [
+          "秋"
+        ],
+        "weather_tags": [],
+        "presentation": [
+          "feminine"
+        ],
+        "intensity": "easy",
+        "formality": 3,
+        "garment_ids": [
+          "garment_jade_dress_0476",
+          "garment_heir_shoes_0014",
+          "garment_ease_bag_0019"
+        ],
+        "visible_slots": [
+          "dress",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_jade_dress_0476": "hero",
+          "garment_heir_shoes_0014": "support",
+          "garment_ease_bag_0019": "support"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "未判断",
+          "saturation": "未判断",
+          "harmony": "未判断",
+          "palette": []
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/d5d2638c467dcd3131dc1e80.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source": "designer_recomposition",
+          "confidence": null,
+          "review_notes": [
+            "season, palette and persona are design targets pending whole-image review"
+          ]
+        }
+      },
+      "record_fingerprint": "51f23a053956cdf3146d19c3625a61bef65dbda3296846c142f8f21827451566",
+      "asset_sha256": "65bc6b7df0e56c9e63c2e94740b026fb089f0d3ccd23c5806fe20e97f8df3b7b",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/d5d2638c467dcd3131dc1e80.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_jade_dress_0476",
+            "slot": "dress",
+            "box": [
+              141,
+              160,
+              758,
+              1330
+            ]
+          },
+          {
+            "garment_id": "garment_heir_shoes_0014",
+            "slot": "shoes",
+            "box": [
+              936,
+              880,
+              1033,
+              1080
+            ]
+          },
+          {
+            "garment_id": "garment_ease_bag_0019",
+            "slot": "bag",
+            "box": [
+              872,
+              410,
+              1107,
+              730
+            ]
+          }
+        ]
+      },
+      "status": "pending_native_review",
+      "review": null
+    },
+    {
+      "target_palette": "evidence_first",
+      "hero": "g0426",
+      "new_record": {
+        "id": "outfit_bolt_p0-visual-gap-01_03",
+        "kind": "master",
+        "parent_outfit_id": null,
+        "recipe_version": "p0-visual-gap-01",
+        "title": "BOLT autumn 日常设计 03",
+        "description": "在逃千金 easy / skirt：以“华丽焦点、戏剧轮廓、精致贵气”为人格证据，只保留一件主视觉，其余单品降低竞争并维持日常可穿。",
+        "primary_persona": "BOLT",
+        "secondary_personas": [],
+        "persona_affinity": {},
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "日常"
+        ],
+        "season_tags": [
+          "秋"
+        ],
+        "weather_tags": [],
+        "presentation": [
+          "feminine"
+        ],
+        "intensity": "easy",
+        "formality": 3,
+        "garment_ids": [
+          "garment_bolt_skirt_0426",
+          "garment_iced_top_0006",
+          "garment_ease_shoes_0020",
+          "garment_noir_bag_0270"
+        ],
+        "visible_slots": [
+          "skirt",
+          "top",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_bolt_skirt_0426": "hero",
+          "garment_iced_top_0006": "support",
+          "garment_ease_shoes_0020": "support",
+          "garment_noir_bag_0270": "support"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "未判断",
+          "saturation": "未判断",
+          "harmony": "未判断",
+          "palette": []
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/eb080129d160748b3691608f.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source": "designer_recomposition",
+          "confidence": null,
+          "review_notes": [
+            "season, palette and persona are design targets pending whole-image review"
+          ]
+        }
+      },
+      "record_fingerprint": "9fb520adae7fe537d1b0c482f4685207d1e3a336d50d00fcf9def9c3418a9fd9",
+      "asset_sha256": "bdb6054d30e39408562ed90b508a7d447523a3828a930f4f9142f088c8ef4bb2",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/eb080129d160748b3691608f.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_bolt_skirt_0426",
+            "slot": "skirt",
+            "box": [
+              149,
+              644,
+              751,
+              1330
+            ]
+          },
+          {
+            "garment_id": "garment_iced_top_0006",
+            "slot": "top",
+            "box": [
+              260,
+              160,
+              640,
+              620
+            ]
+          },
+          {
+            "garment_id": "garment_ease_shoes_0020",
+            "slot": "shoes",
+            "box": [
+              840,
+              880,
+              1129,
+              1080
+            ]
+          },
+          {
+            "garment_id": "garment_noir_bag_0270",
+            "slot": "bag",
+            "box": [
+              865,
+              410,
+              1114,
+              730
+            ]
+          }
+        ]
+      },
+      "status": "pending_native_review",
+      "review": null
+    },
+    {
+      "target_palette": "evidence_first",
+      "hero": "g0478",
+      "new_record": {
+        "id": "outfit_bolt_p0-visual-gap-01_04",
+        "kind": "master",
+        "parent_outfit_id": null,
+        "recipe_version": "p0-visual-gap-01",
+        "title": "BOLT autumn 日常设计 04",
+        "description": "在逃千金 easy / dress：以“华丽焦点、戏剧轮廓、精致贵气”为人格证据，只保留一件主视觉，其余单品降低竞争并维持日常可穿。",
+        "primary_persona": "BOLT",
+        "secondary_personas": [],
+        "persona_affinity": {},
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "日常"
+        ],
+        "season_tags": [
+          "秋"
+        ],
+        "weather_tags": [],
+        "presentation": [
+          "feminine"
+        ],
+        "intensity": "easy",
+        "formality": 3,
+        "garment_ids": [
+          "garment_noir_dress_0478",
+          "garment_ease_shoes_0244",
+          "garment_void_bag_0271"
+        ],
+        "visible_slots": [
+          "dress",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_noir_dress_0478": "hero",
+          "garment_ease_shoes_0244": "support",
+          "garment_void_bag_0271": "support"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "未判断",
+          "saturation": "未判断",
+          "harmony": "未判断",
+          "palette": []
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/8cf7fb2eebf3db579507ca51.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source": "designer_recomposition",
+          "confidence": null,
+          "review_notes": [
+            "season, palette and persona are design targets pending whole-image review"
+          ]
+        }
+      },
+      "record_fingerprint": "0b4b28c7da235032444b365cc1875fcb165d3fcfab2117d12b3bb1fadb87df33",
+      "asset_sha256": "419dddadd24d425a8721a304c8870b09e2956ad9d8e0c7069b34feffd893e76e",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/8cf7fb2eebf3db579507ca51.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_noir_dress_0478",
+            "slot": "dress",
+            "box": [
+              233,
+              160,
+              667,
+              1330
+            ]
+          },
+          {
+            "garment_id": "garment_ease_shoes_0244",
+            "slot": "shoes",
+            "box": [
+              840,
+              886,
+              1130,
+              1074
+            ]
+          },
+          {
+            "garment_id": "garment_void_bag_0271",
+            "slot": "bag",
+            "box": [
+              865,
+              410,
+              1115,
+              730
+            ]
+          }
+        ]
+      },
+      "status": "pending_native_review",
+      "review": null
+    },
+    {
+      "target_palette": "evidence_first",
+      "hero": "g0410",
+      "new_record": {
+        "id": "outfit_bolt_p0-visual-gap-01_05",
+        "kind": "master",
+        "parent_outfit_id": null,
+        "recipe_version": "p0-visual-gap-01",
+        "title": "BOLT autumn 日常设计 05",
+        "description": "在逃千金 typical / pants：以“华丽焦点、戏剧轮廓、精致贵气”为人格证据，只保留一件主视觉，其余单品降低竞争并维持日常可穿。",
+        "primary_persona": "BOLT",
+        "secondary_personas": [],
+        "persona_affinity": {},
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "日常"
+        ],
+        "season_tags": [
+          "秋"
+        ],
+        "weather_tags": [],
+        "presentation": [
+          "feminine"
+        ],
+        "intensity": "typical",
+        "formality": 3,
+        "garment_ids": [
+          "garment_bolt_bottom_0410",
+          "garment_iced_top_0008",
+          "garment_melt_shoes_0245",
+          "garment_oops_bag_0272"
+        ],
+        "visible_slots": [
+          "bottom",
+          "top",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_bolt_bottom_0410": "hero",
+          "garment_iced_top_0008": "support",
+          "garment_melt_shoes_0245": "support",
+          "garment_oops_bag_0272": "support"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "未判断",
+          "saturation": "未判断",
+          "harmony": "未判断",
+          "palette": []
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/63dd6647ce587297f0202b54.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source": "designer_recomposition",
+          "confidence": null,
+          "review_notes": [
+            "season, palette and persona are design targets pending whole-image review"
+          ]
+        }
+      },
+      "record_fingerprint": "9a7e50f502af46b435fe394b04021d11ca0744ac4a686a857448d690304b0033",
+      "asset_sha256": "171eb8047910fc9927732bb5e55ca3738011462b3a73114dda75c28d8025c613",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/63dd6647ce587297f0202b54.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_bolt_bottom_0410",
+            "slot": "bottom",
+            "box": [
+              308,
+              644,
+              592,
+              1330
+            ]
+          },
+          {
+            "garment_id": "garment_iced_top_0008",
+            "slot": "top",
+            "box": [
+              270,
+              160,
+              629,
+              620
+            ]
+          },
+          {
+            "garment_id": "garment_melt_shoes_0245",
+            "slot": "shoes",
+            "box": [
+              930,
+              880,
+              1040,
+              1080
+            ]
+          },
+          {
+            "garment_id": "garment_oops_bag_0272",
+            "slot": "bag",
+            "box": [
+              876,
+              410,
+              1104,
+              730
+            ]
+          }
+        ]
+      },
+      "status": "pending_native_review",
+      "review": null
+    },
+    {
+      "target_palette": "evidence_first",
+      "hero": "g0330",
+      "new_record": {
+        "id": "outfit_bolt_p0-visual-gap-01_06",
+        "kind": "master",
+        "parent_outfit_id": null,
+        "recipe_version": "p0-visual-gap-01",
+        "title": "BOLT autumn 日常设计 06",
+        "description": "在逃千金 typical / skirt：以“华丽焦点、戏剧轮廓、精致贵气”为人格证据，只保留一件主视觉，其余单品降低竞争并维持日常可穿。",
+        "primary_persona": "BOLT",
+        "secondary_personas": [],
+        "persona_affinity": {},
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "日常"
+        ],
+        "season_tags": [
+          "秋"
+        ],
+        "weather_tags": [],
+        "presentation": [
+          "feminine"
+        ],
+        "intensity": "typical",
+        "formality": 3,
+        "garment_ids": [
+          "garment_bolt_top_0330",
+          "garment_bolt_skirt_0186",
+          "garment_wabi_shoes_0246",
+          "garment_mute_bag_0273"
+        ],
+        "visible_slots": [
+          "top",
+          "skirt",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_bolt_top_0330": "hero",
+          "garment_bolt_skirt_0186": "support",
+          "garment_wabi_shoes_0246": "support",
+          "garment_mute_bag_0273": "support"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "未判断",
+          "saturation": "未判断",
+          "harmony": "未判断",
+          "palette": []
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/bcabcc1904d72256a5296c52.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source": "designer_recomposition",
+          "confidence": null,
+          "review_notes": [
+            "season, palette and persona are design targets pending whole-image review"
+          ]
+        }
+      },
+      "record_fingerprint": "379068d48fc699bde8c517b7834057fdc298b5ab02f98cf7aaee2c87cd00f1c9",
+      "asset_sha256": "83a2732f30da82c371be3b535cfb204b9a2d6c817933d0a8da545746ef5a592a",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/bcabcc1904d72256a5296c52.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_bolt_top_0330",
+            "slot": "top",
+            "box": [
+              234,
+              160,
+              666,
+              620
+            ]
+          },
+          {
+            "garment_id": "garment_bolt_skirt_0186",
+            "slot": "skirt",
+            "box": [
+              216,
+              644,
+              683,
+              1330
+            ]
+          },
+          {
+            "garment_id": "garment_wabi_shoes_0246",
+            "slot": "shoes",
+            "box": [
+              841,
+              880,
+              1128,
+              1080
+            ]
+          },
+          {
+            "garment_id": "garment_mute_bag_0273",
+            "slot": "bag",
+            "box": [
+              860,
+              410,
+              1120,
+              730
+            ]
+          }
+        ]
+      },
+      "status": "pending_native_review",
+      "review": null
+    },
+    {
+      "target_palette": "evidence_first",
+      "hero": "g0476",
+      "new_record": {
+        "id": "outfit_bolt_p0-visual-gap-01_07",
+        "kind": "master",
+        "parent_outfit_id": null,
+        "recipe_version": "p0-visual-gap-01",
+        "title": "BOLT autumn 日常设计 07",
+        "description": "在逃千金 typical / dress：以“华丽焦点、戏剧轮廓、精致贵气”为人格证据，只保留一件主视觉，其余单品降低竞争并维持日常可穿。",
+        "primary_persona": "BOLT",
+        "secondary_personas": [],
+        "persona_affinity": {},
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "日常"
+        ],
+        "season_tags": [
+          "秋"
+        ],
+        "weather_tags": [],
+        "presentation": [
+          "feminine"
+        ],
+        "intensity": "typical",
+        "formality": 3,
+        "garment_ids": [
+          "garment_jade_dress_0476",
+          "garment_flou_shoes_0247",
+          "garment_iced_bag_0274"
+        ],
+        "visible_slots": [
+          "dress",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_jade_dress_0476": "hero",
+          "garment_flou_shoes_0247": "support",
+          "garment_iced_bag_0274": "support"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "未判断",
+          "saturation": "未判断",
+          "harmony": "未判断",
+          "palette": []
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/92355fada2c32862665f0626.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source": "designer_recomposition",
+          "confidence": null,
+          "review_notes": [
+            "season, palette and persona are design targets pending whole-image review"
+          ]
+        }
+      },
+      "record_fingerprint": "e9678d61bd2433b52cab70697683261b754263bd7c6e9149ae9ed99fb192cd04",
+      "asset_sha256": "d702f82753c8aef9b70aaea0426fdf9541a46f19c0f370ab314caa95de109e6e",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/92355fada2c32862665f0626.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_jade_dress_0476",
+            "slot": "dress",
+            "box": [
+              141,
+              160,
+              758,
+              1330
+            ]
+          },
+          {
+            "garment_id": "garment_flou_shoes_0247",
+            "slot": "shoes",
+            "box": [
+              879,
+              880,
+              1091,
+              1080
+            ]
+          },
+          {
+            "garment_id": "garment_iced_bag_0274",
+            "slot": "bag",
+            "box": [
+              883,
+              410,
+              1096,
+              730
+            ]
+          }
+        ]
+      },
+      "status": "pending_native_review",
+      "review": null
+    },
+    {
+      "target_palette": "evidence_first",
+      "hero": "g0346",
+      "new_record": {
+        "id": "outfit_bolt_p0-visual-gap-01_08",
+        "kind": "master",
+        "parent_outfit_id": null,
+        "recipe_version": "p0-visual-gap-01",
+        "title": "BOLT autumn 日常设计 08",
+        "description": "在逃千金 explore / pants：以“华丽焦点、戏剧轮廓、精致贵气”为人格证据，只保留一件主视觉，其余单品降低竞争并维持日常可穿。",
+        "primary_persona": "BOLT",
+        "secondary_personas": [],
+        "persona_affinity": {},
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "日常"
+        ],
+        "season_tags": [
+          "秋"
+        ],
+        "weather_tags": [],
+        "presentation": [
+          "feminine"
+        ],
+        "intensity": "explore",
+        "formality": 3,
+        "garment_ids": [
+          "garment_bolt_top_0346",
+          "garment_mute_bottom_0003",
+          "garment_neon_shoes_0248",
+          "garment_heir_bag_0275"
+        ],
+        "visible_slots": [
+          "top",
+          "bottom",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_bolt_top_0346": "hero",
+          "garment_mute_bottom_0003": "support",
+          "garment_neon_shoes_0248": "support",
+          "garment_heir_bag_0275": "support"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "未判断",
+          "saturation": "未判断",
+          "harmony": "未判断",
+          "palette": []
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/7ffbab89de3e616ce620a29b.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source": "designer_recomposition",
+          "confidence": null,
+          "review_notes": [
+            "season, palette and persona are design targets pending whole-image review"
+          ]
+        }
+      },
+      "record_fingerprint": "9012a0881bf79052938d6e53506079ea90808c69c86ba27d11615d0926cb28ad",
+      "asset_sha256": "aecfdef9502857d204fced1540d1a9fbea9447de5740d7bfcc5cec4fa113b4b9",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/7ffbab89de3e616ce620a29b.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_bolt_top_0346",
+            "slot": "top",
+            "box": [
+              286,
+              160,
+              614,
+              620
+            ]
+          },
+          {
+            "garment_id": "garment_mute_bottom_0003",
+            "slot": "bottom",
+            "box": [
+              312,
+              644,
+              588,
+              1330
+            ]
+          },
+          {
+            "garment_id": "garment_neon_shoes_0248",
+            "slot": "shoes",
+            "box": [
+              901,
+              880,
+              1069,
+              1080
+            ]
+          },
+          {
+            "garment_id": "garment_heir_bag_0275",
+            "slot": "bag",
+            "box": [
+              864,
+              410,
+              1116,
+              730
+            ]
+          }
+        ]
+      },
+      "status": "pending_native_review",
+      "review": null
+    },
+    {
+      "target_palette": "evidence_first",
+      "hero": "g0239",
+      "new_record": {
+        "id": "outfit_edge_p0-visual-gap-01_09",
+        "kind": "master",
+        "parent_outfit_id": null,
+        "recipe_version": "p0-visual-gap-01",
+        "title": "EDGE autumn 日常设计 09",
+        "description": "甜酷轻亚 easy / dress：以“甜辣对撞、锋芒感、露肤度”为人格证据，只保留一件主视觉，其余单品降低竞争并维持日常可穿。",
+        "primary_persona": "EDGE",
+        "secondary_personas": [],
+        "persona_affinity": {},
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "日常"
+        ],
+        "season_tags": [
+          "秋"
+        ],
+        "weather_tags": [],
+        "presentation": [
+          "feminine"
+        ],
+        "intensity": "easy",
+        "formality": 3,
+        "garment_ids": [
+          "garment_void_dress_0239",
+          "garment_mute_shoes_0004",
+          "garment_mute_bag_0005"
+        ],
+        "visible_slots": [
+          "dress",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_void_dress_0239": "hero",
+          "garment_mute_shoes_0004": "support",
+          "garment_mute_bag_0005": "support"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "未判断",
+          "saturation": "未判断",
+          "harmony": "未判断",
+          "palette": []
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/884894e31633b46a4bc9fbdc.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source": "designer_recomposition",
+          "confidence": null,
+          "review_notes": [
+            "season, palette and persona are design targets pending whole-image review"
+          ]
+        }
+      },
+      "record_fingerprint": "8ec3fb69f917f5b04bf4261c58b7e083ccad5c945667cea0d379e86ad13ba1b1",
+      "asset_sha256": "1f490cb4ecc92414515fa85d78132b35c833092fb24c9c95d6610fe8f5559c39",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/884894e31633b46a4bc9fbdc.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_void_dress_0239",
+            "slot": "dress",
+            "box": [
+              100,
+              160,
+              800,
+              1237
+            ]
+          },
+          {
+            "garment_id": "garment_mute_shoes_0004",
+            "slot": "shoes",
+            "box": [
+              891,
+              880,
+              1078,
+              1080
+            ]
+          },
+          {
+            "garment_id": "garment_mute_bag_0005",
+            "slot": "bag",
+            "box": [
+              851,
+              410,
+              1129,
+              730
+            ]
+          }
+        ]
+      },
+      "status": "pending_native_review",
+      "review": null
+    },
+    {
+      "target_palette": "evidence_first",
+      "hero": "g0334",
+      "new_record": {
+        "id": "outfit_edge_p0-visual-gap-01_10",
+        "kind": "master",
+        "parent_outfit_id": null,
+        "recipe_version": "p0-visual-gap-01",
+        "title": "EDGE autumn 日常设计 10",
+        "description": "甜酷轻亚 easy / pants：以“甜辣对撞、锋芒感、露肤度”为人格证据，只保留一件主视觉，其余单品降低竞争并维持日常可穿。",
+        "primary_persona": "EDGE",
+        "secondary_personas": [],
+        "persona_affinity": {},
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "日常"
+        ],
+        "season_tags": [
+          "秋"
+        ],
+        "weather_tags": [],
+        "presentation": [
+          "feminine"
+        ],
+        "intensity": "easy",
+        "formality": 3,
+        "garment_ids": [
+          "garment_noir_top_0334",
+          "garment_mute_bottom_0003",
+          "garment_heir_shoes_0014",
+          "garment_ease_bag_0019"
+        ],
+        "visible_slots": [
+          "top",
+          "bottom",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_noir_top_0334": "hero",
+          "garment_mute_bottom_0003": "support",
+          "garment_heir_shoes_0014": "support",
+          "garment_ease_bag_0019": "support"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "未判断",
+          "saturation": "未判断",
+          "harmony": "未判断",
+          "palette": []
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/eced2bf321eacf9982900f96.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source": "designer_recomposition",
+          "confidence": null,
+          "review_notes": [
+            "season, palette and persona are design targets pending whole-image review"
+          ]
+        }
+      },
+      "record_fingerprint": "2ea2f8f000eb0ae869358e93fb6dcb1f071c3ae412ec9e05843434c4147ce5aa",
+      "asset_sha256": "b44fee1c6555ab2ab887023329cf492199339cc6c38f135671ff0909db3e8a7c",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/eced2bf321eacf9982900f96.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_noir_top_0334",
+            "slot": "top",
+            "box": [
+              319,
+              160,
+              580,
+              620
+            ]
+          },
+          {
+            "garment_id": "garment_mute_bottom_0003",
+            "slot": "bottom",
+            "box": [
+              312,
+              644,
+              588,
+              1330
+            ]
+          },
+          {
+            "garment_id": "garment_heir_shoes_0014",
+            "slot": "shoes",
+            "box": [
+              936,
+              880,
+              1033,
+              1080
+            ]
+          },
+          {
+            "garment_id": "garment_ease_bag_0019",
+            "slot": "bag",
+            "box": [
+              872,
+              410,
+              1107,
+              730
+            ]
+          }
+        ]
+      },
+      "status": "pending_native_review",
+      "review": null
+    },
+    {
+      "target_palette": "evidence_first",
+      "hero": "g0190",
+      "new_record": {
+        "id": "outfit_edge_p0-visual-gap-01_11",
+        "kind": "master",
+        "parent_outfit_id": null,
+        "recipe_version": "p0-visual-gap-01",
+        "title": "EDGE autumn 日常设计 11",
+        "description": "甜酷轻亚 easy / skirt：以“甜辣对撞、锋芒感、露肤度”为人格证据，只保留一件主视觉，其余单品降低竞争并维持日常可穿。",
+        "primary_persona": "EDGE",
+        "secondary_personas": [],
+        "persona_affinity": {},
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "日常"
+        ],
+        "season_tags": [
+          "秋"
+        ],
+        "weather_tags": [],
+        "presentation": [
+          "feminine"
+        ],
+        "intensity": "easy",
+        "formality": 3,
+        "garment_ids": [
+          "garment_noir_skirt_0190",
+          "garment_mute_top_0002",
+          "garment_ease_shoes_0020",
+          "garment_noir_bag_0270"
+        ],
+        "visible_slots": [
+          "skirt",
+          "top",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_noir_skirt_0190": "hero",
+          "garment_mute_top_0002": "support",
+          "garment_ease_shoes_0020": "support",
+          "garment_noir_bag_0270": "support"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "未判断",
+          "saturation": "未判断",
+          "harmony": "未判断",
+          "palette": []
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/797c8e7dea53d06a9fbf35dd.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source": "designer_recomposition",
+          "confidence": null,
+          "review_notes": [
+            "season, palette and persona are design targets pending whole-image review"
+          ]
+        }
+      },
+      "record_fingerprint": "11186b536a148e2ece28701cf97f44e1fff5f73bdbd659b34a8315de02a172b7",
+      "asset_sha256": "69898a0408ef9ca95b8e58a15667a6c83ef7d840eb83c811512090750574732e",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/797c8e7dea53d06a9fbf35dd.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_noir_skirt_0190",
+            "slot": "skirt",
+            "box": [
+              270,
+              644,
+              629,
+              1330
+            ]
+          },
+          {
+            "garment_id": "garment_mute_top_0002",
+            "slot": "top",
+            "box": [
+              232,
+              160,
+              668,
+              620
+            ]
+          },
+          {
+            "garment_id": "garment_ease_shoes_0020",
+            "slot": "shoes",
+            "box": [
+              840,
+              880,
+              1129,
+              1080
+            ]
+          },
+          {
+            "garment_id": "garment_noir_bag_0270",
+            "slot": "bag",
+            "box": [
+              865,
+              410,
+              1114,
+              730
+            ]
+          }
+        ]
+      },
+      "status": "pending_native_review",
+      "review": null
+    },
+    {
+      "target_palette": "evidence_first",
+      "hero": "g0462",
+      "new_record": {
+        "id": "outfit_edge_p0-visual-gap-01_12",
+        "kind": "master",
+        "parent_outfit_id": null,
+        "recipe_version": "p0-visual-gap-01",
+        "title": "EDGE autumn 日常设计 12",
+        "description": "甜酷轻亚 easy / dress：以“甜辣对撞、锋芒感、露肤度”为人格证据，只保留一件主视觉，其余单品降低竞争并维持日常可穿。",
+        "primary_persona": "EDGE",
+        "secondary_personas": [],
+        "persona_affinity": {},
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "日常"
+        ],
+        "season_tags": [
+          "秋"
+        ],
+        "weather_tags": [],
+        "presentation": [
+          "feminine"
+        ],
+        "intensity": "easy",
+        "formality": 3,
+        "garment_ids": [
+          "garment_noir_dress_0462",
+          "garment_ease_shoes_0244",
+          "garment_void_bag_0271"
+        ],
+        "visible_slots": [
+          "dress",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_noir_dress_0462": "hero",
+          "garment_ease_shoes_0244": "support",
+          "garment_void_bag_0271": "support"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "未判断",
+          "saturation": "未判断",
+          "harmony": "未判断",
+          "palette": []
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/eaccd93e8f5789cb5a737210.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source": "designer_recomposition",
+          "confidence": null,
+          "review_notes": [
+            "season, palette and persona are design targets pending whole-image review"
+          ]
+        }
+      },
+      "record_fingerprint": "d9c7d0414ab41f088087713192159dd08c770559f7ad9d30302cfc25c826bb80",
+      "asset_sha256": "78c15b41f8c3032892a853844945d96261adc347a4f71b871108d7fe1386870e",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/eaccd93e8f5789cb5a737210.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_noir_dress_0462",
+            "slot": "dress",
+            "box": [
+              226,
+              160,
+              674,
+              1330
+            ]
+          },
+          {
+            "garment_id": "garment_ease_shoes_0244",
+            "slot": "shoes",
+            "box": [
+              840,
+              886,
+              1130,
+              1074
+            ]
+          },
+          {
+            "garment_id": "garment_void_bag_0271",
+            "slot": "bag",
+            "box": [
+              865,
+              410,
+              1115,
+              730
+            ]
+          }
+        ]
+      },
+      "status": "pending_native_review",
+      "review": null
+    },
+    {
+      "target_palette": "evidence_first",
+      "hero": "g0077",
+      "new_record": {
+        "id": "outfit_edge_p0-visual-gap-01_13",
+        "kind": "master",
+        "parent_outfit_id": null,
+        "recipe_version": "p0-visual-gap-01",
+        "title": "EDGE autumn 日常设计 13",
+        "description": "甜酷轻亚 explore / pants：以“甜辣对撞、锋芒感、露肤度”为人格证据，只保留一件主视觉，其余单品降低竞争并维持日常可穿。",
+        "primary_persona": "EDGE",
+        "secondary_personas": [],
+        "persona_affinity": {},
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "日常"
+        ],
+        "season_tags": [
+          "秋"
+        ],
+        "weather_tags": [],
+        "presentation": [
+          "feminine"
+        ],
+        "intensity": "explore",
+        "formality": 3,
+        "garment_ids": [
+          "garment_oops_top_0077",
+          "garment_heir_bottom_0013",
+          "garment_melt_shoes_0245",
+          "garment_oops_bag_0272"
+        ],
+        "visible_slots": [
+          "top",
+          "bottom",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_oops_top_0077": "hero",
+          "garment_heir_bottom_0013": "support",
+          "garment_melt_shoes_0245": "support",
+          "garment_oops_bag_0272": "support"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "未判断",
+          "saturation": "未判断",
+          "harmony": "未判断",
+          "palette": []
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/308f1ccab1c7e9e766271084.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source": "designer_recomposition",
+          "confidence": null,
+          "review_notes": [
+            "season, palette and persona are design targets pending whole-image review"
+          ]
+        }
+      },
+      "record_fingerprint": "7d7b782a4204bbb07ddc2e360d4421b74e40eb29b46b35e1f7b6f7df0151b676",
+      "asset_sha256": "cdc2cd31320d73190112025e66a3f23835dbfbe5c39810a0821428e75f2c9a0d",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/308f1ccab1c7e9e766271084.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_oops_top_0077",
+            "slot": "top",
+            "box": [
+              251,
+              160,
+              649,
+              620
+            ]
+          },
+          {
+            "garment_id": "garment_heir_bottom_0013",
+            "slot": "bottom",
+            "box": [
+              290,
+              644,
+              609,
+              1330
+            ]
+          },
+          {
+            "garment_id": "garment_melt_shoes_0245",
+            "slot": "shoes",
+            "box": [
+              930,
+              880,
+              1040,
+              1080
+            ]
+          },
+          {
+            "garment_id": "garment_oops_bag_0272",
+            "slot": "bag",
+            "box": [
+              876,
+              410,
+              1104,
+              730
+            ]
+          }
+        ]
+      },
+      "status": "pending_native_review",
+      "review": null
+    },
+    {
+      "target_palette": "evidence_first",
+      "hero": "g0460",
+      "new_record": {
+        "id": "outfit_jade_p0-visual-gap-01_14",
+        "kind": "master",
+        "parent_outfit_id": null,
+        "recipe_version": "p0-visual-gap-01",
+        "title": "JADE autumn 日常设计 14",
+        "description": "东方玉骨 easy / dress：以“东方线条、风骨自成、现代感”为人格证据，只保留一件主视觉，其余单品降低竞争并维持日常可穿。",
+        "primary_persona": "JADE",
+        "secondary_personas": [],
+        "persona_affinity": {},
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "日常"
+        ],
+        "season_tags": [
+          "秋"
+        ],
+        "weather_tags": [],
+        "presentation": [
+          "feminine"
+        ],
+        "intensity": "easy",
+        "formality": 3,
+        "garment_ids": [
+          "garment_jade_dress_0460",
+          "garment_mute_shoes_0004",
+          "garment_mute_bag_0005"
+        ],
+        "visible_slots": [
+          "dress",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_jade_dress_0460": "hero",
+          "garment_mute_shoes_0004": "support",
+          "garment_mute_bag_0005": "support"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "未判断",
+          "saturation": "未判断",
+          "harmony": "未判断",
+          "palette": []
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/1cbd8ac3b0a95d48dccd2d2b.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source": "designer_recomposition",
+          "confidence": null,
+          "review_notes": [
+            "season, palette and persona are design targets pending whole-image review"
+          ]
+        }
+      },
+      "record_fingerprint": "a2f11bea9be493bb9813eceedab2910e97b822c901c81443e6c25f180cd29f01",
+      "asset_sha256": "f3b640238dc28a7d0125e1792134562242ddc2d1b290a598a2bb069fb4334efe",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/1cbd8ac3b0a95d48dccd2d2b.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_jade_dress_0460",
+            "slot": "dress",
+            "box": [
+              100,
+              160,
+              800,
+              1307
+            ]
+          },
+          {
+            "garment_id": "garment_mute_shoes_0004",
+            "slot": "shoes",
+            "box": [
+              891,
+              880,
+              1078,
+              1080
+            ]
+          },
+          {
+            "garment_id": "garment_mute_bag_0005",
+            "slot": "bag",
+            "box": [
+              851,
+              410,
+              1129,
+              730
+            ]
+          }
+        ]
+      },
+      "status": "pending_native_review",
+      "review": null
+    },
+    {
+      "target_palette": "evidence_first",
+      "hero": "g0476",
+      "new_record": {
+        "id": "outfit_jade_p0-visual-gap-01_15",
+        "kind": "master",
+        "parent_outfit_id": null,
+        "recipe_version": "p0-visual-gap-01",
+        "title": "JADE autumn 日常设计 15",
+        "description": "东方玉骨 easy / dress：以“东方线条、风骨自成、现代感”为人格证据，只保留一件主视觉，其余单品降低竞争并维持日常可穿。",
+        "primary_persona": "JADE",
+        "secondary_personas": [],
+        "persona_affinity": {},
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "日常"
+        ],
+        "season_tags": [
+          "秋"
+        ],
+        "weather_tags": [],
+        "presentation": [
+          "feminine"
+        ],
+        "intensity": "easy",
+        "formality": 3,
+        "garment_ids": [
+          "garment_jade_dress_0476",
+          "garment_heir_shoes_0014",
+          "garment_ease_bag_0019"
+        ],
+        "visible_slots": [
+          "dress",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_jade_dress_0476": "hero",
+          "garment_heir_shoes_0014": "support",
+          "garment_ease_bag_0019": "support"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "未判断",
+          "saturation": "未判断",
+          "harmony": "未判断",
+          "palette": []
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/d5d2638c467dcd3131dc1e80.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source": "designer_recomposition",
+          "confidence": null,
+          "review_notes": [
+            "season, palette and persona are design targets pending whole-image review"
+          ]
+        }
+      },
+      "record_fingerprint": "5c1450a5e394ccae4444ff5c9efe393e1ebd050d6421d8505f534098491354fb",
+      "asset_sha256": "65bc6b7df0e56c9e63c2e94740b026fb089f0d3ccd23c5806fe20e97f8df3b7b",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/d5d2638c467dcd3131dc1e80.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_jade_dress_0476",
+            "slot": "dress",
+            "box": [
+              141,
+              160,
+              758,
+              1330
+            ]
+          },
+          {
+            "garment_id": "garment_heir_shoes_0014",
+            "slot": "shoes",
+            "box": [
+              936,
+              880,
+              1033,
+              1080
+            ]
+          },
+          {
+            "garment_id": "garment_ease_bag_0019",
+            "slot": "bag",
+            "box": [
+              872,
+              410,
+              1107,
+              730
+            ]
+          }
+        ]
+      },
+      "status": "pending_native_review",
+      "review": null
+    },
+    {
+      "target_palette": "evidence_first",
+      "hero": "g0084",
+      "new_record": {
+        "id": "outfit_jade_p0-visual-gap-01_16",
+        "kind": "master",
+        "parent_outfit_id": null,
+        "recipe_version": "p0-visual-gap-01",
+        "title": "JADE autumn 日常设计 16",
+        "description": "东方玉骨 easy / pants：以“东方线条、风骨自成、现代感”为人格证据，只保留一件主视觉，其余单品降低竞争并维持日常可穿。",
+        "primary_persona": "JADE",
+        "secondary_personas": [],
+        "persona_affinity": {},
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "日常"
+        ],
+        "season_tags": [
+          "秋"
+        ],
+        "weather_tags": [],
+        "presentation": [
+          "feminine"
+        ],
+        "intensity": "easy",
+        "formality": 3,
+        "garment_ids": [
+          "garment_ease_top_0084",
+          "garment_mute_bottom_0003",
+          "garment_ease_shoes_0020",
+          "garment_noir_bag_0270"
+        ],
+        "visible_slots": [
+          "top",
+          "bottom",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_ease_top_0084": "hero",
+          "garment_mute_bottom_0003": "support",
+          "garment_ease_shoes_0020": "support",
+          "garment_noir_bag_0270": "support"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "未判断",
+          "saturation": "未判断",
+          "harmony": "未判断",
+          "palette": []
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/561bb8767821a0ba623fe44f.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source": "designer_recomposition",
+          "confidence": null,
+          "review_notes": [
+            "season, palette and persona are design targets pending whole-image review"
+          ]
+        }
+      },
+      "record_fingerprint": "7ab3f8660a607cead7734df314a550e492a19fc4480a56aa1022c0c6ae38a052",
+      "asset_sha256": "e58a1bef6712335772954638c4fd1d17624b1d428fb359bb595f0d71fdd114d8",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/561bb8767821a0ba623fe44f.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_ease_top_0084",
+            "slot": "top",
+            "box": [
+              222,
+              160,
+              677,
+              620
+            ]
+          },
+          {
+            "garment_id": "garment_mute_bottom_0003",
+            "slot": "bottom",
+            "box": [
+              312,
+              644,
+              588,
+              1330
+            ]
+          },
+          {
+            "garment_id": "garment_ease_shoes_0020",
+            "slot": "shoes",
+            "box": [
+              840,
+              880,
+              1129,
+              1080
+            ]
+          },
+          {
+            "garment_id": "garment_noir_bag_0270",
+            "slot": "bag",
+            "box": [
+              865,
+              410,
+              1114,
+              730
+            ]
+          }
+        ]
+      },
+      "status": "pending_native_review",
+      "review": null
+    },
+    {
+      "target_palette": "evidence_first",
+      "hero": "g0456",
+      "new_record": {
+        "id": "outfit_neon_p0-visual-gap-01_17",
+        "kind": "master",
+        "parent_outfit_id": null,
+        "recipe_version": "p0-visual-gap-01",
+        "title": "NEON autumn 日常设计 17",
+        "description": "灵动吸睛 easy / dress：以“高能色彩、图案焦点、主动吸睛”为人格证据，只保留一件主视觉，其余单品降低竞争并维持日常可穿。",
+        "primary_persona": "NEON",
+        "secondary_personas": [],
+        "persona_affinity": {},
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "日常"
+        ],
+        "season_tags": [
+          "秋"
+        ],
+        "weather_tags": [],
+        "presentation": [
+          "feminine"
+        ],
+        "intensity": "easy",
+        "formality": 3,
+        "garment_ids": [
+          "garment_neon_dress_0456",
+          "garment_mute_shoes_0004",
+          "garment_mute_bag_0005"
+        ],
+        "visible_slots": [
+          "dress",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_neon_dress_0456": "hero",
+          "garment_mute_shoes_0004": "support",
+          "garment_mute_bag_0005": "support"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "未判断",
+          "saturation": "未判断",
+          "harmony": "未判断",
+          "palette": []
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/8b58a706b9ecf7f3914eb569.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source": "designer_recomposition",
+          "confidence": null,
+          "review_notes": [
+            "season, palette and persona are design targets pending whole-image review"
+          ]
+        }
+      },
+      "record_fingerprint": "d4005454c3e9fcfc7f43c811b5982a27c1cf9444e6f2646b236cf9fc6c1c2746",
+      "asset_sha256": "deceacbf6ae8f9eca4bdd9e827c836f99b1a82b895eaa3399aafa5ce72661092",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/8b58a706b9ecf7f3914eb569.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_neon_dress_0456",
+            "slot": "dress",
+            "box": [
+              117,
+              160,
+              782,
+              1330
+            ]
+          },
+          {
+            "garment_id": "garment_mute_shoes_0004",
+            "slot": "shoes",
+            "box": [
+              891,
+              880,
+              1078,
+              1080
+            ]
+          },
+          {
+            "garment_id": "garment_mute_bag_0005",
+            "slot": "bag",
+            "box": [
+              851,
+              410,
+              1129,
+              730
+            ]
+          }
+        ]
+      },
+      "status": "pending_native_review",
+      "review": null
+    },
+    {
+      "target_palette": "evidence_first",
+      "hero": "g0037",
+      "new_record": {
+        "id": "outfit_neon_p0-visual-gap-01_18",
+        "kind": "master",
+        "parent_outfit_id": null,
+        "recipe_version": "p0-visual-gap-01",
+        "title": "NEON autumn 日常设计 18",
+        "description": "灵动吸睛 easy / pants：以“高能色彩、图案焦点、主动吸睛”为人格证据，只保留一件主视觉，其余单品降低竞争并维持日常可穿。",
+        "primary_persona": "NEON",
+        "secondary_personas": [],
+        "persona_affinity": {},
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "日常"
+        ],
+        "season_tags": [
+          "秋"
+        ],
+        "weather_tags": [],
+        "presentation": [
+          "feminine"
+        ],
+        "intensity": "easy",
+        "formality": 3,
+        "garment_ids": [
+          "garment_neon_bottom_0037",
+          "garment_mute_top_0002",
+          "garment_heir_shoes_0014",
+          "garment_ease_bag_0019"
+        ],
+        "visible_slots": [
+          "bottom",
+          "top",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_neon_bottom_0037": "hero",
+          "garment_mute_top_0002": "support",
+          "garment_heir_shoes_0014": "support",
+          "garment_ease_bag_0019": "support"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "未判断",
+          "saturation": "未判断",
+          "harmony": "未判断",
+          "palette": []
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/15ff5a7f73d40d7b5829d4fd.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source": "designer_recomposition",
+          "confidence": null,
+          "review_notes": [
+            "season, palette and persona are design targets pending whole-image review"
+          ]
+        }
+      },
+      "record_fingerprint": "c40e27fbfc813a6eaacb37f348abb1517ddff8fc84bbd60cf53641088b714d92",
+      "asset_sha256": "cfcb1da4dea0212c6e7b579f24e37efde55681a48905a4c9b599369f3d01c145",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/15ff5a7f73d40d7b5829d4fd.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_neon_bottom_0037",
+            "slot": "bottom",
+            "box": [
+              244,
+              644,
+              655,
+              1330
+            ]
+          },
+          {
+            "garment_id": "garment_mute_top_0002",
+            "slot": "top",
+            "box": [
+              232,
+              160,
+              668,
+              620
+            ]
+          },
+          {
+            "garment_id": "garment_heir_shoes_0014",
+            "slot": "shoes",
+            "box": [
+              936,
+              880,
+              1033,
+              1080
+            ]
+          },
+          {
+            "garment_id": "garment_ease_bag_0019",
+            "slot": "bag",
+            "box": [
+              872,
+              410,
+              1107,
+              730
+            ]
+          }
+        ]
+      },
+      "status": "pending_native_review",
+      "review": null
+    },
+    {
+      "target_palette": "evidence_first",
+      "hero": "g0328",
+      "new_record": {
+        "id": "outfit_neon_p0-visual-gap-01_19",
+        "kind": "master",
+        "parent_outfit_id": null,
+        "recipe_version": "p0-visual-gap-01",
+        "title": "NEON autumn 日常设计 19",
+        "description": "灵动吸睛 easy / skirt：以“高能色彩、图案焦点、主动吸睛”为人格证据，只保留一件主视觉，其余单品降低竞争并维持日常可穿。",
+        "primary_persona": "NEON",
+        "secondary_personas": [],
+        "persona_affinity": {},
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "日常"
+        ],
+        "season_tags": [
+          "秋"
+        ],
+        "weather_tags": [],
+        "presentation": [
+          "feminine"
+        ],
+        "intensity": "easy",
+        "formality": 3,
+        "garment_ids": [
+          "garment_neon_top_0328",
+          "garment_bolt_skirt_0186",
+          "garment_ease_shoes_0020",
+          "garment_noir_bag_0270"
+        ],
+        "visible_slots": [
+          "top",
+          "skirt",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_neon_top_0328": "hero",
+          "garment_bolt_skirt_0186": "support",
+          "garment_ease_shoes_0020": "support",
+          "garment_noir_bag_0270": "support"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "未判断",
+          "saturation": "未判断",
+          "harmony": "未判断",
+          "palette": []
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/81991fa63f3fa717584d2d9d.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source": "designer_recomposition",
+          "confidence": null,
+          "review_notes": [
+            "season, palette and persona are design targets pending whole-image review"
+          ]
+        }
+      },
+      "record_fingerprint": "1fa5f019f34cd0b1dda79c0ec2e988f6b193f631041274e7bc40a20859865789",
+      "asset_sha256": "ff4ccc0314fea277afcc430809d6dff6847f6d2e718cb75b999d67d81b42ec02",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/81991fa63f3fa717584d2d9d.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_neon_top_0328",
+            "slot": "top",
+            "box": [
+              277,
+              160,
+              622,
+              620
+            ]
+          },
+          {
+            "garment_id": "garment_bolt_skirt_0186",
+            "slot": "skirt",
+            "box": [
+              216,
+              644,
+              683,
+              1330
+            ]
+          },
+          {
+            "garment_id": "garment_ease_shoes_0020",
+            "slot": "shoes",
+            "box": [
+              840,
+              880,
+              1129,
+              1080
+            ]
+          },
+          {
+            "garment_id": "garment_noir_bag_0270",
+            "slot": "bag",
+            "box": [
+              865,
+              410,
+              1114,
+              730
+            ]
+          }
+        ]
+      },
+      "status": "pending_native_review",
+      "review": null
+    },
+    {
+      "target_palette": "evidence_first",
+      "hero": "g0472",
+      "new_record": {
+        "id": "outfit_neon_p0-visual-gap-01_20",
+        "kind": "master",
+        "parent_outfit_id": null,
+        "recipe_version": "p0-visual-gap-01",
+        "title": "NEON autumn 日常设计 20",
+        "description": "灵动吸睛 explore / dress：以“高能色彩、图案焦点、主动吸睛”为人格证据，只保留一件主视觉，其余单品降低竞争并维持日常可穿。",
+        "primary_persona": "NEON",
+        "secondary_personas": [],
+        "persona_affinity": {},
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "日常"
+        ],
+        "season_tags": [
+          "秋"
+        ],
+        "weather_tags": [],
+        "presentation": [
+          "feminine"
+        ],
+        "intensity": "explore",
+        "formality": 3,
+        "garment_ids": [
+          "garment_neon_dress_0472",
+          "garment_ease_shoes_0244",
+          "garment_void_bag_0271"
+        ],
+        "visible_slots": [
+          "dress",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_neon_dress_0472": "hero",
+          "garment_ease_shoes_0244": "support",
+          "garment_void_bag_0271": "support"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "未判断",
+          "saturation": "未判断",
+          "harmony": "未判断",
+          "palette": []
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/92d17becba1f1ee69dc5917a.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source": "designer_recomposition",
+          "confidence": null,
+          "review_notes": [
+            "season, palette and persona are design targets pending whole-image review"
+          ]
+        }
+      },
+      "record_fingerprint": "b8da5cc89ad3ba6ea96b0ab0cadf81d08e4f42267c7b5c3ee99dd6aace9e66a4",
+      "asset_sha256": "e7d3e1c49e74a206b7d565c2135101a73d4b2b0fdff7feb11ec3c1631521f7a9",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/92d17becba1f1ee69dc5917a.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_neon_dress_0472",
+            "slot": "dress",
+            "box": [
+              123,
+              160,
+              776,
+              1330
+            ]
+          },
+          {
+            "garment_id": "garment_ease_shoes_0244",
+            "slot": "shoes",
+            "box": [
+              840,
+              886,
+              1130,
+              1074
+            ]
+          },
+          {
+            "garment_id": "garment_void_bag_0271",
+            "slot": "bag",
+            "box": [
+              865,
+              410,
+              1115,
+              730
+            ]
+          }
+        ]
+      },
+      "status": "pending_native_review",
+      "review": null
+    },
+    {
+      "target_palette": "evidence_first",
+      "hero": "g0568",
+      "new_record": {
+        "id": "outfit_neon_p0-visual-gap-01_21",
+        "kind": "master",
+        "parent_outfit_id": null,
+        "recipe_version": "p0-visual-gap-01",
+        "title": "NEON autumn 日常设计 21",
+        "description": "灵动吸睛 explore / pants：以“高能色彩、图案焦点、主动吸睛”为人格证据，只保留一件主视觉，其余单品降低竞争并维持日常可穿。",
+        "primary_persona": "NEON",
+        "secondary_personas": [],
+        "persona_affinity": {},
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "日常"
+        ],
+        "season_tags": [
+          "秋"
+        ],
+        "weather_tags": [],
+        "presentation": [
+          "feminine"
+        ],
+        "intensity": "explore",
+        "formality": 3,
+        "garment_ids": [
+          "garment_neon_top_0568",
+          "garment_mute_bottom_0003",
+          "garment_melt_shoes_0245",
+          "garment_oops_bag_0272"
+        ],
+        "visible_slots": [
+          "top",
+          "bottom",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_neon_top_0568": "hero",
+          "garment_mute_bottom_0003": "support",
+          "garment_melt_shoes_0245": "support",
+          "garment_oops_bag_0272": "support"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "未判断",
+          "saturation": "未判断",
+          "harmony": "未判断",
+          "palette": []
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/fa4e2fad113c904966732e97.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source": "designer_recomposition",
+          "confidence": null,
+          "review_notes": [
+            "season, palette and persona are design targets pending whole-image review"
+          ]
+        }
+      },
+      "record_fingerprint": "087c20a4728a906ce8b0c7fcff349d94458290a356a9ca445e657347c30bfb1e",
+      "asset_sha256": "54fdab91f9df9e6a69d702c1c1e79d63ca713c91025192bb903e164220af7951",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/fa4e2fad113c904966732e97.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_neon_top_0568",
+            "slot": "top",
+            "box": [
+              283,
+              160,
+              617,
+              620
+            ]
+          },
+          {
+            "garment_id": "garment_mute_bottom_0003",
+            "slot": "bottom",
+            "box": [
+              312,
+              644,
+              588,
+              1330
+            ]
+          },
+          {
+            "garment_id": "garment_melt_shoes_0245",
+            "slot": "shoes",
+            "box": [
+              930,
+              880,
+              1040,
+              1080
+            ]
+          },
+          {
+            "garment_id": "garment_oops_bag_0272",
+            "slot": "bag",
+            "box": [
+              876,
+              410,
+              1104,
+              730
+            ]
+          }
+        ]
+      },
+      "status": "pending_native_review",
+      "review": null
+    },
+    {
+      "target_palette": "evidence_first",
+      "hero": "g0461",
+      "new_record": {
+        "id": "outfit_oops_p0-visual-gap-01_22",
+        "kind": "master",
+        "parent_outfit_id": null,
+        "recipe_version": "p0-visual-gap-01",
+        "title": "OOPS autumn 日常设计 22",
+        "description": "搭配事故 easy / dress：以“主动冲突、异质拼接、失序有趣”为人格证据，只保留一件主视觉，其余单品降低竞争并维持日常可穿。",
+        "primary_persona": "OOPS",
+        "secondary_personas": [],
+        "persona_affinity": {},
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "日常"
+        ],
+        "season_tags": [
+          "秋"
+        ],
+        "weather_tags": [],
+        "presentation": [
+          "feminine"
+        ],
+        "intensity": "easy",
+        "formality": 3,
+        "garment_ids": [
+          "garment_loop_dress_0461",
+          "garment_mute_shoes_0004",
+          "garment_mute_bag_0005"
+        ],
+        "visible_slots": [
+          "dress",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_loop_dress_0461": "hero",
+          "garment_mute_shoes_0004": "support",
+          "garment_mute_bag_0005": "support"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "未判断",
+          "saturation": "未判断",
+          "harmony": "未判断",
+          "palette": []
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/6c78f508730092eaf9455a6f.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source": "designer_recomposition",
+          "confidence": null,
+          "review_notes": [
+            "season, palette and persona are design targets pending whole-image review"
+          ]
+        }
+      },
+      "record_fingerprint": "30487416002443644bf011be12f2a4da3ca862e8d347a5b0e9a5f1a28362e28f",
+      "asset_sha256": "73b04bf516707850a6630392c93e0954efcc0d34527db23abfa06a439bcbdb76",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/6c78f508730092eaf9455a6f.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_loop_dress_0461",
+            "slot": "dress",
+            "box": [
+              100,
+              160,
+              800,
+              1303
+            ]
+          },
+          {
+            "garment_id": "garment_mute_shoes_0004",
+            "slot": "shoes",
+            "box": [
+              891,
+              880,
+              1078,
+              1080
+            ]
+          },
+          {
+            "garment_id": "garment_mute_bag_0005",
+            "slot": "bag",
+            "box": [
+              851,
+              410,
+              1129,
+              730
+            ]
+          }
+        ]
+      },
+      "status": "pending_native_review",
+      "review": null
+    },
+    {
+      "target_palette": "evidence_first",
+      "hero": "g0038",
+      "new_record": {
+        "id": "outfit_oops_p0-visual-gap-01_23",
+        "kind": "master",
+        "parent_outfit_id": null,
+        "recipe_version": "p0-visual-gap-01",
+        "title": "OOPS autumn 日常设计 23",
+        "description": "搭配事故 easy / skirt：以“主动冲突、异质拼接、失序有趣”为人格证据，只保留一件主视觉，其余单品降低竞争并维持日常可穿。",
+        "primary_persona": "OOPS",
+        "secondary_personas": [],
+        "persona_affinity": {},
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "日常"
+        ],
+        "season_tags": [
+          "秋"
+        ],
+        "weather_tags": [],
+        "presentation": [
+          "feminine"
+        ],
+        "intensity": "easy",
+        "formality": 3,
+        "garment_ids": [
+          "garment_neon_top_0038",
+          "garment_bolt_skirt_0186",
+          "garment_heir_shoes_0014",
+          "garment_ease_bag_0019"
+        ],
+        "visible_slots": [
+          "top",
+          "skirt",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_neon_top_0038": "hero",
+          "garment_bolt_skirt_0186": "support",
+          "garment_heir_shoes_0014": "support",
+          "garment_ease_bag_0019": "support"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "未判断",
+          "saturation": "未判断",
+          "harmony": "未判断",
+          "palette": []
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/9d0d82e043a9f11fbea41e22.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source": "designer_recomposition",
+          "confidence": null,
+          "review_notes": [
+            "season, palette and persona are design targets pending whole-image review"
+          ]
+        }
+      },
+      "record_fingerprint": "03e46440ca7d682e67609e2556c24e78e01a84fe771b053bf55bb29fcd4eb00f",
+      "asset_sha256": "a605e967ae7caa7299bd7a7a68c58cc97c7d44501d1357c9d2f87d1529f996db",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/9d0d82e043a9f11fbea41e22.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_neon_top_0038",
+            "slot": "top",
+            "box": [
+              239,
+              160,
+              661,
+              620
+            ]
+          },
+          {
+            "garment_id": "garment_bolt_skirt_0186",
+            "slot": "skirt",
+            "box": [
+              216,
+              644,
+              683,
+              1330
+            ]
+          },
+          {
+            "garment_id": "garment_heir_shoes_0014",
+            "slot": "shoes",
+            "box": [
+              936,
+              880,
+              1033,
+              1080
+            ]
+          },
+          {
+            "garment_id": "garment_ease_bag_0019",
+            "slot": "bag",
+            "box": [
+              872,
+              410,
+              1107,
+              730
+            ]
+          }
+        ]
+      },
+      "status": "pending_native_review",
+      "review": null
+    },
+    {
+      "target_palette": "evidence_first",
+      "hero": "g0461",
+      "new_record": {
+        "id": "outfit_oops_p0-visual-gap-01_24",
+        "kind": "master",
+        "parent_outfit_id": null,
+        "recipe_version": "p0-visual-gap-01",
+        "title": "OOPS autumn 日常设计 24",
+        "description": "搭配事故 easy / dress：以“主动冲突、异质拼接、失序有趣”为人格证据，只保留一件主视觉，其余单品降低竞争并维持日常可穿。",
+        "primary_persona": "OOPS",
+        "secondary_personas": [],
+        "persona_affinity": {},
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "日常"
+        ],
+        "season_tags": [
+          "秋"
+        ],
+        "weather_tags": [],
+        "presentation": [
+          "feminine"
+        ],
+        "intensity": "easy",
+        "formality": 3,
+        "garment_ids": [
+          "garment_loop_dress_0461",
+          "garment_ease_shoes_0020",
+          "garment_noir_bag_0270"
+        ],
+        "visible_slots": [
+          "dress",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_loop_dress_0461": "hero",
+          "garment_ease_shoes_0020": "support",
+          "garment_noir_bag_0270": "support"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "未判断",
+          "saturation": "未判断",
+          "harmony": "未判断",
+          "palette": []
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/524a4a49e92690ae39cc35a8.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source": "designer_recomposition",
+          "confidence": null,
+          "review_notes": [
+            "season, palette and persona are design targets pending whole-image review"
+          ]
+        }
+      },
+      "record_fingerprint": "27ed253c2ea196eb3ba9a89afeb14b0dc850f05f11d12f9c6325fbee77dddd7e",
+      "asset_sha256": "fb1bfdd9533f49bb1ce2a2a544c6aef41ec5d78d20fe34fdfc51412025a6f497",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/524a4a49e92690ae39cc35a8.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_loop_dress_0461",
+            "slot": "dress",
+            "box": [
+              100,
+              160,
+              800,
+              1303
+            ]
+          },
+          {
+            "garment_id": "garment_ease_shoes_0020",
+            "slot": "shoes",
+            "box": [
+              840,
+              880,
+              1129,
+              1080
+            ]
+          },
+          {
+            "garment_id": "garment_noir_bag_0270",
+            "slot": "bag",
+            "box": [
+              865,
+              410,
+              1114,
+              730
+            ]
+          }
+        ]
+      },
+      "status": "pending_native_review",
+      "review": null
+    },
+    {
+      "target_palette": "evidence_first",
+      "hero": "g0077",
+      "new_record": {
+        "id": "outfit_oops_p0-visual-gap-01_25",
+        "kind": "master",
+        "parent_outfit_id": null,
+        "recipe_version": "p0-visual-gap-01",
+        "title": "OOPS autumn 日常设计 25",
+        "description": "搭配事故 easy / skirt：以“主动冲突、异质拼接、失序有趣”为人格证据，只保留一件主视觉，其余单品降低竞争并维持日常可穿。",
+        "primary_persona": "OOPS",
+        "secondary_personas": [],
+        "persona_affinity": {},
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "日常"
+        ],
+        "season_tags": [
+          "秋"
+        ],
+        "weather_tags": [],
+        "presentation": [
+          "feminine"
+        ],
+        "intensity": "easy",
+        "formality": 3,
+        "garment_ids": [
+          "garment_oops_top_0077",
+          "garment_film_skirt_0187",
+          "garment_ease_shoes_0244",
+          "garment_void_bag_0271"
+        ],
+        "visible_slots": [
+          "top",
+          "skirt",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_oops_top_0077": "hero",
+          "garment_film_skirt_0187": "support",
+          "garment_ease_shoes_0244": "support",
+          "garment_void_bag_0271": "support"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "未判断",
+          "saturation": "未判断",
+          "harmony": "未判断",
+          "palette": []
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/8cc7827563738a1295d8ecc4.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source": "designer_recomposition",
+          "confidence": null,
+          "review_notes": [
+            "season, palette and persona are design targets pending whole-image review"
+          ]
+        }
+      },
+      "record_fingerprint": "e9d23aba31f9e35769e8d522d1e83a9fb5ddd693a6040a2e0832322c9da2f476",
+      "asset_sha256": "26abed18844bfd85a1c941462b19abbad303ce8877fc0a548410bc007147879c",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/8cc7827563738a1295d8ecc4.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_oops_top_0077",
+            "slot": "top",
+            "box": [
+              251,
+              160,
+              649,
+              620
+            ]
+          },
+          {
+            "garment_id": "garment_film_skirt_0187",
+            "slot": "skirt",
+            "box": [
+              288,
+              644,
+              612,
+              1330
+            ]
+          },
+          {
+            "garment_id": "garment_ease_shoes_0244",
+            "slot": "shoes",
+            "box": [
+              840,
+              886,
+              1130,
+              1074
+            ]
+          },
+          {
+            "garment_id": "garment_void_bag_0271",
+            "slot": "bag",
+            "box": [
+              865,
+              410,
+              1115,
+              730
+            ]
+          }
+        ]
+      },
+      "status": "pending_native_review",
+      "review": null
+    },
+    {
+      "target_palette": "evidence_first",
+      "hero": "g0238",
+      "new_record": {
+        "id": "outfit_void_p0-visual-gap-01_26",
+        "kind": "master",
+        "parent_outfit_id": null,
+        "recipe_version": "p0-visual-gap-01",
+        "title": "VOID autumn 日常设计 26",
+        "description": "人间失格 easy / dress：以“状态游离、拒绝定型、默认制服”为人格证据，只保留一件主视觉，其余单品降低竞争并维持日常可穿。",
+        "primary_persona": "VOID",
+        "secondary_personas": [],
+        "persona_affinity": {},
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "日常"
+        ],
+        "season_tags": [
+          "秋"
+        ],
+        "weather_tags": [],
+        "presentation": [
+          "feminine"
+        ],
+        "intensity": "easy",
+        "formality": 3,
+        "garment_ids": [
+          "garment_noir_dress_0238",
+          "garment_mute_shoes_0004",
+          "garment_mute_bag_0005"
+        ],
+        "visible_slots": [
+          "dress",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_noir_dress_0238": "hero",
+          "garment_mute_shoes_0004": "support",
+          "garment_mute_bag_0005": "support"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "未判断",
+          "saturation": "未判断",
+          "harmony": "未判断",
+          "palette": []
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/1ada61a2ecfb4ab4e5aed0cd.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source": "designer_recomposition",
+          "confidence": null,
+          "review_notes": [
+            "season, palette and persona are design targets pending whole-image review"
+          ]
+        }
+      },
+      "record_fingerprint": "671a2502e9e0eefbcc4649fdfd0fe0288d8b34b37c1cf8eb21522a8f8100d5b4",
+      "asset_sha256": "e483fce1e0dbf2bca57ad654a52cbb5370cfb6d7f35d8f5002c07411ff884e4e",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/1ada61a2ecfb4ab4e5aed0cd.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_noir_dress_0238",
+            "slot": "dress",
+            "box": [
+              190,
+              160,
+              709,
+              1330
+            ]
+          },
+          {
+            "garment_id": "garment_mute_shoes_0004",
+            "slot": "shoes",
+            "box": [
+              891,
+              880,
+              1078,
+              1080
+            ]
+          },
+          {
+            "garment_id": "garment_mute_bag_0005",
+            "slot": "bag",
+            "box": [
+              851,
+              410,
+              1129,
+              730
+            ]
+          }
+        ]
+      },
+      "status": "pending_native_review",
+      "review": null
+    },
+    {
+      "target_palette": "evidence_first",
+      "hero": "g0094",
+      "new_record": {
+        "id": "outfit_void_p0-visual-gap-01_27",
+        "kind": "master",
+        "parent_outfit_id": null,
+        "recipe_version": "p0-visual-gap-01",
+        "title": "VOID autumn 日常设计 27",
+        "description": "人间失格 easy / skirt：以“状态游离、拒绝定型、默认制服”为人格证据，只保留一件主视觉，其余单品降低竞争并维持日常可穿。",
+        "primary_persona": "VOID",
+        "secondary_personas": [],
+        "persona_affinity": {},
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "日常"
+        ],
+        "season_tags": [
+          "秋"
+        ],
+        "weather_tags": [],
+        "presentation": [
+          "feminine"
+        ],
+        "intensity": "easy",
+        "formality": 3,
+        "garment_ids": [
+          "garment_noir_top_0094",
+          "garment_bolt_skirt_0186",
+          "garment_heir_shoes_0014",
+          "garment_ease_bag_0019"
+        ],
+        "visible_slots": [
+          "top",
+          "skirt",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_noir_top_0094": "hero",
+          "garment_bolt_skirt_0186": "support",
+          "garment_heir_shoes_0014": "support",
+          "garment_ease_bag_0019": "support"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "未判断",
+          "saturation": "未判断",
+          "harmony": "未判断",
+          "palette": []
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/a7ab31d50fd2d005e14d19ba.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source": "designer_recomposition",
+          "confidence": null,
+          "review_notes": [
+            "season, palette and persona are design targets pending whole-image review"
+          ]
+        }
+      },
+      "record_fingerprint": "69d861d80aae490d175d782210bb3211c000b46d8b30c3c3736d4dd0fb26ead9",
+      "asset_sha256": "d7012f18289474bcf70f1b330ca81c1aae79bbcd3f77276d9151d5213c45901a",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/a7ab31d50fd2d005e14d19ba.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_noir_top_0094",
+            "slot": "top",
+            "box": [
+              306,
+              160,
+              594,
+              620
+            ]
+          },
+          {
+            "garment_id": "garment_bolt_skirt_0186",
+            "slot": "skirt",
+            "box": [
+              216,
+              644,
+              683,
+              1330
+            ]
+          },
+          {
+            "garment_id": "garment_heir_shoes_0014",
+            "slot": "shoes",
+            "box": [
+              936,
+              880,
+              1033,
+              1080
+            ]
+          },
+          {
+            "garment_id": "garment_ease_bag_0019",
+            "slot": "bag",
+            "box": [
+              872,
+              410,
+              1107,
+              730
+            ]
+          }
+        ]
+      },
+      "status": "pending_native_review",
+      "review": null
+    },
+    {
+      "target_palette": "evidence_first",
+      "hero": "g0463",
+      "new_record": {
+        "id": "outfit_void_p0-visual-gap-01_28",
+        "kind": "master",
+        "parent_outfit_id": null,
+        "recipe_version": "p0-visual-gap-01",
+        "title": "VOID autumn 日常设计 28",
+        "description": "人间失格 easy / dress：以“状态游离、拒绝定型、默认制服”为人格证据，只保留一件主视觉，其余单品降低竞争并维持日常可穿。",
+        "primary_persona": "VOID",
+        "secondary_personas": [],
+        "persona_affinity": {},
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "日常"
+        ],
+        "season_tags": [
+          "秋"
+        ],
+        "weather_tags": [],
+        "presentation": [
+          "feminine"
+        ],
+        "intensity": "easy",
+        "formality": 3,
+        "garment_ids": [
+          "garment_void_dress_0463",
+          "garment_ease_shoes_0020",
+          "garment_noir_bag_0270"
+        ],
+        "visible_slots": [
+          "dress",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_void_dress_0463": "hero",
+          "garment_ease_shoes_0020": "support",
+          "garment_noir_bag_0270": "support"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "未判断",
+          "saturation": "未判断",
+          "harmony": "未判断",
+          "palette": []
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/310a31a94fcf79c61bf6e94e.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source": "designer_recomposition",
+          "confidence": null,
+          "review_notes": [
+            "season, palette and persona are design targets pending whole-image review"
+          ]
+        }
+      },
+      "record_fingerprint": "39e41c549a81987bad920c0fb256d2e85e632b6e6919403d09cfc82ba4fb1b43",
+      "asset_sha256": "74a1855688b365ec20f9cbd399e984d556c82ed21a6e2ba414839bb7d0263048",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/310a31a94fcf79c61bf6e94e.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_void_dress_0463",
+            "slot": "dress",
+            "box": [
+              182,
+              160,
+              717,
+              1330
+            ]
+          },
+          {
+            "garment_id": "garment_ease_shoes_0020",
+            "slot": "shoes",
+            "box": [
+              840,
+              880,
+              1129,
+              1080
+            ]
+          },
+          {
+            "garment_id": "garment_noir_bag_0270",
+            "slot": "bag",
+            "box": [
+              865,
+              410,
+              1114,
+              730
+            ]
+          }
+        ]
+      },
+      "status": "pending_native_review",
+      "review": null
+    },
+    {
+      "target_palette": "evidence_first",
+      "hero": "g0127",
+      "new_record": {
+        "id": "outfit_void_p0-visual-gap-01_29",
+        "kind": "master",
+        "parent_outfit_id": null,
+        "recipe_version": "p0-visual-gap-01",
+        "title": "VOID autumn 日常设计 29",
+        "description": "人间失格 easy / skirt：以“状态游离、拒绝定型、默认制服”为人格证据，只保留一件主视觉，其余单品降低竞争并维持日常可穿。",
+        "primary_persona": "VOID",
+        "secondary_personas": [],
+        "persona_affinity": {},
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "日常"
+        ],
+        "season_tags": [
+          "秋"
+        ],
+        "weather_tags": [],
+        "presentation": [
+          "feminine"
+        ],
+        "intensity": "easy",
+        "formality": 3,
+        "garment_ids": [
+          "garment_void_top_0127",
+          "garment_film_skirt_0187",
+          "garment_ease_shoes_0244",
+          "garment_void_bag_0271"
+        ],
+        "visible_slots": [
+          "top",
+          "skirt",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_void_top_0127": "hero",
+          "garment_film_skirt_0187": "support",
+          "garment_ease_shoes_0244": "support",
+          "garment_void_bag_0271": "support"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "未判断",
+          "saturation": "未判断",
+          "harmony": "未判断",
+          "palette": []
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/1697960be64964d5cffaf964.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source": "designer_recomposition",
+          "confidence": null,
+          "review_notes": [
+            "season, palette and persona are design targets pending whole-image review"
+          ]
+        }
+      },
+      "record_fingerprint": "bc1bb7cf98a9a77d8295c2ede2539b61ea03e5ae6b8b8f3d4c6cbe45207293e6",
+      "asset_sha256": "9fd59540c47b2e2bfac71a41b8577230e682d0b346685f3c75dd64a33095ddef",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/1697960be64964d5cffaf964.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_void_top_0127",
+            "slot": "top",
+            "box": [
+              226,
+              160,
+              674,
+              620
+            ]
+          },
+          {
+            "garment_id": "garment_film_skirt_0187",
+            "slot": "skirt",
+            "box": [
+              288,
+              644,
+              612,
+              1330
+            ]
+          },
+          {
+            "garment_id": "garment_ease_shoes_0244",
+            "slot": "shoes",
+            "box": [
+              840,
+              886,
+              1130,
+              1074
+            ]
+          },
+          {
+            "garment_id": "garment_void_bag_0271",
+            "slot": "bag",
+            "box": [
+              865,
+              410,
+              1115,
+              730
+            ]
+          }
+        ]
+      },
+      "status": "pending_native_review",
+      "review": null
+    }
+  ],
+  "production_approved": false,
+  "version": "aw-designed-rendered-3acd5a167b59c6b6273c"
+}

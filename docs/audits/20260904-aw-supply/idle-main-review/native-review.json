@@ -1,0 +1,748 @@
+{
+  "schema_version": 1,
+  "source_ledger_version": "aw-repairs-095c65a758884479d2a6",
+  "review_kind": "codex_visual_review",
+  "independent_blind_review": false,
+  "sheets": [
+    {
+      "sheet": "idle-main-1.jpg",
+      "tokens": [
+        "g0021",
+        "g0023",
+        "g0033",
+        "g0036",
+        "g0048",
+        "g0051",
+        "g0057",
+        "g0066",
+        "g0369",
+        "g0372",
+        "g0375",
+        "g0378"
+      ]
+    },
+    {
+      "sheet": "idle-main-2.jpg",
+      "tokens": [
+        "g0381",
+        "g0384",
+        "g0387",
+        "g0390",
+        "g0393",
+        "g0396",
+        "g0437",
+        "g0449",
+        "g0452",
+        "g0456",
+        "g0459",
+        "g0462"
+      ]
+    },
+    {
+      "sheet": "idle-main-3.jpg",
+      "tokens": [
+        "g0465",
+        "g0468",
+        "g0471",
+        "g0474",
+        "g0475",
+        "g0477",
+        "g0480",
+        "g0570",
+        "g0573",
+        "g0581",
+        "g0585"
+      ]
+    }
+  ],
+  "entries": [
+    {
+      "garment_id": "garment_melt_outer_0021",
+      "token": "g0021",
+      "status": "ai_candidate",
+      "category": "outer",
+      "visual_personas": [
+        "melt"
+      ],
+      "main_colors": [
+        "pale_pink"
+      ],
+      "evidence": "浅粉短开衫有柔绒、门襟绞花、蓬袖与贴袋；按开襟针织外搭归 outer，圆润短比例而非仅浅色支持 MELT。",
+      "decision": "direct_autumn_recompose",
+      "native_evidence": "短柔绒开衫完整；宜配简洁高腰裤或素长裙，避免再加蝴蝶结。",
+      "outfit_approval": false,
+      "winter_outdoor_approved": false
+    },
+    {
+      "garment_id": "garment_melt_skirt_0023",
+      "token": "g0023",
+      "status": "ai_candidate",
+      "category": "skirt",
+      "visual_personas": [
+        "melt"
+      ],
+      "main_colors": [
+        "cream",
+        "pale_pink"
+      ],
+      "evidence": "奶油粉 A 字短针织裙，粉侧片、圆绒球抽绳、圆贴袋；可作甜味焦点但非极简基础裙。",
+      "decision": "autumn_with_coverage",
+      "native_evidence": "短针织裙完整但长度短；秋季须有不透覆盖方案，不能直接证明冬季户外。",
+      "outfit_approval": false,
+      "winter_outdoor_approved": false
+    },
+    {
+      "garment_id": "garment_flou_dress_0033",
+      "token": "g0033",
+      "status": "ai_candidate",
+      "category": "dress",
+      "visual_personas": [
+        "flou"
+      ],
+      "main_colors": [
+        "cream",
+        "pale_pink",
+        "sage"
+      ],
+      "evidence": "细吊带垂领花卉长裙，收腰、斜向流线与渐扩摆，浪漫语汇清楚，适合暖季或社交。",
+      "decision": "adjust_use_or_layer",
+      "native_evidence": "细吊带垂领花卉长裙完整，优先暖季社交；秋季须加入不透内层和外层后看图。",
+      "outfit_approval": false,
+      "winter_outdoor_approved": false
+    },
+    {
+      "garment_id": "garment_neon_outer_0036",
+      "token": "g0036",
+      "status": "ai_candidate",
+      "category": "outer",
+      "visual_personas": [
+        "neon",
+        "oops"
+      ],
+      "main_colors": [
+        "cobalt",
+        "orange",
+        "lime",
+        "hot_pink"
+      ],
+      "evidence": "蓝橙酸绿亮粉短夹克，巨型袖体积、拉链与拼色切分，短长反差和科技亮面是主视觉依据。",
+      "decision": "statement_not_default_daily",
+      "native_evidence": "高彩巨袖短夹克完整；仅适合 NEON/OOPS 鲜明表达，必须配低装饰主支撑款。",
+      "outfit_approval": false,
+      "winter_outdoor_approved": false
+    },
+    {
+      "garment_id": "garment_bolt_dress_0048",
+      "token": "g0048",
+      "status": "ai_candidate",
+      "category": "dress",
+      "visual_personas": [
+        "bolt"
+      ],
+      "main_colors": [
+        "burgundy",
+        "cream"
+      ],
+      "evidence": "酒红奶油束腰裙有巨泡袖、胸腰大结、花绣与层层蕾丝裙摆；接近戏剧服，不能当日常典型。",
+      "decision": "occasion_only",
+      "native_evidence": "束腰、巨泡袖、刺绣与多层裙摆同时出现，属于戏剧场合款而非默认日常。",
+      "outfit_approval": false,
+      "winter_outdoor_approved": false
+    },
+    {
+      "garment_id": "garment_film_outer_0051",
+      "token": "g0051",
+      "status": "ai_candidate",
+      "category": "outer",
+      "visual_personas": [
+        "film",
+        "wabi"
+      ],
+      "main_colors": [
+        "washed_blue",
+        "tobacco"
+      ],
+      "evidence": "褪色蓝与烟草棕短夹克，灯芯绒观感翻领、胸袋和弹力下摆，复古工作服短箱形比例明确。",
+      "decision": "direct_autumn_recompose",
+      "native_evidence": "复古工作服短夹克完整，适合直筒裤、锥裤或简洁裙装。",
+      "outfit_approval": false,
+      "winter_outdoor_approved": false
+    },
+    {
+      "garment_id": "garment_jade_outer_0057",
+      "token": "g0057",
+      "status": "ai_candidate",
+      "category": "outer",
+      "visual_personas": [
+        "jade"
+      ],
+      "main_colors": [
+        "black",
+        "ivory",
+        "burgundy"
+      ],
+      "evidence": "黑色斜襟外套，米白交领边和宽袖口、暗花与红系带，东方结构清楚，但整组叠搭易传统服装化。",
+      "decision": "direct_autumn_recompose",
+      "native_evidence": "交领暗花外套完整；应搭无装饰内层和素下装，避免整套传统服装化。",
+      "outfit_approval": false,
+      "winter_outdoor_approved": false
+    },
+    {
+      "garment_id": "garment_noir_outer_0066",
+      "token": "g0066",
+      "status": "ai_candidate",
+      "category": "outer",
+      "visual_personas": [
+        "noir"
+      ],
+      "main_colors": [
+        "black"
+      ],
+      "evidence": "黑亮皮观感长风衣，尖驳领、强肩、腰带与长开衩前片，暗黑依据是锐利材质与纵线而非黑色本身。",
+      "decision": "direct_autumn_recompose",
+      "native_evidence": "黑色长皮感风衣完整，强肩长线清楚；日常版需内搭和鞋包克制。",
+      "outfit_approval": false,
+      "winter_outdoor_approved": false
+    },
+    {
+      "garment_id": "garment_mute_outer_0369",
+      "token": "g0369",
+      "status": "ai_candidate",
+      "category": "outer",
+      "visual_personas": [
+        "mute",
+        "ease",
+        "loop"
+      ],
+      "main_colors": [
+        "charcoal"
+      ],
+      "evidence": "炭灰V领开衫有扣门襟、两个贴袋和罗纹边，袖身宽松；跨人格低装饰基础型，与其他素开衫需做家族近似控制。",
+      "decision": "direct_autumn_recompose",
+      "native_evidence": "炭灰素开衫完整，是可复用基础外层；与相似素开衫受家族重复约束。",
+      "outfit_approval": false,
+      "winter_outdoor_approved": false
+    },
+    {
+      "garment_id": "garment_ease_outer_0372",
+      "token": "g0372",
+      "status": "ai_candidate",
+      "category": "outer",
+      "visual_personas": [
+        "ease",
+        "film",
+        "loop"
+      ],
+      "main_colors": [
+        "ivory",
+        "brown"
+      ],
+      "evidence": "奶白短夹克配棕色领、大袋盖、鼓袖及抽绳下摆，温暖休闲语汇明确；与普通素拉链运动夹克有袋和领型差异。",
+      "decision": "direct_autumn_recompose",
+      "native_evidence": "奶白棕领短夹克完整，袋型和抽绳提供休闲焦点，宜配简洁裤裙。",
+      "outfit_approval": false,
+      "winter_outdoor_approved": false
+    },
+    {
+      "garment_id": "garment_flou_outer_0375",
+      "token": "g0375",
+      "status": "ai_candidate",
+      "category": "outer",
+      "visual_personas": [
+        "flou",
+        "melt"
+      ],
+      "main_colors": [
+        "pale_pink",
+        "sage",
+        "ivory"
+      ],
+      "evidence": "粉绿花纱开襟罩衫以胸前细绳固定、宽钟袖和不等长荷叶摆，透视明显；作为外搭保留，但必须明确不透明内层，不能当单穿上衣。",
+      "decision": "requires_opaque_inner",
+      "native_evidence": "花纱罩衫完整但视觉透感明确；只有配不透内搭后才能进入秋季配方。",
+      "outfit_approval": false,
+      "winter_outdoor_approved": false
+    },
+    {
+      "garment_id": "garment_bolt_outer_0378",
+      "token": "g0378",
+      "status": "ai_candidate",
+      "category": "outer",
+      "visual_personas": [
+        "bolt",
+        "heir"
+      ],
+      "main_colors": [
+        "ivory",
+        "burgundy"
+      ],
+      "evidence": "乳白粗织短西装有酒红大翻领、花饰肩片、收腰和巨泡袖，袖口也有繁复饰边；比普通学院短外套明显场合化。",
+      "decision": "occasion_only",
+      "native_evidence": "花饰肩片、巨泡袖和繁复袖口同时存在，限 BOLT 场合表达。",
+      "outfit_approval": false,
+      "winter_outdoor_approved": false
+    },
+    {
+      "garment_id": "garment_loop_outer_0381",
+      "token": "g0381",
+      "status": "ai_candidate",
+      "category": "outer",
+      "visual_personas": [
+        "melt",
+        "ease",
+        "loop"
+      ],
+      "main_colors": [
+        "ivory",
+        "gray"
+      ],
+      "evidence": "奶白宽开衫配灰门襟宽边和袖口小系带，贴袋、低落肩及蓬袖明显；柔软舒适但叠其他窄袖外套需核对松量。",
+      "decision": "direct_autumn_recompose",
+      "native_evidence": "宽松针织外层完整；内搭须简洁且需核对袖量，不再叠窄袖外套。",
+      "outfit_approval": false,
+      "winter_outdoor_approved": false
+    },
+    {
+      "garment_id": "garment_oops_outer_0384",
+      "token": "g0384",
+      "status": "ai_candidate",
+      "category": "outer",
+      "visual_personas": [
+        "oops",
+        "edge"
+      ],
+      "main_colors": [
+        "denim_blue",
+        "charcoal",
+        "dusty_pink"
+      ],
+      "evidence": "短外套灰西装领与丹宁袋片拼粉蕾丝，左右袖量和破边不同、抽绳很多；有意反差但高密度，需单一素下装而非全套堆叠。",
+      "decision": "statement_not_default_daily",
+      "native_evidence": "左右不对称西装/丹宁/蕾丝外套完整但密度高；仅配素下装。",
+      "outfit_approval": false,
+      "winter_outdoor_approved": false
+    },
+    {
+      "garment_id": "garment_heir_outer_0387",
+      "token": "g0387",
+      "status": "ai_candidate",
+      "category": "outer",
+      "visual_personas": [
+        "heir",
+        "loop",
+        "mute"
+      ],
+      "main_colors": [
+        "navy",
+        "ivory"
+      ],
+      "evidence": "藏蓝圆领开衫以奶油边框围领口门襟袖口及下摆，金色圆扣和两贴袋。规整短比例与学院细节明确，非依靠复杂图案表达。",
+      "decision": "direct_autumn_recompose",
+      "native_evidence": "藏蓝奶油边圆领开衫完整，规整短比例适合 HEIR/LOOP 日常。",
+      "outfit_approval": false,
+      "winter_outdoor_approved": false
+    },
+    {
+      "garment_id": "garment_wabi_outer_0390",
+      "token": "g0390",
+      "status": "ai_candidate",
+      "category": "outer",
+      "visual_personas": [
+        "wabi",
+        "void",
+        "film"
+      ],
+      "main_colors": [
+        "taupe",
+        "olive",
+        "brown"
+      ],
+      "evidence": "灰褐橄榄拼料夹克有错位翻领、斜扣、不齐摆和侧鼓袖，局部纤维皱感明显。自然粗织与不规则量结合，不是所有灰褐单品都自动WABI。",
+      "decision": "direct_autumn_recompose",
+      "native_evidence": "灰褐错位茧型外层完整；下装和鞋应保持单色、低装饰。",
+      "outfit_approval": false,
+      "winter_outdoor_approved": false
+    },
+    {
+      "garment_id": "garment_edge_outer_0393",
+      "token": "g0393",
+      "status": "ai_candidate",
+      "category": "outer",
+      "visual_personas": [
+        "edge",
+        "oops"
+      ],
+      "main_colors": [
+        "black",
+        "denim_blue",
+        "dusty_pink"
+      ],
+      "evidence": "黑针织短V开衫配丹宁粉花边、口袋、上臂双带扣与下袖交叉绑带，喇叭袖口层边。黑硬带扣与粉软边支持甜酷，合体身与复杂袖要分开考虑。",
+      "decision": "statement_not_default_daily",
+      "native_evidence": "短身、带扣、绑带和甜软花边集中在袖部；只作 EDGE 鲜明表达。",
+      "outfit_approval": false,
+      "winter_outdoor_approved": false
+    },
+    {
+      "garment_id": "garment_jade_outer_0396",
+      "token": "g0396",
+      "status": "ai_candidate",
+      "category": "outer",
+      "visual_personas": [
+        "jade",
+        "flou",
+        "bolt"
+      ],
+      "main_colors": [
+        "ivory",
+        "charcoal",
+        "red"
+      ],
+      "evidence": "乳白交叠翻领收腰外套有炭灰领片、竹枝墨纹与小红穗，长袖末端黑白层片垂下。JADE线条和墨枝成立，袖量与装饰强度较高，不作极简基础外套。",
+      "decision": "statement_not_default_daily",
+      "native_evidence": "交叠收腰和墨枝成立，但袖摆体积与装饰较高；不作极简日常外层。",
+      "outfit_approval": false,
+      "winter_outdoor_approved": false
+    },
+    {
+      "garment_id": "garment_melt_skirt_0437",
+      "token": "g0437",
+      "status": "ai_candidate",
+      "category": "skirt",
+      "visual_personas": [
+        "melt",
+        "flou"
+      ],
+      "main_colors": [
+        "ivory",
+        "pale_pink"
+      ],
+      "evidence": "奶油浅粉长横层裙有腰抽绳毛球、小荷叶边和蕾丝带，整体圆软。MELT装饰虽多但温和，主裙之外应搭素上衣。",
+      "decision": "direct_autumn_recompose",
+      "native_evidence": "奶油粉长层裙完整，主裙已带荷叶和蕾丝，必须配素上衣。",
+      "outfit_approval": false,
+      "winter_outdoor_approved": false
+    },
+    {
+      "garment_id": "garment_mute_skirt_0449",
+      "token": "g0449",
+      "status": "ai_candidate",
+      "category": "skirt",
+      "visual_personas": [
+        "mute",
+        "void",
+        "loop"
+      ],
+      "main_colors": [
+        "charcoal",
+        "taupe",
+        "black"
+      ],
+      "evidence": "炭灰长裹片下露灰褐和黑两层软摆，腰袢门襟规整、无链扣印花。层次克制，可用长度和材质层面给低彩人格变化。",
+      "decision": "direct_autumn_recompose",
+      "native_evidence": "炭灰长裹片层裙完整，克制纵向层次可服务 MUTE/VOID/LOOP。",
+      "outfit_approval": false,
+      "winter_outdoor_approved": false
+    },
+    {
+      "garment_id": "garment_ease_skirt_0452",
+      "token": "g0452",
+      "status": "ai_candidate",
+      "category": "skirt",
+      "visual_personas": [
+        "ease",
+        "flou",
+        "wabi"
+      ],
+      "main_colors": [
+        "beige"
+      ],
+      "evidence": "米色长裙腰下斜接线向一侧集中细褶，裙摆柔软开阔。自然纹理和单处收褶低负担，可为EASE增裙型而不强加装饰。",
+      "decision": "direct_autumn_recompose",
+      "native_evidence": "米色斜接褶长裙完整，低负担流动感适合 EASE/WABI/FLOU。",
+      "outfit_approval": false,
+      "winter_outdoor_approved": false
+    },
+    {
+      "garment_id": "garment_neon_dress_0456",
+      "token": "g0456",
+      "status": "ai_candidate",
+      "category": "dress",
+      "visual_personas": [
+        "neon",
+        "oops"
+      ],
+      "main_colors": [
+        "blue",
+        "orange",
+        "lime",
+        "pink"
+      ],
+      "evidence": "无袖蓝翻领门襟与腰带维持衬衫裙结构，橙绿粉网面亮片层摆不对称。高彩加运动材质结构支持NEON，不能作为低表达日常。",
+      "decision": "statement_not_default_daily",
+      "native_evidence": "高彩网面不对称衬衫裙完整，限 NEON/OOPS 典型或探索，不作默认易穿。",
+      "outfit_approval": false,
+      "winter_outdoor_approved": false
+    },
+    {
+      "garment_id": "garment_film_dress_0459",
+      "token": "g0459",
+      "status": "ai_candidate",
+      "category": "dress",
+      "visual_personas": [
+        "film",
+        "wabi",
+        "ease"
+      ],
+      "main_colors": [
+        "brown",
+        "washed_blue",
+        "olive"
+      ],
+      "evidence": "棕色钮扣胸片与蓝棕橄榄纵向拼布延展长裙，下摆一道宽褶。复古材料观感和规整收腰结合，非任意灰褐破边堆积。",
+      "decision": "direct_autumn_recompose",
+      "native_evidence": "棕蓝橄榄纵拼收腰长裙完整，可用简洁短外套建立 FILM 秋季比例。",
+      "outfit_approval": false,
+      "winter_outdoor_approved": false
+    },
+    {
+      "garment_id": "garment_noir_dress_0462",
+      "token": "g0462",
+      "status": "ai_candidate",
+      "category": "dress",
+      "visual_personas": [
+        "noir",
+        "edge"
+      ],
+      "main_colors": [
+        "black",
+        "burgundy"
+      ],
+      "evidence": "黑色长袖衬衫裙收腰尖肩，正中门襟贯穿，下摆黑尖片露酒红内层。锐利长线支持NOIR，不仅因为色域暗。",
+      "decision": "direct_autumn_recompose",
+      "native_evidence": "黑色长袖收腰衬衫裙完整，强肩与长直线足以支持 NOIR。",
+      "outfit_approval": false,
+      "winter_outdoor_approved": false
+    },
+    {
+      "garment_id": "garment_mute_dress_0465",
+      "token": "g0465",
+      "status": "ai_candidate",
+      "category": "dress",
+      "visual_personas": [
+        "mute",
+        "loop",
+        "heir"
+      ],
+      "main_colors": [
+        "charcoal"
+      ],
+      "evidence": "炭灰圆领短袖直中长裙，以细侧腰带轻收腰、前开衩提供活动口。低装饰H线清楚，适合基础轮廓复用，不靠标题判断新款。",
+      "decision": "direct_autumn_recompose",
+      "native_evidence": "炭灰直筒中长裙完整，低装饰且有活动开衩，可作 MUTE/LOOP 基础主衣。",
+      "outfit_approval": false,
+      "winter_outdoor_approved": false
+    },
+    {
+      "garment_id": "garment_ease_dress_0468",
+      "token": "g0468",
+      "status": "ai_candidate",
+      "category": "dress",
+      "visual_personas": [
+        "ease",
+        "loop",
+        "wabi"
+      ],
+      "main_colors": [
+        "beige"
+      ],
+      "evidence": "米色自然细纹衬衫长裙有腰带、纽扣门襟和卷袖，裙摆柔松。EASE日常线索充分，不从织纹断言亚麻成分。",
+      "decision": "direct_autumn_recompose",
+      "native_evidence": "米色长袖衬衫长裙完整，腰带收束松量，可作 EASE/LOOP 秋季主衣。",
+      "outfit_approval": false,
+      "winter_outdoor_approved": false
+    },
+    {
+      "garment_id": "garment_flou_dress_0471",
+      "token": "g0471",
+      "status": "ai_candidate",
+      "category": "dress",
+      "visual_personas": [
+        "flou",
+        "melt"
+      ],
+      "main_colors": [
+        "pale_pink",
+        "sage",
+        "ivory"
+      ],
+      "evidence": "粉绿淡花细肩带长裙用胸前垂褶和腰侧花结固定斜裹长层，整体细长柔软。和g0455同方向但裙长不同，应记录家族关系及长度变化。",
+      "decision": "adjust_use_or_layer",
+      "native_evidence": "细肩带花纱长裙完整但暖季语汇明显；秋季须补不透内层和外层后复审。",
+      "outfit_approval": false,
+      "winter_outdoor_approved": false
+    },
+    {
+      "garment_id": "garment_bolt_dress_0474",
+      "token": "g0474",
+      "status": "ai_candidate",
+      "category": "dress",
+      "visual_personas": [
+        "bolt",
+        "heir"
+      ],
+      "main_colors": [
+        "ivory",
+        "burgundy"
+      ],
+      "evidence": "奶油刺绣衬衫式礼服有披肩片鼓袖、酒红腰蝴蝶结和深色插片长摆。礼仪体量强，只有相邻经典元素，不当普通HEIR通勤款。",
+      "decision": "occasion_only",
+      "native_evidence": "披肩鼓袖、刺绣、宽蝴蝶结和双色长摆同时出现，限 BOLT 礼仪场景。",
+      "outfit_approval": false,
+      "winter_outdoor_approved": false
+    },
+    {
+      "garment_id": "garment_film_dress_0475",
+      "token": "g0475",
+      "status": "ai_candidate",
+      "category": "dress",
+      "visual_personas": [
+        "film",
+        "wabi",
+        "void"
+      ],
+      "main_colors": [
+        "brown",
+        "washed_blue",
+        "beige",
+        "olive"
+      ],
+      "evidence": "棕细肩带钮扣胸片收腰，旧丹宁和褐绿粗织斜层裙片下垂。复古软层次与自然色关联，比几何规整拼片更飘，面料成分未知。",
+      "decision": "adjust_use_or_layer",
+      "native_evidence": "吊带复古拼布长裙完整；秋季可配素贴身内层，冬季仍需完整外层。",
+      "outfit_approval": false,
+      "winter_outdoor_approved": false
+    },
+    {
+      "garment_id": "garment_loop_dress_0477",
+      "token": "g0477",
+      "status": "ai_candidate",
+      "category": "dress",
+      "visual_personas": [
+        "loop",
+        "iced"
+      ],
+      "main_colors": [
+        "ivory",
+        "gray",
+        "blue_gray"
+      ],
+      "evidence": "乳白无袖圆领长裙在侧腰抽结，灰盖袋与蓝灰内褶从长开片露出。模块和纵线兼具，可为低彩人格增加结构差异。",
+      "decision": "direct_autumn_recompose",
+      "native_evidence": "乳白灰蓝无袖模块长裙完整；秋季配素内层，保持纵线和侧腰抽结为唯一焦点。",
+      "outfit_approval": false,
+      "winter_outdoor_approved": false
+    },
+    {
+      "garment_id": "garment_oops_dress_0480",
+      "token": "g0480",
+      "status": "ai_candidate",
+      "category": "dress",
+      "visual_personas": [
+        "oops",
+        "edge"
+      ],
+      "main_colors": [
+        "ice_blue",
+        "charcoal",
+        "ivory",
+        "blue",
+        "yellow"
+      ],
+      "evidence": "浅蓝翻领一侧短泡袖、一侧露肩白蕾丝长泡袖，收腰下接灰西装、蓝褶和黄蓝花片。错位结构强，需低装饰配件，不可按浅蓝直接匹配清简人格。",
+      "decision": "statement_not_default_daily",
+      "native_evidence": "左右袖与多层裙片强错位，限 OOPS/EDGE 鲜明表达并配素鞋包。",
+      "outfit_approval": false,
+      "winter_outdoor_approved": false
+    },
+    {
+      "garment_id": "garment_bolt_outer_0570",
+      "token": "g0570",
+      "status": "ai_candidate",
+      "category": "outer",
+      "visual_personas": [
+        "bolt",
+        "heir"
+      ],
+      "main_colors": [
+        "ivory",
+        "burgundy",
+        "gold"
+      ],
+      "evidence": "奶油合腰短夹克配酒红绒翻领、花纹袖口，大肩片鼓袖外垂，金扣。戏剧礼仪结构而非普通学院外套，限制日常首屏。",
+      "decision": "occasion_only",
+      "native_evidence": "合腰粗织夹克有披肩巨袖和礼仪装饰，限 BOLT/HEIR 场合用途。",
+      "outfit_approval": false,
+      "winter_outdoor_approved": false
+    },
+    {
+      "garment_id": "garment_loop_outer_0573",
+      "token": "g0573",
+      "status": "needs_review",
+      "category": "outer",
+      "visual_personas": [
+        "loop",
+        "ease",
+        "wabi"
+      ],
+      "main_colors": [
+        "light_gray"
+      ],
+      "evidence": "原图同时出现外层披领开衫与里层V领纽扣开衫两道独立门襟、两层摆。可能连体假两件也可能多件打包；在单品定义与拆款结构确认前保留待核，不能直接当一件基础外套。",
+      "decision": "blocked_item_definition",
+      "native_evidence": "实际图有两道独立 V 领、门襟和下摆；未能证明是单件假两件，继续隔离。",
+      "outfit_approval": false,
+      "winter_outdoor_approved": false
+    },
+    {
+      "garment_id": "garment_melt_skirt_0581",
+      "token": "g0581",
+      "status": "ai_candidate",
+      "category": "skirt",
+      "visual_personas": [
+        "melt",
+        "flou"
+      ],
+      "main_colors": [
+        "ivory",
+        "pale_pink"
+      ],
+      "evidence": "奶油粉层层针织绒感中长裙，抽绳毛球与不等层宽，外形蓬软。明确软体积，不能仅因粉色与轻薄夏裙视为同季节重量。",
+      "decision": "direct_autumn_recompose",
+      "native_evidence": "奶油粉绒感层裙完整且体量较厚；配素针织上衣，避免继续增加层边。",
+      "outfit_approval": false,
+      "winter_outdoor_approved": false
+    },
+    {
+      "garment_id": "garment_edge_dress_0585",
+      "token": "g0585",
+      "status": "ai_candidate",
+      "category": "dress",
+      "visual_personas": [
+        "edge",
+        "oops"
+      ],
+      "main_colors": [
+        "black",
+        "washed_blue",
+        "pale_pink"
+      ],
+      "evidence": "黑洗蓝束胸肩带中长裙、腰带链条与不对称扣眼牛仔片，下摆粉黑网纱。硬软甜酷有明确主件，鞋包宜简。",
+      "decision": "statement_not_default_daily",
+      "native_evidence": "束胸、扣眼丹宁片、链条和粉黑网纱已构成强主视觉；限 EDGE/OOPS 鲜明表达。",
+      "outfit_approval": false,
+      "winter_outdoor_approved": false
+    }
+  ],
+  "version": "aw-idle-main-1fdd6d3183c4cde4ce65"
+}

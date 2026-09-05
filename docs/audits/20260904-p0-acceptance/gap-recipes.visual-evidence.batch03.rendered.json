@@ -1,0 +1,146 @@
+{
+  "schema_version": 1,
+  "batch_id": "p0-visual-gap-03",
+  "source_visual_version": "codex-visual-16b18cdcdca36dbc306a",
+  "entries": [
+    {
+      "target_palette": "evidence_first",
+      "hero": "g0328",
+      "new_record": {
+        "id": "outfit_neon_p0-visual-gap-03_01",
+        "kind": "master",
+        "parent_outfit_id": null,
+        "recipe_version": "p0-visual-gap-03",
+        "title": "NEON autumn 日常设计 01",
+        "description": "灵动吸睛 explore / skirt 修复：高彩不对称上衣承担唯一焦点，低装饰浅色半裙与基础鞋包把表达收敛到 everyday_with_statement。",
+        "primary_persona": "NEON",
+        "secondary_personas": [],
+        "persona_affinity": {},
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "日常"
+        ],
+        "season_tags": [
+          "秋"
+        ],
+        "weather_tags": [],
+        "presentation": [
+          "feminine"
+        ],
+        "intensity": "explore",
+        "formality": 3,
+        "garment_ids": [
+          "garment_neon_top_0328",
+          "garment_bolt_skirt_0186",
+          "garment_ease_shoes_0020",
+          "garment_noir_bag_0270"
+        ],
+        "visible_slots": [
+          "top",
+          "skirt",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_neon_top_0328": "hero",
+          "garment_bolt_skirt_0186": "support",
+          "garment_ease_shoes_0020": "support",
+          "garment_noir_bag_0270": "support"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "未判断",
+          "saturation": "未判断",
+          "harmony": "未判断",
+          "palette": []
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/81991fa63f3fa717584d2d9d.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source": "designer_recomposition",
+          "confidence": null,
+          "review_notes": [
+            "season, palette and persona are design targets pending whole-image review"
+          ]
+        }
+      },
+      "record_fingerprint": "b1e2012d1885cdd8dd072ca66c237141c8dca4303d693b3d9df23c641e53abd6",
+      "asset_sha256": "ff4ccc0314fea277afcc430809d6dff6847f6d2e718cb75b999d67d81b42ec02",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/81991fa63f3fa717584d2d9d.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_neon_top_0328",
+            "slot": "top",
+            "box": [
+              277,
+              160,
+              622,
+              620
+            ]
+          },
+          {
+            "garment_id": "garment_bolt_skirt_0186",
+            "slot": "skirt",
+            "box": [
+              216,
+              644,
+              683,
+              1330
+            ]
+          },
+          {
+            "garment_id": "garment_ease_shoes_0020",
+            "slot": "shoes",
+            "box": [
+              840,
+              880,
+              1129,
+              1080
+            ]
+          },
+          {
+            "garment_id": "garment_noir_bag_0270",
+            "slot": "bag",
+            "box": [
+              865,
+              410,
+              1114,
+              730
+            ]
+          }
+        ]
+      },
+      "status": "pending_native_review",
+      "review": null
+    }
+  ],
+  "production_approved": false,
+  "version": "aw-designed-rendered-e92538f55c187c2a0bc4"
+}

@@ -1,0 +1,544 @@
+{
+  "schema_version": 1,
+  "batch_id": "p0-gap-01",
+  "source_visual_version": "codex-visual-16b18cdcdca36dbc306a",
+  "entries": [
+    {
+      "target_palette": "earth",
+      "hero": "g0367",
+      "new_record": {
+        "id": "outfit_film_p0-gap-01_01",
+        "kind": "master",
+        "parent_outfit_id": null,
+        "recipe_version": "p0-gap-01",
+        "title": "FILM autumn 日常设计 01",
+        "description": "FILM 轻探索：把手作边缘感集中在上衣，用低腰宽裤与素色鞋包收敛，保留日常可穿性。",
+        "primary_persona": "FILM",
+        "secondary_personas": [],
+        "persona_affinity": {},
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "日常"
+        ],
+        "season_tags": [
+          "秋"
+        ],
+        "weather_tags": [],
+        "presentation": [
+          "feminine"
+        ],
+        "intensity": "explore",
+        "formality": 3,
+        "garment_ids": [
+          "garment_void_top_0367",
+          "garment_film_bottom_0171",
+          "garment_bolt_shoes_0266",
+          "garment_film_bag_0283"
+        ],
+        "visible_slots": [
+          "top",
+          "bottom",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_void_top_0367": "hero",
+          "garment_film_bottom_0171": "support",
+          "garment_bolt_shoes_0266": "support",
+          "garment_film_bag_0283": "support"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "未判断",
+          "saturation": "未判断",
+          "harmony": "未判断",
+          "palette": []
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/d4c857bbf711d37b270ae6ee.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source": "designer_recomposition",
+          "confidence": null,
+          "review_notes": [
+            "season, palette and persona are design targets pending whole-image review"
+          ]
+        }
+      },
+      "record_fingerprint": "2182088c287f2c53b7974f818f7188a3537c688f4afc6b73e416cd3b4bdc8a86",
+      "asset_sha256": "84420f8edeee8f58eed3316e27b4f461f7a43487afd1e0be9007bd676590f234",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/d4c857bbf711d37b270ae6ee.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_void_top_0367",
+            "slot": "top",
+            "box": [
+              241,
+              160,
+              659,
+              620
+            ]
+          },
+          {
+            "garment_id": "garment_film_bottom_0171",
+            "slot": "bottom",
+            "box": [
+              281,
+              644,
+              618,
+              1330
+            ]
+          },
+          {
+            "garment_id": "garment_bolt_shoes_0266",
+            "slot": "shoes",
+            "box": [
+              878,
+              880,
+              1091,
+              1080
+            ]
+          },
+          {
+            "garment_id": "garment_film_bag_0283",
+            "slot": "bag",
+            "box": [
+              871,
+              410,
+              1108,
+              730
+            ]
+          }
+        ]
+      },
+      "status": "pending_native_review",
+      "review": null
+    },
+    {
+      "target_palette": "ocean",
+      "hero": "g0562",
+      "new_record": {
+        "id": "outfit_iced_p0-gap-01_02",
+        "kind": "master",
+        "parent_outfit_id": null,
+        "recipe_version": "p0-gap-01",
+        "title": "ICED autumn 日常设计 02",
+        "description": "ICED 轻探索：斜向结构背心作唯一主视觉，窄长裙和低跟乐福鞋维持冷静纵向线条。",
+        "primary_persona": "ICED",
+        "secondary_personas": [],
+        "persona_affinity": {},
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "日常"
+        ],
+        "season_tags": [
+          "秋"
+        ],
+        "weather_tags": [],
+        "presentation": [
+          "feminine"
+        ],
+        "intensity": "explore",
+        "formality": 3,
+        "garment_ids": [
+          "garment_iced_top_0562",
+          "garment_mute_skirt_0433",
+          "garment_iced_shoes_0258",
+          "garment_iced_bag_0290"
+        ],
+        "visible_slots": [
+          "top",
+          "skirt",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_iced_top_0562": "hero",
+          "garment_mute_skirt_0433": "support",
+          "garment_iced_shoes_0258": "support",
+          "garment_iced_bag_0290": "support"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "未判断",
+          "saturation": "未判断",
+          "harmony": "未判断",
+          "palette": []
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/4ceefff3cb2aa3a696711215.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source": "designer_recomposition",
+          "confidence": null,
+          "review_notes": [
+            "season, palette and persona are design targets pending whole-image review"
+          ]
+        }
+      },
+      "record_fingerprint": "64f45231b2f51e5ca69513483aaef05ac4374bef10fc4a7bb31a6445383474c9",
+      "asset_sha256": "910bd001af214c32291cfdff9f8f290d296603b246cac531d3a5fd0813ee450e",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/4ceefff3cb2aa3a696711215.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_iced_top_0562",
+            "slot": "top",
+            "box": [
+              329,
+              160,
+              571,
+              620
+            ]
+          },
+          {
+            "garment_id": "garment_mute_skirt_0433",
+            "slot": "skirt",
+            "box": [
+              298,
+              644,
+              602,
+              1330
+            ]
+          },
+          {
+            "garment_id": "garment_iced_shoes_0258",
+            "slot": "shoes",
+            "box": [
+              879,
+              880,
+              1091,
+              1080
+            ]
+          },
+          {
+            "garment_id": "garment_iced_bag_0290",
+            "slot": "bag",
+            "box": [
+              865,
+              410,
+              1114,
+              730
+            ]
+          }
+        ]
+      },
+      "status": "pending_native_review",
+      "review": null
+    },
+    {
+      "target_palette": "earth",
+      "hero": "g0367",
+      "new_record": {
+        "id": "outfit_wabi_p0-gap-01_03",
+        "kind": "master",
+        "parent_outfit_id": null,
+        "recipe_version": "p0-gap-01",
+        "title": "WABI autumn 日常设计 03",
+        "description": "WABI 轻探索裤装：不对称针织上衣承担肌理焦点，九分锥形裤与素色配件留出呼吸感。",
+        "primary_persona": "WABI",
+        "secondary_personas": [],
+        "persona_affinity": {},
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "日常"
+        ],
+        "season_tags": [
+          "秋"
+        ],
+        "weather_tags": [],
+        "presentation": [
+          "feminine"
+        ],
+        "intensity": "explore",
+        "formality": 3,
+        "garment_ids": [
+          "garment_void_top_0367",
+          "garment_wabi_bottom_0182",
+          "garment_ease_shoes_0244",
+          "garment_jade_bag_0284"
+        ],
+        "visible_slots": [
+          "top",
+          "bottom",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_void_top_0367": "hero",
+          "garment_wabi_bottom_0182": "support",
+          "garment_ease_shoes_0244": "support",
+          "garment_jade_bag_0284": "support"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "未判断",
+          "saturation": "未判断",
+          "harmony": "未判断",
+          "palette": []
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/cd2156a587d8047c66ee5054.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source": "designer_recomposition",
+          "confidence": null,
+          "review_notes": [
+            "season, palette and persona are design targets pending whole-image review"
+          ]
+        }
+      },
+      "record_fingerprint": "5675cc6147f06f4c5e176f6da85e91f5d615b66c42f0d2ae4ee8da2dc70f8420",
+      "asset_sha256": "0997adca1edb8b6bafb2d7a9b11b8b38d09c4aaf9f429f217b2fcbd4ba1be292",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/cd2156a587d8047c66ee5054.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_void_top_0367",
+            "slot": "top",
+            "box": [
+              241,
+              160,
+              659,
+              620
+            ]
+          },
+          {
+            "garment_id": "garment_wabi_bottom_0182",
+            "slot": "bottom",
+            "box": [
+              295,
+              644,
+              605,
+              1330
+            ]
+          },
+          {
+            "garment_id": "garment_ease_shoes_0244",
+            "slot": "shoes",
+            "box": [
+              840,
+              886,
+              1130,
+              1074
+            ]
+          },
+          {
+            "garment_id": "garment_jade_bag_0284",
+            "slot": "bag",
+            "box": [
+              850,
+              414,
+              1130,
+              725
+            ]
+          }
+        ]
+      },
+      "status": "pending_native_review",
+      "review": null
+    },
+    {
+      "target_palette": "earth",
+      "hero": "g0470",
+      "new_record": {
+        "id": "outfit_wabi_p0-gap-01_04",
+        "kind": "master",
+        "parent_outfit_id": null,
+        "recipe_version": "p0-gap-01",
+        "title": "WABI autumn 日常设计 04",
+        "description": "WABI 轻探索连衣装：曲线层片只集中在主裙，鞋包保持低装饰和中性棕色，避免多焦点。",
+        "primary_persona": "WABI",
+        "secondary_personas": [],
+        "persona_affinity": {},
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "日常"
+        ],
+        "season_tags": [
+          "秋"
+        ],
+        "weather_tags": [],
+        "presentation": [
+          "feminine"
+        ],
+        "intensity": "explore",
+        "formality": 3,
+        "garment_ids": [
+          "garment_wabi_dress_0470",
+          "garment_ease_shoes_0244",
+          "garment_film_bag_0283"
+        ],
+        "visible_slots": [
+          "dress",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_wabi_dress_0470": "hero",
+          "garment_ease_shoes_0244": "support",
+          "garment_film_bag_0283": "support"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "未判断",
+          "saturation": "未判断",
+          "harmony": "未判断",
+          "palette": []
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/45de7616aa827316ac74710f.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source": "designer_recomposition",
+          "confidence": null,
+          "review_notes": [
+            "season, palette and persona are design targets pending whole-image review"
+          ]
+        }
+      },
+      "record_fingerprint": "7d5b96865a48955d6f58ddc071010e6785a03d01d660b6ef688379a407a5d2e1",
+      "asset_sha256": "a9adfd37f24aa8f93d6c412fe51adf62e1baeeccfc581b3dda4e7d3e4fdd5eff",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/45de7616aa827316ac74710f.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_wabi_dress_0470",
+            "slot": "dress",
+            "box": [
+              112,
+              160,
+              787,
+              1330
+            ]
+          },
+          {
+            "garment_id": "garment_ease_shoes_0244",
+            "slot": "shoes",
+            "box": [
+              840,
+              886,
+              1130,
+              1074
+            ]
+          },
+          {
+            "garment_id": "garment_film_bag_0283",
+            "slot": "bag",
+            "box": [
+              871,
+              410,
+              1108,
+              730
+            ]
+          }
+        ]
+      },
+      "status": "pending_native_review",
+      "review": null
+    }
+  ],
+  "production_approved": false,
+  "version": "aw-designed-rendered-6ba6ef463192d1d19876"
+}

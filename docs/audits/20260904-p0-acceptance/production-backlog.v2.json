@@ -1,0 +1,1282 @@
+{
+  "schema_version": 1,
+  "status": "production_required",
+  "source_anchor_manifest": "docs/audits/20260904-p0-acceptance/anchor-candidates.v13.json",
+  "source_anchor_manifest_sha256": "e0fd39c4b4cb099afaf2c3296d42a7871810fa2875cab96f74ca0e69ea41c866",
+  "persona_signal": "visual",
+  "summary": {
+    "current_visual_evidence_anchors": 117,
+    "target_anchors": 160,
+    "production_tasks": 43,
+    "by_persona": {
+      "bolt": 10,
+      "edge": 7,
+      "jade": 6,
+      "mute": 2,
+      "neon": 7,
+      "noir": 3,
+      "oops": 4,
+      "void": 4
+    },
+    "by_expression": {
+      "easy": 21,
+      "typical": 14,
+      "explore": 8
+    },
+    "by_structure": {
+      "pants": 13,
+      "skirt": 13,
+      "dress": 17
+    }
+  },
+  "tasks": [
+    {
+      "task_id": "P0-CONTENT-BOLT-01",
+      "persona": "bolt",
+      "persona_name": "在逃千金",
+      "persona_keywords": [
+        "华丽焦点",
+        "戏剧轮廓",
+        "精致贵气"
+      ],
+      "expression": "easy",
+      "structure": "pants",
+      "scene": "daily",
+      "wearability": [
+        "everyday",
+        "everyday_with_statement"
+      ],
+      "production_state": "not_started",
+      "acceptance": {
+        "whole_image_persona_score_min": 0.55,
+        "exact_expression": "easy",
+        "exact_structure": "pants",
+        "exactly_one_hero": true,
+        "daily_context_required": true,
+        "distinct_parent_recipe_required": true,
+        "layer_graph_required_when_layering_gt_1": true,
+        "four_gate_editorial_review": "pending",
+        "independent_blind_review": "pending"
+      }
+    },
+    {
+      "task_id": "P0-CONTENT-BOLT-02",
+      "persona": "bolt",
+      "persona_name": "在逃千金",
+      "persona_keywords": [
+        "华丽焦点",
+        "戏剧轮廓",
+        "精致贵气"
+      ],
+      "expression": "easy",
+      "structure": "skirt",
+      "scene": "daily",
+      "wearability": [
+        "everyday",
+        "everyday_with_statement"
+      ],
+      "production_state": "not_started",
+      "acceptance": {
+        "whole_image_persona_score_min": 0.55,
+        "exact_expression": "easy",
+        "exact_structure": "skirt",
+        "exactly_one_hero": true,
+        "daily_context_required": true,
+        "distinct_parent_recipe_required": true,
+        "layer_graph_required_when_layering_gt_1": true,
+        "four_gate_editorial_review": "pending",
+        "independent_blind_review": "pending"
+      }
+    },
+    {
+      "task_id": "P0-CONTENT-BOLT-03",
+      "persona": "bolt",
+      "persona_name": "在逃千金",
+      "persona_keywords": [
+        "华丽焦点",
+        "戏剧轮廓",
+        "精致贵气"
+      ],
+      "expression": "easy",
+      "structure": "dress",
+      "scene": "daily",
+      "wearability": [
+        "everyday",
+        "everyday_with_statement"
+      ],
+      "production_state": "not_started",
+      "acceptance": {
+        "whole_image_persona_score_min": 0.55,
+        "exact_expression": "easy",
+        "exact_structure": "dress",
+        "exactly_one_hero": true,
+        "daily_context_required": true,
+        "distinct_parent_recipe_required": true,
+        "layer_graph_required_when_layering_gt_1": true,
+        "four_gate_editorial_review": "pending",
+        "independent_blind_review": "pending"
+      }
+    },
+    {
+      "task_id": "P0-CONTENT-BOLT-04",
+      "persona": "bolt",
+      "persona_name": "在逃千金",
+      "persona_keywords": [
+        "华丽焦点",
+        "戏剧轮廓",
+        "精致贵气"
+      ],
+      "expression": "easy",
+      "structure": "pants",
+      "scene": "daily",
+      "wearability": [
+        "everyday",
+        "everyday_with_statement"
+      ],
+      "production_state": "not_started",
+      "acceptance": {
+        "whole_image_persona_score_min": 0.55,
+        "exact_expression": "easy",
+        "exact_structure": "pants",
+        "exactly_one_hero": true,
+        "daily_context_required": true,
+        "distinct_parent_recipe_required": true,
+        "layer_graph_required_when_layering_gt_1": true,
+        "four_gate_editorial_review": "pending",
+        "independent_blind_review": "pending"
+      }
+    },
+    {
+      "task_id": "P0-CONTENT-BOLT-05",
+      "persona": "bolt",
+      "persona_name": "在逃千金",
+      "persona_keywords": [
+        "华丽焦点",
+        "戏剧轮廓",
+        "精致贵气"
+      ],
+      "expression": "typical",
+      "structure": "skirt",
+      "scene": "daily",
+      "wearability": [
+        "everyday",
+        "everyday_with_statement"
+      ],
+      "production_state": "not_started",
+      "acceptance": {
+        "whole_image_persona_score_min": 0.55,
+        "exact_expression": "typical",
+        "exact_structure": "skirt",
+        "exactly_one_hero": true,
+        "daily_context_required": true,
+        "distinct_parent_recipe_required": true,
+        "layer_graph_required_when_layering_gt_1": true,
+        "four_gate_editorial_review": "pending",
+        "independent_blind_review": "pending"
+      }
+    },
+    {
+      "task_id": "P0-CONTENT-BOLT-06",
+      "persona": "bolt",
+      "persona_name": "在逃千金",
+      "persona_keywords": [
+        "华丽焦点",
+        "戏剧轮廓",
+        "精致贵气"
+      ],
+      "expression": "typical",
+      "structure": "dress",
+      "scene": "daily",
+      "wearability": [
+        "everyday",
+        "everyday_with_statement"
+      ],
+      "production_state": "not_started",
+      "acceptance": {
+        "whole_image_persona_score_min": 0.55,
+        "exact_expression": "typical",
+        "exact_structure": "dress",
+        "exactly_one_hero": true,
+        "daily_context_required": true,
+        "distinct_parent_recipe_required": true,
+        "layer_graph_required_when_layering_gt_1": true,
+        "four_gate_editorial_review": "pending",
+        "independent_blind_review": "pending"
+      }
+    },
+    {
+      "task_id": "P0-CONTENT-BOLT-07",
+      "persona": "bolt",
+      "persona_name": "在逃千金",
+      "persona_keywords": [
+        "华丽焦点",
+        "戏剧轮廓",
+        "精致贵气"
+      ],
+      "expression": "typical",
+      "structure": "pants",
+      "scene": "daily",
+      "wearability": [
+        "everyday",
+        "everyday_with_statement"
+      ],
+      "production_state": "not_started",
+      "acceptance": {
+        "whole_image_persona_score_min": 0.55,
+        "exact_expression": "typical",
+        "exact_structure": "pants",
+        "exactly_one_hero": true,
+        "daily_context_required": true,
+        "distinct_parent_recipe_required": true,
+        "layer_graph_required_when_layering_gt_1": true,
+        "four_gate_editorial_review": "pending",
+        "independent_blind_review": "pending"
+      }
+    },
+    {
+      "task_id": "P0-CONTENT-BOLT-08",
+      "persona": "bolt",
+      "persona_name": "在逃千金",
+      "persona_keywords": [
+        "华丽焦点",
+        "戏剧轮廓",
+        "精致贵气"
+      ],
+      "expression": "typical",
+      "structure": "skirt",
+      "scene": "daily",
+      "wearability": [
+        "everyday",
+        "everyday_with_statement"
+      ],
+      "production_state": "not_started",
+      "acceptance": {
+        "whole_image_persona_score_min": 0.55,
+        "exact_expression": "typical",
+        "exact_structure": "skirt",
+        "exactly_one_hero": true,
+        "daily_context_required": true,
+        "distinct_parent_recipe_required": true,
+        "layer_graph_required_when_layering_gt_1": true,
+        "four_gate_editorial_review": "pending",
+        "independent_blind_review": "pending"
+      }
+    },
+    {
+      "task_id": "P0-CONTENT-BOLT-09",
+      "persona": "bolt",
+      "persona_name": "在逃千金",
+      "persona_keywords": [
+        "华丽焦点",
+        "戏剧轮廓",
+        "精致贵气"
+      ],
+      "expression": "explore",
+      "structure": "dress",
+      "scene": "daily",
+      "wearability": [
+        "everyday",
+        "everyday_with_statement"
+      ],
+      "production_state": "not_started",
+      "acceptance": {
+        "whole_image_persona_score_min": 0.55,
+        "exact_expression": "explore",
+        "exact_structure": "dress",
+        "exactly_one_hero": true,
+        "daily_context_required": true,
+        "distinct_parent_recipe_required": true,
+        "layer_graph_required_when_layering_gt_1": true,
+        "four_gate_editorial_review": "pending",
+        "independent_blind_review": "pending"
+      }
+    },
+    {
+      "task_id": "P0-CONTENT-BOLT-10",
+      "persona": "bolt",
+      "persona_name": "在逃千金",
+      "persona_keywords": [
+        "华丽焦点",
+        "戏剧轮廓",
+        "精致贵气"
+      ],
+      "expression": "explore",
+      "structure": "pants",
+      "scene": "daily",
+      "wearability": [
+        "everyday",
+        "everyday_with_statement"
+      ],
+      "production_state": "not_started",
+      "acceptance": {
+        "whole_image_persona_score_min": 0.55,
+        "exact_expression": "explore",
+        "exact_structure": "pants",
+        "exactly_one_hero": true,
+        "daily_context_required": true,
+        "distinct_parent_recipe_required": true,
+        "layer_graph_required_when_layering_gt_1": true,
+        "four_gate_editorial_review": "pending",
+        "independent_blind_review": "pending"
+      }
+    },
+    {
+      "task_id": "P0-CONTENT-EDGE-01",
+      "persona": "edge",
+      "persona_name": "甜酷轻亚",
+      "persona_keywords": [
+        "甜辣对撞",
+        "锋芒感",
+        "露肤度"
+      ],
+      "expression": "easy",
+      "structure": "pants",
+      "scene": "daily",
+      "wearability": [
+        "everyday",
+        "everyday_with_statement"
+      ],
+      "production_state": "not_started",
+      "acceptance": {
+        "whole_image_persona_score_min": 0.55,
+        "exact_expression": "easy",
+        "exact_structure": "pants",
+        "exactly_one_hero": true,
+        "daily_context_required": true,
+        "distinct_parent_recipe_required": true,
+        "layer_graph_required_when_layering_gt_1": true,
+        "four_gate_editorial_review": "pending",
+        "independent_blind_review": "pending"
+      }
+    },
+    {
+      "task_id": "P0-CONTENT-EDGE-02",
+      "persona": "edge",
+      "persona_name": "甜酷轻亚",
+      "persona_keywords": [
+        "甜辣对撞",
+        "锋芒感",
+        "露肤度"
+      ],
+      "expression": "easy",
+      "structure": "skirt",
+      "scene": "daily",
+      "wearability": [
+        "everyday",
+        "everyday_with_statement"
+      ],
+      "production_state": "not_started",
+      "acceptance": {
+        "whole_image_persona_score_min": 0.55,
+        "exact_expression": "easy",
+        "exact_structure": "skirt",
+        "exactly_one_hero": true,
+        "daily_context_required": true,
+        "distinct_parent_recipe_required": true,
+        "layer_graph_required_when_layering_gt_1": true,
+        "four_gate_editorial_review": "pending",
+        "independent_blind_review": "pending"
+      }
+    },
+    {
+      "task_id": "P0-CONTENT-EDGE-03",
+      "persona": "edge",
+      "persona_name": "甜酷轻亚",
+      "persona_keywords": [
+        "甜辣对撞",
+        "锋芒感",
+        "露肤度"
+      ],
+      "expression": "easy",
+      "structure": "dress",
+      "scene": "daily",
+      "wearability": [
+        "everyday",
+        "everyday_with_statement"
+      ],
+      "production_state": "not_started",
+      "acceptance": {
+        "whole_image_persona_score_min": 0.55,
+        "exact_expression": "easy",
+        "exact_structure": "dress",
+        "exactly_one_hero": true,
+        "daily_context_required": true,
+        "distinct_parent_recipe_required": true,
+        "layer_graph_required_when_layering_gt_1": true,
+        "four_gate_editorial_review": "pending",
+        "independent_blind_review": "pending"
+      }
+    },
+    {
+      "task_id": "P0-CONTENT-EDGE-04",
+      "persona": "edge",
+      "persona_name": "甜酷轻亚",
+      "persona_keywords": [
+        "甜辣对撞",
+        "锋芒感",
+        "露肤度"
+      ],
+      "expression": "easy",
+      "structure": "pants",
+      "scene": "daily",
+      "wearability": [
+        "everyday",
+        "everyday_with_statement"
+      ],
+      "production_state": "not_started",
+      "acceptance": {
+        "whole_image_persona_score_min": 0.55,
+        "exact_expression": "easy",
+        "exact_structure": "pants",
+        "exactly_one_hero": true,
+        "daily_context_required": true,
+        "distinct_parent_recipe_required": true,
+        "layer_graph_required_when_layering_gt_1": true,
+        "four_gate_editorial_review": "pending",
+        "independent_blind_review": "pending"
+      }
+    },
+    {
+      "task_id": "P0-CONTENT-EDGE-05",
+      "persona": "edge",
+      "persona_name": "甜酷轻亚",
+      "persona_keywords": [
+        "甜辣对撞",
+        "锋芒感",
+        "露肤度"
+      ],
+      "expression": "typical",
+      "structure": "skirt",
+      "scene": "daily",
+      "wearability": [
+        "everyday",
+        "everyday_with_statement"
+      ],
+      "production_state": "not_started",
+      "acceptance": {
+        "whole_image_persona_score_min": 0.55,
+        "exact_expression": "typical",
+        "exact_structure": "skirt",
+        "exactly_one_hero": true,
+        "daily_context_required": true,
+        "distinct_parent_recipe_required": true,
+        "layer_graph_required_when_layering_gt_1": true,
+        "four_gate_editorial_review": "pending",
+        "independent_blind_review": "pending"
+      }
+    },
+    {
+      "task_id": "P0-CONTENT-EDGE-06",
+      "persona": "edge",
+      "persona_name": "甜酷轻亚",
+      "persona_keywords": [
+        "甜辣对撞",
+        "锋芒感",
+        "露肤度"
+      ],
+      "expression": "typical",
+      "structure": "dress",
+      "scene": "daily",
+      "wearability": [
+        "everyday",
+        "everyday_with_statement"
+      ],
+      "production_state": "not_started",
+      "acceptance": {
+        "whole_image_persona_score_min": 0.55,
+        "exact_expression": "typical",
+        "exact_structure": "dress",
+        "exactly_one_hero": true,
+        "daily_context_required": true,
+        "distinct_parent_recipe_required": true,
+        "layer_graph_required_when_layering_gt_1": true,
+        "four_gate_editorial_review": "pending",
+        "independent_blind_review": "pending"
+      }
+    },
+    {
+      "task_id": "P0-CONTENT-EDGE-07",
+      "persona": "edge",
+      "persona_name": "甜酷轻亚",
+      "persona_keywords": [
+        "甜辣对撞",
+        "锋芒感",
+        "露肤度"
+      ],
+      "expression": "explore",
+      "structure": "pants",
+      "scene": "daily",
+      "wearability": [
+        "everyday",
+        "everyday_with_statement"
+      ],
+      "production_state": "not_started",
+      "acceptance": {
+        "whole_image_persona_score_min": 0.55,
+        "exact_expression": "explore",
+        "exact_structure": "pants",
+        "exactly_one_hero": true,
+        "daily_context_required": true,
+        "distinct_parent_recipe_required": true,
+        "layer_graph_required_when_layering_gt_1": true,
+        "four_gate_editorial_review": "pending",
+        "independent_blind_review": "pending"
+      }
+    },
+    {
+      "task_id": "P0-CONTENT-JADE-01",
+      "persona": "jade",
+      "persona_name": "东方玉骨",
+      "persona_keywords": [
+        "东方线条",
+        "风骨自成",
+        "现代感"
+      ],
+      "expression": "easy",
+      "structure": "dress",
+      "scene": "daily",
+      "wearability": [
+        "everyday",
+        "everyday_with_statement"
+      ],
+      "production_state": "not_started",
+      "acceptance": {
+        "whole_image_persona_score_min": 0.55,
+        "exact_expression": "easy",
+        "exact_structure": "dress",
+        "exactly_one_hero": true,
+        "daily_context_required": true,
+        "distinct_parent_recipe_required": true,
+        "layer_graph_required_when_layering_gt_1": true,
+        "four_gate_editorial_review": "pending",
+        "independent_blind_review": "pending"
+      }
+    },
+    {
+      "task_id": "P0-CONTENT-JADE-02",
+      "persona": "jade",
+      "persona_name": "东方玉骨",
+      "persona_keywords": [
+        "东方线条",
+        "风骨自成",
+        "现代感"
+      ],
+      "expression": "easy",
+      "structure": "skirt",
+      "scene": "daily",
+      "wearability": [
+        "everyday",
+        "everyday_with_statement"
+      ],
+      "production_state": "not_started",
+      "acceptance": {
+        "whole_image_persona_score_min": 0.55,
+        "exact_expression": "easy",
+        "exact_structure": "skirt",
+        "exactly_one_hero": true,
+        "daily_context_required": true,
+        "distinct_parent_recipe_required": true,
+        "layer_graph_required_when_layering_gt_1": true,
+        "four_gate_editorial_review": "pending",
+        "independent_blind_review": "pending"
+      }
+    },
+    {
+      "task_id": "P0-CONTENT-JADE-03",
+      "persona": "jade",
+      "persona_name": "东方玉骨",
+      "persona_keywords": [
+        "东方线条",
+        "风骨自成",
+        "现代感"
+      ],
+      "expression": "typical",
+      "structure": "dress",
+      "scene": "daily",
+      "wearability": [
+        "everyday",
+        "everyday_with_statement"
+      ],
+      "production_state": "not_started",
+      "acceptance": {
+        "whole_image_persona_score_min": 0.55,
+        "exact_expression": "typical",
+        "exact_structure": "dress",
+        "exactly_one_hero": true,
+        "daily_context_required": true,
+        "distinct_parent_recipe_required": true,
+        "layer_graph_required_when_layering_gt_1": true,
+        "four_gate_editorial_review": "pending",
+        "independent_blind_review": "pending"
+      }
+    },
+    {
+      "task_id": "P0-CONTENT-JADE-04",
+      "persona": "jade",
+      "persona_name": "东方玉骨",
+      "persona_keywords": [
+        "东方线条",
+        "风骨自成",
+        "现代感"
+      ],
+      "expression": "typical",
+      "structure": "skirt",
+      "scene": "daily",
+      "wearability": [
+        "everyday",
+        "everyday_with_statement"
+      ],
+      "production_state": "not_started",
+      "acceptance": {
+        "whole_image_persona_score_min": 0.55,
+        "exact_expression": "typical",
+        "exact_structure": "skirt",
+        "exactly_one_hero": true,
+        "daily_context_required": true,
+        "distinct_parent_recipe_required": true,
+        "layer_graph_required_when_layering_gt_1": true,
+        "four_gate_editorial_review": "pending",
+        "independent_blind_review": "pending"
+      }
+    },
+    {
+      "task_id": "P0-CONTENT-JADE-05",
+      "persona": "jade",
+      "persona_name": "东方玉骨",
+      "persona_keywords": [
+        "东方线条",
+        "风骨自成",
+        "现代感"
+      ],
+      "expression": "explore",
+      "structure": "dress",
+      "scene": "daily",
+      "wearability": [
+        "everyday",
+        "everyday_with_statement"
+      ],
+      "production_state": "not_started",
+      "acceptance": {
+        "whole_image_persona_score_min": 0.55,
+        "exact_expression": "explore",
+        "exact_structure": "dress",
+        "exactly_one_hero": true,
+        "daily_context_required": true,
+        "distinct_parent_recipe_required": true,
+        "layer_graph_required_when_layering_gt_1": true,
+        "four_gate_editorial_review": "pending",
+        "independent_blind_review": "pending"
+      }
+    },
+    {
+      "task_id": "P0-CONTENT-JADE-06",
+      "persona": "jade",
+      "persona_name": "东方玉骨",
+      "persona_keywords": [
+        "东方线条",
+        "风骨自成",
+        "现代感"
+      ],
+      "expression": "explore",
+      "structure": "pants",
+      "scene": "daily",
+      "wearability": [
+        "everyday",
+        "everyday_with_statement"
+      ],
+      "production_state": "not_started",
+      "acceptance": {
+        "whole_image_persona_score_min": 0.55,
+        "exact_expression": "explore",
+        "exact_structure": "pants",
+        "exactly_one_hero": true,
+        "daily_context_required": true,
+        "distinct_parent_recipe_required": true,
+        "layer_graph_required_when_layering_gt_1": true,
+        "four_gate_editorial_review": "pending",
+        "independent_blind_review": "pending"
+      }
+    },
+    {
+      "task_id": "P0-CONTENT-MUTE-01",
+      "persona": "mute",
+      "persona_name": "静音时髦",
+      "persona_keywords": [
+        "低表达",
+        "低装饰",
+        "秩序感"
+      ],
+      "expression": "typical",
+      "structure": "dress",
+      "scene": "daily",
+      "wearability": [
+        "everyday",
+        "everyday_with_statement"
+      ],
+      "production_state": "not_started",
+      "acceptance": {
+        "whole_image_persona_score_min": 0.55,
+        "exact_expression": "typical",
+        "exact_structure": "dress",
+        "exactly_one_hero": true,
+        "daily_context_required": true,
+        "distinct_parent_recipe_required": true,
+        "layer_graph_required_when_layering_gt_1": true,
+        "four_gate_editorial_review": "pending",
+        "independent_blind_review": "pending"
+      }
+    },
+    {
+      "task_id": "P0-CONTENT-MUTE-02",
+      "persona": "mute",
+      "persona_name": "静音时髦",
+      "persona_keywords": [
+        "低表达",
+        "低装饰",
+        "秩序感"
+      ],
+      "expression": "typical",
+      "structure": "pants",
+      "scene": "daily",
+      "wearability": [
+        "everyday",
+        "everyday_with_statement"
+      ],
+      "production_state": "not_started",
+      "acceptance": {
+        "whole_image_persona_score_min": 0.55,
+        "exact_expression": "typical",
+        "exact_structure": "pants",
+        "exactly_one_hero": true,
+        "daily_context_required": true,
+        "distinct_parent_recipe_required": true,
+        "layer_graph_required_when_layering_gt_1": true,
+        "four_gate_editorial_review": "pending",
+        "independent_blind_review": "pending"
+      }
+    },
+    {
+      "task_id": "P0-CONTENT-NEON-01",
+      "persona": "neon",
+      "persona_name": "灵动吸睛",
+      "persona_keywords": [
+        "高能色彩",
+        "图案焦点",
+        "主动吸睛"
+      ],
+      "expression": "easy",
+      "structure": "pants",
+      "scene": "daily",
+      "wearability": [
+        "everyday",
+        "everyday_with_statement"
+      ],
+      "production_state": "not_started",
+      "acceptance": {
+        "whole_image_persona_score_min": 0.55,
+        "exact_expression": "easy",
+        "exact_structure": "pants",
+        "exactly_one_hero": true,
+        "daily_context_required": true,
+        "distinct_parent_recipe_required": true,
+        "layer_graph_required_when_layering_gt_1": true,
+        "four_gate_editorial_review": "pending",
+        "independent_blind_review": "pending"
+      }
+    },
+    {
+      "task_id": "P0-CONTENT-NEON-02",
+      "persona": "neon",
+      "persona_name": "灵动吸睛",
+      "persona_keywords": [
+        "高能色彩",
+        "图案焦点",
+        "主动吸睛"
+      ],
+      "expression": "easy",
+      "structure": "skirt",
+      "scene": "daily",
+      "wearability": [
+        "everyday",
+        "everyday_with_statement"
+      ],
+      "production_state": "not_started",
+      "acceptance": {
+        "whole_image_persona_score_min": 0.55,
+        "exact_expression": "easy",
+        "exact_structure": "skirt",
+        "exactly_one_hero": true,
+        "daily_context_required": true,
+        "distinct_parent_recipe_required": true,
+        "layer_graph_required_when_layering_gt_1": true,
+        "four_gate_editorial_review": "pending",
+        "independent_blind_review": "pending"
+      }
+    },
+    {
+      "task_id": "P0-CONTENT-NEON-03",
+      "persona": "neon",
+      "persona_name": "灵动吸睛",
+      "persona_keywords": [
+        "高能色彩",
+        "图案焦点",
+        "主动吸睛"
+      ],
+      "expression": "easy",
+      "structure": "dress",
+      "scene": "daily",
+      "wearability": [
+        "everyday",
+        "everyday_with_statement"
+      ],
+      "production_state": "not_started",
+      "acceptance": {
+        "whole_image_persona_score_min": 0.55,
+        "exact_expression": "easy",
+        "exact_structure": "dress",
+        "exactly_one_hero": true,
+        "daily_context_required": true,
+        "distinct_parent_recipe_required": true,
+        "layer_graph_required_when_layering_gt_1": true,
+        "four_gate_editorial_review": "pending",
+        "independent_blind_review": "pending"
+      }
+    },
+    {
+      "task_id": "P0-CONTENT-NEON-04",
+      "persona": "neon",
+      "persona_name": "灵动吸睛",
+      "persona_keywords": [
+        "高能色彩",
+        "图案焦点",
+        "主动吸睛"
+      ],
+      "expression": "typical",
+      "structure": "pants",
+      "scene": "daily",
+      "wearability": [
+        "everyday",
+        "everyday_with_statement"
+      ],
+      "production_state": "not_started",
+      "acceptance": {
+        "whole_image_persona_score_min": 0.55,
+        "exact_expression": "typical",
+        "exact_structure": "pants",
+        "exactly_one_hero": true,
+        "daily_context_required": true,
+        "distinct_parent_recipe_required": true,
+        "layer_graph_required_when_layering_gt_1": true,
+        "four_gate_editorial_review": "pending",
+        "independent_blind_review": "pending"
+      }
+    },
+    {
+      "task_id": "P0-CONTENT-NEON-05",
+      "persona": "neon",
+      "persona_name": "灵动吸睛",
+      "persona_keywords": [
+        "高能色彩",
+        "图案焦点",
+        "主动吸睛"
+      ],
+      "expression": "typical",
+      "structure": "skirt",
+      "scene": "daily",
+      "wearability": [
+        "everyday",
+        "everyday_with_statement"
+      ],
+      "production_state": "not_started",
+      "acceptance": {
+        "whole_image_persona_score_min": 0.55,
+        "exact_expression": "typical",
+        "exact_structure": "skirt",
+        "exactly_one_hero": true,
+        "daily_context_required": true,
+        "distinct_parent_recipe_required": true,
+        "layer_graph_required_when_layering_gt_1": true,
+        "four_gate_editorial_review": "pending",
+        "independent_blind_review": "pending"
+      }
+    },
+    {
+      "task_id": "P0-CONTENT-NEON-06",
+      "persona": "neon",
+      "persona_name": "灵动吸睛",
+      "persona_keywords": [
+        "高能色彩",
+        "图案焦点",
+        "主动吸睛"
+      ],
+      "expression": "explore",
+      "structure": "dress",
+      "scene": "daily",
+      "wearability": [
+        "everyday",
+        "everyday_with_statement"
+      ],
+      "production_state": "not_started",
+      "acceptance": {
+        "whole_image_persona_score_min": 0.55,
+        "exact_expression": "explore",
+        "exact_structure": "dress",
+        "exactly_one_hero": true,
+        "daily_context_required": true,
+        "distinct_parent_recipe_required": true,
+        "layer_graph_required_when_layering_gt_1": true,
+        "four_gate_editorial_review": "pending",
+        "independent_blind_review": "pending"
+      }
+    },
+    {
+      "task_id": "P0-CONTENT-NEON-07",
+      "persona": "neon",
+      "persona_name": "灵动吸睛",
+      "persona_keywords": [
+        "高能色彩",
+        "图案焦点",
+        "主动吸睛"
+      ],
+      "expression": "explore",
+      "structure": "pants",
+      "scene": "daily",
+      "wearability": [
+        "everyday",
+        "everyday_with_statement"
+      ],
+      "production_state": "not_started",
+      "acceptance": {
+        "whole_image_persona_score_min": 0.55,
+        "exact_expression": "explore",
+        "exact_structure": "pants",
+        "exactly_one_hero": true,
+        "daily_context_required": true,
+        "distinct_parent_recipe_required": true,
+        "layer_graph_required_when_layering_gt_1": true,
+        "four_gate_editorial_review": "pending",
+        "independent_blind_review": "pending"
+      }
+    },
+    {
+      "task_id": "P0-CONTENT-NOIR-01",
+      "persona": "noir",
+      "persona_name": "暗黑肃杀",
+      "persona_keywords": [
+        "黑色执念",
+        "冷硬层次",
+        "无彩战士"
+      ],
+      "expression": "typical",
+      "structure": "skirt",
+      "scene": "daily",
+      "wearability": [
+        "everyday",
+        "everyday_with_statement"
+      ],
+      "production_state": "not_started",
+      "acceptance": {
+        "whole_image_persona_score_min": 0.55,
+        "exact_expression": "typical",
+        "exact_structure": "skirt",
+        "exactly_one_hero": true,
+        "daily_context_required": true,
+        "distinct_parent_recipe_required": true,
+        "layer_graph_required_when_layering_gt_1": true,
+        "four_gate_editorial_review": "pending",
+        "independent_blind_review": "pending"
+      }
+    },
+    {
+      "task_id": "P0-CONTENT-NOIR-02",
+      "persona": "noir",
+      "persona_name": "暗黑肃杀",
+      "persona_keywords": [
+        "黑色执念",
+        "冷硬层次",
+        "无彩战士"
+      ],
+      "expression": "typical",
+      "structure": "dress",
+      "scene": "daily",
+      "wearability": [
+        "everyday",
+        "everyday_with_statement"
+      ],
+      "production_state": "not_started",
+      "acceptance": {
+        "whole_image_persona_score_min": 0.55,
+        "exact_expression": "typical",
+        "exact_structure": "dress",
+        "exactly_one_hero": true,
+        "daily_context_required": true,
+        "distinct_parent_recipe_required": true,
+        "layer_graph_required_when_layering_gt_1": true,
+        "four_gate_editorial_review": "pending",
+        "independent_blind_review": "pending"
+      }
+    },
+    {
+      "task_id": "P0-CONTENT-NOIR-03",
+      "persona": "noir",
+      "persona_name": "暗黑肃杀",
+      "persona_keywords": [
+        "黑色执念",
+        "冷硬层次",
+        "无彩战士"
+      ],
+      "expression": "explore",
+      "structure": "pants",
+      "scene": "daily",
+      "wearability": [
+        "everyday",
+        "everyday_with_statement"
+      ],
+      "production_state": "not_started",
+      "acceptance": {
+        "whole_image_persona_score_min": 0.55,
+        "exact_expression": "explore",
+        "exact_structure": "pants",
+        "exactly_one_hero": true,
+        "daily_context_required": true,
+        "distinct_parent_recipe_required": true,
+        "layer_graph_required_when_layering_gt_1": true,
+        "four_gate_editorial_review": "pending",
+        "independent_blind_review": "pending"
+      }
+    },
+    {
+      "task_id": "P0-CONTENT-OOPS-01",
+      "persona": "oops",
+      "persona_name": "搭配事故",
+      "persona_keywords": [
+        "主动冲突",
+        "异质拼接",
+        "失序有趣"
+      ],
+      "expression": "easy",
+      "structure": "dress",
+      "scene": "daily",
+      "wearability": [
+        "everyday",
+        "everyday_with_statement"
+      ],
+      "production_state": "not_started",
+      "acceptance": {
+        "whole_image_persona_score_min": 0.55,
+        "exact_expression": "easy",
+        "exact_structure": "dress",
+        "exactly_one_hero": true,
+        "daily_context_required": true,
+        "distinct_parent_recipe_required": true,
+        "layer_graph_required_when_layering_gt_1": true,
+        "four_gate_editorial_review": "pending",
+        "independent_blind_review": "pending"
+      }
+    },
+    {
+      "task_id": "P0-CONTENT-OOPS-02",
+      "persona": "oops",
+      "persona_name": "搭配事故",
+      "persona_keywords": [
+        "主动冲突",
+        "异质拼接",
+        "失序有趣"
+      ],
+      "expression": "easy",
+      "structure": "dress",
+      "scene": "daily",
+      "wearability": [
+        "everyday",
+        "everyday_with_statement"
+      ],
+      "production_state": "not_started",
+      "acceptance": {
+        "whole_image_persona_score_min": 0.55,
+        "exact_expression": "easy",
+        "exact_structure": "dress",
+        "exactly_one_hero": true,
+        "daily_context_required": true,
+        "distinct_parent_recipe_required": true,
+        "layer_graph_required_when_layering_gt_1": true,
+        "four_gate_editorial_review": "pending",
+        "independent_blind_review": "pending"
+      }
+    },
+    {
+      "task_id": "P0-CONTENT-OOPS-03",
+      "persona": "oops",
+      "persona_name": "搭配事故",
+      "persona_keywords": [
+        "主动冲突",
+        "异质拼接",
+        "失序有趣"
+      ],
+      "expression": "easy",
+      "structure": "skirt",
+      "scene": "daily",
+      "wearability": [
+        "everyday",
+        "everyday_with_statement"
+      ],
+      "production_state": "not_started",
+      "acceptance": {
+        "whole_image_persona_score_min": 0.55,
+        "exact_expression": "easy",
+        "exact_structure": "skirt",
+        "exactly_one_hero": true,
+        "daily_context_required": true,
+        "distinct_parent_recipe_required": true,
+        "layer_graph_required_when_layering_gt_1": true,
+        "four_gate_editorial_review": "pending",
+        "independent_blind_review": "pending"
+      }
+    },
+    {
+      "task_id": "P0-CONTENT-OOPS-04",
+      "persona": "oops",
+      "persona_name": "搭配事故",
+      "persona_keywords": [
+        "主动冲突",
+        "异质拼接",
+        "失序有趣"
+      ],
+      "expression": "easy",
+      "structure": "dress",
+      "scene": "daily",
+      "wearability": [
+        "everyday",
+        "everyday_with_statement"
+      ],
+      "production_state": "not_started",
+      "acceptance": {
+        "whole_image_persona_score_min": 0.55,
+        "exact_expression": "easy",
+        "exact_structure": "dress",
+        "exactly_one_hero": true,
+        "daily_context_required": true,
+        "distinct_parent_recipe_required": true,
+        "layer_graph_required_when_layering_gt_1": true,
+        "four_gate_editorial_review": "pending",
+        "independent_blind_review": "pending"
+      }
+    },
+    {
+      "task_id": "P0-CONTENT-VOID-01",
+      "persona": "void",
+      "persona_name": "人间失格",
+      "persona_keywords": [
+        "状态游离",
+        "拒绝定型",
+        "默认制服"
+      ],
+      "expression": "easy",
+      "structure": "dress",
+      "scene": "daily",
+      "wearability": [
+        "everyday",
+        "everyday_with_statement"
+      ],
+      "production_state": "not_started",
+      "acceptance": {
+        "whole_image_persona_score_min": 0.55,
+        "exact_expression": "easy",
+        "exact_structure": "dress",
+        "exactly_one_hero": true,
+        "daily_context_required": true,
+        "distinct_parent_recipe_required": true,
+        "layer_graph_required_when_layering_gt_1": true,
+        "four_gate_editorial_review": "pending",
+        "independent_blind_review": "pending"
+      }
+    },
+    {
+      "task_id": "P0-CONTENT-VOID-02",
+      "persona": "void",
+      "persona_name": "人间失格",
+      "persona_keywords": [
+        "状态游离",
+        "拒绝定型",
+        "默认制服"
+      ],
+      "expression": "easy",
+      "structure": "skirt",
+      "scene": "daily",
+      "wearability": [
+        "everyday",
+        "everyday_with_statement"
+      ],
+      "production_state": "not_started",
+      "acceptance": {
+        "whole_image_persona_score_min": 0.55,
+        "exact_expression": "easy",
+        "exact_structure": "skirt",
+        "exactly_one_hero": true,
+        "daily_context_required": true,
+        "distinct_parent_recipe_required": true,
+        "layer_graph_required_when_layering_gt_1": true,
+        "four_gate_editorial_review": "pending",
+        "independent_blind_review": "pending"
+      }
+    },
+    {
+      "task_id": "P0-CONTENT-VOID-03",
+      "persona": "void",
+      "persona_name": "人间失格",
+      "persona_keywords": [
+        "状态游离",
+        "拒绝定型",
+        "默认制服"
+      ],
+      "expression": "easy",
+      "structure": "dress",
+      "scene": "daily",
+      "wearability": [
+        "everyday",
+        "everyday_with_statement"
+      ],
+      "production_state": "not_started",
+      "acceptance": {
+        "whole_image_persona_score_min": 0.55,
+        "exact_expression": "easy",
+        "exact_structure": "dress",
+        "exactly_one_hero": true,
+        "daily_context_required": true,
+        "distinct_parent_recipe_required": true,
+        "layer_graph_required_when_layering_gt_1": true,
+        "four_gate_editorial_review": "pending",
+        "independent_blind_review": "pending"
+      }
+    },
+    {
+      "task_id": "P0-CONTENT-VOID-04",
+      "persona": "void",
+      "persona_name": "人间失格",
+      "persona_keywords": [
+        "状态游离",
+        "拒绝定型",
+        "默认制服"
+      ],
+      "expression": "easy",
+      "structure": "skirt",
+      "scene": "daily",
+      "wearability": [
+        "everyday",
+        "everyday_with_statement"
+      ],
+      "production_state": "not_started",
+      "acceptance": {
+        "whole_image_persona_score_min": 0.55,
+        "exact_expression": "easy",
+        "exact_structure": "skirt",
+        "exactly_one_hero": true,
+        "daily_context_required": true,
+        "distinct_parent_recipe_required": true,
+        "layer_graph_required_when_layering_gt_1": true,
+        "four_gate_editorial_review": "pending",
+        "independent_blind_review": "pending"
+      }
+    }
+  ],
+  "release_note": "A production task is only a target. It cannot enter the release allow-list until whole-image review, all four editorial gates, and independent blind review pass."
+}

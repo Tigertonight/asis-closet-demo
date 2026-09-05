@@ -1,0 +1,1412 @@
+{
+  "schema_version": 1,
+  "batch_id": "aw-generated-garments-05",
+  "prompt_version": "selfit-aw-targeted-structure-v1",
+  "status": "internal_candidate",
+  "production_approved": false,
+  "generation": [
+    {
+      "garment_id": "garment_aw_targeted03_dress_melt_earth_01",
+      "token": "n0018",
+      "source_output": "/Users/yuanzexiang/.codex/generated_images/01a056c3-ad43-77d1-aed3-35866995a6d6/exec-bb098185-0e49-4d2d-8a4a-a4228740c3c0.png",
+      "raw_path": "raw/autumn-dress-earth-melt-raw-v1.png",
+      "prepared_path": "prepared/autumn-dress-earth-melt-v1.png",
+      "qa_path": "qa/autumn-dress-earth-melt-v1.json",
+      "final_prompt": "Create a warm camel and rose-taupe soft knit midi dress with rounded shoulder, softly defined waist and fluid A-line skirt. Photorealistic premium fashion e-commerce product cutout, exactly one original unbranded garment, front-facing and naturally shaped as if invisibly supported, genuinely transparent alpha background, centered square canvas, complete silhouette with 12% clear padding on every side. No person, mannequin, hanger, stand, accessories, text, label, logo, watermark, floor shadow, white halo, duplicate item or clipped edge.",
+      "target_conditions": [
+        "MELT×earth×autumn"
+      ]
+    },
+    {
+      "garment_id": "garment_aw_targeted03_dress_mute_ocean_01",
+      "token": "n0019",
+      "source_output": "/Users/yuanzexiang/.codex/generated_images/01a056c3-ad43-77d1-aed3-35866995a6d6/exec-b7e67a5c-c0e6-4ebf-8093-72f3c03df4b5.png",
+      "raw_path": "raw/autumn-dress-ocean-mute-raw-v1.png",
+      "prepared_path": "prepared/autumn-dress-ocean-mute-v1.png",
+      "qa_path": "qa/autumn-dress-ocean-mute-v1.json",
+      "final_prompt": "Create a muted slate-ocean-blue straight midi shirt dress with crisp collar, concealed placket and clean vertical line. Photorealistic premium fashion e-commerce product cutout, exactly one original unbranded garment, front-facing and naturally shaped as if invisibly supported, genuinely transparent alpha background, centered square canvas, complete silhouette with 12% clear padding on every side. No person, mannequin, hanger, stand, accessories, text, label, logo, watermark, floor shadow, white halo, duplicate item or clipped edge.",
+      "target_conditions": [
+        "MUTE×ocean×autumn"
+      ]
+    },
+    {
+      "garment_id": "garment_aw_targeted03_dress_oops_mono_01",
+      "token": "n0020",
+      "source_output": "/Users/yuanzexiang/.codex/generated_images/01a056c3-ad43-77d1-aed3-35866995a6d6/exec-b2a088f2-2ae1-4b41-91c6-0c8684e171ec.png",
+      "raw_path": "raw/autumn-dress-mono-oops-raw-v1.png",
+      "prepared_path": "prepared/autumn-dress-mono-oops-v1.png",
+      "qa_path": "qa/autumn-dress-mono-oops-v1.json",
+      "final_prompt": "Create a charcoal long-sleeve midi dress with one diagonal waist seam and one controlled offset wrap panel. Photorealistic premium fashion e-commerce product cutout, exactly one original unbranded garment, front-facing and naturally shaped as if invisibly supported, genuinely transparent alpha background, centered square canvas, complete silhouette with 12% clear padding on every side. No person, mannequin, hanger, stand, accessories, text, label, logo, watermark, floor shadow, white halo, duplicate item or clipped edge.",
+      "target_conditions": [
+        "OOPS×mono×autumn"
+      ]
+    },
+    {
+      "garment_id": "garment_aw_targeted03_dress_oops_pastel_01",
+      "token": "n0021",
+      "source_output": "/Users/yuanzexiang/.codex/generated_images/01a056c3-ad43-77d1-aed3-35866995a6d6/exec-eee6e83c-d414-4266-ab42-4d4080991147.png",
+      "raw_path": "raw/autumn-dress-pastel-oops-raw-v1.png",
+      "prepared_path": "prepared/autumn-dress-pastel-oops-v1.png",
+      "qa_path": "qa/autumn-dress-pastel-oops-v1.json",
+      "final_prompt": "Create a powder-blue midi dress with one soft-blush offset side panel following a coherent diagonal seam. Photorealistic premium fashion e-commerce product cutout, exactly one original unbranded garment, front-facing and naturally shaped as if invisibly supported, genuinely transparent alpha background, centered square canvas, complete silhouette with 12% clear padding on every side. No person, mannequin, hanger, stand, accessories, text, label, logo, watermark, floor shadow, white halo, duplicate item or clipped edge.",
+      "target_conditions": [
+        "OOPS×pastel×autumn"
+      ]
+    },
+    {
+      "garment_id": "garment_aw_targeted03_dress_void_earth_01",
+      "token": "n0022",
+      "source_output": "/Users/yuanzexiang/.codex/generated_images/01a056c3-ad43-77d1-aed3-35866995a6d6/exec-c3bfa959-129d-4059-a4fc-0d94c26a9ddf.png",
+      "raw_path": "raw/autumn-dress-earth-void-raw-v1.png",
+      "prepared_path": "prepared/autumn-dress-earth-void-v1.png",
+      "qa_path": "qa/autumn-dress-earth-void-v1.json",
+      "final_prompt": "Create an earthy taupe-brown cocoon wrap midi dress with protective volume and one subtle offset closure. Photorealistic premium fashion e-commerce product cutout, exactly one original unbranded garment, front-facing and naturally shaped as if invisibly supported, genuinely transparent alpha background, centered square canvas, complete silhouette with 12% clear padding on every side. No person, mannequin, hanger, stand, accessories, text, label, logo, watermark, floor shadow, white halo, duplicate item or clipped edge.",
+      "target_conditions": [
+        "VOID×earth×autumn"
+      ]
+    },
+    {
+      "garment_id": "garment_aw_targeted03_outer_noir_mono_01",
+      "token": "n0023",
+      "source_output": "/Users/yuanzexiang/.codex/generated_images/01a056c3-ad43-77d1-aed3-35866995a6d6/exec-1e8b336a-2fd6-403e-8ee9-15f29ce5cbb8.png",
+      "raw_path": "raw/winter-coat-mono-noir-stand-raw-v1.png",
+      "prepared_path": "prepared/winter-coat-mono-noir-stand-v1.png",
+      "qa_path": "qa/winter-coat-mono-noir-stand-v1.json",
+      "final_prompt": "Create a deep charcoal-black strong-shoulder long coat with sculpted square shoulder, high stand collar and concealed closure. Photorealistic premium fashion e-commerce product cutout, exactly one original unbranded garment, front-facing and naturally shaped as if invisibly supported, genuinely transparent alpha background, centered square canvas, complete silhouette with 12% clear padding on every side. No person, mannequin, hanger, stand, accessories, text, label, logo, watermark, floor shadow, white halo, duplicate item or clipped edge.",
+      "target_conditions": [
+        "NOIR×mono×winter"
+      ]
+    },
+    {
+      "garment_id": "garment_aw_targeted03_outer_void_mono_01",
+      "token": "n0024",
+      "source_output": "/Users/yuanzexiang/.codex/generated_images/01a056c3-ad43-77d1-aed3-35866995a6d6/exec-b6f2aba1-f897-425c-b8f6-df0c27afd367.png",
+      "raw_path": "raw/winter-coat-mono-void-wrap-raw-v1.png",
+      "prepared_path": "prepared/winter-coat-mono-void-wrap-v1.png",
+      "qa_path": "qa/winter-coat-mono-void-wrap-v1.json",
+      "final_prompt": "Create a charcoal cocoon wrap coat with dropped shoulder, one off-center wrap closure and soft funnel collar. Photorealistic premium fashion e-commerce product cutout, exactly one original unbranded garment, front-facing and naturally shaped as if invisibly supported, genuinely transparent alpha background, centered square canvas, complete silhouette with 12% clear padding on every side. No person, mannequin, hanger, stand, accessories, text, label, logo, watermark, floor shadow, white halo, duplicate item or clipped edge.",
+      "target_conditions": [
+        "VOID×mono×winter"
+      ]
+    },
+    {
+      "garment_id": "garment_aw_targeted03_outer_wabi_jewel_01",
+      "token": "n0025",
+      "source_output": "/Users/yuanzexiang/.codex/generated_images/01a056c3-ad43-77d1-aed3-35866995a6d6/exec-d035b346-2abf-4285-8bc4-912635760359.png",
+      "raw_path": "raw/winter-coat-jewel-wabi-teal-raw-v1.png",
+      "prepared_path": "prepared/winter-coat-jewel-wabi-teal-v1.png",
+      "qa_path": "qa/winter-coat-jewel-wabi-teal-v1.json",
+      "final_prompt": "Create a deep teal-indigo naturally textured cocoon coat with quiet curved seams and a clean closing line. Photorealistic premium fashion e-commerce product cutout, exactly one original unbranded garment, front-facing and naturally shaped as if invisibly supported, genuinely transparent alpha background, centered square canvas, complete silhouette with 12% clear padding on every side. No person, mannequin, hanger, stand, accessories, text, label, logo, watermark, floor shadow, white halo, duplicate item or clipped edge.",
+      "target_conditions": [
+        "WABI×jewel×winter"
+      ]
+    }
+  ],
+  "garments": [
+    {
+      "id": "garment_aw_targeted03_dress_melt_earth_01",
+      "category": "dress",
+      "subcategory": "玫瑰驼柔软针织中长裙",
+      "silhouette": [
+        "soft_a_line",
+        "rounded_shoulder",
+        "defined_waist"
+      ],
+      "fit": "合体",
+      "materials": [],
+      "details": [
+        "original_gap_fill",
+        "earth",
+        "visually_reviewed_cutout"
+      ],
+      "season_tags": [
+        "秋"
+      ],
+      "scene_tags": [
+        "日常",
+        "通勤",
+        "旅行"
+      ],
+      "weather_tags": [],
+      "presentation": [
+        "feminine",
+        "neutral"
+      ],
+      "layer_role": "single",
+      "tryon_slot": "dress",
+      "persona_affinity": {
+        "MELT": 0.96,
+        "EASE": 0.88,
+        "FLOU": 0.8,
+        "LOOP": 0.72
+      },
+      "color": {
+        "temperature": "未判断",
+        "lightness": "中等",
+        "saturation": "中饱和",
+        "harmony": "未判断",
+        "palette": [
+          "#aa7b6a",
+          "#b48775",
+          "#906151",
+          "#bb8f7d",
+          "#c49a88"
+        ]
+      },
+      "assets": {
+        "image_url": "/static/selfit/assets/content_v2_drafts/aw-targeted-03/garments/autumn-dress-earth-melt-v1.png",
+        "source_url": "",
+        "width": 1200,
+        "height": 1200,
+        "alpha_verified": true,
+        "rights_status": "owned"
+      },
+      "production": {
+        "source_kind": "generated_original",
+        "generation_job_id": "aw-generated-garments-05-n0018",
+        "prompt_version": "selfit-aw-targeted-structure-v1",
+        "reference_ids": [],
+        "qa_status": "approved",
+        "phash": "707171f07171b230-ac7f6e"
+      },
+      "annotation": {
+        "status": "designer_reviewed",
+        "source": "designer",
+        "confidence": 0.92,
+        "review_notes": [
+          "Cutout and visible silhouette reviewed in current Codex session; outfit use remains draft."
+        ]
+      },
+      "color_evidence": {
+        "source": "opaque_pixel_quantization_v1",
+        "status": "measured_not_semantic_review",
+        "asset_sha256": "7cea78d599f8f4140866593cd35337dad9798f7c3c8dbdd20b7a3c3c2bc98974",
+        "swatches": [
+          {
+            "hex": "#aa7b6a",
+            "weight": 0.2537,
+            "family": "粉"
+          },
+          {
+            "hex": "#b48775",
+            "weight": 0.25,
+            "family": "粉"
+          },
+          {
+            "hex": "#906151",
+            "weight": 0.2062,
+            "family": "红"
+          },
+          {
+            "hex": "#bb8f7d",
+            "weight": 0.1729,
+            "family": "粉"
+          },
+          {
+            "hex": "#c49a88",
+            "weight": 0.1172,
+            "family": "粉"
+          }
+        ],
+        "palette_names": [
+          "粉",
+          "红"
+        ],
+        "color": {
+          "temperature": "未判断",
+          "lightness": "中等",
+          "saturation": "中饱和",
+          "harmony": "未判断",
+          "palette": [
+            "#aa7b6a",
+            "#b48775",
+            "#906151",
+            "#bb8f7d",
+            "#c49a88"
+          ]
+        },
+        "limitations": "渲染光照会影响色值；不据此推断面料成分、真实冷暖或人体适配。"
+      }
+    },
+    {
+      "id": "garment_aw_targeted03_dress_mute_ocean_01",
+      "category": "dress",
+      "subcategory": "雾霾海蓝直线衬衫裙",
+      "silhouette": [
+        "long_column",
+        "clean_vertical",
+        "subtle_waist"
+      ],
+      "fit": "合体",
+      "materials": [],
+      "details": [
+        "original_gap_fill",
+        "ocean",
+        "visually_reviewed_cutout"
+      ],
+      "season_tags": [
+        "秋"
+      ],
+      "scene_tags": [
+        "日常",
+        "通勤",
+        "旅行"
+      ],
+      "weather_tags": [],
+      "presentation": [
+        "feminine",
+        "neutral"
+      ],
+      "layer_role": "single",
+      "tryon_slot": "dress",
+      "persona_affinity": {
+        "MUTE": 0.96,
+        "ICED": 0.88,
+        "JADE": 0.8,
+        "LOOP": 0.72
+      },
+      "color": {
+        "temperature": "未判断",
+        "lightness": "中等",
+        "saturation": "中饱和",
+        "harmony": "未判断",
+        "palette": [
+          "#45576b",
+          "#4b5e73",
+          "#3b4b5c",
+          "#506379",
+          "#566a81"
+        ]
+      },
+      "assets": {
+        "image_url": "/static/selfit/assets/content_v2_drafts/aw-targeted-03/garments/autumn-dress-ocean-mute-v1.png",
+        "source_url": "",
+        "width": 1200,
+        "height": 1200,
+        "alpha_verified": true,
+        "rights_status": "owned"
+      },
+      "production": {
+        "source_kind": "generated_original",
+        "generation_job_id": "aw-generated-garments-05-n0019",
+        "prompt_version": "selfit-aw-targeted-structure-v1",
+        "reference_ids": [],
+        "qa_status": "approved",
+        "phash": "30b2b2f07171b030-485a6f"
+      },
+      "annotation": {
+        "status": "designer_reviewed",
+        "source": "designer",
+        "confidence": 0.92,
+        "review_notes": [
+          "Cutout and visible silhouette reviewed in current Codex session; outfit use remains draft."
+        ]
+      },
+      "color_evidence": {
+        "source": "opaque_pixel_quantization_v1",
+        "status": "measured_not_semantic_review",
+        "asset_sha256": "728cf884d6a17adc217037cbdae6402737718605d6135d8a0aae7112bd56e29a",
+        "swatches": [
+          {
+            "hex": "#45576b",
+            "weight": 0.2987,
+            "family": "蓝"
+          },
+          {
+            "hex": "#4b5e73",
+            "weight": 0.2236,
+            "family": "蓝"
+          },
+          {
+            "hex": "#3b4b5c",
+            "weight": 0.1886,
+            "family": "蓝"
+          },
+          {
+            "hex": "#506379",
+            "weight": 0.1698,
+            "family": "蓝"
+          },
+          {
+            "hex": "#566a81",
+            "weight": 0.1194,
+            "family": "蓝"
+          }
+        ],
+        "palette_names": [
+          "蓝"
+        ],
+        "color": {
+          "temperature": "未判断",
+          "lightness": "中等",
+          "saturation": "中饱和",
+          "harmony": "未判断",
+          "palette": [
+            "#45576b",
+            "#4b5e73",
+            "#3b4b5c",
+            "#506379",
+            "#566a81"
+          ]
+        },
+        "limitations": "渲染光照会影响色值；不据此推断面料成分、真实冷暖或人体适配。"
+      }
+    },
+    {
+      "id": "garment_aw_targeted03_dress_oops_mono_01",
+      "category": "dress",
+      "subcategory": "炭灰单侧收褶错位中长裙",
+      "silhouette": [
+        "stable_column",
+        "single_offset_wrap",
+        "diagonal_waist"
+      ],
+      "fit": "合体",
+      "materials": [],
+      "details": [
+        "original_gap_fill",
+        "mono",
+        "visually_reviewed_cutout"
+      ],
+      "season_tags": [
+        "秋"
+      ],
+      "scene_tags": [
+        "日常",
+        "通勤",
+        "旅行"
+      ],
+      "weather_tags": [],
+      "presentation": [
+        "feminine",
+        "neutral"
+      ],
+      "layer_role": "single",
+      "tryon_slot": "dress",
+      "persona_affinity": {
+        "OOPS": 0.96,
+        "EDGE": 0.88,
+        "VOID": 0.8,
+        "MUTE": 0.72
+      },
+      "color": {
+        "temperature": "未判断",
+        "lightness": "深色",
+        "saturation": "中饱和",
+        "harmony": "未判断",
+        "palette": [
+          "#58473e",
+          "#604e43",
+          "#645247",
+          "#3f3229",
+          "#6c594e"
+        ]
+      },
+      "assets": {
+        "image_url": "/static/selfit/assets/content_v2_drafts/aw-targeted-03/garments/autumn-dress-mono-oops-v1.png",
+        "source_url": "",
+        "width": 1200,
+        "height": 1200,
+        "alpha_verified": true,
+        "rights_status": "owned"
+      },
+      "production": {
+        "source_kind": "generated_original",
+        "generation_job_id": "aw-generated-garments-05-n0020",
+        "prompt_version": "selfit-aw-targeted-structure-v1",
+        "reference_ids": [],
+        "qa_status": "approved",
+        "phash": "30b270707179b230-5a493f"
+      },
+      "annotation": {
+        "status": "designer_reviewed",
+        "source": "designer",
+        "confidence": 0.92,
+        "review_notes": [
+          "Cutout and visible silhouette reviewed in current Codex session; outfit use remains draft."
+        ]
+      },
+      "color_evidence": {
+        "source": "opaque_pixel_quantization_v1",
+        "status": "measured_not_semantic_review",
+        "asset_sha256": "dd9a2444cab2b0026f17bb10f7e6d33634dc11b149ca69537d9ca1536d9ea68c",
+        "swatches": [
+          {
+            "hex": "#58473e",
+            "weight": 0.2647,
+            "family": "棕"
+          },
+          {
+            "hex": "#604e43",
+            "weight": 0.2629,
+            "family": "棕"
+          },
+          {
+            "hex": "#645247",
+            "weight": 0.1683,
+            "family": "棕"
+          },
+          {
+            "hex": "#3f3229",
+            "weight": 0.1617,
+            "family": "棕"
+          },
+          {
+            "hex": "#6c594e",
+            "weight": 0.1425,
+            "family": "棕"
+          }
+        ],
+        "palette_names": [
+          "棕"
+        ],
+        "color": {
+          "temperature": "未判断",
+          "lightness": "深色",
+          "saturation": "中饱和",
+          "harmony": "未判断",
+          "palette": [
+            "#58473e",
+            "#604e43",
+            "#645247",
+            "#3f3229",
+            "#6c594e"
+          ]
+        },
+        "limitations": "渲染光照会影响色值；不据此推断面料成分、真实冷暖或人体适配。"
+      }
+    },
+    {
+      "id": "garment_aw_targeted03_dress_oops_pastel_01",
+      "category": "dress",
+      "subcategory": "粉蓝斜片错位中长裙",
+      "silhouette": [
+        "stable_a_line",
+        "single_offset_panel",
+        "defined_waist"
+      ],
+      "fit": "合体",
+      "materials": [],
+      "details": [
+        "original_gap_fill",
+        "pastel",
+        "visually_reviewed_cutout"
+      ],
+      "season_tags": [
+        "秋"
+      ],
+      "scene_tags": [
+        "日常",
+        "通勤",
+        "旅行"
+      ],
+      "weather_tags": [],
+      "presentation": [
+        "feminine",
+        "neutral"
+      ],
+      "layer_role": "single",
+      "tryon_slot": "dress",
+      "persona_affinity": {
+        "OOPS": 0.96,
+        "EDGE": 0.88,
+        "MELT": 0.8,
+        "LOOP": 0.72
+      },
+      "color": {
+        "temperature": "未判断",
+        "lightness": "浅色",
+        "saturation": "低饱和",
+        "harmony": "未判断",
+        "palette": [
+          "#b1c5e4",
+          "#b0bdd7",
+          "#ebc9c6",
+          "#a2afca",
+          "#c8cbdf"
+        ]
+      },
+      "assets": {
+        "image_url": "/static/selfit/assets/content_v2_drafts/aw-targeted-03/garments/autumn-dress-pastel-oops-v1.png",
+        "source_url": "",
+        "width": 1200,
+        "height": 1200,
+        "alpha_verified": true,
+        "rights_status": "owned"
+      },
+      "production": {
+        "source_kind": "generated_original",
+        "generation_job_id": "aw-generated-garments-05-n0021",
+        "prompt_version": "selfit-aw-targeted-structure-v1",
+        "reference_ids": [],
+        "qa_status": "approved",
+        "phash": "7061717161717130-b8bfd7"
+      },
+      "annotation": {
+        "status": "designer_reviewed",
+        "source": "designer",
+        "confidence": 0.92,
+        "review_notes": [
+          "Cutout and visible silhouette reviewed in current Codex session; outfit use remains draft."
+        ]
+      },
+      "color_evidence": {
+        "source": "opaque_pixel_quantization_v1",
+        "status": "measured_not_semantic_review",
+        "asset_sha256": "2c98636296e12b0d3eb59e464027b80fabf0895beeac753568742f1adc51e4d0",
+        "swatches": [
+          {
+            "hex": "#b1c5e4",
+            "weight": 0.3202,
+            "family": "蓝"
+          },
+          {
+            "hex": "#b0bdd7",
+            "weight": 0.2662,
+            "family": "蓝"
+          },
+          {
+            "hex": "#ebc9c6",
+            "weight": 0.2359,
+            "family": "粉"
+          },
+          {
+            "hex": "#a2afca",
+            "weight": 0.149,
+            "family": "蓝"
+          },
+          {
+            "hex": "#c8cbdf",
+            "weight": 0.0287,
+            "family": "白"
+          }
+        ],
+        "palette_names": [
+          "蓝",
+          "粉"
+        ],
+        "color": {
+          "temperature": "未判断",
+          "lightness": "浅色",
+          "saturation": "低饱和",
+          "harmony": "未判断",
+          "palette": [
+            "#b1c5e4",
+            "#b0bdd7",
+            "#ebc9c6",
+            "#a2afca",
+            "#c8cbdf"
+          ]
+        },
+        "limitations": "渲染光照会影响色值；不据此推断面料成分、真实冷暖或人体适配。"
+      }
+    },
+    {
+      "id": "garment_aw_targeted03_dress_void_earth_01",
+      "category": "dress",
+      "subcategory": "泥褐包裹茧形中长裙",
+      "silhouette": [
+        "cocoon_wrap",
+        "protective_volume",
+        "single_offset_closure"
+      ],
+      "fit": "宽松",
+      "materials": [],
+      "details": [
+        "original_gap_fill",
+        "earth",
+        "visually_reviewed_cutout"
+      ],
+      "season_tags": [
+        "秋"
+      ],
+      "scene_tags": [
+        "日常",
+        "通勤",
+        "旅行"
+      ],
+      "weather_tags": [],
+      "presentation": [
+        "feminine",
+        "neutral"
+      ],
+      "layer_role": "single",
+      "tryon_slot": "dress",
+      "persona_affinity": {
+        "VOID": 0.96,
+        "WABI": 0.88,
+        "EASE": 0.8,
+        "LOOP": 0.72
+      },
+      "color": {
+        "temperature": "未判断",
+        "lightness": "深色",
+        "saturation": "无彩",
+        "harmony": "未判断",
+        "palette": [
+          "#3a393b",
+          "#403f41",
+          "#343435",
+          "#373637",
+          "#2e2d2e"
+        ]
+      },
+      "assets": {
+        "image_url": "/static/selfit/assets/content_v2_drafts/aw-targeted-03/garments/autumn-dress-earth-void-v1.png",
+        "source_url": "",
+        "width": 1200,
+        "height": 1200,
+        "alpha_verified": true,
+        "rights_status": "owned"
+      },
+      "production": {
+        "source_kind": "generated_original",
+        "generation_job_id": "aw-generated-garments-05-n0022",
+        "prompt_version": "selfit-aw-targeted-structure-v1",
+        "reference_ids": [],
+        "qa_status": "approved",
+        "phash": "30b2b2f070703030-383738"
+      },
+      "annotation": {
+        "status": "designer_reviewed",
+        "source": "designer",
+        "confidence": 0.92,
+        "review_notes": [
+          "Cutout and visible silhouette reviewed in current Codex session; outfit use remains draft."
+        ]
+      },
+      "color_evidence": {
+        "source": "opaque_pixel_quantization_v1",
+        "status": "measured_not_semantic_review",
+        "asset_sha256": "6623efbc808927df879bc84923817a3c4b9dd35cb8325f3049818e1b66bddfaa",
+        "swatches": [
+          {
+            "hex": "#3a393b",
+            "weight": 0.2831,
+            "family": "灰"
+          },
+          {
+            "hex": "#403f41",
+            "weight": 0.2352,
+            "family": "灰"
+          },
+          {
+            "hex": "#343435",
+            "weight": 0.1944,
+            "family": "灰"
+          },
+          {
+            "hex": "#373637",
+            "weight": 0.172,
+            "family": "灰"
+          },
+          {
+            "hex": "#2e2d2e",
+            "weight": 0.1153,
+            "family": "黑"
+          }
+        ],
+        "palette_names": [
+          "灰"
+        ],
+        "color": {
+          "temperature": "未判断",
+          "lightness": "深色",
+          "saturation": "无彩",
+          "harmony": "未判断",
+          "palette": [
+            "#3a393b",
+            "#403f41",
+            "#343435",
+            "#373637",
+            "#2e2d2e"
+          ]
+        },
+        "limitations": "渲染光照会影响色值；不据此推断面料成分、真实冷暖或人体适配。"
+      }
+    },
+    {
+      "id": "garment_aw_targeted03_outer_noir_mono_01",
+      "category": "outer",
+      "subcategory": "墨黑高立领强肩长外套",
+      "silhouette": [
+        "strong_shoulder",
+        "long_column",
+        "stand_collar"
+      ],
+      "fit": "合体",
+      "materials": [],
+      "details": [
+        "original_gap_fill",
+        "mono",
+        "visually_reviewed_cutout"
+      ],
+      "season_tags": [
+        "秋",
+        "冬"
+      ],
+      "scene_tags": [
+        "日常",
+        "通勤",
+        "旅行"
+      ],
+      "weather_tags": [],
+      "presentation": [
+        "feminine",
+        "neutral"
+      ],
+      "layer_role": "outer",
+      "tryon_slot": "outer",
+      "persona_affinity": {
+        "NOIR": 0.96,
+        "EDGE": 0.88,
+        "ICED": 0.8,
+        "MUTE": 0.72
+      },
+      "color": {
+        "temperature": "未判断",
+        "lightness": "深色",
+        "saturation": "无彩",
+        "harmony": "未判断",
+        "palette": [
+          "#2d2c2d",
+          "#302f31",
+          "#343335",
+          "#3b3a3c",
+          "#212021"
+        ]
+      },
+      "assets": {
+        "image_url": "/static/selfit/assets/content_v2_drafts/aw-targeted-03/garments/winter-coat-mono-noir-stand-v1.png",
+        "source_url": "",
+        "width": 1200,
+        "height": 1200,
+        "alpha_verified": true,
+        "rights_status": "owned"
+      },
+      "production": {
+        "source_kind": "generated_original",
+        "generation_job_id": "aw-generated-garments-05-n0023",
+        "prompt_version": "selfit-aw-targeted-structure-v1",
+        "reference_ids": [],
+        "qa_status": "approved",
+        "phash": "3030307169703010-2f2e2f"
+      },
+      "annotation": {
+        "status": "designer_reviewed",
+        "source": "designer",
+        "confidence": 0.92,
+        "review_notes": [
+          "Cutout and visible silhouette reviewed in current Codex session; outfit use remains draft."
+        ]
+      },
+      "color_evidence": {
+        "source": "opaque_pixel_quantization_v1",
+        "status": "measured_not_semantic_review",
+        "asset_sha256": "c3a9e80e0f06bdd6954227b0ee0a5a7c0c1e3a1f5145bdf8403c32059591d137",
+        "swatches": [
+          {
+            "hex": "#2d2c2d",
+            "weight": 0.3061,
+            "family": "黑"
+          },
+          {
+            "hex": "#302f31",
+            "weight": 0.2582,
+            "family": "灰"
+          },
+          {
+            "hex": "#343335",
+            "weight": 0.1789,
+            "family": "灰"
+          },
+          {
+            "hex": "#3b3a3c",
+            "weight": 0.1308,
+            "family": "灰"
+          },
+          {
+            "hex": "#212021",
+            "weight": 0.126,
+            "family": "黑"
+          }
+        ],
+        "palette_names": [
+          "黑",
+          "灰"
+        ],
+        "color": {
+          "temperature": "未判断",
+          "lightness": "深色",
+          "saturation": "无彩",
+          "harmony": "未判断",
+          "palette": [
+            "#2d2c2d",
+            "#302f31",
+            "#343335",
+            "#3b3a3c",
+            "#212021"
+          ]
+        },
+        "limitations": "渲染光照会影响色值；不据此推断面料成分、真实冷暖或人体适配。"
+      }
+    },
+    {
+      "id": "garment_aw_targeted03_outer_void_mono_01",
+      "category": "outer",
+      "subcategory": "炭灰高围领错位包裹大衣",
+      "silhouette": [
+        "cocoon_wrap",
+        "dropped_shoulder",
+        "offset_closure"
+      ],
+      "fit": "宽松",
+      "materials": [],
+      "details": [
+        "original_gap_fill",
+        "mono",
+        "visually_reviewed_cutout"
+      ],
+      "season_tags": [
+        "秋",
+        "冬"
+      ],
+      "scene_tags": [
+        "日常",
+        "通勤",
+        "旅行"
+      ],
+      "weather_tags": [],
+      "presentation": [
+        "feminine",
+        "neutral"
+      ],
+      "layer_role": "outer",
+      "tryon_slot": "outer",
+      "persona_affinity": {
+        "VOID": 0.96,
+        "WABI": 0.88,
+        "EASE": 0.8,
+        "LOOP": 0.72
+      },
+      "color": {
+        "temperature": "未判断",
+        "lightness": "深色",
+        "saturation": "无彩",
+        "harmony": "未判断",
+        "palette": [
+          "#1c1b1c",
+          "#201f20",
+          "#131213",
+          "#252526",
+          "#222123"
+        ]
+      },
+      "assets": {
+        "image_url": "/static/selfit/assets/content_v2_drafts/aw-targeted-03/garments/winter-coat-mono-void-wrap-v1.png",
+        "source_url": "",
+        "width": 1200,
+        "height": 1200,
+        "alpha_verified": true,
+        "rights_status": "owned"
+      },
+      "production": {
+        "source_kind": "generated_original",
+        "generation_job_id": "aw-generated-garments-05-n0024",
+        "prompt_version": "selfit-aw-targeted-structure-v1",
+        "reference_ids": [],
+        "qa_status": "approved",
+        "phash": "3030307070703010-1d1c1d"
+      },
+      "annotation": {
+        "status": "designer_reviewed",
+        "source": "designer",
+        "confidence": 0.92,
+        "review_notes": [
+          "Cutout and visible silhouette reviewed in current Codex session; outfit use remains draft."
+        ]
+      },
+      "color_evidence": {
+        "source": "opaque_pixel_quantization_v1",
+        "status": "measured_not_semantic_review",
+        "asset_sha256": "eff088c1dc6d84d5919009780a038dab96e584caf045d2cba1703a27980c673c",
+        "swatches": [
+          {
+            "hex": "#1c1b1c",
+            "weight": 0.3046,
+            "family": "黑"
+          },
+          {
+            "hex": "#201f20",
+            "weight": 0.1914,
+            "family": "黑"
+          },
+          {
+            "hex": "#131213",
+            "weight": 0.1899,
+            "family": "黑"
+          },
+          {
+            "hex": "#252526",
+            "weight": 0.1695,
+            "family": "黑"
+          },
+          {
+            "hex": "#222123",
+            "weight": 0.1447,
+            "family": "黑"
+          }
+        ],
+        "palette_names": [
+          "黑"
+        ],
+        "color": {
+          "temperature": "未判断",
+          "lightness": "深色",
+          "saturation": "无彩",
+          "harmony": "未判断",
+          "palette": [
+            "#1c1b1c",
+            "#201f20",
+            "#131213",
+            "#252526",
+            "#222123"
+          ]
+        },
+        "limitations": "渲染光照会影响色值；不据此推断面料成分、真实冷暖或人体适配。"
+      }
+    },
+    {
+      "id": "garment_aw_targeted03_outer_wabi_jewel_01",
+      "category": "outer",
+      "subcategory": "深青靛自然弧线茧形大衣",
+      "silhouette": [
+        "natural_cocoon",
+        "curved_seam",
+        "clean_closure"
+      ],
+      "fit": "宽松",
+      "materials": [],
+      "details": [
+        "original_gap_fill",
+        "jewel",
+        "visually_reviewed_cutout"
+      ],
+      "season_tags": [
+        "秋",
+        "冬"
+      ],
+      "scene_tags": [
+        "日常",
+        "通勤",
+        "旅行"
+      ],
+      "weather_tags": [],
+      "presentation": [
+        "feminine",
+        "neutral"
+      ],
+      "layer_role": "outer",
+      "tryon_slot": "outer",
+      "persona_affinity": {
+        "WABI": 0.96,
+        "VOID": 0.88,
+        "EASE": 0.8,
+        "JADE": 0.72
+      },
+      "color": {
+        "temperature": "未判断",
+        "lightness": "深色",
+        "saturation": "高饱和",
+        "harmony": "未判断",
+        "palette": [
+          "#143341",
+          "#193a49",
+          "#0b232d",
+          "#1e4050",
+          "#254759"
+        ]
+      },
+      "assets": {
+        "image_url": "/static/selfit/assets/content_v2_drafts/aw-targeted-03/garments/winter-coat-jewel-wabi-teal-v1.png",
+        "source_url": "",
+        "width": 1200,
+        "height": 1200,
+        "alpha_verified": true,
+        "rights_status": "owned"
+      },
+      "production": {
+        "source_kind": "generated_original",
+        "generation_job_id": "aw-generated-garments-05-n0025",
+        "prompt_version": "selfit-aw-targeted-structure-v1",
+        "reference_ids": [],
+        "qa_status": "approved",
+        "phash": "3070787879793010-173644"
+      },
+      "annotation": {
+        "status": "designer_reviewed",
+        "source": "designer",
+        "confidence": 0.92,
+        "review_notes": [
+          "Cutout and visible silhouette reviewed in current Codex session; outfit use remains draft."
+        ]
+      },
+      "color_evidence": {
+        "source": "opaque_pixel_quantization_v1",
+        "status": "measured_not_semantic_review",
+        "asset_sha256": "d3129e6f8faad8e0f992ccf1eb793c20b9de5be3a77bbf19c1949ad4fed35da3",
+        "swatches": [
+          {
+            "hex": "#143341",
+            "weight": 0.2878,
+            "family": "蓝"
+          },
+          {
+            "hex": "#193a49",
+            "weight": 0.255,
+            "family": "蓝"
+          },
+          {
+            "hex": "#0b232d",
+            "weight": 0.17,
+            "family": "黑"
+          },
+          {
+            "hex": "#1e4050",
+            "weight": 0.1662,
+            "family": "蓝"
+          },
+          {
+            "hex": "#254759",
+            "weight": 0.121,
+            "family": "蓝"
+          }
+        ],
+        "palette_names": [
+          "蓝",
+          "黑"
+        ],
+        "color": {
+          "temperature": "未判断",
+          "lightness": "深色",
+          "saturation": "高饱和",
+          "harmony": "未判断",
+          "palette": [
+            "#143341",
+            "#193a49",
+            "#0b232d",
+            "#1e4050",
+            "#254759"
+          ]
+        },
+        "limitations": "渲染光照会影响色值；不据此推断面料成分、真实冷暖或人体适配。"
+      }
+    }
+  ],
+  "visual": {
+    "garment_aw_targeted03_dress_melt_earth_01": {
+      "token": "n0018",
+      "status": "ai_candidate",
+      "record_fingerprint": "f485592fb456eafbd1e59bc37339cbc38edbed93cff607aab5586d72933b47b8",
+      "asset_sha256": "7cea78d599f8f4140866593cd35337dad9798f7c3c8dbdd20b7a3c3c2bc98974",
+      "image_url": "/static/selfit/assets/content_v2_drafts/aw-targeted-03/garments/autumn-dress-earth-melt-v1.png",
+      "source_kind": "codex_visual_review",
+      "evidence": "玫瑰驼针织裙以圆肩、柔和收腰和流动 A 线形成温和日常轮廓，面料视觉不透。",
+      "observations": {
+        "category": "dress",
+        "subcategory": "soft_knit_midi_dress",
+        "neckline": "crew",
+        "sleeve": "long",
+        "length": "midi",
+        "volume": "soft_a_line",
+        "construction": "knit_waist_panel",
+        "pattern": "solid",
+        "decoration": "low",
+        "material_appearance": "soft_fine_knit",
+        "main_colors": [
+          "rose_taupe",
+          "warm_camel"
+        ],
+        "visual_personas": [
+          "melt",
+          "ease",
+          "flou",
+          "loop"
+        ],
+        "usage_limits": null
+      },
+      "confidence": 0.9,
+      "model": "current_codex_session",
+      "prompt_version": "aw-generated-garment-review-v1",
+      "review_level": "individual_full_resolution_judgment",
+      "review_complete": true,
+      "confidence_basis": "Non-calibrated AI visual judgment; material appearance is visual only and warmth is not claimed."
+    },
+    "garment_aw_targeted03_dress_mute_ocean_01": {
+      "token": "n0019",
+      "status": "ai_candidate",
+      "record_fingerprint": "1ab065fb7db6b10b82ecbfc727dcd7c81eaea7ee8f215e595cc9458d14ba89eb",
+      "asset_sha256": "728cf884d6a17adc217037cbdae6402737718605d6135d8a0aae7112bd56e29a",
+      "image_url": "/static/selfit/assets/content_v2_drafts/aw-targeted-03/garments/autumn-dress-ocean-mute-v1.png",
+      "source_kind": "codex_visual_review",
+      "evidence": "雾霾海蓝衬衫裙以暗门襟、清楚小领和连续纵线表达低装饰与收净感。",
+      "observations": {
+        "category": "dress",
+        "subcategory": "concealed_placket_shirt_dress",
+        "neckline": "small_shirt_collar",
+        "sleeve": "long",
+        "length": "midi",
+        "volume": "straight",
+        "construction": "concealed_placket_subtle_princess_seams",
+        "pattern": "solid",
+        "decoration": "minimal",
+        "material_appearance": "matte_woven",
+        "main_colors": [
+          "slate_ocean_blue"
+        ],
+        "visual_personas": [
+          "mute",
+          "iced",
+          "jade",
+          "loop"
+        ],
+        "usage_limits": null
+      },
+      "confidence": 0.9,
+      "model": "current_codex_session",
+      "prompt_version": "aw-generated-garment-review-v1",
+      "review_level": "individual_full_resolution_judgment",
+      "review_complete": true,
+      "confidence_basis": "Non-calibrated AI visual judgment; material appearance is visual only and warmth is not claimed."
+    },
+    "garment_aw_targeted03_dress_oops_mono_01": {
+      "token": "n0020",
+      "status": "ai_candidate",
+      "record_fingerprint": "136f59992682a5611fbdc7dae2520b42f4a269cf9c8c637f295c252ee318db59",
+      "asset_sha256": "dd9a2444cab2b0026f17bb10f7e6d33634dc11b149ca69537d9ca1536d9ea68c",
+      "image_url": "/static/selfit/assets/content_v2_drafts/aw-targeted-03/garments/autumn-dress-mono-oops-v1.png",
+      "source_kind": "codex_visual_review",
+      "evidence": "炭灰裙只用一条斜腰线和单侧收褶形成可解释错位，其余轮廓稳定。",
+      "observations": {
+        "category": "dress",
+        "subcategory": "single_offset_wrap_midi_dress",
+        "neckline": "crew",
+        "sleeve": "long",
+        "length": "midi",
+        "volume": "straight",
+        "construction": "diagonal_waist_single_side_gather",
+        "pattern": "solid",
+        "decoration": "low",
+        "material_appearance": "matte_jersey",
+        "main_colors": [
+          "charcoal"
+        ],
+        "visual_personas": [
+          "oops",
+          "edge",
+          "void",
+          "mute"
+        ],
+        "usage_limits": null
+      },
+      "confidence": 0.9,
+      "model": "current_codex_session",
+      "prompt_version": "aw-generated-garment-review-v1",
+      "review_level": "individual_full_resolution_judgment",
+      "review_complete": true,
+      "confidence_basis": "Non-calibrated AI visual judgment; material appearance is visual only and warmth is not claimed."
+    },
+    "garment_aw_targeted03_dress_oops_pastel_01": {
+      "token": "n0021",
+      "status": "ai_candidate",
+      "record_fingerprint": "bff07d7330a1d3fd96872f99adc75f1f0e160235c982f29fab89505ff3213783",
+      "asset_sha256": "2c98636296e12b0d3eb59e464027b80fabf0895beeac753568742f1adc51e4d0",
+      "image_url": "/static/selfit/assets/content_v2_drafts/aw-targeted-03/garments/autumn-dress-pastel-oops-v1.png",
+      "source_kind": "codex_visual_review",
+      "evidence": "粉蓝主身与一块柔粉斜片共用同一方向线，错位集中且不形成随机拼接。",
+      "observations": {
+        "category": "dress",
+        "subcategory": "pastel_offset_panel_midi_dress",
+        "neckline": "crew",
+        "sleeve": "long",
+        "length": "midi",
+        "volume": "a_line",
+        "construction": "single_diagonal_blush_panel",
+        "pattern": "colorblock",
+        "decoration": "low",
+        "material_appearance": "smooth_matte_woven",
+        "main_colors": [
+          "powder_blue",
+          "soft_blush"
+        ],
+        "visual_personas": [
+          "oops",
+          "edge",
+          "melt",
+          "loop"
+        ],
+        "usage_limits": null
+      },
+      "confidence": 0.9,
+      "model": "current_codex_session",
+      "prompt_version": "aw-generated-garment-review-v1",
+      "review_level": "individual_full_resolution_judgment",
+      "review_complete": true,
+      "confidence_basis": "Non-calibrated AI visual judgment; material appearance is visual only and warmth is not claimed."
+    },
+    "garment_aw_targeted03_dress_void_earth_01": {
+      "token": "n0022",
+      "status": "ai_candidate",
+      "record_fingerprint": "22baf1369fcf474df7816e135edc8a46525e42321527498e8c6e96be439d7550",
+      "asset_sha256": "6623efbc808927df879bc84923817a3c4b9dd35cb8325f3049818e1b66bddfaa",
+      "image_url": "/static/selfit/assets/content_v2_drafts/aw-targeted-03/garments/autumn-dress-earth-void-v1.png",
+      "source_kind": "codex_visual_review",
+      "evidence": "泥褐连衣裙以包裹体积和一处偏置闭合表达保护感，没有破片或多余装饰。",
+      "observations": {
+        "category": "dress",
+        "subcategory": "cocoon_wrap_midi_dress",
+        "neckline": "wrap_v",
+        "sleeve": "long_dropped",
+        "length": "midi",
+        "volume": "cocoon",
+        "construction": "single_offset_button_wrap",
+        "pattern": "solid",
+        "decoration": "minimal",
+        "material_appearance": "soft_matte_woven",
+        "main_colors": [
+          "earth_taupe_brown"
+        ],
+        "visual_personas": [
+          "void",
+          "wabi",
+          "ease",
+          "loop"
+        ],
+        "usage_limits": null
+      },
+      "confidence": 0.9,
+      "model": "current_codex_session",
+      "prompt_version": "aw-generated-garment-review-v1",
+      "review_level": "individual_full_resolution_judgment",
+      "review_complete": true,
+      "confidence_basis": "Non-calibrated AI visual judgment; material appearance is visual only and warmth is not claimed."
+    },
+    "garment_aw_targeted03_outer_noir_mono_01": {
+      "token": "n0023",
+      "status": "ai_candidate",
+      "record_fingerprint": "bf67143f4f6bb38ef65e947b75aed26309636d4beda6c9ec2548c7fb1bfd935c",
+      "asset_sha256": "c3a9e80e0f06bdd6954227b0ee0a5a7c0c1e3a1f5145bdf8403c32059591d137",
+      "image_url": "/static/selfit/assets/content_v2_drafts/aw-targeted-03/garments/winter-coat-mono-noir-stand-v1.png",
+      "source_kind": "codex_visual_review",
+      "evidence": "墨黑长外套以高立领、强肩和连续雕塑分割形成锐利纵线，与普通翻领风衣家族不同。",
+      "observations": {
+        "category": "outer",
+        "subcategory": "strong_shoulder_stand_collar_coat",
+        "neckline": "high_stand_collar",
+        "sleeve": "long",
+        "length": "maxi",
+        "volume": "shaped_column",
+        "construction": "concealed_front_sculpted_seams",
+        "pattern": "solid",
+        "decoration": "minimal",
+        "material_appearance": "dense_matte_wool_like",
+        "main_colors": [
+          "deep_charcoal_black"
+        ],
+        "visual_personas": [
+          "noir",
+          "edge",
+          "iced",
+          "mute"
+        ],
+        "usage_limits": null
+      },
+      "confidence": 0.9,
+      "model": "current_codex_session",
+      "prompt_version": "aw-generated-garment-review-v1",
+      "review_level": "individual_full_resolution_judgment",
+      "review_complete": true,
+      "confidence_basis": "Non-calibrated AI visual judgment; material appearance is visual only and warmth is not claimed."
+    },
+    "garment_aw_targeted03_outer_void_mono_01": {
+      "token": "n0024",
+      "status": "ai_candidate",
+      "record_fingerprint": "96eeeba974be25b21bf930d159fd2d3d702cfa628d90bbf1e7b82eaa4fadc359",
+      "asset_sha256": "eff088c1dc6d84d5919009780a038dab96e584caf045d2cba1703a27980c673c",
+      "image_url": "/static/selfit/assets/content_v2_drafts/aw-targeted-03/garments/winter-coat-mono-void-wrap-v1.png",
+      "source_kind": "codex_visual_review",
+      "evidence": "炭灰大衣以高围领、圆量和单一错位门襟形成包裹感，未使用随机破片。",
+      "observations": {
+        "category": "outer",
+        "subcategory": "funnel_collar_cocoon_wrap_coat",
+        "neckline": "soft_funnel_wrap",
+        "sleeve": "long_dropped",
+        "length": "maxi",
+        "volume": "rounded_cocoon",
+        "construction": "single_offset_button_wrap",
+        "pattern": "solid",
+        "decoration": "minimal",
+        "material_appearance": "dense_matte_wool_like",
+        "main_colors": [
+          "charcoal"
+        ],
+        "visual_personas": [
+          "void",
+          "wabi",
+          "ease",
+          "loop"
+        ],
+        "usage_limits": null
+      },
+      "confidence": 0.9,
+      "model": "current_codex_session",
+      "prompt_version": "aw-generated-garment-review-v1",
+      "review_level": "individual_full_resolution_judgment",
+      "review_complete": true,
+      "confidence_basis": "Non-calibrated AI visual judgment; material appearance is visual only and warmth is not claimed."
+    },
+    "garment_aw_targeted03_outer_wabi_jewel_01": {
+      "token": "n0025",
+      "status": "ai_candidate",
+      "record_fingerprint": "f4dc80df81441bb8e88f83c89dfc2a03a6bb01079eb5e54fff3cf0723aaff0c4",
+      "asset_sha256": "d3129e6f8faad8e0f992ccf1eb793c20b9de5be3a77bbf19c1949ad4fed35da3",
+      "image_url": "/static/selfit/assets/content_v2_drafts/aw-targeted-03/garments/winter-coat-jewel-wabi-teal-v1.png",
+      "source_kind": "codex_visual_review",
+      "evidence": "深青靛大衣用自然织物观感和弧线分割表达安静手作感，没有拼布或毛边堆叠。",
+      "observations": {
+        "category": "outer",
+        "subcategory": "textured_curved_seam_cocoon_coat",
+        "neckline": "soft_stand",
+        "sleeve": "long",
+        "length": "maxi",
+        "volume": "natural_cocoon",
+        "construction": "single_button_curved_seams",
+        "pattern": "solid",
+        "decoration": "minimal",
+        "material_appearance": "subtle_textured_woven",
+        "main_colors": [
+          "deep_teal_indigo"
+        ],
+        "visual_personas": [
+          "wabi",
+          "void",
+          "ease",
+          "jade"
+        ],
+        "usage_limits": null
+      },
+      "confidence": 0.9,
+      "model": "current_codex_session",
+      "prompt_version": "aw-generated-garment-review-v1",
+      "review_level": "individual_full_resolution_judgment",
+      "review_complete": true,
+      "confidence_basis": "Non-calibrated AI visual judgment; material appearance is visual only and warmth is not claimed."
+    }
+  },
+  "limitations": [
+    "AI visual review is not independent blind review.",
+    "Dense or wool-like appearance does not prove warmth, fiber, waterproofing or comfort.",
+    "No garment is in the published pool."
+  ],
+  "version": "aw-generated-garments-56ef40faf3d5426dad18"
+}

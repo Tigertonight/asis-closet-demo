@@ -1,0 +1,2061 @@
+{
+  "schema_version": 1,
+  "version": "native-family-29dfc79c909cff365924",
+  "visual_version": "codex-visual-16b18cdcdca36dbc306a",
+  "policy": "OFFLINE DRAFT ONLY. No production activation or QA promotion.",
+  "production_approved": false,
+  "families": [
+    {
+      "id": "native:blue_fitted_sheer_pointcollar_shirt",
+      "status": "visual_reviewed",
+      "reviewer": "Codex native vision (nonblind AI)",
+      "evidence": [
+        {
+          "source_file": "native-groups-10-13.tsv",
+          "rationale": "浅银蓝合体腰省、普通翻领前扣与薄袖透明观感近似",
+          "boundary": "g0008可见实体内衬而g0354覆盖待核；家族相同绝不复制QA通过状态",
+          "sources": [
+            "family-components-13.jpg"
+          ]
+        }
+      ],
+      "members": {
+        "garment_iced_top_0008": "8ece11365dc960d1857ca952232dd1a79188fec32b505ad5f7f3b6f10ae233ae",
+        "garment_iced_top_0354": "477201e13d6a5aa5f48e3295d24844febf48b0dfe4e4d884114fa6661dfe5a95"
+      },
+      "asset_sha256": {
+        "garment_iced_top_0008": "5464ea7019cbd2e7f611647f4d4d78615de991e1e33d209f1a331dcdbac477d3",
+        "garment_iced_top_0354": "8743a6c84660837fc1a059ced64c3fba9e515de07f7f4d65554f3419c7de2627"
+      },
+      "semantics": "repeat_exposure_family_not_identical_sku",
+      "production_approved": false
+    },
+    {
+      "id": "native:blue_fitted_short_crew_tee",
+      "status": "visual_reviewed",
+      "reviewer": "Codex native vision (nonblind AI)",
+      "evidence": [
+        {
+          "source_file": "native-groups-10-13.tsv",
+          "rationale": "蓝色合体短袖圆领T，基本肩袖和腰线近似",
+          "boundary": "平摆与弧摆、明度和棉面轻纹保留，不算新主廓形",
+          "sources": [
+            "family-components-13.jpg"
+          ]
+        }
+      ],
+      "members": {
+        "garment_iced_top_0098": "895554e5facb81226edc8eeb191d5ffb67b32f5280258fa814759097427129c1",
+        "garment_neon_top_0104": "f9a9007d57fdaebe29fce978cafc363741fdc53303cfe90fa588abc4c4781c8e"
+      },
+      "asset_sha256": {
+        "garment_iced_top_0098": "3a45d0907660db25aabf3318185fa701daf5a4f1c502cb121308d51b41f53cbb",
+        "garment_neon_top_0104": "6a48c5f588064d35a0c583e487e5297fa8d4dec56fb5ead84d0372824dac5ebb"
+      },
+      "semantics": "repeat_exposure_family_not_identical_sku",
+      "production_approved": false
+    },
+    {
+      "id": "native:botanical_classic_pointcollar_shirt",
+      "status": "visual_reviewed",
+      "reviewer": "Codex native vision (nonblind AI)",
+      "evidence": [
+        {
+          "source_file": "native-groups-01-03.tsv",
+          "rationale": "尖领、单胸袋、长袖弧摆的传统衬衫上换低对比枝叶小花纹，主版型近似",
+          "boundary": "蓝灰粉底色与图案密度不同，不按每种花纹单独计新轮廓",
+          "sources": [
+            "family-components-03.jpg"
+          ]
+        },
+        {
+          "source_file": "native-groups-supplement.tsv",
+          "rationale": "与g0107原图对照为传统尖领、单胸袋、宽直长袖弧摆，小枝花纹低对比",
+          "boundary": "蓝灰与奶油底、花纹密度及钮色不同；此处是款式体感家族而非一件衣服换色复制的断言",
+          "sources": [
+            "original:g0095",
+            "original:g0107"
+          ]
+        }
+      ],
+      "members": {
+        "garment_heir_top_0083": "607bae03bd05b37f9834b84cc076642fd71068b55914f5e89aab58ab2510b583",
+        "garment_void_top_0095": "831659e4fa84ce6e62186dc056982f95459fbb1e53430aa8759035904aedebc1",
+        "garment_melt_top_0101": "c55e40e86912f42070dd472c255505893e88c1f2f7a67d30cf932b7283861350",
+        "garment_film_top_0107": "94181d681928afbb8c15d91e549da2f3c36c47e812d3bf297fc9b6e642a96926",
+        "garment_flou_top_0119": "1cda3304ca1ddf907647e9e8e38ba19881b73c48b6fe8b2341830c3b6f624491"
+      },
+      "asset_sha256": {
+        "garment_heir_top_0083": "e392b47c5cab43c4c5922d85aebe677aebef9906312a8e811771962a2828f42c",
+        "garment_void_top_0095": "33526fe578122ef172de518e9366ad195daa64a73089d1ac9836c3d3bd1cc99a",
+        "garment_melt_top_0101": "e4ce85f4914383db6ff159d7781300fd28d626dd33d59b30b5d2d53960951acb",
+        "garment_film_top_0107": "e633ca03d7fec0968d7902b581363fece6b7d62b3d281d5c3c50c312b58622ed",
+        "garment_flou_top_0119": "d434e796b32ef1af915303bcc6f1c5321aff156cc978114fac80bb12520c6bd7"
+      },
+      "semantics": "repeat_exposure_family_not_identical_sku",
+      "production_approved": false
+    },
+    {
+      "id": "native:boxy_crew_pocket_tee",
+      "status": "visual_reviewed",
+      "reviewer": "Codex native vision (nonblind AI)",
+      "evidence": [
+        {
+          "source_file": "native-groups-descriptors.tsv",
+          "rationale": "圆领箱形短身、宽短袖与一个胸袋构成相近基础T恤，白和浅蓝变体",
+          "boundary": "袋底弧角与尖角、肩宽略有差异；不与合体长袖或无袋修身短T并组",
+          "sources": [
+            "original:g0092",
+            "original:g0128"
+          ]
+        }
+      ],
+      "members": {
+        "garment_jade_top_0092": "abf1da96edbe4acf7a2dbb5918e781c89d773bf0bd7305161e76502f20e58fb8",
+        "garment_oops_top_0128": "2d33d1172f1b13d24a1cdcd1c7951889e25e55c140df42646af3ecccc3f525cd"
+      },
+      "asset_sha256": {
+        "garment_jade_top_0092": "ea3d74bd0d5263e7253f39acf4a83c92eda4180459e0d8d86a751d5572f452ee",
+        "garment_oops_top_0128": "28e52331fe1454fc641d0f521298bef991310b3ac7afa6a17dde7a8000d216c9"
+      },
+      "semantics": "repeat_exposure_family_not_identical_sku",
+      "production_approved": false
+    },
+    {
+      "id": "native:center_invertedpleat_a_skirt",
+      "status": "visual_reviewed",
+      "reviewer": "Codex native vision (nonblind AI)",
+      "evidence": [
+        {
+          "source_file": "native-groups-07-09.tsv",
+          "rationale": "前中单一大对褶与平整A裙面相近，浅蓝和藏蓝为变体",
+          "boundary": "不误认裤门襟或两腿，也不和整圈规则百褶裙合并",
+          "sources": [
+            "family-components-08.jpg",
+            "family-components-09.jpg"
+          ]
+        }
+      ],
+      "members": {
+        "garment_oops_skirt_0192": "b0f2243c874f3f404af93dbc64fdedeab3643aefc8a348510b61a4b02f2dde05",
+        "garment_iced_skirt_0194": "afdcdfdfcf8b9c0ead427e2e503106945e19c161bf0c65d52f169ea5c2f01ee8"
+      },
+      "asset_sha256": {
+        "garment_oops_skirt_0192": "46aaa67e4d3a4f18f7375722623826a6d4910bf17876f817c785b7620e677eee",
+        "garment_iced_skirt_0194": "5e47e2d4d1cfd3508836e41bbda657162504571fff1509d6b7f0bcf45635cb46"
+      },
+      "semantics": "repeat_exposure_family_not_identical_sku",
+      "production_approved": false
+    },
+    {
+      "id": "native:classic_fitted_crew_longtop",
+      "status": "visual_reviewed",
+      "reviewer": "Codex native vision (nonblind AI)",
+      "evidence": [
+        {
+          "source_file": "native-groups-04-06.tsv",
+          "rationale": "黑色合体圆领长袖、均匀平整面和普通下摆为单独基本款",
+          "boundary": "与宽松侧褶衫和垂领衫分开，不能用黑色平均色并组",
+          "sources": [
+            "family-components-05.jpg"
+          ]
+        },
+        {
+          "source_file": "native-groups-10-13.tsv",
+          "rationale": "灰褐合体圆领长袖与第5页黑色g0337的基础轮廓接近",
+          "boundary": "g0091有小胸袋，g0097侧身轻收褶；保留细节但不当全新主款式",
+          "sources": [
+            "family-components-05.jpg",
+            "family-components-12.jpg"
+          ]
+        },
+        {
+          "source_file": "native-groups-descriptors.tsv",
+          "rationale": "粉色合体圆领长袖与g0097的灰褐款均为贴体薄针织观感基本衫",
+          "boundary": "g0097腹段堆褶更强；保留静态褶量，不冒充打版一致",
+          "sources": [
+            "original:g0103",
+            "original:g0097"
+          ]
+        }
+      ],
+      "members": {
+        "garment_film_top_0091": "ee5bbe9487ffe2f43527aeeb02f098084ea07bf92d58cdf2459340dd020a2a4e",
+        "garment_mute_top_0097": "61d6def05bf646fcad863786ca702b7baee2f1cc71086c032cd169ac939bd353",
+        "garment_flou_top_0103": "152b83f9ef0cbe56bb3aa17738e7a22ab31842fbb0603a0c5b8d9ae6e6d64281",
+        "garment_mute_top_0337": "6d5d99e6de7a00f63eb992891273161de964c3c3877de02195ceb113220e317d"
+      },
+      "asset_sha256": {
+        "garment_film_top_0091": "8e3eea08af5ac9229fffe5d2fbee974005b0068268d1fd37a6fb9d6ff8354ac2",
+        "garment_mute_top_0097": "1ecba67fa953d1c6907021530fbec71ad9fe025fff9824d216da80dfa313f07e",
+        "garment_flou_top_0103": "2454c341779a9490bbd9bb16a0f4fa9b443036bce90bd4fea09802aa363af1a3",
+        "garment_mute_top_0337": "2ff46feb80832311b205717c04f2937d27db9867ff859e98ea3ef8432dd79a31"
+      },
+      "semantics": "repeat_exposure_family_not_identical_sku",
+      "production_approved": false
+    },
+    {
+      "id": "native:classic_navy_knit_polo",
+      "status": "visual_reviewed",
+      "reviewer": "Codex native vision (nonblind AI)",
+      "evidence": [
+        {
+          "source_file": "native-groups-10-13.tsv",
+          "rationale": "藏蓝短袖针织POLO、翻领短扣襟和合体身相近，白边只是小面积变化",
+          "boundary": "保留g0355奶白滚边和钮差，不计全新主上衣版型",
+          "sources": [
+            "family-components-12.jpg"
+          ]
+        }
+      ],
+      "members": {
+        "garment_heir_top_0012": "d2d143703245fff070767889253e826f21cc52278ce8679427184ae2f29f02cf",
+        "garment_heir_top_0355": "db9d19a8aba845a42204dc9d4d47cd458b4e79fb398bf3917c1bbe0ad7d9e53f"
+      },
+      "asset_sha256": {
+        "garment_heir_top_0012": "675ea591d53eb84b078a90dfe820c87cd888b9efd9b2040aea149a45979e04e4",
+        "garment_heir_top_0355": "a4fe43cea3e3f67de7dc45a493c4366ddb67d7db9d2ad761986740a025036cc3"
+      },
+      "semantics": "repeat_exposure_family_not_identical_sku",
+      "production_approved": false
+    },
+    {
+      "id": "native:classic_pointcollar_pocket_shirt",
+      "status": "visual_reviewed",
+      "reviewer": "Codex native vision (nonblind AI)",
+      "evidence": [
+        {
+          "source_file": "native-groups-01-03.tsv",
+          "rationale": "普通翻尖领、长袖扣衬衫与弧摆的基础结构高度重复，蓝白灰色变化居多",
+          "boundary": "保留胸袋有无、明暗门襟和袖口褶量差异；家族用于曝光，不声称裁片一致",
+          "sources": [
+            "family-components-03.jpg"
+          ]
+        },
+        {
+          "source_file": "native-groups-04-06.tsv",
+          "rationale": "黑灰素尖领长袖扣衬衫与第3页蓝白基础款共享弧摆和常规衫体",
+          "boundary": "g0002无明显胸袋而g0126有袋，记录细节但不把基础换色堆成不同款式",
+          "sources": [
+            "family-components-03.jpg",
+            "family-components-05.jpg"
+          ]
+        }
+      ],
+      "members": {
+        "garment_mute_top_0002": "5fc780e4d4d816e7b1961023d1891d44f79e8e11438b382140846bead336c460",
+        "garment_bolt_top_0090": "4473d247a6007ea5b123c9c77dad3c1c8e0c695f19c774ade48d167a515c9d17",
+        "garment_oops_top_0096": "fcfe2d946ba19097fc81400d85555c1a859999b2dd62b15eb3b0cc887af4e586",
+        "garment_wabi_top_0102": "93ddf36b7178bc11871ace33d824c4d1555d570facfcf71b53db84a7386e4236",
+        "garment_jade_top_0108": "a7518318a5430bd7f2ea746e5b4d159988235efd2c76e9c8a15c29f7d6793041",
+        "garment_mute_top_0113": "6a468d50aac4af2854d6aa3985ea346ef5501777ffcb59170f30219498cb63bc",
+        "garment_iced_top_0114": "ea8479e300e9b9bb62a94cdf6bf24cf117b8e36ffc2a0686464f9c165b767d7a",
+        "garment_noir_top_0126": "2d2d8594169095db81bc313f400463e3f7339a9e19a1b8dbc35e15287f23efc2"
+      },
+      "asset_sha256": {
+        "garment_mute_top_0002": "d783ecba0257b1a3b7b12e2b720c8c55804bc5b8f4991766f3bf0f08cfbccc89",
+        "garment_bolt_top_0090": "13495774453892c830ae0dc83726c030bf252081e8da12fae8486f529fdb4358",
+        "garment_oops_top_0096": "7668f5ac0246ba74a0eb1b6713811b1f5e06a4c01514bb73f701b1cdf7e95a10",
+        "garment_wabi_top_0102": "fa6e562cedfcdfe0ba407c9f11828ba52595a3ae5ec59f106be7c896db9f1454",
+        "garment_jade_top_0108": "0ffcfe139650f585565e36f1c5be064bd2ebd19c1f691074d0546444649aa81b",
+        "garment_mute_top_0113": "a437f4f48ab32d341deaf410f862faad5550418087ae915021c8c8409ea7af72",
+        "garment_iced_top_0114": "856e55fb62107d6093d95cf4fdc7a831c3a64d0ac6a63f86e560c5a74296c339",
+        "garment_noir_top_0126": "67d38fcd96d7bae2384ced43ce21fa96464793045cdac911c39266d782214445"
+      },
+      "semantics": "repeat_exposure_family_not_identical_sku",
+      "production_approved": false
+    },
+    {
+      "id": "native:classic_vneck_short_cardigan",
+      "status": "visual_reviewed",
+      "reviewer": "Codex native vision (nonblind AI)",
+      "evidence": [
+        {
+          "source_file": "native-groups-04-06.tsv",
+          "rationale": "V领前排扣、罗纹边和松袖短针织外搭的主结构重复",
+          "boundary": "保留g0021绞花和粉色、g0129大贴袋及更松体量；不是同针法SKU",
+          "sources": [
+            "family-components-06.jpg"
+          ]
+        },
+        {
+          "source_file": "native-groups-07-09.tsv",
+          "rationale": "深灰V领排扣、贴袋和针织罗纹边，与第6页同类浅色开衫共享结构",
+          "boundary": "保留衣长和深色质感，不把色彩差异算成新开衫版型",
+          "sources": [
+            "family-components-06.jpg",
+            "family-components-09.jpg"
+          ]
+        },
+        {
+          "source_file": "native-groups-10-13.tsv",
+          "rationale": "藏蓝V领前排扣短针织衫、罗纹袖底边与第6页基本开衫同类",
+          "boundary": "不是新型开衫，深浅色及针织厚薄未知不额外推断",
+          "sources": [
+            "family-components-06.jpg",
+            "family-components-10.jpg"
+          ]
+        }
+      ],
+      "members": {
+        "garment_ease_outer_0017": "b1b7ddf68618acc6bb1ce0ced758fea682827098f80f93036cd36f944444e3a6",
+        "garment_melt_outer_0021": "03ffc36e0100191dfcd5da3d014b8eaf9e28bbe9d02c0a10a59acfd557d7d2fd",
+        "garment_mute_outer_0129": "b49c43e44dd716c93ad568ffbaa930c2151ff97d9825a582587e0af75827bbf5",
+        "garment_heir_outer_0147": "61f3895bcb6aca20008d59032e7d08f56307fcd72bc5eec3d96a85d79677400b",
+        "garment_mute_outer_0369": "a8f46269ccdaf76ee60e665569d883b9b080fe7a2bfc4745380d9d7055e926bd"
+      },
+      "asset_sha256": {
+        "garment_ease_outer_0017": "90e643f432ee15813a70a4738a4fab7cdb9fe60e9a76d4cee3765d85f6e57c61",
+        "garment_melt_outer_0021": "a3d04a4d64f584a1aefe97dc017290975b18f5f7edea72d4558df0cb07ce2687",
+        "garment_mute_outer_0129": "a0e39ee3f620b2499b6d747b568660ebca824a3140cca0259660ec023313b250",
+        "garment_heir_outer_0147": "303051cf3872aea34c3948debf65143660cd0838348fce4f961b21a06ab3609f",
+        "garment_mute_outer_0369": "95709efc5165fa6405c72bc0801e422135ffa3139ed1df883f18f2196451ed73"
+      },
+      "semantics": "repeat_exposure_family_not_identical_sku",
+      "production_approved": false
+    },
+    {
+      "id": "native:coated_wrap_wide_pants",
+      "status": "visual_reviewed",
+      "reviewer": "Codex native vision (nonblind AI)",
+      "evidence": [
+        {
+          "source_file": "native-groups-01-03.tsv",
+          "rationale": "平整黑色阔腿叠加斜向长覆片，亮哑拼面形成同类包覆结构",
+          "boundary": "g0068偏单侧覆片、g0574两侧暗酒红片；不合并普通素黑裤",
+          "sources": [
+            "family-components-01.jpg"
+          ]
+        }
+      ],
+      "members": {
+        "garment_noir_bottom_0068": "ab17cad10a523a5400ea977db48668733d5fc5ad347b1c31d70117489663079a",
+        "garment_noir_bottom_0574": "c885a98a7b4395ece63520dc17c31feceddc414cd7880e42c920426a780f580b"
+      },
+      "asset_sha256": {
+        "garment_noir_bottom_0068": "3cfe20a5ba261e34c0658cda13fb277fca87c5d1b2a8bd221809c388efd7b9a3",
+        "garment_noir_bottom_0574": "487bd1b3a090b9ddd7ac78e822de109a88b1d75c09dc1f36e8d0529c6a358ee2"
+      },
+      "semantics": "repeat_exposure_family_not_identical_sku",
+      "production_approved": false
+    },
+    {
+      "id": "native:collarless_singlebutton_blazer",
+      "status": "visual_reviewed",
+      "reviewer": "Codex native vision (nonblind AI)",
+      "evidence": [
+        {
+          "source_file": "native-groups-04-06.tsv",
+          "rationale": "粉灰无领深V、单扣和双细翻袋形成简洁西装结构",
+          "boundary": "不合并奶白圆领敞开夹克，后续可跨页对比同V领版型",
+          "sources": [
+            "family-components-06.jpg"
+          ]
+        },
+        {
+          "source_file": "native-groups-07-09.tsv",
+          "rationale": "灰褐和深灰无领深V单扣、胸袋及双翻袋与第6页粉色款主结构相近",
+          "boundary": "保留衣长、合体程度和颜色；不和圆领敞开夹克合并",
+          "sources": [
+            "family-components-06.jpg",
+            "family-components-07.jpg",
+            "family-components-09.jpg"
+          ]
+        },
+        {
+          "source_file": "native-groups-descriptors.tsv",
+          "rationale": "原图对比g0151，均为无领深V单扣、腰省和双翻盖袋的合体中长西装",
+          "boundary": "灰褐深浅、钮色及翻袋宽窄不同，不当不同主结构，也不声称实物尺寸同一",
+          "sources": [
+            "original:g0157",
+            "original:g0145",
+            "original:g0151"
+          ]
+        }
+      ],
+      "members": {
+        "garment_mute_outer_0001": "ba093d95542b8498c22c9dcb3e7d6b0a43bcfde4184fb9beaf3f09ae8bea535c",
+        "garment_film_outer_0139": "8a61ac70edfa7424fea23f57deea7a93f47723676ab29af4efca6782663f4597",
+        "garment_mute_outer_0145": "8d6ab3d291d0f21950b0dff7260fa3dd27e92e5d8fd1eb34cd3e0beb98d0bea1",
+        "garment_flou_outer_0151": "502099bcbfc83c3b8bd0b191cc6ec7fa16cf89a81106101c93188bf029007cc8",
+        "garment_loop_outer_0157": "9c3142fc9948737cd084d97855063b6b40274e84df76487d55660008ce05f7bc",
+        "garment_mute_outer_0385": "2512a807b0948df6cf09249d9578b048d55483e37f37e592341ce09487e71506"
+      },
+      "asset_sha256": {
+        "garment_mute_outer_0001": "88584f65bdee021fa48f428abedf191960c3bb2ad3c6b5c0446dfd7b2a56c2f5",
+        "garment_film_outer_0139": "d6257ae6b2357bad1f9972af15093706b5644810490d5ef507f45d1e1df43c29",
+        "garment_mute_outer_0145": "413918dfc54c72edbc67147273e58e83f8783747ff11a3cbeb83bc212a235e7f",
+        "garment_flou_outer_0151": "d5c676f92fefe6ab86155c20ffde07c980c25f46f4f29f5b351607b264301010",
+        "garment_loop_outer_0157": "f247342fffd15c29d127f37b5fcb05fb94dc0594205265658d1e759e077a00d9",
+        "garment_mute_outer_0385": "004ec114d99f1b8f5bb2bf6c1950a535339cc0be3195ac2484655b06d4590e1d"
+      },
+      "semantics": "repeat_exposure_family_not_identical_sku",
+      "production_approved": false
+    },
+    {
+      "id": "native:cream_fitted_mockneck_longtop",
+      "status": "visual_reviewed",
+      "reviewer": "Codex native vision (nonblind AI)",
+      "evidence": [
+        {
+          "source_file": "native-groups-10-13.tsv",
+          "rationale": "奶白小半高领、合体长袖和无前襟的基本针织上衣",
+          "boundary": "与圆领纽扣开衫g0109领口及开合不同，不应成同家族",
+          "sources": [
+            "family-components-13.jpg"
+          ]
+        },
+        {
+          "source_file": "native-groups-descriptors.tsv",
+          "rationale": "与g0085同为半高领合体长袖、罗纹领袖及底边的基础套头衫",
+          "boundary": "蓝灰与奶油、领高细差保留；家族名称来自首项，不限制成员颜色",
+          "sources": [
+            "original:g0121",
+            "original:g0085"
+          ]
+        }
+      ],
+      "members": {
+        "garment_melt_top_0085": "874726e037cfefd6feafe765a8de3f62944f7bc1334277413d3805ea80e165f3",
+        "garment_edge_top_0121": "ba61a31fa1c3eea88a81b105c00292b57fd5e9665051ba7768b6ac8f743af1d1"
+      },
+      "asset_sha256": {
+        "garment_melt_top_0085": "86eb53d9201498d8cc08990455403a2ed509155ae1dad5b011cedbca168afb44",
+        "garment_edge_top_0121": "8f804a300fe4cfeee2ad09c9c16456a7e639d073e5f142dca7cb73bb11121c97"
+      },
+      "semantics": "repeat_exposure_family_not_identical_sku",
+      "production_approved": false
+    },
+    {
+      "id": "native:denim_lace_utility_flare_pants",
+      "status": "visual_reviewed",
+      "reviewer": "Codex native vision (nonblind AI)",
+      "evidence": [
+        {
+          "source_file": "native-groups-01-03.tsv",
+          "rationale": "黑丹宁、粉黑纱片、金属链及工具细节出现在长喇腿上，缩略图语汇近似",
+          "boundary": "短裙式腰覆片和裤侧片位置不同，保留结构变体；不是简单换色同款",
+          "sources": [
+            "family-components-01.jpg"
+          ]
+        }
+      ],
+      "members": {
+        "garment_edge_bottom_0042": "dd1be203992a8403a71af97b76065b00e6bc34fa4502aeec38c6ebe7a61526e8",
+        "garment_edge_bottom_0409": "6ca3c1fbd4d324fbbb9103555278176dad6e5b086966f3c473759aae6f98cc02"
+      },
+      "asset_sha256": {
+        "garment_edge_bottom_0042": "b497cdb20152fe5146b95293c76cbd4fb580c2dfd0c7c8117cce9acb3334363c",
+        "garment_edge_bottom_0409": "ad7d5966ca0812c7c81d4dfa520bcf833d2660a00bfed9da928f3846f21dfd58"
+      },
+      "semantics": "repeat_exposure_family_not_identical_sku",
+      "production_approved": false
+    },
+    {
+      "id": "native:denim_straight_wide_fivepocket",
+      "status": "visual_reviewed",
+      "reviewer": "Codex native vision (nonblind AI)",
+      "evidence": [
+        {
+          "source_file": "native-groups-01-03.tsv",
+          "rationale": "五袋扣门襟、中等宽度直长腿和洗白膝部构成同类牛仔版型",
+          "boundary": "保留浅蓝深蓝灰黑及轻微裤口变化，颜色和洗水不计新主款式",
+          "sources": [
+            "family-components-01.jpg"
+          ]
+        },
+        {
+          "source_file": "native-groups-04-06.tsv",
+          "rationale": "浅蓝中蓝五袋牛仔长直腿，与第1页g0179等的主体版型相近",
+          "boundary": "洗白位置和颜色深浅是变体，不能只换牛仔蓝度就算新裤型",
+          "sources": [
+            "family-components-01.jpg",
+            "family-components-04.jpg"
+          ]
+        }
+      ],
+      "members": {
+        "garment_mute_bottom_0161": "d11047c40e49a073ee6e54090e3f7ed1ca555f45ccb8673f50a7b9469448108b",
+        "garment_loop_bottom_0173": "505f30db8f94901a9f1e63e5762e373c302f8457294ab628c15c26dbad4b5f97",
+        "garment_heir_bottom_0179": "d7c24899bb451e0c3f6c06edccb73a51e498d001d803d524cbb81002b9c5422b",
+        "garment_edge_bottom_0185": "e7f088e8f250f91117c00c9691fb3e4ce54c641ef7f058f9788c56244a4beb49",
+        "garment_mute_bottom_0401": "c84e553722ebfd7d14785d7b71c1e9f5c964c5845cfbd61d708b1423ff8fef56",
+        "garment_heir_bottom_0419": "59b93144e2a0ec019ae52c1cc82b40df213919bde22a5bd98be6baa1b5729de7"
+      },
+      "asset_sha256": {
+        "garment_mute_bottom_0161": "a257f6624df78ca7636fc85515fb6624b95cf272c0cddf92f085fb3e5db4f22b",
+        "garment_loop_bottom_0173": "45ccd3bacd2ec83d3cde0a830469264605eb2c3db23f06fb9d7c0f421f0e78d5",
+        "garment_heir_bottom_0179": "ec6b01aa5cced7338f917c2358f285eb746faef54189879ed8a6d3c8d594b6a2",
+        "garment_edge_bottom_0185": "9eab692620baafd226501c571621a26bfad9d87218d109e708fc17af7c614a78",
+        "garment_mute_bottom_0401": "fd0370675e421a20646047c863e6635a8ee14d26ebd9360af233d97e7653e409",
+        "garment_heir_bottom_0419": "dcf362ffc1567bee9676d63c70286bb49caec737e77c7f33b9ac0625f094bf45"
+      },
+      "semantics": "repeat_exposure_family_not_identical_sku",
+      "production_approved": false
+    },
+    {
+      "id": "native:earth_patch_oversized_pointcollar_shirt",
+      "status": "visual_reviewed",
+      "reviewer": "Codex native vision (nonblind AI)",
+      "evidence": [
+        {
+          "source_file": "native-groups-10-13.tsv",
+          "rationale": "灰米宽尖领、橄榄胸袋、棕绿裹片与前后不齐长摆高度相关",
+          "boundary": "g0027卷袖与斜襟、g0342收口袖和肩片不同；关联家族不是完全相同版型",
+          "sources": [
+            "family-components-12.jpg"
+          ]
+        }
+      ],
+      "members": {
+        "garment_wabi_top_0027": "3d8047d0fe22bbd0a40c9515e6bd25e705560f6e3315d80f2bfa7c167ff805c7",
+        "garment_wabi_top_0342": "f5ca7dfcd248f37c669040dd0d2798ac8013281072edf3b94c943452958e3b05"
+      },
+      "asset_sha256": {
+        "garment_wabi_top_0027": "aa1f8ff872e3a43705cb8384cfb5b7b2060c984bfdc74da31af398dccb8ebac4",
+        "garment_wabi_top_0342": "b89a71f865dbb30a685b4c96a53fb079aac7a4892afe3089af87d7944a32398c"
+      },
+      "semantics": "repeat_exposure_family_not_identical_sku",
+      "production_approved": false
+    },
+    {
+      "id": "native:fitted_scoopneck_plain_tank",
+      "status": "visual_reviewed",
+      "reviewer": "Codex native vision (nonblind AI)",
+      "evidence": [
+        {
+          "source_file": "native-groups-descriptors.tsv",
+          "rationale": "藏蓝与奶油的宽肩带低U领合体背心，平弧底边为重复基本结构",
+          "boundary": "奶油纵纹更明显，蓝色较平滑；与高圆领背心不同，不因无袖合并",
+          "sources": [
+            "original:g0106",
+            "original:g0100"
+          ]
+        }
+      ],
+      "members": {
+        "garment_ease_top_0100": "2f15b87cfa66bd3e47acb6733d44b6f5c636a8d87b579d90fbc718d475488592",
+        "garment_bolt_top_0106": "c13062594a2c6c5937f55e762ab08db37fab9c15724d2167d8e03685e21003d2"
+      },
+      "asset_sha256": {
+        "garment_ease_top_0100": "6fbde843620cdc1923f59c6345f112d25dcbf8903b3a246040a67db5b50a50f6",
+        "garment_bolt_top_0106": "e5d9cb933b20a4afe7eb19833fa19bde5b96538940de4c266f48f2901bccbde3"
+      },
+      "semantics": "repeat_exposure_family_not_identical_sku",
+      "production_approved": false
+    },
+    {
+      "id": "native:fitted_sleeveless_pointcollar_shirt",
+      "status": "visual_reviewed",
+      "reviewer": "Codex native vision (nonblind AI)",
+      "evidence": [
+        {
+          "source_file": "native-groups-10-13.tsv",
+          "rationale": "无袖尖翻领、前襟纽扣或暗襟与腰省弧摆反复出现，蓝与奶白只是变体",
+          "boundary": "保留领口明暗襟与颜色，不能与窄肩背心或高领抽褶无袖衫合并",
+          "sources": [
+            "family-components-10.jpg"
+          ]
+        }
+      ],
+      "members": {
+        "garment_iced_top_0082": "10142da12aaaa69b2e22c7327b47d0ed73ffa12bd8fc351b3d99a8a07a14ff1d",
+        "garment_oops_top_0112": "071791139eb1ca14b96e37665cc2f13034c2eaccc0d1bb1e3071fc0cb81c930e",
+        "garment_wabi_top_0118": "2c975ab759de4a9ca07381ea222f9e62593556fc8d4f0dab5a83b0363e83d628"
+      },
+      "asset_sha256": {
+        "garment_iced_top_0082": "70001e4ae1f5905b82c124b4f793be7f003897b66ed2d4efb4562a0033de4073",
+        "garment_oops_top_0112": "f570b41bc994b10da047ed346bb6f930f36b915594cbe206cd5ccb49c1738ab6",
+        "garment_wabi_top_0118": "9bfaacf4c142f6a74d48afcf520d5c6de356f2bddeb0b87ed53d14f1f487de40"
+      },
+      "semantics": "repeat_exposure_family_not_identical_sku",
+      "production_approved": false
+    },
+    {
+      "id": "native:floral_layered_scarf",
+      "status": "visual_reviewed",
+      "reviewer": "Codex native vision (nonblind AI)",
+      "evidence": [
+        {
+          "source_file": "native-groups-supplement.tsv",
+          "rationale": "粉绿奶油小花纱、花边长尾和层叠薄片高度近似，原图可见不同围法",
+          "boundary": "花朵大小、层片落点保留；不宣称相同印花文件或实物纤维",
+          "sources": [
+            "original:g0551",
+            "original:g0599"
+          ]
+        }
+      ],
+      "members": {
+        "garment_flou_scarf_0551": "bb62cef6e7e77f4b13b5ccc435bc675425c6ab1f35f9a97584883023079ab1c9",
+        "garment_flou_scarf_0599": "7250ee670a559a40dc7c0ea10cc12cc8b8df8d4d07b4bb0225737836c97e30ed"
+      },
+      "asset_sha256": {
+        "garment_flou_scarf_0551": "9ab6fe4f95a0bd099567283d6a6b9d31accc32edebd4de80af6b1522a4865535",
+        "garment_flou_scarf_0599": "fe8ced3fbfa019809f242dd084a034d3caa882ae90233f91c38208c92950a7dc"
+      },
+      "semantics": "repeat_exposure_family_not_identical_sku",
+      "production_approved": false
+    },
+    {
+      "id": "native:ink_black_band_loafers",
+      "status": "visual_reviewed",
+      "reviewer": "Codex native vision (nonblind AI)",
+      "evidence": [
+        {
+          "source_file": "native-groups-10-13.tsv",
+          "rationale": "奶白墨纹面、黑包边横带、红小珠与低粗跟反复出现，确认为乐福",
+          "boundary": "保留鞋头修长程度和花墨位置，不合并所有黑白鞋或普通棕乐福",
+          "sources": [
+            "family-components-12.jpg",
+            "family-components-13.jpg"
+          ]
+        }
+      ],
+      "members": {
+        "garment_jade_shoes_0492": "4462e1a8a7da8ce29a7ab07aaabf67119576a29ebc88f6e715cd6e767d5db8ba",
+        "garment_jade_shoes_0588": "75628df3ff3f69e528cf3e2c9905ad393cd684838abbf8c65d23a0f4a115f979"
+      },
+      "asset_sha256": {
+        "garment_jade_shoes_0492": "6e8d8a2542d5bd7c610532a0529a9fbe818597913884b2da7e21ed8f0606dd35",
+        "garment_jade_shoes_0588": "4df1a58082c805cba4885d900998804ac7f1f85043c74f76f788438b3ffb41b3"
+      },
+      "semantics": "repeat_exposure_family_not_identical_sku",
+      "production_approved": false
+    },
+    {
+      "id": "native:ink_contrast_belted_long_duster",
+      "status": "visual_reviewed",
+      "reviewer": "Codex native vision (nonblind AI)",
+      "evidence": [
+        {
+          "source_file": "native-groups-10-13.tsv",
+          "rationale": "奶白黑灰长外套、腰带、竖幅墨花和细红点共同构成东方长线",
+          "boundary": "g0380黑领与底花、g0572袖花位置不同，保留但限制同族重复曝光",
+          "sources": [
+            "family-components-13.jpg"
+          ]
+        }
+      ],
+      "members": {
+        "garment_jade_outer_0380": "e04f3d50309a2a1396ecd5ba470b01987935bbee847ce1db98cb06d38eb6e45a",
+        "garment_jade_outer_0572": "5fc9a7586d828fdc5e6c1ee75c259c876342ace6efea7ffeec954efa420442c6"
+      },
+      "asset_sha256": {
+        "garment_jade_outer_0380": "1cbf556b377e13cab195330629e648e5c056a4d9ab28ece04f1a92d47faa6bb6",
+        "garment_jade_outer_0572": "bc95d8fde3fb8579818dbb14b1b59159a50a26214887155ce5c14c28a84cc526"
+      },
+      "semantics": "repeat_exposure_family_not_identical_sku",
+      "production_approved": false
+    },
+    {
+      "id": "native:ink_cream_layered_flared_skirt",
+      "status": "visual_reviewed",
+      "reviewer": "Codex native vision (nonblind AI)",
+      "evidence": [
+        {
+          "source_file": "native-groups-01-03.tsv",
+          "rationale": "奶白花墨裙体外覆黑灰薄片，长A摆和局部红系带构成近似家族",
+          "boundary": "g0428侧裹斜线、g0444中央展开不同；保留裁片关系，非完全同款",
+          "sources": [
+            "family-components-02.jpg"
+          ]
+        }
+      ],
+      "members": {
+        "garment_jade_skirt_0428": "3717cc36f2decb2b4b155f64d74a3c8dd511743f743c51ac9355abb8dca14461",
+        "garment_jade_skirt_0444": "ba29c001831126e4cb37ff62e55aed6a5adb20d1ca5dc1abd1193a2d3a6f0389"
+      },
+      "asset_sha256": {
+        "garment_jade_skirt_0428": "4f2ac3722b53245085e4c3f846967b5460e71797c261ba6db19b9b74cd7e8d0b",
+        "garment_jade_skirt_0444": "7bac6f55c4284cb0ff94e53253962c70177841bcc8fbe66bfe12328a663ccc19"
+      },
+      "semantics": "repeat_exposure_family_not_identical_sku",
+      "production_approved": false
+    },
+    {
+      "id": "native:ivory_navy_scarfprint_shirt",
+      "status": "visual_reviewed",
+      "reviewer": "Codex native vision (nonblind AI)",
+      "evidence": [
+        {
+          "source_file": "native-groups-10-13.tsv",
+          "rationale": "奶白底藏蓝酒红金链、丝巾式图案、尖领合体长袖构成近似经典语法",
+          "boundary": "花叶与皮带格块分布不同，不是复制图案，但同族曝光易显重复",
+          "sources": [
+            "family-components-13.jpg"
+          ]
+        }
+      ],
+      "members": {
+        "garment_heir_top_0323": "5f150a362f661d23f1e52cd46b165c3c81ebf2a4b4188036773493cd1845ffeb",
+        "garment_heir_top_0563": "8b7ccf210891d7f4d3f1ce60b576cb67f8b075bd5617e5e4a9b908a6f2001656"
+      },
+      "asset_sha256": {
+        "garment_heir_top_0323": "375c5e1af77938757e9d8ebb5631ff3c8f71d5bcee91c57ae4e3038514294ab4",
+        "garment_heir_top_0563": "f07c5334c12bc9fa85eb4585794d55b0cd7f6d36a0088585ff5fee60f10fad9b"
+      },
+      "semantics": "repeat_exposure_family_not_identical_sku",
+      "production_approved": false
+    },
+    {
+      "id": "native:khaki_waistpleat_long_a_skirt",
+      "status": "visual_reviewed",
+      "reviewer": "Codex native vision (nonblind AI)",
+      "evidence": [
+        {
+          "source_file": "native-groups-01-03.tsv",
+          "rationale": "卡其高腰短褶只在腰段展开、下摆宽而长，与通长百褶不同",
+          "boundary": "与g0198等普通A裙存在明显腰褶和长度变化，保留独立款式",
+          "sources": [
+            "family-components-02.jpg"
+          ]
+        },
+        {
+          "source_file": "native-groups-07-09.tsv",
+          "rationale": "米白和浅蓝扣腰、腰段短褶后展开长A裙，与第2页卡其g0580结构接近",
+          "boundary": "颜色不计新轮廓，保留布料厚薄观感和前门襟细节",
+          "sources": [
+            "family-components-02.jpg",
+            "family-components-08.jpg"
+          ]
+        }
+      ],
+      "members": {
+        "garment_bolt_skirt_0186": "eb4da6793bc9622dd96a2574db9663e3d06c56e1b8dc367a25d70a82bd08106a",
+        "garment_neon_skirt_0216": "efaa1e400ecee7bd9b483b9bedea1b199b7915dec281e01aa9ad75393656577e",
+        "garment_ease_skirt_0580": "1d978c25a27bb505570491558502e09e9f31be43f4af7f3f55a0e5cccb61a21b"
+      },
+      "asset_sha256": {
+        "garment_bolt_skirt_0186": "0c881eb47a0239549cd82fc1e413fe141874853cf63a1420faddb58670d92079",
+        "garment_neon_skirt_0216": "6461c029b91974418df5d86a0206b94c1e0d0a7529a0813670c49ae6ed36f8a9",
+        "garment_ease_skirt_0580": "b257a9b604e852a3bd332d0a3732f0b311e446ebaffedd205a3912148224f986"
+      },
+      "semantics": "repeat_exposure_family_not_identical_sku",
+      "production_approved": false
+    },
+    {
+      "id": "native:leather_pink_denim_belted_flare_coat",
+      "status": "visual_reviewed",
+      "reviewer": "Codex native vision (nonblind AI)",
+      "evidence": [
+        {
+          "source_file": "native-groups-07-09.tsv",
+          "rationale": "黑皮感收腰系带、丹宁驳领和粉纱层摆构成共同甜酷裙式外套",
+          "boundary": "g0377偏异袖丹宁片、g0569双粉袖不同；保留袖型和透视状态，不宣称完全同款",
+          "sources": [
+            "family-components-07.jpg"
+          ]
+        }
+      ],
+      "members": {
+        "garment_edge_outer_0377": "5d93b53563377d08de11be9f25c6b7309c9a047f815471c67bcb6fe2fb890262",
+        "garment_edge_outer_0569": "52a5cb829e685904908056eaed5ead929e98b6a41eacf1963ac73c1b7fbfbc52"
+      },
+      "asset_sha256": {
+        "garment_edge_outer_0377": "236ee5794ee00da72998880f82d4053f83f8fccef1d0c386c8ec05ee8f2a0453",
+        "garment_edge_outer_0569": "bbebd0b220eed2b5c45ff89da90d813eab2855d4420c1727a2f77573b0b2220b"
+      },
+      "semantics": "repeat_exposure_family_not_identical_sku",
+      "production_approved": false
+    },
+    {
+      "id": "native:light_layered_utility_wide_pants",
+      "status": "visual_reviewed",
+      "reviewer": "Codex native vision (nonblind AI)",
+      "evidence": [
+        {
+          "source_file": "native-groups-04-06.tsv",
+          "rationale": "浅灰米色阔裤叠加长工具袋、侧片与固定带，结构复杂度和体积接近",
+          "boundary": "g0063有更明显前围片，g0397长侧袋更直；区别于毛边自然款",
+          "sources": [
+            "family-components-04.jpg"
+          ]
+        }
+      ],
+      "members": {
+        "garment_loop_bottom_0063": "16a7b825869ca7077aaad4de4e28801a03c65d866c0e9baef2725540eff3402e",
+        "garment_loop_bottom_0397": "32461ef7e0da5a2d5a67a5c1de8cceead1f0d144b91f728aff2e1928add501f2"
+      },
+      "asset_sha256": {
+        "garment_loop_bottom_0063": "85f16c256965a700dc99feaca1ae93544b6d66f04cb8a02a16a729236c4d0e77",
+        "garment_loop_bottom_0397": "526b4b8402d9eec2dfbeb0d78be3a1b5a27d50c3ae8a53b07ffef4ac56af220b"
+      },
+      "semantics": "repeat_exposure_family_not_identical_sku",
+      "production_approved": false
+    },
+    {
+      "id": "native:mixed_lace_suiting_asym_wide",
+      "status": "visual_reviewed",
+      "reviewer": "Codex native vision (nonblind AI)",
+      "evidence": [
+        {
+          "source_file": "native-groups-01-03.tsv",
+          "rationale": "西装灰与丹宁宽裤、粉白纱及亮面单侧覆片反复混搭，两腿长直宽",
+          "boundary": "保留g0400大斜色块和g0576长蕾丝侧幅区别；与同材但明显锥腿g0416分开",
+          "sources": [
+            "family-components-01.jpg"
+          ]
+        }
+      ],
+      "members": {
+        "garment_oops_bottom_0400": "564b4ee6e6077c5005274246df36dd3590a80ab792809e51722873563dce11af",
+        "garment_oops_bottom_0576": "9c20a14bd63c851aa5d3fa3efc0a492f7c21b50a66262cc4b871e47c7bee14bd"
+      },
+      "asset_sha256": {
+        "garment_oops_bottom_0400": "d57783aa48f5c9e755ebaf53df3805daec7ad80f68ff3659ae04b96688d817bb",
+        "garment_oops_bottom_0576": "36263169fde1adba755a06613da74744b126b5f13fa762e66d3d47cd85544b07"
+      },
+      "semantics": "repeat_exposure_family_not_identical_sku",
+      "production_approved": false
+    },
+    {
+      "id": "native:mixed_lapel_lace_denim_shoulder",
+      "status": "visual_reviewed",
+      "reviewer": "Codex native vision (nonblind AI)",
+      "evidence": [
+        {
+          "source_file": "native-groups-supplement.tsv",
+          "rationale": "灰西装翻片、牛仔白蕾丝、黄绿收褶片组合为宽软肩包，异质拼片主视觉重复",
+          "boundary": "g0512三角侧翼更大、g0528圆软包体更明显，保留差异；g0592信使翻盖结构另组",
+          "sources": [
+            "original:g0512",
+            "original:g0528",
+            "original:g0592"
+          ]
+        }
+      ],
+      "members": {
+        "garment_oops_bag_0512": "7b2d37f1e77a32f2281c54cd9683255375041a90199e72bd36a21c17d6fbd2b1",
+        "garment_oops_bag_0528": "7e16b1acaddddaa317e2c9c4c154cb7f5ca72af39d2595faa9ab6d99d5c436a5"
+      },
+      "asset_sha256": {
+        "garment_oops_bag_0512": "7ff199429ba49eb547787f40ebeb0e79008748e56a4f78a35da079487273f740",
+        "garment_oops_bag_0528": "4d0e08b1b487bdd0b8091f518425a9bfe64125a896b2a91856253d40fe8e3a60"
+      },
+      "semantics": "repeat_exposure_family_not_identical_sku",
+      "production_approved": false
+    },
+    {
+      "id": "native:natural_earth_patch_draped_hobo",
+      "status": "visual_reviewed",
+      "reviewer": "Codex native vision (nonblind AI)",
+      "evidence": [
+        {
+          "source_file": "native-groups-10-13.tsv",
+          "rationale": "灰米橄榄棕粗织软包、垂口宽肩带和侧拼片，整体体积高度相近",
+          "boundary": "g0518三角片更突出、g0029褶口较软，保留但不计完全独立包型",
+          "sources": [
+            "family-components-13.jpg"
+          ]
+        }
+      ],
+      "members": {
+        "garment_wabi_bag_0029": "678ff01c2776819baa5094e52abab0827ece185f27852cf560d929cf1aed9411",
+        "garment_wabi_bag_0518": "26954a8ee8e252086d3dcaab2c9717c20d973353b6915f870de7ffa9d69d0008"
+      },
+      "asset_sha256": {
+        "garment_wabi_bag_0029": "f98688205dd2f6c0109a78942043dedf9e1b3a41f3489060da07cf20e57ba9ba",
+        "garment_wabi_bag_0518": "d14f31cd28c5c8e1aedf745eb18969355d8cf3d4aff1c88e5bbbe9b9dcf065f1"
+      },
+      "semantics": "repeat_exposure_family_not_identical_sku",
+      "production_approved": false
+    },
+    {
+      "id": "native:natural_raw_layered_wrap",
+      "status": "visual_reviewed",
+      "reviewer": "Codex native vision (nonblind AI)",
+      "evidence": [
+        {
+          "source_file": "native-groups-supplement.tsv",
+          "rationale": "灰褐橄榄粗织三角围裹、裂片长尾与宽量一致，垂片有变化",
+          "boundary": "与普通素长围巾分开，不能仅因同自然色并组",
+          "sources": [
+            "original:g0550",
+            "original:g0598"
+          ]
+        }
+      ],
+      "members": {
+        "garment_wabi_scarf_0550": "ac98f53f7ad1be1c4eb3dd7dc6996caaa34f95fbc4077505e1f514e712e781b4",
+        "garment_wabi_scarf_0598": "0b9464607732ef765345c352ea21759279be1317b3ac78b8fd60099acfb6456b"
+      },
+      "asset_sha256": {
+        "garment_wabi_scarf_0550": "93a979aee5dbae1464eb5bc4eb0417831a40c89f0eb43b243336bf67b1811ba5",
+        "garment_wabi_scarf_0598": "ce1b2e0b753280111efdf698db60f75b1d42f88beacf95b7a557ded08d9d0397"
+      },
+      "semantics": "repeat_exposure_family_not_identical_sku",
+      "production_approved": false
+    },
+    {
+      "id": "native:natural_tonal_wrap_layer_maxi",
+      "status": "visual_reviewed",
+      "reviewer": "Codex native vision (nonblind AI)",
+      "evidence": [
+        {
+          "source_file": "native-groups-01-03.tsv",
+          "rationale": "灰褐橄榄同调粗纹多幅裹片、柔软宽摆和松腰相近",
+          "boundary": "g0438腰系带、g0582弹性褶腰有区别；与蓝棕高对比毛片裙分组",
+          "sources": [
+            "family-components-02.jpg"
+          ]
+        }
+      ],
+      "members": {
+        "garment_wabi_skirt_0438": "7916c613ee5985b97394c46d2006f973a5c6de4d0bfe3092b698627cc82aad6e",
+        "garment_wabi_skirt_0582": "10339e52b1b9764f1dd7a6833a62167929c083703406f6541500d6c400cf629d"
+      },
+      "asset_sha256": {
+        "garment_wabi_skirt_0438": "09052b9cede2bd501421f15e931f5a631bdeac493757aa5b733e9c76268e75c0",
+        "garment_wabi_skirt_0582": "e70dba4a93a5569fe1c50d9e8119cda5796907b1602f51a57c6e14dc606dea96"
+      },
+      "semantics": "repeat_exposure_family_not_identical_sku",
+      "production_approved": false
+    },
+    {
+      "id": "native:open_pointcollar_draped_blouse",
+      "status": "visual_reviewed",
+      "reviewer": "Codex native vision (nonblind AI)",
+      "evidence": [
+        {
+          "source_file": "native-groups-01-03.tsv",
+          "rationale": "开领V线、柔软下垂肩袖和浮弧下摆相近，浅蓝与桃米色变体",
+          "boundary": "g0093可见前扣而g0117更隐，保留细节；与挺身基础衬衫分开",
+          "sources": [
+            "family-components-03.jpg"
+          ]
+        }
+      ],
+      "members": {
+        "garment_loop_top_0093": "a71e29b2969bc75256501618a833e981aae87e9170b7e5c7ce4c663a90c9b42f",
+        "garment_melt_top_0117": "98be84c5fee3230bb2d4552668e4e636bbeb7802ceb5b70f53c15409bd56878d"
+      },
+      "asset_sha256": {
+        "garment_loop_top_0093": "80786658ba325a95550600f9df333a885b74bb4e756b42fdcd870219a0c8b045",
+        "garment_melt_top_0117": "04b7f2c3a9b12b549c3dc112b479a1c484a84650e1fc8667f97222624cbd41ab"
+      },
+      "semantics": "repeat_exposure_family_not_identical_sku",
+      "production_approved": false
+    },
+    {
+      "id": "native:oriental_sidepanel_wide_pants",
+      "status": "visual_reviewed",
+      "reviewer": "Codex native vision (nonblind AI)",
+      "evidence": [
+        {
+          "source_file": "native-groups-04-06.tsv",
+          "rationale": "长宽裤以浅色主体和侧面墨花或纱感裹片配红细结，东方轻线条近似",
+          "boundary": "g0058绿纱更柔、g0412黑墨更利落；不是同工艺，但有共享视觉公式",
+          "sources": [
+            "family-components-04.jpg"
+          ]
+        }
+      ],
+      "members": {
+        "garment_jade_bottom_0058": "1f260d808afb42b6c2e43cfedff7a71ee39023a7348c3309a870eebc7562ec64",
+        "garment_jade_bottom_0412": "b565361e59d512c14ae246b41030ab4560dbae75a6a38192ba11ba13c563e7fe"
+      },
+      "asset_sha256": {
+        "garment_jade_bottom_0058": "a43c15683db57bcac95183bfc277e67be48e84ef5face5a29c655d00f986245a",
+        "garment_jade_bottom_0412": "d87a79af3aa65508fd08b52deecfa843476bcf2738dfb60fc498f37b71cf3e7c"
+      },
+      "semantics": "repeat_exposure_family_not_identical_sku",
+      "production_approved": false
+    },
+    {
+      "id": "native:pale_sheer_short_shoulder_bag",
+      "status": "visual_reviewed",
+      "reviewer": "Codex native vision (nonblind AI)",
+      "evidence": [
+        {
+          "source_file": "native-groups-supplement.tsv",
+          "rationale": "冰蓝浅紫低横弧短肩包、窄带和纱叠片为重复的冷柔设计",
+          "boundary": "g0514斜交几何纱片、g0594横垂纱褶与织底保留，不是相同素材或完全同款",
+          "sources": [
+            "original:g0514",
+            "original:g0594"
+          ]
+        }
+      ],
+      "members": {
+        "garment_iced_bag_0514": "650a191d8e12a0586a9ec8cddd329100020f4842d5c0853c1e977840dd742652",
+        "garment_iced_bag_0594": "9bc4fa2d04a4d26eda5a9e4a1cb02973aee27b63c5d52e0f81d9e452095123ae"
+      },
+      "asset_sha256": {
+        "garment_iced_bag_0514": "26080fab59015fae11c544f2b5fa05c2587442eae011d780fd73627b0429701f",
+        "garment_iced_bag_0594": "6658c5fab9e6d84fb2958fd01605766ee276b9878f674238ec899ad155e3a3f0"
+      },
+      "semantics": "repeat_exposure_family_not_identical_sku",
+      "production_approved": false
+    },
+    {
+      "id": "native:pastel_floral_panel_flare_pants",
+      "status": "visual_reviewed",
+      "reviewer": "Codex native vision (nonblind AI)",
+      "evidence": [
+        {
+          "source_file": "native-groups-04-06.tsv",
+          "rationale": "浅粉绿花纱包绕浅色两裤腿，喇摆与不齐侧片形成同类柔美结构",
+          "boundary": "g0407有丹宁硬腰、g0423软裹腰不同；看图确认均为裤，不与相似花裙跨品类合并",
+          "sources": [
+            "family-components-04.jpg"
+          ]
+        }
+      ],
+      "members": {
+        "garment_flou_bottom_0407": "2b9cc83719eb6e517f590263fb214f20bccf20f9167daccf044833d17e512471",
+        "garment_flou_bottom_0423": "4de03d16a60bf03811323707f803cb4bd87076cfdd55c0b38523b7f939f81dc4"
+      },
+      "asset_sha256": {
+        "garment_flou_bottom_0407": "4e7a525073bfaa14281fbc6bcaf5f182cd33ab54ca8e1f21e020c66446fff233",
+        "garment_flou_bottom_0423": "a92e0e25a7ab8e765b9d5e9ca2f694e79beb9aa8c6fcb5d382a0d2c2cf39d637"
+      },
+      "semantics": "repeat_exposure_family_not_identical_sku",
+      "production_approved": false
+    },
+    {
+      "id": "native:pastel_floral_wrap_layer_skirt",
+      "status": "visual_reviewed",
+      "reviewer": "Codex native vision (nonblind AI)",
+      "evidence": [
+        {
+          "source_file": "native-groups-01-03.tsv",
+          "rationale": "浅粉浅绿花纱、不齐裹片与侧系结长摆高度相似，主视觉均为轻柔层纱",
+          "boundary": "保留各款实体内层审核状态和透明限制；家族相似不等于内搭已合格",
+          "sources": [
+            "family-components-02.jpg"
+          ]
+        }
+      ],
+      "members": {
+        "garment_flou_skirt_0031": "dc7a8b217c4424944519cd60ce2d9d3c119087f69a8b6655610018720117da68",
+        "garment_flou_skirt_0439": "82aee567127e49728544c96812c12ddaf8873143280f05ff4f091c1115e4d847",
+        "garment_flou_skirt_0583": "93e25c51e54c116044f85f831866513cd2ee45d11584f502a7ef79e52687d69c"
+      },
+      "asset_sha256": {
+        "garment_flou_skirt_0031": "ea748540a84fec483b49e99e6e0aa4f331e8ac7005e7b18337ba55c02d01ba03",
+        "garment_flou_skirt_0439": "41e2a4cc4a8358d0c1bdf1bd3ae43573cf3916a86ee1cd502b430ba57a73d11f",
+        "garment_flou_skirt_0583": "210f4b25bc7f8a94f444bcf9f8a63ddb8b9b299c5279019bc61c28c4bd3b1011"
+      },
+      "semantics": "repeat_exposure_family_not_identical_sku",
+      "production_approved": false
+    },
+    {
+      "id": "native:pastel_knit_patch_ruffle_skirt",
+      "status": "visual_reviewed",
+      "reviewer": "Codex native vision (nonblind AI)",
+      "evidence": [
+        {
+          "source_file": "native-groups-07-09.tsv",
+          "rationale": "奶白粉米拼段、细荷叶边、绳球腰头及中长A摆重复同构",
+          "boundary": "层片顺序、腰褶与纹理变化保留，仍应同家族抑制相邻曝光",
+          "sources": [
+            "family-components-08.jpg"
+          ]
+        }
+      ],
+      "members": {
+        "garment_melt_skirt_0437": "3617d6acd11d9a6ea8232854d756fea71eada345c8ef6841ed07b9f00eac85a8",
+        "garment_melt_skirt_0581": "0965f5d88dfa883903aed1d0aca6f6821219caad5df9436ba434e6abf405a488"
+      },
+      "asset_sha256": {
+        "garment_melt_skirt_0437": "a20824c69364bb316dbe5cd81cb09a06ae11022ba8d373b837437a9f3a37ffbd",
+        "garment_melt_skirt_0581": "c54306891da9740334b1c794132f234ec81133a8fd093015cc1cf3e81fbefe3d"
+      },
+      "semantics": "repeat_exposure_family_not_identical_sku",
+      "production_approved": false
+    },
+    {
+      "id": "native:pink_drawstring_soft_wide_pants",
+      "status": "visual_reviewed",
+      "reviewer": "Codex native vision (nonblind AI)",
+      "evidence": [
+        {
+          "source_file": "native-groups-04-06.tsv",
+          "rationale": "奶白绳腰与浅粉柔绒感宽裤、底部堆褶高度相近，抽绳小球重复",
+          "boundary": "口袋位置和粉度差异保留，不当独立新主款",
+          "sources": [
+            "family-components-04.jpg"
+          ]
+        }
+      ],
+      "members": {
+        "garment_melt_bottom_0405": "081d36c39af6fe0351af6c3ce23e1beb788e2801946fda2e69d90c720b74b482",
+        "garment_melt_bottom_0421": "2fe5a5e54e07d582dcdf1cee116dd53988ea33a313763906402aacdaafcf0c7b"
+      },
+      "asset_sha256": {
+        "garment_melt_bottom_0405": "ea6be0efae608452f0f625b450b547e9100c3708249bfe4bf89a2a324401a95d",
+        "garment_melt_bottom_0421": "1ebd8aca2a8488b04a3cc93a4453c3f141829db84946aad5254dbbf7af421d10"
+      },
+      "semantics": "repeat_exposure_family_not_identical_sku",
+      "production_approved": false
+    },
+    {
+      "id": "native:plain_bandcollar_button_shirt",
+      "status": "visual_reviewed",
+      "reviewer": "Codex native vision (nonblind AI)",
+      "evidence": [
+        {
+          "source_file": "native-groups-01-03.tsv",
+          "rationale": "立领前排扣、弧摆与普通袖量构成近似基本款，米白与蓝为配色变体",
+          "boundary": "比植物纹版本更安静但可视为关联款；不宣称完全同版型",
+          "sources": [
+            "family-components-03.jpg"
+          ]
+        }
+      ],
+      "members": {
+        "garment_ease_top_0084": "d1fe7ddf89038329ecaa4b1a284884a9a13b8e542fb6be7853c48911bba99be1",
+        "garment_neon_top_0120": "072910c449f7e266e2b684460a44119c030a288c4f64ba6d6c51adf2d4898937"
+      },
+      "asset_sha256": {
+        "garment_ease_top_0084": "84cba2385b8533ae75528c99d76839b5647c6f9245f85a4632d2d8894461499b",
+        "garment_neon_top_0120": "76a775a1d40a87a847df847cc60d1181c94750c0f23f57462b5c9ed9f3a504e5"
+      },
+      "semantics": "repeat_exposure_family_not_identical_sku",
+      "production_approved": false
+    },
+    {
+      "id": "native:plain_cowl_draped_longtop",
+      "status": "visual_reviewed",
+      "reviewer": "Codex native vision (nonblind AI)",
+      "evidence": [
+        {
+          "source_file": "native-groups-04-06.tsv",
+          "rationale": "素深色垂领、胸前自然弧褶和常规长袖形成共通主语言",
+          "boundary": "g0105更贴体袖窄、g0561较松且收袖，保留松量差异；无碎片叠层",
+          "sources": [
+            "family-components-05.jpg"
+          ]
+        }
+      ],
+      "members": {
+        "garment_edge_top_0105": "6c1ab1fb721f8112fcd809f4c2491f0e51da6ac90ed674e80191d977bfa00e92",
+        "garment_mute_top_0561": "51dff42dcf25bfd19c1bcb76178234d3a415f7d08185e9edc12fe96b817416ba"
+      },
+      "asset_sha256": {
+        "garment_edge_top_0105": "e5980ba17bb2f359269601f2b99e39ba9cabd72716ba07e53c6160581536cc88",
+        "garment_mute_top_0561": "bfc506482c7d0693ad933db7ce0adf6fd811d64e42ba4cad40bbd0a10d54c4f1"
+      },
+      "semantics": "repeat_exposure_family_not_identical_sku",
+      "production_approved": false
+    },
+    {
+      "id": "native:plain_felt_beret",
+      "status": "visual_reviewed",
+      "reviewer": "Codex native vision (nonblind AI)",
+      "evidence": [
+        {
+          "source_file": "native-groups-10-13.tsv",
+          "rationale": "软圆贝雷帽冠、小顶柄和窄围带构成共同帽型，粉白灰藏蓝变化明显",
+          "boundary": "g0531棕皮围、其余同色织围不同；保留围边材质，不按换色增加帽型",
+          "sources": [
+            "family-components-10.jpg",
+            "family-components-12.jpg"
+          ]
+        },
+        {
+          "source_file": "native-groups-supplement.tsv",
+          "rationale": "原尺寸与g0531对照，奶油软圆帽冠、小顶柄和棕色窄皮围延续同一贝雷帽型",
+          "boundary": "保留毛面粗细和深浅配色；不能将颜色版本当新帽型",
+          "sources": [
+            "original:g0531",
+            "original:g0596"
+          ]
+        }
+      ],
+      "members": {
+        "garment_heir_hat_0291": "5f63acdd4e07e6b2a3b58770d501f9827f83abf02a7e7422f680dc1891a16029",
+        "garment_flou_hat_0295": "77e684b95beb37f2f124bfb29be78f61d28d53a098eebc01e7ddaa4aeecdd533",
+        "garment_bolt_hat_0298": "5281ade061b8e28d2206177ae0043830fb0b138b410c936125a3fdcc15fa0f0d",
+        "garment_loop_hat_0301": "463e9bd0388c2f9fd805804ce4b27d172818d417316e221fcef21f87fa3fa196",
+        "garment_heir_hat_0531": "d97c5f05b82afedd6b6e8c968f724bb6443f150bbf8d71bf3a1187054af7dbd7",
+        "garment_ease_hat_0596": "d867036f27b16f94ed6629e30d9010417e75bac743260f389366c62dd58c08cd"
+      },
+      "asset_sha256": {
+        "garment_heir_hat_0291": "6746c986cab3b86bcbd01c7ea8869e43be978080b259ebdb68792a18270fbc24",
+        "garment_flou_hat_0295": "935ed5974022a2069dd56e5161290d42a9082bbd95100797f39f5970677c7ebd",
+        "garment_bolt_hat_0298": "26e24d83fe94657c5fad24e195c335e8032cc5f32dbfdfdbfead9b0431ec1862",
+        "garment_loop_hat_0301": "6c8e659d1d862c38d034ecc2bd3b5fbe459f509281c83dbf46c065112ca548e2",
+        "garment_heir_hat_0531": "1e833f27c44d94812e82c305900a2d82cf06474bf71cf57aed18290189440742",
+        "garment_ease_hat_0596": "0e08d340c382c6fb084199ccf0a977332fdfc994c5f2e8554c4e0f159f573038"
+      },
+      "semantics": "repeat_exposure_family_not_identical_sku",
+      "production_approved": false
+    },
+    {
+      "id": "native:plain_flared_midi_skirt",
+      "status": "visual_reviewed",
+      "reviewer": "Codex native vision (nonblind AI)",
+      "evidence": [
+        {
+          "source_file": "native-groups-01-03.tsv",
+          "rationale": "平整腰段逐渐向下展开、无明显外贴层片或整圈压褶，普通A摆相近",
+          "boundary": "保留棕灰绿颜色和织纹差异；不与窄直裙或规则百褶裙合并",
+          "sources": [
+            "family-components-02.jpg"
+          ]
+        }
+      ],
+      "members": {
+        "garment_wabi_skirt_0198": "cc6e6abd169ef525cd709615bdee13d19beec3bff4739b635e5359e7fa781414",
+        "garment_jade_skirt_0204": "7bfdbc5d1b64ab85413069c2e0bb868e41e7926fc2a75cffd9fb6080605e782d",
+        "garment_noir_skirt_0206": "f5a43d64d7404aee3f2d765c5a89a8397776e3633a429823b5df2a5fba777fa1"
+      },
+      "asset_sha256": {
+        "garment_wabi_skirt_0198": "db3c514c396575255078ae790ef9535782f90107cee588bb51d7e3b8194c8f1a",
+        "garment_jade_skirt_0204": "794b04c2e0727715956fbd79f46177c1b1744af7ba7f17827f1b4689384e995a",
+        "garment_noir_skirt_0206": "e12e796ed5c75a8d56bda4d70722843b3c1b0b572ccbbbc844d34fc4868a2b06"
+      },
+      "semantics": "repeat_exposure_family_not_identical_sku",
+      "production_approved": false
+    },
+    {
+      "id": "native:plain_pointcollar_longcoat",
+      "status": "visual_reviewed",
+      "reviewer": "Codex native vision (nonblind AI)",
+      "evidence": [
+        {
+          "source_file": "native-groups-10-13.tsv",
+          "rationale": "普通尖领单排扣、袖口卷带和长A身相近，炭灰与蓝灰变体",
+          "boundary": "与圆领长外套、双排扣西装大衣分开，保留腰线轻微收省",
+          "sources": [
+            "family-components-11.jpg",
+            "family-components-13.jpg"
+          ]
+        }
+      ],
+      "members": {
+        "garment_iced_outer_0146": "1a1afb4935b9abe4a812bd5a521c77743970c913228a8911fecb9966aa208280",
+        "garment_noir_outer_0158": "dd607896cf7ea4f9bddd94d1c6d3289fedf08ee94c33f1a52845ab52b0007644"
+      },
+      "asset_sha256": {
+        "garment_iced_outer_0146": "13d1c203a48be28bd77aad673be26140f72430a4b15131b0a0c5542539c2c4c5",
+        "garment_noir_outer_0158": "ebb86b029c7e3c46c0e0d872cf5e0e4301f36a340c3b6244973f874ab375f7ba"
+      },
+      "semantics": "repeat_exposure_family_not_identical_sku",
+      "production_approved": false
+    },
+    {
+      "id": "native:plain_regular_pleated_midi_skirt",
+      "status": "visual_reviewed",
+      "reviewer": "Codex native vision (nonblind AI)",
+      "evidence": [
+        {
+          "source_file": "native-groups-01-03.tsv",
+          "rationale": "灰色整圈规则宽褶和清晰腰线，靠压褶而非普通A裁片展开",
+          "boundary": "后续可跨组件对照其他同型百褶裙，本表不等于穷尽跨色候选",
+          "sources": [
+            "family-components-02.jpg"
+          ]
+        },
+        {
+          "source_file": "native-groups-07-09.tsv",
+          "rationale": "藏蓝整圈规则压褶及长A摆相似，与第2页灰色g0207共同视觉结构",
+          "boundary": "g0189较细褶，g0435前皮带与g0579侧带不同；保留腰细节但限制同型高频",
+          "sources": [
+            "family-components-02.jpg",
+            "family-components-09.jpg"
+          ]
+        }
+      ],
+      "members": {
+        "garment_loop_skirt_0189": "c8e3d74a7b2705f1603b4f2a66508092ff6128ddc9e7abd07be40107fae055e2",
+        "garment_void_skirt_0207": "3eef23f93509cf7dcf0a8ce5ac7d35f172754a0f18469e4bb0c32d5d8b738fc5",
+        "garment_heir_skirt_0435": "888c618da1af79a6d2cbcc8d010306575a409c619d9629946f1138540e07854f",
+        "garment_heir_skirt_0579": "696ea58ddfabc401c5d99f17d5d3f4907fff8ce90492b3cae1085496288b4091"
+      },
+      "asset_sha256": {
+        "garment_loop_skirt_0189": "83050d9b6a81214b1a472af4a41d1e516b2e01b34bdca196d852626b56131277",
+        "garment_void_skirt_0207": "207f3e1d32b87c54770c0d8a6bc7f28a5964f895538fde374dd6742664f58eaa",
+        "garment_heir_skirt_0435": "16aa8fe4e5ecfc6008569f67697c0c0c45426ab9353eed04843912de675a0746",
+        "garment_heir_skirt_0579": "4b6676bc6873958a4798123e48227027e102b5b03a85e8b8b2750386b482e065"
+      },
+      "semantics": "repeat_exposure_family_not_identical_sku",
+      "production_approved": false
+    },
+    {
+      "id": "native:plain_regular_pleated_mini",
+      "status": "visual_reviewed",
+      "reviewer": "Codex native vision (nonblind AI)",
+      "evidence": [
+        {
+          "source_file": "native-groups-10-13.tsv",
+          "rationale": "短A裙上从腰展开规则压褶，灰米白粉边款主比例反复出现",
+          "boundary": "g0453针织感与粉边、g0213侧扣不同；保留差异，短裙不并入中长褶裙",
+          "sources": [
+            "family-components-11.jpg"
+          ]
+        }
+      ],
+      "members": {
+        "garment_edge_skirt_0201": "ab1106ae49c019dc34d9697eb14bc895c4b938830214de799bceebc4659750a8",
+        "garment_oops_skirt_0208": "3e237cc1a1e6e6fc437869bd1f04cd57f39f72674995e96753da3854392b7823",
+        "garment_melt_skirt_0213": "c0a0dd31ffd8132a717ce7fe3d42c3ae2624e5d726be5348e46a674d41d28fb1",
+        "garment_melt_skirt_0453": "cc18684057e35c7fadba863a6b057ef95dbbf9409fa75572a3145b8ccbef9648"
+      },
+      "asset_sha256": {
+        "garment_edge_skirt_0201": "f299f0d9da6c69a26778c16598f18602b8f3863c7ea35e311a22fb8ba417a7d1",
+        "garment_oops_skirt_0208": "448b968eb1ed15d2f1b9e622fad1941f97390dbc4aade04f27cbcd702420c627",
+        "garment_melt_skirt_0213": "2da141621d6d701dc0efec1c19f53415f7cc8b43a773c0d60f46c8e3d431fec3",
+        "garment_melt_skirt_0453": "a0d1d5a7c6cd89ff297cc5ae0dc74342b34243d3977450e01138b13954cd71a0"
+      },
+      "semantics": "repeat_exposure_family_not_identical_sku",
+      "production_approved": false
+    },
+    {
+      "id": "native:plain_roundtoe_maryjane_flat",
+      "status": "visual_reviewed",
+      "reviewer": "Codex native vision (nonblind AI)",
+      "evidence": [
+        {
+          "source_file": "native-groups-10-13.tsv",
+          "rationale": "圆头单横带低跟玛丽珍鞋，蓝灰棕黑为色彩变体",
+          "boundary": "鞋带与露出脚背结构区别乐福鞋，保留楦头宽窄细差不宣称尺码相同",
+          "sources": [
+            "family-components-10.jpg",
+            "family-components-11.jpg"
+          ]
+        }
+      ],
+      "members": {
+        "garment_neon_shoes_0248": "8a0721870d6ced9258afb33a40e5306d997a3cb8124d4152f96a5d231ebf3784",
+        "garment_noir_shoes_0254": "f3a81c0b9e6b6d2e8dc02a8b873932575b5ff74051744a1a67157f8442cd5149",
+        "garment_ease_shoes_0260": "a9ba443f14a242c5222ccef7ac8ff416b3377e116ddc24d0d2993a5dfb3e42f4"
+      },
+      "asset_sha256": {
+        "garment_neon_shoes_0248": "225d0fb0ffff364c898b9e2bcb3938a6fd91051d70fc7aa46b4dca585977dbac",
+        "garment_noir_shoes_0254": "c62c514103670bb7ad38d9b27b496c812bf81b5f77690b175de6ef11bbdbaa8c",
+        "garment_ease_shoes_0260": "d611cdfd36c6f279c616080a2125ab1b1161d4923de4fe692b758ff6714bcc34"
+      },
+      "semantics": "repeat_exposure_family_not_identical_sku",
+      "production_approved": false
+    },
+    {
+      "id": "native:plain_soft_hobo_shoulder_bag",
+      "status": "visual_reviewed",
+      "reviewer": "Codex native vision (nonblind AI)",
+      "evidence": [
+        {
+          "source_file": "native-groups-10-13.tsv",
+          "rationale": "软半月开口、单根肩带和无强装饰中型包体，黑灰版本相近",
+          "boundary": "保留g0529较高包身侧片、g0270较平口、g0271柔褶，容量未知不作承诺",
+          "sources": [
+            "family-components-12.jpg",
+            "family-components-13.jpg"
+          ]
+        }
+      ],
+      "members": {
+        "garment_noir_bag_0270": "1c159ea83d550dc465ced57440b63be144d06a248d981728c3e0e0e2a1ae5229",
+        "garment_void_bag_0271": "135fd6b2c9f13f75959e78a1876733c98b6ffc563b7a4fbe3bc07c60ee3ef5f2",
+        "garment_mute_bag_0529": "04434a853ff372601608665b60c08ccdd9b85dad0e520061658e696dcca922ae"
+      },
+      "asset_sha256": {
+        "garment_noir_bag_0270": "d3c86beba39da404e6ad7ebf0f7dd9439e077f9918f7014dbaee76cd419fd1dd",
+        "garment_void_bag_0271": "1933906984a9b76e45488e7c9fe25398582b59a2b7012974aebf83c2ffd8e63f",
+        "garment_mute_bag_0529": "133897dfb0642408d00aeddb721ad9f4f3ff44da9ccd19133532519ad1318d7e"
+      },
+      "semantics": "repeat_exposure_family_not_identical_sku",
+      "production_approved": false
+    },
+    {
+      "id": "native:plain_tailored_a_mini",
+      "status": "visual_reviewed",
+      "reviewer": "Codex native vision (nonblind AI)",
+      "evidence": [
+        {
+          "source_file": "native-groups-10-13.tsv",
+          "rationale": "灰褐平整短A裙，一处侧前折或裹片形成相近简洁短裙体感",
+          "boundary": "腰袢、侧裹门襟保留差异，不合并整圈压褶短裙",
+          "sources": [
+            "family-components-10.jpg"
+          ]
+        }
+      ],
+      "members": {
+        "garment_ease_skirt_0196": "e7d505eb71ef976fc5a096e9c769ef436f842c2fb06e00b2ef56d95bc45888c0",
+        "garment_wabi_skirt_0214": "ee210662248edc069d7dde2926883906c91758ff505df81050fac100cb8d8b31"
+      },
+      "asset_sha256": {
+        "garment_ease_skirt_0196": "30175d3dcd0c4982852237f744e36adc10501abbe22a8fa328e1628459442f20",
+        "garment_wabi_skirt_0214": "a18caa49b33c0d6072dfa2f2c498ca86b183995f54972ea58874cff02e3585ca"
+      },
+      "semantics": "repeat_exposure_family_not_identical_sku",
+      "production_approved": false
+    },
+    {
+      "id": "native:plain_tailored_column_midi",
+      "status": "visual_reviewed",
+      "reviewer": "Codex native vision (nonblind AI)",
+      "evidence": [
+        {
+          "source_file": "native-groups-01-03.tsv",
+          "rationale": "素色窄直中长裙、简洁腰头与纵向平整面形成基础直裙家族",
+          "boundary": "长度、腰袢及中央开口或褶需保留，不宣称实物工艺相同；区别裹裙和A裙",
+          "sources": [
+            "family-components-02.jpg"
+          ]
+        },
+        {
+          "source_file": "native-groups-10-13.tsv",
+          "rationale": "浅蓝与藏蓝窄直裙、平整大面积和普通腰段延续第2页基础直裙家族",
+          "boundary": "g0451细腰带和g0205腰褶存在差别，不等于新整体廓形",
+          "sources": [
+            "family-components-02.jpg",
+            "family-components-12.jpg"
+          ]
+        }
+      ],
+      "members": {
+        "garment_film_skirt_0187": "0f5623e82fc9196c84e7f8322c771a91ef699f71ce70b29daea79016046971b9",
+        "garment_noir_skirt_0190": "8892bd17add77c07211a3c5fbc8a05272036e23d383dcf1de85f26d054a5962c",
+        "garment_mute_skirt_0193": "b7a334e58b606356233bf0903b2262112db0c6d3af60ea615932d01dd2bf01c5",
+        "garment_loop_skirt_0205": "2a806302b76277ea267c5a8b309843a6b808791e14d1c6ceea129f3b55003920",
+        "garment_mute_skirt_0433": "ab4cb76b7a6f8a8da712971a48cb59d6ba82e20f3e0da871c35980f82a01d627",
+        "garment_heir_skirt_0451": "2c6ba99334f8b6e7ae617e529c0f8318cc151e1edf660b44bb15bb427daaf645"
+      },
+      "asset_sha256": {
+        "garment_film_skirt_0187": "09872b5bd823878837d2524b4fbd3b9e518ecf3da01d54246f0c6df8916136b5",
+        "garment_noir_skirt_0190": "15edb54b5dcd75e19612ee516468b29237426119eea467623b7b39b6475a0963",
+        "garment_mute_skirt_0193": "9e2cd16406494851efb363d39870514dbe30a627e8a2e8ba81ff1b6a22977767",
+        "garment_loop_skirt_0205": "c743c231e27e3847d745f4204992f868146bb16746d8f2047faecbb77df9fca8",
+        "garment_mute_skirt_0433": "cc2b877d1f495eef572979a04dc0151759974e0b96e50d3d3328326a54837f44",
+        "garment_heir_skirt_0451": "f0d02d3212fe89425a46cbf07ee8178145e0f35151c12c36120444a512393049"
+      },
+      "semantics": "repeat_exposure_family_not_identical_sku",
+      "production_approved": false
+    },
+    {
+      "id": "native:plain_wrap_a_skirt",
+      "status": "visual_reviewed",
+      "reviewer": "Codex native vision (nonblind AI)",
+      "evidence": [
+        {
+          "source_file": "native-groups-01-03.tsv",
+          "rationale": "米色平纹侧裹长裙、侧腰固定、单一前覆片，无纱与层层接边",
+          "boundary": "与亮滑g0188及收褶大摆g0452保留材质观感和腰部构造差别",
+          "sources": [
+            "family-components-02.jpg"
+          ]
+        },
+        {
+          "source_file": "native-groups-07-09.tsv",
+          "rationale": "浅蓝侧腰固定、单前幅裹A裙与第2页米色g0212共同结构明显",
+          "boundary": "保留单扣位置与面料观感，不能因不同蓝度计新廓形",
+          "sources": [
+            "family-components-02.jpg",
+            "family-components-08.jpg"
+          ]
+        }
+      ],
+      "members": {
+        "garment_iced_skirt_0210": "dc9e838f2858f62580952042a89883d458c6b3db5cc7ba63a2d59a9003ed8edd",
+        "garment_ease_skirt_0212": "a002408c758b8e6d0fb0b036558bc582b9e7711ba1ab578752de16b7a31ce11d"
+      },
+      "asset_sha256": {
+        "garment_iced_skirt_0210": "2b02cc9e65766536a66bc025b701fac6d920a7706ec91b7dfb736bb19c656c48",
+        "garment_ease_skirt_0212": "1e7f7bbb6ff9c012059a253399ec19da9458f8585823d975134858f834839162"
+      },
+      "semantics": "repeat_exposure_family_not_identical_sku",
+      "production_approved": false
+    },
+    {
+      "id": "native:pointcollar_box_wool_jacket",
+      "status": "visual_reviewed",
+      "reviewer": "Codex native vision (nonblind AI)",
+      "evidence": [
+        {
+          "source_file": "native-groups-04-06.tsv",
+          "rationale": "灰米短方夹克有普通尖领、双翻袋和前扣，短箱形结构明确",
+          "boundary": "区别西装翻驳领及松紧下摆夹克，不能因为浅色短外套统归组",
+          "sources": [
+            "family-components-06.jpg"
+          ]
+        },
+        {
+          "source_file": "native-groups-10-13.tsv",
+          "rationale": "藏蓝普通尖领前扣、短箱形衣身与第6页g0132的基础轮廓相近",
+          "boundary": "纵插袋与翻盖袋不同，作为结构变体保留，不与弹性下摆夹克混合",
+          "sources": [
+            "family-components-06.jpg",
+            "family-components-10.jpg"
+          ]
+        }
+      ],
+      "members": {
+        "garment_ease_outer_0132": "20a47cfaf6f4bb7c3bb118353de44607b0fa40abce10dc328987d920ecebe487",
+        "garment_bolt_outer_0138": "d227ea9f9f95989f7480785d4406879a84d5b5d733fc171106a66e3428895ec3"
+      },
+      "asset_sha256": {
+        "garment_ease_outer_0132": "a6acde3b92bcc6b32b5b883c9ad12a9e7e4321c7bfbc083858c25fc6f32a3582",
+        "garment_bolt_outer_0138": "c4084f5ea3a3735b00a82f6014a7ba3ab0a3751a78178d072ece4a97498ae756"
+      },
+      "semantics": "repeat_exposure_family_not_identical_sku",
+      "production_approved": false
+    },
+    {
+      "id": "native:pointcollar_elastic_blouson",
+      "status": "visual_reviewed",
+      "reviewer": "Codex native vision (nonblind AI)",
+      "evidence": [
+        {
+          "source_file": "native-groups-04-06.tsv",
+          "rationale": "奶白普通尖领、松肩袖与弹性底边形成相近短夹克体积",
+          "boundary": "g0136拉链、g0148纽扣不同；不是同款但可约束过密相邻曝光",
+          "sources": [
+            "family-components-06.jpg"
+          ]
+        }
+      ],
+      "members": {
+        "garment_neon_outer_0136": "a8c23f2cf169ef01c3d11ebcc40758f688d11fc18521b3a55f6878776cc327d4",
+        "garment_ease_outer_0148": "bce996c3763c20499c3b76bf36f1f30bc30624b046ceb4e49bb89528f1d4f5c2"
+      },
+      "asset_sha256": {
+        "garment_neon_outer_0136": "f57d00407b1d7aff2d9fc3677904dab3dca49be5176b8f5fb0a8357ee4be2483",
+        "garment_ease_outer_0148": "4cc9332b81009afe7f1cd03ad40a9d834346f9a7484d6ee73e65526fb8c858ce"
+      },
+      "semantics": "repeat_exposure_family_not_identical_sku",
+      "production_approved": false
+    },
+    {
+      "id": "native:printed_bandcollar_button_shirt",
+      "status": "visual_reviewed",
+      "reviewer": "Codex native vision (nonblind AI)",
+      "evidence": [
+        {
+          "source_file": "native-groups-01-03.tsv",
+          "rationale": "小立领、前排扣和传统长袖衬衫体量近似，植物印花大小不同",
+          "boundary": "区别尖翻领及无全开襟的抽褶罩衫，保留g0089较大枝叶纹",
+          "sources": [
+            "family-components-03.jpg"
+          ]
+        }
+      ],
+      "members": {
+        "garment_edge_top_0089": "cccdf44b5a0996634fecf05757e9c3dfd1e27e6db824da40e3d90e523cbd2db7",
+        "garment_loop_top_0125": "46fd1b4b8431c333b822945af7abbc76c6923fe7d418a91cf297656d192ac1f9"
+      },
+      "asset_sha256": {
+        "garment_edge_top_0089": "0786a1fb822250a0d1d184fccc5e9650c43ff3d54eef258109a02ff3c510c5ba",
+        "garment_loop_top_0125": "b5ce527272c6a1827f3e44d5ef29e7bd2cc223a7dec193cb7b780917de32928c"
+      },
+      "semantics": "repeat_exposure_family_not_identical_sku",
+      "production_approved": false
+    },
+    {
+      "id": "native:raw_denim_brown_layered_maxi",
+      "status": "visual_reviewed",
+      "reviewer": "Codex native vision (nonblind AI)",
+      "evidence": [
+        {
+          "source_file": "native-groups-01-03.tsv",
+          "rationale": "洗蓝棕灰多片毛边逐层垂下，形成不齐长裙，共同重复未完成拼片语法",
+          "boundary": "层数、侧袋、抽绳和褶量保留；不是同SKU，但应约束相邻曝光",
+          "sources": [
+            "family-components-02.jpg"
+          ]
+        }
+      ],
+      "members": {
+        "garment_void_skirt_0431": "2766607bbb0ff4bd3db90dcb62e8fb4cc3f56a7910d1bf3a5c038e2d79f9e325",
+        "garment_film_skirt_0443": "94c50b760d3ec93552f9feb82f593e852311105454d393c50d340bc39ee2d647",
+        "garment_void_skirt_0447": "871ae6d80b728d1246ce4aceee1b8b78d5401f567d1d5eea015e9b430c815927"
+      },
+      "asset_sha256": {
+        "garment_void_skirt_0431": "017a454ae0703224c742bd9cd39ed2ce38948820c7d8c9fdcc543d7cf8515955",
+        "garment_film_skirt_0443": "97a5579c839fb2ced48f98f3bcbe4dab79e279fdc720698ee5c54326fa84527d",
+        "garment_void_skirt_0447": "546bc9805917628c49cb3aeabd387262f24682db90c85c9266fbd3968cf7bf9f"
+      },
+      "semantics": "repeat_exposure_family_not_identical_sku",
+      "production_approved": false
+    },
+    {
+      "id": "native:raw_denim_cord_chunky_sneaker",
+      "status": "visual_reviewed",
+      "reviewer": "Codex native vision (nonblind AI)",
+      "evidence": [
+        {
+          "source_file": "native-groups-07-09.tsv",
+          "rationale": "灰蓝棕做旧拼面、毛边、额外长绳与多层厚底高度相近",
+          "boundary": "保留绳结数量及旧色深浅；纹理变体不算独立新鞋型",
+          "sources": [
+            "family-components-09.jpg"
+          ]
+        }
+      ],
+      "members": {
+        "garment_void_shoes_0495": "5f05b5a71be35817df26b0e0f52511bcf393499b653b47c779ecd83935944a91",
+        "garment_void_shoes_0591": "34ece2d9a637745d31865ff280231ad85cded6c683e54dd86f3b3b484e1c78c6"
+      },
+      "asset_sha256": {
+        "garment_void_shoes_0495": "48200819b5bb52cf86de488ec196b5d731e0db23f8ecae0761d8755057e30673",
+        "garment_void_shoes_0591": "7e503a27d7516c7ee0b9f527498cb3218caafad2b3cbfdc40a4f18e23af41d37"
+      },
+      "semantics": "repeat_exposure_family_not_identical_sku",
+      "production_approved": false
+    },
+    {
+      "id": "native:raw_drawstring_flap_balloon_pants",
+      "status": "visual_reviewed",
+      "reviewer": "Codex native vision (nonblind AI)",
+      "evidence": [
+        {
+          "source_file": "native-groups-01-03.tsv",
+          "rationale": "抽绳软腰、两侧多片垂幅与宽松收底裤腿构成共同语法",
+          "boundary": "保留灰棕丹宁色块和垂幅数量差异；与硬腰五袋牛仔及素锥裤分开",
+          "sources": [
+            "family-components-01.jpg"
+          ]
+        }
+      ],
+      "members": {
+        "garment_wabi_bottom_0028": "d1e7d8d3ae0842cbfe835b9ed237c1571eba2317951218119d11d7ef8820c4ac",
+        "garment_void_bottom_0073": "db081b3fb9ceaa7201741340b37863c87506820f8af94178c5b330a4f641c8ba",
+        "garment_void_bottom_0399": "38455b04e5ee914d715b230540beb96ec1d5925839ee09b97a0f1b135985daa4",
+        "garment_void_bottom_0415": "8b3b094b5e92a826c9839c428c457bb3dc13e5a6208d1ab3e8044cfcc6e9e3b9"
+      },
+      "asset_sha256": {
+        "garment_wabi_bottom_0028": "2009fd26d3f6bfbd11118df733df3f7f6ba64aabc5ea9a85da98a7287ad94da8",
+        "garment_void_bottom_0073": "55a941a925431113edb160bdecf3f9fef0cb33ed0672840582a7136c88a0e3ac",
+        "garment_void_bottom_0399": "b207ff343280a2a1d99f1ed85bbb0545269cca6eb28ad1e7641898a74a8da918",
+        "garment_void_bottom_0415": "061d629edc86668827b49f70f6f867a3214e99fa6d01885933a7460fe991942f"
+      },
+      "semantics": "repeat_exposure_family_not_identical_sku",
+      "production_approved": false
+    },
+    {
+      "id": "native:regular_three_tier_skirt",
+      "status": "visual_reviewed",
+      "reviewer": "Codex native vision (nonblind AI)",
+      "evidence": [
+        {
+          "source_file": "native-groups-01-03.tsv",
+          "rationale": "深灰规则三层水平接缝和均匀褶量是主要款式语法",
+          "boundary": "与不齐覆层和毛边碎片裙有结构差异，不按所有多层裙归一家族",
+          "sources": [
+            "family-components-02.jpg"
+          ]
+        },
+        {
+          "source_file": "native-groups-07-09.tsv",
+          "rationale": "奶白浅灰的水平三层收褶长裙与第2页深灰三层裙同类",
+          "boundary": "保留裙长及每层比例，颜色变体不扩大款式数量",
+          "sources": [
+            "family-components-02.jpg",
+            "family-components-08.jpg"
+          ]
+        }
+      ],
+      "members": {
+        "garment_void_skirt_0191": "022a29844a8e9fbc7e4b86c1dd22d4029e853ea122f691bcd601c8b6be71955b",
+        "garment_melt_skirt_0197": "d66a939947146130e54ec3efc8343940f8bad39077f2e9b71d0e7437373733f5",
+        "garment_mute_skirt_0209": "848aedf2f47fc7d04682617f465924e2b0fe72d134e87dd4a93a293731eaa0fd"
+      },
+      "asset_sha256": {
+        "garment_void_skirt_0191": "7d88b473535a78ec4d99faedb7e836b8f25849426688ab0cacade4b6b1b29b03",
+        "garment_melt_skirt_0197": "8f92e765b25faa8f4f0e17c90c958fd4e3ca0dde3844261942d372de048cca50",
+        "garment_mute_skirt_0209": "84550343abc93830abcef61220ccfe6a9534ccd1b747bc3718cbb464a88bdf21"
+      },
+      "semantics": "repeat_exposure_family_not_identical_sku",
+      "production_approved": false
+    },
+    {
+      "id": "native:relaxed_rollsleeve_pocket_shirt",
+      "status": "visual_reviewed",
+      "reviewer": "Codex native vision (nonblind AI)",
+      "evidence": [
+        {
+          "source_file": "native-groups-01-03.tsv",
+          "rationale": "米灰色普通尖领单胸袋、宽弧摆与卷袖反复出现，松软宽衫体感近似",
+          "boundary": "g0016布面更粗灰、后两者更奶油；口袋袖卷小变化不计新款式",
+          "sources": [
+            "family-components-03.jpg"
+          ]
+        }
+      ],
+      "members": {
+        "garment_ease_top_0016": "d923210f634d5d3aa8300c11d3841f5edff33732f2def09bd9a8dcd46ed9ff7a",
+        "garment_ease_top_0324": "5944ef4aee293cc19ee09f030a3840ea5c54f0ae61843f93a14a4d833f5eb1a0",
+        "garment_ease_top_0564": "0e06152993ad258f4a74564f3244443b63e7b056003c84b0044a5a890dc31217"
+      },
+      "asset_sha256": {
+        "garment_ease_top_0016": "be9f7212710cc60ee858327e7d1ff01dd436249dff0f1e88c28b8309864bb984",
+        "garment_ease_top_0324": "b7510eddfcce69707b4f1eeeec719bdfb57deffd7ede3fc759012e7e651c46ba",
+        "garment_ease_top_0564": "d60460884219e53dfc721d3e4faa1b2d5acac92e1953ca4944a0cdc45110a964"
+      },
+      "semantics": "repeat_exposure_family_not_identical_sku",
+      "production_approved": false
+    },
+    {
+      "id": "native:romantic_bow_ruffle_knit_top",
+      "status": "visual_reviewed",
+      "reviewer": "Codex native vision (nonblind AI)",
+      "evidence": [
+        {
+          "source_file": "native-groups-07-09.tsv",
+          "rationale": "奶白粉色针织、前领细蝴蝶结和袖口下摆荷叶反复出现",
+          "boundary": "g0325胸前横花边、g0565下摆外展更明显，保留装饰位置但不计完全新风格",
+          "sources": [
+            "family-components-09.jpg"
+          ]
+        }
+      ],
+      "members": {
+        "garment_melt_top_0325": "2614c9c96761273ce0f83ede0282ac023a73187c5a6a7fb417128eaccdc5ddbd",
+        "garment_melt_top_0565": "e8276aa373db4b937a0fc179b323a10bdb3a4702759a1a7f9f2f1996c61fcb26"
+      },
+      "asset_sha256": {
+        "garment_melt_top_0325": "176a9b110db3a8d23083c5fdf30ebf147cf7e02844b1c94c7c525643831a0900",
+        "garment_melt_top_0565": "5fd068430fa60593a52de3e05e5058e996d9d677c1604199ee0f8c30f9d956e1"
+      },
+      "semantics": "repeat_exposure_family_not_identical_sku",
+      "production_approved": false
+    },
+    {
+      "id": "native:roundtoe_plain_penny_loafers",
+      "status": "visual_reviewed",
+      "reviewer": "Codex native vision (nonblind AI)",
+      "evidence": [
+        {
+          "source_file": "native-groups-10-13.tsv",
+          "rationale": "圆头低平底、横带便鞋，灰褐和黑色为相近基础乐福款",
+          "boundary": "与单带玛丽珍和更尖瘦正式乐福鞋分开，鞋型不是由底色决定",
+          "sources": [
+            "family-components-10.jpg",
+            "family-components-11.jpg"
+          ]
+        }
+      ],
+      "members": {
+        "garment_mute_shoes_0004": "6ff9b8e982c2140997dfb592c1cfa9bb540c02d5e9798c420f4bfdf662831d8a",
+        "garment_bolt_shoes_0250": "c337c1e5795cad97f66d3943936fd18b212ade686c606c9a7f40e7b57fc9d94d"
+      },
+      "asset_sha256": {
+        "garment_mute_shoes_0004": "b5abe85c6a38527f995e3ac1ed96b97c3d0fc87c8c05d4293ce6f6a4a0e1a15e",
+        "garment_bolt_shoes_0250": "24b1fc9b1775df1920ec3f7a72eb6464ba5d418f004e897966a5a6dab2d7651f"
+      },
+      "semantics": "repeat_exposure_family_not_identical_sku",
+      "production_approved": false
+    },
+    {
+      "id": "native:sidewrap_column_midi_skirt",
+      "status": "visual_reviewed",
+      "reviewer": "Codex native vision (nonblind AI)",
+      "evidence": [
+        {
+          "source_file": "native-groups-10-13.tsv",
+          "rationale": "灰蓝藏蓝窄长裙由侧裹片和侧下开口组成，平整纵向线相近",
+          "boundary": "保留侧扣位置、斜边及长度；不同于普通中开衩直裙和大A裹裙",
+          "sources": [
+            "family-components-12.jpg"
+          ]
+        }
+      ],
+      "members": {
+        "garment_flou_skirt_0199": "15b83a69dfda29c6c0b52e9f00b1e92f3893f080153ff878476b3761b82a3d8a",
+        "garment_heir_skirt_0211": "109e935e4c6340468cd7e48a3d9a511fd6bcd4115c376dfc66274fbb5b2b72f1"
+      },
+      "asset_sha256": {
+        "garment_flou_skirt_0199": "8986436d03f86fd2b3d839d554efb7fc564cdd04855b6ff5565e8775c2a4d4a6",
+        "garment_heir_skirt_0211": "a2f2250827cae847e91ee8cec1c9d94adbdf5adb9767515e1f0d159f1595d239"
+      },
+      "semantics": "repeat_exposure_family_not_identical_sku",
+      "production_approved": false
+    },
+    {
+      "id": "native:silvery_ruched_bias_long_skirt",
+      "status": "visual_reviewed",
+      "reviewer": "Codex native vision (nonblind AI)",
+      "evidence": [
+        {
+          "source_file": "native-groups-10-13.tsv",
+          "rationale": "银蓝亮滑斜裹面、侧腰收褶和不齐轻薄长摆高度相近",
+          "boundary": "保留偏光与布面褶量差异，不能凭高光变化说是新裙型",
+          "sources": [
+            "family-components-13.jpg"
+          ]
+        }
+      ],
+      "members": {
+        "garment_iced_skirt_0007": "0e20ef6ef94c52f9780b774044b3cda01cd5816c8086dad407551d27d8ed5f69",
+        "garment_iced_skirt_0434": "74f9483bfa80077054d8ac6b09634fd38ea34eb9b619b8cda67dc267e742c075"
+      },
+      "asset_sha256": {
+        "garment_iced_skirt_0007": "64db8a274731b59a47a806916c90f2ab1d07dfb5eacd8b5385a4aa90ec572bdf",
+        "garment_iced_skirt_0434": "c33d20e0dda908b9b0bffdf169b020b39f60b47c78ba37f7a4011df08700cf13"
+      },
+      "semantics": "repeat_exposure_family_not_identical_sku",
+      "production_approved": false
+    },
+    {
+      "id": "native:sixpanel_baseball_cap",
+      "status": "visual_reviewed",
+      "reviewer": "Codex native vision (nonblind AI)",
+      "evidence": [
+        {
+          "source_file": "native-groups-10-13.tsv",
+          "rationale": "六片帽冠、弯檐、小顶扣与普通运动帽比例相同，色块和软纹理是变化",
+          "boundary": "g0532棕檐、g0597粉针织侧片、g0302素黑；不是像素重复但同帽型",
+          "sources": [
+            "family-components-10.jpg",
+            "family-components-11.jpg"
+          ]
+        }
+      ],
+      "members": {
+        "garment_ease_hat_0292": "09cd7ce8d3dd1bc7690331fb42f0213f447ea23072d9ee4031fc7c09e657e70b",
+        "garment_noir_hat_0302": "86fde1239f2f9981809f9b687adf275b87709228b16938dcc7a67697b41d14b3",
+        "garment_ease_hat_0532": "4ca50f8b0ab5b08df01182161e5d3e205de08145ab452bd453ff233561b2f1e6",
+        "garment_melt_hat_0597": "1c630d7333fdc852079bfb38b367b31bec90fe3abd98057cacb0fab6a8a4d1ea"
+      },
+      "asset_sha256": {
+        "garment_ease_hat_0292": "ce9f7d615261cb9514e622a5eb28c267c686888ea957654e9c30008826288617",
+        "garment_noir_hat_0302": "4e3aa4ac22ed98c990ea6c08210744b45653688480137e3b939310cd02618147",
+        "garment_ease_hat_0532": "97fc85998316ca193639feb9afd45dc75e66f2116188d488815ebc86c597618b",
+        "garment_melt_hat_0597": "d9361cdbdd6ec6a3547b475ac73f45295589df0b6b49695204d0da5f509bc441"
+      },
+      "semantics": "repeat_exposure_family_not_identical_sku",
+      "production_approved": false
+    },
+    {
+      "id": "native:splitneck_gathered_float_blouse",
+      "status": "visual_reviewed",
+      "reviewer": "Codex native vision (nonblind AI)",
+      "evidence": [
+        {
+          "source_file": "native-groups-01-03.tsv",
+          "rationale": "开衩小领、肩颈收褶与宽浮摆形成同款式语法，蓝与米灰只是主色变化",
+          "boundary": "与通长纽扣衬衫分开，不把领口开衩当立领全开襟",
+          "sources": [
+            "family-components-03.jpg"
+          ]
+        }
+      ],
+      "members": {
+        "garment_flou_top_0087": "f2303e31d07b6f3d2e44bf7de6582af51aa8b808e384a3e7b980cf069897d310",
+        "garment_film_top_0123": "1538405ca0cd54fd0d6bc817b118a4b422a856bceb0b7dd6f3408d9707794c95"
+      },
+      "asset_sha256": {
+        "garment_flou_top_0087": "aa3cc03b56addde2061c0d588c7e67dd86bdd3ca9796cd1606c4f51cdea75a55",
+        "garment_film_top_0123": "473c0200403c0f3e5315faab5c000b3330bf4b45215381d53fdb8502d83a8cf7"
+      },
+      "semantics": "repeat_exposure_family_not_identical_sku",
+      "production_approved": false
+    },
+    {
+      "id": "native:tailored_full_wide_frontpleat",
+      "status": "visual_reviewed",
+      "reviewer": "Codex native vision (nonblind AI)",
+      "evidence": [
+        {
+          "source_file": "native-groups-01-03.tsv",
+          "rationale": "扣门襟前褶、长阔腿、素色精纺观感反复出现，主版型语言相近",
+          "boundary": "保留藏蓝深灰与褶量、裤脚堆量区别；不是完全同SKU或可互换尺码",
+          "sources": [
+            "family-components-01.jpg"
+          ]
+        },
+        {
+          "source_file": "native-groups-04-06.tsv",
+          "rationale": "米白卡其浅蓝的前褶长阔西裤延续第1页深色款的平整腰头和松大裤腿",
+          "boundary": "跨页比较后归同视觉家族；保留布面亮哑、前褶及下摆堆量差异，不当色差增加款式",
+          "sources": [
+            "family-components-01.jpg",
+            "family-components-04.jpg"
+          ]
+        }
+      ],
+      "members": {
+        "garment_heir_bottom_0013": "5b5c31ead415a9a7d906af7a4bbec9cb07c87714dd3ad9ca047031eb1a8d82a1",
+        "garment_ease_bottom_0018": "4fcc8e2be8d110f74c4c2d00fdb9bb21c3c72ff085097d8317c9da87a73a8c3b",
+        "garment_heir_bottom_0163": "6a3efcc85996cd138ca3c4d68ce14e2516036ccd17d6a6be14fda508464439b7",
+        "garment_edge_bottom_0169": "0d711de0168b085af7e408e31b41c6e08338b3b63f9533fe1091b939f5cc66c2",
+        "garment_jade_bottom_0172": "e95f444c7016aa5baa4b4345410b235f7f5eb366841a2820b9665f2d7443187b",
+        "garment_void_bottom_0175": "3a94364f49e841cc915c9809cae4e1805d57e766eaf84b7257446c27b867fe2c",
+        "garment_melt_bottom_0181": "f502a44b372e2557ade9f0c4faee1450df0f46c3a74877bbfb023cc460476f47",
+        "garment_flou_bottom_0183": "c3598dccf3ce61d62a9730931d952ddf694faea7582d18fc108da66544f78a5b",
+        "garment_heir_bottom_0403": "ec9c6bb8f50edbf702983f292a882e2632c618c3608dfd1f00fe2ccb1c64544e",
+        "garment_mute_bottom_0417": "44feae5c716f1635ea875d43f36b27ded2c436b4ec54044b272eff3025448ef8",
+        "garment_ease_bottom_0420": "490494b3a96c7932a0f9175e3ddef658fa2b479beabf60783c6b59b9cb739e53",
+        "garment_mute_bottom_0577": "77316b7e89faa4c1c2abac03a9cadf642853d5b85df384e7b6f0972ed0390811"
+      },
+      "asset_sha256": {
+        "garment_heir_bottom_0013": "0bc8aec7a49a13704633984a866ba004313167fb7ae2dcaf359cd0ad09243a1f",
+        "garment_ease_bottom_0018": "124a98d8ca048c55e3279d355118f5591fb7c14e4522c33c4dfa79a40187a927",
+        "garment_heir_bottom_0163": "b3225555a6b4a885decbeeac96d2530163e47c56e8233cde10a0492f2dcf790a",
+        "garment_edge_bottom_0169": "753212ef7f202fc44ca66250c1bb9af8b760ba2e51d9a8e2363af9b201cfa781",
+        "garment_jade_bottom_0172": "bad2324d2ac5b41103fc82ba2d0ea8492671f85918bc796b31d6f2b2bfa962b9",
+        "garment_void_bottom_0175": "4a249b72a910da24e0aaa19210529f774c55fd8a1f2de095e7253d4cdddef298",
+        "garment_melt_bottom_0181": "5e39918839e3bc7f41ad12fefe2849d0f0a716aa8e5fa43be9c2674b50095372",
+        "garment_flou_bottom_0183": "56219ac6e7c7d91511a2e09475ce81fb58803518c9c08e6d9c9c97ccfca7523e",
+        "garment_heir_bottom_0403": "bd6667f38dd7c40a58b33bb46e7a8210065d72589615f6957ff3ea11ae9ef00f",
+        "garment_mute_bottom_0417": "463da0ce8a3b3ba61181038dfc0a8f64915a268b557064edc71b1a089c24a4b8",
+        "garment_ease_bottom_0420": "27ec9240b47cef23e40ea3c897a773eccee18fd9384881de2ae4f0f2b9bd1817",
+        "garment_mute_bottom_0577": "c0ac8d5dfae349f70dee441a14ab9a4d92c37062f3eb2f8a1be6429dab91575c"
+      },
+      "semantics": "repeat_exposure_family_not_identical_sku",
+      "production_approved": false
+    },
+    {
+      "id": "native:tailored_straight_tapered_ankle",
+      "status": "visual_reviewed",
+      "reviewer": "Codex native vision (nonblind AI)",
+      "evidence": [
+        {
+          "source_file": "native-groups-04-06.tsv",
+          "rationale": "普通西裤腰头、中缝、较窄直锥腿及清楚脚踝长度相近",
+          "boundary": "与大阔拖长裤分开，浅灰浅蓝颜色不能抵消同型重复体感",
+          "sources": [
+            "family-components-04.jpg"
+          ]
+        },
+        {
+          "source_file": "native-groups-07-09.tsv",
+          "rationale": "灰米棕普通前褶中缝西裤，腿逐渐收窄，与第4页浅色锥裤体积接近",
+          "boundary": "颜色和前褶小变化不计新款式，和弧形宽臀短裤分开",
+          "sources": [
+            "family-components-04.jpg",
+            "family-components-09.jpg"
+          ]
+        },
+        {
+          "source_file": "native-groups-10-13.tsv",
+          "rationale": "奶白普通前褶中缝、锥直腿及脚踝长度，与第4页基础锥裤同语法",
+          "boundary": "保留臀围与前褶细差；颜色差异不能夸大基础裤丰富度",
+          "sources": [
+            "family-components-04.jpg",
+            "family-components-12.jpg"
+          ]
+        }
+      ],
+      "members": {
+        "garment_oops_bottom_0160": "8c0ea86fe6413278658825f32675a8c93cfd86a9e866b23e8b7f1b1131b27a05",
+        "garment_iced_bottom_0162": "6251fcb2075a57599d2c207711e15788f4a7e9bbbeb194757ff93eb0db5bfa44",
+        "garment_ease_bottom_0164": "83ad7e35443e634fc8225585ab4fb3bc52d9470ac6f8e2cc6479700ef907666b",
+        "garment_wabi_bottom_0166": "3330c01ff92cbe5bd32b11ea29af1c9e6fac34121cb1e930988875a0ed2f4dc1",
+        "garment_bolt_bottom_0170": "323f04a3408ccffb1f1699fd11b31d52762d786c970fa681fa2dedb87e170895",
+        "garment_oops_bottom_0176": "fa0bdd38bdefba33285f9bd6ad8ca0fa555be4039afdfea739b567887ed962ad",
+        "garment_iced_bottom_0178": "07663653eb7b75917fa66bdcd9abab1eab40c9dc3c872e00512933626104f456",
+        "garment_wabi_bottom_0182": "2d1eae03dc5b67ec8e7304b39978893e0557c98301b096e2ed9d838d7e375856",
+        "garment_neon_bottom_0184": "b4418b5fb5d581ea3d798a3a11c7e5cf2db0091ece17c5b271c5d8628a4f9078"
+      },
+      "asset_sha256": {
+        "garment_oops_bottom_0160": "e775c7bcff1cfcfcef4694704a3ab8a7db7b7e36e9d3fa5bbb9f4cc18c4967f8",
+        "garment_iced_bottom_0162": "039e90bda326ec3caaa8044686f7661fcf40ccf45dc8fc5ab7a8ee49e84a34dc",
+        "garment_ease_bottom_0164": "7c0c1bd3cf870416c5ac94cbc485a2b3b7482533cc9a7b0b8edcf30bba0dcf41",
+        "garment_wabi_bottom_0166": "4365781b4069b173d1d6aa48e5afd33b8ad31d7eac892c40ecc5a377738c8f79",
+        "garment_bolt_bottom_0170": "9c8edfca3c06ab1963f5ab16ddbaf307cb3bc55a9e8fe571cf46d5dd4f6e293f",
+        "garment_oops_bottom_0176": "6e6585c846c0bd41022851a03e48ba82b3e275da8041b43df2198488e2749c9b",
+        "garment_iced_bottom_0178": "f8a27f8215c9235f2f2396cc8bae103f5a49379a49b247eaf061c0a2927343e1",
+        "garment_wabi_bottom_0182": "1bc823dac2ec7676a3cf253519b7f6a21d09cf44224ab910de52bdc838020232",
+        "garment_neon_bottom_0184": "fff21b1f81475e054ada9dc420f685a1467136b177f8eda91d20da249f477812"
+      },
+      "semantics": "repeat_exposure_family_not_identical_sku",
+      "production_approved": false
+    },
+    {
+      "id": "native:tailored_straight_wide_plain",
+      "status": "visual_reviewed",
+      "reviewer": "Codex native vision (nonblind AI)",
+      "evidence": [
+        {
+          "source_file": "native-groups-01-03.tsv",
+          "rationale": "黑色高腰扣门襟、中等宽直腿与中缝相近，适合作为基础直宽西裤家族",
+          "boundary": "与大幅腰褶和拖长松量宽裤分开；颜色不能单独定义家族",
+          "sources": [
+            "family-components-01.jpg"
+          ]
+        },
+        {
+          "source_file": "native-groups-04-06.tsv",
+          "rationale": "浅蓝和米色普通扣腰直宽长裤，与第1页黑色g0003/g0174体积接近",
+          "boundary": "保留浅色款前褶和裤长细差，仍不算不同大轮廓",
+          "sources": [
+            "family-components-01.jpg",
+            "family-components-04.jpg"
+          ]
+        },
+        {
+          "source_file": "native-groups-10-13.tsv",
+          "rationale": "浅蓝高腰常规直宽裤腿与第1/4页同型西裤轮廓近似",
+          "boundary": "保留g0402更柔垂、g0418较挺直及腰褶差；符合原有两件家族关联，不提升资产QA",
+          "sources": [
+            "family-components-01.jpg",
+            "family-components-04.jpg",
+            "family-components-13.jpg"
+          ]
+        }
+      ],
+      "members": {
+        "garment_mute_bottom_0003": "1db0b8a59aa9020d905db96c56ff9ebf4e293b525faff82b35a78a2486c4f335",
+        "garment_neon_bottom_0168": "9c608737f27c4247841db332a2f48ba659ef533d68cc71c7480ce59deaa62b21",
+        "garment_noir_bottom_0174": "dd9deeb2d82ec1846d38abedfb78bdc655865dcd9e1b3a39c3369273c2ee7480",
+        "garment_ease_bottom_0180": "05fcf21909718aeed5f521de23f18d63c00c42adfb6c09c9d7212003527499a0",
+        "garment_iced_bottom_0402": "31fda7f4d83623bf9c5acde8c407a3234b259098afbb325aac77cf0092f3d279",
+        "garment_iced_bottom_0418": "e9096e51ca5cea11d1c7f7a17c9312f0a4a27ab7c7d269ab33a23a858c967fb1"
+      },
+      "asset_sha256": {
+        "garment_mute_bottom_0003": "cc713e9bde3931b7e6e1dd0bc453195e876a0f83f51f9711b27ea566904043e1",
+        "garment_neon_bottom_0168": "91b694abf5b5197e05cc01516af308d283e19377f238aae653294369b9059615",
+        "garment_noir_bottom_0174": "8d63d0aa14c9c6be1ec9ec5caa7131e9980307dbb2b3629ae18a3bd3de6f31d2",
+        "garment_ease_bottom_0180": "5fa0fbfa6e763821cf5811bae849890bb4c0dbb3b4f7a43ef13a444e9febce8c",
+        "garment_iced_bottom_0402": "18e5d1f7278d0b7e2b81c4036a4f4faa73e7911a902ac92d4a4820c2775a68bf",
+        "garment_iced_bottom_0418": "d0d66618d797b9a04afebe41070d4a575351901bfae57713ad1ce79a3cfa62f0"
+      },
+      "semantics": "repeat_exposure_family_not_identical_sku",
+      "production_approved": false
+    },
+    {
+      "id": "native:vintage_floral_denim_patch_shirt",
+      "status": "visual_reviewed",
+      "reviewer": "Codex native vision (nonblind AI)",
+      "evidence": [
+        {
+          "source_file": "native-groups-04-06.tsv",
+          "rationale": "棕领、旧蓝丹宁与暖褐花片、单胸袋和宽弧摆反复同构",
+          "boundary": "保留花纹分布及袖口宽窄，粗旧混材区别于普通印花单衫",
+          "sources": [
+            "family-components-05.jpg"
+          ]
+        }
+      ],
+      "members": {
+        "garment_film_top_0052": "e1f9488badea9ec32f70352511996ab0f211c424262a88c8389bd3321e1633a2",
+        "garment_film_top_0347": "60e4b8f95c794136eb55081b63054ed6adc07d6cdc954f87318bf385e7b90659"
+      },
+      "asset_sha256": {
+        "garment_film_top_0052": "fcf76fdf8326fdc10a1ce7261e287d2dec4a94321ecc7d613106a7db9113466b",
+        "garment_film_top_0347": "824f30c83da4b5be7d75cfcebb710dedef9012dddeee46d33abe4a6f2276d654"
+      },
+      "semantics": "repeat_exposure_family_not_identical_sku",
+      "production_approved": false
+    },
+    {
+      "id": "native:washed_wide_cuff_trousers",
+      "status": "visual_reviewed",
+      "reviewer": "Codex native vision (nonblind AI)",
+      "evidence": [
+        {
+          "source_file": "native-groups-01-03.tsv",
+          "rationale": "柔软洗旧观感、前褶阔腿与翻折裤脚相似，灰蓝和旧棕为变体",
+          "boundary": "卷脚和柔软褶皱区别于平整不翻脚西裤，不能仅按长裤轮廓全部合并",
+          "sources": [
+            "family-components-01.jpg"
+          ]
+        }
+      ],
+      "members": {
+        "garment_void_bottom_0159": "9fc566b69ab2db31ab59302a00a40bb0c2fd4242bee39abca7f393a9bad9c5c3",
+        "garment_film_bottom_0171": "a45ef1ff7c36750f54ba7ee47c883491caed9d8973d19eee48004e2dfc9398e1"
+      },
+      "asset_sha256": {
+        "garment_void_bottom_0159": "4848c12244ccdfc3ca6f34c31fa01f1b7d7878386125d9b1ae889afcfeaa6290",
+        "garment_film_bottom_0171": "69005152faf9839295a92bc5bb6407a11ef56a16cebb1c50e7a39820cb1be090"
+      },
+      "semantics": "repeat_exposure_family_not_identical_sku",
+      "production_approved": false
+    }
+  ]
+}

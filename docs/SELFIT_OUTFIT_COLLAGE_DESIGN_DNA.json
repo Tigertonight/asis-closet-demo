@@ -1,0 +1,143 @@
+{
+  "meta": {
+    "name": "Selfit Outfit Collage V2",
+    "description": "A deterministic fashion flatlay system that balances visible silhouette area, perceived visual weight, and stable semantic placement.",
+    "source_references": [
+      "selfit-collage-handoff/README.md",
+      "selfit-collage-handoff/docs/FLOW.md",
+      "selfit-collage-handoff/source/frontend/CollageLab.tsx",
+      "DESIGN.md",
+      "current Selfit recommendation cards"
+    ],
+    "created_at": "2026-09-02"
+  },
+  "design_system": {
+    "color": {
+      "palette_type": "monochromatic",
+      "primary": {"hex": "#8A011B", "role": "brand textile and selected state"},
+      "secondary": {"hex": "#FFFAF8", "role": "flatlay canvas"},
+      "accent": {"hex": "#FF4F86", "role": "primary product action only"},
+      "neutral": {"scale": ["#FFFFFF", "#FAF8F7", "#E8E3E1", "#9A9694", "#242222"], "usage": "warm surfaces, dividers, metadata and body text"},
+      "semantic": {"success": "#2F7D57", "warning": "#A36A20", "error": "#C9364F", "info": "#607D94"},
+      "surface": {"background": "#FAF8F7", "card": "#FFFFFF", "elevated": "#FFFFFF"},
+      "contrast_strategy": "dark-on-light product imagery with white-on-wine branded editorial moments"
+    },
+    "typography": {
+      "type_scale": {
+        "display": {"size": "32px", "weight": 600, "line_height": 1.15, "tracking": "-0.02em"},
+        "heading_1": {"size": "24px", "weight": 700, "line_height": 1.25, "tracking": "-0.01em"},
+        "heading_2": {"size": "20px", "weight": 700, "line_height": 1.3, "tracking": "0"},
+        "heading_3": {"size": "17px", "weight": 600, "line_height": 1.35, "tracking": "0"},
+        "body": {"size": "15px", "weight": 400, "line_height": 1.55, "tracking": "0"},
+        "body_small": {"size": "13px", "weight": 400, "line_height": 1.5, "tracking": "0"},
+        "caption": {"size": "12px", "weight": 400, "line_height": 1.45, "tracking": "0"},
+        "overline": {"size": "11px", "weight": 500, "line_height": 1.4, "tracking": "0.12em"}
+      },
+      "font_families": {"heading": "system sans-serif", "body": "system sans-serif", "mono": "ui-monospace"},
+      "font_style_notes": "clean consumer sans-serif paired with restrained Didot-style editorial overlines"
+    },
+    "spacing": {
+      "base_unit": "4px",
+      "scale": ["4px", "8px", "12px", "16px", "24px", "32px", "48px"],
+      "content_density": "comfortable",
+      "section_rhythm": "compact inside image compositions and spacious between product sections"
+    },
+    "layout": {
+      "grid_system": "928x1232 deterministic portrait canvas with semantic main zone and accessory rail",
+      "max_content_width": "928px",
+      "columns": 2,
+      "gutter": "4% canvas width",
+      "breakpoints": ["393px", "430px", "768px"],
+      "alignment_tendency": "asymmetric but deterministic"
+    },
+    "shape": {
+      "border_radius": {"small": "10px", "medium": "16px", "large": "24px", "pill": "999px"},
+      "border_usage": "subtle 1px on controls; no border around the flatlay itself",
+      "divider_style": "warm low-contrast hairline"
+    },
+    "elevation": {
+      "shadow_style": "soft diffused",
+      "levels": {"low": "0 4px 12px rgba(40,24,26,.06)", "medium": "0 12px 30px rgba(40,24,26,.10)", "high": "0 20px 48px rgba(40,24,26,.16)"},
+      "depth_cues": "subtle item shadows and spatial separation, never overlapping garment silhouettes"
+    },
+    "iconography": {"style": "rounded outline", "stroke_weight": "1.75px", "size_scale": ["18px", "22px", "26px"], "preferred_set": "project inline SVG"},
+    "motion": {
+      "easing": "cubic-bezier(.2,.8,.2,1)",
+      "duration_scale": {"micro": "160ms", "normal": "240ms", "macro": "360ms"},
+      "entrance_pattern": "fade and short rise",
+      "exit_pattern": "short fade",
+      "philosophy": "minimal functional"
+    },
+    "components": {
+      "button_style": "pill-shaped, direct labels, rose only for primary actions",
+      "input_style": "warm white surface with restrained outline",
+      "card_style": "warm white or wine textile editorial surface with 16-24px corners",
+      "navigation_pattern": "light translucent bottom navigation",
+      "modal_style": "mobile sheet with image-first hierarchy",
+      "list_style": "two-column image-led recommendation grid",
+      "component_notes": "The flatlay composition remains identical between recommendation card, detail preview, and try-on handoff."
+    }
+  },
+  "design_style": {
+    "aesthetic": {
+      "mood": ["considered", "feminine", "calm", "trustworthy"],
+      "visual_metaphor": "a stylist arranging a complete outfit on warm paper",
+      "era_influence": "contemporary editorial with vintage textile accents",
+      "genre": "consumer fashion editorial utility",
+      "personality_traits": ["meticulous", "warm", "tasteful", "quietly confident"],
+      "adjectives": ["balanced", "image-first", "crafted", "stable"]
+    },
+    "visual_language": {
+      "complexity": "moderate",
+      "ornamentation": "subtle accents",
+      "whitespace_usage": "functional breathing room measured around visible silhouettes",
+      "visual_weight_distribution": "one normalized main outfit group balanced by a lighter accessory rail",
+      "focal_strategy": "single main outfit silhouette",
+      "contrast_level": "medium",
+      "texture_usage": "wine textile for brand surfaces and warm paper for product canvases"
+    },
+    "composition": {
+      "hierarchy_method": "visible silhouette area and vertical span",
+      "balance_type": "asymmetric",
+      "flow_direction": "top-to-bottom main dressing order, then right-side accessories",
+      "grouping_strategy": "top and lower garment form one optical group; dress is an equivalent single group",
+      "negative_space_role": "separates semantic groups without weakening outfit cohesion"
+    },
+    "imagery": {
+      "photo_treatment": "transparent cutouts on warm paper with restrained soft shadows",
+      "illustration_style": "none",
+      "graphic_elements": "white lace and wine textile reserved for branded framing",
+      "pattern_usage": "subtle textile and lace, never behind garment edge evaluation",
+      "image_shape": "stable 928:1232 portrait canvas"
+    },
+    "interaction_feel": {
+      "feedback_style": "immediate and quiet",
+      "hover_behavior": "subtle lift on desktop",
+      "transition_personality": "smooth glide",
+      "loading_style": "branded textile progress state",
+      "microinteraction_density": "low"
+    },
+    "brand_voice_in_ui": {
+      "tone": "warm stylist guidance",
+      "formality": "conversational professional",
+      "cta_style": "friendly invitation",
+      "empty_state_approach": "show the next useful action",
+      "error_tone": "specific, reassuring, and recoverable"
+    }
+  },
+  "visual_effects": {
+    "overview": {"effect_intensity": "subtle-accent", "performance_tier": "lightweight", "fallback_strategy": "static snapshot", "primary_technology": "CSS and deterministic Pillow rendering"},
+    "background_effects": {"type": "texture-image", "description": "Static wine textile on branded card surfaces", "technology": "CSS", "params": {"color_palette": ["#8A011B", "#FFFAF8"], "speed": "0", "density": "low", "opacity": 1, "blend_mode": "normal"}},
+    "particle_systems": {"enabled": false, "type": "none", "description": "No particles", "technology": "none", "params": {"count": 0, "shape": "none", "size_range": "none", "movement_pattern": "none", "color_behavior": "none", "interaction": "none", "spawn_area": "none"}},
+    "3d_elements": {"enabled": false, "type": "none", "description": "No 3D elements", "technology": "none", "params": {"renderer": "none", "lighting": "none", "camera": "none", "materials": [], "geometry": [], "post_processing": [], "interaction_model": "none"}},
+    "shader_effects": {"enabled": false, "type": "none", "description": "No shaders", "technology": "none", "params": {"uniforms": {}, "vertex_manipulation": "none", "fragment_output": "none", "noise_type": "none", "distortion": "none"}},
+    "scroll_effects": {"parallax": {"enabled": false, "layers": 0, "depth_range": "none", "speed_curve": "none"}, "scroll_triggered_animations": {"enabled": false, "trigger_points": [], "animation_type": "none", "scrub_behavior": "none"}, "scroll_morphing": {"enabled": false, "description": "none"}},
+    "text_effects": {"type": "none", "description": "Static editorial typography", "technology": "CSS", "params": {"split_strategy": "none", "animation_per_unit": "none", "stagger": "0", "effect_style": "none"}},
+    "cursor_effects": {"enabled": false, "type": "none", "description": "Native cursor", "params": {"shape": "native", "size": "native", "blend_mode": "normal", "trail": false, "interaction_zone": "none"}},
+    "image_effects": {"type": "soft-shadow", "description": "Subtle silhouette-preserving shadow", "technology": "Pillow and CSS", "params": {"filter_pipeline": ["alpha trim", "contain", "soft shadow"], "hover_transform": "translateY(-1px)", "reveal_animation": "fade", "distortion_type": "none"}},
+    "glassmorphism_neumorphism": {"enabled": false, "style": "none", "params": {"blur_radius": "0", "transparency": 1, "border_treatment": "none", "shadow_type": "soft diffused", "light_source_angle": "top"}},
+    "canvas_drawings": {"enabled": true, "type": "deterministic-flatlay", "description": "Server-rendered placement of transparent fashion cutouts", "technology": "Pillow", "params": {"draw_method": "alpha compositing into fixed semantic zones", "animation_loop": false, "color_scheme": "warm white", "responsiveness": "single canonical asset reused at all sizes", "interaction": "none"}},
+    "svg_animations": {"enabled": false, "type": "none", "description": "Static SVG icons only", "params": {"animation_method": "none", "path_morphing": false, "stroke_animation": false, "filter_effects": []}},
+    "composite_notes": "Visual area must be calculated from the trimmed visible alpha bounds. A top plus lower garment is one optical main group and should be perceptually compensated to 82-90% of a dress group's visible area while matching its 74-78% vertical span."
+  }
+}

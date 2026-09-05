@@ -1,0 +1,441 @@
+{
+  "schema_version": 1,
+  "status": "matrix_passed_pending_full_release",
+  "anchor_manifest_sha256": "c2ef5c348175726fe02bd8e3cdc66af0696bf5f4c76bed37c809066d09eae88b",
+  "staging_sha256": "8b6d71a8dcd74c62bc9cda6dc3997aece85838249bce7e0e090951c42e03edc2",
+  "personas": {
+    "bolt": {
+      "selected": [
+        "outfit_bolt_master_01_v1",
+        "outfit_bolt_master_09",
+        "outfit_bolt_master_04_v1",
+        "outfit_bolt_master_12_v2",
+        "outfit_bolt_master_18_v1",
+        "outfit_bolt_master_14_v1",
+        "outfit_bolt_master_03_v1",
+        "outfit_bolt_master_26",
+        "outfit_bolt_master_28",
+        "outfit_bolt_master_15_v1"
+      ],
+      "structures": {
+        "pants": 4,
+        "skirt": 4,
+        "dress": 2
+      },
+      "expressions": {
+        "easy": 4,
+        "typical": 4,
+        "explore": 2
+      },
+      "held": {},
+      "errors": []
+    },
+    "ease": {
+      "selected": [
+        "outfit_ease_master_01_v2",
+        "outfit_ease_master_11",
+        "outfit_ease_master_02_v1",
+        "outfit_ease_master_12_v1",
+        "outfit_ease_master_04_v2",
+        "outfit_ease_master_13",
+        "outfit_ease_master_05_v1",
+        "outfit_ease_master_06",
+        "outfit_ease_master_26_v1",
+        "outfit_ease_master_18_v1"
+      ],
+      "structures": {
+        "pants": 5,
+        "skirt": 4,
+        "dress": 1
+      },
+      "expressions": {
+        "easy": 4,
+        "typical": 4,
+        "explore": 2
+      },
+      "held": {},
+      "errors": []
+    },
+    "edge": {
+      "selected": [
+        "outfit_edge_master_09",
+        "outfit_edge_master_12_v1",
+        "outfit_edge_master_01",
+        "outfit_edge_master_13",
+        "outfit_edge_master_08",
+        "outfit_edge_master_26_v1",
+        "outfit_edge_master_05",
+        "outfit_edge_master_15",
+        "outfit_edge_master_27_v1",
+        "outfit_edge_master_14"
+      ],
+      "structures": {
+        "pants": 4,
+        "skirt": 4,
+        "dress": 2
+      },
+      "expressions": {
+        "easy": 4,
+        "typical": 4,
+        "explore": 2
+      },
+      "held": {},
+      "errors": []
+    },
+    "film": {
+      "selected": [
+        "outfit_film_master_05_v1",
+        "outfit_film_master_14_v1",
+        "outfit_film_master_01",
+        "outfit_film_master_15_v2",
+        "outfit_film_master_02_v2",
+        "outfit_film_master_26_v1",
+        "outfit_film_master_03_v1",
+        "outfit_film_master_11_v2",
+        "outfit_film_master_28",
+        "outfit_film_p0-gap-02_01"
+      ],
+      "structures": {
+        "pants": 5,
+        "skirt": 3,
+        "dress": 2
+      },
+      "expressions": {
+        "easy": 4,
+        "typical": 4,
+        "explore": 2
+      },
+      "held": {},
+      "errors": []
+    },
+    "flou": {
+      "selected": [
+        "outfit_flou_master_04_v1",
+        "outfit_flou_master_05_v2",
+        "outfit_flou_master_06",
+        "outfit_flou_master_15_v1",
+        "outfit_flou_master_10",
+        "outfit_flou_master_25_v1",
+        "outfit_flou_master_01_v2",
+        "outfit_flou_master_13_v1",
+        "outfit_flou_master_30_v1",
+        "outfit_flou_master_12_v1"
+      ],
+      "structures": {
+        "pants": 5,
+        "skirt": 3,
+        "dress": 2
+      },
+      "expressions": {
+        "easy": 4,
+        "typical": 4,
+        "explore": 2
+      },
+      "held": {},
+      "errors": []
+    },
+    "heir": {
+      "selected": [
+        "outfit_heir_master_01_v2",
+        "outfit_heir_master_11_v1",
+        "outfit_heir_master_04",
+        "outfit_heir_master_13",
+        "outfit_heir_master_07_v1",
+        "outfit_heir_master_16",
+        "outfit_heir_master_10_v1",
+        "outfit_heir_master_09",
+        "outfit_heir_master_25",
+        "outfit_heir_master_14_v1"
+      ],
+      "structures": {
+        "pants": 5,
+        "skirt": 4,
+        "dress": 1
+      },
+      "expressions": {
+        "easy": 4,
+        "typical": 4,
+        "explore": 2
+      },
+      "held": {},
+      "errors": []
+    },
+    "iced": {
+      "selected": [
+        "outfit_iced_master_02",
+        "outfit_iced_master_03",
+        "outfit_iced_master_07",
+        "outfit_iced_master_04",
+        "outfit_iced_master_15",
+        "outfit_iced_master_12_v2",
+        "outfit_iced_master_06_v1",
+        "outfit_iced_master_18",
+        "outfit_iced_master_25",
+        "outfit_iced_p0-gap-01_02"
+      ],
+      "structures": {
+        "pants": 5,
+        "skirt": 4,
+        "dress": 1
+      },
+      "expressions": {
+        "easy": 4,
+        "typical": 4,
+        "explore": 2
+      },
+      "held": {},
+      "errors": []
+    },
+    "jade": {
+      "selected": [
+        "outfit_jade_master_13",
+        "outfit_jade_master_25_v1",
+        "outfit_jade_master_11_v1",
+        "outfit_jade_master_26",
+        "outfit_jade_master_12_v2",
+        "outfit_jade_master_27_v1",
+        "outfit_jade_master_04_v1",
+        "outfit_jade_master_14_v2",
+        "outfit_jade_master_16",
+        "outfit_jade_master_08_v1"
+      ],
+      "structures": {
+        "skirt": 5,
+        "dress": 3,
+        "pants": 2
+      },
+      "expressions": {
+        "easy": 4,
+        "typical": 4,
+        "explore": 2
+      },
+      "held": {},
+      "errors": []
+    },
+    "loop": {
+      "selected": [
+        "outfit_loop_master_15_v2",
+        "outfit_loop_master_25_v1",
+        "outfit_loop_master_01_v1",
+        "outfit_loop_master_26",
+        "outfit_loop_master_03_v2",
+        "outfit_loop_master_27_v1",
+        "outfit_loop_master_02_v2",
+        "outfit_loop_master_11_v1",
+        "outfit_loop_master_14_v1",
+        "outfit_loop_master_28_v1"
+      ],
+      "structures": {
+        "skirt": 3,
+        "dress": 4,
+        "pants": 3
+      },
+      "expressions": {
+        "easy": 4,
+        "typical": 4,
+        "explore": 2
+      },
+      "held": {},
+      "errors": []
+    },
+    "melt": {
+      "selected": [
+        "outfit_melt_master_05_v1",
+        "outfit_melt_master_13",
+        "outfit_melt_master_04_v1",
+        "outfit_melt_master_15_v1",
+        "outfit_melt_master_06",
+        "outfit_melt_master_25",
+        "outfit_melt_master_02_v2",
+        "outfit_melt_master_08",
+        "outfit_melt_master_11_v1",
+        "outfit_melt_master_28_v1"
+      ],
+      "structures": {
+        "pants": 5,
+        "skirt": 3,
+        "dress": 2
+      },
+      "expressions": {
+        "easy": 4,
+        "typical": 4,
+        "explore": 2
+      },
+      "held": {},
+      "errors": []
+    },
+    "mute": {
+      "selected": [
+        "outfit_mute_master_01",
+        "outfit_mute_master_12",
+        "outfit_mute_master_06",
+        "outfit_mute_master_13",
+        "outfit_mute_master_09_v1",
+        "outfit_mute_master_14",
+        "outfit_mute_master_05",
+        "outfit_mute_master_10",
+        "outfit_mute_master_27",
+        "outfit_mute_master_11_v1"
+      ],
+      "structures": {
+        "pants": 5,
+        "skirt": 4,
+        "dress": 1
+      },
+      "expressions": {
+        "easy": 4,
+        "typical": 4,
+        "explore": 2
+      },
+      "held": {},
+      "errors": []
+    },
+    "neon": {
+      "selected": [
+        "outfit_neon_master_03_v1",
+        "outfit_neon_master_06",
+        "outfit_neon_aw-winter-04_02",
+        "outfit_neon_master_13_v1",
+        "outfit_neon_master_07_v2",
+        "outfit_neon_master_25_v1",
+        "outfit_neon_master_02",
+        "outfit_neon_master_14_v2",
+        "outfit_neon_master_29",
+        "outfit_neon_master_11_v2"
+      ],
+      "structures": {
+        "pants": 4,
+        "skirt": 4,
+        "dress": 2
+      },
+      "expressions": {
+        "easy": 4,
+        "typical": 4,
+        "explore": 2
+      },
+      "held": {},
+      "errors": []
+    },
+    "noir": {
+      "selected": [
+        "outfit_noir_master_04_v2",
+        "outfit_noir_master_11_v2",
+        "outfit_noir_master_01_v1",
+        "outfit_noir_master_25_v1",
+        "outfit_noir_master_03",
+        "outfit_noir_master_27",
+        "outfit_noir_master_02",
+        "outfit_noir_master_05_v2",
+        "outfit_noir_master_26_v1",
+        "outfit_noir_master_14_v1"
+      ],
+      "structures": {
+        "pants": 5,
+        "skirt": 2,
+        "dress": 3
+      },
+      "expressions": {
+        "easy": 4,
+        "typical": 4,
+        "explore": 2
+      },
+      "held": {},
+      "errors": []
+    },
+    "oops": {
+      "selected": [
+        "outfit_oops_aw-winter-04_09",
+        "outfit_oops_master_04_v2",
+        "outfit_neon_master_09_v2__aw-repair-05",
+        "outfit_oops_master_13_v1",
+        "outfit_oops_master_05_v2",
+        "outfit_oops_master_14_v1",
+        "outfit_oops_master_12",
+        "outfit_oops_master_07_v2",
+        "outfit_oops_master_15_v2",
+        "outfit_oops_master_25_v1"
+      ],
+      "structures": {
+        "dress": 2,
+        "pants": 4,
+        "skirt": 4
+      },
+      "expressions": {
+        "easy": 4,
+        "typical": 4,
+        "explore": 2
+      },
+      "held": {},
+      "errors": []
+    },
+    "void": {
+      "selected": [
+        "outfit_void_master_05_v1",
+        "outfit_void_master_13_v2",
+        "outfit_void_master_01",
+        "outfit_void_master_27_v1",
+        "outfit_void_master_03_v1",
+        "outfit_void_master_29_v1",
+        "outfit_void_master_04",
+        "outfit_void_master_07_v2",
+        "outfit_void_master_25_v1",
+        "outfit_void_master_14_v1"
+      ],
+      "structures": {
+        "pants": 5,
+        "skirt": 2,
+        "dress": 3
+      },
+      "expressions": {
+        "easy": 4,
+        "typical": 4,
+        "explore": 2
+      },
+      "held": {},
+      "errors": []
+    },
+    "wabi": {
+      "selected": [
+        "outfit_wabi_master_04",
+        "outfit_wabi_master_13",
+        "outfit_wabi_master_01",
+        "outfit_wabi_master_14",
+        "outfit_wabi_master_02_v1",
+        "outfit_wabi_master_15",
+        "outfit_wabi_p0-gap-01_03",
+        "outfit_wabi_master_03_v1",
+        "outfit_wabi_master_25_v1",
+        "outfit_wabi_p0-gap-02_02"
+      ],
+      "structures": {
+        "pants": 5,
+        "skirt": 4,
+        "dress": 1
+      },
+      "expressions": {
+        "easy": 4,
+        "typical": 4,
+        "explore": 2
+      },
+      "held": {},
+      "errors": []
+    }
+  },
+  "errors": [],
+  "cases": {
+    "REC-001": "Pass",
+    "REC-002": "Pass",
+    "REC-003": "Pass",
+    "REC-004": "Pass",
+    "REC-005": "Pass",
+    "REC-006": "Pass",
+    "REC-007": "Not Run",
+    "REC-008": "Not Run",
+    "REC-009": "Not Run",
+    "REC-010": "Not Run",
+    "REC-011": "Not Run",
+    "REC-012": "Not Run",
+    "REC-013": "Not Run",
+    "REC-014": "Not Run"
+  }
+}

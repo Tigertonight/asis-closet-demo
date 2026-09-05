@@ -1,0 +1,4517 @@
+{
+  "schema_version": 1,
+  "batch_id": "aw-repair-04",
+  "source_visual_version": "codex-visual-16b18cdcdca36dbc306a",
+  "entries": [
+    {
+      "source_outfit_id": "outfit_iced_master_22",
+      "source_token": "o0052",
+      "source_record_fingerprint": "5516d38b3278a29598a6e034589ca54f21de202e2b33e50ad713204a47541484",
+      "new_record": {
+        "id": "outfit_iced_master_22__aw-repair-04",
+        "kind": "master",
+        "parent_outfit_id": "outfit_iced_master_22",
+        "recipe_version": "aw-repair-04",
+        "title": "ICED 旅行 22",
+        "description": "ICED 人格的秋旅行原创穿搭配方。",
+        "primary_persona": "ICED",
+        "secondary_personas": [
+          "MUTE",
+          "FLOU"
+        ],
+        "persona_affinity": {
+          "ICED": 0.96,
+          "MUTE": 0.65,
+          "FLOU": 0.55
+        },
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "旅行"
+        ],
+        "season_tags": [
+          "秋"
+        ],
+        "weather_tags": [
+          "晴",
+          "室内"
+        ],
+        "presentation": [
+          "neutral"
+        ],
+        "intensity": "signature",
+        "formality": 3,
+        "garment_ids": [
+          "garment_noir_top_0094",
+          "garment_iced_bottom_0578",
+          "garment_iced_outer_0386",
+          "garment_mute_shoes_0497",
+          "garment_mute_bag_0005"
+        ],
+        "visible_slots": [
+          "top",
+          "bottom",
+          "outer",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_noir_top_0094": "hero",
+          "garment_iced_bottom_0578": "support",
+          "garment_iced_outer_0386": "support",
+          "garment_mute_shoes_0497": "support",
+          "garment_mute_bag_0005": "accent"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "深色",
+          "saturation": "无彩",
+          "harmony": "未判断",
+          "palette": [
+            "#373739",
+            "#abb6c3",
+            "#b8becc",
+            "#323135",
+            "#3d3c3d"
+          ]
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/01f73c24ee6301bdd1fe2d8d.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source_outfit_id": "outfit_iced_master_22"
+        },
+        "design_intent": "用贴身、低袖量内层 g0094 替换 g0002，保留外套为主视觉；仅解除袖量冲突，整套重新看图"
+      },
+      "record_fingerprint": "6292677f4bbe161f021e42abe2c31f3a0025b12e089aa33e508baeaf3d315c0b",
+      "asset_sha256": "f02852dca54ec9a443086af61f21d90c8b476db7b4e77066f43ca307bb6b182a",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/01f73c24ee6301bdd1fe2d8d.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_noir_top_0094",
+            "slot": "top",
+            "box": [
+              475,
+              160,
+              775,
+              640
+            ]
+          },
+          {
+            "garment_id": "garment_iced_bottom_0578",
+            "slot": "bottom",
+            "box": [
+              505,
+              664,
+              744,
+              1330
+            ]
+          },
+          {
+            "garment_id": "garment_iced_outer_0386",
+            "slot": "outer",
+            "box": [
+              70,
+              160,
+              420,
+              943
+            ]
+          },
+          {
+            "garment_id": "garment_mute_shoes_0497",
+            "slot": "shoes",
+            "box": [
+              933,
+              880,
+              1036,
+              1080
+            ]
+          },
+          {
+            "garment_id": "garment_mute_bag_0005",
+            "slot": "bag",
+            "box": [
+              851,
+              410,
+              1129,
+              730
+            ]
+          }
+        ]
+      },
+      "replacements": {
+        "garment_mute_top_0002": "garment_noir_top_0094"
+      },
+      "status": "pending_native_review",
+      "review": null
+    },
+    {
+      "source_outfit_id": "outfit_ease_master_23",
+      "source_token": "o0111",
+      "source_record_fingerprint": "5cbeff1fa07570ea569de4e82c25a66e460f7d7dc2ce7673fc38199b7c5e8647",
+      "new_record": {
+        "id": "outfit_ease_master_23__aw-repair-04",
+        "kind": "master",
+        "parent_outfit_id": "outfit_ease_master_23",
+        "recipe_version": "aw-repair-04",
+        "title": "EASE 旅行 23",
+        "description": "EASE 人格的秋旅行原创穿搭配方。",
+        "primary_persona": "EASE",
+        "secondary_personas": [
+          "HEIR",
+          "WABI"
+        ],
+        "persona_affinity": {
+          "EASE": 0.96,
+          "HEIR": 0.65,
+          "WABI": 0.55
+        },
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "旅行"
+        ],
+        "season_tags": [
+          "秋"
+        ],
+        "weather_tags": [
+          "晴",
+          "室内"
+        ],
+        "presentation": [
+          "neutral"
+        ],
+        "intensity": "signature",
+        "formality": 3,
+        "garment_ids": [
+          "garment_neon_top_0104",
+          "garment_ease_bottom_0404",
+          "garment_wabi_outer_0150",
+          "garment_film_shoes_0491",
+          "garment_loop_bag_0509"
+        ],
+        "visible_slots": [
+          "top",
+          "bottom",
+          "outer",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_neon_top_0104": "hero",
+          "garment_ease_bottom_0404": "support",
+          "garment_wabi_outer_0150": "support",
+          "garment_film_shoes_0491": "support",
+          "garment_loop_bag_0509": "accent"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "深色",
+          "saturation": "低饱和",
+          "harmony": "未判断",
+          "palette": [
+            "#46423e",
+            "#bfaa91",
+            "#786d65",
+            "#4c3729",
+            "#695f5b"
+          ]
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/a63cd3da32df3e4e00fa4c1d.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source_outfit_id": "outfit_ease_master_23"
+        },
+        "design_intent": "用贴身、低袖量内层 g0104 替换 g0053，保留外套为主视觉；仅解除袖量冲突，整套重新看图"
+      },
+      "record_fingerprint": "6a00e17e071e7c2649d8b7ecd2e46981edb950819d1d0e3129b5707e04916834",
+      "asset_sha256": "e1710df04b3f5de10d96c696d26a925f9a3a148e0fa02f98efb9e412eb2cac37",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/a63cd3da32df3e4e00fa4c1d.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_neon_top_0104",
+            "slot": "top",
+            "box": [
+              450,
+              340,
+              800,
+              640
+            ]
+          },
+          {
+            "garment_id": "garment_ease_bottom_0404",
+            "slot": "bottom",
+            "box": [
+              469,
+              664,
+              780,
+              1330
+            ]
+          },
+          {
+            "garment_id": "garment_wabi_outer_0150",
+            "slot": "outer",
+            "box": [
+              70,
+              160,
+              420,
+              463
+            ]
+          },
+          {
+            "garment_id": "garment_film_shoes_0491",
+            "slot": "shoes",
+            "box": [
+              912,
+              880,
+              1057,
+              1080
+            ]
+          },
+          {
+            "garment_id": "garment_loop_bag_0509",
+            "slot": "bag",
+            "box": [
+              853,
+              410,
+              1127,
+              730
+            ]
+          }
+        ]
+      },
+      "replacements": {
+        "garment_film_top_0053": "garment_neon_top_0104"
+      },
+      "status": "pending_native_review",
+      "review": null
+    },
+    {
+      "source_outfit_id": "outfit_wabi_master_24",
+      "source_token": "o0172",
+      "source_record_fingerprint": "85f6b63a81938adbef494d1443380ea921faa899f03846acff97fb5dc58d9692",
+      "new_record": {
+        "id": "outfit_wabi_master_24__aw-repair-04",
+        "kind": "master",
+        "parent_outfit_id": "outfit_wabi_master_24",
+        "recipe_version": "aw-repair-04",
+        "title": "WABI 旅行 24",
+        "description": "WABI 人格的冬旅行原创穿搭配方。",
+        "primary_persona": "WABI",
+        "secondary_personas": [
+          "EASE",
+          "VOID"
+        ],
+        "persona_affinity": {
+          "WABI": 0.96,
+          "EASE": 0.65,
+          "VOID": 0.55
+        },
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "旅行"
+        ],
+        "season_tags": [
+          "冬"
+        ],
+        "weather_tags": [
+          "晴",
+          "室内"
+        ],
+        "presentation": [
+          "neutral"
+        ],
+        "intensity": "signature",
+        "formality": 3,
+        "garment_ids": [
+          "garment_neon_top_0104",
+          "garment_void_bottom_0159",
+          "garment_jade_outer_0156",
+          "garment_film_shoes_0267",
+          "garment_void_bag_0527"
+        ],
+        "visible_slots": [
+          "top",
+          "bottom",
+          "outer",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_neon_top_0104": "hero",
+          "garment_void_bottom_0159": "support",
+          "garment_jade_outer_0156": "support",
+          "garment_film_shoes_0267": "support",
+          "garment_void_bag_0527": "accent"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "深色",
+          "saturation": "低饱和",
+          "harmony": "未判断",
+          "palette": [
+            "#46423e",
+            "#32353e",
+            "#d0c8be",
+            "#5c4f43",
+            "#3a3739"
+          ]
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/fefcff4aef943e04eb076c63.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source_outfit_id": "outfit_wabi_master_24"
+        },
+        "design_intent": "用贴身、低袖量内层 g0104 替换 g0053，保留外套为主视觉；仅解除袖量冲突，整套重新看图"
+      },
+      "record_fingerprint": "c3eea2811f316646c5f3aad571258685ec0de77f1663d491ce5ba6bb8411349f",
+      "asset_sha256": "4c0fc4dc9d9353f17f6423b5196c4e82cc4cf0a6cc9bd367e6dace8cb03557da",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/fefcff4aef943e04eb076c63.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_neon_top_0104",
+            "slot": "top",
+            "box": [
+              450,
+              340,
+              800,
+              640
+            ]
+          },
+          {
+            "garment_id": "garment_void_bottom_0159",
+            "slot": "bottom",
+            "box": [
+              450,
+              664,
+              800,
+              1273
+            ]
+          },
+          {
+            "garment_id": "garment_jade_outer_0156",
+            "slot": "outer",
+            "box": [
+              70,
+              160,
+              420,
+              494
+            ]
+          },
+          {
+            "garment_id": "garment_film_shoes_0267",
+            "slot": "shoes",
+            "box": [
+              840,
+              883,
+              1130,
+              1077
+            ]
+          },
+          {
+            "garment_id": "garment_void_bag_0527",
+            "slot": "bag",
+            "box": [
+              864,
+              410,
+              1115,
+              730
+            ]
+          }
+        ]
+      },
+      "replacements": {
+        "garment_film_top_0053": "garment_neon_top_0104"
+      },
+      "status": "pending_native_review",
+      "review": null
+    },
+    {
+      "source_outfit_id": "outfit_flou_master_19",
+      "source_token": "o0197",
+      "source_record_fingerprint": "4e9d4a3543581cea5ceaa5ac97249dd83b163fb2abdce0517e037149a6655537",
+      "new_record": {
+        "id": "outfit_flou_master_19__aw-repair-04",
+        "kind": "master",
+        "parent_outfit_id": "outfit_flou_master_19",
+        "recipe_version": "aw-repair-04",
+        "title": "FLOU 正式活动 19",
+        "description": "FLOU 人格的秋正式活动原创穿搭配方。",
+        "primary_persona": "FLOU",
+        "secondary_personas": [
+          "MELT",
+          "BOLT"
+        ],
+        "persona_affinity": {
+          "FLOU": 0.96,
+          "MELT": 0.65,
+          "BOLT": 0.55
+        },
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "正式活动"
+        ],
+        "season_tags": [
+          "秋"
+        ],
+        "weather_tags": [
+          "晴",
+          "室内"
+        ],
+        "presentation": [
+          "feminine"
+        ],
+        "intensity": "signature",
+        "formality": 4,
+        "garment_ids": [
+          "garment_flou_top_0103",
+          "garment_iced_bottom_0418",
+          "garment_flou_outer_0391",
+          "garment_flou_shoes_0263",
+          "garment_melt_bag_0025"
+        ],
+        "visible_slots": [
+          "top",
+          "bottom",
+          "outer",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_flou_top_0103": "hero",
+          "garment_iced_bottom_0418": "support",
+          "garment_flou_outer_0391": "support",
+          "garment_flou_shoes_0263": "support",
+          "garment_melt_bag_0025": "accent"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "浅色",
+          "saturation": "低饱和",
+          "harmony": "未判断",
+          "palette": [
+            "#e1d1c6",
+            "#b3bbcb",
+            "#c0aca8",
+            "#6d5f58",
+            "#d7bfb3"
+          ]
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/d6017c5f83397e1007613f56.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source_outfit_id": "outfit_flou_master_19"
+        },
+        "design_intent": "用贴身、低袖量内层 g0103 替换 g0565，保留外套为主视觉；仅解除袖量冲突，整套重新看图"
+      },
+      "record_fingerprint": "3de2a94b097e8203e4cdf1c40a51c568d76b2710dc3c8d21a07a1d392a2d9b93",
+      "asset_sha256": "92bd22fc66fe481afe8990f740d4921cddd4f8d4c4a35b6b50ae4c8f905429d5",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/d6017c5f83397e1007613f56.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_flou_top_0103",
+            "slot": "top",
+            "box": [
+              450,
+              207,
+              800,
+              640
+            ]
+          },
+          {
+            "garment_id": "garment_iced_bottom_0418",
+            "slot": "bottom",
+            "box": [
+              518,
+              664,
+              732,
+              1330
+            ]
+          },
+          {
+            "garment_id": "garment_flou_outer_0391",
+            "slot": "outer",
+            "box": [
+              70,
+              160,
+              420,
+              587
+            ]
+          },
+          {
+            "garment_id": "garment_flou_shoes_0263",
+            "slot": "shoes",
+            "box": [
+              931,
+              880,
+              1039,
+              1080
+            ]
+          },
+          {
+            "garment_id": "garment_melt_bag_0025",
+            "slot": "bag",
+            "box": [
+              856,
+              410,
+              1123,
+              730
+            ]
+          }
+        ]
+      },
+      "replacements": {
+        "garment_melt_top_0565": "garment_flou_top_0103"
+      },
+      "status": "pending_native_review",
+      "review": null
+    },
+    {
+      "source_outfit_id": "outfit_flou_master_21",
+      "source_token": "o0199",
+      "source_record_fingerprint": "d7f6c57bcf77cba99d015e0e89cdf0b80eafca487a9c080954a8398e8e9448a7",
+      "new_record": {
+        "id": "outfit_flou_master_21__aw-repair-04",
+        "kind": "master",
+        "parent_outfit_id": "outfit_flou_master_21",
+        "recipe_version": "aw-repair-04",
+        "title": "FLOU 正式活动 21",
+        "description": "FLOU 人格的秋正式活动原创穿搭配方。",
+        "primary_persona": "FLOU",
+        "secondary_personas": [
+          "MELT",
+          "BOLT"
+        ],
+        "persona_affinity": {
+          "FLOU": 0.96,
+          "MELT": 0.65,
+          "BOLT": 0.55
+        },
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "正式活动"
+        ],
+        "season_tags": [
+          "秋"
+        ],
+        "weather_tags": [
+          "晴",
+          "室内"
+        ],
+        "presentation": [
+          "feminine"
+        ],
+        "intensity": "signature",
+        "formality": 4,
+        "garment_ids": [
+          "garment_flou_top_0103",
+          "garment_melt_bottom_0421",
+          "garment_bolt_outer_0138",
+          "garment_melt_shoes_0245",
+          "garment_bolt_bag_0282"
+        ],
+        "visible_slots": [
+          "top",
+          "bottom",
+          "outer",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_flou_top_0103": "hero",
+          "garment_melt_bottom_0421": "support",
+          "garment_bolt_outer_0138": "support",
+          "garment_melt_shoes_0245": "support",
+          "garment_bolt_bag_0282": "accent"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "浅色",
+          "saturation": "低饱和",
+          "harmony": "未判断",
+          "palette": [
+            "#dbc9ba",
+            "#dec9bd",
+            "#222635",
+            "#6a5b53",
+            "#c8bfb4"
+          ]
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/9dc49934d0fd6ce145519b61.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source_outfit_id": "outfit_flou_master_21"
+        },
+        "design_intent": "用贴身、低袖量内层 g0103 替换 g0325，保留外套为主视觉；仅解除袖量冲突，整套重新看图"
+      },
+      "record_fingerprint": "284af02f25aa976dccc72f098c2f935ad54f3ea7624d0c767310ebe5d1069223",
+      "asset_sha256": "956de9535fa541e95653be30d818cffd12a6a5565891bde66f6d60b6d885f732",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/9dc49934d0fd6ce145519b61.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_flou_top_0103",
+            "slot": "top",
+            "box": [
+              450,
+              207,
+              800,
+              640
+            ]
+          },
+          {
+            "garment_id": "garment_melt_bottom_0421",
+            "slot": "bottom",
+            "box": [
+              450,
+              664,
+              800,
+              1250
+            ]
+          },
+          {
+            "garment_id": "garment_bolt_outer_0138",
+            "slot": "outer",
+            "box": [
+              70,
+              160,
+              420,
+              506
+            ]
+          },
+          {
+            "garment_id": "garment_melt_shoes_0245",
+            "slot": "shoes",
+            "box": [
+              930,
+              880,
+              1040,
+              1080
+            ]
+          },
+          {
+            "garment_id": "garment_bolt_bag_0282",
+            "slot": "bag",
+            "box": [
+              850,
+              470,
+              1130,
+              670
+            ]
+          }
+        ]
+      },
+      "replacements": {
+        "garment_melt_top_0325": "garment_flou_top_0103"
+      },
+      "status": "pending_native_review",
+      "review": null
+    },
+    {
+      "source_outfit_id": "outfit_neon_master_23",
+      "source_token": "o0230",
+      "source_record_fingerprint": "57ac940c6b99101b40f223b6de50272c75d5d332e900edf9278705e4bd9e4769",
+      "new_record": {
+        "id": "outfit_neon_master_23__aw-repair-04",
+        "kind": "master",
+        "parent_outfit_id": "outfit_neon_master_23",
+        "recipe_version": "aw-repair-04",
+        "title": "NEON 旅行 23",
+        "description": "NEON 人格的秋旅行原创穿搭配方。",
+        "primary_persona": "NEON",
+        "secondary_personas": [
+          "EDGE",
+          "OOPS"
+        ],
+        "persona_affinity": {
+          "NEON": 0.96,
+          "EDGE": 0.65,
+          "OOPS": 0.55
+        },
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "旅行"
+        ],
+        "season_tags": [
+          "秋"
+        ],
+        "weather_tags": [
+          "晴",
+          "室内"
+        ],
+        "presentation": [
+          "neutral"
+        ],
+        "intensity": "signature",
+        "formality": 3,
+        "garment_ids": [
+          "garment_neon_top_0104",
+          "garment_neon_bottom_0168",
+          "garment_edge_outer_0041",
+          "garment_neon_shoes_0248",
+          "garment_oops_bag_0288"
+        ],
+        "visible_slots": [
+          "top",
+          "bottom",
+          "outer",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_neon_top_0104": "hero",
+          "garment_neon_bottom_0168": "support",
+          "garment_edge_outer_0041": "support",
+          "garment_neon_shoes_0248": "support",
+          "garment_oops_bag_0288": "accent"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "中等",
+          "saturation": "低饱和",
+          "harmony": "未判断",
+          "palette": [
+            "#d0cac5",
+            "#b6c4db",
+            "#333133",
+            "#79818d",
+            "#5a544f"
+          ]
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/6b2733aa085651bcd3a21087.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source_outfit_id": "outfit_neon_master_23"
+        },
+        "design_intent": "用贴身、低袖量内层 g0104 替换 g0077，保留外套为主视觉；仅解除袖量冲突，整套重新看图"
+      },
+      "record_fingerprint": "55d93b816050d4b4dceb33f33f655da8294aec0d42fc1f086d215bc0da5c1a22",
+      "asset_sha256": "70984d5371413133b64bb02cc67e5329c17cdc8f01c96450856139740c3f6626",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/6b2733aa085651bcd3a21087.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_neon_top_0104",
+            "slot": "top",
+            "box": [
+              450,
+              340,
+              800,
+              640
+            ]
+          },
+          {
+            "garment_id": "garment_neon_bottom_0168",
+            "slot": "bottom",
+            "box": [
+              490,
+              664,
+              759,
+              1330
+            ]
+          },
+          {
+            "garment_id": "garment_edge_outer_0041",
+            "slot": "outer",
+            "box": [
+              70,
+              160,
+              420,
+              549
+            ]
+          },
+          {
+            "garment_id": "garment_neon_shoes_0248",
+            "slot": "shoes",
+            "box": [
+              901,
+              880,
+              1069,
+              1080
+            ]
+          },
+          {
+            "garment_id": "garment_oops_bag_0288",
+            "slot": "bag",
+            "box": [
+              850,
+              444,
+              1130,
+              695
+            ]
+          }
+        ]
+      },
+      "replacements": {
+        "garment_oops_top_0077": "garment_neon_top_0104"
+      },
+      "status": "pending_native_review",
+      "review": null
+    },
+    {
+      "source_outfit_id": "outfit_neon_master_24",
+      "source_token": "o0231",
+      "source_record_fingerprint": "f30b7b380e7e3905ef06413e3a3e77f9394a733a4400206d954f499ff98fb129",
+      "new_record": {
+        "id": "outfit_neon_master_24__aw-repair-04",
+        "kind": "master",
+        "parent_outfit_id": "outfit_neon_master_24",
+        "recipe_version": "aw-repair-04",
+        "title": "NEON 旅行 24",
+        "description": "NEON 人格的冬旅行原创穿搭配方。",
+        "primary_persona": "NEON",
+        "secondary_personas": [
+          "EDGE",
+          "OOPS"
+        ],
+        "persona_affinity": {
+          "NEON": 0.96,
+          "EDGE": 0.65,
+          "OOPS": 0.55
+        },
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "旅行"
+        ],
+        "season_tags": [
+          "冬"
+        ],
+        "weather_tags": [
+          "晴",
+          "室内"
+        ],
+        "presentation": [
+          "neutral"
+        ],
+        "intensity": "signature",
+        "formality": 3,
+        "garment_ids": [
+          "garment_neon_top_0104",
+          "garment_neon_bottom_0184",
+          "garment_edge_outer_0137",
+          "garment_neon_shoes_0264",
+          "garment_neon_bag_0280"
+        ],
+        "visible_slots": [
+          "top",
+          "bottom",
+          "outer",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_neon_top_0104": "hero",
+          "garment_neon_bottom_0184": "support",
+          "garment_edge_outer_0137": "support",
+          "garment_neon_shoes_0264": "support",
+          "garment_neon_bag_0280": "accent"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "浅色",
+          "saturation": "高饱和",
+          "harmony": "未判断",
+          "palette": [
+            "#053cb8",
+            "#8f96a6",
+            "#313236",
+            "#9ba1ac",
+            "#6e8197"
+          ]
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/eacb225477d67eaf56b5b7f8.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source_outfit_id": "outfit_neon_master_24"
+        },
+        "design_intent": "用贴身、低袖量内层 g0104 替换 g0344，保留外套为主视觉；仅解除袖量冲突，整套重新看图"
+      },
+      "record_fingerprint": "6dee4246aaf8fb4d2982c3c278f6d729551236acbe5b9a5112d2c68fa7c0094f",
+      "asset_sha256": "15748882161dd1d3a3e50921778ef8ad3529781044d76baa6a15fc5a25c96f34",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/eacb225477d67eaf56b5b7f8.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_neon_top_0104",
+            "slot": "top",
+            "box": [
+              450,
+              340,
+              800,
+              640
+            ]
+          },
+          {
+            "garment_id": "garment_neon_bottom_0184",
+            "slot": "bottom",
+            "box": [
+              502,
+              664,
+              747,
+              1330
+            ]
+          },
+          {
+            "garment_id": "garment_edge_outer_0137",
+            "slot": "outer",
+            "box": [
+              70,
+              160,
+              420,
+              498
+            ]
+          },
+          {
+            "garment_id": "garment_neon_shoes_0264",
+            "slot": "shoes",
+            "box": [
+              840,
+              882,
+              1130,
+              1078
+            ]
+          },
+          {
+            "garment_id": "garment_neon_bag_0280",
+            "slot": "bag",
+            "box": [
+              885,
+              410,
+              1095,
+              730
+            ]
+          }
+        ]
+      },
+      "replacements": {
+        "garment_neon_top_0344": "garment_neon_top_0104"
+      },
+      "status": "pending_native_review",
+      "review": null
+    },
+    {
+      "source_outfit_id": "outfit_edge_master_19",
+      "source_token": "o0256",
+      "source_record_fingerprint": "ff6ac87e4c467105cd68582deeac9903343ba70a0c412a639b4e244af03dc20d",
+      "new_record": {
+        "id": "outfit_edge_master_19__aw-repair-04",
+        "kind": "master",
+        "parent_outfit_id": "outfit_edge_master_19",
+        "recipe_version": "aw-repair-04",
+        "title": "EDGE 正式活动 19",
+        "description": "EDGE 人格的秋正式活动原创穿搭配方。",
+        "primary_persona": "EDGE",
+        "secondary_personas": [
+          "NEON",
+          "NOIR"
+        ],
+        "persona_affinity": {
+          "EDGE": 0.96,
+          "NEON": 0.65,
+          "NOIR": 0.55
+        },
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "正式活动"
+        ],
+        "season_tags": [
+          "秋"
+        ],
+        "weather_tags": [
+          "晴",
+          "室内"
+        ],
+        "presentation": [
+          "feminine"
+        ],
+        "intensity": "signature",
+        "formality": 4,
+        "garment_ids": [
+          "garment_noir_top_0094",
+          "garment_noir_bottom_0574",
+          "garment_edge_outer_0153",
+          "garment_edge_shoes_0249",
+          "garment_neon_bag_0520"
+        ],
+        "visible_slots": [
+          "top",
+          "bottom",
+          "outer",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_noir_top_0094": "hero",
+          "garment_noir_bottom_0574": "support",
+          "garment_edge_outer_0153": "support",
+          "garment_edge_shoes_0249": "support",
+          "garment_neon_bag_0520": "accent"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "深色",
+          "saturation": "低饱和",
+          "harmony": "未判断",
+          "palette": [
+            "#0f0e10",
+            "#2d2b2c",
+            "#acacb1",
+            "#b4b1ae",
+            "#113179"
+          ]
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/c470c4365d684d1900cc97f5.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source_outfit_id": "outfit_edge_master_19"
+        },
+        "design_intent": "用贴身、低袖量内层 g0094 替换 g0361，保留外套为主视觉；仅解除袖量冲突，整套重新看图"
+      },
+      "record_fingerprint": "0be7bef3e44b3b9e689b9fd258b1b7edc9ce41e36fc6756157804c0e27ea2cd2",
+      "asset_sha256": "12be2ce801e51c6bb9e294be7d2f767a4273931949a90f1089e5492b598364b5",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/c470c4365d684d1900cc97f5.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_noir_top_0094",
+            "slot": "top",
+            "box": [
+              475,
+              160,
+              775,
+              640
+            ]
+          },
+          {
+            "garment_id": "garment_noir_bottom_0574",
+            "slot": "bottom",
+            "box": [
+              497,
+              664,
+              753,
+              1330
+            ]
+          },
+          {
+            "garment_id": "garment_edge_outer_0153",
+            "slot": "outer",
+            "box": [
+              70,
+              160,
+              420,
+              559
+            ]
+          },
+          {
+            "garment_id": "garment_edge_shoes_0249",
+            "slot": "shoes",
+            "box": [
+              840,
+              880,
+              1130,
+              1079
+            ]
+          },
+          {
+            "garment_id": "garment_neon_bag_0520",
+            "slot": "bag",
+            "box": [
+              850,
+              431,
+              1130,
+              709
+            ]
+          }
+        ]
+      },
+      "replacements": {
+        "garment_edge_top_0361": "garment_noir_top_0094"
+      },
+      "status": "pending_native_review",
+      "review": null
+    },
+    {
+      "source_outfit_id": "outfit_bolt_master_19",
+      "source_token": "o0285",
+      "source_record_fingerprint": "eecc06dc9f5648db7dfae6f54f82da605c18a75b44daf1dad930e4a4d2ec00d0",
+      "new_record": {
+        "id": "outfit_bolt_master_19__aw-repair-04",
+        "kind": "master",
+        "parent_outfit_id": "outfit_bolt_master_19",
+        "recipe_version": "aw-repair-04",
+        "title": "BOLT 正式活动 19",
+        "description": "BOLT 人格的秋正式活动原创穿搭配方。",
+        "primary_persona": "BOLT",
+        "secondary_personas": [
+          "FLOU",
+          "HEIR"
+        ],
+        "persona_affinity": {
+          "BOLT": 0.96,
+          "FLOU": 0.65,
+          "HEIR": 0.55
+        },
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "正式活动"
+        ],
+        "season_tags": [
+          "秋"
+        ],
+        "weather_tags": [
+          "晴",
+          "室内"
+        ],
+        "presentation": [
+          "feminine"
+        ],
+        "intensity": "signature",
+        "formality": 4,
+        "garment_ids": [
+          "garment_neon_top_0104",
+          "garment_bolt_bottom_0170",
+          "garment_bolt_outer_0394",
+          "garment_bolt_shoes_0050",
+          "garment_flou_bag_0279"
+        ],
+        "visible_slots": [
+          "top",
+          "bottom",
+          "outer",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_neon_top_0104": "hero",
+          "garment_bolt_bottom_0170": "support",
+          "garment_bolt_outer_0394": "support",
+          "garment_bolt_shoes_0050": "support",
+          "garment_flou_bag_0279": "accent"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "浅色",
+          "saturation": "低饱和",
+          "harmony": "未判断",
+          "palette": [
+            "#abb3be",
+            "#d6d0c7",
+            "#bba793",
+            "#1e0206",
+            "#b09492"
+          ]
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/131174868f043e77fdaddc9d.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source_outfit_id": "outfit_bolt_master_19"
+        },
+        "design_intent": "用贴身、低袖量内层 g0104 替换 g0087，保留外套为主视觉；仅解除袖量冲突，整套重新看图"
+      },
+      "record_fingerprint": "9d0a000c5ca7137903b788a4ac5b7c66a5da22f37e9bef8c9f2e171b25d86502",
+      "asset_sha256": "a81c70a3f64bc68bfbdf7817fc3f7228c3895b4c2147aaf03ce6624553f4d9d2",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/131174868f043e77fdaddc9d.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_neon_top_0104",
+            "slot": "top",
+            "box": [
+              450,
+              340,
+              800,
+              640
+            ]
+          },
+          {
+            "garment_id": "garment_bolt_bottom_0170",
+            "slot": "bottom",
+            "box": [
+              478,
+              664,
+              771,
+              1330
+            ]
+          },
+          {
+            "garment_id": "garment_bolt_outer_0394",
+            "slot": "outer",
+            "box": [
+              70,
+              160,
+              420,
+              522
+            ]
+          },
+          {
+            "garment_id": "garment_bolt_shoes_0050",
+            "slot": "shoes",
+            "box": [
+              883,
+              880,
+              1087,
+              1080
+            ]
+          },
+          {
+            "garment_id": "garment_flou_bag_0279",
+            "slot": "bag",
+            "box": [
+              893,
+              410,
+              1087,
+              730
+            ]
+          }
+        ]
+      },
+      "replacements": {
+        "garment_flou_top_0087": "garment_neon_top_0104"
+      },
+      "status": "pending_native_review",
+      "review": null
+    },
+    {
+      "source_outfit_id": "outfit_noir_master_21",
+      "source_token": "o0402",
+      "source_record_fingerprint": "554a92bea076c0ced1e41a4f63fa662fd8ccb3567d36a1da4e51ce6be313d050",
+      "new_record": {
+        "id": "outfit_noir_master_21__aw-repair-04",
+        "kind": "master",
+        "parent_outfit_id": "outfit_noir_master_21",
+        "recipe_version": "aw-repair-04",
+        "title": "NOIR 正式活动 21",
+        "description": "NOIR 人格的秋正式活动原创穿搭配方。",
+        "primary_persona": "NOIR",
+        "secondary_personas": [
+          "EDGE",
+          "MUTE"
+        ],
+        "persona_affinity": {
+          "NOIR": 0.96,
+          "EDGE": 0.65,
+          "MUTE": 0.55
+        },
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "正式活动"
+        ],
+        "season_tags": [
+          "秋"
+        ],
+        "weather_tags": [
+          "晴",
+          "室内"
+        ],
+        "presentation": [
+          "feminine"
+        ],
+        "intensity": "signature",
+        "formality": 4,
+        "garment_ids": [
+          "garment_noir_top_0094",
+          "garment_edge_bottom_0169",
+          "garment_noir_outer_0142",
+          "garment_edge_shoes_0505",
+          "garment_noir_bag_0270"
+        ],
+        "visible_slots": [
+          "top",
+          "bottom",
+          "outer",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_noir_top_0094": "hero",
+          "garment_edge_bottom_0169": "support",
+          "garment_noir_outer_0142": "support",
+          "garment_edge_shoes_0505": "support",
+          "garment_noir_bag_0270": "accent"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "中等",
+          "saturation": "低饱和",
+          "harmony": "未判断",
+          "palette": [
+            "#201f20",
+            "#37373a",
+            "#3e3e40",
+            "#b9acb1",
+            "#3f3e3e"
+          ]
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/5ad9103ab23b3aa45f869337.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source_outfit_id": "outfit_noir_master_21"
+        },
+        "design_intent": "用贴身、低袖量内层 g0094 替换 g0329，保留外套为主视觉；仅解除袖量冲突，整套重新看图"
+      },
+      "record_fingerprint": "f07cf64ea94882c276f514384b55dc218665b8ec4af2d494f406f2230ccb698e",
+      "asset_sha256": "7c43d30d2642b30da370337edafbb023f31eeb874d9fd906ab5617ed9970275b",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/5ad9103ab23b3aa45f869337.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_noir_top_0094",
+            "slot": "top",
+            "box": [
+              475,
+              160,
+              775,
+              640
+            ]
+          },
+          {
+            "garment_id": "garment_edge_bottom_0169",
+            "slot": "bottom",
+            "box": [
+              464,
+              664,
+              785,
+              1330
+            ]
+          },
+          {
+            "garment_id": "garment_noir_outer_0142",
+            "slot": "outer",
+            "box": [
+              70,
+              160,
+              420,
+              539
+            ]
+          },
+          {
+            "garment_id": "garment_edge_shoes_0505",
+            "slot": "shoes",
+            "box": [
+              886,
+              880,
+              1084,
+              1080
+            ]
+          },
+          {
+            "garment_id": "garment_noir_bag_0270",
+            "slot": "bag",
+            "box": [
+              865,
+              410,
+              1114,
+              730
+            ]
+          }
+        ]
+      },
+      "replacements": {
+        "garment_edge_top_0329": "garment_noir_top_0094"
+      },
+      "status": "pending_native_review",
+      "review": null
+    },
+    {
+      "source_outfit_id": "outfit_void_master_24",
+      "source_token": "o0434",
+      "source_record_fingerprint": "2cb0d2a28584e4b0fa26493dc368658c5efc757167845da51af993c9983b98ac",
+      "new_record": {
+        "id": "outfit_void_master_24__aw-repair-04",
+        "kind": "master",
+        "parent_outfit_id": "outfit_void_master_24",
+        "recipe_version": "aw-repair-04",
+        "title": "VOID 旅行 24",
+        "description": "VOID 人格的冬旅行原创穿搭配方。",
+        "primary_persona": "VOID",
+        "secondary_personas": [
+          "WABI",
+          "FILM"
+        ],
+        "persona_affinity": {
+          "VOID": 0.96,
+          "WABI": 0.65,
+          "FILM": 0.55
+        },
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "旅行"
+        ],
+        "season_tags": [
+          "冬"
+        ],
+        "weather_tags": [
+          "晴",
+          "室内"
+        ],
+        "presentation": [
+          "neutral"
+        ],
+        "intensity": "signature",
+        "formality": 3,
+        "garment_ids": [
+          "garment_mute_top_0097",
+          "garment_wabi_bottom_0166",
+          "garment_wabi_outer_0374",
+          "garment_wabi_shoes_0246",
+          "garment_void_bag_0271"
+        ],
+        "visible_slots": [
+          "top",
+          "bottom",
+          "outer",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_mute_top_0097": "hero",
+          "garment_wabi_bottom_0166": "support",
+          "garment_wabi_outer_0374": "support",
+          "garment_wabi_shoes_0246": "support",
+          "garment_void_bag_0271": "accent"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "中等",
+          "saturation": "低饱和",
+          "harmony": "未判断",
+          "palette": [
+            "#62574c",
+            "#89827b",
+            "#605447",
+            "#69574c",
+            "#4f4c4c"
+          ]
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/8f22b29186d75dc2eac9722f.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source_outfit_id": "outfit_void_master_24"
+        },
+        "design_intent": "用贴身、低袖量内层 g0097 替换 g0566，保留外套为主视觉；仅解除袖量冲突，整套重新看图"
+      },
+      "record_fingerprint": "7fdda7bb303679f0b8a8cb257a65d8ae78af149c2712a7473055ccb5ed12c7fa",
+      "asset_sha256": "4365846d4fddbcf2c8d6f7ef7bf508a5ab0d5d25b8945f0675d850859789a521",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/8f22b29186d75dc2eac9722f.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_mute_top_0097",
+            "slot": "top",
+            "box": [
+              450,
+              241,
+              800,
+              640
+            ]
+          },
+          {
+            "garment_id": "garment_wabi_bottom_0166",
+            "slot": "bottom",
+            "box": [
+              485,
+              664,
+              765,
+              1330
+            ]
+          },
+          {
+            "garment_id": "garment_wabi_outer_0374",
+            "slot": "outer",
+            "box": [
+              70,
+              160,
+              420,
+              775
+            ]
+          },
+          {
+            "garment_id": "garment_wabi_shoes_0246",
+            "slot": "shoes",
+            "box": [
+              841,
+              880,
+              1128,
+              1080
+            ]
+          },
+          {
+            "garment_id": "garment_void_bag_0271",
+            "slot": "bag",
+            "box": [
+              865,
+              410,
+              1115,
+              730
+            ]
+          }
+        ]
+      },
+      "replacements": {
+        "garment_wabi_top_0566": "garment_mute_top_0097"
+      },
+      "status": "pending_native_review",
+      "review": null
+    },
+    {
+      "source_outfit_id": "outfit_oops_master_23",
+      "source_token": "o0461",
+      "source_record_fingerprint": "f30ba983ce5e346f1b53f4edc39cd3f44a6353ae3cc10bd4804224741884ea2e",
+      "new_record": {
+        "id": "outfit_oops_master_23__aw-repair-04",
+        "kind": "master",
+        "parent_outfit_id": "outfit_oops_master_23",
+        "recipe_version": "aw-repair-04",
+        "title": "OOPS 旅行 23",
+        "description": "OOPS 人格的秋旅行原创穿搭配方。",
+        "primary_persona": "OOPS",
+        "secondary_personas": [
+          "NEON",
+          "EDGE"
+        ],
+        "persona_affinity": {
+          "OOPS": 0.96,
+          "NEON": 0.65,
+          "EDGE": 0.55
+        },
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "旅行"
+        ],
+        "season_tags": [
+          "秋"
+        ],
+        "weather_tags": [
+          "晴",
+          "室内"
+        ],
+        "presentation": [
+          "neutral"
+        ],
+        "intensity": "signature",
+        "formality": 3,
+        "garment_ids": [
+          "garment_neon_top_0104",
+          "garment_oops_bottom_0176",
+          "garment_neon_outer_0152",
+          "garment_neon_shoes_0488",
+          "garment_oops_bag_0272"
+        ],
+        "visible_slots": [
+          "top",
+          "bottom",
+          "outer",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_neon_top_0104": "hero",
+          "garment_oops_bottom_0176": "support",
+          "garment_neon_outer_0152": "support",
+          "garment_neon_shoes_0488": "support",
+          "garment_oops_bag_0272": "accent"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "浅色",
+          "saturation": "高饱和",
+          "harmony": "未判断",
+          "palette": [
+            "#053cb8",
+            "#d3ccc3",
+            "#8695a5",
+            "#2a2976",
+            "#aea8a1"
+          ]
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/dcda2d0754e724928d49bcd3.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source_outfit_id": "outfit_oops_master_23"
+        },
+        "design_intent": "用贴身、低袖量内层 g0104 替换 g0344，保留外套为主视觉；仅解除袖量冲突，整套重新看图"
+      },
+      "record_fingerprint": "872263f6ae2050b3f78526df47670f637e069fa43840549abb7e7934c9834e9b",
+      "asset_sha256": "3b193adc2a6d1daebba234b309a706a4944eb9cbf8900428d0c02ee6bea16170",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/dcda2d0754e724928d49bcd3.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_neon_top_0104",
+            "slot": "top",
+            "box": [
+              450,
+              340,
+              800,
+              640
+            ]
+          },
+          {
+            "garment_id": "garment_oops_bottom_0176",
+            "slot": "bottom",
+            "box": [
+              479,
+              664,
+              771,
+              1330
+            ]
+          },
+          {
+            "garment_id": "garment_neon_outer_0152",
+            "slot": "outer",
+            "box": [
+              70,
+              160,
+              420,
+              747
+            ]
+          },
+          {
+            "garment_id": "garment_neon_shoes_0488",
+            "slot": "shoes",
+            "box": [
+              864,
+              880,
+              1106,
+              1080
+            ]
+          },
+          {
+            "garment_id": "garment_oops_bag_0272",
+            "slot": "bag",
+            "box": [
+              876,
+              410,
+              1104,
+              730
+            ]
+          }
+        ]
+      },
+      "replacements": {
+        "garment_neon_top_0344": "garment_neon_top_0104"
+      },
+      "status": "pending_native_review",
+      "review": null
+    },
+    {
+      "source_outfit_id": "outfit_mute_master_24_v1",
+      "source_token": "o0507",
+      "source_record_fingerprint": "ef337e67d37244c20b22dcd67fa98937b3fa81c0ee7414494639e78ff91af766",
+      "new_record": {
+        "id": "outfit_mute_master_24_v1__aw-repair-04",
+        "kind": "variant",
+        "parent_outfit_id": "outfit_mute_master_24",
+        "recipe_version": "aw-repair-04",
+        "title": "MUTE 旅行 24 · 替换 1",
+        "description": "MUTE 人格的冬旅行原创穿搭配方。",
+        "primary_persona": "MUTE",
+        "secondary_personas": [
+          "ICED",
+          "HEIR"
+        ],
+        "persona_affinity": {
+          "MUTE": 0.96,
+          "ICED": 0.65,
+          "HEIR": 0.55
+        },
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "旅行"
+        ],
+        "season_tags": [
+          "冬"
+        ],
+        "weather_tags": [
+          "晴",
+          "室内"
+        ],
+        "presentation": [
+          "neutral"
+        ],
+        "intensity": "signature",
+        "formality": 3,
+        "garment_ids": [
+          "garment_noir_top_0094",
+          "garment_iced_bottom_0578",
+          "garment_jade_outer_0140",
+          "garment_heir_shoes_0014",
+          "garment_loop_bag_0509"
+        ],
+        "visible_slots": [
+          "top",
+          "bottom",
+          "outer",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_noir_top_0094": "hero",
+          "garment_iced_bottom_0578": "support",
+          "garment_jade_outer_0140": "support",
+          "garment_heir_shoes_0014": "support",
+          "garment_loop_bag_0509": "accent"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "中等",
+          "saturation": "低饱和",
+          "harmony": "未判断",
+          "palette": [
+            "#312c2a",
+            "#abb6c3",
+            "#cbc4b8",
+            "#3a1d1a",
+            "#695f5b"
+          ]
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/66707e99238e47a1ec714c23.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source_outfit_id": "outfit_mute_master_24_v1"
+        },
+        "design_intent": "用贴身、低袖量内层 g0094 替换 g0332，保留外套为主视觉；仅解除袖量冲突，整套重新看图"
+      },
+      "record_fingerprint": "b68ee1a9b328a234bcecabce4d6ff9c5c0f131e6c56ff49c2777c31ab552f3a1",
+      "asset_sha256": "6fcedd1e81a0492903c686632963f4b7724d6a92f4c5a74cad526fcee66a2fe6",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/66707e99238e47a1ec714c23.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_noir_top_0094",
+            "slot": "top",
+            "box": [
+              475,
+              160,
+              775,
+              640
+            ]
+          },
+          {
+            "garment_id": "garment_iced_bottom_0578",
+            "slot": "bottom",
+            "box": [
+              505,
+              664,
+              744,
+              1330
+            ]
+          },
+          {
+            "garment_id": "garment_jade_outer_0140",
+            "slot": "outer",
+            "box": [
+              70,
+              160,
+              420,
+              785
+            ]
+          },
+          {
+            "garment_id": "garment_heir_shoes_0014",
+            "slot": "shoes",
+            "box": [
+              936,
+              880,
+              1033,
+              1080
+            ]
+          },
+          {
+            "garment_id": "garment_loop_bag_0509",
+            "slot": "bag",
+            "box": [
+              853,
+              410,
+              1127,
+              730
+            ]
+          }
+        ]
+      },
+      "replacements": {
+        "garment_jade_top_0332": "garment_noir_top_0094"
+      },
+      "status": "pending_native_review",
+      "review": null
+    },
+    {
+      "source_outfit_id": "outfit_iced_master_19_v1",
+      "source_token": "o0547",
+      "source_record_fingerprint": "c2750a1594fcee848a1396856c9ff99c6e6d90670f642ef111e599f387136888",
+      "new_record": {
+        "id": "outfit_iced_master_19_v1__aw-repair-04",
+        "kind": "variant",
+        "parent_outfit_id": "outfit_iced_master_19",
+        "recipe_version": "aw-repair-04",
+        "title": "ICED 正式活动 19 · 替换 1",
+        "description": "ICED 人格的秋正式活动原创穿搭配方。",
+        "primary_persona": "ICED",
+        "secondary_personas": [
+          "MUTE",
+          "FLOU"
+        ],
+        "persona_affinity": {
+          "ICED": 0.96,
+          "MUTE": 0.65,
+          "FLOU": 0.55
+        },
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "正式活动"
+        ],
+        "season_tags": [
+          "秋"
+        ],
+        "weather_tags": [
+          "晴",
+          "室内"
+        ],
+        "presentation": [
+          "feminine"
+        ],
+        "intensity": "signature",
+        "formality": 4,
+        "garment_ids": [
+          "garment_noir_top_0094",
+          "garment_iced_bottom_0418",
+          "garment_iced_outer_0370",
+          "garment_iced_shoes_0258",
+          "garment_mute_bag_0289"
+        ],
+        "visible_slots": [
+          "top",
+          "bottom",
+          "outer",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_noir_top_0094": "hero",
+          "garment_iced_bottom_0418": "support",
+          "garment_iced_outer_0370": "support",
+          "garment_iced_shoes_0258": "support",
+          "garment_mute_bag_0289": "accent"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "深色",
+          "saturation": "无彩",
+          "harmony": "未判断",
+          "palette": [
+            "#605d61",
+            "#b3bbcb",
+            "#acb5c8",
+            "#b0b3bd",
+            "#cbc4be"
+          ]
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/b750274b952be1ac4633c614.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source_outfit_id": "outfit_iced_master_19_v1"
+        },
+        "design_intent": "用贴身、低袖量内层 g0094 替换 g0353，保留外套为主视觉；仅解除袖量冲突，整套重新看图"
+      },
+      "record_fingerprint": "1715b3f6e736e4ec0af6ab3d620f41671b8a3ee052e98aa6347207a2209f4d60",
+      "asset_sha256": "081988f8dd4ad8f3fc3d1296da6f09f83aca4d3bd979b40cb03a10c8180ae258",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/b750274b952be1ac4633c614.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_noir_top_0094",
+            "slot": "top",
+            "box": [
+              475,
+              160,
+              775,
+              640
+            ]
+          },
+          {
+            "garment_id": "garment_iced_bottom_0418",
+            "slot": "bottom",
+            "box": [
+              518,
+              664,
+              732,
+              1330
+            ]
+          },
+          {
+            "garment_id": "garment_iced_outer_0370",
+            "slot": "outer",
+            "box": [
+              70,
+              160,
+              420,
+              617
+            ]
+          },
+          {
+            "garment_id": "garment_iced_shoes_0258",
+            "slot": "shoes",
+            "box": [
+              879,
+              880,
+              1091,
+              1080
+            ]
+          },
+          {
+            "garment_id": "garment_mute_bag_0289",
+            "slot": "bag",
+            "box": [
+              862,
+              410,
+              1118,
+              730
+            ]
+          }
+        ]
+      },
+      "replacements": {
+        "garment_mute_top_0353": "garment_noir_top_0094"
+      },
+      "status": "pending_native_review",
+      "review": null
+    },
+    {
+      "source_outfit_id": "outfit_heir_master_23_v1",
+      "source_token": "o0595",
+      "source_record_fingerprint": "52a05e91305ab3760ef461e0ea7ba61e4033f4a1a1b9a4a6e9d3bb560768ed68",
+      "new_record": {
+        "id": "outfit_heir_master_23_v1__aw-repair-04",
+        "kind": "variant",
+        "parent_outfit_id": "outfit_heir_master_23",
+        "recipe_version": "aw-repair-04",
+        "title": "HEIR 旅行 23 · 替换 1",
+        "description": "HEIR 人格的秋旅行原创穿搭配方。",
+        "primary_persona": "HEIR",
+        "secondary_personas": [
+          "EASE",
+          "MUTE"
+        ],
+        "persona_affinity": {
+          "HEIR": 0.96,
+          "EASE": 0.65,
+          "MUTE": 0.55
+        },
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "旅行"
+        ],
+        "season_tags": [
+          "秋"
+        ],
+        "weather_tags": [
+          "晴",
+          "室内"
+        ],
+        "presentation": [
+          "neutral"
+        ],
+        "intensity": "signature",
+        "formality": 3,
+        "garment_ids": [
+          "garment_melt_top_0085",
+          "garment_ease_bottom_0404",
+          "garment_heir_outer_0371",
+          "garment_heir_shoes_0014",
+          "garment_bolt_bag_0282"
+        ],
+        "visible_slots": [
+          "top",
+          "bottom",
+          "outer",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_melt_top_0085": "hero",
+          "garment_ease_bottom_0404": "support",
+          "garment_heir_outer_0371": "support",
+          "garment_heir_shoes_0014": "support",
+          "garment_bolt_bag_0282": "accent"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "中等",
+          "saturation": "中饱和",
+          "harmony": "未判断",
+          "palette": [
+            "#d7cbbe",
+            "#bfaa91",
+            "#282a3a",
+            "#3a1d1a",
+            "#c8bfb4"
+          ]
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/cf4bdce5490f7be95548e931.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source_outfit_id": "outfit_heir_master_23_v1"
+        },
+        "design_intent": "用贴身、低袖量内层 g0085 替换 g0362，保留外套为主视觉；仅解除袖量冲突，整套重新看图"
+      },
+      "record_fingerprint": "b7b99e84638ec18d7ce5c579f499ae61ee0de30449fbfb1355d0300647146251",
+      "asset_sha256": "90e3b712ae0d3d43f9224da96e95c0added37d2e8da2ac2400b565c0d818c9b4",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/cf4bdce5490f7be95548e931.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_melt_top_0085",
+            "slot": "top",
+            "box": [
+              450,
+              180,
+              800,
+              640
+            ]
+          },
+          {
+            "garment_id": "garment_ease_bottom_0404",
+            "slot": "bottom",
+            "box": [
+              469,
+              664,
+              780,
+              1330
+            ]
+          },
+          {
+            "garment_id": "garment_heir_outer_0371",
+            "slot": "outer",
+            "box": [
+              70,
+              160,
+              420,
+              770
+            ]
+          },
+          {
+            "garment_id": "garment_heir_shoes_0014",
+            "slot": "shoes",
+            "box": [
+              936,
+              880,
+              1033,
+              1080
+            ]
+          },
+          {
+            "garment_id": "garment_bolt_bag_0282",
+            "slot": "bag",
+            "box": [
+              850,
+              470,
+              1130,
+              670
+            ]
+          }
+        ]
+      },
+      "replacements": {
+        "garment_bolt_top_0362": "garment_melt_top_0085"
+      },
+      "status": "pending_native_review",
+      "review": null
+    },
+    {
+      "source_outfit_id": "outfit_melt_master_20_v1",
+      "source_token": "o0680",
+      "source_record_fingerprint": "ff9c431cb209f400628664ab43bf09d3d6905b15aaf65b2143cfea0b8ec24e4c",
+      "new_record": {
+        "id": "outfit_melt_master_20_v1__aw-repair-04",
+        "kind": "variant",
+        "parent_outfit_id": "outfit_melt_master_20",
+        "recipe_version": "aw-repair-04",
+        "title": "MELT 正式活动 20 · 替换 1",
+        "description": "MELT 人格的秋正式活动原创穿搭配方。",
+        "primary_persona": "MELT",
+        "secondary_personas": [
+          "FLOU",
+          "EASE"
+        ],
+        "persona_affinity": {
+          "MELT": 0.96,
+          "FLOU": 0.65,
+          "EASE": 0.55
+        },
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "正式活动"
+        ],
+        "season_tags": [
+          "秋"
+        ],
+        "weather_tags": [
+          "晴",
+          "室内"
+        ],
+        "presentation": [
+          "feminine"
+        ],
+        "intensity": "signature",
+        "formality": 4,
+        "garment_ids": [
+          "garment_neon_top_0104",
+          "garment_melt_bottom_0165",
+          "garment_melt_outer_0133",
+          "garment_melt_shoes_0485",
+          "garment_melt_bag_0277"
+        ],
+        "visible_slots": [
+          "top",
+          "bottom",
+          "outer",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_neon_top_0104": "hero",
+          "garment_melt_bottom_0165": "support",
+          "garment_melt_outer_0133": "support",
+          "garment_melt_shoes_0485": "support",
+          "garment_melt_bag_0277": "accent"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "浅色",
+          "saturation": "低饱和",
+          "harmony": "未判断",
+          "palette": [
+            "#abb3be",
+            "#dbd0c4",
+            "#e2dbd2",
+            "#cfb6a7",
+            "#c4b7a9"
+          ]
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/a59747ad86111e8cf8968e7b.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source_outfit_id": "outfit_melt_master_20_v1"
+        },
+        "design_intent": "用贴身、低袖量内层 g0104 替换 g0087，保留外套为主视觉；仅解除袖量冲突，整套重新看图"
+      },
+      "record_fingerprint": "0bd89b0152f94783c80f531cc532051a995a4cd98d40cd876bf900d0c5bbe3f5",
+      "asset_sha256": "3b784e3b62e40d6afa0f07fd815543c8b52db8d70fb130007009d8b4b7d46d0f",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/a59747ad86111e8cf8968e7b.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_neon_top_0104",
+            "slot": "top",
+            "box": [
+              450,
+              340,
+              800,
+              640
+            ]
+          },
+          {
+            "garment_id": "garment_melt_bottom_0165",
+            "slot": "bottom",
+            "box": [
+              458,
+              664,
+              792,
+              1330
+            ]
+          },
+          {
+            "garment_id": "garment_melt_outer_0133",
+            "slot": "outer",
+            "box": [
+              70,
+              160,
+              420,
+              493
+            ]
+          },
+          {
+            "garment_id": "garment_melt_shoes_0485",
+            "slot": "shoes",
+            "box": [
+              905,
+              880,
+              1064,
+              1080
+            ]
+          },
+          {
+            "garment_id": "garment_melt_bag_0277",
+            "slot": "bag",
+            "box": [
+              898,
+              410,
+              1082,
+              730
+            ]
+          }
+        ]
+      },
+      "replacements": {
+        "garment_flou_top_0087": "garment_neon_top_0104"
+      },
+      "status": "pending_native_review",
+      "review": null
+    },
+    {
+      "source_outfit_id": "outfit_wabi_master_23_v1",
+      "source_token": "o0728",
+      "source_record_fingerprint": "dd781410ddcdec0566d6e0b08d5eea6246ba4d451533699f77b33242eb35da0f",
+      "new_record": {
+        "id": "outfit_wabi_master_23_v1__aw-repair-04",
+        "kind": "variant",
+        "parent_outfit_id": "outfit_wabi_master_23",
+        "recipe_version": "aw-repair-04",
+        "title": "WABI 旅行 23 · 替换 1",
+        "description": "WABI 人格的秋旅行原创穿搭配方。",
+        "primary_persona": "WABI",
+        "secondary_personas": [
+          "EASE",
+          "VOID"
+        ],
+        "persona_affinity": {
+          "WABI": 0.96,
+          "EASE": 0.65,
+          "VOID": 0.55
+        },
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "旅行"
+        ],
+        "season_tags": [
+          "秋"
+        ],
+        "weather_tags": [
+          "晴",
+          "室内"
+        ],
+        "presentation": [
+          "neutral"
+        ],
+        "intensity": "signature",
+        "formality": 3,
+        "garment_ids": [
+          "garment_mute_top_0097",
+          "garment_wabi_bottom_0422",
+          "garment_film_outer_0395",
+          "garment_film_shoes_0251",
+          "garment_wabi_bag_0029"
+        ],
+        "visible_slots": [
+          "top",
+          "bottom",
+          "outer",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_mute_top_0097": "hero",
+          "garment_wabi_bottom_0422": "support",
+          "garment_film_outer_0395": "support",
+          "garment_film_shoes_0251": "support",
+          "garment_wabi_bag_0029": "accent"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "中等",
+          "saturation": "低饱和",
+          "harmony": "未判断",
+          "palette": [
+            "#736759",
+            "#5c534a",
+            "#483d31",
+            "#433933",
+            "#5b5044"
+          ]
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/209bf541b7877a97e32422ee.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source_outfit_id": "outfit_wabi_master_23_v1"
+        },
+        "design_intent": "用贴身、低袖量内层 g0097 替换 g0326，保留外套为主视觉；仅解除袖量冲突，整套重新看图"
+      },
+      "record_fingerprint": "d3d42d56e0b34fdcdb5df1759e476662ec77d79449a7fe49d772fb426bd68731",
+      "asset_sha256": "7af716a82cc256d2c23c2d382105220eaef0e65b5c751e9f2a57b436c88c9563",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/209bf541b7877a97e32422ee.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_mute_top_0097",
+            "slot": "top",
+            "box": [
+              450,
+              241,
+              800,
+              640
+            ]
+          },
+          {
+            "garment_id": "garment_wabi_bottom_0422",
+            "slot": "bottom",
+            "box": [
+              450,
+              664,
+              800,
+              1255
+            ]
+          },
+          {
+            "garment_id": "garment_film_outer_0395",
+            "slot": "outer",
+            "box": [
+              70,
+              160,
+              420,
+              607
+            ]
+          },
+          {
+            "garment_id": "garment_film_shoes_0251",
+            "slot": "shoes",
+            "box": [
+              929,
+              880,
+              1041,
+              1080
+            ]
+          },
+          {
+            "garment_id": "garment_wabi_bag_0029",
+            "slot": "bag",
+            "box": [
+              875,
+              410,
+              1104,
+              730
+            ]
+          }
+        ]
+      },
+      "replacements": {
+        "garment_wabi_top_0326": "garment_mute_top_0097"
+      },
+      "status": "pending_native_review",
+      "review": null
+    },
+    {
+      "source_outfit_id": "outfit_flou_master_20_v1",
+      "source_token": "o0769",
+      "source_record_fingerprint": "8b142d32be35ec61be8dae548f7451166d1e3745ec554cd52baa201d99dda970",
+      "new_record": {
+        "id": "outfit_flou_master_20_v1__aw-repair-04",
+        "kind": "variant",
+        "parent_outfit_id": "outfit_flou_master_20",
+        "recipe_version": "aw-repair-04",
+        "title": "FLOU 正式活动 20 · 替换 1",
+        "description": "FLOU 人格的秋正式活动原创穿搭配方。",
+        "primary_persona": "FLOU",
+        "secondary_personas": [
+          "MELT",
+          "BOLT"
+        ],
+        "persona_affinity": {
+          "FLOU": 0.96,
+          "MELT": 0.65,
+          "BOLT": 0.55
+        },
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "正式活动"
+        ],
+        "season_tags": [
+          "秋"
+        ],
+        "weather_tags": [
+          "晴",
+          "室内"
+        ],
+        "presentation": [
+          "feminine"
+        ],
+        "intensity": "signature",
+        "formality": 4,
+        "garment_ids": [
+          "garment_melt_top_0085",
+          "garment_bolt_bottom_0170",
+          "garment_bolt_outer_0046",
+          "garment_melt_shoes_0261",
+          "garment_melt_bag_0517"
+        ],
+        "visible_slots": [
+          "top",
+          "bottom",
+          "outer",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_melt_top_0085": "hero",
+          "garment_bolt_bottom_0170": "support",
+          "garment_bolt_outer_0046": "support",
+          "garment_melt_shoes_0261": "support",
+          "garment_melt_bag_0517": "accent"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "浅色",
+          "saturation": "低饱和",
+          "harmony": "未判断",
+          "palette": [
+            "#e1d5c6",
+            "#d6d0c7",
+            "#cfc3b5",
+            "#ccbfb5",
+            "#dabfad"
+          ]
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/facfba87afe1df43a5966d80.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source_outfit_id": "outfit_flou_master_20_v1"
+        },
+        "design_intent": "用贴身、低袖量内层 g0085 替换 g0022，保留外套为主视觉；仅解除袖量冲突，整套重新看图"
+      },
+      "record_fingerprint": "d5fcda6474bf6540edfa8fa9c456e96a231c1ca2b29fb02a12b8447f118a3e3b",
+      "asset_sha256": "d2b396a6a4bc10aa72813c48f3d1a115bb0628be7261e96b64112edf4749d515",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/facfba87afe1df43a5966d80.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_melt_top_0085",
+            "slot": "top",
+            "box": [
+              450,
+              180,
+              800,
+              640
+            ]
+          },
+          {
+            "garment_id": "garment_bolt_bottom_0170",
+            "slot": "bottom",
+            "box": [
+              478,
+              664,
+              771,
+              1330
+            ]
+          },
+          {
+            "garment_id": "garment_bolt_outer_0046",
+            "slot": "outer",
+            "box": [
+              70,
+              160,
+              420,
+              570
+            ]
+          },
+          {
+            "garment_id": "garment_melt_shoes_0261",
+            "slot": "shoes",
+            "box": [
+              850,
+              880,
+              1120,
+              1080
+            ]
+          },
+          {
+            "garment_id": "garment_melt_bag_0517",
+            "slot": "bag",
+            "box": [
+              863,
+              410,
+              1117,
+              730
+            ]
+          }
+        ]
+      },
+      "replacements": {
+        "garment_melt_top_0022": "garment_melt_top_0085"
+      },
+      "status": "pending_native_review",
+      "review": null
+    },
+    {
+      "source_outfit_id": "outfit_flou_master_23_v1",
+      "source_token": "o0772",
+      "source_record_fingerprint": "aadf5029f0e4857cec290d4be47ca493d5c1fc5fd7238528cc2413aa32d0e951",
+      "new_record": {
+        "id": "outfit_flou_master_23_v1__aw-repair-04",
+        "kind": "variant",
+        "parent_outfit_id": "outfit_flou_master_23",
+        "recipe_version": "aw-repair-04",
+        "title": "FLOU 旅行 23 · 替换 1",
+        "description": "FLOU 人格的秋旅行原创穿搭配方。",
+        "primary_persona": "FLOU",
+        "secondary_personas": [
+          "MELT",
+          "BOLT"
+        ],
+        "persona_affinity": {
+          "FLOU": 0.96,
+          "MELT": 0.65,
+          "BOLT": 0.55
+        },
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "旅行"
+        ],
+        "season_tags": [
+          "秋"
+        ],
+        "weather_tags": [
+          "晴",
+          "室内"
+        ],
+        "presentation": [
+          "neutral"
+        ],
+        "intensity": "signature",
+        "formality": 3,
+        "garment_ids": [
+          "garment_melt_top_0085",
+          "garment_flou_bottom_0407",
+          "garment_bolt_outer_0154",
+          "garment_bolt_shoes_0050",
+          "garment_iced_bag_0290"
+        ],
+        "visible_slots": [
+          "top",
+          "bottom",
+          "outer",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_melt_top_0085": "hero",
+          "garment_flou_bottom_0407": "support",
+          "garment_bolt_outer_0154": "support",
+          "garment_bolt_shoes_0050": "support",
+          "garment_iced_bag_0290": "accent"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "中等",
+          "saturation": "中饱和",
+          "harmony": "未判断",
+          "palette": [
+            "#d7cbbe",
+            "#aea29a",
+            "#d6d3ce",
+            "#1e0206",
+            "#aab5c3"
+          ]
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/487dc955cfaa043a9ae8f806.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source_outfit_id": "outfit_flou_master_23_v1"
+        },
+        "design_intent": "用贴身、低袖量内层 g0085 替换 g0362，保留外套为主视觉；仅解除袖量冲突，整套重新看图"
+      },
+      "record_fingerprint": "623bccb558ce7bb3f0c3ce7ea45da789860cec4e096dc38616f96674b4a00e56",
+      "asset_sha256": "6583b442d9795061d34a33fdefb1a61cb973509741ae197f257be87084128f27",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/487dc955cfaa043a9ae8f806.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_melt_top_0085",
+            "slot": "top",
+            "box": [
+              450,
+              180,
+              800,
+              640
+            ]
+          },
+          {
+            "garment_id": "garment_flou_bottom_0407",
+            "slot": "bottom",
+            "box": [
+              450,
+              664,
+              800,
+              1206
+            ]
+          },
+          {
+            "garment_id": "garment_bolt_outer_0154",
+            "slot": "outer",
+            "box": [
+              70,
+              160,
+              420,
+              498
+            ]
+          },
+          {
+            "garment_id": "garment_bolt_shoes_0050",
+            "slot": "shoes",
+            "box": [
+              883,
+              880,
+              1087,
+              1080
+            ]
+          },
+          {
+            "garment_id": "garment_iced_bag_0290",
+            "slot": "bag",
+            "box": [
+              865,
+              410,
+              1114,
+              730
+            ]
+          }
+        ]
+      },
+      "replacements": {
+        "garment_bolt_top_0362": "garment_melt_top_0085"
+      },
+      "status": "pending_native_review",
+      "review": null
+    },
+    {
+      "source_outfit_id": "outfit_bolt_master_20_v1",
+      "source_token": "o0901",
+      "source_record_fingerprint": "2973a745dd59998013178aa31c716e0840c339d3c646e749b0ae2bec2fcfb515",
+      "new_record": {
+        "id": "outfit_bolt_master_20_v1__aw-repair-04",
+        "kind": "variant",
+        "parent_outfit_id": "outfit_bolt_master_20",
+        "recipe_version": "aw-repair-04",
+        "title": "BOLT 正式活动 20 · 替换 1",
+        "description": "BOLT 人格的秋正式活动原创穿搭配方。",
+        "primary_persona": "BOLT",
+        "secondary_personas": [
+          "FLOU",
+          "HEIR"
+        ],
+        "persona_affinity": {
+          "BOLT": 0.96,
+          "FLOU": 0.65,
+          "HEIR": 0.55
+        },
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "正式活动"
+        ],
+        "season_tags": [
+          "秋"
+        ],
+        "weather_tags": [
+          "晴",
+          "室内"
+        ],
+        "presentation": [
+          "feminine"
+        ],
+        "intensity": "signature",
+        "formality": 4,
+        "garment_ids": [
+          "garment_neon_top_0104",
+          "garment_flou_bottom_0167",
+          "garment_bolt_outer_0046",
+          "garment_flou_shoes_0503",
+          "garment_flou_bag_0035"
+        ],
+        "visible_slots": [
+          "top",
+          "bottom",
+          "outer",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_neon_top_0104": "hero",
+          "garment_flou_bottom_0167": "support",
+          "garment_bolt_outer_0046": "support",
+          "garment_flou_shoes_0503": "support",
+          "garment_flou_bag_0035": "accent"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "浅色",
+          "saturation": "低饱和",
+          "harmony": "未判断",
+          "palette": [
+            "#abb3be",
+            "#9ba6b0",
+            "#cfc3b5",
+            "#b4a49c",
+            "#bfb2a9"
+          ]
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/40d3ed2f355fdd3de2623ebe.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source_outfit_id": "outfit_bolt_master_20_v1"
+        },
+        "design_intent": "用贴身、低袖量内层 g0104 替换 g0087，保留外套为主视觉；仅解除袖量冲突，整套重新看图"
+      },
+      "record_fingerprint": "792ca7a42f91ee2497e571ea95b56caf1b0dadb8885c9104031257509f3cbdca",
+      "asset_sha256": "454f06e228f81c63c16ee53af861ef3001fbbed4378b2ea1ee0de32a7a295a29",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/40d3ed2f355fdd3de2623ebe.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_neon_top_0104",
+            "slot": "top",
+            "box": [
+              450,
+              340,
+              800,
+              640
+            ]
+          },
+          {
+            "garment_id": "garment_flou_bottom_0167",
+            "slot": "bottom",
+            "box": [
+              478,
+              664,
+              771,
+              1330
+            ]
+          },
+          {
+            "garment_id": "garment_bolt_outer_0046",
+            "slot": "outer",
+            "box": [
+              70,
+              160,
+              420,
+              570
+            ]
+          },
+          {
+            "garment_id": "garment_flou_shoes_0503",
+            "slot": "shoes",
+            "box": [
+              925,
+              880,
+              1045,
+              1080
+            ]
+          },
+          {
+            "garment_id": "garment_flou_bag_0035",
+            "slot": "bag",
+            "box": [
+              883,
+              410,
+              1097,
+              730
+            ]
+          }
+        ]
+      },
+      "replacements": {
+        "garment_flou_top_0087": "garment_neon_top_0104"
+      },
+      "status": "pending_native_review",
+      "review": null
+    },
+    {
+      "source_outfit_id": "outfit_bolt_master_21_v1",
+      "source_token": "o0902",
+      "source_record_fingerprint": "120f37bbe85eaf7cb8aee5ad45828f50935a69f38ba712632a2461de38076c3f",
+      "new_record": {
+        "id": "outfit_bolt_master_21_v1__aw-repair-04",
+        "kind": "variant",
+        "parent_outfit_id": "outfit_bolt_master_21",
+        "recipe_version": "aw-repair-04",
+        "title": "BOLT 正式活动 21 · 替换 1",
+        "description": "BOLT 人格的秋正式活动原创穿搭配方。",
+        "primary_persona": "BOLT",
+        "secondary_personas": [
+          "FLOU",
+          "HEIR"
+        ],
+        "persona_affinity": {
+          "BOLT": 0.96,
+          "FLOU": 0.65,
+          "HEIR": 0.55
+        },
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "正式活动"
+        ],
+        "season_tags": [
+          "秋"
+        ],
+        "weather_tags": [
+          "晴",
+          "室内"
+        ],
+        "presentation": [
+          "feminine"
+        ],
+        "intensity": "signature",
+        "formality": 4,
+        "garment_ids": [
+          "garment_melt_top_0085",
+          "garment_flou_bottom_0183",
+          "garment_bolt_outer_0138",
+          "garment_bolt_shoes_0250",
+          "garment_bolt_bag_0049"
+        ],
+        "visible_slots": [
+          "top",
+          "bottom",
+          "outer",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_melt_top_0085": "hero",
+          "garment_flou_bottom_0183": "support",
+          "garment_bolt_outer_0138": "support",
+          "garment_bolt_shoes_0250": "support",
+          "garment_bolt_bag_0049": "accent"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "中等",
+          "saturation": "中饱和",
+          "harmony": "未判断",
+          "palette": [
+            "#d7cbbe",
+            "#aab3bc",
+            "#222635",
+            "#8e7d72",
+            "#220105"
+          ]
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/3960c53d22413c91aa1a2f81.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source_outfit_id": "outfit_bolt_master_21_v1"
+        },
+        "design_intent": "用贴身、低袖量内层 g0085 替换 g0362，保留外套为主视觉；仅解除袖量冲突，整套重新看图"
+      },
+      "record_fingerprint": "dab5d8a0a4f8a3f84055a4d5f83539d0f75983da202e8eb27594fa8acc8e758b",
+      "asset_sha256": "92480be32316fda21cfd935d54998033a0f4a50a66aab406659bb2f835e42853",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/3960c53d22413c91aa1a2f81.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_melt_top_0085",
+            "slot": "top",
+            "box": [
+              450,
+              180,
+              800,
+              640
+            ]
+          },
+          {
+            "garment_id": "garment_flou_bottom_0183",
+            "slot": "bottom",
+            "box": [
+              450,
+              664,
+              800,
+              1286
+            ]
+          },
+          {
+            "garment_id": "garment_bolt_outer_0138",
+            "slot": "outer",
+            "box": [
+              70,
+              160,
+              420,
+              506
+            ]
+          },
+          {
+            "garment_id": "garment_bolt_shoes_0250",
+            "slot": "shoes",
+            "box": [
+              893,
+              880,
+              1077,
+              1080
+            ]
+          },
+          {
+            "garment_id": "garment_bolt_bag_0049",
+            "slot": "bag",
+            "box": [
+              850,
+              421,
+              1130,
+              719
+            ]
+          }
+        ]
+      },
+      "replacements": {
+        "garment_bolt_top_0362": "garment_melt_top_0085"
+      },
+      "status": "pending_native_review",
+      "review": null
+    },
+    {
+      "source_outfit_id": "outfit_film_master_24_v1",
+      "source_token": "o0950",
+      "source_record_fingerprint": "a734d347d708d77f8ecf0c3dd91ab089df6fc1ca69ae04c297629a788391a664",
+      "new_record": {
+        "id": "outfit_film_master_24_v1__aw-repair-04",
+        "kind": "variant",
+        "parent_outfit_id": "outfit_film_master_24",
+        "recipe_version": "aw-repair-04",
+        "title": "FILM 旅行 24 · 替换 1",
+        "description": "FILM 人格的冬旅行原创穿搭配方。",
+        "primary_persona": "FILM",
+        "secondary_personas": [
+          "WABI",
+          "EASE"
+        ],
+        "persona_affinity": {
+          "FILM": 0.96,
+          "WABI": 0.65,
+          "EASE": 0.55
+        },
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "旅行"
+        ],
+        "season_tags": [
+          "冬"
+        ],
+        "weather_tags": [
+          "晴",
+          "室内"
+        ],
+        "presentation": [
+          "neutral"
+        ],
+        "intensity": "signature",
+        "formality": 3,
+        "garment_ids": [
+          "garment_neon_top_0104",
+          "garment_film_bottom_0171",
+          "garment_void_outer_0143",
+          "garment_film_shoes_0251",
+          "garment_film_bag_0283"
+        ],
+        "visible_slots": [
+          "top",
+          "bottom",
+          "outer",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_neon_top_0104": "hero",
+          "garment_film_bottom_0171": "support",
+          "garment_void_outer_0143": "support",
+          "garment_film_shoes_0251": "support",
+          "garment_film_bag_0283": "accent"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "深色",
+          "saturation": "低饱和",
+          "harmony": "未判断",
+          "palette": [
+            "#46423e",
+            "#655850",
+            "#2c2f38",
+            "#433933",
+            "#59493f"
+          ]
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/2885cb90878790befa7ac5f1.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source_outfit_id": "outfit_film_master_24_v1"
+        },
+        "design_intent": "用贴身、低袖量内层 g0104 替换 g0053，保留外套为主视觉；仅解除袖量冲突，整套重新看图"
+      },
+      "record_fingerprint": "59a7e6b68547366771a147fb4302606584142f74e7f1a4030025a18c73a7a09c",
+      "asset_sha256": "6f233c02fbf2b432c92c539231f4e0d17db76bad18d72377ea444abf2dfb0f29",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/2885cb90878790befa7ac5f1.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_neon_top_0104",
+            "slot": "top",
+            "box": [
+              450,
+              340,
+              800,
+              640
+            ]
+          },
+          {
+            "garment_id": "garment_film_bottom_0171",
+            "slot": "bottom",
+            "box": [
+              461,
+              664,
+              788,
+              1330
+            ]
+          },
+          {
+            "garment_id": "garment_void_outer_0143",
+            "slot": "outer",
+            "box": [
+              70,
+              160,
+              420,
+              720
+            ]
+          },
+          {
+            "garment_id": "garment_film_shoes_0251",
+            "slot": "shoes",
+            "box": [
+              929,
+              880,
+              1041,
+              1080
+            ]
+          },
+          {
+            "garment_id": "garment_film_bag_0283",
+            "slot": "bag",
+            "box": [
+              871,
+              410,
+              1108,
+              730
+            ]
+          }
+        ]
+      },
+      "replacements": {
+        "garment_film_top_0053": "garment_neon_top_0104"
+      },
+      "status": "pending_native_review",
+      "review": null
+    },
+    {
+      "source_outfit_id": "outfit_jade_master_20_v1",
+      "source_token": "o0991",
+      "source_record_fingerprint": "78a8854a294cf9c188099239ff1c8cbb2b0867f892dc829a92dca3fa9c1cf10a",
+      "new_record": {
+        "id": "outfit_jade_master_20_v1__aw-repair-04",
+        "kind": "variant",
+        "parent_outfit_id": "outfit_jade_master_20",
+        "recipe_version": "aw-repair-04",
+        "title": "JADE 正式活动 20 · 替换 1",
+        "description": "JADE 人格的秋正式活动原创穿搭配方。",
+        "primary_persona": "JADE",
+        "secondary_personas": [
+          "MUTE",
+          "WABI"
+        ],
+        "persona_affinity": {
+          "JADE": 0.96,
+          "MUTE": 0.65,
+          "WABI": 0.55
+        },
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "正式活动"
+        ],
+        "season_tags": [
+          "秋"
+        ],
+        "weather_tags": [
+          "晴",
+          "室内"
+        ],
+        "presentation": [
+          "feminine"
+        ],
+        "intensity": "signature",
+        "formality": 4,
+        "garment_ids": [
+          "garment_melt_top_0085",
+          "garment_jade_bottom_0412",
+          "garment_jade_outer_0156",
+          "garment_jade_shoes_0252",
+          "garment_jade_bag_0284"
+        ],
+        "visible_slots": [
+          "top",
+          "bottom",
+          "outer",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_melt_top_0085": "hero",
+          "garment_jade_bottom_0412": "support",
+          "garment_jade_outer_0156": "support",
+          "garment_jade_shoes_0252": "support",
+          "garment_jade_bag_0284": "accent"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "浅色",
+          "saturation": "低饱和",
+          "harmony": "未判断",
+          "palette": [
+            "#d4cdc3",
+            "#d9d2c7",
+            "#d0c8be",
+            "#dad2c8",
+            "#858a80"
+          ]
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/18c134d25adba596c6b5d75e.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source_outfit_id": "outfit_jade_master_20_v1"
+        },
+        "design_intent": "用贴身、低袖量内层 g0085 替换 g0056，保留外套为主视觉；仅解除袖量冲突，整套重新看图"
+      },
+      "record_fingerprint": "ca798e8cead2001cb2aa01cbf89759883fec67b57ed0bcca3a0e6626e7c246a0",
+      "asset_sha256": "db373c2f82e0c4ee8c6a3b0fe218980b7f90cf46b10bf324702204dc30706618",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/18c134d25adba596c6b5d75e.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_melt_top_0085",
+            "slot": "top",
+            "box": [
+              450,
+              180,
+              800,
+              640
+            ]
+          },
+          {
+            "garment_id": "garment_jade_bottom_0412",
+            "slot": "bottom",
+            "box": [
+              462,
+              664,
+              788,
+              1330
+            ]
+          },
+          {
+            "garment_id": "garment_jade_outer_0156",
+            "slot": "outer",
+            "box": [
+              70,
+              160,
+              420,
+              494
+            ]
+          },
+          {
+            "garment_id": "garment_jade_shoes_0252",
+            "slot": "shoes",
+            "box": [
+              856,
+              880,
+              1114,
+              1080
+            ]
+          },
+          {
+            "garment_id": "garment_jade_bag_0284",
+            "slot": "bag",
+            "box": [
+              850,
+              414,
+              1130,
+              725
+            ]
+          }
+        ]
+      },
+      "replacements": {
+        "garment_jade_top_0056": "garment_melt_top_0085"
+      },
+      "status": "pending_native_review",
+      "review": null
+    },
+    {
+      "source_outfit_id": "outfit_jade_master_21_v1",
+      "source_token": "o0992",
+      "source_record_fingerprint": "799c96b323eadb70a20724df924d5e666bdbc11b92b58e038aac7f92ef31410d",
+      "new_record": {
+        "id": "outfit_jade_master_21_v1__aw-repair-04",
+        "kind": "variant",
+        "parent_outfit_id": "outfit_jade_master_21",
+        "recipe_version": "aw-repair-04",
+        "title": "JADE 正式活动 21 · 替换 1",
+        "description": "JADE 人格的秋正式活动原创穿搭配方。",
+        "primary_persona": "JADE",
+        "secondary_personas": [
+          "MUTE",
+          "WABI"
+        ],
+        "persona_affinity": {
+          "JADE": 0.96,
+          "MUTE": 0.65,
+          "WABI": 0.55
+        },
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "正式活动"
+        ],
+        "season_tags": [
+          "秋"
+        ],
+        "weather_tags": [
+          "晴",
+          "室内"
+        ],
+        "presentation": [
+          "feminine"
+        ],
+        "intensity": "signature",
+        "formality": 4,
+        "garment_ids": [
+          "garment_noir_top_0094",
+          "garment_jade_bottom_0172",
+          "garment_jade_outer_0572",
+          "garment_jade_shoes_0268",
+          "garment_jade_bag_0524"
+        ],
+        "visible_slots": [
+          "top",
+          "bottom",
+          "outer",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_noir_top_0094": "hero",
+          "garment_jade_bottom_0172": "support",
+          "garment_jade_outer_0572": "support",
+          "garment_jade_shoes_0268": "support",
+          "garment_jade_bag_0524": "accent"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "中等",
+          "saturation": "低饱和",
+          "harmony": "未判断",
+          "palette": [
+            "#312c2a",
+            "#c4c1bb",
+            "#cdc3b6",
+            "#baa897",
+            "#2e2223"
+          ]
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/b8f5a695930c331dce7c56e7.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source_outfit_id": "outfit_jade_master_21_v1"
+        },
+        "design_intent": "用贴身、低袖量内层 g0094 替换 g0332，保留外套为主视觉；仅解除袖量冲突，整套重新看图"
+      },
+      "record_fingerprint": "f7d2e8fc8c00c34fbaa797a84cc8ccbdd3cf210fafb09a76d2f0fb608eba7ca1",
+      "asset_sha256": "085ebb6300bd2d606e2fa87cde2083c7f37af39caf1dad3258c7b8b37e319911",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/b8f5a695930c331dce7c56e7.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_noir_top_0094",
+            "slot": "top",
+            "box": [
+              475,
+              160,
+              775,
+              640
+            ]
+          },
+          {
+            "garment_id": "garment_jade_bottom_0172",
+            "slot": "bottom",
+            "box": [
+              492,
+              664,
+              758,
+              1330
+            ]
+          },
+          {
+            "garment_id": "garment_jade_outer_0572",
+            "slot": "outer",
+            "box": [
+              70,
+              160,
+              420,
+              824
+            ]
+          },
+          {
+            "garment_id": "garment_jade_shoes_0268",
+            "slot": "shoes",
+            "box": [
+              846,
+              880,
+              1124,
+              1080
+            ]
+          },
+          {
+            "garment_id": "garment_jade_bag_0524",
+            "slot": "bag",
+            "box": [
+              882,
+              410,
+              1098,
+              730
+            ]
+          }
+        ]
+      },
+      "replacements": {
+        "garment_jade_top_0332": "garment_noir_top_0094"
+      },
+      "status": "pending_native_review",
+      "review": null
+    },
+    {
+      "source_outfit_id": "outfit_jade_master_23_v1",
+      "source_token": "o0993",
+      "source_record_fingerprint": "5f104e965cd7d97aa9a9a6d98bdb504eef130d296bc10b57dce24e74512a0760",
+      "new_record": {
+        "id": "outfit_jade_master_23_v1__aw-repair-04",
+        "kind": "variant",
+        "parent_outfit_id": "outfit_jade_master_23",
+        "recipe_version": "aw-repair-04",
+        "title": "JADE 旅行 23 · 替换 1",
+        "description": "JADE 人格的秋旅行原创穿搭配方。",
+        "primary_persona": "JADE",
+        "secondary_personas": [
+          "MUTE",
+          "WABI"
+        ],
+        "persona_affinity": {
+          "JADE": 0.96,
+          "MUTE": 0.65,
+          "WABI": 0.55
+        },
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "旅行"
+        ],
+        "season_tags": [
+          "秋"
+        ],
+        "weather_tags": [
+          "晴",
+          "室内"
+        ],
+        "presentation": [
+          "neutral"
+        ],
+        "intensity": "signature",
+        "formality": 3,
+        "garment_ids": [
+          "garment_melt_top_0085",
+          "garment_jade_bottom_0058",
+          "garment_jade_outer_0572",
+          "garment_jade_shoes_0268",
+          "garment_jade_bag_0524"
+        ],
+        "visible_slots": [
+          "top",
+          "bottom",
+          "outer",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_melt_top_0085": "hero",
+          "garment_jade_bottom_0058": "support",
+          "garment_jade_outer_0572": "support",
+          "garment_jade_shoes_0268": "support",
+          "garment_jade_bag_0524": "accent"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "浅色",
+          "saturation": "低饱和",
+          "harmony": "未判断",
+          "palette": [
+            "#d4cdc3",
+            "#b3b0a0",
+            "#cdc3b6",
+            "#baa897",
+            "#2e2223"
+          ]
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/9385097ebcbec764f7513217.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source_outfit_id": "outfit_jade_master_23_v1"
+        },
+        "design_intent": "用贴身、低袖量内层 g0085 替换 g0056，保留外套为主视觉；仅解除袖量冲突，整套重新看图"
+      },
+      "record_fingerprint": "258a490a18b2a593b8a4c7491d909d1a671bf6c74d41704e006c7e4eb75a0f21",
+      "asset_sha256": "12088ce0b669a78aa1fa0eca17ab04eed5de6a5f3566841f1f5a8877c5bd5cbb",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/9385097ebcbec764f7513217.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_melt_top_0085",
+            "slot": "top",
+            "box": [
+              450,
+              180,
+              800,
+              640
+            ]
+          },
+          {
+            "garment_id": "garment_jade_bottom_0058",
+            "slot": "bottom",
+            "box": [
+              450,
+              664,
+              800,
+              1328
+            ]
+          },
+          {
+            "garment_id": "garment_jade_outer_0572",
+            "slot": "outer",
+            "box": [
+              70,
+              160,
+              420,
+              824
+            ]
+          },
+          {
+            "garment_id": "garment_jade_shoes_0268",
+            "slot": "shoes",
+            "box": [
+              846,
+              880,
+              1124,
+              1080
+            ]
+          },
+          {
+            "garment_id": "garment_jade_bag_0524",
+            "slot": "bag",
+            "box": [
+              882,
+              410,
+              1098,
+              730
+            ]
+          }
+        ]
+      },
+      "replacements": {
+        "garment_jade_top_0056": "garment_melt_top_0085"
+      },
+      "status": "pending_native_review",
+      "review": null
+    },
+    {
+      "source_outfit_id": "outfit_loop_master_22_v1",
+      "source_token": "o1031",
+      "source_record_fingerprint": "5c89dca67060b564191c9b01540a5ab646c75dc1a5ba07fe0172fd8fe2814e21",
+      "new_record": {
+        "id": "outfit_loop_master_22_v1__aw-repair-04",
+        "kind": "variant",
+        "parent_outfit_id": "outfit_loop_master_22",
+        "recipe_version": "aw-repair-04",
+        "title": "LOOP 旅行 22 · 替换 1",
+        "description": "LOOP 人格的秋旅行原创穿搭配方。",
+        "primary_persona": "LOOP",
+        "secondary_personas": [
+          "MUTE",
+          "EASE"
+        ],
+        "persona_affinity": {
+          "LOOP": 0.96,
+          "MUTE": 0.65,
+          "EASE": 0.55
+        },
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "旅行"
+        ],
+        "season_tags": [
+          "秋"
+        ],
+        "weather_tags": [
+          "晴",
+          "室内"
+        ],
+        "presentation": [
+          "neutral"
+        ],
+        "intensity": "signature",
+        "formality": 3,
+        "garment_ids": [
+          "garment_melt_top_0085",
+          "garment_loop_bottom_0413",
+          "garment_loop_outer_0157",
+          "garment_loop_shoes_0253",
+          "garment_loop_bag_0285"
+        ],
+        "visible_slots": [
+          "top",
+          "bottom",
+          "outer",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_melt_top_0085": "hero",
+          "garment_loop_bottom_0413": "support",
+          "garment_loop_outer_0157": "support",
+          "garment_loop_shoes_0253": "support",
+          "garment_loop_bag_0285": "accent"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "浅色",
+          "saturation": "无彩",
+          "harmony": "未判断",
+          "palette": [
+            "#c8c4bd",
+            "#57606d",
+            "#635852",
+            "#7c6d63",
+            "#c9c1b8"
+          ]
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/55d33d00f0d5086ddde7b463.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source_outfit_id": "outfit_loop_master_22_v1"
+        },
+        "design_intent": "用贴身、低袖量内层 g0085 替换 g0365，保留外套为主视觉；仅解除袖量冲突，整套重新看图"
+      },
+      "record_fingerprint": "62b83aad08cf71ea153aa5e6025da00932dcfe62840ceb38acff7a45895121aa",
+      "asset_sha256": "27900f731d63682f91320fdc7fdd648e23581affb3c0983e2486e8476dfaf12c",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/55d33d00f0d5086ddde7b463.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_melt_top_0085",
+            "slot": "top",
+            "box": [
+              450,
+              180,
+              800,
+              640
+            ]
+          },
+          {
+            "garment_id": "garment_loop_bottom_0413",
+            "slot": "bottom",
+            "box": [
+              450,
+              664,
+              800,
+              1247
+            ]
+          },
+          {
+            "garment_id": "garment_loop_outer_0157",
+            "slot": "outer",
+            "box": [
+              70,
+              160,
+              420,
+              547
+            ]
+          },
+          {
+            "garment_id": "garment_loop_shoes_0253",
+            "slot": "shoes",
+            "box": [
+              883,
+              880,
+              1086,
+              1080
+            ]
+          },
+          {
+            "garment_id": "garment_loop_bag_0285",
+            "slot": "bag",
+            "box": [
+              860,
+              410,
+              1119,
+              730
+            ]
+          }
+        ]
+      },
+      "replacements": {
+        "garment_loop_top_0365": "garment_melt_top_0085"
+      },
+      "status": "pending_native_review",
+      "review": null
+    },
+    {
+      "source_outfit_id": "outfit_noir_master_23_v1",
+      "source_token": "o1076",
+      "source_record_fingerprint": "75d173c0af8e714c3d21bbfe1684ad262c78c05eaf6e8e39b844695e2db89830",
+      "new_record": {
+        "id": "outfit_noir_master_23_v1__aw-repair-04",
+        "kind": "variant",
+        "parent_outfit_id": "outfit_noir_master_23",
+        "recipe_version": "aw-repair-04",
+        "title": "NOIR 旅行 23 · 替换 1",
+        "description": "NOIR 人格的秋旅行原创穿搭配方。",
+        "primary_persona": "NOIR",
+        "secondary_personas": [
+          "EDGE",
+          "MUTE"
+        ],
+        "persona_affinity": {
+          "NOIR": 0.96,
+          "EDGE": 0.65,
+          "MUTE": 0.55
+        },
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "旅行"
+        ],
+        "season_tags": [
+          "秋"
+        ],
+        "weather_tags": [
+          "晴",
+          "室内"
+        ],
+        "presentation": [
+          "neutral"
+        ],
+        "intensity": "signature",
+        "formality": 3,
+        "garment_ids": [
+          "garment_noir_top_0094",
+          "garment_noir_bottom_0398",
+          "garment_edge_outer_0041",
+          "garment_noir_shoes_0254",
+          "garment_noir_bag_0286"
+        ],
+        "visible_slots": [
+          "top",
+          "bottom",
+          "outer",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_noir_top_0094": "hero",
+          "garment_noir_bottom_0398": "support",
+          "garment_edge_outer_0041": "support",
+          "garment_noir_shoes_0254": "support",
+          "garment_noir_bag_0286": "accent"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "中等",
+          "saturation": "低饱和",
+          "harmony": "未判断",
+          "palette": [
+            "#201f20",
+            "#262627",
+            "#333133",
+            "#2e2c2d",
+            "#39373b"
+          ]
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/07a90ff4c09420262a463434.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source_outfit_id": "outfit_noir_master_23_v1"
+        },
+        "design_intent": "用贴身、低袖量内层 g0094 替换 g0329，保留外套为主视觉；仅解除袖量冲突，整套重新看图"
+      },
+      "record_fingerprint": "d18583b22109882626993d6f60369176f3c629ee09a8ade1977e296f7df6926e",
+      "asset_sha256": "0448be5e88052f200b429d5cac02b1508b8fc5dc302bf89bda0ce1c8e2646348",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/07a90ff4c09420262a463434.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_noir_top_0094",
+            "slot": "top",
+            "box": [
+              475,
+              160,
+              775,
+              640
+            ]
+          },
+          {
+            "garment_id": "garment_noir_bottom_0398",
+            "slot": "bottom",
+            "box": [
+              486,
+              664,
+              763,
+              1330
+            ]
+          },
+          {
+            "garment_id": "garment_edge_outer_0041",
+            "slot": "outer",
+            "box": [
+              70,
+              160,
+              420,
+              549
+            ]
+          },
+          {
+            "garment_id": "garment_noir_shoes_0254",
+            "slot": "shoes",
+            "box": [
+              895,
+              880,
+              1075,
+              1080
+            ]
+          },
+          {
+            "garment_id": "garment_noir_bag_0286",
+            "slot": "bag",
+            "box": [
+              851,
+              410,
+              1129,
+              730
+            ]
+          }
+        ]
+      },
+      "replacements": {
+        "garment_edge_top_0329": "garment_noir_top_0094"
+      },
+      "status": "pending_native_review",
+      "review": null
+    }
+  ],
+  "production_approved": false
+}

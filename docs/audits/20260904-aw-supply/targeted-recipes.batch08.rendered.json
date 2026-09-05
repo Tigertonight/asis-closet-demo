@@ -1,0 +1,2331 @@
+{
+  "schema_version": 1,
+  "batch_id": "aw-targeted-08",
+  "source_visual_version": "codex-visual-16b18cdcdca36dbc306a",
+  "entries": [
+    {
+      "target_palette": "ocean",
+      "hero": "n0048",
+      "new_record": {
+        "id": "outfit_bolt_aw-targeted-08_01",
+        "kind": "master",
+        "parent_outfit_id": null,
+        "recipe_version": "aw-targeted-08",
+        "title": "BOLT winter 日常设计 01",
+        "description": "盘活 n0048 已有视觉亲和中的 BOLT×ocean，补 pants 结构。",
+        "primary_persona": "BOLT",
+        "secondary_personas": [],
+        "persona_affinity": {},
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "日常"
+        ],
+        "season_tags": [
+          "冬"
+        ],
+        "weather_tags": [],
+        "presentation": [
+          "feminine"
+        ],
+        "intensity": "entry",
+        "formality": 3,
+        "garment_ids": [
+          "garment_aw_targeted07_outer_ocean_precise_01",
+          "garment_mute_top_0002",
+          "garment_mute_bottom_0003",
+          "garment_mute_shoes_0004",
+          "garment_mute_bag_0005"
+        ],
+        "visible_slots": [
+          "outer",
+          "top",
+          "bottom",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_aw_targeted07_outer_ocean_precise_01": "hero",
+          "garment_mute_top_0002": "support",
+          "garment_mute_bottom_0003": "support",
+          "garment_mute_shoes_0004": "support",
+          "garment_mute_bag_0005": "support"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "未判断",
+          "saturation": "未判断",
+          "harmony": "未判断",
+          "palette": []
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/4b109a971441445b1c858ed6.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source": "designer_recomposition",
+          "confidence": null,
+          "review_notes": [
+            "season, palette and persona are design targets pending whole-image review"
+          ]
+        }
+      },
+      "record_fingerprint": "a765ac50863b92ebce1c2fefbb3f23e791b628dc8d947d8619ab07995c035415",
+      "asset_sha256": "df36c5de1bf8ab1b554cf7441a695264ad379cf8b6177bd366a99f049aa2ca40",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/4b109a971441445b1c858ed6.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_aw_targeted07_outer_ocean_precise_01",
+            "slot": "outer",
+            "box": [
+              70,
+              160,
+              420,
+              922
+            ]
+          },
+          {
+            "garment_id": "garment_mute_top_0002",
+            "slot": "top",
+            "box": [
+              450,
+              271,
+              800,
+              640
+            ]
+          },
+          {
+            "garment_id": "garment_mute_bottom_0003",
+            "slot": "bottom",
+            "box": [
+              491,
+              664,
+              759,
+              1330
+            ]
+          },
+          {
+            "garment_id": "garment_mute_shoes_0004",
+            "slot": "shoes",
+            "box": [
+              891,
+              880,
+              1078,
+              1080
+            ]
+          },
+          {
+            "garment_id": "garment_mute_bag_0005",
+            "slot": "bag",
+            "box": [
+              851,
+              410,
+              1129,
+              730
+            ]
+          }
+        ]
+      },
+      "status": "pending_native_review",
+      "review": null
+    },
+    {
+      "target_palette": "ocean",
+      "hero": "n0048",
+      "new_record": {
+        "id": "outfit_bolt_aw-targeted-08_02",
+        "kind": "master",
+        "parent_outfit_id": null,
+        "recipe_version": "aw-targeted-08",
+        "title": "BOLT winter 日常设计 02",
+        "description": "盘活 n0048 已有视觉亲和中的 BOLT×ocean，补 skirt 结构。",
+        "primary_persona": "BOLT",
+        "secondary_personas": [],
+        "persona_affinity": {},
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "日常"
+        ],
+        "season_tags": [
+          "冬"
+        ],
+        "weather_tags": [],
+        "presentation": [
+          "feminine"
+        ],
+        "intensity": "entry",
+        "formality": 3,
+        "garment_ids": [
+          "garment_aw_targeted07_outer_ocean_precise_01",
+          "garment_mute_top_0337",
+          "garment_noir_skirt_0190",
+          "garment_noir_shoes_0069",
+          "garment_noir_bag_0070"
+        ],
+        "visible_slots": [
+          "outer",
+          "top",
+          "skirt",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_aw_targeted07_outer_ocean_precise_01": "hero",
+          "garment_mute_top_0337": "support",
+          "garment_noir_skirt_0190": "support",
+          "garment_noir_shoes_0069": "support",
+          "garment_noir_bag_0070": "support"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "未判断",
+          "saturation": "未判断",
+          "harmony": "未判断",
+          "palette": []
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/959980ba813a48104cf8361f.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source": "designer_recomposition",
+          "confidence": null,
+          "review_notes": [
+            "season, palette and persona are design targets pending whole-image review"
+          ]
+        }
+      },
+      "record_fingerprint": "60410661e27a40eadb898c430e3a50f0af7bfb339f2df71206208d7b38c5e44f",
+      "asset_sha256": "4468ce9f0b7caadc52a2b9de79ed8b36f4bd20f22aae9bda3819a40132d7a50c",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/959980ba813a48104cf8361f.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_aw_targeted07_outer_ocean_precise_01",
+            "slot": "outer",
+            "box": [
+              70,
+              160,
+              420,
+              922
+            ]
+          },
+          {
+            "garment_id": "garment_mute_top_0337",
+            "slot": "top",
+            "box": [
+              450,
+              239,
+              800,
+              640
+            ]
+          },
+          {
+            "garment_id": "garment_noir_skirt_0190",
+            "slot": "skirt",
+            "box": [
+              451,
+              664,
+              799,
+              1330
+            ]
+          },
+          {
+            "garment_id": "garment_noir_shoes_0069",
+            "slot": "shoes",
+            "box": [
+              921,
+              880,
+              1049,
+              1080
+            ]
+          },
+          {
+            "garment_id": "garment_noir_bag_0070",
+            "slot": "bag",
+            "box": [
+              850,
+              441,
+              1130,
+              698
+            ]
+          }
+        ]
+      },
+      "status": "pending_native_review",
+      "review": null
+    },
+    {
+      "target_palette": "ocean",
+      "hero": "n0049",
+      "new_record": {
+        "id": "outfit_wabi_aw-targeted-08_03",
+        "kind": "master",
+        "parent_outfit_id": null,
+        "recipe_version": "aw-targeted-08",
+        "title": "WABI winter 日常设计 03",
+        "description": "盘活 n0049 已有视觉亲和中的 WABI×ocean，补 pants 结构。",
+        "primary_persona": "WABI",
+        "secondary_personas": [],
+        "persona_affinity": {},
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "日常"
+        ],
+        "season_tags": [
+          "冬"
+        ],
+        "weather_tags": [],
+        "presentation": [
+          "feminine"
+        ],
+        "intensity": "entry",
+        "formality": 3,
+        "garment_ids": [
+          "garment_aw_targeted07_outer_ocean_soft_01",
+          "garment_ease_top_0084",
+          "garment_ease_bottom_0164",
+          "garment_loop_shoes_0253",
+          "garment_ease_bag_0276"
+        ],
+        "visible_slots": [
+          "outer",
+          "top",
+          "bottom",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_aw_targeted07_outer_ocean_soft_01": "hero",
+          "garment_ease_top_0084": "support",
+          "garment_ease_bottom_0164": "support",
+          "garment_loop_shoes_0253": "support",
+          "garment_ease_bag_0276": "support"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "未判断",
+          "saturation": "未判断",
+          "harmony": "未判断",
+          "palette": []
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/0426b0d82c38f05ca7f40aab.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source": "designer_recomposition",
+          "confidence": null,
+          "review_notes": [
+            "season, palette and persona are design targets pending whole-image review"
+          ]
+        }
+      },
+      "record_fingerprint": "f3f5a245aca9cc4b29c0c9b9fdbe5b2341364ac9240dc73e4223d7c4a1638b73",
+      "asset_sha256": "97fdbed41dcb171228c5828345dcff72458842ae417d3aa3923ffe5602b27801",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/0426b0d82c38f05ca7f40aab.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_aw_targeted07_outer_ocean_soft_01",
+            "slot": "outer",
+            "box": [
+              70,
+              160,
+              420,
+              846
+            ]
+          },
+          {
+            "garment_id": "garment_ease_top_0084",
+            "slot": "top",
+            "box": [
+              450,
+              286,
+              800,
+              640
+            ]
+          },
+          {
+            "garment_id": "garment_ease_bottom_0164",
+            "slot": "bottom",
+            "box": [
+              472,
+              664,
+              777,
+              1330
+            ]
+          },
+          {
+            "garment_id": "garment_loop_shoes_0253",
+            "slot": "shoes",
+            "box": [
+              883,
+              880,
+              1086,
+              1080
+            ]
+          },
+          {
+            "garment_id": "garment_ease_bag_0276",
+            "slot": "bag",
+            "box": [
+              866,
+              410,
+              1114,
+              730
+            ]
+          }
+        ]
+      },
+      "status": "pending_native_review",
+      "review": null
+    },
+    {
+      "target_palette": "ocean",
+      "hero": "n0049",
+      "new_record": {
+        "id": "outfit_wabi_aw-targeted-08_04",
+        "kind": "master",
+        "parent_outfit_id": null,
+        "recipe_version": "aw-targeted-08",
+        "title": "WABI winter 日常设计 04",
+        "description": "盘活 n0049 已有视觉亲和中的 WABI×ocean，补 dress 结构。",
+        "primary_persona": "WABI",
+        "secondary_personas": [],
+        "persona_affinity": {},
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "日常"
+        ],
+        "season_tags": [
+          "冬"
+        ],
+        "weather_tags": [],
+        "presentation": [
+          "feminine"
+        ],
+        "intensity": "entry",
+        "formality": 3,
+        "garment_ids": [
+          "garment_aw_targeted07_outer_ocean_soft_01",
+          "garment_wabi_dress_0230",
+          "garment_melt_shoes_0245",
+          "garment_ease_bag_0276"
+        ],
+        "visible_slots": [
+          "outer",
+          "dress",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_aw_targeted07_outer_ocean_soft_01": "hero",
+          "garment_wabi_dress_0230": "support",
+          "garment_melt_shoes_0245": "support",
+          "garment_ease_bag_0276": "support"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "未判断",
+          "saturation": "未判断",
+          "harmony": "未判断",
+          "palette": []
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/831a0093d4d4fc6083e3fe88.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source": "designer_recomposition",
+          "confidence": null,
+          "review_notes": [
+            "season, palette and persona are design targets pending whole-image review"
+          ]
+        }
+      },
+      "record_fingerprint": "c84e0212d38d2d7154a0911b617069f57ceb20175c78dd52a116ba3234a721fb",
+      "asset_sha256": "5ad214e014ba1ec9e84d3da382543bad54f8c5b6745adbe72131257135b85b8c",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/831a0093d4d4fc6083e3fe88.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_aw_targeted07_outer_ocean_soft_01",
+            "slot": "outer",
+            "box": [
+              70,
+              160,
+              420,
+              846
+            ]
+          },
+          {
+            "garment_id": "garment_wabi_dress_0230",
+            "slot": "dress",
+            "box": [
+              450,
+              160,
+              800,
+              764
+            ]
+          },
+          {
+            "garment_id": "garment_melt_shoes_0245",
+            "slot": "shoes",
+            "box": [
+              930,
+              880,
+              1040,
+              1080
+            ]
+          },
+          {
+            "garment_id": "garment_ease_bag_0276",
+            "slot": "bag",
+            "box": [
+              866,
+              410,
+              1114,
+              730
+            ]
+          }
+        ]
+      },
+      "status": "pending_native_review",
+      "review": null
+    },
+    {
+      "target_palette": "earth",
+      "hero": "n0050",
+      "new_record": {
+        "id": "outfit_heir_aw-targeted-08_05",
+        "kind": "master",
+        "parent_outfit_id": null,
+        "recipe_version": "aw-targeted-08",
+        "title": "HEIR winter 日常设计 05",
+        "description": "盘活 n0050 已有视觉亲和中的 HEIR×earth，补 pants 结构。",
+        "primary_persona": "HEIR",
+        "secondary_personas": [],
+        "persona_affinity": {},
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "日常"
+        ],
+        "season_tags": [
+          "冬"
+        ],
+        "weather_tags": [],
+        "presentation": [
+          "feminine"
+        ],
+        "intensity": "entry",
+        "formality": 3,
+        "garment_ids": [
+          "garment_aw_targeted07_outer_earth_precise_01",
+          "garment_iced_top_0114",
+          "garment_jade_bottom_0172",
+          "garment_iced_shoes_0258",
+          "garment_mute_bag_0289"
+        ],
+        "visible_slots": [
+          "outer",
+          "top",
+          "bottom",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_aw_targeted07_outer_earth_precise_01": "hero",
+          "garment_iced_top_0114": "support",
+          "garment_jade_bottom_0172": "support",
+          "garment_iced_shoes_0258": "support",
+          "garment_mute_bag_0289": "support"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "未判断",
+          "saturation": "未判断",
+          "harmony": "未判断",
+          "palette": []
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/eeaf64a9eb4d4b736914759b.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source": "designer_recomposition",
+          "confidence": null,
+          "review_notes": [
+            "season, palette and persona are design targets pending whole-image review"
+          ]
+        }
+      },
+      "record_fingerprint": "96e7c3046771bf67b02599971cbabae2afbc2c71fc96cefe50a82e053994c88a",
+      "asset_sha256": "2e39f549e7bb9824f0cc7614d7307efa936cbcad6c367246486cba52b2e3d666",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/eeaf64a9eb4d4b736914759b.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_aw_targeted07_outer_earth_precise_01",
+            "slot": "outer",
+            "box": [
+              70,
+              160,
+              420,
+              958
+            ]
+          },
+          {
+            "garment_id": "garment_iced_top_0114",
+            "slot": "top",
+            "box": [
+              450,
+              299,
+              800,
+              640
+            ]
+          },
+          {
+            "garment_id": "garment_jade_bottom_0172",
+            "slot": "bottom",
+            "box": [
+              492,
+              664,
+              758,
+              1330
+            ]
+          },
+          {
+            "garment_id": "garment_iced_shoes_0258",
+            "slot": "shoes",
+            "box": [
+              879,
+              880,
+              1091,
+              1080
+            ]
+          },
+          {
+            "garment_id": "garment_mute_bag_0289",
+            "slot": "bag",
+            "box": [
+              862,
+              410,
+              1118,
+              730
+            ]
+          }
+        ]
+      },
+      "status": "pending_native_review",
+      "review": null
+    },
+    {
+      "target_palette": "earth",
+      "hero": "n0050",
+      "new_record": {
+        "id": "outfit_heir_aw-targeted-08_06",
+        "kind": "master",
+        "parent_outfit_id": null,
+        "recipe_version": "aw-targeted-08",
+        "title": "HEIR winter 日常设计 06",
+        "description": "盘活 n0050 已有视觉亲和中的 HEIR×earth，补 dress 结构。",
+        "primary_persona": "HEIR",
+        "secondary_personas": [],
+        "persona_affinity": {},
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "日常"
+        ],
+        "season_tags": [
+          "冬"
+        ],
+        "weather_tags": [],
+        "presentation": [
+          "feminine"
+        ],
+        "intensity": "entry",
+        "formality": 3,
+        "garment_ids": [
+          "garment_aw_targeted07_outer_earth_precise_01",
+          "garment_edge_dress_0217",
+          "garment_mute_shoes_0004",
+          "garment_noir_bag_0270"
+        ],
+        "visible_slots": [
+          "outer",
+          "dress",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_aw_targeted07_outer_earth_precise_01": "hero",
+          "garment_edge_dress_0217": "support",
+          "garment_mute_shoes_0004": "support",
+          "garment_noir_bag_0270": "support"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "未判断",
+          "saturation": "未判断",
+          "harmony": "未判断",
+          "palette": []
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/54e027539af737150d42f0b5.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source": "designer_recomposition",
+          "confidence": null,
+          "review_notes": [
+            "season, palette and persona are design targets pending whole-image review"
+          ]
+        }
+      },
+      "record_fingerprint": "a3b7cb216f32bb07720abe5b4b24ec39ec46ae638e6c9bdac179f058315b8d3c",
+      "asset_sha256": "d236e15953782c4868d4a1ce0f496f978948d88e5f9f71c26a4fb33771687f10",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/54e027539af737150d42f0b5.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_aw_targeted07_outer_earth_precise_01",
+            "slot": "outer",
+            "box": [
+              70,
+              160,
+              420,
+              958
+            ]
+          },
+          {
+            "garment_id": "garment_edge_dress_0217",
+            "slot": "dress",
+            "box": [
+              450,
+              160,
+              800,
+              958
+            ]
+          },
+          {
+            "garment_id": "garment_mute_shoes_0004",
+            "slot": "shoes",
+            "box": [
+              891,
+              880,
+              1078,
+              1080
+            ]
+          },
+          {
+            "garment_id": "garment_noir_bag_0270",
+            "slot": "bag",
+            "box": [
+              865,
+              410,
+              1114,
+              730
+            ]
+          }
+        ]
+      },
+      "status": "pending_native_review",
+      "review": null
+    },
+    {
+      "target_palette": "earth",
+      "hero": "n0051",
+      "new_record": {
+        "id": "outfit_ease_aw-targeted-08_07",
+        "kind": "master",
+        "parent_outfit_id": null,
+        "recipe_version": "aw-targeted-08",
+        "title": "EASE winter 日常设计 07",
+        "description": "盘活 n0051 已有视觉亲和中的 EASE×earth，补 skirt 结构。",
+        "primary_persona": "EASE",
+        "secondary_personas": [],
+        "persona_affinity": {},
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "日常"
+        ],
+        "season_tags": [
+          "冬"
+        ],
+        "weather_tags": [],
+        "presentation": [
+          "feminine"
+        ],
+        "intensity": "entry",
+        "formality": 3,
+        "garment_ids": [
+          "garment_aw_targeted07_outer_earth_soft_01",
+          "garment_wabi_top_0086",
+          "garment_wabi_skirt_0198",
+          "garment_wabi_shoes_0246",
+          "garment_wabi_bag_0278"
+        ],
+        "visible_slots": [
+          "outer",
+          "top",
+          "skirt",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_aw_targeted07_outer_earth_soft_01": "hero",
+          "garment_wabi_top_0086": "support",
+          "garment_wabi_skirt_0198": "support",
+          "garment_wabi_shoes_0246": "support",
+          "garment_wabi_bag_0278": "support"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "未判断",
+          "saturation": "未判断",
+          "harmony": "未判断",
+          "palette": []
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/0ffc1f17946e97d5e8e8ea84.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source": "designer_recomposition",
+          "confidence": null,
+          "review_notes": [
+            "season, palette and persona are design targets pending whole-image review"
+          ]
+        }
+      },
+      "record_fingerprint": "fff8fc059f33db7c9b2de4888dfabaeaef627681d21a7356c893e95dc68974ea",
+      "asset_sha256": "b4717b860170b79715ee46ecb9acbda146261d15cfd563eebe4d65aa15e669d7",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/0ffc1f17946e97d5e8e8ea84.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_aw_targeted07_outer_earth_soft_01",
+            "slot": "outer",
+            "box": [
+              70,
+              160,
+              420,
+              664
+            ]
+          },
+          {
+            "garment_id": "garment_wabi_top_0086",
+            "slot": "top",
+            "box": [
+              450,
+              359,
+              800,
+              640
+            ]
+          },
+          {
+            "garment_id": "garment_wabi_skirt_0198",
+            "slot": "skirt",
+            "box": [
+              450,
+              664,
+              800,
+              1117
+            ]
+          },
+          {
+            "garment_id": "garment_wabi_shoes_0246",
+            "slot": "shoes",
+            "box": [
+              841,
+              880,
+              1128,
+              1080
+            ]
+          },
+          {
+            "garment_id": "garment_wabi_bag_0278",
+            "slot": "bag",
+            "box": [
+              892,
+              410,
+              1088,
+              730
+            ]
+          }
+        ]
+      },
+      "status": "pending_native_review",
+      "review": null
+    },
+    {
+      "target_palette": "earth",
+      "hero": "n0051",
+      "new_record": {
+        "id": "outfit_ease_aw-targeted-08_08",
+        "kind": "master",
+        "parent_outfit_id": null,
+        "recipe_version": "aw-targeted-08",
+        "title": "EASE winter 日常设计 08",
+        "description": "盘活 n0051 已有视觉亲和中的 EASE×earth，补 dress 结构。",
+        "primary_persona": "EASE",
+        "secondary_personas": [],
+        "persona_affinity": {},
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "日常"
+        ],
+        "season_tags": [
+          "冬"
+        ],
+        "weather_tags": [],
+        "presentation": [
+          "feminine"
+        ],
+        "intensity": "entry",
+        "formality": 3,
+        "garment_ids": [
+          "garment_aw_targeted07_outer_earth_soft_01",
+          "garment_wabi_dress_0230",
+          "garment_melt_shoes_0245",
+          "garment_ease_bag_0276"
+        ],
+        "visible_slots": [
+          "outer",
+          "dress",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_aw_targeted07_outer_earth_soft_01": "hero",
+          "garment_wabi_dress_0230": "support",
+          "garment_melt_shoes_0245": "support",
+          "garment_ease_bag_0276": "support"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "未判断",
+          "saturation": "未判断",
+          "harmony": "未判断",
+          "palette": []
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/69a4d09e9244547a7707bf41.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source": "designer_recomposition",
+          "confidence": null,
+          "review_notes": [
+            "season, palette and persona are design targets pending whole-image review"
+          ]
+        }
+      },
+      "record_fingerprint": "bd9b05d8682f3bdfdc11429166ccfcf04ef84d2ef687b641d021205e94295db8",
+      "asset_sha256": "56fe7e9e51d6ad95e46a3b57cc16e921c180d6e2ca52570a376c551facd73c00",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/69a4d09e9244547a7707bf41.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_aw_targeted07_outer_earth_soft_01",
+            "slot": "outer",
+            "box": [
+              70,
+              160,
+              420,
+              664
+            ]
+          },
+          {
+            "garment_id": "garment_wabi_dress_0230",
+            "slot": "dress",
+            "box": [
+              450,
+              160,
+              800,
+              764
+            ]
+          },
+          {
+            "garment_id": "garment_melt_shoes_0245",
+            "slot": "shoes",
+            "box": [
+              930,
+              880,
+              1040,
+              1080
+            ]
+          },
+          {
+            "garment_id": "garment_ease_bag_0276",
+            "slot": "bag",
+            "box": [
+              866,
+              410,
+              1114,
+              730
+            ]
+          }
+        ]
+      },
+      "status": "pending_native_review",
+      "review": null
+    },
+    {
+      "target_palette": "bright",
+      "hero": "n0052",
+      "new_record": {
+        "id": "outfit_neon_aw-targeted-08_09",
+        "kind": "master",
+        "parent_outfit_id": null,
+        "recipe_version": "aw-targeted-08",
+        "title": "NEON winter 日常设计 09",
+        "description": "盘活 n0052 已有视觉亲和中的 NEON×bright，补 pants 结构。",
+        "primary_persona": "NEON",
+        "secondary_personas": [],
+        "persona_affinity": {},
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "日常"
+        ],
+        "season_tags": [
+          "冬"
+        ],
+        "weather_tags": [],
+        "presentation": [
+          "feminine"
+        ],
+        "intensity": "entry",
+        "formality": 3,
+        "garment_ids": [
+          "garment_aw_targeted07_outer_bright_sharp_01",
+          "garment_mute_top_0002",
+          "garment_mute_bottom_0003",
+          "garment_mute_shoes_0004",
+          "garment_mute_bag_0005"
+        ],
+        "visible_slots": [
+          "outer",
+          "top",
+          "bottom",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_aw_targeted07_outer_bright_sharp_01": "hero",
+          "garment_mute_top_0002": "support",
+          "garment_mute_bottom_0003": "support",
+          "garment_mute_shoes_0004": "support",
+          "garment_mute_bag_0005": "support"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "未判断",
+          "saturation": "未判断",
+          "harmony": "未判断",
+          "palette": []
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/5fd094f1684fe583b7020b2b.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source": "designer_recomposition",
+          "confidence": null,
+          "review_notes": [
+            "season, palette and persona are design targets pending whole-image review"
+          ]
+        }
+      },
+      "record_fingerprint": "f9ac27427c7e52a213f1bcafcb5b4a161b1f374978da0e8dff727360a2910b30",
+      "asset_sha256": "dc743be54e35e5d80a09460e8946f9cd03906ec04f0eeff3accf991c640d5411",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/5fd094f1684fe583b7020b2b.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_aw_targeted07_outer_bright_sharp_01",
+            "slot": "outer",
+            "box": [
+              70,
+              160,
+              420,
+              656
+            ]
+          },
+          {
+            "garment_id": "garment_mute_top_0002",
+            "slot": "top",
+            "box": [
+              450,
+              271,
+              800,
+              640
+            ]
+          },
+          {
+            "garment_id": "garment_mute_bottom_0003",
+            "slot": "bottom",
+            "box": [
+              491,
+              664,
+              759,
+              1330
+            ]
+          },
+          {
+            "garment_id": "garment_mute_shoes_0004",
+            "slot": "shoes",
+            "box": [
+              891,
+              880,
+              1078,
+              1080
+            ]
+          },
+          {
+            "garment_id": "garment_mute_bag_0005",
+            "slot": "bag",
+            "box": [
+              851,
+              410,
+              1129,
+              730
+            ]
+          }
+        ]
+      },
+      "status": "pending_native_review",
+      "review": null
+    },
+    {
+      "target_palette": "bright",
+      "hero": "n0052",
+      "new_record": {
+        "id": "outfit_neon_aw-targeted-08_10",
+        "kind": "master",
+        "parent_outfit_id": null,
+        "recipe_version": "aw-targeted-08",
+        "title": "NEON winter 日常设计 10",
+        "description": "盘活 n0052 已有视觉亲和中的 NEON×bright，补 dress 结构。",
+        "primary_persona": "NEON",
+        "secondary_personas": [],
+        "persona_affinity": {},
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "日常"
+        ],
+        "season_tags": [
+          "冬"
+        ],
+        "weather_tags": [],
+        "presentation": [
+          "feminine"
+        ],
+        "intensity": "entry",
+        "formality": 3,
+        "garment_ids": [
+          "garment_aw_targeted07_outer_bright_sharp_01",
+          "garment_edge_dress_0217",
+          "garment_mute_shoes_0004",
+          "garment_noir_bag_0270"
+        ],
+        "visible_slots": [
+          "outer",
+          "dress",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_aw_targeted07_outer_bright_sharp_01": "hero",
+          "garment_edge_dress_0217": "support",
+          "garment_mute_shoes_0004": "support",
+          "garment_noir_bag_0270": "support"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "未判断",
+          "saturation": "未判断",
+          "harmony": "未判断",
+          "palette": []
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/cd175f59ebd81df6cf710836.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source": "designer_recomposition",
+          "confidence": null,
+          "review_notes": [
+            "season, palette and persona are design targets pending whole-image review"
+          ]
+        }
+      },
+      "record_fingerprint": "6e71777293a1bf4790beeb86488d9e49f53452b62056a0874a375fbd35078cb3",
+      "asset_sha256": "9da1a69a227d6cef7b031706d37d4d063278fe13bc91ab6f1339d763a478dd22",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/cd175f59ebd81df6cf710836.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_aw_targeted07_outer_bright_sharp_01",
+            "slot": "outer",
+            "box": [
+              70,
+              160,
+              420,
+              656
+            ]
+          },
+          {
+            "garment_id": "garment_edge_dress_0217",
+            "slot": "dress",
+            "box": [
+              450,
+              160,
+              800,
+              958
+            ]
+          },
+          {
+            "garment_id": "garment_mute_shoes_0004",
+            "slot": "shoes",
+            "box": [
+              891,
+              880,
+              1078,
+              1080
+            ]
+          },
+          {
+            "garment_id": "garment_noir_bag_0270",
+            "slot": "bag",
+            "box": [
+              865,
+              410,
+              1114,
+              730
+            ]
+          }
+        ]
+      },
+      "status": "pending_native_review",
+      "review": null
+    },
+    {
+      "target_palette": "bright",
+      "hero": "n0053",
+      "new_record": {
+        "id": "outfit_loop_aw-targeted-08_11",
+        "kind": "master",
+        "parent_outfit_id": null,
+        "recipe_version": "aw-targeted-08",
+        "title": "LOOP winter 日常设计 11",
+        "description": "盘活 n0053 已有视觉亲和中的 LOOP×bright，补 skirt 结构。",
+        "primary_persona": "LOOP",
+        "secondary_personas": [],
+        "persona_affinity": {},
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "日常"
+        ],
+        "season_tags": [
+          "冬"
+        ],
+        "weather_tags": [],
+        "presentation": [
+          "feminine"
+        ],
+        "intensity": "entry",
+        "formality": 3,
+        "garment_ids": [
+          "garment_aw_targeted07_outer_bright_soft_01",
+          "garment_wabi_top_0086",
+          "garment_wabi_skirt_0198",
+          "garment_wabi_shoes_0246",
+          "garment_wabi_bag_0278"
+        ],
+        "visible_slots": [
+          "outer",
+          "top",
+          "skirt",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_aw_targeted07_outer_bright_soft_01": "hero",
+          "garment_wabi_top_0086": "support",
+          "garment_wabi_skirt_0198": "support",
+          "garment_wabi_shoes_0246": "support",
+          "garment_wabi_bag_0278": "support"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "未判断",
+          "saturation": "未判断",
+          "harmony": "未判断",
+          "palette": []
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/4ccabe707dc19dd653d02387.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source": "designer_recomposition",
+          "confidence": null,
+          "review_notes": [
+            "season, palette and persona are design targets pending whole-image review"
+          ]
+        }
+      },
+      "record_fingerprint": "c77192f9759b75bf139ba0d14f8d923fb5b5b70d5856076f7f5bb537c4c255a2",
+      "asset_sha256": "4bd92678549230113b51280cd94f68dce32383f2eac51f41f8c9d582e16113ee",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/4ccabe707dc19dd653d02387.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_aw_targeted07_outer_bright_soft_01",
+            "slot": "outer",
+            "box": [
+              70,
+              160,
+              420,
+              725
+            ]
+          },
+          {
+            "garment_id": "garment_wabi_top_0086",
+            "slot": "top",
+            "box": [
+              450,
+              359,
+              800,
+              640
+            ]
+          },
+          {
+            "garment_id": "garment_wabi_skirt_0198",
+            "slot": "skirt",
+            "box": [
+              450,
+              664,
+              800,
+              1117
+            ]
+          },
+          {
+            "garment_id": "garment_wabi_shoes_0246",
+            "slot": "shoes",
+            "box": [
+              841,
+              880,
+              1128,
+              1080
+            ]
+          },
+          {
+            "garment_id": "garment_wabi_bag_0278",
+            "slot": "bag",
+            "box": [
+              892,
+              410,
+              1088,
+              730
+            ]
+          }
+        ]
+      },
+      "status": "pending_native_review",
+      "review": null
+    },
+    {
+      "target_palette": "bright",
+      "hero": "n0053",
+      "new_record": {
+        "id": "outfit_loop_aw-targeted-08_12",
+        "kind": "master",
+        "parent_outfit_id": null,
+        "recipe_version": "aw-targeted-08",
+        "title": "LOOP winter 日常设计 12",
+        "description": "盘活 n0053 已有视觉亲和中的 LOOP×bright，补 dress 结构。",
+        "primary_persona": "LOOP",
+        "secondary_personas": [],
+        "persona_affinity": {},
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "日常"
+        ],
+        "season_tags": [
+          "冬"
+        ],
+        "weather_tags": [],
+        "presentation": [
+          "feminine"
+        ],
+        "intensity": "entry",
+        "formality": 3,
+        "garment_ids": [
+          "garment_aw_targeted07_outer_bright_soft_01",
+          "garment_wabi_dress_0230",
+          "garment_melt_shoes_0245",
+          "garment_ease_bag_0276"
+        ],
+        "visible_slots": [
+          "outer",
+          "dress",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_aw_targeted07_outer_bright_soft_01": "hero",
+          "garment_wabi_dress_0230": "support",
+          "garment_melt_shoes_0245": "support",
+          "garment_ease_bag_0276": "support"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "未判断",
+          "saturation": "未判断",
+          "harmony": "未判断",
+          "palette": []
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/d684382e3fcadb1e91e74d7b.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source": "designer_recomposition",
+          "confidence": null,
+          "review_notes": [
+            "season, palette and persona are design targets pending whole-image review"
+          ]
+        }
+      },
+      "record_fingerprint": "c28202ba815033de0b64c2c55a648e08729cd61d2979ba091cbdbc3405d98ca0",
+      "asset_sha256": "a23f3194c5b5252cb9a818f3b81e248a760fc773efe11f81cbb0ccfe5bfae550",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/d684382e3fcadb1e91e74d7b.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_aw_targeted07_outer_bright_soft_01",
+            "slot": "outer",
+            "box": [
+              70,
+              160,
+              420,
+              725
+            ]
+          },
+          {
+            "garment_id": "garment_wabi_dress_0230",
+            "slot": "dress",
+            "box": [
+              450,
+              160,
+              800,
+              764
+            ]
+          },
+          {
+            "garment_id": "garment_melt_shoes_0245",
+            "slot": "shoes",
+            "box": [
+              930,
+              880,
+              1040,
+              1080
+            ]
+          },
+          {
+            "garment_id": "garment_ease_bag_0276",
+            "slot": "bag",
+            "box": [
+              866,
+              410,
+              1114,
+              730
+            ]
+          }
+        ]
+      },
+      "status": "pending_native_review",
+      "review": null
+    },
+    {
+      "target_palette": "jewel",
+      "hero": "n0054",
+      "new_record": {
+        "id": "outfit_heir_aw-targeted-08_13",
+        "kind": "master",
+        "parent_outfit_id": null,
+        "recipe_version": "aw-targeted-08",
+        "title": "HEIR winter 日常设计 13",
+        "description": "盘活 n0054 已有视觉亲和中的 HEIR×jewel，补 skirt 结构。",
+        "primary_persona": "HEIR",
+        "secondary_personas": [],
+        "persona_affinity": {},
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "日常"
+        ],
+        "season_tags": [
+          "冬"
+        ],
+        "weather_tags": [],
+        "presentation": [
+          "feminine"
+        ],
+        "intensity": "entry",
+        "formality": 3,
+        "garment_ids": [
+          "garment_aw_targeted07_outer_jewel_sharp_01",
+          "garment_mute_top_0337",
+          "garment_noir_skirt_0190",
+          "garment_noir_shoes_0069",
+          "garment_noir_bag_0070"
+        ],
+        "visible_slots": [
+          "outer",
+          "top",
+          "skirt",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_aw_targeted07_outer_jewel_sharp_01": "hero",
+          "garment_mute_top_0337": "support",
+          "garment_noir_skirt_0190": "support",
+          "garment_noir_shoes_0069": "support",
+          "garment_noir_bag_0070": "support"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "未判断",
+          "saturation": "未判断",
+          "harmony": "未判断",
+          "palette": []
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/57b9d96d8e40f0b9ae0de52f.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source": "designer_recomposition",
+          "confidence": null,
+          "review_notes": [
+            "season, palette and persona are design targets pending whole-image review"
+          ]
+        }
+      },
+      "record_fingerprint": "a978b3e611ae372d0abcc02d292be144d1c8b92444eb6d9c5c662cf68d6aca27",
+      "asset_sha256": "a8e29e8a075bc1c96f509015ed66d351b9e2dc2536abffb472398a4d341320b8",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/57b9d96d8e40f0b9ae0de52f.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_aw_targeted07_outer_jewel_sharp_01",
+            "slot": "outer",
+            "box": [
+              70,
+              160,
+              420,
+              912
+            ]
+          },
+          {
+            "garment_id": "garment_mute_top_0337",
+            "slot": "top",
+            "box": [
+              450,
+              239,
+              800,
+              640
+            ]
+          },
+          {
+            "garment_id": "garment_noir_skirt_0190",
+            "slot": "skirt",
+            "box": [
+              451,
+              664,
+              799,
+              1330
+            ]
+          },
+          {
+            "garment_id": "garment_noir_shoes_0069",
+            "slot": "shoes",
+            "box": [
+              921,
+              880,
+              1049,
+              1080
+            ]
+          },
+          {
+            "garment_id": "garment_noir_bag_0070",
+            "slot": "bag",
+            "box": [
+              850,
+              441,
+              1130,
+              698
+            ]
+          }
+        ]
+      },
+      "status": "pending_native_review",
+      "review": null
+    },
+    {
+      "target_palette": "jewel",
+      "hero": "n0054",
+      "new_record": {
+        "id": "outfit_heir_aw-targeted-08_14",
+        "kind": "master",
+        "parent_outfit_id": null,
+        "recipe_version": "aw-targeted-08",
+        "title": "HEIR winter 日常设计 14",
+        "description": "盘活 n0054 已有视觉亲和中的 HEIR×jewel，补 pants 结构。",
+        "primary_persona": "HEIR",
+        "secondary_personas": [],
+        "persona_affinity": {},
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "日常"
+        ],
+        "season_tags": [
+          "冬"
+        ],
+        "weather_tags": [],
+        "presentation": [
+          "feminine"
+        ],
+        "intensity": "entry",
+        "formality": 3,
+        "garment_ids": [
+          "garment_aw_targeted07_outer_jewel_sharp_01",
+          "garment_mute_top_0002",
+          "garment_mute_bottom_0003",
+          "garment_mute_shoes_0004",
+          "garment_mute_bag_0005"
+        ],
+        "visible_slots": [
+          "outer",
+          "top",
+          "bottom",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_aw_targeted07_outer_jewel_sharp_01": "hero",
+          "garment_mute_top_0002": "support",
+          "garment_mute_bottom_0003": "support",
+          "garment_mute_shoes_0004": "support",
+          "garment_mute_bag_0005": "support"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "未判断",
+          "saturation": "未判断",
+          "harmony": "未判断",
+          "palette": []
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/c7f3f93c76041b6e75724c18.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source": "designer_recomposition",
+          "confidence": null,
+          "review_notes": [
+            "season, palette and persona are design targets pending whole-image review"
+          ]
+        }
+      },
+      "record_fingerprint": "11ca514c460e42a43eaf2d5e48a44427019e2d3d7aab4fc41edf62f5a4c4afdc",
+      "asset_sha256": "b2a05ed1dfee89517e32475b11768e6a936f2268ede96936d38416211de13294",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/c7f3f93c76041b6e75724c18.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_aw_targeted07_outer_jewel_sharp_01",
+            "slot": "outer",
+            "box": [
+              70,
+              160,
+              420,
+              912
+            ]
+          },
+          {
+            "garment_id": "garment_mute_top_0002",
+            "slot": "top",
+            "box": [
+              450,
+              271,
+              800,
+              640
+            ]
+          },
+          {
+            "garment_id": "garment_mute_bottom_0003",
+            "slot": "bottom",
+            "box": [
+              491,
+              664,
+              759,
+              1330
+            ]
+          },
+          {
+            "garment_id": "garment_mute_shoes_0004",
+            "slot": "shoes",
+            "box": [
+              891,
+              880,
+              1078,
+              1080
+            ]
+          },
+          {
+            "garment_id": "garment_mute_bag_0005",
+            "slot": "bag",
+            "box": [
+              851,
+              410,
+              1129,
+              730
+            ]
+          }
+        ]
+      },
+      "status": "pending_native_review",
+      "review": null
+    },
+    {
+      "target_palette": "jewel",
+      "hero": "n0055",
+      "new_record": {
+        "id": "outfit_wabi_aw-targeted-08_15",
+        "kind": "master",
+        "parent_outfit_id": null,
+        "recipe_version": "aw-targeted-08",
+        "title": "WABI winter 日常设计 15",
+        "description": "盘活 n0055 已有视觉亲和中的 WABI×jewel，补 skirt 结构。",
+        "primary_persona": "WABI",
+        "secondary_personas": [],
+        "persona_affinity": {},
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "日常"
+        ],
+        "season_tags": [
+          "冬"
+        ],
+        "weather_tags": [],
+        "presentation": [
+          "feminine"
+        ],
+        "intensity": "entry",
+        "formality": 3,
+        "garment_ids": [
+          "garment_aw_targeted07_outer_jewel_soft_01",
+          "garment_wabi_top_0086",
+          "garment_wabi_skirt_0198",
+          "garment_wabi_shoes_0246",
+          "garment_wabi_bag_0278"
+        ],
+        "visible_slots": [
+          "outer",
+          "top",
+          "skirt",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_aw_targeted07_outer_jewel_soft_01": "hero",
+          "garment_wabi_top_0086": "support",
+          "garment_wabi_skirt_0198": "support",
+          "garment_wabi_shoes_0246": "support",
+          "garment_wabi_bag_0278": "support"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "未判断",
+          "saturation": "未判断",
+          "harmony": "未判断",
+          "palette": []
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/bc0e98df154bff87bdf44a2b.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source": "designer_recomposition",
+          "confidence": null,
+          "review_notes": [
+            "season, palette and persona are design targets pending whole-image review"
+          ]
+        }
+      },
+      "record_fingerprint": "dc4764c9a56e7993220dd9431c357e5c7c7d34b08a46bb02de51296718888655",
+      "asset_sha256": "0f73666ff710e16ead0c420eccf238e89ab4bb2a7129ff36605fb74fd89fcc08",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/bc0e98df154bff87bdf44a2b.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_aw_targeted07_outer_jewel_soft_01",
+            "slot": "outer",
+            "box": [
+              70,
+              160,
+              420,
+              802
+            ]
+          },
+          {
+            "garment_id": "garment_wabi_top_0086",
+            "slot": "top",
+            "box": [
+              450,
+              359,
+              800,
+              640
+            ]
+          },
+          {
+            "garment_id": "garment_wabi_skirt_0198",
+            "slot": "skirt",
+            "box": [
+              450,
+              664,
+              800,
+              1117
+            ]
+          },
+          {
+            "garment_id": "garment_wabi_shoes_0246",
+            "slot": "shoes",
+            "box": [
+              841,
+              880,
+              1128,
+              1080
+            ]
+          },
+          {
+            "garment_id": "garment_wabi_bag_0278",
+            "slot": "bag",
+            "box": [
+              892,
+              410,
+              1088,
+              730
+            ]
+          }
+        ]
+      },
+      "status": "pending_native_review",
+      "review": null
+    },
+    {
+      "target_palette": "jewel",
+      "hero": "n0055",
+      "new_record": {
+        "id": "outfit_wabi_aw-targeted-08_16",
+        "kind": "master",
+        "parent_outfit_id": null,
+        "recipe_version": "aw-targeted-08",
+        "title": "WABI winter 日常设计 16",
+        "description": "盘活 n0055 已有视觉亲和中的 WABI×jewel，补 dress 结构。",
+        "primary_persona": "WABI",
+        "secondary_personas": [],
+        "persona_affinity": {},
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "日常"
+        ],
+        "season_tags": [
+          "冬"
+        ],
+        "weather_tags": [],
+        "presentation": [
+          "feminine"
+        ],
+        "intensity": "entry",
+        "formality": 3,
+        "garment_ids": [
+          "garment_aw_targeted07_outer_jewel_soft_01",
+          "garment_wabi_dress_0230",
+          "garment_melt_shoes_0245",
+          "garment_ease_bag_0276"
+        ],
+        "visible_slots": [
+          "outer",
+          "dress",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_aw_targeted07_outer_jewel_soft_01": "hero",
+          "garment_wabi_dress_0230": "support",
+          "garment_melt_shoes_0245": "support",
+          "garment_ease_bag_0276": "support"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "未判断",
+          "saturation": "未判断",
+          "harmony": "未判断",
+          "palette": []
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/49f8d5cd681d34395e54cfb9.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source": "designer_recomposition",
+          "confidence": null,
+          "review_notes": [
+            "season, palette and persona are design targets pending whole-image review"
+          ]
+        }
+      },
+      "record_fingerprint": "d37fa3a58e6f07d56b6ef475a7cec2b8d3a0f208ab14fa00fd542c97fa8471f8",
+      "asset_sha256": "bc11c0271ed5425ba15ce2c6aa502538a967ccdc0ba1c4080fd6a675a1c4d50f",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/49f8d5cd681d34395e54cfb9.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_aw_targeted07_outer_jewel_soft_01",
+            "slot": "outer",
+            "box": [
+              70,
+              160,
+              420,
+              802
+            ]
+          },
+          {
+            "garment_id": "garment_wabi_dress_0230",
+            "slot": "dress",
+            "box": [
+              450,
+              160,
+              800,
+              764
+            ]
+          },
+          {
+            "garment_id": "garment_melt_shoes_0245",
+            "slot": "shoes",
+            "box": [
+              930,
+              880,
+              1040,
+              1080
+            ]
+          },
+          {
+            "garment_id": "garment_ease_bag_0276",
+            "slot": "bag",
+            "box": [
+              866,
+              410,
+              1114,
+              730
+            ]
+          }
+        ]
+      },
+      "status": "pending_native_review",
+      "review": null
+    }
+  ],
+  "production_approved": false,
+  "version": "aw-designed-rendered-b33c7d1e8adfd7e922ea"
+}

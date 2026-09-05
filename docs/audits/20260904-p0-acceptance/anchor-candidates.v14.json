@@ -1,0 +1,436 @@
+{
+  "schema_version": 1,
+  "status": "candidate",
+  "version": "selfit-p0-anchor-candidates-20260904-v1",
+  "content_version": "2026.09-v2-published1",
+  "visual_version": "codex-visual-16b18cdcdca36dbc306a",
+  "family_registry_sha256": "c8a09893f8dac718495dde16f6a82864ff75ec62e26070b9ac9d025d595c0d36",
+  "blind_review_package_id": null,
+  "staging_version": "p0-family-refresh-35d5c36556471ef01a85",
+  "persona_signal": "visual",
+  "anchors": [
+    {
+      "outfit_id": "outfit_neon_master_09_v2__aw-repair-05",
+      "persona": "edge",
+      "expression": "typical",
+      "structure": "pants",
+      "user_title": "甜酷轻亚 · 轻松出门",
+      "record_fingerprint": "81cd676cbf84e3720e9bddc676297747c6120ae16c5e910530e20baa694eac5f",
+      "four_gate_current": false
+    },
+    {
+      "outfit_id": "outfit_film_p0-gap-02_01",
+      "persona": "film",
+      "expression": "explore",
+      "structure": "pants",
+      "user_title": "虚焦胶片 · 轻松出门",
+      "record_fingerprint": "fad65595218987b767d8252538f93730888f49f02d6b342890b487ba04a46a8c",
+      "four_gate_current": false
+    },
+    {
+      "outfit_id": "outfit_iced_p0-gap-01_02",
+      "persona": "iced",
+      "expression": "explore",
+      "structure": "skirt",
+      "user_title": "冷感冰面 · 轻松出门",
+      "record_fingerprint": "64f45231b2f51e5ca69513483aaef05ac4374bef10fc4a7bb31a6445383474c9",
+      "four_gate_current": false
+    },
+    {
+      "outfit_id": "outfit_neon_aw-winter-04_02",
+      "persona": "melt",
+      "expression": "typical",
+      "structure": "skirt",
+      "user_title": "奶油治愈 · 轻松出门",
+      "record_fingerprint": "5d331b97cca22c9132b0170161d5e08c247891f19689474070e6d18258d4c0fa",
+      "four_gate_current": false
+    },
+    {
+      "outfit_id": "outfit_oops_aw-winter-04_09",
+      "persona": "neon",
+      "expression": "easy",
+      "structure": "dress",
+      "user_title": "灵动吸睛 · 轻松出门",
+      "record_fingerprint": "d4eb500a5490f68725360133fc1f105a75fa323f1aeabbc65aa2010921656f95",
+      "four_gate_current": false
+    },
+    {
+      "outfit_id": "outfit_wabi_p0-gap-01_03",
+      "persona": "wabi",
+      "expression": "explore",
+      "structure": "pants",
+      "user_title": "手作侘寂 · 轻松出门",
+      "record_fingerprint": "5675cc6147f06f4c5e176f6da85e91f5d615b66c42f0d2ae4ee8da2dc70f8420",
+      "four_gate_current": false
+    },
+    {
+      "outfit_id": "outfit_wabi_p0-gap-02_02",
+      "persona": "wabi",
+      "expression": "explore",
+      "structure": "skirt",
+      "user_title": "手作侘寂 · 日常有序",
+      "record_fingerprint": "d760088dfd18b577d191407550293c0791d337605fa4ec884cd49a2584bff19b",
+      "four_gate_current": false
+    }
+  ],
+  "readiness": {
+    "selected": 7,
+    "required": 160,
+    "current_four_gate_reviews": 0,
+    "visual_catalog_candidates": 7,
+    "visual_catalog_held": 1169,
+    "staging_candidates": 7,
+    "gaps": [
+      {
+        "persona": "bolt",
+        "required": {
+          "easy": 4,
+          "typical": 4,
+          "explore": 2
+        },
+        "eligible_supply": {
+          "easy": 0,
+          "typical": 0,
+          "explore": 0
+        },
+        "selected_mix": {},
+        "missing_by_expression": {
+          "easy": 4,
+          "typical": 4,
+          "explore": 2
+        },
+        "selected": 0,
+        "missing": 10
+      },
+      {
+        "persona": "ease",
+        "required": {
+          "easy": 4,
+          "typical": 4,
+          "explore": 2
+        },
+        "eligible_supply": {
+          "easy": 0,
+          "typical": 0,
+          "explore": 0
+        },
+        "selected_mix": {},
+        "missing_by_expression": {
+          "easy": 4,
+          "typical": 4,
+          "explore": 2
+        },
+        "selected": 0,
+        "missing": 10
+      },
+      {
+        "persona": "edge",
+        "required": {
+          "easy": 4,
+          "typical": 4,
+          "explore": 2
+        },
+        "eligible_supply": {
+          "easy": 0,
+          "typical": 1,
+          "explore": 0
+        },
+        "selected_mix": {
+          "typical": 1
+        },
+        "missing_by_expression": {
+          "easy": 4,
+          "typical": 3,
+          "explore": 2
+        },
+        "selected": 1,
+        "missing": 9
+      },
+      {
+        "persona": "film",
+        "required": {
+          "easy": 4,
+          "typical": 4,
+          "explore": 2
+        },
+        "eligible_supply": {
+          "easy": 0,
+          "typical": 0,
+          "explore": 1
+        },
+        "selected_mix": {
+          "explore": 1
+        },
+        "missing_by_expression": {
+          "easy": 4,
+          "typical": 4,
+          "explore": 1
+        },
+        "selected": 1,
+        "missing": 9
+      },
+      {
+        "persona": "flou",
+        "required": {
+          "easy": 4,
+          "typical": 4,
+          "explore": 2
+        },
+        "eligible_supply": {
+          "easy": 0,
+          "typical": 0,
+          "explore": 0
+        },
+        "selected_mix": {},
+        "missing_by_expression": {
+          "easy": 4,
+          "typical": 4,
+          "explore": 2
+        },
+        "selected": 0,
+        "missing": 10
+      },
+      {
+        "persona": "heir",
+        "required": {
+          "easy": 4,
+          "typical": 4,
+          "explore": 2
+        },
+        "eligible_supply": {
+          "easy": 0,
+          "typical": 0,
+          "explore": 0
+        },
+        "selected_mix": {},
+        "missing_by_expression": {
+          "easy": 4,
+          "typical": 4,
+          "explore": 2
+        },
+        "selected": 0,
+        "missing": 10
+      },
+      {
+        "persona": "iced",
+        "required": {
+          "easy": 4,
+          "typical": 4,
+          "explore": 2
+        },
+        "eligible_supply": {
+          "easy": 0,
+          "typical": 0,
+          "explore": 1
+        },
+        "selected_mix": {
+          "explore": 1
+        },
+        "missing_by_expression": {
+          "easy": 4,
+          "typical": 4,
+          "explore": 1
+        },
+        "selected": 1,
+        "missing": 9
+      },
+      {
+        "persona": "jade",
+        "required": {
+          "easy": 4,
+          "typical": 4,
+          "explore": 2
+        },
+        "eligible_supply": {
+          "easy": 0,
+          "typical": 0,
+          "explore": 0
+        },
+        "selected_mix": {},
+        "missing_by_expression": {
+          "easy": 4,
+          "typical": 4,
+          "explore": 2
+        },
+        "selected": 0,
+        "missing": 10
+      },
+      {
+        "persona": "loop",
+        "required": {
+          "easy": 4,
+          "typical": 4,
+          "explore": 2
+        },
+        "eligible_supply": {
+          "easy": 0,
+          "typical": 0,
+          "explore": 0
+        },
+        "selected_mix": {},
+        "missing_by_expression": {
+          "easy": 4,
+          "typical": 4,
+          "explore": 2
+        },
+        "selected": 0,
+        "missing": 10
+      },
+      {
+        "persona": "melt",
+        "required": {
+          "easy": 4,
+          "typical": 4,
+          "explore": 2
+        },
+        "eligible_supply": {
+          "easy": 0,
+          "typical": 1,
+          "explore": 0
+        },
+        "selected_mix": {
+          "typical": 1
+        },
+        "missing_by_expression": {
+          "easy": 4,
+          "typical": 3,
+          "explore": 2
+        },
+        "selected": 1,
+        "missing": 9
+      },
+      {
+        "persona": "mute",
+        "required": {
+          "easy": 4,
+          "typical": 4,
+          "explore": 2
+        },
+        "eligible_supply": {
+          "easy": 0,
+          "typical": 0,
+          "explore": 0
+        },
+        "selected_mix": {},
+        "missing_by_expression": {
+          "easy": 4,
+          "typical": 4,
+          "explore": 2
+        },
+        "selected": 0,
+        "missing": 10
+      },
+      {
+        "persona": "neon",
+        "required": {
+          "easy": 4,
+          "typical": 4,
+          "explore": 2
+        },
+        "eligible_supply": {
+          "easy": 1,
+          "typical": 0,
+          "explore": 0
+        },
+        "selected_mix": {
+          "easy": 1
+        },
+        "missing_by_expression": {
+          "easy": 3,
+          "typical": 4,
+          "explore": 2
+        },
+        "selected": 1,
+        "missing": 9
+      },
+      {
+        "persona": "noir",
+        "required": {
+          "easy": 4,
+          "typical": 4,
+          "explore": 2
+        },
+        "eligible_supply": {
+          "easy": 0,
+          "typical": 0,
+          "explore": 0
+        },
+        "selected_mix": {},
+        "missing_by_expression": {
+          "easy": 4,
+          "typical": 4,
+          "explore": 2
+        },
+        "selected": 0,
+        "missing": 10
+      },
+      {
+        "persona": "oops",
+        "required": {
+          "easy": 4,
+          "typical": 4,
+          "explore": 2
+        },
+        "eligible_supply": {
+          "easy": 0,
+          "typical": 0,
+          "explore": 0
+        },
+        "selected_mix": {},
+        "missing_by_expression": {
+          "easy": 4,
+          "typical": 4,
+          "explore": 2
+        },
+        "selected": 0,
+        "missing": 10
+      },
+      {
+        "persona": "void",
+        "required": {
+          "easy": 4,
+          "typical": 4,
+          "explore": 2
+        },
+        "eligible_supply": {
+          "easy": 0,
+          "typical": 0,
+          "explore": 0
+        },
+        "selected_mix": {},
+        "missing_by_expression": {
+          "easy": 4,
+          "typical": 4,
+          "explore": 2
+        },
+        "selected": 0,
+        "missing": 10
+      },
+      {
+        "persona": "wabi",
+        "required": {
+          "easy": 4,
+          "typical": 4,
+          "explore": 2
+        },
+        "eligible_supply": {
+          "easy": 0,
+          "typical": 0,
+          "explore": 2
+        },
+        "selected_mix": {
+          "explore": 2
+        },
+        "missing_by_expression": {
+          "easy": 4,
+          "typical": 4,
+          "explore": 0
+        },
+        "selected": 2,
+        "missing": 8
+      }
+    ],
+    "release_ready": false,
+    "note": "AI visual candidates are not editorial approval or independent blind review."
+  }
+}
