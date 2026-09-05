@@ -1,0 +1,171 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://selfit.local/schema/content-pool.v2.json",
+  "title": "Selfit Content Pool V2",
+  "type": "object",
+  "required": ["schemaVersion", "contentVersion", "status", "outfits"],
+  "properties": {
+    "schemaVersion": {"const": "2.0"},
+    "contentVersion": {"type": "string"},
+    "status": {"enum": ["draft", "review", "published"]},
+    "outfits": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/outfit"}
+    },
+    "garments": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/garment"}
+    }
+  },
+  "$defs": {
+    "reviewGate": {
+      "type": "object",
+      "required": ["status", "reviewer", "evidence"],
+      "properties": {
+        "status": {"enum": ["pending", "passed", "rejected"]},
+        "reviewer": {"type": "string", "minLength": 1},
+        "evidence": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}}
+      }
+    },
+    "qualityReview": {
+      "type": "object",
+      "required": ["record_fingerprint", "technical", "aesthetic", "persona", "context"],
+      "properties": {
+        "record_fingerprint": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "technical": {"$ref": "#/$defs/reviewGate"},
+        "aesthetic": {"$ref": "#/$defs/reviewGate"},
+        "persona": {"$ref": "#/$defs/reviewGate"},
+        "context": {"$ref": "#/$defs/reviewGate"}
+      }
+    },
+    "annotation": {
+      "type": "object",
+      "required": ["status", "source", "confidence"],
+      "properties": {
+        "status": {"enum": ["unlabeled", "machine_draft", "designer_reviewed", "published"]},
+        "source": {"enum": ["source_record", "text_heuristic", "persona_inheritance", "designer"]},
+        "confidence": {"type": "number", "minimum": 0, "maximum": 1},
+        "review_notes": {"type": "array", "items": {"type": "string"}}
+      }
+    },
+    "personaAffinity": {
+      "type": "object",
+      "propertyNames": {"enum": ["MUTE", "ICED", "HEIR", "EASE", "MELT", "WABI", "FLOU", "NEON", "EDGE", "BOLT", "FILM", "JADE", "LOOP", "NOIR", "VOID", "OOPS"]},
+      "additionalProperties": {"type": "number", "minimum": 0, "maximum": 1}
+    },
+    "color": {
+      "type": "object",
+      "required": ["temperature", "lightness", "saturation", "harmony"],
+      "properties": {
+        "temperature": {"enum": ["冷调", "暖调", "中性", "冷暖混合", "未判断"]},
+        "lightness": {"enum": ["浅色", "中等", "深色", "深浅对比", "未判断"]},
+        "saturation": {"enum": ["无彩", "低饱和", "中饱和", "高饱和", "未判断"]},
+        "harmony": {"enum": ["同色", "邻近色", "互补色", "无彩平衡", "主色加点缀", "混合", "未判断"]},
+        "palette": {"type": "array", "items": {"type": "string"}, "maxItems": 6}
+      }
+    },
+    "structure": {
+      "type": "object",
+      "required": ["visual_weight", "waistline", "tummy_space", "line_direction"],
+      "properties": {
+        "visual_weight": {"enum": ["上半身", "下半身", "上下均衡", "未判断"]},
+        "waistline": {"enum": ["无腰线", "低腰", "自然腰", "高腰", "胸下腰线", "未判断"]},
+        "tummy_space": {"enum": ["贴身", "合体不贴", "宽松", "未判断"]},
+        "line_direction": {"enum": ["横向", "纵向", "无明显", "未判断"]}
+      }
+    },
+    "asset": {
+      "type": "object",
+      "required": ["image_url", "rights_status"],
+      "properties": {
+        "image_url": {"type": "string"},
+        "source_url": {"type": "string"},
+        "width": {"type": ["integer", "null"]},
+        "height": {"type": ["integer", "null"]},
+        "alpha_verified": {"type": "boolean"},
+        "rights_status": {"enum": ["owned", "licensed", "source_recorded", "source_missing", "review_required"]}
+      }
+    },
+    "productionMeta": {
+      "type": "object",
+      "required": ["source_kind", "qa_status"],
+      "properties": {
+        "source_kind": {"enum": ["generated_original", "owned_extraction"]},
+        "generation_job_id": {"type": "string"},
+        "prompt_version": {"type": "string"},
+        "reference_ids": {"type": "array", "items": {"type": "string"}},
+        "qa_status": {"enum": ["planned", "generated", "rejected", "approved"]},
+        "phash": {"type": "string"}
+      }
+    },
+    "garment": {
+      "type": "object",
+      "required": ["id", "category", "subcategory", "persona_affinity", "assets", "annotation"],
+      "properties": {
+        "id": {"type": "string"},
+        "category": {"enum": ["top", "outer", "bottom", "skirt", "dress", "shoes", "bag", "hat", "scarf", "accessory"]},
+        "subcategory": {"type": "string"},
+        "silhouette": {"type": "array", "items": {"type": "string"}},
+        "fit": {"enum": ["贴身", "合体", "宽松", "超宽松", "不适用", "未判断"]},
+        "materials": {"type": "array", "items": {"type": "string"}},
+        "details": {"type": "array", "items": {"type": "string"}},
+        "season_tags": {"type": "array", "items": {"enum": ["春", "夏", "秋", "冬", "四季"]}},
+        "scene_tags": {"type": "array", "items": {"enum": ["通勤", "日常", "约会社交", "正式活动", "旅行", "创意表达"]}},
+        "weather_tags": {"type": "array", "items": {"enum": ["晴", "雨", "风", "冷", "热", "室内"]}},
+        "presentation": {"type": "array", "items": {"enum": ["feminine", "neutral", "masculine"]}},
+        "layer_role": {"enum": ["base", "mid", "outer", "single", "accessory"]},
+        "tryon_slot": {"type": "string"},
+        "persona_affinity": {"$ref": "#/$defs/personaAffinity"},
+        "color": {"$ref": "#/$defs/color"},
+        "assets": {"$ref": "#/$defs/asset"},
+        "production": {"$ref": "#/$defs/productionMeta"},
+        "annotation": {"$ref": "#/$defs/annotation"}
+      }
+    },
+    "outfit": {
+      "type": "object",
+      "required": ["id", "title", "primary_persona", "persona_affinity", "scene_tags", "season_tags", "presentation", "intensity", "structure", "color", "assets", "annotation"],
+      "properties": {
+        "quality_review": {"$ref": "#/$defs/qualityReview"},
+        "id": {"type": "string"},
+        "title": {"type": "string"},
+        "description": {"type": "string"},
+        "primary_persona": {"type": "string"},
+        "secondary_personas": {"type": "array", "items": {"type": "string"}},
+        "persona_affinity": {"$ref": "#/$defs/personaAffinity"},
+        "regional_styles": {"type": "array", "items": {"type": "string"}},
+        "body_types": {"type": "array", "items": {"type": "string"}},
+        "scene_tags": {"type": "array", "items": {"enum": ["通勤", "日常", "约会社交", "正式活动", "旅行", "创意表达"]}},
+        "season_tags": {"type": "array", "items": {"enum": ["春", "夏", "秋", "冬", "四季"]}},
+        "weather_tags": {"type": "array", "items": {"type": "string"}},
+        "presentation": {"type": "array", "items": {"enum": ["feminine", "neutral", "masculine"]}},
+        "intensity": {"enum": ["entry", "signature", "experimental"]},
+        "formality": {"type": "integer", "minimum": 1, "maximum": 5},
+        "garment_ids": {"type": "array", "items": {"type": "string"}},
+        "visible_slots": {"type": "array", "items": {"type": "string"}},
+        "layer_graph": {"type": "array", "items": {"type": "object"}},
+        "structure": {"$ref": "#/$defs/structure"},
+        "color": {"$ref": "#/$defs/color"},
+        "recommendation_reasons": {"type": "array", "items": {"type": "string"}},
+        "parent_outfit_id": {"type": ["string", "null"]},
+        "recipe_version": {"type": "string"},
+        "slot_roles": {
+          "type": "object",
+          "additionalProperties": {"enum": ["hero", "support", "balance", "accent"]}
+        },
+        "replacement_rules": {
+          "type": "object",
+          "properties": {
+            "same_slot": {"type": "boolean"},
+            "match_season": {"type": "boolean"},
+            "match_scene": {"type": "boolean"},
+            "max_formality_delta": {"type": "integer", "minimum": 0, "maximum": 4},
+            "preserve_color_harmony": {"type": "boolean"}
+          }
+        },
+        "assets": {"$ref": "#/$defs/asset"},
+        "annotation": {"$ref": "#/$defs/annotation"}
+      }
+    }
+  }
+}

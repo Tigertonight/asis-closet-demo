@@ -1,0 +1,61 @@
+{
+  "schema_version": 1,
+  "policy": "Same style family is an exposure constraint, not an asset deletion or persona approval. Unassigned garments remain singleton families. Color alone never merges styles.",
+  "dimensions": [
+    "category",
+    "neckline",
+    "sleeve",
+    "length",
+    "volume",
+    "waist",
+    "construction",
+    "pattern",
+    "material",
+    "color"
+  ],
+  "unknown_dimensions": "Do not infer actual cut/material from production prompts; keep unreviewed fields unknown.",
+  "candidate_queue": {
+    "source": "docs/audits/20260903-recommendation-similarity/audit-data.json",
+    "field": "garment_similarity.joint_pairs",
+    "status": "pending_visual_review",
+    "automatic_merge": false
+  },
+  "families": [
+    {
+      "id": "style-family:navy-belted-pleated-skirt",
+      "status": "visual_reviewed",
+      "reviewer": "codex-nonblind-visual-audit-20260903",
+      "independent_persona_review": false,
+      "evidence": "docs/SELFIT_RECOMMENDATION_PERSONA_DIVERSITY_AUDIT_20260903.md",
+      "rationale": "藏蓝腰带百褶裙：长度、褶裥与腰部细节高度相似",
+      "members": {
+        "garment_heir_skirt_0435": "888c618da1af79a6d2cbcc8d010306575a409c619d9629946f1138540e07854f",
+        "garment_heir_skirt_0579": "696ea58ddfabc401c5d99f17d5d3f4907fff8ce90492b3cae1085496288b4091"
+      }
+    },
+    {
+      "id": "style-family:beige-rolled-sleeve-shirt",
+      "status": "visual_reviewed",
+      "reviewer": "codex-nonblind-visual-audit-20260903",
+      "independent_persona_review": false,
+      "evidence": "docs/SELFIT_RECOMMENDATION_PERSONA_DIVERSITY_AUDIT_20260903.md",
+      "rationale": "米色翻领卷袖衬衫：口袋、袖长、轮廓高度相似",
+      "members": {
+        "garment_ease_top_0324": "5944ef4aee293cc19ee09f030a3840ea5c54f0ae61843f93a14a4d833f5eb1a0",
+        "garment_ease_top_0564": "0e06152993ad258f4a74564f3244443b63e7b056003c84b0044a5a890dc31217"
+      }
+    },
+    {
+      "id": "style-family:pale-blue-high-waist-trousers",
+      "status": "visual_reviewed",
+      "reviewer": "codex-nonblind-visual-audit-20260903",
+      "independent_persona_review": false,
+      "evidence": "docs/SELFIT_RECOMMENDATION_PERSONA_DIVERSITY_AUDIT_20260903.md",
+      "rationale": "浅蓝高腰长裤：宽度略有变化，缩略图体感相近",
+      "members": {
+        "garment_iced_bottom_0402": "31fda7f4d83623bf9c5acde8c407a3234b259098afbb325aac77cf0092f3d279",
+        "garment_iced_bottom_0418": "e9096e51ca5cea11d1c7f7a17c9312f0a4a27ab7c7d269ab33a23a858c967fb1"
+      }
+    }
+  ]
+}

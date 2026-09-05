@@ -1,0 +1,34 @@
+{
+  "source": "/Users/yuanzexiang/Documents/色彩测试/app/static/selfit/assets/content_v2/noir/garments/noir-bottom-0174-raw-v1.png",
+  "output": "/Users/yuanzexiang/Documents/色彩测试/app/static/selfit/assets/content_v2/noir/garments/noir-bottom-0174-v1.png",
+  "size": [
+    1200,
+    1200
+  ],
+  "meaningful_bbox": [
+    404,
+    121,
+    795,
+    1079
+  ],
+  "margins": {
+    "left": 0.3367,
+    "top": 0.1008,
+    "right": 0.3375,
+    "bottom": 0.1008
+  },
+  "transparent_ratio": 0.7792,
+  "partial_alpha_ratio": 0.2195,
+  "alpha_noise_threshold": 8,
+  "passed": true,
+  "job_id": "v2_0174_noir_bottom",
+  "designer_reviewed": true,
+  "reviewed_at": "2026-09-02T15:23:31.606416+00:00",
+  "visual_checks": {
+    "one_item_only": true,
+    "no_person_mannequin_hanger": true,
+    "no_text_logo_watermark": true,
+    "complete_silhouette": true,
+    "metadata_matches_asset": true
+  }
+}

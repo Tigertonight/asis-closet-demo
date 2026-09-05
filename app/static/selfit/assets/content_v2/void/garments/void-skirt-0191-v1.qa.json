@@ -1,0 +1,34 @@
+{
+  "source": "/Users/yuanzexiang/Documents/色彩测试/app/static/selfit/assets/content_v2/void/garments/void-skirt-0191-raw-v1.png",
+  "output": "/Users/yuanzexiang/Documents/色彩测试/app/static/selfit/assets/content_v2/void/garments/void-skirt-0191-v1.png",
+  "size": [
+    1200,
+    1200
+  ],
+  "meaningful_bbox": [
+    312,
+    120,
+    886,
+    1080
+  ],
+  "margins": {
+    "left": 0.26,
+    "top": 0.1,
+    "right": 0.2617,
+    "bottom": 0.1
+  },
+  "transparent_ratio": 0.6972,
+  "partial_alpha_ratio": 0.3019,
+  "alpha_noise_threshold": 8,
+  "passed": true,
+  "job_id": "v2_0191_void_skirt",
+  "designer_reviewed": true,
+  "reviewed_at": "2026-09-02T15:28:16.523408+00:00",
+  "visual_checks": {
+    "one_item_only": true,
+    "no_person_mannequin_hanger": true,
+    "no_text_logo_watermark": true,
+    "complete_silhouette": true,
+    "metadata_matches_asset": true
+  }
+}

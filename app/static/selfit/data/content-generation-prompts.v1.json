@@ -1,0 +1,42 @@
+{
+  "schemaVersion": "1.0",
+  "useCase": "product-mockup",
+  "assetTypes": {
+    "garment_cutout": {
+      "prompt": "Use case: product-mockup\nAsset type: Selfit wardrobe garment cutout\nPrimary request: create one {garment_description}\nScene/backdrop: genuinely transparent background\nSubject: exactly one isolated garment, front-facing, naturally shaped as if invisibly supported, complete silhouette fully inside canvas\nStyle/medium: photorealistic premium fashion e-commerce product photography\nComposition/framing: centered, square canvas, 12% clear padding on every side, no crop\nLighting/mood: soft neutral studio light, realistic material response, restrained shadow only within the garment\nColor palette: {palette}\nMaterials/textures: {materials}\nConstraints: actual transparent alpha background; one item only; preserve openings, hems, straps and fine edges; no person, mannequin, hanger, stand, floor, wall, text, label, logo or watermark\nAvoid: white or checkerboard fake background; cast shadow outside the object; duplicate garment; clipped sleeves, bag handles, shoe toes or hems; floating extra accessories"
+    },
+    "outfit_flatlay": {
+      "prompt": "Use case: compositing\nAsset type: Selfit outfit recipe flat-lay\nInput images: each input is a garment cutout that must remain recognizable\nPrimary request: arrange the supplied garments into one complete {persona_code} outfit for {scene}, {season}\nScene/backdrop: warm white clean canvas, no border\nSubject: one coordinated outfit with every supplied item shown exactly once\nStyle/medium: photorealistic premium fashion flat-lay\nComposition/framing: vertical 4:5 canvas; top/outer in upper center, lower garment below, shoes at lower right, bag and accessories at the side; generous spacing; no overlap that hides key garment features\nLighting/mood: soft diffused daylight, quiet Selfit editorial polish\nColor palette: {palette}\nConstraints: preserve each garment's exact color, material, pattern and silhouette; no person, mannequin, hanger, text, logo or watermark; no additional garments\nAvoid: black background; clipped bags or hats; gray bars; hard card outlines; duplicate items; replacing supplied garments"
+    },
+    "tryon_reference": {
+      "prompt": "Use case: identity-preserve\nAsset type: Selfit try-on QA reference\nInput images: Image 1 is the person photo; all remaining images are garment references\nPrimary request: replace only the visible compatible clothing and accessories with the supplied garments\nConstraints: preserve face, body shape, pose, hair, expression, hands, skin, camera angle and background; apply each compatible visible garment once; match lighting, folds, scale, perspective and occlusion; if a body region is not visible, skip only that garment; no text, logo or watermark\nAvoid: changing identity; changing body proportions; replacing the entire scene; inventing garments; ignoring visible bags, hats, skirts or shoes"
+    }
+  },
+  "personas": {
+    "MUTE": {"name": "静音时髦", "silhouette": "H/I 型直线、适度宽松、清晰肩线", "palette": "炭黑、烟白、灰褐、钢蓝，低饱和无彩或邻近色", "materials": "精纺羊毛、挺棉、哑光尼龙、细罗纹针织", "signature": ["无领西装", "宽肩衬衫", "直筒裤", "极简乐福鞋", "几何托特包"], "avoid": "多余荷叶边、过量图案、强亮面、无结构松垮"},
+    "ICED": {"name": "冷感冰面", "silhouette": "纤长收净、柔和贴合、窄长比例", "palette": "冰蓝、冷灰、淡紫、银白，冷调低至中饱和", "materials": "细针织、醋酸、薄纱、冷光金属", "signature": ["修身针织", "窄长裙", "冷调衬衫", "银色鞋", "透明感手袋"], "avoid": "奶油暖黄、粗粝天然材质、厚重乡村感"},
+    "HEIR": {"name": "老钱新穿", "silhouette": "合体肩线、经典腰位、耐久比例", "palette": "海军蓝、驼色、奶油白、酒红，低饱和经典配色", "materials": "羊绒、花呢、精纺羊毛、真皮", "signature": ["双排扣外套", "Polo 针织", "百褶裤", "骑士靴", "结构手袋"], "avoid": "大 Logo、廉价金色堆砌、追热点的夸张剪裁"},
+    "EASE": {"name": "松弛讲究", "silhouette": "自然垂坠、松而不垮、柔和腰线", "palette": "燕麦、焦糖、牛仔蓝、橄榄，温暖中性色", "materials": "亚麻、软针织、水洗丹宁、麂皮", "signature": ["宽松衬衫", "针织开衫", "阔腿裤", "软皮包", "低跟鞋"], "avoid": "睡衣感、完全无腰线、过度精修或僵硬套装"},
+    "MELT": {"name": "奶油治愈", "silhouette": "圆润肩线、A 型、柔软短比例", "palette": "奶油、蜜桃、燕麦、雾粉，柔和甜色", "materials": "绒感针织、灯芯绒、圈圈呢、柔软棉", "signature": ["短开衫", "娃娃领上衣", "A 字裙", "圆头鞋", "小型软包"], "avoid": "幼儿化图案、全套蝴蝶结、尖锐机能感"},
+    "WABI": {"name": "手作侘寂", "silhouette": "茧型宽松、自然褶皱、不对称层叠", "palette": "岩灰、亚麻、苔绿、泥棕，矿物低饱和", "materials": "水洗棉麻、粗针织、天然皮革、手工织物", "signature": ["工装外套", "无结构衬衫", "宽裤", "手作包", "皮便鞋"], "avoid": "脏旧感、戏服式民族元素、塑料亮面"},
+    "FLOU": {"name": "造梦浪漫", "silhouette": "流动 A 型、斜裁垂坠、透明叠层", "palette": "灰粉、薄荷、香槟、柔和花卉色", "materials": "雪纺、蕾丝、缎面、轻薄针织", "signature": ["斜裁裙", "薄纱罩衫", "花卉连衣裙", "精巧鞋", "珠光小包"], "avoid": "所有场景都礼服化、过量蓬度、廉价闪片"},
+    "NEON": {"name": "灵动吸睛", "silhouette": "短长反差、夸张体积、锋利切分", "palette": "电光蓝、橙、酸绿、亮粉，高饱和撞色", "materials": "科技尼龙、网眼、亮面皮革、硬挺丹宁", "signature": ["廓形夹克", "撞色裤", "图形针织", "强调鞋", "亮色包"], "avoid": "无规则荧光堆叠、全身同一高亮色、廉价舞台服"},
+    "EDGE": {"name": "甜酷轻亚", "silhouette": "短上衣与强下装、锐利腰线、甜酷对撞", "palette": "黑、银、冷粉、牛仔蓝，中高对比", "materials": "皮革、网纱、丹宁、金属五金", "signature": ["短皮衣", "工装裙裤", "厚底鞋", "金属包", "冷粉内搭"], "avoid": "纯暗黑无甜感、暴露失衡、廉价网红装饰"},
+    "BOLT": {"name": "在逃千金", "silhouette": "沙漏、披肩感、戏剧肩袖、高完成度", "palette": "象牙白、酒红、墨绿、珠宝色", "materials": "花呢、丝绒、缎面、精细刺绣", "signature": ["短花呢外套", "斗篷", "泡袖裙", "精致手袋", "细跟鞋"], "avoid": "影楼感、全身珠宝、只适合晚宴的夸张礼服"},
+    "FILM": {"name": "虚焦胶片", "silhouette": "柔和复古、生活化叠穿、自然旧感", "palette": "烟草、褪色蓝、奶咖、暗橄榄", "materials": "灯芯绒、水洗丹宁、麂皮、粗花呢", "signature": ["复古夹克", "花衬衫", "旧感牛仔", "邮差包", "复古运动鞋"], "avoid": "随机做旧、脏污、所有单品都复古花纹"},
+    "JADE": {"name": "东方玉骨", "silhouette": "纵向结构、克制交叠、清晰领型", "palette": "墨、玉、米白，少量朱砂点色", "materials": "真丝、亚麻、提花、细密棉", "signature": ["立领衬衫", "斜襟外套", "长直裙裤", "玉感配饰", "克制手袋"], "avoid": "直接复制古装、符号化龙凤、舞台汉服感"},
+    "LOOP": {"name": "无限重启", "silhouette": "多版型可切换但完成度始终高", "palette": "中性色底搭配可替换模块点色", "materials": "整洁精纺、挺棉、针织、可转换结构", "signature": ["胶囊西装", "两穿衬衫", "模块裙裤", "双面外套", "可替换配饰"], "avoid": "把无方向误作无人格、低完成度、纯基础款复制"},
+    "NOIR": {"name": "暗黑肃杀", "silhouette": "长直线、强肩、窄长或锐利下摆", "palette": "黑、石墨、冷灰、暗酒红，极低饱和", "materials": "皮革、精纺毛、涂层棉、哑光针织", "signature": ["长皮衣", "黑西装", "窄裙裤", "尖头靴", "硬结构包"], "avoid": "只靠纯黑、材质无层次、哥特戏服化"},
+    "VOID": {"name": "人间失格", "silhouette": "舒适包裹、错位层叠、看似未完成", "palette": "水洗灰、旧棕、暗蓝，低饱和混合", "materials": "汗布、水洗棉、松软针织、旧感丹宁", "signature": ["大卫衣", "多层衬衫", "宽裤", "软帽", "帆布包"], "avoid": "真脏乱、尺寸完全失控、缺少色彩锚点"},
+    "OOPS": {"name": "搭配事故", "silhouette": "解构、冲突比例、主动制造失衡", "palette": "高彩与印花混用，但至少保留一个重复色", "materials": "西装料、蕾丝、丹宁、科技面料跨材质拼接", "signature": ["解构西装", "印花叠穿", "异形裙裤", "趣味帽", "冲突鞋包"], "avoid": "真随机、没有重复母题、无法日常行动的装置服"}
+  },
+  "qualityChecks": [
+    "alpha channel contains both transparent and opaque pixels",
+    "object bounding box keeps at least 6 percent padding",
+    "exactly one garment in garment_cutout",
+    "no mannequin, hanger, person, text, logo or watermark",
+    "material and color agree with metadata",
+    "bag handles, hat brim, shoe toes, sleeves and hems are not clipped",
+    "outfit flat-lay contains every referenced item exactly once"
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "source": "/Users/yuanzexiang/Documents/色彩测试/app/static/selfit/assets/content_v2/flou/garments/flou-bottom-0167-raw-v1.png",
+  "output": "/Users/yuanzexiang/Documents/色彩测试/app/static/selfit/assets/content_v2/flou/garments/flou-bottom-0167-v1.png",
+  "size": [
+    1200,
+    1200
+  ],
+  "meaningful_bbox": [
+    388,
+    120,
+    811,
+    1080
+  ],
+  "margins": {
+    "left": 0.3233,
+    "top": 0.1,
+    "right": 0.3242,
+    "bottom": 0.1
+  },
+  "transparent_ratio": 0.7557,
+  "partial_alpha_ratio": 0.243,
+  "alpha_noise_threshold": 8,
+  "passed": true,
+  "job_id": "v2_0167_flou_bottom",
+  "designer_reviewed": true,
+  "reviewed_at": "2026-09-02T15:23:25.549909+00:00",
+  "visual_checks": {
+    "one_item_only": true,
+    "no_person_mannequin_hanger": true,
+    "no_text_logo_watermark": true,
+    "complete_silhouette": true,
+    "metadata_matches_asset": true
+  }
+}

@@ -34,6 +34,17 @@ cowork/*.zip
 mirro-photo-template-studio/reference/**/__MACOSX/
 mirro-photo-template-studio/reference/**/._*
 
+# Keep lossless Content V2 PNG masters locally; publish the optimized WebP files.
+app/static/selfit/assets/content_v2/**/*.png
+
+# Audit contact sheets and raw generations are reproducible local evidence;
+# commit their structured JSON/TSV decisions, not the bulky review media.
+docs/audits/**/*.png
+docs/audits/**/*.jpg
+docs/audits/**/*.jpeg
+docs/audits/**/*.webp
+docs/audits/**/*.zip
+
 # Agent/runtime generated dependencies and local state
 selfit-agent-runtime/vendor/
 selfit-agent-runtime/.openclaw/
