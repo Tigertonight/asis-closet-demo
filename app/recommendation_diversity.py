@@ -7,7 +7,6 @@ from __future__ import annotations
 
 import json
 from collections import Counter
-from functools import lru_cache
 from pathlib import Path
 
 from app.selfit_content_quality import record_fingerprint
@@ -26,10 +25,11 @@ def main_recipe_signature(outfit: dict) -> tuple[str, ...]:
     }))
 
 
-@lru_cache(maxsize=4)
-def _read_families(path: str, stamp: int) -> dict:
+def _read_families(path: str) -> dict:
     try:
-        data = json.loads(Path(path).read_text())
+        # File timestamps are not revision identities: an in-place restore can
+        # preserve mtime while withdrawing an approved family association.
+        data = json.loads(Path(path).read_bytes())
         return data if isinstance(data, dict) and data.get("schema_version") == 1 else {}
     except (OSError, ValueError):
         return {}
@@ -38,7 +38,7 @@ def _read_families(path: str, stamp: int) -> dict:
 def style_family_map(garments: list[dict], registry: dict | None = None) -> dict[str, str]:
     if registry is None:
         try:
-            registry = _read_families(str(FAMILY_PATH), FAMILY_PATH.stat().st_mtime_ns)
+            registry = _read_families(str(FAMILY_PATH))
         except OSError:
             registry = {}
     if not isinstance(registry, dict) or not isinstance(registry.get("families", []), list):
@@ -74,7 +74,7 @@ def outfit_features(outfit: dict) -> tuple[str, frozenset, frozenset]:
     return parent, ids, families
 
 
-def select_diverse_outfits(ranked: list[dict], seen_ids: list[str], limit: int) -> dict:
+def select_diverse_outfits(ranked: list[dict], seen_ids: list[str], limit: int, *, home_surface: bool = False) -> dict:
     """Main IDs/families <=2 in every 10; recipe relatives >=8 positions apart.
 
     Reconsider deferred candidates after every pick. Probe one extra pick for
@@ -92,8 +92,14 @@ def select_diverse_outfits(ranked: list[dict], seen_ids: list[str], limit: int) 
         main_counts = Counter(g for f in history[-9:] if f for g in f[1])
         family_counts = Counter(g for f in history[-9:] if f for g in f[2])
         recent_parents = {f[0] for f in history[-7:] if f}
+        # The first viewport spans four hero cards plus six feed cards.
+        # Afterwards keep repeated main garments at least six positions apart.
+        recent = history if len(seen) + len(chosen) < 10 else history[-5:]
+        recent_main = {g for f in recent if f for g in f[1]}
+        recent_families = {g for f in recent if f for g in f[2]}
         pick = next((oid for oid in candidates
                      if features[oid][0] not in recent_parents
+                     and (not home_surface or (not features[oid][1] & recent_main and not features[oid][2] & recent_families))
                      and all(main_counts[g] < 2 for g in features[oid][1])
                      and all(family_counts[g] < 2 for g in features[oid][2])), None)
         if pick is None:
@@ -108,7 +114,8 @@ def select_diverse_outfits(ranked: list[dict], seen_ids: list[str], limit: int) 
         "outfits": [by_id[oid] for oid in returned],
         "has_more": has_more,
         "diversity": {
-            "version": VERSION, "window": 10, "main_item_cap": 2,
+            "version": "diverse_home_v2" if home_surface else VERSION, "window": 10,
+            "main_min_distance": 6 if home_surface else None, "first_window_unique": 10 if home_surface else None, "main_item_cap": 2,
             "style_family_cap": 2, "recipe_min_distance": 8,
             "remaining_candidates": remaining,
             "stop_reason": None if has_more else "diversity_limit" if remaining else "pool_exhausted",

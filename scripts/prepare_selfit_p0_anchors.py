@@ -19,7 +19,7 @@ sys.path.insert(0, str(ROOT))
 from app import closet
 from app.recommendation_anchors import PERSONAS, TARGET_EXPRESSIONS
 from app.recommendation_diversity import FAMILY_PATH, outfit_features, main_recipe_signature
-from app.recommendation_visual import attach_visual, load_visual
+from app.recommendation_visual import DEFAULT_PATH as VISUAL_PATH, attach_visual, load_visual
 from app.selfit_content_quality import record_fingerprint, review_is_current
 
 DAILY = {"everyday", "everyday_with_statement"}
@@ -59,14 +59,31 @@ def select_persona(rows, excluded_parents=frozenset(), excluded_recipes=frozense
         for name in TARGET_EXPRESSIONS
     }
     order = ["explore"] * 2 + ["typical"] * 4 + ["easy"] * 4
-    best = []
-
     def walk(position, chosen, parents, main_counts, family_counts, structure_counts):
-        nonlocal best
-        if len(chosen) > len(best):
-            best = list(chosen)
+        covered = {name for name, count in structure_counts.items() if count > 0}
         if position == len(order):
-            return list(chosen) if set(structure_counts) == STRUCTURES else None
+            return list(chosen) if covered == STRUCTURES else None
+        # Counter retains zero-valued keys after backtracking. Only actual
+        # selections count as coverage, and remaining roles must be able to
+        # supply every missing structure without already-exhausted resources.
+        missing_structures = STRUCTURES - covered
+        if len(missing_structures) > len(order) - position:
+            return None
+        available_structures = set()
+        for remaining_expression, required in Counter(order[position:]).items():
+            eligible = []
+            for row in by_expression[remaining_expression]:
+                parent, main_ids, families = outfit_features(row)
+                structure = row["visual"]["structure"]
+                if (parent not in parents and structure_counts[structure] < 5
+                        and all(main_counts[value] < 2 for value in main_ids)
+                        and all(family_counts[value] < 2 for value in families)):
+                    eligible.append(parent)
+                    available_structures.add(structure)
+            if len(set(eligible)) < required:
+                return None
+        if not missing_structures <= available_structures:
+            return None
         expression = order[position]
         candidates = []
         for row in by_expression[expression]:
@@ -154,7 +171,35 @@ def select_persona(rows, excluded_parents=frozenset(), excluded_recipes=frozense
     return partial, {name: len(values) for name, values in by_expression.items()}
 
 
+def selection_gap(persona, selected, supply):
+    """Report replacement needs even when the numeric quota is full."""
+    mix = Counter(row["visual"]["expression"] for row in selected)
+    structures = Counter(row["visual"]["structure"] for row in selected)
+    missing_structures = sorted(STRUCTURES - {key for key, count in structures.items() if count > 0})
+    overrepresented = {key: count for key, count in structures.items() if count > 5}
+    if (len(selected) == 10 and mix == Counter(TARGET_EXPRESSIONS)
+            and not missing_structures and not overrepresented):
+        return None
+    return {
+        "persona": persona,
+        "required": dict(TARGET_EXPRESSIONS),
+        "eligible_supply": supply,
+        "selected_mix": dict(mix),
+        "missing_by_expression": {
+            expression: max(0, count - mix[expression])
+            for expression, count in TARGET_EXPRESSIONS.items()
+        },
+        "selected": len(selected),
+        "missing": max(0, 10 - len(selected)),
+        "selected_structures": dict(structures),
+        "missing_structures": missing_structures,
+        "overrepresented_structures": overrepresented,
+        "replacement_required": len(selected) >= 10,
+    }
+
+
 def build_manifest(staging_path: Path | None = None, persona_signal: str = "visual"):
+    visual_sha = hashlib.sha256(VISUAL_PATH.read_bytes()).hexdigest()
     pool = closet.selfit_content_pool()
     visual = load_visual()
     catalog, held = attach_visual(closet._published_catalog_outfits(), pool.garments, pool.outfits, visual)
@@ -212,20 +257,9 @@ def build_manifest(staging_path: Path | None = None, persona_signal: str = "visu
     anchors, gaps = [], []
     for persona in sorted(PERSONAS):
         selected, supply = selected_by_persona[persona], supply_by_persona[persona]
-        if len(selected) != 10:
-            selected_mix = Counter(row["visual"]["expression"] for row in selected)
-            gaps.append({
-                "persona": persona,
-                "required": dict(TARGET_EXPRESSIONS),
-                "eligible_supply": supply,
-                "selected_mix": dict(selected_mix),
-                "missing_by_expression": {
-                    expression: max(0, count - selected_mix[expression])
-                    for expression, count in TARGET_EXPRESSIONS.items()
-                },
-                "selected": len(selected),
-                "missing": 10 - len(selected),
-            })
+        gap = selection_gap(persona, selected, supply)
+        if gap is not None:
+            gaps.append(gap)
         # User titles are an override in the release allow-list; legacy internal
         # titles remain untouched for historical resolution.
         for index, row in enumerate(selected):
@@ -240,12 +274,15 @@ def build_manifest(staging_path: Path | None = None, persona_signal: str = "visu
                 "record_fingerprint": record_fingerprint(source),
                 "four_gate_current": review_is_current(source),
             })
+    if hashlib.sha256(VISUAL_PATH.read_bytes()).hexdigest() != visual_sha:
+        raise ValueError("Visual index changed during selection; retry against a stable revision")
     return {
         "schema_version": 1,
         "status": "candidate",
         "version": "selfit-p0-anchor-candidates-20260904-v1",
         "content_version": str(pool.metadata.get("contentVersion") or "unknown"),
         "visual_version": str(visual.get("version") or "pending-vision"),
+        "visual_index_sha256": visual_sha,
         "family_registry_sha256": hashlib.sha256(FAMILY_PATH.read_bytes()).hexdigest() if FAMILY_PATH.is_file() else "missing",
         "blind_review_package_id": None,
         "staging_version": staging_version,

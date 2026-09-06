@@ -1,7 +1,47 @@
 import json
+import hashlib
+import os
+import pytest
 
 from app.recommendation_anchors import PERSONAS, adapt_released_anchor, approved_anchor_pool, validate_manifest
 from app.selfit_content_quality import GATES, record_fingerprint
+
+
+def test_release_json_reload_ignores_preserved_modification_time(tmp_path):
+    from app.recommendation_anchors import load_json
+    path = tmp_path / "manifest.json"
+    path.write_text('{"status":"approved"}')
+    stamp = path.stat()
+    assert load_json(path)["status"] == "approved"
+    path.write_text('{"status":"rejected"}')
+    os.utime(path, ns=(stamp.st_atime_ns, stamp.st_mtime_ns))
+    assert load_json(path)["status"] == "rejected"
+    path.write_bytes(b"\xff\x00")
+    assert load_json(path) == {}
+
+
+@pytest.mark.parametrize("changed", ["manifest", "blind", "family"])
+def test_release_rejects_evidence_changed_during_validation(tmp_path, monkeypatch, changed):
+    import app.recommendation_anchors as module
+    raw, catalog, manifest, blind = release_fixture()
+    paths = {name: tmp_path / f"{name}.json" for name in ("manifest", "blind", "family")}
+    paths["family"].write_text('{}')
+    manifest["family_registry_sha256"] = hashlib.sha256(paths["family"].read_bytes()).hexdigest()
+    paths["manifest"].write_text(json.dumps(manifest))
+    paths["blind"].write_text(json.dumps(blind))
+    monkeypatch.setattr(module, "FAMILY_PATH", paths["family"])
+    monkeypatch.setattr(module, "configured_paths", lambda: (paths["manifest"], paths["blind"]))
+    rows, result = module.approved_anchor_pool(catalog, raw, content_version="content-v1", visual_version="visual-v1")
+    assert result["valid"] and len(rows) == 160
+    original = module.validate_manifest
+    def replace_during_validation(*args, **kwargs):
+        result = original(*args, **kwargs)
+        paths[changed].write_text('{"changed":true}')
+        return result
+    monkeypatch.setattr(module, "validate_manifest", replace_during_validation)
+    rows, result = module.approved_anchor_pool(catalog, raw, content_version="content-v1", visual_version="visual-v1")
+    assert not rows and not result["valid"]
+    assert any("changed during validation" in error for error in result["errors"])
 
 
 def _four_gate_review(record):

@@ -30,7 +30,7 @@ def allocate_structures(existing: Counter, count: int) -> list[str]:
         )
         counts[choice] += 1
         result.append(choice)
-    if sum(counts.values()) == 10 and set(counts) != set(STRUCTURES):
+    if sum(counts.values()) == 10 and {key for key, value in counts.items() if value > 0} != set(STRUCTURES):
         raise ValueError("Ten-look target does not cover pants, skirt and dress")
     return result
 
@@ -50,11 +50,35 @@ def build(manifest_path: Path, templates_path: Path) -> dict:
             for expression in EXPRESSION_ORDER
             for _ in range(int(gap["missing_by_expression"].get(expression, 0)))
         ]
-        structures = allocate_structures(
-            Counter(row["structure"] for row in current), len(missing_roles)
-        )
+        counts = Counter(row["structure"] for row in current)
+        replacements = []
+        if len(current) == 10:
+            if missing_roles:
+                raise ValueError(f"{persona}: expression mix requires editorial reselection")
+            # Keep the 4/4/2 mix: replace a redundant structure in-place with
+            # a genuinely new main recipe, retaining the removed role.
+            removed = set()
+            for structure in STRUCTURES:
+                if counts[structure] > 0:
+                    continue
+                choices = [row for row in current
+                           if row["outfit_id"] not in removed and counts[row["structure"]] > 1]
+                if not choices:
+                    raise ValueError(f"{persona}: no safe structural replacement")
+                old = min(choices, key=lambda row: (-counts[row["structure"]], row["outfit_id"]))
+                removed.add(old["outfit_id"])
+                counts[old["structure"]] -= 1
+                counts[structure] += 1
+                replacements.append((old["expression"], structure, old["outfit_id"]))
+            if any(count > 5 for count in counts.values()):
+                raise ValueError(f"{persona}: overrepresented structures require editorial reselection")
+            planned = replacements
+        else:
+            structures = allocate_structures(counts, len(missing_roles))
+            planned = [(expression, structure, None)
+                       for expression, structure in zip(missing_roles, structures)]
         metadata = templates[persona]
-        for index, (expression, structure) in enumerate(zip(missing_roles, structures), 1):
+        for index, (expression, structure, replaces) in enumerate(planned, 1):
             tasks.append({
                 "task_id": f"P0-CONTENT-{persona.upper()}-{index:02d}",
                 "persona": persona,
@@ -62,6 +86,8 @@ def build(manifest_path: Path, templates_path: Path) -> dict:
                 "persona_keywords": metadata.get("keywords") or [],
                 "expression": expression,
                 "structure": structure,
+                "task_type": "replace" if replaces else "add",
+                "replaces_outfit_id": replaces,
                 "scene": "daily",
                 "wearability": ["everyday", "everyday_with_statement"],
                 "production_state": "not_started",
@@ -87,6 +113,8 @@ def build(manifest_path: Path, templates_path: Path) -> dict:
             "current_visual_evidence_anchors": len(manifest.get("anchors") or []),
             "target_anchors": 160,
             "production_tasks": len(tasks),
+            "addition_tasks": sum(row["task_type"] == "add" for row in tasks),
+            "replacement_tasks": sum(row["task_type"] == "replace" for row in tasks),
             "by_persona": dict(Counter(row["persona"] for row in tasks)),
             "by_expression": dict(Counter(row["expression"] for row in tasks)),
             "by_structure": dict(Counter(row["structure"] for row in tasks)),

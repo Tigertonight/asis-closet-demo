@@ -5,7 +5,6 @@ import hashlib
 import json
 import math
 import os
-from functools import lru_cache
 from pathlib import Path
 
 from app.selfit_content_quality import record_fingerprint
@@ -19,23 +18,19 @@ FIELDS = {
 }
 
 
-@lru_cache(maxsize=4096)
-def _asset_sha(path, stamp, size):
-    return hashlib.sha256(Path(path).read_bytes()).hexdigest()
-
-
 def asset_sha(url):
     if not isinstance(url, str) or not url.startswith("/static/"):
         return None
     path = (ROOT / "app" / url.lstrip("/")).resolve()
     if not path.is_relative_to(ROOT / "app/static") or not path.is_file():
         return None
-    stat = path.stat()
-    return _asset_sha(str(path), stat.st_mtime_ns, stat.st_size)
+    try:
+        return hashlib.sha256(path.read_bytes()).hexdigest()
+    except OSError:
+        return None
 
 
-@lru_cache(maxsize=4)
-def _load(path, stamp):
+def _load(path):
     try:
         data = json.loads(Path(path).read_text())
         if isinstance(data, dict) and data.get("schema_version") == 1:
@@ -47,7 +42,7 @@ def _load(path, stamp):
 
 def load_visual():
     path = Path(os.getenv("SELFIT_RECOMMENDATION_VISUAL_PATH", str(DEFAULT_PATH)))
-    return _load(str(path), path.stat().st_mtime_ns if path.exists() else 0)
+    return _load(str(path))
 
 
 def valid_observation(record, observation, image_url, section=None):

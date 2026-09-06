@@ -16,8 +16,15 @@ from PIL import Image
 
 
 def prepare(source: Path, output: Path, *, size: int = 1200, padding: float = 0.10, alpha_noise: int = 8) -> dict[str, object]:
-    image = Image.open(source).convert("RGBA")
+    original = Image.open(source)
+    # Adding transparent canvas margins cannot turn an opaque background
+    # (including a painted checkerboard) into a garment cutout.
+    if "A" not in original.getbands() and "transparency" not in original.info:
+        raise ValueError("source has no transparency; background extraction is required")
+    image = original.convert("RGBA")
     alpha = image.getchannel("A")
+    if alpha.getextrema()[0] >= alpha_noise:
+        raise ValueError("source background is opaque; background extraction is required")
     cleaned_alpha = alpha.point(lambda value: 0 if value < alpha_noise else value)
     image.putalpha(cleaned_alpha)
     meaningful = cleaned_alpha.point(lambda value: 255 if value >= alpha_noise else 0)

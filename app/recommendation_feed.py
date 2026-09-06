@@ -266,7 +266,13 @@ def _page(data, start, first=False):
     carousel = [row for row in rows[:min(4,len(rows))] if row["outfit_id"] not in suppressed] if first else []
     page_rows = rows[4:end] if first else rows[start:end]
     feed = [row for row in page_rows if row["outfit_id"] not in suppressed]
-    next_cursor = f"{end}:{digest([data['session_id'],end,data['profile_version']])[:24]}" if end<len(rows) else None
+    # Keep snapshot offsets stable while skipping fully suppressed batches.
+    # A non-empty raw tail is not evidence that recommendable supply remains.
+    next_start = next((offset for offset in range(end, len(rows), 6)
+                       if any(row["outfit_id"] not in suppressed
+                              for row in rows[offset:offset + 6])), None)
+    next_cursor = (f"{next_start}:{digest([data['session_id'],next_start,data['profile_version']])[:24]}"
+                   if next_start is not None else None)
     return {"algorithm":data.get("strategy_version",VERSION), "session_id":data["session_id"], "profile_version":data["profile_version"],
             "content_version":data["content_version"], "next_cursor":next_cursor, "has_more":bool(next_cursor),
             "outfits":feed, "carousel":carousel, "total":len(rows), "offset":start, "next_offset":0,
@@ -276,7 +282,7 @@ def _page(data, start, first=False):
 
 
 def create_feed(profile, catalog, context, events=(), content_version="unknown", validation_bundle=None,
-                expression_roles=None):
+                expression_roles=None, anchor_release=None):
     now = datetime.now(timezone.utc)
     ranked, rejected = rank_candidates(catalog,profile,context,events,now)
     recent = {e.get("entity_id") for e in events if e.get("event_type")=="impression" and (age:=event_age_days(e,now)) is not None and age<1}
@@ -295,16 +301,19 @@ def create_feed(profile, catalog, context, events=(), content_version="unknown",
             "context":copy.deepcopy(context),
             "preview":bool(profile.get("preview")), "rows":rows, "gaps":gaps,
             "rejected":rejected, "feedback_ids":[], "validation_bundle":validation_bundle,
-            "strategy_version":(validation_bundle or {}).get("strategy", VERSION), "selection":selection}
+            "strategy_version":(validation_bundle or {}).get("strategy", VERSION), "selection":selection,
+            "anchor_release":copy.deepcopy(anchor_release)}
     with LOCK: _write_snapshot(data)
     return _page(data,0,True)
 
 
-def continue_feed(token, cursor, profile):
+def continue_feed(token, cursor, profile, anchor_release=None):
     with LOCK:
         data = _read_snapshot(token)
         if data["profile_version"] != profile["version"]:
             raise HTTPException(409,"偏好已更新，请重新加载推荐")
+        if data.get("anchor_release") != anchor_release:
+            raise HTTPException(409,"推荐内容已更新，请换一批")
         try:
             value,signature = str(cursor).split(":")
             start = int(value)
@@ -312,7 +321,10 @@ def continue_feed(token, cursor, profile):
             raise HTTPException(422,"分页信息无效")
         if start<10 or start>len(data["rows"]) or (start-10)%6 or signature!=digest([token,start,data["profile_version"]])[:24]:
             raise HTTPException(422,"分页信息无效")
-        return _page(data,start)
+        result = _page(data,start)
+        if anchor_release is not None:
+            result["anchor_release"] = copy.deepcopy(anchor_release)
+        return result
 
 
 def validate_feedback(payload):
@@ -336,9 +348,11 @@ def validate_feedback(payload):
                 raise HTTPException(422,"曝光时长不足或无效")
         if payload.get("event_type") == "dislike":
             _, disliked_main, disliked_families = outfit_features(outfit)
-            target_index = next(index for index, row in enumerate(data["rows"]) if row["outfit_id"] == outfit["outfit_id"])
             suppressed = set(data.get("suppressed_outfit_ids") or [])
-            for row in data["rows"][target_index + 1:]:
+            suppressed.add(outfit["outfit_id"])
+            # Apply to old pages too: a retry must not resurrect a rejected
+            # item (or its close family) from an earlier snapshot position.
+            for row in data["rows"]:
                 _, main_ids, families = outfit_features(row)
                 if disliked_main & main_ids or disliked_families & families:
                     suppressed.add(row["outfit_id"])

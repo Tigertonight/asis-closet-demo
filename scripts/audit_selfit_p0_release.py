@@ -27,7 +27,17 @@ from app.selfit_content_quality import record_fingerprint, review_is_current
 FEED_CASES = {f"FEED-{number:03d}" for number in range(1, 15)}
 REC_CASES = {f"REC-{number:03d}" for number in range(1, 15)}
 E2E_CASES = {f"E2E-{number:03d}" for number in range(1, 13)}
-PERF_CASES = {f"PERF-{number:03d}" for number in range(1, 7)}
+PERF_CASES = {f"PERF-{number:03d}" for number in range(1, 9)}
+GATE_CASES = {
+    "G0_traceability": {f"VERSION-{n:03d}" for n in range(1, 7)},
+    "G1_home_feed_stability": FEED_CASES | {"PERF-005"},
+    "G2_content_admission": {f"CONTENT-{n:03d}" for n in range(1, 13)},
+    "G3_anchor_completeness": {f"ANCHOR-{n:03d}" for n in range(1, 13)},
+    "G4_persona_blind_review": {f"BLIND-{n:03d}" for n in range(1, 11)},
+    "G5_recommendation_quality": REC_CASES | {f"FAMILY-{n:03d}" for n in range(1, 7)},
+    "G6_end_to_end": E2E_CASES,
+    "G7_performance_and_regression": PERF_CASES,
+}
 ALLOWED_CASE_STATUS = {"Pass", "Fail", "Blocked", "Not Run"}
 
 
@@ -75,8 +85,16 @@ def evidence_gate(evidence: dict[str, Any], required: set[str], anchor_sha: str 
     errors = []
     if evidence.get("schema_version") != 1:
         errors.append("evidence schema_version must be 1")
-    if evidence.get("anchor_manifest_sha256") != anchor_sha:
+    if not anchor_sha or evidence.get("anchor_manifest_sha256") != anchor_sha:
         errors.append("evidence is not bound to this anchor manifest")
+    rows = evidence.get("cases")
+    if isinstance(rows, list):
+        ids = [row.get("id") for row in rows if isinstance(row, dict)]
+        if len(ids) != len(set(ids)):
+            errors.append("duplicate case IDs")
+        records = {row.get("id"): row for row in rows if isinstance(row, dict)}
+    else:
+        records = rows if isinstance(rows, dict) else {}
     cases = evidence_cases(evidence)
     missing = sorted(required - cases.keys())
     invalid = sorted(case_id for case_id in required if cases.get(case_id) not in ALLOWED_CASE_STATUS)
@@ -87,12 +105,40 @@ def evidence_gate(evidence: dict[str, Any], required: set[str], anchor_sha: str 
         errors.append("invalid case statuses: " + ", ".join(invalid))
     if failed:
         errors.append("non-passing cases: " + ", ".join(failed))
+    for case_id in sorted(required):
+        if cases.get(case_id) != "Pass":
+            continue
+        row = records.get(case_id)
+        if not isinstance(row, dict):
+            errors.append(f"{case_id}: Pass requires an execution record, not a status label")
+            continue
+        for field in ("executor", "executed_at", "actual_result"):
+            if not isinstance(row.get(field), str) or not row[field].strip():
+                errors.append(f"{case_id}: missing {field}")
+        artifacts = row.get("artifacts")
+        if not isinstance(artifacts, list) or not artifacts:
+            errors.append(f"{case_id}: no evidence artifacts")
+            continue
+        for artifact in artifacts:
+            if not isinstance(artifact, dict) or not isinstance(artifact.get("path"), str):
+                errors.append(f"{case_id}: malformed artifact")
+                continue
+            path = Path(artifact["path"])
+            if not path.is_absolute():
+                path = ROOT / path
+            try:
+                digest = sha256(path)
+            except OSError:
+                digest = None
+            if not digest or artifact.get("sha256") != digest:
+                errors.append(f"{case_id}: missing or changed evidence artifact: {artifact['path']}")
     return {"status": "Pass" if not errors else "Fail", "errors": errors, "cases": cases}
 
 
 def make_report(anchor_path: Path, blind_path: Path | None, browser_path: Path | None,
                 performance_path: Path | None, staging_path: Path | None = None,
-                recommendation_path: Path | None = None) -> dict[str, Any]:
+                recommendation_path: Path | None = None,
+                case_evidence_path: Path | None = None) -> dict[str, Any]:
     manifest, blind = read_json(anchor_path), read_json(blind_path)
     browser, performance = read_json(browser_path), read_json(performance_path)
     recommendation = read_json(recommendation_path)
@@ -175,6 +221,18 @@ def make_report(anchor_path: Path, blind_path: Path | None, browser_path: Path |
         "G6_end_to_end": e2e,
         "G7_performance_and_regression": perf,
     }
+    # Data validators cover only part of the written acceptance contract.
+    # Every gate also needs its complete executed-case ledger; structural
+    # validity alone cannot prove manual review or negative-path tests ran.
+    ledger = read_json(case_evidence_path)
+    case_results = {}
+    for name, required in GATE_CASES.items():
+        checked = evidence_gate(ledger, required, anchor_sha)
+        case_results[name] = checked
+        if checked["status"] != "Pass":
+            gates[name]["errors"].extend(checked["errors"])
+            if gates[name]["status"] == "Pass":
+                gates[name]["status"] = checked["status"]
     releasable = all(gate["status"] == "Pass" for gate in gates.values())
     return {
         "schema_version": 1,
@@ -194,6 +252,7 @@ def make_report(anchor_path: Path, blind_path: Path | None, browser_path: Path |
             "browser_evidence_sha256": sha256(browser_path),
             "performance_evidence_sha256": sha256(performance_path),
             "recommendation_evidence_sha256": sha256(recommendation_path),
+            "case_evidence_sha256": sha256(case_evidence_path),
             "staging_version": staging.get("version"),
             "staging_sha256": sha256(staging_path),
         },
@@ -204,6 +263,7 @@ def make_report(anchor_path: Path, blind_path: Path | None, browser_path: Path |
             "visual_held_catalog": len(held),
         },
         "gates": gates,
+        "case_evidence": case_results,
     }
 
 
@@ -214,13 +274,15 @@ def main() -> int:
     parser.add_argument("--browser-evidence", type=Path)
     parser.add_argument("--performance-evidence", type=Path)
     parser.add_argument("--recommendation-evidence", type=Path)
+    parser.add_argument("--case-evidence", type=Path, help="Complete 94-case execution ledger with hashed artifacts")
     parser.add_argument("--staging", type=Path)
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
     if args.output.exists():
         raise ValueError("Refusing to overwrite existing release evidence")
     report = make_report(args.anchor_manifest, args.blind_result, args.browser_evidence,
-                         args.performance_evidence, args.staging, args.recommendation_evidence)
+                         args.performance_evidence, args.staging, args.recommendation_evidence,
+                         args.case_evidence)
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print(json.dumps({"release_decision": report["release_decision"], "gates": {

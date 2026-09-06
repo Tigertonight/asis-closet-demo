@@ -64,7 +64,73 @@ def test_candidate_selection_excludes_accessory_duplicates_and_wrong_scene():
     assert [item["outfit_id"] for item in selected] == ["first"]
 
 
-def test_evidence_gate_requires_all_cases_and_revision_binding():
+def test_full_numeric_quota_still_reports_missing_structure():
+    rows = [{"visual": {"expression": expression,
+                        "structure": "pants" if index < 5 else "skirt"}}
+            for index, expression in enumerate(["easy"] * 4 + ["typical"] * 4 + ["explore"] * 2)]
+    gap = prepare.selection_gap("wabi", rows, {})
+    assert gap["selected"] == 10
+    assert gap["missing"] == 0
+    assert gap["missing_structures"] == ["dress"]
+    assert gap["replacement_required"] is True
+    rows[-1]["visual"]["structure"] = "dress"
+    assert prepare.selection_gap("wabi", rows, {}) is None
+    rows[0]["visual"]["expression"] = "typical"
+    assert prepare.selection_gap("wabi", rows, {})["missing_by_expression"]["easy"] == 1
+
+
+def test_backlog_creates_replacement_without_inflating_anchor_target(tmp_path):
+    rows = [{"outfit_id": f"wabi-{index}", "persona": "wabi",
+             "expression": expression, "structure": "pants" if index < 5 else "skirt"}
+            for index, expression in enumerate(["easy"] * 4 + ["typical"] * 4 + ["explore"] * 2)]
+    gap = prepare.selection_gap("wabi", [{"visual": row} for row in rows], {})
+    manifest = tmp_path / "manifest.json"
+    manifest.write_text(json.dumps({"anchors": rows, "readiness": {"gaps": [gap]}}))
+    templates = tmp_path / "templates.json"
+    templates.write_text(json.dumps({"types": {"wabi": {"metadata": {"name": "WABI"}}}}))
+    result = backlog.build(manifest, templates)
+    assert result["summary"]["addition_tasks"] == 0
+    assert result["summary"]["replacement_tasks"] == 1
+    task = result["tasks"][0]
+    assert task["structure"] == "dress"
+    old = next(row for row in rows if row["outfit_id"] == task["replaces_outfit_id"])
+    assert task["expression"] == old["expression"]
+    final = [row for row in rows if row != old] + [task]
+    assert len(final) == 10
+    assert prepare.selection_gap("wabi", [{"visual": row} for row in final], {}) is None
+
+
+def test_selector_covers_actual_structures_after_conflicting_dress_branch():
+    rows = []
+    for index, expression in enumerate(["explore"] * 2 + ["typical"] * 4 + ["easy"] * 4):
+        oid = f"row-{index}"
+        rows.append({
+            "outfit_id": oid, "parent_outfit_id": oid,
+            "items": [{"item_id": oid, "category": "top"}],
+            "visual": {"expression": expression,
+                       "structure": "pants" if index < 5 else "skirt",
+                       "wearability": "everyday", "scenes": ["daily"]},
+            "_raw": {"slot_roles": {oid: "hero"}},
+        })
+    # This high-ranked dress steals the parent needed by a mandatory easy row.
+    # Visiting it and backtracking must not leave phantom dress coverage.
+    import copy
+    conflict = copy.deepcopy(rows[0])
+    conflict.update(outfit_id="a-conflict", parent_outfit_id="row-9", _target_persona_score=1)
+    conflict["items"] = [{"item_id": "conflict-dress", "category": "dress"}]
+    conflict["visual"]["structure"] = "dress"
+    selected, supply = prepare.select_persona([conflict, *rows])
+    assert prepare.selection_gap("wabi", selected, supply) is not None
+    valid = copy.deepcopy(conflict)
+    valid.update(outfit_id="valid-dress", parent_outfit_id="valid-dress")
+    valid["items"] = [{"item_id": "valid-dress", "category": "dress"}]
+    selected, supply = prepare.select_persona([conflict, valid, *rows])
+    assert len(selected) == 10
+    assert {row["visual"]["structure"] for row in selected} == prepare.STRUCTURES
+    assert prepare.selection_gap("wabi", selected, supply) is None
+
+
+def test_evidence_gate_requires_all_cases_and_revision_binding(tmp_path):
     required = {"CASE-001", "CASE-002"}
     missing = audit.evidence_gate({}, required, "anchor-sha")
     assert missing["status"] == "Not Run"
@@ -77,12 +143,42 @@ def test_evidence_gate_requires_all_cases_and_revision_binding():
     assert stale["status"] == "Fail"
     assert any("not bound" in error for error in stale["errors"])
 
-    complete = audit.evidence_gate({
+    artifact = tmp_path / "run.log"
+    artifact.write_text("observed actual execution results")
+    record = {"status": "Pass", "executor": "qa", "executed_at": "2026-09-05T12:00:00Z",
+              "actual_result": "Assertions matched recorded observations",
+              "artifacts": [{"path": str(artifact), "sha256": audit.sha256(artifact)}]}
+    evidence = {
         "schema_version": 1,
         "anchor_manifest_sha256": "anchor-sha",
-        "cases": {case_id: {"status": "Pass"} for case_id in required},
-    }, required, "anchor-sha")
+        "cases": {case_id: dict(record) for case_id in required},
+    }
+    complete = audit.evidence_gate(evidence, required, "anchor-sha")
     assert complete["status"] == "Pass"
+    artifact.write_text("changed after acceptance")
+    assert audit.evidence_gate(evidence, required, "anchor-sha")["status"] == "Fail"
+
+
+def test_status_only_and_duplicate_evidence_cannot_pass():
+    evidence = {"schema_version": 1, "anchor_manifest_sha256": "sha",
+                "cases": {"CASE-001": "Pass"}}
+    result = audit.evidence_gate(evidence, {"CASE-001"}, "sha")
+    assert result["status"] == "Fail"
+    assert any("execution record" in error for error in result["errors"])
+    evidence["cases"] = [{"id": "CASE-001", "status": "Fail"},
+                         {"id": "CASE-001", "status": "Pass"}]
+    result = audit.evidence_gate(evidence, {"CASE-001"}, "sha")
+    assert "duplicate case IDs" in result["errors"]
+
+
+def test_gate_case_matrix_matches_all_94_documented_cases():
+    import re
+    spec = (audit.ROOT / "docs/SELFIT_P0_ACCEPTANCE_20260904.md").read_text()
+    documented = set(re.findall(r"^\| ([A-Z][A-Z0-9]*-\d{3}) \|", spec, re.MULTILINE))
+    required = set().union(*audit.GATE_CASES.values())
+    assert len(documented) == 94
+    assert required == documented
+    assert {"PERF-007", "PERF-008"} <= audit.PERF_CASES
 
 
 def test_non_pass_case_blocks_evidence_gate():

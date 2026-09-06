@@ -12,7 +12,6 @@ import math
 import os
 import re
 from collections import Counter, defaultdict
-from functools import lru_cache
 from pathlib import Path
 from typing import Any
 
@@ -43,22 +42,29 @@ def _sha256(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
-@lru_cache(maxsize=8)
-def _read_json(path: str, stamp: int) -> dict[str, Any]:
-    del stamp
+def _json_snapshot(path: Path) -> tuple[dict[str, Any], str | None]:
+    """Parse and fingerprint identical bytes, never trust mtime as content identity."""
     try:
-        value = json.loads(Path(path).read_text(encoding="utf-8"))
-        return value if isinstance(value, dict) else {}
-    except (OSError, ValueError):
-        return {}
+        payload = path.read_bytes()
+    except OSError:
+        return {}, None
+    fingerprint = hashlib.sha256(payload).hexdigest()
+    try:
+        value = json.loads(payload)
+        return (value if isinstance(value, dict) else {}), fingerprint
+    except (ValueError, UnicodeError):
+        return {}, fingerprint
 
 
 def load_json(path: Path) -> dict[str, Any]:
+    return _json_snapshot(path)[0]
+
+
+def _current_sha(path: Path) -> str | None:
     try:
-        stamp = path.stat().st_mtime_ns
+        return _sha256(path)
     except OSError:
-        stamp = 0
-    return _read_json(str(path), stamp)
+        return None
 
 
 def configured_paths() -> tuple[Path, Path]:
@@ -66,6 +72,26 @@ def configured_paths() -> tuple[Path, Path]:
         Path(os.getenv("SELFIT_P0_ANCHOR_MANIFEST", str(DEFAULT_MANIFEST))),
         Path(os.getenv("SELFIT_P0_BLIND_REVIEW", str(DEFAULT_BLIND_RESULT))),
     )
+
+
+def anchor_visual_workset(catalog: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """Prune expensive vision checks; this is NOT release admission.
+
+    The full current manifest, reviews and fingerprints must still pass
+    approved_anchor_pool afterwards. A manifest change between these reads
+    can only remove required candidates and fail closed, never admit them.
+    """
+    manifest = load_json(configured_paths()[0])
+    entries = manifest.get("anchors")
+    if not isinstance(entries, list) or len(entries) != 160:
+        return []
+    if any(not isinstance(row, dict) or not isinstance(row.get("outfit_id"), str)
+           or not row["outfit_id"] for row in entries):
+        return []
+    ids = {row["outfit_id"] for row in entries}
+    if len(ids) != 160:
+        return []
+    return [row for row in catalog if row.get("outfit_id") in ids]
 
 
 def adapt_released_anchor(row: dict[str, Any], entry: dict[str, Any]) -> dict[str, Any]:
@@ -296,21 +322,27 @@ def approved_anchor_pool(
     visual_version: str,
 ) -> tuple[list[dict[str, Any]], dict[str, Any]]:
     manifest_path, blind_path = configured_paths()
-    manifest, blind = load_json(manifest_path), load_json(blind_path)
+    manifest, manifest_sha = _json_snapshot(manifest_path)
+    blind, blind_sha = _json_snapshot(blind_path)
+    family_sha = _current_sha(FAMILY_PATH)
     result = validate_manifest(
         manifest,
         catalog,
         raw_outfits,
         content_version=content_version,
         visual_version=visual_version,
-        family_registry_sha256=_sha256(FAMILY_PATH) if FAMILY_PATH.is_file() else "missing",
+        family_registry_sha256=family_sha or "missing",
         blind_result=blind,
         require_release=True,
     )
     result["manifest_path"] = str(manifest_path)
-    result["manifest_sha256"] = _sha256(manifest_path) if manifest_path.is_file() else None
+    result["manifest_sha256"] = manifest_sha
     result["blind_result_path"] = str(blind_path)
-    result["blind_result_sha256"] = _sha256(blind_path) if blind_path.is_file() else None
+    result["blind_result_sha256"] = blind_sha
+    for path, expected in ((manifest_path, manifest_sha), (blind_path, blind_sha), (FAMILY_PATH, family_sha)):
+        if _current_sha(path) != expected:
+            result["valid"] = False
+            result["errors"].append("Release evidence changed during validation; retry against a stable revision")
     if not result["valid"]:
         return [], result
     entries = {str(row["outfit_id"]): row for row in result["anchors"]}
