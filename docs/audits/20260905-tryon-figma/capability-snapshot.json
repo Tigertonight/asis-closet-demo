@@ -1,0 +1,72 @@
+{
+  "schemaVersion": 1,
+  "capturedAt": "2026-09-05T21:41:23.464852",
+  "target": {
+    "name": "试穿环节",
+    "source": "https://www.figma.com/design/7WvSROZhohAyvpEMfxZ3Dd/",
+    "permissionBoundary": "user-authorized"
+  },
+  "capabilities": [
+    {
+      "name": "observation",
+      "available": true,
+      "toolOrMethod": "CUA Chrome browser",
+      "scope": "five target frames",
+      "limits": [],
+      "artifactPath": "source/",
+      "validationPower": "gate-capable",
+      "fallback": "",
+      "downgradeImpact": ""
+    },
+    {
+      "name": "extraction",
+      "available": true,
+      "toolOrMethod": "Figma UI PNG/SVG export",
+      "scope": "five target frames",
+      "limits": [],
+      "artifactPath": "source/",
+      "validationPower": "gate-capable",
+      "fallback": "",
+      "downgradeImpact": ""
+    },
+    {
+      "name": "measurement",
+      "available": true,
+      "toolOrMethod": "SVG geometry and PNG",
+      "scope": "five target frames",
+      "limits": [],
+      "artifactPath": "source/",
+      "validationPower": "gate-capable",
+      "fallback": "",
+      "downgradeImpact": ""
+    },
+    {
+      "name": "build",
+      "available": true,
+      "toolOrMethod": "local frontend",
+      "scope": "five target frames",
+      "limits": [],
+      "artifactPath": "source/",
+      "validationPower": "gate-capable",
+      "fallback": "",
+      "downgradeImpact": ""
+    },
+    {
+      "name": "comparison",
+      "available": true,
+      "toolOrMethod": "browser screenshots and image differences",
+      "scope": "five target frames",
+      "limits": [],
+      "artifactPath": "source/",
+      "validationPower": "gate-capable",
+      "fallback": "",
+      "downgradeImpact": ""
+    }
+  ],
+  "missingCapabilities": [],
+  "gateDecision": {
+    "capabilitySnapshotComplete": true,
+    "blockers": [],
+    "decidedAt": "2026-09-05T21:41:23.464852"
+  }
+}

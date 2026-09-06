@@ -135,6 +135,7 @@ from app.stylist_sessions import (
 from app import selfit_onboarding, selfit_share
 from app.selfit_onboarding import router as selfit_onboarding_router
 from app.selfit_mirror_handoff import router as selfit_mirror_handoff_router
+from app.selfit_studio import router as selfit_studio_router
 from app.selfit_analytics import admin_router as selfit_admin_router, router as selfit_analytics_router
 from app.selfit_admin_submissions import router as selfit_admin_submissions_router
 from app.qa_onboarding import QA_PHOTO_DIR, router as qa_onboarding_router
@@ -149,6 +150,7 @@ app = FastAPI(title="selfit", version="0.2.0")
 app.middleware("http")(request_guard_middleware)
 app.include_router(selfit_onboarding_router)
 app.include_router(selfit_mirror_handoff_router)
+app.include_router(selfit_studio_router)
 app.include_router(selfit_analytics_router)
 app.include_router(selfit_admin_router)
 app.include_router(selfit_admin_submissions_router)
@@ -773,11 +775,13 @@ async def closet_outfit_recommendations(request: Request, current_user: dict[str
         from app import closet
         with user_storage(current_user["user_id"]):
             profile = resolve_profile(current_user["user_id"])
+            from app.recommendation_anchors import approved_anchor_pool, anchor_visual_workset, enabled as p0_anchors_enabled
+            p0_active = p0_anchors_enabled()
             context = payload.get("context") if isinstance(payload.get("context"), dict) else {}
             preview = context.get("persona_preview") is True
             if preview:
                 profile = preview_profile(profile, context, payload.get("persona") or {})
-            if not profile.get("validation_enabled"):
+            if not profile.get("validation_enabled") and not p0_active:
                 # Legacy scoring remains available, but the account owns formal identity.
                 if not preview:
                     if not profile["persona_id"]:
@@ -790,14 +794,17 @@ async def closet_outfit_recommendations(request: Request, current_user: dict[str
                 return recommend_outfits(payload)
             if not profile["persona_id"]:
                 return {"outfits": [], "carousel": [], "validation": True, "has_more": False, "profile_required": True}
-            if payload.get("session_id"):
+            if payload.get("session_id") and not p0_active:
                 return continue_feed(payload["session_id"], payload.get("cursor"), profile)
             pool = closet.selfit_content_pool()
             visual = load_visual()
-            candidates, held = attach_visual(closet._published_catalog_outfits(), pool.garments, pool.outfits, visual)
-            from app.recommendation_anchors import approved_anchor_pool, enabled as p0_anchors_enabled
+            visual_catalog = closet._published_catalog_outfits()
+            if p0_active:
+                visual_catalog = anchor_visual_workset(visual_catalog)
+            candidates, held = attach_visual(visual_catalog, pool.garments, pool.outfits, visual)
             anchor_gate = None
-            if p0_anchors_enabled():
+            anchor_release = None
+            if p0_active:
                 candidates, anchor_gate = approved_anchor_pool(
                     candidates,
                     pool.outfits,
@@ -815,6 +822,14 @@ async def closet_outfit_recommendations(request: Request, current_user: dict[str
                     row for row in candidates
                     if str(row.get("primary_persona") or "").lower() == target_persona
                 ]
+                anchor_release = {
+                    "valid": True,
+                    "manifest_sha256": anchor_gate.get("manifest_sha256"),
+                    "blind_result_sha256": anchor_gate.get("blind_result_sha256"),
+                }
+                if payload.get("session_id"):
+                    return continue_feed(payload["session_id"], payload.get("cursor"), profile,
+                                         anchor_release=anchor_release)
             if preview:
                 candidates = [o for o in candidates if str(o.get("primary_persona") or "").lower()==profile["persona_id"]]
             events = [] if preview else closet._ensure_recommendation_feedback().get("events", [])
@@ -838,13 +853,10 @@ async def closet_outfit_recommendations(request: Request, current_user: dict[str
             from app.recommendation_anchors import P0_SEQUENCE_ROLES
             result = create_feed(feed_profile, candidates, feed_context, events,
                                  str(visual.get("version") or "pending-vision"), validation_bundle=bundle,
-                                 expression_roles=P0_SEQUENCE_ROLES if anchor_gate is not None else None)
+                                 expression_roles=P0_SEQUENCE_ROLES if anchor_gate is not None else None,
+                                 anchor_release=anchor_release)
             if anchor_gate is not None:
-                result["anchor_release"] = {
-                    "valid": True,
-                    "manifest_sha256": anchor_gate.get("manifest_sha256"),
-                    "blind_result_sha256": anchor_gate.get("blind_result_sha256"),
-                }
+                result["anchor_release"] = anchor_release
             if not candidates:
                 result["supply_gaps"].append({"reason":"visual_review_pending", "held_count":len(held)})
             return result
@@ -1104,6 +1116,16 @@ def selfit_mirror_page() -> FileResponse:
             "Cache-Control": "no-store, no-cache, must-revalidate, max-age=0",
             "Pragma": "no-cache",
         },
+    )
+
+
+@app.get("/selfit/try-on", response_class=FileResponse)
+@app.get("/selfit/try-on/", response_class=FileResponse)
+def selfit_tryon_studio_page() -> FileResponse:
+    return FileResponse(
+        Path(__file__).resolve().parent / "static" / "selfit-tryon" / "index.html",
+        media_type="text/html",
+        headers={"Cache-Control": "no-store"},
     )
 
 

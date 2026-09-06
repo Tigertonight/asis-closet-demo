@@ -1,0 +1,57 @@
+{
+  "mirror-model": {
+    "mean_absolute_error_0_255": 2.198,
+    "pixels_with_max_channel_error_at_most_16_percent": 96.68,
+    "evaluated_pixels": 312858,
+    "excluded": "status bar y<54 and transparent Figma device corners",
+    "regions": {
+      "hero": 1.508,
+      "controls": 3.281,
+      "navigation": 2.777
+    }
+  },
+  "mirror-styling": {
+    "mean_absolute_error_0_255": 5.636,
+    "pixels_with_max_channel_error_at_most_16_percent": 91.84,
+    "evaluated_pixels": 312858,
+    "excluded": "status bar y<54 and transparent Figma device corners",
+    "regions": {
+      "hero": 6.835,
+      "controls": 4.622,
+      "navigation": 2.739
+    }
+  },
+  "closet": {
+    "mean_absolute_error_0_255": 3.812,
+    "pixels_with_max_channel_error_at_most_16_percent": 89.77,
+    "evaluated_pixels": 312858,
+    "excluded": "status bar y<54 and transparent Figma device corners",
+    "regions": {
+      "hero": 3.777,
+      "controls": 4.008,
+      "navigation": 3.534
+    }
+  },
+  "inspiration": {
+    "mean_absolute_error_0_255": 4.34,
+    "pixels_with_max_channel_error_at_most_16_percent": 93.43,
+    "evaluated_pixels": 312858,
+    "excluded": "status bar y<54 and transparent Figma device corners",
+    "regions": {
+      "hero": 3.081,
+      "controls": 6.56,
+      "navigation": 4.875
+    }
+  },
+  "detail": {
+    "mean_absolute_error_0_255": 4.601,
+    "pixels_with_max_channel_error_at_most_16_percent": 91.23,
+    "evaluated_pixels": 312858,
+    "excluded": "status bar y<54 and transparent Figma device corners",
+    "regions": {
+      "hero": 5.016,
+      "controls": 2.157,
+      "navigation": 8.149
+    }
+  }
+}

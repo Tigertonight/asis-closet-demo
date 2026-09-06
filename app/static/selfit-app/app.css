@@ -2444,3 +2444,124 @@ body:has(.sheet.open) .app::after { opacity: 1; }
 }
 #personaTestPalette { width: 100%; min-height: 44px; margin-top: 8px; padding: 10px 12px; border: 1px solid var(--color-line, #e7e7e7); border-radius: 12px; background: #fff; color: #222; font: inherit; font-size: 14px; }
 #personaTestPalette:focus-visible { outline: 2px solid #8a011b; outline-offset: 2px; }
+
+
+/* Compact discovery layout: keep outfits and their actions in the first viewport. */
+#page-home > .top-row { margin-bottom: 20px; }
+#page-home > .today-section { margin-top: 0; }
+#page-home .section-head { min-height: 28px; margin-bottom: 10px; }
+#page-home .today-card {
+  height: 198px;
+  min-height: 198px;
+  padding: 14px 16px;
+  grid-template-columns: minmax(0, 1fr) 48%;
+  gap: 8px;
+}
+#page-home .today-art { min-height: 0; height: 170px; }
+#page-home .today-art .today-cover { padding: 12px; }
+#page-home .today-copy { gap: 6px; }
+#page-home .today-copy h1 { margin: 0; font-size: 19px; }
+#page-home .today-copy p {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.5;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  overflow: hidden;
+}
+#page-home .today-track { padding-bottom: 0; }
+#page-home .today-dots { margin-top: 0; min-height: 32px; }
+#page-home .today-section + .home-section { margin-top: 12px; }
+
+/* Quiet feed actions; negative feedback is available on a long press. */
+#homeGrid .outfit-meta { justify-content: space-between; }
+#homeGrid .try-btn {
+  min-width: 52px;
+  min-height: 32px;
+  height: 32px;
+  padding: 0 12px;
+  border-radius: 999px;
+  font-size: 12px;
+}
+#homeGrid .outfit-canvas { -webkit-touch-callout: none; user-select: none; }
+#homeGrid .outfit-canvas img { -webkit-user-drag: none; }
+
+#modelCell { position: relative; padding-right: 78px; }
+#modelCell .profile-model-thumbnail {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 56px;
+  height: calc(100% - 24px);
+  max-height: 86px;
+  border-radius: 10px;
+  object-fit: cover;
+  object-position: center 20%;
+  background: #f5f0f1;
+}
+#modelCell .profile-model-thumbnail[hidden] { display: none; }
+#modelCell #currentModelName { max-width: 100%; overflow-wrap: anywhere; }
+
+/* Put feed actions inside the image card, leaving the next row closer. */
+#homeGrid .outfit-card { position: relative; }
+#homeGrid .outfit-reason { display: none; }
+#homeGrid .outfit-card .outfit-meta {
+  position: absolute;
+  z-index: 2;
+  inset: auto 8px 8px;
+  min-height: 32px;
+  padding: 0;
+  align-items: center;
+  pointer-events: none;
+}
+#homeGrid .outfit-meta > button { pointer-events: auto; }
+#homeGrid .favorite-btn {
+  width: 32px;
+  height: 32px;
+  min-height: 32px;
+  padding: 0;
+  border-radius: 50%;
+  background: rgba(255,255,255,.92);
+}
+#homeGrid .outfit-card:not(.persona-inspiration-card) .outfit-canvas > img {
+  padding-bottom: 38px;
+}
+
+/* One compact detail toolbar: deletion on the left, preference feedback on the right. */
+#detailFeedbackActions { margin: 4px 16px 0; gap: 4px; align-items: center; }
+#detailFeedbackActions #detailDeleteBtn {
+  margin: 0 auto 0 0;
+  border: 0;
+  padding: 10px;
+  color: var(--sf-text-secondary);
+  background: transparent;
+}
+#detailFeedbackActions #detailDeleteBtn[hidden] { display: none; }
+#detailFeedbackActions #detailDeleteBtn:hover { color: var(--sf-brand); background: #f8eff1; }
+#detailFeedbackActions + #itemWearStateActions + #detailItemsSection { margin-top: 16px; }
+
+/* Image-local actions follow the corners, independent of the media renderer. */
+.detail-image-panel { position: relative; }
+.detail-image-panel #detailFeedbackActions {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  pointer-events: none;
+}
+.detail-image-panel #detailFeedbackActions button {
+  position: absolute;
+  pointer-events: auto;
+  background: rgba(255,255,255,.92);
+  box-shadow: 0 2px 8px rgba(45,30,35,.05);
+}
+.detail-image-panel #detailFeedbackActions #detailDeleteBtn {
+  top: 20px;
+  left: auto;
+  right: 20px;
+  margin: 0;
+  background: rgba(255,255,255,.92);
+}
+.detail-image-panel #detailLikeBtn { bottom: 20px; left: 20px; }
+.detail-image-panel #detailDislikeBtn { bottom: 20px; left: 68px; }
+#page-detail #detailItemsSection { margin-top: 16px; }

@@ -184,6 +184,56 @@ def test_dislike_suppresses_later_related_family_in_same_snapshot(tmp_path, monk
         assert related["outfit_id"] not in {row["outfit_id"] for row in next_page["outfits"]}
 
 
+def test_disliked_outfit_cannot_return_on_cursor_retry(tmp_path, monkeypatch):
+    import app.storage as storage
+    monkeypatch.setattr(storage, "ROOT_DIR", tmp_path)
+    rows = [outfit(i, category=["pants", "skirt", "dress"][i % 3],
+                   expression=["easy", "typical", "explore"][(i // 3) % 3]) for i in range(90)]
+    with user_storage("u"):
+        first = create_feed(profile(), rows, {})
+        page = continue_feed(first["session_id"], first["next_cursor"], profile())
+        target = page["outfits"][0]["outfit_id"]
+        payload = {"entity_id": target, "event_type": "dislike",
+                   "context": {"recommendation_session": first["session_id"]}}
+        validate_feedback(payload)
+        validate_feedback(payload)  # Repeated feedback must not undo suppression.
+        retry = continue_feed(first["session_id"], first["next_cursor"], profile())
+        assert target not in {row["outfit_id"] for row in retry["outfits"]}
+        assert retry == continue_feed(first["session_id"], first["next_cursor"], profile())
+
+
+def test_suppressed_tail_exhaustion_and_empty_batch_skipping():
+    from app.recommendation_feed import _page
+    data = {"rows": [outfit(i) for i in range(28)], "session_id": "test",
+            "profile_version": "p1", "content_version": "c1", "gaps": [],
+            "suppressed_outfit_ids": [f"o{i}" for i in range(16, 28)]}
+    assert _page(data, 10)["has_more"] is False
+    data["suppressed_outfit_ids"] = [f"o{i}" for i in range(16, 22)]
+    page = _page(data, 10)
+    assert page["next_cursor"].startswith("22:")
+    assert _page(data, 22)["has_more"] is False
+
+
+def test_tryon_summary_does_not_count_review_or_failure_as_success():
+    from app import closet
+    source = closet.render_selfit_demo_page()
+    body = source.split("function renderTryonResultDetails(data) {", 1)[1].split("const itemsById", 1)[0]
+    run_js("""
+const assert = require('node:assert/strict');
+const nodes = {'#tryonResultDetails': {}, '#tryonResultSummary': {}};
+const $ = key => nodes[key];
+function render(data) {""" + body + """}
+render({summary:{applied_count:3,review_count:1,skipped_count:0}});
+assert.equal(nodes['#tryonResultSummary'].textContent,'3 件已替换 · 1 处建议检查');
+render({summary:{applied_count:0,review_count:2,skipped_count:1}});
+assert.equal(nodes['#tryonResultSummary'].textContent,'0 件已替换 · 2 处建议检查 · 1 件跳过');
+render({summary:{applied_count:4,review_count:0,skipped_count:0}});
+assert.equal(nodes['#tryonResultSummary'].textContent,'4 件已替换');
+render(null);
+assert.equal(nodes['#tryonResultDetails'].hidden,true);
+""")
+
+
 def test_home_dislike_immediately_requests_a_reviewed_replacement_page():
     from app import closet
     source = closet.render_selfit_demo_page()
@@ -319,6 +369,60 @@ def test_internal_api_groups_and_cursor_contract(tmp_path, monkeypatch):
     finally:
         main.app.dependency_overrides.clear()
         main.app.dependency_overrides.update(prior)
+
+
+@pytest.mark.parametrize("validation", [False, True])
+@pytest.mark.parametrize("continuation", [False, True])
+def test_enabled_p0_never_bypasses_invalid_release_via_legacy_or_cursor(tmp_path, monkeypatch, validation, continuation):
+    from types import SimpleNamespace
+    from fastapi.testclient import TestClient
+    import app.main as main
+    import app.storage as storage
+    import app.closet as closet
+    import app.recommendation_anchors as anchors
+    monkeypatch.setattr(storage, "ROOT_DIR", tmp_path)
+    monkeypatch.setattr(main, "resolve_profile", lambda uid: profile(validation_enabled=validation))
+    monkeypatch.setattr(anchors, "enabled", lambda: True)
+    monkeypatch.setattr(anchors, "approved_anchor_pool", lambda *a, **kw: ([], {"valid": False, "errors": ["missing review"]}))
+    monkeypatch.setattr(closet, "selfit_content_pool", lambda: SimpleNamespace(garments=[], outfits=[], metadata={}))
+    monkeypatch.setattr(closet, "_published_catalog_outfits", lambda: [])
+    monkeypatch.setattr(main, "load_visual", lambda: {})
+    monkeypatch.setattr(main, "attach_visual", lambda *a: ([], []))
+    monkeypatch.setattr(main, "recommend_outfits", lambda *a: {"leaked_legacy": True})
+    monkeypatch.setattr(main, "continue_feed", lambda *a, **kw: {"leaked_snapshot": True})
+    prior = dict(main.app.dependency_overrides)
+    main.app.dependency_overrides[main.get_current_user] = lambda: {"user_id": "p0-isolation-test"}
+    try:
+        with TestClient(main.app) as client:
+            result = client.post("/closet/recommendations/outfits", json={"session_id": "old", "cursor": "old"} if continuation else {}).json()
+            assert result.get("anchor_release", {}).get("valid") is False
+            assert result["outfits"] == [] and result["has_more"] is False
+            assert "leaked_legacy" not in result and "leaked_snapshot" not in result
+    finally:
+        main.app.dependency_overrides.clear()
+        main.app.dependency_overrides.update(prior)
+
+
+def test_p0_snapshot_requires_same_current_release_and_rejects_legacy(tmp_path, monkeypatch):
+    import app.storage as storage
+    monkeypatch.setattr(storage, "ROOT_DIR", tmp_path)
+    rows = [outfit(i, category=["pants", "skirt", "dress"][i % 3],
+                   expression=["easy", "typical", "explore"][(i // 3) % 3]) for i in range(90)]
+    release = {"valid": True, "manifest_sha256": "manifest-a", "blind_result_sha256": "blind-a"}
+    with user_storage("p0-isolation-test"):
+        first = create_feed(profile(), rows, {}, anchor_release=release)
+        page = continue_feed(first["session_id"], first["next_cursor"], profile(), anchor_release=release)
+        assert page["anchor_release"] == release
+        assert page == continue_feed(first["session_id"], first["next_cursor"], profile(), anchor_release=release)
+        for changed in (None, {**release, "manifest_sha256": "manifest-b"},
+                        {**release, "blind_result_sha256": "blind-b"}):
+            with pytest.raises(HTTPException) as error:
+                continue_feed(first["session_id"], first["next_cursor"], profile(), anchor_release=changed)
+            assert error.value.status_code == 409
+        legacy = create_feed(profile(), rows, {})
+        with pytest.raises(HTTPException) as error:
+            continue_feed(legacy["session_id"], legacy["next_cursor"], profile(), anchor_release=release)
+        assert error.value.status_code == 409
 
 
 def test_visible_exposure_timer_cancels_on_exit_and_hidden_tab():

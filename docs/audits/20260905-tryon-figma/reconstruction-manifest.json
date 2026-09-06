@@ -1,0 +1,207 @@
+{
+  "schemaVersion": 1,
+  "source": {
+    "canonicalSource": "https://www.figma.com/design/7WvSROZhohAyvpEMfxZ3Dd/",
+    "permissionBoundary": "user-authorized",
+    "allowedPermissionBoundaries": [
+      "public",
+      "user-authorized",
+      "external-blocked"
+    ]
+  },
+  "targetSet": [
+    {
+      "name": "mirror-model",
+      "node": "201:23890",
+      "truth": "SOURCE",
+      "evidence": "source/mirror-model.png"
+    },
+    {
+      "name": "mirror-styling",
+      "node": "201:24095",
+      "truth": "SOURCE",
+      "evidence": "source/mirror-styling.png"
+    },
+    {
+      "name": "closet",
+      "node": "110:18892",
+      "truth": "SOURCE",
+      "evidence": "source/closet.png"
+    },
+    {
+      "name": "inspiration",
+      "node": "110:18976",
+      "truth": "SOURCE",
+      "evidence": "source/inspiration.png"
+    },
+    {
+      "name": "detail",
+      "node": "218:24786",
+      "truth": "SOURCE",
+      "evidence": "source/detail.png"
+    }
+  ],
+  "domain": {
+    "name": "frontend",
+    "adapter": "HTML CSS JS",
+    "fields": {
+      "viewport": "393x852"
+    }
+  },
+  "mechanism": {
+    "components": [],
+    "sequence": [],
+    "dependencies": [],
+    "state": [],
+    "inputs": [],
+    "outputs": []
+  },
+  "facts": {
+    "leafFacts": [
+      {
+        "name": "mirror-model",
+        "node": "201:23890",
+        "truth": "SOURCE",
+        "evidence": "source/mirror-model.png"
+      },
+      {
+        "name": "mirror-styling",
+        "node": "201:24095",
+        "truth": "SOURCE",
+        "evidence": "source/mirror-styling.png"
+      },
+      {
+        "name": "closet",
+        "node": "110:18892",
+        "truth": "SOURCE",
+        "evidence": "source/closet.png"
+      },
+      {
+        "name": "inspiration",
+        "node": "110:18976",
+        "truth": "SOURCE",
+        "evidence": "source/inspiration.png"
+      },
+      {
+        "name": "detail",
+        "node": "218:24786",
+        "truth": "SOURCE",
+        "evidence": "source/detail.png"
+      },
+      {
+        "name": "geometry and image patterns",
+        "truth": "SOURCE",
+        "evidence": "source/*-structure.xml"
+      }
+    ],
+    "wiringFacts": [
+      {
+        "name": "existing API contracts",
+        "truth": "SOURCE",
+        "evidence": "app/main.py /selfit/try-on/jobs and app/closet.py tryOutfit"
+      },
+      {
+        "name": "button transitions and mirror mode toggle",
+        "truth": "GUESS",
+        "evidence": "Labels on target frames; no prototype link metadata exported",
+        "fallback": "implement direct navigation consistent with labels; mark interaction parity partial"
+      }
+    ],
+    "defaultLabel": "GUESS",
+    "allowedTruth": [
+      "SOURCE",
+      "PARTIAL",
+      "GUESS"
+    ]
+  },
+  "unknowns": {
+    "blocking": [],
+    "important": [],
+    "deferred": [],
+    "external": []
+  },
+  "reconstruction": {
+    "route": "SOURCE_RECONSTRUCTION",
+    "allowedRoutes": [
+      "SOURCE_RECONSTRUCTION",
+      "MECHANISM_RECONSTRUCTION",
+      "BEHAVIOR_APPROXIMATION"
+    ],
+    "fidelityTier": "Exact source geometry/assets; inferred UI transitions",
+    "fallbacks": [
+      "HTML font rendering and real device chrome differ from Figma vector text",
+      "Prototype timing not available; standard immediate transitions"
+    ]
+  },
+  "evidence": [],
+  "gateDecision": {
+    "reconstructionReady": true,
+    "requiredEvidence": {
+      "targetSet": [
+        {
+          "status": "passed",
+          "evidenceId": "figma-export",
+          "path": "source/",
+          "truth": "SOURCE",
+          "notes": "Five PNGs and four SVGs; missing prototype wiring explicitly downgraded."
+        }
+      ],
+      "mechanismOrFallback": [
+        {
+          "status": "passed",
+          "evidenceId": "figma-export",
+          "path": "source/",
+          "truth": "SOURCE",
+          "notes": "Five PNGs and four SVGs; missing prototype wiring explicitly downgraded."
+        }
+      ],
+      "criticalResources": [
+        {
+          "status": "passed",
+          "evidenceId": "figma-export",
+          "path": "source/",
+          "truth": "SOURCE",
+          "notes": "Five PNGs and four SVGs; missing prototype wiring explicitly downgraded."
+        }
+      ],
+      "sequenceStateInputs": [
+        {
+          "status": "passed",
+          "evidenceId": "figma-export",
+          "path": "source/",
+          "truth": "SOURCE",
+          "notes": "Five PNGs and four SVGs; missing prototype wiring explicitly downgraded."
+        }
+      ],
+      "outputRelationship": [
+        {
+          "status": "passed",
+          "evidenceId": "figma-export",
+          "path": "source/",
+          "truth": "SOURCE",
+          "notes": "Five PNGs and four SVGs; missing prototype wiring explicitly downgraded."
+        }
+      ],
+      "truthLabels": [
+        {
+          "status": "passed",
+          "evidenceId": "figma-export",
+          "path": "source/",
+          "truth": "SOURCE",
+          "notes": "Five PNGs and four SVGs; missing prototype wiring explicitly downgraded."
+        }
+      ],
+      "blockingUnknownsResolvedOrDowngraded": [
+        {
+          "status": "passed",
+          "evidenceId": "figma-export",
+          "path": "source/",
+          "truth": "SOURCE",
+          "notes": "Five PNGs and four SVGs; missing prototype wiring explicitly downgraded."
+        }
+      ]
+    },
+    "blockers": [],
+    "decidedAt": ""
+  }
+}

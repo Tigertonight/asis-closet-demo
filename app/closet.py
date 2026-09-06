@@ -291,6 +291,7 @@ def _published_catalog_outfits(*, include_archived: bool = False) -> list[dict[s
             "display_item_ids": item_ids,
             "overflow_items": [],
             "warnings": [],
+            "can_delete": False,
             "source": "published_content_v2",
             "content_version": pool.metadata.get("contentVersion"),
             "curation": outfit.get("curation") or {},
@@ -1629,7 +1630,7 @@ def _record_recommendation_feedback(payload: dict[str, Any]) -> dict[str, Any]:
     if not entity_id:
         raise HTTPException(status_code=400, detail="缺少反馈对象")
     reason = str(payload.get("reason") or "").strip()[:48]
-    if event_type == "dislike" and reason not in {"color", "fit", "scene", "formal", "complex", "repeated", "other"}:
+    if event_type == "dislike" and reason not in {"color", "fit", "scene", "formal", "complex", "repeated", "other", "dislike", "unsuitable"}:
         raise HTTPException(status_code=400, detail="请选择不喜欢的原因")
     data = _ensure_recommendation_feedback()
     now = _now_iso()
@@ -1852,6 +1853,7 @@ def recommend_outfits(payload: dict[str, Any]) -> dict[str, Any]:
     persona = payload.get("persona") if isinstance(payload.get("persona"), dict) else {}
     offset = max(0, int(payload.get("offset") or 0))
     limit = max(1, min(20, int(payload.get("limit") or 12)))
+    home_surface = payload.get("separate_carousel") is True
     rotate_by = max(1, min(limit, int(payload.get("rotate_by") or 4)))
     context = payload.get("context") if isinstance(payload.get("context"), dict) else {}
     preview = context.get("persona_preview") is True
@@ -1910,10 +1912,11 @@ def recommend_outfits(payload: dict[str, Any]) -> dict[str, Any]:
         # wardrobe to occupy the entire six-card home viewport.
         personal_quota = min(limit, len(personal), 2)
         reserved_ids = {str(outfit.get("outfit_id") or "") for outfit in personal[:personal_quota]}
-        ranked = personal[:personal_quota] + [
-            outfit for outfit in ranked
-            if str(outfit.get("outfit_id") or "") not in reserved_ids
-        ]
+        remaining_ranked = [outfit for outfit in ranked if str(outfit.get("outfit_id") or "") not in reserved_ids]
+        if home_surface:
+            ranked = personal[:1] + remaining_ranked[:4] + personal[1:personal_quota] + remaining_ranked[4:]
+        else:
+            ranked = personal[:personal_quota] + remaining_ranked
     if ranked:
         start = offset % len(ranked)
         ordered = ranked[start:] + ranked[:start]
@@ -1923,7 +1926,13 @@ def recommend_outfits(payload: dict[str, Any]) -> dict[str, Any]:
     # unstable offsets: exposure feedback can reorder the ranking between calls.
     # Preserve delivery order so the last page participates in the same window.
     seen_ids = _string_list(payload.get("exclude_outfit_ids"))[:5000]
-    selection = select_diverse_outfits(ordered, seen_ids, limit)
+    first_home_page = home_surface and not seen_ids
+    selection = select_diverse_outfits(ordered, seen_ids, limit + (4 if first_home_page else 0), home_surface=home_surface)
+    if home_surface:
+        chosen = selection["outfits"]
+        selection["carousel"] = chosen[:4] if first_home_page else []
+        selection["outfits"] = chosen[4:] if first_home_page else chosen
+        selection["separate_carousel"] = True
     return {
         "total": len(ranked),
         "offset": offset,
@@ -2437,6 +2446,7 @@ def _resolve_outfit(outfit: dict[str, Any], items_by_id: dict[str, dict[str, Any
     return {
         **outfit,
         **layout_patch,
+        "can_delete": True,
         "items": items,
         "tryon_ready": bool(completeness.get("main_complete")) and not completeness.get("conflicts"),
         "completeness": completeness,
@@ -4535,6 +4545,7 @@ def render_selfit_demo_page() -> str:
       font-weight: 800;
       min-height: 64px;
     }
+    a.nav-btn { text-decoration: none; }
     .nav-btn .nav-icon {
       width: 24px;
       height: 24px;
@@ -4592,6 +4603,8 @@ def render_selfit_demo_page() -> str:
       max-height: 82vh;
       overflow: auto;
     }
+    /* Off-screen transforms alone leave closed controls in the Tab order. */
+    .sheet:not(.open), .session-sidebar:not(.open) { visibility: hidden; }
     .sheet.open { transform: translate(-50%, 0); }
     .sheet-title { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
     .sheet-title b { font-size: 20px; }
@@ -5181,10 +5194,30 @@ def render_selfit_demo_page() -> str:
       .ai-session-bar { top: 58px; }
       .sheet { bottom: 24px; border-radius: 28px 28px 34px 34px; }
     }
+    .delete-outfit-action { display:block; margin:0 24px 12px auto; min-height:44px; padding:8px 16px; border:1px solid #e7d6db; border-radius:18px; color:#8a011b; background:white; font-weight:600; }
+    .delete-outfit-action[hidden] { display:none; }
+    #outfitDeleteDialog { border:0; border-radius:24px; padding:24px; width:min(345px,calc(100vw - 32px)); color:#222; background:#fafafa; }
+    #outfitDeleteDialog::backdrop { background:#0006; }
+    #outfitDeleteDialog h2 { font-size:20px; margin:0 0 12px; }
+    #outfitDeleteDialog p { line-height:1.6; color:#666; }
+    .outfit-delete-actions { display:flex; gap:12px; margin-top:20px; }
+    .outfit-delete-actions button { flex:1; min-height:44px; }
   </style>
-  <link rel="stylesheet" href="/static/selfit-app/app.css?v=20260903-scroll-feed-v1" />
+  <style>
+    #detailBoot { display:none; }
+    html[data-detail-boot] .app { visibility:hidden; }
+    html[data-detail-boot] #detailBoot { display:flex; position:fixed; inset:0; z-index:1000; background:#fafafa; align-items:center; justify-content:center; flex-direction:column; gap:16px; color:#73646a; font-size:14px; }
+    .detail-boot-spinner { width:32px; height:32px; border:2px solid #eadde1; border-top-color:#8a011b; border-radius:50%; animation:detail-boot-spin .85s linear infinite; }
+    html[data-detail-boot="error"] .detail-boot-spinner { display:none; }
+    @keyframes detail-boot-spin { to { transform:rotate(360deg); } }
+    @media(prefers-reduced-motion:reduce) { .detail-boot-spinner { animation:none; } }
+  </style>
+  <script>if(new URLSearchParams(location.search).get("outfit"))document.documentElement.dataset.detailBoot="loading";</script>
+  <script src="/static/selfit-app/outfit-copy.js?v=20260905-copy2"></script>
+  <link rel="stylesheet" href="/static/selfit-app/app.css?v=20260905-detail-overlay2" />
 </head>
 <body>
+  <div id="detailBoot" role="status" aria-live="polite"><span class="detail-boot-spinner" aria-hidden="true"></span><span id="detailBootMessage">正在打开穿搭…</span><button id="detailBootRetry" class="secondary-btn" hidden>重新加载</button></div>
   <main class="app auth-pending">
     <section id="personaTestPanel" class="persona-test-panel" hidden aria-label="人格推荐测试模式">
       <div><strong>测试模式</strong><span id="personaTestStatus" role="status">仅预览推荐，不修改风格报告</span></div>
@@ -5207,15 +5240,8 @@ def render_selfit_demo_page() -> str:
         <div class="brand">selfit</div>
         <div class="weather"><b id="weatherTemp">24~29°C</b><span id="weatherText">上海市 小雨</span></div>
       </div>
-      <section class="home-section home-actions-section">
-        <div class="home-action-grid">
-          <button id="homeTryAction" class="home-action-card" type="button"><span class="home-action-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 4h8l3 4-2 12H7L5 8l3-4Z"/><path d="M9 4c0 2 1 3 3 3s3-1 3-3"/></svg></span><b>拍一件试试</b><small>上传衣服看上身</small></button>
-          <button id="homeExtractAction" class="home-action-card" type="button"><span class="home-action-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9.5 14.5 14.5 9"/><path d="m7 16.8-1 1a3.4 3.4 0 0 1-4.8-4.8l3.6-3.6a3.4 3.4 0 0 1 4.8 0"/><path d="m17 7.2 1-1A3.4 3.4 0 0 1 22.8 11l-3.6 3.6a3.4 3.4 0 0 1-4.8 0"/></svg></span><b>提取单品</b><small>粘贴喜欢的链接</small></button>
-          <button id="homeAskAction" class="home-action-card" type="button"><span class="home-action-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5.5h14v10H9l-4 3v-13Z"/><path d="M9 10.5h6"/></svg></span><b>问问搭配</b><small>结合风格与衣橱</small></button>
-        </div>
-      </section>
       <section class="home-section today-section">
-        <div class="section-head"><div><small>PERSONAL EDIT</small><h2>今天，怎么穿</h2></div></div>
+        <div class="section-head"><div><h2>今天，怎么穿</h2></div></div>
       <div class="today-carousel" aria-label="今日推荐">
         <div id="todayTrack" class="today-track">
           <article class="today-card home-today-skeleton" aria-label="正在准备今日推荐" aria-busy="true">
@@ -5227,7 +5253,7 @@ def render_selfit_demo_page() -> str:
       </div>
       </section>
       <section class="home-section">
-        <div class="section-head"><div><small>FOR YOUR STYLE</small><h2 id="feedTitle">与你同频的穿搭</h2></div><button id="refreshInspiration">换一批</button></div>
+        <div class="section-head"><div><h2 id="feedTitle">与你同频的穿搭</h2></div><button id="refreshInspiration">换一批</button></div>
         <div id="refreshNote" class="refresh-note"></div>
         <div id="homeGrid" class="masonry home-feed-loading" aria-label="正在准备风格推荐" aria-busy="true"><div class="home-feed-skeleton"></div><div class="home-feed-skeleton"></div></div>
         <div id="homeFeedFooter" class="home-feed-footer" hidden>
@@ -5243,10 +5269,13 @@ def render_selfit_demo_page() -> str:
         <div class="screen-title" id="detailTitle">穿搭详情</div>
         <button class="icon-btn" id="detailShare" aria-label="分享"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V4"/><path d="m8 8 4-4 4 4"/><path d="M5 12v7h14v-7"/></svg></button>
       </div>
+      <div class="detail-image-panel">
       <div class="detail-hero" id="detailHero"></div>
+      <button id="detailDeleteBtn" class="delete-outfit-action" type="button" aria-label="删除穿搭" title="删除穿搭" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13M10 10v7M14 10v7"/></svg></button>
       <div id="detailFeedbackActions" class="detail-feedback-actions" role="group" aria-label="穿搭反馈">
         <button id="detailLikeBtn" type="button" aria-label="喜欢这套" title="喜欢这套" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 10H3v11h4V10Zm0 0 5-7c.5-.8 2-.5 2 1v5h5a2 2 0 0 1 2 2.4l-1.5 7A3 3 0 0 1 16.6 21H7"/></svg></button>
         <button id="detailDislikeBtn" type="button" aria-label="不太适合" title="不太适合" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 14H3V3h4v11Zm0 0 5 7c.5.8 2 .5 2-1v-5h5a2 2 0 0 0 2-2.4l-1.5-7A3 3 0 0 0 16.6 3H7"/></svg></button>
+      </div>
       </div>
       <div id="itemWearStateActions" class="item-wear-state-actions" hidden><span>当前状态</span><button type="button" data-item-wear-state="available">可穿</button><button type="button" data-item-wear-state="laundry">洗护中</button><button type="button" data-item-wear-state="unavailable">暂不可用</button></div>
       <section class="home-section" id="detailItemsSection">
@@ -5405,7 +5434,7 @@ def render_selfit_demo_page() -> str:
       </div>
       <button id="profilePersonaLink" class="profile-persona-card" type="button"><span><small id="profilePersonaCode">MUTE · 你的风格人格</small><b id="profilePersonaName">静音时髦</b><em id="profilePersonaTraits">低表达 · 低装饰 · 秩序感</em></span><span aria-hidden="true">→</span></button>
       <div class="profile-grid">
-        <button class="profile-cell" id="modelCell" type="button"><small>试穿形象</small><b>我的模特</b><span id="currentModelName">沙漏型</span></button>
+        <button class="profile-cell" id="modelCell" type="button"><small>试穿形象</small><b>我的模特</b><span id="currentModelName">沙漏型</span><img id="currentModelThumbnail" class="profile-model-thumbnail" alt="当前试穿模特" hidden /></button>
         <button class="profile-cell" id="profileColorCell" type="button"><small>个人档案</small><b>适合我的颜色</b><span id="profileColorDots" class="profile-color-dots"></span></button>
       </div>
       <div class="profile-tabs"><button class="profile-tab active" data-profile-view="records">试穿记录</button><button class="profile-tab" data-profile-view="works">我的作品</button><button class="profile-tab" data-profile-view="favorites">我的收藏</button></div>
@@ -5421,10 +5450,12 @@ def render_selfit_demo_page() -> str:
       <button class="nav-btn active" data-tab="home"><span class="nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v14H4z"/><path d="m7 15 3-3 2 2 3-4 2 2"/></svg></span><span class="nav-label">推荐</span></button>
       <button class="nav-btn" data-tab="ai"><span class="nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5.5h14v10H9l-4 3v-13Z"/><path d="M9 10.5h6"/></svg></span><span class="nav-label">问搭配</span></button>
       <button id="mainPlus" class="plus-btn" aria-label="添加"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button>
-      <button class="nav-btn" data-tab="closet"><span class="nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4h10l2 4v12H5V8l2-4z"/><path d="M5 8h14"/><path d="M9 12h6"/></svg></span><span class="nav-label">衣橱</span></button>
+      <a class="nav-btn" href="/selfit/try-on?screen=mirror" aria-label="试衣镜"><span class="nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><ellipse cx="12" cy="9" rx="6" ry="7"/><path d="M12 16v5M8 22h8M9 6l3-2"/></svg></span><span class="nav-label">试衣镜</span></a>
       <button class="nav-btn" data-tab="me"><span class="nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4.5 20c1.5-4 4-6 7.5-6s6 2 7.5 6"/></svg></span><span class="nav-label">我的</span></button>
     </nav>
   </main>
+  <dialog id="outfitDeleteDialog" aria-labelledby="outfitDeleteTitle"><h2 id="outfitDeleteTitle">删除这套穿搭？</h2><p>删除后将从我的穿搭中移除，衣橱单品和已生成的试穿图片会保留。</p><div class="outfit-delete-actions"><button id="cancelOutfitDelete" class="secondary-btn" type="button">取消</button><button id="confirmOutfitDelete" class="primary-btn" type="button">确认删除</button></div></dialog>
+
 
   <aside id="uploadSheet" class="sheet">
     <div class="sheet-title"><b>添加衣服</b><button class="close" data-close="uploadSheet" aria-label="关闭">×</button></div>
@@ -5507,6 +5538,7 @@ def render_selfit_demo_page() -> str:
     <div class="sheet-title"><b>这套哪里不合适？</b><button class="close" data-close="recommendationFeedbackSheet" aria-label="关闭">×</button></div>
     <p>你的选择会用来调整之后的推荐。</p>
     <div class="feedback-reasons">
+      <button type="button" data-feedback-reason="dislike">不喜欢</button><button type="button" data-feedback-reason="unsuitable">不合适</button>
       <button type="button" data-feedback-reason="color">颜色不适合</button><button type="button" data-feedback-reason="fit">版型不适合</button>
       <button type="button" data-feedback-reason="scene">不合场景</button><button type="button" data-feedback-reason="formal">太正式</button>
       <button type="button" data-feedback-reason="complex">太复杂</button><button type="button" data-feedback-reason="repeated">最近看过太多</button>
@@ -6049,6 +6081,15 @@ def render_selfit_demo_page() -> str:
       const label = model.id === "self" ? "我的照片" : model.name;
       const node = $("#currentModelName");
       if (node) node.textContent = label;
+      const thumbnail = $("#currentModelThumbnail");
+      if (thumbnail) {
+        const src = model.src ? assetURL(model.src) : "";
+        thumbnail.hidden = !src;
+        thumbnail.alt = `当前试穿模特：${label}`;
+        thumbnail.onerror = () => { thumbnail.hidden = true; };
+        if (src && thumbnail.getAttribute("src") !== src) thumbnail.src = src;
+        if (!src) thumbnail.removeAttribute("src");
+      }
       if (state.currentOutfit) renderDetail();
     }
     const MAX_HOME_FEED_CARDS = 60;
@@ -6268,13 +6309,14 @@ def render_selfit_demo_page() -> str:
           cursor: append ? state.recommendationCursor || null : null,
           offset,
           limit: 6,
+          separate_carousel: true,
           exclude_outfit_ids: append ? state.recommendationSeenIds : [],
           rotate_by: 4
         })
       });
       if (requestId !== state.recommendationRequest) return false;
       const incoming = data.outfits || [];
-      state.recommendationValidation = data.validation === true;
+      state.recommendationValidation = data.validation === true || data.separate_carousel === true;
       state.recommendationSession = data.session_id || null;
       state.recommendationCursor = data.next_cursor || null;
       if (!append) state.todayOutfits = data.carousel || [];
@@ -6964,80 +7006,12 @@ def render_selfit_demo_page() -> str:
       const copy = todayRecommendationCopy(card, index);
       const cover = withVersion(card.layout_snapshot_path || card.cover_path || card.cover || "", card);
       return `<article class="today-card" role="button" tabindex="0" data-today-outfit="${card.outfit_id}" aria-label="${escapeHTML(card.title || "今日推荐")}">
-        <div class="today-copy"><span class="tag">${copy.tag}</span><h1>${escapeHTML(copy.title)}</h1><p>${copy.reason}</p></div>
+        <div class="today-copy"><span class="tag">${copy.tag}</span><h1>${escapeHTML(copy.title)}</h1><p>${escapeHTML(copy.reason)}</p></div>
         <div class="today-art">${cover ? `<img class="today-cover" src="${cover}" alt="${escapeHTML(card.title || copy.title)}">` : todayOutfitArt(card)}</div>
       </article>`;
     }
     function todayRecommendationCopy(card, index) {
-      const items = visibleItems(card.items || []);
-      const slots = new Set(items.map(itemSlot));
-      const rawTitle = String(card.title || "").trim();
-      const genericTitle = !rawTitle || ["自由搭配", "灵感搭配", "我的搭配", "AI 推荐搭配", "推荐套装"].includes(rawTitle);
-      const hasDress = slots.has("dress");
-      const hasTop = slots.has("top");
-      const hasBottom = slots.has("bottom") || slots.has("skirt");
-      const hasShoes = slots.has("shoes");
-      const hasBag = slots.has("bag");
-      const complete = (hasDress || (hasTop && hasBottom)) && hasShoes;
-      const variants = [
-        {
-          tag: "今日推荐",
-          title: complete ? "小雨通勤套装" : "轻便出门组合",
-          reason: complete ? "小雨天少露肤、鞋包齐，早晚通勤不用再临时补单品。" : "天气偏湿，先用轻便主服装打底，适合补一双好走的鞋。",
-        },
-        {
-          tag: "换个思路",
-          title: hasDress ? "一件成套" : "上短下长",
-          reason: hasDress ? "连衣装省搭配时间，配鞋就能出门，适合赶时间的早上。" : "上衣和下装比例清楚，视觉更利落，适合办公室和咖啡约见。",
-        },
-        {
-          tag: "显气色",
-          title: hasBag ? "带包更完整" : "清爽不闷",
-          reason: hasBag ? "包放在侧边能提完整度，也方便雨天带伞和随身物。" : "颜色和层次都轻，24~29°C 穿起来不厚重。",
-        },
-        {
-          tag: "周末可穿",
-          title: hasShoes ? "好走一整天" : "午后轻装",
-          reason: hasShoes ? "鞋子已经配好，适合通勤后直接去逛街或见朋友。" : "主搭配简单干净，午后出门不需要复杂配饰。",
-        },
-        {
-          tag: "少想一步",
-          title: hasDress ? "省心连衣装" : "三件就够",
-          reason: hasDress ? "一件定主风格，鞋包只做收尾，出门前不用反复试。" : "主服装、鞋或包已经成组，今天直接按这套开始。",
-        },
-        {
-          tag: "雨天友好",
-          title: hasShoes ? "稳妥鞋装" : "不拖沓",
-          reason: hasShoes ? "鞋子收在底部，整体重心稳，小雨天也不显狼狈。" : "版型和层次都简洁，潮湿天气看起来更干净。",
-        },
-        {
-          tag: "拍照好看",
-          title: hasBag ? "侧边有重点" : "比例清楚",
-          reason: hasBag ? "包在侧边形成视觉落点，平铺和上身都更完整。" : "上下装边界清楚，镜头里更容易显精神。",
-        },
-        {
-          tag: "轻正式",
-          title: hasTop && hasBottom ? "上班不费力" : "干净见人",
-          reason: hasTop && hasBottom ? "上衣和下装都利落，适合开会、通勤和临时见人。" : "颜色不吵、层次不多，见人场景更稳。",
-        },
-        {
-          tag: "约会轻松",
-          title: hasBag || hasShoes ? "温柔有收口" : "柔和一点",
-          reason: hasBag || hasShoes ? "鞋包把风格收住，整体更完整，适合晚一点的安排。" : "主服装不复杂，留一点轻松感，约会和散步都能穿。",
-        },
-        {
-          tag: "显高一点",
-          title: hasTop && hasBottom ? "竖向更清楚" : "重心上移",
-          reason: hasTop && hasBottom ? "上下装边界清楚，视觉线条更顺，拍照也更利落。" : "把视觉重点放在上半身，小个子也更容易穿出精神。",
-        },
-      ];
-      const picked = variants[index % variants.length];
-      const recommendationReason = humanizeRecommendationReason(card.recommendation?.primary_reason || card.recommendation?.reasons?.[0]);
-      return {
-        tag: card.recommendation ? "与你同频" : picked.tag,
-        title: genericTitle ? picked.title : rawTitle,
-        reason: recommendationReason || picked.reason,
-      };
+      return window.SelfitOutfitCopy.create(card);
     }
     function humanizeRecommendationReason(reason) {
       const text = String(reason || "").trim();
@@ -7064,7 +7038,7 @@ def render_selfit_demo_page() -> str:
     }
     function todayDots(cards) {
       if (!cards.length) return "";
-      return `<div class="today-dots">${cards.map((_, index) => `<button class="today-dot ${index === state.todayIndex % cards.length ? "active" : ""}" data-today-index="${index}" aria-label="第 ${index + 1} 套"></button>`).join("")}</div>`;
+      return `${cards.map((_, index) => `<button class="today-dot ${index === state.todayIndex % cards.length ? "active" : ""}" data-today-index="${index}" aria-label="第 ${index + 1} 套"></button>`).join("")}`;
     }
     function outfitCardHTML(card) {
       const cover = withVersion(card.layout_snapshot_path || card.cover_path || card.cover || "", card);
@@ -7072,8 +7046,8 @@ def render_selfit_demo_page() -> str:
       const heart = card.favorite ? "♥" : "♡";
       return `<article class="outfit-card" data-open-outfit="${card.outfit_id || ""}">
         <div class="outfit-canvas">${img}</div>
-        <div class="outfit-reason">${escapeHTML(humanizeRecommendationReason(card.recommendation?.primary_reason || card.recommendation?.reasons?.[0]) || card.completeness?.message || "根据你的风格与衣橱推荐")}</div>
-        <div class="outfit-meta"><button class="favorite-btn ${card.favorite ? "active" : ""}" data-favorite-outfit="${card.outfit_id || ""}" aria-label="${card.favorite ? "取消收藏" : "收藏"}搭配" aria-pressed="${Boolean(card.favorite)}">${heart}</button><button class="outfit-dislike" data-dislike-outfit="${card.outfit_id || ""}" type="button">不适合</button><button class="try-btn" data-home-outfit="${card.outfit_id || ""}">试穿</button></div>
+        <div class="outfit-reason">${escapeHTML(window.SelfitOutfitCopy.create(card).reason)}</div>
+        <div class="outfit-meta"><button class="favorite-btn ${card.favorite ? "active" : ""}" data-favorite-outfit="${card.outfit_id || ""}" aria-label="${card.favorite ? "取消收藏" : "收藏"}搭配" aria-pressed="${Boolean(card.favorite)}">${heart}</button><button class="try-btn" data-home-outfit="${card.outfit_id || ""}">试穿</button></div>
       </article>`;
     }
     function createRecommendationClientId(prefix = "event") {
@@ -7114,7 +7088,8 @@ def render_selfit_demo_page() -> str:
       }});
       document.querySelectorAll('#homeGrid .outfit-card, #todayTrack [data-today-outfit]').forEach(node => homeExposure.observe(node));
     }
-    function openRecommendationFeedback(outfitId) {
+    function openRecommendationFeedback(outfitId, trigger = "button") {
+      state.recommendationFeedbackTrigger = trigger;
       state.recommendationFeedbackOutfitId = outfitId || "";
       openSheet("recommendationFeedbackSheet");
     }
@@ -8022,6 +7997,7 @@ def render_selfit_demo_page() -> str:
       });
     }
     function renderDetail() {
+      $("#detailDeleteBtn").hidden = state.detailMode !== "outfit" || state.currentOutfit?.can_delete !== true;
       const item = state.detailMode === "item" ? state.currentItem : null;
       if (item) {
         $("#detailFeedbackActions").hidden = true;
@@ -8319,7 +8295,7 @@ def render_selfit_demo_page() -> str:
       const completed = Number(summary.applied_count || 0);
       const review = Number(summary.review_count || 0);
       const skipped = Number(summary.skipped_count || 0);
-      $("#tryonResultSummary").textContent = `${completed + review} 件已替换${review ? ` · ${review} 处建议检查` : ""}${skipped ? ` · ${skipped} 件跳过` : ""}`;
+      $("#tryonResultSummary").textContent = `${completed} 件已替换${review ? ` · ${review} 处建议检查` : ""}${skipped ? ` · ${skipped} 件跳过` : ""}`;
       const itemsById = new Map(visibleItems(state.currentOutfit?.items || []).map(item => [String(item.item_id), item]));
       const statusCopy = { applied:"已替换", review:"检查一下", failed_item:"未替换", skipped_not_visible:"未入镜", skipped_user:"已保留" };
       $("#tryonResultPieces").innerHTML = (data.piece_results || []).map(piece => {
@@ -8748,7 +8724,44 @@ def render_selfit_demo_page() -> str:
         node.dataset.outfitActionBound = "true";
         return true;
       });
-      unbound("[data-open-outfit]").forEach(card => card.addEventListener("click", () => openOutfitDetail(card.dataset.openOutfit)));
+      unbound("[data-open-outfit]").forEach(card => {
+        let timer = 0, startX = 0, startY = 0, suppressClick = false;
+        const cancelPress = () => { window.clearTimeout(timer); timer = 0; };
+        const feedback = trigger => {
+          cancelPress();
+          suppressClick = true;
+          openRecommendationFeedback(card.dataset.openOutfit, trigger);
+        };
+        card.tabIndex = 0;
+        card.setAttribute("aria-label", "查看穿搭；长按或按菜单键反馈");
+        card.addEventListener("pointerdown", event => {
+          cancelPress();
+          suppressClick = false;
+          if (!event.isPrimary || event.button !== 0 || event.target.closest("button, a")) return;
+          startX = event.clientX; startY = event.clientY;
+          timer = window.setTimeout(() => feedback("long_press"), 550);
+        });
+        card.addEventListener("pointermove", event => {
+          if (Math.hypot(event.clientX - startX, event.clientY - startY) > 10) cancelPress();
+        });
+        ["pointerup", "pointercancel", "pointerleave", "dragstart"].forEach(name => card.addEventListener(name, cancelPress));
+        card.addEventListener("contextmenu", event => {
+          if (event.target.closest("button, a")) return;
+          event.preventDefault();
+          if (!suppressClick) feedback("context_menu");
+        });
+        card.addEventListener("keydown", event => {
+          if (event.target !== card) return;
+          if (event.key === "ContextMenu" || (event.shiftKey && event.key === "F10")) {
+            event.preventDefault(); feedback("keyboard");
+          } else if (event.key === "Enter") openOutfitDetail(card.dataset.openOutfit);
+        });
+        card.addEventListener("click", event => {
+          if (suppressClick) { event.preventDefault(); event.stopPropagation(); suppressClick = false; return; }
+          if (event.target.closest("button, a")) return;
+          openOutfitDetail(card.dataset.openOutfit);
+        }, true);
+      });
       unbound("[data-home-outfit]").forEach(btn => btn.addEventListener("click", event => {
         event.stopPropagation();
         openOutfitDetail(btn.dataset.homeOutfit);
@@ -9032,21 +9045,20 @@ def render_selfit_demo_page() -> str:
     }));
     $all("[data-close]").forEach(btn => btn.addEventListener("click", () => closeSheet(btn.dataset.close)));
     $all("[data-back-home]").forEach(btn => btn.addEventListener("click", () => setTab("home")));
-    $all("[data-back-detail]").forEach(btn => btn.addEventListener("click", () => setTab(state.detailReturnTab || "home")));
+    $all("[data-back-detail]").forEach(btn => btn.addEventListener("click", () => {
+      const query = new URLSearchParams(location.search);
+      if (query.get("from") === "tryon" && query.get("outfit")) {
+        const target = new URL("/selfit/try-on", location.origin);
+        const screen = query.get("return_screen");
+        target.searchParams.set("screen", ["closet", "inspiration", "mirror"].includes(screen) ? screen : "closet");
+        target.searchParams.set("outfit", query.get("outfit"));
+        location.assign(target.href);
+        return;
+      }
+      setTab(state.detailReturnTab || "home");
+    }));
     $all("[data-open-detail]").forEach(btn => btn.addEventListener("click", () => state.currentOutfit ? setPage("page-detail") : setTab("home")));
     $("#mainPlus").addEventListener("click", () => openSheet("uploadSheet"));
-    $("#homeTryAction").addEventListener("click", () => {
-      const first = visibleOutfits()[0];
-      if (first?.outfit_id) return openOutfitDetail(first.outfit_id);
-      $("#uploadStatus").textContent = "先上传一件想试的衣服，识别完成后就可以直接生成试穿图。";
-      openSheet("uploadSheet");
-    });
-    $("#homeExtractAction").addEventListener("click", () => {
-      $("#uploadStatus").textContent = "粘贴喜欢的内容链接，我会提取其中可识别的衣服。";
-      openSheet("uploadSheet");
-      window.setTimeout(() => $("#wearLinkInput").focus(), 220);
-    });
-    $("#homeAskAction").addEventListener("click", () => setTab("ai"));
     $("#handoffContinue").addEventListener("click", closePersonaHandoff);
     [$("#profilePersonaLink")].forEach(button => button?.addEventListener("click", () => {
       window.location.href = button.dataset.reportUrl || "/selfit";
@@ -9174,7 +9186,37 @@ def render_selfit_demo_page() -> str:
       renderEditor();
       setPage("page-editor");
     });
-    $("#detailTryBtn").addEventListener("click", () => state.detailMode === "item" ? tryCurrentItem() : (state.currentOutfit ? tryOutfit(state.currentOutfit.outfit_id) : toast("先选择一套搭配。")));
+    let pendingDeleteOutfit = null;
+    $("#detailDeleteBtn").addEventListener("click", () => {
+      if (!state.currentOutfit?.can_delete) return;
+      pendingDeleteOutfit = state.currentOutfit;
+      $("#outfitDeleteTitle").textContent = `删除“${pendingDeleteOutfit.title || "这套穿搭"}”？`;
+      $("#outfitDeleteDialog").showModal();
+    });
+    $("#cancelOutfitDelete").addEventListener("click", () => { pendingDeleteOutfit=null; $("#outfitDeleteDialog").close(); });
+    $("#outfitDeleteDialog").addEventListener("cancel", () => { pendingDeleteOutfit=null; });
+    $("#confirmOutfitDelete").addEventListener("click", async () => {
+      const outfit = pendingDeleteOutfit;
+      if (!outfit?.can_delete) return;
+      const button = $("#confirmOutfitDelete");
+      button.disabled = true;
+      try {
+        await fetchJSON(`/closet/outfits/${encodeURIComponent(outfit.outfit_id)}`, {method:"DELETE"});
+        state.outfits = state.outfits.filter(x=>x.outfit_id!==outfit.outfit_id);
+        state.todayOutfits = (state.todayOutfits || []).filter(x=>x.outfit_id!==outfit.outfit_id);
+        state.currentOutfit = null; state.editorItems = []; pendingDeleteOutfit=null;
+        state.closetDataRevision += 1; state.closetRenderKey = "";
+        $("#outfitDeleteDialog").close();
+        setTab(state.detailReturnTab || "closet");
+        toast("穿搭已删除，衣橱单品已保留。");
+      } catch (error) { toast("删除没有完成，请重试。"); }
+      finally { button.disabled = false; }
+    });
+    $("#detailTryBtn").addEventListener("click", () => {
+      if (state.detailMode === "item") return tryCurrentItem();
+      if (!state.currentOutfit) return toast("先选择一套搭配。");
+      window.location.href = `/selfit/try-on?outfit=${encodeURIComponent(state.currentOutfit.outfit_id)}`;
+    });
     $("#detailLikeBtn").addEventListener("click", async () => {
       const outfitId = state.currentOutfit?.outfit_id;
       if (!outfitId || state.detailFeedbackPending.has(outfitId) || state.detailFeedback.get(outfitId) === "like") return;
@@ -9206,7 +9248,7 @@ def render_selfit_demo_page() -> str:
       if (!outfitId || state.detailFeedbackPending.has(outfitId)) return;
       state.detailFeedbackPending.add(outfitId);
       renderDetailFeedback();
-      const saved = await recordRecommendationEvent("dislike", outfitId, button.dataset.feedbackReason, { surface: state.tab });
+      const saved = await recordRecommendationEvent("dislike", outfitId, button.dataset.feedbackReason, { surface: state.tab, trigger: state.recommendationFeedbackTrigger || "button" });
       state.detailFeedbackPending.delete(outfitId);
       if (saved) state.detailFeedback.set(outfitId, "dislike");
       renderDetailFeedback();
@@ -9309,7 +9351,27 @@ def render_selfit_demo_page() -> str:
     loadStylePersona();
     const initialTab = new URLSearchParams(window.location.search).get("tab");
     setTab(["home", "ai", "closet", "me"].includes(initialTab) ? initialTab : "home", { historyMode: "none" });
-    initializeAuth().catch(error => toast(error.message || "加载失败"));
+    $("#detailBootRetry").addEventListener("click", () => location.reload());
+    initializeAuth().then(async () => {
+      const outfitId = new URLSearchParams(location.search).get("outfit");
+      if (state.dataReady && outfitId) {
+        await openOutfitDetail(outfitId);
+        const cover = $("#detailHero > img");
+        if (cover) {
+          let timer;
+          try {
+            await Promise.race([cover.decode(), new Promise((_, reject) => { timer = setTimeout(() => reject(new Error("图片加载超时，请重试。")), 20000); })]);
+          } finally { clearTimeout(timer); }
+        }
+        delete document.documentElement.dataset.detailBoot;
+      }
+    }).catch(error => {
+      if (document.documentElement.dataset.detailBoot) {
+        document.documentElement.dataset.detailBoot = "error";
+        $("#detailBootMessage").textContent = "穿搭暂时未能加载，请重试。";
+        $("#detailBootRetry").hidden = false;
+      } else toast(error.message || "穿搭暂时无法打开，请重试。");
+    });
   </script>
 </body>
 </html>

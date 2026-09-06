@@ -1,0 +1,140 @@
+{
+  "schemaVersion": 1,
+  "entries": [
+    {
+      "id": "mirror-model",
+      "fact": "模特试穿原稿帧",
+      "value": {
+        "node": "201:23890",
+        "size": [
+          393,
+          852
+        ]
+      },
+      "truth": "SOURCE",
+      "targetIds": [
+        "201:23890"
+      ],
+      "source": {
+        "type": "source",
+        "location": "source/mirror-model.svg",
+        "hash": "835bac7484eb703f3ae09fc6ab9791fa4048352b8e9497b3e9fd165baeeaa8de"
+      },
+      "authority": "direct",
+      "confidence": 1,
+      "verifiedBy": [
+        "Figma browser frame export",
+        "matching screenshot inspection"
+      ],
+      "notes": "视觉叶子事实；不证明原型连线"
+    },
+    {
+      "id": "mirror-styling",
+      "fact": "自由搭配原稿帧",
+      "value": {
+        "node": "201:24095",
+        "size": [
+          393,
+          852
+        ]
+      },
+      "truth": "SOURCE",
+      "targetIds": [
+        "201:24095"
+      ],
+      "source": {
+        "type": "source",
+        "location": "source/mirror-styling.svg",
+        "hash": "0bdef3e02e01782f132d09a05d4032d2a03c156243e159074989af284b215594"
+      },
+      "authority": "direct",
+      "confidence": 1,
+      "verifiedBy": [
+        "Figma browser frame export",
+        "matching screenshot inspection"
+      ],
+      "notes": "视觉叶子事实；不证明原型连线"
+    },
+    {
+      "id": "closet",
+      "fact": "衣帽间原稿帧",
+      "value": {
+        "node": "110:18892",
+        "size": [
+          393,
+          852
+        ]
+      },
+      "truth": "SOURCE",
+      "targetIds": [
+        "110:18892"
+      ],
+      "source": {
+        "type": "source",
+        "location": "source/closet.svg",
+        "hash": "92c7cbed729232c8a544a79324e3303d6b6f8481bef344a9816a69b3fa2aafea"
+      },
+      "authority": "direct",
+      "confidence": 1,
+      "verifiedBy": [
+        "Figma browser frame export",
+        "matching screenshot inspection"
+      ],
+      "notes": "视觉叶子事实；不证明原型连线"
+    },
+    {
+      "id": "inspiration",
+      "fact": "灵感库原稿帧",
+      "value": {
+        "node": "110:18976",
+        "size": [
+          393,
+          852
+        ]
+      },
+      "truth": "SOURCE",
+      "targetIds": [
+        "110:18976"
+      ],
+      "source": {
+        "type": "source",
+        "location": "source/inspiration.svg",
+        "hash": "bb81d7c447d88d1633a0aaafb80b018cc1e500597eea34deced5f7e292e15469"
+      },
+      "authority": "direct",
+      "confidence": 1,
+      "verifiedBy": [
+        "Figma browser frame export",
+        "matching screenshot inspection"
+      ],
+      "notes": "视觉叶子事实；不证明原型连线"
+    },
+    {
+      "id": "detail",
+      "fact": "套装详情原稿帧",
+      "value": {
+        "node": "218:24786",
+        "size": [
+          393,
+          852
+        ]
+      },
+      "truth": "SOURCE",
+      "targetIds": [
+        "218:24786"
+      ],
+      "source": {
+        "type": "source",
+        "location": "source/detail.svg",
+        "hash": "63520bf95914fd707196a61fca3cb90b1f8ab8a0cfbceb381410fb98dd515cf8"
+      },
+      "authority": "direct",
+      "confidence": 1,
+      "verifiedBy": [
+        "Figma browser frame export",
+        "matching screenshot inspection"
+      ],
+      "notes": "视觉叶子事实；不证明原型连线"
+    }
+  ]
+}

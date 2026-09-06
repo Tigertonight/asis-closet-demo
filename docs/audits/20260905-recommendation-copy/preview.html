@@ -1,0 +1,2280 @@
+
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>selfit Demo</title>
+  <link rel="icon" type="image/svg+xml" href="/static/brand/favicon.svg" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/static/brand/favicon-32.png" />
+  <link rel="apple-touch-icon" href="/static/brand/apple-touch-icon.png" />
+  <style>
+    :root {
+      --screen-w: 430px;
+      --bg: #fffafa;
+      --card: #ffffff;
+      --page: #f8f2f5;
+      --soft: #fff1f6;
+      --soft-2: #eefbff;
+      --ink: #1c1b20;
+      --soft-ink: #4f454c;
+      --muted: #8b8388;
+      --line: #eee4e8;
+      --rose: #ff4f86;
+      --rose-deep: #e83d73;
+      --error: #d92c4e;
+      --mint: #74f0d2;
+      --radius: 24px;
+      --pill: 999px;
+      --shadow-card: 0 18px 48px rgba(82, 42, 61, .09);
+      --shadow-cta: 0 16px 30px rgba(255, 79, 134, .24);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: #fff;
+      color: var(--ink);
+      font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Segoe UI", sans-serif;
+      letter-spacing: 0;
+    }
+    button, input { font: inherit; }
+    button { cursor: pointer; }
+    .app {
+      width: min(100%, var(--screen-w));
+      min-height: 100vh;
+      margin: 0 auto;
+      background: linear-gradient(180deg, #fffafa 0%, #f8f2f5 100%);
+      position: relative;
+      overflow: hidden;
+    }
+    .page {
+      display: none;
+      min-height: 100vh;
+      padding: 22px 16px 104px;
+      overflow: auto;
+    }
+    .page.active { display: block; }
+    .top-row { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin-bottom: 18px; }
+    .brand { font-size: 32px; line-height: 1; font-style: italic; font-weight: 900; letter-spacing: 0; }
+    .weather { text-align: right; font-size: 12px; color: #666; line-height: 1.25; padding-top: 4px; }
+    .weather b { display: block; font-size: 17px; color: var(--ink); }
+    h1, h2, h3, p { margin: 0; }
+    h2 { font-size: 26px; line-height: 1.1; font-weight: 900; margin: 0 0 14px; }
+    .widget-row, .item-strip, .palette-tabs, .category-row, .today-track {
+      scrollbar-width: none !important;
+      -ms-overflow-style: none !important;
+      -webkit-overflow-scrolling: touch;
+      overscroll-behavior-x: contain;
+    }
+    .widget-row::-webkit-scrollbar,
+    .item-strip::-webkit-scrollbar,
+    .palette-tabs::-webkit-scrollbar,
+    .category-row::-webkit-scrollbar,
+    .today-track::-webkit-scrollbar {
+      display: none !important;
+      width: 0 !important;
+      height: 0 !important;
+      background: transparent !important;
+    }
+    .home-section { margin-top: 24px; }
+    .section-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 12px; }
+    .section-head h2 { margin: 0; }
+    .section-head button { border: 0; background: transparent; color: var(--muted); font-weight: 750; min-height: 38px; }
+    .today-carousel { margin: 0 -16px; padding: 0 16px; overflow: hidden; }
+    .today-track {
+      display: flex;
+      gap: 12px;
+      overflow-x: auto;
+      overflow-y: hidden;
+      scroll-snap-type: x mandatory;
+      padding: 0 0 6px;
+      touch-action: pan-x pan-y;
+    }
+    .today-card {
+      width: 100%;
+      flex: 0 0 100%;
+      scroll-snap-align: center;
+      border: 0;
+      border-radius: 28px;
+      background: #1f1d20;
+      color: #fff;
+      text-align: left;
+      min-height: 158px;
+      padding: 8px 14px;
+      overflow: hidden;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 48%;
+      gap: 4px;
+      box-shadow: var(--shadow-card);
+      position: relative;
+      touch-action: pan-x pan-y;
+    }
+    .today-copy { display: grid; align-content: center; gap: 7px; min-width: 0; padding: 0; }
+    .tag { width: fit-content; border-radius: var(--pill); background: rgba(255,255,255,.12); padding: 6px 11px; color: #bdf7de; font-size: 12px; font-weight: 850; }
+    .today-card h1 { font-size: 24px; line-height: 1.05; font-weight: 900; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; letter-spacing: 0; }
+    .today-card p { color: rgba(255,255,255,.72); line-height: 1.42; font-size: 13px; max-width: 15em; }
+    .today-art { position: relative; min-width: 0; min-height: 142px; margin: -8px -8px -8px 0; }
+    .today-art img { position: absolute; object-fit: contain; filter: drop-shadow(0 14px 24px rgba(0,0,0,.36)); }
+    .image-preview-button {
+      appearance: none;
+      border: 0;
+      background: transparent;
+      color: inherit;
+      font: inherit;
+      padding: 0;
+      text-align: inherit;
+      cursor: zoom-in;
+    }
+    .today-art.image-preview-button { width: 100%; height: calc(100% + 16px); }
+    .today-art .slot-top { width: 100%; height: 64%; left: 1%; top: -8%; }
+    .today-art .slot-bottom, .today-art .slot-skirt { width: 96%; height: 72%; left: -12%; top: 34%; }
+    .today-art .slot-dress { width: 108%; height: 108%; left: -14%; top: -4%; }
+    .today-art .slot-shoes { width: 78%; height: 40%; right: -9%; bottom: -8%; }
+    .today-art .slot-bag { width: 70%; height: 50%; right: -9%; top: 18%; }
+    .today-art .slot-accessory { width: 54%; height: 38%; right: -3%; top: -4%; }
+    .today-art .slot-generic { width: 84%; height: 58%; left: 6%; top: 18%; }
+    .today-dots { display: flex; justify-content: center; align-items: center; gap: 7px; min-height: 12px; }
+    .today-dot { width: 18px; height: 4px; border: 0; border-radius: var(--pill); background: rgba(28,27,32,.16); padding: 0; transition: width .18s ease, background .18s ease; }
+    .today-dot.active { width: 30px; background: var(--ink); }
+    .today-empty { background: linear-gradient(135deg, #fff1f6, #eefbff); color: var(--ink); grid-template-columns: 1fr; }
+    .today-empty p { color: var(--soft-ink, #4f454c); }
+    .widget-row { display: flex; gap: 12px; overflow-x: auto; overflow-y: hidden; padding: 2px 0 4px; margin-right: -16px; scroll-snap-type: x proximity; }
+    .widget-card {
+      border: 0;
+      border-radius: 18px;
+      min-width: 154px;
+      min-height: 112px;
+      padding: 14px;
+      color: #fff;
+      text-align: left;
+      font-size: 18px;
+      font-weight: 900;
+      background: #fff;
+      display: grid;
+      align-content: end;
+      box-shadow: 0 12px 28px rgba(82, 42, 61, .08);
+      scroll-snap-align: start;
+      position: relative;
+      overflow: hidden;
+      isolation: isolate;
+      text-shadow: 0 2px 16px rgba(0,0,0,.28);
+    }
+    .widget-card::before,
+    .widget-card::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+    }
+    .widget-card::before {
+      background: var(--widget-bg);
+      background-size: cover;
+      background-position: center;
+      transform: scale(1.03);
+    }
+    .widget-card::after {
+      background: linear-gradient(180deg, rgba(15,12,16,.04) 0%, rgba(15,12,16,.14) 44%, rgba(15,12,16,.54) 100%);
+    }
+    .widget-card.color {
+      --widget-bg:
+        linear-gradient(180deg, rgba(255,255,255,.04), rgba(20,12,18,.14)),
+        url("/fixture-images/real_social_screenshot_auto_crop.jpg"),
+        radial-gradient(circle at 22% 24%, rgba(255,255,255,.95) 0 10%, transparent 11%),
+        radial-gradient(circle at 34% 22%, rgba(255,214,224,.98) 0 7%, transparent 8%),
+        radial-gradient(circle at 47% 23%, rgba(255,226,166,.98) 0 7%, transparent 8%),
+        radial-gradient(circle at 61% 23%, rgba(184,242,225,.98) 0 7%, transparent 8%),
+        linear-gradient(135deg, rgba(255,244,237,.96), rgba(234,247,250,.96));
+      background-position: center;
+      animation: widgetNudge 7.2s ease-in-out infinite;
+    }
+    .widget-card.color::after {
+      background:
+        linear-gradient(110deg, transparent 0%, rgba(255,255,255,.0) 34%, rgba(255,255,255,.42) 45%, rgba(255,255,255,.08) 56%, transparent 68%),
+        linear-gradient(180deg, rgba(15,12,16,.02) 0%, rgba(15,12,16,.16) 48%, rgba(15,12,16,.58) 100%);
+      background-size: 240% 100%, 100% 100%;
+      animation: widgetBeam 4.8s ease-in-out infinite;
+    }
+    .widget-card.ai {
+      --widget-bg:
+        linear-gradient(180deg, rgba(255,255,255,.02), rgba(20,12,18,.18)),
+        var(--widget-image, url("/tryon-models/female_slim_1.webp?v=fullbody-20260705")),
+        radial-gradient(circle at 20% 22%, rgba(255,255,255,.96) 0 11%, transparent 12%),
+        radial-gradient(circle at 72% 28%, rgba(255,255,255,.92) 0 12%, transparent 13%),
+        linear-gradient(145deg, rgba(255,246,241,.96), rgba(239,249,255,.98) 58%, rgba(255,239,247,.94));
+    }
+    .widget-card.ai::before {
+      background:
+        var(--widget-bg),
+        linear-gradient(90deg, transparent 0 18%, rgba(45,74,96,.18) 18% 25%, transparent 25% 100%),
+        linear-gradient(0deg, transparent 0 54%, rgba(28,27,32,.18) 54% 61%, transparent 61% 100%);
+      background-position: center, center 18%, center, center, center, center, center;
+      background-size: cover, cover, auto, auto, cover, auto, auto;
+    }
+    .widget-card.upload {
+      --widget-bg:
+        linear-gradient(180deg, rgba(255,255,255,.02), rgba(20,12,18,.14)),
+        var(--widget-image, url("/fixture-images/xhs_low_quality_video_cover.jpg")),
+        radial-gradient(ellipse at 30% 42%, rgba(255,255,255,.95) 0 20%, transparent 21%),
+        radial-gradient(ellipse at 73% 35%, rgba(255,255,255,.9) 0 17%, transparent 18%),
+        linear-gradient(135deg, rgba(255,241,246,.98), rgba(255,249,237,.96));
+    }
+    .widget-card.upload::before {
+      background:
+        var(--widget-bg),
+        linear-gradient(110deg, transparent 0 32%, rgba(221,171,130,.28) 32% 37%, transparent 37% 100%),
+        linear-gradient(18deg, transparent 0 56%, rgba(120,88,70,.22) 56% 62%, transparent 62% 100%);
+      background-position: center, center 38%, center, center, center, center, center;
+      background-size: cover, cover, auto, auto, cover, auto, auto;
+    }
+    @keyframes widgetNudge {
+      0%, 82%, 100% { transform: translateX(0) rotate(0); }
+      86% { transform: translateX(-1px) rotate(-.6deg); }
+      90% { transform: translateX(1px) rotate(.6deg); }
+      94% { transform: translateX(0) rotate(0); }
+    }
+    @keyframes widgetBeam {
+      0%, 58% { background-position: 170% 0, 0 0; }
+      78%, 100% { background-position: -80% 0, 0 0; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .widget-card.color,
+      .widget-card.color::after { animation: none; }
+    }
+    .refresh-note { color: var(--muted); font-size: 13px; min-height: 20px; margin-bottom: 10px; }
+    .masonry, .item-grid, .record-grid { display: grid; gap: 12px; }
+    .masonry, .item-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .outfit-card, .closet-card {
+      border: 0;
+      background: var(--card);
+      border-radius: 22px;
+      overflow: hidden;
+      color: inherit;
+      text-align: left;
+      padding: 0;
+      min-width: 0;
+      box-shadow: var(--shadow-card);
+    }
+    .outfit-canvas, .closet-img {
+      background: #eef0f3;
+      width: 100%;
+      aspect-ratio: 1;
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+    }
+    .outfit-canvas img, .closet-img img { width: 100%; height: 100%; object-fit: contain; display: block; }
+    .outfit-canvas[data-preview-image], .closet-img[data-preview-image], .detail-hero[data-preview-image], .tryon-hero[data-preview-image], .item-tile[data-preview-image], .record-card[data-preview-image], .model-chip[data-preview-image], .self-upload-zone[data-preview-image] { cursor: zoom-in; }
+    .outfit-meta, .closet-meta { min-height: 54px; display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 11px 12px; }
+    .favorite-btn { border: 0; background: transparent; display: inline-flex; align-items: center; justify-content: center; padding: 0; color: #050505; width: 40px; height: 40px; min-height: 38px; font-size: 24px; font-weight: 950; line-height: 1; }
+    .favorite-btn.active { color: var(--rose); }
+    .try-btn, .match-btn {
+      border: 0;
+      border-radius: var(--pill);
+      background: var(--soft);
+      color: var(--rose-deep);
+      min-width: 78px;
+      min-height: 38px;
+      padding: 0 16px;
+      font-size: 15px;
+      font-weight: 850;
+    }
+    .primary-btn, .secondary-btn {
+      border: 0;
+      border-radius: var(--pill);
+      min-height: 54px;
+      padding: 0 22px;
+      font-size: 16px;
+      font-weight: 850;
+    }
+    .primary-btn { background: var(--rose); color: #fff; box-shadow: var(--shadow-cta); }
+    .secondary-btn { background: #fff; color: var(--rose-deep); border: 1px solid #f2c6cc; }
+    .icon-btn { border: 0; width: 44px; height: 44px; border-radius: 50%; background: rgba(255,255,255,.9); font-size: 24px; font-weight: 850; display: grid; place-items: center; }
+    .screen-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 14px; }
+    .screen-title { font-size: 22px; font-weight: 900; }
+    .detail-hero, .tryon-hero, .editor-canvas, .color-card {
+      background: #fff;
+      border-radius: 24px;
+      box-shadow: var(--shadow-card);
+      overflow: hidden;
+    }
+    .detail-hero { min-height: 410px; display: grid; place-items: center; padding: 18px; position: relative; }
+    .detail-hero img { width: 100%; height: 100%; max-height: 380px; object-fit: contain; }
+    .model-chip { position: absolute; right: 18px; bottom: 18px; width: 78px; border-radius: 18px; background: rgba(255,255,255,.92); padding: 6px; box-shadow: 0 12px 28px rgba(0,0,0,.10); }
+    .model-chip img { width: 100%; aspect-ratio: 3 / 4; object-fit: cover; border-radius: 12px; display: block; }
+    .item-strip { display: flex; gap: 12px; overflow-x: auto; padding: 2px 0 4px; scroll-snap-type: x proximity; }
+    .item-tile { min-width: 118px; border-radius: 18px; background: #fff; padding: 10px; box-shadow: var(--shadow-card); scroll-snap-align: start; }
+    .item-tile img { width: 100%; aspect-ratio: 1; object-fit: contain; display: block; }
+    .item-tile span { display: block; margin-top: 8px; color: var(--muted); font-size: 13px; font-weight: 700; }
+    .bottom-actions { position: fixed; left: 50%; bottom: 18px; transform: translateX(-50%); width: min(calc(100% - 32px), 398px); display: grid; grid-template-columns: 1fr 1fr; gap: 12px; z-index: 11; }
+    .tryon-hero { min-height: 560px; display: grid; place-items: center; position: relative; background: linear-gradient(180deg, #fff, #f8f2f5); }
+    .tryon-hero img { width: 100%; max-height: 560px; object-fit: contain; display: block; }
+    .tryon-failure { width: 100%; min-height: 560px; padding: 28px 24px; display: grid; align-content: center; justify-items: center; gap: 16px; text-align: center; }
+    .tryon-failure-preview { width: min(100%, 320px); aspect-ratio: 4 / 3; position: relative; border-radius: 18px; overflow: hidden; background: #f5f5f5; }
+    .tryon-failure-preview > img { width: 100%; height: 100%; max-height: none; object-fit: contain; }
+    .tryon-failure-model { position: absolute; right: 10px; bottom: 10px; width: 62px; height: 82px; padding: 4px; border-radius: 14px; background: rgba(255,255,255,.94); box-shadow: 0 5px 24px rgba(0,0,0,.10); }
+    .tryon-failure-model img { width: 100%; height: 100%; max-height: none; border-radius: 10px; object-fit: cover; }
+    .tryon-failure h3 { margin: 2px 0 -6px; color: #222; font-size: 18px; line-height: 1.45; }
+    .tryon-failure p { max-width: 300px; margin: 0; color: #666; font-size: 14px; line-height: 1.65; }
+    .tryon-failure-change { min-height: 44px; padding: 0 24px; border: 1px solid #8a011b; border-radius: 18px; background: #fff; color: #8a011b; font-size: 14px; font-weight: 800; }
+    .tryon-hero.is-generating {
+      color: #fff;
+      background: #8a011b url("/static/selfit/assets/splash-textile@2x.png") center / cover no-repeat;
+      box-shadow: none;
+      isolation: isolate;
+    }
+    .tryon-hero.is-generating::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      background: linear-gradient(180deg, rgba(96,0,18,.04), rgba(58,0,11,.16));
+      pointer-events: none;
+    }
+    .tryon-hero.is-generating > .empty { opacity: 0; }
+    .tryon-hero.is-generating + .result-actions { visibility: hidden; pointer-events: none; }
+    .generating-layer {
+      position: absolute;
+      inset: 0;
+      z-index: 2;
+      color: #fff;
+      display: none;
+      place-items: center;
+      text-align: center;
+      padding: 18px 24px 20px;
+    }
+    .generating-layer.active { display: grid; }
+    .tryon-generating-card {
+      width: min(100%, 342px);
+      min-height: 520px;
+      padding: 20px 0 6px;
+      display: grid;
+      justify-items: center;
+      align-content: center;
+      grid-template-rows: auto auto auto auto auto auto;
+      gap: 12px;
+    }
+    .tryon-loading-art {
+      width: min(100%, 282px);
+      height: auto;
+      max-height: none !important;
+      object-fit: contain;
+      margin: 0 0 8px;
+      opacity: 1;
+      transform: translateY(0) scale(1);
+      transition: opacity 300ms ease-out, transform 300ms ease-out;
+    }
+    .tryon-loading-art.is-changing {
+      opacity: .16;
+      transform: translateY(4px) scale(.985);
+    }
+    .tryon-generating-kicker {
+      margin: 0;
+      color: rgba(255,255,255,.64);
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 12px;
+      line-height: 18px;
+      letter-spacing: .16em;
+    }
+    .tryon-generating-title {
+      max-width: 286px;
+      font-size: 18px;
+      line-height: 26px;
+      font-weight: 750;
+      color: #fff;
+      text-wrap: balance;
+    }
+    .tryon-generating-copy {
+      max-width: 274px;
+      margin: -2px 0 0;
+      color: rgba(255,255,255,.68);
+      font-size: 14px;
+      line-height: 22px;
+      font-weight: 400;
+      text-wrap: balance;
+    }
+    .tryon-progress-row {
+      width: min(100%, 274px);
+      display: grid;
+      grid-template-columns: 1fr 38px;
+      align-items: center;
+      gap: 12px;
+      margin-top: 4px;
+    }
+    .tryon-progress {
+      width: 100%;
+      height: 2px;
+      border-radius: 2px;
+      background: rgba(255,255,255,.24);
+      overflow: hidden;
+    }
+    .tryon-progress span {
+      display: block;
+      width: 8%;
+      height: 100%;
+      border-radius: inherit;
+      background: #fff;
+      transition: width 420ms ease-out;
+    }
+    .tryon-progress-value {
+      color: rgba(255,255,255,.78);
+      font-size: 12px;
+      line-height: 18px;
+      font-variant-numeric: tabular-nums;
+      text-align: right;
+    }
+    .tryon-cancel {
+      min-width: 96px;
+      min-height: 44px;
+      margin-top: 2px;
+      padding: 0 18px;
+      border: 0;
+      background: transparent;
+      color: rgba(255,255,255,.76);
+      box-shadow: none;
+      font-size: 14px;
+      font-weight: 600;
+      text-decoration: underline;
+      text-decoration-color: rgba(255,255,255,.34);
+      text-underline-offset: 5px;
+    }
+    .tryon-loading-signature {
+      width: 72px !important;
+      height: auto !important;
+      max-height: none !important;
+      object-fit: contain;
+      margin-top: 0;
+      opacity: .74;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .tryon-loading-art,
+      .tryon-progress span { transition: none; }
+    }
+    .result-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 14px; }
+    .color-card { padding: 18px; display: grid; gap: 14px; }
+    .upload-zone { border: 2px dashed #f2b4c8; background: #fff8fb; border-radius: 24px; min-height: 240px; display: grid; place-items: center; text-align: center; color: var(--muted); padding: 20px; }
+    .upload-zone img { max-width: 100%; max-height: 260px; object-fit: contain; border-radius: 18px; }
+    .color-result { background: #fff; border-radius: 18px; padding: 14px; color: var(--soft-ink, #4f454c); line-height: 1.55; display: none; }
+    .editor-canvas { height: 488px; position: relative; margin-bottom: 14px; background: #fffaf8; border: 1px solid #f2e4e9; border-radius: 22px; box-shadow: 0 16px 42px rgba(82,42,61,.07); overflow: hidden; touch-action: none; }
+    .canvas-item { position: absolute; width: 132px; height: 132px; display: grid; place-items: center; border: 2px solid transparent; border-radius: 14px; touch-action: none; }
+    .canvas-item.active { border-color: #fff; box-shadow: 0 0 0 2px var(--rose); }
+    .canvas-item img { width: 100%; height: 100%; object-fit: contain; pointer-events: none; filter: drop-shadow(0 12px 18px rgba(0,0,0,.08)); }
+    .canvas-delete { position: absolute; width: 34px; height: 34px; border-radius: 50%; border: 0; background: #050505; color: #fff; display: grid; place-items: center; z-index: 80; font-size: 20px; line-height: 1; }
+    .smart-layout { display: block; margin: -2px auto 16px; border: 0; border-radius: var(--pill); min-height: 42px; padding: 0 18px; background: #fff; font-weight: 850; color: var(--ink); box-shadow: var(--shadow-card); }
+    .editor-palette { background: #fff; border-radius: 24px 24px 0 0; margin: 0 -16px -104px; padding: 16px 16px 112px; }
+    .palette-tabs { display: flex; gap: 22px; overflow-x: auto; border-bottom: 1px solid var(--line); margin: 0 -16px 12px; padding: 0 16px; scroll-snap-type: x proximity; }
+    .palette-tab { border: 0; background: transparent; min-height: 42px; font-size: 16px; font-weight: 800; color: var(--muted); white-space: nowrap; scroll-snap-align: start; }
+    .palette-tab.active { color: var(--ink); border-bottom: 3px solid var(--ink); }
+    .empty {
+      grid-column: 1 / -1;
+      min-height: 180px;
+      display: grid;
+      place-items: center;
+      text-align: center;
+      color: #777;
+      line-height: 1.6;
+      background: #fff;
+      border-radius: 22px;
+      padding: 24px;
+    }
+    .ai-hero {
+      min-height: 0;
+      position: relative;
+      overflow: hidden;
+      margin: 22px 0 20px;
+      background: var(--bg);
+      max-height: 520px;
+      opacity: 1;
+      transform: translateY(0);
+      transition: max-height .42s cubic-bezier(.2,.8,.2,1), opacity .24s ease, transform .32s cubic-bezier(.2,.8,.2,1), margin .32s ease;
+    }
+    .ai-hero.is-dismissed {
+      max-height: 0;
+      opacity: 0;
+      transform: translateY(-18px);
+      margin: 0;
+      pointer-events: none;
+    }
+    .ai-session-bar {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 10px;
+      margin: 0;
+      position: fixed;
+      top: max(34px, calc(env(safe-area-inset-top) + 24px));
+      right: max(18px, calc((100vw - var(--screen-w)) / 2 + 18px));
+      z-index: 34;
+      pointer-events: none;
+    }
+    .ai-session-toggle {
+      pointer-events: auto;
+      border: 0;
+      width: 42px;
+      height: 42px;
+      border-radius: 15px;
+      background: rgba(255,255,255,.92);
+      color: #73767d;
+      display: grid;
+      place-items: center;
+      box-shadow: 0 14px 32px rgba(82, 42, 61, .12);
+      backdrop-filter: blur(16px);
+      transition: transform .18s ease, color .18s ease, background .18s ease, box-shadow .18s ease;
+    }
+    .ai-session-toggle:active { transform: scale(.96); }
+    .ai-session-toggle svg {
+      width: 24px;
+      height: 24px;
+      display: block;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+    .ai-session-toggle.active { color: var(--rose-deep); background: #fff; }
+    .session-toggle-icon {
+      display: block;
+    }
+    .ai-session-toggle .icon-open { display: block; }
+    .ai-session-toggle .icon-close { display: none; }
+    .ai-session-toggle.active .icon-open { display: none; }
+    .ai-session-toggle.active .icon-close { display: block; }
+    .ai-copy { position: static; }
+    .ai-copy .hi { font-size: 52px; line-height: .95; font-weight: 950; font-style: italic; letter-spacing: 0; }
+    .ai-copy h2 { margin: 16px 0 10px; font-size: 24px; line-height: 1.18; max-width: 11em; }
+    .ai-copy p { color: #777; font-size: 14px; line-height: 1.5; }
+    .chips { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; }
+    .chip {
+      border: 0;
+      border-radius: var(--pill);
+      background: #fff;
+      min-height: 42px;
+      padding: 0 16px;
+      font-size: 14px;
+      font-weight: 850;
+      color: #111;
+    }
+    .ai-panel {
+      display: grid;
+      gap: 18px;
+      margin: 8px 0 104px;
+      padding-bottom: 8px;
+    }
+    .ai-panel b { font-size: 18px; }
+    .ai-panel p { margin: 0; color: var(--ink); line-height: 1.72; font-size: 15px; }
+    .ai-panel ul { margin: 0; padding-left: 22px; color: var(--ink); line-height: 1.7; }
+    .ai-thread { display: grid; gap: 18px; }
+    .ai-thread.has-messages { animation: aiThreadLift .36s cubic-bezier(.2,.8,.2,1); }
+    .ai-thread.is-streaming,
+    .ai-thread.is-streaming .ai-bubble.user,
+    .ai-thread.is-generating,
+    .ai-thread.is-generating .ai-bubble.user { animation: none; }
+    .ai-bubble {
+      border-radius: 20px;
+      padding: 14px 16px;
+      line-height: 1.55;
+      font-size: 15px;
+      color: var(--ink);
+      background: #fff;
+      max-width: 86%;
+      text-wrap: pretty;
+    }
+    .ai-bubble.user {
+      justify-self: end;
+      background: #edf3ff;
+      color: var(--ink);
+      font-size: 18px;
+      font-weight: 750;
+      border-radius: 18px;
+      box-shadow: none;
+      animation: aiBubbleIn .26s cubic-bezier(.2,.8,.2,1);
+    }
+    .ai-assistant-turn {
+      display: grid;
+      gap: 13px;
+      color: var(--ink);
+      font-size: 15px;
+      line-height: 1.72;
+      overflow-anchor: none;
+    }
+    .ai-assistant-copy {
+      display: grid;
+      gap: 12px;
+    }
+    .ai-assistant-copy p {
+      color: var(--ink);
+      font-size: 15px;
+      line-height: 1.76;
+      margin: 0;
+    }
+    .ai-assistant-copy strong {
+      color: #1c1b20;
+      font-weight: 850;
+    }
+    .ai-md-heading {
+      color: #1c1b20;
+      font-size: 15px;
+      font-weight: 850;
+      line-height: 1.48;
+      margin-top: 2px;
+    }
+    .ai-md-list {
+      display: grid;
+      gap: 8px;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+    .ai-md-list li {
+      color: #2f2b31;
+      font-size: 15px;
+      line-height: 1.68;
+      padding-left: 18px;
+      position: relative;
+    }
+    .ai-md-list li::before {
+      content: "";
+      width: 6px;
+      height: 6px;
+      border-radius: var(--pill);
+      background: var(--rose);
+      opacity: .7;
+      position: absolute;
+      left: 2px;
+      top: .76em;
+    }
+    .ai-assistant-copy code {
+      background: #fff1f6;
+      border-radius: 7px;
+      color: var(--rose-deep);
+      font-size: .94em;
+      padding: 1px 5px;
+    }
+    .ai-status-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      width: fit-content;
+      border: 0;
+      background: transparent;
+      color: #7a7c81;
+      font-size: 16px;
+      font-weight: 850;
+      padding: 0;
+    }
+    .ai-status-label::after {
+      content: "";
+      width: 7px;
+      height: 7px;
+      border-right: 2px solid currentColor;
+      border-bottom: 2px solid currentColor;
+      transform: rotate(45deg) translateY(-2px);
+      opacity: .8;
+    }
+    .ai-status-label.is-collapsed::after { transform: rotate(-45deg) translateY(1px); }
+    .ai-sources { display: flex; gap: 8px; flex-wrap: wrap; }
+    .ai-source {
+      border-radius: var(--pill);
+      background: #fff1f6;
+      color: var(--rose-deep);
+      min-height: 30px;
+      padding: 6px 10px;
+      font-size: 12px;
+      font-weight: 800;
+    }
+    .ai-toolchain {
+      display: grid;
+      gap: 7px;
+      padding: 2px 0 4px 10px;
+      border-left: 2px solid #ece8eb;
+      background: transparent;
+    }
+    .ai-tool-summary {
+      display: inline-flex;
+      width: fit-content;
+      align-items: center;
+      gap: 8px;
+      color: #8a8d93;
+      font-size: 14px;
+      font-weight: 800;
+      padding-left: 2px;
+    }
+    .ai-tool-history {
+      width: fit-content;
+      max-width: 100%;
+    }
+    .ai-tool-history > summary {
+      list-style: none;
+      cursor: pointer;
+      width: fit-content;
+      border-radius: var(--pill);
+    }
+    .ai-tool-history > summary::-webkit-details-marker { display: none; }
+    .ai-tool-history[open] > summary { margin-bottom: 8px; }
+    .ai-tool-summary::before {
+      content: "✓";
+      color: #b5b7bb;
+      font-weight: 900;
+    }
+    .ai-streaming-cursor::after {
+      content: "";
+      display: inline-block;
+      width: 7px;
+      height: 1.1em;
+      margin-left: 2px;
+      border-radius: 999px;
+      background: currentColor;
+      vertical-align: -2px;
+      animation: aiCursorBlink .86s steps(2, start) infinite;
+    }
+    @keyframes aiThreadLift {
+      from { transform: translateY(24px); }
+      to { transform: translateY(0); }
+    }
+    @keyframes aiBubbleIn {
+      from { opacity: 0; transform: translateY(14px) scale(.98); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    @keyframes aiCursorBlink {
+      0%, 45% { opacity: 1; }
+      46%, 100% { opacity: 0; }
+    }
+    .ai-tool-step {
+      display: grid;
+      grid-template-columns: 22px 1fr;
+      gap: 8px;
+      align-items: start;
+      color: #7a7c81;
+    }
+    .ai-tool-dot {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      background: #f4f1f3;
+      color: #999ba1;
+      font-size: 11px;
+      font-weight: 900;
+      margin-top: 1px;
+    }
+    .ai-tool-step.done .ai-tool-dot { background: #f7f4f6; color: #b5b7bb; }
+    .ai-tool-step.running .ai-tool-dot {
+      background: #fff1f6;
+      color: var(--rose-deep);
+      box-shadow: 0 0 0 0 rgba(255,79,134,.3);
+      animation: aiBreathingLight 1.45s ease-in-out infinite;
+    }
+    .ai-tool-step.failed .ai-tool-dot { background: #fff1f6; color: #a84f64; }
+    .ai-tool-main { display: grid; gap: 2px; }
+    .ai-tool-title-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+    .ai-tool-title { font-size: 15px; font-weight: 850; color: #73757a; }
+    .ai-tool-status { color: #a4a0a5; font-size: 12px; font-weight: 800; white-space: nowrap; }
+    .ai-tool-step.running .ai-tool-title { color: #4f454c; }
+    .ai-tool-step.running .ai-tool-status { color: var(--rose-deep); }
+    .ai-tool-detail { font-size: 14px; line-height: 1.55; color: #85878d; }
+    @keyframes aiBreathingLight {
+      0%, 100% { transform: scale(.96); opacity: .82; box-shadow: 0 0 0 0 rgba(255,79,134,.28); }
+      50% { transform: scale(1.04); opacity: 1; box-shadow: 0 0 0 8px rgba(255,79,134,0); }
+    }
+    .xhs-note-strip {
+      display: flex;
+      gap: 12px;
+      overflow-x: auto;
+      margin: 2px -16px 0 0;
+      padding: 2px 16px 10px 0;
+      scroll-snap-type: x mandatory;
+      scrollbar-width: none;
+    }
+    .xhs-note-strip::-webkit-scrollbar { display: none; }
+    .xhs-note-card {
+      flex: 0 0 154px;
+      scroll-snap-align: start;
+      border: 1px solid #f0dfe5;
+      border-radius: 18px;
+      overflow: hidden;
+      background: #fff;
+      color: var(--ink);
+      text-decoration: none;
+      box-shadow: 0 10px 24px rgba(82, 42, 61, .06);
+    }
+    .xhs-note-cover {
+      width: 100%;
+      aspect-ratio: 4 / 5;
+      background: #f7f0f2;
+      display: grid;
+      place-items: center;
+      color: #b3a7ad;
+      font-size: 12px;
+      overflow: hidden;
+    }
+    .xhs-note-cover img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .xhs-note-body {
+      display: grid;
+      gap: 6px;
+      padding: 9px 10px 10px;
+    }
+    .xhs-note-title {
+      min-height: 36px;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      font-size: 13px;
+      line-height: 1.35;
+      font-weight: 900;
+    }
+    .xhs-note-meta {
+      display: flex;
+      justify-content: space-between;
+      gap: 6px;
+      color: #7b7e86;
+      font-size: 11px;
+      line-height: 1.3;
+    }
+    .xhs-note-meta span {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .ai-panel .ai-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+    .ai-panel .ai-actions button { border: 0; border-radius: var(--pill); min-height: 38px; padding: 0 14px; background: #f4f5f7; font-weight: 850; }
+    .ai-panel.error .ai-assistant-turn { color: #9c4359; }
+    .ai-input {
+      position: fixed;
+      left: 50%;
+      bottom: 92px;
+      transform: translateX(-50%);
+      width: min(calc(100% - 28px), 402px);
+      height: 58px;
+      border-radius: var(--pill);
+      padding: 2px;
+      background: #fff;
+      z-index: 9;
+      overflow: hidden;
+      box-shadow: 0 14px 38px rgba(64, 33, 48, .10);
+      isolation: isolate;
+    }
+    .ai-input::before {
+      content: "";
+      position: absolute;
+      inset: -120px;
+      z-index: -2;
+      background:
+        conic-gradient(from 0deg,
+          rgba(105, 234, 214, .95),
+          rgba(255, 255, 255, .25) 16%,
+          rgba(255, 79, 134, .92) 32%,
+          rgba(235, 236, 255, .96) 52%,
+          rgba(105, 234, 214, .95) 72%,
+          rgba(255, 79, 134, .82));
+      animation: aiInputBorderFlow 5.6s linear infinite;
+    }
+    .ai-input::after {
+      content: "";
+      position: absolute;
+      inset: 2px;
+      z-index: -1;
+      border-radius: var(--pill);
+      background: #fff;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.72);
+    }
+    .ai-input-inner {
+      position: relative;
+      z-index: 1;
+      height: 100%;
+      border-radius: var(--pill);
+      background: #fff;
+      display: grid;
+      grid-template-columns: 1fr 46px;
+      align-items: center;
+      padding: 0 8px 0 24px;
+      color: #aaa;
+      font-size: 16px;
+    }
+    .ai-input-inner::after {
+      content: "";
+      position: absolute;
+      inset: 1px auto 1px -36%;
+      width: 34%;
+      border-radius: inherit;
+      pointer-events: none;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,.92), transparent);
+      mix-blend-mode: screen;
+      opacity: .52;
+      transform: skewX(-18deg);
+      animation: aiInputSheen 3.8s ease-in-out infinite;
+    }
+    .ai-input-inner textarea {
+      width: 100%;
+      min-width: 0;
+      height: 42px;
+      resize: none;
+      border: 0;
+      outline: 0;
+      background: transparent;
+      color: var(--ink);
+      font: inherit;
+      line-height: 42px;
+      padding: 0;
+    }
+    .ai-input-inner textarea::placeholder { color: #aaa; }
+    .circle-icon { width: 42px; height: 42px; border-radius: 50%; border: 0; background: #eff0f2; display: grid; place-items: center; font-size: 23px; font-weight: 800; }
+    .circle-icon.is-stopping {
+      background: #1c1b20;
+      color: #fff;
+      font-size: 18px;
+      box-shadow: 0 10px 24px rgba(28, 27, 32, .18);
+    }
+    @keyframes aiInputBorderFlow {
+      to { transform: rotate(1turn); }
+    }
+    @keyframes aiInputSheen {
+      0%, 38% { transform: translateX(0) skewX(-18deg); opacity: 0; }
+      52% { opacity: .58; }
+      74%, 100% { transform: translateX(440%) skewX(-18deg); opacity: 0; }
+    }
+    .session-list {
+      display: grid;
+      gap: 6px;
+      max-height: none;
+      overflow-y: auto;
+      padding-right: 2px;
+    }
+    .session-new-btn {
+      border: 0;
+      border-radius: 16px;
+      background: #fff;
+      min-height: 54px;
+      padding: 0 14px;
+      color: var(--ink);
+      font-size: 17px;
+      font-weight: 850;
+      text-align: left;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      box-shadow: 0 8px 20px rgba(82,42,61,.04);
+    }
+    .session-new-btn svg {
+      width: 22px;
+      height: 22px;
+      stroke: var(--rose-deep);
+      fill: none;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      flex: 0 0 auto;
+    }
+    .session-section-title {
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 850;
+      margin: 16px 0 6px;
+    }
+    .session-card {
+      border: 0;
+      border-radius: 12px;
+      background: #fff;
+      min-height: 48px;
+      padding: 9px 12px;
+      display: grid;
+      grid-template-columns: auto 1fr;
+      align-items: center;
+      gap: 10px;
+      text-align: left;
+      color: var(--ink);
+    }
+    .session-card.active { background: #f5f2f4; }
+    .session-unread-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--rose);
+      box-shadow: 0 0 0 4px rgba(255,79,134,.12);
+      opacity: 0;
+    }
+    .session-card.unread .session-unread-dot { opacity: 1; }
+    .session-main { min-width: 0; display: grid; gap: 5px; }
+    .session-title { font-size: 16px; font-weight: 760; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .session-preview,
+    .session-meta { display: none; }
+    .session-empty {
+      border-radius: 18px;
+      background: #fff;
+      color: var(--muted);
+      padding: 18px;
+      line-height: 1.6;
+      text-align: center;
+    }
+    .session-sidebar {
+      position: fixed;
+      left: max(0px, calc((100% - var(--screen-w)) / 2));
+      right: auto;
+      top: 0;
+      bottom: 0;
+      z-index: 22;
+      width: min(78vw, 300px);
+      height: 100dvh;
+      transform: translateX(-104%);
+      transition: transform .24s cubic-bezier(.2,.8,.2,1);
+      background: #fff;
+      border-radius: 0 24px 24px 0;
+      padding: 28px 12px 24px;
+      box-shadow: 22px 0 60px rgba(54,25,38,.14);
+      display: grid;
+      align-content: start;
+      gap: 12px;
+      overflow: auto;
+    }
+    .session-sidebar.open { transform: translateX(0); }
+    .session-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 21;
+      width: min(100%, var(--screen-w));
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(28,27,32,.22);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .22s ease;
+    }
+    .session-backdrop.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .session-action-popover {
+      position: fixed;
+      z-index: 24;
+      left: max(14px, calc((100% - var(--screen-w)) / 2 + 14px));
+      top: 120px;
+      width: 178px;
+      border-radius: 18px;
+      background: rgba(255,255,255,.96);
+      box-shadow: 0 18px 42px rgba(54,25,38,.18);
+      padding: 8px;
+      display: none;
+      gap: 6px;
+    }
+    .session-action-popover.open { display: grid; }
+    .session-action-popover button {
+      border: 0;
+      border-radius: 13px;
+      background: #fff;
+      min-height: 42px;
+      padding: 0 12px;
+      text-align: left;
+      color: var(--ink);
+      font-size: 15px;
+      font-weight: 850;
+    }
+    .session-action-popover button.danger { color: var(--error); }
+    .session-confirm {
+      position: fixed;
+      inset: 0;
+      z-index: 25;
+      width: min(100%, var(--screen-w));
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(28,27,32,.24);
+      display: none;
+      place-items: center;
+      padding: 24px;
+    }
+    .session-confirm.open { display: grid; }
+    .session-confirm-card {
+      width: min(100%, 310px);
+      border-radius: 24px;
+      background: #fff;
+      box-shadow: 0 22px 60px rgba(54,25,38,.18);
+      padding: 20px;
+      display: grid;
+      gap: 14px;
+    }
+    .session-confirm-card b { font-size: 18px; }
+    .session-confirm-card p { margin: 0; color: var(--muted); line-height: 1.55; font-size: 14px; }
+    .session-confirm-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .session-confirm-actions button { border: 0; border-radius: var(--pill); min-height: 46px; font-size: 15px; font-weight: 850; }
+    .session-confirm-actions .cancel { background: #f4f5f7; color: var(--ink); }
+    .session-confirm-actions .danger { background: var(--rose); color: #fff; }
+    .closet-top {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+    .closet-tabs { display: flex; gap: 34px; align-items: end; }
+    .closet-tab {
+      border: 0;
+      background: transparent;
+      color: #a5a6aa;
+      font-size: 26px;
+      font-weight: 850;
+      padding: 0 0 12px;
+      position: relative;
+    }
+    .closet-tab.active { color: var(--ink); }
+    .closet-tab.active::after {
+      content: "";
+      position: absolute;
+      left: 4px;
+      right: 4px;
+      bottom: 0;
+      height: 4px;
+      border-radius: 4px;
+      background: #050505;
+    }
+    .tool-row { display: flex; gap: 12px; align-items: center; }
+    .tool-row button { border: 0; background: transparent; width: 32px; height: 32px; font-size: 22px; font-weight: 900; color: #111; }
+    .category-row { display: flex; gap: 14px; overflow-x: auto; overflow-y: hidden; padding: 8px 0 16px; margin: 0 -16px; padding-left: 16px; scroll-snap-type: x proximity; }
+    .cat {
+      border: 0;
+      background: transparent;
+      color: #909298;
+      min-width: 62px;
+      display: grid;
+      justify-items: center;
+      gap: 6px;
+      font-size: 13px;
+      font-weight: 750;
+      position: relative;
+      scroll-snap-align: start;
+    }
+    .cat-thumb {
+      width: 54px;
+      height: 54px;
+      border-radius: 50%;
+      background: #fff;
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+      border: 0;
+      position: relative;
+    }
+    .cat.active .cat-thumb { outline: 2px solid #111; outline-offset: 2px; }
+    .cat-thumb img { width: 88%; height: 88%; object-fit: contain; }
+    .badge { position: absolute; top: 0; right: 0; background: #050505; color: #fff; border-radius: var(--pill); min-width: 22px; padding: 2px 6px; font-size: 11px; font-weight: 850; z-index: 2; }
+    .closet-card { padding: 10px; }
+    .closet-img { border-radius: 18px; background: #fff; }
+    .closet-meta { padding: 10px 2px 0; }
+    .add-mini { border: 0; background: transparent; font-size: 22px; font-weight: 900; width: 40px; height: 40px; }
+    .item-favorite { border: 0; background: transparent; color: #111; font-size: 24px; font-weight: 950; width: 40px; height: 40px; line-height: 1; }
+    .item-favorite.active { color: var(--rose); }
+    .floating-match {
+      position: fixed;
+      right: max(14px, calc((100% - var(--screen-w)) / 2 + 14px));
+      bottom: 128px;
+      border: 0;
+      border-radius: var(--pill);
+      background: #050505;
+      color: #fff;
+      min-height: 58px;
+      padding: 0 28px;
+      font-size: 18px;
+      font-weight: 900;
+      z-index: 8;
+    }
+    .profile-head { display: grid; grid-template-columns: 74px 1fr 40px; align-items: center; gap: 14px; padding: 18px 0 28px; }
+    .avatar { width: 74px; height: 74px; border-radius: 50%; background: #e3e4e6; display: grid; place-items: center; color: #fff; font-size: 40px; font-weight: 900; }
+    .profile-name { font-size: 22px; font-weight: 850; }
+    .pro-card {
+      min-height: 128px;
+      border-radius: 22px;
+      color: #fff;
+      background: radial-gradient(circle at 82% 10%, rgba(255,79,134,.56), transparent 28%), linear-gradient(135deg, #070707, #1d2725 58%, #130b1f);
+      padding: 22px;
+      display: grid;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    .pro-card b { font-size: 27px; font-style: italic; }
+    .pro-card span { color: rgba(255,255,255,.86); }
+    .profile-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 26px; }
+    .profile-cell { min-height: 66px; border: 0; color: var(--ink); background: #eef0f3; border-radius: 16px; padding: 18px; display: flex; align-items: center; justify-content: space-between; font-size: 18px; font-weight: 850; text-align: left; }
+    .profile-tabs { display: flex; gap: 28px; border-bottom: 1px solid var(--line); margin: 0 -16px 14px; padding: 0 16px; overflow-x: auto; scrollbar-width: none; }
+    .profile-tabs::-webkit-scrollbar { display: none; }
+    .profile-tab { border: 0; background: transparent; color: #aaa; font-size: 20px; font-weight: 850; padding: 0 0 12px; }
+    .profile-tab { white-space: nowrap; }
+    .profile-tab.active { color: var(--ink); border-bottom: 4px solid #111; }
+    .record-head { color: #999; margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+    .record-edit-btn { border: 0; background: transparent; color: #999; font-size: 16px; font-weight: 800; min-height: 36px; padding: 0; }
+    .record-edit-btn.active { color: var(--rose); }
+    .record-delete-bar { display: none; grid-template-columns: 1fr auto; align-items: center; gap: 12px; margin: 0 0 12px; padding: 10px 12px; border-radius: 16px; background: #fff; box-shadow: 0 10px 24px rgba(82, 42, 61, .08); color: var(--muted); font-weight: 750; }
+    .record-delete-bar.active { display: grid; }
+    .record-delete-btn { border: 0; border-radius: var(--pill); background: var(--rose); color: #fff; min-height: 38px; padding: 0 16px; font-weight: 900; }
+    .record-delete-btn:disabled { opacity: .42; }
+    .works-subtabs {
+      display: none;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin: 0 0 12px;
+      padding: 4px;
+      border-radius: var(--pill);
+      background: rgba(255,255,255,.72);
+      border: 1px solid var(--line);
+    }
+    .works-subtabs.active { display: grid; }
+    .works-subtab {
+      border: 0;
+      border-radius: var(--pill);
+      min-height: 38px;
+      background: transparent;
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 850;
+    }
+    .works-subtab.active {
+      background: var(--rose);
+      color: #fff;
+      box-shadow: 0 10px 22px rgba(255,79,134,.18);
+    }
+    .record-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .record-card { border: 0; padding: 0; position: relative; border-radius: 16px; background: #ddd; aspect-ratio: 3 / 4; overflow: hidden; }
+    .record-card img { width: 100%; height: 100%; object-fit: cover; }
+    .record-card.work-item img { object-fit: contain; background: #fff; padding: 10px; }
+    .record-card .record-badge { position: absolute; left: 8px; bottom: 8px; z-index: 1; padding: 5px 8px; border-radius: 999px; background: rgba(255,255,255,.9); color: #2b2a2f; font-size: 11px; font-weight: 900; box-shadow: 0 6px 16px rgba(0,0,0,.14); }
+    .record-card.editing::after { content: ""; position: absolute; inset: 0; background: rgba(17,17,20,.18); }
+    .record-card .check { position: absolute; right: 8px; top: 8px; z-index: 1; width: 24px; height: 24px; border-radius: 50%; display: grid; place-items: center; background: rgba(255,255,255,.9); color: transparent; font-size: 15px; font-weight: 950; box-shadow: 0 6px 16px rgba(0,0,0,.16); }
+    .record-card.selected { outline: 3px solid var(--rose); outline-offset: -3px; }
+    .record-card.selected .check { background: var(--rose); color: #fff; }
+    .bottom-nav {
+      position: fixed;
+      left: 50%;
+      bottom: 0;
+      z-index: 10;
+      width: min(100%, var(--screen-w));
+      transform: translateX(-50%);
+      height: 84px;
+      background: rgba(255,255,255,.92);
+      backdrop-filter: blur(18px);
+      display: grid;
+      grid-template-columns: 1fr 1fr 82px 1fr 1fr;
+      align-items: center;
+      border-top: 1px solid rgba(236,238,241,.8);
+    }
+    .bottom-nav.hidden { display: none; }
+    .nav-btn {
+      border: 0;
+      background: transparent;
+      color: #bbb;
+      display: grid;
+      gap: 5px;
+      justify-items: center;
+      align-content: center;
+      font-size: 12px;
+      font-weight: 800;
+      min-height: 64px;
+    }
+    a.nav-btn { text-decoration: none; }
+    .nav-btn .nav-icon {
+      width: 24px;
+      height: 24px;
+      display: block;
+    }
+    .nav-btn .nav-icon svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 2.2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+    .nav-btn.active { color: #050505; }
+    .plus-btn {
+      width: 66px;
+      height: 66px;
+      border-radius: 50%;
+      border: 0;
+      background:
+        radial-gradient(circle at 34% 24%, rgba(255,255,255,.42), transparent 28%),
+        linear-gradient(145deg, #19171a, #050505 62%, #1d1b20);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      justify-self: center;
+      margin-top: -22px;
+      box-shadow: 0 18px 34px rgba(5,5,5,.26), inset 0 1px 0 rgba(255,255,255,.24);
+      position: relative;
+    }
+    .plus-btn svg {
+      width: 30px;
+      height: 30px;
+      stroke: currentColor;
+      stroke-width: 2.7;
+      stroke-linecap: round;
+    }
+    .sheet {
+      position: fixed;
+      left: 50%;
+      bottom: 0;
+      z-index: 20;
+      width: min(100%, var(--screen-w));
+      transform: translate(-50%, 110%);
+      transition: transform .22s ease;
+      background: #fff;
+      border-radius: 28px 28px 0 0;
+      padding: 18px 16px 24px;
+      box-shadow: 0 -24px 70px rgba(0,0,0,.16);
+      display: grid;
+      gap: 12px;
+      max-height: 82vh;
+      overflow: auto;
+    }
+    .sheet.open { transform: translate(-50%, 0); }
+    .sheet-title { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+    .sheet-title b { font-size: 20px; }
+    .close { border: 0; background: #f0f1f3; width: 38px; height: 38px; border-radius: 50%; font-size: 22px; }
+    .action-grid { display: grid; gap: 10px; }
+    .action-card { border: 0; background: #f5f6f8; border-radius: 18px; min-height: 58px; padding: 0 18px; text-align: left; font-size: 17px; font-weight: 850; }
+    .hidden-input { display: none; }
+    .link-line { display: grid; grid-template-columns: 1fr 86px; gap: 8px; }
+    .link-line input { border: 0; background: #f5f6f8; border-radius: var(--pill); min-height: 48px; padding: 0 16px; outline: none; }
+    .black-btn { border: 0; background: #050505; color: #fff; border-radius: var(--pill); font-weight: 850; }
+    .import-review-copy { margin: 0; color: #666; font-size: 14px; line-height: 1.6; }
+    .import-review-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+    .import-review-card { position: relative; display: grid; gap: 8px; min-width: 0; }
+    .import-review-image { width: 100%; aspect-ratio: 1; object-fit: contain; display: block; background: #faf8f8; border-radius: 12px; }
+    .import-review-select { width: 100%; min-height: 42px; border: 1px solid #e7e7e7; border-radius: 12px; background: #fff; color: #222; padding: 0 10px; font-size: 14px; }
+    .import-review-remove { position: absolute; top: 8px; right: 8px; width: 32px; height: 32px; border: 0; border-radius: 50%; background: rgba(255,255,255,.94); color: #8a011b; font-size: 20px; box-shadow: 0 4px 14px rgba(0,0,0,.08); }
+    .import-review-done { min-height: 44px; border: 0; border-radius: 18px; background: #8a011b; color: #fff; font-size: 14px; font-weight: 800; }
+    .builder-list { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+    .pick-card { border: 2px solid transparent; border-radius: 16px; background: #f6f7f9; padding: 7px; min-height: 112px; }
+    .pick-card.active { border-color: #050505; }
+    .pick-card img { width: 100%; aspect-ratio: 1; object-fit: contain; display: block; }
+    .model-sheet {
+      padding-left: 0;
+      padding-right: 0;
+      padding-bottom: max(18px, env(safe-area-inset-bottom));
+      gap: 12px;
+      height: min(80dvh, 690px);
+      max-height: none;
+      overflow: hidden !important;
+      overflow-y: clip !important;
+      scrollbar-width: none;
+      overscroll-behavior: contain;
+      grid-template-rows: auto auto minmax(0, 1fr) auto;
+    }
+    .model-sheet::-webkit-scrollbar { display: none; }
+    .model-sheet .sheet-title { padding: 0 16px; }
+    .model-tabs {
+      display: flex;
+      justify-content: center;
+      gap: 54px;
+      padding: 2px 16px 8px;
+      border-bottom: 1px solid transparent;
+    }
+    .model-tab {
+      border: 0;
+      background: transparent;
+      color: #9a9aa0;
+      font-size: 21px;
+      font-weight: 900;
+      padding: 0 0 10px;
+      position: relative;
+    }
+    .model-tab.active { color: var(--ink); }
+    .model-tab.active::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      bottom: 0;
+      width: 34px;
+      height: 4px;
+      border-radius: 999px;
+      background: #050505;
+      transform: translateX(-50%);
+    }
+    .model-carousel {
+      display: flex;
+      gap: 24px;
+      min-height: 0;
+      overflow-x: auto;
+      overflow-y: clip;
+      padding: 18px 0 6px;
+      scroll-snap-type: x mandatory;
+      scrollbar-width: none;
+      align-items: stretch;
+    }
+    .model-carousel::-webkit-scrollbar { display: none; }
+    .model-option {
+      flex: 0 0 74%;
+      min-height: 0;
+      border: 0;
+      background: transparent;
+      padding: 0;
+      display: grid;
+      grid-template-rows: minmax(0, 1fr) auto;
+      justify-items: center;
+      align-items: stretch;
+      gap: 12px;
+      scroll-snap-align: center;
+      color: var(--ink);
+      opacity: .86;
+      transform: scale(.96);
+      transition: opacity .1s ease, transform .1s ease;
+      cursor: pointer;
+    }
+    .model-option.active {
+      opacity: 1;
+      transform: scale(1);
+    }
+    .model-option.active .model-figure {
+      box-shadow: 0 0 0 3px rgba(255, 79, 134, .72), 0 20px 44px rgba(82, 42, 61, .12);
+    }
+    .model-figure {
+      width: 100%;
+      height: 100%;
+      min-height: 0;
+      display: grid;
+      place-items: end center;
+      background: linear-gradient(180deg, #f9fafc, #f1f2f5);
+      border-radius: 28px;
+      overflow: hidden;
+      transition: box-shadow .1s ease;
+    }
+    .model-figure img {
+      width: 98%;
+      height: 100%;
+      object-fit: contain;
+      object-position: bottom center;
+      filter: none;
+      image-rendering: auto;
+    }
+    .model-tags {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+      min-height: 28px;
+      text-align: center;
+    }
+    .model-tags span {
+      border: 1px solid #d8dbe0;
+      border-radius: 9px;
+      padding: 4px 9px;
+      color: #5f6268;
+      font-size: 13px;
+      font-weight: 800;
+      background: #fff;
+    }
+    .model-confirm {
+      margin: 2px 16px 0;
+      min-height: 58px;
+      border: 0;
+      border-radius: var(--pill);
+      background: #050505;
+      color: #fff;
+      font-size: 17px;
+      font-weight: 900;
+      box-shadow: 0 14px 30px rgba(0,0,0,.16);
+    }
+    .my-photo-panel {
+      display: none;
+      min-height: 0;
+      padding: 12px 16px 0;
+    }
+    .model-sheet[data-mode="photo"] .model-carousel,
+    .model-sheet[data-mode="photo"] #confirmModelBtn { display: none; }
+    .model-sheet[data-mode="photo"] .my-photo-panel { display: grid; gap: 12px; }
+    .self-upload-zone {
+      min-height: 0;
+      border-radius: 28px;
+      border: 2px dashed #d9dce2;
+      background: #f7f8fa;
+      display: grid;
+      place-items: center;
+      text-align: center;
+      color: #8a8d94;
+      padding: 24px;
+      overflow: hidden;
+    }
+    .self-upload-zone img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+      border-radius: 20px;
+    }
+    .image-lightbox {
+      position: fixed;
+      inset: 0;
+      left: 50%;
+      width: min(100%, var(--screen-w));
+      transform: translateX(-50%);
+      z-index: 90;
+      display: none;
+      grid-template-rows: auto minmax(0, 1fr) auto;
+      gap: 12px;
+      padding: max(18px, env(safe-area-inset-top)) 14px max(18px, env(safe-area-inset-bottom));
+      background: rgba(18, 17, 20, .86);
+      backdrop-filter: blur(14px);
+    }
+    .image-lightbox.open { display: grid; }
+    .image-lightbox-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      color: #fff;
+      min-height: 44px;
+    }
+    .image-lightbox-title {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      font-size: 15px;
+      font-weight: 850;
+    }
+    .image-lightbox-actions {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      flex: 0 0 auto;
+    }
+    .image-lightbox-zoom {
+      display: none;
+      border: 0;
+      min-height: 38px;
+      border-radius: var(--pill);
+      background: rgba(255,255,255,.14);
+      color: #fff;
+      padding: 0 13px;
+      font-size: 13px;
+      font-weight: 850;
+    }
+    .image-lightbox-close {
+      border: 0;
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: rgba(255,255,255,.14);
+      color: #fff;
+      font-size: 24px;
+      display: grid;
+      place-items: center;
+      flex: 0 0 auto;
+    }
+    .image-lightbox-stage {
+      min-height: 0;
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+      border-radius: 24px;
+      background: rgba(255,255,255,.96);
+    }
+    .image-lightbox-stage img {
+      width: 100%;
+      height: 100%;
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+      display: block;
+      cursor: default;
+    }
+    .image-lightbox.actual .image-lightbox-stage {
+      place-items: start center;
+      background:
+        linear-gradient(45deg, #f6f7f9 25%, transparent 25%),
+        linear-gradient(-45deg, #f6f7f9 25%, transparent 25%),
+        linear-gradient(45deg, transparent 75%, #f6f7f9 75%),
+        linear-gradient(-45deg, transparent 75%, #f6f7f9 75%),
+        #fff;
+      background-size: 24px 24px;
+      background-position: 0 0, 0 12px, 12px -12px, -12px 0;
+    }
+    .image-lightbox.actual .image-lightbox-stage img {
+      width: 100%;
+      height: 100%;
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+      cursor: default;
+    }
+    .image-lightbox-tip {
+      color: rgba(255,255,255,.72);
+      text-align: center;
+      font-size: 13px;
+      line-height: 1.45;
+    }
+    .toast { position: fixed; left: 50%; bottom: 96px; transform: translateX(-50%); background: #050505; color: #fff; border-radius: var(--pill); padding: 12px 18px; font-size: 14px; font-weight: 800; z-index: 40; opacity: 0; pointer-events: none; transition: opacity .2s ease; max-width: 360px; text-align: center; }
+    .toast.show { opacity: 1; }
+    .login-screen {
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      left: 50%;
+      width: min(100%, var(--screen-w));
+      transform: translateX(-50%);
+      z-index: 80;
+      background:
+        radial-gradient(circle at 88% 10%, rgba(255,241,246,.92), transparent 30%),
+        linear-gradient(180deg, #fffafa 0%, #f8f2f5 100%);
+      color: var(--ink);
+      padding: max(20px, env(safe-area-inset-top)) 18px max(22px, env(safe-area-inset-bottom));
+      display: none;
+      overflow: hidden;
+      min-height: 100%;
+    }
+    .login-screen.active { display: block; }
+    body:has(.login-screen.active) { overflow: hidden; }
+    .login-screen::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(90deg, rgba(255,79,134,.07) 1px, transparent 1px),
+        linear-gradient(180deg, rgba(255,79,134,.05) 1px, transparent 1px);
+      background-size: 42px 42px;
+      mask-image: linear-gradient(180deg, rgba(0,0,0,.42), transparent 70%);
+      pointer-events: none;
+    }
+    .login-screen::after {
+      content: "";
+      position: absolute;
+      width: min(66vw, 280px);
+      aspect-ratio: 1;
+      right: -24%;
+      top: 10%;
+      border-radius: 50%;
+      background: rgba(255,79,134,.08);
+      filter: blur(2px);
+      pointer-events: none;
+    }
+    .login-shell {
+      position: relative;
+      height: 100%;
+      min-height: 0;
+      display: grid;
+      grid-template-rows: minmax(348px, 1fr) auto;
+      align-content: center;
+      gap: 24px;
+    }
+    .login-brand { display: none; }
+    .login-copy {
+      display: grid;
+      justify-items: center;
+      gap: 8px;
+      color: var(--soft-ink);
+      line-height: 1.18;
+      max-width: 300px;
+      text-wrap: pretty;
+    }
+    .login-copy-main {
+      color: var(--ink);
+      font-family: "Songti SC", "STSong", "Noto Serif CJK SC", "PingFang SC", serif;
+      font-size: clamp(25px, 6.8vw, 31px);
+      font-weight: 600;
+      letter-spacing: .06em;
+      padding-left: .06em;
+    }
+    .login-copy-en {
+      font-family: Didot, "Bodoni 72", "Times New Roman", serif;
+      color: rgba(189, 74, 111, .78);
+      font-size: clamp(16px, 4.35vw, 20px);
+      font-style: italic;
+      font-weight: 400;
+      letter-spacing: .015em;
+      line-height: 1.05;
+    }
+    .login-stage {
+      align-self: stretch;
+      width: 100%;
+      min-height: 348px;
+      overflow: hidden;
+      position: relative;
+      display: grid;
+      grid-template-rows: auto minmax(236px, 1fr) auto;
+      justify-items: center;
+      align-content: start;
+      padding-top: clamp(18px, 4vh, 42px);
+    }
+    .login-stage::before {
+      content: "";
+      position: absolute;
+      left: 50%;
+      top: 46%;
+      width: min(88%, 340px);
+      height: 172px;
+      border-radius: 999px;
+      background:
+        radial-gradient(circle at 24% 50%, rgba(255,79,134,.13), transparent 36%),
+        radial-gradient(circle at 72% 48%, rgba(238,251,255,.92), transparent 42%);
+      filter: blur(10px);
+      transform: translate(-50%, -50%);
+    }
+    .login-logo-lockup {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      justify-items: center;
+      gap: 11px;
+      animation: loginRise .7s cubic-bezier(.2,.8,.2,1) both;
+    }
+    .login-logo-en {
+      color: var(--ink);
+      font-size: clamp(50px, 15.4vw, 66px);
+      line-height: .78;
+      font-weight: 400;
+      letter-spacing: -.065em;
+      font-family: Didot, "Bodoni 72", "Times New Roman", serif;
+      padding-right: .065em;
+      text-rendering: geometricPrecision;
+    }
+    .login-brand-signature {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+      width: 100%;
+      color: rgba(43, 36, 38, .72);
+    }
+    .login-brand-signature::before,
+    .login-brand-signature::after {
+      content: "";
+      width: 26px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(236, 75, 127, .5));
+    }
+    .login-brand-signature::after {
+      transform: scaleX(-1);
+    }
+    .login-wordmark-cn {
+      color: inherit;
+      font-family: "Songti SC", "STSong", "Noto Serif CJK SC", "PingFang SC", serif;
+      font-size: 14px;
+      line-height: 1;
+      font-weight: 500;
+      letter-spacing: .22em;
+      padding-left: .22em;
+      white-space: nowrap;
+    }
+    .login-closet-cloud {
+      position: relative;
+      z-index: 1;
+      width: min(100%, 352px);
+      min-height: 226px;
+      margin-top: 34px;
+      isolation: isolate;
+    }
+    .login-gift-box {
+      position: absolute;
+      left: 50%;
+      top: 49%;
+      z-index: 0;
+      width: min(61vw, 232px);
+      max-width: 68%;
+      transform: translate(-50%, -50%) translateZ(0);
+      opacity: .22;
+      filter: saturate(.96) drop-shadow(0 24px 42px rgba(255,79,134,.10));
+      mix-blend-mode: normal;
+      pointer-events: none;
+      user-select: none;
+      animation: loginGiftFloat 8.4s .2s ease-in-out infinite;
+      will-change: transform, opacity;
+    }
+    .login-closet-item {
+      --x: 0px;
+      --y: 0px;
+      --r: 0deg;
+      --s: 1;
+      --d: 0s;
+      position: absolute;
+      z-index: 2;
+      left: 50%;
+      top: 50%;
+      width: var(--w, 76px);
+      aspect-ratio: 1;
+      display: grid;
+      place-items: center;
+      border-radius: 22px;
+      background: rgba(255,255,255,.66);
+      box-shadow: 0 16px 34px rgba(82,42,61,.10);
+      transform: translate3d(-50%, -50%, 0) scale(.72) rotate(0deg);
+      opacity: 0;
+      animation: loginItemScatter 8.4s var(--d) cubic-bezier(.2,.78,.2,1) infinite;
+      will-change: transform, opacity;
+    }
+    .login-closet-item img {
+      display: block;
+      max-width: 116%;
+      max-height: 116%;
+      object-fit: contain;
+      filter: drop-shadow(0 12px 18px rgba(54,25,38,.10));
+      user-select: none;
+      pointer-events: none;
+    }
+    .login-closet-item:nth-child(1) { --x: -126px; --y: -48px; --r: -9deg; --s: .96; --w: 88px; --d: .04s; }
+    .login-closet-item:nth-child(2) { --x: -30px; --y: -56px; --r: 5deg; --s: .98; --w: 82px; --d: .12s; }
+    .login-closet-item:nth-child(3) { --x: 78px; --y: -50px; --r: -5deg; --s: 1; --w: 86px; --d: .20s; }
+    .login-closet-item:nth-child(4) { --x: 134px; --y: 8px; --r: 7deg; --s: .92; --w: 72px; --d: .28s; }
+    .login-closet-item:nth-child(5) { --x: -112px; --y: 30px; --r: 7deg; --s: .92; --w: 82px; --d: .36s; }
+    .login-closet-item:nth-child(6) { --x: -24px; --y: 38px; --r: -5deg; --s: 1.04; --w: 96px; --d: .44s; }
+    .login-closet-item:nth-child(7) { --x: 72px; --y: 42px; --r: 5deg; --s: .94; --w: 78px; --d: .52s; }
+    .login-closet-item:nth-child(8) { --x: -124px; --y: 112px; --r: -5deg; --s: .86; --w: 72px; --d: .60s; }
+    .login-closet-item:nth-child(9) { --x: 6px; --y: 118px; --r: 6deg; --s: .9; --w: 78px; --d: .68s; }
+    .login-closet-item:nth-child(10) { --x: 126px; --y: 104px; --r: -7deg; --s: .82; --w: 68px; --d: .76s; }
+    .login-hero {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      justify-items: center;
+      text-align: center;
+      margin-top: 2px;
+      padding: 10px 18px 0;
+      animation: loginRise .72s .18s cubic-bezier(.2,.8,.2,1) both;
+    }
+    .login-form {
+      display: grid;
+      gap: 12px;
+      align-self: start;
+      animation: loginRise .72s .28s cubic-bezier(.2,.8,.2,1) both;
+    }
+    .login-form input {
+      width: 100%;
+      min-height: 54px;
+      border-radius: 18px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.78);
+      padding: 0 16px;
+      font-family: "PingFang SC", "Helvetica Neue", sans-serif;
+      font-size: 17px;
+      font-weight: 600;
+      letter-spacing: .015em;
+      color: var(--ink);
+      outline: none;
+      box-shadow: 0 10px 24px rgba(82, 42, 61, .06);
+    }
+    .login-form input::placeholder { color: var(--muted); }
+    .login-form input:focus { border-color: rgba(255,79,134,.62); box-shadow: 0 0 0 4px rgba(255,79,134,.10), 0 10px 24px rgba(82, 42, 61, .06); }
+    .login-form .primary-btn {
+      position: relative;
+      overflow: hidden;
+      color: #fff;
+      font-family: "PingFang SC", "Helvetica Neue", sans-serif;
+      font-size: 17px;
+      font-weight: 650;
+      letter-spacing: .025em;
+      background:
+        linear-gradient(135deg, rgba(255,255,255,.26), rgba(255,255,255,.06) 34%, rgba(255,79,134,.34)),
+        linear-gradient(180deg, rgba(255,79,134,.92), rgba(232,61,115,.88));
+      border: 1px solid rgba(255,255,255,.72);
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,.62),
+        inset 0 -1px 0 rgba(173, 31, 83, .18),
+        0 18px 34px rgba(255,79,134,.24),
+        0 8px 22px rgba(82,42,61,.10);
+      backdrop-filter: blur(18px) saturate(1.25);
+      -webkit-backdrop-filter: blur(18px) saturate(1.25);
+    }
+    .login-form .primary-btn::before {
+      content: "";
+      position: absolute;
+      inset: 1px 1px auto;
+      height: 48%;
+      border-radius: inherit;
+      background: linear-gradient(180deg, rgba(255,255,255,.46), rgba(255,255,255,0));
+      pointer-events: none;
+    }
+    .login-form .primary-btn:active { transform: translateY(1px); box-shadow: inset 0 1px 0 rgba(255,255,255,.48), 0 12px 24px rgba(255,79,134,.20); }
+    .login-note { min-height: 20px; color: var(--muted); font-size: 13px; line-height: 1.45; }
+    .login-note.error { color: var(--error); }
+    @keyframes loginRise { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes loginItemScatter {
+      0% { opacity: 0; transform: translate3d(-50%, -50%, 0) scale(.72) rotate(0deg); }
+      10% { opacity: 0; transform: translate3d(-50%, -50%, 0) scale(.72) rotate(0deg); }
+      24% { opacity: 1; transform: translate3d(calc(-50% + var(--x)), calc(-50% + var(--y)), 0) scale(var(--s)) rotate(var(--r)); }
+      62% { opacity: 1; transform: translate3d(calc(-50% + var(--x)), calc(-50% + var(--y) - 5px), 0) scale(var(--s)) rotate(calc(var(--r) * .72)); }
+      82% { opacity: .94; transform: translate3d(calc(-50% + var(--x)), calc(-50% + var(--y)), 0) scale(var(--s)) rotate(var(--r)); }
+      100% { opacity: 0; transform: translate3d(calc(-50% + var(--x)), calc(-50% + var(--y) + 10px), 0) scale(calc(var(--s) * .96)) rotate(var(--r)); }
+    }
+    @keyframes loginGiftFloat {
+      0%, 100% { opacity: .16; transform: translate(-50%, -50%) translateY(2px) scale(.98); }
+      28%, 72% { opacity: .24; transform: translate(-50%, -50%) translateY(-4px) scale(1); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .login-hero, .login-form, .login-logo-lockup, .login-closet-item, .login-gift-box { animation: none; }
+      .login-closet-item { transform: translate3d(calc(-50% + var(--x)), calc(-50% + var(--y)), 0) scale(var(--s)) rotate(var(--r)); }
+      .ai-input::before,
+      .ai-input-inner::after { animation: none; }
+    }
+    .profile-line { color: var(--muted); font-size: 13px; line-height: 1.45; margin-top: 4px; }
+    .switch-user { border: 0; background: transparent; color: var(--rose-deep); font-weight: 850; padding: 0; }
+    @media (min-width: 861px) {
+      body { background: #f1f2f4; padding: 24px 0; }
+      .app { min-height: calc(100vh - 48px); border-radius: 34px; box-shadow: 0 24px 90px rgba(0,0,0,.10); }
+      .login-screen { top: 24px; bottom: 24px; border-radius: 34px; }
+      .bottom-nav { bottom: 24px; border-radius: 0 0 34px 34px; }
+      .ai-input { bottom: 116px; }
+      .ai-session-bar { top: 58px; }
+      .sheet { bottom: 24px; border-radius: 28px 28px 34px 34px; }
+    }
+    .delete-outfit-action { display:block; margin:0 24px 12px auto; min-height:44px; padding:8px 16px; border:1px solid #e7d6db; border-radius:18px; color:#8a011b; background:white; font-weight:600; }
+    .delete-outfit-action[hidden] { display:none; }
+    #outfitDeleteDialog { border:0; border-radius:24px; padding:24px; width:min(345px,calc(100vw - 32px)); color:#222; background:#fafafa; }
+    #outfitDeleteDialog::backdrop { background:#0006; }
+    #outfitDeleteDialog h2 { font-size:20px; margin:0 0 12px; }
+    #outfitDeleteDialog p { line-height:1.6; color:#666; }
+    .outfit-delete-actions { display:flex; gap:12px; margin-top:20px; }
+    .outfit-delete-actions button { flex:1; min-height:44px; }
+  </style>
+
+  <link rel="stylesheet" href="/static/selfit-app/app.css?v=20260905-model-thumb1" />
+</head>
+<body>
+  <main class="app auth-pending">
+    <section id="personaTestPanel" class="persona-test-panel" hidden aria-label="人格推荐测试模式">
+      <div><strong>测试模式</strong><span id="personaTestStatus" role="status">仅预览推荐，不修改风格报告</span></div>
+      <button id="personaTestPicker" type="button" aria-haspopup="dialog">切换人格</button>
+    </section>
+    <section id="personaHandoff" class="persona-handoff" hidden aria-labelledby="handoffTitle">
+      <img class="handoff-wordmark" src="/static/selfit/assets/selfit-wordmark.svg" width="55" height="20" alt="selfit" />
+      <div class="handoff-ornament" aria-hidden="true">
+        <img src="/static/selfit/assets/loading-stage-100@2x.png" width="240" height="163" alt="" />
+      </div>
+      <div class="handoff-copy">
+        <small>我们记住你了</small>
+        <h1 id="handoffTitle">从认识自己，开始真正适合你的穿搭</h1>
+        <p id="handoffPersonaCopy">你的风格人格、推荐色和穿搭偏好已经带入。</p>
+      </div>
+      <button id="handoffContinue" class="handoff-action" type="button">开始搭配</button>
+    </section>
+    <section id="page-home" class="page active">
+      <div class="top-row">
+        <div class="brand">selfit</div>
+        <div class="weather"><b id="weatherTemp">24~29°C</b><span id="weatherText">上海市 小雨</span></div>
+      </div>
+      <section class="home-section today-section">
+        <div class="section-head"><div><h2>今天，怎么穿</h2></div></div>
+      <div class="today-carousel" aria-label="今日推荐">
+        <div id="todayTrack" class="today-track"><article class="today-card"><div class="today-copy"><span class="tag">深浅相衬</span><h1>藏蓝针织与浅灰裤装</h1><p>藏蓝Polo 针织搭配浅灰烟管裤，深浅对比清楚。</p></div><div class="today-art"><img class="today-cover" src="/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/d08446e85e889758d0920efc.webp"></div></article></div><div id="todayDots" class="today-dots"></div>
+      </div>
+      </section>
+      <section class="home-section">
+        <div class="section-head"><div><h2 id="feedTitle">与你同频的穿搭</h2></div><button id="refreshInspiration">换一批</button></div>
+        <div id="refreshNote" class="refresh-note"></div>
+        <div id="homeGrid" class="masonry home-feed-loading" aria-label="正在准备风格推荐" aria-busy="true"><article class="outfit-card"><div class="outfit-canvas"><img src="/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/d08446e85e889758d0920efc.webp"></div><div class="outfit-reason">藏蓝Polo 针织搭配浅灰烟管裤，深浅对比清楚。</div><div class="outfit-meta"><button class="favorite-btn">♡</button><button class="try-btn">试穿</button></div></article><article class="outfit-card"><div class="outfit-canvas"><img src="/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/b0002467fb219dd8e5d499de.webp"></div><div class="outfit-reason">灰色上衣搭配黑色直筒裤，以长靴收尾。</div><div class="outfit-meta"><button class="favorite-btn">♡</button><button class="try-btn">试穿</button></div></article><article class="outfit-card"><div class="outfit-canvas"><img src="/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/2f37401a75933955d8c5059a.webp"></div><div class="outfit-reason">蓝色上衣搭配浅灰长裤，以短靴收尾。</div><div class="outfit-meta"><button class="favorite-btn">♡</button><button class="try-btn">试穿</button></div></article></div></section>
+    </section>
+
+    <section id="page-detail" class="page">
+      <div class="screen-top">
+        <button class="icon-btn" data-back-detail aria-label="返回"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 5-7 7 7 7"/></svg></button>
+        <div class="screen-title" id="detailTitle">穿搭详情</div>
+        <button class="icon-btn" id="detailShare" aria-label="分享"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V4"/><path d="m8 8 4-4 4 4"/><path d="M5 12v7h14v-7"/></svg></button>
+      </div>
+      <button id="detailDeleteBtn" class="delete-outfit-action" type="button" hidden>删除穿搭</button>
+      <div class="detail-hero" id="detailHero"></div>
+      <div id="detailFeedbackActions" class="detail-feedback-actions" role="group" aria-label="穿搭反馈">
+        <button id="detailLikeBtn" type="button" aria-label="喜欢这套" title="喜欢这套" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 10H3v11h4V10Zm0 0 5-7c.5-.8 2-.5 2 1v5h5a2 2 0 0 1 2 2.4l-1.5 7A3 3 0 0 1 16.6 21H7"/></svg></button>
+        <button id="detailDislikeBtn" type="button" aria-label="不太适合" title="不太适合" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 14H3V3h4v11Zm0 0 5 7c.5.8 2 .5 2-1v-5h5a2 2 0 0 0 2-2.4l-1.5-7A3 3 0 0 0 16.6 3H7"/></svg></button>
+      </div>
+      <div id="itemWearStateActions" class="item-wear-state-actions" hidden><span>当前状态</span><button type="button" data-item-wear-state="available">可穿</button><button type="button" data-item-wear-state="laundry">洗护中</button><button type="button" data-item-wear-state="unavailable">暂不可用</button></div>
+      <section class="home-section" id="detailItemsSection">
+        <div class="section-head"><div><small id="detailItemsEyebrow">OUTFIT PIECES</small><h2 id="detailItemsTitle">穿搭单品</h2></div></div>
+        <p id="detailItemsNote" class="detail-items-note" hidden></p>
+        <div id="detailItems" class="item-strip"></div>
+      </section>
+      <div class="bottom-actions">
+        <button id="detailEditBtn" class="secondary-btn">调整搭配</button>
+        <button id="detailTryBtn" class="primary-btn">开始试穿</button>
+      </div>
+    </section>
+
+    <section id="page-tryon-confirm" class="page tryon-confirm-page">
+      <div class="screen-top">
+        <button class="icon-btn" id="confirmTryonBack" aria-label="返回穿搭详情"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 5-7 7 7 7"/></svg></button>
+        <div class="screen-title">确认试穿</div>
+        <span aria-hidden="true" style="width:44px;"></span>
+      </div>
+      <div id="tryonConfirmLoading" class="tryon-confirm-loading" role="status">正在看看这张照片能替换哪些单品…</div>
+      <div id="tryonConfirmContent" class="tryon-confirm-content" hidden>
+        <div class="tryon-confirm-photo">
+          <img id="tryonConfirmPhoto" alt="当前试穿照片" />
+        </div>
+        <button id="changeConfirmPhoto" class="photo-fit-bar" type="button">
+          <span class="photo-fit-thumb"><img id="tryonConfirmPhotoThumb" alt="" /></span>
+          <span><b id="tryonConfirmPhotoName">当前照片</b><small id="tryonConfirmPhotoSummary">正在判断入镜范围</small></span>
+          <em>更换</em>
+        </button>
+        <div class="tryon-confirm-heading">
+          <div><small>TRY ON PLAN</small><h2 id="tryonConfirmCount">预计替换 0 件单品</h2></div>
+          <p id="tryonConfirmHint">只替换照片里清楚可见的部分</p>
+        </div>
+        <div id="tryonConflict" class="tryon-conflict" hidden></div>
+        <div id="tryonPieceList" class="tryon-piece-list"></div>
+      </div>
+      <div class="tryon-confirm-actions">
+        <button id="confirmTryonBtn" class="primary-btn" type="button" disabled>生成试穿图</button>
+      </div>
+    </section>
+
+    <section id="page-tryon" class="page">
+      <div class="screen-top">
+        <button class="icon-btn" data-open-detail aria-label="返回"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 5-7 7 7 7"/></svg></button>
+        <div class="screen-title">试穿</div>
+        <button class="icon-btn" id="tryonSaveBtn" aria-label="收藏"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3 2.7 5.5 6.1.9-4.4 4.3 1 6.1-5.4-2.9-5.4 2.9 1-6.1-4.4-4.3 6.1-.9L12 3Z"/></svg></button>
+      </div>
+      <div class="tryon-hero" id="tryonHero">
+        <div class="empty">选择一套搭配后，就能在这里查看试穿效果。</div>
+        <div id="generatingLayer" class="generating-layer">
+          <div class="tryon-generating-card" role="status" aria-live="polite">
+            <img class="tryon-loading-art" id="tryonLoadingArt" src="/static/selfit/assets/loading-stage-25@2x.png" width="480" height="324" alt="" aria-hidden="true" data-stage="25">
+            <p class="tryon-generating-kicker">SUIT × LIKE × VIBE</p>
+            <div class="tryon-generating-title" id="generatingText">正在让这套穿搭更像你</div>
+            <p class="tryon-generating-copy" id="tryonGeneratingCopy">先整理好你的照片和每件单品。</p>
+            <div class="tryon-progress-row"><div class="tryon-progress" role="progressbar" aria-label="试穿图生成进度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="8"><span id="tryonProgressBar"></span></div><span class="tryon-progress-value" id="tryonProgressValue">8%</span></div>
+            <button id="cancelGenerate" class="tryon-cancel" type="button">返回继续逛</button>
+            <img class="tryon-loading-signature" src="/static/selfit/assets/splash-signature@2x.png" width="200" height="133" alt="" aria-hidden="true">
+          </div>
+        </div>
+      </div>
+      <section id="tryonResultDetails" class="tryon-result-details" hidden>
+        <div class="tryon-result-summary"><small>TRY ON RESULT</small><h2 id="tryonResultSummary">已完成试穿</h2><p>按住结果图可以查看原来的照片</p></div>
+        <div id="tryonResultPieces" class="tryon-result-pieces"></div>
+        <p class="tryon-reality-note">试穿图用于判断颜色、比例和整体风格，实际尺码与面料效果请以实物为准。</p>
+      </section>
+      <div class="result-actions">
+        <button id="tryAnotherBtn" class="secondary-btn">调整搭配</button>
+        <button id="retryTryonBtn" class="primary-btn">保存结果</button>
+      </div>
+    </section>
+
+    <section id="page-color" class="page">
+      <div class="screen-top">
+        <button class="icon-btn" data-back-home aria-label="返回"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 5-7 7 7 7"/></svg></button>
+        <div class="screen-title">色彩测试</div>
+        <span style="width:44px;"></span>
+      </div>
+      <div class="color-card">
+        <h2 style="margin:0;">上传一张自然光自拍</h2>
+        <p style="color:var(--muted);line-height:1.55;">脸部清楚、少滤镜，结果会更准。</p>
+        <label class="upload-zone" for="colorUploadInput" id="colorUploadZone">
+          <span><b style="color:var(--ink);font-size:18px;">选择自拍图片</b><br>支持 JPG、PNG、WebP</span>
+        </label>
+        <input id="colorUploadInput" class="hidden-input" type="file" accept="image/*" />
+        <button id="startColorBtn" class="primary-btn" disabled>开始色彩测试</button>
+        <div id="colorResult" class="color-result"></div>
+      </div>
+    </section>
+
+    <section id="page-editor" class="page">
+      <div class="screen-top">
+        <button class="icon-btn" data-open-detail aria-label="返回"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 5-7 7 7 7"/></svg></button>
+        <div class="screen-title">调整搭配</div>
+        <button id="editorSaveBtn" class="primary-btn" style="min-height:44px;padding:0 18px;">保存</button>
+      </div>
+      <div id="editorCanvas" class="editor-canvas"></div>
+      <button id="smartLayoutBtn" class="smart-layout">一键排版</button>
+      <div class="editor-palette">
+        <div id="paletteTabs" class="palette-tabs"></div>
+        <div id="paletteGrid" class="item-grid"></div>
+      </div>
+    </section>
+
+    <section id="page-ai" class="page">
+      <div class="ai-session-bar">
+        <button id="sessionPickerBtn" class="ai-session-toggle" type="button" aria-label="展开会话侧栏">
+          <span class="session-toggle-icon icon-open" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><rect x="3.5" y="4" width="17" height="16" rx="4"/><path d="M9 4v16"/><path d="m14 9 3 3-3 3"/></svg>
+          </span>
+          <span class="session-toggle-icon icon-close" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><rect x="3.5" y="4" width="17" height="16" rx="4"/><path d="M15 4v16"/><path d="m10 9-3 3 3 3"/></svg>
+          </span>
+        </button>
+      </div>
+      <div class="ai-hero">
+        <div class="ai-copy">
+          <div class="hi" id="aiHi">穿搭灵感</div>
+          <h2 id="aiTitle">今天想以什么样子出现？</h2>
+          <p id="aiSubtitle">说说场景和心情，我会结合你的风格与衣橱，整理一套更像你的选择。</p>
+          <div id="aiChips" class="chips"></div>
+        </div>
+      </div>
+      <div id="aiResult" class="ai-panel" style="display:none;"></div>
+      <div class="ai-input">
+        <div class="ai-input-inner"><textarea id="aiPromptInput" rows="1" placeholder="向灵感发送消息"></textarea><button class="circle-icon" id="aiSendBtn" aria-label="发送"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 18V6"/><path d="m7.5 10.5 4.5-4.5 4.5 4.5"/></svg></button></div>
+      </div>
+    </section>
+
+    <section id="page-closet" class="page">
+      <div class="closet-top">
+        <div class="closet-tabs">
+          <button class="closet-tab active" data-closet-mode="items">单品</button>
+          <button class="closet-tab" data-closet-mode="outfits">套装</button>
+        </div>
+        <div class="tool-row"><button id="floatingMatch" class="closet-compose" type="button">开始搭配</button></div>
+      </div>
+      <div id="categoryRow" class="category-row"></div>
+      <div id="closetSearchPanel" class="closet-search-panel">
+        <label class="closet-search"><span aria-hidden="true">⌕</span><input id="closetSearchInput" type="search" placeholder="搜索颜色、品类或材质" autocomplete="off"></label>
+        <div class="closet-quick-filters" aria-label="衣橱快速筛选"><button type="button" class="active" data-closet-filter="all">全部</button><button type="button" data-closet-filter="favorite">收藏</button><button type="button" data-closet-filter="worn">穿过</button><button type="button" data-closet-filter="laundry">洗护中</button></div>
+      </div>
+      <div id="closetGrid" class="item-grid" aria-busy="true" aria-label="正在整理衣橱">
+        <div class="closet-skeleton" aria-hidden="true"></div>
+        <div class="closet-skeleton" aria-hidden="true"></div>
+        <div class="closet-skeleton" aria-hidden="true"></div>
+        <div class="closet-skeleton" aria-hidden="true"></div>
+      </div>
+    </section>
+
+    <section id="page-me" class="page">
+      <div class="profile-head">
+        <div class="avatar" id="profileAvatar" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.5"/><path d="M5.5 19.5c1.35-3.8 3.5-5.7 6.5-5.7s5.15 1.9 6.5 5.7"/></svg></div>
+        <div><div class="profile-name" id="profileName">本地用户</div><div class="profile-line" id="profileLine">Mock 身份</div></div>
+        <button class="circle-icon" id="logoutBtn" aria-label="退出登录"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 5H5v14h5"/><path d="M13 8l4 4-4 4M17 12H9"/></svg></button>
+      </div>
+      <button id="profilePersonaLink" class="profile-persona-card" type="button"><span><small id="profilePersonaCode">MUTE · 你的风格人格</small><b id="profilePersonaName">静音时髦</b><em id="profilePersonaTraits">低表达 · 低装饰 · 秩序感</em></span><span aria-hidden="true">→</span></button>
+      <div class="profile-grid">
+        <button class="profile-cell" id="modelCell" type="button"><small>试穿形象</small><b>我的模特</b><span id="currentModelName">沙漏型</span><img id="currentModelThumbnail" class="profile-model-thumbnail" alt="当前试穿模特" hidden /></button>
+        <button class="profile-cell" id="profileColorCell" type="button"><small>个人档案</small><b>适合我的颜色</b><span id="profileColorDots" class="profile-color-dots"></span></button>
+      </div>
+      <div class="profile-tabs"><button class="profile-tab active" data-profile-view="records">试穿记录</button><button class="profile-tab" data-profile-view="works">我的作品</button><button class="profile-tab" data-profile-view="favorites">我的收藏</button></div>
+      <div class="record-head"><span><span id="recordCount">0</span><span id="recordCountLabel">条试穿记录</span></span><button id="recordEditBtn" class="record-edit-btn" type="button">编辑</button></div>
+      <div id="recordDeleteBar" class="record-delete-bar"><span id="recordSelectText">选择要删除的记录</span><button id="recordDeleteBtn" class="record-delete-btn" type="button" disabled>删除</button></div>
+      <div id="worksSubtabs" class="works-subtabs"><button class="works-subtab active" data-work-view="outfits" type="button">套装</button><button class="works-subtab" data-work-view="items" type="button">单品</button></div>
+      <div id="recordGrid" class="record-grid"></div>
+    </section>
+
+    <button id="tryonTaskBar" class="tryon-task-bar" type="button" hidden><span class="tryon-task-pulse" aria-hidden="true"></span><span><b id="tryonTaskTitle">试穿图生成中</b><small id="tryonTaskCopy">完成后会保存在试穿记录</small></span><em>查看</em></button>
+
+    <nav class="bottom-nav">
+      <button class="nav-btn active" data-tab="home"><span class="nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v14H4z"/><path d="m7 15 3-3 2 2 3-4 2 2"/></svg></span><span class="nav-label">推荐</span></button>
+      <button class="nav-btn" data-tab="ai"><span class="nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5.5h14v10H9l-4 3v-13Z"/><path d="M9 10.5h6"/></svg></span><span class="nav-label">问搭配</span></button>
+      <button id="mainPlus" class="plus-btn" aria-label="添加"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button>
+      <a class="nav-btn" href="/selfit/try-on?screen=mirror" aria-label="试衣镜"><span class="nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><ellipse cx="12" cy="9" rx="6" ry="7"/><path d="M12 16v5M8 22h8M9 6l3-2"/></svg></span><span class="nav-label">试衣镜</span></a>
+      <button class="nav-btn" data-tab="me"><span class="nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4.5 20c1.5-4 4-6 7.5-6s6 2 7.5 6"/></svg></span><span class="nav-label">我的</span></button>
+    </nav>
+  </main>
+  <dialog id="outfitDeleteDialog" aria-labelledby="outfitDeleteTitle"><h2 id="outfitDeleteTitle">删除这套穿搭？</h2><p>删除后将从我的穿搭中移除，衣橱单品和已生成的试穿图片会保留。</p><div class="outfit-delete-actions"><button id="cancelOutfitDelete" class="secondary-btn" type="button">取消</button><button id="confirmOutfitDelete" class="primary-btn" type="button">确认删除</button></div></dialog>
+
+
+  <aside id="uploadSheet" class="sheet">
+    <div class="sheet-title"><b>添加衣服</b><button class="close" data-close="uploadSheet" aria-label="关闭">×</button></div>
+    <input id="wearUploadInput" class="hidden-input" type="file" accept="image/*" multiple />
+    <div class="action-grid">
+      <button id="uploadGarmentBtn" class="action-card"><b>从相册选择</b><span>支持单品图或整套穿搭图</span></button>
+      <button id="cameraBtn" class="action-card"><b>现在拍一张</b><span>背景简单，提取会更准确</span></button>
+      <div class="link-import"><label for="wearLinkInput">从喜欢的内容提取单品</label><div class="link-line"><input id="wearLinkInput" type="url" placeholder="粘贴小红书或网页链接" /><button id="wearLinkBtn" class="black-btn">提取</button></div></div>
+    </div>
+    <p id="uploadStatus" style="color:#777;line-height:1.5;">添加后会识别其中的衣服，并放入你的衣橱。</p>
+    <button id="retryImportBtn" class="secondary-btn" type="button" hidden>重试这次提取</button>
+  </aside>
+  <aside id="importReviewSheet" class="sheet">
+    <div class="sheet-title"><b id="importReviewTitle">确认识别结果</b><button class="close" data-close="importReviewSheet" aria-label="关闭">×</button></div>
+    <p id="importReviewCopy" class="import-review-copy">看看是否每件衣物都完整，分类不对可以直接修改。</p>
+    <div class="import-review-toolbar"><span id="importReviewSelected">0 件待入柜</span><button id="mergeImportItems" type="button" disabled>合并所选</button></div>
+    <div id="importReviewGrid" class="import-review-grid"></div>
+    <button id="importReviewDone" class="import-review-done" type="button">完成入柜</button>
+  </aside>
+  <div id="sessionBackdrop" class="session-backdrop"></div>
+  <aside id="sessionSheet" class="session-sidebar">
+    <button id="sessionSheetNew" class="session-new-btn" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 6.8C5 5.25 6.25 4 7.8 4h8.4C17.75 4 19 5.25 19 6.8v6.9c0 1.55-1.25 2.8-2.8 2.8H11l-4.15 3.1c-.65.48-1.57.02-1.57-.79V16.3A2.8 2.8 0 0 1 3.5 13.7V6.8"/><path d="M12 8.2v4.8"/><path d="M9.6 10.6h4.8"/></svg><span>新建会话</span></button>
+    <div class="session-section-title">历史会话</div>
+    <div id="sessionList" class="session-list"></div>
+  </aside>
+  <div id="sessionActionPopover" class="session-action-popover">
+    <button id="sessionRenameBtn" type="button">编辑名称</button>
+    <button id="sessionDeleteMenuBtn" class="danger" type="button">删除会话</button>
+  </div>
+  <div id="sessionDeleteConfirm" class="session-confirm">
+    <div class="session-confirm-card">
+      <b>删除这个会话？</b>
+      <p>删除后这个历史会话会从列表中移除。</p>
+      <div class="session-confirm-actions">
+        <button id="sessionCancelDeleteBtn" class="cancel" type="button">取消</button>
+        <button id="sessionConfirmDeleteBtn" class="danger" type="button">删除</button>
+      </div>
+    </div>
+  </div>
+
+  <aside id="builderSheet" class="sheet">
+    <div class="sheet-title"><b>选择搭配单品</b><button class="close" data-close="builderSheet">×</button></div>
+    <div id="builderSelection" class="builder-selection" aria-live="polite"></div>
+    <div id="builderCategories" class="builder-categories" aria-label="筛选搭配单品"></div>
+    <p id="builderHelp" class="builder-help">先选一件主单品，我会优先给你适合的搭配候选。</p>
+    <div id="builderAnalysis" class="builder-analysis" aria-live="polite"></div>
+    <div id="builderList" class="builder-list"></div>
+    <div class="builder-actions"><button id="saveOutfitBtn" class="secondary-btn">保存套装</button><button id="tryOutfitBtn" class="match-btn">生成试穿图</button></div>
+  </aside>
+  <aside id="modelSheet" class="sheet model-sheet" data-mode="preset">
+    <div class="sheet-title"><span></span><button class="close" data-close="modelSheet">×</button></div>
+    <div class="model-tabs">
+      <button class="model-tab active" type="button" data-model-mode="preset">预设模特</button>
+      <button class="model-tab" type="button" data-model-mode="photo">我的照片</button>
+    </div>
+    <div id="modelCarousel" class="model-carousel"></div>
+    <div id="myPhotoPanel" class="my-photo-panel">
+      <label class="self-upload-zone" for="selfModelInput" id="selfUploadZone">
+        <span><b>还没有可用的全身照</b>完成风格测试后会自动带入，也可以点击这里重新上传。</span>
+      </label>
+      <input id="selfModelInput" class="hidden-input" type="file" accept="image/*" />
+      <button id="confirmSelfModel" class="model-confirm" type="button" disabled>确认</button>
+    </div>
+    <button id="confirmModelBtn" class="model-confirm" type="button">确认</button>
+  </aside>
+  <aside id="pieceRetrySheet" class="sheet piece-retry-sheet">
+    <div class="sheet-title"><b id="pieceRetryTitle">重新处理这件</b><button class="close" data-close="pieceRetrySheet" aria-label="关闭">×</button></div>
+    <div class="piece-retry-preview"><img id="pieceRetryImage" alt="需要重新处理的单品" /><p>只调整这件单品，尽量保持人物、背景和其他穿搭不变。</p></div>
+    <fieldset class="piece-retry-reasons">
+      <legend>哪里需要调整？</legend>
+      <label><input type="radio" name="pieceRetryReason" value="没有换上" checked><span>没有换上</span></label>
+      <label><input type="radio" name="pieceRetryReason" value="版型不对"><span>版型不对</span></label>
+      <label><input type="radio" name="pieceRetryReason" value="颜色不对"><span>颜色不对</span></label>
+      <label><input type="radio" name="pieceRetryReason" value="图案或细节丢失"><span>细节丢失</span></label>
+      <label><input type="radio" name="pieceRetryReason" value="边缘不自然"><span>边缘不自然</span></label>
+    </fieldset>
+    <button id="submitPieceRetry" class="primary-btn piece-retry-submit" type="button">重新处理这件</button>
+  </aside>
+  <aside id="recommendationFeedbackSheet" class="sheet recommendation-feedback-sheet">
+    <div class="sheet-title"><b>这套哪里不合适？</b><button class="close" data-close="recommendationFeedbackSheet" aria-label="关闭">×</button></div>
+    <p>你的选择会用来调整之后的推荐。</p>
+    <div class="feedback-reasons">
+      <button type="button" data-feedback-reason="dislike">不喜欢</button><button type="button" data-feedback-reason="unsuitable">不合适</button>
+      <button type="button" data-feedback-reason="color">颜色不适合</button><button type="button" data-feedback-reason="fit">版型不适合</button>
+      <button type="button" data-feedback-reason="scene">不合场景</button><button type="button" data-feedback-reason="formal">太正式</button>
+      <button type="button" data-feedback-reason="complex">太复杂</button><button type="button" data-feedback-reason="repeated">最近看过太多</button>
+    </div>
+  </aside>
+  <div id="imageLightbox" class="image-lightbox" aria-hidden="true">
+    <div class="image-lightbox-head">
+      <button id="imageLightboxBack" class="image-lightbox-back" type="button" aria-label="返回"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 5-7 7 7 7"/></svg></button>
+      <div id="imageLightboxTitle" class="image-lightbox-title">查看图片</div>
+      <div class="image-lightbox-actions">
+        <button id="imageLightboxZoom" class="image-lightbox-zoom" type="button">适应屏幕</button>
+        <button id="imageLightboxClose" class="image-lightbox-close" type="button" aria-label="关闭">×</button>
+      </div>
+    </div>
+    <div class="image-lightbox-stage">
+      <img id="imageLightboxImg" alt="放大预览" />
+      <span id="imageLightboxModel" class="image-lightbox-model" hidden><img alt="当前试穿模特" /></span>
+    </div>
+    <div id="imageLightboxTip" class="image-lightbox-tip">已按图片比例完整展示</div>
+  </div>
+  <dialog id="personaTestDialog" class="persona-test-dialog" aria-labelledby="personaTestTitle">
+    <div class="persona-test-dialog-head"><h2 id="personaTestTitle">切换推荐人格</h2><button id="personaTestClose" type="button" aria-label="关闭人格选择">×</button></div>
+    <p>仅用于查看推荐效果。再次连续点击底部“我的”5次，恢复正式模式。</p>
+    <div id="personaTestOptions" class="persona-test-options" role="group" aria-label="16种风格人格"></div>
+    <label for="personaTestPalette">测试颜色偏好</label>
+    <select id="personaTestPalette" aria-label="测试颜色偏好">
+      <option value="">人格模板推荐色</option><option value="mono">黑白灰</option><option value="earth">大地色</option><option value="ocean">海洋蓝</option><option value="jewel">宝石色</option><option value="bright">明亮色</option><option value="pastel">柔粉浅彩</option>
+    </select>
+  </dialog>
+  <div id="toast" class="toast"></div>
+
+
+
+
+
+</body>
+</html>

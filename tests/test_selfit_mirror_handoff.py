@@ -6,6 +6,7 @@ from pathlib import Path
 
 import cv2
 import numpy as np
+import pytest
 from fastapi.testclient import TestClient
 from PIL import Image
 
@@ -14,6 +15,29 @@ import app.ops as ops
 import app.selfit_mirror_handoff as mirror_handoff
 import app.selfit_onboarding as onboarding
 from app.main import app
+
+
+@pytest.mark.parametrize("index", range(64))
+def test_handoff_qr_deterministic_pattern_readability(index):
+    from scripts.audit_selfit_qr_decode import sample_url
+    url = sample_url(index)
+    png = mirror_handoff._readable_handoff_qr(url)
+    pixels = cv2.imdecode(np.frombuffer(png, dtype=np.uint8), cv2.IMREAD_COLOR)
+    assert pixels.shape[:2] == (135, 135)
+    for candidate in (pixels, cv2.GaussianBlur(pixels, (3, 3), 0)):
+        assert cv2.QRCodeDetector().detectAndDecode(candidate)[0] == url
+
+
+def test_handoff_qr_unreadable_candidates_have_bounded_failure(monkeypatch):
+    attempts = []
+    class UnavailableDecoder:
+        def detectAndDecode(self, image):
+            attempts.append(1)
+            return "", None, None
+    monkeypatch.setattr(cv2, "QRCodeDetector", UnavailableDecoder)
+    with pytest.raises(ValueError, match="No readable"):
+        mirror_handoff._readable_handoff_qr("http://testserver/selfit?handoff=synthetic")
+    assert len(attempts) == 9
 
 
 def _photo_bytes() -> bytes:

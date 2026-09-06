@@ -1,0 +1,62 @@
+{
+  "schemaVersion": 1,
+  "claims": [
+    {
+      "id": "visual",
+      "statement": "五张静态稿及图像来自指定 Figma 视觉+交互区域",
+      "type": "leaf",
+      "truth": "SOURCE",
+      "evidence": [
+        "mirror-model",
+        "mirror-styling",
+        "closet",
+        "inspiration",
+        "detail"
+      ],
+      "unknowns": [],
+      "usedBy": [
+        "assets",
+        "layout"
+      ],
+      "promoteWhen": "already observed",
+      "notes": "浏览器导出"
+    },
+    {
+      "id": "wiring",
+      "statement": "导航和详情动作依按钮含义及现有接口接线",
+      "type": "wiring",
+      "truth": "GUESS",
+      "evidence": [
+        "source/",
+        "app/static/selfit-tryon/studio.js"
+      ],
+      "unknowns": [
+        "Figma prototype connections"
+      ],
+      "usedBy": [
+        "interaction"
+      ],
+      "promoteWhen": "获取并核对原型连线",
+      "notes": "不将图像推断提升为 SOURCE"
+    },
+    {
+      "id": "runtime",
+      "statement": "浏览器已执行参考数据流；真实上传与生图未验证",
+      "type": "qa",
+      "truth": "PARTIAL",
+      "evidence": [
+        "interaction-checks.json",
+        "route-checks.json",
+        "known-gaps.md"
+      ],
+      "unknowns": [
+        "real upload/generation"
+      ],
+      "usedBy": [
+        "QA"
+      ],
+      "promoteWhen": "测试账户真实链路通过",
+      "notes": "无真实生图结论"
+    }
+  ]
+}

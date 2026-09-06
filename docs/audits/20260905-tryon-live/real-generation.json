@@ -1,0 +1,1694 @@
+{
+  "test_identity": "isolated studio_generation_test",
+  "real_provider": true,
+  "fixture": "default Figma model; no user photo",
+  "source_outfit": "outfit_mute_master_01",
+  "source_item_ids": [
+    "garment_mute_top_0561",
+    "garment_mute_bottom_0003",
+    "garment_mute_shoes_0257",
+    "garment_mute_bag_0513"
+  ],
+  "persisted_item_ids": [
+    "garment_mute_top_0561",
+    "garment_mute_bottom_0003",
+    "garment_mute_shoes_0257",
+    "garment_mute_bag_0513"
+  ],
+  "preview_plan": {
+    "plan_id": "f71a0f802f2c9aaab7",
+    "outfit_id": "fd3c8b4c030e0a8c",
+    "outfit_title": "试衣镜链路验收",
+    "photo_summary": "上半身与下装区域清楚",
+    "person_image_id": "e43e23cd81068e86",
+    "replaceable_count": 3,
+    "pieces": [
+      {
+        "item_id": "garment_mute_top_0561",
+        "slot": "top",
+        "category": "top",
+        "category_label": "上衣",
+        "image_path": "/static/selfit/assets/content_v2/mute/garments/mute-top-0561-v1.webp",
+        "status": "replaceable",
+        "selected": true,
+        "reason": "画面中清楚可见"
+      },
+      {
+        "item_id": "garment_mute_bottom_0003",
+        "slot": "bottom",
+        "category": "bottom",
+        "category_label": "裤子",
+        "image_path": "/static/selfit/assets/content_v2/mute/garments/mute-bottom-0003-v1.webp",
+        "status": "replaceable",
+        "selected": true,
+        "reason": "画面中清楚可见"
+      },
+      {
+        "item_id": "garment_mute_shoes_0257",
+        "slot": "shoes",
+        "category": "shoes",
+        "category_label": "鞋子",
+        "image_path": "/static/selfit/assets/content_v2/mute/garments/mute-shoes-0257-v1.webp",
+        "status": "not_visible",
+        "selected": false,
+        "reason": "照片没有拍到脚部，本次跳过"
+      },
+      {
+        "item_id": "garment_mute_bag_0513",
+        "slot": "bag",
+        "category": "bag",
+        "category_label": "包",
+        "image_path": "/static/selfit/assets/content_v2/mute/garments/mute-bag-0513-v1.webp",
+        "status": "replaceable",
+        "selected": true,
+        "reason": "画面中可搭配，生成后请检查接触位置"
+      }
+    ],
+    "conflicts": [],
+    "photo_issue": ""
+  },
+  "workspace": "/var/folders/1d/g83hxyws0mnct6y_w1d067f00000gn/T/selfit-studio-live-4brohudb",
+  "job_id": "79e9b4d1cc51145aca",
+  "status": "completed",
+  "error": null,
+  "result": {
+    "status": "review",
+    "tryon_id": "3e8d046f5ae5b68a",
+    "mode": "from_outfit_plan",
+    "source_mode": "from_outfit",
+    "generation_strategy": "single_step_reference_board",
+    "photo_mode": "standard",
+    "missing_slots": [
+      "鞋子"
+    ],
+    "applied_item_ids": [
+      "garment_mute_top_0561",
+      "garment_mute_bottom_0003",
+      "garment_mute_bag_0513"
+    ],
+    "requested_item_ids": [
+      "garment_mute_top_0561",
+      "garment_mute_bottom_0003",
+      "garment_mute_bag_0513"
+    ],
+    "user_skipped_item_ids": [
+      "garment_mute_shoes_0257"
+    ],
+    "skipped_item_ids": [],
+    "input": {
+      "person_image_id": "e43e23cd81068e86",
+      "person": {
+        "filename": "model.webp",
+        "saved_path": "/var/folders/1d/g83hxyws0mnct6y_w1d067f00000gn/T/selfit-studio-live-4brohudb/uploads/users/studio_generation_test/person_e43e23cd81068e86.webp",
+        "format": "WEBP",
+        "width": 969,
+        "height": 1624,
+        "aspect_ratio": 0.5967,
+        "size_bytes": 344376
+      },
+      "style_reference_image_id": "outfit_fd3c8b4c030e0a8c",
+      "item_image_ids": [
+        "garment_mute_top_0561",
+        "garment_mute_bottom_0003",
+        "garment_mute_shoes_0257",
+        "garment_mute_bag_0513"
+      ]
+    },
+    "available_outfit_plan": {
+      "title": "试衣镜链路验收",
+      "model_photo_mode": "standard",
+      "scene_label": "",
+      "style_reference": {
+        "image_id": "outfit_fd3c8b4c030e0a8c",
+        "image_path": "/var/folders/1d/g83hxyws0mnct6y_w1d067f00000gn/T/selfit-studio-live-4brohudb/outputs/users/studio_generation_test/closet/outfits/fd3c8b4c030e0a8c/flatlay-unified-flatlay-v1.png",
+        "role": "overall_outfit_reference",
+        "meta": {
+          "filename": "flatlay-unified-flatlay-v1.png",
+          "saved_path": "/var/folders/1d/g83hxyws0mnct6y_w1d067f00000gn/T/selfit-studio-live-4brohudb/outputs/users/studio_generation_test/closet/outfits/fd3c8b4c030e0a8c/flatlay-unified-flatlay-v1.png"
+        }
+      },
+      "items": [
+        {
+          "item_id": "garment_mute_top_0561",
+          "image_id": "garment_mute_top_0561",
+          "slot": "top",
+          "category": "top",
+          "category_label": "上衣",
+          "public_image_path": "/static/selfit/assets/content_v2/mute/garments/mute-top-0561-v1.webp",
+          "attributes": {
+            "colors": [
+              "灰",
+              "黑"
+            ],
+            "color_hex": [
+              "#3e3e40",
+              "#373639",
+              "#282829",
+              "#444347",
+              "#4f4e51"
+            ],
+            "material": [],
+            "fit": "未判断",
+            "style_tags": [
+              "signature原创款",
+              "通勤",
+              "日常"
+            ],
+            "scene_tags": [
+              "通勤",
+              "日常"
+            ],
+            "season_tags": [
+              "春",
+              "夏"
+            ]
+          },
+          "note": "",
+          "wearing_instruction": "上衣穿在上半身，保留领口、袖长、衣长和图案。",
+          "display_order": 0,
+          "wear_region": "upper_body",
+          "image_path": "/Users/yuanzexiang/Documents/色彩测试/app/static/selfit/assets/content_v2/mute/garments/mute-top-0561-v1.webp"
+        },
+        {
+          "item_id": "garment_mute_bottom_0003",
+          "image_id": "garment_mute_bottom_0003",
+          "slot": "bottom",
+          "category": "bottom",
+          "category_label": "裤子",
+          "public_image_path": "/static/selfit/assets/content_v2/mute/garments/mute-bottom-0003-v1.webp",
+          "attributes": {
+            "colors": [
+              "黑"
+            ],
+            "color_hex": [
+              "#282829",
+              "#2f2f30",
+              "#212122",
+              "#1b1a1b",
+              "#242425"
+            ],
+            "material": [],
+            "fit": "未判断",
+            "style_tags": [
+              "signature原创款",
+              "通勤",
+              "日常"
+            ],
+            "scene_tags": [
+              "通勤",
+              "日常"
+            ],
+            "season_tags": [
+              "春",
+              "夏"
+            ]
+          },
+          "note": "",
+          "wearing_instruction": "裤子穿在下半身，保留裤型、腰线和长度。",
+          "display_order": 1,
+          "wear_region": "lower_body",
+          "image_path": "/Users/yuanzexiang/Documents/色彩测试/app/static/selfit/assets/content_v2/mute/garments/mute-bottom-0003-v1.webp"
+        },
+        {
+          "item_id": "garment_mute_shoes_0257",
+          "image_id": "garment_mute_shoes_0257",
+          "slot": "shoes",
+          "category": "shoes",
+          "category_label": "鞋子",
+          "public_image_path": "/static/selfit/assets/content_v2/mute/garments/mute-shoes-0257-v1.webp",
+          "attributes": {
+            "colors": [
+              "棕"
+            ],
+            "color_hex": [
+              "#63564e",
+              "#74655d",
+              "#4d433d",
+              "#7f7067",
+              "#90827b"
+            ],
+            "material": [],
+            "fit": "未判断",
+            "style_tags": [
+              "shared原创款",
+              "通勤",
+              "日常",
+              "约会社交",
+              "正式活动",
+              "旅行",
+              "创意表达"
+            ],
+            "scene_tags": [
+              "通勤",
+              "日常",
+              "约会社交",
+              "正式活动",
+              "旅行",
+              "创意表达"
+            ],
+            "season_tags": [
+              "四季"
+            ]
+          },
+          "note": "",
+          "wearing_instruction": "鞋子穿在双脚，保留鞋型、颜色和鞋底比例。",
+          "display_order": 2,
+          "wear_region": "feet",
+          "image_path": "/Users/yuanzexiang/Documents/色彩测试/app/static/selfit/assets/content_v2/mute/garments/mute-shoes-0257-v1.webp"
+        },
+        {
+          "item_id": "garment_mute_bag_0513",
+          "image_id": "garment_mute_bag_0513",
+          "slot": "bag",
+          "category": "bag",
+          "category_label": "包",
+          "public_image_path": "/static/selfit/assets/content_v2/mute/garments/mute-bag-0513-v1.webp",
+          "attributes": {
+            "colors": [
+              "灰",
+              "黑"
+            ],
+            "color_hex": [
+              "#434141",
+              "#504d4d",
+              "#3c3a3a",
+              "#282626",
+              "#383636"
+            ],
+            "material": [],
+            "fit": "未判断",
+            "style_tags": [
+              "variant原创款",
+              "通勤",
+              "日常"
+            ],
+            "scene_tags": [
+              "通勤",
+              "日常"
+            ],
+            "season_tags": [
+              "春",
+              "夏"
+            ]
+          },
+          "note": "",
+          "wearing_instruction": "包作为包袋搭配在可见手臂、手部或肩侧；手提包需要手握或挂在前臂，肩背包需要贴合肩线，不能悬空。",
+          "display_order": 3,
+          "wear_region": "hand_or_shoulder",
+          "image_path": "/Users/yuanzexiang/Documents/色彩测试/app/static/selfit/assets/content_v2/mute/garments/mute-bag-0513-v1.webp"
+        }
+      ],
+      "style_brief": ""
+    },
+    "outfit_plan": {
+      "title": "试衣镜链路验收",
+      "model_photo_mode": "standard",
+      "scene_label": "",
+      "style_reference": {
+        "image_id": "outfit_fd3c8b4c030e0a8c",
+        "image_path": "/var/folders/1d/g83hxyws0mnct6y_w1d067f00000gn/T/selfit-studio-live-4brohudb/outputs/users/studio_generation_test/closet/outfits/fd3c8b4c030e0a8c/flatlay-unified-flatlay-v1.png",
+        "role": "overall_outfit_reference",
+        "meta": {
+          "filename": "flatlay-unified-flatlay-v1.png",
+          "saved_path": "/var/folders/1d/g83hxyws0mnct6y_w1d067f00000gn/T/selfit-studio-live-4brohudb/outputs/users/studio_generation_test/closet/outfits/fd3c8b4c030e0a8c/flatlay-unified-flatlay-v1.png"
+        }
+      },
+      "items": [
+        {
+          "item_id": "garment_mute_top_0561",
+          "image_id": "garment_mute_top_0561",
+          "slot": "top",
+          "category": "top",
+          "category_label": "上衣",
+          "public_image_path": "/static/selfit/assets/content_v2/mute/garments/mute-top-0561-v1.webp",
+          "attributes": {
+            "colors": [
+              "灰",
+              "黑"
+            ],
+            "color_hex": [
+              "#3e3e40",
+              "#373639",
+              "#282829",
+              "#444347",
+              "#4f4e51"
+            ],
+            "material": [],
+            "fit": "未判断",
+            "style_tags": [
+              "signature原创款",
+              "通勤",
+              "日常"
+            ],
+            "scene_tags": [
+              "通勤",
+              "日常"
+            ],
+            "season_tags": [
+              "春",
+              "夏"
+            ]
+          },
+          "note": "",
+          "wearing_instruction": "上衣穿在上半身，保留领口、袖长、衣长和图案。",
+          "display_order": 0,
+          "wear_region": "upper_body",
+          "image_path": "/Users/yuanzexiang/Documents/色彩测试/app/static/selfit/assets/content_v2/mute/garments/mute-top-0561-v1.webp"
+        },
+        {
+          "item_id": "garment_mute_bottom_0003",
+          "image_id": "garment_mute_bottom_0003",
+          "slot": "bottom",
+          "category": "bottom",
+          "category_label": "裤子",
+          "public_image_path": "/static/selfit/assets/content_v2/mute/garments/mute-bottom-0003-v1.webp",
+          "attributes": {
+            "colors": [
+              "黑"
+            ],
+            "color_hex": [
+              "#282829",
+              "#2f2f30",
+              "#212122",
+              "#1b1a1b",
+              "#242425"
+            ],
+            "material": [],
+            "fit": "未判断",
+            "style_tags": [
+              "signature原创款",
+              "通勤",
+              "日常"
+            ],
+            "scene_tags": [
+              "通勤",
+              "日常"
+            ],
+            "season_tags": [
+              "春",
+              "夏"
+            ]
+          },
+          "note": "",
+          "wearing_instruction": "裤子穿在下半身，保留裤型、腰线和长度。",
+          "display_order": 1,
+          "wear_region": "lower_body",
+          "image_path": "/Users/yuanzexiang/Documents/色彩测试/app/static/selfit/assets/content_v2/mute/garments/mute-bottom-0003-v1.webp"
+        },
+        {
+          "item_id": "garment_mute_bag_0513",
+          "image_id": "garment_mute_bag_0513",
+          "slot": "bag",
+          "category": "bag",
+          "category_label": "包",
+          "public_image_path": "/static/selfit/assets/content_v2/mute/garments/mute-bag-0513-v1.webp",
+          "attributes": {
+            "colors": [
+              "灰",
+              "黑"
+            ],
+            "color_hex": [
+              "#434141",
+              "#504d4d",
+              "#3c3a3a",
+              "#282626",
+              "#383636"
+            ],
+            "material": [],
+            "fit": "未判断",
+            "style_tags": [
+              "variant原创款",
+              "通勤",
+              "日常"
+            ],
+            "scene_tags": [
+              "通勤",
+              "日常"
+            ],
+            "season_tags": [
+              "春",
+              "夏"
+            ]
+          },
+          "note": "",
+          "wearing_instruction": "包作为包袋搭配在可见手臂、手部或肩侧；手提包需要手握或挂在前臂，肩背包需要贴合肩线，不能悬空。",
+          "display_order": 3,
+          "wear_region": "hand_or_shoulder",
+          "image_path": "/Users/yuanzexiang/Documents/色彩测试/app/static/selfit/assets/content_v2/mute/garments/mute-bag-0513-v1.webp"
+        }
+      ],
+      "style_brief": ""
+    },
+    "applied_outfit_plan": {
+      "title": "试衣镜链路验收",
+      "model_photo_mode": "standard",
+      "scene_label": "",
+      "style_reference": {
+        "image_id": "outfit_fd3c8b4c030e0a8c",
+        "image_path": "/var/folders/1d/g83hxyws0mnct6y_w1d067f00000gn/T/selfit-studio-live-4brohudb/outputs/users/studio_generation_test/closet/outfits/fd3c8b4c030e0a8c/flatlay-unified-flatlay-v1.png",
+        "role": "overall_outfit_reference",
+        "meta": {
+          "filename": "flatlay-unified-flatlay-v1.png",
+          "saved_path": "/var/folders/1d/g83hxyws0mnct6y_w1d067f00000gn/T/selfit-studio-live-4brohudb/outputs/users/studio_generation_test/closet/outfits/fd3c8b4c030e0a8c/flatlay-unified-flatlay-v1.png"
+        }
+      },
+      "items": [
+        {
+          "item_id": "garment_mute_top_0561",
+          "image_id": "garment_mute_top_0561",
+          "slot": "top",
+          "category": "top",
+          "category_label": "上衣",
+          "public_image_path": "/static/selfit/assets/content_v2/mute/garments/mute-top-0561-v1.webp",
+          "attributes": {
+            "colors": [
+              "灰",
+              "黑"
+            ],
+            "color_hex": [
+              "#3e3e40",
+              "#373639",
+              "#282829",
+              "#444347",
+              "#4f4e51"
+            ],
+            "material": [],
+            "fit": "未判断",
+            "style_tags": [
+              "signature原创款",
+              "通勤",
+              "日常"
+            ],
+            "scene_tags": [
+              "通勤",
+              "日常"
+            ],
+            "season_tags": [
+              "春",
+              "夏"
+            ]
+          },
+          "note": "",
+          "wearing_instruction": "上衣穿在上半身，保留领口、袖长、衣长和图案。",
+          "display_order": 0,
+          "wear_region": "upper_body",
+          "image_path": "/Users/yuanzexiang/Documents/色彩测试/app/static/selfit/assets/content_v2/mute/garments/mute-top-0561-v1.webp"
+        },
+        {
+          "item_id": "garment_mute_bottom_0003",
+          "image_id": "garment_mute_bottom_0003",
+          "slot": "bottom",
+          "category": "bottom",
+          "category_label": "裤子",
+          "public_image_path": "/static/selfit/assets/content_v2/mute/garments/mute-bottom-0003-v1.webp",
+          "attributes": {
+            "colors": [
+              "黑"
+            ],
+            "color_hex": [
+              "#282829",
+              "#2f2f30",
+              "#212122",
+              "#1b1a1b",
+              "#242425"
+            ],
+            "material": [],
+            "fit": "未判断",
+            "style_tags": [
+              "signature原创款",
+              "通勤",
+              "日常"
+            ],
+            "scene_tags": [
+              "通勤",
+              "日常"
+            ],
+            "season_tags": [
+              "春",
+              "夏"
+            ]
+          },
+          "note": "",
+          "wearing_instruction": "裤子穿在下半身，保留裤型、腰线和长度。",
+          "display_order": 1,
+          "wear_region": "lower_body",
+          "image_path": "/Users/yuanzexiang/Documents/色彩测试/app/static/selfit/assets/content_v2/mute/garments/mute-bottom-0003-v1.webp"
+        },
+        {
+          "item_id": "garment_mute_bag_0513",
+          "image_id": "garment_mute_bag_0513",
+          "slot": "bag",
+          "category": "bag",
+          "category_label": "包",
+          "public_image_path": "/static/selfit/assets/content_v2/mute/garments/mute-bag-0513-v1.webp",
+          "attributes": {
+            "colors": [
+              "灰",
+              "黑"
+            ],
+            "color_hex": [
+              "#434141",
+              "#504d4d",
+              "#3c3a3a",
+              "#282626",
+              "#383636"
+            ],
+            "material": [],
+            "fit": "未判断",
+            "style_tags": [
+              "variant原创款",
+              "通勤",
+              "日常"
+            ],
+            "scene_tags": [
+              "通勤",
+              "日常"
+            ],
+            "season_tags": [
+              "春",
+              "夏"
+            ]
+          },
+          "note": "",
+          "wearing_instruction": "包作为包袋搭配在可见手臂、手部或肩侧；手提包需要手握或挂在前臂，肩背包需要贴合肩线，不能悬空。",
+          "display_order": 3,
+          "wear_region": "hand_or_shoulder",
+          "image_path": "/Users/yuanzexiang/Documents/色彩测试/app/static/selfit/assets/content_v2/mute/garments/mute-bag-0513-v1.webp"
+        }
+      ],
+      "style_brief": ""
+    },
+    "reference_board_path": "/user-assets/tryon/3e8d046f5ae5b68a/outfit_reference_board.png",
+    "prompt_context": {
+      "title": "试衣镜链路验收",
+      "photo_mode": "standard",
+      "scene_label": "",
+      "style_brief": "",
+      "items": [
+        {
+          "slot": "top",
+          "category": "top",
+          "category_label": "上衣",
+          "wear_region": "upper_body",
+          "wearing_instruction": "上衣穿在上半身，保留领口、袖长、衣长和图案。",
+          "placement_rule": "align with shoulders, neck, chest, waist, and arm openings; preserve natural folds and occlusion by hair or arms.",
+          "attributes": {
+            "colors": [
+              "灰",
+              "黑"
+            ],
+            "color_hex": [
+              "#3e3e40",
+              "#373639",
+              "#282829",
+              "#444347",
+              "#4f4e51"
+            ],
+            "material": [],
+            "fit": "未判断",
+            "style_tags": [
+              "signature原创款",
+              "通勤",
+              "日常"
+            ],
+            "scene_tags": [
+              "通勤",
+              "日常"
+            ],
+            "season_tags": [
+              "春",
+              "夏"
+            ]
+          },
+          "note": ""
+        },
+        {
+          "slot": "bottom",
+          "category": "bottom",
+          "category_label": "裤子",
+          "wear_region": "lower_body",
+          "wearing_instruction": "裤子穿在下半身，保留裤型、腰线和长度。",
+          "placement_rule": "align with visible waist, hips, legs, and original crop; do not invent feet or extend the body.",
+          "attributes": {
+            "colors": [
+              "黑"
+            ],
+            "color_hex": [
+              "#282829",
+              "#2f2f30",
+              "#212122",
+              "#1b1a1b",
+              "#242425"
+            ],
+            "material": [],
+            "fit": "未判断",
+            "style_tags": [
+              "signature原创款",
+              "通勤",
+              "日常"
+            ],
+            "scene_tags": [
+              "通勤",
+              "日常"
+            ],
+            "season_tags": [
+              "春",
+              "夏"
+            ]
+          },
+          "note": ""
+        },
+        {
+          "slot": "bag",
+          "category": "bag",
+          "category_label": "包",
+          "wear_region": "hand_or_shoulder",
+          "wearing_instruction": "包作为包袋搭配在可见手臂、手部或肩侧；手提包需要手握或挂在前臂，肩背包需要贴合肩线，不能悬空。",
+          "placement_rule": "must have a believable contact point: handbag held by a visible hand or hanging from the forearm, shoulder bag resting on the shoulder, crossbody strap crossing the torso. Never let the bag float, hover, or sit detached from the arm/body.",
+          "attributes": {
+            "colors": [
+              "灰",
+              "黑"
+            ],
+            "color_hex": [
+              "#434141",
+              "#504d4d",
+              "#3c3a3a",
+              "#282626",
+              "#383636"
+            ],
+            "material": [],
+            "fit": "未判断",
+            "style_tags": [
+              "variant原创款",
+              "通勤",
+              "日常"
+            ],
+            "scene_tags": [
+              "通勤",
+              "日常"
+            ],
+            "season_tags": [
+              "春",
+              "夏"
+            ]
+          },
+          "note": ""
+        }
+      ],
+      "priority": [
+        "preserve_model_identity_body_pose_background",
+        "preserve_individual_item_details",
+        "follow_wearing_instructions",
+        "use_overall_style_reference_for_layering_and_proportion",
+        "avoid_copying_reference_person_or_background"
+      ]
+    },
+    "decision": {
+      "blocking_errors": [],
+      "warnings": [
+        {
+          "code": "person.face_detector_relaxed_for_ai_tryon",
+          "message": "本地人脸检测未命中，已交给 AI 继续判断",
+          "suggestion": "真实生活照可能无法被本地检测器稳定识别，已继续生成试穿。"
+        },
+        {
+          "code": "outfit.missing_reference_slots",
+          "message": "穿搭参考不完整",
+          "suggestion": "已继续生成；缺少鞋子时会让模型按现有单品自然补足。"
+        }
+      ],
+      "user_message": "试穿图已生成，但有些细节建议复核；你可以先查看，也可以重新生成一版。"
+    },
+    "pipeline": {
+      "input_quality": {
+        "status": "pass",
+        "confidence": 0.86,
+        "evidence": {
+          "person_size": {
+            "width": 969,
+            "height": 1624
+          },
+          "garment_size": {
+            "width": 1200,
+            "height": 900
+          },
+          "person_sharpness": 118.38,
+          "hard_sharpness_threshold": 55,
+          "soft_sharpness_threshold": 90
+        },
+        "issues": [],
+        "suggestions": []
+      },
+      "person_detection": {
+        "status": "warn",
+        "confidence": 0.52,
+        "evidence": {
+          "face_count": 0,
+          "primary_face": {
+            "box": {
+              "x": 417,
+              "y": 552,
+              "width": 135,
+              "height": 162
+            },
+            "area_ratio": 0.0139
+          },
+          "fallback": "ai_tryon_identity_preserve",
+          "reason": "local_face_detector_missed_real_world_photo"
+        },
+        "issues": [
+          {
+            "code": "person.face_detector_relaxed_for_ai_tryon",
+            "message": "本地人脸检测未命中，已交给 AI 继续判断",
+            "suggestion": "真实生活照可能无法被本地检测器稳定识别，已继续生成试穿。"
+          }
+        ],
+        "suggestions": [
+          "真实生活照可能无法被本地检测器稳定识别，已继续生成试穿。"
+        ]
+      },
+      "body_coverage": {
+        "status": "pass",
+        "confidence": 0.84,
+        "evidence": {
+          "required_slots": [
+            "bag",
+            "bottom",
+            "top"
+          ],
+          "image_height": 1624,
+          "measured": true,
+          "visible_head_units_below_top": 6.62,
+          "visible_slots": [
+            "bag",
+            "bottom",
+            "top"
+          ],
+          "skipped_slots": []
+        },
+        "issues": [],
+        "suggestions": []
+      },
+      "outfit_plan": {
+        "status": "warn",
+        "confidence": 0.68,
+        "evidence": {
+          "item_count": 3,
+          "missing_slots": [
+            "鞋子"
+          ],
+          "required_groups": {
+            "upper": [
+              "outer",
+              "top"
+            ],
+            "lower": [
+              "bottom",
+              "dress",
+              "skirt"
+            ],
+            "feet": [
+              "shoes"
+            ]
+          },
+          "photo_mode": "standard"
+        },
+        "issues": [
+          {
+            "code": "outfit.missing_reference_slots",
+            "message": "穿搭参考不完整",
+            "suggestion": "已继续生成；缺少鞋子时会让模型按现有单品自然补足。"
+          }
+        ],
+        "suggestions": [
+          "已继续生成；缺少鞋子时会让模型按现有单品自然补足。"
+        ]
+      },
+      "outfit_body_mask": {
+        "status": "pass",
+        "confidence": 0.84,
+        "evidence": {
+          "mask_path": "/var/folders/1d/g83hxyws0mnct6y_w1d067f00000gn/T/selfit-studio-live-4brohudb/outputs/users/studio_generation_test/tryon/3e8d046f5ae5b68a/outfit_body_mask.png",
+          "slots": [
+            "bag",
+            "bottom",
+            "top"
+          ],
+          "head_accessory_count": 0,
+          "editable_bbox": [
+            228,
+            668,
+            740,
+            1623
+          ],
+          "editable_ratio": 0.2773
+        },
+        "issues": [],
+        "suggestions": []
+      },
+      "edit_contract": {
+        "status": "pass",
+        "confidence": 0.86,
+        "evidence": {
+          "strategy": "strong_image_editor_with_lightweight_mask",
+          "model_profile": "nano_banana_compatible",
+          "mode": "outfit_body",
+          "preprocessing": {
+            "level": "lightweight",
+            "reason": "backend image editor is expected to understand person, garment, and mask inputs without heavy VTON preprocessing",
+            "no_heavy_human_parsing_required": true
+          },
+          "inputs": [
+            {
+              "id": "image_a",
+              "role": "identity_pose_background_anchor",
+              "meaning": "user/person photo; preserve identity, pose, background, camera, and canvas"
+            },
+            {
+              "id": "image_b",
+              "role": "garment_or_outfit_reference",
+              "meaning": "clothing visual reference; use for color, material, fit, pattern, and details"
+            },
+            {
+              "id": "image_c_or_mask",
+              "role": "editable_region_mask",
+              "meaning": "same-size mask for Image A; guides where edits are allowed"
+            }
+          ],
+          "mask": {
+            "path": "/var/folders/1d/g83hxyws0mnct6y_w1d067f00000gn/T/selfit-studio-live-4brohudb/outputs/users/studio_generation_test/tryon/3e8d046f5ae5b68a/outfit_body_mask.png",
+            "rule": null,
+            "editable_ratio": 0.2773,
+            "editable": "transparent_or_black_alpha_lt_128",
+            "protected": "opaque_or_white_alpha_gte_220",
+            "soft_boundary": true
+          },
+          "preserve": [
+            "face",
+            "hair",
+            "skin_tone",
+            "hands",
+            "body_shape",
+            "pose",
+            "background",
+            "lighting",
+            "camera_angle",
+            "canvas_framing"
+          ],
+          "post_quality_checks": [
+            "same_canvas_size_or_normalized_to_image_a",
+            "face_region_difference",
+            "protected_region_difference",
+            "mask_editable_ratio"
+          ]
+        },
+        "issues": [],
+        "suggestions": []
+      },
+      "image_edit": {
+        "status": "pass",
+        "confidence": 0.82,
+        "evidence": {
+          "provider": "runway_google_generate_content",
+          "strategy": "visible_clothing_then_accessories",
+          "stages": [
+            {
+              "name": "visible_clothing",
+              "item_ids": [
+                "garment_mute_top_0561",
+                "garment_mute_bottom_0003"
+              ],
+              "mask_path": "/var/folders/1d/g83hxyws0mnct6y_w1d067f00000gn/T/selfit-studio-live-4brohudb/outputs/users/studio_generation_test/tryon/3e8d046f5ae5b68a/stage_1_visible_clothing/edit_mask.png",
+              "reference_board_path": "/var/folders/1d/g83hxyws0mnct6y_w1d067f00000gn/T/selfit-studio-live-4brohudb/outputs/users/studio_generation_test/tryon/3e8d046f5ae5b68a/stage_1_visible_clothing/reference_board.png",
+              "status": "pass",
+              "evidence": {
+                "provider": "runway_google_generate_content",
+                "url": "https://runway.devops.rednote.life/openai/google/v1:generateContent",
+                "result_path": "/var/folders/1d/g83hxyws0mnct6y_w1d067f00000gn/T/selfit-studio-live-4brohudb/outputs/users/studio_generation_test/tryon/3e8d046f5ae5b68a/stage_1_visible_clothing/result_runway_google.png",
+                "mime_type": "image/png",
+                "target_size": {
+                  "width": 969,
+                  "height": 1624,
+                  "aspect_ratio": 0.5967
+                },
+                "result_size": {
+                  "width": 969,
+                  "height": 1624,
+                  "aspect_ratio": 0.5967
+                },
+                "canvas_normalization": {
+                  "normalized": true,
+                  "source_size": {
+                    "width": 1195,
+                    "height": 896
+                  },
+                  "target_size": {
+                    "width": 969,
+                    "height": 1624
+                  },
+                  "crop_box": [
+                    330,
+                    0,
+                    864,
+                    896
+                  ],
+                  "rule": "center_crop_to_image_a_canvas"
+                },
+                "response_shape": {
+                  "keys": [
+                    "candidates",
+                    "createTime",
+                    "modelVersion",
+                    "responseId",
+                    "usageMetadata"
+                  ],
+                  "candidate_count": 1,
+                  "first_candidate_part_keys": [
+                    [
+                      "inlineData"
+                    ]
+                  ]
+                }
+              }
+            },
+            {
+              "name": "visible_accessories",
+              "item_ids": [
+                "garment_mute_bag_0513"
+              ],
+              "mask_path": "/var/folders/1d/g83hxyws0mnct6y_w1d067f00000gn/T/selfit-studio-live-4brohudb/outputs/users/studio_generation_test/tryon/3e8d046f5ae5b68a/stage_2_visible_accessories/edit_mask.png",
+              "reference_board_path": "/var/folders/1d/g83hxyws0mnct6y_w1d067f00000gn/T/selfit-studio-live-4brohudb/outputs/users/studio_generation_test/tryon/3e8d046f5ae5b68a/stage_2_visible_accessories/reference_board.png",
+              "status": "pass",
+              "evidence": {
+                "provider": "runway_google_generate_content",
+                "url": "https://runway.devops.rednote.life/openai/google/v1:generateContent",
+                "result_path": "/var/folders/1d/g83hxyws0mnct6y_w1d067f00000gn/T/selfit-studio-live-4brohudb/outputs/users/studio_generation_test/tryon/3e8d046f5ae5b68a/stage_2_visible_accessories/result_runway_google.png",
+                "mime_type": "image/png",
+                "target_size": {
+                  "width": 969,
+                  "height": 1624,
+                  "aspect_ratio": 0.5967
+                },
+                "result_size": {
+                  "width": 969,
+                  "height": 1624,
+                  "aspect_ratio": 0.5967
+                },
+                "canvas_normalization": {
+                  "normalized": true,
+                  "source_size": {
+                    "width": 800,
+                    "height": 1344
+                  },
+                  "target_size": {
+                    "width": 969,
+                    "height": 1624
+                  },
+                  "crop_box": [
+                    0,
+                    2,
+                    800,
+                    1342
+                  ],
+                  "rule": "center_crop_to_image_a_canvas"
+                },
+                "response_shape": {
+                  "keys": [
+                    "candidates",
+                    "createTime",
+                    "modelVersion",
+                    "responseId",
+                    "usageMetadata"
+                  ],
+                  "candidate_count": 1,
+                  "first_candidate_part_keys": [
+                    [
+                      "inlineData"
+                    ]
+                  ]
+                }
+              }
+            }
+          ],
+          "result_path": "/var/folders/1d/g83hxyws0mnct6y_w1d067f00000gn/T/selfit-studio-live-4brohudb/outputs/users/studio_generation_test/tryon/3e8d046f5ae5b68a/stage_2_visible_accessories/result_runway_google.png"
+        },
+        "issues": [],
+        "suggestions": []
+      },
+      "quality_review": {
+        "status": "fail",
+        "confidence": 0.62,
+        "evidence": {
+          "result_exists": true,
+          "result_size": {
+            "width": 969,
+            "height": 1624
+          },
+          "face_diff": 114.29,
+          "protected_region_diff": 184.65,
+          "mask_editable_ratio": 0.2677,
+          "mask_contract": "fail_if_protected_face_or_background_changes",
+          "required_slots": [
+            "bag",
+            "bottom",
+            "top"
+          ],
+          "semantic_review": {
+            "provider": "runway_google_vision",
+            "verified": true,
+            "slot_results": [
+              {
+                "review_id": "garment_mute_top_0561",
+                "slot": "top",
+                "status": "matched",
+                "confidence": 1.0,
+                "observed_colors": [
+                  "dark grey"
+                ],
+                "detail_match": "The top is a dark grey, long-sleeved blouse with a cowl neck, matching the expected description and style."
+              },
+              {
+                "review_id": "garment_mute_bottom_0003",
+                "slot": "bottom",
+                "status": "matched",
+                "confidence": 1.0,
+                "observed_colors": [
+                  "black"
+                ],
+                "detail_match": "The bottom is a pair of black, wide-leg trousers with a high waist, matching the expected description and style."
+              },
+              {
+                "review_id": "garment_mute_bag_0513",
+                "slot": "bag",
+                "status": "matched",
+                "confidence": 1.0,
+                "observed_colors": [
+                  "black"
+                ],
+                "detail_match": "The bag is a small, black shoulder bag with a strap, worn over the shoulder and resting on the side, matching the expected description and style."
+              }
+            ],
+            "unexpected_items": [
+              "A black and white polka dot scarf is worn around the neck.",
+              "A pair of black thong sandals are worn on the feet."
+            ]
+          }
+        },
+        "issues": [
+          {
+            "code": "quality.face_changed",
+            "message": "人脸区域变化过大",
+            "suggestion": "请重新生成，避免改变用户本人特征。"
+          },
+          {
+            "code": "quality.background_changed",
+            "message": "背景或非衣服区域变化较大",
+            "suggestion": "请重新生成。"
+          }
+        ],
+        "suggestions": [
+          "请重新生成，避免改变用户本人特征。",
+          "请重新生成。"
+        ]
+      }
+    },
+    "result": {
+      "image_path": "/user-assets/tryon/3e8d046f5ae5b68a/stage_2_visible_accessories/result_runway_google.png",
+      "mask_path": "/user-assets/tryon/3e8d046f5ae5b68a/outfit_body_mask.png",
+      "bridge_job_id": null,
+      "bridge_status_url": null,
+      "user_message": "试穿图已生成，但有些细节建议复核；你可以先查看，也可以重新生成一版。"
+    },
+    "piece_results": [
+      {
+        "item_id": "garment_mute_top_0561",
+        "slot": "top",
+        "category": "top",
+        "category_label": "上衣",
+        "status": "applied",
+        "message": "已替换",
+        "retry_available": false
+      },
+      {
+        "item_id": "garment_mute_bottom_0003",
+        "slot": "bottom",
+        "category": "bottom",
+        "category_label": "裤子",
+        "status": "applied",
+        "message": "已替换",
+        "retry_available": false
+      },
+      {
+        "item_id": "garment_mute_shoes_0257",
+        "slot": "shoes",
+        "category": "shoes",
+        "category_label": "鞋子",
+        "status": "skipped_user",
+        "message": "本次保留原穿搭",
+        "retry_available": true
+      },
+      {
+        "item_id": "garment_mute_bag_0513",
+        "slot": "bag",
+        "category": "bag",
+        "category_label": "包",
+        "status": "applied",
+        "message": "已替换",
+        "retry_available": false
+      }
+    ],
+    "summary": {
+      "applied_count": 3,
+      "review_count": 0,
+      "skipped_count": 1
+    },
+    "version_id": "3e8d046f5ae5b68a",
+    "outfit": {
+      "outfit_id": "fd3c8b4c030e0a8c",
+      "user_id": "studio_generation_test",
+      "title": "试衣镜链路验收",
+      "item_ids": [
+        "garment_mute_top_0561",
+        "garment_mute_bottom_0003",
+        "garment_mute_shoes_0257",
+        "garment_mute_bag_0513"
+      ],
+      "cover_path": "/user-assets/closet/outfits/fd3c8b4c030e0a8c/flatlay-unified-flatlay-v1.png",
+      "layout_version": "unified-flatlay-v1",
+      "layout_mode": "semantic-main-accessory-rail",
+      "canvas": {
+        "width": 1200,
+        "height": 1500
+      },
+      "layout_snapshot_path": "/user-assets/closet/outfits/fd3c8b4c030e0a8c/flatlay-unified-flatlay-v1.png",
+      "layout_slots": [
+        {
+          "item_id": "garment_mute_top_0561",
+          "slot": "top",
+          "box": {
+            "x": 208,
+            "y": 160,
+            "width": 483,
+            "height": 460
+          },
+          "source_box": {
+            "x": 209,
+            "y": 160,
+            "width": 483,
+            "height": 460
+          },
+          "column": 0,
+          "row": 0,
+          "scale": 0.5031,
+          "visual_area_ratio": 0.6667,
+          "optical_group": "main_outfit",
+          "z_index": 10
+        },
+        {
+          "item_id": "garment_mute_bottom_0003",
+          "slot": "bottom",
+          "box": {
+            "x": 312,
+            "y": 644,
+            "width": 276,
+            "height": 686
+          },
+          "source_box": {
+            "x": 312,
+            "y": 644,
+            "width": 276,
+            "height": 686
+          },
+          "column": 0,
+          "row": 1,
+          "scale": 0.715,
+          "visual_area_ratio": 0.6667,
+          "optical_group": "main_outfit",
+          "z_index": 11
+        },
+        {
+          "item_id": "garment_mute_shoes_0257",
+          "slot": "shoes",
+          "box": {
+            "x": 919,
+            "y": 880,
+            "width": 132,
+            "height": 200
+          },
+          "source_box": {
+            "x": 919,
+            "y": 880,
+            "width": 132,
+            "height": 200
+          },
+          "column": 1,
+          "row": 0,
+          "scale": 0.2079,
+          "visual_area_ratio": 0.2222,
+          "optical_group": "accessory_rail",
+          "z_index": 12
+        },
+        {
+          "item_id": "garment_mute_bag_0513",
+          "slot": "bag",
+          "box": {
+            "x": 854,
+            "y": 410,
+            "width": 273,
+            "height": 320
+          },
+          "source_box": {
+            "x": 853,
+            "y": 410,
+            "width": 273,
+            "height": 320
+          },
+          "column": 1,
+          "row": 1,
+          "scale": 0.3329,
+          "visual_area_ratio": 0.2222,
+          "optical_group": "accessory_rail",
+          "z_index": 13
+        }
+      ],
+      "display_item_ids": [
+        "garment_mute_top_0561",
+        "garment_mute_bottom_0003",
+        "garment_mute_shoes_0257",
+        "garment_mute_bag_0513"
+      ],
+      "overflow_items": [],
+      "warnings": [],
+      "scene_tags": [],
+      "favorite_count": 41,
+      "favorite": false,
+      "created_at": "2026-09-05T14:40:14.120564+00:00",
+      "updated_at": "2026-09-05T14:40:14.120564+00:00",
+      "deleted": false,
+      "items": [
+        {
+          "item_id": "garment_mute_top_0561",
+          "style_family_id": "item:garment_mute_top_0561",
+          "image_id": "garment_mute_top_0561",
+          "category": "top",
+          "category_label": "上衣",
+          "subcategory": "静音时髦垂坠罩衫",
+          "slot": null,
+          "title": "静音时髦垂坠罩衫",
+          "assets": {
+            "cutout_path": "/static/selfit/assets/content_v2/mute/garments/mute-top-0561-v1.webp",
+            "preview_path": "/static/selfit/assets/content_v2/mute/garments/mute-top-0561-v1.webp"
+          },
+          "attributes": {
+            "colors": [
+              "灰",
+              "黑"
+            ],
+            "color_hex": [
+              "#3e3e40",
+              "#373639",
+              "#282829",
+              "#444347",
+              "#4f4e51"
+            ],
+            "material": [],
+            "fit": "未判断",
+            "style_tags": [
+              "signature原创款",
+              "通勤",
+              "日常"
+            ],
+            "scene_tags": [
+              "通勤",
+              "日常"
+            ],
+            "season_tags": [
+              "春",
+              "夏"
+            ]
+          },
+          "quality": {
+            "status": "usable",
+            "score": 1.0,
+            "reasons": [
+              "published_content_v2"
+            ]
+          },
+          "source": {
+            "type": "published_content_v2",
+            "content_version": "2026.09-v2-published1"
+          },
+          "tryon_ready": true,
+          "favorite": false,
+          "deleted": false,
+          "outfit_role": "hero",
+          "user_id": "studio_generation_test",
+          "created_at": "2026-09-05T14:40:14.112481+00:00"
+        },
+        {
+          "item_id": "garment_mute_bottom_0003",
+          "style_family_id": "item:garment_mute_bottom_0003",
+          "image_id": "garment_mute_bottom_0003",
+          "category": "bottom",
+          "category_label": "裤子",
+          "subcategory": "直筒裤",
+          "slot": null,
+          "title": "直筒裤",
+          "assets": {
+            "cutout_path": "/static/selfit/assets/content_v2/mute/garments/mute-bottom-0003-v1.webp",
+            "preview_path": "/static/selfit/assets/content_v2/mute/garments/mute-bottom-0003-v1.webp"
+          },
+          "attributes": {
+            "colors": [
+              "黑"
+            ],
+            "color_hex": [
+              "#282829",
+              "#2f2f30",
+              "#212122",
+              "#1b1a1b",
+              "#242425"
+            ],
+            "material": [],
+            "fit": "未判断",
+            "style_tags": [
+              "signature原创款",
+              "通勤",
+              "日常"
+            ],
+            "scene_tags": [
+              "通勤",
+              "日常"
+            ],
+            "season_tags": [
+              "春",
+              "夏"
+            ]
+          },
+          "quality": {
+            "status": "usable",
+            "score": 1.0,
+            "reasons": [
+              "published_content_v2"
+            ]
+          },
+          "source": {
+            "type": "published_content_v2",
+            "content_version": "2026.09-v2-published1"
+          },
+          "tryon_ready": true,
+          "favorite": false,
+          "deleted": false,
+          "outfit_role": "support",
+          "user_id": "studio_generation_test",
+          "created_at": "2026-09-05T14:40:14.112520+00:00"
+        },
+        {
+          "item_id": "garment_mute_shoes_0257",
+          "style_family_id": "item:garment_mute_shoes_0257",
+          "image_id": "garment_mute_shoes_0257",
+          "category": "shoes",
+          "category_label": "鞋子",
+          "subcategory": "静音时髦结构长靴",
+          "slot": null,
+          "title": "静音时髦结构长靴",
+          "assets": {
+            "cutout_path": "/static/selfit/assets/content_v2/mute/garments/mute-shoes-0257-v1.webp",
+            "preview_path": "/static/selfit/assets/content_v2/mute/garments/mute-shoes-0257-v1.webp"
+          },
+          "attributes": {
+            "colors": [
+              "棕"
+            ],
+            "color_hex": [
+              "#63564e",
+              "#74655d",
+              "#4d433d",
+              "#7f7067",
+              "#90827b"
+            ],
+            "material": [],
+            "fit": "未判断",
+            "style_tags": [
+              "shared原创款",
+              "通勤",
+              "日常",
+              "约会社交",
+              "正式活动",
+              "旅行",
+              "创意表达"
+            ],
+            "scene_tags": [
+              "通勤",
+              "日常",
+              "约会社交",
+              "正式活动",
+              "旅行",
+              "创意表达"
+            ],
+            "season_tags": [
+              "四季"
+            ]
+          },
+          "quality": {
+            "status": "usable",
+            "score": 1.0,
+            "reasons": [
+              "published_content_v2"
+            ]
+          },
+          "source": {
+            "type": "published_content_v2",
+            "content_version": "2026.09-v2-published1"
+          },
+          "tryon_ready": true,
+          "favorite": false,
+          "deleted": false,
+          "outfit_role": "support",
+          "user_id": "studio_generation_test",
+          "created_at": "2026-09-05T14:40:14.112535+00:00"
+        },
+        {
+          "item_id": "garment_mute_bag_0513",
+          "style_family_id": "item:garment_mute_bag_0513",
+          "image_id": "garment_mute_bag_0513",
+          "category": "bag",
+          "category_label": "包",
+          "subcategory": "静音时髦小型腋下包",
+          "slot": null,
+          "title": "静音时髦小型腋下包",
+          "assets": {
+            "cutout_path": "/static/selfit/assets/content_v2/mute/garments/mute-bag-0513-v1.webp",
+            "preview_path": "/static/selfit/assets/content_v2/mute/garments/mute-bag-0513-v1.webp"
+          },
+          "attributes": {
+            "colors": [
+              "灰",
+              "黑"
+            ],
+            "color_hex": [
+              "#434141",
+              "#504d4d",
+              "#3c3a3a",
+              "#282626",
+              "#383636"
+            ],
+            "material": [],
+            "fit": "未判断",
+            "style_tags": [
+              "variant原创款",
+              "通勤",
+              "日常"
+            ],
+            "scene_tags": [
+              "通勤",
+              "日常"
+            ],
+            "season_tags": [
+              "春",
+              "夏"
+            ]
+          },
+          "quality": {
+            "status": "usable",
+            "score": 1.0,
+            "reasons": [
+              "published_content_v2"
+            ]
+          },
+          "source": {
+            "type": "published_content_v2",
+            "content_version": "2026.09-v2-published1"
+          },
+          "tryon_ready": true,
+          "favorite": false,
+          "deleted": false,
+          "outfit_role": "accent",
+          "user_id": "studio_generation_test",
+          "created_at": "2026-09-05T14:40:14.112551+00:00"
+        }
+      ],
+      "tryon_ready": true,
+      "completeness": {
+        "version": "selfit_outfit_completeness_v1",
+        "status": "complete",
+        "label": "搭配已完整",
+        "message": "已可以保存和试穿",
+        "main_complete": true,
+        "missing_slots": [],
+        "conflicts": [],
+        "warnings": [
+          {
+            "code": "season_mismatch",
+            "message": "这些单品的适穿季节不完全一致"
+          }
+        ],
+        "selected_count": 4,
+        "scene_tags": []
+      }
+    },
+    "record": {
+      "record_id": "ab24ce87b435c4aa",
+      "user_id": "studio_generation_test",
+      "mode": "selfit_from_outfit_plan",
+      "status": "review",
+      "tryon_id": "3e8d046f5ae5b68a",
+      "outfit_id": "fd3c8b4c030e0a8c",
+      "outfit_title": "试衣镜链路验收",
+      "image_path": "/user-assets/tryon/3e8d046f5ae5b68a/stage_2_visible_accessories/result_runway_google.png",
+      "reference_board_path": "/user-assets/tryon/3e8d046f5ae5b68a/outfit_reference_board.png",
+      "scene_tags": [],
+      "photo_mode": "standard",
+      "generation_strategy": "single_step_reference_board",
+      "piece_summary": {
+        "applied_count": 3,
+        "review_count": 0,
+        "skipped_count": 1
+      },
+      "piece_results": [
+        {
+          "item_id": "garment_mute_top_0561",
+          "slot": "top",
+          "category": "top",
+          "category_label": "上衣",
+          "status": "applied",
+          "message": "已替换",
+          "retry_available": false
+        },
+        {
+          "item_id": "garment_mute_bottom_0003",
+          "slot": "bottom",
+          "category": "bottom",
+          "category_label": "裤子",
+          "status": "applied",
+          "message": "已替换",
+          "retry_available": false
+        },
+        {
+          "item_id": "garment_mute_shoes_0257",
+          "slot": "shoes",
+          "category": "shoes",
+          "category_label": "鞋子",
+          "status": "skipped_user",
+          "message": "本次保留原穿搭",
+          "retry_available": true
+        },
+        {
+          "item_id": "garment_mute_bag_0513",
+          "slot": "bag",
+          "category": "bag",
+          "category_label": "包",
+          "status": "applied",
+          "message": "已替换",
+          "retry_available": false
+        }
+      ],
+      "version_id": "3e8d046f5ae5b68a",
+      "quality_review": {
+        "status": "fail",
+        "confidence": 0.62,
+        "evidence": {
+          "result_exists": true,
+          "result_size": {
+            "width": 969,
+            "height": 1624
+          },
+          "face_diff": 114.29,
+          "protected_region_diff": 184.65,
+          "mask_editable_ratio": 0.2677,
+          "mask_contract": "fail_if_protected_face_or_background_changes",
+          "required_slots": [
+            "bag",
+            "bottom",
+            "top"
+          ],
+          "semantic_review": {
+            "provider": "runway_google_vision",
+            "verified": true,
+            "slot_results": [
+              {
+                "review_id": "garment_mute_top_0561",
+                "slot": "top",
+                "status": "matched",
+                "confidence": 1.0,
+                "observed_colors": [
+                  "dark grey"
+                ],
+                "detail_match": "The top is a dark grey, long-sleeved blouse with a cowl neck, matching the expected description and style."
+              },
+              {
+                "review_id": "garment_mute_bottom_0003",
+                "slot": "bottom",
+                "status": "matched",
+                "confidence": 1.0,
+                "observed_colors": [
+                  "black"
+                ],
+                "detail_match": "The bottom is a pair of black, wide-leg trousers with a high waist, matching the expected description and style."
+              },
+              {
+                "review_id": "garment_mute_bag_0513",
+                "slot": "bag",
+                "status": "matched",
+                "confidence": 1.0,
+                "observed_colors": [
+                  "black"
+                ],
+                "detail_match": "The bag is a small, black shoulder bag with a strap, worn over the shoulder and resting on the side, matching the expected description and style."
+              }
+            ],
+            "unexpected_items": [
+              "A black and white polka dot scarf is worn around the neck.",
+              "A pair of black thong sandals are worn on the feet."
+            ]
+          }
+        },
+        "issues": [
+          {
+            "code": "quality.face_changed",
+            "message": "人脸区域变化过大",
+            "suggestion": "请重新生成，避免改变用户本人特征。"
+          },
+          {
+            "code": "quality.background_changed",
+            "message": "背景或非衣服区域变化较大",
+            "suggestion": "请重新生成。"
+          }
+        ],
+        "suggestions": [
+          "请重新生成，避免改变用户本人特征。",
+          "请重新生成。"
+        ]
+      },
+      "created_at": "2026-09-05T14:40:41.349498+00:00",
+      "updated_at": "2026-09-05T14:40:41.349498+00:00",
+      "deleted": false,
+      "note": "试穿图已生成，建议复核后使用。"
+    }
+  },
+  "result_http_status": 401,
+  "result_file_verified": true,
+  "authenticated_result_http_status": 200,
+  "anonymous_result_http_status": 401
+}

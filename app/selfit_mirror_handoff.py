@@ -12,6 +12,8 @@ from typing import Any
 from urllib.parse import urlencode
 
 import qrcode
+import cv2
+import numpy as np
 from fastapi import APIRouter, Depends, File, Form, Request, UploadFile
 from fastapi.responses import JSONResponse, Response
 from PIL import Image, UnidentifiedImageError
@@ -465,22 +467,34 @@ async def mirror_handoff_qr(request: Request, token: str) -> Response:
     # 生产 handoff URL 在 M 级纠错下稳定落在 Version 5（37×37 数据模块）。
     # 加上 4 模块标准安静区后共 45 模块，按每模块 3px 直接生成
     # 135×135 PNG，与前端显示尺寸一致，避免非整数缩放把码点撕裂。
-    qr = qrcode.QRCode(
-        version=5,
-        error_correction=qrcode.constants.ERROR_CORRECT_M,
-        box_size=3,
-        border=4,
-    )
-    qr.add_data(_handoff_url(request, token))
-    qr.make(fit=True)
-    image = qr.make_image(fill_color="#171313", back_color="#ffffff")
-    output = io.BytesIO()
-    image.save(output, format="PNG")
+    try:
+        png = await run_in_threadpool(_readable_handoff_qr, _handoff_url(request, token))
+    except ValueError:
+        return _error(503, "mirror.qr_unreadable", "二维码暂时未准备好，请重试。")
     return Response(
-        output.getvalue(),
+        png,
         media_type="image/png",
         headers={"Cache-Control": "no-store, private", "X-Content-Type-Options": "nosniff"},
     )
+
+
+def _readable_handoff_qr(url: str) -> bytes:
+    """Keep URL/size intact; reject mask patterns our smoke decoder cannot read."""
+    for mask in (None, *range(8)):
+        qr = qrcode.QRCode(version=5, error_correction=qrcode.constants.ERROR_CORRECT_M,
+                           box_size=3, border=4, mask_pattern=mask)
+        qr.add_data(url)
+        qr.make(fit=True)
+        image = qr.make_image(fill_color="#171313", back_color="#ffffff").convert("RGB")
+        pixels = np.asarray(image)
+        # This is a bounded readability check, not a claim about every scanner.
+        if any(cv2.QRCodeDetector().detectAndDecode(candidate)[0] != url
+               for candidate in (pixels, cv2.GaussianBlur(pixels, (3, 3), 0))):
+            continue
+        output = io.BytesIO()
+        image.save(output, format="PNG")
+        return output.getvalue()
+    raise ValueError("No readable QR mask found")
 
 
 @router.post("/handoffs/{token}/claim")

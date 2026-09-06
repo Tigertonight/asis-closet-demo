@@ -1,0 +1,217 @@
+{
+  "schemaVersion": 1,
+  "source": {
+    "canonicalSource": "https://www.figma.com/design/7WvSROZhohAyvpEMfxZ3Dd/",
+    "sourceMaterial": [
+      "user screenshot",
+      "source/mirror-model.png",
+      "source/mirror-styling.png",
+      "source/closet.png",
+      "source/inspiration.png",
+      "source/detail.png"
+    ],
+    "capturedAt": "2026-09-05T21:41:23.464852",
+    "permissionBoundary": "user-authorized",
+    "allowedPermissionBoundaries": [
+      "public",
+      "user-authorized",
+      "external-blocked"
+    ]
+  },
+  "target": {
+    "name": "试穿环节",
+    "scope": "five supplied screens and their interaction loop",
+    "inScope": [
+      "mirror",
+      "styling",
+      "closet",
+      "inspiration",
+      "detail",
+      "existing try-on API"
+    ],
+    "excluded": [
+      "persona algorithm",
+      "deployment",
+      "onboarding redesign"
+    ],
+    "constraints": [
+      "393x852 baseline",
+      "no synthetic device status bar",
+      "real HTML controls"
+    ]
+  },
+  "candidates": [
+    {
+      "name": "mirror-model",
+      "node": "201:23890",
+      "truth": "SOURCE",
+      "evidence": "source/mirror-model.png"
+    },
+    {
+      "name": "mirror-styling",
+      "node": "201:24095",
+      "truth": "SOURCE",
+      "evidence": "source/mirror-styling.png"
+    },
+    {
+      "name": "closet",
+      "node": "110:18892",
+      "truth": "SOURCE",
+      "evidence": "source/closet.png"
+    },
+    {
+      "name": "inspiration",
+      "node": "110:18976",
+      "truth": "SOURCE",
+      "evidence": "source/inspiration.png"
+    },
+    {
+      "name": "detail",
+      "node": "218:24786",
+      "truth": "SOURCE",
+      "evidence": "source/detail.png"
+    }
+  ],
+  "lockStatus": "locked",
+  "allowedLockStatus": [
+    "unlocked",
+    "provisional",
+    "attributed",
+    "locked"
+  ],
+  "allowedTruth": [
+    "SOURCE",
+    "PARTIAL",
+    "GUESS"
+  ],
+  "targetSet": [
+    {
+      "name": "mirror-model",
+      "node": "201:23890",
+      "truth": "SOURCE",
+      "evidence": "source/mirror-model.png"
+    },
+    {
+      "name": "mirror-styling",
+      "node": "201:24095",
+      "truth": "SOURCE",
+      "evidence": "source/mirror-styling.png"
+    },
+    {
+      "name": "closet",
+      "node": "110:18892",
+      "truth": "SOURCE",
+      "evidence": "source/closet.png"
+    },
+    {
+      "name": "inspiration",
+      "node": "110:18976",
+      "truth": "SOURCE",
+      "evidence": "source/inspiration.png"
+    },
+    {
+      "name": "detail",
+      "node": "218:24786",
+      "truth": "SOURCE",
+      "evidence": "source/detail.png"
+    }
+  ],
+  "alternatives": [
+    "Other visual section excluded: these five frames match provided screenshot"
+  ],
+  "mechanismHypotheses": [
+    "Navigation labels map three tabs; detail actions open styling or generation"
+  ],
+  "scopeRisk": "low",
+  "allowedScopeRisk": [
+    "low",
+    "medium",
+    "high"
+  ],
+  "blockingUnknowns": [],
+  "nextProbe": {
+    "type": "implementation",
+    "target": "five-screen baseline",
+    "resolves": [
+      "layout and interaction parity"
+    ]
+  },
+  "evidence": [],
+  "primaryEvidenceRoute": "Figma UI exports and project API source",
+  "gateDecision": {
+    "targetAttributed": true,
+    "targetLocked": true,
+    "requiredEvidence": {
+      "targetBoundary": [
+        {
+          "status": "passed",
+          "evidenceId": "figma-five-frames",
+          "path": "source/",
+          "truth": "SOURCE",
+          "notes": "Browser matched exact provided imagery and frame dimensions; implementation interaction inference separately labeled."
+        }
+      ],
+      "attribution": [
+        {
+          "status": "passed",
+          "evidenceId": "figma-five-frames",
+          "path": "source/",
+          "truth": "SOURCE",
+          "notes": "Browser matched exact provided imagery and frame dimensions; implementation interaction inference separately labeled."
+        }
+      ],
+      "targetSet": [
+        {
+          "status": "passed",
+          "evidenceId": "figma-five-frames",
+          "path": "source/",
+          "truth": "SOURCE",
+          "notes": "Browser matched exact provided imagery and frame dimensions; implementation interaction inference separately labeled."
+        }
+      ],
+      "ownerOrProducer": [
+        {
+          "status": "passed",
+          "evidenceId": "figma-five-frames",
+          "path": "source/",
+          "truth": "SOURCE",
+          "notes": "Browser matched exact provided imagery and frame dimensions; implementation interaction inference separately labeled."
+        }
+      ],
+      "primaryMechanism": [
+        {
+          "status": "passed",
+          "evidenceId": "figma-five-frames",
+          "path": "source/",
+          "truth": "SOURCE",
+          "notes": "Browser matched exact provided imagery and frame dimensions; implementation interaction inference separately labeled."
+        }
+      ],
+      "alternativesExcluded": [
+        {
+          "status": "passed",
+          "evidenceId": "figma-five-frames",
+          "path": "source/",
+          "truth": "SOURCE",
+          "notes": "Browser matched exact provided imagery and frame dimensions; implementation interaction inference separately labeled."
+        }
+      ],
+      "primaryEvidenceRoute": [
+        {
+          "status": "passed",
+          "evidenceId": "figma-five-frames",
+          "path": "source/",
+          "truth": "SOURCE",
+          "notes": "Browser matched exact provided imagery and frame dimensions; implementation interaction inference separately labeled."
+        }
+      ]
+    },
+    "blockers": [],
+    "decidedAt": "2026-09-05T21:41:23.464852"
+  },
+  "truthNotes": {
+    "source": [],
+    "partial": [],
+    "guess": []
+  }
+}

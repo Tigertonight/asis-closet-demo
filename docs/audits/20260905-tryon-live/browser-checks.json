@@ -1,0 +1,18 @@
+{
+  "environment": "isolated QA account, same application; recommendation page supplies six real catalog outfits without personalized ranking",
+  "passed": [
+    "carousel + feed merge shows all six outfits",
+    "catalog detail shows actual four piece IDs/assets",
+    "favorite persists personal copy",
+    "file chooser upload accepted and saved",
+    "reload restores protected user photo",
+    "off-page deep link outfit_mute_master_10 resolves correctly",
+    "free styling replaces top and persists mixed catalog selection",
+    "preview reflects selected pieces and disables not-visible shoes",
+    "completed real job restored through polling",
+    "protected result image renders with no broken resources",
+    "393px layout no overflow",
+    "console error/warn empty"
+  ],
+  "download": "Save button exercised; in-app browser download event not confirmed. Authenticated image endpoint separately returns 200."
+}

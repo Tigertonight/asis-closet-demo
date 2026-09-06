@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width,initial-scale=1,viewport-fit=cover"
+    />
+    <title>selfit · 试衣镜</title>
+    <link rel="icon" href="/static/brand/favicon.svg" />
+    <link
+      rel="stylesheet"
+      href="/static/selfit-tryon/studio.css?v=20260906-canvas3"
+    />
+  </head>
+  <body>
+    <main id="studio" class="studio" aria-label="试穿与搭配">
+      <a class="studio-home" href="/wearwow/demo?tab=home" aria-label="返回首页"
+        ><svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="m14 6-6 6 6 6" /></svg
+        ><span>首页</span></a
+      >
+      <div id="screen" class="screen"></div>
+      <nav id="navigation" aria-label="主要导航"></nav>
+      <div id="notice" role="status" aria-live="polite"></div>
+      <dialog id="sheet" aria-labelledby="sheetTitle"></dialog>
+      <input
+        id="photoInput"
+        type="file"
+        accept="image/jpeg,image/png,image/webp"
+        hidden
+      /><input
+        id="garmentInput"
+        type="file"
+        accept="image/jpeg,image/png,image/webp"
+        hidden
+      />
+    </main>
+    <script src="/static/selfit-tryon/outfit-layout.js?v=20260906-canvas3"></script>
+    <script src="/static/selfit-tryon/studio.js?v=20260906-canvas3"></script>
+  </body>
+</html>

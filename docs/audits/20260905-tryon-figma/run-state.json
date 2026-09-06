@@ -1,0 +1,118 @@
+{
+  "schemaVersion": 1,
+  "state": "DONE_BASELINE_WITH_GAPS",
+  "gateStatus": {
+    "capabilitySnapshot": true,
+    "targetAttributed": true,
+    "targetLocked": true,
+    "reconstructionReady": true,
+    "baselineVerified": false,
+    "projectVerified": false
+  },
+  "strategy": {
+    "primaryEvidenceRoute": "Figma Chrome UI exports",
+    "reconstructionRoute": "measured DOM layout and original leaf assets",
+    "capabilityProfile": "browser + local Python image comparison"
+  },
+  "attempts": [
+    "Original Figma export",
+    "Measured layout",
+    "Source SVG image crop repair",
+    "Small viewport collision repair"
+  ],
+  "targetSet": [
+    "201:23890",
+    "201:24095",
+    "110:18892",
+    "110:18976",
+    "218:24786"
+  ],
+  "unknowns": {
+    "blocking": [],
+    "important": [
+      "Prototype wiring inferred",
+      "Residual font and rasterization differences"
+    ],
+    "deferred": [],
+    "external": [
+      "Upload filechooser blocked by Chrome extension permission; real generation not executed"
+    ]
+  },
+  "evidenceIndex": [
+    "mirror-model",
+    "mirror-styling",
+    "closet",
+    "inspiration",
+    "detail"
+  ],
+  "allowedGateArtifactStatuses": [
+    "missing",
+    "incomplete",
+    "passed",
+    "blocked"
+  ],
+  "artifacts": {
+    "capabilitySnapshot": "capability-snapshot.json",
+    "evidenceIndex": "evidence-index.json",
+    "claims": "claims.json",
+    "targetLock": "target-lock.json",
+    "manifest": "reconstruction-manifest.json",
+    "qaReport": "qa-report.md",
+    "knownGaps": "known-gaps.md"
+  },
+  "gateArtifacts": {
+    "capabilitySnapshot": {
+      "artifact": "capability-snapshot.json",
+      "status": "passed"
+    },
+    "targetAttribution": {
+      "artifact": "target-lock.json",
+      "status": "passed"
+    },
+    "targetLock": {
+      "artifact": "target-lock.json",
+      "status": "passed"
+    },
+    "reconstructionReady": {
+      "artifact": "reconstruction-manifest.json",
+      "status": "passed"
+    },
+    "baselineVerify": {
+      "artifact": "qa-report.md",
+      "status": "incomplete"
+    },
+    "projectVerify": {
+      "artifact": "qa-report.md",
+      "status": "blocked"
+    }
+  },
+  "budgets": {
+    "sameStrategyMax": 2,
+    "evidenceRouteCategoriesMax": 3,
+    "repairRoundsMax": 6,
+    "plateauRoundsMax": 2
+  },
+  "plateau": {
+    "roundsWithoutProgress": 0,
+    "lastProgress": "Closet MAE reduced to 3.812; small-screen navigation collision fixed."
+  },
+  "nextAction": {
+    "state": "PROJECT_VERIFY",
+    "unknown": "live upload/generation",
+    "action": "When extension file access is enabled, validate authenticated upload and generation with a test account",
+    "expectedEvidence": "Successful real workflow trace; not required to inspect delivered visual baseline"
+  },
+  "fidelityTier": "measured baseline with documented gaps",
+  "qa": {
+    "sourceToBaseline": [
+      "pixel-metrics.json",
+      "*-comparison.png"
+    ],
+    "baselineToProject": [
+      "route-checks.json",
+      "responsive-checks.json",
+      "small-screen-final.json",
+      "known-gaps.md"
+    ]
+  }
+}

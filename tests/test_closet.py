@@ -1557,3 +1557,21 @@ def test_tryon_plan_keeps_unready_item_as_reference_only(monkeypatch, tmp_path: 
 
     assert [item["item_id"] for item in plan["items"]] == [top["item_id"]]
     assert plan["reference_only_item_ids"] == [bag["item_id"]]
+
+
+def test_long_press_feedback_persists_reasons_and_trigger(monkeypatch, tmp_path: Path) -> None:
+    _use_tmp_closet(monkeypatch, tmp_path)
+    client = _auth_client()
+    for reason in ("dislike", "unsuitable"):
+        payload = {
+            "event_type": "dislike", "entity_type": "outfit", "entity_id": "qa-long-press",
+            "reason": reason, "client_event_id": f"qa-long-press-{reason}",
+            "context": {"surface": "home", "trigger": "long_press"},
+        }
+        response = client.post("/closet/recommendations/feedback", json=payload)
+        assert response.status_code == 200
+        assert client.post("/closet/recommendations/feedback", json=payload).json()["deduplicated"]
+    records = json.loads(next(tmp_path.rglob("recommendation_feedback.json")).read_text())["events"]
+    assert [event["reason"] for event in records] == ["dislike", "unsuitable"]
+    assert all(event["context"]["trigger"] == "long_press" for event in records)
+    assert all(event["created_at"] and event["entity_id"] == "qa-long-press" for event in records)
