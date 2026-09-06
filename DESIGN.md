@@ -21,6 +21,23 @@ The visible wordmark is `selfit`; the Chinese product concept/file name is `适�
 
 ## 2. Product Idea
 
+### Mirror-first delivery (2026-09-06)
+
+This flow replaces the legacy main App as the post-onboarding destination.
+After onboarding completes, open `/selfit/try-on` directly. The mirror is the home;
+retain its original mirror composition, model/free-styling controls, garment strip,
+and decorative bottom navigation for the mirror, personal wardrobe, and inspiration library.
+Only the legacy main App and its bottom tabs are removed from the delivery flow.
+Do not replace the mirror's own navigation with a top bar or redesign its layout.
+Load models from their existing master-data manifest. Prefer the user's saved photo;
+when absent, show an explicitly labelled example model and offer photo upload.
+Recommendations belong to the inspiration library and use the account's stored persona.
+The wardrobe contains uploaded/favorited garments, favorited outfits, and outfits made
+with personal garments. Trying a library outfit alone never means the user owns its pieces.
+An empty wardrobe must remain empty. Recommendation failures never fall back to personal data.
+Keep outfit details, favorites, garment upload, garment-led outfit creation, and try-on in
+the mirror experience. The generated style report remains accessible from the mirror.
+
 selfit helps a person understand their style before deciding what to wear.
 
 > 个人风格 DNA = suit 你适合的 × like 你喜欢的 × vibe 你表达的

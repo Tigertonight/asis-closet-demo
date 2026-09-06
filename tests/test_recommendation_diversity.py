@@ -11,6 +11,31 @@ def outfit(oid, main, parent=None, family=None):
             "items": [{"item_id": main, "category": "bottom", "style_family_id": family}]}
 
 
+def test_inspiration_hides_accessory_variants_across_pages():
+    original = outfit("original", "dress")
+    variant = outfit("variant", "dress")
+    variant["items"].append({"item_id": "new-shoes", "category": "shoes"})
+    ranked = [original, variant] + [outfit(f"unique{i}", f"main{i}") for i in range(24)]
+    first = select_diverse_outfits(ranked, [], 12, inspiration_surface=True)
+    seen = [o["outfit_id"] for o in first["outfits"]]
+    second = select_diverse_outfits(list(reversed(ranked)), seen, 12, inspiration_surface=True)
+    ids = seen + [o["outfit_id"] for o in second["outfits"]]
+    assert "original" in ids and "variant" not in ids
+    assert len(ids) == len(set(ids)) == 24
+
+
+def test_inspiration_first_ten_unique_and_no_similar_filler():
+    rows = [outfit("original", "same"), outfit("variant", "same")]
+    page = select_diverse_outfits(rows, [], 12, inspiration_surface=True)
+    assert len(page["outfits"]) == 1
+    assert not page["has_more"]
+    assert page["diversity"]["stop_reason"] == "diversity_limit"
+    rows += [outfit(f"unique{i}", f"main{i}") for i in range(12)]
+    page = select_diverse_outfits(rows, [], 12, inspiration_surface=True)
+    main = [outfit_features(o)[1] for o in page["outfits"][:10]]
+    assert all(not a & b for i, a in enumerate(main) for b in main[i+1:])
+
+
 def assert_constraints(rows):
     features = [outfit_features(o) for o in rows]
     for i, feature in enumerate(features):

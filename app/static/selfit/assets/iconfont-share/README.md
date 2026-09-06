@@ -11,3 +11,5 @@ Downloaded as SVG path data from Alibaba Iconfont on 2026-08-21 and normalized t
 | `icon-link.svg` | 链接 | 1305476 | https://www.iconfont.cn/search/index?q=链接&searchType=icon |
 
 The SVGs are served locally so the share UI has no runtime dependency on Iconfont's CDN.
+
+Report navigation: `icon-logout.svg` uses Iconfont “退出登录”, ID `6539866`, retrieved on 2026-09-06 from https://www.iconfont.cn/api/icon/search.json (query: 退出登录). Original paths retained; fill normalized to gray `#999999`.

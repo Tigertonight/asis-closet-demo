@@ -15,7 +15,7 @@ from pathlib import Path
 
 from fastapi import HTTPException
 
-from app.recommendation_diversity import outfit_features
+from app.recommendation_diversity import outfit_features, select_diverse_outfits
 from app.recommendation_profile import PALETTES, digest, event_age_days
 from app.storage import storage_context
 
@@ -282,7 +282,7 @@ def _page(data, start, first=False):
 
 
 def create_feed(profile, catalog, context, events=(), content_version="unknown", validation_bundle=None,
-                expression_roles=None, anchor_release=None):
+                expression_roles=None, anchor_release=None, inspiration_surface=False):
     now = datetime.now(timezone.utc)
     ranked, rejected = rank_candidates(catalog,profile,context,events,now)
     recent = {e.get("entity_id") for e in events if e.get("event_type")=="impression" and (age:=event_age_days(e,now)) is not None and age<1}
@@ -296,6 +296,11 @@ def create_feed(profile, catalog, context, events=(), content_version="unknown",
         rows,gaps = select_sequence(ranked, recent_hero=recent,
                                     category_filtered=bool(context.get("categories") or profile.get("preferred_categories")),
                                     expression_roles=expression_roles)
+    if inspiration_surface:
+        diverse = select_diverse_outfits(rows, [], len(rows), inspiration_surface=True)
+        if len(diverse["outfits"]) < len(rows):
+            gaps.append({"reason": "inspiration_similarity_filtered"})
+        rows = diverse["outfits"]
     data = {"session_id":secrets.token_hex(16), "user_id":storage_context().user_id,
             "created_at":now.timestamp(), "profile_version":profile["version"], "content_version":content_version,
             "context":copy.deepcopy(context),

@@ -38,12 +38,13 @@
   const sharedReportEntry = entryParams.get('from') === 'shared-report';
   const sharedReportType = (entryParams.get('shared_type') || '').trim().slice(0, 24);
   const reportParentTab = ({
+    'mirror': 'home',
     'app-home': 'home',
     'app-profile': 'me',
   })[entryParams.get('from')] || '';
   const reportBack = document.querySelector('[data-screen="report"] [data-back]');
   if (reportParentTab && reportBack) {
-    reportBack.setAttribute('aria-label', reportParentTab === 'me' ? '返回我的' : '返回推荐');
+    reportBack.setAttribute('aria-label', '返回试衣镜');
   }
   let api;
   let auth;
@@ -156,10 +157,10 @@
 
   const returnToReportParent = () => {
     if (!reportParentTab) return false;
-    const appUrl = new URL('/wearwow/demo', window.location.origin);
+    const appUrl = new URL('/selfit/try-on', window.location.origin);
     const typeId = String(entryParams.get('type') || state.currentReportTypeId || '').trim().toLowerCase();
     if (typeId) appUrl.searchParams.set('persona', typeId);
-    appUrl.searchParams.set('tab', reportParentTab);
+    appUrl.searchParams.set('screen', 'mirror');
     window.location.assign(`${appUrl.pathname}${appUrl.search}`);
     return true;
   };
@@ -302,7 +303,7 @@
     const typeId = String(result?.report?.typeId || '').trim().toLowerCase();
     if (!typeId) return false;
     track('existing_report_app_entered', { typeId, reportId: result.report.reportId || '' });
-    window.location.replace(`/wearwow/demo?from=login&persona=${encodeURIComponent(typeId)}`);
+    window.location.replace(`/selfit/try-on?from=login&persona=${encodeURIComponent(typeId)}`);
     return true;
   };
   const setAuthBusy = (button, busy) => {
@@ -811,7 +812,7 @@
     const reportTypeId = String(data.typeId || 'mute').toLowerCase();
     state.currentReportTypeId = reportTypeId;
     const continueToApp = document.querySelector('#continueToApp');
-    if (continueToApp) continueToApp.href = `/wearwow/demo?from=report&persona=${encodeURIComponent(reportTypeId)}`;
+    if (continueToApp) continueToApp.href = `/selfit/try-on?from=report&persona=${encodeURIComponent(reportTypeId)}`;
     const fullHero = Boolean(data.heroImage?.src);
     const heroSource = fullHero ? mobileHeroSource(data.heroImage.src) : '';
     reportNodes.hero.classList.toggle('report-hero--full', fullHero);
@@ -964,7 +965,7 @@
       setLoadingProgress(100);
       renderReport(preparedReport);
       await delay(650);
-      showScreen('report');
+      window.location.replace(`/selfit/try-on?from=onboarding&persona=${encodeURIComponent(report?.typeId || '')}`);
     } catch (error) {
       track('report_failed', { message: error.message || '' });
       showScreen('vibe');
@@ -1517,6 +1518,12 @@
     input.remove();
     if (!copied) throw new Error('当前浏览器无法自动复制，请稍后重试。');
   };
+  document.querySelector('#reportLogout').addEventListener('click', () => {
+    auth.clear();
+    sessionStorage.removeItem('selfit.studio.job');
+    localStorage.removeItem(SESSION_STORAGE_KEY);
+    window.location.replace('/selfit');
+  });
   document.querySelector('#retakeBtn').addEventListener('click', () => { track('retake_clicked'); showScreen('vibe'); });
   document.querySelectorAll('[data-share]').forEach((button) => button.addEventListener('click', () => runButtonAction(button, async () => {
     if (button.dataset.share === 'report-link') {
@@ -1572,6 +1579,20 @@
   });
 
   const previewParams = new URLSearchParams(window.location.search);
+  if (entryParams.get('from') === 'mirror' && entryParams.get('report') === 'latest') {
+    shell.classList.add('is-ready');
+    showScreen('loading');
+    void authReady.then(async (session) => {
+      if (!session?.user) { showScreen('login'); return; }
+      const result = await api.getLatestReport();
+      if (!result?.report) { showScreen('intro'); playIntro(); return; }
+      state.reportId = result.report.reportId || null;
+      const fullReport = await api.getReport(state.reportId);
+      renderReport(fullReport.report);
+      showScreen('report');
+    }).catch(() => { window.location.replace('/selfit/try-on'); });
+    return;
+  }
   const previewScreen = previewParams.get('preview');
   if (['splash', 'login', 'phone-login', 'invite-login', 'intro', 'suit', 'suit-manual', 'like', 'vibe'].includes(previewScreen)) {
     showScreen(previewScreen);

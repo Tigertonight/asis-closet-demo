@@ -13,6 +13,67 @@ router = APIRouter(prefix="/selfit/try-on", tags=["selfit-studio"])
 _save_lock = RLock()
 
 
+def personal_wardrobe() -> dict[str, Any]:
+    """A library copy used for try-on does not imply wardrobe ownership."""
+    from app import closet
+
+    items = closet.list_closet_items()["items"]
+    personal = [item for item in items if item.get("favorite") or
+                item.get("source", {}).get("type") in {"upload", "xhs_link", "web_link", "reprocess"} or
+                item.get("source", {}).get("upload")]
+    owned_ids = {item["item_id"] for item in personal}
+    outfits = [outfit for outfit in closet.list_outfits()["outfits"]
+               if outfit.get("favorite") or owned_ids.intersection(outfit.get("item_ids", []))]
+    return {"items": personal, "outfits": outfits}
+
+
+@router.get("/wardrobe")
+def studio_wardrobe(user: dict[str, Any] = Depends(get_current_user)) -> dict[str, Any]:
+    with user_storage(user["user_id"]):
+        return personal_wardrobe()
+
+
+@router.post("/items/{item_id}/outfits")
+def studio_item_outfits(item_id: str, user: dict[str, Any] = Depends(get_current_user)) -> dict[str, Any]:
+    """Keep the user's selected garment as the anchor of each generated outfit."""
+    from app import closet
+    from app.recommendation_profile import resolve_profile
+    from app.selfit_report import _personality_template_catalog
+
+    with user_storage(user["user_id"]):
+        anchor = closet.get_closet_item(item_id)
+        profile = resolve_profile(user["user_id"])
+        persona = _personality_template_catalog()["types"].get(profile.get("persona_id"), {})
+        candidates = closet.recommend_outfits({"persona": persona, "source": "inspiration", "limit": 20})["outfits"]
+        def slot_for(item):
+            slot = closet._outfit_item_slot(item)
+            return "bottom" if slot == "skirt" else slot
+
+        slot = slot_for(anchor)
+        generated, seen = [], set()
+        for candidate in candidates:
+            pieces = candidate.get("items", [])
+            if not any(slot_for(item) == slot for item in pieces):
+                continue
+            others = [item for item in pieces if slot_for(item) != slot]
+            # A dress and separate upper/lower garments are mutually exclusive.
+            if slot == "dress":
+                others = [item for item in others if slot_for(item) not in {"top", "bottom"}]
+            elif slot in {"top", "bottom"}:
+                others = [item for item in others if slot_for(item) != "dress"]
+            ids = [item_id, *[item["item_id"] for item in others if item["item_id"] != item_id]][:8]
+            signature = tuple(sorted(ids))
+            if len(ids) < 2 or signature in seen:
+                continue
+            seen.add(signature)
+            generated.append(save_studio_outfit(StudioOutfit(item_ids=ids, title="围绕我的单品搭配")))
+            if len(generated) == 3:
+                break
+        if not generated:
+            raise HTTPException(422, "暂时没有适合这件衣服的组合，可以先试穿单品或自由搭配。")
+        return {"outfits": generated, "anchor_item_id": item_id, "personalized": bool(persona)}
+
+
 class StudioOutfit(BaseModel):
     item_ids: list[str] = Field(min_length=1, max_length=8)
     title: str = Field(default="我的搭配", max_length=48)

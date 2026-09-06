@@ -854,7 +854,8 @@ async def closet_outfit_recommendations(request: Request, current_user: dict[str
             result = create_feed(feed_profile, candidates, feed_context, events,
                                  str(visual.get("version") or "pending-vision"), validation_bundle=bundle,
                                  expression_roles=P0_SEQUENCE_ROLES if anchor_gate is not None else None,
-                                 anchor_release=anchor_release)
+                                 anchor_release=anchor_release,
+                                 inspiration_surface=payload.get("source") == "inspiration")
             if anchor_gate is not None:
                 result["anchor_release"] = anchor_release
             if not candidates:
@@ -1129,9 +1130,15 @@ def selfit_tryon_studio_page() -> FileResponse:
     )
 
 
-@app.get("/wearwow/demo", response_class=HTMLResponse)
-def wearwow_demo_compat_page() -> HTMLResponse:
-    return HTMLResponse(render_selfit_demo_page())
+@app.get("/wearwow/demo", response_class=RedirectResponse)
+def wearwow_demo_compat_page(request: Request) -> RedirectResponse:
+    from urllib.parse import urlencode
+    query = {}
+    if request.query_params.get("outfit"):
+        query = {"screen": "detail", "outfit": request.query_params["outfit"]}
+    elif request.query_params.get("tab") == "closet":
+        query = {"screen": "closet"}
+    return RedirectResponse("/selfit/try-on" + ("?" + urlencode(query) if query else ""), status_code=307)
 
 
 @app.get("/ori/runtime-readiness", include_in_schema=False)

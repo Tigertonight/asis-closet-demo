@@ -8,6 +8,7 @@
   --brand: #8a011b;
   --canvas: #fafafa;
 }
+
 * {
   box-sizing: border-box;
 }
@@ -324,29 +325,6 @@ a {
   outline: 1px solid #8a011b55;
   outline-offset: -1px;
 }
-.dots {
-  display: flex;
-  gap: 4px;
-  justify-content: center;
-  margin-top: 14px;
-  height: 8px;
-}
-.dots button {
-  width: 5px;
-  height: 5px;
-  background: #ccc;
-  padding: 0;
-  border-radius: 50%;
-  position: relative;
-}
-.dots button::after {
-  content: "";
-  position: absolute;
-  inset: -8px -2px;
-}
-.dots button[aria-current="true"] {
-  background: #333;
-}
 .categories {
   display: flex;
   gap: 8px;
@@ -504,11 +482,21 @@ a {
   min-height: 100%;
 }
 .detail-top {
+  position: relative;
   height: 51px;
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
   padding: 0 23px;
+}
+.detail-wordmark {
+  position: absolute;
+  left: 50%;
+  top: 12px;
+  transform: translateX(-50%);
+  width: 55px;
+  height: 20px;
+  object-fit: contain;
 }
 .back {
   width: 44px;
@@ -595,6 +583,12 @@ a {
   color: #777;
   font-size: 14px;
   line-height: 1.8;
+}
+.strip > .empty {
+  flex: 1 0 100%;
+  min-width: 0;
+  margin: 24px 0;
+  text-align: center;
 }
 .empty button,
 .empty a {
@@ -802,10 +796,6 @@ dialog .secondary {
 .strip > .card {
   flex-basis: calc((100cqw - 57px) / 3);
 }
-.dots {
-  margin-top: 17px;
-  padding-left: 17px;
-}
 .nav-ornament {
   right: -2px;
   top: 4px;
@@ -831,16 +821,13 @@ dialog .secondary {
   min-width: 60px;
   padding: 0 16px;
 }
-.mirror-screen:has(.styling) .strip {
+.mirror-screen .strip {
   padding: 0 24px;
   gap: 8px;
   scroll-padding-left: 24px;
 }
-.mirror-screen:has(.styling) .strip > .card {
+.mirror-screen .strip > .card {
   flex-basis: calc((100cqw - 64px) / 3);
-}
-.mirror-screen:has(.styling) .dots {
-  margin-top: 0;
 }
 .mirror-screen .item-card {
   height: 110px;
@@ -989,11 +976,18 @@ dialog .secondary {
 }
 
 .model-library {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  display: flex;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  padding: 4px 2px 12px;
   gap: 12px;
 }
 .model-library .model-option {
+  flex: 0 0 64%;
+  max-width: 190px;
+  scroll-snap-align: start;
   height: auto;
   min-height: 210px;
 }
@@ -1028,41 +1022,35 @@ dialog .secondary {
   background: white;
 }
 
-.studio-home {
+.mirror-profile-card {
   position: absolute;
-  top: max(8px, env(safe-area-inset-top));
-  left: 16px;
-  z-index: 12;
+  top: 34%;
+  left: 2%;
+  width: 21%;
+  aspect-ratio: 102 / 151;
+  z-index: 4;
   display: flex;
+  flex-direction: column;
+  justify-content: center;
   align-items: center;
-  gap: 2px;
-  min-height: 44px;
-  padding: 0 12px 0 8px;
-  border: 1px solid #e7d6db;
-  border-radius: 999px;
-  background: #fffef9ed;
-  color: #59343d;
+  gap: 10px;
+  padding: 12px 6px;
+  background: url('/static/selfit/assets/lace-card@4x.png') center / 100% 100% no-repeat;
+  color: #715b54;
   text-decoration: none;
   font-size: 14px;
-  font-weight: 600;
-  box-shadow: 0 2px 8px #30202408;
+  white-space: nowrap;
 }
-.studio-home svg {
-  width: 20px;
-  height: 20px;
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 1.8;
-  stroke-linecap: round;
-  stroke-linejoin: round;
+.profile-card-title {
+  color: #8a011b;
+  font-family: 'Bradley Hand', 'Chalkboard SE', cursive;
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1;
+  text-align: center;
+  transform: rotate(-4deg);
 }
-/* Keep result actions below the persistent home link. */
-.studio-home ~ .screen .result-tools {
-  top: 60px;
-}
-
-/* Make the pending outfit explicit and separate the primary action from home. */
-.studio-home ~ .screen .try-outfit-tools {
+.mirror-stage .try-outfit-tools {
   top: max(8px, env(safe-area-inset-top));
   left: auto;
   right: 16px;
@@ -1110,19 +1098,19 @@ dialog .secondary {
 @media (prefers-reduced-motion: reduce) { .mirror-spinner { animation: none; } }
 
 /* The add control is part of the garment grid and scrolls with its contents. */
-.closet-grid .add-garment {
-  position: relative;
-  inset: auto;
-  justify-self: center;
-  align-self: center;
+.studio > .add-garment {
+  position: absolute;
+  bottom: calc(125px + env(safe-area-inset-bottom, 0px));
+  right: 26px;
   display: grid;
   place-items: center;
   padding: 0;
-  margin: 12px 0;
+  margin: 0;
   background: #8a011b url("/static/selfit/assets/splash-textile@2x.png") center / cover;
   box-shadow: inset 0 0 0 1px #ffffff26, 0 3px 8px #8a011b1a;
-  z-index: auto;
+  z-index: 6;
 }
+.studio > .add-garment[hidden] { display: none; }
 .add-garment svg {
   display: block;
   width: 28px;
@@ -1166,3 +1154,42 @@ button.composition-piece:focus-visible { outline:2px solid #8a011b; outline-offs
 .canvas-remove { position:absolute; transform:translate(-50%,-50%); pointer-events:auto; width:44px; height:44px; padding:9px; border:0; background:transparent; display:grid; place-items:center; }
 .canvas-remove svg { width:26px; height:26px; padding:5px; box-sizing:border-box; border-radius:50%; background:#8a011b; color:white; fill:none; stroke:currentColor; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; box-shadow:0 2px 6px #573b3b25; }
 .canvas-remove:focus-visible { outline:2px solid #8a011b; outline-offset:0; }
+
+/* Data categories and action sheets retain the original mirror layout. */
+.closet-screen, .inspiration-screen { position: relative; }
+.collection-brand {
+  position: absolute;
+  inset: 0 0 auto;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.collection-brand img { display: block; width: 55px; height: 20px; object-fit: contain; }
+.category-tabs { overflow-x: auto; justify-content: flex-start; gap: 16px; }
+.category-tabs button { flex-shrink: 0; min-height: 44px; }
+#sheet > .primary, #sheet > .secondary { display: block; width: 100%; min-height: 44px; margin-top: 12px; }
+
+.closet-screen:has(.wardrobe-empty) {
+  display: flex; flex-direction: column; height: 100%; min-height: 660px;
+  padding-bottom: 190px;
+}
+.closet-screen:has(.wardrobe-empty) .category-tabs { flex-shrink: 0; }
+.closet-grid:empty { display: none; }
+.wardrobe-empty {
+  flex: 1; display: flex; flex-direction: column; align-items: center;
+  justify-content: center; text-align: center; padding: 24px 8px;
+  animation: empty-arrive 350ms ease-out both;
+}
+.wardrobe-empty-art { position: relative; width: 200px; height: 180px; margin-bottom: 22px; }
+.empty-paper { position: absolute; width: 102px; height: 143px; left: 70px; top: 19px; transform: rotate(12deg); border: 1px solid #e5d9d4; border-radius: 8px; background: #f3e9e4; }
+.empty-lace { position: absolute; width: 105px; height: 155px; left: 38px; top: 8px; transform: rotate(-9deg); filter: drop-shadow(0 6px 9px #60453c14); }
+.empty-keepsake { position: absolute; width: 84px; height: 80px; object-fit: contain; left: 49px; top: 42px; transform: rotate(-9deg); filter: drop-shadow(0 3px 3px #60453c16); }
+.empty-butterfly { position: absolute; width: 49px; height: 35px; object-fit: contain; right: 12px; top: 4px; transform: rotate(18deg); }
+.wardrobe-empty h2 { margin: 0; font-size: 18px; line-height: 28px; color: #493b38; font-weight: 600; }
+.wardrobe-empty p { margin: 12px 0 26px; font-size: 14px; line-height: 25px; color: #82736e; }
+.wardrobe-empty > .primary { width: 224px; max-width: 100%; min-height: 44px; border-radius: 18px; font-size: 14px; }
+.empty-browse { margin-top: 8px; min-height: 44px; font-size: 14px; color: #8a6567; }
+.empty-browse span { margin-left: 6px; }
+@keyframes empty-arrive { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) { .wardrobe-empty { animation: none; } }

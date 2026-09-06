@@ -74,7 +74,7 @@ def outfit_features(outfit: dict) -> tuple[str, frozenset, frozenset]:
     return parent, ids, families
 
 
-def select_diverse_outfits(ranked: list[dict], seen_ids: list[str], limit: int, *, home_surface: bool = False) -> dict:
+def select_diverse_outfits(ranked: list[dict], seen_ids: list[str], limit: int, *, home_surface: bool = False, inspiration_surface: bool = False) -> dict:
     """Main IDs/families <=2 in every 10; recipe relatives >=8 positions apart.
 
     Reconsider deferred candidates after every pick. Probe one extra pick for
@@ -83,9 +83,11 @@ def select_diverse_outfits(ranked: list[dict], seen_ids: list[str], limit: int, 
     """
     by_id = {str(o["outfit_id"]): o for o in ranked}
     features = {oid: outfit_features(o) for oid, o in by_id.items()}
+    recipes = {oid: main_recipe_signature(o) for oid, o in by_id.items()}
     seen = list(dict.fromkeys(str(oid) for oid in seen_ids))
     history = [features[oid] if oid in features else None for oid in seen[-9:]]
     excluded = set(seen)
+    seen_recipes = {recipes[oid] for oid in seen if oid in recipes and recipes[oid]}
     candidates = [oid for oid in by_id if oid not in excluded]
     chosen = []
     for _ in range(limit + 1):
@@ -99,13 +101,16 @@ def select_diverse_outfits(ranked: list[dict], seen_ids: list[str], limit: int, 
         recent_families = {g for f in recent if f for g in f[2]}
         pick = next((oid for oid in candidates
                      if features[oid][0] not in recent_parents
-                     and (not home_surface or (not features[oid][1] & recent_main and not features[oid][2] & recent_families))
+                     and (not inspiration_surface or not recipes[oid] or recipes[oid] not in seen_recipes)
+                     and (not (home_surface or inspiration_surface) or (not features[oid][1] & recent_main and not features[oid][2] & recent_families))
                      and all(main_counts[g] < 2 for g in features[oid][1])
                      and all(family_counts[g] < 2 for g in features[oid][2])), None)
         if pick is None:
             break
         candidates.remove(pick)
         chosen.append(pick)
+        if recipes[pick]:
+            seen_recipes.add(recipes[pick])
         history.append(features[pick])
     has_more = len(chosen) > limit
     returned = chosen[:limit]
@@ -114,8 +119,8 @@ def select_diverse_outfits(ranked: list[dict], seen_ids: list[str], limit: int, 
         "outfits": [by_id[oid] for oid in returned],
         "has_more": has_more,
         "diversity": {
-            "version": "diverse_home_v2" if home_surface else VERSION, "window": 10,
-            "main_min_distance": 6 if home_surface else None, "first_window_unique": 10 if home_surface else None, "main_item_cap": 2,
+            "version": "diverse_inspiration_v1" if inspiration_surface else "diverse_home_v2" if home_surface else VERSION, "window": 10,
+            "main_min_distance": 6 if home_surface or inspiration_surface else None, "first_window_unique": 10 if home_surface or inspiration_surface else None, "main_item_cap": 2,
             "style_family_cap": 2, "recipe_min_distance": 8,
             "remaining_candidates": remaining,
             "stop_reason": None if has_more else "diversity_limit" if remaining else "pool_exhausted",

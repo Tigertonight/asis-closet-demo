@@ -41,6 +41,62 @@ def test_reject_unknown_piece_before_copying_anything(library):
         assert closet._ensure_manifest()['items']==[]
 
 
+def test_wardrobe_does_not_treat_library_tryon_as_ownership(library):
+    from app.selfit_studio import personal_wardrobe
+    with storage.user_storage('studio_empty_wardrobe'):
+        assert personal_wardrobe() == {'items': [], 'outfits': []}
+        saved = save_studio_outfit(StudioOutfit(item_ids=library['item_ids']))
+        assert personal_wardrobe() == {'items': [], 'outfits': []}
+        closet.update_outfit(saved['outfit_id'], {'favorite': True})
+        wardrobe = personal_wardrobe()
+        assert wardrobe['items'] == []
+        assert [row['outfit_id'] for row in wardrobe['outfits']] == [saved['outfit_id']]
+        closet.update_outfit(saved['outfit_id'], {'favorite': False})
+        assert personal_wardrobe() == {'items': [], 'outfits': []}
+
+
+def test_uploaded_anchor_generation_and_user_isolation(library, monkeypatch):
+    from app.selfit_studio import personal_wardrobe, studio_item_outfits
+    from app import recommendation_profile
+    monkeypatch.setattr(recommendation_profile, 'resolve_profile', lambda user_id: {'persona_id': None})
+    with storage.user_storage('studio_anchor_owner'):
+        anchor = deepcopy(library['items'][0])
+        anchor.update(item_id='uploaded_anchor', source={'type': 'upload'})
+        manifest = closet._ensure_manifest()
+        manifest['items'].append(anchor)
+        closet._write_manifest(manifest)
+    result = studio_item_outfits('uploaded_anchor', {'user_id': 'studio_anchor_owner'})
+    assert result['outfits']
+    for row in result['outfits']:
+        assert 'uploaded_anchor' in row['item_ids']
+        assert library['items'][0]['item_id'] not in row['item_ids']
+    with storage.user_storage('studio_anchor_owner'):
+        wardrobe = personal_wardrobe()
+        assert [item['item_id'] for item in wardrobe['items']] == ['uploaded_anchor']
+        assert wardrobe['outfits']
+    with pytest.raises(HTTPException) as error:
+        studio_item_outfits('uploaded_anchor', {'user_id': 'studio_anchor_other'})
+    assert error.value.status_code == 404
+
+
+def test_legacy_app_link_routes_to_mirror_detail():
+    client = TestClient(app)
+    response = client.get('/wearwow/demo?outfit=sample', follow_redirects=False)
+    assert response.status_code == 307
+    assert response.headers['location'] == '/selfit/try-on?screen=detail&outfit=sample'
+
+
+def test_inspiration_recommendation_does_not_read_private_outfits(library, monkeypatch):
+    with storage.user_storage('studio_source_boundary'):
+        save_studio_outfit(StudioOutfit(item_ids=library['item_ids'], favorite=True))
+        def unexpected_private_read():
+            raise AssertionError('Inspiration must only rank published outfits')
+        monkeypatch.setattr(closet, 'list_outfits', unexpected_private_read)
+        result = closet.recommend_outfits({'source': 'inspiration', 'limit': 12})
+        assert result['outfits']
+        assert {row['outfit_id'] for row in result['outfits']} == {library['outfit_id']}
+
+
 def test_route_requires_auth_and_rejects_too_many_items(library):
     client=TestClient(app)
     assert client.post('/selfit/try-on/outfits',json={'item_ids':library['item_ids']}).status_code==401

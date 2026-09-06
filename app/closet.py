@@ -1858,7 +1858,7 @@ def recommend_outfits(payload: dict[str, Any]) -> dict[str, Any]:
     context = payload.get("context") if isinstance(payload.get("context"), dict) else {}
     preview = context.get("persona_preview") is True
     # Preview the published pool alone: no hydrated Demo or private creations.
-    outfits = [] if preview else list_outfits()["outfits"]
+    outfits = [] if preview or payload.get("source") == "inspiration" else list_outfits()["outfits"]
     known_ids = {str(outfit.get("outfit_id") or "") for outfit in outfits}
     outfits.extend(
         outfit
@@ -1927,7 +1927,8 @@ def recommend_outfits(payload: dict[str, Any]) -> dict[str, Any]:
     # Preserve delivery order so the last page participates in the same window.
     seen_ids = _string_list(payload.get("exclude_outfit_ids"))[:5000]
     first_home_page = home_surface and not seen_ids
-    selection = select_diverse_outfits(ordered, seen_ids, limit + (4 if first_home_page else 0), home_surface=home_surface)
+    selection = select_diverse_outfits(ordered, seen_ids, limit + (4 if first_home_page else 0), home_surface=home_surface,
+                                       inspiration_surface=payload.get("source") == "inspiration")
     if home_surface:
         chosen = selection["outfits"]
         selection["carousel"] = chosen[:4] if first_home_page else []

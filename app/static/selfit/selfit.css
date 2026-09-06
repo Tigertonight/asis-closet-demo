@@ -775,7 +775,7 @@ button {
   z-index: 5;
   top: 0;
   display: grid;
-  grid-template-columns: 44px 1fr 44px;
+  grid-template-columns: 72px 1fr 72px;
   align-items: center;
   min-height: 64px;
   padding: max(8px, env(safe-area-inset-top)) 20px 8px;
@@ -787,6 +787,9 @@ button {
 .report-nav .icon-button::before { position: absolute; top: 16px; left: 15px; width: 11px; height: 11px; border: solid currentColor; border-width: 0 0 2px 2px; content: ''; transform: rotate(45deg); }
 .report-nav h2 { margin: 0; font-size: 18px; font-weight: 600; line-height: 26px; text-align: center; }
 .report-nav .header-spacer { width: 44px; }
+.report-logout { width: 44px; height: 44px; justify-self: end; display: grid; place-items: center; padding: 0; border: 0; background: transparent; }
+.report-logout img { display: block; width: 22px; height: 22px; }
+.is-public-report .report-logout { visibility: hidden; pointer-events: none; }
 .public-report-error { display: grid; width: calc(100% - 40px); min-height: 100dvh; margin: 0 auto; padding: 40px 18px max(40px, env(safe-area-inset-bottom)); place-content: center; text-align: center; }
 .public-report-error-wordmark { display: block; width: 72px; height: auto; margin: 0 auto 32px; }
 .public-report-error h1 { margin: 0; font-size: 20px; line-height: 29px; text-wrap: pretty; }
