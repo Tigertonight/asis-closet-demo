@@ -1,0 +1,375 @@
+{
+  "schema_version": 1,
+  "production_approved": false,
+  "source_anchor_manifest": "docs/audits/20260904-p0-acceptance/anchor-candidates.v61.json",
+  "source_anchor_sha256": "0fc5ae5e49922a1cc54f47f00bb708826312d67a836b84397850c5a3b52b5e47",
+  "source_staging": "docs/audits/20260904-p0-acceptance/p0-gap-staging.v50.json",
+  "source_staging_sha256": "0d0db5a89318bed068175134906dae90a0c04a33a6c7b8703449e72eb7cc5b16",
+  "output_anchor_manifest": "docs/audits/20260904-p0-acceptance/anchor-candidates.v62.json",
+  "output_anchor_sha256": "c46829516292c94990b7a4bd8ecb3fe42115054f47fe1c1c5d9563f27d5ae965",
+  "output_staging": "docs/audits/20260904-p0-acceptance/p0-gap-staging.v51.json",
+  "output_staging_sha256": "2b7fba032987b3927dd62062f5a76ea38b7f5b458c271e6985a73a9a0a222884",
+  "conversions": [
+    {
+      "source_url": "/static/selfit/assets/content_v2_drafts/aw-winter-03/garments/winter-jacket-bright-fuchsia-v1.png",
+      "source_sha256": "1e95961744f45c82cb1833cc2caa33ffe9d2424685282681cc1affdbd91696bb",
+      "target_url": "/static/selfit/assets/content_v2_drafts/aw-winter-03/garments/winter-jacket-bright-fuchsia-v1.webp",
+      "target_sha256": "3e7493a460d4781fafe0587daf5ad88450c80877272561385292979146a91c97",
+      "pixel_sha256": "afa07c2e6003350228e6610fde19656393a00300a9974546b05381b626afd058",
+      "size": [
+        1200,
+        1200
+      ],
+      "mode": "RGBA",
+      "lossless_pixel_equal": true,
+      "source_retained_for_audit": true
+    },
+    {
+      "source_url": "/static/selfit/assets/content_v2_drafts/p0-bolt-structure-04/garments/bolt-shaped-tweed-jacket-v1.png",
+      "source_sha256": "1ddb87fb3f6a8f941280e8015b9ad478db698904087286be62c84d3c55ca8a3a",
+      "target_url": "/static/selfit/assets/content_v2_drafts/p0-bolt-structure-04/garments/bolt-shaped-tweed-jacket-v1.webp",
+      "target_sha256": "7084b515a940248a90d533f7ef70f8a7f272a98f742836cdea6f4fd13ae0a7a8",
+      "pixel_sha256": "f08630087eb9b5370da99e7289f6c3b2efcc150f5778c326a296b135aeb56850",
+      "size": [
+        1200,
+        1200
+      ],
+      "mode": "RGBA",
+      "lossless_pixel_equal": true,
+      "source_retained_for_audit": true
+    },
+    {
+      "source_url": "/static/selfit/assets/content_v2_drafts/p0-final-supply-11/garments/bolt-easy-ivory-blouse-v1.png",
+      "source_sha256": "9e5985deda6758b038d8e0b6862cbd208707b5ee23665d732923df737260213e",
+      "target_url": "/static/selfit/assets/content_v2_drafts/p0-final-supply-11/garments/bolt-easy-ivory-blouse-v1.webp",
+      "target_sha256": "393d1b411553cd2fe4ea69966cc83ce75dbd56bc3a3d8ed759761ad37a603188",
+      "pixel_sha256": "c3a86d9b324382c30e2fe169f793271a6785070759bebe7e4a5a6b3528335d14",
+      "size": [
+        1200,
+        1200
+      ],
+      "mode": "RGBA",
+      "lossless_pixel_equal": true,
+      "source_retained_for_audit": true
+    },
+    {
+      "source_url": "/static/selfit/assets/content_v2_drafts/p0-final-supply-11/garments/bolt-explore-emerald-dress-v1.png",
+      "source_sha256": "cc33466edc96a451e75034e11872453ee42b7178e7831b6f1c04e3adf670b0b8",
+      "target_url": "/static/selfit/assets/content_v2_drafts/p0-final-supply-11/garments/bolt-explore-emerald-dress-v1.webp",
+      "target_sha256": "b119eed09a738f3f3f39dfc69ef47a9c19a8baeb0def261a4a5f61f47855dde8",
+      "pixel_sha256": "93e53b035d7aca8c015cbbe5113ad26cd02f22f6cb1eb354759d4a74642cb1ee",
+      "size": [
+        1200,
+        1200
+      ],
+      "mode": "RGBA",
+      "lossless_pixel_equal": true,
+      "source_retained_for_audit": true
+    },
+    {
+      "source_url": "/static/selfit/assets/content_v2_drafts/p0-final-supply-11/garments/bolt-explore-petal-jacket-v1.png",
+      "source_sha256": "f8ef2964522df27f958bdcf37fffd5126020a623e16c224d3613047371f35ab3",
+      "target_url": "/static/selfit/assets/content_v2_drafts/p0-final-supply-11/garments/bolt-explore-petal-jacket-v1.webp",
+      "target_sha256": "a49db4700b05c8d22f0b3641c2f91de82367bf973dfb29825de8e819b949e440",
+      "pixel_sha256": "03d4f5d73c749f28c0fd39935497f81aeb794fd7b6c99f0215fda4c5cde021e3",
+      "size": [
+        1200,
+        1200
+      ],
+      "mode": "RGBA",
+      "lossless_pixel_equal": true,
+      "source_retained_for_audit": true
+    },
+    {
+      "source_url": "/static/selfit/assets/content_v2_drafts/p0-final-supply-11/garments/bolt-typical-burgundy-blouse-v1.png",
+      "source_sha256": "5a4b39c0709ca73f584503b95a0b2e5b11bb39d9dafd121735ec433cf9bc7fa9",
+      "target_url": "/static/selfit/assets/content_v2_drafts/p0-final-supply-11/garments/bolt-typical-burgundy-blouse-v1.webp",
+      "target_sha256": "c74c14e613adcdf74ff53966233dd9a98b7d821b2c3eadc598e1a6cb911d4865",
+      "pixel_sha256": "e63a93494a40b3743dfdb8bd1f75e02ad8120fc405ff02edba2e58a58e911ea5",
+      "size": [
+        1200,
+        1200
+      ],
+      "mode": "RGBA",
+      "lossless_pixel_equal": true,
+      "source_retained_for_audit": true
+    },
+    {
+      "source_url": "/static/selfit/assets/content_v2_drafts/p0-final-supply-11/garments/edge-denim-pleat-dress-v1.png",
+      "source_sha256": "bc4e37b5e561a5214edecee5f33c8c01050335a8dd6800adc08e51a7e561214c",
+      "target_url": "/static/selfit/assets/content_v2_drafts/p0-final-supply-11/garments/edge-denim-pleat-dress-v1.webp",
+      "target_sha256": "b5bdb2e954bffdb42a853dea54e1c55c09083502536355e9ef90d3c8dc2daeeb",
+      "pixel_sha256": "b02bd20e8c542072eb7da91cc78d735c35cadcfcb30410cfe968e31ef73051be",
+      "size": [
+        1200,
+        1200
+      ],
+      "mode": "RGBA",
+      "lossless_pixel_equal": true,
+      "source_retained_for_audit": true
+    },
+    {
+      "source_url": "/static/selfit/assets/content_v2_drafts/p0-final-supply-11/garments/edge-diagonal-knit-top-v1.png",
+      "source_sha256": "8343fdbfa7e37a3d07bd274bf48d92e826cf991e21f55600a06ca8ce01de5c21",
+      "target_url": "/static/selfit/assets/content_v2_drafts/p0-final-supply-11/garments/edge-diagonal-knit-top-v1.webp",
+      "target_sha256": "472356404d144596fd623733d8df015a9da43cbbefd0777547be6ce7ac5cee72",
+      "pixel_sha256": "3d5320d2cae1c27bad3651eed333665ed74cf4965d5460dbf774d8f646507fad",
+      "size": [
+        1200,
+        1200
+      ],
+      "mode": "RGBA",
+      "lossless_pixel_equal": true,
+      "source_retained_for_audit": true
+    },
+    {
+      "source_url": "/static/selfit/assets/content_v2_drafts/p0-final-supply-11/garments/edge-organza-panel-jacket-v1.png",
+      "source_sha256": "32be41f777d88db55d326eb8211513193b6e55289c2c4bd7a9e43cc4a3559a10",
+      "target_url": "/static/selfit/assets/content_v2_drafts/p0-final-supply-11/garments/edge-organza-panel-jacket-v1.webp",
+      "target_sha256": "a26b6264d9e76e5e4493adc192b37de77d68661e6c605510b62b9ecdc4dcc0a5",
+      "pixel_sha256": "d862b132481e02f65cd64738993e17935f7f2b6ef0a891d384f3ddcfd699c192",
+      "size": [
+        1200,
+        1200
+      ],
+      "mode": "RGBA",
+      "lossless_pixel_equal": true,
+      "source_retained_for_audit": true
+    },
+    {
+      "source_url": "/static/selfit/assets/content_v2_drafts/p0-final-supply-11/garments/neon-curve-panel-dress-v1.png",
+      "source_sha256": "dcc8ad912279e442bb80037bbe94d8ab5902f7d834f7f59db1eac3023099b118",
+      "target_url": "/static/selfit/assets/content_v2_drafts/p0-final-supply-11/garments/neon-curve-panel-dress-v1.webp",
+      "target_sha256": "9f8267c7b5afbda0be61c86fe9a648070c25894bb1df2886a5888fcb0665ce08",
+      "pixel_sha256": "ca92d0a7e00ef464e2bddf111b287089c0abfe2441c45f2db6b25f640e282b14",
+      "size": [
+        1200,
+        1200
+      ],
+      "mode": "RGBA",
+      "lossless_pixel_equal": true,
+      "source_retained_for_audit": true
+    },
+    {
+      "source_url": "/static/selfit/assets/content_v2_drafts/p0-final-supply-11/garments/neon-curve-panel-top-v1.png",
+      "source_sha256": "2a80dcbc7a2efe1f1c70bb9fe35e47a1e364cd025430f6edcd6b7d06f58888f1",
+      "target_url": "/static/selfit/assets/content_v2_drafts/p0-final-supply-11/garments/neon-curve-panel-top-v1.webp",
+      "target_sha256": "a01766cecd459248ef9b9fc8cd0d683dbcfb8055844f6b2a27326ceca1d7e3cb",
+      "pixel_sha256": "fbc2c3048520f19522defb2815ff08be9e8c6cf35a6f6c62a54df08fbff7caa0",
+      "size": [
+        1200,
+        1200
+      ],
+      "mode": "RGBA",
+      "lossless_pixel_equal": true,
+      "source_retained_for_audit": true
+    },
+    {
+      "source_url": "/static/selfit/assets/content_v2_drafts/p0-final-supply-11/garments/neon-explore-arc-dress-v1.png",
+      "source_sha256": "db87d1411bf7155381ae4a608987cea8de88f3383b4a4c4c93c996a424c9583c",
+      "target_url": "/static/selfit/assets/content_v2_drafts/p0-final-supply-11/garments/neon-explore-arc-dress-v1.webp",
+      "target_sha256": "5880db1ecf25b5e1900603d21cc383171b1c786b384c5eb362aef08520ccd1d3",
+      "pixel_sha256": "ce47d8e47cd11909af72d3e747ffe88c1696ee6e8e12141d1bab494e63f792a2",
+      "size": [
+        1200,
+        1200
+      ],
+      "mode": "RGBA",
+      "lossless_pixel_equal": true,
+      "source_retained_for_audit": true
+    },
+    {
+      "source_url": "/static/selfit/assets/content_v2_drafts/p0-final-supply-11/garments/neon-explore-storm-overshirt-v1.png",
+      "source_sha256": "637ed0c714e890cde03e4ffdc9ec5fdc3e707d8fbc50c0e8b9fe3ac8870edc23",
+      "target_url": "/static/selfit/assets/content_v2_drafts/p0-final-supply-11/garments/neon-explore-storm-overshirt-v1.webp",
+      "target_sha256": "343540da7994923f910b298b2c2620843299cf9b72649594f7093a79888e3934",
+      "pixel_sha256": "e5f7e2faf45bcae336752d2abd36b1b0981958f0fcbeb77344bef6af0e74547b",
+      "size": [
+        1200,
+        1200
+      ],
+      "mode": "RGBA",
+      "lossless_pixel_equal": true,
+      "source_retained_for_audit": true
+    },
+    {
+      "source_url": "/static/selfit/assets/content_v2_drafts/p0-final-supply-11/garments/neon-typical-graphic-top-v1.png",
+      "source_sha256": "9b7454960454fc6ee06826ea7ebadfd8a351e8c69b7a98d45a285e3861cfdffd",
+      "target_url": "/static/selfit/assets/content_v2_drafts/p0-final-supply-11/garments/neon-typical-graphic-top-v1.webp",
+      "target_sha256": "424267c2b535a90df2dd2937568c4663109e4bdd25b95e70f264efcadc3a56b4",
+      "pixel_sha256": "e8a6028a41f9899b7c7953968cdb1425cf6fd1bae4458b8c608ca551e930d70a",
+      "size": [
+        1200,
+        1200
+      ],
+      "mode": "RGBA",
+      "lossless_pixel_equal": true,
+      "source_retained_for_audit": true
+    },
+    {
+      "source_url": "/static/selfit/assets/content_v2_drafts/p0-final-supply-11/garments/noir-diagonal-zip-dress-v1.png",
+      "source_sha256": "c927f5799807f2ef51551890e42f891a351175aee967717edabb77c33b4e41ba",
+      "target_url": "/static/selfit/assets/content_v2_drafts/p0-final-supply-11/garments/noir-diagonal-zip-dress-v1.webp",
+      "target_sha256": "3d12098a0150577a4d623736b97a9132b13f0ac8ddfafd32fadc73f3efa1e95c",
+      "pixel_sha256": "531be01e662d4c8e70c905d9a86789ab092539d3cc5389028dd92fb87cf66508",
+      "size": [
+        1200,
+        1200
+      ],
+      "mode": "RGBA",
+      "lossless_pixel_equal": true,
+      "source_retained_for_audit": true
+    },
+    {
+      "source_url": "/static/selfit/assets/content_v2_drafts/p0-final-supply-11/garments/oops-rugby-tailored-dress-v1.png",
+      "source_sha256": "6a61b672ce31b237990a0377f9bf9ad3e8654b1fdf8f5325a4c46258234d8154",
+      "target_url": "/static/selfit/assets/content_v2_drafts/p0-final-supply-11/garments/oops-rugby-tailored-dress-v1.webp",
+      "target_sha256": "20191b4bd82164d8e4e4c4c7b30ee43f24745f0e3fedc0181df9ef00c15d322b",
+      "pixel_sha256": "aebabd5a38a8917c5e6364c2a2fbddbf1bd516e7772c96ab1568862a6c321e05",
+      "size": [
+        1200,
+        1200
+      ],
+      "mode": "RGBA",
+      "lossless_pixel_equal": true,
+      "source_retained_for_audit": true
+    },
+    {
+      "source_url": "/static/selfit/assets/content_v2_drafts/p0-final-supply-11/garments/void-offset-pocket-skirt-v1.png",
+      "source_sha256": "70f1e0ef9279949693b3b2dde992a11a96834f8a876cb3a6b66bb1eb368e4c34",
+      "target_url": "/static/selfit/assets/content_v2_drafts/p0-final-supply-11/garments/void-offset-pocket-skirt-v1.webp",
+      "target_sha256": "6444abbc607abdcda93a1b62f4632ada203c515733b37ddc637c0446e49fb61c",
+      "pixel_sha256": "4d24010d5408d36513fdb994e300efc8b634e29f2a299be157fda1832c9556b0",
+      "size": [
+        1200,
+        1200
+      ],
+      "mode": "RGBA",
+      "lossless_pixel_equal": true,
+      "source_retained_for_audit": true
+    },
+    {
+      "source_url": "/static/selfit/assets/content_v2_drafts/p0-low-expression-01/garments/bolt-bow-blouse-v1.png",
+      "source_sha256": "62050afcc83adc4437f2929d9dca5d0200a51d26ad6eddf8cf2e001a1cbdb056",
+      "target_url": "/static/selfit/assets/content_v2_drafts/p0-low-expression-01/garments/bolt-bow-blouse-v1.webp",
+      "target_sha256": "5b39dd4a11ebe9d4e0b2ccb61c4b27ca9e174f831a898c17463a60c929c3fc49",
+      "pixel_sha256": "fcf4260ea7c576025de9679feea7ca512b8f43e73aa27eded0f6cd99983e1247",
+      "size": [
+        1200,
+        1200
+      ],
+      "mode": "RGBA",
+      "lossless_pixel_equal": true,
+      "source_retained_for_audit": true
+    },
+    {
+      "source_url": "/static/selfit/assets/content_v2_drafts/p0-low-expression-01/garments/bolt-bow-dress-v1.png",
+      "source_sha256": "32173a0e834a3c435e8a0db180e47535ad46ed19e5256806bb953a337c83cc54",
+      "target_url": "/static/selfit/assets/content_v2_drafts/p0-low-expression-01/garments/bolt-bow-dress-v1.webp",
+      "target_sha256": "885fa442429c969a2b9f8a64ed7b428f5e666ee4e889ed188a8a6ae6be3664ea",
+      "pixel_sha256": "8b75901a5e96ba2fe4ff37769faa1f9b9ced39d5a12af85e93147bb55e0fa846",
+      "size": [
+        1200,
+        1200
+      ],
+      "mode": "RGBA",
+      "lossless_pixel_equal": true,
+      "source_retained_for_audit": true
+    },
+    {
+      "source_url": "/static/selfit/assets/content_v2_drafts/p0-low-expression-01/garments/edge-piped-dress-v1.png",
+      "source_sha256": "a99705648643f4dc4471d45fb22cd0de5771ee68e8322e64981eedfc702efeee",
+      "target_url": "/static/selfit/assets/content_v2_drafts/p0-low-expression-01/garments/edge-piped-dress-v1.webp",
+      "target_sha256": "440daff64f5614af3f3ee946ed0ad70eaa96feaee4735b571490c2908ba18709",
+      "pixel_sha256": "61294aab00c57ed968af038463b6685771e94e9737326d934d5e62cd4ee1c880",
+      "size": [
+        1200,
+        1200
+      ],
+      "mode": "RGBA",
+      "lossless_pixel_equal": true,
+      "source_retained_for_audit": true
+    },
+    {
+      "source_url": "/static/selfit/assets/content_v2_drafts/p0-low-expression-01/garments/edge-piped-knit-v1.png",
+      "source_sha256": "b00a02f157ef802074110ee03a50b2434ec515eb0b5fb833b58b792190b32408",
+      "target_url": "/static/selfit/assets/content_v2_drafts/p0-low-expression-01/garments/edge-piped-knit-v1.webp",
+      "target_sha256": "016aeff84be5db61b8ed9f294cd2561d792c331bc1beec88c2a82b755ef4db4a",
+      "pixel_sha256": "f31fc4af59bf922980a2aad44411e3b9c98502a4cb1d7d06011aa266500cd717",
+      "size": [
+        1200,
+        1200
+      ],
+      "mode": "RGBA",
+      "lossless_pixel_equal": true,
+      "source_retained_for_audit": true
+    },
+    {
+      "source_url": "/static/selfit/assets/content_v2_drafts/p0-low-expression-01/garments/jade-wrap-dress-v1.png",
+      "source_sha256": "674daefb6a7f10cbf71d07b064801d8d03ac167c854f79b632249b20cda60114",
+      "target_url": "/static/selfit/assets/content_v2_drafts/p0-low-expression-01/garments/jade-wrap-dress-v1.webp",
+      "target_sha256": "742e1d1f38fbea7f2a71f5e81efb1fbd1371ebbe87b1abfa5dc76ff7cd5124df",
+      "pixel_sha256": "57cf01ac50d49481f9c4af99de1965ac9a2dbd11ac1a4e025436191f6677a3d0",
+      "size": [
+        1200,
+        1200
+      ],
+      "mode": "RGBA",
+      "lossless_pixel_equal": true,
+      "source_retained_for_audit": true
+    },
+    {
+      "source_url": "/static/selfit/assets/content_v2_drafts/p0-low-expression-01/garments/oops-split-skirt-v1.png",
+      "source_sha256": "dcbecb0ba5ce1405fbc7a1dca418e6ebe6243a743fabc2423dd07d52683a11ce",
+      "target_url": "/static/selfit/assets/content_v2_drafts/p0-low-expression-01/garments/oops-split-skirt-v1.webp",
+      "target_sha256": "cf6c3ba5c9ea9adcf3d3df32f51633c5ecfecb2cf4033104975be0907ef2388f",
+      "pixel_sha256": "20444506ca27b4ff1d924a6a772ddb1992bad51e7a6524d56ce34a400e645686",
+      "size": [
+        1200,
+        1200
+      ],
+      "mode": "RGBA",
+      "lossless_pixel_equal": true,
+      "source_retained_for_audit": true
+    },
+    {
+      "source_url": "/static/selfit/assets/content_v2_drafts/p0-low-expression-01/garments/void-pocket-dress-v1.png",
+      "source_sha256": "bdf190aa73d03d121fbb60b0bfd965556283b9392fb9051a0a7c4bb5d5af5e93",
+      "target_url": "/static/selfit/assets/content_v2_drafts/p0-low-expression-01/garments/void-pocket-dress-v1.webp",
+      "target_sha256": "ca12d4e07b113e2fb3878f32b403508f1e302869237b43ce201262578a90fde9",
+      "pixel_sha256": "ae616765095a727617b505324df6d27c8cc5fd9370b20f8debebad2b43c1f28f",
+      "size": [
+        1200,
+        1200
+      ],
+      "mode": "RGBA",
+      "lossless_pixel_equal": true,
+      "source_retained_for_audit": true
+    },
+    {
+      "source_url": "/static/selfit/assets/content_v2_drafts/p0-medium-expression-02/garments/bolt-wine-typical-dress-v1.png",
+      "source_sha256": "0c26ca3d7ef085126fd85ad9271448ad716eca3d9feaad50fa8c86945fda5cb0",
+      "target_url": "/static/selfit/assets/content_v2_drafts/p0-medium-expression-02/garments/bolt-wine-typical-dress-v1.webp",
+      "target_sha256": "7e6a8bf38ba12ce5e1f84261a85d12a9466ff43678b114beb4063eafb4e34df2",
+      "pixel_sha256": "37332c183729a596c367fdce968313bcfd02858aeea9af8455ddb0d6a51bd18a",
+      "size": [
+        1200,
+        1200
+      ],
+      "mode": "RGBA",
+      "lossless_pixel_equal": true,
+      "source_retained_for_audit": true
+    }
+  ],
+  "selected_asset_audit": {
+    "anchor_count": 160,
+    "unique_asset_urls": 452,
+    "formats": {
+      "WEBP": 452
+    },
+    "missing": [],
+    "non_webp": [],
+    "all_webp": true
+  },
+  "version": "p0-selected-webp-migration-8a2ee5134aef8c796c59"
+}

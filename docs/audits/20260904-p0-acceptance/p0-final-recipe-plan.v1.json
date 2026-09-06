@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "status": "planned_pending_registered_garments",
+  "formal_acceptance": false,
+  "recipes": [
+    {"task_id":"P0-CONTENT-BOLT-01","persona":"BOLT","expression":"easy","structure":"pants","hero":"n0113","items":["n0113","g0003","g0004","g0005"],"intent":"象牙丝缎上衣以酒红细滚边、三枚珠扣和轻收腰作为低强度精致焦点，黑色阔腿裤与素鞋包支撑。"},
+    {"task_id":"P0-CONTENT-BOLT-02","persona":"BOLT","expression":"typical","structure":"skirt","hero":"n0114","items":["n0114","g0433","g0004","g0005"],"intent":"酒红折肩上衣的肖像领、公主线和紧凑短摆承担中强度戏剧结构，灰色直裙与素鞋包控制其余信息。"},
+    {"task_id":"P0-CONTENT-BOLT-03","persona":"BOLT","expression":"explore","structure":"dress","hero":"n0115","items":["n0115","g0004","g0005"],"intent":"祖母绿裙的单一斜披折片贯穿肩腰并收进裹片裙摆，作为探索型唯一主角；实穿活动量和场景边界待审。"},
+    {"task_id":"P0-CONTENT-BOLT-04","persona":"BOLT","expression":"explore","structure":"pants","hero":"n0116","items":["g0097","n0116","g0003","g0004","g0005"],"layer_graph":[{"inner":"g0097","outer":"n0116"}],"intent":"酒红花瓣叠领外套以弧线珠扣和强收腰集中戏剧焦点，素圆领内搭提供覆盖，阔腿裤与鞋包支撑。"},
+    {"task_id":"P0-CONTENT-EDGE-01","persona":"EDGE","expression":"easy","structure":"pants","hero":"n0104","items":["n0104","g0003","g0004","g0005"],"intent":"黑色罗纹上衣用粉尖领和单一斜拉链形成低强度甜酷对照，直裤和素鞋包不竞争。"},
+    {"task_id":"P0-CONTENT-EDGE-02","persona":"EDGE","expression":"easy","structure":"skirt","hero":"n0104","items":["n0104","g0433","g0004","g0005"],"intent":"同一粉领斜拉链上衣第二次使用，改配灰直裙形成更柔和纵向比例；不宣称换下装创造全新人格语言。"},
+    {"task_id":"P0-CONTENT-EDGE-03","persona":"EDGE","expression":"typical","structure":"dress","hero":"n0106","items":["n0106","g0004","g0005"],"intent":"黑丹宁衬衫裙与粉褶内片沿斜裹线形成完整甜酷关系，鞋包保持低装饰。"},
+    {"task_id":"P0-CONTENT-EDGE-04","persona":"EDGE","expression":"explore","structure":"pants","hero":"n0105","items":["g0097","n0105","g0003","g0004","g0005"],"layer_graph":[{"inner":"g0097","outer":"n0105"}],"intent":"洗黑短外套和单侧粉纱片构成探索型甜酷主角，素内搭保障覆盖，黑裤鞋包控制焦点；粉纱透明度待审。"},
+    {"task_id":"P0-CONTENT-NEON-01","persona":"NEON","expression":"easy","structure":"pants","hero":"n0108","items":["n0108","g0003","g0004","g0005"],"intent":"钴蓝针织上衣以一条荧光弧片和小珊瑚拉链袋构成入门主信号，黑裤鞋包支撑。"},
+    {"task_id":"P0-CONTENT-NEON-02","persona":"NEON","expression":"easy","structure":"skirt","hero":"n0108","items":["n0108","g0433","g0004","g0005"],"intent":"同一弧片上衣第二次使用，灰直裙平衡高彩；不增加第二个图案焦点。"},
+    {"task_id":"P0-CONTENT-NEON-03","persona":"NEON","expression":"easy","structure":"dress","hero":"n0109","items":["n0109","g0004","g0005"],"intent":"珊瑚T恤裙以单一钴蓝弧面和荧光细边形成入门吸睛线索，轮廓保持日常。"},
+    {"task_id":"P0-CONTENT-NEON-04","persona":"NEON","expression":"typical","structure":"pants","hero":"n0110","items":["n0110","g0003","g0004","g0005"],"intent":"紫蓝荧光连环图形跨越衣身和一只袖子，承担中强度图案焦点，黑裤鞋包降噪。"},
+    {"task_id":"P0-CONTENT-NEON-05","persona":"NEON","expression":"typical","structure":"skirt","hero":"n0110","items":["n0110","g0433","g0004","g0005"],"intent":"同一连环图形上衣第二次使用，灰直裙提供不同结构但保持唯一图形主角。"},
+    {"task_id":"P0-CONTENT-NEON-06","persona":"NEON","expression":"explore","structure":"dress","hero":"n0111","items":["n0111","g0004","g0005"],"intent":"洋红裙以多重扩展弧线贯穿上下身，作为探索型唯一图形语言；日常场景边界待整图审核。"},
+    {"task_id":"P0-CONTENT-NEON-07","persona":"NEON","expression":"explore","structure":"pants","hero":"n0112","items":["g0097","n0112","g0003","g0004","g0005"],"layer_graph":[{"inner":"g0097","outer":"n0112"}],"intent":"橙红外搭的荧光斜襟和成对紫袋构成主动吸睛主角，素内搭与黑裤鞋包提供结构支撑。"},
+    {"task_id":"P0-CONTENT-NOIR-01","persona":"NOIR","expression":"explore","structure":"dress","hero":"n0103","items":["n0103","g0004","g0005"],"intent":"黑色针织裙以斜缝、双向拉链、覆片和单侧罗纹建立冷硬方向性，不用黑色本身作为人格结论。"},
+    {"task_id":"P0-CONTENT-OOPS-01","persona":"OOPS","expression":"easy","structure":"dress","hero":"n0102","items":["n0102","g0004","g0005"],"intent":"运动领针织上身与细条纹西装褶裙经斜腰缝并置，单件承担正式度冲突，素鞋包支撑。"},
+    {"task_id":"P0-CONTENT-OOPS-02","persona":"OOPS","expression":"easy","structure":"dress","hero":"n0102","items":["n0102","g0136","g0004","g0005"],"layer_graph":[{"inner":"n0102","outer":"g0136"}],"intent":"同一拼接裙第二次使用，加素面短运动外套形成不同主衣关系；外套敞开，不能遮蔽斜腰和褶裙证据。"},
+    {"task_id":"P0-CONTENT-VOID-01","persona":"VOID","expression":"easy","structure":"skirt","hero":"n0107","items":["g0097","n0107","g0004","g0005"],"intent":"素圆领长袖与水洗偏缝低口袋裙构成默认制服，游离感只来自偏移细节。"},
+    {"task_id":"P0-CONTENT-VOID-02","persona":"VOID","expression":"easy","structure":"skirt","hero":"n0107","items":["g0096","n0107","g0004","g0005"],"intent":"同裙第二次使用，宽松白衬衫维持低指向性；需通过衣摆处理露出偏缝和低口袋。"}
+  ]
+}

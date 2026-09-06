@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "batch_id": "p0-distinct-bolt-04",
+  "source_visual_version": "codex-visual-16b18cdcdca36dbc306a",
+  "status": "designer_targets_pending_whole_image_review",
+  "new_garments": [],
+  "new_garment_manifest": "generated-garments/batch01/manifest.json",
+  "new_garment_version": "aw-generated-garments-b42e54ea8cabc29fe4f7",
+  "recipes": [
+    {
+      "task_id": "P0-CONTENT-BOLT-SKIRT-REBUILD-01",
+      "persona": "BOLT",
+      "palette": "evidence_first",
+      "season": "autumn",
+      "structure": "skirt",
+      "hero": "n0088",
+      "items": ["n0088", "g0186", "g0004", "g0005"],
+      "expression": "easy",
+      "intent": "象牙色微泡袖衬衫以领结、细扣集中表达精致感，简洁长裙和黑色平底鞋包降低正式度；重建稳定主衣父配方，表达层级与人格仍待独立复核。"
+    },
+    {
+      "task_id": "P0-CONTENT-BOLT-DRESS-REBUILD-02",
+      "persona": "BOLT",
+      "palette": "evidence_first",
+      "season": "autumn",
+      "structure": "dress",
+      "hero": "n0089",
+      "items": ["n0089", "g0004", "g0019"],
+      "expression": "easy",
+      "intent": "象牙色收腰衬衫裙承担唯一精致焦点，软包和平底乐福鞋保持日常；将旧稿单只高靴替换为完整一双鞋。此配方仅计一个连衣装主衣配方，不再以换配件扩充锚点数。"
+    }
+  ]
+}

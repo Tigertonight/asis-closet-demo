@@ -1,0 +1,425 @@
+{
+  "schema_version": 1,
+  "batch_id": "p0-edge-rebuild-07",
+  "source_visual_version": "codex-visual-16b18cdcdca36dbc306a",
+  "entries": [
+    {
+      "target_palette": "evidence_first",
+      "hero": "n0090",
+      "new_record": {
+        "id": "outfit_edge_p0-edge-rebuild-07_01",
+        "kind": "master",
+        "parent_outfit_id": "main-recipe-c4d2cacf5ad853a5ae46aba7",
+        "recipe_version": "p0-edge-rebuild-07",
+        "title": "EDGE autumn 日常设计 01",
+        "description": "方领针织的斜向黑色细带、金属环与不齐下摆提供轻量甜酷细节，黑色阔腿裤保持干净线条，平底鞋和素包作支撑。修复旧配方单只靴问题，主衣组合稳定计为一个父配方；不依赖粉色或鞋包标签判断人格。",
+        "primary_persona": "EDGE",
+        "secondary_personas": [],
+        "persona_affinity": {},
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "日常"
+        ],
+        "season_tags": [
+          "秋"
+        ],
+        "weather_tags": [],
+        "presentation": [
+          "feminine"
+        ],
+        "intensity": "easy",
+        "formality": 3,
+        "garment_ids": [
+          "garment_p0_low_edge_top_n0090",
+          "garment_mute_bottom_0003",
+          "garment_mute_shoes_0004",
+          "garment_mute_bag_0005"
+        ],
+        "visible_slots": [
+          "top",
+          "bottom",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_p0_low_edge_top_n0090": "hero",
+          "garment_mute_bottom_0003": "support",
+          "garment_mute_shoes_0004": "support",
+          "garment_mute_bag_0005": "support"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "未判断",
+          "saturation": "未判断",
+          "harmony": "未判断",
+          "palette": []
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/e8167fdb4610f390073edee9.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source": "designer_recomposition",
+          "confidence": null,
+          "review_notes": [
+            "season, palette and persona are design targets pending whole-image review"
+          ]
+        }
+      },
+      "record_fingerprint": "f1b8dc95435aac8b7dd9fb898a07796d3c239a7110d99439d48ac7963bfa0824",
+      "asset_sha256": "e3a2609cf080656e7b0de7f7a4fe879b01ea417296c02b4735885f46514512e9",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/e8167fdb4610f390073edee9.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_p0_low_edge_top_n0090",
+            "slot": "top",
+            "box": [
+              248,
+              160,
+              652,
+              620
+            ]
+          },
+          {
+            "garment_id": "garment_mute_bottom_0003",
+            "slot": "bottom",
+            "box": [
+              312,
+              644,
+              588,
+              1330
+            ]
+          },
+          {
+            "garment_id": "garment_mute_shoes_0004",
+            "slot": "shoes",
+            "box": [
+              891,
+              880,
+              1078,
+              1080
+            ]
+          },
+          {
+            "garment_id": "garment_mute_bag_0005",
+            "slot": "bag",
+            "box": [
+              851,
+              410,
+              1129,
+              730
+            ]
+          }
+        ]
+      },
+      "status": "pending_native_review",
+      "review": null
+    },
+    {
+      "target_palette": "evidence_first",
+      "hero": "n0090",
+      "new_record": {
+        "id": "outfit_edge_p0-edge-rebuild-07_02",
+        "kind": "master",
+        "parent_outfit_id": "main-recipe-f192fe7bae086c055a50d6d8",
+        "recipe_version": "p0-edge-rebuild-07",
+        "title": "EDGE autumn 日常设计 02",
+        "description": "同一不对称针织与素面A形长裙组合，表达更柔和的甜酷入门。主衣只复用第二次，不再换鞋包扩增；需整图复核金属环和斜带能否保持EDGE可辨性，而不是退化成普通柔和穿搭。",
+        "primary_persona": "EDGE",
+        "secondary_personas": [],
+        "persona_affinity": {},
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "日常"
+        ],
+        "season_tags": [
+          "秋"
+        ],
+        "weather_tags": [],
+        "presentation": [
+          "feminine"
+        ],
+        "intensity": "easy",
+        "formality": 3,
+        "garment_ids": [
+          "garment_p0_low_edge_top_n0090",
+          "garment_bolt_skirt_0186",
+          "garment_mute_shoes_0004",
+          "garment_mute_bag_0005"
+        ],
+        "visible_slots": [
+          "top",
+          "skirt",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_p0_low_edge_top_n0090": "hero",
+          "garment_bolt_skirt_0186": "support",
+          "garment_mute_shoes_0004": "support",
+          "garment_mute_bag_0005": "support"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "未判断",
+          "saturation": "未判断",
+          "harmony": "未判断",
+          "palette": []
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/03d14762054d65a84c2a5a9a.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source": "designer_recomposition",
+          "confidence": null,
+          "review_notes": [
+            "season, palette and persona are design targets pending whole-image review"
+          ]
+        }
+      },
+      "record_fingerprint": "cdcfdb072f4434b37f0adf461856f6330745b6922abc7b2f1513d0ba4727fb7e",
+      "asset_sha256": "5e26a5adc756afae70eea0a6d66700b5534f28118a11ec5846aa5b754e07141c",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/03d14762054d65a84c2a5a9a.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_p0_low_edge_top_n0090",
+            "slot": "top",
+            "box": [
+              248,
+              160,
+              652,
+              620
+            ]
+          },
+          {
+            "garment_id": "garment_bolt_skirt_0186",
+            "slot": "skirt",
+            "box": [
+              216,
+              644,
+              683,
+              1330
+            ]
+          },
+          {
+            "garment_id": "garment_mute_shoes_0004",
+            "slot": "shoes",
+            "box": [
+              891,
+              880,
+              1078,
+              1080
+            ]
+          },
+          {
+            "garment_id": "garment_mute_bag_0005",
+            "slot": "bag",
+            "box": [
+              851,
+              410,
+              1129,
+              730
+            ]
+          }
+        ]
+      },
+      "status": "pending_native_review",
+      "review": null
+    },
+    {
+      "target_palette": "evidence_first",
+      "hero": "g0041",
+      "new_record": {
+        "id": "outfit_edge_p0-edge-rebuild-07_03",
+        "kind": "master",
+        "parent_outfit_id": "main-recipe-4ec7c4b7a583866e9599bc50",
+        "recipe_version": "p0-edge-rebuild-07",
+        "title": "EDGE autumn 日常设计 03",
+        "description": "短机车外套作唯一酷感主视觉，素面方领A形裙提供柔和支撑，内层无袖以减少袖量冲突。通过主衣皮质感、斜拉链与柔和裙线的对照表达甜酷，而非只靠黑粉配色。金属细节多，按典型级而非入门目标送整图复核；需核实敞开穿着的下摆和裙身关系。",
+        "primary_persona": "EDGE",
+        "secondary_personas": [],
+        "persona_affinity": {},
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "日常"
+        ],
+        "season_tags": [
+          "秋"
+        ],
+        "weather_tags": [],
+        "presentation": [
+          "feminine"
+        ],
+        "intensity": "typical",
+        "formality": 3,
+        "garment_ids": [
+          "garment_edge_outer_0041",
+          "garment_p0_low_edge_dress_n0091",
+          "garment_mute_shoes_0004",
+          "garment_mute_bag_0005"
+        ],
+        "visible_slots": [
+          "outer",
+          "dress",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [
+          {
+            "inner": "garment_p0_low_edge_dress_n0091",
+            "outer": "garment_edge_outer_0041"
+          }
+        ],
+        "slot_roles": {
+          "garment_edge_outer_0041": "hero",
+          "garment_p0_low_edge_dress_n0091": "support",
+          "garment_mute_shoes_0004": "support",
+          "garment_mute_bag_0005": "support"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "未判断",
+          "saturation": "未判断",
+          "harmony": "未判断",
+          "palette": []
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/9757baf9ede00eb25f8e8e29.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source": "designer_recomposition",
+          "confidence": null,
+          "review_notes": [
+            "season, palette and persona are design targets pending whole-image review"
+          ]
+        }
+      },
+      "record_fingerprint": "ed3516b93ff995ae3c8f476e412b8ae0c3cf746b736d2e3930a59bc95174e087",
+      "asset_sha256": "b2d652f6ab7cbe7ec2fc144a16468e7a2cfea07c0dd88d2f19891519d3f592e1",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/9757baf9ede00eb25f8e8e29.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_edge_outer_0041",
+            "slot": "outer",
+            "box": [
+              70,
+              160,
+              420,
+              549
+            ]
+          },
+          {
+            "garment_id": "garment_p0_low_edge_dress_n0091",
+            "slot": "dress",
+            "box": [
+              450,
+              160,
+              800,
+              715
+            ]
+          },
+          {
+            "garment_id": "garment_mute_shoes_0004",
+            "slot": "shoes",
+            "box": [
+              891,
+              880,
+              1078,
+              1080
+            ]
+          },
+          {
+            "garment_id": "garment_mute_bag_0005",
+            "slot": "bag",
+            "box": [
+              851,
+              410,
+              1129,
+              730
+            ]
+          }
+        ]
+      },
+      "status": "pending_native_review",
+      "review": null
+    }
+  ],
+  "production_approved": false,
+  "version": "aw-designed-rendered-813dfda468ecb8b2965f"
+}

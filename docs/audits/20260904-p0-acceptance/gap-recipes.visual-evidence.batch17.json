@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "batch_id": "p0-bolt-structure-17",
+  "source_visual_version": "codex-visual-16b18cdcdca36dbc306a",
+  "status": "designer_targets_pending_whole_image_review",
+  "new_garments": [],
+  "new_garment_manifest": "generated-garments/batch04/manifest.json",
+  "new_garment_version": "aw-generated-garments-c8e78c03442f4fc69f27",
+  "recipes": [
+    {"persona": "BOLT", "palette": "evidence_first", "season": "autumn", "structure": "pants",
+     "hero": "n0100", "items": ["n0100", "g0097", "g0003", "g0004", "g0005"], "expression": "typical",
+     "layer_graph": [{"inner": "g0097", "outer": "n0100"}],
+     "intent": "收腰短外套的抬肩、细滚边与圆扣承担主视觉，真实素面长袖内搭与黑阔腿裤支撑；领口和肩袖层级须检查，不把外套内部衬里误认为已存在内搭。HEIR与BOLT边界待整图复核。"},
+    {"persona": "BOLT", "palette": "evidence_first", "season": "autumn", "structure": "skirt",
+     "hero": "n0100", "items": ["n0100", "g0097", "g0433", "g0004", "g0005"], "expression": "typical",
+     "layer_graph": [{"inner": "g0097", "outer": "n0100"}],
+     "intent": "同件精致短外套配低装饰H线长裙，以裙身直线支撑肩腰反差；按主衣第二次使用计数，非换配饰凑新套，独立人格辨识和裙子活动松量待审。"},
+    {"persona": "BOLT", "palette": "evidence_first", "season": "autumn", "structure": "pants",
+     "hero": "n0101", "items": ["n0101", "g0018", "g0004", "g0005"], "expression": "explore",
+     "intent": "以偏肩至胸腰斜褶做唯一受控立体焦点，奶油宽裤与素面鞋包支撑；轻探索仅为目标，若实际更偏FLOU/MELT或表达不足则保留待审，不按槽位需要定级。"},
+    {"persona": "BOLT", "palette": "evidence_first", "season": "autumn", "structure": "skirt",
+     "hero": "n0101", "items": ["n0101", "g0186", "g0004", "g0005"], "expression": "explore",
+     "intent": "偏肩折片上衣配素面长裙，检查主衣线条是否足以表达BOLT且属于轻探索，而非普通柔和日常；不由粉色或原始persona标签赋予通过。"}
+  ]
+}

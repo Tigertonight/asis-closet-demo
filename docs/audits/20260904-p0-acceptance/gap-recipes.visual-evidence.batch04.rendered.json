@@ -1,0 +1,270 @@
+{
+  "schema_version": 1,
+  "batch_id": "p0-distinct-bolt-04",
+  "source_visual_version": "codex-visual-16b18cdcdca36dbc306a",
+  "entries": [
+    {
+      "target_palette": "evidence_first",
+      "hero": "n0088",
+      "new_record": {
+        "id": "outfit_bolt_p0-distinct-bolt-04_01",
+        "kind": "master",
+        "parent_outfit_id": "main-recipe-bdec510ec5f2cf98bd1a29c1",
+        "recipe_version": "p0-distinct-bolt-04",
+        "title": "BOLT autumn 日常设计 01",
+        "description": "象牙色微泡袖衬衫以领结、细扣集中表达精致感，简洁长裙和黑色平底鞋包降低正式度；重建稳定主衣父配方，表达层级与人格仍待独立复核。",
+        "primary_persona": "BOLT",
+        "secondary_personas": [],
+        "persona_affinity": {},
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "日常"
+        ],
+        "season_tags": [
+          "秋"
+        ],
+        "weather_tags": [],
+        "presentation": [
+          "feminine"
+        ],
+        "intensity": "easy",
+        "formality": 3,
+        "garment_ids": [
+          "garment_p0_low_bolt_top_n0088",
+          "garment_bolt_skirt_0186",
+          "garment_mute_shoes_0004",
+          "garment_mute_bag_0005"
+        ],
+        "visible_slots": [
+          "top",
+          "skirt",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_p0_low_bolt_top_n0088": "hero",
+          "garment_bolt_skirt_0186": "support",
+          "garment_mute_shoes_0004": "support",
+          "garment_mute_bag_0005": "support"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "未判断",
+          "saturation": "未判断",
+          "harmony": "未判断",
+          "palette": []
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/f512ab253ee17ddb7c47d4fa.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source": "designer_recomposition",
+          "confidence": null,
+          "review_notes": [
+            "season, palette and persona are design targets pending whole-image review"
+          ]
+        }
+      },
+      "record_fingerprint": "9568274c853dfa19c0319b32a3ca096cb452f85fc608c3ba70921195346d4d85",
+      "asset_sha256": "aaf05890fd10b9ef23214696039b40f1cde9397f73e59067e12e33582a1c698c",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/f512ab253ee17ddb7c47d4fa.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_p0_low_bolt_top_n0088",
+            "slot": "top",
+            "box": [
+              241,
+              160,
+              659,
+              620
+            ]
+          },
+          {
+            "garment_id": "garment_bolt_skirt_0186",
+            "slot": "skirt",
+            "box": [
+              216,
+              644,
+              683,
+              1330
+            ]
+          },
+          {
+            "garment_id": "garment_mute_shoes_0004",
+            "slot": "shoes",
+            "box": [
+              891,
+              880,
+              1078,
+              1080
+            ]
+          },
+          {
+            "garment_id": "garment_mute_bag_0005",
+            "slot": "bag",
+            "box": [
+              851,
+              410,
+              1129,
+              730
+            ]
+          }
+        ]
+      },
+      "status": "pending_native_review",
+      "review": null
+    },
+    {
+      "target_palette": "evidence_first",
+      "hero": "n0089",
+      "new_record": {
+        "id": "outfit_bolt_p0-distinct-bolt-04_02",
+        "kind": "master",
+        "parent_outfit_id": "main-recipe-b093502d16e3f1323a60c819",
+        "recipe_version": "p0-distinct-bolt-04",
+        "title": "BOLT autumn 日常设计 02",
+        "description": "象牙色收腰衬衫裙承担唯一精致焦点，软包和平底乐福鞋保持日常；将旧稿单只高靴替换为完整一双鞋。此配方仅计一个连衣装主衣配方，不再以换配件扩充锚点数。",
+        "primary_persona": "BOLT",
+        "secondary_personas": [],
+        "persona_affinity": {},
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "日常"
+        ],
+        "season_tags": [
+          "秋"
+        ],
+        "weather_tags": [],
+        "presentation": [
+          "feminine"
+        ],
+        "intensity": "easy",
+        "formality": 3,
+        "garment_ids": [
+          "garment_p0_low_bolt_dress_n0089",
+          "garment_mute_shoes_0004",
+          "garment_ease_bag_0019"
+        ],
+        "visible_slots": [
+          "dress",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_p0_low_bolt_dress_n0089": "hero",
+          "garment_mute_shoes_0004": "support",
+          "garment_ease_bag_0019": "support"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "未判断",
+          "saturation": "未判断",
+          "harmony": "未判断",
+          "palette": []
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/012d524ab6d11571f0c1ed13.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source": "designer_recomposition",
+          "confidence": null,
+          "review_notes": [
+            "season, palette and persona are design targets pending whole-image review"
+          ]
+        }
+      },
+      "record_fingerprint": "8c9e6e9a1c3714e0031f102d91d005a854f009e4932fd525c0ac2bc4e7d8c33f",
+      "asset_sha256": "e2710506bb98f215d840b54098f0d8341d61c1f81b0808260a53b6bddb622786",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/012d524ab6d11571f0c1ed13.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_p0_low_bolt_dress_n0089",
+            "slot": "dress",
+            "box": [
+              140,
+              160,
+              759,
+              1330
+            ]
+          },
+          {
+            "garment_id": "garment_mute_shoes_0004",
+            "slot": "shoes",
+            "box": [
+              891,
+              880,
+              1078,
+              1080
+            ]
+          },
+          {
+            "garment_id": "garment_ease_bag_0019",
+            "slot": "bag",
+            "box": [
+              872,
+              410,
+              1107,
+              730
+            ]
+          }
+        ]
+      },
+      "status": "pending_native_review",
+      "review": null
+    }
+  ],
+  "production_approved": false,
+  "version": "aw-designed-rendered-231426134a58252bde8b"
+}

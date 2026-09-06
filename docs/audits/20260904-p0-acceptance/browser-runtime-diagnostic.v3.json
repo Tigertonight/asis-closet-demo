@@ -1,0 +1,37 @@
+{
+  "schema_version": 1,
+  "status": "diagnostic_only_not_release_evidence",
+  "environment": {
+    "url": "http://127.0.0.1:8000/wearwow/demo?tab=home",
+    "account": "dedicated synthetic local test account",
+    "persona": "mute",
+    "photos": "application preset model; no personal photo uploaded",
+    "content_path": "legacy recommendation, not the approved P0 anchor release",
+    "code_frozen": false
+  },
+  "observations": [
+    "New test account required onboarding. Manual synthetic profile and preference choices allowed entry without photo analysis. Color accuracy was not tested.",
+    "Home -> outfit detail -> try-on confirmation listed four selected pieces: top, pants, shoes, bag.",
+    "A real try-on task was submitted using the application preset model. Return to browsing left the task running and displayed a progress bar.",
+    "Task completion changed the task bar while the home page remained visible; result opened only after clicking the completed task bar.",
+    "Result showed three applied pieces and shoes marked failed/not replaced, while the pre-fix heading incorrectly claimed four replaced.",
+    "Dislike with the repeated-content reason removed the targeted card. Visible card count changed from 12 to 17 after replacement-page loading. This was not a single-card-only replacement.",
+    "Browser warning/error log query returned no entries before completion. This is not a complete network-error audit.",
+    "Viewport override of 390x844 produced actual innerWidth=520 and innerHeight=1125 with devicePixelRatio=0.75. A 293x633 override produced actual 391x844 with scrollWidth=391. Required exact widths were not verified; override reset before handoff.",
+    "After restarting the server with the copy fix and reloading, the completed result remained available under My -> try-on records. Opening it showed an image lightbox, not the per-piece summary; fixed summary still needs browser verification in a new or restored detailed-result flow."
+  ],
+  "defect": {
+    "area": "E2E-008 result status consistency",
+    "cause": "renderTryonResultDetails added review_count to applied_count when displaying successful replacements",
+    "change": "Display applied_count only; keep review_count as a separate inspection warning",
+    "verification": "32 tests in tests/test_personal_home_v3.py passed, including actual JavaScript execution for success/review/skip summary combinations",
+    "browser_retest": "pending"
+  },
+  "release_case_status": "Not Run",
+  "limitations": [
+    "Not bound to frozen code or a released 160-anchor dataset",
+    "No formal 390/393/430/1440 matrix, 10-minute stability, 10 round-trips, or percentile samples",
+    "Generated image quality not independently approved",
+    "A code change from another workspace activity appeared after server reload; this run cannot establish a frozen release baseline"
+  ]
+}

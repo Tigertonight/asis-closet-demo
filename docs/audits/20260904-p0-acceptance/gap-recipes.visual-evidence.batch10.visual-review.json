@@ -1,0 +1,87 @@
+{
+  "schema_version": 1,
+  "version": "p0-mute-rebuild-10-visual-review-v1",
+  "source_rendered_version": "aw-designed-rendered-ae5b050a33cad4b74510",
+  "independent_blind_review": false,
+  "four_gate_editorial_review": false,
+  "entries": [
+    {
+      "outfit_id": "outfit_mute_p0-mute-rebuild-10_01",
+      "status": "ai_candidate",
+      "record_fingerprint": "4c36cd0d0ad0ee976047af1b6acbce55210bb74eab2c8de56b35a6a38dcb6a75",
+      "asset_sha256": "bf241627f6edd7b560e3dceee7423c78317754231be5112dd69bac420998d4f2",
+      "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/581ed5cd4b6075ea55ff876a.webp",
+      "source_kind": "codex_visual_review",
+      "model": "current_codex_session",
+      "prompt_version": "p0-mute-rebuild-10-visual-v1",
+      "review_level": "individual_whole_image_judgment",
+      "evidence_scope": "Production-side triage only; not four-gate approval or independent blind review",
+      "confidence": 0.79,
+      "evidence": "已看单品大图与实际整套图。圆领短袖直线裙的窄腰带、侧置扣和窄开衩形成克制的细节，平底乐福鞋与无装饰托特支撑，未见夸张廓形、金属堆叠或图案干扰；裙完整、鞋成对。作为MUTE典型候选的依据是直线比例与低装饰完成度，不是黑色本身。细节浓度也可能被评为easy，短袖温度适用性、裙开衩与腰身舒适性仍须四门审核；未经过独立人格辨识。",
+      "observations": {
+        "axes": {},
+        "expression": "typical",
+        "formality": "smart_casual",
+        "layering": 1,
+        "persona_scores": {
+          "mute": 0.82,
+          "ease": 0.4,
+          "noir": 0.3
+        },
+        "scenes": [
+          "daily"
+        ],
+        "seasons": [
+          "autumn"
+        ],
+        "structure": "dress",
+        "wearability": "everyday",
+        "main_visual_slots": [
+          "dress"
+        ],
+        "main_colors": [],
+        "conflicts": null,
+        "persona_evidence": "已看单品大图与实际整套图。圆领短袖直线裙的窄腰带、侧置扣和窄开衩形成克制的细节，平底乐福鞋与无装饰托特支撑，未见夸张廓形、金属堆叠或图案干扰；裙完整、鞋成对。作为MUTE典型候选的依据是直线比例与低装饰完成度，不是黑色本身。细节浓度也可能被评为easy，短袖温度适用性、裙开衩与腰身舒适性仍须四门审核；未经过独立人格辨识。"
+      }
+    },
+    {
+      "outfit_id": "outfit_mute_p0-mute-rebuild-10_02",
+      "status": "ai_candidate",
+      "record_fingerprint": "611cbab09683e7cf3774aaa934a5d1e694953794fa6ae7de229f67ecdc8726e2",
+      "asset_sha256": "b01104c4b6c10db25d630ef5707cfdaec0fe15cf1a636dcb30208af886fd26d5",
+      "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/6e8c175ff9a56f279882a913.webp",
+      "source_kind": "codex_visual_review",
+      "model": "current_codex_session",
+      "prompt_version": "p0-mute-rebuild-10-visual-v1",
+      "review_level": "individual_whole_image_judgment",
+      "evidence_scope": "Production-side triage only; not four-gate approval or independent blind review",
+      "confidence": 0.79,
+      "evidence": "已看上衣大图和四件整图。垂领柔软线条与直线窄裙形成小幅软硬对照，垂褶为单一焦点，鞋包无额外装饰，整体完整且鞋成对。没有强烈破坏、夸张肩袖或主题感，适合静音时髦候选。典型级的合理性来自领口处理与整套比例，但easy/typical及MUTE/EASE边界需要复核；平铺不能证明上衣塞腰后的腰线与垂褶效果，不直接判通过。",
+      "observations": {
+        "axes": {},
+        "expression": "typical",
+        "formality": "smart_casual",
+        "layering": 1,
+        "persona_scores": {
+          "mute": 0.82,
+          "ease": 0.4,
+          "noir": 0.3
+        },
+        "scenes": [
+          "daily"
+        ],
+        "seasons": [
+          "autumn"
+        ],
+        "structure": "skirt",
+        "wearability": "everyday",
+        "main_visual_slots": [
+          "top"
+        ],
+        "main_colors": [],
+        "conflicts": null,
+        "persona_evidence": "已看上衣大图和四件整图。垂领柔软线条与直线窄裙形成小幅软硬对照，垂褶为单一焦点，鞋包无额外装饰，整体完整且鞋成对。没有强烈破坏、夸张肩袖或主题感，适合静音时髦候选。典型级的合理性来自领口处理与整套比例，但easy/typical及MUTE/EASE边界需要复核；平铺不能证明上衣塞腰后的腰线与垂褶效果，不直接判通过。"
+      }
+    }
+  ]
+}

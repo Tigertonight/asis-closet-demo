@@ -1,0 +1,111 @@
+{
+  "schema_version": 1,
+  "version": "p0-oops-rebuild-13-visual-review-v1",
+  "source_rendered_version": "aw-designed-rendered-555d6389b4d87618382c",
+  "independent_blind_review": false,
+  "four_gate_editorial_review": false,
+  "entries": [
+    {
+      "outfit_id": "outfit_oops_p0-oops-rebuild-13_01",
+      "status": "ai_candidate",
+      "record_fingerprint": "4431bfc17259671ea047e09e8d1f577b0d933d8129ac6192f5ee72c1a6ca0ed5",
+      "asset_sha256": "29e860c71415c06286b56e8014759e3b8be4a4a8f9ac9a12aa93fa1809137327",
+      "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/c1d0ac155289c4d871489fe0.webp",
+      "source_kind": "codex_visual_review",
+      "model": "current_codex_session",
+      "prompt_version": "p0-oops-rebuild-13-visual-v1",
+      "review_level": "individual_whole_image_judgment",
+      "evidence_scope": "Production-side triage only; not four-gate approval or independent blind review",
+      "evidence": "已看单品与实际整套图。裙左侧细条纹、压褶和西装式腰头，与右侧素面工装片及有盖贴袋并置，反常规关系来自正式/工装结构，不只颜色；素面贴身长袖、成对平底鞋和托特支撑单一裙装主角。作为OOPS入门候选；腰部厚度、行走开合与拼接手感仍需正式审核，不能由平铺证明舒适。",
+      "confidence": 0.79,
+      "observations": {
+        "axes": {},
+        "expression": "easy",
+        "formality": "casual",
+        "layering": 1,
+        "persona_scores": {
+          "oops": 0.8,
+          "loop": 0.5
+        },
+        "scenes": [
+          "daily"
+        ],
+        "seasons": [
+          "autumn"
+        ],
+        "structure": "skirt",
+        "wearability": "everyday",
+        "main_visual_slots": [
+          "skirt"
+        ],
+        "main_colors": [],
+        "conflicts": null,
+        "persona_evidence": "已看单品与实际整套图。裙左侧细条纹、压褶和西装式腰头，与右侧素面工装片及有盖贴袋并置，反常规关系来自正式/工装结构，不只颜色；素面贴身长袖、成对平底鞋和托特支撑单一裙装主角。作为OOPS入门候选；腰部厚度、行走开合与拼接手感仍需正式审核，不能由平铺证明舒适。"
+      }
+    },
+    {
+      "outfit_id": "outfit_oops_p0-oops-rebuild-13_02",
+      "status": "ai_candidate",
+      "record_fingerprint": "4eaf4a59c045e42817ca491b408af990b6c34269d97038dd17586f5cab5bef9b",
+      "asset_sha256": "d784947f2d0644cb5ce50108ab9b7f8f8470b3f98a13eddbb3efb0a98b21945a",
+      "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/7c6d6704e2d574b22d2db16d.webp",
+      "source_kind": "codex_visual_review",
+      "model": "current_codex_session",
+      "prompt_version": "p0-oops-rebuild-13-visual-v1",
+      "review_level": "individual_whole_image_judgment",
+      "evidence_scope": "Production-side triage only; not four-gate approval or independent blind review",
+      "evidence": "已看实际整套图。宽松白衬衫降低上半身装饰，主焦点保留在半西装半工装裙；同裙第二次使用，主衣组合与前套不同但不宣称全新风格语言。候选OOPS依据是裙的结构/正式度冲突，非配件标签；衬衫实际穿着应调整衣摆以露出裙腰与侧袋，遮挡及比例待复核。",
+      "confidence": 0.79,
+      "observations": {
+        "axes": {},
+        "expression": "easy",
+        "formality": "casual",
+        "layering": 1,
+        "persona_scores": {
+          "oops": 0.8,
+          "loop": 0.5
+        },
+        "scenes": [
+          "daily"
+        ],
+        "seasons": [
+          "autumn"
+        ],
+        "structure": "skirt",
+        "wearability": "everyday",
+        "main_visual_slots": [
+          "skirt"
+        ],
+        "main_colors": [],
+        "conflicts": null,
+        "persona_evidence": "已看实际整套图。宽松白衬衫降低上半身装饰，主焦点保留在半西装半工装裙；同裙第二次使用，主衣组合与前套不同但不宣称全新风格语言。候选OOPS依据是裙的结构/正式度冲突，非配件标签；衬衫实际穿着应调整衣摆以露出裙腰与侧袋，遮挡及比例待复核。"
+      }
+    },
+    {
+      "outfit_id": "outfit_oops_p0-oops-rebuild-13_03",
+      "status": "needs_review",
+      "record_fingerprint": "550b8f7ae13b9a07075e5744cae820d1ea3f7b5b9b0a40549a80273d75b28b5a",
+      "asset_sha256": "52c07b170b6e744742e0eab6f643aeac4f961540b2aa8f524a50a851e9e121bb",
+      "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/5174fde512b47b6342a18d50.webp",
+      "source_kind": "codex_visual_review",
+      "model": "current_codex_session",
+      "prompt_version": "p0-oops-rebuild-13-visual-v1",
+      "review_level": "individual_whole_image_judgment",
+      "evidence_scope": "Production-side triage only; not four-gate approval or independent blind review",
+      "evidence": "已看实际整套图。裙左右主要为细条纹与素面分区，领型和衣身轮廓基本对称；单枚跳色纽扣与双色分区不足以确定OOPS人格。日常可穿不等于人格可辨，标为needs_review，不为补连衣装缺口入列。"
+    },
+    {
+      "outfit_id": "outfit_oops_p0-oops-rebuild-13_04",
+      "status": "needs_review",
+      "record_fingerprint": "875832c9eb7efc550a24ebf20f9d59509345c058d457b19711fa9701aa3a21ec",
+      "asset_sha256": "67e508604bbc0e1fb8d4dc0e5dad007b269678c971fb0efd97e7f9f166bacc84",
+      "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/10157cfc45dccb142d1e18c0.webp",
+      "source_kind": "codex_visual_review",
+      "model": "current_codex_session",
+      "prompt_version": "p0-oops-rebuild-13-visual-v1",
+      "review_level": "individual_whole_image_judgment",
+      "evidence_scope": "Production-side triage only; not four-gate approval or independent blind review",
+      "evidence": "已看实际整套图。素面短外套与衬衫裙搭配完整，但常见的休闲外套加衬衫裙关系没有补足原裙的OOPS证据，敞开后的双领及腰带位置也未实穿验证。标为needs_review，不因为增加主衣外层就视为合格锚点。"
+    }
+  ]
+}

@@ -1,0 +1,113 @@
+{
+  "schema_version": 1,
+  "version": "p0-void-rebuild-14-visual-review-v1",
+  "source_rendered_version": "aw-designed-rendered-a06d68c53a4b80c63d54",
+  "independent_blind_review": false,
+  "four_gate_editorial_review": false,
+  "entries": [
+    {
+      "outfit_id": "outfit_void_p0-void-rebuild-14_01",
+      "status": "ai_candidate",
+      "record_fingerprint": "c13bab23a0abeb479f6fc87a6bae97fc6bc537a3ef2a50fda947eff327351d7d",
+      "asset_sha256": "0f27a12a010035e2257baa176a1ad7c195c8f5eb1884bdb55b6b0fb01630a1ef",
+      "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/3abb03cdba07ef64d279a102.webp",
+      "source_kind": "codex_visual_review",
+      "model": "current_codex_session",
+      "prompt_version": "p0-void-rebuild-14-visual-v1",
+      "review_level": "individual_whole_image_judgment",
+      "evidence_scope": "Production-side triage only; not four-gate approval or independent blind review",
+      "evidence": "已看单品与实际整套图。宽直落肩T恤裙有从肩至下摆的斜缝、偏低软口袋与细微错位下摆，松垂形态保持完整，不是仅用深灰色表达人格；低装饰托特和成对乐福鞋支撑。作为VOID入门候选，依据为低强度松垂与错位关系。短袖限温暖天气，实际针织重量、走动余量和VOID/WABI/EASE边界仍须审核。",
+      "confidence": 0.8,
+      "observations": {
+        "axes": {},
+        "expression": "easy",
+        "formality": "casual",
+        "layering": 1,
+        "persona_scores": {
+          "void": 0.8,
+          "wabi": 0.5,
+          "ease": 0.5
+        },
+        "scenes": [
+          "daily"
+        ],
+        "seasons": [
+          "autumn"
+        ],
+        "structure": "dress",
+        "wearability": "everyday",
+        "main_visual_slots": [
+          "dress"
+        ],
+        "main_colors": [],
+        "conflicts": null,
+        "persona_evidence": "已看单品与实际整套图。宽直落肩T恤裙有从肩至下摆的斜缝、偏低软口袋与细微错位下摆，松垂形态保持完整，不是仅用深灰色表达人格；低装饰托特和成对乐福鞋支撑。作为VOID入门候选，依据为低强度松垂与错位关系。短袖限温暖天气，实际针织重量、走动余量和VOID/WABI/EASE边界仍须审核。"
+      }
+    },
+    {
+      "outfit_id": "outfit_void_p0-void-rebuild-14_02",
+      "status": "ai_candidate",
+      "record_fingerprint": "dba84ea47b438a9d7c079dfd16c01ec1728e5e61332a804477663ed3e2ff6a47",
+      "asset_sha256": "63cb3d48de4c3566726116f814519d5d35aaf85c7a32ed4db5f6b6fa31cf2165",
+      "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/2ac51101acb96242247920c3.webp",
+      "source_kind": "codex_visual_review",
+      "model": "current_codex_session",
+      "prompt_version": "p0-void-rebuild-14-visual-v1",
+      "review_level": "individual_whole_image_judgment",
+      "evidence_scope": "Production-side triage only; not four-gate approval or independent blind review",
+      "evidence": "已看实际整套图。柔软落肩开衫配斜缝口袋裙，外层低装饰，裙的斜向线条与不齐下摆保留主视觉；实际配方声明裙内开衫外。作为VOID入门候选送审，同裙第二次使用，不宣称独立的新风格语言。开衫须敞开，双层袖量、口袋遮挡及是否过于偏向EASE仍未实穿核实；四门与独立盲审均未通过。",
+      "confidence": 0.78,
+      "observations": {
+        "axes": {},
+        "expression": "easy",
+        "formality": "casual",
+        "layering": 2,
+        "persona_scores": {
+          "void": 0.8,
+          "wabi": 0.5,
+          "ease": 0.5
+        },
+        "scenes": [
+          "daily"
+        ],
+        "seasons": [
+          "autumn"
+        ],
+        "structure": "dress",
+        "wearability": "everyday",
+        "main_visual_slots": [
+          "dress"
+        ],
+        "main_colors": [],
+        "conflicts": null,
+        "persona_evidence": "已看实际整套图。柔软落肩开衫配斜缝口袋裙，外层低装饰，裙的斜向线条与不齐下摆保留主视觉；实际配方声明裙内开衫外。作为VOID入门候选送审，同裙第二次使用，不宣称独立的新风格语言。开衫须敞开，双层袖量、口袋遮挡及是否过于偏向EASE仍未实穿核实；四门与独立盲审均未通过。"
+      }
+    },
+    {
+      "outfit_id": "outfit_void_p0-void-rebuild-14_03",
+      "status": "needs_review",
+      "record_fingerprint": "6e78d8736ca3dfddb8e22757d7b18d110a1ebf46555d9b0ee62fc3e2ea006b16",
+      "asset_sha256": "61f2b09957a1e9ff04216112ef4143ba0f70cef69dc93999f0d0fc59a1a357e7",
+      "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/cb9899bc9de2036face21fa6.webp",
+      "source_kind": "codex_visual_review",
+      "model": "current_codex_session",
+      "prompt_version": "p0-void-rebuild-14-visual-v1",
+      "review_level": "individual_whole_image_judgment",
+      "evidence_scope": "Production-side triage only; not four-gate approval or independent blind review",
+      "evidence": "已看实际整套图。基础圆领针织与水洗偏门襟裙的整套关系较常规，低位小补片与旧感表面不足以排除MUTE/EASE/WABI。日常可穿与VOID可辨性是两件事，标needs_review，不为数量入列。"
+    },
+    {
+      "outfit_id": "outfit_void_p0-void-rebuild-14_04",
+      "status": "needs_review",
+      "record_fingerprint": "5e807ba4d292292f820f4c8b37ecaeeb58aa4b1a09cf95a305830a919790b8ee",
+      "asset_sha256": "cad819331269ce93832c089de69aa367828e73fa7e8ef67e3e464e99f33253f7",
+      "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/b4d17fd208d4646bb3e4b930.webp",
+      "source_kind": "codex_visual_review",
+      "model": "current_codex_session",
+      "prompt_version": "p0-void-rebuild-14-visual-v1",
+      "review_level": "individual_whole_image_judgment",
+      "evidence_scope": "Production-side triage only; not four-gate approval or independent blind review",
+      "evidence": "已看实际整套图。侧垂褶上衣仍呈现较整理的柔和线条，配水洗裙后与MUTE/FLOU/WABI边界不明确；主衣的自然错位证据不足，不能凭灰色与补片直接归VOID。标needs_review，不入选锚点。"
+    }
+  ]
+}

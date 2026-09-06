@@ -1,0 +1,48 @@
+{
+  "schema_version": 1,
+  "version": "p0-bolt-rebuild-15-visual-review-v1",
+  "source_rendered_version": "aw-designed-rendered-22be39d790bca10d0837",
+  "independent_blind_review": false,
+  "four_gate_editorial_review": false,
+  "entries": [
+    {
+      "outfit_id": "outfit_bolt_p0-bolt-typical-15_01",
+      "status": "ai_candidate",
+      "record_fingerprint": "0cbb657745c7380d4354db0c41b779185ce95a9b089650f5f0bd5b78d838f5a3",
+      "asset_sha256": "95ce0f217f05289d31c1ba9dd0df94ea2f7f08eea7ba66f29477608b8fd1e5c2",
+      "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/402da8afd9e9a04ded1e1f14.webp",
+      "source_kind": "codex_visual_review",
+      "model": "current_codex_session",
+      "prompt_version": "p0-bolt-rebuild-15-visual-v1",
+      "review_level": "individual_whole_image_judgment",
+      "evidence_scope": "Production-side triage only; not four-gate approval or independent blind review",
+      "confidence": 0.78,
+      "evidence": "已看单品与实际整套图。丝绒外观衣身与较轻泡袖形成材质对照，圆领片、细扣和窄腰带集中在上身，裙摆是单层收腰A形，没有宫廷层叠、拖尾或重刺绣；素面托特与成对平底鞋支撑。作为BOLT典型候选送审，依据是收腰、肩袖与细节集中而非酒红色本身。白领和纽扣仍有节庆感风险，适合日常约会还是仅节庆场景需四门复核，不能据此宣称日常场景通过。",
+      "observations": {
+        "axes": {},
+        "expression": "typical",
+        "formality": "smart_casual",
+        "layering": 1,
+        "persona_scores": {
+          "bolt": 0.8,
+          "heir": 0.5,
+          "melt": 0.5
+        },
+        "scenes": [
+          "daily"
+        ],
+        "seasons": [
+          "autumn"
+        ],
+        "structure": "dress",
+        "wearability": "everyday_with_statement",
+        "main_visual_slots": [
+          "dress"
+        ],
+        "main_colors": [],
+        "conflicts": null,
+        "persona_evidence": "已看单品与实际整套图。丝绒外观衣身与较轻泡袖形成材质对照，圆领片、细扣和窄腰带集中在上身，裙摆是单层收腰A形，没有宫廷层叠、拖尾或重刺绣；素面托特与成对平底鞋支撑。作为BOLT典型候选送审，依据是收腰、肩袖与细节集中而非酒红色本身。白领和纽扣仍有节庆感风险，适合日常约会还是仅节庆场景需四门复核，不能据此宣称日常场景通过。"
+      }
+    }
+  ]
+}

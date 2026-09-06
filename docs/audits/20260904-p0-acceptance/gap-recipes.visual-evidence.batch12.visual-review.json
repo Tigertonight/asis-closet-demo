@@ -1,0 +1,98 @@
+{
+  "schema_version": 1,
+  "version": "p0-noir-rebuild-12-visual-review-v1",
+  "source_rendered_version": "aw-designed-rendered-637bea279565172de791",
+  "independent_blind_review": false,
+  "four_gate_editorial_review": false,
+  "entries": [
+    {
+      "outfit_id": "outfit_noir_p0-noir-rebuild-12_01",
+      "status": "ai_candidate",
+      "record_fingerprint": "3b1376de615156eef58c3cd4a4b9c447657ab891be8cba5404f76ce97eb45603",
+      "asset_sha256": "bb11d1821d45a55ded4d57403117a2a0f638eac03c116862d9dd9d5c6c5d7176",
+      "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/3f77b872a86a89b68b408139.webp",
+      "source_kind": "codex_visual_review",
+      "model": "current_codex_session",
+      "prompt_version": "p0-noir-rebuild-12-visual-v1",
+      "review_level": "individual_whole_image_judgment",
+      "evidence_scope": "Production-side triage only; not four-gate approval or independent blind review",
+      "evidence": "已逐张查看单品与实际整套图。尖翻领、纵向分割、收腰及尖下摆使马甲成为单一主角，细针织内搭提供深领覆盖，阔腿裤与素面鞋包压低其余信息量，鞋成对且衣物完整。NOIR典型候选依据为硬质外观和利落收束，不是深色本身；与EDGE的边界、腰部叠穿余量及实际舒适性须四门复核，不能用平铺证明适体。",
+      "confidence": 0.8,
+      "observations": {
+        "axes": {},
+        "expression": "typical",
+        "formality": "smart_casual",
+        "layering": 2,
+        "persona_scores": {
+          "noir": 0.82,
+          "edge": 0.55
+        },
+        "scenes": [
+          "daily"
+        ],
+        "seasons": [
+          "autumn"
+        ],
+        "structure": "pants",
+        "wearability": "everyday_with_statement",
+        "main_visual_slots": [
+          "top"
+        ],
+        "main_colors": [],
+        "conflicts": null,
+        "persona_evidence": "已逐张查看单品与实际整套图。尖翻领、纵向分割、收腰及尖下摆使马甲成为单一主角，细针织内搭提供深领覆盖，阔腿裤与素面鞋包压低其余信息量，鞋成对且衣物完整。NOIR典型候选依据为硬质外观和利落收束，不是深色本身；与EDGE的边界、腰部叠穿余量及实际舒适性须四门复核，不能用平铺证明适体。"
+      }
+    },
+    {
+      "outfit_id": "outfit_noir_p0-noir-rebuild-12_02",
+      "status": "ai_candidate",
+      "record_fingerprint": "a4154544487302c1a7f01be7aafe37cd6b3590562f6352d4c7db6f0b1b17d8c8",
+      "asset_sha256": "8a354c10ff61cfe0a2207dfce75a74f8b4f0e2a781cd6d8791148f61ad032469",
+      "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/04c962aad55c482d3948d63a.webp",
+      "source_kind": "codex_visual_review",
+      "model": "current_codex_session",
+      "prompt_version": "p0-noir-rebuild-12-visual-v1",
+      "review_level": "individual_whole_image_judgment",
+      "evidence_scope": "Production-side triage only; not four-gate approval or independent blind review",
+      "evidence": "已逐张查看实际整套图。马甲的尖领与收腰结构搭配窄直裙，形成更窄的纵向比例；圆领长袖内搭覆盖深领，素鞋包不抢主视觉。作为NOIR典型候选送审，同一马甲与内搭均为本人格第二次使用，不把换下装当作完全独立风格语言；裙开衩、坐姿及腰部叠穿仍待核实，未通过独立盲审。",
+      "confidence": 0.8,
+      "observations": {
+        "axes": {},
+        "expression": "typical",
+        "formality": "smart_casual",
+        "layering": 2,
+        "persona_scores": {
+          "noir": 0.82,
+          "edge": 0.55
+        },
+        "scenes": [
+          "daily"
+        ],
+        "seasons": [
+          "autumn"
+        ],
+        "structure": "skirt",
+        "wearability": "everyday_with_statement",
+        "main_visual_slots": [
+          "top"
+        ],
+        "main_colors": [],
+        "conflicts": null,
+        "persona_evidence": "已逐张查看实际整套图。马甲的尖领与收腰结构搭配窄直裙，形成更窄的纵向比例；圆领长袖内搭覆盖深领，素鞋包不抢主视觉。作为NOIR典型候选送审，同一马甲与内搭均为本人格第二次使用，不把换下装当作完全独立风格语言；裙开衩、坐姿及腰部叠穿仍待核实，未通过独立盲审。"
+      }
+    },
+    {
+      "outfit_id": "outfit_noir_p0-noir-rebuild-12_03",
+      "status": "needs_review",
+      "record_fingerprint": "4900117ff87ea5e06d9c19cda4151eb350890bda0172df91e1bdd9140dcdbfbb",
+      "asset_sha256": "370274006df0cff3edc16f48bcbb7ee6518b2a2b6b325f94ac62894b8f144c97",
+      "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/d65cabffaa166a6641ba1302.webp",
+      "source_kind": "codex_visual_review",
+      "model": "current_codex_session",
+      "prompt_version": "p0-noir-rebuild-12-visual-v1",
+      "review_level": "individual_whole_image_judgment",
+      "evidence_scope": "Production-side triage only; not four-gate approval or independent blind review",
+      "evidence": "已逐张查看实际整套图。尖肩、斜领、尖下摆和延伸尖袖口集中在同一外套，虽然素面裙提供支撑，但日常轻探索与主题服装的边界仍不明确。标为needs_review，暂不计入候选；需要降低袖口和肩部攻击性或补充实际穿着审核，不用仅换素裙宣称场景通过。"
+    }
+  ]
+}

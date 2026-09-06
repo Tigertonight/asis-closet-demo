@@ -1,0 +1,549 @@
+{
+  "schema_version": 1,
+  "batch_id": "p0-void-rebuild-14",
+  "source_visual_version": "codex-visual-16b18cdcdca36dbc306a",
+  "entries": [
+    {
+      "target_palette": "evidence_first",
+      "hero": "n0098",
+      "new_record": {
+        "id": "outfit_void_p0-void-rebuild-14_01",
+        "kind": "master",
+        "parent_outfit_id": "main-recipe-e15ed2919ddedeb7013599a1",
+        "recipe_version": "p0-void-rebuild-14",
+        "title": "VOID autumn 日常设计 01",
+        "description": "落肩宽直T恤裙的斜向接缝、偏置软袋和微错位下摆形成低强度不规整，平底素鞋包支撑。人格依据应是自然松垂与轻微错位，而非灰色本身；短袖限温暖天气，真实面料与穿着舒适待审。",
+        "primary_persona": "VOID",
+        "secondary_personas": [],
+        "persona_affinity": {},
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "日常"
+        ],
+        "season_tags": [
+          "秋"
+        ],
+        "weather_tags": [],
+        "presentation": [
+          "feminine"
+        ],
+        "intensity": "easy",
+        "formality": 3,
+        "garment_ids": [
+          "garment_p0_low_void_dress_n0098",
+          "garment_mute_shoes_0004",
+          "garment_mute_bag_0005"
+        ],
+        "visible_slots": [
+          "dress",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_p0_low_void_dress_n0098": "hero",
+          "garment_mute_shoes_0004": "support",
+          "garment_mute_bag_0005": "support"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "未判断",
+          "saturation": "未判断",
+          "harmony": "未判断",
+          "palette": []
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/3abb03cdba07ef64d279a102.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source": "designer_recomposition",
+          "confidence": null,
+          "review_notes": [
+            "season, palette and persona are design targets pending whole-image review"
+          ]
+        }
+      },
+      "record_fingerprint": "c13bab23a0abeb479f6fc87a6bae97fc6bc537a3ef2a50fda947eff327351d7d",
+      "asset_sha256": "0f27a12a010035e2257baa176a1ad7c195c8f5eb1884bdb55b6b0fb01630a1ef",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/3abb03cdba07ef64d279a102.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_p0_low_void_dress_n0098",
+            "slot": "dress",
+            "box": [
+              121,
+              160,
+              778,
+              1330
+            ]
+          },
+          {
+            "garment_id": "garment_mute_shoes_0004",
+            "slot": "shoes",
+            "box": [
+              891,
+              880,
+              1078,
+              1080
+            ]
+          },
+          {
+            "garment_id": "garment_mute_bag_0005",
+            "slot": "bag",
+            "box": [
+              851,
+              410,
+              1129,
+              730
+            ]
+          }
+        ]
+      },
+      "status": "pending_native_review",
+      "review": null
+    },
+    {
+      "target_palette": "evidence_first",
+      "hero": "n0098",
+      "new_record": {
+        "id": "outfit_void_p0-void-rebuild-14_02",
+        "kind": "master",
+        "parent_outfit_id": "main-recipe-d9ce953fc09d7edbc99c8d37",
+        "recipe_version": "p0-void-rebuild-14",
+        "title": "VOID autumn 日常设计 02",
+        "description": "松软素面开衫与偏置口袋T恤裙形成包裹但不堆叠的过渡季层次，开衫敞开保留主裙斜缝线索。检查两层袖量、口袋遮挡及是否过于接近EASE，不自动把宽松判为VOID。",
+        "primary_persona": "VOID",
+        "secondary_personas": [],
+        "persona_affinity": {},
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "日常"
+        ],
+        "season_tags": [
+          "秋"
+        ],
+        "weather_tags": [],
+        "presentation": [
+          "feminine"
+        ],
+        "intensity": "easy",
+        "formality": 3,
+        "garment_ids": [
+          "garment_mute_outer_0129",
+          "garment_p0_low_void_dress_n0098",
+          "garment_mute_shoes_0004",
+          "garment_mute_bag_0005"
+        ],
+        "visible_slots": [
+          "outer",
+          "dress",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [
+          {
+            "inner": "garment_p0_low_void_dress_n0098",
+            "outer": "garment_mute_outer_0129"
+          }
+        ],
+        "slot_roles": {
+          "garment_mute_outer_0129": "support",
+          "garment_p0_low_void_dress_n0098": "hero",
+          "garment_mute_shoes_0004": "support",
+          "garment_mute_bag_0005": "support"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "未判断",
+          "saturation": "未判断",
+          "harmony": "未判断",
+          "palette": []
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/2ac51101acb96242247920c3.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source": "designer_recomposition",
+          "confidence": null,
+          "review_notes": [
+            "season, palette and persona are design targets pending whole-image review"
+          ]
+        }
+      },
+      "record_fingerprint": "dba84ea47b438a9d7c079dfd16c01ec1728e5e61332a804477663ed3e2ff6a47",
+      "asset_sha256": "63cb3d48de4c3566726116f814519d5d35aaf85c7a32ed4db5f6b6fa31cf2165",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/2ac51101acb96242247920c3.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_mute_outer_0129",
+            "slot": "outer",
+            "box": [
+              70,
+              160,
+              420,
+              543
+            ]
+          },
+          {
+            "garment_id": "garment_p0_low_void_dress_n0098",
+            "slot": "dress",
+            "box": [
+              450,
+              160,
+              800,
+              783
+            ]
+          },
+          {
+            "garment_id": "garment_mute_shoes_0004",
+            "slot": "shoes",
+            "box": [
+              891,
+              880,
+              1078,
+              1080
+            ]
+          },
+          {
+            "garment_id": "garment_mute_bag_0005",
+            "slot": "bag",
+            "box": [
+              851,
+              410,
+              1129,
+              730
+            ]
+          }
+        ]
+      },
+      "status": "pending_native_review",
+      "review": null
+    },
+    {
+      "target_palette": "evidence_first",
+      "hero": "n0097",
+      "new_record": {
+        "id": "outfit_void_p0-void-rebuild-14_03",
+        "kind": "master",
+        "parent_outfit_id": "main-recipe-1d9d28064b79e43aaf3e9bac",
+        "recipe_version": "p0-void-rebuild-14",
+        "title": "VOID autumn 日常设计 03",
+        "description": "松针织与水洗偏门襟裙，以旧感表面、低位小补片和宽松上身形成低强度状态感，不再增加裤装。需辨别VOID与EASE/WABI边界，不能只凭水洗色与补丁定人格。",
+        "primary_persona": "VOID",
+        "secondary_personas": [],
+        "persona_affinity": {},
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "日常"
+        ],
+        "season_tags": [
+          "秋"
+        ],
+        "weather_tags": [],
+        "presentation": [
+          "feminine"
+        ],
+        "intensity": "easy",
+        "formality": 3,
+        "garment_ids": [
+          "garment_void_top_0127",
+          "garment_p0_low_void_skirt_n0097",
+          "garment_mute_shoes_0004",
+          "garment_mute_bag_0005"
+        ],
+        "visible_slots": [
+          "top",
+          "skirt",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_void_top_0127": "support",
+          "garment_p0_low_void_skirt_n0097": "hero",
+          "garment_mute_shoes_0004": "support",
+          "garment_mute_bag_0005": "support"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "未判断",
+          "saturation": "未判断",
+          "harmony": "未判断",
+          "palette": []
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/cb9899bc9de2036face21fa6.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source": "designer_recomposition",
+          "confidence": null,
+          "review_notes": [
+            "season, palette and persona are design targets pending whole-image review"
+          ]
+        }
+      },
+      "record_fingerprint": "6e78d8736ca3dfddb8e22757d7b18d110a1ebf46555d9b0ee62fc3e2ea006b16",
+      "asset_sha256": "61f2b09957a1e9ff04216112ef4143ba0f70cef69dc93999f0d0fc59a1a357e7",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/cb9899bc9de2036face21fa6.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_void_top_0127",
+            "slot": "top",
+            "box": [
+              226,
+              160,
+              674,
+              620
+            ]
+          },
+          {
+            "garment_id": "garment_p0_low_void_skirt_n0097",
+            "slot": "skirt",
+            "box": [
+              271,
+              644,
+              629,
+              1330
+            ]
+          },
+          {
+            "garment_id": "garment_mute_shoes_0004",
+            "slot": "shoes",
+            "box": [
+              891,
+              880,
+              1078,
+              1080
+            ]
+          },
+          {
+            "garment_id": "garment_mute_bag_0005",
+            "slot": "bag",
+            "box": [
+              851,
+              410,
+              1129,
+              730
+            ]
+          }
+        ]
+      },
+      "status": "pending_native_review",
+      "review": null
+    },
+    {
+      "target_palette": "evidence_first",
+      "hero": "g0321",
+      "new_record": {
+        "id": "outfit_void_p0-void-rebuild-14_04",
+        "kind": "master",
+        "parent_outfit_id": "main-recipe-8528d4c52c1d115ed12a86b1",
+        "recipe_version": "p0-void-rebuild-14",
+        "title": "VOID autumn 日常设计 04",
+        "description": "单侧自然垂褶上衣与低装饰水洗裙试搭，以软垂及不对称下摆为唯一主视觉，裙下部小补片只作背景细节。检查是否漂向FLOU/MUTE或产生两个焦点，作为待审试稿而非直接合格。",
+        "primary_persona": "VOID",
+        "secondary_personas": [],
+        "persona_affinity": {},
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "日常"
+        ],
+        "season_tags": [
+          "秋"
+        ],
+        "weather_tags": [],
+        "presentation": [
+          "feminine"
+        ],
+        "intensity": "easy",
+        "formality": 3,
+        "garment_ids": [
+          "garment_mute_top_0321",
+          "garment_p0_low_void_skirt_n0097",
+          "garment_mute_shoes_0004",
+          "garment_mute_bag_0005"
+        ],
+        "visible_slots": [
+          "top",
+          "skirt",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_mute_top_0321": "hero",
+          "garment_p0_low_void_skirt_n0097": "support",
+          "garment_mute_shoes_0004": "support",
+          "garment_mute_bag_0005": "support"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "未判断",
+          "saturation": "未判断",
+          "harmony": "未判断",
+          "palette": []
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/b4d17fd208d4646bb3e4b930.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source": "designer_recomposition",
+          "confidence": null,
+          "review_notes": [
+            "season, palette and persona are design targets pending whole-image review"
+          ]
+        }
+      },
+      "record_fingerprint": "5e807ba4d292292f820f4c8b37ecaeeb58aa4b1a09cf95a305830a919790b8ee",
+      "asset_sha256": "cad819331269ce93832c089de69aa367828e73fa7e8ef67e3e464e99f33253f7",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/b4d17fd208d4646bb3e4b930.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_mute_top_0321",
+            "slot": "top",
+            "box": [
+              234,
+              160,
+              666,
+              620
+            ]
+          },
+          {
+            "garment_id": "garment_p0_low_void_skirt_n0097",
+            "slot": "skirt",
+            "box": [
+              271,
+              644,
+              629,
+              1330
+            ]
+          },
+          {
+            "garment_id": "garment_mute_shoes_0004",
+            "slot": "shoes",
+            "box": [
+              891,
+              880,
+              1078,
+              1080
+            ]
+          },
+          {
+            "garment_id": "garment_mute_bag_0005",
+            "slot": "bag",
+            "box": [
+              851,
+              410,
+              1129,
+              730
+            ]
+          }
+        ]
+      },
+      "status": "pending_native_review",
+      "review": null
+    }
+  ],
+  "production_approved": false,
+  "version": "aw-designed-rendered-a06d68c53a4b80c63d54"
+}

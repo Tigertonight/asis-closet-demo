@@ -1,0 +1,144 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-09-05T15:08:45.517051+00:00",
+  "release_decision": "do_not_release",
+  "releasable": false,
+  "versions": {
+    "git_commit": "bbf454c48c43b19b6fcdb989ff690462447ede3d",
+    "git_worktree_clean": false,
+    "content_version": "2026.09-v2-published1",
+    "content_sha256": "e80b36e79f83baa2f97cd22d6c44c932dda5a09d7ca3152322c07f422e29ddce",
+    "visual_version": "codex-visual-16b18cdcdca36dbc306a",
+    "visual_sha256": "340ebaa77ec3a1038af35b2738ffb19a22d7b70d4ce7dd6cbeeca9cc33760dc4",
+    "family_registry_sha256": "c8a09893f8dac718495dde16f6a82864ff75ec62e26070b9ac9d025d595c0d36",
+    "anchor_manifest_sha256": "a1b1555bbbceb25044d9a2b9e44b0ecebc601fbe6f9152af1008b0daadaa3fa1",
+    "blind_result_sha256": null,
+    "browser_evidence_sha256": null,
+    "performance_evidence_sha256": null,
+    "recommendation_evidence_sha256": null,
+    "case_evidence_sha256": null,
+    "staging_version": "p0-replacement-staging-9f9f5173f35abf9e0660",
+    "staging_sha256": "bfe176f04d2aa781f64bf7c2ebb926cc81550abb0c19e3ee2133ba97a09943cc"
+  },
+  "inventory": {
+    "anchor_rows": 138,
+    "current_four_gate_reviews": 0,
+    "visual_eligible_catalog": 1064,
+    "visual_held_catalog": 217
+  },
+  "gates": {
+    "G0_traceability": {
+      "status": "Fail",
+      "errors": [
+        "git worktree is not frozen/clean",
+        "evidence file is missing"
+      ]
+    },
+    "G1_home_feed_stability": {
+      "status": "Not Run",
+      "errors": [
+        "evidence file is missing",
+        "evidence file is missing"
+      ]
+    },
+    "G2_content_admission": {
+      "status": "Fail",
+      "errors": [
+        "anchor count is 138, expected 160",
+        "current four-gate reviews are 0/160",
+        "evidence file is missing"
+      ]
+    },
+    "G3_anchor_completeness": {
+      "status": "Fail",
+      "errors": [
+        "anchor manifest must contain exactly 160 rows",
+        "bolt: anchor count must be 10",
+        "edge: anchor count must be 10",
+        "neon: anchor count must be 10",
+        "noir: anchor count must be 10",
+        "oops: anchor count must be 10",
+        "void: anchor count must be 10",
+        "evidence file is missing"
+      ]
+    },
+    "G4_persona_blind_review": {
+      "status": "Not Run",
+      "errors": [
+        "blind review result is missing",
+        "evidence file is missing"
+      ]
+    },
+    "G5_recommendation_quality": {
+      "status": "Not Run",
+      "errors": [
+        "evidence file is missing",
+        "evidence file is missing"
+      ]
+    },
+    "G6_end_to_end": {
+      "status": "Not Run",
+      "errors": [
+        "evidence file is missing",
+        "evidence file is missing"
+      ]
+    },
+    "G7_performance_and_regression": {
+      "status": "Not Run",
+      "errors": [
+        "evidence file is missing",
+        "evidence file is missing"
+      ]
+    }
+  },
+  "case_evidence": {
+    "G0_traceability": {
+      "status": "Not Run",
+      "errors": [
+        "evidence file is missing"
+      ]
+    },
+    "G1_home_feed_stability": {
+      "status": "Not Run",
+      "errors": [
+        "evidence file is missing"
+      ]
+    },
+    "G2_content_admission": {
+      "status": "Not Run",
+      "errors": [
+        "evidence file is missing"
+      ]
+    },
+    "G3_anchor_completeness": {
+      "status": "Not Run",
+      "errors": [
+        "evidence file is missing"
+      ]
+    },
+    "G4_persona_blind_review": {
+      "status": "Not Run",
+      "errors": [
+        "evidence file is missing"
+      ]
+    },
+    "G5_recommendation_quality": {
+      "status": "Not Run",
+      "errors": [
+        "evidence file is missing"
+      ]
+    },
+    "G6_end_to_end": {
+      "status": "Not Run",
+      "errors": [
+        "evidence file is missing"
+      ]
+    },
+    "G7_performance_and_regression": {
+      "status": "Not Run",
+      "errors": [
+        "evidence file is missing"
+      ]
+    }
+  }
+}

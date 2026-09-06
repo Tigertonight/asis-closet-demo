@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "batch_id": "p0-wabi-layer-06",
+  "source_visual_version": "codex-visual-16b18cdcdca36dbc306a",
+  "status": "designer_targets_pending_whole_image_review",
+  "new_garments": [],
+  "recipes": [{
+    "task_id": "P0-CONTENT-WABI-STRUCTURE-EXPLORE",
+    "replaces_source_outfit_id": "outfit_void_master_14_v1__p0-persona-wabi",
+    "persona": "WABI",
+    "palette": "evidence_first",
+    "season": "autumn",
+    "structure": "dress",
+    "hero": "g0390",
+    "items": ["g0390", "g0230", "g0004", "g0284"],
+    "layer_graph": [{"inner": "g0230", "outer": "g0390"}],
+    "expression": "explore",
+    "intent": "素面短袖连衣裙作内层，不对称拼接外套作唯一主视觉。以主服装的粗细肌理和不规则门襟表达手作感，鞋包保持克制；不用此前被拒的多层茧形主裙。外套袖量应容纳内层短袖，敞开穿着保留裙身简洁线条；领口、长度关系及日常适用性须在整图复核，不按目标标签自动通过。"
+  }]
+}

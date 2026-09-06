@@ -1,0 +1,48 @@
+{
+  "schema_version": 1,
+  "version": "p0-bolt-rebuild-16-visual-review-v1",
+  "source_rendered_version": "aw-designed-rendered-fce7e17592bdc6439f48",
+  "independent_blind_review": false,
+  "four_gate_editorial_review": false,
+  "entries": [
+    {
+      "outfit_id": "outfit_bolt_p0-bolt-pants-16_01",
+      "status": "ai_candidate",
+      "record_fingerprint": "b6c8c579110be01b7810ef3db0b62dd155551c8b19a7965da781efdf454c310c",
+      "asset_sha256": "114cf432ebdc6e1cb727ca1eae66eab7a662b65db4f74872fe076babd8e01da6",
+      "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/3fc31d7c40d1789f871b9d1b.webp",
+      "source_kind": "codex_visual_review",
+      "model": "current_codex_session",
+      "prompt_version": "p0-bolt-rebuild-16-visual-v1",
+      "review_level": "individual_whole_image_judgment",
+      "evidence_scope": "Production-side triage only; not four-gate approval or independent blind review",
+      "confidence": 0.79,
+      "evidence": "已看实际整套图。长袖轻泡袖衬衫的领结、微光表面和窄腰是唯一精致焦点，平整阔腿裤与素面鞋包把其余信息量压低，四件完整、鞋成对。主衣第二次使用，新配方改变主下装而非只换鞋包；作为BOLT入门候选保留easy/typical及HEIR/MELT边界待审。已按实图纠正试稿描述中的短袖为长袖，采用新的记录指纹，不继承旧描述审核。",
+      "observations": {
+        "axes": {},
+        "expression": "easy",
+        "formality": "smart_casual",
+        "layering": 1,
+        "persona_scores": {
+          "bolt": 0.8,
+          "heir": 0.5,
+          "melt": 0.5
+        },
+        "scenes": [
+          "daily"
+        ],
+        "seasons": [
+          "autumn"
+        ],
+        "structure": "pants",
+        "wearability": "everyday_with_statement",
+        "main_visual_slots": [
+          "top"
+        ],
+        "main_colors": [],
+        "conflicts": null,
+        "persona_evidence": "已看实际整套图。长袖轻泡袖衬衫的领结、微光表面和窄腰是唯一精致焦点，平整阔腿裤与素面鞋包把其余信息量压低，四件完整、鞋成对。主衣第二次使用，新配方改变主下装而非只换鞋包；作为BOLT入门候选保留easy/typical及HEIR/MELT边界待审。已按实图纠正试稿描述中的短袖为长袖，采用新的记录指纹，不继承旧描述审核。"
+      }
+    }
+  ]
+}

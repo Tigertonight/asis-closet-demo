@@ -1,0 +1,42 @@
+{
+  "schema_version": 1,
+  "scope": "read_only_pixel_inspection_and_production_visual_triage",
+  "registered": false,
+  "production_approved": false,
+  "assets": [
+    {
+      "path": "raw/bolt-shaped-tweed-jacket-raw-v1.png",
+      "sha256": "a3a63653c96a6e61b616bb978d6e454a6b5c853e31ae0092722862e22ab83f85",
+      "mode": "RGBA", "size": [1254, 1254], "alpha_range": [0, 255],
+      "transparent_ratio": 0.4763391914613269,
+      "partial_alpha_ratio": 0.5227800543841843,
+      "meaningful_bbox_alpha_at_least_8": [69, 47, 1185, 1207],
+      "minimum_meaningful_margin": 0.037480063795853266,
+      "status": "needs_preparation_and_visual_recheck",
+      "reason": "Top/bottom margins below existing 0.055 registration threshold; scattered low-alpha edge pixels."
+    },
+    {
+      "path": "raw/bolt-folded-shoulder-blouse-raw-v1.png",
+      "sha256": "3af1926c363cead4b1827b863aa7811bc2fb6da21945a5f561adbc763255ecb8",
+      "mode": "RGBA", "size": [1254, 1254], "alpha_range": [0, 255],
+      "transparent_ratio": 0.4425455766427814,
+      "partial_alpha_ratio": 0.5559930709767023,
+      "meaningful_bbox_alpha_at_least_8": [81, 91, 1172, 1181],
+      "minimum_meaningful_margin": 0.058213716108452954,
+      "status": "needs_preparation_and_visual_recheck",
+      "reason": "Meaningful margins meet minimum, but low-alpha speckles extend to canvas edges; not reviewed in a final outfit."
+    },
+    {
+      "path": "rejected/bolt-shaped-tweed-jacket-edit-v1.png",
+      "sha256": "854bb0b6e37e93aab061889ad6db4bbde14751594b2e05c01e3a16e94ff9eacc",
+      "mode": "RGB", "size": [1254, 1254], "status": "reject",
+      "reason": "No alpha channel; checkerboard is painted into the image."
+    },
+    {
+      "path": "rejected/bolt-folded-shoulder-blouse-edit-v1.png",
+      "sha256": "23f21e6eb360cb4a35ada929e33d082eedc9db4ab1811f3d965e9b1f4f11f92a",
+      "mode": "RGB", "size": [1254, 1254], "status": "reject",
+      "reason": "No alpha channel; checkerboard is painted into the image."
+    }
+  ]
+}

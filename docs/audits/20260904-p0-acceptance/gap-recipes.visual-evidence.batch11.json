@@ -1,0 +1,14 @@
+{
+  "schema_version": 1, "batch_id": "p0-neon-rebuild-11",
+  "source_visual_version": "codex-visual-16b18cdcdca36dbc306a",
+  "status": "designer_targets_pending_whole_image_review", "new_garments": [],
+  "new_garment_manifest": "generated-garments/batch01/manifest.json",
+  "new_garment_version": "aw-generated-garments-b42e54ea8cabc29fe4f7",
+  "recipes": [
+    {"persona":"NEON","palette":"evidence_first","season":"autumn","structure":"pants","hero":"n0093","items":["n0093","g0003","g0004","g0005"],"expression":"easy","intent":"Polo短门襟与贴袋设计形成运动感上衣，干净阔腿裤、素鞋包控制全套信息量。只作待评估入门试稿：需验证主衣除撞色外是否有足够NEON证据，不把高饱和等同人格通过。"},
+    {"persona":"NEON","palette":"evidence_first","season":"autumn","structure":"skirt","hero":"n0093","items":["n0093","g0186","g0004","g0005"],"expression":"easy","intent":"Polo配素面A形长裙，检查运动与裙装的轻反差是否成立。主上衣第二次复用，不能以换鞋包计新配方；人格若仅剩撞色则不进入候选。"},
+    {"persona":"NEON","palette":"evidence_first","season":"autumn","structure":"dress","hero":"n0094","items":["n0094","g0004","g0005"],"expression":"easy","intent":"侧向拼片与腰侧扣袢提供连衣裙的小幅不对称结构，素鞋包避免装饰堆叠。需看整体是否为可日常的NEON入门，不因亮色自动通过；只计一个主裙配方。"},
+    {"persona":"NEON","palette":"evidence_first","season":"autumn","structure":"dress","hero":"g0036","items":["g0036","g0225","g0004","g0005"],"expression":"explore","layer_graph":[{"inner":"g0225","outer":"g0036"}],"intent":"拼接运动短外套承担唯一探索主视觉，素面短袖连衣裙作内层，明确外套在外。检查宽袖、亮面与拼片能否被素裙收束到日常探索；如仍像主题服则拒绝，不能因结构缺口放宽场景。"},
+    {"persona":"NEON","palette":"evidence_first","season":"autumn","structure":"pants","hero":"g0036","items":["g0036","g0097","g0003","g0004","g0005"],"expression":"explore","layer_graph":[{"inner":"g0097","outer":"g0036"}],"intent":"拼接运动短外套配素面圆领内搭和直线阔腿裤，仅外套作为主视觉；不使用无内搭的虚假完整套装。外套第二次复用，需检查内层袖量与外套体量、面料语境和日常适用性。"}
+  ]
+}

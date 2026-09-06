@@ -1,0 +1,368 @@
+{
+  "schema_version": 1,
+  "batch_id": "p0-bolt-structure-04",
+  "prompt_version": "selfit-p0-bolt-structure-v1",
+  "status": "internal_candidate",
+  "production_approved": false,
+  "generation": [
+    {
+      "garment_id": "garment_p0_bolt_shaped_tweed_n0100",
+      "token": "n0100",
+      "source_output": "/Users/yuanzexiang/Documents/色彩测试/docs/audits/20260904-p0-acceptance/generated-garments/batch04/raw/bolt-shaped-tweed-jacket-raw-v1.png",
+      "raw_path": "raw/bolt-shaped-tweed-jacket-raw-v1.png",
+      "prepared_path": "prepared/bolt-shaped-tweed-jacket-v1.png",
+      "qa_path": "qa/bolt-shaped-tweed-jacket-v1.json",
+      "final_prompt": "Use case: product-mockup. Asset type: one photorealistic women's garment catalogue cutout for an outfit-builder. Backdrop: genuinely transparent PNG with real alpha everywhere outside the garment, including between sleeves and body; no painted gray/white backdrop, no checkerboard, no cast shadow. Subject: ONE contemporary, wearable cropped tweed jacket for a polished feminine city wardrobe, NOT a historical costume. Dense fine ivory boucle with subtle burgundy flecks, collarless softly squared neckline, very gently raised rounded shoulder caps (modest, not huge puff sleeves), fitted princess seams into a short waist-length gently flared hem, narrow burgundy velvet piping, four small pearl-like round buttons, two clean shallow welt pockets. Long slim sleeves, opaque real fabric, front fastened. The main expressive evidence is the shaped shoulder/waist contrast, textured construction and precise small trim; no bows, embroidery, lace, gold brocade, fur, cape or large shoulder decoration. Front-facing ghost-mannequin garment ONLY, no visible mannequin/person/hanger, natural material folds. Entire jacket and sleeve cuffs visible, sleeves slightly separated, centered square image with generous transparent margins. Soft neutral studio illumination on the garment only. No text, logo or accessories.",
+      "target_conditions": [
+        "BOLT typical candidate; HEIR boundary requires outfit review"
+      ],
+      "preprocessing": "User-authorized existing prepare_selfit_garment_asset.py; size=1200 padding=.10 alpha_noise=8"
+    },
+    {
+      "garment_id": "garment_p0_bolt_folded_shoulder_n0101",
+      "token": "n0101",
+      "source_output": "/Users/yuanzexiang/Documents/色彩测试/docs/audits/20260904-p0-acceptance/generated-garments/batch04/raw/bolt-folded-shoulder-blouse-raw-v1.png",
+      "raw_path": "raw/bolt-folded-shoulder-blouse-raw-v1.png",
+      "prepared_path": "prepared/bolt-folded-shoulder-blouse-v1.png",
+      "qa_path": "qa/bolt-folded-shoulder-blouse-v1.json",
+      "final_prompt": "Use case: product-mockup. Asset type: one photorealistic women's garment catalogue cutout for an outfit-builder. Backdrop: genuinely transparent PNG with real alpha outside and between sleeves/body, no painted backdrop, no gray haze, no checkerboard, no cast shadow. Subject: ONE contemporary women's architectural blouse for restrained expressive city dressing. Opaque dusty-rose heavy crepe with a slight satin surface, wearable high shallow boat neckline with BOTH shoulders covered. One small folded fan-like pleat grows from the neckline near the wearer's left shoulder and continues into a diagonal tuck across the bodice, giving controlled asymmetric volume; the other shoulder remains clean. Modest rounded sleeve heads, long smoothly tapered sleeves with plain narrow cuffs, clear fitted waist darts, a clean short straight hem at upper hip. NO bow, no flower, no giant balloon sleeve, no cape, no embroidery, no ruffles, no peplum skirt, no exposed midriff, no corset lacing, no costume details. The single sculpted shoulder-to-bodice fold is the main design feature; elegant everyday dinner/date blouse rather than evening gown. Front-facing garment only, invisible mannequin presentation without body or hanger, soft realistic texture and natural small folds. Entire garment including both cuffs visible with generous clear transparent margins. Centered square product photograph. No text, logo, necklace or accessories.",
+      "target_conditions": [
+        "BOLT light exploration target; classification remains pending whole-image review"
+      ],
+      "preprocessing": "User-authorized existing prepare_selfit_garment_asset.py; size=1200 padding=.10 alpha_noise=8"
+    }
+  ],
+  "garments": [
+    {
+      "id": "garment_p0_bolt_shaped_tweed_n0100",
+      "category": "outer",
+      "subcategory": "细滚边收腰短外套",
+      "silhouette": [
+        "shaped_waist",
+        "short_jacket",
+        "raised_rounded_shoulder"
+      ],
+      "fit": "合体",
+      "materials": [],
+      "details": [
+        "original_gap_fill",
+        "p0_persona_not_color_test",
+        "visually_reviewed_cutout"
+      ],
+      "season_tags": [
+        "秋"
+      ],
+      "scene_tags": [
+        "日常",
+        "约会社交"
+      ],
+      "weather_tags": [],
+      "presentation": [
+        "feminine",
+        "neutral"
+      ],
+      "layer_role": "outer",
+      "tryon_slot": "outer",
+      "persona_affinity": {
+        "BOLT": 0.96,
+        "HEIR": 0.88
+      },
+      "color": {
+        "temperature": "未判断",
+        "lightness": "浅色",
+        "saturation": "低饱和",
+        "harmony": "未判断",
+        "palette": [
+          "#c7bab3",
+          "#d5cac3",
+          "#dcd2cc",
+          "#9a8380",
+          "#e3dad4"
+        ]
+      },
+      "assets": {
+        "image_url": "/static/selfit/assets/content_v2_drafts/p0-bolt-structure-04/garments/bolt-shaped-tweed-jacket-v1.png",
+        "source_url": "",
+        "width": 1200,
+        "height": 1200,
+        "alpha_verified": true,
+        "rights_status": "owned"
+      },
+      "production": {
+        "source_kind": "generated_original",
+        "generation_job_id": "p0-bolt-structure-04-n0100",
+        "prompt_version": "selfit-p0-bolt-structure-v1",
+        "reference_ids": [],
+        "qa_status": "approved",
+        "phash": "8a8696f0d0e8e870-c5b7b1"
+      },
+      "annotation": {
+        "status": "designer_reviewed",
+        "source": "designer",
+        "confidence": 0.8,
+        "review_notes": [
+          "Prepared output viewed individually; only cutout usability is candidate-approved.",
+          "User authorized low-alpha cleanup, proportional resizing and transparent padding; no redesign.",
+          "Persona and expression targets require whole-outfit judgment; no independent review performed."
+        ]
+      },
+      "color_evidence": {
+        "source": "opaque_pixel_quantization_v1",
+        "status": "measured_not_semantic_review",
+        "asset_sha256": "1ddb87fb3f6a8f941280e8015b9ad478db698904087286be62c84d3c55ca8a3a",
+        "swatches": [
+          {
+            "hex": "#c7bab3",
+            "weight": 0.3018,
+            "family": "灰"
+          },
+          {
+            "hex": "#d5cac3",
+            "weight": 0.2319,
+            "family": "白"
+          },
+          {
+            "hex": "#dcd2cc",
+            "weight": 0.1807,
+            "family": "白"
+          },
+          {
+            "hex": "#9a8380",
+            "weight": 0.1544,
+            "family": "红"
+          },
+          {
+            "hex": "#e3dad4",
+            "weight": 0.1312,
+            "family": "白"
+          }
+        ],
+        "palette_names": [
+          "灰",
+          "白",
+          "红"
+        ],
+        "color": {
+          "temperature": "未判断",
+          "lightness": "浅色",
+          "saturation": "低饱和",
+          "harmony": "未判断",
+          "palette": [
+            "#c7bab3",
+            "#d5cac3",
+            "#dcd2cc",
+            "#9a8380",
+            "#e3dad4"
+          ]
+        },
+        "limitations": "渲染光照会影响色值；不据此推断面料成分、真实冷暖或人体适配。"
+      }
+    },
+    {
+      "id": "garment_p0_bolt_folded_shoulder_n0101",
+      "category": "top",
+      "subcategory": "偏肩折片合腰上衣",
+      "silhouette": [
+        "fitted_waist",
+        "asymmetric_bodice_fold",
+        "covered_shoulders"
+      ],
+      "fit": "合体",
+      "materials": [],
+      "details": [
+        "original_gap_fill",
+        "p0_persona_not_color_test",
+        "visually_reviewed_cutout"
+      ],
+      "season_tags": [
+        "秋"
+      ],
+      "scene_tags": [
+        "日常",
+        "约会社交"
+      ],
+      "weather_tags": [],
+      "presentation": [
+        "feminine",
+        "neutral"
+      ],
+      "layer_role": "single",
+      "tryon_slot": "top",
+      "persona_affinity": {
+        "BOLT": 0.96,
+        "FLOU": 0.88,
+        "MELT": 0.8
+      },
+      "color": {
+        "temperature": "未判断",
+        "lightness": "浅色",
+        "saturation": "中饱和",
+        "harmony": "未判断",
+        "palette": [
+          "#b97e80",
+          "#c28789",
+          "#cc9294",
+          "#a3696a",
+          "#d9a0a1"
+        ]
+      },
+      "assets": {
+        "image_url": "/static/selfit/assets/content_v2_drafts/p0-bolt-structure-04/garments/bolt-folded-shoulder-blouse-v1.png",
+        "source_url": "",
+        "width": 1200,
+        "height": 1200,
+        "alpha_verified": true,
+        "rights_status": "owned"
+      },
+      "production": {
+        "source_kind": "generated_original",
+        "generation_job_id": "p0-bolt-structure-04-n0101",
+        "prompt_version": "selfit-p0-bolt-structure-v1",
+        "reference_ids": [],
+        "qa_status": "approved",
+        "phash": "82aaaab2f0c8c868-bd8384"
+      },
+      "annotation": {
+        "status": "designer_reviewed",
+        "source": "designer",
+        "confidence": 0.8,
+        "review_notes": [
+          "Prepared output viewed individually; only cutout usability is candidate-approved.",
+          "User authorized low-alpha cleanup, proportional resizing and transparent padding; no redesign.",
+          "Persona and expression targets require whole-outfit judgment; no independent review performed."
+        ]
+      },
+      "color_evidence": {
+        "source": "opaque_pixel_quantization_v1",
+        "status": "measured_not_semantic_review",
+        "asset_sha256": "89550feefdbefa36986846b90d6ac3046e3a03b81b961739f106f0714b19855b",
+        "swatches": [
+          {
+            "hex": "#b97e80",
+            "weight": 0.3162,
+            "family": "粉"
+          },
+          {
+            "hex": "#c28789",
+            "weight": 0.2313,
+            "family": "粉"
+          },
+          {
+            "hex": "#cc9294",
+            "weight": 0.1729,
+            "family": "粉"
+          },
+          {
+            "hex": "#a3696a",
+            "weight": 0.163,
+            "family": "红"
+          },
+          {
+            "hex": "#d9a0a1",
+            "weight": 0.1166,
+            "family": "粉"
+          }
+        ],
+        "palette_names": [
+          "粉",
+          "红"
+        ],
+        "color": {
+          "temperature": "未判断",
+          "lightness": "浅色",
+          "saturation": "中饱和",
+          "harmony": "未判断",
+          "palette": [
+            "#b97e80",
+            "#c28789",
+            "#cc9294",
+            "#a3696a",
+            "#d9a0a1"
+          ]
+        },
+        "limitations": "渲染光照会影响色值；不据此推断面料成分、真实冷暖或人体适配。"
+      }
+    }
+  ],
+  "visual": {
+    "garment_p0_bolt_shaped_tweed_n0100": {
+      "token": "n0100",
+      "status": "ai_candidate",
+      "record_fingerprint": "8fc5537481f12e9e9703278f79b769fe2fb04a1822977a68193b28b39bb3ed61",
+      "asset_sha256": "1ddb87fb3f6a8f941280e8015b9ad478db698904087286be62c84d3c55ca8a3a",
+      "image_url": "/static/selfit/assets/content_v2_drafts/p0-bolt-structure-04/garments/bolt-shaped-tweed-jacket-v1.png",
+      "source_kind": "codex_visual_review",
+      "evidence": "微抬肩、公主线收腰、短摆、细滚边和四枚圆扣形成集中精致结构；与HEIR相邻，不以目标BOLT标签证明整套人格。",
+      "observations": {
+        "category": "outer",
+        "subcategory": "shaped_collarless_tweed_jacket",
+        "neckline": "rounded_square_collarless",
+        "sleeve": "long_slightly_raised_head",
+        "length": "waist",
+        "volume": "fitted_slight_hem_flare",
+        "construction": "princess_seams_four_round_buttons_welt_pockets",
+        "pattern": "fine_flecked_weave",
+        "decoration": "medium",
+        "material_appearance": "boucle_with_velvet_like_piping",
+        "main_colors": [
+          "ivory",
+          "burgundy"
+        ],
+        "visual_personas": [
+          "bolt",
+          "heir"
+        ],
+        "usage_limits": "Autumn/date draft; warmth, comfort and persona distinctiveness unverified."
+      },
+      "confidence": 0.8,
+      "model": "current_codex_session",
+      "prompt_version": "aw-generated-garment-review-v1",
+      "review_level": "individual_full_resolution_judgment",
+      "review_complete": true,
+      "confidence_basis": "Non-calibrated AI visual judgment; material appearance is visual only and warmth is not claimed."
+    },
+    "garment_p0_bolt_folded_shoulder_n0101": {
+      "token": "n0101",
+      "status": "ai_candidate",
+      "record_fingerprint": "25754b8ec9339bd1df006d1e7779bd6bc6482f3e28a37841a6de340c89970ab4",
+      "asset_sha256": "89550feefdbefa36986846b90d6ac3046e3a03b81b961739f106f0714b19855b",
+      "image_url": "/static/selfit/assets/content_v2_drafts/p0-bolt-structure-04/garments/bolt-folded-shoulder-blouse-v1.png",
+      "source_kind": "codex_visual_review",
+      "evidence": "偏肩折片与胸腰斜褶构成单一体积焦点，肩部覆盖、长袖收窄；实图绉感偏哑光，需检查BOLT与FLOU/MELT及typical/explore边界。",
+      "observations": {
+        "category": "top",
+        "subcategory": "asymmetric_folded_shoulder_blouse",
+        "neckline": "shallow_boat",
+        "sleeve": "long_tapered",
+        "length": "upper_hip",
+        "volume": "fitted",
+        "construction": "one_shoulder_tab_diagonal_bodice_pleats_waist_darts",
+        "pattern": "solid",
+        "decoration": "medium",
+        "material_appearance": "matte_crepe_like",
+        "main_colors": [
+          "dusty_rose"
+        ],
+        "visual_personas": [
+          "bolt",
+          "flou",
+          "melt"
+        ],
+        "usage_limits": "Autumn/date draft; warmth, comfort and persona distinctiveness unverified."
+      },
+      "confidence": 0.8,
+      "model": "current_codex_session",
+      "prompt_version": "aw-generated-garment-review-v1",
+      "review_level": "individual_full_resolution_judgment",
+      "review_complete": true,
+      "confidence_basis": "Non-calibrated AI visual judgment; material appearance is visual only and warmth is not claimed."
+    }
+  },
+  "limitations": [
+    "AI visual review is not independent blind review.",
+    "Dense or wool-like appearance does not prove warmth, fiber, waterproofing or comfort.",
+    "No garment is in the published pool.",
+    "Failed RGB checkerboard edits were rejected; only original RGBA files were normalized."
+  ],
+  "version": "aw-generated-garments-c8e78c03442f4fc69f27"
+}

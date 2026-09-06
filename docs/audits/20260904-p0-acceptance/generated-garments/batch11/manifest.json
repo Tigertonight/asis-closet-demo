@@ -1,0 +1,2566 @@
+{
+  "schema_version": 1,
+  "batch_id": "p0-generated-final-supply-11",
+  "prompt_version": "selfit-p0-final-supply-v1",
+  "status": "internal_candidate",
+  "production_approved": false,
+  "generation": [
+    {
+      "garment_id": "garment_p0_final_oops_dress_n0102",
+      "token": "n0102",
+      "source_output": "/Users/yuanzexiang/Documents/色彩测试/docs/audits/20260904-p0-acceptance/generated-garments/batch05/oops-rugby-tailored-dress-raw-v1.png",
+      "raw_path": "raw/oops-rugby-tailored-dress-raw-v1.png",
+      "prepared_path": "prepared/oops-rugby-tailored-dress-v1.png",
+      "qa_path": "qa/oops-rugby-tailored-dress-v1.json",
+      "final_prompt": "Use case: product-mockup\nAsset type: original garment cutout for internal wardrobe prototype, not a branded retail item.\nPrimary request: one women's everyday hybrid midi dress, a deliberate sportswear/tailoring mismatch built into one sewn garment, not separate clothes.\nSubject: relaxed long-sleeve charcoal cotton rugby upper bodice with ivory small polo collar and three-button short placket, rib cuffs. A clearly diagonal waist joining seam meets a dark charcoal fine-pinstripe wool-look lower skirt: broad crisp asymmetric tailored wrap panel crossing in front, three deep pleats only on one side, discreet side fastening and a modest mid-calf hem. The sports jersey texture above and structured pinstripe pleats below should be distinctly readable. Comfortable covered chest, no cutouts, no bodycon, no logos, no unnecessary hardware. Restrained colors, interest comes from conflicting construction rather than decoration.\nStyle: photorealistic front-facing e-commerce garment-only flat lay, soft even studio illumination, actual fabric grain and seams. Full garment including both cuffs and hem, centered in a square with at least 12% completely empty margin on every side. Sleeves naturally angled outward, silhouette clearly separated.\nBackground: genuinely transparent PNG alpha, no white backdrop, no painted checkerboard, no ground plane or cast shadow. No model, mannequin, hanger, human, shoes, bag, props, text, watermark. Exactly one garment. Photorealistic premium fashion e-commerce product cutout, exactly one original unbranded garment, front-facing and naturally shaped as if invisibly supported, genuinely transparent alpha background, centered square canvas, complete silhouette with 12% clear padding on every side. No person, mannequin, hanger, stand, accessories, text, label, logo, watermark, floor shadow, white halo, duplicate item or clipped edge.",
+      "target_conditions": [
+        "easy:dress",
+        "easy:dress"
+      ]
+    },
+    {
+      "garment_id": "garment_p0_final_noir_dress_n0103",
+      "token": "n0103",
+      "source_output": "/Users/yuanzexiang/Documents/色彩测试/docs/audits/20260904-p0-acceptance/generated-garments/batch06/noir-diagonal-zip-dress-raw-v1.png",
+      "raw_path": "raw/noir-diagonal-zip-dress-raw-v1.png",
+      "prepared_path": "prepared/noir-diagonal-zip-dress-v1.png",
+      "qa_path": "qa/noir-diagonal-zip-dress-v1.json",
+      "final_prompt": "Use case: product-mockup\nAsset type: original garment cutout for an internal wardrobe prototype, not a branded retail item.\nPrimary request: one women's everyday black midi dress with restrained, cold, directional structure; a daily-wear NOIR exploration target whose visual evidence comes from construction, not merely color.\nSubject: matte black heavyweight cotton-jersey midi dress with a covered crew neck, relaxed straight body and full-length sleeves. One clean diagonal seam begins below one shoulder and travels across the torso into an offset double-ended matte gunmetal zipper at the waist; below it, an asymmetric overlapping front panel creates one long angular line and a modest side opening backed by an opaque underlayer. Subtle ribbed side inset on only one side and slightly extended cuffs with thumb openings. No sharp costume shoulders, corset, leather, exposed skin, bodycon fit, distressed holes, slogans or logos. Comfortable enough for commuting; hem below mid-calf.\nStyle/medium: photorealistic front-facing e-commerce garment-only flat lay, soft even studio illumination, visible real jersey grain and construction seams.\nComposition/framing: full garment including neckline, both cuffs and hem, centered in a square with at least 14% completely empty margin on every edge; sleeves gently angled outward and silhouette clearly separated.\nBackground: genuinely transparent PNG alpha. No white/black/gray backdrop, no painted checkerboard, ground plane, shadow, model, mannequin, hanger, person, shoes, bag, props, text or watermark. Exactly one garment. Photorealistic premium fashion e-commerce product cutout, exactly one original unbranded garment, front-facing and naturally shaped as if invisibly supported, genuinely transparent alpha background, centered square canvas, complete silhouette with 12% clear padding on every side. No person, mannequin, hanger, stand, accessories, text, label, logo, watermark, floor shadow, white halo, duplicate item or clipped edge.",
+      "target_conditions": [
+        "explore:dress"
+      ]
+    },
+    {
+      "garment_id": "garment_p0_final_edge_top_n0104",
+      "token": "n0104",
+      "source_output": "/Users/yuanzexiang/Documents/色彩测试/docs/audits/20260904-p0-acceptance/generated-garments/batch07/edge-diagonal-knit-top-raw-v1.png",
+      "raw_path": "raw/edge-diagonal-knit-top-raw-v1.png",
+      "prepared_path": "prepared/edge-diagonal-knit-top-v1.png",
+      "qa_path": "qa/edge-diagonal-knit-top-v1.json",
+      "final_prompt": "Use case: product-mockup\nAsset type: original garment cutout for an internal wardrobe prototype.\nPrimary request: one women's daily sweet-cool fitted knit top for an EDGE easy outfit target.\nSubject: matte black fine-rib long-sleeve knit cardigan/top, hip length, gently fitted but comfortable, small pointed collar in dusty rose, narrow dusty-rose piping tracing only the collar and one diagonal two-way zipper from upper chest to side waist. Simple covered chest, regular shoulders, slim sleeves, no cutouts, no corset, no lace, no logos. The sweet/cool contrast is restrained and construction-led.\nStyle/medium: photorealistic front-facing e-commerce garment-only flat lay, real knit grain, soft even studio light.\nComposition/framing: entire top including collar, both cuffs and hem centered in square, at least 14% transparent margin on all edges.\nBackground: genuinely transparent PNG alpha; no checkerboard, backdrop, shadow, model, mannequin, hanger, props, text or watermark. Exactly one garment. Photorealistic premium fashion e-commerce product cutout, exactly one original unbranded garment, front-facing and naturally shaped as if invisibly supported, genuinely transparent alpha background, centered square canvas, complete silhouette with 12% clear padding on every side. No person, mannequin, hanger, stand, accessories, text, label, logo, watermark, floor shadow, white halo, duplicate item or clipped edge.",
+      "target_conditions": [
+        "easy:pants",
+        "easy:skirt"
+      ]
+    },
+    {
+      "garment_id": "garment_p0_final_edge_outer_n0105",
+      "token": "n0105",
+      "source_output": "/Users/yuanzexiang/Documents/色彩测试/docs/audits/20260904-p0-acceptance/generated-garments/batch07/edge-organza-panel-jacket-raw-v1.png",
+      "raw_path": "raw/edge-organza-panel-jacket-raw-v1.png",
+      "prepared_path": "prepared/edge-organza-panel-jacket-v1.png",
+      "qa_path": "qa/edge-organza-panel-jacket-v1.json",
+      "final_prompt": "Use case: product-mockup\nAsset type: original garment cutout for an internal wardrobe prototype.\nPrimary request: one women's daily sweet-cool cropped jacket for an EDGE explore outfit target.\nSubject: waist-length washed-black structured cotton jacket, wearable regular shoulders, long sleeves, asymmetric pointed front closure with matte gunmetal snaps. One controlled dusty-rose organza knife-pleat inset begins beneath a single front yoke and continues as a narrow side peplum on only one side; the rest remains clean black tailoring. Covered torso, no exposed bra, no extreme shoulder, no spikes, no chains, no costume styling, no logos. One clear cool/sweet structural contrast, commuting wearable.\nStyle/medium: photorealistic front-facing e-commerce garment-only flat lay, visible cotton and sheer organza textures, soft even studio light.\nComposition/framing: full jacket including both cuffs and hem centered in square, at least 14% transparent margin on every edge.\nBackground: genuinely transparent PNG alpha; no checkerboard, backdrop, shadow, model, mannequin, hanger, props, text or watermark. Exactly one garment. Photorealistic premium fashion e-commerce product cutout, exactly one original unbranded garment, front-facing and naturally shaped as if invisibly supported, genuinely transparent alpha background, centered square canvas, complete silhouette with 12% clear padding on every side. No person, mannequin, hanger, stand, accessories, text, label, logo, watermark, floor shadow, white halo, duplicate item or clipped edge.",
+      "target_conditions": [
+        "explore:pants"
+      ]
+    },
+    {
+      "garment_id": "garment_p0_final_edge_dress_n0106",
+      "token": "n0106",
+      "source_output": "/Users/yuanzexiang/Documents/色彩测试/docs/audits/20260904-p0-acceptance/generated-garments/batch07/edge-denim-pleat-dress-raw-v1.png",
+      "raw_path": "raw/edge-denim-pleat-dress-raw-v1.png",
+      "prepared_path": "prepared/edge-denim-pleat-dress-v1.png",
+      "qa_path": "qa/edge-denim-pleat-dress-v1.json",
+      "final_prompt": "Use case: product-mockup\nAsset type: original garment cutout for an internal wardrobe prototype.\nPrimary request: one women's daily sweet-cool midi dress for an EDGE typical outfit target, cohesive rather than chaotic.\nSubject: washed-black denim long-sleeve shirt dress with a covered small pointed collar, fitted upper body with princess seams, a clean asymmetric wrap skirt and one dusty-rose matte chiffon knife-pleat underpanel visible only from knee to midi hem. Narrow dusty-rose topstitching follows one diagonal wrap edge; matte gunmetal snaps. Regular wearable shoulders, modest neckline, comfortable A-line ease. No corset, cutouts, lace, ruffles, chains, spikes, logos or costume styling.\nStyle/medium: photorealistic front-facing e-commerce garment-only flat lay with real denim and chiffon texture, soft even studio lighting.\nComposition/framing: intentionally small product scale occupying no more than 65% of the square height and width; entire collar, both cuffs and hem centered, at least 16% genuinely transparent empty margin on all four edges.\nBackground: real transparent PNG alpha only; no checkerboard, backdrop, shadow, model, mannequin, hanger, props, text or watermark. Exactly one garment. Photorealistic premium fashion e-commerce product cutout, exactly one original unbranded garment, front-facing and naturally shaped as if invisibly supported, genuinely transparent alpha background, centered square canvas, complete silhouette with 12% clear padding on every side. No person, mannequin, hanger, stand, accessories, text, label, logo, watermark, floor shadow, white halo, duplicate item or clipped edge.",
+      "target_conditions": [
+        "typical:dress"
+      ]
+    },
+    {
+      "garment_id": "garment_p0_final_void_skirt_n0107",
+      "token": "n0107",
+      "source_output": "/Users/yuanzexiang/Documents/色彩测试/docs/audits/20260904-p0-acceptance/generated-garments/batch08/void-offset-pocket-skirt-raw-v1.png",
+      "raw_path": "raw/void-offset-pocket-skirt-raw-v1.png",
+      "prepared_path": "prepared/void-offset-pocket-skirt-v1.png",
+      "qa_path": "qa/void-offset-pocket-skirt-v1.json",
+      "final_prompt": "Use case: product-mockup\nAsset type: original garment cutout for an internal wardrobe prototype.\nPrimary request: one women's low-effort daily midi skirt for a VOID easy outfit target, intentionally non-prescriptive and slightly displaced rather than artisanal.\nSubject: washed charcoal soft cotton-jersey pull-on straight midi skirt, elastic waist, relaxed walking ease, one subtly offset vertical seam that drifts toward the front, one low asymmetric patch pocket and a small uneven-but-finished layered hem overlap. Soft worn-in drape, no distress holes, embroidery, bohemian craft, tailoring, shine, logos or decoration. It should feel like a default uniform with a quiet refusal to resolve into a polished silhouette.\nStyle/medium: photorealistic front-facing e-commerce garment-only flat lay, visible washed jersey grain, even studio light.\nComposition/framing: intentionally small item occupying no more than 58% of square height and width; full waistband and hem centered with at least 18% transparent margin on every edge.\nBackground: genuine transparent PNG alpha only; no checkerboard, backdrop, shadow, model, mannequin, hanger, props, text or watermark. Exactly one garment. Photorealistic premium fashion e-commerce product cutout, exactly one original unbranded garment, front-facing and naturally shaped as if invisibly supported, genuinely transparent alpha background, centered square canvas, complete silhouette with 12% clear padding on every side. No person, mannequin, hanger, stand, accessories, text, label, logo, watermark, floor shadow, white halo, duplicate item or clipped edge.",
+      "target_conditions": [
+        "easy:skirt",
+        "easy:skirt"
+      ]
+    },
+    {
+      "garment_id": "garment_p0_final_neon_top_n0108",
+      "token": "n0108",
+      "source_output": "/Users/yuanzexiang/Documents/色彩测试/docs/audits/20260904-p0-acceptance/generated-garments/batch08/neon-curve-panel-top-raw-v1.png",
+      "raw_path": "raw/neon-curve-panel-top-raw-v1.png",
+      "prepared_path": "prepared/neon-curve-panel-top-v1.png",
+      "qa_path": "qa/neon-curve-panel-top-v1.json",
+      "final_prompt": "Use case: product-mockup\nAsset type: original garment cutout for an internal wardrobe prototype.\nPrimary request: one women's high-energy but everyday long-sleeve top for a NEON easy outfit target.\nSubject: vivid cobalt-blue matte cotton jersey crew-neck top, relaxed straight hip-length fit, regular shoulders and long sleeves. One broad curved lime-green panel arcs from one shoulder across the upper torso, with a small coral-red zipper pocket integrated into that panel. Clean construction and only three solid colors, no print, text, logos, cutouts, puff sleeves, sequins or costume styling. Comfortable daily wear; the single graphic curve is the focal signal.\nStyle/medium: photorealistic front-facing e-commerce garment-only flat lay, visible real jersey texture, soft even studio light.\nComposition/framing: intentionally small item occupying no more than 60% of square dimensions; full neckline, both cuffs and hem centered with at least 18% transparent margin on all edges.\nBackground: genuine transparent PNG alpha only; no checkerboard, backdrop, shadow, person, mannequin, hanger, props, text or watermark. Exactly one garment. Photorealistic premium fashion e-commerce product cutout, exactly one original unbranded garment, front-facing and naturally shaped as if invisibly supported, genuinely transparent alpha background, centered square canvas, complete silhouette with 12% clear padding on every side. No person, mannequin, hanger, stand, accessories, text, label, logo, watermark, floor shadow, white halo, duplicate item or clipped edge.",
+      "target_conditions": [
+        "easy:pants",
+        "easy:skirt"
+      ]
+    },
+    {
+      "garment_id": "garment_p0_final_neon_dress_n0109",
+      "token": "n0109",
+      "source_output": "/Users/yuanzexiang/Documents/色彩测试/docs/audits/20260904-p0-acceptance/generated-garments/batch08/neon-curve-panel-dress-raw-v1.png",
+      "raw_path": "raw/neon-curve-panel-dress-raw-v1.png",
+      "prepared_path": "prepared/neon-curve-panel-dress-v1.png",
+      "qa_path": "qa/neon-curve-panel-dress-v1.json",
+      "final_prompt": "Use case: product-mockup\nAsset type: original garment cutout for an internal wardrobe prototype.\nPrimary request: one women's energetic everyday midi dress for a NEON easy outfit target.\nSubject: coral-red matte cotton T-shirt midi dress with a covered crew neck, short sleeves and relaxed straight silhouette. One large cobalt-blue rounded diagonal panel crosses the lower torso into the skirt, edged by a narrow lime-green piping line; one functional side pocket is integrated into the blue panel. Three clean solid colors, one graphic focal shape. No print, text, logos, cutouts, bodycon, ruffles, sequins or costume styling; commuting and weekend wearable.\nStyle/medium: photorealistic front-facing e-commerce garment-only flat lay, realistic cotton grain, soft even studio light.\nComposition/framing: intentionally small garment occupying no more than 62% of square dimensions; full neckline, sleeves and hem centered with at least 17% transparent margin on every edge.\nBackground: genuine transparent PNG alpha only; no checkerboard, backdrop, shadow, model, mannequin, hanger, props, text or watermark. Exactly one garment. Photorealistic premium fashion e-commerce product cutout, exactly one original unbranded garment, front-facing and naturally shaped as if invisibly supported, genuinely transparent alpha background, centered square canvas, complete silhouette with 12% clear padding on every side. No person, mannequin, hanger, stand, accessories, text, label, logo, watermark, floor shadow, white halo, duplicate item or clipped edge.",
+      "target_conditions": [
+        "easy:dress"
+      ]
+    },
+    {
+      "garment_id": "garment_p0_final_neon_top_n0110",
+      "token": "n0110",
+      "source_output": "/Users/yuanzexiang/Documents/色彩测试/docs/audits/20260904-p0-acceptance/generated-garments/batch09/neon-typical-graphic-top-raw-v1.png",
+      "raw_path": "raw/neon-typical-graphic-top-raw-v1.png",
+      "prepared_path": "prepared/neon-typical-graphic-top-v1.png",
+      "qa_path": "qa/neon-typical-graphic-top-v1.json",
+      "final_prompt": "Use case: product-mockup\nAsset type: original garment cutout for an internal wardrobe prototype.\nPrimary request: one women's graphic long-sleeve top for a NEON typical outfit target, more expressive than the easy curved-panel top.\nSubject: vivid violet matte jersey mock-neck top, relaxed hip-length shape and regular shoulders. Large cobalt and acid-lime interlocking rounded geometric blocks wrap across the front and one sleeve, with one small coral-red bound pocket embedded in the graphic. Clean large-scale pattern, exactly four solid colors. No words, logos, tiny all-over print, sequins, cutouts, puff sleeves or costume styling; daily wearable.\nStyle/medium: photorealistic front-facing e-commerce garment-only flat lay with real jersey grain, soft even studio light.\nComposition/framing: intentionally small item occupying at most 58% of square dimensions; full neck, both cuffs and hem centered, at least 18% transparent margin on every edge.\nBackground: genuine transparent PNG alpha only; no checkerboard, backdrop, shadow, model, mannequin, hanger, props, text or watermark. Exactly one garment. Photorealistic premium fashion e-commerce product cutout, exactly one original unbranded garment, front-facing and naturally shaped as if invisibly supported, genuinely transparent alpha background, centered square canvas, complete silhouette with 12% clear padding on every side. No person, mannequin, hanger, stand, accessories, text, label, logo, watermark, floor shadow, white halo, duplicate item or clipped edge.",
+      "target_conditions": [
+        "typical:pants",
+        "typical:skirt"
+      ]
+    },
+    {
+      "garment_id": "garment_p0_final_neon_dress_n0111",
+      "token": "n0111",
+      "source_output": "/Users/yuanzexiang/Documents/色彩测试/docs/audits/20260904-p0-acceptance/generated-garments/batch09/neon-explore-arc-dress-raw-v1.png",
+      "raw_path": "raw/neon-explore-arc-dress-raw-v1.png",
+      "prepared_path": "prepared/neon-explore-arc-dress-v1.png",
+      "qa_path": "qa/neon-explore-arc-dress-v1.json",
+      "final_prompt": "Use case: product-mockup\nAsset type: original garment cutout for an internal wardrobe prototype.\nPrimary request: one women's energetic statement midi dress for a NEON explore outfit target, still suitable for an art event or weekend city wear.\nSubject: vivid magenta matte twill sleeveless midi dress layered-looking but sewn as one garment, covered square neckline and relaxed A-line volume. Three oversized cobalt-blue and acid-lime concentric arc panels sweep diagonally from upper bodice through the skirt, interrupted once by a coral-red rounded patch pocket. Crisp large graphic shapes with controlled asymmetric hem, no text, logos, cutouts, sequins, ruffles, bodycon fit or costume hardware. Exactly one visual language: expanding arcs.\nStyle/medium: photorealistic front-facing e-commerce garment-only flat lay with real twill grain and seams, soft even studio light.\nComposition/framing: deliberately small garment occupying at most 60% of square dimensions; full neckline and hem centered, at least 18% transparent margin on all edges.\nBackground: genuine transparent PNG alpha only; no checkerboard, backdrop, shadow, person, mannequin, hanger, props, text or watermark. Exactly one garment. Photorealistic premium fashion e-commerce product cutout, exactly one original unbranded garment, front-facing and naturally shaped as if invisibly supported, genuinely transparent alpha background, centered square canvas, complete silhouette with 12% clear padding on every side. No person, mannequin, hanger, stand, accessories, text, label, logo, watermark, floor shadow, white halo, duplicate item or clipped edge.",
+      "target_conditions": [
+        "explore:dress"
+      ]
+    },
+    {
+      "garment_id": "garment_p0_final_neon_outer_n0112",
+      "token": "n0112",
+      "source_output": "/Users/yuanzexiang/Documents/色彩测试/docs/audits/20260904-p0-acceptance/generated-garments/batch09/neon-explore-storm-overshirt-raw-v1.png",
+      "raw_path": "raw/neon-explore-storm-overshirt-raw-v1.png",
+      "prepared_path": "prepared/neon-explore-storm-overshirt-v1.png",
+      "qa_path": "qa/neon-explore-storm-overshirt-v1.json",
+      "final_prompt": "Use case: product-mockup\nAsset type: original garment cutout for an internal wardrobe prototype.\nPrimary request: one women's high-energy long-sleeve overshirt for a NEON explore pants outfit target.\nSubject: vivid orange-red structured cotton hip-length overshirt with regular shoulders and full sleeves, covered cobalt-blue stand collar, one broad acid-lime diagonal storm flap sweeping across the chest, and two large violet rounded patch pockets aligned below. Concealed snaps, relaxed daily layering ease. Four solid colors and one bold diagonal construction; no text, logos, tiny print, sequins, cutouts, extreme shoulders or costume styling.\nStyle/medium: photorealistic front-facing e-commerce garment-only flat lay with real cotton texture, soft even studio light.\nComposition/framing: intentionally small product occupying at most 58% of square dimensions; full collar, both cuffs and hem centered, at least 18% transparent margin on every edge.\nBackground: genuine transparent PNG alpha only; no checkerboard, backdrop, shadow, model, mannequin, hanger, props, text or watermark. Exactly one garment. Photorealistic premium fashion e-commerce product cutout, exactly one original unbranded garment, front-facing and naturally shaped as if invisibly supported, genuinely transparent alpha background, centered square canvas, complete silhouette with 12% clear padding on every side. No person, mannequin, hanger, stand, accessories, text, label, logo, watermark, floor shadow, white halo, duplicate item or clipped edge.",
+      "target_conditions": [
+        "explore:pants"
+      ]
+    },
+    {
+      "garment_id": "garment_p0_final_bolt_top_n0113",
+      "token": "n0113",
+      "source_output": "/Users/yuanzexiang/Documents/色彩测试/docs/audits/20260904-p0-acceptance/generated-garments/batch10/bolt-easy-ivory-blouse-raw-v1.png",
+      "raw_path": "raw/bolt-easy-ivory-blouse-raw-v1.png",
+      "prepared_path": "prepared/bolt-easy-ivory-blouse-v1.png",
+      "qa_path": "qa/bolt-easy-ivory-blouse-v1.json",
+      "final_prompt": "Use case: product-mockup\nAsset type: original garment cutout for an internal wardrobe prototype.\nPrimary request: one women's refined everyday blouse for a BOLT easy pants outfit target.\nSubject: warm ivory matte satin long-sleeve blouse with a covered rounded jewel neckline, gently shaped waist, narrow burgundy velvet piping around neckline and cuffs, and exactly three small pearl-like covered buttons centered below the neck. Regular shoulders with a very slight gathered sleeve head, hip length, comfortable and modest. One refined focal line, no bow, ruffles, lace, cutouts, logos or bridal styling.\nStyle/medium: photorealistic front-facing e-commerce garment-only flat lay, realistic matte satin and velvet texture, even studio light.\nComposition/framing: small item occupying at most 56% of square dimensions; full neckline, both cuffs and hem centered with at least 19% transparent margin on all edges.\nBackground: genuine transparent PNG alpha only; no checkerboard, backdrop, shadow, person, mannequin, hanger, props, text or watermark. Exactly one garment. Photorealistic premium fashion e-commerce product cutout, exactly one original unbranded garment, front-facing and naturally shaped as if invisibly supported, genuinely transparent alpha background, centered square canvas, complete silhouette with 12% clear padding on every side. No person, mannequin, hanger, stand, accessories, text, label, logo, watermark, floor shadow, white halo, duplicate item or clipped edge.",
+      "target_conditions": [
+        "easy:pants"
+      ]
+    },
+    {
+      "garment_id": "garment_p0_final_bolt_top_n0114",
+      "token": "n0114",
+      "source_output": "/Users/yuanzexiang/Documents/色彩测试/docs/audits/20260904-p0-acceptance/generated-garments/batch10/bolt-typical-burgundy-blouse-raw-v1.png",
+      "raw_path": "raw/bolt-typical-burgundy-blouse-raw-v1.png",
+      "prepared_path": "prepared/bolt-typical-burgundy-blouse-v1.png",
+      "qa_path": "qa/bolt-typical-burgundy-blouse-v1.json",
+      "final_prompt": "Use case: product-mockup\nAsset type: original garment cutout for an internal wardrobe prototype.\nPrimary request: one women's dramatic-refined blouse for a BOLT typical skirt outfit target, suitable for dinner or polished daytime.\nSubject: deep burgundy matte faille long-sleeve blouse with a square portrait collar, defined princess-seam waist and a compact sculpted fold at each shoulder that reads as controlled architecture, not puff sleeves. Slight peplum below waist, concealed back closure, covered chest. No sparkle, lace, corset, cutout, oversized bow, logos or costume styling.\nStyle/medium: photorealistic front-facing e-commerce garment-only flat lay, crisp faille grain and seam detail, even studio light.\nComposition/framing: product occupies no more than 56% of square dimensions; full collar, both cuffs and hem centered with at least 19% transparent margin on every edge.\nBackground: genuine transparent PNG alpha only; no checkerboard, backdrop, shadow, model, mannequin, hanger, props, text or watermark. Exactly one garment. Photorealistic premium fashion e-commerce product cutout, exactly one original unbranded garment, front-facing and naturally shaped as if invisibly supported, genuinely transparent alpha background, centered square canvas, complete silhouette with 12% clear padding on every side. No person, mannequin, hanger, stand, accessories, text, label, logo, watermark, floor shadow, white halo, duplicate item or clipped edge.",
+      "target_conditions": [
+        "typical:skirt"
+      ]
+    },
+    {
+      "garment_id": "garment_p0_final_bolt_dress_n0115",
+      "token": "n0115",
+      "source_output": "/Users/yuanzexiang/Documents/色彩测试/docs/audits/20260904-p0-acceptance/generated-garments/batch10/bolt-explore-emerald-dress-raw-v1.png",
+      "raw_path": "raw/bolt-explore-emerald-dress-raw-v1.png",
+      "prepared_path": "prepared/bolt-explore-emerald-dress-v1.png",
+      "qa_path": "qa/bolt-explore-emerald-dress-v1.json",
+      "final_prompt": "Use case: product-mockup\nAsset type: original garment cutout for an internal wardrobe prototype.\nPrimary request: one women's dramatic architectural midi dress for a BOLT explore outfit target, refined enough for gallery dinner rather than costume.\nSubject: deep emerald matte satin long-sleeve midi dress with covered boat neckline, defined waist and sculpted asymmetric cape-like collar fold that begins at one shoulder and ends at the opposite waist. A controlled tulip skirt with one broad front pleat, regular shoulder width beneath the fold, modest coverage. No sparkle, lace, corset, cutout, extreme train, puff sleeves, logos or fantasy styling. Exactly one dramatic folding gesture.\nStyle/medium: photorealistic front-facing e-commerce garment-only flat lay, visible matte satin texture and construction, even studio light.\nComposition/framing: item occupies at most 56% of square dimensions; full neckline, both cuffs and hem centered with at least 19% transparent margin on all four edges.\nBackground: genuine transparent PNG alpha only; no checkerboard, backdrop, shadow, person, mannequin, hanger, props, text or watermark. Exactly one garment. Photorealistic premium fashion e-commerce product cutout, exactly one original unbranded garment, front-facing and naturally shaped as if invisibly supported, genuinely transparent alpha background, centered square canvas, complete silhouette with 12% clear padding on every side. No person, mannequin, hanger, stand, accessories, text, label, logo, watermark, floor shadow, white halo, duplicate item or clipped edge.",
+      "target_conditions": [
+        "explore:dress"
+      ]
+    },
+    {
+      "garment_id": "garment_p0_final_bolt_outer_n0116",
+      "token": "n0116",
+      "source_output": "/Users/yuanzexiang/Documents/色彩测试/docs/audits/20260904-p0-acceptance/generated-garments/batch10/bolt-explore-petal-jacket-raw-v1.png",
+      "raw_path": "raw/bolt-explore-petal-jacket-raw-v1.png",
+      "prepared_path": "prepared/bolt-explore-petal-jacket-v1.png",
+      "qa_path": "qa/bolt-explore-petal-jacket-v1.json",
+      "final_prompt": "Use case: product-mockup\nAsset type: original garment cutout for an internal wardrobe prototype.\nPrimary request: one women's refined statement cropped jacket for a BOLT explore pants outfit target.\nSubject: rich burgundy matte satin waist-length jacket with covered round neckline, sculpted overlapping petal lapels forming one large asymmetric front arc, sharply defined princess-seam waist, long tapered sleeves and a compact flared hem. Three small pearl-like closures follow the arc. Modest and wearable for dinner; no sparkle, lace, corset, cutout, extreme shoulders, bow, logos or costume styling. One architectural focal gesture.\nStyle/medium: photorealistic front-facing e-commerce garment-only flat lay with realistic matte satin grain and seams, even studio light.\nComposition/framing: item occupies at most 55% of square dimensions; full neckline, cuffs and hem centered with at least 20% transparent margin on every edge.\nBackground: genuine transparent PNG alpha only; no checkerboard, backdrop, shadow, model, mannequin, hanger, props, text or watermark. Exactly one garment. Photorealistic premium fashion e-commerce product cutout, exactly one original unbranded garment, front-facing and naturally shaped as if invisibly supported, genuinely transparent alpha background, centered square canvas, complete silhouette with 12% clear padding on every side. No person, mannequin, hanger, stand, accessories, text, label, logo, watermark, floor shadow, white halo, duplicate item or clipped edge.",
+      "target_conditions": [
+        "explore:pants"
+      ]
+    }
+  ],
+  "garments": [
+    {
+      "id": "garment_p0_final_oops_dress_n0102",
+      "category": "dress",
+      "subcategory": "运动西装斜拼连衣裙",
+      "silhouette": [
+        "rugby_bodice",
+        "diagonal_waist",
+        "tailored_wrap_skirt"
+      ],
+      "fit": "宽松",
+      "materials": [],
+      "details": [
+        "original_gap_fill",
+        "p0_persona_not_color_test",
+        "visually_reviewed_cutout"
+      ],
+      "season_tags": [
+        "秋"
+      ],
+      "scene_tags": [
+        "日常",
+        "通勤",
+        "约会社交"
+      ],
+      "weather_tags": [],
+      "presentation": [
+        "feminine",
+        "neutral"
+      ],
+      "layer_role": "single",
+      "tryon_slot": "dress",
+      "persona_affinity": {
+        "OOPS": 0.96
+      },
+      "color": {
+        "temperature": "未判断",
+        "lightness": "深色",
+        "saturation": "无彩",
+        "harmony": "未判断",
+        "palette": [
+          "#383739",
+          "#323134",
+          "#333336",
+          "#272628",
+          "#4f4e50"
+        ]
+      },
+      "assets": {
+        "image_url": "/static/selfit/assets/content_v2_drafts/p0-final-supply-11/garments/oops-rugby-tailored-dress-v1.png",
+        "source_url": "",
+        "width": 1200,
+        "height": 1200,
+        "alpha_verified": true,
+        "rights_status": "owned"
+      },
+      "production": {
+        "source_kind": "generated_original",
+        "generation_job_id": "p0-generated-final-supply-11-n0102",
+        "prompt_version": "selfit-p0-final-supply-v1",
+        "reference_ids": [],
+        "qa_status": "approved",
+        "phash": "307830f07069b230-39383a"
+      },
+      "annotation": {
+        "status": "designer_reviewed",
+        "source": "designer",
+        "confidence": 0.8,
+        "review_notes": [
+          "Cutout usability reviewed; persona/expression require whole-outfit review.",
+          "Normalization only removes alpha noise, resizes proportionally and adds transparent padding."
+        ]
+      },
+      "color_evidence": {
+        "source": "opaque_pixel_quantization_v1",
+        "status": "measured_not_semantic_review",
+        "asset_sha256": "6a61b672ce31b237990a0377f9bf9ad3e8654b1fdf8f5325a4c46258234d8154",
+        "swatches": [
+          {
+            "hex": "#383739",
+            "weight": 0.3773,
+            "family": "灰"
+          },
+          {
+            "hex": "#323134",
+            "weight": 0.2288,
+            "family": "灰"
+          },
+          {
+            "hex": "#333336",
+            "weight": 0.2064,
+            "family": "灰"
+          },
+          {
+            "hex": "#272628",
+            "weight": 0.1201,
+            "family": "黑"
+          },
+          {
+            "hex": "#4f4e50",
+            "weight": 0.0674,
+            "family": "灰"
+          }
+        ],
+        "palette_names": [
+          "灰",
+          "黑"
+        ],
+        "color": {
+          "temperature": "未判断",
+          "lightness": "深色",
+          "saturation": "无彩",
+          "harmony": "未判断",
+          "palette": [
+            "#383739",
+            "#323134",
+            "#333336",
+            "#272628",
+            "#4f4e50"
+          ]
+        },
+        "limitations": "渲染光照会影响色值；不据此推断面料成分、真实冷暖或人体适配。"
+      }
+    },
+    {
+      "id": "garment_p0_final_noir_dress_n0103",
+      "category": "dress",
+      "subcategory": "斜拉链覆片针织连衣裙",
+      "silhouette": [
+        "long_column",
+        "diagonal_zip",
+        "overlap_front"
+      ],
+      "fit": "宽松",
+      "materials": [],
+      "details": [
+        "original_gap_fill",
+        "p0_persona_not_color_test",
+        "visually_reviewed_cutout"
+      ],
+      "season_tags": [
+        "秋"
+      ],
+      "scene_tags": [
+        "日常",
+        "通勤",
+        "约会社交"
+      ],
+      "weather_tags": [],
+      "presentation": [
+        "feminine",
+        "neutral"
+      ],
+      "layer_role": "single",
+      "tryon_slot": "dress",
+      "persona_affinity": {
+        "NOIR": 0.96
+      },
+      "color": {
+        "temperature": "未判断",
+        "lightness": "深色",
+        "saturation": "无彩",
+        "harmony": "未判断",
+        "palette": [
+          "#1e1e1e",
+          "#212121",
+          "#242424",
+          "#171717",
+          "#292929"
+        ]
+      },
+      "assets": {
+        "image_url": "/static/selfit/assets/content_v2_drafts/p0-final-supply-11/garments/noir-diagonal-zip-dress-v1.png",
+        "source_url": "",
+        "width": 1200,
+        "height": 1200,
+        "alpha_verified": true,
+        "rights_status": "owned"
+      },
+      "production": {
+        "source_kind": "generated_original",
+        "generation_job_id": "p0-generated-final-supply-11-n0103",
+        "prompt_version": "selfit-p0-final-supply-v1",
+        "reference_ids": [],
+        "qa_status": "approved",
+        "phash": "1830307070703030-1f1f1f"
+      },
+      "annotation": {
+        "status": "designer_reviewed",
+        "source": "designer",
+        "confidence": 0.8,
+        "review_notes": [
+          "Cutout usability reviewed; persona/expression require whole-outfit review.",
+          "Normalization only removes alpha noise, resizes proportionally and adds transparent padding."
+        ]
+      },
+      "color_evidence": {
+        "source": "opaque_pixel_quantization_v1",
+        "status": "measured_not_semantic_review",
+        "asset_sha256": "c927f5799807f2ef51551890e42f891a351175aee967717edabb77c33b4e41ba",
+        "swatches": [
+          {
+            "hex": "#1e1e1e",
+            "weight": 0.3148,
+            "family": "黑"
+          },
+          {
+            "hex": "#212121",
+            "weight": 0.2649,
+            "family": "黑"
+          },
+          {
+            "hex": "#242424",
+            "weight": 0.1574,
+            "family": "黑"
+          },
+          {
+            "hex": "#171717",
+            "weight": 0.1471,
+            "family": "黑"
+          },
+          {
+            "hex": "#292929",
+            "weight": 0.1159,
+            "family": "黑"
+          }
+        ],
+        "palette_names": [
+          "黑"
+        ],
+        "color": {
+          "temperature": "未判断",
+          "lightness": "深色",
+          "saturation": "无彩",
+          "harmony": "未判断",
+          "palette": [
+            "#1e1e1e",
+            "#212121",
+            "#242424",
+            "#171717",
+            "#292929"
+          ]
+        },
+        "limitations": "渲染光照会影响色值；不据此推断面料成分、真实冷暖或人体适配。"
+      }
+    },
+    {
+      "id": "garment_p0_final_edge_top_n0104",
+      "category": "top",
+      "subcategory": "粉领斜拉链罗纹上衣",
+      "silhouette": [
+        "fitted_rib",
+        "diagonal_zip",
+        "small_point_collar"
+      ],
+      "fit": "合体",
+      "materials": [],
+      "details": [
+        "original_gap_fill",
+        "p0_persona_not_color_test",
+        "visually_reviewed_cutout"
+      ],
+      "season_tags": [
+        "秋"
+      ],
+      "scene_tags": [
+        "日常",
+        "通勤",
+        "约会社交"
+      ],
+      "weather_tags": [],
+      "presentation": [
+        "feminine",
+        "neutral"
+      ],
+      "layer_role": "single",
+      "tryon_slot": "top",
+      "persona_affinity": {
+        "EDGE": 0.96
+      },
+      "color": {
+        "temperature": "未判断",
+        "lightness": "深色",
+        "saturation": "无彩",
+        "harmony": "未判断",
+        "palette": [
+          "#151415",
+          "#121111",
+          "#101010",
+          "#0d0d0d",
+          "#443838"
+        ]
+      },
+      "assets": {
+        "image_url": "/static/selfit/assets/content_v2_drafts/p0-final-supply-11/garments/edge-diagonal-knit-top-v1.png",
+        "source_url": "",
+        "width": 1200,
+        "height": 1200,
+        "alpha_verified": true,
+        "rights_status": "owned"
+      },
+      "production": {
+        "source_kind": "generated_original",
+        "generation_job_id": "p0-generated-final-supply-11-n0104",
+        "prompt_version": "selfit-p0-final-supply-v1",
+        "reference_ids": [],
+        "qa_status": "approved",
+        "phash": "84e4e8e0e060f830-201d1c"
+      },
+      "annotation": {
+        "status": "designer_reviewed",
+        "source": "designer",
+        "confidence": 0.8,
+        "review_notes": [
+          "Cutout usability reviewed; persona/expression require whole-outfit review.",
+          "Normalization only removes alpha noise, resizes proportionally and adds transparent padding."
+        ]
+      },
+      "color_evidence": {
+        "source": "opaque_pixel_quantization_v1",
+        "status": "measured_not_semantic_review",
+        "asset_sha256": "8343fdbfa7e37a3d07bd274bf48d92e826cf991e21f55600a06ca8ce01de5c21",
+        "swatches": [
+          {
+            "hex": "#151415",
+            "weight": 0.4153,
+            "family": "黑"
+          },
+          {
+            "hex": "#121111",
+            "weight": 0.2169,
+            "family": "黑"
+          },
+          {
+            "hex": "#101010",
+            "weight": 0.1695,
+            "family": "黑"
+          },
+          {
+            "hex": "#0d0d0d",
+            "weight": 0.1038,
+            "family": "黑"
+          },
+          {
+            "hex": "#443838",
+            "weight": 0.0946,
+            "family": "红"
+          }
+        ],
+        "palette_names": [
+          "黑"
+        ],
+        "color": {
+          "temperature": "未判断",
+          "lightness": "深色",
+          "saturation": "无彩",
+          "harmony": "未判断",
+          "palette": [
+            "#151415",
+            "#121111",
+            "#101010",
+            "#0d0d0d",
+            "#443838"
+          ]
+        },
+        "limitations": "渲染光照会影响色值；不据此推断面料成分、真实冷暖或人体适配。"
+      }
+    },
+    {
+      "id": "garment_p0_final_edge_outer_n0105",
+      "category": "outer",
+      "subcategory": "粉纱单侧拼片短外套",
+      "silhouette": [
+        "cropped",
+        "asymmetric_front",
+        "one_side_peplum"
+      ],
+      "fit": "合体",
+      "materials": [],
+      "details": [
+        "original_gap_fill",
+        "p0_persona_not_color_test",
+        "visually_reviewed_cutout"
+      ],
+      "season_tags": [
+        "秋"
+      ],
+      "scene_tags": [
+        "日常",
+        "通勤",
+        "约会社交"
+      ],
+      "weather_tags": [],
+      "presentation": [
+        "feminine",
+        "neutral"
+      ],
+      "layer_role": "outer",
+      "tryon_slot": "outer",
+      "persona_affinity": {
+        "EDGE": 0.96
+      },
+      "color": {
+        "temperature": "未判断",
+        "lightness": "深色",
+        "saturation": "低饱和",
+        "harmony": "未判断",
+        "palette": [
+          "#242426",
+          "#29282b",
+          "#302f32",
+          "#1b1b1d",
+          "#937273"
+        ]
+      },
+      "assets": {
+        "image_url": "/static/selfit/assets/content_v2_drafts/p0-final-supply-11/garments/edge-organza-panel-jacket-v1.png",
+        "source_url": "",
+        "width": 1200,
+        "height": 1200,
+        "alpha_verified": true,
+        "rights_status": "owned"
+      },
+      "production": {
+        "source_kind": "generated_original",
+        "generation_job_id": "p0-generated-final-supply-11-n0105",
+        "prompt_version": "selfit-p0-final-supply-v1",
+        "reference_ids": [],
+        "qa_status": "approved",
+        "phash": "a286e6e4e4e07830-342f31"
+      },
+      "annotation": {
+        "status": "designer_reviewed",
+        "source": "designer",
+        "confidence": 0.8,
+        "review_notes": [
+          "Cutout usability reviewed; persona/expression require whole-outfit review.",
+          "Normalization only removes alpha noise, resizes proportionally and adds transparent padding."
+        ]
+      },
+      "color_evidence": {
+        "source": "opaque_pixel_quantization_v1",
+        "status": "measured_not_semantic_review",
+        "asset_sha256": "32be41f777d88db55d326eb8211513193b6e55289c2c4bd7a9e43cc4a3559a10",
+        "swatches": [
+          {
+            "hex": "#242426",
+            "weight": 0.3488,
+            "family": "黑"
+          },
+          {
+            "hex": "#29282b",
+            "weight": 0.2415,
+            "family": "黑"
+          },
+          {
+            "hex": "#302f32",
+            "weight": 0.154,
+            "family": "灰"
+          },
+          {
+            "hex": "#1b1b1d",
+            "weight": 0.1508,
+            "family": "黑"
+          },
+          {
+            "hex": "#937273",
+            "weight": 0.1049,
+            "family": "红"
+          }
+        ],
+        "palette_names": [
+          "黑",
+          "灰"
+        ],
+        "color": {
+          "temperature": "未判断",
+          "lightness": "深色",
+          "saturation": "低饱和",
+          "harmony": "未判断",
+          "palette": [
+            "#242426",
+            "#29282b",
+            "#302f32",
+            "#1b1b1d",
+            "#937273"
+          ]
+        },
+        "limitations": "渲染光照会影响色值；不据此推断面料成分、真实冷暖或人体适配。"
+      }
+    },
+    {
+      "id": "garment_p0_final_edge_dress_n0106",
+      "category": "dress",
+      "subcategory": "黑丹宁粉褶拼片连衣裙",
+      "silhouette": [
+        "shirt_dress",
+        "asymmetric_wrap",
+        "pleat_underpanel"
+      ],
+      "fit": "合体",
+      "materials": [],
+      "details": [
+        "original_gap_fill",
+        "p0_persona_not_color_test",
+        "visually_reviewed_cutout"
+      ],
+      "season_tags": [
+        "秋"
+      ],
+      "scene_tags": [
+        "日常",
+        "通勤",
+        "约会社交"
+      ],
+      "weather_tags": [],
+      "presentation": [
+        "feminine",
+        "neutral"
+      ],
+      "layer_role": "single",
+      "tryon_slot": "dress",
+      "persona_affinity": {
+        "EDGE": 0.96
+      },
+      "color": {
+        "temperature": "未判断",
+        "lightness": "深色",
+        "saturation": "低饱和",
+        "harmony": "未判断",
+        "palette": [
+          "#2d2d2f",
+          "#343335",
+          "#272729",
+          "#aa7875",
+          "#4c4142"
+        ]
+      },
+      "assets": {
+        "image_url": "/static/selfit/assets/content_v2_drafts/p0-final-supply-11/garments/edge-denim-pleat-dress-v1.png",
+        "source_url": "",
+        "width": 1200,
+        "height": 1200,
+        "alpha_verified": true,
+        "rights_status": "owned"
+      },
+      "production": {
+        "source_kind": "generated_original",
+        "generation_job_id": "p0-generated-final-supply-11-n0106",
+        "prompt_version": "selfit-p0-final-supply-v1",
+        "reference_ids": [],
+        "qa_status": "approved",
+        "phash": "7071306171703030-443b3c"
+      },
+      "annotation": {
+        "status": "designer_reviewed",
+        "source": "designer",
+        "confidence": 0.8,
+        "review_notes": [
+          "Cutout usability reviewed; persona/expression require whole-outfit review.",
+          "Normalization only removes alpha noise, resizes proportionally and adds transparent padding."
+        ]
+      },
+      "color_evidence": {
+        "source": "opaque_pixel_quantization_v1",
+        "status": "measured_not_semantic_review",
+        "asset_sha256": "bc4e37b5e561a5214edecee5f33c8c01050335a8dd6800adc08e51a7e561214c",
+        "swatches": [
+          {
+            "hex": "#2d2d2f",
+            "weight": 0.3006,
+            "family": "黑"
+          },
+          {
+            "hex": "#343335",
+            "weight": 0.2836,
+            "family": "灰"
+          },
+          {
+            "hex": "#272729",
+            "weight": 0.1928,
+            "family": "黑"
+          },
+          {
+            "hex": "#aa7875",
+            "weight": 0.1594,
+            "family": "粉"
+          },
+          {
+            "hex": "#4c4142",
+            "weight": 0.0636,
+            "family": "红"
+          }
+        ],
+        "palette_names": [
+          "黑",
+          "灰",
+          "粉"
+        ],
+        "color": {
+          "temperature": "未判断",
+          "lightness": "深色",
+          "saturation": "低饱和",
+          "harmony": "未判断",
+          "palette": [
+            "#2d2d2f",
+            "#343335",
+            "#272729",
+            "#aa7875",
+            "#4c4142"
+          ]
+        },
+        "limitations": "渲染光照会影响色值；不据此推断面料成分、真实冷暖或人体适配。"
+      }
+    },
+    {
+      "id": "garment_p0_final_void_skirt_n0107",
+      "category": "skirt",
+      "subcategory": "水洗偏缝低口袋针织裙",
+      "silhouette": [
+        "soft_column",
+        "offset_seam",
+        "uneven_overlap_hem"
+      ],
+      "fit": "宽松",
+      "materials": [],
+      "details": [
+        "original_gap_fill",
+        "p0_persona_not_color_test",
+        "visually_reviewed_cutout"
+      ],
+      "season_tags": [
+        "秋"
+      ],
+      "scene_tags": [
+        "日常",
+        "通勤",
+        "约会社交"
+      ],
+      "weather_tags": [],
+      "presentation": [
+        "feminine",
+        "neutral"
+      ],
+      "layer_role": "single",
+      "tryon_slot": "skirt",
+      "persona_affinity": {
+        "VOID": 0.96
+      },
+      "color": {
+        "temperature": "未判断",
+        "lightness": "深色",
+        "saturation": "无彩",
+        "harmony": "未判断",
+        "palette": [
+          "#403e3f",
+          "#454344",
+          "#4c494b",
+          "#312f30",
+          "#565455"
+        ]
+      },
+      "assets": {
+        "image_url": "/static/selfit/assets/content_v2_drafts/p0-final-supply-11/garments/void-offset-pocket-skirt-v1.png",
+        "source_url": "",
+        "width": 1200,
+        "height": 1200,
+        "alpha_verified": true,
+        "rights_status": "owned"
+      },
+      "production": {
+        "source_kind": "generated_original",
+        "generation_job_id": "p0-generated-final-supply-11-n0107",
+        "prompt_version": "selfit-p0-final-supply-v1",
+        "reference_ids": [],
+        "qa_status": "approved",
+        "phash": "6069696969697030-444243"
+      },
+      "annotation": {
+        "status": "designer_reviewed",
+        "source": "designer",
+        "confidence": 0.8,
+        "review_notes": [
+          "Cutout usability reviewed; persona/expression require whole-outfit review.",
+          "Normalization only removes alpha noise, resizes proportionally and adds transparent padding."
+        ]
+      },
+      "color_evidence": {
+        "source": "opaque_pixel_quantization_v1",
+        "status": "measured_not_semantic_review",
+        "asset_sha256": "70f1e0ef9279949693b3b2dde992a11a96834f8a876cb3a6b66bb1eb368e4c34",
+        "swatches": [
+          {
+            "hex": "#403e3f",
+            "weight": 0.3004,
+            "family": "灰"
+          },
+          {
+            "hex": "#454344",
+            "weight": 0.248,
+            "family": "灰"
+          },
+          {
+            "hex": "#4c494b",
+            "weight": 0.1691,
+            "family": "灰"
+          },
+          {
+            "hex": "#312f30",
+            "weight": 0.1605,
+            "family": "灰"
+          },
+          {
+            "hex": "#565455",
+            "weight": 0.1221,
+            "family": "灰"
+          }
+        ],
+        "palette_names": [
+          "灰"
+        ],
+        "color": {
+          "temperature": "未判断",
+          "lightness": "深色",
+          "saturation": "无彩",
+          "harmony": "未判断",
+          "palette": [
+            "#403e3f",
+            "#454344",
+            "#4c494b",
+            "#312f30",
+            "#565455"
+          ]
+        },
+        "limitations": "渲染光照会影响色值；不据此推断面料成分、真实冷暖或人体适配。"
+      }
+    },
+    {
+      "id": "garment_p0_final_neon_top_n0108",
+      "category": "top",
+      "subcategory": "钴蓝荧光弧片针织上衣",
+      "silhouette": [
+        "relaxed_straight",
+        "single_curve_panel",
+        "regular_shoulder"
+      ],
+      "fit": "宽松",
+      "materials": [],
+      "details": [
+        "original_gap_fill",
+        "p0_persona_not_color_test",
+        "visually_reviewed_cutout"
+      ],
+      "season_tags": [
+        "秋"
+      ],
+      "scene_tags": [
+        "日常",
+        "通勤",
+        "约会社交"
+      ],
+      "weather_tags": [],
+      "presentation": [
+        "feminine",
+        "neutral"
+      ],
+      "layer_role": "single",
+      "tryon_slot": "top",
+      "persona_affinity": {
+        "NEON": 0.96
+      },
+      "color": {
+        "temperature": "未判断",
+        "lightness": "浅色",
+        "saturation": "高饱和",
+        "harmony": "未判断",
+        "palette": [
+          "#0647c2",
+          "#0642ba",
+          "#0d50cd",
+          "#0137a3",
+          "#92c672"
+        ]
+      },
+      "assets": {
+        "image_url": "/static/selfit/assets/content_v2_drafts/p0-final-supply-11/garments/neon-curve-panel-top-v1.png",
+        "source_url": "",
+        "width": 1200,
+        "height": 1200,
+        "alpha_verified": true,
+        "rights_status": "owned"
+      },
+      "production": {
+        "source_kind": "generated_original",
+        "generation_job_id": "p0-generated-final-supply-11-n0108",
+        "prompt_version": "selfit-p0-final-supply-v1",
+        "reference_ids": [],
+        "qa_status": "approved",
+        "phash": "b2faf8d0e4f07928-1a56b0"
+      },
+      "annotation": {
+        "status": "designer_reviewed",
+        "source": "designer",
+        "confidence": 0.8,
+        "review_notes": [
+          "Cutout usability reviewed; persona/expression require whole-outfit review.",
+          "Normalization only removes alpha noise, resizes proportionally and adds transparent padding."
+        ]
+      },
+      "color_evidence": {
+        "source": "opaque_pixel_quantization_v1",
+        "status": "measured_not_semantic_review",
+        "asset_sha256": "2a80dcbc7a2efe1f1c70bb9fe35e47a1e364cd025430f6edcd6b7d06f58888f1",
+        "swatches": [
+          {
+            "hex": "#0647c2",
+            "weight": 0.3148,
+            "family": "蓝"
+          },
+          {
+            "hex": "#0642ba",
+            "weight": 0.2629,
+            "family": "蓝"
+          },
+          {
+            "hex": "#0d50cd",
+            "weight": 0.1875,
+            "family": "蓝"
+          },
+          {
+            "hex": "#0137a3",
+            "weight": 0.1202,
+            "family": "蓝"
+          },
+          {
+            "hex": "#92c672",
+            "weight": 0.1147,
+            "family": "绿"
+          }
+        ],
+        "palette_names": [
+          "蓝"
+        ],
+        "color": {
+          "temperature": "未判断",
+          "lightness": "浅色",
+          "saturation": "高饱和",
+          "harmony": "未判断",
+          "palette": [
+            "#0647c2",
+            "#0642ba",
+            "#0d50cd",
+            "#0137a3",
+            "#92c672"
+          ]
+        },
+        "limitations": "渲染光照会影响色值；不据此推断面料成分、真实冷暖或人体适配。"
+      }
+    },
+    {
+      "id": "garment_p0_final_neon_dress_n0109",
+      "category": "dress",
+      "subcategory": "珊瑚钴蓝弧片T恤裙",
+      "silhouette": [
+        "tshirt_midi",
+        "single_diagonal_panel",
+        "straight"
+      ],
+      "fit": "宽松",
+      "materials": [],
+      "details": [
+        "original_gap_fill",
+        "p0_persona_not_color_test",
+        "visually_reviewed_cutout"
+      ],
+      "season_tags": [
+        "秋"
+      ],
+      "scene_tags": [
+        "日常",
+        "通勤",
+        "约会社交"
+      ],
+      "weather_tags": [],
+      "presentation": [
+        "feminine",
+        "neutral"
+      ],
+      "layer_role": "single",
+      "tryon_slot": "dress",
+      "persona_affinity": {
+        "NEON": 0.96
+      },
+      "color": {
+        "temperature": "未判断",
+        "lightness": "浅色",
+        "saturation": "高饱和",
+        "harmony": "未判断",
+        "palette": [
+          "#e83e3b",
+          "#693868",
+          "#bd5b5e",
+          "#b4455a"
+        ]
+      },
+      "assets": {
+        "image_url": "/static/selfit/assets/content_v2_drafts/p0-final-supply-11/garments/neon-curve-panel-dress-v1.png",
+        "source_url": "",
+        "width": 1200,
+        "height": 1200,
+        "alpha_verified": true,
+        "rights_status": "owned"
+      },
+      "production": {
+        "source_kind": "generated_original",
+        "generation_job_id": "p0-generated-final-supply-11-n0109",
+        "prompt_version": "selfit-p0-final-supply-v1",
+        "reference_ids": [],
+        "qa_status": "approved",
+        "phash": "303232b2b2b07030-b24557"
+      },
+      "annotation": {
+        "status": "designer_reviewed",
+        "source": "designer",
+        "confidence": 0.8,
+        "review_notes": [
+          "Cutout usability reviewed; persona/expression require whole-outfit review.",
+          "Normalization only removes alpha noise, resizes proportionally and adds transparent padding."
+        ]
+      },
+      "color_evidence": {
+        "source": "opaque_pixel_quantization_v1",
+        "status": "measured_not_semantic_review",
+        "asset_sha256": "dcc8ad912279e442bb80037bbe94d8ab5902f7d834f7f59db1eac3023099b118",
+        "swatches": [
+          {
+            "hex": "#e83e3b",
+            "weight": 0.7136,
+            "family": "红"
+          },
+          {
+            "hex": "#693868",
+            "weight": 0.2699,
+            "family": "紫"
+          },
+          {
+            "hex": "#bd5b5e",
+            "weight": 0.0161,
+            "family": "红"
+          },
+          {
+            "hex": "#b4455a",
+            "weight": 0.0005,
+            "family": "红"
+          }
+        ],
+        "palette_names": [
+          "红",
+          "紫"
+        ],
+        "color": {
+          "temperature": "未判断",
+          "lightness": "浅色",
+          "saturation": "高饱和",
+          "harmony": "未判断",
+          "palette": [
+            "#e83e3b",
+            "#693868",
+            "#bd5b5e",
+            "#b4455a"
+          ]
+        },
+        "limitations": "渲染光照会影响色值；不据此推断面料成分、真实冷暖或人体适配。"
+      }
+    },
+    {
+      "id": "garment_p0_final_neon_top_n0110",
+      "category": "top",
+      "subcategory": "紫蓝荧光连环图形上衣",
+      "silhouette": [
+        "mock_neck",
+        "large_scale_graphic",
+        "relaxed"
+      ],
+      "fit": "宽松",
+      "materials": [],
+      "details": [
+        "original_gap_fill",
+        "p0_persona_not_color_test",
+        "visually_reviewed_cutout"
+      ],
+      "season_tags": [
+        "秋"
+      ],
+      "scene_tags": [
+        "日常",
+        "通勤",
+        "约会社交"
+      ],
+      "weather_tags": [],
+      "presentation": [
+        "feminine",
+        "neutral"
+      ],
+      "layer_role": "single",
+      "tryon_slot": "top",
+      "persona_affinity": {
+        "NEON": 0.96
+      },
+      "color": {
+        "temperature": "未判断",
+        "lightness": "浅色",
+        "saturation": "高饱和",
+        "harmony": "未判断",
+        "palette": [
+          "#7c23a9",
+          "#033fd0",
+          "#bff235",
+          "#641c98",
+          "#8c8a6e"
+        ]
+      },
+      "assets": {
+        "image_url": "/static/selfit/assets/content_v2_drafts/p0-final-supply-11/garments/neon-typical-graphic-top-v1.png",
+        "source_url": "",
+        "width": 1200,
+        "height": 1200,
+        "alpha_verified": true,
+        "rights_status": "owned"
+      },
+      "production": {
+        "source_kind": "generated_original",
+        "generation_job_id": "p0-generated-final-supply-11-n0110",
+        "prompt_version": "selfit-p0-final-supply-v1",
+        "reference_ids": [],
+        "qa_status": "approved",
+        "phash": "81e2f2d8c8c97010-655197"
+      },
+      "annotation": {
+        "status": "designer_reviewed",
+        "source": "designer",
+        "confidence": 0.8,
+        "review_notes": [
+          "Cutout usability reviewed; persona/expression require whole-outfit review.",
+          "Normalization only removes alpha noise, resizes proportionally and adds transparent padding."
+        ]
+      },
+      "color_evidence": {
+        "source": "opaque_pixel_quantization_v1",
+        "status": "measured_not_semantic_review",
+        "asset_sha256": "9b7454960454fc6ee06826ea7ebadfd8a351e8c69b7a98d45a285e3861cfdffd",
+        "swatches": [
+          {
+            "hex": "#7c23a9",
+            "weight": 0.3041,
+            "family": "紫"
+          },
+          {
+            "hex": "#033fd0",
+            "weight": 0.2826,
+            "family": "蓝"
+          },
+          {
+            "hex": "#bff235",
+            "weight": 0.1848,
+            "family": "绿"
+          },
+          {
+            "hex": "#641c98",
+            "weight": 0.1833,
+            "family": "紫"
+          },
+          {
+            "hex": "#8c8a6e",
+            "weight": 0.0452,
+            "family": "黄"
+          }
+        ],
+        "palette_names": [
+          "紫",
+          "蓝",
+          "绿"
+        ],
+        "color": {
+          "temperature": "未判断",
+          "lightness": "浅色",
+          "saturation": "高饱和",
+          "harmony": "未判断",
+          "palette": [
+            "#7c23a9",
+            "#033fd0",
+            "#bff235",
+            "#641c98",
+            "#8c8a6e"
+          ]
+        },
+        "limitations": "渲染光照会影响色值；不据此推断面料成分、真实冷暖或人体适配。"
+      }
+    },
+    {
+      "id": "garment_p0_final_neon_dress_n0111",
+      "category": "dress",
+      "subcategory": "洋红多重弧线连衣裙",
+      "silhouette": [
+        "covered_square_neck",
+        "expanding_arcs",
+        "a_line"
+      ],
+      "fit": "合体",
+      "materials": [],
+      "details": [
+        "original_gap_fill",
+        "p0_persona_not_color_test",
+        "visually_reviewed_cutout"
+      ],
+      "season_tags": [
+        "秋"
+      ],
+      "scene_tags": [
+        "日常",
+        "通勤",
+        "约会社交"
+      ],
+      "weather_tags": [],
+      "presentation": [
+        "feminine",
+        "neutral"
+      ],
+      "layer_role": "single",
+      "tryon_slot": "dress",
+      "persona_affinity": {
+        "NEON": 0.96
+      },
+      "color": {
+        "temperature": "未判断",
+        "lightness": "浅色",
+        "saturation": "高饱和",
+        "harmony": "未判断",
+        "palette": [
+          "#c0036a",
+          "#dc0a84",
+          "#373497",
+          "#aee91d",
+          "#5a8c63"
+        ]
+      },
+      "assets": {
+        "image_url": "/static/selfit/assets/content_v2_drafts/p0-final-supply-11/garments/neon-explore-arc-dress-v1.png",
+        "source_url": "",
+        "width": 1200,
+        "height": 1200,
+        "alpha_verified": true,
+        "rights_status": "owned"
+      },
+      "production": {
+        "source_kind": "generated_original",
+        "generation_job_id": "p0-generated-final-supply-11-n0111",
+        "prompt_version": "selfit-p0-final-supply-v1",
+        "reference_ids": [],
+        "qa_status": "approved",
+        "phash": "30616170b2b2b228-973f71"
+      },
+      "annotation": {
+        "status": "designer_reviewed",
+        "source": "designer",
+        "confidence": 0.8,
+        "review_notes": [
+          "Cutout usability reviewed; persona/expression require whole-outfit review.",
+          "Normalization only removes alpha noise, resizes proportionally and adds transparent padding."
+        ]
+      },
+      "color_evidence": {
+        "source": "opaque_pixel_quantization_v1",
+        "status": "measured_not_semantic_review",
+        "asset_sha256": "db87d1411bf7155381ae4a608987cea8de88f3383b4a4c4c93c996a424c9583c",
+        "swatches": [
+          {
+            "hex": "#c0036a",
+            "weight": 0.2781,
+            "family": "紫"
+          },
+          {
+            "hex": "#dc0a84",
+            "weight": 0.2775,
+            "family": "紫"
+          },
+          {
+            "hex": "#373497",
+            "weight": 0.2436,
+            "family": "蓝"
+          },
+          {
+            "hex": "#aee91d",
+            "weight": 0.1858,
+            "family": "绿"
+          },
+          {
+            "hex": "#5a8c63",
+            "weight": 0.015,
+            "family": "绿"
+          }
+        ],
+        "palette_names": [
+          "紫",
+          "蓝",
+          "绿"
+        ],
+        "color": {
+          "temperature": "未判断",
+          "lightness": "浅色",
+          "saturation": "高饱和",
+          "harmony": "未判断",
+          "palette": [
+            "#c0036a",
+            "#dc0a84",
+            "#373497",
+            "#aee91d",
+            "#5a8c63"
+          ]
+        },
+        "limitations": "渲染光照会影响色值；不据此推断面料成分、真实冷暖或人体适配。"
+      }
+    },
+    {
+      "id": "garment_p0_final_neon_outer_n0112",
+      "category": "outer",
+      "subcategory": "橙红荧光斜襟外搭",
+      "silhouette": [
+        "hip_length",
+        "diagonal_storm_flap",
+        "large_round_pockets"
+      ],
+      "fit": "宽松",
+      "materials": [],
+      "details": [
+        "original_gap_fill",
+        "p0_persona_not_color_test",
+        "visually_reviewed_cutout"
+      ],
+      "season_tags": [
+        "秋"
+      ],
+      "scene_tags": [
+        "日常",
+        "通勤",
+        "约会社交"
+      ],
+      "weather_tags": [],
+      "presentation": [
+        "feminine",
+        "neutral"
+      ],
+      "layer_role": "outer",
+      "tryon_slot": "outer",
+      "persona_affinity": {
+        "NEON": 0.96
+      },
+      "color": {
+        "temperature": "未判断",
+        "lightness": "浅色",
+        "saturation": "高饱和",
+        "harmony": "未判断",
+        "palette": [
+          "#e82f15",
+          "#f54223",
+          "#68236e",
+          "#ea3a21",
+          "#cbc12f"
+        ]
+      },
+      "assets": {
+        "image_url": "/static/selfit/assets/content_v2_drafts/p0-final-supply-11/garments/neon-explore-storm-overshirt-v1.png",
+        "source_url": "",
+        "width": 1200,
+        "height": 1200,
+        "alpha_verified": true,
+        "rights_status": "owned"
+      },
+      "production": {
+        "source_kind": "generated_original",
+        "generation_job_id": "p0-generated-final-supply-11-n0112",
+        "prompt_version": "selfit-p0-final-supply-v1",
+        "reference_ids": [],
+        "qa_status": "approved",
+        "phash": "00b296dcf0616800-c84532"
+      },
+      "annotation": {
+        "status": "designer_reviewed",
+        "source": "designer",
+        "confidence": 0.8,
+        "review_notes": [
+          "Cutout usability reviewed; persona/expression require whole-outfit review.",
+          "Normalization only removes alpha noise, resizes proportionally and adds transparent padding."
+        ]
+      },
+      "color_evidence": {
+        "source": "opaque_pixel_quantization_v1",
+        "status": "measured_not_semantic_review",
+        "asset_sha256": "637ed0c714e890cde03e4ffdc9ec5fdc3e707d8fbc50c0e8b9fe3ac8870edc23",
+        "swatches": [
+          {
+            "hex": "#e82f15",
+            "weight": 0.2884,
+            "family": "红"
+          },
+          {
+            "hex": "#f54223",
+            "weight": 0.2572,
+            "family": "红"
+          },
+          {
+            "hex": "#68236e",
+            "weight": 0.2091,
+            "family": "紫"
+          },
+          {
+            "hex": "#ea3a21",
+            "weight": 0.1346,
+            "family": "红"
+          },
+          {
+            "hex": "#cbc12f",
+            "weight": 0.1106,
+            "family": "黄"
+          }
+        ],
+        "palette_names": [
+          "红",
+          "紫"
+        ],
+        "color": {
+          "temperature": "未判断",
+          "lightness": "浅色",
+          "saturation": "高饱和",
+          "harmony": "未判断",
+          "palette": [
+            "#e82f15",
+            "#f54223",
+            "#68236e",
+            "#ea3a21",
+            "#cbc12f"
+          ]
+        },
+        "limitations": "渲染光照会影响色值；不据此推断面料成分、真实冷暖或人体适配。"
+      }
+    },
+    {
+      "id": "garment_p0_final_bolt_top_n0113",
+      "category": "top",
+      "subcategory": "象牙丝缎酒红滚边上衣",
+      "silhouette": [
+        "shaped_waist",
+        "soft_sleeve_head",
+        "jewel_neck"
+      ],
+      "fit": "合体",
+      "materials": [],
+      "details": [
+        "original_gap_fill",
+        "p0_persona_not_color_test",
+        "visually_reviewed_cutout"
+      ],
+      "season_tags": [
+        "秋"
+      ],
+      "scene_tags": [
+        "日常",
+        "通勤",
+        "约会社交"
+      ],
+      "weather_tags": [],
+      "presentation": [
+        "feminine",
+        "neutral"
+      ],
+      "layer_role": "single",
+      "tryon_slot": "top",
+      "persona_affinity": {
+        "BOLT": 0.96
+      },
+      "color": {
+        "temperature": "未判断",
+        "lightness": "浅色",
+        "saturation": "低饱和",
+        "harmony": "未判断",
+        "palette": [
+          "#e4d9cf",
+          "#e9dfd5",
+          "#ede5dc",
+          "#f4ede5",
+          "#d2c2b6"
+        ]
+      },
+      "assets": {
+        "image_url": "/static/selfit/assets/content_v2_drafts/p0-final-supply-11/garments/bolt-easy-ivory-blouse-v1.png",
+        "source_url": "",
+        "width": 1200,
+        "height": 1200,
+        "alpha_verified": true,
+        "rights_status": "owned"
+      },
+      "production": {
+        "source_kind": "generated_original",
+        "generation_job_id": "p0-generated-final-supply-11-n0113",
+        "prompt_version": "selfit-p0-final-supply-v1",
+        "reference_ids": [],
+        "qa_status": "approved",
+        "phash": "82d6dcd4d4d8e828-e5dad0"
+      },
+      "annotation": {
+        "status": "designer_reviewed",
+        "source": "designer",
+        "confidence": 0.8,
+        "review_notes": [
+          "Cutout usability reviewed; persona/expression require whole-outfit review.",
+          "Normalization only removes alpha noise, resizes proportionally and adds transparent padding."
+        ]
+      },
+      "color_evidence": {
+        "source": "opaque_pixel_quantization_v1",
+        "status": "measured_not_semantic_review",
+        "asset_sha256": "9e5985deda6758b038d8e0b6862cbd208707b5ee23665d732923df737260213e",
+        "swatches": [
+          {
+            "hex": "#e4d9cf",
+            "weight": 0.3583,
+            "family": "白"
+          },
+          {
+            "hex": "#e9dfd5",
+            "weight": 0.2223,
+            "family": "白"
+          },
+          {
+            "hex": "#ede5dc",
+            "weight": 0.1877,
+            "family": "白"
+          },
+          {
+            "hex": "#f4ede5",
+            "weight": 0.1223,
+            "family": "白"
+          },
+          {
+            "hex": "#d2c2b6",
+            "weight": 0.1095,
+            "family": "黄"
+          }
+        ],
+        "palette_names": [
+          "白"
+        ],
+        "color": {
+          "temperature": "未判断",
+          "lightness": "浅色",
+          "saturation": "低饱和",
+          "harmony": "未判断",
+          "palette": [
+            "#e4d9cf",
+            "#e9dfd5",
+            "#ede5dc",
+            "#f4ede5",
+            "#d2c2b6"
+          ]
+        },
+        "limitations": "渲染光照会影响色值；不据此推断面料成分、真实冷暖或人体适配。"
+      }
+    },
+    {
+      "id": "garment_p0_final_bolt_top_n0114",
+      "category": "top",
+      "subcategory": "酒红折肩收腰上衣",
+      "silhouette": [
+        "portrait_neck",
+        "sculpted_shoulder_fold",
+        "compact_peplum"
+      ],
+      "fit": "合体",
+      "materials": [],
+      "details": [
+        "original_gap_fill",
+        "p0_persona_not_color_test",
+        "visually_reviewed_cutout"
+      ],
+      "season_tags": [
+        "秋"
+      ],
+      "scene_tags": [
+        "日常",
+        "通勤",
+        "约会社交"
+      ],
+      "weather_tags": [],
+      "presentation": [
+        "feminine",
+        "neutral"
+      ],
+      "layer_role": "single",
+      "tryon_slot": "top",
+      "persona_affinity": {
+        "BOLT": 0.96
+      },
+      "color": {
+        "temperature": "未判断",
+        "lightness": "深色",
+        "saturation": "高饱和",
+        "harmony": "未判断",
+        "palette": [
+          "#48101c",
+          "#531624",
+          "#360811",
+          "#591b29",
+          "#611f2e"
+        ]
+      },
+      "assets": {
+        "image_url": "/static/selfit/assets/content_v2_drafts/p0-final-supply-11/garments/bolt-typical-burgundy-blouse-v1.png",
+        "source_url": "",
+        "width": 1200,
+        "height": 1200,
+        "alpha_verified": true,
+        "rights_status": "owned"
+      },
+      "production": {
+        "source_kind": "generated_original",
+        "generation_job_id": "p0-generated-final-supply-11-n0114",
+        "prompt_version": "selfit-p0-final-supply-v1",
+        "reference_ids": [],
+        "qa_status": "approved",
+        "phash": "8296b2d2d4f0cc4c-4c131f"
+      },
+      "annotation": {
+        "status": "designer_reviewed",
+        "source": "designer",
+        "confidence": 0.8,
+        "review_notes": [
+          "Cutout usability reviewed; persona/expression require whole-outfit review.",
+          "Normalization only removes alpha noise, resizes proportionally and adds transparent padding."
+        ]
+      },
+      "color_evidence": {
+        "source": "opaque_pixel_quantization_v1",
+        "status": "measured_not_semantic_review",
+        "asset_sha256": "5a4b39c0709ca73f584503b95a0b2e5b11bb39d9dafd121735ec433cf9bc7fa9",
+        "swatches": [
+          {
+            "hex": "#48101c",
+            "weight": 0.2917,
+            "family": "红"
+          },
+          {
+            "hex": "#531624",
+            "weight": 0.2142,
+            "family": "红"
+          },
+          {
+            "hex": "#360811",
+            "weight": 0.1857,
+            "family": "红"
+          },
+          {
+            "hex": "#591b29",
+            "weight": 0.1611,
+            "family": "红"
+          },
+          {
+            "hex": "#611f2e",
+            "weight": 0.1473,
+            "family": "红"
+          }
+        ],
+        "palette_names": [
+          "红"
+        ],
+        "color": {
+          "temperature": "未判断",
+          "lightness": "深色",
+          "saturation": "高饱和",
+          "harmony": "未判断",
+          "palette": [
+            "#48101c",
+            "#531624",
+            "#360811",
+            "#591b29",
+            "#611f2e"
+          ]
+        },
+        "limitations": "渲染光照会影响色值；不据此推断面料成分、真实冷暖或人体适配。"
+      }
+    },
+    {
+      "id": "garment_p0_final_bolt_dress_n0115",
+      "category": "dress",
+      "subcategory": "祖母绿斜披领裹片裙",
+      "silhouette": [
+        "asymmetric_cape_fold",
+        "defined_waist",
+        "tulip_midi"
+      ],
+      "fit": "合体",
+      "materials": [],
+      "details": [
+        "original_gap_fill",
+        "p0_persona_not_color_test",
+        "visually_reviewed_cutout"
+      ],
+      "season_tags": [
+        "秋"
+      ],
+      "scene_tags": [
+        "日常",
+        "通勤",
+        "约会社交"
+      ],
+      "weather_tags": [],
+      "presentation": [
+        "feminine",
+        "neutral"
+      ],
+      "layer_role": "single",
+      "tryon_slot": "dress",
+      "persona_affinity": {
+        "BOLT": 0.96
+      },
+      "color": {
+        "temperature": "未判断",
+        "lightness": "深色",
+        "saturation": "高饱和",
+        "harmony": "未判断",
+        "palette": [
+          "#083a2d",
+          "#0d4338",
+          "#03291f",
+          "#124f41",
+          "#1b6252"
+        ]
+      },
+      "assets": {
+        "image_url": "/static/selfit/assets/content_v2_drafts/p0-final-supply-11/garments/bolt-explore-emerald-dress-v1.png",
+        "source_url": "",
+        "width": 1200,
+        "height": 1200,
+        "alpha_verified": true,
+        "rights_status": "owned"
+      },
+      "production": {
+        "source_kind": "generated_original",
+        "generation_job_id": "p0-generated-final-supply-11-n0115",
+        "prompt_version": "selfit-p0-final-supply-v1",
+        "reference_ids": [],
+        "qa_status": "approved",
+        "phash": "30b2b2f070707030-0c4033"
+      },
+      "annotation": {
+        "status": "designer_reviewed",
+        "source": "designer",
+        "confidence": 0.8,
+        "review_notes": [
+          "Cutout usability reviewed; persona/expression require whole-outfit review.",
+          "Normalization only removes alpha noise, resizes proportionally and adds transparent padding."
+        ]
+      },
+      "color_evidence": {
+        "source": "opaque_pixel_quantization_v1",
+        "status": "measured_not_semantic_review",
+        "asset_sha256": "cc33466edc96a451e75034e11872453ee42b7178e7831b6f1c04e3adf670b0b8",
+        "swatches": [
+          {
+            "hex": "#083a2d",
+            "weight": 0.3139,
+            "family": "绿"
+          },
+          {
+            "hex": "#0d4338",
+            "weight": 0.2352,
+            "family": "绿"
+          },
+          {
+            "hex": "#03291f",
+            "weight": 0.1652,
+            "family": "黑"
+          },
+          {
+            "hex": "#124f41",
+            "weight": 0.1619,
+            "family": "绿"
+          },
+          {
+            "hex": "#1b6252",
+            "weight": 0.1238,
+            "family": "绿"
+          }
+        ],
+        "palette_names": [
+          "绿",
+          "黑"
+        ],
+        "color": {
+          "temperature": "未判断",
+          "lightness": "深色",
+          "saturation": "高饱和",
+          "harmony": "未判断",
+          "palette": [
+            "#083a2d",
+            "#0d4338",
+            "#03291f",
+            "#124f41",
+            "#1b6252"
+          ]
+        },
+        "limitations": "渲染光照会影响色值；不据此推断面料成分、真实冷暖或人体适配。"
+      }
+    },
+    {
+      "id": "garment_p0_final_bolt_outer_n0116",
+      "category": "outer",
+      "subcategory": "酒红花瓣叠领收腰外套",
+      "silhouette": [
+        "petal_lapel",
+        "shaped_waist",
+        "compact_flared_hem"
+      ],
+      "fit": "合体",
+      "materials": [],
+      "details": [
+        "original_gap_fill",
+        "p0_persona_not_color_test",
+        "visually_reviewed_cutout"
+      ],
+      "season_tags": [
+        "秋"
+      ],
+      "scene_tags": [
+        "日常",
+        "通勤",
+        "约会社交"
+      ],
+      "weather_tags": [],
+      "presentation": [
+        "feminine",
+        "neutral"
+      ],
+      "layer_role": "outer",
+      "tryon_slot": "outer",
+      "persona_affinity": {
+        "BOLT": 0.96
+      },
+      "color": {
+        "temperature": "未判断",
+        "lightness": "深色",
+        "saturation": "高饱和",
+        "harmony": "未判断",
+        "palette": [
+          "#4c1523",
+          "#581d2c",
+          "#632434",
+          "#380c16",
+          "#6d2b3c"
+        ]
+      },
+      "assets": {
+        "image_url": "/static/selfit/assets/content_v2_drafts/p0-final-supply-11/garments/bolt-explore-petal-jacket-v1.png",
+        "source_url": "",
+        "width": 1200,
+        "height": 1200,
+        "alpha_verified": true,
+        "rights_status": "owned"
+      },
+      "production": {
+        "source_kind": "generated_original",
+        "generation_job_id": "p0-generated-final-supply-11-n0116",
+        "prompt_version": "selfit-p0-final-supply-v1",
+        "reference_ids": [],
+        "qa_status": "approved",
+        "phash": "9286e0f0f4e06820-531a28"
+      },
+      "annotation": {
+        "status": "designer_reviewed",
+        "source": "designer",
+        "confidence": 0.8,
+        "review_notes": [
+          "Cutout usability reviewed; persona/expression require whole-outfit review.",
+          "Normalization only removes alpha noise, resizes proportionally and adds transparent padding."
+        ]
+      },
+      "color_evidence": {
+        "source": "opaque_pixel_quantization_v1",
+        "status": "measured_not_semantic_review",
+        "asset_sha256": "f8ef2964522df27f958bdcf37fffd5126020a623e16c224d3613047371f35ab3",
+        "swatches": [
+          {
+            "hex": "#4c1523",
+            "weight": 0.2942,
+            "family": "红"
+          },
+          {
+            "hex": "#581d2c",
+            "weight": 0.2034,
+            "family": "红"
+          },
+          {
+            "hex": "#632434",
+            "weight": 0.195,
+            "family": "红"
+          },
+          {
+            "hex": "#380c16",
+            "weight": 0.1922,
+            "family": "红"
+          },
+          {
+            "hex": "#6d2b3c",
+            "weight": 0.1151,
+            "family": "红"
+          }
+        ],
+        "palette_names": [
+          "红"
+        ],
+        "color": {
+          "temperature": "未判断",
+          "lightness": "深色",
+          "saturation": "高饱和",
+          "harmony": "未判断",
+          "palette": [
+            "#4c1523",
+            "#581d2c",
+            "#632434",
+            "#380c16",
+            "#6d2b3c"
+          ]
+        },
+        "limitations": "渲染光照会影响色值；不据此推断面料成分、真实冷暖或人体适配。"
+      }
+    }
+  ],
+  "visual": {
+    "garment_p0_final_oops_dress_n0102": {
+      "token": "n0102",
+      "status": "ai_candidate",
+      "record_fingerprint": "84b63e91690b32bbd2b66fb6d4007e18f955a82652df7254b1c78dbddf42f2e3",
+      "asset_sha256": "6a61b672ce31b237990a0377f9bf9ad3e8654b1fdf8f5325a4c46258234d8154",
+      "image_url": "/static/selfit/assets/content_v2_drafts/p0-final-supply-11/garments/oops-rugby-tailored-dress-v1.png",
+      "source_kind": "codex_visual_review",
+      "evidence": "运动针织上身与细条纹西装褶裙通过斜腰缝并置，冲突来自结构和正式度，而非配件或高彩。",
+      "observations": {
+        "category": "dress",
+        "subcategory": "sports_tailoring_hybrid_midi_dress",
+        "neckline": "small_polo_collar",
+        "sleeve": "long_cuffed",
+        "length": "midi",
+        "volume": "relaxed_straight",
+        "construction": "diagonal_waist_pinstripe_wrap_pleats",
+        "pattern": "solid_and_pinstripe",
+        "decoration": "low",
+        "material_appearance": "cotton_jersey_and_suiting_like",
+        "main_colors": [
+          "charcoal",
+          "ivory"
+        ],
+        "visual_personas": [
+          "oops"
+        ],
+        "usage_limits": null
+      },
+      "confidence": 0.8,
+      "model": "current_codex_session",
+      "prompt_version": "aw-generated-garment-review-v1",
+      "review_level": "individual_full_resolution_judgment",
+      "review_complete": true,
+      "confidence_basis": "Non-calibrated AI visual judgment; material appearance is visual only and warmth is not claimed."
+    },
+    "garment_p0_final_noir_dress_n0103": {
+      "token": "n0103",
+      "status": "ai_candidate",
+      "record_fingerprint": "9faa85aea8dc0db07cc049b8da8e1eeb4c07515eb8cbd59db31e55b8d48785f8",
+      "asset_sha256": "c927f5799807f2ef51551890e42f891a351175aee967717edabb77c33b4e41ba",
+      "image_url": "/static/selfit/assets/content_v2_drafts/p0-final-supply-11/garments/noir-diagonal-zip-dress-v1.png",
+      "source_kind": "codex_visual_review",
+      "evidence": "斜向长缝、双向拉链、覆片和单侧罗纹形成冷硬方向性；日常针织轮廓避免只靠黑色归类。",
+      "observations": {
+        "category": "dress",
+        "subcategory": "diagonal_zip_jersey_midi_dress",
+        "neckline": "covered_crew",
+        "sleeve": "long_thumbhole_cuff",
+        "length": "midi",
+        "volume": "relaxed_column",
+        "construction": "diagonal_zip_overlap_panel_rib_inset",
+        "pattern": "solid",
+        "decoration": "low",
+        "material_appearance": "heavy_cotton_jersey_like",
+        "main_colors": [
+          "black"
+        ],
+        "visual_personas": [
+          "noir"
+        ],
+        "usage_limits": null
+      },
+      "confidence": 0.8,
+      "model": "current_codex_session",
+      "prompt_version": "aw-generated-garment-review-v1",
+      "review_level": "individual_full_resolution_judgment",
+      "review_complete": true,
+      "confidence_basis": "Non-calibrated AI visual judgment; material appearance is visual only and warmth is not claimed."
+    },
+    "garment_p0_final_edge_top_n0104": {
+      "token": "n0104",
+      "status": "ai_candidate",
+      "record_fingerprint": "3a2f91578b1d5a851f93e329c4583bc9242f86aaa2a1642780d150f79537e221",
+      "asset_sha256": "8343fdbfa7e37a3d07bd274bf48d92e826cf991e21f55600a06ca8ce01de5c21",
+      "image_url": "/static/selfit/assets/content_v2_drafts/p0-final-supply-11/garments/edge-diagonal-knit-top-v1.png",
+      "source_kind": "codex_visual_review",
+      "evidence": "黑色细罗纹、粉色尖领和单一斜拉链形成低强度甜酷结构。",
+      "observations": {
+        "category": "top",
+        "subcategory": "sweet_cool_diagonal_zip_knit",
+        "neckline": "small_point_collar",
+        "sleeve": "long_slim",
+        "length": "hip",
+        "volume": "fitted",
+        "construction": "diagonal_two_way_zip_contrast_piping",
+        "pattern": "solid",
+        "decoration": "low",
+        "material_appearance": "fine_rib_knit_like",
+        "main_colors": [
+          "black",
+          "dusty_rose"
+        ],
+        "visual_personas": [
+          "edge"
+        ],
+        "usage_limits": null
+      },
+      "confidence": 0.8,
+      "model": "current_codex_session",
+      "prompt_version": "aw-generated-garment-review-v1",
+      "review_level": "individual_full_resolution_judgment",
+      "review_complete": true,
+      "confidence_basis": "Non-calibrated AI visual judgment; material appearance is visual only and warmth is not claimed."
+    },
+    "garment_p0_final_edge_outer_n0105": {
+      "token": "n0105",
+      "status": "ai_candidate",
+      "record_fingerprint": "b7aba2049e9043de2dd6429a86aee4f1e11e66cb159c17991c5b82c5dd7360c8",
+      "asset_sha256": "32be41f777d88db55d326eb8211513193b6e55289c2c4bd7a9e43cc4a3559a10",
+      "image_url": "/static/selfit/assets/content_v2_drafts/p0-final-supply-11/garments/edge-organza-panel-jacket-v1.png",
+      "source_kind": "codex_visual_review",
+      "evidence": "洗黑短外套与单侧粉纱褶片构成强甜酷对照；透明度和躯干覆盖仍须整套审核。",
+      "observations": {
+        "category": "outer",
+        "subcategory": "asymmetric_organza_panel_jacket",
+        "neckline": "point_collar",
+        "sleeve": "long",
+        "length": "waist",
+        "volume": "shaped",
+        "construction": "pointed_closure_one_side_pleat_inset",
+        "pattern": "solid",
+        "decoration": "medium",
+        "material_appearance": "washed_cotton_and_organza_like",
+        "main_colors": [
+          "washed_black",
+          "dusty_rose"
+        ],
+        "visual_personas": [
+          "edge"
+        ],
+        "usage_limits": null
+      },
+      "confidence": 0.8,
+      "model": "current_codex_session",
+      "prompt_version": "aw-generated-garment-review-v1",
+      "review_level": "individual_full_resolution_judgment",
+      "review_complete": true,
+      "confidence_basis": "Non-calibrated AI visual judgment; material appearance is visual only and warmth is not claimed."
+    },
+    "garment_p0_final_edge_dress_n0106": {
+      "token": "n0106",
+      "status": "ai_candidate",
+      "record_fingerprint": "7b149a2b0c877f82c9e36a5513aab744ee5378c124c7289a0f46ac96a6d4b54c",
+      "asset_sha256": "bc4e37b5e561a5214edecee5f33c8c01050335a8dd6800adc08e51a7e561214c",
+      "image_url": "/static/selfit/assets/content_v2_drafts/p0-final-supply-11/garments/edge-denim-pleat-dress-v1.png",
+      "source_kind": "codex_visual_review",
+      "evidence": "黑丹宁收束与粉色褶片沿同一斜线组织，甜酷关系完整且不依赖外加配件。",
+      "observations": {
+        "category": "dress",
+        "subcategory": "denim_wrap_pleat_midi_dress",
+        "neckline": "small_point_collar",
+        "sleeve": "long",
+        "length": "midi",
+        "volume": "controlled_a_line",
+        "construction": "princess_seams_diagonal_wrap_pleat_underpanel",
+        "pattern": "solid",
+        "decoration": "medium",
+        "material_appearance": "washed_denim_and_matte_chiffon_like",
+        "main_colors": [
+          "washed_black",
+          "dusty_rose"
+        ],
+        "visual_personas": [
+          "edge"
+        ],
+        "usage_limits": null
+      },
+      "confidence": 0.8,
+      "model": "current_codex_session",
+      "prompt_version": "aw-generated-garment-review-v1",
+      "review_level": "individual_full_resolution_judgment",
+      "review_complete": true,
+      "confidence_basis": "Non-calibrated AI visual judgment; material appearance is visual only and warmth is not claimed."
+    },
+    "garment_p0_final_void_skirt_n0107": {
+      "token": "n0107",
+      "status": "ai_candidate",
+      "record_fingerprint": "1d268a4a75042b2b04ce1bf035ae570617ec3cf4da9898798c4a0676751af374",
+      "asset_sha256": "70f1e0ef9279949693b3b2dde992a11a96834f8a876cb3a6b66bb1eb368e4c34",
+      "image_url": "/static/selfit/assets/content_v2_drafts/p0-final-supply-11/garments/void-offset-pocket-skirt-v1.png",
+      "source_kind": "codex_visual_review",
+      "evidence": "默认制服般的水洗针织直裙，以偏移缝、低口袋和轻微错层下摆保留游离感。",
+      "observations": {
+        "category": "skirt",
+        "subcategory": "washed_offset_seam_jersey_midi_skirt",
+        "neckline": "none",
+        "sleeve": "none",
+        "length": "midi",
+        "volume": "relaxed_straight",
+        "construction": "elastic_waist_offset_seam_low_patch_pocket",
+        "pattern": "solid",
+        "decoration": "low",
+        "material_appearance": "washed_cotton_jersey_like",
+        "main_colors": [
+          "washed_charcoal"
+        ],
+        "visual_personas": [
+          "void"
+        ],
+        "usage_limits": null
+      },
+      "confidence": 0.8,
+      "model": "current_codex_session",
+      "prompt_version": "aw-generated-garment-review-v1",
+      "review_level": "individual_full_resolution_judgment",
+      "review_complete": true,
+      "confidence_basis": "Non-calibrated AI visual judgment; material appearance is visual only and warmth is not claimed."
+    },
+    "garment_p0_final_neon_top_n0108": {
+      "token": "n0108",
+      "status": "ai_candidate",
+      "record_fingerprint": "129565b42d4328462f6bf9861cab7f4df54c48a3ce31fa9445a513ccc05ef10d",
+      "asset_sha256": "2a80dcbc7a2efe1f1c70bb9fe35e47a1e364cd025430f6edcd6b7d06f58888f1",
+      "image_url": "/static/selfit/assets/content_v2_drafts/p0-final-supply-11/garments/neon-curve-panel-top-v1.png",
+      "source_kind": "codex_visual_review",
+      "evidence": "钴蓝基底仅由一条荧光弧片和小珊瑚拉链袋提亮，形成可日常化的高能主焦点。",
+      "observations": {
+        "category": "top",
+        "subcategory": "high_color_curve_panel_jersey_top",
+        "neckline": "crew",
+        "sleeve": "long",
+        "length": "hip",
+        "volume": "relaxed",
+        "construction": "single_lime_curve_panel_coral_zip_pocket",
+        "pattern": "color_block",
+        "decoration": "low",
+        "material_appearance": "cotton_jersey_like",
+        "main_colors": [
+          "cobalt",
+          "lime",
+          "coral"
+        ],
+        "visual_personas": [
+          "neon"
+        ],
+        "usage_limits": null
+      },
+      "confidence": 0.8,
+      "model": "current_codex_session",
+      "prompt_version": "aw-generated-garment-review-v1",
+      "review_level": "individual_full_resolution_judgment",
+      "review_complete": true,
+      "confidence_basis": "Non-calibrated AI visual judgment; material appearance is visual only and warmth is not claimed."
+    },
+    "garment_p0_final_neon_dress_n0109": {
+      "token": "n0109",
+      "status": "ai_candidate",
+      "record_fingerprint": "271819c681b6477697571950697a45101462630b394db09e75c43e319acd7467",
+      "asset_sha256": "dcc8ad912279e442bb80037bbe94d8ab5902f7d834f7f59db1eac3023099b118",
+      "image_url": "/static/selfit/assets/content_v2_drafts/p0-final-supply-11/garments/neon-curve-panel-dress-v1.png",
+      "source_kind": "codex_visual_review",
+      "evidence": "基础T恤裙用单一钴蓝弧面和荧光细边构成入门吸睛信号。",
+      "observations": {
+        "category": "dress",
+        "subcategory": "high_color_curve_panel_tshirt_dress",
+        "neckline": "crew",
+        "sleeve": "short",
+        "length": "midi",
+        "volume": "relaxed_straight",
+        "construction": "single_cobalt_curve_panel_lime_piping_pocket",
+        "pattern": "color_block",
+        "decoration": "low",
+        "material_appearance": "cotton_jersey_like",
+        "main_colors": [
+          "coral",
+          "cobalt",
+          "lime"
+        ],
+        "visual_personas": [
+          "neon"
+        ],
+        "usage_limits": null
+      },
+      "confidence": 0.8,
+      "model": "current_codex_session",
+      "prompt_version": "aw-generated-garment-review-v1",
+      "review_level": "individual_full_resolution_judgment",
+      "review_complete": true,
+      "confidence_basis": "Non-calibrated AI visual judgment; material appearance is visual only and warmth is not claimed."
+    },
+    "garment_p0_final_neon_top_n0110": {
+      "token": "n0110",
+      "status": "ai_candidate",
+      "record_fingerprint": "9ca08e549ad6da2e85fe2ad5ff248fc05cf44f239395b53011b30ec5493696ff",
+      "asset_sha256": "9b7454960454fc6ee06826ea7ebadfd8a351e8c69b7a98d45a285e3861cfdffd",
+      "image_url": "/static/selfit/assets/content_v2_drafts/p0-final-supply-11/garments/neon-typical-graphic-top-v1.png",
+      "source_kind": "codex_visual_review",
+      "evidence": "跨衣身和单袖的连续大块图形提高强度，口袋仍从属于同一图形语言。",
+      "observations": {
+        "category": "top",
+        "subcategory": "high_color_interlocking_graphic_top",
+        "neckline": "mock",
+        "sleeve": "long",
+        "length": "hip",
+        "volume": "relaxed",
+        "construction": "large_interlocking_rounded_blocks_patch_pocket",
+        "pattern": "large_geometric",
+        "decoration": "medium",
+        "material_appearance": "cotton_jersey_like",
+        "main_colors": [
+          "violet",
+          "cobalt",
+          "lime",
+          "coral"
+        ],
+        "visual_personas": [
+          "neon"
+        ],
+        "usage_limits": null
+      },
+      "confidence": 0.8,
+      "model": "current_codex_session",
+      "prompt_version": "aw-generated-garment-review-v1",
+      "review_level": "individual_full_resolution_judgment",
+      "review_complete": true,
+      "confidence_basis": "Non-calibrated AI visual judgment; material appearance is visual only and warmth is not claimed."
+    },
+    "garment_p0_final_neon_dress_n0111": {
+      "token": "n0111",
+      "status": "ai_candidate",
+      "record_fingerprint": "27d2c91728da7cbc394b09db7ecf2408e1fc4da528272d10239fd923b8ad2300",
+      "asset_sha256": "db87d1411bf7155381ae4a608987cea8de88f3383b4a4c4c93c996a424c9583c",
+      "image_url": "/static/selfit/assets/content_v2_drafts/p0-final-supply-11/garments/neon-explore-arc-dress-v1.png",
+      "source_kind": "codex_visual_review",
+      "evidence": "多重扩展弧线贯穿衣身和裙摆，形成探索强度但维持单一图形语法。",
+      "observations": {
+        "category": "dress",
+        "subcategory": "expanding_arc_panel_midi_dress",
+        "neckline": "covered_square",
+        "sleeve": "sleeveless",
+        "length": "midi",
+        "volume": "controlled_a_line",
+        "construction": "oversized_concentric_arc_panels_patch_pocket",
+        "pattern": "large_geometric",
+        "decoration": "medium",
+        "material_appearance": "matte_twill_like",
+        "main_colors": [
+          "magenta",
+          "cobalt",
+          "lime",
+          "coral"
+        ],
+        "visual_personas": [
+          "neon"
+        ],
+        "usage_limits": null
+      },
+      "confidence": 0.8,
+      "model": "current_codex_session",
+      "prompt_version": "aw-generated-garment-review-v1",
+      "review_level": "individual_full_resolution_judgment",
+      "review_complete": true,
+      "confidence_basis": "Non-calibrated AI visual judgment; material appearance is visual only and warmth is not claimed."
+    },
+    "garment_p0_final_neon_outer_n0112": {
+      "token": "n0112",
+      "status": "ai_candidate",
+      "record_fingerprint": "fd2db96cf1da47170d4c6a932ca5e6adba584730581e444bf16ce8a0464371ad",
+      "asset_sha256": "637ed0c714e890cde03e4ffdc9ec5fdc3e707d8fbc50c0e8b9fe3ac8870edc23",
+      "image_url": "/static/selfit/assets/content_v2_drafts/p0-final-supply-11/garments/neon-explore-storm-overshirt-v1.png",
+      "source_kind": "codex_visual_review",
+      "evidence": "橙红外搭以荧光斜襟和成对大口袋构成主动吸睛结构，适合作为探索型唯一主角。",
+      "observations": {
+        "category": "outer",
+        "subcategory": "high_color_diagonal_flap_overshirt",
+        "neckline": "stand_collar",
+        "sleeve": "long",
+        "length": "hip",
+        "volume": "relaxed",
+        "construction": "diagonal_storm_flap_two_large_patch_pockets",
+        "pattern": "color_block",
+        "decoration": "medium",
+        "material_appearance": "structured_cotton_like",
+        "main_colors": [
+          "orange_red",
+          "cobalt",
+          "lime",
+          "violet"
+        ],
+        "visual_personas": [
+          "neon"
+        ],
+        "usage_limits": null
+      },
+      "confidence": 0.8,
+      "model": "current_codex_session",
+      "prompt_version": "aw-generated-garment-review-v1",
+      "review_level": "individual_full_resolution_judgment",
+      "review_complete": true,
+      "confidence_basis": "Non-calibrated AI visual judgment; material appearance is visual only and warmth is not claimed."
+    },
+    "garment_p0_final_bolt_top_n0113": {
+      "token": "n0113",
+      "status": "ai_candidate",
+      "record_fingerprint": "928e429e701990a8b58f677506051c7c3762c4aa7b1415cba2364a8cfdf9a56e",
+      "asset_sha256": "9e5985deda6758b038d8e0b6862cbd208707b5ee23665d732923df737260213e",
+      "image_url": "/static/selfit/assets/content_v2_drafts/p0-final-supply-11/garments/bolt-easy-ivory-blouse-v1.png",
+      "source_kind": "codex_visual_review",
+      "evidence": "酒红细滚边、三枚珠扣和轻收腰集中为低强度精致焦点。",
+      "observations": {
+        "category": "top",
+        "subcategory": "refined_piped_satin_blouse",
+        "neckline": "rounded_jewel",
+        "sleeve": "long_soft_gather",
+        "length": "hip",
+        "volume": "gently_fitted",
+        "construction": "waist_darts_three_pearl_buttons_piped_cuffs",
+        "pattern": "solid",
+        "decoration": "low",
+        "material_appearance": "matte_satin_and_velvet_like",
+        "main_colors": [
+          "ivory",
+          "burgundy"
+        ],
+        "visual_personas": [
+          "bolt"
+        ],
+        "usage_limits": null
+      },
+      "confidence": 0.8,
+      "model": "current_codex_session",
+      "prompt_version": "aw-generated-garment-review-v1",
+      "review_level": "individual_full_resolution_judgment",
+      "review_complete": true,
+      "confidence_basis": "Non-calibrated AI visual judgment; material appearance is visual only and warmth is not claimed."
+    },
+    "garment_p0_final_bolt_top_n0114": {
+      "token": "n0114",
+      "status": "ai_candidate",
+      "record_fingerprint": "a231ee5e0b2922fd63305596ae5ee32221d4374bc5935dd12f054bcc4d109139",
+      "asset_sha256": "5a4b39c0709ca73f584503b95a0b2e5b11bb39d9dafd121735ec433cf9bc7fa9",
+      "image_url": "/static/selfit/assets/content_v2_drafts/p0-final-supply-11/garments/bolt-typical-burgundy-blouse-v1.png",
+      "source_kind": "codex_visual_review",
+      "evidence": "方形肖像领、紧凑折肩、公主线和短荷叶摆形成中强度戏剧轮廓。",
+      "observations": {
+        "category": "top",
+        "subcategory": "sculpted_fold_peplum_blouse",
+        "neckline": "square_portrait",
+        "sleeve": "long_tapered",
+        "length": "waist",
+        "volume": "fitted_peplum",
+        "construction": "princess_seams_compact_shoulder_folds",
+        "pattern": "solid",
+        "decoration": "medium",
+        "material_appearance": "matte_faille_like",
+        "main_colors": [
+          "burgundy"
+        ],
+        "visual_personas": [
+          "bolt"
+        ],
+        "usage_limits": null
+      },
+      "confidence": 0.8,
+      "model": "current_codex_session",
+      "prompt_version": "aw-generated-garment-review-v1",
+      "review_level": "individual_full_resolution_judgment",
+      "review_complete": true,
+      "confidence_basis": "Non-calibrated AI visual judgment; material appearance is visual only and warmth is not claimed."
+    },
+    "garment_p0_final_bolt_dress_n0115": {
+      "token": "n0115",
+      "status": "ai_candidate",
+      "record_fingerprint": "fff07526ff94ef91e4e70a1e06e95ca524a8b256163beeede208c892c38595a6",
+      "asset_sha256": "cc33466edc96a451e75034e11872453ee42b7178e7831b6f1c04e3adf670b0b8",
+      "image_url": "/static/selfit/assets/content_v2_drafts/p0-final-supply-11/garments/bolt-explore-emerald-dress-v1.png",
+      "source_kind": "codex_visual_review",
+      "evidence": "单一斜披折片从肩延伸到腰，收束进郁金香裙形成探索级戏剧主线。",
+      "observations": {
+        "category": "dress",
+        "subcategory": "asymmetric_cape_fold_midi_dress",
+        "neckline": "covered_boat",
+        "sleeve": "long",
+        "length": "midi",
+        "volume": "fitted_tulip",
+        "construction": "one_shoulder_cape_fold_waist_gather_wrap_hem",
+        "pattern": "solid",
+        "decoration": "medium",
+        "material_appearance": "matte_satin_like",
+        "main_colors": [
+          "deep_emerald"
+        ],
+        "visual_personas": [
+          "bolt"
+        ],
+        "usage_limits": null
+      },
+      "confidence": 0.8,
+      "model": "current_codex_session",
+      "prompt_version": "aw-generated-garment-review-v1",
+      "review_level": "individual_full_resolution_judgment",
+      "review_complete": true,
+      "confidence_basis": "Non-calibrated AI visual judgment; material appearance is visual only and warmth is not claimed."
+    },
+    "garment_p0_final_bolt_outer_n0116": {
+      "token": "n0116",
+      "status": "ai_candidate",
+      "record_fingerprint": "9189bf4a4ccb457df7e270a8433a61aeac7a6bdf2ae750ee6396861060d8668a",
+      "asset_sha256": "f8ef2964522df27f958bdcf37fffd5126020a623e16c224d3613047371f35ab3",
+      "image_url": "/static/selfit/assets/content_v2_drafts/p0-final-supply-11/garments/bolt-explore-petal-jacket-v1.png",
+      "source_kind": "codex_visual_review",
+      "evidence": "花瓣式叠领、弧线珠扣和强收腰集中成一个建筑化焦点。",
+      "observations": {
+        "category": "outer",
+        "subcategory": "petal_lapel_satin_jacket",
+        "neckline": "covered_round",
+        "sleeve": "long_tapered",
+        "length": "waist",
+        "volume": "fitted_flared",
+        "construction": "overlapping_petal_lapels_princess_seams_three_pearl_closures",
+        "pattern": "solid",
+        "decoration": "medium",
+        "material_appearance": "matte_satin_like",
+        "main_colors": [
+          "burgundy"
+        ],
+        "visual_personas": [
+          "bolt"
+        ],
+        "usage_limits": null
+      },
+      "confidence": 0.8,
+      "model": "current_codex_session",
+      "prompt_version": "aw-generated-garment-review-v1",
+      "review_level": "individual_full_resolution_judgment",
+      "review_complete": true,
+      "confidence_basis": "Non-calibrated AI visual judgment; material appearance is visual only and warmth is not claimed."
+    }
+  },
+  "limitations": [
+    "No generated garment is published.",
+    "Cutout approval is not outfit, four-gate editorial or independent blind-review approval.",
+    "Color-person assessment is outside this P0 scope."
+  ],
+  "version": "aw-generated-garments-ca1392e202ea8291fa04"
+}

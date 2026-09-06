@@ -1,0 +1,151 @@
+{
+  "schema_version": 1,
+  "batch_id": "p0-jade-layer-09",
+  "source_visual_version": "codex-visual-16b18cdcdca36dbc306a",
+  "entries": [
+    {
+      "target_palette": "evidence_first",
+      "hero": "n0092",
+      "new_record": {
+        "id": "outfit_jade_p0-jade-layer-09_01",
+        "kind": "master",
+        "parent_outfit_id": "main-recipe-5fbde46af3b193553e59691d",
+        "recipe_version": "p0-jade-layer-09",
+        "title": "JADE autumn 日常设计 01",
+        "description": "素面无扣开衫敞开穿，保留斜襟裙的立领与细扣为唯一人格焦点；主衣增加实际外层，不以换配饰计新配方。裙子只第二次使用。针织与裙身厚薄、开衫长度和活动遮挡仍需整图及穿着复核；不得把开衫的来源人格视为整套人格。",
+        "primary_persona": "JADE",
+        "secondary_personas": [],
+        "persona_affinity": {},
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "日常"
+        ],
+        "season_tags": [
+          "秋"
+        ],
+        "weather_tags": [],
+        "presentation": [
+          "feminine"
+        ],
+        "intensity": "easy",
+        "formality": 3,
+        "garment_ids": [
+          "garment_p0_low_jade_dress_n0092",
+          "garment_loop_outer_0141",
+          "garment_mute_shoes_0004",
+          "garment_jade_bag_0284"
+        ],
+        "visible_slots": [
+          "dress",
+          "outer",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [
+          {
+            "inner": "garment_p0_low_jade_dress_n0092",
+            "outer": "garment_loop_outer_0141"
+          }
+        ],
+        "slot_roles": {
+          "garment_p0_low_jade_dress_n0092": "hero",
+          "garment_loop_outer_0141": "support",
+          "garment_mute_shoes_0004": "support",
+          "garment_jade_bag_0284": "support"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "未判断",
+          "saturation": "未判断",
+          "harmony": "未判断",
+          "palette": []
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/54b3f27bceb7d1606829a1ee.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source": "designer_recomposition",
+          "confidence": null,
+          "review_notes": [
+            "season, palette and persona are design targets pending whole-image review"
+          ]
+        }
+      },
+      "record_fingerprint": "a325fc9956116290dd5f52eb6df19a3e0bee7f9552013d1f2cecefbac0c6d7bd",
+      "asset_sha256": "ffc00267e2149dba40fd8e05c6bab853af48b2e2ee8c114bdd576225d44576b8",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/54b3f27bceb7d1606829a1ee.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_p0_low_jade_dress_n0092",
+            "slot": "dress",
+            "box": [
+              450,
+              160,
+              800,
+              1042
+            ]
+          },
+          {
+            "garment_id": "garment_loop_outer_0141",
+            "slot": "outer",
+            "box": [
+              70,
+              160,
+              420,
+              653
+            ]
+          },
+          {
+            "garment_id": "garment_mute_shoes_0004",
+            "slot": "shoes",
+            "box": [
+              891,
+              880,
+              1078,
+              1080
+            ]
+          },
+          {
+            "garment_id": "garment_jade_bag_0284",
+            "slot": "bag",
+            "box": [
+              850,
+              414,
+              1130,
+              725
+            ]
+          }
+        ]
+      },
+      "status": "pending_native_review",
+      "review": null
+    }
+  ],
+  "production_approved": false,
+  "version": "aw-designed-rendered-56c59f88dcf564043283"
+}

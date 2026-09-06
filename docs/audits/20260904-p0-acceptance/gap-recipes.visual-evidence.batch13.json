@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "batch_id": "p0-oops-rebuild-13",
+  "source_visual_version": "codex-visual-16b18cdcdca36dbc306a",
+  "status": "designer_targets_pending_whole_image_review",
+  "new_garments": [],
+  "new_garment_manifest": "generated-garments/batch01/manifest.json",
+  "new_garment_version": "aw-generated-garments-b42e54ea8cabc29fe4f7",
+  "recipes": [
+    {
+      "persona": "OOPS", "palette": "evidence_first", "season": "autumn", "structure": "skirt",
+      "hero": "n0095", "items": ["g0097", "n0095", "g0004", "g0005"], "expression": "easy",
+      "intent": "半边细条纹西装褶、半边工装口袋的裙子承担唯一受控冲突，素面圆领贴身长袖和低装饰鞋包支撑；入门目标依靠正式与工装结构并置，不靠高饱和或换配件赋予人格。"
+    },
+    {
+      "persona": "OOPS", "palette": "evidence_first", "season": "autumn", "structure": "skirt",
+      "hero": "n0095", "items": ["g0096", "n0095", "g0004", "g0005"], "expression": "easy",
+      "intent": "宽松素面白衬衫配半西装半工装裙，只有裙子的褶线、拼片和贴袋表现反常规关系。按同裙第二次使用计数；实际半塞腰、衣长和贴袋遮挡仍需穿着检查。"
+    },
+    {
+      "persona": "OOPS", "palette": "evidence_first", "season": "autumn", "structure": "dress",
+      "hero": "n0096", "items": ["n0096", "g0004", "g0005"], "expression": "easy",
+      "intent": "一半细条纹一半素面的长袖衬衫裙，错配领片、左右面料视觉和一枚跳色纽扣形成轻微不对称；干净鞋包支撑。需确认OOPS证据不是普通双色拼接，入门定级与人格边界均待审。"
+    },
+    {
+      "persona": "OOPS", "palette": "evidence_first", "season": "autumn", "structure": "dress",
+      "hero": "n0096", "items": ["g0136", "n0096", "g0004", "g0005"], "expression": "easy",
+      "layer_graph": [{"inner": "n0096", "outer": "g0136"}],
+      "intent": "短款素面拉链运动外套与拼片衬衫裙形成休闲和衬衫结构的轻对照；外套敞开穿以保留主裙线索。必须复核领口叠搭、侧系带与外套下摆的位置，不将新增外层自动视为人格或场景通过。"
+    }
+  ]
+}

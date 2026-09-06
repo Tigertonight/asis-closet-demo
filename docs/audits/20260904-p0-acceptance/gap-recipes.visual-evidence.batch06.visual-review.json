@@ -1,0 +1,38 @@
+{
+  "schema_version": 1,
+  "version": "p0-wabi-layer-06-visual-review-v1",
+  "source_rendered_version": "aw-designed-rendered-f66e4132a83f6be8fc57",
+  "independent_blind_review": false,
+  "four_gate_editorial_review": false,
+  "entries": [{
+    "outfit_id": "outfit_wabi_p0-wabi-layer-06_01",
+    "status": "ai_candidate",
+    "record_fingerprint": "4b705b0155fa06fe23f04e24d8b4692c67dd60c5a5daea8946ee8d454a4c37a6",
+    "asset_sha256": "abcb48c9b2033fd3cec09db78568e857a84a1cd18e977d929f28abfa8a7046f3",
+    "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/e40c32ecb1db1ca1625d1064.webp",
+    "source_kind": "codex_visual_review",
+    "model": "current_codex_session",
+    "prompt_version": "p0-wabi-layer-06-visual-v1",
+    "review_level": "individual_whole_image_judgment",
+    "evidence_scope": "Production-side visual triage only; not four-gate approval or independent blind review",
+    "confidence": 0.82,
+    "evidence": "已看四件平铺整图及外套单品大图。外套的不对称门襟、粗细拼片与不等长下摆集中手作证据，素面短袖A形裙、乐福鞋和托特包降低其余部分的信息量；不是只靠配饰或灰色赋予WABI。四件完整、鞋履成对，无明显透明内搭缺失。相较此前多层茧形裙，体量集中在较短外套，长裙本身不再堆叠；可作为日常探索候选。平铺不证明真实上身袖量与下摆关系；外套在排版中偏小，穿着后的主视觉与WABI/VOID边界仍须四门及独立审核，不直接放行。",
+    "observations": {
+      "axes": {},
+      "expression": "explore",
+      "formality": "smart_casual",
+      "layering": 2,
+      "persona_scores": {"wabi": 0.82, "void": 0.45, "ease": 0.35},
+      "scenes": ["daily"],
+      "seasons": ["autumn"],
+      "structure": "dress",
+      "wearability": "everyday_with_statement",
+      "main_visual_slots": ["outer"],
+      "main_colors": [],
+      "conflicts": null,
+      "silhouette": "textured_asymmetric_short_outer_over_plain_a_line_dress",
+      "color_relation": "muted_low_competition",
+      "persona_evidence": "人格线索由主服装外套的粗细肌理、非对称拼接与不齐下摆提供；素裙和鞋包作支撑。"
+    }
+  }]
+}

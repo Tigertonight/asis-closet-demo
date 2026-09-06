@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "batch_id": "p0-edge-rebuild-07",
+  "source_visual_version": "codex-visual-16b18cdcdca36dbc306a",
+  "status": "designer_targets_pending_whole_image_review",
+  "new_garments": [],
+  "new_garment_manifest": "generated-garments/batch01/manifest.json",
+  "new_garment_version": "aw-generated-garments-b42e54ea8cabc29fe4f7",
+  "recipes": [
+    {
+      "persona": "EDGE", "palette": "evidence_first", "season": "autumn", "structure": "pants",
+      "hero": "n0090", "items": ["n0090", "g0003", "g0004", "g0005"], "expression": "easy",
+      "intent": "方领针织的斜向黑色细带、金属环与不齐下摆提供轻量甜酷细节，黑色阔腿裤保持干净线条，平底鞋和素包作支撑。修复旧配方单只靴问题，主衣组合稳定计为一个父配方；不依赖粉色或鞋包标签判断人格。"
+    },
+    {
+      "persona": "EDGE", "palette": "evidence_first", "season": "autumn", "structure": "skirt",
+      "hero": "n0090", "items": ["n0090", "g0186", "g0004", "g0005"], "expression": "easy",
+      "intent": "同一不对称针织与素面A形长裙组合，表达更柔和的甜酷入门。主衣只复用第二次，不再换鞋包扩增；需整图复核金属环和斜带能否保持EDGE可辨性，而不是退化成普通柔和穿搭。"
+    },
+    {
+      "persona": "EDGE", "palette": "evidence_first", "season": "autumn", "structure": "dress",
+      "hero": "g0041", "items": ["g0041", "n0091", "g0004", "g0005"], "expression": "typical",
+      "layer_graph": [{"inner": "n0091", "outer": "g0041"}],
+      "intent": "短机车外套作唯一酷感主视觉，素面方领A形裙提供柔和支撑，内层无袖以减少袖量冲突。通过主衣皮质感、斜拉链与柔和裙线的对照表达甜酷，而非只靠黑粉配色。金属细节多，按典型级而非入门目标送整图复核；需核实敞开穿着的下摆和裙身关系。"
+    }
+  ]
+}

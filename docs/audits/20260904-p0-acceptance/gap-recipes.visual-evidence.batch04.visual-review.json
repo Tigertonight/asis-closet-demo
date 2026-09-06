@@ -1,0 +1,55 @@
+{
+  "schema_version": 1,
+  "version": "p0-distinct-bolt-04-visual-review-v1",
+  "source_rendered_version": "aw-designed-rendered-231426134a58252bde8b",
+  "independent_blind_review": false,
+  "four_gate_editorial_review": false,
+  "entries": [
+    {
+      "outfit_id": "outfit_bolt_p0-distinct-bolt-04_01",
+      "status": "ai_candidate",
+      "record_fingerprint": "9568274c853dfa19c0319b32a3ca096cb452f85fc608c3ba70921195346d4d85",
+      "asset_sha256": "aaf05890fd10b9ef23214696039b40f1cde9397f73e59067e12e33582a1c698c",
+      "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/f512ab253ee17ddb7c47d4fa.webp",
+      "source_kind": "codex_visual_review",
+      "model": "current_codex_session",
+      "prompt_version": "p0-distinct-bolt-04-visual-v1",
+      "review_level": "individual_whole_image_judgment",
+      "evidence_scope": "Production-side triage only; not independent blind review or four-gate approval",
+      "confidence": 0.8,
+      "evidence": "重新查看当前整图。衬衫的微泡袖、细金边扣和丝绒感领结集中精致装饰；素面A形长裙及黑色平底鞋包不再增加装饰。衣、裙、包完整，鞋成对，未见明显透明缺内搭。只有上衣一个装饰焦点，没有大裙撑、重蕾丝或满身珠饰，可作为入门精致感候选；缎面高光与领结仍可能使审核者判为typical，须保留复核。人格依据在主衣，不仅是酒红色；与HEIR/MELT的边界未经过独立盲审。",
+      "observations": {
+        "axes": {}, "expression": "easy", "formality": "smart_casual", "layering": 1,
+        "persona_scores": {"bolt": 0.8, "heir": 0.45, "melt": 0.35},
+        "scenes": ["daily"], "seasons": ["autumn"], "structure": "skirt",
+        "wearability": "everyday_with_statement", "main_visual_slots": ["top"],
+        "main_colors": [], "conflicts": null,
+        "silhouette": "gently_puffed_blouse_with_plain_a_line_skirt",
+        "persona_evidence": "微泡袖、细扣、领结共同提供集中但非全身的精致装饰。"
+      }
+    },
+    {
+      "outfit_id": "outfit_bolt_p0-distinct-bolt-04_02",
+      "status": "ai_candidate",
+      "record_fingerprint": "8c9e6e9a1c3714e0031f102d91d005a854f009e4932fd525c0ac2bc4e7d8c33f",
+      "asset_sha256": "e2710506bb98f215d840b54098f0d8341d61c1f81b0808260a53b6bddb622786",
+      "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/012d524ab6d11571f0c1ed13.webp",
+      "source_kind": "codex_visual_review",
+      "model": "current_codex_session",
+      "prompt_version": "p0-distinct-bolt-04-visual-v1",
+      "review_level": "individual_whole_image_judgment",
+      "evidence_scope": "Production-side triage only; not independent blind review or four-gate approval",
+      "confidence": 0.8,
+      "evidence": "重新查看当前整图。连衣裙呈收腰A形，微泡袖、圆润细扣和小领结提供精致焦点，裙摆无夸张层叠；软包与成对黑色乐福鞋保持日常。主衣完整、无明显透肤面料或缺失内搭。可作为易穿的一件式BOLT候选，但与前一套共用领结语言，需要家族审核；不能将不同ID视作完全不同风格，也不宣称已通过独立人格辨识。",
+      "observations": {
+        "axes": {}, "expression": "easy", "formality": "smart_casual", "layering": 1,
+        "persona_scores": {"bolt": 0.8, "heir": 0.4, "melt": 0.4},
+        "scenes": ["daily"], "seasons": ["autumn"], "structure": "dress",
+        "wearability": "everyday_with_statement", "main_visual_slots": ["dress"],
+        "main_colors": [], "conflicts": null,
+        "silhouette": "waisted_shirt_dress_with_restrained_puff_sleeves",
+        "persona_evidence": "主衣收腰、微泡袖、细扣与小领结构成集中精致感，而非靠鞋包标签赋予人格。"
+      }
+    }
+  ]
+}

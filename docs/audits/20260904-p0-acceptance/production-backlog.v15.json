@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "status": "production_required",
+  "source_anchor_manifest": "docs/audits/20260904-p0-acceptance/anchor-candidates.v62.json",
+  "source_anchor_manifest_sha256": "c46829516292c94990b7a4bd8ecb3fe42115054f47fe1c1c5d9563f27d5ae965",
+  "persona_signal": "visual",
+  "summary": {
+    "current_visual_evidence_anchors": 160,
+    "target_anchors": 160,
+    "production_tasks": 0,
+    "addition_tasks": 0,
+    "replacement_tasks": 0,
+    "by_persona": {},
+    "by_expression": {},
+    "by_structure": {}
+  },
+  "tasks": [],
+  "release_note": "A production task is only a target. It cannot enter the release allow-list until whole-image review, all four editorial gates, and independent blind review pass."
+}

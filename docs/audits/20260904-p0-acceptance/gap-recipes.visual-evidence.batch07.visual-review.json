@@ -1,0 +1,66 @@
+{
+  "schema_version": 1,
+  "version": "p0-edge-rebuild-07-visual-review-v1",
+  "source_rendered_version": "aw-designed-rendered-813dfda468ecb8b2965f",
+  "independent_blind_review": false,
+  "four_gate_editorial_review": false,
+  "entries": [
+    {
+      "outfit_id": "outfit_edge_p0-edge-rebuild-07_01", "status": "ai_candidate",
+      "record_fingerprint": "f1b8dc95435aac8b7dd9fb898a07796d3c239a7110d99439d48ac7963bfa0824",
+      "asset_sha256": "e3a2609cf080656e7b0de7f7a4fe879b01ea417296c02b4735885f46514512e9",
+      "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/e8167fdb4610f390073edee9.webp",
+      "source_kind": "codex_visual_review", "model": "current_codex_session",
+      "prompt_version": "p0-edge-rebuild-07-visual-v1", "review_level": "individual_whole_image_judgment",
+      "evidence_scope": "Production-side triage only; not four-gate approval or independent blind review",
+      "confidence": 0.81,
+      "evidence": "已看实际四件整图。方领贴身针织的斜向黑色细带、金属环和不齐下摆集中轻量反叛细节；黑色阔腿裤、平底鞋和素面托特包保持干净。四件完整，鞋成对，未见透明内搭缺失或额外层级。可作为甜酷入门候选；不是靠鞋包赋予人格。金属细节较小，独立观察者是否能与普通休闲针织区分仍需盲审，不能按粉黑颜色直接通过。",
+      "observations": {
+        "axes": {}, "expression": "easy", "formality": "casual", "layering": 1,
+        "persona_scores": {"edge": 0.8, "mute": 0.35, "melt": 0.35},
+        "scenes": ["daily"], "seasons": ["autumn"], "structure": "pants",
+        "wearability": "everyday_with_statement", "main_visual_slots": ["top"], "main_colors": [], "conflicts": null,
+        "silhouette": "fitted_asymmetric_knit_with_clean_wide_trousers",
+        "persona_evidence": "柔软贴身针织与斜带、金属环、不齐下摆形成轻量甜酷对照。"
+      }
+    },
+    {
+      "outfit_id": "outfit_edge_p0-edge-rebuild-07_02", "status": "ai_candidate",
+      "record_fingerprint": "cdcfdb072f4434b37f0adf461856f6330745b6922abc7b2f1513d0ba4727fb7e",
+      "asset_sha256": "5e26a5adc756afae70eea0a6d66700b5534f28118a11ec5846aa5b754e07141c",
+      "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/03d14762054d65a84c2a5a9a.webp",
+      "source_kind": "codex_visual_review", "model": "current_codex_session",
+      "prompt_version": "p0-edge-rebuild-07-visual-v1", "review_level": "individual_whole_image_judgment",
+      "evidence_scope": "Production-side triage only; not four-gate approval or independent blind review",
+      "confidence": 0.79,
+      "evidence": "已看实际整图。素面A形长裙没有追加主题化装饰，上衣的斜带、金属环和不齐下摆仍为唯一焦点；成对黑色乐福鞋和黑包收束。主结构由裤改裙而非仅换配饰，可计不同主衣组合，但与第一套共用针织，家族/单品占用必须合并计数，不能当作完全不同风格。整体更柔和，EDGE与MELT边界风险高于裤装，作为入门候选送复核，不直接批准。",
+      "observations": {
+        "axes": {}, "expression": "easy", "formality": "casual", "layering": 1,
+        "persona_scores": {"edge": 0.72, "melt": 0.5, "mute": 0.35},
+        "scenes": ["daily"], "seasons": ["autumn"], "structure": "skirt",
+        "wearability": "everyday_with_statement", "main_visual_slots": ["top"], "main_colors": [], "conflicts": null,
+        "silhouette": "asymmetric_hardware_knit_with_plain_a_line_skirt",
+        "persona_evidence": "针织本身的金属环、黑色斜带和不齐下摆提供轻量酷感，素裙提供柔和对照。"
+      }
+    },
+    {
+      "outfit_id": "outfit_edge_p0-edge-rebuild-07_03", "status": "ai_candidate",
+      "record_fingerprint": "ed3516b93ff995ae3c8f476e412b8ae0c3cf746b736d2e3930a59bc95174e087",
+      "asset_sha256": "b2d652f6ab7cbe7ec2fc144a16468e7a2cfea07c0dd88d2f19891519d3f592e1",
+      "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/9757baf9ede00eb25f8e8e29.webp",
+      "source_kind": "codex_visual_review", "model": "current_codex_session",
+      "prompt_version": "p0-edge-rebuild-07-visual-v1", "review_level": "individual_whole_image_judgment",
+      "evidence_scope": "Production-side triage only; not four-gate approval or independent blind review",
+      "confidence": 0.84,
+      "evidence": "已看外套、裙子单品与四件整图。短机车外套的斜拉链、翻领、细滚边和金属件承担酷感主视觉，无袖方领A形裙线条克制，形成主衣材质与廓形对照而非仅粉黑配色。鞋履成对，四件完整；无袖内层不会额外堆袖，层级明确为裙在内外套在外。金属件较多，归为典型目标，不冒充入门。平铺不能证明上身的腰线、外套敞开状态和下摆长度，仍需四门复核及独立人格辨识。",
+      "observations": {
+        "axes": {}, "expression": "typical", "formality": "casual", "layering": 2,
+        "persona_scores": {"edge": 0.86, "noir": 0.4, "bolt": 0.3},
+        "scenes": ["daily"], "seasons": ["autumn"], "structure": "dress",
+        "wearability": "everyday_with_statement", "main_visual_slots": ["outer"], "main_colors": [], "conflicts": null,
+        "silhouette": "short_biker_jacket_over_plain_a_line_dress",
+        "persona_evidence": "机车外套与简洁柔和裙线的材质/廓形反差表达甜酷，不靠配件命名。"
+      }
+    }
+  ]
+}

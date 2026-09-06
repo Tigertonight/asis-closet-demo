@@ -1,0 +1,12 @@
+{
+  "schema_version": 1,
+  "prompt": "Use case: background-extraction. Edit ONLY the transparent background cleanup and framing of the supplied garment cutout. Preserve the garment silhouette, material, exact design, colors, buttons, neckline, sleeves, folds and proportions unchanged. Place the complete garment smaller in the center with at least 12% completely empty transparent padding on EVERY side of a square PNG. Remove all detached pixels, red/white fringe, background haze and low-alpha speckles outside the garment. Real alpha=0 outside the garment, opaque fabric interior, naturally antialiased edges; NOT a black, white, gray or checkerboard painted backdrop. No shadow. No cropping, new elements, extra clothing, hanger, person, text or logo. This is a technical cutout correction, not redesign.",
+  "input_files": [
+    "exec-79b30003-0de0-4b97-8649-00850f6c3590.png",
+    "exec-5ca48e80-7385-4542-be01-7adb6ebc3d49.png"
+  ],
+  "output_files": [
+    "exec-52b3f785-d644-491e-b06f-fedb7e6c8a3e.png",
+    "exec-b0529a2e-6033-4484-a98f-b13e70ad98a0.png"
+  ]
+}

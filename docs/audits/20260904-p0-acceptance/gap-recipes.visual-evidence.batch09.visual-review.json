@@ -1,0 +1,47 @@
+{
+  "schema_version": 1,
+  "version": "p0-jade-layer-09-visual-review-v1",
+  "source_rendered_version": "aw-designed-rendered-56c59f88dcf564043283",
+  "independent_blind_review": false,
+  "four_gate_editorial_review": false,
+  "entries": [
+    {
+      "outfit_id": "outfit_jade_p0-jade-layer-09_01",
+      "status": "ai_candidate",
+      "record_fingerprint": "a325fc9956116290dd5f52eb6df19a3e0bee7f9552013d1f2cecefbac0c6d7bd",
+      "asset_sha256": "ffc00267e2149dba40fd8e05c6bab853af48b2e2ee8c114bdd576225d44576b8",
+      "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/54b3f27bceb7d1606829a1ee.webp",
+      "source_kind": "codex_visual_review",
+      "model": "current_codex_session",
+      "prompt_version": "p0-jade-layer-09-visual-v1",
+      "review_level": "individual_whole_image_judgment",
+      "evidence_scope": "Production-side triage only; not four-gate approval or independent blind review",
+      "confidence": 0.8,
+      "evidence": "已看开衫单品及实际四件平铺图。无扣素面针织开衫不添加领饰或花纹，敞开时斜襟裙的立领、斜向门襟与细扣仍是人格焦点；裙子素净、鞋履成对、四件完整。外层为明确新增主服装，不是换鞋包重复计数，裙子累计仅两次。适合作入门秋季候选，开衫松量与内层短袖无明显静态冲突；平铺不能证明活动时的领襟露出、开衫长度或厚薄舒适度，需四门及独立审核，不能直接放行。",
+      "observations": {
+        "axes": {},
+        "expression": "easy",
+        "formality": "smart_casual",
+        "layering": 2,
+        "persona_scores": {
+          "jade": 0.8,
+          "ease": 0.4
+        },
+        "scenes": [
+          "daily"
+        ],
+        "seasons": [
+          "autumn"
+        ],
+        "structure": "dress",
+        "wearability": "everyday_with_statement",
+        "main_visual_slots": [
+          "dress"
+        ],
+        "main_colors": [],
+        "conflicts": null,
+        "persona_evidence": "已看开衫单品及实际四件平铺图。无扣素面针织开衫不添加领饰或花纹，敞开时斜襟裙的立领、斜向门襟与细扣仍是人格焦点；裙子素净、鞋履成对、四件完整。外层为明确新增主服装，不是换鞋包重复计数，裙子累计仅两次。适合作入门秋季候选，开衫松量与内层短袖无明显静态冲突；平铺不能证明活动时的领襟露出、开衫长度或厚薄舒适度，需四门及独立审核，不能直接放行。"
+      }
+    }
+  ]
+}

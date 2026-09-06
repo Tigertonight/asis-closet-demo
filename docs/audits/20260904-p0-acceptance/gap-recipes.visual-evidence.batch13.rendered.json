@@ -1,0 +1,549 @@
+{
+  "schema_version": 1,
+  "batch_id": "p0-oops-rebuild-13",
+  "source_visual_version": "codex-visual-16b18cdcdca36dbc306a",
+  "entries": [
+    {
+      "target_palette": "evidence_first",
+      "hero": "n0095",
+      "new_record": {
+        "id": "outfit_oops_p0-oops-rebuild-13_01",
+        "kind": "master",
+        "parent_outfit_id": "main-recipe-778c1c9c2f5fc46fdfc47120",
+        "recipe_version": "p0-oops-rebuild-13",
+        "title": "OOPS autumn 日常设计 01",
+        "description": "半边细条纹西装褶、半边工装口袋的裙子承担唯一受控冲突，素面圆领贴身长袖和低装饰鞋包支撑；入门目标依靠正式与工装结构并置，不靠高饱和或换配件赋予人格。",
+        "primary_persona": "OOPS",
+        "secondary_personas": [],
+        "persona_affinity": {},
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "日常"
+        ],
+        "season_tags": [
+          "秋"
+        ],
+        "weather_tags": [],
+        "presentation": [
+          "feminine"
+        ],
+        "intensity": "easy",
+        "formality": 3,
+        "garment_ids": [
+          "garment_mute_top_0097",
+          "garment_p0_low_oops_skirt_n0095",
+          "garment_mute_shoes_0004",
+          "garment_mute_bag_0005"
+        ],
+        "visible_slots": [
+          "top",
+          "skirt",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_mute_top_0097": "support",
+          "garment_p0_low_oops_skirt_n0095": "hero",
+          "garment_mute_shoes_0004": "support",
+          "garment_mute_bag_0005": "support"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "未判断",
+          "saturation": "未判断",
+          "harmony": "未判断",
+          "palette": []
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/c1d0ac155289c4d871489fe0.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source": "designer_recomposition",
+          "confidence": null,
+          "review_notes": [
+            "season, palette and persona are design targets pending whole-image review"
+          ]
+        }
+      },
+      "record_fingerprint": "4431bfc17259671ea047e09e8d1f577b0d933d8129ac6192f5ee72c1a6ca0ed5",
+      "asset_sha256": "29e860c71415c06286b56e8014759e3b8be4a4a8f9ac9a12aa93fa1809137327",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/c1d0ac155289c4d871489fe0.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_mute_top_0097",
+            "slot": "top",
+            "box": [
+              248,
+              160,
+              652,
+              620
+            ]
+          },
+          {
+            "garment_id": "garment_p0_low_oops_skirt_n0095",
+            "slot": "skirt",
+            "box": [
+              192,
+              644,
+              707,
+              1330
+            ]
+          },
+          {
+            "garment_id": "garment_mute_shoes_0004",
+            "slot": "shoes",
+            "box": [
+              891,
+              880,
+              1078,
+              1080
+            ]
+          },
+          {
+            "garment_id": "garment_mute_bag_0005",
+            "slot": "bag",
+            "box": [
+              851,
+              410,
+              1129,
+              730
+            ]
+          }
+        ]
+      },
+      "status": "pending_native_review",
+      "review": null
+    },
+    {
+      "target_palette": "evidence_first",
+      "hero": "n0095",
+      "new_record": {
+        "id": "outfit_oops_p0-oops-rebuild-13_02",
+        "kind": "master",
+        "parent_outfit_id": "main-recipe-0b11937135ea811abe24b47d",
+        "recipe_version": "p0-oops-rebuild-13",
+        "title": "OOPS autumn 日常设计 02",
+        "description": "宽松素面白衬衫配半西装半工装裙，只有裙子的褶线、拼片和贴袋表现反常规关系。按同裙第二次使用计数；实际半塞腰、衣长和贴袋遮挡仍需穿着检查。",
+        "primary_persona": "OOPS",
+        "secondary_personas": [],
+        "persona_affinity": {},
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "日常"
+        ],
+        "season_tags": [
+          "秋"
+        ],
+        "weather_tags": [],
+        "presentation": [
+          "feminine"
+        ],
+        "intensity": "easy",
+        "formality": 3,
+        "garment_ids": [
+          "garment_oops_top_0096",
+          "garment_p0_low_oops_skirt_n0095",
+          "garment_mute_shoes_0004",
+          "garment_mute_bag_0005"
+        ],
+        "visible_slots": [
+          "top",
+          "skirt",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_oops_top_0096": "support",
+          "garment_p0_low_oops_skirt_n0095": "hero",
+          "garment_mute_shoes_0004": "support",
+          "garment_mute_bag_0005": "support"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "未判断",
+          "saturation": "未判断",
+          "harmony": "未判断",
+          "palette": []
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/7c6d6704e2d574b22d2db16d.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source": "designer_recomposition",
+          "confidence": null,
+          "review_notes": [
+            "season, palette and persona are design targets pending whole-image review"
+          ]
+        }
+      },
+      "record_fingerprint": "4eaf4a59c045e42817ca491b408af990b6c34269d97038dd17586f5cab5bef9b",
+      "asset_sha256": "d784947f2d0644cb5ce50108ab9b7f8f8470b3f98a13eddbb3efb0a98b21945a",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/7c6d6704e2d574b22d2db16d.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_oops_top_0096",
+            "slot": "top",
+            "box": [
+              250,
+              160,
+              650,
+              620
+            ]
+          },
+          {
+            "garment_id": "garment_p0_low_oops_skirt_n0095",
+            "slot": "skirt",
+            "box": [
+              192,
+              644,
+              707,
+              1330
+            ]
+          },
+          {
+            "garment_id": "garment_mute_shoes_0004",
+            "slot": "shoes",
+            "box": [
+              891,
+              880,
+              1078,
+              1080
+            ]
+          },
+          {
+            "garment_id": "garment_mute_bag_0005",
+            "slot": "bag",
+            "box": [
+              851,
+              410,
+              1129,
+              730
+            ]
+          }
+        ]
+      },
+      "status": "pending_native_review",
+      "review": null
+    },
+    {
+      "target_palette": "evidence_first",
+      "hero": "n0096",
+      "new_record": {
+        "id": "outfit_oops_p0-oops-rebuild-13_03",
+        "kind": "master",
+        "parent_outfit_id": "main-recipe-18a5e8e399566eb83e621047",
+        "recipe_version": "p0-oops-rebuild-13",
+        "title": "OOPS autumn 日常设计 03",
+        "description": "一半细条纹一半素面的长袖衬衫裙，错配领片、左右面料视觉和一枚跳色纽扣形成轻微不对称；干净鞋包支撑。需确认OOPS证据不是普通双色拼接，入门定级与人格边界均待审。",
+        "primary_persona": "OOPS",
+        "secondary_personas": [],
+        "persona_affinity": {},
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "日常"
+        ],
+        "season_tags": [
+          "秋"
+        ],
+        "weather_tags": [],
+        "presentation": [
+          "feminine"
+        ],
+        "intensity": "easy",
+        "formality": 3,
+        "garment_ids": [
+          "garment_p0_low_oops_dress_n0096",
+          "garment_mute_shoes_0004",
+          "garment_mute_bag_0005"
+        ],
+        "visible_slots": [
+          "dress",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_p0_low_oops_dress_n0096": "hero",
+          "garment_mute_shoes_0004": "support",
+          "garment_mute_bag_0005": "support"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "未判断",
+          "saturation": "未判断",
+          "harmony": "未判断",
+          "palette": []
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/5174fde512b47b6342a18d50.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source": "designer_recomposition",
+          "confidence": null,
+          "review_notes": [
+            "season, palette and persona are design targets pending whole-image review"
+          ]
+        }
+      },
+      "record_fingerprint": "550b8f7ae13b9a07075e5744cae820d1ea3f7b5b9b0a40549a80273d75b28b5a",
+      "asset_sha256": "52c07b170b6e744742e0eab6f643aeac4f961540b2aa8f524a50a851e9e121bb",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/5174fde512b47b6342a18d50.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_p0_low_oops_dress_n0096",
+            "slot": "dress",
+            "box": [
+              113,
+              160,
+              787,
+              1330
+            ]
+          },
+          {
+            "garment_id": "garment_mute_shoes_0004",
+            "slot": "shoes",
+            "box": [
+              891,
+              880,
+              1078,
+              1080
+            ]
+          },
+          {
+            "garment_id": "garment_mute_bag_0005",
+            "slot": "bag",
+            "box": [
+              851,
+              410,
+              1129,
+              730
+            ]
+          }
+        ]
+      },
+      "status": "pending_native_review",
+      "review": null
+    },
+    {
+      "target_palette": "evidence_first",
+      "hero": "n0096",
+      "new_record": {
+        "id": "outfit_oops_p0-oops-rebuild-13_04",
+        "kind": "master",
+        "parent_outfit_id": "main-recipe-e44b16f222dc047a5721ba59",
+        "recipe_version": "p0-oops-rebuild-13",
+        "title": "OOPS autumn 日常设计 04",
+        "description": "短款素面拉链运动外套与拼片衬衫裙形成休闲和衬衫结构的轻对照；外套敞开穿以保留主裙线索。必须复核领口叠搭、侧系带与外套下摆的位置，不将新增外层自动视为人格或场景通过。",
+        "primary_persona": "OOPS",
+        "secondary_personas": [],
+        "persona_affinity": {},
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "日常"
+        ],
+        "season_tags": [
+          "秋"
+        ],
+        "weather_tags": [],
+        "presentation": [
+          "feminine"
+        ],
+        "intensity": "easy",
+        "formality": 3,
+        "garment_ids": [
+          "garment_neon_outer_0136",
+          "garment_p0_low_oops_dress_n0096",
+          "garment_mute_shoes_0004",
+          "garment_mute_bag_0005"
+        ],
+        "visible_slots": [
+          "outer",
+          "dress",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [
+          {
+            "inner": "garment_p0_low_oops_dress_n0096",
+            "outer": "garment_neon_outer_0136"
+          }
+        ],
+        "slot_roles": {
+          "garment_neon_outer_0136": "support",
+          "garment_p0_low_oops_dress_n0096": "hero",
+          "garment_mute_shoes_0004": "support",
+          "garment_mute_bag_0005": "support"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "未判断",
+          "saturation": "未判断",
+          "harmony": "未判断",
+          "palette": []
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/10157cfc45dccb142d1e18c0.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source": "designer_recomposition",
+          "confidence": null,
+          "review_notes": [
+            "season, palette and persona are design targets pending whole-image review"
+          ]
+        }
+      },
+      "record_fingerprint": "875832c9eb7efc550a24ebf20f9d59509345c058d457b19711fa9701aa3a21ec",
+      "asset_sha256": "67e508604bbc0e1fb8d4dc0e5dad007b269678c971fb0efd97e7f9f166bacc84",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/10157cfc45dccb142d1e18c0.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_neon_outer_0136",
+            "slot": "outer",
+            "box": [
+              70,
+              160,
+              420,
+              518
+            ]
+          },
+          {
+            "garment_id": "garment_p0_low_oops_dress_n0096",
+            "slot": "dress",
+            "box": [
+              450,
+              160,
+              800,
+              768
+            ]
+          },
+          {
+            "garment_id": "garment_mute_shoes_0004",
+            "slot": "shoes",
+            "box": [
+              891,
+              880,
+              1078,
+              1080
+            ]
+          },
+          {
+            "garment_id": "garment_mute_bag_0005",
+            "slot": "bag",
+            "box": [
+              851,
+              410,
+              1129,
+              730
+            ]
+          }
+        ]
+      },
+      "status": "pending_native_review",
+      "review": null
+    }
+  ],
+  "production_approved": false,
+  "version": "aw-designed-rendered-555d6389b4d87618382c"
+}

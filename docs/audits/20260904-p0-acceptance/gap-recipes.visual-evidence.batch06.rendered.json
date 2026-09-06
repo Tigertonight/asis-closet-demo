@@ -1,0 +1,151 @@
+{
+  "schema_version": 1,
+  "batch_id": "p0-wabi-layer-06",
+  "source_visual_version": "codex-visual-16b18cdcdca36dbc306a",
+  "entries": [
+    {
+      "target_palette": "evidence_first",
+      "hero": "g0390",
+      "new_record": {
+        "id": "outfit_wabi_p0-wabi-layer-06_01",
+        "kind": "master",
+        "parent_outfit_id": "main-recipe-6f8136636d2acb82f4e6e937",
+        "recipe_version": "p0-wabi-layer-06",
+        "title": "WABI autumn 日常设计 01",
+        "description": "素面短袖连衣裙作内层，不对称拼接外套作唯一主视觉。以主服装的粗细肌理和不规则门襟表达手作感，鞋包保持克制；不用此前被拒的多层茧形主裙。外套袖量应容纳内层短袖，敞开穿着保留裙身简洁线条；领口、长度关系及日常适用性须在整图复核，不按目标标签自动通过。",
+        "primary_persona": "WABI",
+        "secondary_personas": [],
+        "persona_affinity": {},
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "日常"
+        ],
+        "season_tags": [
+          "秋"
+        ],
+        "weather_tags": [],
+        "presentation": [
+          "feminine"
+        ],
+        "intensity": "explore",
+        "formality": 3,
+        "garment_ids": [
+          "garment_wabi_outer_0390",
+          "garment_wabi_dress_0230",
+          "garment_mute_shoes_0004",
+          "garment_jade_bag_0284"
+        ],
+        "visible_slots": [
+          "outer",
+          "dress",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [
+          {
+            "inner": "garment_wabi_dress_0230",
+            "outer": "garment_wabi_outer_0390"
+          }
+        ],
+        "slot_roles": {
+          "garment_wabi_outer_0390": "hero",
+          "garment_wabi_dress_0230": "support",
+          "garment_mute_shoes_0004": "support",
+          "garment_jade_bag_0284": "support"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "未判断",
+          "saturation": "未判断",
+          "harmony": "未判断",
+          "palette": []
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/e40c32ecb1db1ca1625d1064.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source": "designer_recomposition",
+          "confidence": null,
+          "review_notes": [
+            "season, palette and persona are design targets pending whole-image review"
+          ]
+        }
+      },
+      "record_fingerprint": "4b705b0155fa06fe23f04e24d8b4692c67dd60c5a5daea8946ee8d454a4c37a6",
+      "asset_sha256": "abcb48c9b2033fd3cec09db78568e857a84a1cd18e977d929f28abfa8a7046f3",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/e40c32ecb1db1ca1625d1064.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_wabi_outer_0390",
+            "slot": "outer",
+            "box": [
+              70,
+              160,
+              420,
+              522
+            ]
+          },
+          {
+            "garment_id": "garment_wabi_dress_0230",
+            "slot": "dress",
+            "box": [
+              450,
+              160,
+              800,
+              764
+            ]
+          },
+          {
+            "garment_id": "garment_mute_shoes_0004",
+            "slot": "shoes",
+            "box": [
+              891,
+              880,
+              1078,
+              1080
+            ]
+          },
+          {
+            "garment_id": "garment_jade_bag_0284",
+            "slot": "bag",
+            "box": [
+              850,
+              414,
+              1130,
+              725
+            ]
+          }
+        ]
+      },
+      "status": "pending_native_review",
+      "review": null
+    }
+  ],
+  "production_approved": false,
+  "version": "aw-designed-rendered-f66e4132a83f6be8fc57"
+}

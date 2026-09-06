@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="2" time="12.098" timestamp="2026-09-06T00:03:00.800732+08:00" hostname="H9HV4XJ0JH"><testcase classname="tests.test_p0_raw_garment_supply" name="test_current_raw_supply_covers_exact_backlog" time="11.922" /><testcase classname="tests.test_p0_raw_garment_supply" name="test_no_alpha_is_rejected" time="0.028"><failure message="ValueError: '/private/var/folders/1d/g83hxyws0mnct6y_w1d067f00000gn/T/pytest-of-yuanzexiang/pytest-252/test_no_alpha_is_rejected0/supply/plan.json' is not in the subpath of '/Users/yuanzexiang/Documents/色彩测试'">tmp_path = PosixPath('/private/var/folders/1d/g83hxyws0mnct6y_w1d067f00000gn/T/pytest-of-yuanzexiang/pytest-252/test_no_alpha_is_rejected0')
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x12250c530&gt;
+
+    def test_no_alpha_is_rejected(tmp_path, monkeypatch):
+        root = tmp_path / "supply"
+        root.mkdir()
+        Image.new("RGB", (32, 32), "white").save(root / "bad.png")
+        plan = root / "plan.json"
+        data = {"schema_version": 1, "entries": [
+            {"token": "n0102", "persona": "oops", "slug": "bad",
+             "source": "bad.png", "targets": ["easy:dress", "easy:dress"]}
+        ]}
+        plan.write_text(json.dumps(data))
+        monkeypatch.setattr(audit, "AUDIT_ROOT", root)
+        monkeypatch.setattr(audit, "TARGETS", {"oops": audit.Counter({"easy:dress": 2})})
+        monkeypatch.setattr(audit, "PERSONAS", {"oops"})
+&gt;       result = audit.inspect(plan)
+                 ^^^^^^^^^^^^^^^^^^^
+
+tests/test_p0_raw_garment_supply.py:32:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+scripts/audit_selfit_p0_raw_garment_supply.py:86: in inspect
+    "plan": str(plan_path.relative_to(ROOT)),
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = PosixPath('/private/var/folders/1d/g83hxyws0mnct6y_w1d067f00000gn/T/pytest-of-yuanzexiang/pytest-252/test_no_alpha_is_rejected0/supply/plan.json')
+other = PosixPath('/Users/yuanzexiang/Documents/色彩测试'), walk_up = False
+_deprecated = ()
+
+    def relative_to(self, other, /, *_deprecated, walk_up=False):
+        """Return the relative path to another path identified by the passed
+        arguments.  If the operation is not possible (because this is not
+        related to the other path), raise ValueError.
+
+        The *walk_up* parameter controls whether `..` may be used to resolve
+        the path.
+        """
+        if _deprecated:
+            msg = ("support for supplying more than one positional argument "
+                   "to pathlib.PurePath.relative_to() is deprecated and "
+                   "scheduled for removal in Python {remove}")
+            warnings._deprecated("pathlib.PurePath.relative_to(*args)", msg,
+                                 remove=(3, 14))
+        other = self.with_segments(other, *_deprecated)
+        for step, path in enumerate([other] + list(other.parents)):
+            if self.is_relative_to(path):
+                break
+            elif not walk_up:
+&gt;               raise ValueError(f"{str(self)!r} is not in the subpath of {str(other)!r}")
+E               ValueError: '/private/var/folders/1d/g83hxyws0mnct6y_w1d067f00000gn/T/pytest-of-yuanzexiang/pytest-252/test_no_alpha_is_rejected0/supply/plan.json' is not in the subpath of '/Users/yuanzexiang/Documents/色彩测试'
+
+/opt/homebrew/Cellar/python@3.12/3.12.8/Frameworks/Python.framework/Versions/3.12/lib/python3.12/pathlib.py:682: ValueError</failure></testcase></testsuite></testsuites>

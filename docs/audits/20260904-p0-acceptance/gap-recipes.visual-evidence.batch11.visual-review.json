@@ -1,0 +1,99 @@
+{
+  "schema_version": 1,
+  "version": "p0-neon-rebuild-11-visual-review-v1",
+  "source_rendered_version": "aw-designed-rendered-eb64710fdbefadee19c4",
+  "independent_blind_review": false,
+  "four_gate_editorial_review": false,
+  "entries": [
+    {
+      "outfit_id": "outfit_neon_p0-neon-rebuild-11_01",
+      "status": "needs_review",
+      "record_fingerprint": "5dae05b4a17b5fb7e4b0394422d9388a362704fb727f6a6834939ba409d46b79",
+      "asset_sha256": "b528e1076db41fe99dc964191ee4d0a674b99eaa9d612da977bfce18032cfba2",
+      "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/f4f7074a2d36017673c14d4e.webp",
+      "source_kind": "codex_visual_review",
+      "model": "current_codex_session",
+      "prompt_version": "p0-neon-rebuild-11-visual-v1",
+      "review_level": "individual_whole_image_judgment",
+      "evidence_scope": "Production-side triage only; not four-gate approval or independent blind review",
+      "evidence": "逐张查看实际整套图：普通短袖Polo的领口与贴袋主要通过撞色提供醒目感，裤装和鞋包为基础支撑。主衣没有足够独立于色彩的廓形或材质证据，不能证明NEON入门适配；needs_review，不入选锚点。"
+    },
+    {
+      "outfit_id": "outfit_neon_p0-neon-rebuild-11_02",
+      "status": "needs_review",
+      "record_fingerprint": "0e6ae88a984a3d72d421c4c049371a8dd6e6739d16538bbe8bee092167599a49",
+      "asset_sha256": "3a58e82d7a299042c4a16086cf2fb11670466a46f8dc2cad0145d007129c1250",
+      "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/0b2f0f8224f7784b70e356f0.webp",
+      "source_kind": "codex_visual_review",
+      "model": "current_codex_session",
+      "prompt_version": "p0-neon-rebuild-11-visual-v1",
+      "review_level": "individual_whole_image_judgment",
+      "evidence_scope": "Production-side triage only; not four-gate approval or independent blind review",
+      "evidence": "逐张查看实际整套图：换成素色A字裙后，主衣仍是常规Polo，辨识线索仍主要依赖领口与贴袋撞色。结构多样性不能替代人格证据；needs_review，不入选锚点。"
+    },
+    {
+      "outfit_id": "outfit_neon_p0-neon-rebuild-11_03",
+      "status": "needs_review",
+      "record_fingerprint": "07b0c8ad1f895d18067014c9afd8a85d1c3deadee1f31c5cafc87a1d603e2f43",
+      "asset_sha256": "9d068b197344e8bcddb0d35890eaf3f3f05edea218930bd557a802503abf2417",
+      "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/4ae0fc9ff1b0a1692bb86393.webp",
+      "source_kind": "codex_visual_review",
+      "model": "current_codex_session",
+      "prompt_version": "p0-neon-rebuild-11-visual-v1",
+      "review_level": "individual_whole_image_judgment",
+      "evidence_scope": "Production-side triage only; not four-gate approval or independent blind review",
+      "evidence": "逐张查看实际整套图：圆领无袖A字裙有从腋下延伸至裙摆的不对称侧片，侧腰短袢强调偏置收束，形成单一图形焦点；素面托特和成对乐福鞋支撑。作为入门候选，依据是偏置拼片与简洁整体关系，仍较依赖色彩，必须复核NEON可辨性、侧片实际构造与温度场景；本记录不代表四门通过或独立盲审。",
+      "confidence": 0.73,
+      "observations": {
+        "axes": {},
+        "expression": "easy",
+        "formality": "casual",
+        "layering": 1,
+        "persona_scores": {
+          "neon": 0.75,
+          "oops": 0.4
+        },
+        "scenes": [
+          "daily"
+        ],
+        "seasons": [
+          "autumn"
+        ],
+        "structure": "dress",
+        "wearability": "everyday",
+        "main_visual_slots": [
+          "dress"
+        ],
+        "main_colors": [],
+        "conflicts": null,
+        "persona_evidence": "逐张查看实际整套图：圆领无袖A字裙有从腋下延伸至裙摆的不对称侧片，侧腰短袢强调偏置收束，形成单一图形焦点；素面托特和成对乐福鞋支撑。作为入门候选，依据是偏置拼片与简洁整体关系，仍较依赖色彩，必须复核NEON可辨性、侧片实际构造与温度场景；本记录不代表四门通过或独立盲审。"
+      }
+    },
+    {
+      "outfit_id": "outfit_neon_p0-neon-rebuild-11_04",
+      "status": "reject",
+      "record_fingerprint": "46c141a394ed4e24df92fe64a4440af6cee6590070e96c4c82b6182b9910c616",
+      "asset_sha256": "cbc695cf830ff5fe4841ac0a6ee61bc2a16ccbc13cf8cb2dc67b075725949d51",
+      "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/f99f89711d8ec639bda95ac0.webp",
+      "source_kind": "codex_visual_review",
+      "model": "current_codex_session",
+      "prompt_version": "p0-neon-rebuild-11-visual-v1",
+      "review_level": "individual_whole_image_judgment",
+      "evidence_scope": "Production-side triage only; not four-gate approval or independent blind review",
+      "evidence": "逐张查看实际整套图：外套巨量灯笼袖、短衣长、多块高亮/网眼/牛仔拼片与多条抽绳同时竞争，配素裙并未改变主衣的主题装扮强度。拒绝作为默认日常轻探索锚点；应重做低装饰外套，而不是仅更换支撑款。"
+    },
+    {
+      "outfit_id": "outfit_neon_p0-neon-rebuild-11_05",
+      "status": "reject",
+      "record_fingerprint": "ab6c21a325e7cf9a619235933a6f4a9165aa3901d7f4da469c525e7fb0d622ed",
+      "asset_sha256": "c5847c835a7b3c64e66839bd6650b68a1bef2cebfb88e68a4c04c87909ab1fb2",
+      "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/4da4a9a9d38e7c970ad23e67.webp",
+      "source_kind": "codex_visual_review",
+      "model": "current_codex_session",
+      "prompt_version": "p0-neon-rebuild-11-visual-v1",
+      "review_level": "individual_whole_image_judgment",
+      "evidence_scope": "Production-side triage only; not four-gate approval or independent blind review",
+      "evidence": "逐张查看实际整套图：素面贴身内搭和阔腿裤提供完整覆盖，但外套的巨量袖形、密集不规则材质拼块与抽绳依然过强。拒绝作为默认日常轻探索锚点；完整layer_graph只能证明有内外关系，不能证明日常审美合格。"
+    }
+  ]
+}

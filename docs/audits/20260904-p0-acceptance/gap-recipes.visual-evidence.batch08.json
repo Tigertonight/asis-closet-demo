@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "batch_id": "p0-jade-rebuild-08",
+  "source_visual_version": "codex-visual-16b18cdcdca36dbc306a",
+  "status": "designer_targets_pending_whole_image_review",
+  "new_garments": [],
+  "new_garment_manifest": "generated-garments/batch01/manifest.json",
+  "new_garment_version": "aw-generated-garments-b42e54ea8cabc29fe4f7",
+  "recipes": [
+    {"persona":"JADE","palette":"evidence_first","season":"autumn","structure":"dress","hero":"n0092","items":["n0092","g0004","g0284"],"expression":"easy","intent":"简洁立领斜襟短袖裙作唯一主衣，平底鞋和素托特降低仪式感；一枚细扣而非满身刺绣，限定温暖天气日常候选，开衩高度和贴合程度仍须审核。只计一个连衣裙主配方，不换鞋包扩充。"},
+    {"persona":"JADE","palette":"evidence_first","season":"autumn","structure":"pants","hero":"g0364","items":["g0364","g0018","g0004","g0284"],"expression":"typical","intent":"交领侧系带无袖上衣集中东方结构和植物纹样，简洁阔腿裤支撑。重点检查主衣是否自带不透明内层、层片是否过强；不因水墨图案或名字自动通过。"},
+    {"persona":"JADE","palette":"evidence_first","season":"autumn","structure":"skirt","hero":"g0364","items":["g0364","g0186","g0004","g0284"],"expression":"typical","intent":"交领侧系带上衣配素面A形长裙，用干净下装收束纹样；同主衣第二次使用，合并计入单品及家族上限。检查腰部上衣层片与长裙是否形成过量体积。"},
+    {"persona":"JADE","palette":"evidence_first","season":"autumn","structure":"pants","hero":"g0332","items":["g0332","g0003","g0004","g0005"],"expression":"explore","intent":"盘扣偏襟和水墨宽袖集中探索表达，黑色直线阔腿裤、素鞋包克制其余部分；上身主衣必须有不透明衣身，透明袖仅作袖部设计，不把正式表演服伪装成日常。"},
+    {"persona":"JADE","palette":"evidence_first","season":"autumn","structure":"skirt","hero":"g0332","items":["g0332","g0433","g0004","g0005"],"expression":"explore","intent":"盘扣宽袖上衣配素面窄裙，以窄下装控制整体体量，同上衣仅第二次复用。日常适用性与礼服化风险须逐图判断；不因数量缺口而强行准入。"}
+  ]
+}

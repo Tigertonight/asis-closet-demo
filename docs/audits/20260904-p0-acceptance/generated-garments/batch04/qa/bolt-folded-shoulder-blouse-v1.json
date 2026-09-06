@@ -1,0 +1,24 @@
+{
+  "source": "docs/audits/20260904-p0-acceptance/generated-garments/batch04/raw/bolt-folded-shoulder-blouse-raw-v1.png",
+  "output": "docs/audits/20260904-p0-acceptance/generated-garments/batch04/prepared/bolt-folded-shoulder-blouse-v1.png",
+  "size": [
+    1200,
+    1200
+  ],
+  "meaningful_bbox": [
+    121,
+    120,
+    1080,
+    1078
+  ],
+  "margins": {
+    "left": 0.1008,
+    "top": 0.1,
+    "right": 0.1,
+    "bottom": 0.1017
+  },
+  "transparent_ratio": 0.5342,
+  "partial_alpha_ratio": 0.4639,
+  "alpha_noise_threshold": 8,
+  "passed": true
+}

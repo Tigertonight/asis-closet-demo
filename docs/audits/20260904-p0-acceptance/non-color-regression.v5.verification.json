@@ -1,0 +1,22 @@
+{
+  "verified_at": "2026-09-05T15:00:28.701747+00:00",
+  "changed": [
+    "app/closet.py"
+  ],
+  "added": [],
+  "source_count": 234,
+  "junit_sha256": "95c665af7260be541c1867be38eed759bea6fcc8cfcb39af89e3ce031d8c71e5",
+  "suites": [
+    {
+      "name": "pytest",
+      "errors": "0",
+      "failures": "0",
+      "skipped": "0",
+      "tests": "746",
+      "time": "203.457",
+      "timestamp": "2026-09-05T22:56:44.444472+08:00",
+      "hostname": "H9HV4XJ0JH"
+    }
+  ],
+  "scope": "Python source snapshot comparison detected app/closet.py changed; this run is not frozen-current-source acceptance and does not prove content or browser acceptance"
+}

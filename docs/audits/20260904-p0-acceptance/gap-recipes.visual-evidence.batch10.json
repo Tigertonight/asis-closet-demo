@@ -1,0 +1,13 @@
+{
+  "schema_version": 1, "batch_id": "p0-mute-rebuild-10",
+  "source_visual_version": "codex-visual-16b18cdcdca36dbc306a",
+  "status": "designer_targets_pending_whole_image_review", "new_garments": [],
+  "recipes": [
+    {"persona":"MUTE","palette":"evidence_first","season":"autumn","structure":"dress",
+      "hero":"g0465","items":["g0465","g0004","g0005"],"expression":"typical",
+      "intent":"素面直线裙以侧置细腰带、窄开衩和面料质感为安静焦点，不叠加装饰；素面鞋包支撑。按典型目标复核是否足够表现静音时髦，而非仅因黑色或名字判定；短袖限温暖天气。"},
+    {"persona":"MUTE","palette":"evidence_first","season":"autumn","structure":"skirt",
+      "hero":"g0561","items":["g0561","g0433","g0004","g0005"],"expression":"typical",
+      "intent":"轻垂领上衣与直线窄裙形成软硬线条对照，以领口垂褶为唯一细节焦点，克制鞋包不抢主衣。需要审核typical与easy边界及MUTE相对EASE/NOIR可辨性，不以整身深色充当人格证据。"}
+  ]
+}

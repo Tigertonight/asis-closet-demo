@@ -1,0 +1,890 @@
+{
+  "schema_version": 1,
+  "source_rendered_version": "aw-designed-rendered-51091e2279a5e8d38ff6",
+  "independent_blind_review": false,
+  "four_gate_editorial_review": false,
+  "formal_acceptance": false,
+  "entries": [
+    {
+      "outfit_id": "outfit_bolt_p0-final-gap-19_01",
+      "task_id": "P0-CONTENT-BOLT-01",
+      "status": "ai_candidate",
+      "record_fingerprint": "732e6c8ddaeb7d16a3268f773e71cf2d590e4238e671b1c7f7519ab82b0df4dc",
+      "asset_sha256": "7f7e9eb61a794c9300319d29ccc133cf8276f6fe89fd5cb46cefd11868ff2e78",
+      "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/1fb09f2916c7c30e74d7dece.webp",
+      "source_kind": "codex_visual_review",
+      "model": "current_codex_session",
+      "prompt_version": "p0-final-gap-19-visual-v1",
+      "review_level": "individual_whole_image_and_contact_sheet_judgment",
+      "evidence_scope": "Production-side triage only; not four-gate approval or independent blind review",
+      "evidence": "已查看实际整套图。象牙丝缎上衣以酒红细滚边、三枚珠扣和轻收腰作为低强度精致焦点，炭灰压褶阔腿裤与素鞋包支撑。 低强度边界接近HEIR，须确认珠扣与滚边仍能辨识BOLT。",
+      "confidence": 0.78,
+      "review_complete": true,
+      "contact_sheet": "batch19-review/recipes-1.jpg",
+      "observations": {
+        "axes": {},
+        "expression": "easy",
+        "formality": "smart_casual",
+        "layering": 1,
+        "persona_scores": {
+          "bolt": 0.62
+        },
+        "scenes": [
+          "daily"
+        ],
+        "seasons": [
+          "autumn"
+        ],
+        "structure": "pants",
+        "wearability": "everyday",
+        "main_visual_slots": [
+          "top"
+        ],
+        "main_colors": [
+          "ivory",
+          "burgundy",
+          "charcoal"
+        ],
+        "conflicts": "低强度边界接近HEIR，须确认珠扣与滚边仍能辨识BOLT。",
+        "persona_evidence": "已查看实际整套图。象牙丝缎上衣以酒红细滚边、三枚珠扣和轻收腰作为低强度精致焦点，炭灰压褶阔腿裤与素鞋包支撑。 低强度边界接近HEIR，须确认珠扣与滚边仍能辨识BOLT。"
+      }
+    },
+    {
+      "outfit_id": "outfit_bolt_p0-final-gap-19_02",
+      "task_id": "P0-CONTENT-BOLT-02",
+      "status": "ai_candidate",
+      "record_fingerprint": "cbe6c0bc051ddc467cc019213af43c05d59373b1a156c9b42526a3849124a0b0",
+      "asset_sha256": "d371ea4f8c43b2c7aeea8fce60f0f8a0a0046f84d7cde1208b97fd4f251e3009",
+      "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/7356f710aeb794a195c5cef2.webp",
+      "source_kind": "codex_visual_review",
+      "model": "current_codex_session",
+      "prompt_version": "p0-final-gap-19-visual-v1",
+      "review_level": "individual_whole_image_and_contact_sheet_judgment",
+      "evidence_scope": "Production-side triage only; not four-gate approval or independent blind review",
+      "evidence": "已查看实际整套图。酒红折肩上衣的肖像领、公主线和紧凑短摆承担中强度戏剧结构，灰色直裙与素鞋包控制其余信息。 短摆与直裙腰部衔接、坐姿余量待实穿确认。",
+      "confidence": 0.78,
+      "review_complete": true,
+      "contact_sheet": "batch19-review/recipes-1.jpg",
+      "observations": {
+        "axes": {},
+        "expression": "typical",
+        "formality": "smart_casual",
+        "layering": 1,
+        "persona_scores": {
+          "bolt": 0.78
+        },
+        "scenes": [
+          "daily"
+        ],
+        "seasons": [
+          "autumn"
+        ],
+        "structure": "skirt",
+        "wearability": "everyday_with_statement",
+        "main_visual_slots": [
+          "top"
+        ],
+        "main_colors": [
+          "burgundy",
+          "charcoal"
+        ],
+        "conflicts": "短摆与直裙腰部衔接、坐姿余量待实穿确认。",
+        "persona_evidence": "已查看实际整套图。酒红折肩上衣的肖像领、公主线和紧凑短摆承担中强度戏剧结构，灰色直裙与素鞋包控制其余信息。 短摆与直裙腰部衔接、坐姿余量待实穿确认。"
+      }
+    },
+    {
+      "outfit_id": "outfit_bolt_p0-final-gap-19_03",
+      "task_id": "P0-CONTENT-BOLT-03",
+      "status": "ai_candidate",
+      "record_fingerprint": "36ad9b2b764b7eceaea46c994b52304f8eca5c7b335dfddcd0ac0a1c4cc38c2c",
+      "asset_sha256": "f13163a066955824ab13dc6d1376f6a4e06c6fbb7074f20d63474a3d5ee1d512",
+      "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/79074acec2face0c51d5730b.webp",
+      "source_kind": "codex_visual_review",
+      "model": "current_codex_session",
+      "prompt_version": "p0-final-gap-19-visual-v1",
+      "review_level": "individual_whole_image_and_contact_sheet_judgment",
+      "evidence_scope": "Production-side triage only; not four-gate approval or independent blind review",
+      "evidence": "已查看实际整套图。祖母绿裙的单一斜披折片贯穿肩腰并收进裹片裙摆，作为探索型唯一主角；实穿活动量和场景边界待审。 绿缎裹片裙可能偏晚宴，日常探索场景边界待四门复核。",
+      "confidence": 0.78,
+      "review_complete": true,
+      "contact_sheet": "batch19-review/recipes-1.jpg",
+      "observations": {
+        "axes": {},
+        "expression": "explore",
+        "formality": "smart_casual",
+        "layering": 1,
+        "persona_scores": {
+          "bolt": 0.76
+        },
+        "scenes": [
+          "daily"
+        ],
+        "seasons": [
+          "autumn"
+        ],
+        "structure": "dress",
+        "wearability": "everyday_with_statement",
+        "main_visual_slots": [
+          "dress"
+        ],
+        "main_colors": [
+          "deep_emerald"
+        ],
+        "conflicts": "绿缎裹片裙可能偏晚宴，日常探索场景边界待四门复核。",
+        "persona_evidence": "已查看实际整套图。祖母绿裙的单一斜披折片贯穿肩腰并收进裹片裙摆，作为探索型唯一主角；实穿活动量和场景边界待审。 绿缎裹片裙可能偏晚宴，日常探索场景边界待四门复核。"
+      }
+    },
+    {
+      "outfit_id": "outfit_bolt_p0-final-gap-19_04",
+      "task_id": "P0-CONTENT-BOLT-04",
+      "status": "ai_candidate",
+      "record_fingerprint": "b5e2d328f402bafc4f3af0d3dfff07913309a9a4629aed7667d7ca28e54aa00a",
+      "asset_sha256": "a3d6729fa9715d96eed992c70f458343933201b83306a2df7c18b74c0a56008f",
+      "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/3d6d4a491046e30517c068a0.webp",
+      "source_kind": "codex_visual_review",
+      "model": "current_codex_session",
+      "prompt_version": "p0-final-gap-19-visual-v1",
+      "review_level": "individual_whole_image_and_contact_sheet_judgment",
+      "evidence_scope": "Production-side triage only; not four-gate approval or independent blind review",
+      "evidence": "已查看实际整套图。酒红花瓣叠领外套以弧线珠扣和强收腰集中戏剧焦点，炭灰圆领针织提供覆盖，蓝灰直筒裤与鞋包支撑。 花瓣外套与内搭领口、扣合及腰部余量待实穿确认。",
+      "confidence": 0.78,
+      "review_complete": true,
+      "contact_sheet": "batch19-review/recipes-1.jpg",
+      "observations": {
+        "axes": {},
+        "expression": "explore",
+        "formality": "smart_casual",
+        "layering": 2,
+        "persona_scores": {
+          "bolt": 0.8
+        },
+        "scenes": [
+          "daily"
+        ],
+        "seasons": [
+          "autumn"
+        ],
+        "structure": "pants",
+        "wearability": "everyday_with_statement",
+        "main_visual_slots": [
+          "outer"
+        ],
+        "main_colors": [
+          "charcoal",
+          "burgundy",
+          "blue_gray"
+        ],
+        "conflicts": "花瓣外套与内搭领口、扣合及腰部余量待实穿确认。",
+        "persona_evidence": "已查看实际整套图。酒红花瓣叠领外套以弧线珠扣和强收腰集中戏剧焦点，炭灰圆领针织提供覆盖，蓝灰直筒裤与鞋包支撑。 花瓣外套与内搭领口、扣合及腰部余量待实穿确认。"
+      }
+    },
+    {
+      "outfit_id": "outfit_edge_p0-final-gap-19_05",
+      "task_id": "P0-CONTENT-EDGE-01",
+      "status": "ai_candidate",
+      "record_fingerprint": "5abef01b10637340b2f3c9c6dcbf56b566ae37202dbb6ecb386b0abd71f7ad3a",
+      "asset_sha256": "e1159fa68fe542664943afb7bbba303481c46f38ddb7b0e15fc1eb7a36812688",
+      "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/00894d57aad8b45560c0bf5b.webp",
+      "source_kind": "codex_visual_review",
+      "model": "current_codex_session",
+      "prompt_version": "p0-final-gap-19-visual-v1",
+      "review_level": "individual_whole_image_and_contact_sheet_judgment",
+      "evidence_scope": "Production-side triage only; not four-gate approval or independent blind review",
+      "evidence": "已查看实际整套图。黑色罗纹上衣用粉尖领和单一斜拉链形成低强度甜酷对照，直裤和素鞋包不竞争。 合体针织舒适度与斜拉链末端开口待确认。",
+      "confidence": 0.78,
+      "review_complete": true,
+      "contact_sheet": "batch19-review/recipes-1.jpg",
+      "observations": {
+        "axes": {},
+        "expression": "easy",
+        "formality": "smart_casual",
+        "layering": 1,
+        "persona_scores": {
+          "edge": 0.72
+        },
+        "scenes": [
+          "daily"
+        ],
+        "seasons": [
+          "autumn"
+        ],
+        "structure": "pants",
+        "wearability": "everyday",
+        "main_visual_slots": [
+          "top"
+        ],
+        "main_colors": [
+          "black",
+          "dusty_rose"
+        ],
+        "conflicts": "合体针织舒适度与斜拉链末端开口待确认。",
+        "persona_evidence": "已查看实际整套图。黑色罗纹上衣用粉尖领和单一斜拉链形成低强度甜酷对照，直裤和素鞋包不竞争。 合体针织舒适度与斜拉链末端开口待确认。"
+      }
+    },
+    {
+      "outfit_id": "outfit_edge_p0-final-gap-19_06",
+      "task_id": "P0-CONTENT-EDGE-02",
+      "status": "ai_candidate",
+      "record_fingerprint": "b78ff6c4deaaefdaecc42a7952000181c4680e0b2a6b00cd9a485fd1f6df8116",
+      "asset_sha256": "914c6900798928eedd1e1cacc97c96ea02031a5830e88f5ea31cd6f70811ca68",
+      "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/3ff24b35b74e8666d8638014.webp",
+      "source_kind": "codex_visual_review",
+      "model": "current_codex_session",
+      "prompt_version": "p0-final-gap-19-visual-v1",
+      "review_level": "individual_whole_image_and_contact_sheet_judgment",
+      "evidence_scope": "Production-side triage only; not four-gate approval or independent blind review",
+      "evidence": "已查看实际整套图。同一粉领斜拉链上衣第二次使用，改配灰直裙形成更柔和纵向比例；不宣称换下装创造全新人格语言。 与裤装版共享上衣，需确认灰裙没有把甜酷信号稀释。",
+      "confidence": 0.78,
+      "review_complete": true,
+      "contact_sheet": "batch19-review/recipes-1.jpg",
+      "observations": {
+        "axes": {},
+        "expression": "easy",
+        "formality": "smart_casual",
+        "layering": 1,
+        "persona_scores": {
+          "edge": 0.7
+        },
+        "scenes": [
+          "daily"
+        ],
+        "seasons": [
+          "autumn"
+        ],
+        "structure": "skirt",
+        "wearability": "everyday",
+        "main_visual_slots": [
+          "top"
+        ],
+        "main_colors": [
+          "black",
+          "dusty_rose",
+          "charcoal"
+        ],
+        "conflicts": "与裤装版共享上衣，需确认灰裙没有把甜酷信号稀释。",
+        "persona_evidence": "已查看实际整套图。同一粉领斜拉链上衣第二次使用，改配灰直裙形成更柔和纵向比例；不宣称换下装创造全新人格语言。 与裤装版共享上衣，需确认灰裙没有把甜酷信号稀释。"
+      }
+    },
+    {
+      "outfit_id": "outfit_edge_p0-final-gap-19_07",
+      "task_id": "P0-CONTENT-EDGE-03",
+      "status": "ai_candidate",
+      "record_fingerprint": "ffe44d07f646c4439dd53e0936bcf7d8d7549a76510ee22a3ef42d142a1fd551",
+      "asset_sha256": "80bfb1458f5f6fdaa29c49be3c617a3bb187f4b76aad87b4654f9ef282516d85",
+      "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/63dc42ac5dd7ec24924d3fb1.webp",
+      "source_kind": "codex_visual_review",
+      "model": "current_codex_session",
+      "prompt_version": "p0-final-gap-19-visual-v1",
+      "review_level": "individual_whole_image_and_contact_sheet_judgment",
+      "evidence_scope": "Production-side triage only; not four-gate approval or independent blind review",
+      "evidence": "已查看实际整套图。黑丹宁衬衫裙与粉褶内片沿斜裹线形成完整甜酷关系，鞋包保持低装饰。 粉褶裙片行走开合与丹宁重量待确认。",
+      "confidence": 0.78,
+      "review_complete": true,
+      "contact_sheet": "batch19-review/recipes-2.jpg",
+      "observations": {
+        "axes": {},
+        "expression": "typical",
+        "formality": "smart_casual",
+        "layering": 1,
+        "persona_scores": {
+          "edge": 0.79
+        },
+        "scenes": [
+          "daily"
+        ],
+        "seasons": [
+          "autumn"
+        ],
+        "structure": "dress",
+        "wearability": "everyday_with_statement",
+        "main_visual_slots": [
+          "dress"
+        ],
+        "main_colors": [
+          "washed_black",
+          "dusty_rose"
+        ],
+        "conflicts": "粉褶裙片行走开合与丹宁重量待确认。",
+        "persona_evidence": "已查看实际整套图。黑丹宁衬衫裙与粉褶内片沿斜裹线形成完整甜酷关系，鞋包保持低装饰。 粉褶裙片行走开合与丹宁重量待确认。"
+      }
+    },
+    {
+      "outfit_id": "outfit_edge_p0-final-gap-19_08",
+      "task_id": "P0-CONTENT-EDGE-04",
+      "status": "ai_candidate",
+      "record_fingerprint": "d20817095b50653fee999cce564c627b9c3bb343504cb1507c60ded79f7e4dc6",
+      "asset_sha256": "99ce7edfcc39bb2f7563f1f5bbc9f4e8660dcf26732407d284c96e917464cb89",
+      "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/42ff33db1030f7a909c7e2b0.webp",
+      "source_kind": "codex_visual_review",
+      "model": "current_codex_session",
+      "prompt_version": "p0-final-gap-19-visual-v1",
+      "review_level": "individual_whole_image_and_contact_sheet_judgment",
+      "evidence_scope": "Production-side triage only; not four-gate approval or independent blind review",
+      "evidence": "已查看实际整套图。洗黑短外套和单侧粉纱片构成探索型甜酷主角，素内搭保障覆盖，炭灰压褶裤与鞋包控制焦点；粉纱透明度待审。 粉纱视觉透明，虽有不透明内搭，覆盖与叠穿摩擦待确认。",
+      "confidence": 0.78,
+      "review_complete": true,
+      "contact_sheet": "batch19-review/recipes-2.jpg",
+      "observations": {
+        "axes": {},
+        "expression": "explore",
+        "formality": "smart_casual",
+        "layering": 2,
+        "persona_scores": {
+          "edge": 0.78
+        },
+        "scenes": [
+          "daily"
+        ],
+        "seasons": [
+          "autumn"
+        ],
+        "structure": "pants",
+        "wearability": "everyday_with_statement",
+        "main_visual_slots": [
+          "outer"
+        ],
+        "main_colors": [
+          "taupe",
+          "washed_black",
+          "dusty_rose",
+          "charcoal"
+        ],
+        "conflicts": "粉纱视觉透明，虽有不透明内搭，覆盖与叠穿摩擦待确认。",
+        "persona_evidence": "已查看实际整套图。洗黑短外套和单侧粉纱片构成探索型甜酷主角，素内搭保障覆盖，炭灰压褶裤与鞋包控制焦点；粉纱透明度待审。 粉纱视觉透明，虽有不透明内搭，覆盖与叠穿摩擦待确认。"
+      }
+    },
+    {
+      "outfit_id": "outfit_neon_p0-final-gap-19_09",
+      "task_id": "P0-CONTENT-NEON-01",
+      "status": "ai_candidate",
+      "record_fingerprint": "1af1c9eca990b0754870a3185974ed52793e57bbbc8356e0849a0d7848566677",
+      "asset_sha256": "d4197eb5a27c49aded34b9b4fc81aebf7d6a4f1605edf6b0451265db6b900680",
+      "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/2610ac82aa50b8f6c38d4fab.webp",
+      "source_kind": "codex_visual_review",
+      "model": "current_codex_session",
+      "prompt_version": "p0-final-gap-19-visual-v1",
+      "review_level": "individual_whole_image_and_contact_sheet_judgment",
+      "evidence_scope": "Production-side triage only; not four-gate approval or independent blind review",
+      "evidence": "已查看实际整套图。钴蓝针织上衣以一条荧光弧片和小珊瑚拉链袋构成入门主信号，黑裤鞋包支撑。 高彩上衣与黑裤关系清楚，真实面料色牢度不在平铺证据内。",
+      "confidence": 0.78,
+      "review_complete": true,
+      "contact_sheet": "batch19-review/recipes-2.jpg",
+      "observations": {
+        "axes": {},
+        "expression": "easy",
+        "formality": "casual",
+        "layering": 1,
+        "persona_scores": {
+          "neon": 0.82
+        },
+        "scenes": [
+          "daily"
+        ],
+        "seasons": [
+          "autumn"
+        ],
+        "structure": "pants",
+        "wearability": "everyday",
+        "main_visual_slots": [
+          "top"
+        ],
+        "main_colors": [
+          "cobalt",
+          "lime",
+          "coral",
+          "black"
+        ],
+        "conflicts": "高彩上衣与黑裤关系清楚，真实面料色牢度不在平铺证据内。",
+        "persona_evidence": "已查看实际整套图。钴蓝针织上衣以一条荧光弧片和小珊瑚拉链袋构成入门主信号，黑裤鞋包支撑。 高彩上衣与黑裤关系清楚，真实面料色牢度不在平铺证据内。"
+      }
+    },
+    {
+      "outfit_id": "outfit_neon_p0-final-gap-19_10",
+      "task_id": "P0-CONTENT-NEON-02",
+      "status": "ai_candidate",
+      "record_fingerprint": "b594ea105ec4b616353f4f71a77396df3c4314820f9b05ec7c23cefe8cf7bc45",
+      "asset_sha256": "e85dd3caf2ca8d0a9e94526403b347ba01a2f7e2ef6dbc58e00649e949d7dfa3",
+      "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/cccb3ba80a991ab66077766f.webp",
+      "source_kind": "codex_visual_review",
+      "model": "current_codex_session",
+      "prompt_version": "p0-final-gap-19-visual-v1",
+      "review_level": "individual_whole_image_and_contact_sheet_judgment",
+      "evidence_scope": "Production-side triage only; not four-gate approval or independent blind review",
+      "evidence": "已查看实际整套图。同一弧片上衣第二次使用，灰直裙平衡高彩；不增加第二个图案焦点。 灰裙降低强度，仍需复核easy层级与上衣长度比例。",
+      "confidence": 0.78,
+      "review_complete": true,
+      "contact_sheet": "batch19-review/recipes-2.jpg",
+      "observations": {
+        "axes": {},
+        "expression": "easy",
+        "formality": "casual",
+        "layering": 1,
+        "persona_scores": {
+          "neon": 0.8
+        },
+        "scenes": [
+          "daily"
+        ],
+        "seasons": [
+          "autumn"
+        ],
+        "structure": "skirt",
+        "wearability": "everyday",
+        "main_visual_slots": [
+          "top"
+        ],
+        "main_colors": [
+          "cobalt",
+          "lime",
+          "coral",
+          "charcoal"
+        ],
+        "conflicts": "灰裙降低强度，仍需复核easy层级与上衣长度比例。",
+        "persona_evidence": "已查看实际整套图。同一弧片上衣第二次使用，灰直裙平衡高彩；不增加第二个图案焦点。 灰裙降低强度，仍需复核easy层级与上衣长度比例。"
+      }
+    },
+    {
+      "outfit_id": "outfit_neon_p0-final-gap-19_11",
+      "task_id": "P0-CONTENT-NEON-03",
+      "status": "ai_candidate",
+      "record_fingerprint": "b9baa0e7f510df6ef60ad3025f5a4283fc47964226b8e68362bb0a4327beb950",
+      "asset_sha256": "b15439e761091ba0a21d74d6509c6fe17167abd72074fcaae8c75a709295c54e",
+      "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/a09bff6cea22fbb6d288d769.webp",
+      "source_kind": "codex_visual_review",
+      "model": "current_codex_session",
+      "prompt_version": "p0-final-gap-19-visual-v1",
+      "review_level": "individual_whole_image_and_contact_sheet_judgment",
+      "evidence_scope": "Production-side triage only; not four-gate approval or independent blind review",
+      "evidence": "已查看实际整套图。珊瑚T恤裙以单一钴蓝弧面和荧光细边形成入门吸睛线索，轮廓保持日常。 短袖季节范围和大口袋实际容量待确认。",
+      "confidence": 0.78,
+      "review_complete": true,
+      "contact_sheet": "batch19-review/recipes-2.jpg",
+      "observations": {
+        "axes": {},
+        "expression": "easy",
+        "formality": "casual",
+        "layering": 1,
+        "persona_scores": {
+          "neon": 0.82
+        },
+        "scenes": [
+          "daily"
+        ],
+        "seasons": [
+          "autumn"
+        ],
+        "structure": "dress",
+        "wearability": "everyday",
+        "main_visual_slots": [
+          "dress"
+        ],
+        "main_colors": [
+          "coral",
+          "cobalt",
+          "lime"
+        ],
+        "conflicts": "短袖季节范围和大口袋实际容量待确认。",
+        "persona_evidence": "已查看实际整套图。珊瑚T恤裙以单一钴蓝弧面和荧光细边形成入门吸睛线索，轮廓保持日常。 短袖季节范围和大口袋实际容量待确认。"
+      }
+    },
+    {
+      "outfit_id": "outfit_neon_p0-final-gap-19_12",
+      "task_id": "P0-CONTENT-NEON-04",
+      "status": "ai_candidate",
+      "record_fingerprint": "83ca107d8a6bb5f32c40d162fb3543f518c4f20ba50a043ab95307fd82f9a6c3",
+      "asset_sha256": "edf537e9d560e502512a3f52e98c44fd21d76cad9f98f9af2cdd52d5b0bd619d",
+      "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/cf65d32978fb468991f09685.webp",
+      "source_kind": "codex_visual_review",
+      "model": "current_codex_session",
+      "prompt_version": "p0-final-gap-19-visual-v1",
+      "review_level": "individual_whole_image_and_contact_sheet_judgment",
+      "evidence_scope": "Production-side triage only; not four-gate approval or independent blind review",
+      "evidence": "已查看实际整套图。紫蓝荧光连环图形跨越衣身和一只袖子，承担中强度图案焦点，黑裤鞋包降噪。 大图形为唯一主角，袖部连续图形在实穿弯曲时待观察。",
+      "confidence": 0.78,
+      "review_complete": true,
+      "contact_sheet": "batch19-review/recipes-2.jpg",
+      "observations": {
+        "axes": {},
+        "expression": "typical",
+        "formality": "casual",
+        "layering": 1,
+        "persona_scores": {
+          "neon": 0.88
+        },
+        "scenes": [
+          "daily"
+        ],
+        "seasons": [
+          "autumn"
+        ],
+        "structure": "pants",
+        "wearability": "everyday_with_statement",
+        "main_visual_slots": [
+          "top"
+        ],
+        "main_colors": [
+          "violet",
+          "cobalt",
+          "lime",
+          "coral",
+          "black"
+        ],
+        "conflicts": "大图形为唯一主角，袖部连续图形在实穿弯曲时待观察。",
+        "persona_evidence": "已查看实际整套图。紫蓝荧光连环图形跨越衣身和一只袖子，承担中强度图案焦点，黑裤鞋包降噪。 大图形为唯一主角，袖部连续图形在实穿弯曲时待观察。"
+      }
+    },
+    {
+      "outfit_id": "outfit_neon_p0-final-gap-19_13",
+      "task_id": "P0-CONTENT-NEON-05",
+      "status": "ai_candidate",
+      "record_fingerprint": "2be9fec0d5fae2df43b3d690fa1f03351d86c8be2edfd8a8f6537159d7ba1d4a",
+      "asset_sha256": "6b9fe507a06efe4f46f8794ba1830b406be550975b137c6d30c59fe13b9d5241",
+      "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/dd6fe29bf241892ed17c2e47.webp",
+      "source_kind": "codex_visual_review",
+      "model": "current_codex_session",
+      "prompt_version": "p0-final-gap-19-visual-v1",
+      "review_level": "individual_whole_image_and_contact_sheet_judgment",
+      "evidence_scope": "Production-side triage only; not four-gate approval or independent blind review",
+      "evidence": "已查看实际整套图。同一连环图形上衣第二次使用，灰直裙提供不同结构但保持唯一图形主角。 与裤装版共享上衣，直裙不能造成腰线遮挡。",
+      "confidence": 0.78,
+      "review_complete": true,
+      "contact_sheet": "batch19-review/recipes-3.jpg",
+      "observations": {
+        "axes": {},
+        "expression": "typical",
+        "formality": "casual",
+        "layering": 1,
+        "persona_scores": {
+          "neon": 0.86
+        },
+        "scenes": [
+          "daily"
+        ],
+        "seasons": [
+          "autumn"
+        ],
+        "structure": "skirt",
+        "wearability": "everyday_with_statement",
+        "main_visual_slots": [
+          "top"
+        ],
+        "main_colors": [
+          "violet",
+          "cobalt",
+          "lime",
+          "coral",
+          "charcoal"
+        ],
+        "conflicts": "与裤装版共享上衣，直裙不能造成腰线遮挡。",
+        "persona_evidence": "已查看实际整套图。同一连环图形上衣第二次使用，灰直裙提供不同结构但保持唯一图形主角。 与裤装版共享上衣，直裙不能造成腰线遮挡。"
+      }
+    },
+    {
+      "outfit_id": "outfit_neon_p0-final-gap-19_14",
+      "task_id": "P0-CONTENT-NEON-06",
+      "status": "ai_candidate",
+      "record_fingerprint": "59fdb376ab4b14736e95f83ca6f06ae2ee29e369dc1fc48c293fbbe4cd9f8682",
+      "asset_sha256": "5233754daf4c9095d5d14f6fd30ed6175ead32ae637edd5a606f4880e5970c47",
+      "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/68e2f50e3843c6832c33c4ec.webp",
+      "source_kind": "codex_visual_review",
+      "model": "current_codex_session",
+      "prompt_version": "p0-final-gap-19-visual-v1",
+      "review_level": "individual_whole_image_and_contact_sheet_judgment",
+      "evidence_scope": "Production-side triage only; not four-gate approval or independent blind review",
+      "evidence": "已查看实际整套图。洋红裙以多重扩展弧线贯穿上下身，作为探索型唯一图形语言；日常场景边界待整图审核。 探索强度明确，艺术活动之外的日常场景边界待复核。",
+      "confidence": 0.78,
+      "review_complete": true,
+      "contact_sheet": "batch19-review/recipes-3.jpg",
+      "observations": {
+        "axes": {},
+        "expression": "explore",
+        "formality": "casual",
+        "layering": 1,
+        "persona_scores": {
+          "neon": 0.9
+        },
+        "scenes": [
+          "daily"
+        ],
+        "seasons": [
+          "autumn"
+        ],
+        "structure": "dress",
+        "wearability": "everyday_with_statement",
+        "main_visual_slots": [
+          "dress"
+        ],
+        "main_colors": [
+          "magenta",
+          "cobalt",
+          "lime",
+          "coral"
+        ],
+        "conflicts": "探索强度明确，艺术活动之外的日常场景边界待复核。",
+        "persona_evidence": "已查看实际整套图。洋红裙以多重扩展弧线贯穿上下身，作为探索型唯一图形语言；日常场景边界待整图审核。 探索强度明确，艺术活动之外的日常场景边界待复核。"
+      }
+    },
+    {
+      "outfit_id": "outfit_neon_p0-final-gap-19_15",
+      "task_id": "P0-CONTENT-NEON-07",
+      "status": "ai_candidate",
+      "record_fingerprint": "385875fc54c67e280e46083f26cb9bf5f20566477eb5fb52f15aadadd6de7689",
+      "asset_sha256": "b22a67ea5fb07c850cc29fcefa8874de64c435a85f7c18773adfd1c53fec0d81",
+      "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/f07007bfffb51ac68f012224.webp",
+      "source_kind": "codex_visual_review",
+      "model": "current_codex_session",
+      "prompt_version": "p0-final-gap-19-visual-v1",
+      "review_level": "individual_whole_image_and_contact_sheet_judgment",
+      "evidence_scope": "Production-side triage only; not four-gate approval or independent blind review",
+      "evidence": "已查看实际整套图。橙红外搭的荧光斜襟和成对紫袋构成主动吸睛主角，素内搭与炭灰压褶裤、鞋包提供结构支撑。 外搭色块强，内搭领口和斜襟闭合方式待确认。",
+      "confidence": 0.78,
+      "review_complete": true,
+      "contact_sheet": "batch19-review/recipes-3.jpg",
+      "observations": {
+        "axes": {},
+        "expression": "explore",
+        "formality": "casual",
+        "layering": 2,
+        "persona_scores": {
+          "neon": 0.88
+        },
+        "scenes": [
+          "daily"
+        ],
+        "seasons": [
+          "autumn"
+        ],
+        "structure": "pants",
+        "wearability": "everyday_with_statement",
+        "main_visual_slots": [
+          "outer"
+        ],
+        "main_colors": [
+          "taupe",
+          "orange_red",
+          "cobalt",
+          "lime",
+          "violet",
+          "charcoal"
+        ],
+        "conflicts": "外搭色块强，内搭领口和斜襟闭合方式待确认。",
+        "persona_evidence": "已查看实际整套图。橙红外搭的荧光斜襟和成对紫袋构成主动吸睛主角，素内搭与炭灰压褶裤、鞋包提供结构支撑。 外搭色块强，内搭领口和斜襟闭合方式待确认。"
+      }
+    },
+    {
+      "outfit_id": "outfit_noir_p0-final-gap-19_16",
+      "task_id": "P0-CONTENT-NOIR-01",
+      "status": "ai_candidate",
+      "record_fingerprint": "f06325c5c2022747aaaedbcc3af0e02163121ffdc107e7ba4ed9981ed8a2f835",
+      "asset_sha256": "ee4f8b174633600a810d5e7cff7cd3285c4b6199b4427ec0f8b76e2aa0ea3c0d",
+      "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/a01432e7471830bc58598362.webp",
+      "source_kind": "codex_visual_review",
+      "model": "current_codex_session",
+      "prompt_version": "p0-final-gap-19-visual-v1",
+      "review_level": "individual_whole_image_and_contact_sheet_judgment",
+      "evidence_scope": "Production-side triage only; not four-gate approval or independent blind review",
+      "evidence": "已查看实际整套图。黑色针织裙以斜缝、双向拉链、覆片和单侧罗纹建立冷硬方向性，不用黑色本身作为人格结论。 黑色不是归类依据；覆片开口、拉链触感和行走余量待确认。",
+      "confidence": 0.78,
+      "review_complete": true,
+      "contact_sheet": "batch19-review/recipes-3.jpg",
+      "observations": {
+        "axes": {},
+        "expression": "explore",
+        "formality": "smart_casual",
+        "layering": 1,
+        "persona_scores": {
+          "noir": 0.8
+        },
+        "scenes": [
+          "daily"
+        ],
+        "seasons": [
+          "autumn"
+        ],
+        "structure": "dress",
+        "wearability": "everyday_with_statement",
+        "main_visual_slots": [
+          "dress"
+        ],
+        "main_colors": [
+          "black"
+        ],
+        "conflicts": "黑色不是归类依据；覆片开口、拉链触感和行走余量待确认。",
+        "persona_evidence": "已查看实际整套图。黑色针织裙以斜缝、双向拉链、覆片和单侧罗纹建立冷硬方向性，不用黑色本身作为人格结论。 黑色不是归类依据；覆片开口、拉链触感和行走余量待确认。"
+      }
+    },
+    {
+      "outfit_id": "outfit_oops_p0-final-gap-19_17",
+      "task_id": "P0-CONTENT-OOPS-01",
+      "status": "ai_candidate",
+      "record_fingerprint": "5d07de3a12624071b820147e80ee3cb08c24749ceab53ccfff3a7f828266b7c4",
+      "asset_sha256": "27a509d47e73dec90abd8a3c735fde5d15a8fc2f59e13fd230ca7c5b6d3f92af",
+      "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/ee329f52f6602bae800c2a7c.webp",
+      "source_kind": "codex_visual_review",
+      "model": "current_codex_session",
+      "prompt_version": "p0-final-gap-19-visual-v1",
+      "review_level": "individual_whole_image_and_contact_sheet_judgment",
+      "evidence_scope": "Production-side triage only; not four-gate approval or independent blind review",
+      "evidence": "已查看实际整套图。运动领针织上身与细条纹西装褶裙经斜腰缝并置，单件承担正式度冲突，素鞋包支撑。 运动与西装结构冲突清楚，斜腰接缝舒适性待确认。",
+      "confidence": 0.78,
+      "review_complete": true,
+      "contact_sheet": "batch19-review/recipes-3.jpg",
+      "observations": {
+        "axes": {},
+        "expression": "easy",
+        "formality": "casual",
+        "layering": 1,
+        "persona_scores": {
+          "oops": 0.82
+        },
+        "scenes": [
+          "daily"
+        ],
+        "seasons": [
+          "autumn"
+        ],
+        "structure": "dress",
+        "wearability": "everyday",
+        "main_visual_slots": [
+          "dress"
+        ],
+        "main_colors": [
+          "charcoal",
+          "ivory"
+        ],
+        "conflicts": "运动与西装结构冲突清楚，斜腰接缝舒适性待确认。",
+        "persona_evidence": "已查看实际整套图。运动领针织上身与细条纹西装褶裙经斜腰缝并置，单件承担正式度冲突，素鞋包支撑。 运动与西装结构冲突清楚，斜腰接缝舒适性待确认。"
+      }
+    },
+    {
+      "outfit_id": "outfit_oops_p0-final-gap-19_18",
+      "task_id": "P0-CONTENT-OOPS-02",
+      "status": "ai_candidate",
+      "record_fingerprint": "622260c5cd4910940289b23841ad7c6d7a78432de5a3260d7a5df319f9f67d42",
+      "asset_sha256": "abe2351635370f58177019daee7fac2fa8d401e04ddbc2af4a117e5384d05848",
+      "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/c784aadce283b173f52ccb5f.webp",
+      "source_kind": "codex_visual_review",
+      "model": "current_codex_session",
+      "prompt_version": "p0-final-gap-19-visual-v1",
+      "review_level": "individual_whole_image_and_contact_sheet_judgment",
+      "evidence_scope": "Production-side triage only; not four-gate approval or independent blind review",
+      "evidence": "已查看实际整套图。同一拼接裙第二次使用，加素面短运动外套形成不同主衣关系；外套敞开，不能遮蔽斜腰和褶裙证据。 白色外层必须敞开，避免遮住斜腰缝和褶裙主证据。",
+      "confidence": 0.78,
+      "review_complete": true,
+      "contact_sheet": "batch19-review/recipes-3.jpg",
+      "observations": {
+        "axes": {},
+        "expression": "easy",
+        "formality": "casual",
+        "layering": 2,
+        "persona_scores": {
+          "oops": 0.76
+        },
+        "scenes": [
+          "daily"
+        ],
+        "seasons": [
+          "autumn"
+        ],
+        "structure": "dress",
+        "wearability": "everyday",
+        "main_visual_slots": [
+          "dress"
+        ],
+        "main_colors": [
+          "charcoal",
+          "ivory"
+        ],
+        "conflicts": "白色外层必须敞开，避免遮住斜腰缝和褶裙主证据。",
+        "persona_evidence": "已查看实际整套图。同一拼接裙第二次使用，加素面短运动外套形成不同主衣关系；外套敞开，不能遮蔽斜腰和褶裙证据。 白色外层必须敞开，避免遮住斜腰缝和褶裙主证据。"
+      }
+    },
+    {
+      "outfit_id": "outfit_void_p0-final-gap-19_19",
+      "task_id": "P0-CONTENT-VOID-01",
+      "status": "ai_candidate",
+      "record_fingerprint": "e70f6aeb87a99d0eb37e5ed83bbce5751de137fe6ea7dc81187706ea5f5a7384",
+      "asset_sha256": "ceab3be85f85b125ca1c8794c2a682a6aed840850340a308265ba4fb0ddcd5a8",
+      "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/3b6b761951ef1a47c1b75a35.webp",
+      "source_kind": "codex_visual_review",
+      "model": "current_codex_session",
+      "prompt_version": "p0-final-gap-19-visual-v1",
+      "review_level": "individual_whole_image_and_contact_sheet_judgment",
+      "evidence_scope": "Production-side triage only; not four-gate approval or independent blind review",
+      "evidence": "已查看实际整套图。素圆领长袖与水洗偏缝低口袋裙构成默认制服，游离感只来自偏移细节。 与MUTE/WABI相邻，偏缝和低口袋的可辨识度须盲审验证。",
+      "confidence": 0.78,
+      "review_complete": true,
+      "contact_sheet": "batch19-review/recipes-4.jpg",
+      "observations": {
+        "axes": {},
+        "expression": "easy",
+        "formality": "casual",
+        "layering": 1,
+        "persona_scores": {
+          "void": 0.64
+        },
+        "scenes": [
+          "daily"
+        ],
+        "seasons": [
+          "autumn"
+        ],
+        "structure": "skirt",
+        "wearability": "everyday",
+        "main_visual_slots": [
+          "skirt"
+        ],
+        "main_colors": [
+          "taupe",
+          "washed_charcoal"
+        ],
+        "conflicts": "与MUTE/WABI相邻，偏缝和低口袋的可辨识度须盲审验证。",
+        "persona_evidence": "已查看实际整套图。素圆领长袖与水洗偏缝低口袋裙构成默认制服，游离感只来自偏移细节。 与MUTE/WABI相邻，偏缝和低口袋的可辨识度须盲审验证。"
+      }
+    },
+    {
+      "outfit_id": "outfit_void_p0-final-gap-19_20",
+      "task_id": "P0-CONTENT-VOID-02",
+      "status": "ai_candidate",
+      "record_fingerprint": "6b5a426eff51b6d543a30bd893dfa17cfd3f73d8f322799a69e503e40211f9b2",
+      "asset_sha256": "a5d8373d3d620cf53c281d4821b95c65f5675a7069fcc1d5cccfb40e421eeb7a",
+      "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/2ae3a809e6b189864bbe2980.webp",
+      "source_kind": "codex_visual_review",
+      "model": "current_codex_session",
+      "prompt_version": "p0-final-gap-19-visual-v1",
+      "review_level": "individual_whole_image_and_contact_sheet_judgment",
+      "evidence_scope": "Production-side triage only; not four-gate approval or independent blind review",
+      "evidence": "已查看实际整套图。同裙第二次使用，宽松白衬衫维持低指向性；需通过衣摆处理露出偏缝和低口袋。 白衬衫衣摆可能遮挡偏缝与口袋，需实穿调整并二审边界。",
+      "confidence": 0.78,
+      "review_complete": true,
+      "contact_sheet": "batch19-review/recipes-4.jpg",
+      "observations": {
+        "axes": {},
+        "expression": "easy",
+        "formality": "casual",
+        "layering": 1,
+        "persona_scores": {
+          "void": 0.6
+        },
+        "scenes": [
+          "daily"
+        ],
+        "seasons": [
+          "autumn"
+        ],
+        "structure": "skirt",
+        "wearability": "everyday",
+        "main_visual_slots": [
+          "skirt"
+        ],
+        "main_colors": [
+          "white",
+          "washed_charcoal"
+        ],
+        "conflicts": "白衬衫衣摆可能遮挡偏缝与口袋，需实穿调整并二审边界。",
+        "persona_evidence": "已查看实际整套图。同裙第二次使用，宽松白衬衫维持低指向性；需通过衣摆处理露出偏缝和低口袋。 白衬衫衣摆可能遮挡偏缝与口袋，需实穿调整并二审边界。"
+      }
+    }
+  ],
+  "version": "p0-final-gap-19-review-e5a66f8a80bf93131719"
+}

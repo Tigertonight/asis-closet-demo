@@ -1,0 +1,397 @@
+{
+  "formal_acceptance": false,
+  "scope": "Isolated synthetic MUTE profile; P0 unavailable state only. Not complete E2E-012 or success flow.",
+  "recorded_at": "2026-09-05T15:37:50.262Z",
+  "runtime": "/tmp/selfit-p0-runtime.VXfV0s",
+  "runtime_closet_sha256": "11d42d25db82ecfa432803edb60ada5a9f9d629274e5b2f210cd6f358a2eeadb",
+  "before": {
+    "widths": [
+      {
+        "viewport": 390,
+        "docWidth": 390,
+        "homeWidth": 390,
+        "empty": "符合本次偏好的穿搭还在审核中，请稍后再来看看。",
+        "refresh": {
+          "width": 54,
+          "height": 44
+        }
+      },
+      {
+        "viewport": 393,
+        "docWidth": 393,
+        "homeWidth": 393,
+        "empty": "符合本次偏好的穿搭还在审核中，请稍后再来看看。",
+        "refresh": {
+          "width": 54,
+          "height": 44
+        }
+      },
+      {
+        "viewport": 430,
+        "docWidth": 430,
+        "homeWidth": 393,
+        "empty": "符合本次偏好的穿搭还在审核中，请稍后再来看看。",
+        "refresh": {
+          "width": 54,
+          "height": 44
+        }
+      },
+      {
+        "viewport": 1440,
+        "docWidth": 1440,
+        "homeWidth": 393,
+        "empty": "符合本次偏好的穿搭还在审核中，请稍后再来看看。",
+        "refresh": {
+          "width": 54,
+          "height": 44
+        }
+      }
+    ],
+    "focus": [
+      {
+        "tag": "BUTTON",
+        "id": "refreshInspiration",
+        "text": "换一批",
+        "x": 323,
+        "y": 164,
+        "width": 54,
+        "height": 44
+      },
+      {
+        "tag": "BUTTON",
+        "id": "",
+        "text": "推荐",
+        "x": 14,
+        "y": 787.5,
+        "width": 70.75,
+        "height": 54
+      },
+      {
+        "tag": "BUTTON",
+        "id": "",
+        "text": "问搭配",
+        "x": 84.75,
+        "y": 787.5,
+        "width": 70.75,
+        "height": 54
+      },
+      {
+        "tag": "BUTTON",
+        "id": "mainPlus",
+        "text": "",
+        "x": 172.5,
+        "y": 786.5,
+        "width": 48,
+        "height": 48
+      },
+      {
+        "tag": "A",
+        "id": "",
+        "text": "试衣镜",
+        "x": 237.5,
+        "y": 787.5,
+        "width": 70.75,
+        "height": 54
+      },
+      {
+        "tag": "BUTTON",
+        "id": "",
+        "text": "我的",
+        "x": 308.25,
+        "y": 787.5,
+        "width": 70.75,
+        "height": 54
+      },
+      {
+        "tag": "BUTTON",
+        "id": "",
+        "text": "×",
+        "x": 324,
+        "y": 908.4000244140625,
+        "width": 44,
+        "height": 44
+      },
+      {
+        "tag": "BUTTON",
+        "id": "uploadGarmentBtn",
+        "text": "从相册选择支持单品图或整套穿搭图",
+        "x": 25,
+        "y": 968.4000244140625,
+        "width": 343,
+        "height": 76
+      },
+      {
+        "tag": "BUTTON",
+        "id": "cameraBtn",
+        "text": "现在拍一张背景简单，提取会更准确",
+        "x": 25,
+        "y": 1054.4000244140625,
+        "width": 343,
+        "height": 76
+      },
+      {
+        "tag": "INPUT",
+        "id": "wearLinkInput",
+        "text": "",
+        "x": 25,
+        "y": 1177.4000244140625,
+        "width": 249,
+        "height": 48
+      },
+      {
+        "tag": "BUTTON",
+        "id": "wearLinkBtn",
+        "text": "提取",
+        "x": 282,
+        "y": 1177.4000244140625,
+        "width": 86,
+        "height": 48
+      },
+      {
+        "tag": "BUTTON",
+        "id": "",
+        "text": "×",
+        "x": 324,
+        "y": 894.9390869140625,
+        "width": 44,
+        "height": 44
+      },
+      {
+        "tag": "BUTTON",
+        "id": "importReviewDone",
+        "text": "完成入柜",
+        "x": 25,
+        "y": 1069.3297119140625,
+        "width": 343,
+        "height": 44
+      },
+      {
+        "tag": "BUTTON",
+        "id": "sessionSheetNew",
+        "text": "新建会话",
+        "x": -695.288330078125,
+        "y": 28,
+        "width": 276,
+        "height": 54
+      },
+      {
+        "tag": "BUTTON",
+        "id": "",
+        "text": "×",
+        "x": 324,
+        "y": 903.2999877929688,
+        "width": 44,
+        "height": 44
+      },
+      {
+        "tag": "BUTTON",
+        "id": "saveOutfitBtn",
+        "text": "保存套装",
+        "x": 25,
+        "y": 1161.300048828125,
+        "width": 148,
+        "height": 44
+      }
+    ]
+  },
+  "after": {
+    "widths": [
+      {
+        "width": 390,
+        "documentWidth": 390,
+        "closedHidden": true
+      },
+      {
+        "width": 393,
+        "documentWidth": 393,
+        "closedHidden": true
+      },
+      {
+        "width": 430,
+        "documentWidth": 430,
+        "closedHidden": true
+      },
+      {
+        "width": 1440,
+        "documentWidth": 1440,
+        "closedHidden": true
+      }
+    ],
+    "focus": [
+      {
+        "tag": "BUTTON",
+        "id": "refreshInspiration",
+        "text": "换一批",
+        "x": 323,
+        "y": 164,
+        "width": 54,
+        "height": 44,
+        "closedPanel": false
+      },
+      {
+        "tag": "BUTTON",
+        "id": "",
+        "text": "推荐",
+        "x": 14,
+        "y": 787.5,
+        "width": 70.75,
+        "height": 54,
+        "closedPanel": false
+      },
+      {
+        "tag": "BUTTON",
+        "id": "",
+        "text": "问搭配",
+        "x": 84.75,
+        "y": 787.5,
+        "width": 70.75,
+        "height": 54,
+        "closedPanel": false
+      },
+      {
+        "tag": "BUTTON",
+        "id": "mainPlus",
+        "text": "",
+        "x": 172.5,
+        "y": 786.5,
+        "width": 48,
+        "height": 48,
+        "closedPanel": false
+      },
+      {
+        "tag": "A",
+        "id": "",
+        "text": "试衣镜",
+        "x": 237.5,
+        "y": 787.5,
+        "width": 70.75,
+        "height": 54,
+        "closedPanel": false
+      },
+      {
+        "tag": "BUTTON",
+        "id": "",
+        "text": "我的",
+        "x": 308.25,
+        "y": 787.5,
+        "width": 70.75,
+        "height": 54,
+        "closedPanel": false
+      },
+      {
+        "tag": "BODY",
+        "id": "",
+        "text": "selfit\n今天，怎么穿\n与你同频的穿搭\n换一批\n符合本次",
+        "x": 0,
+        "y": 0,
+        "width": 393,
+        "height": 852,
+        "closedPanel": false
+      },
+      {
+        "tag": "BUTTON",
+        "id": "refreshInspiration",
+        "text": "换一批",
+        "x": 323,
+        "y": 164,
+        "width": 54,
+        "height": 44,
+        "closedPanel": false
+      },
+      {
+        "tag": "BUTTON",
+        "id": "",
+        "text": "推荐",
+        "x": 14,
+        "y": 787.5,
+        "width": 70.75,
+        "height": 54,
+        "closedPanel": false
+      },
+      {
+        "tag": "BUTTON",
+        "id": "",
+        "text": "问搭配",
+        "x": 84.75,
+        "y": 787.5,
+        "width": 70.75,
+        "height": 54,
+        "closedPanel": false
+      },
+      {
+        "tag": "BUTTON",
+        "id": "mainPlus",
+        "text": "",
+        "x": 172.5,
+        "y": 786.5,
+        "width": 48,
+        "height": 48,
+        "closedPanel": false
+      },
+      {
+        "tag": "A",
+        "id": "",
+        "text": "试衣镜",
+        "x": 237.5,
+        "y": 787.5,
+        "width": 70.75,
+        "height": 54,
+        "closedPanel": false
+      },
+      {
+        "tag": "BUTTON",
+        "id": "",
+        "text": "我的",
+        "x": 308.25,
+        "y": 787.5,
+        "width": 70.75,
+        "height": 54,
+        "closedPanel": false
+      },
+      {
+        "tag": "BODY",
+        "id": "",
+        "text": "selfit\n今天，怎么穿\n与你同频的穿搭\n换一批\n符合本次",
+        "x": 0,
+        "y": 0,
+        "width": 393,
+        "height": 852,
+        "closedPanel": false
+      },
+      {
+        "tag": "BUTTON",
+        "id": "refreshInspiration",
+        "text": "换一批",
+        "x": 323,
+        "y": 164,
+        "width": 54,
+        "height": 44,
+        "closedPanel": false
+      },
+      {
+        "tag": "BUTTON",
+        "id": "",
+        "text": "推荐",
+        "x": 14,
+        "y": 787.5,
+        "width": 70.75,
+        "height": 54,
+        "closedPanel": false
+      }
+    ]
+  },
+  "events": {
+    "errors": [],
+    "responses": [],
+    "requests": [
+      {
+        "at": 1788622476405,
+        "url": "http://127.0.0.1:8011/closet/recommendations/outfits"
+      },
+      {
+        "at": 1788622658234,
+        "url": "http://127.0.0.1:8011/closet/recommendations/outfits"
+      }
+    ]
+  }
+}

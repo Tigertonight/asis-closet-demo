@@ -1,0 +1,535 @@
+{
+  "schema_version": 1,
+  "formal_acceptance": false,
+  "scope": "raw garment supply only; no outfit, four-gate or blind-review approval",
+  "plan": "docs/audits/20260904-p0-acceptance/generated-garments/raw-supply-plan.v1.json",
+  "plan_sha256": "7fb67a9da0810b2b276c62219dcf4e28a95307c9d5fa64c19d5574120cf1c772",
+  "status": "raw_supply_complete_pending_normalization",
+  "summary": {
+    "raw_garments": 15,
+    "planned_outfits": 20,
+    "technical_ready_without_normalization": 0,
+    "requires_authorized_normalization": 15,
+    "errors": 0
+  },
+  "target_coverage": {
+    "bolt": {
+      "easy:pants": 1,
+      "typical:skirt": 1,
+      "explore:dress": 1,
+      "explore:pants": 1
+    },
+    "edge": {
+      "easy:pants": 1,
+      "easy:skirt": 1,
+      "explore:pants": 1,
+      "typical:dress": 1
+    },
+    "neon": {
+      "easy:pants": 1,
+      "easy:skirt": 1,
+      "easy:dress": 1,
+      "typical:pants": 1,
+      "typical:skirt": 1,
+      "explore:dress": 1,
+      "explore:pants": 1
+    },
+    "noir": {
+      "explore:dress": 1
+    },
+    "oops": {
+      "easy:dress": 2
+    },
+    "void": {
+      "easy:skirt": 2
+    }
+  },
+  "errors": [],
+  "entries": [
+    {
+      "token": "n0102",
+      "slug": "oops-rugby-tailored-dress",
+      "persona": "oops",
+      "source": "batch05/oops-rugby-tailored-dress-raw-v1.png",
+      "targets": [
+        "easy:dress",
+        "easy:dress"
+      ],
+      "mode": "RGBA",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "598b2c4dd7ac7d3a4d0ac78f3011028661989951cb0283a05bde931a78fcfa13",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "meaningful_bbox": [
+        235,
+        33,
+        1019,
+        1221
+      ],
+      "margins": {
+        "left": 0.1874,
+        "top": 0.0263,
+        "right": 0.1874,
+        "bottom": 0.0263
+      },
+      "technical_status": "requires_authorized_normalization"
+    },
+    {
+      "token": "n0103",
+      "slug": "noir-diagonal-zip-dress",
+      "persona": "noir",
+      "source": "batch06/noir-diagonal-zip-dress-raw-v1.png",
+      "targets": [
+        "explore:dress"
+      ],
+      "mode": "RGBA",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "4758b29c140b0cd7ccae222a91d76d50065a54a0fecfe4c7f0211416a37287d6",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "meaningful_bbox": [
+        275,
+        25,
+        979,
+        1229
+      ],
+      "margins": {
+        "left": 0.2193,
+        "top": 0.0199,
+        "right": 0.2193,
+        "bottom": 0.0199
+      },
+      "technical_status": "requires_authorized_normalization"
+    },
+    {
+      "token": "n0104",
+      "slug": "edge-diagonal-knit-top",
+      "persona": "edge",
+      "source": "batch07/edge-diagonal-knit-top-raw-v1.png",
+      "targets": [
+        "easy:pants",
+        "easy:skirt"
+      ],
+      "mode": "RGBA",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "59f003f16ad5c6096672461bec201f0fa6fe68384246e741ef32a016f5671941",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "meaningful_bbox": [
+        193,
+        59,
+        1060,
+        1193
+      ],
+      "margins": {
+        "left": 0.1539,
+        "top": 0.047,
+        "right": 0.1547,
+        "bottom": 0.0486
+      },
+      "technical_status": "requires_authorized_normalization"
+    },
+    {
+      "token": "n0105",
+      "slug": "edge-organza-panel-jacket",
+      "persona": "edge",
+      "source": "batch07/edge-organza-panel-jacket-raw-v1.png",
+      "targets": [
+        "explore:pants"
+      ],
+      "mode": "RGBA",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "bf4285bbb035f5bbb1317a3f9a8154bf5e8c2ecc018b22ea1516ee0aa99fada7",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "meaningful_bbox": [
+        82,
+        55,
+        1183,
+        1192
+      ],
+      "margins": {
+        "left": 0.0654,
+        "top": 0.0439,
+        "right": 0.0566,
+        "bottom": 0.0494
+      },
+      "technical_status": "requires_authorized_normalization"
+    },
+    {
+      "token": "n0106",
+      "slug": "edge-denim-pleat-dress",
+      "persona": "edge",
+      "source": "batch07/edge-denim-pleat-dress-raw-v1.png",
+      "targets": [
+        "typical:dress"
+      ],
+      "mode": "RGBA",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "92bdd1afdbf83f8084e56ee07cd52da5bfe0296997c2e473c06924a57633f911",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "meaningful_bbox": [
+        365,
+        100,
+        890,
+        1109
+      ],
+      "margins": {
+        "left": 0.2911,
+        "top": 0.0797,
+        "right": 0.2903,
+        "bottom": 0.1156
+      },
+      "technical_status": "requires_authorized_normalization"
+    },
+    {
+      "token": "n0107",
+      "slug": "void-offset-pocket-skirt",
+      "persona": "void",
+      "source": "batch08/void-offset-pocket-skirt-raw-v1.png",
+      "targets": [
+        "easy:skirt",
+        "easy:skirt"
+      ],
+      "mode": "RGBA",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "286d2a1b88255b54805567c841341e50743e802ca19743893b3f29ee4af8fda5",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "meaningful_bbox": [
+        393,
+        239,
+        865,
+        1010
+      ],
+      "margins": {
+        "left": 0.3134,
+        "top": 0.1906,
+        "right": 0.3102,
+        "bottom": 0.1946
+      },
+      "technical_status": "requires_authorized_normalization"
+    },
+    {
+      "token": "n0108",
+      "slug": "neon-curve-panel-top",
+      "persona": "neon",
+      "source": "batch08/neon-curve-panel-top-raw-v1.png",
+      "targets": [
+        "easy:pants",
+        "easy:skirt"
+      ],
+      "mode": "RGBA",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "4cb99f6cef2ddf0cd5fac1e92a01465b34f4da45242d4df2a31a6f1120034675",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "meaningful_bbox": [
+        228,
+        185,
+        1026,
+        1067
+      ],
+      "margins": {
+        "left": 0.1818,
+        "top": 0.1475,
+        "right": 0.1818,
+        "bottom": 0.1491
+      },
+      "technical_status": "requires_authorized_normalization"
+    },
+    {
+      "token": "n0109",
+      "slug": "neon-curve-panel-dress",
+      "persona": "neon",
+      "source": "batch08/neon-curve-panel-dress-raw-v1.png",
+      "targets": [
+        "easy:dress"
+      ],
+      "mode": "RGBA",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "a00c89449d5026680b038eb1c7e3692654b386285eb4daf24f1c49726e62976e",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "meaningful_bbox": [
+        392,
+        118,
+        861,
+        1125
+      ],
+      "margins": {
+        "left": 0.3126,
+        "top": 0.0941,
+        "right": 0.3134,
+        "bottom": 0.1029
+      },
+      "technical_status": "requires_authorized_normalization"
+    },
+    {
+      "token": "n0110",
+      "slug": "neon-typical-graphic-top",
+      "persona": "neon",
+      "source": "batch09/neon-typical-graphic-top-raw-v1.png",
+      "targets": [
+        "typical:pants",
+        "typical:skirt"
+      ],
+      "mode": "RGBA",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "4310ed778ffff14f02a4c7db1e897e0e45095caf6a48325260c71edfa8adec4f",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "meaningful_bbox": [
+        187,
+        197,
+        1066,
+        1027
+      ],
+      "margins": {
+        "left": 0.1491,
+        "top": 0.1571,
+        "right": 0.1499,
+        "bottom": 0.181
+      },
+      "technical_status": "requires_authorized_normalization"
+    },
+    {
+      "token": "n0111",
+      "slug": "neon-explore-arc-dress",
+      "persona": "neon",
+      "source": "batch09/neon-explore-arc-dress-raw-v1.png",
+      "targets": [
+        "explore:dress"
+      ],
+      "mode": "RGBA",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "9606b5db3c028c85a5fac826ffcec5d9e11d1da1f6577607ce963132304bb9f7",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "meaningful_bbox": [
+        282,
+        55,
+        974,
+        1195
+      ],
+      "margins": {
+        "left": 0.2249,
+        "top": 0.0439,
+        "right": 0.2233,
+        "bottom": 0.047
+      },
+      "technical_status": "requires_authorized_normalization"
+    },
+    {
+      "token": "n0112",
+      "slug": "neon-explore-storm-overshirt",
+      "persona": "neon",
+      "source": "batch09/neon-explore-storm-overshirt-raw-v1.png",
+      "targets": [
+        "explore:pants"
+      ],
+      "mode": "RGBA",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "0cbd41e8b099684175d580b8a31c1ce6f3d7fef5322b313296dcb191f4ec4bd4",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "meaningful_bbox": [
+        95,
+        138,
+        1160,
+        1049
+      ],
+      "margins": {
+        "left": 0.0758,
+        "top": 0.11,
+        "right": 0.075,
+        "bottom": 0.1635
+      },
+      "technical_status": "requires_authorized_normalization"
+    },
+    {
+      "token": "n0113",
+      "slug": "bolt-easy-ivory-blouse",
+      "persona": "bolt",
+      "source": "batch10/bolt-easy-ivory-blouse-raw-v1.png",
+      "targets": [
+        "easy:pants"
+      ],
+      "mode": "RGBA",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "c7e7b797c45bba1ea2791b4bf6e2af98480457de1b62bdc79082d129fc7f5547",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "meaningful_bbox": [
+        232,
+        171,
+        1022,
+        1050
+      ],
+      "margins": {
+        "left": 0.185,
+        "top": 0.1364,
+        "right": 0.185,
+        "bottom": 0.1627
+      },
+      "technical_status": "requires_authorized_normalization"
+    },
+    {
+      "token": "n0114",
+      "slug": "bolt-typical-burgundy-blouse",
+      "persona": "bolt",
+      "source": "batch10/bolt-typical-burgundy-blouse-raw-v1.png",
+      "targets": [
+        "typical:skirt"
+      ],
+      "mode": "RGBA",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "69450cec26f9d73717dddddaa81a8ab09ca8cd812fee2e7307edb147581b5192",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "meaningful_bbox": [
+        228,
+        204,
+        1026,
+        1049
+      ],
+      "margins": {
+        "left": 0.1818,
+        "top": 0.1627,
+        "right": 0.1818,
+        "bottom": 0.1635
+      },
+      "technical_status": "requires_authorized_normalization"
+    },
+    {
+      "token": "n0115",
+      "slug": "bolt-explore-emerald-dress",
+      "persona": "bolt",
+      "source": "batch10/bolt-explore-emerald-dress-raw-v1.png",
+      "targets": [
+        "explore:dress"
+      ],
+      "mode": "RGBA",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "901c042ef865eb7b080a43a711b748aab9f61eabf3bff0e5c16504dcb5e6972f",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "meaningful_bbox": [
+        384,
+        91,
+        877,
+        1154
+      ],
+      "margins": {
+        "left": 0.3062,
+        "top": 0.0726,
+        "right": 0.3006,
+        "bottom": 0.0797
+      },
+      "technical_status": "requires_authorized_normalization"
+    },
+    {
+      "token": "n0116",
+      "slug": "bolt-explore-petal-jacket",
+      "persona": "bolt",
+      "source": "batch10/bolt-explore-petal-jacket-raw-v1.png",
+      "targets": [
+        "explore:pants"
+      ],
+      "mode": "RGBA",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "da52b1a9b401b4c5cf23cf2bc7fb1881fef1dc2a267a864f321c813c491c2942",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "meaningful_bbox": [
+        164,
+        111,
+        1090,
+        1125
+      ],
+      "margins": {
+        "left": 0.1308,
+        "top": 0.0885,
+        "right": 0.1308,
+        "bottom": 0.1029
+      },
+      "technical_status": "requires_authorized_normalization"
+    }
+  ]
+}

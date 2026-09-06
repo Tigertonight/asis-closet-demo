@@ -1,0 +1,24 @@
+{
+  "source": "docs/audits/20260904-p0-acceptance/generated-garments/batch04/raw/bolt-shaped-tweed-jacket-raw-v1.png",
+  "output": "docs/audits/20260904-p0-acceptance/generated-garments/batch04/prepared/bolt-shaped-tweed-jacket-v1.png",
+  "size": [
+    1200,
+    1200
+  ],
+  "meaningful_bbox": [
+    139,
+    120,
+    1061,
+    1080
+  ],
+  "margins": {
+    "left": 0.1158,
+    "top": 0.1,
+    "right": 0.1158,
+    "bottom": 0.1
+  },
+  "transparent_ratio": 0.6122,
+  "partial_alpha_ratio": 0.3867,
+  "alpha_noise_threshold": 8,
+  "passed": true
+}

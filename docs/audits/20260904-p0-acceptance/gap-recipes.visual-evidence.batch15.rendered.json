@@ -1,0 +1,133 @@
+{
+  "schema_version": 1,
+  "batch_id": "p0-bolt-typical-15",
+  "source_visual_version": "codex-visual-16b18cdcdca36dbc306a",
+  "entries": [
+    {
+      "target_palette": "evidence_first",
+      "hero": "n0099",
+      "new_record": {
+        "id": "outfit_bolt_p0-bolt-typical-15_01",
+        "kind": "master",
+        "parent_outfit_id": "main-recipe-1324d6051823f2d006dc88a5",
+        "recipe_version": "p0-bolt-typical-15",
+        "title": "BOLT autumn 日常设计 01",
+        "description": "丝绒外观收腰裙的白圆领、细纽扣和轻泡袖集中表达精致感，素面平底鞋与托特降低配饰强度。检查是否仍有日常约会适用性，而非圣诞主题装；不得用生成时的typical标签代替整图审美判断。",
+        "primary_persona": "BOLT",
+        "secondary_personas": [],
+        "persona_affinity": {},
+        "regional_styles": [],
+        "body_types": [],
+        "scene_tags": [
+          "日常"
+        ],
+        "season_tags": [
+          "秋"
+        ],
+        "weather_tags": [],
+        "presentation": [
+          "feminine"
+        ],
+        "intensity": "typical",
+        "formality": 3,
+        "garment_ids": [
+          "garment_p0_typical_bolt_dress_n0099",
+          "garment_mute_shoes_0004",
+          "garment_mute_bag_0005"
+        ],
+        "visible_slots": [
+          "dress",
+          "shoes",
+          "bag"
+        ],
+        "layer_graph": [],
+        "slot_roles": {
+          "garment_p0_typical_bolt_dress_n0099": "hero",
+          "garment_mute_shoes_0004": "support",
+          "garment_mute_bag_0005": "support"
+        },
+        "replacement_rules": {
+          "same_slot": true,
+          "match_season": true,
+          "match_scene": true,
+          "max_formality_delta": 1,
+          "preserve_color_harmony": true
+        },
+        "structure": {
+          "visual_weight": "未判断",
+          "waistline": "未判断",
+          "tummy_space": "未判断",
+          "line_direction": "未判断"
+        },
+        "color": {
+          "temperature": "未判断",
+          "lightness": "未判断",
+          "saturation": "未判断",
+          "harmony": "未判断",
+          "palette": []
+        },
+        "assets": {
+          "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/402da8afd9e9a04ded1e1f14.webp",
+          "width": 1200,
+          "height": 1500,
+          "rights_status": "owned",
+          "layout_version": "unified-flatlay-v1"
+        },
+        "annotation": {
+          "status": "draft",
+          "source": "designer_recomposition",
+          "confidence": null,
+          "review_notes": [
+            "season, palette and persona are design targets pending whole-image review"
+          ]
+        }
+      },
+      "record_fingerprint": "0cbb657745c7380d4354db0c41b779185ce95a9b089650f5f0bd5b78d838f5a3",
+      "asset_sha256": "95ce0f217f05289d31c1ba9dd0df94ea2f7f08eea7ba66f29477608b8fd1e5c2",
+      "layout_qa": {
+        "layout_version": "unified-flatlay-v1",
+        "image_url": "/static/selfit/assets/content_v2/layouts/unified-flatlay-v1/402da8afd9e9a04ded1e1f14.webp",
+        "size": [
+          1200,
+          1500
+        ],
+        "placements": [
+          {
+            "garment_id": "garment_p0_typical_bolt_dress_n0099",
+            "slot": "dress",
+            "box": [
+              100,
+              160,
+              800,
+              1311
+            ]
+          },
+          {
+            "garment_id": "garment_mute_shoes_0004",
+            "slot": "shoes",
+            "box": [
+              891,
+              880,
+              1078,
+              1080
+            ]
+          },
+          {
+            "garment_id": "garment_mute_bag_0005",
+            "slot": "bag",
+            "box": [
+              851,
+              410,
+              1129,
+              730
+            ]
+          }
+        ]
+      },
+      "status": "pending_native_review",
+      "review": null
+    }
+  ],
+  "production_approved": false,
+  "version": "aw-designed-rendered-22be39d790bca10d0837"
+}

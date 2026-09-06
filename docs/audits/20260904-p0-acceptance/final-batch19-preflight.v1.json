@@ -1,0 +1,287 @@
+{
+  "schema_version": 1,
+  "source_anchor_version": "p0-replacement-candidates-ea631fcdbecb8178cc84",
+  "source_staging_version": "p0-replacement-staging-2abc4d82c9484a6ab88d",
+  "source_rendered_version": "aw-designed-rendered-51091e2279a5e8d38ff6",
+  "source_review_version": "p0-final-gap-19-review-e5a66f8a80bf93131719",
+  "candidate_count": 20,
+  "resulting_anchor_count": 160,
+  "constraints_pass": true,
+  "formal_acceptance": false,
+  "violations": [],
+  "personas": {
+    "bolt": {
+      "count": 10,
+      "expressions": {
+        "easy": 4,
+        "explore": 2,
+        "typical": 4
+      },
+      "structures": {
+        "dress": 3,
+        "pants": 4,
+        "skirt": 3
+      },
+      "parent_over_cap": {},
+      "main_item_over_cap": {},
+      "family_over_cap": {},
+      "selection_gap": null
+    },
+    "ease": {
+      "count": 10,
+      "expressions": {
+        "easy": 4,
+        "explore": 2,
+        "typical": 4
+      },
+      "structures": {
+        "dress": 1,
+        "pants": 5,
+        "skirt": 4
+      },
+      "parent_over_cap": {},
+      "main_item_over_cap": {},
+      "family_over_cap": {},
+      "selection_gap": null
+    },
+    "edge": {
+      "count": 10,
+      "expressions": {
+        "easy": 4,
+        "explore": 2,
+        "typical": 4
+      },
+      "structures": {
+        "dress": 3,
+        "pants": 4,
+        "skirt": 3
+      },
+      "parent_over_cap": {},
+      "main_item_over_cap": {},
+      "family_over_cap": {},
+      "selection_gap": null
+    },
+    "film": {
+      "count": 10,
+      "expressions": {
+        "easy": 4,
+        "explore": 2,
+        "typical": 4
+      },
+      "structures": {
+        "dress": 1,
+        "pants": 4,
+        "skirt": 5
+      },
+      "parent_over_cap": {},
+      "main_item_over_cap": {},
+      "family_over_cap": {},
+      "selection_gap": null
+    },
+    "flou": {
+      "count": 10,
+      "expressions": {
+        "easy": 4,
+        "explore": 2,
+        "typical": 4
+      },
+      "structures": {
+        "dress": 2,
+        "pants": 3,
+        "skirt": 5
+      },
+      "parent_over_cap": {},
+      "main_item_over_cap": {},
+      "family_over_cap": {},
+      "selection_gap": null
+    },
+    "heir": {
+      "count": 10,
+      "expressions": {
+        "easy": 4,
+        "explore": 2,
+        "typical": 4
+      },
+      "structures": {
+        "dress": 2,
+        "pants": 3,
+        "skirt": 5
+      },
+      "parent_over_cap": {},
+      "main_item_over_cap": {},
+      "family_over_cap": {},
+      "selection_gap": null
+    },
+    "iced": {
+      "count": 10,
+      "expressions": {
+        "easy": 4,
+        "explore": 2,
+        "typical": 4
+      },
+      "structures": {
+        "dress": 2,
+        "pants": 5,
+        "skirt": 3
+      },
+      "parent_over_cap": {},
+      "main_item_over_cap": {},
+      "family_over_cap": {},
+      "selection_gap": null
+    },
+    "jade": {
+      "count": 10,
+      "expressions": {
+        "easy": 4,
+        "explore": 2,
+        "typical": 4
+      },
+      "structures": {
+        "dress": 2,
+        "pants": 5,
+        "skirt": 3
+      },
+      "parent_over_cap": {},
+      "main_item_over_cap": {},
+      "family_over_cap": {},
+      "selection_gap": null
+    },
+    "loop": {
+      "count": 10,
+      "expressions": {
+        "easy": 4,
+        "explore": 2,
+        "typical": 4
+      },
+      "structures": {
+        "dress": 1,
+        "pants": 5,
+        "skirt": 4
+      },
+      "parent_over_cap": {},
+      "main_item_over_cap": {},
+      "family_over_cap": {},
+      "selection_gap": null
+    },
+    "melt": {
+      "count": 10,
+      "expressions": {
+        "easy": 4,
+        "explore": 2,
+        "typical": 4
+      },
+      "structures": {
+        "dress": 3,
+        "pants": 2,
+        "skirt": 5
+      },
+      "parent_over_cap": {},
+      "main_item_over_cap": {},
+      "family_over_cap": {},
+      "selection_gap": null
+    },
+    "mute": {
+      "count": 10,
+      "expressions": {
+        "easy": 4,
+        "explore": 2,
+        "typical": 4
+      },
+      "structures": {
+        "dress": 3,
+        "pants": 3,
+        "skirt": 4
+      },
+      "parent_over_cap": {},
+      "main_item_over_cap": {},
+      "family_over_cap": {},
+      "selection_gap": null
+    },
+    "neon": {
+      "count": 10,
+      "expressions": {
+        "easy": 4,
+        "explore": 2,
+        "typical": 4
+      },
+      "structures": {
+        "dress": 3,
+        "pants": 4,
+        "skirt": 3
+      },
+      "parent_over_cap": {},
+      "main_item_over_cap": {},
+      "family_over_cap": {},
+      "selection_gap": null
+    },
+    "noir": {
+      "count": 10,
+      "expressions": {
+        "easy": 4,
+        "explore": 2,
+        "typical": 4
+      },
+      "structures": {
+        "dress": 3,
+        "pants": 4,
+        "skirt": 3
+      },
+      "parent_over_cap": {},
+      "main_item_over_cap": {},
+      "family_over_cap": {},
+      "selection_gap": null
+    },
+    "oops": {
+      "count": 10,
+      "expressions": {
+        "easy": 4,
+        "explore": 2,
+        "typical": 4
+      },
+      "structures": {
+        "dress": 2,
+        "pants": 4,
+        "skirt": 4
+      },
+      "parent_over_cap": {},
+      "main_item_over_cap": {},
+      "family_over_cap": {},
+      "selection_gap": null
+    },
+    "void": {
+      "count": 10,
+      "expressions": {
+        "easy": 4,
+        "explore": 2,
+        "typical": 4
+      },
+      "structures": {
+        "dress": 2,
+        "pants": 5,
+        "skirt": 3
+      },
+      "parent_over_cap": {},
+      "main_item_over_cap": {},
+      "family_over_cap": {},
+      "selection_gap": null
+    },
+    "wabi": {
+      "count": 10,
+      "expressions": {
+        "easy": 4,
+        "explore": 2,
+        "typical": 4
+      },
+      "structures": {
+        "dress": 1,
+        "pants": 5,
+        "skirt": 4
+      },
+      "parent_over_cap": {},
+      "main_item_over_cap": {},
+      "family_over_cap": {},
+      "selection_gap": null
+    }
+  },
+  "version": "p0-final-batch-preflight-a4550679787fd642f22e"
+}

@@ -1,0 +1,454 @@
+{
+  "schema_version": 1,
+  "status": "diagnostic_fail",
+  "evidence_scope": "offline_candidate_sequence_only",
+  "formal_acceptance": false,
+  "unverified": [
+    "current four-gate and blind-review admission",
+    "authenticated HTTP feed",
+    "compatible-persona policy",
+    "pagination and cursor snapshots",
+    "all sliding windows and cross-page overlap",
+    "feedback and account isolation"
+  ],
+  "personas": {
+    "bolt": {
+      "selected": [
+        "outfit_bolt_p0-bolt-pants-16_01",
+        "outfit_bolt_p0-distinct-bolt-04_01",
+        "outfit_bolt_p0-bolt-structure-17_01",
+        "outfit_bolt_p0-distinct-bolt-04_02",
+        "outfit_bolt_p0-bolt-structure-17_02"
+      ],
+      "structures": {
+        "pants": 2,
+        "skirt": 2,
+        "dress": 1
+      },
+      "expressions": {
+        "easy": 3,
+        "typical": 2
+      },
+      "held": {
+        "structure_or_asset": 4
+      },
+      "errors": [
+        "sequence did not produce 10 anchors",
+        "expression mix failed"
+      ]
+    },
+    "ease": {
+      "selected": [
+        "outfit_heir_master_01__p0-persona-ease",
+        "outfit_iced_master_13__p0-persona-ease",
+        "outfit_ease_master_06",
+        "outfit_mute_master_08__p0-persona-ease",
+        "outfit_ease_master_15",
+        "outfit_wabi_master_28_v1__p0-persona-ease",
+        "outfit_bolt_master_10_v1__p0-persona-ease",
+        "outfit_heir_master_13_v2__p0-persona-ease",
+        "outfit_melt_master_08__p0-persona-ease",
+        "outfit_melt_master_12_v2__p0-persona-ease"
+      ],
+      "structures": {
+        "pants": 5,
+        "skirt": 4,
+        "dress": 1
+      },
+      "expressions": {
+        "easy": 4,
+        "typical": 4,
+        "explore": 2
+      },
+      "held": {},
+      "errors": []
+    },
+    "edge": {
+      "selected": [
+        "outfit_edge_p0-edge-rebuild-07_01",
+        "outfit_edge_p0-edge-rebuild-07_02",
+        "outfit_edge_p0-edge-rebuild-07_03"
+      ],
+      "structures": {
+        "pants": 1,
+        "skirt": 1,
+        "dress": 1
+      },
+      "expressions": {
+        "easy": 2,
+        "typical": 1
+      },
+      "held": {
+        "structure_or_asset": 4
+      },
+      "errors": [
+        "sequence did not produce 10 anchors",
+        "expression mix failed"
+      ]
+    },
+    "film": {
+      "selected": [
+        "outfit_bolt_master_09__p0-persona-film",
+        "outfit_heir_master_02__p0-persona-film",
+        "outfit_ease_master_12__p0-persona-film",
+        "outfit_heir_master_12__p0-persona-film",
+        "outfit_film_master_03",
+        "outfit_void_master_15_v1__p0-persona-film",
+        "outfit_film_p0-gap-02_01",
+        "outfit_film_master_13_v2",
+        "outfit_neon_master_14_v2__p0-persona-film",
+        "outfit_oops_master_25_v1__p0-persona-film"
+      ],
+      "structures": {
+        "pants": 4,
+        "skirt": 5,
+        "dress": 1
+      },
+      "expressions": {
+        "easy": 4,
+        "typical": 4,
+        "explore": 2
+      },
+      "held": {},
+      "errors": []
+    },
+    "flou": {
+      "selected": [
+        "outfit_ease_master_08__p0-persona-flou",
+        "outfit_ease_master_14__p0-persona-flou",
+        "outfit_iced_master_15__p0-persona-flou",
+        "outfit_jade_master_30__p0-persona-flou",
+        "outfit_melt_master_06__p0-persona-flou",
+        "outfit_mute_master_15__p0-persona-flou",
+        "outfit_neon_master_08__p0-persona-flou",
+        "outfit_melt_master_14__p0-persona-flou",
+        "outfit_neon_master_29__p0-persona-flou",
+        "outfit_neon_master_11__p0-persona-flou"
+      ],
+      "structures": {
+        "pants": 3,
+        "skirt": 5,
+        "dress": 2
+      },
+      "expressions": {
+        "easy": 4,
+        "typical": 4,
+        "explore": 2
+      },
+      "held": {},
+      "errors": []
+    },
+    "heir": {
+      "selected": [
+        "outfit_ease_master_26__p0-persona-heir",
+        "outfit_ease_master_29__p0-persona-heir",
+        "outfit_flou_master_12__p0-persona-heir",
+        "outfit_heir_master_06",
+        "outfit_heir_master_07_v1",
+        "outfit_mute_master_07__p0-persona-heir",
+        "outfit_edge_master_14__p0-persona-heir",
+        "outfit_heir_master_15_v1",
+        "outfit_melt_master_11_v2__p0-persona-heir",
+        "outfit_mute_master_11_v1__p0-persona-heir"
+      ],
+      "structures": {
+        "dress": 2,
+        "skirt": 5,
+        "pants": 3
+      },
+      "expressions": {
+        "easy": 4,
+        "typical": 4,
+        "explore": 2
+      },
+      "held": {},
+      "errors": []
+    },
+    "iced": {
+      "selected": [
+        "outfit_edge_master_09__p0-persona-iced",
+        "outfit_flou_master_26__p0-persona-iced",
+        "outfit_flou_master_14__p0-persona-iced",
+        "outfit_iced_master_02",
+        "outfit_iced_master_18_v1",
+        "outfit_iced_master_05",
+        "outfit_iced_master_06_v2",
+        "outfit_iced_master_25_v1",
+        "outfit_mute_master_10__p0-persona-iced",
+        "outfit_iced_p0-gap-01_02"
+      ],
+      "structures": {
+        "pants": 5,
+        "dress": 2,
+        "skirt": 3
+      },
+      "expressions": {
+        "easy": 4,
+        "typical": 4,
+        "explore": 2
+      },
+      "held": {},
+      "errors": []
+    },
+    "jade": {
+      "selected": [
+        "outfit_jade_master_05",
+        "outfit_jade_master_15",
+        "outfit_jade_master_01",
+        "outfit_jade_p0-jade-layer-09_01",
+        "outfit_jade_p0-jade-rebuild-08_02",
+        "outfit_jade_p0-jade-rebuild-08_01",
+        "outfit_jade_p0-jade-rebuild-08_04",
+        "outfit_jade_p0-jade-rebuild-08_03",
+        "outfit_wabi_master_06__p0-persona-jade",
+        "outfit_jade_p0-jade-rebuild-08_05"
+      ],
+      "structures": {
+        "pants": 5,
+        "skirt": 3,
+        "dress": 2
+      },
+      "expressions": {
+        "easy": 4,
+        "typical": 4,
+        "explore": 2
+      },
+      "held": {},
+      "errors": []
+    },
+    "loop": {
+      "selected": [
+        "outfit_flou_master_15__p0-persona-loop",
+        "outfit_iced_master_28__p0-persona-loop",
+        "outfit_bolt_master_03__p0-persona-loop",
+        "outfit_neon_master_03__p0-persona-loop",
+        "outfit_loop_master_04",
+        "outfit_neon_master_13__p0-persona-loop",
+        "outfit_edge_master_05__p0-persona-loop",
+        "outfit_loop_master_06",
+        "outfit_loop_master_15",
+        "outfit_neon_master_12__p0-persona-loop"
+      ],
+      "structures": {
+        "skirt": 4,
+        "dress": 1,
+        "pants": 5
+      },
+      "expressions": {
+        "easy": 4,
+        "typical": 4,
+        "explore": 2
+      },
+      "held": {},
+      "errors": []
+    },
+    "melt": {
+      "selected": [
+        "outfit_ease_master_25__p0-persona-melt",
+        "outfit_melt_master_04",
+        "outfit_ease_master_16_v1__p0-persona-melt",
+        "outfit_melt_master_25",
+        "outfit_heir_master_18__p0-persona-melt",
+        "outfit_mute_master_12__p0-persona-melt",
+        "outfit_heir_master_14_v1__p0-persona-melt",
+        "outfit_heir_master_25__p0-persona-melt",
+        "outfit_melt_master_15",
+        "outfit_melt_master_02_v2"
+      ],
+      "structures": {
+        "dress": 3,
+        "pants": 2,
+        "skirt": 5
+      },
+      "expressions": {
+        "easy": 4,
+        "typical": 4,
+        "explore": 2
+      },
+      "held": {},
+      "errors": []
+    },
+    "mute": {
+      "selected": [
+        "outfit_heir_master_29__p0-persona-mute",
+        "outfit_iced_master_04__p0-persona-mute",
+        "outfit_edge_master_15__p0-persona-mute",
+        "outfit_mute_master_09",
+        "outfit_iced_master_29_v1__p0-persona-mute",
+        "outfit_mute_master_13",
+        "outfit_neon_master_15__p0-persona-mute",
+        "outfit_mute_p0-mute-rebuild-10_01",
+        "outfit_mute_p0-mute-rebuild-10_02",
+        "outfit_noir_master_09__p0-persona-mute"
+      ],
+      "structures": {
+        "dress": 3,
+        "pants": 3,
+        "skirt": 4
+      },
+      "expressions": {
+        "easy": 4,
+        "typical": 4,
+        "explore": 2
+      },
+      "held": {},
+      "errors": []
+    },
+    "neon": {
+      "selected": [
+        "outfit_oops_aw-winter-04_09__p0-persona-neon"
+      ],
+      "structures": {
+        "dress": 1
+      },
+      "expressions": {
+        "easy": 1
+      },
+      "held": {
+        "structure_or_asset": 7
+      },
+      "errors": [
+        "sequence did not produce 10 anchors",
+        "structure coverage/cap failed",
+        "expression mix failed"
+      ]
+    },
+    "noir": {
+      "selected": [
+        "outfit_edge_master_30__p0-persona-noir",
+        "outfit_mute_master_01__p0-persona-noir",
+        "outfit_edge_master_27_v1__p0-persona-noir",
+        "outfit_mute_master_16__p0-persona-noir",
+        "outfit_noir_master_14",
+        "outfit_neon_master_07_v1__p0-persona-noir",
+        "outfit_edge_master_01_v1__p0-persona-noir",
+        "outfit_noir_p0-noir-rebuild-12_01",
+        "outfit_noir_p0-noir-rebuild-12_02"
+      ],
+      "structures": {
+        "dress": 2,
+        "pants": 4,
+        "skirt": 3
+      },
+      "expressions": {
+        "easy": 4,
+        "typical": 4,
+        "explore": 1
+      },
+      "held": {
+        "structure_or_asset": 1
+      },
+      "errors": [
+        "sequence did not produce 10 anchors",
+        "expression mix failed"
+      ]
+    },
+    "oops": {
+      "selected": [
+        "outfit_oops_p0-oops-rebuild-13_01",
+        "outfit_oops_p0-oops-rebuild-13_02",
+        "outfit_film_master_02_v2__p0-persona-oops"
+      ],
+      "structures": {
+        "skirt": 2,
+        "pants": 1
+      },
+      "expressions": {
+        "easy": 2,
+        "typical": 1
+      },
+      "held": {
+        "structure_or_asset": 2
+      },
+      "errors": [
+        "sequence did not produce 10 anchors",
+        "structure coverage/cap failed",
+        "expression mix failed"
+      ]
+    },
+    "void": {
+      "selected": [
+        "outfit_void_p0-void-rebuild-14_01",
+        "outfit_void_p0-void-rebuild-14_02",
+        "outfit_film_master_06_v2__p0-persona-void"
+      ],
+      "structures": {
+        "dress": 2,
+        "pants": 1
+      },
+      "expressions": {
+        "easy": 2,
+        "typical": 1
+      },
+      "held": {
+        "structure_or_asset": 2
+      },
+      "errors": [
+        "sequence did not produce 10 anchors",
+        "structure coverage/cap failed",
+        "expression mix failed"
+      ]
+    },
+    "wabi": {
+      "selected": [
+        "outfit_ease_master_04__p0-persona-wabi",
+        "outfit_ease_master_09__p0-persona-wabi",
+        "outfit_wabi_master_08",
+        "outfit_ease_master_11__p0-persona-wabi",
+        "outfit_wabi_master_09_v2",
+        "outfit_wabi_master_04",
+        "outfit_wabi_p0-gap-02_02",
+        "outfit_wabi_master_11_v1",
+        "outfit_wabi_master_12_v2",
+        "outfit_wabi_p0-wabi-layer-06_01"
+      ],
+      "structures": {
+        "pants": 5,
+        "skirt": 4,
+        "dress": 1
+      },
+      "expressions": {
+        "easy": 4,
+        "typical": 4,
+        "explore": 2
+      },
+      "held": {},
+      "errors": []
+    }
+  },
+  "errors": [
+    "bolt: sequence did not produce 10 anchors",
+    "bolt: expression mix failed",
+    "edge: sequence did not produce 10 anchors",
+    "edge: expression mix failed",
+    "neon: sequence did not produce 10 anchors",
+    "neon: structure coverage/cap failed",
+    "neon: expression mix failed",
+    "noir: sequence did not produce 10 anchors",
+    "noir: expression mix failed",
+    "oops: sequence did not produce 10 anchors",
+    "oops: structure coverage/cap failed",
+    "oops: expression mix failed",
+    "void: sequence did not produce 10 anchors",
+    "void: structure coverage/cap failed",
+    "void: expression mix failed"
+  ],
+  "cases": {
+    "REC-001": "Not Run",
+    "REC-002": "Not Run",
+    "REC-003": "Not Run",
+    "REC-004": "Not Run",
+    "REC-005": "Not Run",
+    "REC-006": "Not Run",
+    "REC-007": "Not Run",
+    "REC-008": "Not Run",
+    "REC-009": "Not Run",
+    "REC-010": "Not Run",
+    "REC-011": "Not Run",
+    "REC-012": "Not Run",
+    "REC-013": "Not Run",
+    "REC-014": "Not Run"
+  },
+  "anchor_manifest_sha256": "0fc5ae5e49922a1cc54f47f00bb708826312d67a836b84397850c5a3b52b5e47",
+  "staging_sha256": "0d0db5a89318bed068175134906dae90a0c04a33a6c7b8703449e72eb7cc5b16"
+}

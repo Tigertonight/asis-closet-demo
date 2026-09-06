@@ -1,0 +1,498 @@
+{
+  "schema_version": 1,
+  "anchor_manifest_sha256": "0fc5ae5e49922a1cc54f47f00bb708826312d67a836b84397850c5a3b52b5e47",
+  "scope": "partial_execution_ledger; Not Run is intentionally not treated as Pass",
+  "summary": {
+    "total": 94,
+    "pass": 9,
+    "not_run": 85,
+    "fail": 0,
+    "blocked": 0
+  },
+  "cases": {
+    "ANCHOR-001": {
+      "status": "Pass",
+      "executor": "Codex production-side automated preflight",
+      "executed_at": "2026-09-06T00:28:47.518196+00:00",
+      "actual_result": "The resulting candidate manifest contains exactly 16 personas and 160 anchors.",
+      "artifacts": [
+        {
+          "path": "docs/audits/20260904-p0-acceptance/final-batch19-preflight.v1.json",
+          "sha256": "b26500895c84a16da75b28722fab35ffa67a7b0c053d0bc1f029656a539e2d60"
+        },
+        {
+          "path": "docs/audits/20260904-p0-acceptance/final-batch19-preflight-regression.v1.xml",
+          "sha256": "f3bf2b65e3da8f2586bab0d25f7ee66ffef7991c275da6d80eb3c329e38a2137"
+        }
+      ]
+    },
+    "ANCHOR-002": {
+      "status": "Pass",
+      "executor": "Codex production-side automated preflight",
+      "executed_at": "2026-09-06T00:28:47.518196+00:00",
+      "actual_result": "Every persona has exactly 4 easy, 4 typical and 2 explore anchors.",
+      "artifacts": [
+        {
+          "path": "docs/audits/20260904-p0-acceptance/final-batch19-preflight.v1.json",
+          "sha256": "b26500895c84a16da75b28722fab35ffa67a7b0c053d0bc1f029656a539e2d60"
+        },
+        {
+          "path": "docs/audits/20260904-p0-acceptance/final-batch19-preflight-regression.v1.xml",
+          "sha256": "f3bf2b65e3da8f2586bab0d25f7ee66ffef7991c275da6d80eb3c329e38a2137"
+        }
+      ]
+    },
+    "ANCHOR-003": {
+      "status": "Pass",
+      "executor": "Codex production-side automated preflight",
+      "executed_at": "2026-09-06T00:28:47.518196+00:00",
+      "actual_result": "Every persona covers pants, skirt and dress; no structure exceeds five rows.",
+      "artifacts": [
+        {
+          "path": "docs/audits/20260904-p0-acceptance/final-batch19-preflight.v1.json",
+          "sha256": "b26500895c84a16da75b28722fab35ffa67a7b0c053d0bc1f029656a539e2d60"
+        },
+        {
+          "path": "docs/audits/20260904-p0-acceptance/final-batch19-preflight-regression.v1.xml",
+          "sha256": "f3bf2b65e3da8f2586bab0d25f7ee66ffef7991c275da6d80eb3c329e38a2137"
+        }
+      ]
+    },
+    "ANCHOR-004": {
+      "status": "Pass",
+      "executor": "Codex production-side automated preflight",
+      "executed_at": "2026-09-06T00:28:47.518196+00:00",
+      "actual_result": "All 160 selected parent recipes are unique.",
+      "artifacts": [
+        {
+          "path": "docs/audits/20260904-p0-acceptance/final-batch19-preflight.v1.json",
+          "sha256": "b26500895c84a16da75b28722fab35ffa67a7b0c053d0bc1f029656a539e2d60"
+        },
+        {
+          "path": "docs/audits/20260904-p0-acceptance/final-batch19-preflight-regression.v1.xml",
+          "sha256": "f3bf2b65e3da8f2586bab0d25f7ee66ffef7991c275da6d80eb3c329e38a2137"
+        }
+      ]
+    },
+    "ANCHOR-005": {
+      "status": "Pass",
+      "executor": "Codex production-side automated preflight",
+      "executed_at": "2026-09-06T00:28:47.518196+00:00",
+      "actual_result": "No main garment appears more than twice within one persona.",
+      "artifacts": [
+        {
+          "path": "docs/audits/20260904-p0-acceptance/final-batch19-preflight.v1.json",
+          "sha256": "b26500895c84a16da75b28722fab35ffa67a7b0c053d0bc1f029656a539e2d60"
+        },
+        {
+          "path": "docs/audits/20260904-p0-acceptance/final-batch19-preflight-regression.v1.xml",
+          "sha256": "f3bf2b65e3da8f2586bab0d25f7ee66ffef7991c275da6d80eb3c329e38a2137"
+        }
+      ]
+    },
+    "ANCHOR-006": {
+      "status": "Pass",
+      "executor": "Codex production-side automated preflight",
+      "executed_at": "2026-09-06T00:28:47.518196+00:00",
+      "actual_result": "No style family appears more than twice within one persona.",
+      "artifacts": [
+        {
+          "path": "docs/audits/20260904-p0-acceptance/final-batch19-preflight.v1.json",
+          "sha256": "b26500895c84a16da75b28722fab35ffa67a7b0c053d0bc1f029656a539e2d60"
+        },
+        {
+          "path": "docs/audits/20260904-p0-acceptance/final-batch19-preflight-regression.v1.xml",
+          "sha256": "f3bf2b65e3da8f2586bab0d25f7ee66ffef7991c275da6d80eb3c329e38a2137"
+        }
+      ]
+    },
+    "ANCHOR-007": {
+      "status": "Not Run",
+      "actual_result": "No complete revision-bound execution evidence has been collected for this case."
+    },
+    "ANCHOR-008": {
+      "status": "Not Run",
+      "actual_result": "No complete revision-bound execution evidence has been collected for this case."
+    },
+    "ANCHOR-009": {
+      "status": "Not Run",
+      "actual_result": "No complete revision-bound execution evidence has been collected for this case."
+    },
+    "ANCHOR-010": {
+      "status": "Not Run",
+      "actual_result": "No complete revision-bound execution evidence has been collected for this case."
+    },
+    "ANCHOR-011": {
+      "status": "Not Run",
+      "actual_result": "No complete revision-bound execution evidence has been collected for this case."
+    },
+    "ANCHOR-012": {
+      "status": "Not Run",
+      "actual_result": "No complete revision-bound execution evidence has been collected for this case."
+    },
+    "BLIND-001": {
+      "status": "Not Run",
+      "actual_result": "No complete revision-bound execution evidence has been collected for this case."
+    },
+    "BLIND-002": {
+      "status": "Not Run",
+      "actual_result": "No complete revision-bound execution evidence has been collected for this case."
+    },
+    "BLIND-003": {
+      "status": "Not Run",
+      "actual_result": "No complete revision-bound execution evidence has been collected for this case."
+    },
+    "BLIND-004": {
+      "status": "Not Run",
+      "actual_result": "No complete revision-bound execution evidence has been collected for this case."
+    },
+    "BLIND-005": {
+      "status": "Not Run",
+      "actual_result": "No complete revision-bound execution evidence has been collected for this case."
+    },
+    "BLIND-006": {
+      "status": "Not Run",
+      "actual_result": "No complete revision-bound execution evidence has been collected for this case."
+    },
+    "BLIND-007": {
+      "status": "Not Run",
+      "actual_result": "No complete revision-bound execution evidence has been collected for this case."
+    },
+    "BLIND-008": {
+      "status": "Not Run",
+      "actual_result": "No complete revision-bound execution evidence has been collected for this case."
+    },
+    "BLIND-009": {
+      "status": "Not Run",
+      "actual_result": "No complete revision-bound execution evidence has been collected for this case."
+    },
+    "BLIND-010": {
+      "status": "Not Run",
+      "actual_result": "No complete revision-bound execution evidence has been collected for this case."
+    },
+    "CONTENT-001": {
+      "status": "Pass",
+      "executor": "Codex production-side automated preflight",
+      "executed_at": "2026-09-06T00:28:47.518196+00:00",
+      "actual_result": "The reviewed batch loader resolved all referenced outfit, garment and image records.",
+      "artifacts": [
+        {
+          "path": "docs/audits/20260904-p0-acceptance/final-batch19-preflight.v1.json",
+          "sha256": "b26500895c84a16da75b28722fab35ffa67a7b0c053d0bc1f029656a539e2d60"
+        },
+        {
+          "path": "docs/audits/20260904-p0-acceptance/final-batch19-preflight-regression.v1.xml",
+          "sha256": "f3bf2b65e3da8f2586bab0d25f7ee66ffef7991c275da6d80eb3c329e38a2137"
+        }
+      ]
+    },
+    "CONTENT-002": {
+      "status": "Not Run",
+      "actual_result": "No complete revision-bound execution evidence has been collected for this case."
+    },
+    "CONTENT-003": {
+      "status": "Not Run",
+      "actual_result": "No complete revision-bound execution evidence has been collected for this case."
+    },
+    "CONTENT-004": {
+      "status": "Not Run",
+      "actual_result": "No complete revision-bound execution evidence has been collected for this case."
+    },
+    "CONTENT-005": {
+      "status": "Not Run",
+      "actual_result": "No complete revision-bound execution evidence has been collected for this case."
+    },
+    "CONTENT-006": {
+      "status": "Not Run",
+      "actual_result": "No complete revision-bound execution evidence has been collected for this case."
+    },
+    "CONTENT-007": {
+      "status": "Not Run",
+      "actual_result": "No complete revision-bound execution evidence has been collected for this case."
+    },
+    "CONTENT-008": {
+      "status": "Not Run",
+      "actual_result": "No complete revision-bound execution evidence has been collected for this case."
+    },
+    "CONTENT-009": {
+      "status": "Not Run",
+      "actual_result": "No complete revision-bound execution evidence has been collected for this case."
+    },
+    "CONTENT-010": {
+      "status": "Not Run",
+      "actual_result": "No complete revision-bound execution evidence has been collected for this case."
+    },
+    "CONTENT-011": {
+      "status": "Pass",
+      "executor": "Codex production-side automated preflight",
+      "executed_at": "2026-09-06T00:28:47.518196+00:00",
+      "actual_result": "The complete 160-row preflight found no duplicate main or parent recipe.",
+      "artifacts": [
+        {
+          "path": "docs/audits/20260904-p0-acceptance/final-batch19-preflight.v1.json",
+          "sha256": "b26500895c84a16da75b28722fab35ffa67a7b0c053d0bc1f029656a539e2d60"
+        },
+        {
+          "path": "docs/audits/20260904-p0-acceptance/final-batch19-preflight-regression.v1.xml",
+          "sha256": "f3bf2b65e3da8f2586bab0d25f7ee66ffef7991c275da6d80eb3c329e38a2137"
+        }
+      ]
+    },
+    "CONTENT-012": {
+      "status": "Not Run",
+      "actual_result": "No complete revision-bound execution evidence has been collected for this case."
+    },
+    "E2E-001": {
+      "status": "Not Run",
+      "actual_result": "No complete revision-bound execution evidence has been collected for this case."
+    },
+    "E2E-002": {
+      "status": "Not Run",
+      "actual_result": "No complete revision-bound execution evidence has been collected for this case."
+    },
+    "E2E-003": {
+      "status": "Not Run",
+      "actual_result": "No complete revision-bound execution evidence has been collected for this case."
+    },
+    "E2E-004": {
+      "status": "Not Run",
+      "actual_result": "No complete revision-bound execution evidence has been collected for this case."
+    },
+    "E2E-005": {
+      "status": "Not Run",
+      "actual_result": "No complete revision-bound execution evidence has been collected for this case."
+    },
+    "E2E-006": {
+      "status": "Not Run",
+      "actual_result": "No complete revision-bound execution evidence has been collected for this case."
+    },
+    "E2E-007": {
+      "status": "Not Run",
+      "actual_result": "No complete revision-bound execution evidence has been collected for this case."
+    },
+    "E2E-008": {
+      "status": "Not Run",
+      "actual_result": "No complete revision-bound execution evidence has been collected for this case."
+    },
+    "E2E-009": {
+      "status": "Not Run",
+      "actual_result": "No complete revision-bound execution evidence has been collected for this case."
+    },
+    "E2E-010": {
+      "status": "Not Run",
+      "actual_result": "No complete revision-bound execution evidence has been collected for this case."
+    },
+    "E2E-011": {
+      "status": "Not Run",
+      "actual_result": "No complete revision-bound execution evidence has been collected for this case."
+    },
+    "E2E-012": {
+      "status": "Not Run",
+      "actual_result": "No complete revision-bound execution evidence has been collected for this case."
+    },
+    "FAMILY-001": {
+      "status": "Pass",
+      "executor": "Codex production-side automated preflight",
+      "executed_at": "2026-09-06T00:28:47.518196+00:00",
+      "actual_result": "All selected main garments resolved to a registered family or conservative singleton.",
+      "artifacts": [
+        {
+          "path": "docs/audits/20260904-p0-acceptance/final-batch19-preflight.v1.json",
+          "sha256": "b26500895c84a16da75b28722fab35ffa67a7b0c053d0bc1f029656a539e2d60"
+        },
+        {
+          "path": "docs/audits/20260904-p0-acceptance/final-batch19-preflight-regression.v1.xml",
+          "sha256": "f3bf2b65e3da8f2586bab0d25f7ee66ffef7991c275da6d80eb3c329e38a2137"
+        }
+      ]
+    },
+    "FAMILY-002": {
+      "status": "Not Run",
+      "actual_result": "No complete revision-bound execution evidence has been collected for this case."
+    },
+    "FAMILY-003": {
+      "status": "Not Run",
+      "actual_result": "No complete revision-bound execution evidence has been collected for this case."
+    },
+    "FAMILY-004": {
+      "status": "Not Run",
+      "actual_result": "No complete revision-bound execution evidence has been collected for this case."
+    },
+    "FAMILY-005": {
+      "status": "Not Run",
+      "actual_result": "No complete revision-bound execution evidence has been collected for this case."
+    },
+    "FAMILY-006": {
+      "status": "Not Run",
+      "actual_result": "No complete revision-bound execution evidence has been collected for this case."
+    },
+    "FEED-001": {
+      "status": "Not Run",
+      "actual_result": "No complete revision-bound execution evidence has been collected for this case."
+    },
+    "FEED-002": {
+      "status": "Not Run",
+      "actual_result": "No complete revision-bound execution evidence has been collected for this case."
+    },
+    "FEED-003": {
+      "status": "Not Run",
+      "actual_result": "No complete revision-bound execution evidence has been collected for this case."
+    },
+    "FEED-004": {
+      "status": "Not Run",
+      "actual_result": "No complete revision-bound execution evidence has been collected for this case."
+    },
+    "FEED-005": {
+      "status": "Not Run",
+      "actual_result": "No complete revision-bound execution evidence has been collected for this case."
+    },
+    "FEED-006": {
+      "status": "Not Run",
+      "actual_result": "No complete revision-bound execution evidence has been collected for this case."
+    },
+    "FEED-007": {
+      "status": "Not Run",
+      "actual_result": "No complete revision-bound execution evidence has been collected for this case."
+    },
+    "FEED-008": {
+      "status": "Not Run",
+      "actual_result": "No complete revision-bound execution evidence has been collected for this case."
+    },
+    "FEED-009": {
+      "status": "Not Run",
+      "actual_result": "No complete revision-bound execution evidence has been collected for this case."
+    },
+    "FEED-010": {
+      "status": "Not Run",
+      "actual_result": "No complete revision-bound execution evidence has been collected for this case."
+    },
+    "FEED-011": {
+      "status": "Not Run",
+      "actual_result": "No complete revision-bound execution evidence has been collected for this case."
+    },
+    "FEED-012": {
+      "status": "Not Run",
+      "actual_result": "No complete revision-bound execution evidence has been collected for this case."
+    },
+    "FEED-013": {
+      "status": "Not Run",
+      "actual_result": "No complete revision-bound execution evidence has been collected for this case."
+    },
+    "FEED-014": {
+      "status": "Not Run",
+      "actual_result": "No complete revision-bound execution evidence has been collected for this case."
+    },
+    "PERF-001": {
+      "status": "Not Run",
+      "actual_result": "No complete revision-bound execution evidence has been collected for this case."
+    },
+    "PERF-002": {
+      "status": "Not Run",
+      "actual_result": "No complete revision-bound execution evidence has been collected for this case."
+    },
+    "PERF-003": {
+      "status": "Not Run",
+      "actual_result": "No complete revision-bound execution evidence has been collected for this case."
+    },
+    "PERF-004": {
+      "status": "Not Run",
+      "actual_result": "No complete revision-bound execution evidence has been collected for this case."
+    },
+    "PERF-005": {
+      "status": "Not Run",
+      "actual_result": "No complete revision-bound execution evidence has been collected for this case."
+    },
+    "PERF-006": {
+      "status": "Not Run",
+      "actual_result": "No complete revision-bound execution evidence has been collected for this case."
+    },
+    "PERF-007": {
+      "status": "Not Run",
+      "actual_result": "No complete revision-bound execution evidence has been collected for this case."
+    },
+    "PERF-008": {
+      "status": "Not Run",
+      "actual_result": "No complete revision-bound execution evidence has been collected for this case."
+    },
+    "REC-001": {
+      "status": "Not Run",
+      "actual_result": "No complete revision-bound execution evidence has been collected for this case."
+    },
+    "REC-002": {
+      "status": "Not Run",
+      "actual_result": "No complete revision-bound execution evidence has been collected for this case."
+    },
+    "REC-003": {
+      "status": "Not Run",
+      "actual_result": "No complete revision-bound execution evidence has been collected for this case."
+    },
+    "REC-004": {
+      "status": "Not Run",
+      "actual_result": "No complete revision-bound execution evidence has been collected for this case."
+    },
+    "REC-005": {
+      "status": "Not Run",
+      "actual_result": "No complete revision-bound execution evidence has been collected for this case."
+    },
+    "REC-006": {
+      "status": "Not Run",
+      "actual_result": "No complete revision-bound execution evidence has been collected for this case."
+    },
+    "REC-007": {
+      "status": "Not Run",
+      "actual_result": "No complete revision-bound execution evidence has been collected for this case."
+    },
+    "REC-008": {
+      "status": "Not Run",
+      "actual_result": "No complete revision-bound execution evidence has been collected for this case."
+    },
+    "REC-009": {
+      "status": "Not Run",
+      "actual_result": "No complete revision-bound execution evidence has been collected for this case."
+    },
+    "REC-010": {
+      "status": "Not Run",
+      "actual_result": "No complete revision-bound execution evidence has been collected for this case."
+    },
+    "REC-011": {
+      "status": "Not Run",
+      "actual_result": "No complete revision-bound execution evidence has been collected for this case."
+    },
+    "REC-012": {
+      "status": "Not Run",
+      "actual_result": "No complete revision-bound execution evidence has been collected for this case."
+    },
+    "REC-013": {
+      "status": "Not Run",
+      "actual_result": "No complete revision-bound execution evidence has been collected for this case."
+    },
+    "REC-014": {
+      "status": "Not Run",
+      "actual_result": "No complete revision-bound execution evidence has been collected for this case."
+    },
+    "VERSION-001": {
+      "status": "Not Run",
+      "actual_result": "No complete revision-bound execution evidence has been collected for this case."
+    },
+    "VERSION-002": {
+      "status": "Not Run",
+      "actual_result": "No complete revision-bound execution evidence has been collected for this case."
+    },
+    "VERSION-003": {
+      "status": "Not Run",
+      "actual_result": "No complete revision-bound execution evidence has been collected for this case."
+    },
+    "VERSION-004": {
+      "status": "Not Run",
+      "actual_result": "No complete revision-bound execution evidence has been collected for this case."
+    },
+    "VERSION-005": {
+      "status": "Not Run",
+      "actual_result": "No complete revision-bound execution evidence has been collected for this case."
+    },
+    "VERSION-006": {
+      "status": "Not Run",
+      "actual_result": "No complete revision-bound execution evidence has been collected for this case."
+    }
+  }
+}

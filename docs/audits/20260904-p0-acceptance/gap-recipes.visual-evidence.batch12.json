@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "batch_id": "p0-noir-rebuild-12",
+  "source_visual_version": "codex-visual-16b18cdcdca36dbc306a",
+  "status": "designer_targets_pending_whole_image_review",
+  "new_garments": [],
+  "recipes": [
+    {
+      "persona": "NOIR", "palette": "evidence_first", "season": "autumn", "structure": "pants",
+      "hero": "g0334", "items": ["g0334", "g0097", "g0003", "g0004", "g0005"], "expression": "typical",
+      "layer_graph": [{"inner": "g0097", "outer": "g0334"}],
+      "intent": "尖领收腰马甲以利落侧片、尖下摆及皮革外观为主视觉；素面贴身长袖补足深领覆盖，阔腿裤和简单鞋包支撑。检查上紧下直的比例及NOIR与EDGE边界，不把深色直接等同人格。"
+    },
+    {
+      "persona": "NOIR", "palette": "evidence_first", "season": "autumn", "structure": "skirt",
+      "hero": "g0334", "items": ["g0334", "g0097", "g0433", "g0004", "g0005"], "expression": "typical",
+      "layer_graph": [{"inner": "g0097", "outer": "g0334"}],
+      "intent": "以尖领马甲与窄直裙构成收净纵向比例，素面长袖内搭与低装饰鞋包控制信息量。作为同主衣第二次使用而非全新视觉语言，复核腰部叠穿与裙开衩，不靠配件表达人格。"
+    },
+    {
+      "persona": "NOIR", "palette": "evidence_first", "season": "autumn", "structure": "dress",
+      "hero": "g0382", "items": ["g0382", "g0225", "g0004", "g0005"], "expression": "explore",
+      "layer_graph": [{"inner": "g0225", "outer": "g0382"}],
+      "intent": "锐肩斜拉链短外套与素面短袖直线裙试搭，唯一强主角在外套。必须检查尖肩、尖下摆与收腰是否超出日常轻探索；素裙不能自动消除主题化风险。"
+    }
+  ]
+}

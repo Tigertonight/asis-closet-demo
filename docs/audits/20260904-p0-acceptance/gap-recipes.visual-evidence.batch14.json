@@ -1,0 +1,22 @@
+{
+  "schema_version": 1, "batch_id": "p0-void-rebuild-14",
+  "source_visual_version": "codex-visual-16b18cdcdca36dbc306a",
+  "status": "designer_targets_pending_whole_image_review", "new_garments": [],
+  "new_garment_manifest": "generated-garments/batch01/manifest.json",
+  "new_garment_version": "aw-generated-garments-b42e54ea8cabc29fe4f7",
+  "recipes": [
+    {"persona":"VOID","palette":"evidence_first","season":"autumn","structure":"dress",
+     "hero":"n0098","items":["n0098","g0004","g0005"],"expression":"easy",
+     "intent":"落肩宽直T恤裙的斜向接缝、偏置软袋和微错位下摆形成低强度不规整，平底素鞋包支撑。人格依据应是自然松垂与轻微错位，而非灰色本身；短袖限温暖天气，真实面料与穿着舒适待审。"},
+    {"persona":"VOID","palette":"evidence_first","season":"autumn","structure":"dress",
+     "hero":"n0098","items":["g0129","n0098","g0004","g0005"],"expression":"easy",
+     "layer_graph":[{"inner":"n0098","outer":"g0129"}],
+     "intent":"松软素面开衫与偏置口袋T恤裙形成包裹但不堆叠的过渡季层次，开衫敞开保留主裙斜缝线索。检查两层袖量、口袋遮挡及是否过于接近EASE，不自动把宽松判为VOID。"},
+    {"persona":"VOID","palette":"evidence_first","season":"autumn","structure":"skirt",
+     "hero":"n0097","items":["g0127","n0097","g0004","g0005"],"expression":"easy",
+     "intent":"松针织与水洗偏门襟裙，以旧感表面、低位小补片和宽松上身形成低强度状态感，不再增加裤装。需辨别VOID与EASE/WABI边界，不能只凭水洗色与补丁定人格。"},
+    {"persona":"VOID","palette":"evidence_first","season":"autumn","structure":"skirt",
+     "hero":"g0321","items":["g0321","n0097","g0004","g0005"],"expression":"easy",
+     "intent":"单侧自然垂褶上衣与低装饰水洗裙试搭，以软垂及不对称下摆为唯一主视觉，裙下部小补片只作背景细节。检查是否漂向FLOU/MUTE或产生两个焦点，作为待审试稿而非直接合格。"}
+  ]
+}

@@ -1,0 +1,41 @@
+{
+  "schema_version": 1,
+  "status": "diagnostic_only",
+  "case_id": "PERF-001",
+  "case_status": "Not Run",
+  "executed_at": "2026-09-05T14:55:26.509106+00:00",
+  "python": "3.12.8",
+  "component": "app.recommendation_visual.attach_visual",
+  "selection": "First 160 published outfits, NOT approved P0 anchors",
+  "concurrent_load": "Non-color pytest regression was running; not a controlled performance acceptance environment",
+  "full": {
+    "input": 1169,
+    "accepted": 952,
+    "held": 217,
+    "seconds": [
+      1.644692,
+      1.913809,
+      1.496608,
+      1.755789,
+      1.816958
+    ]
+  },
+  "workset": {
+    "input": 160,
+    "accepted": 138,
+    "held": 22,
+    "seconds": [
+      0.267673,
+      0.235496,
+      0.245695,
+      0.259618,
+      0.342817
+    ]
+  },
+  "limitations": [
+    "Not HTTP latency; excludes profile/catalog loading, manifest and blind review validation, sequencing and serialization",
+    "Only 5 samples per mode, not 50 measured HTTP requests after 5 warmups",
+    "Selected samples are published inventory and include held content; not a four-gate-approved 160 release",
+    "Does not authorize release or establish final P95 compliance"
+  ]
+}

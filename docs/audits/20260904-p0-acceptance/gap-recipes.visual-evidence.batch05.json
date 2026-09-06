@@ -1,0 +1,21 @@
+{
+  "schema_version": 1,
+  "batch_id": "p0-wabi-structure-05",
+  "source_visual_version": "codex-visual-16b18cdcdca36dbc306a",
+  "status": "designer_targets_pending_whole_image_review",
+  "new_garments": [],
+  "recipes": [
+    {
+      "task_id": "P0-CONTENT-WABI-STRUCTURE-EXPLORE",
+      "replaces_source_outfit_id": "outfit_void_master_14_v1",
+      "persona": "WABI",
+      "palette": "evidence_first",
+      "season": "autumn",
+      "structure": "dress",
+      "hero": "g0470",
+      "items": ["g0470", "g0004", "g0284"],
+      "expression": "explore",
+      "intent": "替换现有探索级裙装位置，不动4入门/4典型/2探索。以自然纹理、内收茧形裙摆和同色系拼片作为唯一探索主角；平底乐福鞋与简洁布托特保持日常语境。无需新生成人像或素材，整图日常适用性与WABI人格辨识仍需复核。"
+    }
+  ]
+}
