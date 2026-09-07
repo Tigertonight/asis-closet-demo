@@ -1,0 +1,34 @@
+{
+  "source": "/Users/yuanzexiang/Documents/色彩测试/app/static/selfit/assets/content_v2/flou/garments/flou-shoes-0503-raw-v1.png",
+  "output": "/Users/yuanzexiang/Documents/色彩测试/app/static/selfit/assets/content_v2/flou/garments/flou-shoes-0503-v1.png",
+  "size": [
+    1200,
+    1200
+  ],
+  "meaningful_bbox": [
+    312,
+    120,
+    888,
+    1080
+  ],
+  "margins": {
+    "left": 0.26,
+    "top": 0.1,
+    "right": 0.26,
+    "bottom": 0.1
+  },
+  "transparent_ratio": 0.7636,
+  "partial_alpha_ratio": 0.2359,
+  "alpha_noise_threshold": 8,
+  "passed": true,
+  "job_id": "v2_0503_flou_shoes",
+  "designer_reviewed": true,
+  "reviewed_at": "2026-09-02T17:07:04.018016+00:00",
+  "visual_checks": {
+    "one_item_only": true,
+    "no_person_mannequin_hanger": true,
+    "no_text_logo_watermark": true,
+    "complete_silhouette": true,
+    "metadata_matches_asset": true
+  }
+}

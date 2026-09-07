@@ -1,0 +1,34 @@
+{
+  "source": "/Users/yuanzexiang/Documents/色彩测试/app/static/selfit/assets/content_v2/oops/garments/oops-top-0352-raw-v1.png",
+  "output": "/Users/yuanzexiang/Documents/色彩测试/app/static/selfit/assets/content_v2/oops/garments/oops-top-0352-v1.png",
+  "size": [
+    1200,
+    1200
+  ],
+  "meaningful_bbox": [
+    295,
+    120,
+    904,
+    1080
+  ],
+  "margins": {
+    "left": 0.2458,
+    "top": 0.1,
+    "right": 0.2467,
+    "bottom": 0.1
+  },
+  "transparent_ratio": 0.7739,
+  "partial_alpha_ratio": 0.2255,
+  "alpha_noise_threshold": 8,
+  "passed": true,
+  "job_id": "v2_0352_oops_top",
+  "designer_reviewed": true,
+  "reviewed_at": "2026-09-02T16:37:14.970061+00:00",
+  "visual_checks": {
+    "one_item_only": true,
+    "no_person_mannequin_hanger": true,
+    "no_text_logo_watermark": true,
+    "complete_silhouette": true,
+    "metadata_matches_asset": true
+  }
+}

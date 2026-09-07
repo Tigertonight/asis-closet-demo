@@ -1,0 +1,34 @@
+{
+  "source": "/Users/yuanzexiang/Documents/色彩测试/app/static/selfit/assets/content_v2/mute/garments/mute-bag-0289-raw-v1.png",
+  "output": "/Users/yuanzexiang/Documents/色彩测试/app/static/selfit/assets/content_v2/mute/garments/mute-bag-0289-v1.png",
+  "size": [
+    1200,
+    1200
+  ],
+  "meaningful_bbox": [
+    216,
+    120,
+    984,
+    1079
+  ],
+  "margins": {
+    "left": 0.18,
+    "top": 0.1,
+    "right": 0.18,
+    "bottom": 0.1008
+  },
+  "transparent_ratio": 0.751,
+  "partial_alpha_ratio": 0.2477,
+  "alpha_noise_threshold": 8,
+  "passed": true,
+  "job_id": "v2_0289_mute_bag",
+  "designer_reviewed": true,
+  "reviewed_at": "2026-09-02T16:04:43.539797+00:00",
+  "visual_checks": {
+    "one_item_only": true,
+    "no_person_mannequin_hanger": true,
+    "no_text_logo_watermark": true,
+    "complete_silhouette": true,
+    "metadata_matches_asset": true
+  }
+}

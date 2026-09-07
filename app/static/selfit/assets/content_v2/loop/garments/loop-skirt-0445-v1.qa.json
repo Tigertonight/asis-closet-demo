@@ -1,0 +1,34 @@
+{
+  "source": "/Users/yuanzexiang/Documents/色彩测试/app/static/selfit/assets/content_v2/loop/garments/loop-skirt-0445-raw-v1.png",
+  "output": "/Users/yuanzexiang/Documents/色彩测试/app/static/selfit/assets/content_v2/loop/garments/loop-skirt-0445-v1.png",
+  "size": [
+    1200,
+    1200
+  ],
+  "meaningful_bbox": [
+    418,
+    120,
+    782,
+    1079
+  ],
+  "margins": {
+    "left": 0.3483,
+    "top": 0.1,
+    "right": 0.3483,
+    "bottom": 0.1008
+  },
+  "transparent_ratio": 0.7843,
+  "partial_alpha_ratio": 0.2151,
+  "alpha_noise_threshold": 8,
+  "passed": true,
+  "job_id": "v2_0445_loop_skirt",
+  "designer_reviewed": true,
+  "reviewed_at": "2026-09-02T16:52:34.371413+00:00",
+  "visual_checks": {
+    "one_item_only": true,
+    "no_person_mannequin_hanger": true,
+    "no_text_logo_watermark": true,
+    "complete_silhouette": true,
+    "metadata_matches_asset": true
+  }
+}

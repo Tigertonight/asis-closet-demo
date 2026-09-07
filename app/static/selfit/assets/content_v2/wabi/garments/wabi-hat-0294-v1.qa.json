@@ -1,0 +1,34 @@
+{
+  "source": "/Users/yuanzexiang/Documents/色彩测试/app/static/selfit/assets/content_v2/wabi/garments/wabi-hat-0294-raw-v1.png",
+  "output": "/Users/yuanzexiang/Documents/色彩测试/app/static/selfit/assets/content_v2/wabi/garments/wabi-hat-0294-v1.png",
+  "size": [
+    1200,
+    1200
+  ],
+  "meaningful_bbox": [
+    120,
+    164,
+    1080,
+    1036
+  ],
+  "margins": {
+    "left": 0.1,
+    "top": 0.1367,
+    "right": 0.1,
+    "bottom": 0.1367
+  },
+  "transparent_ratio": 0.5483,
+  "partial_alpha_ratio": 0.451,
+  "alpha_noise_threshold": 8,
+  "passed": true,
+  "job_id": "v2_0294_wabi_hat",
+  "designer_reviewed": true,
+  "reviewed_at": "2026-09-02T16:18:21.039413+00:00",
+  "visual_checks": {
+    "one_item_only": true,
+    "no_person_mannequin_hanger": true,
+    "no_text_logo_watermark": true,
+    "complete_silhouette": true,
+    "metadata_matches_asset": true
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "source": "/Users/yuanzexiang/Documents/色彩测试/app/static/selfit/assets/content_v2/heir/garments/heir-skirt-0579-raw-v1.png",
+  "output": "/Users/yuanzexiang/Documents/色彩测试/app/static/selfit/assets/content_v2/heir/garments/heir-skirt-0579-v1.png",
+  "size": [
+    1200,
+    1200
+  ],
+  "meaningful_bbox": [
+    221,
+    120,
+    979,
+    1080
+  ],
+  "margins": {
+    "left": 0.1842,
+    "top": 0.1,
+    "right": 0.1842,
+    "bottom": 0.1
+  },
+  "transparent_ratio": 0.6349,
+  "partial_alpha_ratio": 0.3641,
+  "alpha_noise_threshold": 8,
+  "passed": true,
+  "job_id": "v2_0579_heir_skirt",
+  "designer_reviewed": true,
+  "reviewed_at": "2026-09-02T17:23:04.493031+00:00",
+  "visual_checks": {
+    "one_item_only": true,
+    "no_person_mannequin_hanger": true,
+    "no_text_logo_watermark": true,
+    "complete_silhouette": true,
+    "metadata_matches_asset": true
+  }
+}

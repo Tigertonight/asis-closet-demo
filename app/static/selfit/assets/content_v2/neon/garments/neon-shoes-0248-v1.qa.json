@@ -1,0 +1,34 @@
+{
+  "source": "/Users/yuanzexiang/Documents/色彩测试/app/static/selfit/assets/content_v2/neon/garments/neon-shoes-0248-raw-v1.png",
+  "output": "/Users/yuanzexiang/Documents/色彩测试/app/static/selfit/assets/content_v2/neon/garments/neon-shoes-0248-v1.png",
+  "size": [
+    1200,
+    1200
+  ],
+  "meaningful_bbox": [
+    196,
+    120,
+    1003,
+    1078
+  ],
+  "margins": {
+    "left": 0.1633,
+    "top": 0.1,
+    "right": 0.1642,
+    "bottom": 0.1017
+  },
+  "transparent_ratio": 0.6158,
+  "partial_alpha_ratio": 0.383,
+  "alpha_noise_threshold": 8,
+  "passed": true,
+  "job_id": "v2_0248_neon_shoes",
+  "designer_reviewed": true,
+  "reviewed_at": "2026-09-02T15:59:06.589466+00:00",
+  "visual_checks": {
+    "one_item_only": true,
+    "no_person_mannequin_hanger": true,
+    "no_text_logo_watermark": true,
+    "complete_silhouette": true,
+    "metadata_matches_asset": true
+  }
+}
