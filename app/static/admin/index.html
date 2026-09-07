@@ -187,6 +187,30 @@
   .lightbox-footer { justify-content: space-between; min-height: 48px; color: rgba(255,255,255,.65); font-size: 12px; }
   .lightbox-download { flex: 0 0 auto; padding: 8px 16px; border-radius: 999px; background: #fff; color: var(--brand); text-decoration: none; font-weight: 700; }
 
+  /* 内置素材库看板 */
+  .asset-filters { display: flex; flex-direction: column; gap: 10px; margin-bottom: 16px; }
+  .asset-chip-row { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+  .asset-chip-row > small { flex: 0 0 auto; width: 42px; color: var(--muted); font-size: 12px; }
+  .asset-chip { min-height: 28px; padding: 3px 12px; border: 1px solid var(--line); border-radius: 999px; background: #fff; color: var(--ink); font: inherit; font-size: 12px; cursor: pointer; transition: border-color .15s ease, background .15s ease; }
+  .asset-chip:hover { border-color: rgba(138,1,27,.4); }
+  .asset-chip.is-on { background: #f6e7ea; border-color: rgba(138,1,27,.45); color: var(--brand); font-weight: 600; }
+  .asset-chip small { color: inherit; opacity: .6; margin-left: 3px; }
+  .asset-search { margin-left: auto; min-width: 200px; height: 32px; padding: 0 14px; border: 1px solid var(--line); border-radius: 999px; font: inherit; font-size: 13px; outline: none; }
+  .asset-search:focus { border-color: var(--brand); }
+  .asset-count { margin: 0 0 12px; color: var(--muted); font-size: 12px; }
+  .asset-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(158px, 1fr)); gap: 12px; }
+  .asset-card { display: flex; flex-direction: column; border: 1px solid var(--line); border-radius: 14px; background: #fff; overflow: hidden; transition: border-color .15s ease, box-shadow .15s ease, transform .15s ease; }
+  .asset-card:hover { border-color: rgba(138,1,27,.45); box-shadow: 0 4px 14px rgba(60,21,25,.10); transform: translateY(-1px); }
+  .asset-card .frame { aspect-ratio: 4 / 5; background: repeating-conic-gradient(#f7f2f3 0 25%, #fdfafb 0 50%) 0 0 / 16px 16px; }
+  .asset-card.is-square .frame { aspect-ratio: 1 / 1; }
+  .asset-card .frame button { display: block; width: 100%; height: 100%; padding: 0; border: 0; background: transparent; cursor: zoom-in; }
+  .asset-card .frame img { width: 100%; height: 100%; object-fit: contain; display: block; }
+  .asset-card .meta { display: flex; align-items: center; justify-content: space-between; gap: 6px; padding: 7px 10px; border-top: 1px solid var(--line); }
+  .asset-card .meta b { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 11px; font-weight: 600; }
+  .asset-card .meta .tag { flex: 0 0 auto; font-size: 10px; padding: 1px 7px; }
+  .asset-empty { padding: 48px 0; text-align: center; color: var(--muted); }
+  .asset-sentinel { height: 2px; }
+
   @media (max-width: 700px) {
     header { align-items: flex-start; flex-direction: column; gap: 8px; padding: 12px 16px; }
     nav.tabs { width: 100%; margin-left: 0; overflow-x: auto; }
@@ -225,6 +249,7 @@
   <nav class="tabs">
     <button class="is-active" data-tab="analytics" type="button">数据分析</button>
     <button type="button" data-tab="submissions">用户报告</button>
+    <button type="button" data-tab="assets">素材库</button>
     <button type="button" data-tab="beta">内测用户</button>
     <a href="/qa/onboarding-attributes">实验数据 QA</a>
     <button type="button" data-tab="debug">调试工具</button>
@@ -330,6 +355,19 @@
         <small id="betaUpdatedAt"></small>
       </div>
       <table><thead><tr><th>手机号</th><th>备注</th><th>添加时间</th><th>操作</th></tr></thead><tbody id="betaRows"></tbody></table>
+    </div>
+    <div class="panel" id="assetsPanel" data-tab-panel="assets" hidden>
+      <h2>内置图片素材库</h2>
+      <p class="panel-hint">selfit v2 衣橱素材总览：16 人格单品图、穿搭图与统一排版图。点击图片可放大预览与下载原图；数据来自代码库 content_v2 目录，无需手动维护。</p>
+      <div class="report-tabs" role="tablist" aria-label="素材类型" id="assetTypeTabs"></div>
+      <div class="asset-filters">
+        <div class="asset-chip-row"><small>人格</small><span id="assetPersonaChips" style="display:contents"></span></div>
+        <div class="asset-chip-row" id="assetSubRow"><small id="assetSubLabel">类别</small><span id="assetSubChips" style="display:contents"></span><input class="asset-search" id="assetSearch" type="search" placeholder="搜索文件名 / 单品槽位…" /></div>
+      </div>
+      <p class="asset-count" id="assetCount"></p>
+      <div class="asset-grid" id="assetGrid" data-lightbox-context="assets"></div>
+      <div class="asset-sentinel" id="assetSentinel"></div>
+      <div class="asset-empty" id="assetEmpty" hidden>没有匹配的素材</div>
     </div>
     <div class="panel" id="debugPanel" data-tab-panel="debug" hidden>
       <h2>调试工具</h2>
@@ -875,7 +913,7 @@
   };
 
   const openPhotoLightbox = (trigger) => {
-    const context = trigger.closest('#submissionModalBody') || trigger.closest('[data-report-panel]') || document;
+    const context = trigger.closest('#submissionModalBody') || trigger.closest('[data-lightbox-context]') || trigger.closest('[data-report-panel]') || document;
     const triggers = [...context.querySelectorAll('[data-photo-preview]')];
     lightboxItems = triggers.map((node) => ({
       previewUrl: node.dataset.photoPreview,
@@ -981,6 +1019,199 @@
       reportListState[tab].visible += REPORT_PAGE_SIZE;
       renderReportList(tab);
     });
+  });
+
+  // ---------------------------------------------------------------------------
+  // 内置素材库看板（content_v2）
+  // ---------------------------------------------------------------------------
+
+  const ASSET_CATEGORY_LABELS = {
+    accessory: '配饰', bag: '包', bottom: '下装', dress: '连衣裙', hat: '帽子', loafers: '乐福鞋',
+    outer: '外套', scarf: '围巾', shirt: '衬衫', shoes: '鞋', skirt: '半裙', top: '上衣',
+    tote: '托特包', trousers: '裤装',
+  };
+  const ASSET_SLOT_LABELS = {
+    top: '上衣', skirt: '半裙', bottom: '下装', dress: '连衣裙', outer: '外套',
+    shoes: '鞋', bag: '包', accessory: '配饰',
+  };
+  const ASSET_BATCH = 60;
+  const assetState = {
+    type: 'garments', persona: '', sub: '', query: '',
+    manifest: null, loading: false, items: [], shown: 0,
+  };
+  let assetSearchTimer = 0;
+
+  const assetTypeDefs = () => {
+    const m = assetState.manifest;
+    const layoutDefs = [...new Set(m.layouts.map((x) => x.layout))].map((name) => ({
+      id: `layout:${name}`, label: name, count: m.layouts.filter((x) => x.layout === name).length,
+    }));
+    return [
+      { id: 'garments', label: '单品图', count: m.garments.length },
+      { id: 'outfits', label: '穿搭图', count: m.outfits.length },
+      ...layoutDefs,
+    ];
+  };
+
+  const assetListForType = () => {
+    const m = assetState.manifest;
+    if (assetState.type === 'garments') return m.garments;
+    if (assetState.type === 'outfits') return m.outfits;
+    return m.layouts.filter((x) => x.layout === assetState.type.slice(7));
+  };
+
+  const filteredAssets = () => {
+    let list = assetListForType();
+    const { persona, sub, query, type } = assetState;
+    if (persona) {
+      list = list.filter((x) => (type.startsWith('layout:') ? x.personas.includes(persona) : x.persona === persona));
+    }
+    if (sub) {
+      if (type === 'garments') list = list.filter((x) => x.category === sub);
+      else if (type === 'outfits') list = list.filter((x) => x.version === sub);
+      else list = list.filter((x) => String(x.count) === sub);
+    }
+    if (query) {
+      const q = query.toLowerCase();
+      list = list.filter((x) => (x.name + ' ' + (x.slots || []).map((s) => ASSET_SLOT_LABELS[s] || s).join(' ')
+        + ' ' + (x.personas || x.persona || '')).toLowerCase().includes(q));
+    }
+    return list;
+  };
+
+  const renderAssetTypeTabs = () => {
+    const tabs = $('assetTypeTabs');
+    tabs.replaceChildren(...assetTypeDefs().map((def) => {
+      const button = document.createElement('button');
+      button.className = 'report-tab';
+      button.type = 'button';
+      button.setAttribute('role', 'tab');
+      button.setAttribute('aria-selected', String(assetState.type === def.id));
+      button.textContent = `${def.label}（${def.count}）`;
+      button.addEventListener('click', () => {
+        assetState.type = def.id;
+        assetState.sub = '';
+        assetState.shown = 0;
+        renderAssets();
+      });
+      return button;
+    }));
+  };
+
+  const renderAssetChipRow = (rowId, options, current, onPick) => {
+    const row = $(rowId);
+    row.replaceChildren(...options.map(([value, label, count]) => {
+      const button = document.createElement('button');
+      button.className = 'asset-chip' + (value === current ? ' is-on' : '');
+      button.type = 'button';
+      button.innerHTML = esc(label) + (count != null ? `<small>${count}</small>` : '');
+      button.addEventListener('click', () => onPick(value));
+      return button;
+    }));
+  };
+
+  const renderAssetFilters = () => {
+    const m = assetState.manifest;
+    const { type, persona, sub } = assetState;
+    const personaOptions = [['', '全部'], ...m.personas.map((p) => {
+      const count = type.startsWith('layout:')
+        ? assetListForType().filter((x) => x.personas.includes(p)).length
+        : assetListForType().filter((x) => x.persona === p).length;
+      return [p, p, count];
+    })];
+    renderAssetChipRow('assetPersonaChips', personaOptions, persona, (value) => {
+      assetState.persona = value;
+      assetState.sub = '';
+      assetState.shown = 0;
+      renderAssets();
+    });
+
+    let subOptions = [];
+    let subLabel = '类别';
+    if (type === 'garments') {
+      const counts = {};
+      assetListForType().forEach((x) => { if (!persona || x.persona === persona) counts[x.category] = (counts[x.category] || 0) + 1; });
+      subOptions = Object.entries(counts).sort().map(([c, n]) => [c, ASSET_CATEGORY_LABELS[c] || c, n]);
+    } else if (type === 'outfits') {
+      subLabel = '版本';
+      const counts = {};
+      assetListForType().forEach((x) => { if (!persona || x.persona === persona) counts[x.version] = (counts[x.version] || 0) + 1; });
+      subOptions = Object.entries(counts).sort().map(([v, n]) => [v, v === 'base' ? '原版' : v, n]);
+    } else {
+      subLabel = '件数';
+      const counts = {};
+      assetListForType().forEach((x) => { if (!persona || x.personas.includes(persona)) counts[x.count] = (counts[x.count] || 0) + 1; });
+      subOptions = Object.entries(counts).sort((a, b) => Number(a[0]) - Number(b[0])).map(([c, n]) => [c, `${c} 件`, n]);
+    }
+    $('assetSubLabel').textContent = subLabel;
+    renderAssetChipRow('assetSubChips', [['', '全部', null], ...subOptions], sub, (value) => {
+      assetState.sub = value;
+      assetState.shown = 0;
+      renderAssets();
+    });
+  };
+
+  const renderAssetGrid = () => {
+    const grid = $('assetGrid');
+    const square = assetState.type === 'garments';
+    const end = Math.min(assetState.items.length, assetState.shown + ASSET_BATCH);
+    const cards = [];
+    for (let i = assetState.shown; i < end; i += 1) {
+      const item = assetState.items[i];
+      let tag = '';
+      let meta = item.personas ? `人格 ${item.personas.join('、')} · ${item.slots.map((s) => ASSET_SLOT_LABELS[s] || s).join(' + ')}` : `人格 ${item.persona}${item.category ? ' · ' + (ASSET_CATEGORY_LABELS[item.category] || item.category) : ''}`;
+      if (assetState.type === 'garments') tag = ASSET_CATEGORY_LABELS[item.category] || item.category;
+      else if (assetState.type === 'outfits') tag = item.version === 'base' ? '原版' : item.version;
+      else tag = `${item.count} 件`;
+      const card = document.createElement('div');
+      card.className = 'asset-card' + (square ? ' is-square' : '');
+      card.innerHTML = `<div class="frame"><button type="button" data-photo-preview="${esc(item.url)}" data-photo-download="${esc(item.url)}" data-photo-label="${esc(item.name)}" data-photo-meta="${esc(meta)}" aria-label="放大查看${esc(item.name)}"><img src="${esc(item.url)}" alt="${esc(item.name)}" loading="lazy" decoding="async" fetchpriority="low" /></button></div>`
+        + `<div class="meta"><b title="${esc(item.name)}">${esc(item.name)}</b><span class="tag tag-app">${esc(tag)}</span></div>`;
+      cards.push(card);
+    }
+    grid.append(...cards);
+    assetState.shown = end;
+    $('assetEmpty').hidden = assetState.items.length > 0;
+  };
+
+  const renderAssets = () => {
+    renderAssetTypeTabs();
+    renderAssetFilters();
+    assetState.items = filteredAssets();
+    assetState.shown = 0;
+    const grid = $('assetGrid');
+    grid.replaceChildren();
+    const scope = assetState.persona ? ` · 人格 ${assetState.persona}` : '';
+    $('assetCount').textContent = `共 ${assetState.items.length} 张${scope}`;
+    renderAssetGrid();
+  };
+
+  const initAssetGallery = async () => {
+    if (assetState.manifest) { renderAssets(); return; }
+    if (assetState.loading) return;
+    assetState.loading = true;
+    $('assetCount').textContent = '素材清单加载中…（首次约需数秒）';
+    try {
+      assetState.manifest = await api('/admin/api/assets/manifest');
+      new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting && assetState.manifest && assetState.shown < assetState.items.length) renderAssetGrid();
+      }, { rootMargin: '900px' }).observe($('assetSentinel'));
+      renderAssets();
+    } catch (error) {
+      if (error.status) showLogin();
+      else $('assetCount').textContent = error.message || '素材清单加载失败';
+    } finally {
+      assetState.loading = false;
+    }
+  };
+
+  $('assetSearch').addEventListener('input', (event) => {
+    assetState.query = event.target.value.trim();
+    clearTimeout(assetSearchTimer);
+    assetSearchTimer = window.setTimeout(() => {
+      assetState.shown = 0;
+      if (assetState.manifest) renderAssets();
+    }, 250);
   });
 
   // ---------------------------------------------------------------------------
@@ -1177,7 +1408,7 @@
       const selected = document.querySelector('[data-report-tab][aria-selected="true"]');
       void loadReportTab(selected?.dataset.reportTab || 'submissions');
     }
-    if (tab === 'beta') { setBetaMessage(''); void loadBetaUsers(); }
+    if (tab === 'assets') void initAssetGallery();
   };
   document.querySelectorAll('[data-tab]').forEach((button) => button.addEventListener('click', () => {
     activateTab(button.dataset.tab);

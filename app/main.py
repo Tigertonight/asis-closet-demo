@@ -125,6 +125,7 @@ from app.selfit_onboarding import router as selfit_onboarding_router
 from app.selfit_mirror_handoff import router as selfit_mirror_handoff_router
 from app.selfit_analytics import admin_router as selfit_admin_router, router as selfit_analytics_router
 from app.selfit_admin_submissions import router as selfit_admin_submissions_router
+from app.selfit_admin_assets import router as selfit_admin_assets_router
 from app.beta_access import admin_router as beta_access_admin_router
 from app.qa_onboarding import QA_PHOTO_DIR, router as qa_onboarding_router
 from app.storage import hydrate_user_from_demo_data, storage_context, user_storage
@@ -141,6 +142,7 @@ app.include_router(selfit_mirror_handoff_router)
 app.include_router(selfit_analytics_router)
 app.include_router(selfit_admin_router)
 app.include_router(selfit_admin_submissions_router)
+app.include_router(selfit_admin_assets_router)
 app.include_router(beta_access_admin_router)
 app.include_router(qa_onboarding_router)
 SELFIT_INDEX_PATH = Path(__file__).resolve().parent / "static" / "selfit" / "index.html"
