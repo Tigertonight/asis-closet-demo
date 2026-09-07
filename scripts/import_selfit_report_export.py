@@ -24,7 +24,7 @@ ROOT = Path(__file__).resolve().parents[1]
 MASTER_PATH = ROOT / "app/static/report-builder/data/16-personality-templates.json"
 SEED_JS_PATH = ROOT / "app/static/report-builder/seed-templates.js"
 ASSET_ROOT = ROOT / "app/static/selfit/assets/personality"
-ASSET_VERSION = "20260828-config-v1"
+ASSET_VERSION = "20260907-config-v2"
 LIBRARY_ASSET_VERSION = "20260826-db-v3"
 GROUPS = ("makeup", "hair", "outfits")
 

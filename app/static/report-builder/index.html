@@ -8,7 +8,7 @@
   <link rel="icon" type="image/svg+xml" href="/static/brand/favicon.svg" />
   <link rel="icon" type="image/png" sizes="32x32" href="/static/brand/favicon-32.png" />
   <link rel="apple-touch-icon" href="/static/brand/apple-touch-icon.png" />
-  <link rel="stylesheet" href="/static/report-builder/builder.css?v=20260826-1" />
+  <link rel="stylesheet" href="/static/report-builder/builder.css?v=20260907-1" />
 </head>
 <body>
   <header class="workspace-header">
@@ -34,9 +34,11 @@
       <form id="builderForm" novalidate>
         <section class="form-section" id="identity" data-form-section>
           <div class="section-heading"><span>01</span><div><h2>基础信息</h2><p>定义人格的第一印象与核心表达。</p></div></div>
+          <label class="field"><span>性别版本</span><select name="gender"><option value="unisex">通用</option><option value="male">男性</option><option value="female">女性</option></select></label>
+          <label class="field"><span>身材版本</span><select name="bodyProfile"><option value="standard">通用</option><option value="curvy">微胖</option></select><small>身材版本独立于人格，英文代号沿用原人格。微胖模板的穿搭图与建议需单独配置。</small></label>
           <div class="field-grid field-grid--2"><label class="field"><span>人格名称 <b>必填</b></span><input name="name" maxlength="12" required /></label><label class="field"><span>英文代号 <b>必填</b></span><input name="code" maxlength="12" required /></label></div>
           <div class="field"><span>头部插画 <b>1 张</b></span><div class="image-field" data-image-field="hero"><input type="file" accept="image/png,image/jpeg,image/webp" /><div class="image-thumb"><img alt="头部插画预览" /></div><div><strong>替换头部插画</strong><small>建议 1484 × 1072px，PNG / JPG / WebP</small></div><button type="button" data-clear-image>移除</button></div></div>
-          <fieldset class="repeater"><legend>Keyword <b>3 个 · 每个最多 4 字</b></legend><div class="field-grid field-grid--3" id="keywordFields"></div></fieldset>
+          <fieldset class="repeater"><legend>Keyword <b>3 个 · 每个最多 8 字</b></legend><div class="field-grid field-grid--3" id="keywordFields"></div></fieldset>
           <label class="field"><span>人格概述 <b>1 段 · 建议约 3 行</b></span><textarea name="summary" rows="4" maxlength="120"></textarea><small class="markdown-help">直接描述人格特点，建议 45–70 字；按完整句子换行，避免加入“一句话结论”等小标题。</small><small class="counter" data-counter="summary"></small></label>
         </section>
         <section class="form-section" id="colors" data-form-section>
@@ -62,6 +64,6 @@
     </aside>
   </main>
   <dialog class="confirm-dialog" id="deleteDialog"><form method="dialog"><p class="eyebrow">DELETE TEMPLATE</p><h2>删除这个模板？</h2><p id="deleteDialogCopy">删除后无法恢复，请先确认已导出需要保留的配置。</p><div><button class="button button--quiet" value="cancel">取消</button><button class="button button--danger" id="confirmDeleteButton" value="confirm">删除模板</button></div></form></dialog>
-  <div class="toast" id="toast" role="status" aria-live="polite"></div><script src="/static/report-builder/seed-templates.js?v=20260826-db-v3" defer></script><script src="/static/report-builder/builder.js?v=20260826-1" defer></script>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div><script src="/static/report-builder/seed-templates.js?v=20260907-content1" defer></script><script src="/static/report-builder/body-variants.js?v=20260907-2" defer></script><script src="/static/report-builder/builder.js?v=20260907-2" defer></script>
 </body>
 </html>

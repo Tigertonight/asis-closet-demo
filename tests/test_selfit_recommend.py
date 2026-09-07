@@ -339,7 +339,7 @@ def test_default_report_builder_end_to_end(tmp_path: Path, monkeypatch: pytest.M
 
     assert report["eyebrow"] == "MUTE"
     assert report["typeId"] == "mute"
-    assert report["templateVersion"] == "2026.08.personality-db-v6"
+    assert report["templateVersion"] == "2026.09.report-content-v1"
     assert report["title"] == "静音时髦"
     assert report["traits"] == ["低表达", "低装饰", "秩序感"]
     assert report["colors"][0]["name"] == "黑"
@@ -350,7 +350,7 @@ def test_default_report_builder_end_to_end(tmp_path: Path, monkeypatch: pytest.M
     assert len(report["hair"]) == 2
     assert report["hair"][0]["name"] == "暖棕微卷中长发"
     assert len(report["outfits"]) == 4
-    assert report["outfits"][0]["name"] == "斜肩短裤"
+    assert report["outfits"][0]["name"] == "时髦手袋"
     assert len(report["advice"]) == 3
     assert all(not item.lstrip().startswith(("建议：", "建议:")) for item in report["advice"])
     selfit_recommend.reset_content_pool_cache()

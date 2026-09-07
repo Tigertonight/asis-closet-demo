@@ -31,17 +31,28 @@ def main() -> None:
         for template in payload.get("templates", []):
             type_id = str(template.get("masterData", {}).get("typeId") or "").strip()
             code = str(template.get("code") or "").strip().upper()
+            body_profile = template.get("bodyProfile") or "standard"
+            gender = template.get("gender") or "unisex"
             template_id = type_id or code.lower()
+            if body_profile != "standard":
+                template_id += "-" + body_profile
+            if gender != "unisex":
+                template_id += "-" + gender
             if not template_id or not code:
                 continue
             conn.execute(
                 """
                 INSERT INTO report_templates
                     (id, code, data, revision, seed_version, created_by, updated_by)
-                VALUES (%s, %s, %s, 1, %s, 'system:seed', 'system:seed')
-                ON CONFLICT (code) DO NOTHING
+                SELECT %s, %s, %s, 1, %s, 'system:seed', 'system:seed'
+                WHERE NOT EXISTS (
+                    SELECT 1 FROM report_templates WHERE code = %s
+                    AND COALESCE(data->>'bodyProfile', 'standard') = %s
+                    AND COALESCE(data->>'gender', 'unisex') = %s
+                )
+                ON CONFLICT (id) DO NOTHING
                 """,
-                (template_id, code, Jsonb(template), seed_version),
+                (template_id, code, Jsonb(template), seed_version, code, body_profile, gender),
             )
         conn.commit()
     print("[seed_db] inserted missing templates only")

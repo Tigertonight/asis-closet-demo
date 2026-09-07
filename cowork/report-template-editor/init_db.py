@@ -30,7 +30,7 @@ CREATE TABLE IF NOT EXISTS app_users (
 
 CREATE TABLE IF NOT EXISTS report_templates (
     id TEXT PRIMARY KEY,
-    code TEXT NOT NULL UNIQUE,
+    code TEXT NOT NULL,
     data JSONB NOT NULL,
     revision INTEGER NOT NULL DEFAULT 1,
     seed_version INTEGER NOT NULL DEFAULT 0,
@@ -40,6 +40,10 @@ CREATE TABLE IF NOT EXISTS report_templates (
     updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     deleted_at TIMESTAMPTZ
 );
+-- Templates are identified by id. Multiple audience versions and editable copies
+-- deliberately share the same 16-persona code.
+ALTER TABLE report_templates DROP CONSTRAINT IF EXISTS report_templates_code_key;
+CREATE INDEX IF NOT EXISTS idx_report_templates_code ON report_templates (code);
 CREATE INDEX IF NOT EXISTS idx_report_templates_updated_at
     ON report_templates (updated_at DESC);
 CREATE INDEX IF NOT EXISTS idx_report_templates_deleted_at

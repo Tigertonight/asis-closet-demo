@@ -2,7 +2,8 @@
   const ASSET = '/static/selfit/assets/';
   const STORAGE_KEY = 'selfit.report-library.v2';
   const LEGACY_KEY = 'selfit.report-builder.v1';
-  const SEED_VERSION = 7;
+  const SEED_VERSION = 9;
+  const bodyVariants = window.SELFIT_BODY_VARIANTS;
   const KEYWORD_ALIASES = {'同明度秩序':'同调秩序','不费力精致':'松弛精致','低饱和治愈':'柔色治愈','华丽存在感':'华丽焦点'};
   const defaults = {
     schemaVersion: 'selfit-report-template/1.0', assetQualityVersion: 2, updatedAt: '', name: '造梦浪漫型', code: 'LACE',
@@ -45,11 +46,13 @@
   }
   function normalize(value){
     const source=value?.data&&typeof value.data==='object'?value.data:value;
-    const next=clone(defaults);if(!source||typeof source!=='object')return next;
+    const next=clone(defaults);next.bodyProfile='standard';next.gender='unisex';if(!source||typeof source!=='object')return next;
     ['name','code','hero','summary','outfitSummary','conclusion'].forEach(key=>{if(typeof source[key]==='string')next[key]=source[key]});
+    next.gender=['male','female'].includes(source.gender)?source.gender:'unisex';
+    next.bodyProfile=source.bodyProfile==='curvy'?'curvy':'standard';
     next.hero=typeof next.hero==='string'&&next.hero.endsWith('/figma-report/report-hero-reference.png')?`${ASSET}personality/lace-hero.png`:next.hero;
     ['keywords','advice'].forEach(key=>{if(Array.isArray(source[key]))next[key]=next[key].map((item,index)=>typeof source[key][index]==='string'?source[key][index]:item)});
-    next.keywords=next.keywords.map(value=>Array.from(KEYWORD_ALIASES[String(value).trim()]||String(value).trim()).slice(0,4).join(''));
+    next.keywords=next.keywords.map(value=>Array.from(KEYWORD_ALIASES[String(value).trim()]||String(value).trim()).slice(0,8).join(''));
     if(Array.isArray(source.colors))next.colors=next.colors.map((item,index)=>({...item,...(source.colors[index]||{})}));
     if(source.source&&typeof source.source==='object')next.source={...next.source,...source.source,avatars:{...next.source.avatars,...(source.source.avatars||{})}};
     ['makeup','hair','outfits'].forEach(key=>{if(Array.isArray(source[key]))next[key]=next[key].map((item,index)=>{const merged={...item,...(source[key][index]||{})};merged.image=highResolutionAsset(merged.image);return merged})});
@@ -58,15 +61,14 @@
     next.updatedAt=typeof source.updatedAt==='string'?source.updatedAt:'';return next;
   }
   function recordFrom(value){const stamp=now();return {id:uid(),createdAt:stamp,updatedAt:value?.updatedAt||stamp,data:normalize(value)}}
-  function masterSeeds(){return Array.isArray(window.SELFIT_REPORT_MASTER_DATA?.templates)?window.SELFIT_REPORT_MASTER_DATA.templates:[]}
+  function masterSeeds(){return bodyVariants.seeds(Array.isArray(window.SELFIT_REPORT_MASTER_DATA?.templates)?window.SELFIT_REPORT_MASTER_DATA.templates:[])}
   function migrateLibrary(current){
     const next={schemaVersion:'selfit-report-library/1.0',seedVersion:Number(current.seedVersion)||0,activeId:current.activeId||'',templates:current.templates||[]};
     if(next.seedVersion>=SEED_VERSION)return next;
     next.templates=next.templates.filter(item=>String(item.data?.code||'').toUpperCase()!=='LACE');
-    if(next.seedVersion<6){const seeds=new Map(masterSeeds().map(seed=>[String(seed.code||'').toUpperCase(),seed]));next.templates.forEach(record=>{if(!record.data?.masterData?.typeId)return;const seed=seeds.get(String(record.data.code||'').toUpperCase());if(!seed)return;['hero','keywords','summary','outfitSummary','conclusion','advice'].forEach(key=>{record.data[key]=clone(seed[key])})})}
-    if(next.seedVersion<7){const seeds=new Map(masterSeeds().map(seed=>[String(seed.masterData?.typeId||''),seed]));next.templates.forEach(record=>{const seed=seeds.get(String(record.data?.masterData?.typeId||''));if(seed)record.data.hero=seed.hero})}
-    const existingCodes=new Set(next.templates.map(item=>String(item.data?.code||'').toUpperCase()).filter(Boolean));
-    masterSeeds().forEach(seed=>{const code=String(seed.code||'').toUpperCase();if(!existingCodes.has(code)){next.templates.push(recordFrom(seed));existingCodes.add(code)}});
+    if(next.seedVersion<6){const seeds=new Map(masterSeeds().filter(seed=>seed.bodyProfile!=='curvy'&&(!seed.gender||seed.gender==='unisex')).map(seed=>[String(seed.code||'').toUpperCase(),seed]));next.templates.forEach(record=>{if(!record.data?.masterData?.typeId)return;const seed=seeds.get(String(record.data.code||'').toUpperCase());if(!seed)return;['hero','keywords','summary','outfitSummary','conclusion','advice'].forEach(key=>{record.data[key]=clone(seed[key])})})}
+    if(next.seedVersion<7){const seeds=new Map(masterSeeds().filter(seed=>seed.bodyProfile!=='curvy'&&(!seed.gender||seed.gender==='unisex')).map(seed=>[String(seed.masterData?.typeId||''),seed]));next.templates.forEach(record=>{const seed=seeds.get(String(record.data?.masterData?.typeId||''));if(seed)record.data.hero=seed.hero})}
+    bodyVariants.appendMissing(next.templates,masterSeeds(),recordFrom);
     next.seedVersion=SEED_VERSION;if(!next.templates.some(item=>item.id===next.activeId))next.activeId=next.templates[0]?.id||'';return next;
   }
   function parseStoredLibrary(){
@@ -109,11 +111,11 @@
   function textInput(name,value,placeholder=''){return `<input name="${name}" value="${esc(value)}" placeholder="${esc(placeholder)}" />`}
   function mediaFields(key,target){$(`#${target}`).innerHTML=config[key].map((item,index)=>`<article class="media-item ${key==='outfits'?'media-item--outfit':''}"><label class="media-image" data-media-image="${key}.${index}"><input type="file" accept="image/png,image/jpeg,image/webp" /><img ${item.image?`src="${esc(item.image)}"`:'hidden'} alt="${esc(item.name)}" /></label><div class="media-copy"><label>标题${textInput(`${key}.${index}.name`,item.name,'内容标题')}</label><label>来源署名${textInput(`${key}.${index}.byline`,item.byline,'选填，如 @作者')}</label></div>${key==='outfits'?`<div class="outfit-extra"><label>笔记标题${textInput(`${key}.${index}.sourceTitle`,item.sourceTitle||'','来源笔记标题')}</label><label>笔记链接${textInput(`${key}.${index}.sourceUrl`,item.sourceUrl||'','https://...')}</label><label>素材相对路径${textInput(`${key}.${index}.assetPath`,item.assetPath||'','导入前端时使用')}</label><label>穿法说明<textarea name="${key}.${index}.styling" rows="2" placeholder="输入穿法说明">${esc(item.styling||'')}</textarea></label><label>氛围文案<textarea name="${key}.${index}.mood" rows="2" placeholder="输入氛围文案">${esc(item.mood||'')}</textarea></label></div>`:''}</article>`).join('')}
   function renderForm(){
-    ['name','code','summary','outfitSummary','conclusion'].forEach(key=>{form.elements[key].value=config[key]});
-    $('#keywordFields').innerHTML=config.keywords.map((value,index)=>`<label class="field"><span>关键词 ${index+1} <b>最多 4 字</b></span><input name="keywords.${index}" value="${esc(value)}" maxlength="4" placeholder="输入关键词" /></label>`).join('');
+    ['name','code','bodyProfile','gender','summary','outfitSummary','conclusion'].forEach(key=>{form.elements[key].value=config[key]});
+    $('#keywordFields').innerHTML=config.keywords.map((value,index)=>`<label class="field"><span>关键词 ${index+1} <b>最多 8 字</b></span><input name="keywords.${index}" value="${esc(value)}" maxlength="8" placeholder="输入关键词" /></label>`).join('');
     $('#colorFields').innerHTML=config.colors.map((value,index)=>`<div class="color-item"><label class="color-swatch"><input type="color" name="colors.${index}.value" value="${validHex(value.value)?esc(value.value):'#999999'}" aria-label="颜色 ${index+1} 取色器" /></label><label class="color-hex-label">色值<input class="color-hex" data-color-hex="${index}" value="${esc(value.value)}" maxlength="7" inputmode="text" spellcheck="false" aria-label="颜色 ${index+1} HEX 色值" /></label><label class="color-name-label">名称${textInput(`colors.${index}.name`,value.name,'颜色名')}</label></div>`).join('');
     mediaFields('makeup','makeupFields');mediaFields('hair','hairFields');mediaFields('outfits','outfitFields');
-    $('#outfitLibraryCount').textContent=`完整素材库 ${config.outfitLibrary?.length||config.outfits.length} 条 · 报告预览展示前 4 条；导出配置会保留全部 Excel 素材信息。`;
+    $('#outfitLibraryCount').textContent=`完整素材库 ${config.outfitLibrary?.length??config.outfits.filter(item=>item.image).length} 条 · 报告预览展示前 4 条；导出配置会保留全部 Excel 素材信息。`;
     $('#adviceFields').innerHTML=config.advice.map((value,index)=>`<label class="advice-row"><span>${String(index+1).padStart(2,'0')}</span><textarea name="advice.${index}" rows="2" maxlength="300" placeholder="输入建议，支持 Markdown">${esc(value)}</textarea></label>`).join('');
     document.querySelectorAll('[data-image-field]').forEach(element=>{element.querySelector('img').src=config[element.dataset.imageField]});updateCounters();
   }
@@ -134,7 +136,7 @@
   function readImage(file,callback){if(!file||!file.type.startsWith('image/'))return;if(file.size>8*1024*1024){showToast('单张图片不能超过 8MB');return}const reader=new FileReader();reader.onload=()=>callback(String(reader.result));reader.readAsDataURL(file)}
   function showToast(message){toast.textContent=message;toast.classList.add('is-visible');setTimeout(()=>toast.classList.remove('is-visible'),2200)}
   function downloadJson(payload,filename){const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json;charset=utf-8'});const link=document.createElement('a');link.href=URL.createObjectURL(blob);link.download=filename;link.click();setTimeout(()=>URL.revokeObjectURL(link.href),0)}
-  function exportRecord(record){record.data.updatedAt=record.updatedAt;downloadJson(record.data,`selfit-${record.data.code.toLowerCase()||'report'}-template.json`);showToast('模板配置已导出')}
+  function exportRecord(record){record.data.updatedAt=record.updatedAt;downloadJson(record.data,`selfit-${(record.data.code.toLowerCase()||'report')+(record.data.bodyProfile==='curvy'?'-curvy':'')+(record.data.gender&&record.data.gender!=='unisex'?'-'+record.data.gender:'')}-template.json`);showToast('模板配置已导出')}
   function batchExport(ids){const templates=library.templates.filter(item=>ids.has(item.id)).map(item=>({...item.data,templateId:item.id,createdAt:item.createdAt,updatedAt:item.updatedAt}));downloadJson({schemaVersion:'selfit-report-library/1.0',exportedAt:now(),templates},`selfit-report-templates-${new Date().toISOString().slice(0,10)}.json`);showToast(`已导出 ${templates.length} 个模板`)}
   function importRecords(parsed){const values=Array.isArray(parsed)?parsed:Array.isArray(parsed?.templates)?parsed.templates:[parsed];const records=values.filter(value=>value&&typeof value==='object').map(recordFrom);library.templates.push(...records);persist();renderLibrary();return records.length}
 
@@ -158,7 +160,7 @@
   document.querySelectorAll('[data-form-section]').forEach(element=>observer.observe(element));
   $('#exportButton').addEventListener('click',()=>{const record=activeRecord();if(!record)return;exportRecord({...record,data:clone(config)});if(isDirty)showToast('已导出当前草稿；点击保存修改后才会生效')});$('#importButton').addEventListener('click',()=>$('#importInput').click());
   $('#importInput').addEventListener('change',async event=>{const file=event.target.files[0];if(!file)return;try{config=normalize(JSON.parse(await file.text()));renderForm();renderPreview();markDirty();showToast('配置已导入草稿，保存后生效')}catch{showToast('配置文件格式不正确')}event.target.value=''});
-  $('#resetButton').addEventListener('click',()=>{const seed=masterSeeds().find(item=>String(item.code).toUpperCase()===String(config.code).toUpperCase());if(!seed){showToast('当前模板没有可恢复的主数据版本');return}if(!window.confirm('确定将当前草稿恢复为人格主数据吗？保存前不会生效。'))return;config=normalize(seed);renderForm();renderPreview();markDirty();showToast('已恢复到草稿，保存后生效')});
+  $('#resetButton').addEventListener('click',()=>{const seed=masterSeeds().find(item=>bodyVariants.key(item)===bodyVariants.key(config));if(!seed){showToast('当前模板没有可恢复的主数据版本');return}if(!window.confirm('确定将当前草稿恢复为人格主数据吗？保存前不会生效。'))return;config=normalize(seed);renderForm();renderPreview();markDirty();showToast('已恢复到草稿，保存后生效')});
   $('#previewTop').addEventListener('click',()=>{const reportScreen=preview.contentDocument?.querySelector('[data-report-screen]');if(reportScreen)reportScreen.scrollTo({top:0,behavior:'smooth'});else preview.contentWindow?.scrollTo({top:0,behavior:'smooth'})});preview.addEventListener('load',renderPreview);
   window.addEventListener('storage',event=>{if(event.key!==STORAGE_KEY)return;let fresh;try{fresh=parseStoredLibrary()}catch{return}if(!fresh)return;if($('#editorView').hidden){library=fresh;renderLibrary();return}const remote=fresh.templates.find(item=>item.id===editingId);if(!remote||String(remote.updatedAt||'')===String(baseRevision||''))return;if(isDirty){hasConflict=true;setEditorState('conflict','保存冲突 · 请重新进入');showToast('另一页面已保存此模板，当前草稿不会自动覆盖');return}library=fresh;config=clone(remote.data);baseRevision=remote.updatedAt||'';renderForm();renderPreview();setEditorState('saved','已同步另一页面的更新')});
   window.addEventListener('beforeunload',event=>{if(!isDirty)return;event.preventDefault();event.returnValue='' });
