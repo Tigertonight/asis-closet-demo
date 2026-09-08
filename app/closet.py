@@ -78,7 +78,7 @@ OUTFIT_CANVAS_SIZE = CANVAS
 OUTFIT_LAYOUT_MODE = "semantic-main-accessory-rail"
 OUTFIT_MAIN_SPAN = MAIN_SPAN
 OUTFIT_MAIN_GAP = MAIN_GAP
-WARDROBE_EXTRACTION_PROMPT_VERSION = "look-extract-v1.0-selfit"
+WARDROBE_EXTRACTION_PROMPT_VERSION = "look-extract-v1.1-partial-garments"
 IMPORT_PIPELINE_VERSION = "closet_import_v2"
 IMPORT_JOB_EXECUTOR = ThreadPoolExecutor(max_workers=2, thread_name_prefix="selfit-closet-import")
 IMPORT_JOB_LOCK = threading.Lock()
@@ -306,18 +306,29 @@ def _published_catalog_outfits(*, include_archived: bool = False) -> list[dict[s
     return published
 
 
+def _with_default_items(data: dict[str, Any]) -> dict[str, Any]:
+    # Defaults apply to every persona. Existing edits and deletion tombstones win.
+    path = ROOT_DIR / "app/static/selfit-tryon/assets/default-items/catalog.json"
+    catalog = json.loads(path.read_text(encoding="utf-8"))
+    existing = {item.get("item_id") for item in data["items"]}
+    for item in catalog["items"]:
+        if item["item_id"] not in existing:
+            data["items"].append({**item, "user_id": storage_context().user_id})
+    return data
+
+
 def _ensure_manifest() -> dict[str, Any]:
     _closet_source_dir().mkdir(parents=True, exist_ok=True)
     _closet_item_dir().mkdir(parents=True, exist_ok=True)
     if not _closet_manifest_path().exists():
-        return {"version": 1, "items": []}
+        return _with_default_items({"version": 1, "items": []})
     try:
         data = json.loads(_closet_manifest_path().read_text(encoding="utf-8"))
         if isinstance(data, dict) and isinstance(data.get("items"), list):
-            return data
+            return _with_default_items(data)
     except json.JSONDecodeError:
         pass
-    return {"version": 1, "items": []}
+    return _with_default_items({"version": 1, "items": []})
 
 
 def _write_manifest(data: dict[str, Any]) -> None:
@@ -719,7 +730,9 @@ class AIGarmentCutoutProvider:
             "Every x, y, width and height value must be a decimal from 0.0 through 1.0; never use pixels, percentages, or 0-1000 coordinates. "
             "Use only categories top,bottom,skirt,dress,shoes,bag,accessory. Keep separate garments as separate items, "
             "but treat the two shoes of one pair as one item. Do not split a dress into top and skirt. "
-            "Only include real fashion items whose usable silhouette is mostly visible. Put unreliable, tiny or severely occluded objects in skipped_items, "
+            "Include recognizable tops and trousers even when hands, straps or foreground objects occlude part of them, or their silhouette meets the image edge. "
+            "Mark these items fully_visible=false, visibility=partial and needs_approximate_reconstruction=true; do not silently omit them. "
+            "Prioritize the main clothing before accessories. Put unrecognizable, tiny or severely occluded objects in skipped_items with a reason, "
             "and never classify towels, blankets, bedding, curtains, upholstery or folded household textiles as accessories."
         )
         if self._uses_runway():
@@ -2019,7 +2032,7 @@ def create_outfit(payload: dict[str, Any]) -> dict[str, Any]:
     title = str(payload.get("title") or _default_outfit_title(items))[:48]
     scene_tags = _string_list(payload.get("scene_tags"))[:8]
     outfit_id = hashlib.sha256(f"{title}:{item_ids}:{now}".encode("utf-8")).hexdigest()[:16]
-    layout = _build_outfit_cover(outfit_id, items)
+    layout = _build_outfit_cover(outfit_id, items, payload.get("canvas_layout"))
     outfit = {
         "outfit_id": outfit_id,
         "user_id": storage_context().user_id,
@@ -2574,7 +2587,7 @@ def _outfit_completeness_score(outfit: dict[str, Any]) -> tuple[int, int, int, i
     return (has_main, has_shoes, has_bag, display_count + min(favorite_count, 99), updated_at)
 
 
-def _build_outfit_cover(outfit_id: str, items: list[dict[str, Any]]) -> dict[str, Any]:
+def _build_outfit_cover(outfit_id: str, items: list[dict[str, Any]], custom_layout: list[dict[str, Any]] | None = None) -> dict[str, Any]:
     normalized = _normalize_outfit_layout_items(items)
     canvas_width, canvas_height = OUTFIT_CANVAS_SIZE
     canvas = Image.new("RGBA", OUTFIT_CANVAS_SIZE, BACKGROUND)
@@ -2622,6 +2635,37 @@ def _build_outfit_cover(outfit_id: str, items: list[dict[str, Any]]) -> dict[str
             else:
                 main_row += 1
 
+    if custom_layout is not None:
+        ids = {str(item["item_id"]) for item in items}
+        if not isinstance(custom_layout, list) or len(custom_layout) != len(ids):
+            raise HTTPException(422, "搭配布局与所选单品不一致，请重试。")
+        boxes = {}
+        for raw in custom_layout:
+            if not isinstance(raw, dict) or raw.get("id") not in ids or raw["id"] in boxes:
+                raise HTTPException(422, "搭配布局包含无效单品。")
+            try:
+                box = {key: float(raw[key]) for key in ("x", "y", "w", "h")}
+            except (KeyError, TypeError, ValueError):
+                raise HTTPException(422, "搭配位置无效。")
+            if not all(math.isfinite(v) for v in box.values()) or not (0 <= box["x"] < 100 and 0 <= box["y"] < 100 and 0 < box["w"] <= 100 and 0 < box["h"] <= 100 and box["x"]+box["w"] <= 100.01 and box["y"]+box["h"] <= 100.01):
+                raise HTTPException(422, "请将单品放在画布内。")
+            try:
+                rotation = float(raw.get("rotation", 0))
+            except (TypeError, ValueError):
+                raise HTTPException(422, "单品旋转角度无效。")
+            if not math.isfinite(rotation):
+                raise HTTPException(422, "单品旋转角度无效。")
+            box["rotation"] = rotation % 360
+            boxes[raw["id"]] = box
+        placements = []
+        for entry in prepared:
+            box = boxes[str(entry["item"]["item_id"])]
+            width, height = box["w"]*canvas_width/100, box["h"]*canvas_height/100
+            scale = min(width/entry["image"].width, height/entry["image"].height)
+            w, h = entry["image"].width*scale, entry["image"].height*scale
+            placements.append({**entry, "x":box["x"]*canvas_width/100+(width-w)/2,
+                "y":box["y"]*canvas_height/100+(height-h)/2, "width":w,"height":h,"rotation":box["rotation"],"column":0,"row":0})
+
     layout_slots: list[dict[str, Any]] = []
     for placement in placements:
         item = placement["item"]
@@ -2632,6 +2676,12 @@ def _build_outfit_cover(outfit_id: str, items: list[dict[str, Any]]) -> dict[str
             image = image.resize(target_size, Image.Resampling.LANCZOS)
         x = round(placement["x"] + (placement["width"] - image.width) / 2)
         y = round(placement["y"] + (placement["height"] - image.height) / 2)
+        rotation = placement.get("rotation", 0)
+        if rotation:
+            before = image.size
+            image = image.rotate(-rotation, resample=Image.Resampling.BICUBIC, expand=True)
+            x -= (image.width-before[0])//2
+            y -= (image.height-before[1])//2
         canvas.alpha_composite(image, (x, y))
         layout_slots.append(
             {
@@ -2645,6 +2695,7 @@ def _build_outfit_cover(outfit_id: str, items: list[dict[str, Any]]) -> dict[str
                 "visual_area_ratio": round(_collage_visual_area_ratio(slot), 4),
                 "optical_group": "accessory_rail" if _is_accessory_slot(slot) else "main_outfit",
                 "z_index": len(layout_slots) + 10,
+                "rotation": rotation,
             }
         )
 
@@ -9485,8 +9536,11 @@ def _normalize_inventory_candidates(raw_items: Any) -> list[dict[str, Any]]:
             "season_tags": _string_list(raw.get("season_tags")),
             "scene_tags": _string_list(raw.get("scene_tags")),
         }
-        if raw.get("fully_visible") is False or _inventory_candidate_is_nonfashion(candidate) or _inventory_candidate_is_clipped(candidate):
+        if _inventory_candidate_is_nonfashion(candidate) or candidate["visibility"] in {"small", "severely_occluded", "unrecognizable"}:
             continue
+        if raw.get("fully_visible") is False or candidate["visibility"] == "partial" or _inventory_candidate_is_clipped(candidate):
+            candidate["visibility"] = "partial"
+            candidate["needs_approximate_reconstruction"] = True
         if any(
             previous["category"] == category and _inventory_bbox_iou(previous["bbox"], bbox) >= 0.82
             for previous in candidates

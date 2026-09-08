@@ -96,7 +96,7 @@
     }
   }
   const state = {
-    page: ["mirror", "closet", "inspiration", "detail", "chat", "profile", "profile-edit", "import-review", "result-viewer", "topic"].includes(
+    page: ["mirror", "closet", "inspiration", "detail", "chat", "profile", "profile-edit", "import-review", "result-viewer", "topic", "builder"].includes(
       params.get("screen"),
     )
       ? params.get("screen")
@@ -155,6 +155,7 @@
     preflight = null,
     importFile = null,
     importJob = null,
+    importEpoch = 0,
     generationBusy = false;
   function notify(text, presentation = "") {
     $("#notice").classList.toggle("favorite-notice", presentation === "favorite");
@@ -216,7 +217,7 @@
     }
   }
   function nav() {
-    const visible = !["detail","chat","profile","profile-edit","import-review","result-viewer","topic"].includes(state.page);
+    const visible = !["detail","chat","profile","profile-edit","import-review","result-viewer","topic","builder"].includes(state.page);
     $("#navigation").hidden = !visible;
     $("#navigation").innerHTML = [
       ["mirror", "试衣镜"],
@@ -327,11 +328,11 @@
     const img = new Image();
     img.crossOrigin = "anonymous";
     let done = false;
-    const finish = output => {
+    const finish = (output, aspect) => {
       if(done) return;
       done = true; clearTimeout(timer);
-      trimmedPieces.set(src, {ready:true, src:output || src});
-      if(state.page === "mirror" && state.styling) render();
+      trimmedPieces.set(src, {ready:true, src:output || src, aspect:aspect || img.naturalWidth/img.naturalHeight});
+      if((state.page === "mirror" && state.styling) || state.page === "builder") render();
     };
     const timer = setTimeout(()=>finish(src), 15000);
     img.onerror = ()=>finish(src);
@@ -354,7 +355,7 @@
         const crop=document.createElement("canvas");
         crop.width=Math.ceil((right-left+1)/scale);crop.height=Math.ceil((bottom-top+1)/scale);
         crop.getContext("2d").drawImage(img,left/scale,top/scale,crop.width,crop.height,0,0,crop.width,crop.height);
-        crop.toBlob(blob=>{if(!blob || done)return finish(src);const url=URL.createObjectURL(blob);state.uploadURLs.push(url);finish(url);},"image/png");
+        crop.toBlob(blob=>{if(!blob || done)return finish(src);const url=URL.createObjectURL(blob);state.uploadURLs.push(url);finish(url,crop.width/crop.height);},"image/png");
       } catch { finish(src); }
     };
     img.src=mediaURL(src);
@@ -437,9 +438,18 @@
   }
   async function resumeImport() {
     const pending=pendingImport(); if(!pending?.job_id)return;
+    ++importEpoch;
     importJob={job_id:pending.job_id}; state.importReviewJobId=pending.reviewed ? pending.job_id : '';
     state.importSelection=new Set(pending.selected || []);
+    modal("正在拆分单品", '<p id="importCopy" role="status">正在恢复拆款进度…</p><button class="secondary" data-action="close">继续浏览</button>');
+    $("#sheet").dataset.importFlow = 'true';
     await pollImport();
+  }
+  function importStatusCopy() {
+    const job = pendingImport();
+    if (job?.status === 'awaiting_confirmation' || job?.reviewed) return '单品已拆好 · 继续确认';
+    if (job?.status === 'failed') return '拆款未完成 · 查看并重试';
+    return '正在拆分单品 · 查看进度';
   }
   function closet() {
     if (state.loading)
@@ -453,7 +463,7 @@
     const outfits=["set","saved"].includes(state.closetCategory);
     const tabs=`<header class="wardrobe-header"><div role="tablist" aria-label="衣帽间内容"><button role="tab" data-category="all" data-location="closet" aria-selected="${!outfits}">我的单品</button><button role="tab" data-category="set" data-location="closet" aria-selected="${outfits}">我的搭配</button></div><button class="wardrobe-add" data-action="upload-garment" aria-label="添加衣服"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button></header>`;
     const filters=outfits ? "" : `<div class="wardrobe-filters" role="tablist" aria-label="服装分类">${[["all","全部"],["top","上装"],["bottom","下装"],["shoes","鞋子"],["bag","包包"],["dress","连衣裙"],["hat","帽子"],["accessory","配饰"]].map(([id,label])=>`<button role="tab" data-category="${id}" data-location="closet" aria-selected="${state.closetCategory===id}">${label}</button>`).join("")}</div>`;
-    return `<section class="closet-screen wardrobe-source-layout ${outfits ? "wardrobe-outfits" : ""}" aria-label="衣帽间">${tabs}${filters}${pendingImport()?.job_id ? '<button class="resume-import" data-action="resume-import">有一组待确认单品 · 继续确认</button>' : ""}${state.wardrobeError ? `<div class="empty">${esc(state.wardrobeError)}<button class="secondary" data-action="reload">重新加载</button></div>` : `<div class="closet-grid">${list.map((x) => card(x, ["set", "saved"].includes(state.closetCategory) ? "outfit" : "item")).join("")}</div>${!list.length ? wardrobeEmpty() : ""}`}</section>`;
+    return `<section class="closet-screen wardrobe-source-layout ${outfits ? "wardrobe-outfits" : ""}" aria-label="衣帽间">${tabs}${filters}${pendingImport()?.job_id ? `<button class="resume-import" data-action="resume-import">${importStatusCopy()}</button>` : ""}${state.wardrobeError ? `<div class="empty">${esc(state.wardrobeError)}<button class="secondary" data-action="reload">重新加载</button></div>` : `<div class="closet-grid">${list.map((x) => card(x, ["set", "saved"].includes(state.closetCategory) ? "outfit" : "item")).join("")}</div>${!list.length ? wardrobeEmpty() : ""}`}</section>`;
   }
   function feedCard(x) {
     return `<article class="feed-card ${x.flat ? "flat" : ""} ${x.kind === "note" ? "note-card" : ""}" ${x.kind === "note" ? `style="aspect-ratio:${x.width || 184}/${x.height || 245}"` : ""}><button class="feed-open" data-detail="${esc(x.id)}" aria-label="查看${esc(x.name)}">${image(x.src, x.name)}</button>${`<button class="feed-favorite" data-action="favorite" data-favorite-id="${esc(x.id)}" aria-label="${x.saved ? '取消收藏' : '收藏'}${esc(x.name)}" aria-pressed="${Boolean(x.saved)}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.9-6.2-3.3-6.2 3.3L7 14.2l-5-4.9 6.9-1Z"/></svg></button>`}<button class="try-chip" data-try="${esc(x.id)}">试穿</button></article>`;
@@ -682,10 +692,10 @@
   function importReview() {
     if (!reference && state.error) return `<section class="import-review">${empty(state.error)}</section>`;
     if (state.loading) return `<section class="import-review"><p class="empty" role="status">正在打开上传确认…</p></section>`;
-    return `<section class="note-detail import-review" aria-label="确认上传"><header><button class="back" data-action="leave-import" aria-label="返回衣帽间"><svg viewBox="0 0 24 24"><path d="m15 4-7 8 7 8"/></svg></button><h1>确认上传</h1></header>${state.importPhoto ? image(state.importPhoto,'上传的穿搭照片','import-review-photo') : ''}<p class="import-review-copy">默认上传整套穿搭，可取消勾选不想上传的单品。</p><div class="import-review-pieces">${state.importItems.map(i=>`<button class="import-choice" data-import-piece="${esc(i.id)}" aria-label="${esc(i.name)}" aria-pressed="${state.importSelection.has(i.id)}" ${state.importSaving ? 'disabled' : ''}>${image(i.src,i.name)}<span aria-hidden="true">${state.importSelection.has(i.id) ? '✓' : ''}</span></button>`).join('')}</div>${!state.importItems.length ? '<p class="empty">暂未识别出可添加的单品，请换一张清晰的穿搭照片。</p>' : ''}${state.importError ? `<p class="import-review-error" role="alert">${esc(state.importError)}</p>` : ''}</section><div class="detail-dock note-dock"><button class="secondary" data-action="upload-garment" ${state.importSaving ? 'disabled' : ''}>重新上传</button><button class="primary" data-action="confirm-import" ${state.importSaving || !state.importSelection.size ? 'disabled' : ''}>${state.importSaving ? '正在添加…' : '确认添加'}</button></div>`;
+    return `<section class="note-detail import-review" aria-label="确认上传"><header><button class="back" data-action="leave-import" aria-label="返回衣帽间"><svg viewBox="0 0 24 24"><path d="m15 4-7 8 7 8"/></svg></button><h1>确认上传</h1></header>${state.importPhoto ? image(state.importPhoto,'上传的穿搭照片','import-review-photo') : ''}<p class="import-review-copy">已识别 ${state.importItems.length} 件单品，选中 ${state.importSelection.size} 件。确认后才会加入衣帽间；未识别的衣物可以补拍单品图。</p><div class="import-review-pieces">${state.importItems.map(i=>`<button class="import-choice" data-import-piece="${esc(i.id)}" aria-label="${esc(i.name)}" aria-pressed="${state.importSelection.has(i.id)}" ${state.importSaving ? 'disabled' : ''}>${image(i.src,i.name)}${i.approximate ? '<small class="import-approximate">遮挡部分已补全，请核对</small>' : ""}<span aria-hidden="true">${state.importSelection.has(i.id) ? '✓' : ''}</span></button>`).join('')}</div>${!state.importItems.length ? '<p class="empty">暂未识别出可添加的单品，请换一张清晰的穿搭照片。</p>' : ''}${state.importError ? `<p class="import-review-error" role="alert">${esc(state.importError)}</p>` : ''}</section><div class="detail-dock note-dock"><button class="secondary" data-action="upload-garment" ${state.importSaving ? 'disabled' : ''}>重新上传</button><button class="primary" data-action="confirm-import" ${state.importSaving || !state.importSelection.size ? 'disabled' : ''}>${state.importSaving ? '正在添加…' : `确认添加（${state.importSelection.size}）`}</button></div>`;
   }
   function rememberImport() {
-    if (!reference && importJob?.job_id) sessionStorage.setItem('selfit.studio.import',JSON.stringify({job_id:importJob.job_id,selected:[...state.importSelection],reviewed:state.importReviewJobId===importJob.job_id}));
+    if (!reference && importJob?.job_id) sessionStorage.setItem('selfit.studio.import',JSON.stringify({job_id:importJob.job_id,status:importJob.status,selected:[...state.importSelection],reviewed:state.importReviewJobId===importJob.job_id}));
   }
   async function confirmImport() {
     if (state.importSaving || !state.importSelection.size) return;
@@ -716,7 +726,7 @@
     if (reference) $("#studio").setAttribute("data-reference", "true");
     nav();
     $("#completionNotice").hidden = !state.completedTryon && !(reference && params.get("notice") === "success" && state.page === "inspiration");
-    $("#screen").innerHTML = { mirror: readyMirror, closet, inspiration, topic, detail, chat, profile, "profile-edit": profileEdit, "import-review": importReview, "result-viewer": resultViewer }[
+    $("#screen").innerHTML = { mirror: readyMirror, closet, inspiration, topic, builder: outfitBuilder, detail, chat, profile, "profile-edit": profileEdit, "import-review": importReview, "result-viewer": resultViewer }[
       state.page
     ]();
     $("#studio").dataset.screen = state.page;
@@ -846,25 +856,41 @@
     modal(item.name, `<button class="garment-delete" data-action="delete-item" data-id="${esc(id)}" aria-label="删除单品"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13M10 10v7m4-7v7"/></svg></button>${image(item.src, item.name, "garment-sheet-image")}<button class="primary garment-sheet-cta" data-action="item-generate" data-id="${esc(id)}">帮我搭配</button>`);
     $("#sheet").classList.add("garment-sheet");
   }
-  async function generateForItem(id) {
-    if(reference) { $("#sheet").close(); chooseItem(id); notify("设计预览：正式模式将生成搭配"); return; }
-    modal("围绕这件衣服搭配", '<p role="status">正在为这件单品寻找合适的组合…</p>');
+  function generateForItem(id) {
+    if (!lookup(id)) return;
+    state.builderIds = new Set([id]); state.builderBoxes = {}; state.builderActive = id; state.builderCategory = 'all'; state.builderError = '';
+    $("#sheet").close(); go('builder');
+  }
+  function builderCanvas(chosen) {
+    state.builderBoxes ||= {};
+    chosen.forEach(p=>preparePiece(p.src));
+    const defaults=window.SelfitOutfitLayout.templateLayout(chosen.map(p=>({...p,aspect:trimmedPieces.get(p.src)?.aspect})));
+    for(const box of defaults) if(!state.builderBoxes[box.id]?.manual) state.builderBoxes[box.id]={...box};
+    const active=chosen.some(p=>p.id===state.builderActive) ? state.builderBoxes[state.builderActive] : null;
+    const controls=active ? `<div class="builder-selection" style="left:${active.x}%;top:${active.y}%;width:${active.w}%;height:${active.h}%" role="group" aria-label="选中单品操作">${[['smaller','拖动缩放','↖'],['larger','拖动缩放','↘'],['rotate','拖动旋转','↻'],['remove','移除','×']].map(([action,label,icon])=>`<button data-builder-adjust="${action}" aria-label="${label}选中单品" title="${label}">${icon}</button>`).join('')}</div>` : '';
+    return `<div class="builder-canvas" aria-label="搭配画布">${chosen.map(p=>{const b=state.builderBoxes[p.id];return `<button class="builder-piece" data-builder-piece="${esc(p.id)}" aria-label="移动${esc(p.name)}" aria-pressed="${state.builderActive===p.id}" style="left:${b.x}%;top:${b.y}%;width:${b.w}%;height:${b.h}%;z-index:${b.z || 1}">${image(trimmedPieces.get(p.src)?.src || p.src,p.name).replace('<img ',`<img style="transform:rotate(${b.rotation || 0}deg)" `)}</button>`;}).join('') || '<p>从下方添加单品到画布</p>'}${controls}<button class="builder-auto-layout" data-builder-adjust="reset" aria-label="自动排版">▦ 自动排版</button></div>`;
+  }
+  function outfitBuilder() {
+    const selected = state.builderIds || new Set();
+    const chosen = state.items.filter(x=>selected.has(x.id));
+    const category = state.builderCategory || 'all';
+    const candidates = state.items.filter(x=>category==='all' || categoryGroup(x.category)===category);
+    return `<section class="outfit-builder" aria-label="单品搭配"><header><button class="back" data-page="closet" aria-label="返回衣帽间">‹</button><h1>单品搭配</h1></header>${builderCanvas(chosen)}<h2>从衣帽间添加</h2><div class="categories">${[['all','全部'],['top','上装'],['bottom','下装'],['shoes','鞋子'],['accessory','配饰']].map(([key,label])=>`<button data-builder-category="${key}" aria-selected="${key===category}">${label}</button>`).join('')}</div><div class="builder-grid">${candidates.map(x=>`<button data-builder-item="${esc(x.id)}" aria-label="${esc(x.name)}" aria-pressed="${selected.has(x.id)}" ${state.builderSaving?'disabled':''}>${image(x.src,x.name)}<span>${selected.has(x.id)?'✓':''}</span></button>`).join('')}</div>${!candidates.length?'<p>这个分类还没有单品，可以返回衣帽间添加。</p>':''}${state.builderError?`<p role="alert">${esc(state.builderError)}</p>`:''}</section><div class="detail-dock note-dock"><button class="secondary" data-action="save-builder" ${chosen.length<2 || state.builderSaving?'disabled':''}>保存搭配</button><button class="primary" data-action="try-builder" ${chosen.length<2 || state.builderSaving?'disabled':''}>${state.builderSaving?'正在保存…':'保存并试穿'}</button></div>`;
+  }
+  async function saveBuilder(tryAfter = false) {
+    if (state.builderSaving || (state.builderIds?.size || 0)<2) return;
+    const itemIds = [...state.builderIds];
+    state.builderSaving=true;state.builderError='';render();
     try {
-      const data = await api(`/selfit/try-on/items/${encodeURIComponent(id)}/outfits`, { method: "POST" });
-      const outfits = (data.outfits || []).map(x => normalizeOutfit(x, state.items));
-      state.outfits = uniqueItems([...state.outfits, ...outfits]);
-      state.current = outfits[0];
-      state.source = "closet";
-      state.styling = true;
-      state.category = "set";
-      state.result = "";
-      preflight = null;
-      $("#sheet").close();
-      go("mirror");
-      notify(`已生成 ${outfits.length} 套搭配，选择后即可试穿。`);
-    } catch {
-      modal("暂时没能生成搭配", `<p>可以重试，也可以直接试穿这件单品。</p><button class="primary" data-action="item-generate" data-id="${esc(id)}">重新生成</button><button class="secondary" data-action="item-try" data-id="${esc(id)}">试穿单品</button>`);
-    }
+      const data=await api('/closet/outfits',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({item_ids:itemIds,title:'我的搭配',scene_tags:[],canvas_layout:itemIds.map(id=>({...state.builderBoxes[id],id}))})});
+      const outfit=normalizeOutfit(data,state.items);
+      state.outfits=uniqueItems([outfit,...state.outfits]);
+      if(state.page!=='builder'){notify('搭配已保存到衣帽间。');return;}
+      state.current=outfit;state.selected=new Set(itemIds);state.result='';preflight=null;
+      if(tryAfter){state.styling=true;go('mirror',true,false);await startTry();}
+      else {state.closetCategory='set';go('closet');notify('搭配已保存。');}
+    } catch(e){state.builderError=e.message || '保存失败，请重试。';}
+    finally {state.builderSaving=false;render();}
   }
   function openOutfitSheet(id) {
     const outfit = lookup(id);
@@ -885,6 +911,7 @@
     go("detail");
   }
   function modal(title, body) {
+    delete $("#sheet").dataset.importFlow;
     $("#sheet").classList.remove("garment-sheet", "outfit-sheet", "model-sheet");
     $("#sheet").innerHTML =
       `<h2 id="sheetTitle">${esc(title)}</h2><button class="close" data-action="close" aria-label="关闭">×</button>${body}`;
@@ -1210,30 +1237,45 @@
   }
   async function importGarment(retry = false) {
     if (!importFile && !importJob) return;
+    const epoch = ++importEpoch;
+    const file = importFile;
+    clearTimeout(importTimer);
+    if (!retry) importJob = null;
     modal(
-      "正在整理这件衣服",
+      "正在拆分单品",
       '<p id="importCopy" role="status">正在上传图片，稍等一下…</p><button class="secondary" data-action="close">继续浏览</button>',
     );
+    $("#sheet").dataset.importFlow = 'true';
     try {
+      let submitted;
       if (retry && importJob)
-        importJob = await api(
+        submitted = await api(
           `/closet/import/jobs/${encodeURIComponent(importJob.job_id)}/retry`,
           { method: "POST" },
         );
       else {
         const body = new FormData();
-        body.append("images", importFile);
+        body.append("images", file);
         body.append("require_confirmation", "true");
-        importJob = await api("/closet/import/jobs", { method: "POST", body });
+        submitted = await api("/closet/import/jobs", { method: "POST", body });
       }
+      if (epoch !== importEpoch) return;
+      importJob = submitted;
       if (!retry) {state.importSelection=new Set();state.importReviewJobId="";}
       rememberImport();
+      if (state.page === "closet") render();
       pollImport();
     } catch (e) {
+      if (epoch !== importEpoch) return;
       importFailure(e.message);
     }
   }
   function importFailure(message) {
+    if (!$("#sheet").open || $("#sheet").dataset.importFlow !== 'true') {
+      if (state.page === 'closet') render();
+      notify('拆款暂未完成，可回衣帽间查看并重试。');
+      return;
+    }
     modal(
       "衣服暂未加入",
       `<p>${esc(message)}</p><button class="primary" data-action="retry-import">重新尝试</button><button class="secondary" data-action="upload-garment">换张衣服图</button>`,
@@ -1241,11 +1283,15 @@
   }
   async function pollImport() {
     clearTimeout(importTimer);
+    const epoch = importEpoch, jobId = importJob?.job_id;
+    if (!jobId) return;
     try {
       const job = await api(
-        `/closet/import/jobs/${encodeURIComponent(importJob.job_id)}`,
+        `/closet/import/jobs/${encodeURIComponent(jobId)}`,
       );
+      if (epoch !== importEpoch || jobId !== importJob?.job_id) return;
       importJob = job;
+      rememberImport();
       if (job.status === "failed")
         return importFailure(
           "这张图片暂时无法提取衣服，可以换一张清楚的图片。",
@@ -1256,7 +1302,13 @@
         state.importPhoto=job.preview_images?.[0] || state.importPhoto;
         if (!sameJob) state.importSelection=new Set(state.importItems.map(x=>x.id));
         state.importReviewJobId=job.job_id; state.importError=''; rememberImport();
-        $("#sheet").close(); go('import-review'); return;
+        if (state.page === 'import-review' || ($("#sheet").open && $("#sheet").dataset.importFlow === 'true')) {
+          $("#sheet").close(); go('import-review');
+        } else {
+          if (state.page === 'closet') render();
+          notify('单品已拆好，可回衣帽间确认添加。');
+        }
+        return;
       }
       if (job.status === "completed") {
         sessionStorage.removeItem('selfit.studio.import');
@@ -1269,15 +1321,17 @@
       }
       if ($("#importCopy"))
         $("#importCopy").textContent =
-          `正在整理衣服 · ${Number(job.progress) || 0}%`;
+          `正在识别并分离单品 · ${Number(job.progress) || 0}%\n通常需要约一分钟，你可以先继续浏览。`;
       importTimer = setTimeout(pollImport, 1500);
     } catch (e) {
+      if (epoch !== importEpoch || jobId !== importJob?.job_id) return;
       importFailure(e.message);
     }
   }
   function normalizeItem(x) {
     return {
       id: x.item_id,
+      approximate: x.extraction?.reconstruction_method === "approximate",
       name: x.category_label || x.title || "衣橱单品",
       category: x.slot || x.category,
       src:
@@ -1494,7 +1548,7 @@
       } else state.current ||= state.feed.find(x => x.kind !== "note") || null;
       state.error = "";
       if (id && state.current)
-        state.page = ["mirror", "closet", "inspiration", "detail", "chat", "profile", "profile-edit", "import-review", "result-viewer", "topic"].includes(params.get("screen")) ? params.get("screen") : "mirror";
+        state.page = ["mirror", "closet", "inspiration", "detail", "chat", "profile", "profile-edit", "import-review", "result-viewer", "topic", "builder"].includes(params.get("screen")) ? params.get("screen") : "mirror";
       if (job?.job_id && !params.get("record") && !state.viewerPhoto) {
         state.job = job;
         state.jobPhoto = job.original_image_path || "";
@@ -1503,7 +1557,7 @@
       if (state.page === 'result-viewer' && params.get('record')) {
         await restoreHistoryRoute(params.get('record'));
       }
-      if (state.page === 'import-review') {
+      if (pendingImport()?.job_id) {
         let pending;
         try {pending=JSON.parse(sessionStorage.getItem('selfit.studio.import') || 'null');} catch {}
         if (pending?.job_id) {
@@ -1546,6 +1600,29 @@
       return;
     }
     try {
+      if (b.dataset.builderPiece) {state.builderActive=b.dataset.builderPiece;render();return;}
+      if (b.dataset.builderAdjust) {
+        if(state.builderSaving)return;
+        if(e.detail>0 && ['smaller','larger','rotate'].includes(b.dataset.builderAdjust))return;
+        const id=state.builderActive, box=state.builderBoxes?.[id];
+        if(b.dataset.builderAdjust==='reset')state.builderBoxes={};
+        else if(box && b.dataset.builderAdjust==='remove'){state.builderIds.delete(id);state.builderBoxes={};}
+        else if(box && b.dataset.builderAdjust==='rotate'){box.manual=true;box.rotation=((box.rotation || 0)+15)%360;}
+        else if(box){box.manual=true;const factor=b.dataset.builderAdjust==='larger'?1.1:1/1.1;box.w=Math.max(8,Math.min(95,box.w*factor));box.h=Math.max(8,Math.min(95,box.h*factor));box.x=Math.min(box.x,100-box.w);box.y=Math.min(box.y,100-box.h);}
+        render();return;
+      }
+      if (b.dataset.builderCategory) {state.builderCategory=b.dataset.builderCategory;render();return;}
+      if (b.dataset.builderItem) {
+        if(state.builderSaving)return;
+        const selected=state.builderIds || (state.builderIds=new Set());
+        if(selected.has(b.dataset.builderItem))selected.delete(b.dataset.builderItem);
+        else if(selected.size<6)selected.add(b.dataset.builderItem);
+        else {notify('一套搭配最多选择 6 件单品。');return;}
+        state.builderBoxes={};
+        state.builderActive=selected.has(b.dataset.builderItem)?b.dataset.builderItem:null;
+        render();return;
+      }
+      if(['save-builder','try-builder'].includes(b.dataset.action)){await saveBuilder(b.dataset.action==='try-builder');return;}
       if (b.dataset.record) {
         const record=(state.historyRecords || []).find(row=>row.record_id===b.dataset.record);
         if (!record) return;
@@ -1993,6 +2070,58 @@
     }
     e.target.value = "";
   });
+  let builderDrag = null;
+  function transformBuilderDrag(d, clientX, clientY) {
+    const box={...d.box};
+    if(d.mode==='rotate') {
+      const angle=Math.atan2(clientY-d.cy,clientX-d.cx);
+      box.rotation=((d.box.rotation || 0)+(angle-d.angle)*180/Math.PI+360)%360;
+    } else if(d.mode==='scale') {
+      const distance=Math.hypot(clientX-d.cx,clientY-d.cy);
+      const centerX=d.box.x+d.box.w/2,centerY=d.box.y+d.box.h/2;
+      const maximum=Math.min(2*Math.min(centerX,100-centerX)/d.box.w,2*Math.min(centerY,100-centerY)/d.box.h);
+      const minimum=Math.min(maximum,Math.max(8/d.box.w,8/d.box.h));
+      const factor=Math.max(minimum,Math.min(maximum,distance/Math.max(1,d.distance)));
+      box.w=d.box.w*factor;box.h=d.box.h*factor;
+      box.x=centerX-box.w/2;box.y=centerY-box.h/2;
+    } else {
+      box.x=Math.max(0,Math.min(100-box.w,d.box.x+(clientX-d.x)/d.rect.width*100));
+      box.y=Math.max(0,Math.min(100-box.h,d.box.y+(clientY-d.y)/d.rect.height*100));
+    }
+    return box;
+  }
+  $("#studio").addEventListener('pointerdown', e=>{
+    if(builderDrag || state.builderSaving || (e.button!==0 && e.pointerType==='mouse'))return;
+    const handle=e.target.closest('[data-builder-adjust]');
+    const action=handle?.dataset.builderAdjust;
+    if(handle && !['smaller','larger','rotate'].includes(action))return;
+    const piece=handle ? [...document.querySelectorAll('[data-builder-piece]')].find(p=>p.dataset.builderPiece===state.builderActive) : e.target.closest('[data-builder-piece]');
+    if(!piece)return;
+    const id=piece.dataset.builderPiece,box=state.builderBoxes[id],rect=piece.parentElement.getBoundingClientRect();
+    state.builderActive=id;
+    const cx=rect.left+(box.x+box.w/2)/100*rect.width,cy=rect.top+(box.y+box.h/2)/100*rect.height;
+    builderDrag={id,box:{...box},x:e.clientX,y:e.clientY,rect,piece,pointerId:e.pointerId,
+      mode:handle ? action==='rotate'?'rotate':'scale' : 'move',cx,cy,
+      angle:Math.atan2(e.clientY-cy,e.clientX-cx),distance:Math.hypot(e.clientX-cx,e.clientY-cy)};
+    (handle || piece).setPointerCapture(e.pointerId);e.preventDefault();
+  });
+  $("#studio").addEventListener('pointermove',e=>{
+    if(!builderDrag || builderDrag.pointerId!==e.pointerId)return;
+    const d=builderDrag,b=transformBuilderDrag(d,e.clientX,e.clientY);
+    b.manual=true;state.builderBoxes[d.id]=b;
+    const frame=$('.builder-selection');
+    for(const node of [d.piece,frame].filter(Boolean)){
+      node.style.left=b.x+'%';node.style.top=b.y+'%';node.style.width=b.w+'%';node.style.height=b.h+'%';
+    }
+    d.piece.querySelector('img').style.transform=`rotate(${b.rotation || 0}deg)`;
+    e.preventDefault();
+  });
+  for(const event of ['pointerup','pointercancel']) $('#studio').addEventListener(event,e=>{
+    if(builderDrag && builderDrag.pointerId===e.pointerId){
+      if(event==='pointercancel')state.builderBoxes[builderDrag.id]=builderDrag.box;
+      builderDrag=null;render();
+    }
+  });
   $("#studio").addEventListener("pointerdown", (e) => {
     if (e.target.closest("[data-action=compare]")) {
       const im = $(".model-photo");
@@ -2055,7 +2184,7 @@
       }
     }
     go(
-      ["mirror", "closet", "inspiration", "detail", "chat", "profile", "profile-edit", "import-review", "result-viewer", "topic"].includes(p.get("screen"))
+      ["mirror", "closet", "inspiration", "detail", "chat", "profile", "profile-edit", "import-review", "result-viewer", "topic", "builder"].includes(p.get("screen"))
         ? p.get("screen")
         : "mirror",
       false,

@@ -619,14 +619,16 @@ def test_inventory_candidate_normalization_accepts_gemini_1000_space_and_percent
     assert candidates[1]["bbox"] == {"x": 0.6, "y": 0.2, "width": 0.25, "height": 0.3}
 
 
-def test_inventory_candidate_normalization_rejects_household_textiles_and_clipped_garments() -> None:
+def test_inventory_keeps_recognizable_clipped_garments_but_rejects_household_textiles() -> None:
     candidates = closet._normalize_inventory_candidates([
         {"category": "accessory", "bbox": {"x": 0.1, "y": 0.2, "width": 0.7, "height": 0.5}, "confidence": 0.9, "style_tags": ["bath towel", "folded"]},
         {"category": "bottom", "bbox": {"x": 0.2, "y": 0.68, "width": 0.5, "height": 0.32}, "confidence": 0.98, "fully_visible": False},
         {"category": "top", "bbox": {"x": 0.15, "y": 0.1, "width": 0.7, "height": 0.5}, "confidence": 0.96, "fully_visible": True},
     ])
 
-    assert [candidate["category"] for candidate in candidates] == ["top"]
+    assert [candidate["category"] for candidate in candidates] == ["bottom", "top"]
+    assert candidates[0]["visibility"] == "partial"
+    assert candidates[0]["needs_approximate_reconstruction"] is True
 
 
 def test_confirmed_empty_inventory_does_not_reach_shape_fallback(monkeypatch, tmp_path: Path) -> None:
@@ -1575,3 +1577,26 @@ def test_long_press_feedback_persists_reasons_and_trigger(monkeypatch, tmp_path:
     assert [event["reason"] for event in records] == ["dislike", "unsuitable"]
     assert all(event["context"]["trigger"] == "long_press" for event in records)
     assert all(event["created_at"] and event["entity_id"] == "qa-long-press" for event in records)
+
+
+def test_custom_canvas_layout_is_saved_and_validated(monkeypatch, tmp_path):
+    _use_tmp_closet(monkeypatch, tmp_path)
+    client = _auth_client()
+    created = client.post('/closet/import/upload', files=[('images', ('top.png', _png_bytes(_synthetic_top_image()), 'image/png'))]).json()['items'][0]
+    item_id = created['item_id']
+    payload = {'item_ids': [item_id], 'canvas_layout': [{'id': item_id, 'x': 10, 'y': 20, 'w': 30, 'h': 40}]}
+    response = client.post('/closet/outfits', json=payload)
+    assert response.status_code == 200
+    outfit = response.json()
+    box = outfit['layout_slots'][0]['box']
+    assert box['x'] >= 120 and box['y'] >= 300
+    assert box['x'] + box['width'] <= 481
+    assert box['y'] + box['height'] <= 901
+    restored = client.get('/closet/outfits/' + outfit['outfit_id']).json()
+    assert restored['layout_slots'] == outfit['layout_slots']
+    payload['canvas_layout'][0]['rotation'] = 90
+    rotated = client.post('/closet/outfits', json=payload)
+    assert rotated.status_code == 200
+    assert rotated.json()['layout_slots'][0]['rotation'] == 90
+    payload['canvas_layout'][0]['x'] = 99
+    assert client.post('/closet/outfits', json=payload).status_code == 422
