@@ -401,10 +401,14 @@ def create_outfit_tryon_job(
         except HTTPException as exc:
             if exc.status_code != 404:
                 raise
+    source_photo = _tryon_output_dir() / "job-inputs" / Path(person["saved_path"]).name
+    source_photo.parent.mkdir(parents=True, exist_ok=True)
+    source_photo.write_bytes(person_raw)
     now = datetime.now(timezone.utc).isoformat()
     job = {
         "job_id": job_id,
         "user_id": user_id,
+        "original_image_path": _public_output_path(source_photo),
         "status": "queued",
         "progress": 0,
         "phase": "queued",
@@ -430,6 +434,71 @@ def create_outfit_tryon_job(
     return _public_tryon_job(job)
 
 
+def create_inspiration_tryon_job(person_raw: bytes, person_filename: str | None,
+                                note: dict[str, Any], user_id: str,
+                                client_request_id: str | None = None) -> dict[str, Any]:
+    # The note is resolved from the account's catalog by the authenticated route.
+    source = urlparse(str(note.get("image_url") or "")).path
+    static_root = Path(__file__).resolve().parent / "static"
+    reference = (static_root / source.removeprefix("/static/")).resolve()
+    if not source.startswith("/static/") or not reference.is_relative_to(static_root.resolve()) or not reference.is_file():
+        raise HTTPException(404, "这张穿搭照片暂时不可用")
+    person = _read_upload_image(person_raw, person_filename, "person")
+    inspiration = _read_upload_image(reference.read_bytes(), reference.name, "inspiration")
+    key = str(client_request_id or "").strip()[:128]
+    signature = key or datetime.now(timezone.utc).isoformat()
+    job_id = hashlib.sha256(f"{user_id}:note:{note['id']}:{person['image_id']}:{signature}".encode()).hexdigest()[:18]
+    if key:
+        try:
+            return _public_tryon_job(_read_tryon_job(job_id))
+        except HTTPException as exc:
+            if exc.status_code != 404:
+                raise
+    original = _tryon_output_dir() / "job-inputs" / Path(person["saved_path"]).name
+    original.parent.mkdir(parents=True, exist_ok=True)
+    original.write_bytes(person_raw)
+    now = datetime.now(timezone.utc).isoformat()
+    job = {"job_id":job_id,"user_id":user_id,"kind":"inspiration","note":note,
+           "person_path":str(original),"person_filename":person_filename or "person.png",
+           "inspiration_path":str(inspiration["saved_path"]),
+           "original_image_path":_public_output_path(original),"client_request_id":key or None,
+           "status":"queued","phase":"queued","progress":0,"attempt":1,
+           "created_at":now,"updated_at":now,"result":None,"error":None}
+    _write_tryon_job(job)
+    TRYON_JOB_EXECUTOR.submit(_run_inspiration_tryon_job,user_id,job_id)
+    return _public_tryon_job(job)
+
+
+def _run_inspiration_tryon_job(user_id: str, job_id: str) -> None:
+    try:
+        with user_storage(user_id):
+            job = _read_tryon_job(job_id)
+            _update_tryon_job(job_id,status="processing",phase="generating",progress=20)
+            person = _read_upload_image(Path(job["person_path"]).read_bytes(),job["person_filename"],"person")
+            reference = Path(job["inspiration_path"])
+            inspiration = _read_upload_image(reference.read_bytes(),reference.name,"inspiration")
+            result = run_try_on_from_inspiration(person,inspiration,full_outfit=True)
+            result["note"] = job["note"]
+            completed = result.get("status") in {"generated","review"} and bool(result.get("result",{}).get("image_path"))
+            if completed:
+                # Retry output must not overwrite a photograph already shown in history.
+                source_result = _tryon_result_disk_path(result["result"]["image_path"])
+                if source_result is None or not source_result.is_file():
+                    raise ValueError("试穿图片暂时无法读取，请重试。")
+                version = _tryon_output_dir() / "job-results" / f"{job_id}-{job.get('attempt',1)}{source_result.suffix}"
+                version.parent.mkdir(parents=True,exist_ok=True)
+                version.write_bytes(source_result.read_bytes())
+                result["result"]["image_path"] = _public_output_path(version)
+                from app.closet import record_inspiration_tryon_result
+                result["record"] = record_inspiration_tryon_result(job["note"],job,result)
+            _update_tryon_job(job_id,status="completed" if completed else "failed",
+                phase="completed" if completed else "failed",progress=100,result=result,
+                error=None if completed else {"message":result.get("decision",{}).get("user_message") or "这次试穿没有完成。","retryable":True})
+    except Exception as exc:
+        with user_storage(user_id):
+            _update_tryon_job(job_id,status="failed",phase="failed",error={"message":str(exc)[:500],"retryable":True})
+
+
 def get_outfit_tryon_job(job_id: str) -> dict[str, Any]:
     return _public_tryon_job(_read_tryon_job(job_id))
 
@@ -449,7 +518,7 @@ def retry_outfit_tryon_job(job_id: str, user_id: str) -> dict[str, Any]:
         "error": None,
     })
     _write_tryon_job(job)
-    TRYON_JOB_EXECUTOR.submit(_run_outfit_tryon_job, user_id, job_id)
+    TRYON_JOB_EXECUTOR.submit(_run_inspiration_tryon_job if job.get("kind") == "inspiration" else _run_outfit_tryon_job, user_id, job_id)
     return _public_tryon_job(job)
 
 
@@ -536,7 +605,7 @@ def _read_tryon_job(job_id: str) -> dict[str, Any]:
 
 
 def _public_tryon_job(job: dict[str, Any]) -> dict[str, Any]:
-    return {key: value for key, value in job.items() if key not in {"user_id", "person_path"}}
+    return {key: value for key, value in job.items() if key not in {"user_id", "person_path", "inspiration_path"}}
 
 
 def _update_tryon_job(job_id: str, **updates: Any) -> dict[str, Any]:
@@ -903,8 +972,9 @@ def run_try_on_from_inspiration(
     inspiration: dict[str, Any],
     provider: "TryOnProvider | None" = None,
     style_brief: str | None = None,
+    full_outfit: bool = False,
 ) -> dict[str, Any]:
-    tryon_id = hashlib.sha256(f"inspiration:{person['image_id']}:{inspiration['image_id']}:{style_brief or ''}".encode("utf-8")).hexdigest()[:16]
+    tryon_id = hashlib.sha256(f"inspiration:{person['image_id']}:{inspiration['image_id']}:{style_brief or ''}{':full-outfit' if full_outfit else ''}".encode("utf-8")).hexdigest()[:16]
     work_dir = _tryon_output_dir() / tryon_id
     work_dir.mkdir(parents=True, exist_ok=True)
 
@@ -913,13 +983,13 @@ def run_try_on_from_inspiration(
     inspiration_analysis = _stage("pass", 0.62, {
         "provider": "inspiration_direct",
         "mode": "one_step_ai_extract_and_tryon",
-        "category": "top",
+        "category": "outfit" if full_outfit else "top",
         "skipped_local_garment_gate": True,
         "style_brief": _safe_style_brief(style_brief),
         "note": "Inspiration image is intentionally passed directly to the image model; local garment analysis is not a blocker.",
     }, [])
     mask_stage = (
-        _generate_upper_body_mask(person["image"], person_detection, work_dir / "upper_body_mask.png")
+        (_generate_outfit_body_mask if full_outfit else _generate_upper_body_mask)(person["image"], person_detection, work_dir / "upper_body_mask.png")
         if person_detection["status"] in {"pass", "warn"}
         else _stage("unknown", 0.0, {"skipped": True, "reason": "person_detection_not_pass"}, [])
     )
@@ -929,7 +999,7 @@ def run_try_on_from_inspiration(
         "person_detection": person_detection,
         "garment_analysis": inspiration_analysis,
         "upper_body_mask": mask_stage,
-        "edit_contract": _lightweight_tryon_edit_contract(mask_stage, mode="upper_body_inspiration"),
+        "edit_contract": _lightweight_tryon_edit_contract(mask_stage, mode="outfit_body" if full_outfit else "upper_body_inspiration"),
         "image_edit": _stage("unknown", 0.0, {"skipped": True}, []),
         "quality_review": _stage("unknown", 0.0, {"skipped": True}, []),
     }
@@ -941,7 +1011,7 @@ def run_try_on_from_inspiration(
         user_message = "照片暂不适合试穿，请按提示重新上传。"
     else:
         provider = provider or _default_provider()
-        prompt = _build_inspiration_tryon_prompt(style_brief)
+        prompt = _build_full_inspiration_prompt() if full_outfit else _build_inspiration_tryon_prompt(style_brief)
         edit_result = provider.edit(
             person_image=person["saved_path"],
             garment_image=inspiration["saved_path"],
@@ -964,7 +1034,7 @@ def run_try_on_from_inspiration(
             )
         if pipeline["image_edit"]["status"] == "pass" and pipeline["quality_review"]["status"] in {"pass", "warn"}:
             status = "generated"
-            user_message = "已根据灵感图生成上衣试穿效果，建议重点观察条纹、领口和整体版型。"
+            user_message = "已根据穿搭照片生成试穿效果，请查看服装与人物细节。" if full_outfit else "已根据灵感图生成上衣试穿效果，建议重点观察条纹、领口和整体版型。"
         elif pipeline["image_edit"]["status"] != "pending":
             status = "failed"
             user_message = "这次灵感试穿没有达标，暂不建议展示给用户。"
@@ -981,7 +1051,7 @@ def run_try_on_from_inspiration(
         },
         "garment": {
             **_fallback_garment(),
-            "category": "top",
+            "category": "outfit" if full_outfit else "top",
             "source_type": "inspiration_image",
             "extraction_mode": "one_step_ai",
         },
@@ -4510,6 +4580,15 @@ def _is_tryon_output_path(value: Any) -> bool:
         return True
     except ValueError:
         return False
+
+
+def _build_full_inspiration_prompt() -> str:
+    return ("Image A is the target person. Image B is an outfit photograph. Transfer the visible outfit "
+            "from B onto A: upper garments and layers, skirt/trousers or dress, visible shoes and carried bag. "
+            "Preserve the observed colors, patterns, proportions, fabric and construction; do not invent unseen pieces. "
+            "Keep A's identity, face, hair, skin, body shape, pose, hands, camera and background unchanged. "
+            "Fit the clothing naturally to A, with realistic occlusion and folds. Do not copy B's person, pose, "
+            "background, text or watermark. Respect the protected face region. Return only the final photograph.")
 
 
 def _build_inspiration_tryon_prompt(style_brief: str | None = None) -> str:

@@ -99,6 +99,7 @@ from app.tryon import (
     analyze_garment_upload,
     complete_codex_bridge_job_upload,
     create_outfit_tryon_job,
+    create_inspiration_tryon_job,
     create_piece_retry_job,
     extract_xhs_link,
     get_outfit_tryon_job,
@@ -137,6 +138,7 @@ from app import selfit_onboarding, selfit_share
 from app.selfit_onboarding import router as selfit_onboarding_router
 from app.selfit_mirror_handoff import router as selfit_mirror_handoff_router
 from app.selfit_studio import router as selfit_studio_router
+from app.selfit_inspiration import router as selfit_inspiration_router
 from app.selfit_analytics import admin_router as selfit_admin_router, router as selfit_analytics_router
 from app.selfit_admin_submissions import router as selfit_admin_submissions_router
 from app.qa_onboarding import QA_PHOTO_DIR, router as qa_onboarding_router
@@ -152,6 +154,7 @@ app.middleware("http")(request_guard_middleware)
 app.include_router(selfit_onboarding_router)
 app.include_router(selfit_mirror_handoff_router)
 app.include_router(selfit_studio_router)
+app.include_router(selfit_inspiration_router)
 app.include_router(selfit_analytics_router)
 app.include_router(selfit_admin_router)
 app.include_router(selfit_admin_submissions_router)
@@ -649,15 +652,25 @@ async def wardrobe_extract_look(image: UploadFile = File(...), current_user: dic
 
 
 @app.post("/closet/import/jobs")
-async def closet_import_job_create(images: list[UploadFile] = File(...), current_user: dict[str, Any] = Depends(get_current_user)) -> dict[str, Any]:
+async def closet_import_job_create(images: list[UploadFile] = File(...), require_confirmation: bool = Form(False), current_user: dict[str, Any] = Depends(get_current_user)) -> dict[str, Any]:
     with user_storage(current_user["user_id"]):
-        return await create_import_upload_job(images, current_user["user_id"])
+        return await create_import_upload_job(images, current_user["user_id"], require_confirmation=require_confirmation)
 
 
 @app.get("/closet/import/jobs/{job_id}")
 def closet_import_job(job_id: str, current_user: dict[str, Any] = Depends(get_current_user)) -> dict[str, Any]:
     with user_storage(current_user["user_id"]):
         return get_import_job(job_id)
+
+
+@app.post("/closet/import/jobs/{job_id}/confirm")
+async def closet_import_job_confirm(job_id: str, request: Request, current_user: dict[str, Any] = Depends(get_current_user)) -> dict[str, Any]:
+    from app.closet import confirm_import_job
+    payload = await request.json()
+    if not isinstance(payload, dict):
+        raise HTTPException(422, "请选择需要添加的单品。")
+    with user_storage(current_user["user_id"]):
+        return await run_in_threadpool(confirm_import_job, job_id, payload.get("selected_item_ids"))
 
 
 @app.post("/closet/import/jobs/{job_id}/retry")
@@ -1203,6 +1216,22 @@ async def selfit_try_on_job_create(
             _parse_selected_item_ids(selected_item_ids),
             client_request_id,
         )
+
+
+@app.post("/selfit/try-on/inspiration-jobs")
+async def selfit_inspiration_job_create(
+    person_image: UploadFile = File(...), note_id: str = Form(...),
+    client_request_id: str | None = Form(None),
+    current_user: dict[str, Any] = Depends(get_current_user),
+) -> dict[str, Any]:
+    from app.selfit_inspiration import list_notes
+    catalog = list_notes(current_user)
+    note = next((entry for entry in catalog["notes"] + catalog["saved_notes"] if entry["id"] == note_id), None)
+    if note is None:
+        raise HTTPException(404, "这条穿搭灵感暂时不可用")
+    raw = await person_image.read()
+    with user_storage(current_user["user_id"]):
+        return await run_in_threadpool(create_inspiration_tryon_job,raw,person_image.filename,note,current_user["user_id"],client_request_id)
 
 
 @app.post("/selfit/try-on/preview-plan")

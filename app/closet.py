@@ -1027,7 +1027,7 @@ async def import_uploads(images: list[UploadFile]) -> dict[str, Any]:
     return _import_sources(sources, import_type="upload")
 
 
-async def create_import_upload_job(images: list[UploadFile], user_id: str) -> dict[str, Any]:
+async def create_import_upload_job(images: list[UploadFile], user_id: str, require_confirmation: bool = False) -> dict[str, Any]:
     if not images:
         raise HTTPException(status_code=422, detail="请至少上传一张图片")
     sources = []
@@ -1049,6 +1049,7 @@ async def create_import_upload_job(images: list[UploadFile], user_id: str) -> di
         "job_id": job_id,
         "user_id": user_id,
         "pipeline_version": IMPORT_PIPELINE_VERSION,
+        "require_confirmation": require_confirmation,
         "status": "queued",
         "progress": 0,
         "phase": "queued",
@@ -1068,11 +1069,56 @@ def get_import_job(job_id: str) -> dict[str, Any]:
     return _public_import_job(_read_import_job(job_id))
 
 
+def confirm_import_job(job_id: str, selected_ids: list[str]) -> dict[str, Any]:
+    """Commit only selected draft items; retries never recreate or duplicate an import."""
+    if not isinstance(selected_ids, list) or not selected_ids or any(not isinstance(x, str) for x in selected_ids):
+        raise HTTPException(422, "请至少选择一件单品。")
+    selected = set(selected_ids)
+    with IMPORT_PIPELINE_LOCK:
+        job = _read_import_job(job_id)
+        if not job.get("require_confirmation"):
+            raise HTTPException(409, "这个导入任务无需确认。")
+        if job.get("status") == "completed":
+            if selected != set(job.get("selected_item_ids") or []):
+                raise HTTPException(409, "这次导入已经确认，请返回衣帽间查看。")
+            return _public_import_job(job)
+        if job.get("status") != "awaiting_confirmation":
+            raise HTTPException(409, "正在识别单品，请稍等。")
+        candidates = {row["item_id"]: row for row in (job.get("result") or {}).get("items", [])}
+        if not selected.issubset(candidates):
+            raise HTTPException(422, "选择的单品不属于这次上传，请刷新后重试。")
+        manifest = _ensure_manifest()
+        existing = {row["item_id"]: row for row in manifest.get("items", [])}
+        committed = []
+        created_count = 0
+        for item_id in selected_ids:
+            if item_id not in existing or existing[item_id].get("deleted"):
+                item = {**candidates[item_id], "updated_at": _now_iso()}
+                manifest["items"] = [row for row in manifest["items"] if row.get("item_id") != item_id]
+                manifest["items"].append(item)
+                created_count += 1
+                existing[item_id] = item
+            if not any(row["item_id"] == item_id for row in committed):
+                committed.append(existing[item_id])
+        _write_manifest(manifest)
+        # A source outfit may contain only the user's committed wardrobe pieces.
+        outfits = []
+        for source in job.get("sources", []):
+            outfit = _ensure_source_outfit(source["image_id"], _items_for_source(manifest, source["image_id"]))
+            if outfit:
+                outfits.append(outfit)
+        result = {**(job.get("result") or {}), "items": committed, "outfits": outfits,
+                  "draft_outfit": outfits[0] if outfits else None, "status": "imported", "message": "所选单品已加入衣帽间。",
+                  "summary": {**((job.get("result") or {}).get("summary") or {}), "created": created_count, "cached": len(committed)-created_count}}
+        return _public_import_job(_update_import_job(job_id, status="completed", phase="completed",
+                                  selected_item_ids=sorted(selected), result=result))
+
+
 def retry_import_job(job_id: str, user_id: str) -> dict[str, Any]:
     job = _read_import_job(job_id)
     if job.get("status") in {"queued", "processing"}:
         return _public_import_job(job)
-    if job.get("status") == "completed":
+    if job.get("status") in {"completed", "awaiting_confirmation"}:
         return _public_import_job(job)
     job.update({
         "status": "queued",
@@ -1114,7 +1160,9 @@ def _read_import_job(job_id: str) -> dict[str, Any]:
 
 
 def _public_import_job(job: dict[str, Any]) -> dict[str, Any]:
-    return {key: value for key, value in job.items() if key not in {"sources", "user_id"}}
+    public = {key: value for key, value in job.items() if key not in {"sources", "user_id"}}
+    public["preview_images"] = [row.get("source", {}).get("source_path") for row in job.get("sources", []) if row.get("source", {}).get("source_path")]
+    return public
 
 
 def _update_import_job(job_id: str, **updates: Any) -> dict[str, Any]:
@@ -1149,8 +1197,10 @@ def _run_import_job(user_id: str, job_id: str) -> None:
                 _update_import_job(job_id, status="processing", phase=phase, progress=min(88, percent))
 
             with IMPORT_PIPELINE_LOCK:
-                result = _import_sources(sources, import_type="upload", progress_callback=progress)
-            _update_import_job(job_id, status="completed", phase="completed", progress=100, result=result, error=None)
+                kwargs = {"persist": False} if job.get("require_confirmation") else {}
+                result = _import_sources(sources, import_type="upload", progress_callback=progress, **kwargs)
+            status = "awaiting_confirmation" if job.get("require_confirmation") else "completed"
+            _update_import_job(job_id, status=status, phase=status, progress=100, result=result, error=None)
     except Exception as exc:
         try:
             with user_storage(user_id):
@@ -2246,6 +2296,28 @@ def delete_tryon_record(record_id: str) -> dict[str, Any]:
             _write_tryon_records_manifest(data)
             return {"status": "deleted", "record_id": record_id}
     raise HTTPException(status_code=404, detail="没有找到这条试穿记录")
+
+
+def record_inspiration_tryon_result(note: dict[str, Any], job: dict[str, Any], result: dict[str, Any]) -> dict[str, Any] | None:
+    image_path = result.get("result", {}).get("image_path")
+    if result.get("status") not in {"generated", "review"} or not image_path:
+        return None
+    record_id = hashlib.sha256(f"note-job:{job['job_id']}:{job.get('attempt',1)}".encode()).hexdigest()[:16]
+    data = _ensure_tryon_records_manifest()
+    existing = next((row for row in data.get("records", []) if row.get("record_id") == record_id), None)
+    if existing:
+        return existing
+    now = _now_iso()
+    record = {"record_id":record_id,"user_id":storage_context().user_id,
+              "mode":"selfit_from_inspiration","status":result["status"],
+              "job_id":job["job_id"],"attempt":job.get("attempt",1),
+              "note_id":note["id"],"outfit_id":None,"outfit_title":note.get("title") or "穿搭照片试穿",
+              "image_path":image_path,"original_image_path":job.get("original_image_path"),
+              "reference_image_path":note.get("image_url"),"tryon_id":result.get("tryon_id"),
+              "created_at":now,"updated_at":now,"deleted":False}
+    data.setdefault("records", []).append(record)
+    _write_tryon_records_manifest(data)
+    return record
 
 
 def record_selfit_tryon_result(outfit_id: str, tryon_result: dict[str, Any]) -> dict[str, Any] | None:
@@ -9619,6 +9691,7 @@ def _import_sources(
     source_url: str | None = None,
     final_url: str | None = None,
     progress_callback: Any | None = None,
+    persist: bool = True,
 ) -> dict[str, Any]:
     manifest = _ensure_manifest()
     all_items: list[dict[str, Any]] = []
@@ -9633,7 +9706,7 @@ def _import_sources(
     segmenter = SegFormerClothesAdapter()
 
     for index, source in enumerate(sources):
-        cached_for_source = _items_for_source(manifest, source["image_id"])
+        cached_for_source = _items_for_source(manifest, source["image_id"]) if persist else []
         if cached_for_source:
             cached_items.extend(cached_for_source)
             extraction_modes.append("source_cache")
@@ -9697,10 +9770,11 @@ def _import_sources(
             progress_callback(index + 1, len(sources), "extracted")
 
     now = _now_iso()
-    existing_ids = {item.get("item_id") for item in manifest.get("items", [])}
+    existing_ids = {item.get("item_id") for item in manifest.get("items", []) if persist or not item.get("deleted")}
     new_items = []
     for item in all_items:
         if item["item_id"] in existing_ids:
+            cached_items.extend(row for row in manifest.get("items", []) if row.get("item_id") == item["item_id"])
             continue
         item["user_id"] = storage_context().user_id
         item["created_at"] = now
@@ -9715,7 +9789,8 @@ def _import_sources(
         manifest["items"].append(item)
         new_items.append(item)
         existing_ids.add(item["item_id"])
-    _write_manifest(manifest)
+    if persist:
+        _write_manifest(manifest)
 
     returned_items: list[dict[str, Any]] = []
     returned_ids: set[str] = set()
@@ -9728,7 +9803,7 @@ def _import_sources(
 
     auto_outfits: list[dict[str, Any]] = []
     refreshed_manifest = _ensure_manifest()
-    for source in sources:
+    for source in sources if persist else []:
         source_items = _items_for_source(refreshed_manifest, source["image_id"])
         outfit = _ensure_source_outfit(source["image_id"], source_items)
         if outfit and not any(existing.get("outfit_id") == outfit.get("outfit_id") for existing in auto_outfits):
@@ -9738,6 +9813,8 @@ def _import_sources(
     usable = sum(1 for item in new_items if item.get("quality", {}).get("status") == "usable")
     rejected_items = sum(1 for item in new_items if item.get("quality", {}).get("status") == "rejected")
     status = "imported" if new_items and not used_fallback else "partial" if new_items else "cached" if returned_items else "no_items_found"
+    if not persist:
+        status = "preview" if returned_items else "no_items_found"
     return {
         "request_id": f"look_{hashlib.sha256(':'.join(source['image_id'] for source in sources).encode('utf-8')).hexdigest()[:10]}",
         "prompt_version": WARDROBE_EXTRACTION_PROMPT_VERSION,
@@ -9753,7 +9830,8 @@ def _import_sources(
         "draft_outfit": auto_outfits[0] if auto_outfits else None,
         "skipped_items": skipped_items,
         "summary": {
-            "created": len(new_items),
+            "created": len(new_items) if persist else 0,
+            "candidate_count": len(returned_items),
             "cached": len(returned_items) - len(new_items),
             "usable": usable,
             "review": review,
@@ -9763,7 +9841,7 @@ def _import_sources(
             "inventory_attempts": inventory_attempts,
             "extraction_modes": extraction_modes,
         },
-        "message": "已找到之前拆出的单品，无需重复处理。" if status == "cached" else _import_message(len(new_items), review, used_fallback),
+        "message": ("请选择需要添加到衣帽间的单品。" if returned_items else "暂未识别出可添加的单品。") if not persist else "已找到之前拆出的单品，无需重复处理。" if status == "cached" else _import_message(len(new_items), review, used_fallback),
     }
 
 
