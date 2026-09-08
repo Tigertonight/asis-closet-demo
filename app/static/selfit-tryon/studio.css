@@ -1314,6 +1314,8 @@ button.composition-piece:focus-visible { outline:2px solid #8a011b; outline-offs
 .profile-edit-fields .profile-attribute-art { width:44px; height:42px; }
 .profile-edit-fields .profile-skin { width:40px; height:40px; margin:0 2px; }
 .profile-save { margin:auto 16px 0; min-height:44px; border:0; border-radius:22px; background:#8a011b; color:white; font-size:14px; font-weight:500; }
+.profile-logout { display:block; width:100%; margin-top:32px; min-height:44px; border:0; border-radius:22px; background:#8a011b; color:white; font-size:14px; font-weight:500; }
+.profile-logout:active { background:#720015; }
 .profile-save-error { color:#8a011b; font-size:13px; margin:0 20px 20px; line-height:1.6; }
 .profile-save:disabled { opacity:.6; }
 .mirror-profile-card { border:0; }
