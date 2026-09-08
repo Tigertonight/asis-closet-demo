@@ -407,7 +407,7 @@ def _draw_text(draw: ImageDraw.ImageDraw, xy: tuple[float, float], text_zh: str,
     draw.text(xy, text, font=font, fill=fill)
 
 
-def _render_face_overlay(image: Image.Image, result: dict[str, Any]) -> Image.Image:
+def _render_face_overlay(image: Image.Image, result: dict[str, Any], *, include_details: bool = True) -> Image.Image:
     canvas = image.convert("RGBA")
     tint = Image.new("RGBA", canvas.size, (0, 0, 0, 0))
     tint_draw = ImageDraw.Draw(tint)
@@ -420,17 +420,20 @@ def _render_face_overlay(image: Image.Image, result: dict[str, Any]) -> Image.Im
         x0, y0, x1, y1 = region["box"]
         tint_draw.rectangle([x0, y0, x1, y1], fill=(46, 160, 67, 60))
         draw.rectangle([x0, y0, x1, y1], outline=(46, 160, 67), width=3)
-        _draw_text(draw, (x0 + 4, y0 + 4), region_names.get(region["name"], region["name"]), region["name"], font, use_zh, (0, 120, 40))
+        if include_details:
+            _draw_text(draw, (x0 + 4, y0 + 4), region_names.get(region["name"], region["name"]), region["name"], font, use_zh, (0, 120, 40))
     if geometry.get("bangs_band"):
         x0, y0, x1, y1 = geometry["bangs_band"]
         draw.rectangle([x0, y0, x1, y1], outline=(220, 38, 38), width=3)
-        _draw_text(draw, (x0 + 4, max(0, y0 - font.size - 4)), "刘海检测带", "bangs band", font, use_zh, (220, 38, 38))
+        if include_details:
+            _draw_text(draw, (x0 + 4, max(0, y0 - font.size - 4)), "刘海检测带", "bangs band", font, use_zh, (220, 38, 38))
     colors = {"脸长": (147, 51, 234), "颧骨宽": (225, 29, 72), "额宽": (234, 138, 0), "下颌宽": (37, 99, 235)}
     for line in geometry.get("lines", []):
         color = colors.get(line["name"], (0, 0, 0))
         draw.line([tuple(line["from"]), tuple(line["to"])], fill=color, width=5)
         mx, my = (line["from"][0] + line["to"][0]) / 2, (line["from"][1] + line["to"][1]) / 2
-        _draw_text(draw, (mx + 8, my - font.size / 2), f"{line['name']} {line['width']}", f"{line['name']} {line['width']}", font, use_zh, color)
+        if include_details:
+            _draw_text(draw, (mx + 8, my - font.size / 2), f"{line['name']} {line['width']}", f"{line['name']} {line['width']}", font, use_zh, color)
     for name, (px, py) in geometry.get("points", {}).items():
         draw.ellipse([px - 6, py - 6, px + 6, py + 6], fill=(255, 255, 255), outline=(25, 23, 25), width=2)
     canvas = Image.alpha_composite(canvas, tint)
@@ -447,12 +450,13 @@ def _render_face_overlay(image: Image.Image, result: dict[str, Any]) -> Image.Im
     # alpha_composite 生成新图像对象，横幅必须在其后新建 Draw 再画。
     banner_draw = ImageDraw.Draw(canvas)
     banner_h = font.size + 18
-    banner_draw.rectangle([0, 0, canvas.size[0], banner_h], fill=(25, 23, 25, 200))
-    _draw_text(banner_draw, (10, 9), summary, summary, font, use_zh, (255, 255, 255), outline=(25, 23, 25))
+    if include_details:
+        banner_draw.rectangle([0, 0, canvas.size[0], banner_h], fill=(25, 23, 25, 200))
+        _draw_text(banner_draw, (10, 9), summary, summary, font, use_zh, (255, 255, 255), outline=(25, 23, 25))
     return canvas.convert("RGB")
 
 
-def _render_body_overlay(image: Image.Image, result: dict[str, Any]) -> Image.Image:
+def _render_body_overlay(image: Image.Image, result: dict[str, Any], *, include_details: bool = True) -> Image.Image:
     canvas = image.convert("RGBA")
     tint = Image.new("RGBA", canvas.size, (0, 0, 0, 0))
     tint_draw = ImageDraw.Draw(tint)
@@ -482,7 +486,8 @@ def _render_body_overlay(image: Image.Image, result: dict[str, Any]) -> Image.Im
         draw.line([(x0, y), (x1, y)], fill=color, width=6)
         width_text = f"{row['width']}px" if row else ""
         reliable = "" if (row and row["reliable"]) else "（不可靠）" if use_zh else " (unreliable)"
-        _draw_text(draw, (x1 + 8, y - font.size / 2), f"{name} {width_text}{reliable}", f"{name} {width_text}{reliable}", font, use_zh, color)
+        if include_details:
+            _draw_text(draw, (x1 + 8, y - font.size / 2), f"{name} {width_text}{reliable}", f"{name} {width_text}{reliable}", font, use_zh, color)
     for name, (px, py) in (geometry.get("points") or {}).items():
         draw.ellipse([px - 7, py - 7, px + 7, py + 7], fill=(255, 255, 255), outline=(25, 23, 25), width=2)
     canvas = Image.alpha_composite(canvas, tint)
@@ -493,8 +498,9 @@ def _render_body_overlay(image: Image.Image, result: dict[str, Any]) -> Image.Im
     # alpha_composite 生成新图像对象，横幅必须在其后新建 Draw 再画。
     banner_draw = ImageDraw.Draw(canvas)
     banner_h = font.size + 18
-    banner_draw.rectangle([0, 0, canvas.size[0], banner_h], fill=(25, 23, 25, 200))
-    _draw_text(banner_draw, (10, 9), summary, summary, font, use_zh, (255, 255, 255), outline=(25, 23, 25))
+    if include_details:
+        banner_draw.rectangle([0, 0, canvas.size[0], banner_h], fill=(25, 23, 25, 200))
+        _draw_text(banner_draw, (10, 9), summary, summary, font, use_zh, (255, 255, 255), outline=(25, 23, 25))
     return canvas.convert("RGB")
 
 

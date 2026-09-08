@@ -162,6 +162,12 @@ def _write_store(data: dict[str, Any]) -> None:
 
 def _prune_store(data: dict[str, Any]) -> dict[str, Any]:
     now = _now()
+    # Keep account profile inputs before expiring onboarding drafts.
+    for report in data["reports"]:
+        if report.get("user_id") and "profile" not in report:
+            source = _find_session(data, str(report.get("session_id") or ""))
+            if source and source.get("user_id") == report["user_id"]:
+                report["profile"] = {"manual": _profile_manual(source), "revision": 1}
     sessions = []
     for record in data["sessions"]:
         expires_at = _parse_iso(record.get("expires_at"))
@@ -704,7 +710,9 @@ def _validate_preferences(payload: dict[str, Any]) -> dict[str, Any] | JSONRespo
                 )
             cleaned_axes[axis] = parsed
         cleaned["axes"] = cleaned_axes
-    if palette is not None:
+    if "palette" in payload and palette is None:
+        cleaned["palette"] = None
+    elif palette is not None:
         if not isinstance(palette, str) or palette not in PALETTE_OPTIONS:
             return _error_response(
                 422,
@@ -910,6 +918,71 @@ async def _patch_session(
     return JSONResponse(status_code=status_code, content=body)
 
 
+def _suit_photo(data: dict[str, Any], record: dict[str, Any], kind: str) -> dict[str, Any] | None:
+    """Current session first; fallback only to this session owner's photo index."""
+    photo = (record.get("photos") or {}).get(kind) or {}
+    if photo.get("status") == "accepted" and photo.get("asset_id"):
+        return {**photo, "session_id": record["session_id"]}
+    user_id = record.get("user_id")
+    return _latest_user_photo(data, str(user_id), kind) if user_id else None
+
+
+@router.get("/sessions/{session_id}/suit")
+async def get_session_suit(session_id: str, user: dict[str, Any] | None = Depends(get_optional_user)) -> JSONResponse:
+    from app.selfit_suit import suit_summary
+    data = _load_store()
+    record = _load_active_session(data, session_id, user)
+    if isinstance(record, JSONResponse):
+        return record
+    summary = suit_summary(record)
+    summary["photos"] = {kind: bool(_suit_photo(data, record, kind)) for kind in selfit_photo.PHOTO_KINDS}
+    return JSONResponse(content=summary, headers={"Cache-Control": "no-store"})
+
+
+@router.get("/sessions/{session_id}/photos/{kind}/preview")
+async def get_session_photo_preview(session_id: str, kind: str, user: dict[str, Any] | None = Depends(get_optional_user)) -> Response:
+    data = _load_store()
+    record = _load_active_session(data, session_id, user)
+    if isinstance(record, JSONResponse):
+        return record
+    photo = _suit_photo(data, record, kind) if kind in selfit_photo.PHOTO_KINDS else None
+    if not photo:
+        return _error_response(404, "photo.not_found", "请先上传可用的照片。")
+    suffix = PHOTO_SUPPORTED_FORMATS.get(photo.get("format"))
+    if not suffix:
+        return _error_response(404, "photo.not_found", "请重新上传照片。")
+    key = f"{photo['session_id']}/{photo['asset_id']}{suffix}"
+    store = _asset_store()
+    path = store.local_path(key)
+    if path is None or not path.exists():
+        return _error_response(404, "photo.not_found", "照片暂时无法读取，请重新上传。")
+
+    # Cache a derived asset separately; keep the original upload intact.
+    overlay_key = f"{photo['session_id']}/{photo['asset_id']}_analysis-v1.webp"
+    cached = store.local_path(overlay_key)
+    if cached is not None and cached.exists():
+        return FileResponse(cached, media_type="image/webp", headers={"Cache-Control": "no-store"})
+
+    def render_preview() -> bytes:
+        from app.qa_onboarding import _render_face_overlay, _render_body_overlay
+        with Image.open(path) as original:
+            preview = ImageOps.exif_transpose(original).convert("RGB")
+            preview.thumbnail((1200, 1200))
+            renderer = _render_face_overlay if kind == "face" else _render_body_overlay
+            # Reuse the backend's actual detected geometry, without QA metrics.
+            with selfit_photo._INSPECT_SEMAPHORE:
+                annotated = renderer(preview, {}, include_details=False)
+            output = io.BytesIO()
+            annotated.save(output, format="WEBP", quality=86, method=4)
+            content = output.getvalue()
+            store.save(overlay_key, content, "image/webp")
+            return content
+
+    content = await run_in_threadpool(render_preview)
+    return Response(content=content, media_type="image/webp", headers={"Cache-Control": "no-store"})
+
+
+
 @router.patch("/sessions/{session_id}/profile")
 async def patch_session_profile(
     session_id: str,
@@ -996,6 +1069,61 @@ def _photo_response(
 
 def _asset_store() -> selfit_assets.AssetStore:
     return selfit_assets.asset_store_from_env(SELFIT_ONBOARDING_ASSET_DIR)
+
+
+def _profile_manual(session: dict[str, Any]) -> dict[str, str]:
+    from app.selfit_recommend import resolve_suit_profile
+    resolved = resolve_suit_profile(session)
+    keys = {"skin": "skin", "faceShape": "face_shape", "bodyShape": "body_shape"}
+    return {field: resolved[key] for field, key in keys.items() if resolved.get(key)}
+
+
+def _account_profile_report(data: dict[str, Any], user_id: str) -> dict[str, Any] | None:
+    reports = [r for r in data["reports"] if r.get("user_id") == user_id
+               and isinstance(r.get("data"), dict) and (r["data"].get("typeId") or "").strip()]
+    return max(reports, key=lambda r: (str(r.get("created_at") or ""), r.get("report_id", "")), default=None)
+
+
+def _account_profile(data: dict[str, Any], user_id: str) -> dict[str, Any]:
+    report = _account_profile_report(data, user_id)
+    session = _find_session(data, str((report or {}).get("session_id") or ""))
+    if session and session.get("user_id") != user_id:
+        session = None
+    stored = (report or {}).get("profile") or {}
+    report_data = (report or {}).get("data") or {}
+    return {
+        "tested": report is not None,
+        "revision": int(stored.get("revision") or 1),
+        "manual": stored.get("manual") if "manual" in stored else _profile_manual(session or {}),
+        "photos": {kind: f"/api/v1/selfit/me/photos/{kind}" if _latest_user_photo(data, user_id, kind) else None for kind in ("face", "body")},
+        "report": {"reportId": report["report_id"], "typeId": report_data.get("typeId"),
+                   "title": report_data.get("title"), "heroImage": report_data.get("heroImage") or {}} if report else None,
+    }
+
+
+@router.get("/me/profile")
+async def get_my_profile(user: dict[str, Any] = Depends(get_current_user)) -> dict[str, Any]:
+    return {"profile": _account_profile(_load_store(), user["user_id"])}
+
+
+@router.patch("/me/profile")
+async def update_my_profile(request: Request, user: dict[str, Any] = Depends(get_current_user)) -> JSONResponse:
+    payload = await _read_json_object(request)
+    if isinstance(payload, JSONResponse):
+        return payload
+    manual = _validate_manual(payload.get("manual"))
+    if isinstance(manual, JSONResponse):
+        return manual
+    data = _load_store()
+    report = _account_profile_report(data, user["user_id"])
+    if report is None:
+        return _error_response(409, "profile.test_required", "完成风格测试后，再编辑你的档案。")
+    current = _account_profile(data, user["user_id"])
+    if payload.get("reportId") != report["report_id"] or request.headers.get("if-match") != str(current["revision"]):
+        return _error_response(409, "profile.revision_conflict", "档案已更新，请刷新后再保存。")
+    report["profile"] = {"manual": {**current["manual"], **manual}, "revision": current["revision"] + 1}
+    _write_store(data)
+    return JSONResponse({"profile": _account_profile(data, user["user_id"])})
 
 
 @router.get("/me/photos/{kind}")
@@ -1155,6 +1283,12 @@ async def upload_session_photo(
             # 算法推断的肤色/脸型/身型标签，供报告任务与「手动纠正优先」合并消费。
             "attributes": dict(inspection.attributes),
         }
+        # A newly accepted photo replaces earlier choices for its attributes.
+        # Later explicit edits still take precedence over this photo's inference.
+        manual = record.get("manual") or {}
+        for field in (("faceShape", "skin") if kind == "face" else ("bodyShape",)):
+            manual.pop(field, None)
+        record["manual"] = manual
         _index_user_photo(data, record, kind)
         label = selfit_photo.KIND_LABELS[kind]
         body = _photo_response(
@@ -1366,6 +1500,7 @@ def _run_report_job(job_id: str) -> None:
         "user_id": session.get("user_id"),
         "created_at": _iso(_now()),
         "data": report_data,
+        "profile": {"manual": _profile_manual(session), "revision": 1},
     }
     data["reports"].append(report)
     job["status"] = "completed"

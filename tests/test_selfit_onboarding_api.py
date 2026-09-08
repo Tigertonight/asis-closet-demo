@@ -1028,3 +1028,45 @@ def test_get_outfit_request(monkeypatch, tmp_path: Path) -> None:
     missing = client.get(f"{API}/outfit-requests/outfit_missing")
     assert missing.status_code == 404
     assert missing.json()["error"]["code"] == "outfit.request_not_found"
+
+
+def test_account_profile_edit_is_owned_versioned_and_survives_expiry(monkeypatch, tmp_path: Path) -> None:
+    _use_tmp_store(monkeypatch, tmp_path)
+    monkeypatch.setattr(auth, "AUTH_DIR", tmp_path / "auth")
+    monkeypatch.setattr(auth, "AUTH_STORE_PATH", tmp_path / "auth" / "auth_store.json")
+    client = TestClient(app)
+    def login(phone):
+        result = client.post('/auth/phone/direct', json={'phone': phone}).json()
+        return {'Authorization': f"Bearer {result['access_token']}"}
+    owner = login('13800000681')
+    other = login('13800000682')
+    session_id = _create_session(client, headers=owner)['session']['sessionId']
+    data = selfit_onboarding._load_store()
+    session = next(s for s in data['sessions'] if s['session_id'] == session_id)
+    session['manual'] = {'faceShape': '椭圆脸', 'bodyShape': '矩型'}
+    session['photos'] = {'face': {'attributes': {'skin_tone': {'label': '中性自然肤'}}}}
+    data['reports'].append({'report_id': 'rep_profile_test', 'user_id': session['user_id'], 'session_id': session_id,
+                            'created_at': '2026-09-08T00:00:00Z', 'data': {'typeId': 'flou', 'title': '造梦浪漫'}})
+    selfit_onboarding._write_store(data)
+    url = f'{API}/me/profile'
+    assert client.get(url).status_code == 401
+    profile = client.get(url, headers=owner).json()['profile']
+    assert profile['manual'] == {'faceShape': '椭圆脸', 'bodyShape': '矩型', 'skin': '中性自然肤'}
+    assert client.get(url, headers=other).json()['profile']['tested'] is False
+    data = selfit_onboarding._load_store()
+    next(s for s in data['sessions'] if s['session_id'] == session_id)['expires_at'] = '2000-01-01T00:00:00Z'
+    selfit_onboarding._write_store(selfit_onboarding._prune_store(data))
+    assert client.get(url, headers=owner).json()['profile']['manual'] == profile['manual']
+    payload = {'reportId': 'rep_profile_test', 'manual': {'bodyShape': '梨型'}}
+    assert client.patch(url, headers={**other, 'If-Match': '1'}, json=payload).status_code == 409
+    assert client.patch(url, headers=owner, json=payload).status_code == 409
+    assert client.patch(url, headers={**owner, 'If-Match': '1'}, json={**payload, 'manual': {'skin': 'invalid'}}).status_code == 422
+    saved = client.patch(url, headers={**owner, 'If-Match': '1'}, json=payload)
+    assert saved.status_code == 200
+    assert saved.json()['profile']['revision'] == 2
+    assert saved.json()['profile']['manual']['bodyShape'] == '梨型'
+    assert client.patch(url, headers={**owner, 'If-Match': '1'}, json=payload).status_code == 409
+    restored = client.get(url, headers=owner).json()['profile']
+    assert restored['manual']['bodyShape'] == '梨型'
+    assert restored['manual']['skin'] == '中性自然肤'
+    assert selfit_onboarding._load_store()['reports'][0]['data']['typeId'] == 'flou'
