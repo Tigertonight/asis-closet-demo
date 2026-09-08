@@ -61,16 +61,21 @@
     ['OOPS', [70, 90, 90, 85, 50, 70, 80], ['complexity', 'time_orientation', 'individuality', 'saturation'], '无倾向', ['欧美系', '轻亚']],
   ];
 
+  const hasOwn = (object, key) => Object.prototype.hasOwnProperty.call(object, key);
+
   const PERSONAS = PERSONA_ROWS.map(([code, center, coreDimensions, primaryRegion, compatibleRegions]) => ({
     code,
-    center: Object.fromEntries(DIMENSIONS.map((dimension, index) => [dimension, center[index]])),
+    center: DIMENSIONS.reduce((map, dimension, index) => {
+      map[dimension] = center[index];
+      return map;
+    }, {}),
     coreDimensions: new Set(coreDimensions),
     primaryRegion,
     compatibleRegions: new Set(compatibleRegions),
   }));
 
   const axisValue = (axes, key) => {
-    const value = axes?.[key];
+    const value = axes ? axes[key] : undefined;
     if (typeof value !== 'number' || Number.isNaN(value)) return 50;
     return Math.min(100, Math.max(0, value));
   };
@@ -90,11 +95,11 @@
     const temperature = signals ? signals.temperature : 50;
 
     const completionValue = vibe.occasion;
-    const completion = completionValue && Object.hasOwn(VIBE_COMPLETION_VALUES, String(completionValue))
+    const completion = completionValue && hasOwn(VIBE_COMPLETION_VALUES, String(completionValue))
       ? VIBE_COMPLETION_VALUES[String(completionValue)] : 50;
 
     const individualityValue = vibe.wardrobe;
-    const individuality = individualityValue && Object.hasOwn(VIBE_INDIVIDUALITY_VALUES, String(individualityValue))
+    const individuality = individualityValue && hasOwn(VIBE_INDIVIDUALITY_VALUES, String(individualityValue))
       ? VIBE_INDIVIDUALITY_VALUES[String(individualityValue)] : 50;
 
     let regionalStyle = vibe.expression ? (VIBE_REGIONAL_VALUES[String(vibe.expression)] || null) : null;
@@ -149,7 +154,7 @@
 
   const classifyPersona = (vector) => {
     const ranked = PERSONAS
-      .map((persona) => ({ persona, ...personaDistance(persona, vector) }))
+      .map((persona) => Object.assign({ persona }, personaDistance(persona, vector)))
       .sort((a, b) => a.total - b.total);
     const primary = ranked[0];
     const secondary = ranked[1];

@@ -565,7 +565,7 @@
     if(!state.profile || state.profileLoading) return profileStatus();
     const p=state.profile,m=p.manual || {},r=p.report;
     const attribute=(field)=>`<div class="profile-attribute">${profileArt(field,m[field])}<span>${esc(m[field] || '待完善')}</span></div>`;
-    return `<section class="profile-screen">${profileHeader()}${p.tested ? `<div class="profile-analysis"><section><h2>面部分析</h2><p>了解脸型与肤色，找到衬托你的风格。</p><div class="profile-analysis-row">${profilePhoto('face')}${attribute('faceShape')}${attribute('skin')}</div></section><section><h2>身型分析</h2><p>了解身体线条，找到适合你的穿搭比例。</p><div class="profile-analysis-row">${profilePhoto('body')}${attribute('bodyShape')}</div></section></div>` : ''}${r ? `<a class="profile-report" href="/selfit?from=mirror&amp;report=latest&amp;return_screen=profile" aria-label="查看我的风格报告">${r.heroImage?.src ? image(r.heroImage.src,r.title || '我的风格报告') : `<strong>${esc(r.typeId?.toUpperCase())}<br>${esc(r.title || '我的风格报告')}</strong>`}</a>` : `<a class="profile-test-invite" href="/selfit?from=mirror">${image(`${A}main-app/profile-test-pin.svg`, "", "profile-test-pin")}<strong>selfit 16 型格测试</strong>${image(`${A}main-app/profile-test-art.svg`, 'suit · like · vibe')}<span>去测试 →</span></a>`}<section class="profile-more"><h2>更多测试</h2><div><button disabled>${image(`${A}main-app/archive-more-mirror.webp`, "")}<span>专业脸型风格<small>即将开放</small></span></button><button disabled>${image(`${A}main-app/archive-more-flower.webp`, "")}<span>十二季肤色<small>即将开放</small></span></button></div></section></section>`;
+    return `<section class="profile-screen">${profileHeader()}${p.tested ? `<div class="profile-analysis"><section><h2>面部分析</h2><p>了解脸型与肤色，找到衬托你的风格。</p><div class="profile-analysis-row">${profilePhoto('face')}${attribute('faceShape')}${attribute('skin')}</div></section><section><h2>身型分析</h2><p>了解身体线条，找到适合你的穿搭比例。</p><div class="profile-analysis-row">${profilePhoto('body')}${attribute('bodyShape')}</div></section></div>` : ''}${r ? `<a class="profile-report" href="/selfit?from=mirror&amp;report=latest&amp;return_screen=profile" aria-label="查看我的风格报告">${r.heroImage?.src ? image(r.heroImage.src,r.title || '我的风格报告') : `<strong>${esc(r.typeId?.toUpperCase())}<br>${esc(r.title || '我的风格报告')}</strong>`}</a>` : `<a class="profile-test-invite" href="/selfit?from=mirror">${image(`${A}main-app/profile-test-pin.svg`, "", "profile-test-pin")}<strong>selfit 16 型格测试</strong>${image(`${A}main-app/profile-test-art.svg`, 'suit · like · vibe')}<span>去测试 →</span></a>`}<section class="profile-more"><h2>更多测试</h2><div><button disabled>${image(`${A}main-app/archive-more-mirror.webp`, "")}<span>专业脸型风格<small>即将开放</small></span></button><button disabled>${image(`${A}main-app/archive-more-flower.webp`, "")}<span>十二季肤色<small>即将开放</small></span></button></div></section>${!reference ? '<button class="profile-logout" data-action="logout">退出登录</button>' : ''}</section>`;
   }
   function profileFeatureEdit() {
     const field = state.profileEditingField;
@@ -1979,6 +1979,20 @@
           a.download = "selfit-tryon.png";
           a.click();
           setTimeout(() => URL.revokeObjectURL(downloadURL), 60000);
+          break;
+        }
+        case "logout": {
+          b.disabled = true;
+          try {
+            if (savedSession?.accessToken) await api("/auth/logout", { method: "POST" });
+          } catch {}
+          savedSession = null;
+          visitorReady = null;
+          sessionStorage.removeItem("selfit.auth.session.v1");
+          sessionStorage.removeItem("selfit.studio.job");
+          sessionStorage.removeItem("selfit.studio.import");
+          localStorage.removeItem("selfit.onboarding.session.v1");
+          window.location.replace("/selfit?entry=login");
           break;
         }
       }
