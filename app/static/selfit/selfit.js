@@ -31,6 +31,8 @@
       const key = step.dataset.step;
       step.classList.toggle('is-current', key === config.current);
       step.classList.toggle('is-done', config.done.includes(key));
+      if (key === config.current) step.setAttribute('aria-current', 'step');
+      else step.removeAttribute('aria-current');
     });
   };
   const SESSION_STORAGE_KEY = 'selfit.onboarding.session.v1';
@@ -358,6 +360,7 @@
 
   const validatePhoto = (file) => {
     if (!file) return '请选择照片';
+    if (!file.type.startsWith('image/') && !/\.(heic|heif|jpe?g|png|webp|avif)$/i.test(file.name)) return '请选择一张照片，再试一次';
     if (file.size > 20 * 1024 * 1024) return '照片请小于 20MB';
     return '';
   };
@@ -473,16 +476,21 @@
     let activeController = null;
     input.addEventListener('change', async () => {
       const file = input.files?.[0]; if (!file) return;
+      input.value = '';
+      activeController?.abort();
+      const controller = new AbortController();
+      activeController = controller;
+      state.photoAssets[kind] = null;
       const error = validatePhoto(file);
       if (error) { setPhotoState(kind, 'invalid', error); return; }
       state[kind === 'face' ? 'facePhoto' : 'bodyPhoto'] = file;
       renderPhotoPreview(card, file, kind);
       setPhotoState(kind, 'checking', '正在处理照片…');
       showScreen('suit-processing');
-      activeController?.abort(); activeController = new AbortController();
-      const controller = activeController;
+
       try {
         const sessionId = await ensureSession();
+        if (controller.signal.aborted) return;
         const result = await api.checkPhoto(sessionId, kind, file, { signal: controller.signal });
         if (controller.signal.aborted) return;
         const accepted = result.photo?.status === 'accepted';
@@ -550,7 +558,10 @@
       item.classList.toggle('is-selected', selected);
       item.setAttribute('aria-pressed', String(selected));
     });
-    document.querySelector('#vibeNext').disabled = Object.keys(state.answers).length !== 3;
+    const complete = Object.keys(state.answers).length === 3;
+    const next = document.querySelector('#vibeNext');
+    next.disabled = !complete;
+    next.textContent = complete ? '生成风格报告' : '下一步';
   });
 
   const loadingStages = [
@@ -916,6 +927,9 @@
     reportNodes.heroImage.hidden = !fullHero;
     reportNodes.eyebrow.textContent = data.eyebrow;
     reportNodes.title.textContent = data.title;
+    // The current onboarding report keeps retake/share available from its first
+    // viewport. Shared reports and incomplete data never expose owner actions.
+    document.querySelector('.report-actions').hidden = !data.title || Boolean(publicShareToken);
     reportNodes.traits.replaceChildren(...data.traits.map((trait) => {
       const card = Object.assign(document.createElement('span'), { className: 'report-trait' });
       const lace = Object.assign(document.createElement('img'), {

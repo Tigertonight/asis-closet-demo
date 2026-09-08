@@ -4,7 +4,7 @@ This file is the frontend source of truth for the consumer product in the Figma 
 
 ## Onboarding update — 2026-09-08
 
-The supplied product prototype supersedes the older ordering and validation rules below:
+The latest user corrections in this section supersede all older ordering, validation and layout rules below, including section 14:
 
 - Initial entry includes login before onboarding; restore existing signed-in users, but do not treat a visitor session as completed login. Direct mirror entry retains isolated visitor support. Report actions stay visible and equally sized, with “保存并分享” and “去试穿”; no retake button.
 - Journey: intro → **like → suit → suit results → vibe → report**.
@@ -30,7 +30,8 @@ Use this priority when implementation details conflict:
 Reference:
 
 - Figma file: `7WvSROZhohAyvpEMfxZ3Dd`
-- Ready for Dev section: node `450:11872`
+- Current onboarding section: node `1079:3828` on `onboarding+mirror`; see section 14.
+- Earlier Ready for Dev section: node `450:11872` (asset provenance and historical measurements).
 - Base mobile frame: `393 × 852px`, frame radius `40px`
 
 The visible wordmark is `selfit`; the Chinese product concept/file name is `适我`. Do not show `AS IS` or another legacy brand in the consumer UI unless the product owner explicitly changes the Figma source.
@@ -63,7 +64,7 @@ The primary journey is:
 1. Splash: establish the `selfit / 适我` identity on the wine-red textile.
 2. Login: choose phone verification or invitation-code login; restored sessions skip the login screens.
 3. Onboarding: explain `suit / like / vibe`.
-4. `suit`: collect a front-facing portrait and a full-body photo.
+4. `suit`: first collect skin tone, face shape and body shape on `信息选择`, then show the portrait and full-body photo upload screen.
 5. `like`: capture aesthetic preferences, style spectrums, and color combinations.
 6. `vibe`: capture the way the user wants to present themselves.
 7. Reveal: transition into the user's style result.
@@ -231,7 +232,7 @@ Use measured Figma positions before generic tokens. Do not turn every control in
 
 ### Onboarding measured layout
 
-All positions below are absolute coordinates in the `393 × 852px` base frame.
+The table below records the earlier `450:11872` layout. It is retained for asset provenance; section 14 supersedes its title, DNA, and card coordinates. All positions are absolute coordinates in the `393 × 852px` base frame.
 
 | Element | Figma node | Position / size | Style |
 |---|---|---|---|
@@ -250,7 +251,7 @@ In the composed state, each lace/image layer is exactly `50%` opacity while the 
 
 - The splash transitions to the login-choice screen when no valid auth session is restored; authenticated users continue directly to `intro`.
 - Login choice uses the centered `selfit` wordmark, `适我，不适众`, the provided `Fit yourself, not in.` line, and the paired bottom actions `邀请码登录 / 手机号登录`.
-- Phone login uses an `+86` prefix, an 11-digit mobile number, a 4–6 digit verification code, send/resend countdown, inline feedback, and a disabled-until-valid login CTA.
+- The Figma phone-login reference uses an `+86` prefix, an 11-digit mobile number and a verification code. The current main-site product uses direct phone login; the September 8 onboarding layout update preserves that existing authentication contract. Do not enable SMS or expose invitation login solely to match a static reference.
 - Invitation login uses one invitation-code field and the same bottom CTA. The production endpoint remains `/auth/invite/verify`; until its backend capability is delivered, only the explicit frontend mock mode may complete this path.
 - Auth tokens live in `sessionStorage`, are restored through `/auth/me`, and are attached as Bearer credentials to live onboarding calls. Onboarding session storage is scoped to the authenticated user ID.
 - The login-choice curved tagline and button ornament use the supplied design crops at their 2× source density. The Figma View-seat MCP quota still blocks direct binary export; replace these two isolated image assets with the corresponding Figma exports when access is restored, without changing their layout boxes.
@@ -326,14 +327,14 @@ Technical terms such as `mask`, `pipeline`, `provider`, `JSON`, and `confidence`
 
 ### Complete onboarding state matrix
 
-The Figma `onboarding` group (`4948 × 4552px`) is the acceptance matrix for the complete sequence:
+The current Figma `onboarding` group (`1079:3828`, `6734 × 5573px`) is the visual reference for the complete sequence; retain the explicit product exceptions in section 14:
 
 1. `splash`: timed textile identity frame with the centered `selfit` star halo and `适我` near the bottom; tap may advance early.
 2. `login / phone-login / invite-login`: login choice and the two credential paths, including validation, sending, pending, failure, and restored-session states.
 3. `intro`: separated and composed lace-card states.
-4. `suit`: empty upload, checking, one-photo valid, both valid, insufficient-light failure, and manual `信息选择` fallback.
+4. `suit`: `信息选择` comes first; its Next action saves the choices and opens photo upload. Upload supports empty, checking, one-photo valid, both valid and insufficient-light states. Users who cannot upload may continue with their previously saved choices.
 5. `like`: three continuous axes — `硬朗锐利 / 柔和温柔`, `简约克制 / 精致繁复`, `经典耐看 / 时髦先锋` — plus six composed palettes. The CTA stays disabled until a palette is selected.
-6. `vibe`: three single-choice questions. The CTA stays disabled until every question has an answer and then reads `生成风格报告`.
+6. `vibe`: title `最后一步，了解你想表达的` and three single-choice questions. The CTA reads `下一步` while disabled; once every question has an answer it becomes enabled and reads `生成风格报告`.
 7. `loading`: the onboarding/report-generation loading sequence is four wine-textile stages at `25 / 50 / 75 / 100%`: `先看见真实的你`, `寻找你同频的灵感`, `拼出更像你的样子`, and `我们认识你了...`. The current artwork is, respectively, `薰衣草+花拱+蓝鞋`, `戒指+画作+咖啡`, `樱桃+蛋糕+绿包`, and the `selfit` wordmark. Each stage uses its direct 2× Figma export and transitions over `300ms` with an ease-out cross-fade. The latest `450:11872` matrix uses the dark-wine, three-line embroidered `Fit / yourself / not in` artwork centered near the bottom throughout all four stages.
 
 The mirror route owns a separate three-stage recognition sequence at `25 / 50 / 75%`: `看见你本来的样子`, `你不需要成为谁`, and `只需要更准确地做自己`. Its bottom branding is the exported blue curved `Know yourself first.` signature plus stage-specific ornament artwork. Never reuse the mirror copy, blue signature, or mirror-opening ornament inside onboarding loading; never reuse the onboarding lace cards or embroidered three-line brandmark inside mirror loading; and never replace the mirror sequence with the generic `正在分析中` label.
@@ -342,11 +343,11 @@ The mirror route owns a separate three-stage recognition sequence at `25 / 50 / 
 
 The share layer uses a real three-card carousel: style summary, recommended colors, and visual inspiration. Adjacent cards remain partially visible as a swipe affordance. Touch/trackpad scrolling uses horizontal scroll snap; pagination dots, `ArrowLeft / ArrowRight`, `Home`, and `End` provide equivalent direct navigation. The active dot and live `第 n 张，共 3 张` status always follow native swiping.
 
-The upload route and manual-selection route converge on `like`; report generation must never require debug data or expose technical pipeline language.
+The current sequence is `intro → suit-manual → suit → like`; report generation must never require debug data or expose technical pipeline language.
 
 The `vibe` questionnaire scrolls inside the `361px`-wide content panel beginning at `y=137px`; its title starts at `y=157px` and the first question at `y=221px`. Options are content-width pills with a fixed `42px` height and `16px` vertical gaps. The CTA remains in a `114px` bottom gradient dock, disabled until every question has an answer. At maximum scroll, the final `E` option must sit completely above the CTA; touch scrolling and keyboard focus must never leave an answer hidden beneath the dock.
 
-The paired report actions are progressively disclosed: they are hidden on the report's initial viewport, appear when the user scrolls into `你最适合的穿搭`, and then dock above the bottom safe area. `返回重测` returns to `vibe` with existing answers intact; `保存并分享` opens the share layer. Scrolling back above the outfit section hides them again. Hidden actions must not remain keyboard-focusable or intercept pointer input.
+The current report reference (`1079:6764`) shows the paired actions on the first viewport, docked above the bottom safe area. `返回重测` returns to `vibe` with existing answers intact; `保存并分享` opens the share layer. Empty reports and public shared reports do not expose these owner actions. Hidden screens and actions must not remain keyboard-focusable or intercept pointer input.
 
 The report keeps a visible, sticky top navigation bar with a `44 × 44px` back target and centered `风格报告` label. Back returns to `vibe`, preserving the user's existing questionnaire selections so they can revise an answer and generate the report again.
 
@@ -445,3 +446,42 @@ Confirm before later phases:
 - Final bottom-navigation destinations and labels.
 - Whether profile, closet, AI chat, and free-styling explorations remain in MVP scope.
 - Final exported font/wordmark licensing and asset formats.
+
+
+## 14. Onboarding refresh (2026-09-08)
+
+Use section `1079:3828` on `onboarding+mirror` for this refresh. The inspected
+intro frames are `1079:5454` / `1079:5505`, the questionnaire frames are
+`1079:5867` / `1079:5954`, and the current report is `1079:6764`.
+These take precedence over the historical onboarding measurements above.
+
+- At `393 × 852`, the intro title begins at `y=157`, DNA copy at `y=211`,
+  and its `313 × 44` CTA at `(40,736)`. Reuse the existing exported lace-card
+  artwork and 600ms motion. Current composed card positions are suit `y=338`,
+  like `y=405`, and vibe `y=389`; the separated cards begin around `y=383`.
+- The shared stepper stays above the forms. Suit, manual, like, and vibe titles
+  begin at `y=157`. Taking the shared navigation out of normal document flow
+  must not pull these titles upward by its 46px height.
+- Suit and like content scroll independently between the navigation and bottom
+  actions. The photo frames retain the current `128:160` aspect ratio. Photo
+  guidance and errors wrap; they must not cover the manual-entry or Next buttons.
+- Like has three labelled keyboard-accessible sliders and six named palette
+  buttons with explicit selected states. A palette is required to continue.
+- Per the user's requested order, `去认识自己` opens `信息选择`; saving the
+  three choices opens photo upload, then Next opens like. Back follows the
+  same sequence in reverse and retains choices and photos. The photo-page
+  `不方便拍照？跳过` action continues with the already saved information.
+- Photo replacement cancels the previous validation. Late responses cannot
+  overwrite the latest photo; cancelling the chooser preserves the current
+  selection, and selecting the same rejected file again supports retry.
+- Desktop centers a mobile shell no taller than the available viewport minus
+  48px, using the existing `--visual-viewport-height` compatibility value shared
+  with the WebView viewport adapter.
+  Short screens scroll their form content and keep actions visible.
+- Preserve the current phone-login contract, 16-personality calculation and
+  report data. Figma's LACE illustration is a visual example, not a replacement
+  personality definition. The web share sheet retains its working share-link
+  and save-image actions rather than displaying unsupported native channels.
+
+The before/after differences, browser checks and deployment scope are recorded
+in `docs/SELFIT_ONBOARDING_FIGMA_DIFF_2026-09-08.md`.

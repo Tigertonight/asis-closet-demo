@@ -28,7 +28,7 @@ def test_selfit_report_back_respects_the_app_parent_entry() -> None:
     assert "'app-home': 'home'" in script.text
     assert "'app-profile': 'me'" in script.text
     assert "state.screen === 'report' && returnToReportParent()" in script.text
-    assert "appUrl.searchParams.set('tab', reportParentTab)" in script.text
+    assert "appUrl.searchParams.set('screen', entryParams.get('return_screen') === 'profile' ? 'profile' : 'mirror')" in script.text
 
 
 def test_selfit_onboarding_includes_the_figma_login_extension() -> None:
@@ -226,7 +226,7 @@ def test_selfit_auth_adapter_and_bearer_wiring_are_available() -> None:
     assert "state.authUser ? 'intro' : 'login'" in runtime.text
     assert "auth.directPhone(normalizedPhone())" in runtime.text
     assert "openAppForExistingReport()" in runtime.text
-    assert "/wearwow/demo?from=login&persona=" in runtime.text
+    assert "/selfit/try-on?from=login&persona=" in runtime.text
     assert "/^1[3-9]\\d{9}$/".replace("\\\\", "\\") in runtime.text or "1[3-9]" in runtime.text
 
 
@@ -254,7 +254,8 @@ def test_selfit_onboarding_uses_high_resolution_production_assets() -> None:
         assert response.headers["content-type"].startswith("image/"), asset_path
 
 
-def test_selfit_report_share_cards_use_the_dedicated_qr_artwork() -> None:
+def test_selfit_report_share_cards_use_the_dedicated_qr_artwork(monkeypatch) -> None:
+    monkeypatch.setenv("SELFIT_PUBLIC_BASE_URL", "http://testserver")
     response = client.get("/selfit/demo")
 
     assert response.status_code == 200
@@ -435,11 +436,12 @@ def test_selfit_report_typography_matches_the_approved_layout() -> None:
     assert ".report-signoff-dots" in response.text
 
     markup = client.get("/selfit/demo")
-    assert ">返回重测</button>" in markup.text
+    assert ">返回重测</button>" not in markup.text
+    assert "去试穿" in markup.text
     assert '<h2>你的风格解读</h2>' in markup.text
 
     runtime = client.get("/static/selfit/selfit.js")
-    assert "#retakeBtn').addEventListener('click', () => { track('retake_clicked'); showScreen('vibe'); })" in runtime.text
+    assert "#retakeBtn" not in runtime.text
 
 
 def test_selfit_personality_catalog_keeps_all_colors_but_renders_first_five() -> None:
@@ -447,7 +449,7 @@ def test_selfit_personality_catalog_keeps_all_colors_but_renders_first_five() ->
 
     assert response.status_code == 200
     catalog = json.loads(response.text)
-    assert catalog["templateVersion"] == "2026.08.personality-db-v6"
+    assert catalog["templateVersion"] == "2026.09.report-content-v1"
     assert catalog["renderRules"]["colors"]["limit"] == 5
     assert len(catalog["types"]) == 16
     assert sum(len(item["colors"]["items"]) for item in catalog["types"].values()) == 112
@@ -457,7 +459,7 @@ def test_selfit_personality_catalog_keeps_all_colors_but_renders_first_five() ->
         assert template["typeId"] == type_id
         hero = template["hero"]["image"]
         assert hero["placeholder"] is False
-        assert hero["src"] == f"/static/selfit/assets/personality/{type_id}/hero.png?v=20260828-config-v1"
+        assert hero["src"] == f"/static/selfit/assets/personality/{type_id}/hero.png?v=20260907-config-v2"
         assert (hero["width"], hero["height"]) == (1484, 1072)
         assert len(template["colors"]["items"]) >= 5
         assert len(template["recommendations"]["makeup"]) == 2
@@ -470,8 +472,8 @@ def test_selfit_personality_catalog_keeps_all_colors_but_renders_first_five() ->
     assert all(item["name"] not in {"💇🏻‍♀️显脸小的发型💓", "减龄又显白的发色、米棕色"} for item in mute_hair)
 
     bolt_hair = catalog["types"]["bolt"]["recommendations"]["hair"]
-    assert [item["name"] for item in bolt_hair] == ["柔感水波", "侧分长直"]
-    assert bolt_hair[1]["image"]["alt"] == "在逃千金 · 侧分长直"
+    assert [item["name"] for item in bolt_hair] == ["柔感水波", "优雅S卷"]
+    assert bolt_hair[1]["image"]["alt"] == "在逃千金 · 优雅S卷"
 
     runtime = client.get("/static/selfit/selfit.js")
     assert runtime.status_code == 200
