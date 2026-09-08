@@ -1,0 +1,10 @@
+const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/strict');
+const s=fs.readFileSync('app/static/selfit-tryon/studio.js','utf8');
+const code=s.slice(s.indexOf('  function card('),s.indexOf('  function empty('));
+const state={page:'mirror',current:{id:'owned'},selected:new Set()};
+const ctx={state,reference:false,esc:String,image:()=>'',asset:x=>x};vm.createContext(ctx);vm.runInContext(code+';this.card=card;',ctx);
+assert(ctx.card({id:'library',personalId:'owned'},'outfit').includes('aria-pressed="true"'));
+assert(ctx.card({id:'other'},'outfit').includes('aria-pressed="false"'));
+state.generating={target:{id:'different'}};assert(ctx.card({id:'library',personalId:'owned'},'outfit').includes('aria-pressed="false"'));
+state.generating={target:{id:'owned'}};assert(ctx.card({id:'library',personalId:'owned'},'outfit').includes('正在试穿'));
+console.log('Library and saved outfit selection share identity without selecting unrelated cards: passed');

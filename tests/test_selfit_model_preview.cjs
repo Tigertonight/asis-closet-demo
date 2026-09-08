@@ -1,0 +1,11 @@
+const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/strict');
+const source=fs.readFileSync('app/static/selfit-tryon/studio.js','utf8');
+const code=source.slice(source.indexOf('  function resultViewer()'),source.indexOf('  function importReview()'));
+const state={viewerPhoto:true,photo:'/own/model.jpg',result:'/old/result.jpg'};
+const ctx={state,reference:false,A:'/assets/',image:(src,alt,cls)=>`<img src="${src}" alt="${alt}" class="${cls}">`};
+vm.createContext(ctx);vm.runInContext(code+';this.view=resultViewer;',ctx);
+let html=ctx.view();assert(html.includes('/own/model.jpg'));assert(!html.includes('/old/result.jpg'));assert(html.includes('当前模特大图'));
+state.viewerPhoto=false;html=ctx.view();assert(html.includes('/old/result.jpg'));assert(!html.includes('/own/model.jpg'));
+state.result='';html=ctx.view();assert(html.includes('还没有可查看的试穿图'));assert(!html.includes('/own/model.jpg'));
+state.viewerPhoto=true;state.loading=true;state.photo='';assert(ctx.view().includes('role="status"'));
+console.log('Model preview and generated-result image isolation: passed');

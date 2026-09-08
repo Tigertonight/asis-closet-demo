@@ -1,0 +1,11 @@
+const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/strict');
+const src=fs.readFileSync('app/static/selfit-tryon/studio.js','utf8');
+const restore=src.slice(src.indexOf('  function restoreTryonRecord('),src.indexOf('  async function tryonHistory('));
+const state={current:{id:'unrelated'},job:{job_id:'old'},styling:true};
+const ctx={state,lookup:()=>null};vm.createContext(ctx);vm.runInContext(restore+';this.restore=restoreTryonRecord;',ctx);
+ctx.restore({record_id:'record-a',image_path:'saved-result.png',original_image_path:'original-a.png',note_id:'note-a'});
+assert.equal(state.result,'saved-result.png');assert.equal(state.resultOriginal,'original-a.png');assert.equal(state.current,null);
+assert.equal(state.viewRecordId,'record-a');assert.equal(state.job,null);assert.equal(state.styling,false);
+ctx.restore({record_id:'legacy',image_path:'legacy.png',outfit_id:'removed-outfit'});
+assert.equal(state.resultOriginal,'');assert.equal(state.current,null);
+console.log('History restores recorded images and never associates a different outfit or original: passed');
