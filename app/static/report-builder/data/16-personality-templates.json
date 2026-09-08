@@ -1,8 +1,8 @@
 {
   "schemaVersion": "selfit-report-library/1.0",
-  "seedVersion": 13,
-  "generatedAt": "2026-09-07T01:28:05.057Z",
-  "source": "selfit-report-templates-2026-09-07.json",
+  "seedVersion": 14,
+  "generatedAt": "2026-09-08T17:50:11.176Z",
+  "source": "selfit-report-templates-2026-09-08.json",
   "templates": [
     {
       "schemaVersion": "selfit-report-template/1.0",
@@ -96,7 +96,7 @@
         {
           "name": "时髦手袋",
           "byline": "@王浩入",
-          "image": "/static/selfit/assets/personality/mute/report-outfits-01.webp?v=20260907-config-v2",
+          "image": "/static/selfit/assets/personality/mute/report-outfits-01-309a9c45531306aa.jpg",
           "mood": "一整套白，不说话也站得住",
           "notes": "视觉特征：低表达低装饰、H型直筒、无彩中性色、留白≥60%；矩型路线：直线",
           "styling": "白罗纹背心配同色阔腿裤，全身同色系轻薄材质",
@@ -116,7 +116,7 @@
         {
           "name": "静白风衣",
           "byline": "@Rozannazhan",
-          "image": "/static/selfit/assets/personality/mute/report-outfits-02.webp?v=20260907-config-v2",
+          "image": "/static/selfit/assets/personality/mute/report-outfits-02-b611b9302eceb7b5.jpg",
           "mood": "安静的白，把所有线条都交给风",
           "notes": "视觉特征：低表达低装饰、H型直筒、无彩中性色、留白≥60%；矩型路线：曲线",
           "styling": "白色针织长裙腰间随意系带，垂坠廓形拉长线条",
@@ -136,7 +136,7 @@
         {
           "name": "叠穿上衣",
           "byline": "@小坂",
-          "image": "/static/selfit/assets/personality/mute/report-outfits-03.webp?v=20260907-config-v2",
+          "image": "/static/selfit/assets/personality/mute/report-outfits-03-4d66e5756cfadd21.jpg",
           "mood": "黑得很轻，走起来有风",
           "notes": "",
           "styling": "黑色无袖高领长裙，材质飘逸廓形宽松",
@@ -156,7 +156,7 @@
         {
           "name": "浅灰柔系",
           "byline": "@Tia_智多星",
-          "image": "/static/selfit/assets/personality/mute/report-outfits-04.webp?v=20260907-config-v2",
+          "image": "/static/selfit/assets/personality/mute/report-outfits-04-1a195e32be8909e7.jpg",
           "mood": "最简单的两件，最难被挑错",
           "notes": "文档分组：明星；性别呈现：女装；季节感：秋冬；单品可见性：上装|下装|配饰；图片序号：4/4；是否代表图：是",
           "styling": "黑色紧身长袖上衣配蓝色直筒牛仔裤，极简两件式",
@@ -534,7 +534,10 @@
           "imageWidth": 1080,
           "imageHeight": 1440
         }
-      ]
+      ],
+      "templateId": "mute",
+      "bodyProfile": "standard",
+      "gender": "unisex"
     },
     {
       "schemaVersion": "selfit-report-template/1.0",
@@ -628,7 +631,7 @@
         {
           "name": "飘带伞裙",
           "byline": "@小🐑er",
-          "image": "/static/selfit/assets/personality/iced/report-outfits-01.webp?v=20260907-config-v2",
+          "image": "/static/selfit/assets/personality/iced/report-outfits-01-4d5b66a95b422883.webp",
           "mood": "飘带一系，通勤也有了余地",
           "notes": "",
           "styling": "浅灰飘带领衬衫配同色百褶伞裙，成套系穿法",
@@ -648,7 +651,7 @@
         {
           "name": "黑系冷感",
           "byline": "@ 好吃的鱼",
-          "image": "/static/selfit/assets/personality/iced/report-outfits-02.webp?v=20260907-config-v2",
+          "image": "/static/selfit/assets/personality/iced/report-outfits-02-0c5c47b709e25871.jpg",
           "mood": "冷得像结霜的窗，又软得让人想碰一下",
           "notes": "文档分组：明星；性别呈现：女装；季节感：春夏；单品可见性：上装|下装|鞋|配饰；图片序号：2/6；是否代表图：是",
           "styling": "白色无袖上衣配蓬蓬短裙，蕾丝连裤袜提亮腿部",
@@ -668,7 +671,7 @@
         {
           "name": "米白套装",
           "byline": "@王浩入",
-          "image": "/static/selfit/assets/personality/iced/report-outfits-03.webp?v=20260907-config-v2",
+          "image": "/static/selfit/assets/personality/iced/report-outfits-03-868adb97bd64828b.jpg",
           "mood": "灰紫是冷调里最温柔的那一格",
           "notes": "",
           "styling": "黑色无袖上衣配灰紫色不规则层叠裙",
@@ -688,7 +691,7 @@
         {
           "name": "芋紫素衫",
           "byline": "@737**",
-          "image": "/static/selfit/assets/personality/iced/report-outfits-04.webp?v=20260907-config-v2",
+          "image": "/static/selfit/assets/personality/iced/report-outfits-04-da9557473fc7eb6c.jpg",
           "mood": "灰缎面走动时反光，像水面碎了一下",
           "notes": "",
           "styling": "浅灰无袖上衣配同色缎面百褶长裙，光泽统一",
@@ -1193,7 +1196,10 @@
           "imageWidth": 1080,
           "imageHeight": 1440
         }
-      ]
+      ],
+      "templateId": "iced",
+      "bodyProfile": "standard",
+      "gender": "unisex"
     },
     {
       "schemaVersion": "selfit-report-template/1.0",
@@ -1287,7 +1293,7 @@
         {
           "name": "条纹老钱",
           "byline": "@吴千语Karena",
-          "image": "/static/selfit/assets/personality/heir/report-outfits-01.webp?v=20260907-config-v2",
+          "image": "/static/selfit/assets/personality/heir/report-outfits-01-c4314d2354f25c45.jpg",
           "mood": "一条素裙，交给项圈去发光",
           "notes": "季节感：春夏；单品可见性：上装|配饰",
           "styling": "灰色亚麻质感吊带裙，配镶钻项圈提升贵气",
@@ -1307,7 +1313,7 @@
         {
           "name": "香槟冰面",
           "byline": "@资深巴黎人Olivia",
-          "image": "/static/selfit/assets/personality/heir/report-outfits-02.webp?v=20260907-config-v2",
+          "image": "/static/selfit/assets/personality/heir/report-outfits-02-f9379c062c7f4a01.jpg",
           "mood": "学院气一旦有了年纪，就叫体面",
           "notes": "文档分组：明星；性别呈现：女装；季节感：春夏；单品可见性：上装|下装|包|配饰；图片序号：2/6；是否代表图：是",
           "styling": "焦糖色翻领针织衫配黑色百褶短裙，手提棕色大包",
@@ -1327,7 +1333,7 @@
         {
           "name": "丝绒褶裙",
           "byline": "@少音",
-          "image": "/static/selfit/assets/personality/heir/report-outfits-03.webp?v=20260907-config-v2",
+          "image": "/static/selfit/assets/personality/heir/report-outfits-03-02c886eafc957e48.webp",
           "mood": "撞色撞得刚好，像旧照片褪出的层次",
           "notes": "",
           "styling": "浅绿竖条纹廓形衬衫配深棕丝绒裹身裙，复古撞色",
@@ -1347,7 +1353,7 @@
         {
           "name": "雾棕垂领",
           "byline": "@快乐小天使",
-          "image": "/static/selfit/assets/personality/heir/report-outfits-04.webp?v=20260907-config-v2",
+          "image": "/static/selfit/assets/personality/heir/report-outfits-04-ab0997bb77386efb.jpg",
           "mood": "老钱的底气，藏在一件不合时宜的花呢里",
           "notes": "季节感：春夏；单品可见性：上装|下装|鞋|配饰",
           "styling": "米色粗花呢马甲配橘粉格纹阔腿裤，黑玛丽珍压色",
@@ -1723,7 +1729,10 @@
           "imageWidth": 1080,
           "imageHeight": 1350
         }
-      ]
+      ],
+      "templateId": "heir",
+      "bodyProfile": "standard",
+      "gender": "unisex"
     },
     {
       "schemaVersion": "selfit-report-template/1.0",
@@ -1817,7 +1826,7 @@
         {
           "name": "度假阔腿",
           "byline": "@TIM VISION",
-          "image": "/static/selfit/assets/personality/ease/report-outfits-01.webp?v=20260907-config-v2",
+          "image": "/static/selfit/assets/personality/ease/report-outfits-01-aa4ead590a58c683.webp",
           "mood": "度假感不用去海边，一条裤子就够了",
           "notes": "",
           "styling": "白露肩上衣配佩斯利阔腿裤，加墨镜拍街景",
@@ -1837,7 +1846,7 @@
         {
           "name": "风衣叠穿",
           "byline": "@五指风",
-          "image": "/static/selfit/assets/personality/ease/report-outfits-02.webp?v=20260907-config-v2",
+          "image": "/static/selfit/assets/personality/ease/report-outfits-02-086a233fd6e6d58e.webp",
           "mood": "风衣里塞几个颜色，法式就成立了",
           "notes": "文档分组：核心做工方式：选题牵引(前瞻性趋势和观点挖掘)\n选题投喂：社群的每周洞察br；性别呈现：女装；季节感：秋冬；单品可见性：上装|下装|鞋|包|配饰；图片序号：9/14；是否代表图：是",
           "styling": "卡其长风衣内搭条纹衬衫与白裙，绿袜点缀",
@@ -1857,7 +1866,7 @@
         {
           "name": "亚麻球裤",
           "byline": "@OT Fashion",
-          "image": "/static/selfit/assets/personality/ease/report-outfits-03.webp?v=20260907-config-v2",
+          "image": "/static/selfit/assets/personality/ease/report-outfits-03-f0b0a045de0fd350.jpg",
           "mood": "一条腰带，把松弛穿成讲究",
           "notes": "",
           "styling": "米白棉麻连衣裙用宽腰带收腰，配棕色托特包",
@@ -1877,7 +1886,7 @@
         {
           "name": "米白长裙",
           "byline": "@王五",
-          "image": "/static/selfit/assets/personality/ease/report-outfits-04.webp?v=20260907-config-v2",
+          "image": "/static/selfit/assets/personality/ease/report-outfits-04-95c6a05b4d30ba7d.jpg",
           "mood": "针织配系带，松弛里留一点秩序",
           "notes": "",
           "styling": "米色V领针织衫配深棕系带直筒半裙，腰线利落",
@@ -2253,7 +2262,10 @@
           "imageWidth": 1080,
           "imageHeight": 1440
         }
-      ]
+      ],
+      "templateId": "ease",
+      "bodyProfile": "standard",
+      "gender": "unisex"
     },
     {
       "schemaVersion": "selfit-report-template/1.0",
@@ -2347,7 +2359,7 @@
         {
           "name": "粉系上衣",
           "byline": "@ luucindaa",
-          "image": "/static/selfit/assets/personality/melt/report-outfits-01.webp?v=20260907-config-v2",
+          "image": "/static/selfit/assets/personality/melt/report-outfits-01-eeedbe171aa2b0c3.jpg",
           "mood": "把童年穿回身上，还提着一只菜篮",
           "notes": "季节感：春夏；单品可见性：上装|连体|外套",
           "styling": "紫白条纹泡泡袖衬衫外搭浅蓝牛仔背带裙",
@@ -2367,7 +2379,7 @@
         {
           "name": "波点短裙",
           "byline": "@Kitty鹅",
-          "image": "/static/selfit/assets/personality/melt/report-outfits-02.webp?v=20260907-config-v2",
+          "image": "/static/selfit/assets/personality/melt/report-outfits-02-03ba676fa56cb394.webp",
           "mood": "波点收边用蕾丝，甜里带一点心思",
           "notes": "",
           "styling": "白色长袖上衣配黑白波点蕾丝边紧身短裙",
@@ -2387,7 +2399,7 @@
         {
           "name": "格纹蕾丝",
           "byline": "@水里转圈圈",
-          "image": "/static/selfit/assets/personality/melt/report-outfits-03.webp?v=20260907-config-v2",
+          "image": "/static/selfit/assets/personality/melt/report-outfits-03-fceda281ccdada91.webp",
           "mood": "格纹管收敛，蕾丝管撒野",
           "notes": "文档分组：PUGC；性别呈现：女装；季节感：春夏；单品可见性：上装|下装|鞋|配饰；图片序号：1/6；是否代表图：是",
           "styling": "蓝白格纹短袖衬衫配白色蕾丝荷叶边超短裙",
@@ -2407,7 +2419,7 @@
         {
           "name": "碎花吊带",
           "byline": "@是pp姐呀",
-          "image": "/static/selfit/assets/personality/melt/report-outfits-04.webp?v=20260907-config-v2",
+          "image": "/static/selfit/assets/personality/melt/report-outfits-04-095f8e29fd3ff931.jpg",
           "mood": "叠穿的好处是，随时可以少穿一件",
           "notes": "文档分组：PUGC；性别呈现：女装；季节感：春夏；单品可见性：上装|下装|鞋|包；图片序号：1/18；是否代表图：是",
           "styling": "条纹长袖打底叠穿白色宽松吊带裙，内搭短裤",
@@ -2789,7 +2801,10 @@
           "imageWidth": 1080,
           "imageHeight": 1440
         }
-      ]
+      ],
+      "templateId": "melt",
+      "bodyProfile": "standard",
+      "gender": "unisex"
     },
     {
       "schemaVersion": "selfit-report-template/1.0",
@@ -2883,7 +2898,7 @@
         {
           "name": "军绿工装",
           "byline": "@欧阳娜娜Nana",
-          "image": "/static/selfit/assets/personality/wabi/report-outfits-01.webp?v=20260907-config-v2",
+          "image": "/static/selfit/assets/personality/wabi/report-outfits-01-66c2be1a79e29412.webp",
           "mood": "好东西都是穿旧的，痕迹才是说明书",
           "notes": "季节感：秋冬；单品可见性：外套|下装|鞋",
           "styling": "军绿立领工装夹克配米色多袋工装裤，全大地色系",
@@ -2903,7 +2918,7 @@
         {
           "name": "单肩百褶",
           "byline": "@阿卡酱",
-          "image": "/static/selfit/assets/personality/wabi/report-outfits-02.webp?v=20260907-config-v2",
+          "image": "/static/selfit/assets/personality/wabi/report-outfits-02-5636dd3244f219df.webp",
           "mood": "褶皱不熨平，是它自己的语言",
           "notes": "",
           "styling": "灰褐单肩褶皱上衣配浅灰垂感百褶长裙",
@@ -2923,7 +2938,7 @@
         {
           "name": "做旧针织",
           "byline": "@我不是煎饼果子",
-          "image": "/static/selfit/assets/personality/wabi/report-outfits-03.webp?v=20260907-config-v2",
+          "image": "/static/selfit/assets/personality/wabi/report-outfits-03-8cf21008f43de4bc.webp",
           "mood": "染渍不是脏，是时间留的手印",
           "notes": "",
           "styling": "米色长款针织开衫配做旧染渍感宽松阔腿裤",
@@ -2943,7 +2958,7 @@
         {
           "name": "亚麻长袍",
           "byline": "@一个枫子",
-          "image": "/static/selfit/assets/personality/wabi/report-outfits-04.webp?v=20260907-config-v2",
+          "image": "/static/selfit/assets/personality/wabi/report-outfits-04-2ac49871a5a0b33c.webp",
           "mood": "一件长袍，把身体从规矩里放出来",
           "notes": "",
           "styling": "灰褐宽松蝙蝠袖亚麻长袍式连衣裙，无腰线",
@@ -3253,7 +3268,10 @@
           "imageWidth": 1080,
           "imageHeight": 1440
         }
-      ]
+      ],
+      "templateId": "wabi",
+      "bodyProfile": "standard",
+      "gender": "unisex"
     },
     {
       "schemaVersion": "selfit-report-template/1.0",
@@ -3347,7 +3365,7 @@
         {
           "name": "薄荷绑带",
           "byline": "@羅蛋皮",
-          "image": "/static/selfit/assets/personality/flou/report-outfits-01.webp?v=20260907-config-v2",
+          "image": "/static/selfit/assets/personality/flou/report-outfits-01-6af96c2710ae04b5.webp",
           "mood": "蕾丝下配工装，梦也要落地走路",
           "notes": "",
           "styling": "薄荷绿蕾丝吊带配同色系工装风阔腿长裤",
@@ -3367,7 +3385,7 @@
         {
           "name": "撞色叠纱",
           "byline": "@羅蛋皮",
-          "image": "/static/selfit/assets/personality/flou/report-outfits-02.webp?v=20260907-config-v2",
+          "image": "/static/selfit/assets/personality/flou/report-outfits-02-8deb72077d5dee77.webp",
           "mood": "红与米白之间，塞了一个蝴蝶结",
           "notes": "",
           "styling": "红色吊带配米色不规则纱裙及蝴蝶结网袜",
@@ -3387,7 +3405,7 @@
         {
           "name": "vintage浪漫",
           "byline": "@Y Stylegroove",
-          "image": "/static/selfit/assets/personality/flou/report-outfits-03.webp?v=20260907-config-v2",
+          "image": "/static/selfit/assets/personality/flou/report-outfits-03-083b8c0d489398cd.jpg",
           "mood": "一身钻，走一步亮一次",
           "notes": "文档分组：明星；性别呈现：女装；季节感：春夏；单品可见性：连体；图片序号：1/18；是否代表图：是",
           "styling": "裸色深V细吊带满钻亮片透视长裙，修身贴合",
@@ -3407,7 +3425,7 @@
         {
           "name": "斗篷上衣",
           "byline": "@妙得很",
-          "image": "/static/selfit/assets/personality/flou/report-outfits-04.webp?v=20260907-config-v2",
+          "image": "/static/selfit/assets/personality/flou/report-outfits-04-13f98d2dce38f77b.jpg",
           "mood": "浅蓝配草绿，像春天刚开的那一层",
           "notes": "文档分组：明星；性别呈现：女装；季节感：春夏；单品可见性：连体|帽|配饰；图片序号：2/11；是否代表图：是",
           "styling": "绿色波点吊带配浅蓝纱裙，色彩明快跳脱",
@@ -3983,7 +4001,10 @@
           "imageWidth": 891,
           "imageHeight": 1194
         }
-      ]
+      ],
+      "templateId": "flou",
+      "bodyProfile": "standard",
+      "gender": "unisex"
     },
     {
       "schemaVersion": "selfit-report-template/1.0",
@@ -4077,7 +4098,7 @@
         {
           "name": "橙绿配色",
           "byline": "@RNA结构少女",
-          "image": "/static/selfit/assets/personality/neon/report-outfits-01.webp?v=20260907-config-v2",
+          "image": "/static/selfit/assets/personality/neon/report-outfits-01-f164e27c7fc94392.jpg",
           "mood": "把一幅画穿在身上，走成一个展位",
           "notes": "文档分组：P0  独特审美（引领风格）；性别呈现：女装；季节感：秋冬；单品可见性：上装|外套|下装|鞋|包；图片序号：2/3；是否代表图：是",
           "styling": "枚粉配绿新中式外套高饱和丝巾",
@@ -4097,7 +4118,7 @@
         {
           "name": "蓝绿叠穿",
           "byline": "@Jomu 没衣服穿",
-          "image": "/static/selfit/assets/personality/neon/report-outfits-02.webp?v=20260907-config-v2",
+          "image": "/static/selfit/assets/personality/neon/report-outfits-02-18ea6a9bbc1a2255.jpg",
           "mood": "星星印在裙子上，天真也很有版型",
           "notes": "",
           "styling": "白色泡泡袖上衣配粉色星星图案直筒半裙",
@@ -4117,7 +4138,7 @@
         {
           "name": "粉蓝叠穿",
           "byline": "@noa.kkk",
-          "image": "/static/selfit/assets/personality/neon/report-outfits-03.webp?v=20260907-config-v2",
+          "image": "/static/selfit/assets/personality/neon/report-outfits-03-ebc180ea0318f2ae.jpg",
           "mood": "撞色不是乱来，是排过顺序的",
           "notes": "",
           "styling": "拼色图案背心叠穿衬衫，撞色系统搭配",
@@ -4137,7 +4158,7 @@
         {
           "name": "蓝橙拼接",
           "byline": "@王五",
-          "image": "/static/selfit/assets/personality/neon/report-outfits-04.webp?v=20260907-config-v2",
+          "image": "/static/selfit/assets/personality/neon/report-outfits-04-19c352c642a03bfc.jpg",
           "mood": "条纹加紫包，日常也能有高光",
           "notes": "文档分组：明星；性别呈现：女装；季节感：春夏；单品可见性：上装|下装|鞋|包|配饰；图片序号：1/9；是否代表图：是",
           "styling": "红白竖条纹衬衫配牛仔短裤，紫麂皮包提色",
@@ -4539,7 +4560,10 @@
           "imageWidth": 1080,
           "imageHeight": 1610
         }
-      ]
+      ],
+      "templateId": "neon",
+      "bodyProfile": "standard",
+      "gender": "unisex"
     },
     {
       "schemaVersion": "selfit-report-template/1.0",
@@ -4633,7 +4657,7 @@
         {
           "name": "蝴蝶结亚",
           "byline": "@Miki _yuanjz",
-          "image": "/static/selfit/assets/personality/edge/report-outfits-01.webp?v=20260907-config-v2",
+          "image": "/static/selfit/assets/personality/edge/report-outfits-01-3546b7d6b791a183.jpg",
           "mood": "渔网袜是这套衣服的态度声明",
           "notes": "文档分组：明星；性别呈现：女装；季节感：秋冬；单品可见性：外套|连体|鞋|包；图片序号：2/18；是否代表图：是",
           "styling": "黑色皮衣配黑色花卉渔网袜及过膝长靴",
@@ -4653,7 +4677,7 @@
         {
           "name": "黑皮波点",
           "byline": "@45",
-          "image": "/static/selfit/assets/personality/edge/report-outfits-02.webp?v=20260907-config-v2",
+          "image": "/static/selfit/assets/personality/edge/report-outfits-02-1b77c77a9ee2c575.jpg",
           "mood": "蕾丝在上工装在下，软硬各站一半",
           "notes": "",
           "styling": "黑色蕾丝透视上衣配棕色高腰工装裤",
@@ -4673,7 +4697,7 @@
         {
           "name": "蕾丝轻亚感",
           "byline": "@ kimkimkim",
-          "image": "/static/selfit/assets/personality/edge/report-outfits-03.webp?v=20260907-config-v2",
+          "image": "/static/selfit/assets/personality/edge/report-outfits-03-18596b58e2d78665.jpg",
           "mood": "叠穿把粉色压低了半个调",
           "notes": "",
           "styling": "粉色紧身背心叠穿灰T，配同色褶皱超短裙",
@@ -4693,7 +4717,7 @@
         {
           "name": "波点紫裙",
           "byline": "@设计师很懒",
-          "image": "/static/selfit/assets/personality/edge/report-outfits-04.webp?v=20260907-config-v2",
+          "image": "/static/selfit/assets/personality/edge/report-outfits-04-763cedc764690c3e.webp",
           "mood": "紫工装裙压住波点，甜就不腻了",
           "notes": "",
           "styling": "黑白波点吊带配紫色工装裙，堆堆靴收尾",
@@ -5229,12 +5253,15 @@
           "imageWidth": 1080,
           "imageHeight": 1440
         }
-      ]
+      ],
+      "templateId": "edge",
+      "bodyProfile": "standard",
+      "gender": "unisex"
     },
     {
       "schemaVersion": "selfit-report-template/1.0",
       "assetQualityVersion": 4,
-      "updatedAt": "2026-08-27T17:08:51.454644Z",
+      "updatedAt": "2026-09-07T14:29:44.777526Z",
       "name": "在逃千金型人格",
       "code": "BOLT",
       "hero": "/static/selfit/assets/personality/bolt/hero.png?v=20260907-config-v2",
@@ -5321,9 +5348,9 @@
       },
       "outfits": [
         {
-          "name": "象牙斗篷",
-          "byline": "@古月",
-          "image": "/static/selfit/assets/personality/bolt/report-outfits-01.webp?v=20260907-config-v2",
+          "name": "高智衬衫",
+          "byline": "@从一从一",
+          "image": "/static/selfit/assets/personality/bolt/report-outfits-01-6722b182fad31894.jpg",
           "mood": "她不解释为什么来，进门就是全场的注脚",
           "notes": "季节感：不明确；单品可见性：连体|包|配饰",
           "styling": "黑色丝绒深V吊带长裙，配水钻手袋与钻石项链",
@@ -5331,8 +5358,8 @@
           "position": 1,
           "assetPath": "10_在逃千金 BOLT/00115_6a2fc7ef000000001101105c_09.jpg",
           "bodyTypes": "苹果型",
-          "sourceUrl": "https://www.xiaohongshu.com/explore/6a2fc7ef000000001101105c",
-          "sourceTitle": "Nabi 🌺*✧･ﾟ:*",
+          "sourceUrl": "90 【柔权美学 克制冷静的早秋穿搭 - 从一从一 | 小红书 - 你的生活兴趣社区】 😆 pgQEAm9VxcCwul7 😆 https://www.xiaohongshu.com/discovery/item/6a8ee2080000000005029de3?source=webshare&xhsshare=pc_web&xsec_token=ABKKRQJTpDEokqLK3_W4FJssis-6PAcEf1zfexxPN3Byw=&xsec_source=pc_share",
+          "sourceTitle": "柔权美学 克制冷静的早秋穿搭",
           "primaryStyle": "在逃千金 BOLT",
           "sourceItemId": "6a2fc7ef000000001101105c",
           "regionalStyle": "欧美系|法式",
@@ -5343,7 +5370,7 @@
         {
           "name": "银灰套装",
           "byline": "@快乐小天使",
-          "image": "/static/selfit/assets/personality/bolt/report-outfits-02.webp?v=20260907-config-v2",
+          "image": "/static/selfit/assets/personality/bolt/report-outfits-02-949bb999c862c42a.jpg",
           "mood": "深蓝加银饰，冷贵得很直接",
           "notes": "文档分组：明星；性别呈现：女装；季节感：秋冬；单品可见性：上装|下装|配饰；图片序号：4/4；是否代表图：是",
           "styling": "深蓝紧身长袖上衣，配银色金属发饰",
@@ -5361,9 +5388,9 @@
           "imageHeight": 1620
         },
         {
-          "name": "亮片套装",
-          "byline": "@摄影电焊机",
-          "image": "/static/selfit/assets/personality/bolt/report-outfits-03.webp?v=20260907-config-v2",
+          "name": "层次纱裙",
+          "byline": "@菜花穿搭～",
+          "image": "/static/selfit/assets/personality/bolt/report-outfits-03-a7cc1306facc7e11.jpg",
           "mood": "一条红裙，把场合都定了调",
           "notes": "文档分组：PUGC；性别呈现：女装；季节感：春夏；单品可见性：连体|鞋|包|配饰；图片序号：1/18；是否代表图：是",
           "styling": "正红方领收腰大摆连衣裙，配黑色平底鞋",
@@ -5378,12 +5405,12 @@
           "regionalStyle": "欧美系|法式",
           "secondaryStyle": "老钱新穿 HEIR",
           "imageWidth": 1080,
-          "imageHeight": 1628
+          "imageHeight": 1440
         },
         {
           "name": "毛绒开衩",
           "byline": "@摄影电焊机",
-          "image": "/static/selfit/assets/personality/bolt/report-outfits-04.webp?v=20260907-config-v2",
+          "image": "/static/selfit/assets/personality/bolt/report-outfits-04-8b880f66d9f8929b.webp",
           "mood": "毛绒裹着缎面，贵气有了温度",
           "notes": "",
           "styling": "酒红长毛绒外套内搭粉色缎面开衩连衣裙",
@@ -5763,7 +5790,10 @@
           "imageWidth": 1080,
           "imageHeight": 1440
         }
-      ]
+      ],
+      "templateId": "bolt",
+      "bodyProfile": "standard",
+      "gender": "unisex"
     },
     {
       "schemaVersion": "selfit-report-template/1.0",
@@ -5857,7 +5887,7 @@
         {
           "name": "牛仔工装",
           "byline": "@温妮Winnie",
-          "image": "/static/selfit/assets/personality/film/report-outfits-01.webp?v=20260907-config-v2",
+          "image": "/static/selfit/assets/personality/film/report-outfits-01-1ea0a2ab469ba4b1.webp",
           "mood": "牛仔套装加格纹，旧感很有分寸",
           "notes": "",
           "styling": "深灰水洗牛仔工装套装内搭红格纹衬衫",
@@ -5877,7 +5907,7 @@
         {
           "name": "披衫牛仔",
           "byline": "@SHIYI",
-          "image": "/static/selfit/assets/personality/film/report-outfits-02.webp?v=20260907-config-v2",
+          "image": "/static/selfit/assets/personality/film/report-outfits-02-48d1758aee76680f.webp",
           "mood": "披一件在肩上，画面就有了动作",
           "notes": "",
           "styling": "白T披红白条纹衫，配深蓝牛仔短裤",
@@ -5897,7 +5927,7 @@
         {
           "name": "裙裤叠穿",
           "byline": "@五指风",
-          "image": "/static/selfit/assets/personality/film/report-outfits-03.webp?v=20260907-config-v2",
+          "image": "/static/selfit/assets/personality/film/report-outfits-03-d6369519f8704b53.webp",
           "mood": "裙裤叠穿，是胶片里最松的一格",
           "notes": "文档分组：核心做工方式：选题牵引(前瞻性趋势和观点挖掘)\n选题投喂：社群的每周洞察br；性别呈现：女装；季节感：秋冬；单品可见性：上装|下装|外套|鞋|包；图片序号：8/14；是否代表图：是",
           "styling": "棕色麂皮夹克叠穿深色长裙与浅蓝牛仔裤",
@@ -5917,7 +5947,7 @@
         {
           "name": "碎花蕾丝",
           "byline": "@桃花岛岛主",
-          "image": "/static/selfit/assets/personality/film/report-outfits-04.webp?v=20260907-config-v2",
+          "image": "/static/selfit/assets/personality/film/report-outfits-04-dab06a69cab399f7.webp",
           "mood": "碎花蕾丝配帆布鞋，随手拍都像旧片",
           "notes": "文档分组：PUGC；性别呈现：女装；季节感：春夏；单品可见性：上装|下装|鞋|包|配饰；图片序号：2/18；是否代表图：是",
           "styling": "白色吊带配米色碎花蕾丝半裙及黑色帆布鞋",
@@ -6274,12 +6304,15 @@
           "imageWidth": 1080,
           "imageHeight": 1440
         }
-      ]
+      ],
+      "templateId": "film",
+      "bodyProfile": "standard",
+      "gender": "unisex"
     },
     {
       "schemaVersion": "selfit-report-template/1.0",
       "assetQualityVersion": 4,
-      "updatedAt": "2026-08-27T15:24:36.062303Z",
+      "updatedAt": "2026-09-07T16:55:31.648008Z",
       "name": "东方玉骨型人格",
       "code": "JADE",
       "hero": "/static/selfit/assets/personality/jade/hero.png?v=20260907-config-v2",
@@ -6366,9 +6399,9 @@
       },
       "outfits": [
         {
-          "name": "印花旗袍",
-          "byline": "@cici爱豆日记",
-          "image": "/static/selfit/assets/personality/jade/report-outfits-01.webp?v=20260907-config-v2",
+          "name": "暗纹拼接",
+          "byline": "@Tsaiii",
+          "image": "/static/selfit/assets/personality/jade/report-outfits-01-4f945efe0c2fdb17.jpg",
           "mood": "旗袍不必大红，灰也能压场",
           "notes": "",
           "styling": "灰色印花无袖高领旗袍，丝绸材质修身剪裁",
@@ -6376,19 +6409,19 @@
           "position": 1,
           "assetPath": "12_东方玉骨 JADE/69c6b06d000000001d01b839__aq4.png",
           "bodyTypes": "沙漏型|矩型|苹果型",
-          "sourceUrl": "https://www.xiaohongshu.com/discovery/item/69c6b06d000000001d01b839",
-          "sourceTitle": "欧阳娜娜刚刚更新ins，天呐好美",
+          "sourceUrl": "66 【早秋新中式outfit*3🌸温柔粉与清雅绿的诗意 - Tsaiii | 小红书 - 你的生活兴趣社区】 😆 quIQh9HsKBPgNb2 😆 https://www.xiaohongshu.com/discovery/item/68cff6520000000013010e4e?source=webshare&xhsshare=pc_web&xsec_token=AB3V1gw4qm0vhQ2SRQVqm1R5vGD_GkOHDmODxgmZNlMJA=&xsec_source=pc_share",
+          "sourceTitle": "早秋新中式outfit*3🌸温柔粉与清雅绿的诗意",
           "primaryStyle": "东方玉骨 JADE",
           "sourceItemId": "69c6b06d000000001d01b839",
           "regionalStyle": "中式|日系",
           "secondaryStyle": "甜辣轻亚 EDGE|在逃千金 BOLT",
           "imageWidth": 1080,
-          "imageHeight": 1427
+          "imageHeight": 1512
         },
         {
           "name": "龙纹衬衫",
           "byline": "@哆来咪哒",
-          "image": "/static/selfit/assets/personality/jade/report-outfits-02.webp?v=20260907-config-v2",
+          "image": "/static/selfit/assets/personality/jade/report-outfits-02-e96a9e75950c8196.webp",
           "mood": "龙纹低调地绕在身上，气势不喊",
           "notes": "",
           "styling": "米白龙纹印花衬衫配黑色立体肌理长裙",
@@ -6408,7 +6441,7 @@
         {
           "name": "流苏长裙",
           "byline": "@徐慢醒.",
-          "image": "/static/selfit/assets/personality/jade/report-outfits-03.webp?v=20260907-config-v2",
+          "image": "/static/selfit/assets/personality/jade/report-outfits-03-81c1e000830ed8ef.webp",
           "mood": "流苏是这条裙子的呼吸",
           "notes": "",
           "styling": "黑色无袖收腰上衣配黑白流苏长裙，设计感强",
@@ -6428,7 +6461,7 @@
         {
           "name": "一字肩裙",
           "byline": "@cheeseday芝士日",
-          "image": "/static/selfit/assets/personality/jade/report-outfits-04.webp?v=20260907-config-v2",
+          "image": "/static/selfit/assets/personality/jade/report-outfits-04-8fd2402fb61e2a09.webp",
           "mood": "一字肩露出的是肩线，不是热情",
           "notes": "",
           "styling": "白色一字肩上衣配蓝花印花长裙，优雅浪漫",
@@ -6964,12 +6997,15 @@
           "imageWidth": 1080,
           "imageHeight": 1439
         }
-      ]
+      ],
+      "templateId": "jade",
+      "bodyProfile": "standard",
+      "gender": "unisex"
     },
     {
       "schemaVersion": "selfit-report-template/1.0",
       "assetQualityVersion": 4,
-      "updatedAt": "2026-08-27T13:55:14.377881Z",
+      "updatedAt": "2026-09-07T14:34:44.300059Z",
       "name": "无限重启型人格",
       "code": "LOOP",
       "hero": "/static/selfit/assets/personality/loop/hero.png?v=20260907-config-v2",
@@ -7056,9 +7092,9 @@
       },
       "outfits": [
         {
-          "name": "波点温柔系",
+          "name": "波点温柔",
           "byline": "@池三也",
-          "image": "/static/selfit/assets/personality/loop/report-outfits-01.webp?v=20260907-config-v2",
+          "image": "/static/selfit/assets/personality/loop/report-outfits-01-be619dd481d3c887.jpg",
           "mood": "每天都能重来一次的那套衣服",
           "notes": "",
           "styling": "白色斜肩吊带背心配黑色短裤，最简两件式",
@@ -7078,7 +7114,7 @@
         {
           "name": "自在都市",
           "byline": "@董洁",
-          "image": "/static/selfit/assets/personality/loop/report-outfits-02.webp?v=20260907-config-v2",
+          "image": "/static/selfit/assets/personality/loop/report-outfits-02-b4ea0228539c90e5.webp",
           "mood": "通勤的第一百次循环，依然不出错",
           "notes": "",
           "styling": "蓝红细条纹背心配深蓝宽松长裤，渔夫帽收尾",
@@ -7096,9 +7132,9 @@
           "imageHeight": 1440
         },
         {
-          "name": "柠绿撞色风",
-          "byline": "@TIM VISION",
-          "image": "/static/selfit/assets/personality/loop/report-outfits-03.webp?v=20260907-config-v2",
+          "name": "亮黄点缀",
+          "byline": "@Jomu 没衣服穿",
+          "image": "/static/selfit/assets/personality/loop/report-outfits-03-18ea6a9bbc1a2255.jpg",
           "mood": "叠穿是日常最保险的解法",
           "notes": "",
           "styling": "条纹长袖叠穿白色宽松吊带裙，内搭短裤",
@@ -7106,19 +7142,19 @@
           "position": 3,
           "assetPath": "13_无限重启 LOOP/04227_6a3252ef000000001c0253f9_01.jpg",
           "bodyTypes": "",
-          "sourceUrl": "",
-          "sourceTitle": "在迪士尼的10086张游客照💭⸝⸝꙳ 🐚 ✧*",
+          "sourceUrl": "35 【🫧审美积累｜100位穿搭博主（2） - Jomu 没衣服穿 | 小红书 - 你的生活兴趣社区】 😆 2xikzyVzf56WE9I 😆 https://www.xiaohongshu.com/discovery/item/6a558c380000000007029e05?source=webshare&xhsshare=pc_web&xsec_token=AB8QvxwVbG9O44eNY0HlBgdeNcrzVx_4X9CtCtvB7DyR8=&xsec_source=pc_share",
+          "sourceTitle": "🫧审美积累｜100位穿搭博主（2）",
           "primaryStyle": "",
           "sourceItemId": "",
           "regionalStyle": "",
           "secondaryStyle": "",
           "imageWidth": 1080,
-          "imageHeight": 1620
+          "imageHeight": 1440
         },
         {
           "name": "棉麻随性",
           "byline": "@我不是煎饼果子",
-          "image": "/static/selfit/assets/personality/loop/report-outfits-04.webp?v=20260907-config-v2",
+          "image": "/static/selfit/assets/personality/loop/report-outfits-04-c2b770506bde0f1f.webp",
           "mood": "棉麻穿到第几年，都还是这个样子",
           "notes": "",
           "styling": "浅蓝泡泡袖长罩衫配米白宽松阔腿裤，棉麻质地",
@@ -7450,12 +7486,15 @@
           "imageWidth": 960,
           "imageHeight": 1260
         }
-      ]
+      ],
+      "templateId": "loop",
+      "bodyProfile": "standard",
+      "gender": "unisex"
     },
     {
       "schemaVersion": "selfit-report-template/1.0",
       "assetQualityVersion": 4,
-      "updatedAt": "2026-08-27T14:42:36.154029Z",
+      "updatedAt": "2026-09-07T15:43:21.629517Z",
       "name": "暗黑肃杀型人格",
       "code": "NOIR",
       "hero": "/static/selfit/assets/personality/noir/hero.png?v=20260907-config-v2",
@@ -7544,7 +7583,7 @@
         {
           "name": "立体褶边",
           "byline": "@未羊",
-          "image": "/static/selfit/assets/personality/noir/report-outfits-01.webp?v=20260907-config-v2",
+          "image": "/static/selfit/assets/personality/noir/report-outfits-01-009483e5dfb53c94.webp",
           "mood": "流苏在黑裙上长出来，像一层铠甲",
           "notes": "",
           "styling": "黑色立体流苏纹理紧身长裙，雕塑感强",
@@ -7562,9 +7601,9 @@
           "imageHeight": 1272
         },
         {
-          "name": "长款皮衣",
-          "byline": "@王子文",
-          "image": "/static/selfit/assets/personality/noir/report-outfits-02.webp?v=20260907-config-v2",
+          "name": "暗黑毛绒",
+          "byline": "@早起脱苹",
+          "image": "/static/selfit/assets/personality/noir/report-outfits-02-66ce2052dd350f9a.jpg",
           "mood": "长皮衣走起来，像一句不容反驳的话",
           "notes": "文档分组：明星；性别呈现：女装；季节感：秋冬；单品可见性：上装|下装|包|帽|鞋；图片序号：2/8；是否代表图：是",
           "styling": "黑色长款皮衣配蕾丝渔网袜及过膝靴",
@@ -7572,19 +7611,19 @@
           "position": 2,
           "assetPath": "14_暗黑肃杀 NOIR/02707_6a8829c3000000000902e91d_02.jpg",
           "bodyTypes": "矩型|苹果型",
-          "sourceUrl": "https://www.xiaohongshu.com/explore/6a8829c3000000000902e91d",
-          "sourceTitle": "唯一看得见的成长：头发",
+          "sourceUrl": "91 【🤳🏻📷🖤all black vibe - 早起脱苹 | 小红书 - 你的生活兴趣社区】 😆 MrsIyERNF8kXr52 😆 https://www.xiaohongshu.com/discovery/item/68fa19e00000000003020342?source=webshare&xhsshare=pc_web&xsec_token=ABmt7bHsvfavENirnRlkcitiBqQe1fZRwWvBtBcpEt-5M=&xsec_source=pc_share",
+          "sourceTitle": "🤳🏻📷🖤all black vibe",
           "primaryStyle": "暗黑肃杀 NOIR",
           "sourceItemId": "6a8829c3000000000902e91d",
           "regionalStyle": "欧美系|轻亚",
           "secondaryStyle": "",
-          "imageWidth": 911,
-          "imageHeight": 1620
+          "imageWidth": 1080,
+          "imageHeight": 1440
         },
         {
           "name": "黑皮暗黑",
-          "byline": "@摄影电焊机",
-          "image": "/static/selfit/assets/personality/noir/report-outfits-03.webp?v=20260907-config-v2",
+          "byline": "@设计师很懒",
+          "image": "/static/selfit/assets/personality/noir/report-outfits-03-4a03a2e243133b83.jpg",
           "mood": "永远臣服于黑色",
           "notes": "文档分组：明星；性别呈现：女装；季节感：秋冬；单品可见性：外套|连体|鞋|包；图片序号：2/18；是否代表图：是",
           "styling": "单排扣显瘦大衣",
@@ -7592,19 +7631,19 @@
           "position": 3,
           "assetPath": "14_暗黑肃杀 NOIR/01357_6a54b3bf000000001702e9a2_02.jpg",
           "bodyTypes": "沙漏型",
-          "sourceUrl": "https://www.xiaohongshu.com/explore/693d5d9e000000001e038887?xsec_token=ABeE4dgJAuxADmOYoXTW0O5I8Y1wODLE3hvK73yOWTayE=&xsec_source=pc_search&source=web_explore_feed",
-          "sourceTitle": "007穿搭",
+          "sourceUrl": "40 【跟着ins博主学穿搭｜🔅p.jinjoooo - 设计师很懒 | 小红书 - 你的生活兴趣社区】 😆 OSVRGHVFXdOff4O 😆 https://www.xiaohongshu.com/discovery/item/69412e1a000000001e035c63?source=webshare&xhsshare=pc_web&xsec_token=ABIfQL2M7pZ0ySnNBdrJMnH543vpicQl92-xLBG7ouvKg=&xsec_source=pc_share",
+          "sourceTitle": "跟着ins博主学穿搭｜🔅p.jinjoooo",
           "primaryStyle": "暗黑肃杀 NOIR",
           "sourceItemId": "6a54b3bf000000001702e9a2",
           "regionalStyle": "韩系|欧美系|轻亚",
           "secondaryStyle": "",
           "imageWidth": 1080,
-          "imageHeight": 1620
+          "imageHeight": 1424
         },
         {
           "name": "黑皮靴酷感",
           "byline": "@摄影电焊机",
-          "image": "/static/selfit/assets/personality/noir/report-outfits-04.webp?v=20260907-config-v2",
+          "image": "/static/selfit/assets/personality/noir/report-outfits-04-691e89217446f57b.jpg",
           "mood": "一边肩膀空着，全靠剪裁撑住",
           "notes": "视觉特征：紧身+露腰、皮革网纱、黑暗酒红金属、轮廓与态度表达；矩型路线：直线",
           "styling": "黑色不对称单肩羊毛长裙，建筑感廓形",
@@ -7940,12 +7979,15 @@
           "imageWidth": 1080,
           "imageHeight": 1619
         }
-      ]
+      ],
+      "templateId": "noir",
+      "bodyProfile": "standard",
+      "gender": "unisex"
     },
     {
       "schemaVersion": "selfit-report-template/1.0",
       "assetQualityVersion": 4,
-      "updatedAt": "2026-08-27T14:00:05.443724Z",
+      "updatedAt": "2026-09-07T15:22:38.829568Z",
       "name": "人间失格型人格",
       "code": "VOID",
       "hero": "/static/selfit/assets/personality/void/hero.png?v=20260907-config-v2",
@@ -8032,9 +8074,9 @@
       },
       "outfits": [
         {
-          "name": "隐身就行",
-          "byline": "@allizantt",
-          "image": "/static/selfit/assets/personality/void/report-outfits-01.webp?v=20260907-config-v2",
+          "name": "躺平朋克",
+          "byline": "@p.jinjoooo",
+          "image": "/static/selfit/assets/personality/void/report-outfits-01-8b9089927a7b589b.jpg",
           "mood": "把自己一层层裹起来，谁也别想看清",
           "notes": "在线表格人工精选；原始分享序号：64",
           "styling": "深蓝短外套配红黑格纹长裙，围巾冷帽包裹严实",
@@ -8042,8 +8084,8 @@
           "position": 1,
           "assetPath": "15_人间失格 VOID/04736_697b5068000000000e03cd9b_01.png",
           "bodyTypes": "",
-          "sourceUrl": "https://www.xiaohongshu.com/discovery/item/697b5068000000000e03cd9b",
-          "sourceTitle": "静安女囚一周恶心穿搭",
+          "sourceUrl": "97 【第一次上海之旅❤︎ 来自 LOST IN ECHO - p.jinjoooo | 小红书 - 你的生活兴趣社区】 😆 FRRdeDWEcjugSAt 😆 https://www.xiaohongshu.com/discovery/item/6a9141d5000000003703685f?source=webshare&xhsshare=pc_web&xsec_token=AB3mLtVp8-UKLrCUQHSe_umhsHqfXDbYsULPS_cB7pRJ4=&xsec_source=pc_share",
+          "sourceTitle": "第一次上海之旅❤︎ 来自 LOST IN ECHO",
           "primaryStyle": "人间失格 VOID",
           "sourceItemId": "697b5068000000000e03cd9b",
           "regionalStyle": "日系|韩系|欧美系|中式|法式|轻亚",
@@ -8053,8 +8095,8 @@
         },
         {
           "name": "舒服就行",
-          "byline": "@Sallyhuahua",
-          "image": "/static/selfit/assets/personality/void/report-outfits-02.webp?v=20260907-config-v2",
+          "byline": "@elfin_prairie ins搬运🌔",
+          "image": "/static/selfit/assets/personality/void/report-outfits-02-3dd11895cf250a60.jpg",
           "mood": "随手抓两件出门，也是一种诚实",
           "notes": "在线表格人工精选；原始分享序号：63",
           "styling": "粉棕拼色印花T配灰色短裤，休闲宽松",
@@ -8062,19 +8104,19 @@
           "position": 2,
           "assetPath": "15_人间失格 VOID/04737_68e20781000000000700ff25_01.png",
           "bodyTypes": "",
-          "sourceUrl": "https://www.xiaohongshu.com/discovery/item/68e20781000000000700ff25",
+          "sourceUrl": "62 【 elfin_prairie ins搬运🌔 | 小红书 - 你的生活兴趣社区】 😆 qsIzBVJpDx3JWeS 😆 https://www.xiaohongshu.com/discovery/item/69180e41000000000d00fbc3?source=webshare&xhsshare=pc_web&xsec_token=AB8Z7q-eL7qMUJv0NZh92YfqCB_xDLqL4x3xCUGQj0qFY=&xsec_source=pc_share",
           "sourceTitle": "上班恶心穿搭 我请求出战",
           "primaryStyle": "人间失格 VOID",
           "sourceItemId": "68e20781000000000700ff25",
           "regionalStyle": "日系|韩系|欧美系|中式|法式|轻亚",
           "secondaryStyle": "",
           "imageWidth": 1080,
-          "imageHeight": 1440
+          "imageHeight": 1424
         },
         {
-          "name": "保暖就行",
-          "byline": "@杂志研究员",
-          "image": "/static/selfit/assets/personality/void/report-outfits-03.webp?v=20260907-config-v2",
+          "name": "随意彩叠",
+          "byline": "@Riri爱穿袜子-",
+          "image": "/static/selfit/assets/personality/void/report-outfits-03-631c913ce8a0f33b.jpg",
           "mood": "羽绒服里藏一条裙子，谁也看不出来",
           "notes": "在线表格人工精选；原始分享序号：98",
           "styling": "黑色蓬松羽绒服内搭蓝色裙装，圆润廓形",
@@ -8082,19 +8124,19 @@
           "position": 3,
           "assetPath": "15_人间失格 VOID/04738_6927f7a1000000001e023439_01.png",
           "bodyTypes": "",
-          "sourceUrl": "https://www.xiaohongshu.com/discovery/item/6927f7a1000000001e023439",
-          "sourceTitle": "杂志研究员",
+          "sourceUrl": "50 【跟着ins博主学穿搭｜prohoda - Mozi&Lexi | 小红书 - 你的生活兴趣社区】 😆 4R68LXW7GRYc46H 😆 https://www.xiaohongshu.com/discovery/item/68f771f4000000000402b0d8?source=webshare&xhsshare=pc_web&xsec_token=AB30rgJ-dBqPmbz7Nmi59DZpH5Wy2mU26K-AtUvU5x5-A=&xsec_source=pc_share",
+          "sourceTitle": "跟着ins博主学穿搭｜prohoda",
           "primaryStyle": "人间失格 VOID",
           "sourceItemId": "6927f7a1000000001e023439",
           "regionalStyle": "日系|韩系|欧美系|中式|法式|轻亚",
           "secondaryStyle": "",
-          "imageWidth": 960,
-          "imageHeight": 1223
+          "imageWidth": 1080,
+          "imageHeight": 1439
         },
         {
           "name": "快乐就行",
-          "byline": "@创业者郭鹏",
-          "image": "/static/selfit/assets/personality/void/report-outfits-04.webp?v=20260907-config-v2",
+          "byline": "@干脆三文鱼",
+          "image": "/static/selfit/assets/personality/void/report-outfits-04-473099844e01e520.jpg",
           "mood": "格纹压着碎花，乱得很有情绪",
           "notes": "在线表格人工精选；原始分享序号：55",
           "styling": "红黑格纹西装外套叠穿碎花裙，色彩堆叠",
@@ -8102,8 +8144,8 @@
           "position": 4,
           "assetPath": "15_人间失格 VOID/04739_69270c94000000001e0092f9_01.png",
           "bodyTypes": "",
-          "sourceUrl": "https://www.xiaohongshu.com/discovery/item/69270c94000000001e0092f9",
-          "sourceTitle": "五周年盲盒活动之恶心穿搭大比拼",
+          "sourceUrl": "66 【my fashion notes. 𝟷𝟾 - 干脆三文鱼 | 小红书 - 你的生活兴趣社区】 😆 75a0w8m0JBz7XNM 😆 https://www.xiaohongshu.com/discovery/item/69f5dbbc00000000360318bc?source=webshare&xhsshare=pc_web&xsec_token=AB1WqqA1uzlrpMr81BQU70xJeJX4OKb7p7CxXRuOo4GBw=&xsec_source=pc_share",
+          "sourceTitle": "my fashion notes. 𝟷𝟾",
           "primaryStyle": "人间失格 VOID",
           "sourceItemId": "69270c94000000001e0092f9",
           "regionalStyle": "日系|韩系|欧美系|中式|法式|轻亚",
@@ -8516,12 +8558,15 @@
           "imageWidth": 1080,
           "imageHeight": 1431
         }
-      ]
+      ],
+      "templateId": "void",
+      "bodyProfile": "standard",
+      "gender": "unisex"
     },
     {
       "schemaVersion": "selfit-report-template/1.0",
       "assetQualityVersion": 4,
-      "updatedAt": "2026-08-28T03:28:59.961202Z",
+      "updatedAt": "2026-09-07T15:55:06.451726Z",
       "name": "搭配事故型人格",
       "code": "OOPS",
       "hero": "/static/selfit/assets/personality/oops/hero.png?v=20260907-config-v2",
@@ -8609,8 +8654,8 @@
       "outfits": [
         {
           "name": "撞色堆饰",
-          "byline": "@曲家瑞",
-          "image": "/static/selfit/assets/personality/oops/report-outfits-01.webp?v=20260907-config-v2",
+          "byline": "@lost in echoooooo",
+          "image": "/static/selfit/assets/personality/oops/report-outfits-01-a7fe8c8fdb016227.jpg",
           "mood": "把所有喜欢的都戴上，事故也是作品",
           "notes": "文档分组：P0  独特审美（引领风格）；性别呈现：女装；季节感：春夏；单品可见性：上装|下装|外套|帽|配饰；图片序号：1/2；是否代表图：是",
           "styling": "金色光泽夹克叠穿碎花裙，头饰堆满玩偶杂物",
@@ -8618,8 +8663,8 @@
           "position": 1,
           "assetPath": "16_搭配事故 OOPS/00001_6883af5c00000000170378fd_01.jpg",
           "bodyTypes": "矩型",
-          "sourceUrl": "https://www.xiaohongshu.com/explore/6883af5c00000000170378fd",
-          "sourceTitle": "20多年前紐約街頭，我買了流浪漢全身衣服",
+          "sourceUrl": "47 【Remain unique🥂 - lost in echoooooo | 小红书 - 你的生活兴趣社区】 😆 3DebflVt0vrC4EU 😆 https://www.xiaohongshu.com/discovery/item/6a4b57c4000000000f029721?source=webshare&xhsshare=pc_web&xsec_token=AB7pChD-SwvOblhq6xl3H_Kyf2Fy_yZXgQjJ5pF7jAgas=&xsec_source=pc_share",
+          "sourceTitle": "Remain unique🥂",
           "primaryStyle": "搭配事故 OOPS",
           "sourceItemId": "6883af5c00000000170378fd",
           "regionalStyle": "欧美系|轻亚",
@@ -8630,7 +8675,7 @@
         {
           "name": "西装蓬裙",
           "byline": "@羅蛋皮",
-          "image": "/static/selfit/assets/personality/oops/report-outfits-02.webp?v=20260907-config-v2",
+          "image": "/static/selfit/assets/personality/oops/report-outfits-02-00284b0539b1dec7.webp",
           "mood": "西装配蓬裙，一半上班一半逃跑",
           "notes": "",
           "styling": "黑色西装外套配白色蓬蓬短裙，硬软撞色",
@@ -8650,7 +8695,7 @@
         {
           "name": "机能蕾丝",
           "byline": "@Cecilie Bahnsen",
-          "image": "/static/selfit/assets/personality/oops/report-outfits-03.webp?v=20260907-config-v2",
+          "image": "/static/selfit/assets/personality/oops/report-outfits-03-38dbe762b9004f2d.webp",
           "mood": "卫衣缝上蕾丝，规则被当场撕掉",
           "notes": "视觉特征：圆润廓形泡泡袖、马海毛天鹅绒、马卡龙低饱和、软糯触感；矩型路线：直线",
           "styling": "浅绿拉链卫衣配粉色蕾丝裙片，机能混搭",
@@ -8670,7 +8715,7 @@
         {
           "name": "雨靴蓝袜",
           "byline": "@hoho",
-          "image": "/static/selfit/assets/personality/oops/report-outfits-04.webp?v=20260907-config-v2",
+          "image": "/static/selfit/assets/personality/oops/report-outfits-04-26358579655b5307.jpg",
           "mood": "扭结把最普通的两件拧出了脾气",
           "notes": "视觉特征：短紧+宽松对比、弹力尼龙、高饱和撞色、色彩即能量；矩型路线：直线",
           "styling": "白色扭结无袖上衣配深蓝直筒牛仔裤",
@@ -8936,7 +8981,594 @@
           "imageWidth": 1080,
           "imageHeight": 1465
         }
-      ]
+      ],
+      "templateId": "oops",
+      "bodyProfile": "standard",
+      "gender": "unisex"
+    },
+    {
+      "schemaVersion": "selfit-report-template/1.0",
+      "assetQualityVersion": 2,
+      "updatedAt": "2026-09-07T16:46:03.868215Z",
+      "name": "虚焦胶片-微胖",
+      "code": "FILM",
+      "hero": "/static/selfit/assets/personality/film-curvy/report-hero-01-41c428631ca4397b.png",
+      "keywords": [
+        "复古颗粒",
+        "低清叙事",
+        "随性层叠"
+      ],
+      "summary": "你喜欢旧牛仔、碎花、蕾丝，\n也喜欢旧照片般的配色。\n比起完整精致，你更在意造型里的故事和情绪。",
+      "colors": [
+        {
+          "name": "大地棕",
+          "value": "#80644D"
+        },
+        {
+          "name": "焦糖",
+          "value": "#B57643"
+        },
+        {
+          "name": "橄榄绿",
+          "value": "#777A55"
+        },
+        {
+          "name": "芥末黄",
+          "value": "#C0A044"
+        },
+        {
+          "name": "铁锈红",
+          "value": "#984D3C"
+        }
+      ],
+      "makeup": [
+        {
+          "name": "肉桂奶茶妆",
+          "byline": "@四火",
+          "image": "/static/selfit/assets/personality/film-curvy/report-makeup-01-3a97fef498355a67.webp",
+          "sourceUrl": "https://www.xiaohongshu.com/explore/6a7ec55a0000000025004095",
+          "sourceTitle": "肉桂奶茶妆",
+          "position": 1,
+          "imageWidth": 1080,
+          "imageHeight": 1440
+        },
+        {
+          "name": "陶土丝绒妆",
+          "byline": "@南京滤镜美妆",
+          "image": "/static/selfit/assets/personality/film-curvy/report-makeup-02-62c5c5112e29e5a0.jpg",
+          "sourceUrl": "https://www.xiaohongshu.com/explore/6a2a4d300000000021015115",
+          "sourceTitle": "清纯桃粉妆",
+          "position": 2,
+          "imageWidth": 1080,
+          "imageHeight": 1440
+        }
+      ],
+      "hair": [
+        {
+          "name": "复古发卡卷",
+          "byline": "@ROLA💭",
+          "image": "/static/selfit/assets/personality/film-curvy/report-hair-01-9ef4d0ca010a1322.webp",
+          "sourceUrl": "https://www.xiaohongshu.com/explore/69511bc7000000001e002df2",
+          "sourceTitle": "复古发卡卷",
+          "position": 1,
+          "imageWidth": 1080,
+          "imageHeight": 1438
+        },
+        {
+          "name": "温柔空气内扣",
+          "byline": "@聪儿ii",
+          "image": "/static/selfit/assets/personality/film-curvy/report-hair-02-9f349fdd00d44dcb.webp",
+          "sourceUrl": "https://www.xiaohongshu.com/explore/69840c0900000000210287b1",
+          "sourceTitle": "温柔空气内扣",
+          "position": 2,
+          "imageWidth": 1080,
+          "imageHeight": 1440
+        }
+      ],
+      "outfitSummary": "",
+      "source": {
+        "name": "小红书",
+        "copy": "已整理 4 条穿搭素材",
+        "avatars": {
+          "imageUrl": "/static/selfit/assets/report-user-avatar-stack@4x.png",
+          "alt": "真实用户素材来源"
+        }
+      },
+      "outfits": [
+        {
+          "name": "胶片carhartt",
+          "byline": "@爆贝",
+          "image": "/static/selfit/assets/personality/film-curvy/report-outfits-01-d2eaa0e9a81ecfb7.jpg",
+          "sourceUrl": "92 【这样穿真的帅‼️胶片就是随便拍都好看📷 - 爆贝 | 小红书 - 你的生活兴趣社区】 😆 8JtbRV1pwLsllJb 😆 https://www.xiaohongshu.com/discovery/item/698af6eb000000001b017cb0?source=webshare&xhsshare=pc_web&xsec_token=AB55bHKDbat2JzARRA2a-0qU8WvS1xQeItEFa-s7jzOec=&xsec_source=pc_share",
+          "sourceTitle": "这样穿真的帅‼️胶片就是随便拍都好看📷",
+          "position": 1,
+          "imageWidth": 1080,
+          "imageHeight": 1446
+        },
+        {
+          "name": "格纹衬衫",
+          "byline": "@郭卷毛",
+          "image": "/static/selfit/assets/personality/film-curvy/report-outfits-02-928e274210bd03f9.jpg",
+          "sourceUrl": "23 【梨形小粗腿衣橱｜🧾 - 郭卷毛 | 小红书 - 你的生活兴趣社区】 😆 YiA56daxhftZazO 😆 https://www.xiaohongshu.com/discovery/item/69737b28000000001a0298e7?source=webshare&xhsshare=pc_web&xsec_token=AB0G2FnwcTVhzV1WViv1PrwWPY424Cs6i1jsN4AhKKbYs=&xsec_source=pc_share",
+          "sourceTitle": "梨形小粗腿衣橱｜🧾",
+          "position": 2,
+          "imageWidth": 1080,
+          "imageHeight": 1440
+        },
+        {
+          "name": "斜肩针织",
+          "byline": "@郭卷毛",
+          "image": "/static/selfit/assets/personality/film-curvy/report-outfits-03-5943cc7c524343cb.jpg",
+          "sourceUrl": "91 【梨形小粗腿衣橱｜🧾 - 郭卷毛 | 小红书 - 你的生活兴趣社区】 😆 4L2VL8DaNAfSwwJ 😆 https://www.xiaohongshu.com/discovery/item/69737b28000000001a0298e7?source=webshare&xhsshare=pc_web&xsec_token=AB0G2FnwcTVhzV1WViv1PrwWPY424Cs6i1jsN4AhKKbYs=&xsec_source=pc_share",
+          "sourceTitle": "梨形小粗腿衣橱｜🧾",
+          "position": 3,
+          "imageWidth": 1080,
+          "imageHeight": 1440
+        },
+        {
+          "name": "软雾碎花",
+          "byline": "@天天想吃大披萨",
+          "image": "/static/selfit/assets/personality/film-curvy/report-outfits-04-c74c93756a5b47da.jpg",
+          "sourceUrl": "28 【经常很漂亮的140斤 - 天天想吃大披萨 | 小红书 - 你的生活兴趣社区】 😆 8q1rem0hPCa49mS 😆 https://www.xiaohongshu.com/discovery/item/6a014abe0000000035039fe0?source=webshare&xhsshare=pc_web&xsec_token=ABr9x7f4iAeNtK0x20Rt7ug89l45KCQOtwf_-MNsLf-1c=&xsec_source=pc_share",
+          "sourceTitle": "经常很漂亮的140斤",
+          "position": 4,
+          "imageWidth": 1080,
+          "imageHeight": 1439
+        }
+      ],
+      "conclusion": "你迷恋的不是某个年代，而是时间经过衣服后的痕迹。\n适度的模糊和不完美，会让你的表达显得更真实。",
+      "advice": [
+        "",
+        "",
+        ""
+      ],
+      "bodyProfile": "curvy",
+      "gender": "unisex",
+      "masterData": {
+        "typeId": "film",
+        "sourceCount": 4
+      },
+      "outfitLibrary": [],
+      "templateId": "film-curvy",
+      "createdAt": "2026-09-07T01:33:52.491829Z"
+    },
+    {
+      "schemaVersion": "selfit-report-template/1.0",
+      "assetQualityVersion": 2,
+      "updatedAt": "2026-09-07T17:46:54.866501Z",
+      "name": "无限重启-微胖",
+      "code": "LOOP",
+      "hero": "/static/selfit/assets/personality/loop-curvy/report-hero-01-31491a01e967c83e.png",
+      "keywords": [
+        "多套并存",
+        "状态切换",
+        "轻松驾驭"
+      ],
+      "summary": "你的偏好会随状态、季节和场景变化，\n衣柜里常常并存几条路线。\n你习惯不断试穿重组，再回到熟悉的组合。",
+      "colors": [
+        {
+          "name": "薰衣草紫",
+          "value": "#BDAFD5"
+        },
+        {
+          "name": "冰蓝",
+          "value": "#B9CFDC"
+        },
+        {
+          "name": "竹青",
+          "value": "#647B68"
+        },
+        {
+          "name": "铁锈红",
+          "value": "#984D3C"
+        },
+        {
+          "name": "浅粉",
+          "value": "#E9C4C8"
+        }
+      ],
+      "makeup": [
+        {
+          "name": "伪素颜妆",
+          "byline": "@yv_bodyce",
+          "image": "/static/selfit/assets/personality/loop-curvy/report-makeup-01-8ee8036abff08bed.webp",
+          "sourceUrl": "https://www.xiaohongshu.com/explore/69429087000000001e035b42",
+          "sourceTitle": "伪素颜妆",
+          "position": 1,
+          "imageWidth": 1080,
+          "imageHeight": 1440
+        },
+        {
+          "name": "明媚素颜妆",
+          "byline": "@逸弋",
+          "image": "/static/selfit/assets/personality/loop-curvy/report-makeup-02-2ce8e264c7008d2e.jpg",
+          "sourceUrl": "https://www.xiaohongshu.com/explore/69d8e34b0000000023007042",
+          "sourceTitle": "浅眉大地妆",
+          "position": 2,
+          "imageWidth": 1080,
+          "imageHeight": 1620
+        }
+      ],
+      "hair": [
+        {
+          "name": "空气刘海微卷发",
+          "byline": "@谭百亿阿",
+          "image": "/static/selfit/assets/personality/loop-curvy/report-hair-01-9ec60358af9ac93b.webp",
+          "sourceUrl": "https://www.xiaohongshu.com/explore/69abf861000000002602c059",
+          "sourceTitle": "空气刘海微卷发",
+          "position": 1,
+          "imageWidth": 1080,
+          "imageHeight": 1440
+        },
+        {
+          "name": "随性凌乱丸子头",
+          "byline": "@JUJU",
+          "image": "/static/selfit/assets/personality/loop-curvy/report-hair-02-4cf95752ba7f2194.jpg",
+          "sourceUrl": "https://www.xiaohongshu.com/explore/69af7977000000001a029cde",
+          "sourceTitle": "红棕日常内扣发",
+          "position": 2,
+          "imageWidth": 1080,
+          "imageHeight": 1440
+        }
+      ],
+      "outfitSummary": "",
+      "source": {
+        "name": "小红书",
+        "copy": "已整理 4 条穿搭素材",
+        "avatars": {
+          "imageUrl": "/static/selfit/assets/report-user-avatar-stack@4x.png",
+          "alt": "真实用户素材来源"
+        }
+      },
+      "outfits": [
+        {
+          "name": "黑丝皮衣",
+          "byline": "@Coco会发光",
+          "image": "/static/selfit/assets/personality/loop-curvy/report-outfits-01-54e100bc85112c25.jpg",
+          "sourceUrl": "12 【两中国美女在纽约车站美到被送🌹 - Coco会发光 | 小红书 - 你的生活兴趣社区】 😆 9GcvjQd5ag3I1YM 😆 https://www.xiaohongshu.com/discovery/item/69e857930000000023021dd8?source=webshare&xhsshare=pc_web&xsec_token=ABwGWfLunYWqqjKggdt9QnKNnAzcfazdnE7qRybIYF21M=&xsec_source=pc_share",
+          "sourceTitle": "两中国美女在纽约车站美到被送🌹",
+          "position": 1,
+          "imageWidth": 1080,
+          "imageHeight": 1440
+        },
+        {
+          "name": "紫色条纹",
+          "byline": "@苏苏露",
+          "image": "/static/selfit/assets/personality/loop-curvy/report-outfits-02-d72a25a4f1ee2dc7.jpg",
+          "sourceUrl": "80 【161cm 120斤｜微胖淡人 - 苏苏露 | 小红书 - 你的生活兴趣社区】 😆 0czUrcHhjjstMwN 😆 https://www.xiaohongshu.com/discovery/item/6a663272000000001303ca91?source=webshare&xhsshare=pc_web&xsec_token=ABUzW__hCQjmNKQQaf-s6r7VyYykvMpgQS-XudnhU2uE0=&xsec_source=pc_share",
+          "sourceTitle": "161cm 120斤｜微胖淡人",
+          "position": 2,
+          "imageWidth": 1080,
+          "imageHeight": 1440
+        },
+        {
+          "name": "斜肩上衣",
+          "byline": "@1只曲别针",
+          "image": "/static/selfit/assets/personality/loop-curvy/report-outfits-03-9992b11742f38a21.jpg",
+          "sourceUrl": "70 【130斤微胖女孩可以穿的超显瘦斜肩T恤 - 1只曲别针 | 小红书 - 你的生活兴趣社区】 😆 BH0k0sQBhuKcIto 😆 https://www.xiaohongshu.com/discovery/item/6688a804000000001e0109ea?source=webshare&xhsshare=pc_web&xsec_token=AB1LkzM8-bLQA2xQZwYTatbeuFrY_NBRxSG656Pnc8DdA=&xsec_source=pc_share",
+          "sourceTitle": "130斤微胖女孩可以穿的超显瘦斜肩T恤",
+          "position": 3,
+          "imageWidth": 1080,
+          "imageHeight": 1440
+        },
+        {
+          "name": "正肩叠穿",
+          "byline": "@周一麻辣烫",
+          "image": "/static/selfit/assets/personality/loop-curvy/report-outfits-04-0d4140536228bcaa.jpg",
+          "sourceUrl": "42 【164 120斤 微胖女孩的显瘦正肩T💁🏻💁🏻 - 周一麻辣烫 | 小红书 - 你的生活兴趣社区】 😆 gBAkZ3rguOxQcES 😆 https://www.xiaohongshu.com/discovery/item/6a2d1e45000000000702c367?source=webshare&xhsshare=pc_web&xsec_token=ABAulQogZzO5qAwrW3plbb1XjfCd5TUf5NrRUTzbzv9Qg=&xsec_source=pc_share",
+          "sourceTitle": "164 120斤 微胖女孩的显瘦正肩T💁🏻💁🏻",
+          "position": 4,
+          "imageWidth": 1080,
+          "imageHeight": 1440
+        }
+      ],
+      "conclusion": "反复调整并不代表没有主见，你只是不愿被一个标签限制。\n建立稳定的基础系统，变化反而会变得更轻松。",
+      "advice": [
+        "",
+        "",
+        ""
+      ],
+      "bodyProfile": "curvy",
+      "gender": "unisex",
+      "masterData": {
+        "typeId": "loop",
+        "sourceCount": 4
+      },
+      "outfitLibrary": [],
+      "templateId": "loop-curvy",
+      "createdAt": "2026-09-07T01:33:52.491829Z"
+    },
+    {
+      "schemaVersion": "selfit-report-template/1.0",
+      "assetQualityVersion": 2,
+      "updatedAt": "2026-09-07T18:42:31.713885Z",
+      "name": "人间失格-微胖",
+      "code": "VOID",
+      "hero": "/static/selfit/assets/personality/void-curvy/report-hero-01-fd2dac0e1f842043.png",
+      "keywords": [
+        "状态游离",
+        "拒绝定型",
+        "默认制服"
+      ],
+      "summary": "你的收藏、理想造型和真实衣柜常指向不同方向，\n投入也会随精力变化。\n今天不想被一种风格定义，同样很诚实。",
+      "colors": [
+        {
+          "name": "失焦黑",
+          "value": "#171719"
+        },
+        {
+          "name": "沥青灰",
+          "value": "#45484A"
+        },
+        {
+          "name": "制服蓝",
+          "value": "#536475"
+        },
+        {
+          "name": "医院绿",
+          "value": "#708879"
+        },
+        {
+          "name": "警示红",
+          "value": "#B74C49"
+        }
+      ],
+      "makeup": [
+        {
+          "name": "落泪微醺妆",
+          "byline": "@化妆师米秋秋",
+          "image": "/static/selfit/assets/personality/void-curvy/report-makeup-01-0244b42bb8bdbd79.jpg",
+          "sourceUrl": "https://www.xiaohongshu.com/discovery/item/643d105a00000000130069a1",
+          "sourceTitle": "宿醉玫粉妆",
+          "position": 1,
+          "imageWidth": 1080,
+          "imageHeight": 1440
+        },
+        {
+          "name": "纯纯素颜妆",
+          "byline": "@春春没有猫",
+          "image": "/static/selfit/assets/personality/void-curvy/report-makeup-02-70351134340ed6e0.jpg",
+          "sourceUrl": "https://www.xiaohongshu.com/discovery/item/636dece9000000002203488e",
+          "sourceTitle": "哥特暗红妆",
+          "position": 2,
+          "imageWidth": 1080,
+          "imageHeight": 1440
+        }
+      ],
+      "hair": [
+        {
+          "name": "蓬松羊毛卷长发",
+          "byline": "@化妆师NANA",
+          "image": "/static/selfit/assets/personality/void-curvy/report-hair-01-8513490fad1e4f98.jpg",
+          "sourceUrl": "https://www.xiaohongshu.com/explore/6a6af06a000000000f012ab2",
+          "sourceTitle": "豹纹随性扎发",
+          "position": 1,
+          "imageWidth": 1080,
+          "imageHeight": 1440
+        },
+        {
+          "name": "凌乱感低盘抓夹发",
+          "byline": "@ginger",
+          "image": "/static/selfit/assets/personality/void-curvy/report-hair-02-812aa4cddde0ccb9.jpg",
+          "sourceUrl": "https://www.xiaohongshu.com/explore/6694d12c000000002500173f",
+          "sourceTitle": "个性张扬马尾",
+          "position": 2,
+          "imageWidth": 1080,
+          "imageHeight": 1388
+        }
+      ],
+      "outfitSummary": "",
+      "source": {
+        "name": "小红书",
+        "copy": "已整理 4 条穿搭素材",
+        "avatars": {
+          "imageUrl": "/static/selfit/assets/report-user-avatar-stack@4x.png",
+          "alt": "真实用户素材来源"
+        }
+      },
+      "outfits": [
+        {
+          "name": "柔性静灰",
+          "byline": "@刘嘎",
+          "image": "/static/selfit/assets/personality/void-curvy/report-outfits-01-d564e8ec86c7cf55.jpg",
+          "sourceUrl": "52 【这是哪位微胖ig博主 - 刘嘎 | 小红书 - 你的生活兴趣社区】 😆 hpXXAmS0fqJPQT2 😆 https://www.xiaohongshu.com/discovery/item/6a28dff200000000160255a3?source=webshare&xhsshare=pc_web&xsec_token=AByfLq7h5-5SzUCWt5SQfsD8Ycore3W-GhRKt2ptAv1Zk=&xsec_source=pc_share",
+          "sourceTitle": "这是哪位微胖ig博主",
+          "position": 1,
+          "imageWidth": 1080,
+          "imageHeight": 1440
+        },
+        {
+          "name": "格纹叠穿",
+          "byline": "@芥末酱yo",
+          "image": "/static/selfit/assets/personality/void-curvy/report-outfits-02-48de43f0a948e6a0.jpg",
+          "sourceUrl": "17 【春天穿韩系复古风也太温柔了吧！ - 芥末酱yo | 小红书 - 你的生活兴趣社区】 😆 n4nwXStb3x7hRPX 😆 https://www.xiaohongshu.com/discovery/item/69bbc9500000000023025d5a?source=webshare&xhsshare=pc_web&xsec_token=ABx_X64fBbU74-FpKrEbG9Y_mZDnzlj7QCHtO3Rcd_LCM=&xsec_source=pc_share",
+          "sourceTitle": "春天穿韩系复古风也太温柔了吧！",
+          "position": 2,
+          "imageWidth": 1080,
+          "imageHeight": 1416
+        },
+        {
+          "name": "遮胯长裤",
+          "byline": "@Cherjin_",
+          "image": "/static/selfit/assets/personality/void-curvy/report-outfits-03-1d3bc07d9cd5ed1e.jpg",
+          "sourceUrl": "51 【🇰🇷🖤我的试衣间OOTD～ - Cherjin_ | 小红书 - 你的生活兴趣社区】 😆 k5YmoYLnklAa4sw 😆 https://www.xiaohongshu.com/discovery/item/68e1e0d300000000030108a1?source=webshare&xhsshare=pc_web&xsec_token=AB4UpJcUaZl1-C5mLqCGuhlfx2af2xuwq0xoovh2k_UbE=&xsec_source=pc_share",
+          "sourceTitle": "🇰🇷🖤我的试衣间OOTD～",
+          "position": 3,
+          "imageWidth": 1080,
+          "imageHeight": 1440
+        },
+        {
+          "name": "印花对拼",
+          "byline": "@ONION 洋葱",
+          "image": "/static/selfit/assets/personality/void-curvy/report-outfits-04-6bfe709e46421f10.jpg",
+          "sourceUrl": "5 【126斤微胖女生的穿搭 - ONION 洋葱 | 小红书 - 你的生活兴趣社区】 😆 IJfdo319w0Z7x4G 😆 https://www.xiaohongshu.com/discovery/item/691c3eff000000001e02fe4f?source=webshare&xhsshare=pc_web&xsec_token=AB8-cla4n6tD3JbX57c1GoRwVUKLRWx9_JmQyFNmO2J7Y=&xsec_source=pc_share",
+          "sourceTitle": "126斤微胖女生的穿搭",
+          "position": 4,
+          "imageWidth": 1080,
+          "imageHeight": 1621
+        }
+      ],
+      "conclusion": "你并不是没有审美，只是不想持续维持统一人设。\n比起更多标签，你更需要一套允许状态变化的衣柜系统。",
+      "advice": [
+        "",
+        "",
+        ""
+      ],
+      "bodyProfile": "curvy",
+      "gender": "unisex",
+      "masterData": {
+        "typeId": "void",
+        "sourceCount": 4
+      },
+      "outfitLibrary": [],
+      "templateId": "void-curvy",
+      "createdAt": "2026-09-07T01:33:52.491829Z"
+    },
+    {
+      "schemaVersion": "selfit-report-template/1.0",
+      "assetQualityVersion": 2,
+      "updatedAt": "2026-09-07T19:14:51.900339Z",
+      "name": "手作侘寂-微胖",
+      "code": "WABI",
+      "hero": "/static/selfit/assets/personality/wabi-curvy/report-hero-01-72013a90ef36d819.png",
+      "keywords": [
+        "自然肌理",
+        "手作痕迹",
+        "侘寂留白"
+      ],
+      "summary": "你偏爱棉麻、手织纹理，\n也喜欢略带不规则感的设计。\n比起崭新无瑕，你更爱衣服随穿着留下的变化。",
+      "colors": [
+        {
+          "name": "生白",
+          "value": "#E8E2D4"
+        },
+        {
+          "name": "灰褐",
+          "value": "#8C8072"
+        },
+        {
+          "name": "枯叶绿",
+          "value": "#77765B"
+        },
+        {
+          "name": "烟灰蓝",
+          "value": "#68777B"
+        },
+        {
+          "name": "柿涩棕",
+          "value": "#A5633E"
+        }
+      ],
+      "makeup": [
+        {
+          "name": "木质白水妆",
+          "byline": "@化妆师川川",
+          "image": "/static/selfit/assets/personality/wabi-curvy/report-makeup-01-04ffebcc9ee4c539.jpg",
+          "sourceUrl": "https://www.xiaohongshu.com/explore/6a168ebd000000003700fcaf",
+          "sourceTitle": "雾面蜜桃妆",
+          "position": 1,
+          "imageWidth": 1080,
+          "imageHeight": 1440
+        },
+        {
+          "name": "厌世骨相妆",
+          "byline": "@YEYE椰",
+          "image": "/static/selfit/assets/personality/wabi-curvy/report-makeup-02-49462f3a24ac6dfe.jpg",
+          "sourceUrl": "https://www.xiaohongshu.com/explore/6a2008d8000000003501fc9e",
+          "sourceTitle": "葡萄紫闪妆",
+          "position": 2,
+          "imageWidth": 1080,
+          "imageHeight": 1440
+        }
+      ],
+      "hair": [
+        {
+          "name": "侧分黑直",
+          "byline": "@Danelle",
+          "image": "/static/selfit/assets/personality/wabi-curvy/report-hair-01-122deb05fe59f18e.jpg",
+          "sourceUrl": "https://www.xiaohongshu.com/explore/69feef100000000038023d3a",
+          "sourceTitle": "齐刘海安静发",
+          "position": 1,
+          "imageWidth": 1080,
+          "imageHeight": 1620
+        },
+        {
+          "name": "细辫微卷",
+          "byline": "@SＩMＩ",
+          "image": "/static/selfit/assets/personality/wabi-curvy/report-hair-02-df3f6815c96bb046.jpg",
+          "sourceUrl": "https://www.xiaohongshu.com/explore/6a1949580000000006022e73",
+          "sourceTitle": "侧分垂顺发",
+          "position": 2,
+          "imageWidth": 1080,
+          "imageHeight": 1440
+        }
+      ],
+      "outfitSummary": "",
+      "source": {
+        "name": "小红书",
+        "copy": "已整理 4 条穿搭素材",
+        "avatars": {
+          "imageUrl": "/static/selfit/assets/report-user-avatar-stack@4x.png",
+          "alt": "真实用户素材来源"
+        }
+      },
+      "outfits": [
+        {
+          "name": "高腰阔裤",
+          "byline": "@一根辣条",
+          "image": "/static/selfit/assets/personality/wabi-curvy/report-outfits-01-10768421a8f84625.jpg",
+          "sourceUrl": "49 【我的一周穿搭合集🍨 - 一根辣条 | 小红书 - 你的生活兴趣社区】 😆 IsVK3ckET3xbBcE 😆 https://www.xiaohongshu.com/discovery/item/6a38fe6a0000000016026213?source=webshare&xhsshare=pc_web&xsec_token=ABAP9nWW64Xrx-bobVzXmhVhVec4Jw6_uejLaqZCNcH_A=&xsec_source=pc_share",
+          "sourceTitle": "我的一周穿搭合集🍨",
+          "position": 1,
+          "imageWidth": 1080,
+          "imageHeight": 1440
+        },
+        {
+          "name": "A字伞裙",
+          "byline": "@Tomore.art",
+          "image": "/static/selfit/assets/personality/wabi-curvy/report-outfits-02-673dcade464d5afc.jpg",
+          "sourceUrl": "43 【新品剧透 ｜ 你就是氛围感大女主 - Tomore.art | 小红书 - 你的生活兴趣社区】 😆 w18YohsMMxhXM3b 😆 https://www.xiaohongshu.com/discovery/item/6a98e9d5000000000b036bd0?source=webshare&xhsshare=pc_web&xsec_token=ABA2s4AniO1fCQxZtavxuC5e9R1gwnWGk9HrLLv1iprhM=&xsec_source=pc_share",
+          "sourceTitle": "新品剧透 ｜ 你就是氛围感大女主",
+          "position": 2,
+          "imageWidth": 1080,
+          "imageHeight": 1440
+        },
+        {
+          "name": "收腰紫裙",
+          "byline": "@SHANS33",
+          "image": "/static/selfit/assets/personality/wabi-curvy/report-outfits-03-8d0998bfe2c663a3.jpg",
+          "sourceUrl": "90 【初夏穿搭合集 1.0 - SHANS33 | 小红书 - 你的生活兴趣社区】 😆 ckfPv7Jko35gnhi 😆 https://www.xiaohongshu.com/discovery/item/69f8247d000000002301c4fc?source=webshare&xhsshare=pc_web&xsec_token=ABN3efKdKrE0Toucf6P4xR89WhDKLy_vFQ88CE6CDGfIo=&xsec_source=pc_share",
+          "sourceTitle": "初夏穿搭合集 1.0",
+          "position": 3,
+          "imageWidth": 1080,
+          "imageHeight": 1440
+        },
+        {
+          "name": "蓝色花苞",
+          "byline": "@Tomore.art",
+          "image": "/static/selfit/assets/personality/wabi-curvy/report-outfits-04-8c8459c43243764f.jpg",
+          "sourceUrl": "44 【闭眼冲！韵味蓝紫系列 - Tomore.art | 小红书 - 你的生活兴趣社区】 😆 lE57ABHqJZcRMjO 😆 https://www.xiaohongshu.com/discovery/item/6a7fdefb0000000033030844?source=webshare&xhsshare=pc_web&xsec_token=AB2Lw9Ya641dDfRgc-WPhU5v7UqkPv8TiF63GhyxgEwWk=&xsec_source=pc_share",
+          "sourceTitle": "闭眼冲！韵味蓝紫系列",
+          "position": 4,
+          "imageWidth": 1080,
+          "imageHeight": 1439
+        }
+      ],
+      "conclusion": "褶皱、毛边和做旧在你眼里不是潦草，而是时间留下的痕迹。\n你在意的不是完美表面，而是衣服能否被生活接纳。",
+      "advice": [
+        "",
+        "",
+        ""
+      ],
+      "bodyProfile": "curvy",
+      "gender": "unisex",
+      "masterData": {
+        "typeId": "wabi",
+        "sourceCount": 4
+      },
+      "outfitLibrary": [],
+      "templateId": "wabi-curvy",
+      "createdAt": "2026-09-07T01:33:52.491829Z"
     }
   ]
 }

@@ -36,6 +36,7 @@
   };
   const SESSION_STORAGE_KEY = 'selfit.onboarding.session.v1';
   const entryParams = new URLSearchParams(window.location.search);
+  const retestEntry = entryParams.get('entry') === 'retest';
   const archiveReportEntry = entryParams.get('from') === 'mirror' && entryParams.get('return_screen') === 'profile';
   document.body.classList.toggle('is-archive-report', archiveReportEntry);
   if(archiveReportEntry) {document.querySelector('.report-nav h2').textContent='型格报告';}
@@ -147,6 +148,11 @@
     const next = screens.find((screen) => screen.dataset.screen === name);
     if (!next) return;
     const previous = state.screen;
+    if (previous === 'loading' && name !== 'loading') loadingStory.stop();
+    if (name === 'loading' && previous !== 'loading') {
+      loadingStory.start();
+      void loadingStory.update(25);
+    }
     screens.forEach((screen) => {
       screen.classList.toggle('is-active', screen === next);
       screen.setAttribute('aria-hidden', screen === next ? 'false' : 'true');
@@ -306,7 +312,7 @@
     playIntro();
   };
   const openAppForExistingReport = async () => {
-    if (!state.authUser) return false;
+    if (!state.authUser || retestEntry) return false;
     const result = await api.getLatestReport();
     const typeId = String(result?.report?.typeId || '').trim().toLowerCase();
     if (!typeId) return false;
@@ -696,40 +702,15 @@
     loadingStagePromises.set(src, promise);
     return promise;
   };
-  // Warm the next frames without touching the currently visible <img>. If a
-  // request fails, the current artwork remains visible while retries happen.
-  loadingStages.slice(1).forEach(({ src }) => { void loadLoadingStage(src); });
-  let loadingArtRequest = 0;
-  const setLoadingProgress = (progress) => {
-    const stage = [...loadingStages].reverse().find((item) => progress >= item.percent) || loadingStages[0];
-    const art = document.querySelector('#loadingArt');
-    const line = document.querySelector('#loadingLine');
-    const percent = document.querySelector('#loadingPercent');
-    const stageKey = String(stage.percent);
-    const stageChanged = art.dataset.stage !== stageKey && art.dataset.pendingStage !== stageKey;
-    if (stageChanged) {
-      const requestId = ++loadingArtRequest;
-      art.dataset.pendingStage = stageKey;
-      [art, line, percent].forEach((element) => element.classList.add('is-changing'));
-      window.setTimeout(() => {
-        line.textContent = stage.line;
-        percent.textContent = `${stage.percent}%`;
-        void loadLoadingStage(stage.src).then((loadedSource) => {
-          if (requestId !== loadingArtRequest) return;
-          if (loadedSource) art.src = loadedSource;
-          art.dataset.stage = stageKey;
-          delete art.dataset.pendingStage;
-          requestAnimationFrame(() => requestAnimationFrame(() => {
-            [art, line, percent].forEach((element) => element.classList.remove('is-changing'));
-          }));
-        });
-      }, window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 150);
-      return;
-    }
-    if (!art.dataset.pendingStage) art.dataset.stage = stageKey;
-    line.textContent = stage.line;
-    percent.textContent = `${stage.percent}%`;
-  };
+  loadingStages.forEach(({ src }) => { void loadLoadingStage(src); });
+  const loadingStory = window.SelfitLoadingStory.create({
+    stages: loadingStages,
+    art: document.querySelector('#loadingArt'),
+    lines: document.querySelector('#loadingLines'),
+    percent: document.querySelector('#loadingPercent'),
+    loadImage: loadLoadingStage,
+  });
+  const setLoadingProgress = (progress) => loadingStory.update(progress);
   document.querySelector('#vibeNext').addEventListener('click', () => generateReport());
 
   const DEFAULT_REPORT_DATA = Object.freeze({
@@ -795,7 +776,7 @@
     if (sessionPromise) return sessionPromise;
     sessionPromise = (async () => {
       await authReady;
-      const stored = readPersistedSession();
+      const stored = retestEntry ? null : readPersistedSession();
       if (stored) {
         try {
           const restored = await api.getSession(stored.sessionId);
@@ -867,6 +848,7 @@
   };
   const templateCardToReportCard = (item = {}) => ({
     id: item.id || '',
+    imageAssetId: item.image?.assetId || '',
     name: item.name || '',
     byline: item.byline || '',
     sourceUrl: item.sourceUrl || '',
@@ -878,6 +860,7 @@
     const outfits = template.recommendations?.outfits || {};
     return {
       typeId: template.typeId,
+      templateId: template.templateId || template.typeId,
       title: template.metadata?.name || '',
       eyebrow: template.metadata?.code || '',
       traits: (template.keywords || []).map((keyword) => typeof keyword === 'string' ? keyword : keyword.label).filter(Boolean),
@@ -896,7 +879,7 @@
   };
   const resolvePersonalityPayload = (payload = {}) => {
     if (!payload?.typeId) return payload;
-    const template = personalityCatalog.types?.[String(payload.typeId).toLowerCase()];
+    const template = personalityCatalog.variants?.[payload.templateId] || personalityCatalog.types?.[String(payload.typeId).toLowerCase()];
     if (!template) return payload;
     const base = templateToReportData(template);
     const personalization = payload.personalization && typeof payload.personalization === 'object' ? payload.personalization : {};
@@ -1013,12 +996,24 @@
     ]);
     return { ...outcome, durationMs: Date.now() - startedAt, resourceCount: urls.length };
   };
+  const reportTryOnUrl = (typeId, outfits, templateId = typeId) => {
+    const query = new URLSearchParams({from: 'report', persona: typeId, screen: 'mirror'});
+    const ids = [...new Set(outfits.map((item) => item.id).filter(Boolean))].slice(0, 4);
+    if (ids.length) {
+      query.set('report_notes', ids.join(','));
+      query.set('report_template', templateId);
+      query.set('report_assets', ids.map((id) => {
+        const item = outfits.find((item) => item.id === id);
+        return item.imageAssetId || item.assetId || item.image?.assetId || item.imageUrl?.match(/asset_[a-f0-9]{64}/)?.[0] || 'legacy';
+      }).join(','));
+    }
+    return `/selfit/try-on?${query}`;
+  };
   const renderReport = (payload = {}) => {
     const data = normalizeReport(payload);
     const reportTypeId = String(data.typeId || 'mute').toLowerCase();
     state.currentReportTypeId = reportTypeId;
     const continueToApp = document.querySelector('#continueToApp');
-    if (continueToApp) continueToApp.href = `/selfit/try-on?from=report&persona=${encodeURIComponent(reportTypeId)}`;
     const fullHero = Boolean(data.heroImage?.src);
     const heroSource = fullHero ? mobileHeroSource(data.heroImage.src) : '';
     reportNodes.hero.classList.toggle('report-hero--full', fullHero);
@@ -1068,6 +1063,7 @@
     const visibleOutfits = data.outfits
       .filter((item) => item && item.imageUrl)
       .slice(0, personalityCatalog.renderRules?.outfits?.limit || 4);
+    if (continueToApp) continueToApp.href = reportTryOnUrl(reportTypeId, visibleOutfits, data.templateId || reportTypeId);
     const outfitCards = visibleOutfits.map((item) => {
       const figure = document.createElement('figure');
       const image = Object.assign(document.createElement('img'), {
@@ -1174,7 +1170,6 @@
       setLoadingProgress(100);
       renderReport(preparedReport);
       await delay(650);
-      document.querySelector('#continueToApp').href = `/selfit/try-on?from=report&persona=${encodeURIComponent(report?.typeId || '')}`;
       showScreen('report');
     } catch (error) {
       track('report_failed', { message: error.message || '' });

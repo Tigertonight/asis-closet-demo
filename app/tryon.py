@@ -31,6 +31,7 @@ TRYON_OUTPUT_DIR = ROOT_DIR / "outputs" / "tryon"
 CODEX_BRIDGE_DIR = TRYON_OUTPUT_DIR / "codex_bridge"
 TRYON_MODEL_FIXTURE_DIR = ROOT_DIR / "tests" / "fixtures" / "tryon_models"
 MAX_IMAGE_BYTES = 12 * 1024 * 1024
+MAX_OUTFIT_ITEMS = 16
 SUPPORTED_FORMATS = {"JPEG", "PNG", "WEBP"}
 MIN_PERSON_EDGE = 640
 MIN_GARMENT_EDGE = 360
@@ -387,9 +388,13 @@ def create_outfit_tryon_job(
     base_job_id: str | None = None,
     retry_item_id: str | None = None,
     retry_reason: str | None = None,
+    wear_all_items: bool = False,
 ) -> dict[str, Any]:
     person = _read_upload_image(person_raw, person_filename, "person")
-    selected_ids = list(dict.fromkeys(str(item_id).strip() for item_id in (selected_item_ids or []) if str(item_id).strip()))[:8]
+    selected_ids = list(dict.fromkeys(str(item_id).strip() for item_id in (selected_item_ids or []) if str(item_id).strip()))
+    if wear_all_items and len(selected_ids) > MAX_OUTFIT_ITEMS:
+        raise HTTPException(status_code=400, detail=f"一套最多支持 {MAX_OUTFIT_ITEMS} 件单品，请减少单品后重试。")
+    selected_ids = selected_ids[:MAX_OUTFIT_ITEMS if wear_all_items else 8]
     if selected_item_ids is not None and not selected_ids:
         raise HTTPException(status_code=400, detail="请至少选择一件要替换的单品")
     request_key = str(client_request_id or "").strip()[:128]
@@ -420,6 +425,7 @@ def create_outfit_tryon_job(
         "person_filename": person_filename or "person.png",
         "force_regenerate": bool(force_regenerate),
         "selected_item_ids": selected_ids if selected_item_ids is not None else None,
+        "wear_all_items": bool(wear_all_items),
         "client_request_id": request_key or None,
         "base_job_id": str(base_job_id or "") or None,
         "retry_item_id": str(retry_item_id or "") or None,
@@ -636,6 +642,7 @@ def _run_outfit_tryon_job(user_id: str, job_id: str) -> None:
                 outfit_plan,
                 force_regenerate=bool(job.get("force_regenerate")),
                 selected_item_ids=job.get("selected_item_ids"),
+                wear_all_items=bool(job.get("wear_all_items")),
             )
             if job.get("base_job_id") and job.get("retry_item_id"):
                 base_job = _read_tryon_job(str(job["base_job_id"]))
@@ -1077,6 +1084,7 @@ def run_try_on_from_outfit_plan(
     provider: "TryOnProvider | None" = None,
     force_regenerate: bool = False,
     selected_item_ids: list[str] | None = None,
+    wear_all_items: bool = False,
 ) -> dict[str, Any]:
     allow_cache = provider is None
     normalized_plan = _normalize_outfit_tryon_plan(outfit_plan)
@@ -1085,6 +1093,11 @@ def run_try_on_from_outfit_plan(
         if selected_item_ids is not None
         else None
     )
+    if wear_all_items:
+        all_ids = {str(item.get("item_id") or "") for item in normalized_plan["items"]}
+        if len(normalized_plan["items"]) != len(outfit_plan.get("items", [])) or (selected_ids is not None and selected_ids != all_ids):
+            raise HTTPException(status_code=400, detail="套装中有单品暂时无法试穿，请检查搭配或换一套重试。")
+        selected_ids = None
     requested_plan = {
         **normalized_plan,
         "items": [
@@ -1096,9 +1109,12 @@ def run_try_on_from_outfit_plan(
     if not requested_plan["items"]:
         raise HTTPException(status_code=400, detail="请至少选择一件要替换的单品")
     requested_slots = {str(item.get("slot") or "") for item in requested_plan["items"]}
-    if "dress" in requested_slots and requested_slots.intersection({"top", "outer", "bottom", "skirt"}):
+    delivered_layering = normalized_plan.get("source_catalog") == "styling_delivery" and bool(normalized_plan.get("layer_sequence_inner_to_outer"))
+    if not delivered_layering and "dress" in requested_slots and requested_slots.intersection({"top", "outer", "bottom", "skirt"}):
         raise HTTPException(status_code=400, detail="连衣装与上下装会覆盖同一区域，请保留一种穿法")
     plan_signature = json.dumps(_public_outfit_tryon_plan(requested_plan), ensure_ascii=False, sort_keys=True)
+    if wear_all_items:
+        plan_signature += ":wear_all_items"
     tryon_id = hashlib.sha256(f"outfit-plan:{person['image_id']}:{plan_signature}".encode("utf-8")).hexdigest()[:16]
     work_dir = _tryon_output_dir() / tryon_id
     work_dir.mkdir(parents=True, exist_ok=True)
@@ -1117,7 +1133,20 @@ def run_try_on_from_outfit_plan(
     input_quality = _relax_preset_model_blur_for_outfit_tryon(person, raw_input_quality, person_detection)
     plan_stage = _outfit_plan_stage(requested_plan)
     body_coverage = _outfit_body_coverage_stage(person["image"], person_detection, requested_plan)
-    effective_plan = _visible_outfit_plan(requested_plan, body_coverage)
+    if wear_all_items:
+        evidence = body_coverage.get("evidence", {})
+        body_coverage = {**body_coverage, "evidence": {
+            **evidence, "wear_all_items": True,
+            "unverified_slots": evidence.get("skipped_slots", []) if evidence.get("measured") is not False else evidence.get("required_slots", []),
+            "skipped_slots": [],
+        }, "issues": [
+            _issue("person.coverage_review", "部分单品的入镜范围待确认", "整套单品已提交生成，完成后请检查画面中的穿着效果。")
+            if issue.get("code") in {"person.hidden_slots_skipped", "person.coverage_unverified"} else issue
+            for issue in body_coverage.get("issues", [])
+        ]}
+        effective_plan = requested_plan
+    else:
+        effective_plan = _visible_outfit_plan(requested_plan, body_coverage)
     reference_board_path = _build_outfit_reference_board(effective_plan, work_dir / "outfit_reference_board.png")
     mask_stage = (
         _generate_outfit_group_mask(
@@ -3908,7 +3937,7 @@ def _normalize_outfit_tryon_plan(plan: dict[str, Any]) -> dict[str, Any]:
         "model_photo_mode": photo_mode,
         "scene_label": str(plan.get("scene_label") or "")[:80],
         "style_reference": style_reference,
-        "items": items[:8],
+        "items": items[:MAX_OUTFIT_ITEMS],
         "style_brief": str(plan.get("style_brief") or "")[:1600],
     }
 
@@ -4063,43 +4092,35 @@ def _preset_tryon_model_filenames() -> set[str]:
 
 
 def _build_outfit_reference_board(plan: dict[str, Any], output_path: Path) -> Path:
-    canvas = Image.new("RGB", (1200, 900), "#fffafa")
+    items = plan.get("items", [])
+    columns = 2 if len(items) <= 6 else 3
+    rows = max(1, (len(items) + columns - 1) // columns)
+    height = max(900, 132 + rows * 250)
+    canvas = Image.new("RGB", (1200, height), "#fffafa")
     draw = ImageDraw.Draw(canvas)
-    draw.rounded_rectangle((24, 24, 1176, 876), radius=34, fill="#ffffff", outline="#eee4e8", width=2)
-    _draw_board_label(draw, (54, 44), "整体穿搭参考", "#1c1b20")
+    draw.rounded_rectangle((24, 24, 1176, height - 24), radius=34, fill="#ffffff", outline="#eee4e8", width=2)
+    _draw_board_label(draw, (54, 44), "Overall outfit reference", "#1c1b20")
     style_path = _path_from_plan_image(plan.get("style_reference", {}).get("image_path"))
     if style_path and style_path.exists():
-        _paste_board_image(canvas, style_path, (54, 86, 520, 786))
+        _paste_board_image(canvas, style_path, (54, 86, 520, min(height - 100, 1086)))
     else:
         draw.rounded_rectangle((54, 86, 520, 786), radius=22, fill="#fff1f6", outline="#f0b7c0", width=2)
-        _draw_board_label(draw, (178, 420), "暂无整体图", "#8b8388")
+        _draw_board_label(draw, (178, 420), "No overall reference", "#8b8388")
 
-    slot_boxes = [
-        ("top", (560, 86, 820, 310)),
-        ("outer", (850, 86, 1110, 310)),
-        ("dress", (560, 330, 820, 590)),
-        ("bottom", (850, 330, 1110, 590)),
-        ("skirt", (850, 330, 1110, 590)),
-        ("shoes", (560, 610, 820, 808)),
-        ("bag", (850, 610, 980, 808)),
-        ("accessory", (998, 610, 1110, 808)),
-    ]
-    used = set()
-    for item in plan.get("items", []):
-        slot = str(item.get("slot") or item.get("category") or "accessory")
-        box = next((candidate_box for candidate_slot, candidate_box in slot_boxes if candidate_slot == slot and candidate_slot not in used), None)
-        if box is None:
-            box = next((candidate_box for candidate_slot, candidate_box in slot_boxes if candidate_slot == "accessory"), (998, 610, 1110, 808))
-        used.add(slot)
+    # One cell per item, including multiple tops, bags, or small accessories.
+    cell_width = 576 // columns
+    for index, item in enumerate(items):
+        left = 560 + (index % columns) * cell_width
+        top = 86 + (index // columns) * 250
+        right, bottom = left + cell_width - 16, top + 230
         path = _path_from_plan_image(item.get("image_path"))
-        left, top, right, bottom = box
         draw.rounded_rectangle((left, top, right, bottom), radius=20, fill="#fffafa", outline="#eee4e8", width=2)
         if path and path.exists():
             _paste_board_image(canvas, path, (left + 12, top + 12, right - 12, bottom - 54))
-        label = f"{item.get('category_label') or _fashion_category_label(slot)} / {item.get('wear_region') or _wear_region_for_slot(slot)}"
-        _draw_board_label(draw, (left + 14, bottom - 38), label[:24], "#1c1b20")
+        label = f"{index + 1}. {item.get('slot') or item.get('category') or 'accessory'}"
+        _draw_board_label(draw, (left + 10, bottom - 38), label[:24], "#1c1b20")
     note = f"photo_mode={plan.get('model_photo_mode')} scene={plan.get('scene_label') or 'none'}"
-    _draw_board_label(draw, (54, 824), note[:80], "#8b8388")
+    _draw_board_label(draw, (54, height - 66), note[:80], "#8b8388")
     output_path.parent.mkdir(parents=True, exist_ok=True)
     _save_png_atomically(canvas, output_path)
     return output_path
@@ -4113,7 +4134,7 @@ def _path_from_plan_image(value: Any) -> Path | None:
 
 def _paste_board_image(canvas: Image.Image, image_path: Path, box: tuple[int, int, int, int]) -> None:
     try:
-        image = Image.open(image_path).convert("RGB")
+        image = Image.open(image_path).convert("RGBA")
     except Exception:
         return
     left, top, right, bottom = box
@@ -4122,7 +4143,7 @@ def _paste_board_image(canvas: Image.Image, image_path: Path, box: tuple[int, in
     image.thumbnail((max_w, max_h), Image.Resampling.LANCZOS)
     x = left + (max_w - image.width) // 2
     y = top + (max_h - image.height) // 2
-    canvas.paste(image, (x, y))
+    canvas.paste(image.convert("RGB"), (x, y), image.getchannel("A"))
 
 
 def _draw_board_label(draw: ImageDraw.ImageDraw, xy: tuple[int, int], text: str, fill: str) -> None:
@@ -4138,8 +4159,11 @@ def _build_outfit_prompt_context(plan: dict[str, Any]) -> dict[str, Any]:
         "photo_mode": plan.get("model_photo_mode"),
         "scene_label": plan.get("scene_label") or "",
         "style_brief": plan.get("style_brief") or "",
+        "layer_sequence_inner_to_outer": plan.get("layer_sequence_inner_to_outer") or [],
         "items": [
             {
+                "reference_index": index + 1,
+                "item_id": item.get("item_id"),
                 "slot": item.get("slot"),
                 "category": item.get("category"),
                 "category_label": item.get("category_label"),
@@ -4148,8 +4172,9 @@ def _build_outfit_prompt_context(plan: dict[str, Any]) -> dict[str, Any]:
                 "placement_rule": _placement_rule_for_slot(str(item.get("slot") or item.get("category") or "accessory")),
                 "attributes": item.get("attributes") or {},
                 "note": item.get("note") or "",
+                "styling": item.get("styling") or {},
             }
-            for item in plan.get("items", [])
+            for index, item in enumerate(plan.get("items", []))
         ],
         "priority": [
             "preserve_model_identity_body_pose_background",

@@ -2007,6 +2007,10 @@ def recommend_outfits(payload: dict[str, Any]) -> dict[str, Any]:
 
 
 def get_outfit(outfit_id: str) -> dict[str, Any]:
+    from app.styling_catalog import OUTFIT_PREFIX, get_delivered_outfit
+
+    if outfit_id.startswith(OUTFIT_PREFIX):
+        return get_delivered_outfit(outfit_id)
     data = _ensure_outfit_manifest()
     for outfit in data.get("outfits", []):
         if outfit.get("outfit_id") == outfit_id and not outfit.get("deleted"):
@@ -2119,6 +2123,10 @@ def outfit_as_tryon_garment(outfit_id: str) -> tuple[dict[str, Any] | None, dict
 
 
 def outfit_as_tryon_plan(outfit_id: str, photo_mode: str | None = None, scene_label: str | None = None) -> tuple[dict[str, Any], dict[str, Any]]:
+    from app.styling_catalog import OUTFIT_PREFIX, delivered_tryon_plan
+
+    if outfit_id.startswith(OUTFIT_PREFIX):
+        return delivered_tryon_plan(outfit_id, photo_mode, scene_label)
     outfit = get_outfit(outfit_id)
     cover_disk_path = _closet_disk_path(outfit.get("layout_snapshot_path") or outfit.get("cover_path"))
     if cover_disk_path is None or not cover_disk_path.exists():

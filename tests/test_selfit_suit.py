@@ -181,7 +181,8 @@ def test_onboarding_flow_and_vibe_semantic_order():
     suit_next = re.search(r'<button[^>]*id="suitNext"[^>]*>', markup).group()
     assert 'data-next="vibe"' in suit_next and 'disabled' in suit_next
     assert "showScreen('suit-processing')" not in runtime
-    assert "await delay(650);\n      document.querySelector('#continueToApp')" in runtime
+    assert "await delay(650);" in runtime
+    assert runtime.count('continueToApp.href =') == 1  # Keep the report's notebook handoff when generation finishes.
     assert "showScreen('report');" in runtime
 
 

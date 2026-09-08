@@ -13,11 +13,17 @@ from __future__ import annotations
 import argparse
 import json
 import re
+import sys
 from pathlib import Path
 from typing import Any
 
 
 ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT))
+
+from app.material_assets import MaterialRegistry
+from app.report_template_identity import template_identity
+from scripts.register_material_assets import browser_catalog_script, register_catalog_images
 DEFAULT_SOURCE = ROOT / "app" / "static" / "report-builder" / "data" / "16-personality-templates.json"
 RUNTIME_JSON = ROOT / "app" / "static" / "selfit" / "data" / "personality-report-templates.v1.json"
 RUNTIME_JS = ROOT / "app" / "static" / "selfit" / "personality-report-templates.js"
@@ -49,6 +55,7 @@ def _style_code(value: str, code_by_name: dict[str, str]) -> str | None:
 
 def _image(src: str, alt: str, existing: dict[str, Any] | None = None) -> dict[str, Any]:
     result = dict(existing or {})
+    result.pop("assetId", None)
     result.update({"src": src, "alt": alt})
     return result
 
@@ -77,11 +84,19 @@ def _card(item: dict[str, Any], *, card_id: str, type_name: str,
 def build_runtime(master: dict[str, Any], existing: dict[str, Any]) -> dict[str, Any]:
     old_types = existing.get("types") if isinstance(existing.get("types"), dict) else {}
     types: dict[str, Any] = {}
+    variants: dict[str, Any] = {}
+    seen: set[str] = set()
     for template in master.get("templates") or []:
-        type_id = str((template.get("masterData") or {}).get("typeId") or "").lower()
-        if not type_id:
+        if not re.fullmatch(r"[A-Za-z]{4}", str(template.get("code") or "")):
             continue
-        previous = old_types.get(type_id) if isinstance(old_types, dict) else {}
+        type_id, body, gender, template_id = template_identity(template)
+        if template_id in seen:
+            raise ValueError(f"Duplicate report audience: {template_id}")
+        seen.add(template_id)
+        is_default = body == "standard" and gender == "unisex"
+        destination = types if is_default else variants
+        lookup = old_types if is_default else existing.get("variants", {})
+        previous = lookup.get(template_id) or old_types.get(type_id, {})
         previous = previous if isinstance(previous, dict) else {}
         name = str(template.get("name") or "").removesuffix("型人格")
         code = str(template.get("code") or type_id.upper())
@@ -126,8 +141,11 @@ def build_runtime(master: dict[str, Any], existing: dict[str, Any]) -> dict[str,
                 "value": str(master_color.get("value") or prior_color.get("value") or ""),
             })
         source = dict(template.get("source") or {})
-        types[type_id] = {
+        destination[template_id] = {
             "typeId": type_id,
+            "templateId": template_id,
+            "bodyProfile": body,
+            "gender": gender,
             "index": int((template.get("masterData") or {}).get("index") or 0),
             "status": "assets-ready",
             "metadata": {"name": name, "code": code},
@@ -157,11 +175,15 @@ def build_runtime(master: dict[str, Any], existing: dict[str, Any]) -> dict[str,
         "templateVersion": TEMPLATE_VERSION,
         "renderRules": {"colors": {"limit": 5}, "makeup": {"limit": 2}, "hair": {"limit": 2}, "outfits": {"limit": 4}},
         "types": types,
+        "variants": variants,
     }
 
 
 def build_pool(master: dict[str, Any]) -> dict[str, Any]:
-    templates = master.get("templates") or []
+    # Body-specific and male sets must not overwrite or enter the default pool.
+    templates = [t for t in (master.get("templates") or [])
+                 if re.fullmatch(r"[A-Za-z]{4}", str(t.get("code") or ""))
+                 and template_identity(t)[1:3] == ("standard", "unisex")]
     code_by_name = {
         str(template.get("name") or "").removesuffix("型人格"): str(template.get("code") or "").upper()
         for template in templates
@@ -213,13 +235,14 @@ def main() -> int:
     runtime = build_runtime(master, existing)
     pool = build_pool(master)
 
+    registry = MaterialRegistry()
+    runtime = register_catalog_images(runtime, registry)
+
     RUNTIME_JSON.parent.mkdir(parents=True, exist_ok=True)
     POOL_JSON.parent.mkdir(parents=True, exist_ok=True)
     RUNTIME_JSON.write_text(json.dumps(runtime, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     RUNTIME_JS.write_text(
-        "window.__SELFIT_PERSONALITY_TEMPLATES__ = Object.freeze("
-        + json.dumps(runtime, ensure_ascii=False, separators=(",", ":"))
-        + ");\n",
+        browser_catalog_script(runtime, registry),
         encoding="utf-8",
     )
     POOL_JSON.write_text(json.dumps(pool, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")

@@ -2,7 +2,7 @@
   const ASSET = '/static/selfit/assets/';
   const STORAGE_KEY = 'selfit.report-library.v2';
   const LEGACY_KEY = 'selfit.report-builder.v1';
-  const SEED_VERSION = 9;
+  const SEED_VERSION = 14;
   const bodyVariants = window.SELFIT_BODY_VARIANTS;
   const KEYWORD_ALIASES = {'同明度秩序':'同调秩序','不费力精致':'松弛精致','低饱和治愈':'柔色治愈','华丽存在感':'华丽焦点'};
   const defaults = {
@@ -49,7 +49,7 @@
     const next=clone(defaults);next.bodyProfile='standard';next.gender='unisex';if(!source||typeof source!=='object')return next;
     ['name','code','hero','summary','outfitSummary','conclusion'].forEach(key=>{if(typeof source[key]==='string')next[key]=source[key]});
     next.gender=['male','female'].includes(source.gender)?source.gender:'unisex';
-    next.bodyProfile=source.bodyProfile==='curvy'?'curvy':'standard';
+    next.bodyProfile=bodyVariants.bodyProfile(source);
     next.hero=typeof next.hero==='string'&&next.hero.endsWith('/figma-report/report-hero-reference.png')?`${ASSET}personality/lace-hero.png`:next.hero;
     ['keywords','advice'].forEach(key=>{if(Array.isArray(source[key]))next[key]=next[key].map((item,index)=>typeof source[key][index]==='string'?source[key][index]:item)});
     next.keywords=next.keywords.map(value=>Array.from(KEYWORD_ALIASES[String(value).trim()]||String(value).trim()).slice(0,8).join(''));
@@ -57,6 +57,9 @@
     if(source.source&&typeof source.source==='object')next.source={...next.source,...source.source,avatars:{...next.source.avatars,...(source.source.avatars||{})}};
     ['makeup','hair','outfits'].forEach(key=>{if(Array.isArray(source[key]))next[key]=next[key].map((item,index)=>{const merged={...item,...(source[key][index]||{})};merged.image=highResolutionAsset(merged.image);return merged})});
     if(source.masterData&&typeof source.masterData==='object')next.masterData=clone(source.masterData);
+    if(next.bodyProfile==='curvy'&&next.source.copy==='微胖穿搭素材待配置'&&next.outfits.every(item=>item.name&&item.image)){
+      next.source.copy='已整理 4 条穿搭素材';next.masterData={...next.masterData,sourceCount:4};
+    }
     if(Array.isArray(source.outfitLibrary))next.outfitLibrary=source.outfitLibrary.map(item=>({...item}));
     next.updatedAt=typeof source.updatedAt==='string'?source.updatedAt:'';return next;
   }
@@ -68,6 +71,19 @@
     next.templates=next.templates.filter(item=>String(item.data?.code||'').toUpperCase()!=='LACE');
     if(next.seedVersion<6){const seeds=new Map(masterSeeds().filter(seed=>seed.bodyProfile!=='curvy'&&(!seed.gender||seed.gender==='unisex')).map(seed=>[String(seed.code||'').toUpperCase(),seed]));next.templates.forEach(record=>{if(!record.data?.masterData?.typeId)return;const seed=seeds.get(String(record.data.code||'').toUpperCase());if(!seed)return;['hero','keywords','summary','outfitSummary','conclusion','advice'].forEach(key=>{record.data[key]=clone(seed[key])})})}
     if(next.seedVersion<7){const seeds=new Map(masterSeeds().filter(seed=>seed.bodyProfile!=='curvy'&&(!seed.gender||seed.gender==='unisex')).map(seed=>[String(seed.masterData?.typeId||''),seed]));next.templates.forEach(record=>{const seed=seeds.get(String(record.data?.masterData?.typeId||''));if(seed)record.data.hero=seed.hero})}
+    if(next.seedVersion<14){
+      const seeds=new Map(masterSeeds().map(seed=>[bodyVariants.key(seed),seed]));
+      next.templates.forEach(record=>{
+        const seed=seeds.get(bodyVariants.key(record.data));if(!seed)return;
+        const empty=(record.data.outfits||[]).every(item=>!item.image&&!item.name);
+        const older=record.updatedAt&&Date.parse(record.updatedAt)<Date.parse(seed.updatedAt||'');
+        if(!empty&&!older)return;
+        const fields=empty?['hero','makeup','hair','outfits','outfitSummary','source']:['outfits'];
+        fields.forEach(key=>{if(seed[key]!==undefined)record.data[key]=clone(seed[key])});
+        record.data.bodyProfile=bodyVariants.bodyProfile(seed);
+        record.updatedAt=seed.updatedAt;record.data.updatedAt=seed.updatedAt;
+      });
+    }
     bodyVariants.appendMissing(next.templates,masterSeeds(),recordFrom);
     next.seedVersion=SEED_VERSION;if(!next.templates.some(item=>item.id===next.activeId))next.activeId=next.templates[0]?.id||'';return next;
   }

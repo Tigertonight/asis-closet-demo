@@ -151,6 +151,8 @@ def _safe_public_url(value: Any) -> str:
     text = str(value or "").strip()
     if text.startswith("/static/"):
         return text
+    if re.fullmatch(r"/api/v1/material-assets/asset_[0-9a-f]{64}/content", text):
+        return text
     parsed = urlparse(text)
     return text if parsed.scheme == "https" and parsed.netloc else ""
 

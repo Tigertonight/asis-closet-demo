@@ -7,7 +7,8 @@ for (const file of ['seed-templates.js', 'body-variants.js']) {
   vm.runInContext(fs.readFileSync(`app/static/report-builder/${file}`, 'utf8'), context);
 }
 const api = context.window.SELFIT_BODY_VARIANTS;
-const base = context.window.SELFIT_REPORT_MASTER_DATA.templates;
+const delivered = context.window.SELFIT_REPORT_MASTER_DATA.templates;
+const base = delivered.filter(item => item.bodyProfile !== 'curvy');
 const copy = value => JSON.parse(JSON.stringify(value));
 
 test('four body variants keep persona identity and isolate unreviewed outfits', () => {
@@ -57,10 +58,10 @@ test('builder migrates saved v7 library and preserves body profile through JSON 
   assert.equal(migrated.templates.length, 27);
   assert.equal(migrated.activeId, '3');
   assert.equal(migrated.templates[0].data.summary, '保留编辑');
-  const normalized = builder.normalize(copy(migrated.templates[16]));
+  const normalized = builder.normalize(copy(migrated.templates.find(item => api.key(item.data) === 'LOOP:curvy:unisex')));
   assert.equal(normalized.bodyProfile, 'curvy');
   assert.equal(normalized.code, 'LOOP');
-  assert.ok(normalized.outfits.every(item => item.image === ''));
+  assert.ok(normalized.outfits.every(item => item.image));
   assert.equal(builder.normalize(base[0]).bodyProfile, 'standard');
   assert.equal(builder.migrateLibrary(migrated).templates.length, 27);
 });
@@ -90,15 +91,17 @@ test('seven male templates retain exact names and keywords through import normal
   }
 });
 
-test('v8 migration appends only seven males while preserving edited curvy templates', () => {
+test('v8 migration preserves custom copy while filling previously empty curvy cards', () => {
   const records = api.seeds(base).filter(item => item.gender !== 'male').map((data, id) => ({id: String(id), data: copy(data)}));
   records[16].data.summary = '微胖版本已编辑';
-  const before = JSON.stringify(records);
+  const before = JSON.stringify(records.slice(0, 16));
   const migrated = context.window.testBuilder.migrateLibrary({seedVersion: 8, activeId: '16', templates: records});
   assert.equal(migrated.templates.length, 27);
   assert.equal(migrated.activeId, '16');
-  assert.equal(JSON.stringify(migrated.templates.slice(0, 20)), before);
-  assert.equal(migrated.seedVersion, 9);
+  assert.ok(JSON.stringify(migrated.templates.slice(0, 16)) === before);
+  assert.equal(migrated.templates[16].data.summary, '微胖版本已编辑');
+  assert.ok(migrated.templates[16].data.outfits.every(item => item.image));
+  assert.equal(migrated.seedVersion, 14);
 });
 
 test('Cowork editor preserves audience fields and exact male keywords with remote persistence', () => {
@@ -114,4 +117,36 @@ test('Cowork editor preserves audience fields and exact male keywords with remot
   assert.equal(result.gender, 'male');
   assert.equal(result.keywords[2], '单套有美感');
   assert.equal(api.key(result), 'VOID:standard:male');
+});
+
+test('delivered curvy sets retain their four configured cards without replacing defaults', () => {
+  const seeds = api.seeds(delivered);
+  assert.equal(seeds.length, 27);
+  assert.equal(new Set(seeds.map(api.key)).size, 27);
+  for (const code of ['FILM', 'WABI', 'LOOP', 'VOID']) {
+    const variant = seeds.find(item => api.key(item) === `${code}:curvy:unisex`);
+    const standard = seeds.find(item => api.key(item) === `${code}:standard:unisex`);
+    assert.equal(variant.outfits.length, 4);
+    assert.ok(variant.outfits.every((item, i) => item.image && item.position === i + 1));
+    assert.notDeepEqual(copy(variant.outfits), copy(standard.outfits));
+  }
+});
+
+test('legacy wrong bodyProfile is repaired by stable template ID before import matching', () => {
+  const legacy = {code: 'FILM', templateId: 'film-curvy', name: '自定义标题', bodyProfile: 'standard'};
+  const normalized = context.window.testBuilder.normalize(legacy);
+  assert.equal(normalized.bodyProfile, 'curvy');
+  assert.equal(api.key(legacy), 'FILM:curvy:unisex');
+  const byName = context.window.testBuilder.normalize({code: 'WABI', name: '手作侘寂-微胖', bodyProfile: 'standard'});
+  assert.equal(byName.bodyProfile, 'curvy');
+});
+
+test('v14 migration updates older notes but preserves newer saved work', () => {
+  const data = copy(base.find(item => item.code === 'BOLT'));
+  data.outfits[0].name = '旧笔记';
+  const older = {id: 'old', updatedAt: '2026-09-01T00:00:00Z', data};
+  const newer = {id: 'new', updatedAt: '2026-09-10T00:00:00Z', data: copy(data)};
+  const migrated = context.window.testBuilder.migrateLibrary({seedVersion: 9, templates: [older, newer]});
+  assert.equal(migrated.templates.find(x => x.id === 'old').data.outfits[0].name, '高智衬衫');
+  assert.equal(migrated.templates.find(x => x.id === 'new').data.outfits[0].name, '旧笔记');
 });

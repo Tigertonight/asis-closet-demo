@@ -6,6 +6,7 @@ from fastapi.testclient import TestClient
 from app.main import app
 from app.auth import get_current_user
 from app import selfit_inspiration as inspiration, storage
+from app.material_assets import MaterialRegistry, resolve_asset_url
 
 
 def test_catalog_notes_have_real_assets_and_persona_scoped_ids():
@@ -17,8 +18,18 @@ def test_catalog_notes_have_real_assets_and_persona_scoped_ids():
             assert note['id'] not in ids
             ids.add(note['id'])
             assert note['kind'] == 'note' and 'item_ids' not in note
-            asset = Path('app') / urlsplit(note['image_url']).path.lstrip('/')
-            assert asset.is_file(), asset
+            image_url = note['image_url']
+            if image_url.startswith('/api/v1/material-assets/'):
+                image_url = resolve_asset_url(image_url.split('/')[-2])
+            if image_url.startswith('/static/'):
+                asset = Path('app') / urlsplit(image_url).path.lstrip('/')
+                assert asset.is_file(), asset
+            else:
+                assert image_url.startswith(('https://', 'http://'))
+                if image_url.startswith('http://'):
+                    assert note['image_url'].startswith('/api/v1/material-assets/')
+                    record = MaterialRegistry().get(note['image_url'].split('/')[-2])
+                    assert record['storage']['provider'] == 'qiniu' and record['storage']['private']
             assert note['width'] > 0 and note['height'] > 0
             assert not note['source_url'] or note['source_url'].startswith('https://')
 

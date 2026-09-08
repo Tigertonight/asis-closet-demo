@@ -135,10 +135,12 @@ from app.stylist_sessions import (
     update_stylist_session,
 )
 from app import selfit_onboarding, selfit_share
+from app.material_assets import router as material_assets_router
 from app.selfit_onboarding import router as selfit_onboarding_router
 from app.selfit_mirror_handoff import router as selfit_mirror_handoff_router
 from app.selfit_studio import router as selfit_studio_router
 from app.selfit_inspiration import router as selfit_inspiration_router
+from app.selfit_report_outfits import router as selfit_report_outfits_router
 from app.selfit_analytics import admin_router as selfit_admin_router, router as selfit_analytics_router
 from app.selfit_admin_submissions import router as selfit_admin_submissions_router
 from app.qa_onboarding import QA_PHOTO_DIR, router as qa_onboarding_router
@@ -151,10 +153,12 @@ load_dotenv(Path(__file__).resolve().parents[1] / ".env", override=True)
 
 app = FastAPI(title="selfit", version="0.2.0")
 app.middleware("http")(request_guard_middleware)
+app.include_router(material_assets_router)
 app.include_router(selfit_onboarding_router)
 app.include_router(selfit_mirror_handoff_router)
 app.include_router(selfit_studio_router)
 app.include_router(selfit_inspiration_router)
+app.include_router(selfit_report_outfits_router)
 app.include_router(selfit_analytics_router)
 app.include_router(selfit_admin_router)
 app.include_router(selfit_admin_submissions_router)
@@ -192,7 +196,7 @@ app.mount("/tryon-outputs", StaticFiles(directory="outputs/tryon"), name="tryon-
 app.mount("/tryon-models", StaticFiles(directory=TRYON_MODEL_FIXTURE_DIR), name="tryon-models")
 
 
-def _parse_selected_item_ids(value: str | None) -> list[str] | None:
+def _parse_selected_item_ids(value: str | None, *, limit: int | None = 8) -> list[str] | None:
     if value is None:
         return None
     try:
@@ -201,7 +205,8 @@ def _parse_selected_item_ids(value: str | None) -> list[str] | None:
         raise StarletteHTTPException(status_code=400, detail="单品选择格式不正确") from exc
     if not isinstance(parsed, list):
         raise StarletteHTTPException(status_code=400, detail="单品选择格式不正确")
-    return list(dict.fromkeys(str(item_id).strip() for item_id in parsed if str(item_id).strip()))[:8]
+    ids = list(dict.fromkeys(str(item_id).strip() for item_id in parsed if str(item_id).strip()))
+    return ids if limit is None else ids[:limit]
 CLOSET_OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 app.mount("/closet-outputs", StaticFiles(directory="outputs/closet"), name="closet-outputs")
 QA_PHOTO_DIR.mkdir(parents=True, exist_ok=True)
@@ -1202,6 +1207,7 @@ async def selfit_try_on_job_create(
     force_regenerate: bool = Form(False),
     selected_item_ids: str | None = Form(None),
     client_request_id: str | None = Form(None),
+    wear_all_items: bool = Form(False),
     current_user: dict[str, Any] = Depends(get_current_user),
 ) -> dict[str, Any]:
     with user_storage(current_user["user_id"]):
@@ -1213,8 +1219,9 @@ async def selfit_try_on_job_create(
             scene_label,
             current_user["user_id"],
             force_regenerate,
-            _parse_selected_item_ids(selected_item_ids),
+            _parse_selected_item_ids(selected_item_ids, limit=None if wear_all_items else 8),
             client_request_id,
+            wear_all_items=wear_all_items,
         )
 
 

@@ -11,5 +11,10 @@ const fn=source.slice(source.indexOf('  async function poll()'),source.indexOf('
  const error=ctx.poll();state.job={job_id:'c'};requests[1].reject(Error('old network failure'));await error;assert.equal(failures,0);
  state.viewerPhoto=true;const current=ctx.poll();requests[2].resolve({job_id:'c',status:'completed',outfit_id:'outfit-c',result:{result:{image_path:'c.png'}}});await current;
  assert.equal(state.result,'visible.png');assert.equal(state.completedTryon.src,'c.png');assert.equal(notice.hidden,false);
+ state.source='report';state.reportOutfits=[{id:'outfit-d',name:'报告示例搭配',reportNote:{id:'note:void:outfits-01'}}];
+ state.job={job_id:'d'};
+ const report=ctx.poll();requests[3].resolve({job_id:'d',status:'completed',outfit_id:'outfit-d',result:{outfit:{outfit_id:'outfit-d'},result:{image_path:'d.png'}}});await report;
+ assert.equal(state.completedTryon.outfit.reportNote.id,'note:void:outfits-01');
+ assert.equal(state.completedTryon.outfit.name,'报告示例搭配');
  console.log('Stale job responses ignored and photo preview preserved on completion: passed');
 })().catch(e=>{console.error(e);process.exitCode=1});

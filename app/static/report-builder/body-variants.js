@@ -1,7 +1,10 @@
 (() => {
   const clone = value => JSON.parse(JSON.stringify(value));
   const names = {LOOP: '无限重启', WABI: '手作侘寂', VOID: '人间失格', FILM: '虚焦胶片'};
-  const key = data => `${String(data.code || '').toUpperCase()}:${data.bodyProfile || 'standard'}:${data.gender || 'unisex'}`;
+  const bodyProfile = data => data.bodyProfile === 'curvy' ||
+    String(data.templateId || '').toLowerCase() === `${String(data.code || '').toLowerCase()}-curvy` ||
+    String(data.name || '').endsWith('-微胖') ? 'curvy' : 'standard';
+  const key = data => `${String(data.code || '').toUpperCase()}:${bodyProfile(data)}:${data.gender || 'unisex'}`;
 
   // Body profile is independent of the 16 persona codes and existing body-shape tags.
   function seeds(base) {
@@ -62,5 +65,5 @@
     });
   }
 
-  window.SELFIT_BODY_VARIANTS = {key, seeds, appendMissing};
+  window.SELFIT_BODY_VARIANTS = {key, bodyProfile, seeds, appendMissing};
 })();

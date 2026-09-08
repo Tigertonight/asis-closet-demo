@@ -34,6 +34,7 @@ from pathlib import Path
 from typing import Any, Callable
 
 from app import selfit_persona
+from app.material_assets import resolve_image_references
 
 PERSONALITY_TEMPLATE_PATH = (
     Path(__file__).resolve().parent
@@ -63,6 +64,8 @@ def _template_card(item: dict[str, Any]) -> dict[str, Any]:
         "name": str(item.get("name") or ""),
         "byline": str(item.get("byline") or ""),
         "sourceUrl": str(item.get("sourceUrl") or ""),
+        "assetId": str(image.get("assetId") or ""),
+        "imageAssetId": str(image.get("assetId") or ""),
         "imageUrl": str(image.get("src") or ""),
         "alt": str(image.get("alt") or item.get("name") or ""),
     }
@@ -76,6 +79,8 @@ def default_personality_report(persona_code: str) -> dict[str, Any]:
     template = (catalog.get("types") or {}).get(type_id)
     if not isinstance(template, dict):
         raise ValueError(f"personality report template missing: {type_id}")
+
+    template = resolve_image_references(template)
 
     metadata = template.get("metadata") if isinstance(template.get("metadata"), dict) else {}
     hero = template.get("hero") if isinstance(template.get("hero"), dict) else {}

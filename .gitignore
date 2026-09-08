@@ -55,6 +55,9 @@ selfit-agent-runtime/*workspace-state*.json
 *.log
 *.pid
 
+# Atomic public material registry writer lock
+material-assets*.json.lock
+
 # OS/editor noise
 .idea/
 .vscode/

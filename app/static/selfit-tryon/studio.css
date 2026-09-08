@@ -1281,9 +1281,10 @@ button.composition-piece:focus-visible { outline:2px solid #8a011b; outline-offs
 .profile-analysis section+section .profile-attribute-art { height:65px; width:23px; }
 .profile-skin { display:block; width:40px; height:40px; border-radius:50%; margin:8px 0; flex-shrink:0; }
 .profile-unknown { display:grid; place-items:center; height:56px; width:36px; color:#bbb; }
-.profile-report { width:100%; max-width:361px; margin:24px auto 0; display:grid; place-items:center; background:transparent; color:var(--brand); text-align:center; text-decoration:none; }
+.profile-report-card { position:relative; width:100%; max-width:361px; margin:24px auto 0; }
+.profile-report { width:100%; display:grid; place-items:center; background:transparent; color:var(--brand); text-align:center; text-decoration:none; }
 .profile-report>img { display:block; width:100%; height:auto; object-fit:contain; object-position:center; }
-.profile-report strong { display:block; margin:32px 0; font-size:24px; line-height:1.8; }
+.profile-report strong { display:block; margin:32px 0 92px; font-size:24px; line-height:1.8; }
 .profile-test-invite { position:relative; display:flex; gap:24px; margin:0; padding:28px 20px; border-radius:16px; background:#8a011b url('assets/main-app/profile-textile.webp') center/cover; color:white; text-decoration:none; height:262.824px; flex-direction:column; align-items:center; padding-bottom:26.824px; }
 .profile-test-invite span { font-size:14px; }
 .profile-more { margin-top:24px; }
@@ -1324,12 +1325,13 @@ button.composition-piece:focus-visible { outline:2px solid #8a011b; outline-offs
 .profile-analysis section+section .profile-attribute { line-height:15px; }
 .profile-test-invite strong { font-size:20px; line-height:20px; font-weight:400; }
 .profile-test-invite>img { width:234.648px; height:100px; object-fit:contain; }
-.profile-test-invite>span { display:grid; place-items:center; min-height:44px; width:118px; border-radius:22px; background:transparent; color:#333; font-size:14px; margin-top:-4px; position:relative; isolation:isolate; }
+.profile-test-invite>span,.profile-retest { display:grid; place-items:center; min-height:44px; width:118px; border-radius:22px; background:transparent; color:#333; font-size:14px; margin-top:-4px; position:relative; isolation:isolate; }
+.profile-retest { position:absolute; left:50%; bottom:12px; transform:translateX(-50%); margin:0; text-decoration:none; }
 .profile-photo-add { position:relative; border:0; padding:0; cursor:pointer; }
 .profile-photo-add>img { opacity:.55; object-fit:contain; }
 .profile-photo-add>span { position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); border-radius:50%; background:#8a011b; color:white; width:24px; height:24px; display:grid; place-items:center; font-size:18px; }
 .profile-test-invite>* { flex-shrink:0; }
-.profile-test-invite>span::before { content:""; position:absolute; inset:4px 0; background:white; border-radius:18px; z-index:-1; }
+.profile-test-invite>span::before,.profile-retest::before { content:""; position:absolute; inset:4px 0; background:white; border-radius:18px; z-index:-1; }
 @media(max-width:430px) { .profile-edit-screen { min-height:100dvh; } }
 
 .profile-test-invite>.profile-test-pin { position:absolute; width:97.153px; height:68.5184px; left:-18.407px; top:-11.249px; }
@@ -1424,6 +1426,9 @@ button.composition-piece:focus-visible { outline:2px solid #8a011b; outline-offs
 .mirror-favorite[aria-pressed="true"] { color:#8a011b; }
 .model-mode .result-expand { left:24.17%; top:95.81%; bottom:auto; }
 .mirror-screen .strip { padding:0 17px; margin-top:62px; }
+.report-outfit-context { margin:24px 17px 0; color:#857167; font-size:12px; line-height:1.5; }
+.report-outfit-context strong { display:block; margin-top:4px; color:#54453e; font-size:15px; overflow-wrap:anywhere; }
+.mirror-screen .report-outfit-context + .strip { margin-top:14px; }
 .mirror-screen .strip > .card { flex-basis:calc((100cqw - 58px)/3); aspect-ratio:112.143/150; border-radius:14.286px; }
 .mirror-pagination { display:flex; justify-content:center; gap:4px; height:5px; margin:27px 0 0; }
 .mirror-pagination span { width:5px; height:5px; border-radius:50%; background:#ccc; }

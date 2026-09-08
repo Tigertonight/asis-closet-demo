@@ -102,7 +102,8 @@
       ? params.get("screen")
       : "mirror",
     styling: params.get("mode") === "styling",
-    source: "inspiration",
+    source: params.get("from") === "report" && params.has("report_notes") ? "report" : "inspiration",
+    reportOutfits: [], reportOutfitsMode: "", reportOutfitsKey: "",
     category: "all",
     closetCategory: "all",
     profile: null, profileLoading: false, profileError: "", profileSaving: false, profileDraft: null, profilePhotoDraft: {},
@@ -151,8 +152,6 @@
   let toastTimer,
     pollTimer,
     importTimer,
-    requestId = "",
-    preflight = null,
     importFile = null,
     importJob = null,
     importEpoch = 0,
@@ -197,10 +196,12 @@
           savedSession = null;
           sessionStorage.removeItem("selfit.auth.session.v1");
         }
+        const reportDetail = path.startsWith('/selfit/try-on/report-outfits?') &&
+          [404, 409, 422, 503].includes(r.status) && typeof data?.detail === 'string' ? data.detail : '';
         const e = Error(
           r.status === 401
             ? "请先登录，再查看你的衣橱。"
-            : "这次操作没有完成，请稍后重试。",
+            : reportDetail || "这次操作没有完成，请稍后重试。",
         );
         e.status = r.status;
         throw e;
@@ -277,11 +278,13 @@
         ? [1,6,4,7].map(index => ({...fixtureOutfits[index],saved:false}))
         : state.source === "closet"
           ? state.outfits
+          : state.source === "report"
+            ? state.reportOutfits
           : state.feed.filter(x => x.kind !== "note");
     const availableItems =
       reference || state.source === "closet"
         ? state.items
-        : uniqueItems(state.feed.flatMap((x) => x.items));
+        : uniqueItems((state.source === "report" ? state.reportOutfits : state.feed).flatMap((x) => x.items));
     const items =
       category === "set"
         ? collection
@@ -318,7 +321,7 @@
         ? empty("正在整理你的搭配…")
         : state.error
           ? empty(state.error)
-          : `<div class="strip" aria-label="${category === "set" ? "选择套装" : "选择单品"}">${items.map((x, i) => card(x, category === "set" ? "outfit" : "item", i)).join("") || empty("这里还没有搭配，先添加一件喜欢的衣服。")}</div>`
+          : `${state.source === "report" ? `<div class="report-outfit-context" aria-live="polite"><span>来自你的风格报告${state.reportOutfitsMode === "mock" ? " · 示例搭配" : ""}</span><strong>${esc(state.current?.reportNote?.title || "选择一套喜欢的搭配")}</strong></div>` : ""}<div class="strip" aria-label="${category === "set" ? "选择套装" : "选择单品"}">${items.map((x, i) => card(x, category === "set" ? "outfit" : "item", i)).join("") || empty("这里还没有搭配，先添加一件喜欢的衣服。")}</div>`
     }${items.length > 3 ? `<div class="mirror-pagination" aria-label="套装分页">${Array.from({length:Math.ceil(items.length/3)},(_,i)=>`<span data-strip-page="${i}" ${i===0?'data-active="true"':''}></span>`).join('')}</div>` : ''}</section>`;
   }
   const trimmedPieces = new Map();
@@ -565,7 +568,7 @@
     if(!state.profile || state.profileLoading) return profileStatus();
     const p=state.profile,m=p.manual || {},r=p.report;
     const attribute=(field)=>`<div class="profile-attribute">${profileArt(field,m[field])}<span>${esc(m[field] || '待完善')}</span></div>`;
-    return `<section class="profile-screen">${profileHeader()}${p.tested ? `<div class="profile-analysis"><section><h2>面部分析</h2><p>了解脸型与肤色，找到衬托你的风格。</p><div class="profile-analysis-row">${profilePhoto('face')}${attribute('faceShape')}${attribute('skin')}</div></section><section><h2>身型分析</h2><p>了解身体线条，找到适合你的穿搭比例。</p><div class="profile-analysis-row">${profilePhoto('body')}${attribute('bodyShape')}</div></section></div>` : ''}${r ? `<a class="profile-report" href="/selfit?from=mirror&amp;report=latest&amp;return_screen=profile" aria-label="查看我的风格报告">${r.heroImage?.src ? image(r.heroImage.src,r.title || '我的风格报告') : `<strong>${esc(r.typeId?.toUpperCase())}<br>${esc(r.title || '我的风格报告')}</strong>`}</a>` : `<a class="profile-test-invite" href="/selfit?from=mirror">${image(`${A}main-app/profile-test-pin.svg`, "", "profile-test-pin")}<strong>selfit 16 型格测试</strong>${image(`${A}main-app/profile-test-art.svg`, 'suit · like · vibe')}<span>去测试 →</span></a>`}<section class="profile-more"><h2>更多测试</h2><div><button disabled>${image(`${A}main-app/archive-more-mirror.webp`, "")}<span>专业脸型风格<small>即将开放</small></span></button><button disabled>${image(`${A}main-app/archive-more-flower.webp`, "")}<span>十二季肤色<small>即将开放</small></span></button></div></section>${!reference ? '<button class="profile-logout" data-action="logout">退出登录</button>' : ''}</section>`;
+    return `<section class="profile-screen">${profileHeader()}${p.tested ? `<div class="profile-analysis"><section><h2>面部分析</h2><p>了解脸型与肤色，找到衬托你的风格。</p><div class="profile-analysis-row">${profilePhoto('face')}${attribute('faceShape')}${attribute('skin')}</div></section><section><h2>身型分析</h2><p>了解身体线条，找到适合你的穿搭比例。</p><div class="profile-analysis-row">${profilePhoto('body')}${attribute('bodyShape')}</div></section></div>` : ''}${r ? `<div class="profile-report-card"><a class="profile-report" href="/selfit?from=mirror&amp;report=latest&amp;return_screen=profile" aria-label="查看我的风格报告">${r.heroImage?.src ? image(r.heroImage.src,r.title || '我的风格报告') : `<strong>${esc(r.typeId?.toUpperCase())}<br>${esc(r.title || '我的风格报告')}</strong>`}</a><a class="profile-retest" href="/selfit?from=mirror&amp;entry=retest">重新测试 →</a></div>` : `<a class="profile-test-invite" href="/selfit?from=mirror">${image(`${A}main-app/profile-test-pin.svg`, "", "profile-test-pin")}<strong>selfit 16 型格测试</strong>${image(`${A}main-app/profile-test-art.svg`, 'suit · like · vibe')}<span>去测试 →</span></a>`}<section class="profile-more"><h2>更多测试</h2><div><button disabled>${image(`${A}main-app/archive-more-mirror.webp`, "")}<span>专业脸型风格<small>即将开放</small></span></button><button disabled>${image(`${A}main-app/archive-more-flower.webp`, "")}<span>十二季肤色<small>即将开放</small></span></button></div></section>${!reference ? '<button class="profile-logout" data-action="logout">退出登录</button>' : ''}</section>`;
   }
   function profileFeatureEdit() {
     const field = state.profileEditingField;
@@ -621,7 +624,7 @@
             const modelForm=new FormData();modelForm.append('image',entry.file);
             await api('/closet/preferences/model-photo',{method:'POST',body:modelForm});
             state.personalPhoto=entry.url;state.personalFile=entry.file;
-            if(state.modelId==='self') {state.photo=entry.url;state.file=entry.file;state.result='';preflight=null;}
+            if(state.modelId==='self') {state.photo=entry.url;state.file=entry.file;state.result='';}
           }
           state.profile.photos[kind]=entry.url;
           delete state.profilePhotoDraft[kind];
@@ -804,6 +807,8 @@
       state.photo=completed.original || state.photo;state.styling=false;state.job=completed.job;
       state.viewRecordId="";state.completedTryon=null;
     }
+    if (state.current && state.source === "report" && !state.current.reportNote)
+      state.source = "inspiration";
     state.page = page;
     render();
     if(page === "chat") loadChat();
@@ -812,6 +817,7 @@
     if (push) {
       const u = new URL(location.href);
       u.searchParams.set("screen", page);
+      if (state.source && state.source !== "report") u.searchParams.delete("report_notes");
       if ((page === "topic" || (page === "detail" && state.returnPage === "topic")) && state.topicId) u.searchParams.set("topic",state.topicId); else u.searchParams.delete("topic");
       if (page === "result-viewer" && state.viewerPhoto) u.searchParams.set("preview","photo"); else u.searchParams.delete("preview");
       if (page === "result-viewer" && !state.viewerPhoto && state.viewRecordId) u.searchParams.set("record",state.viewRecordId); else u.searchParams.delete("record");
@@ -841,12 +847,14 @@
   }
   function lookup(id) {
     return [
+      ...(state.reportOutfits || []),
       ...state.feed,
       ...(state.topics || []).flatMap(x=>x.entries),
       ...state.savedNotes,
       ...state.outfits,
       ...state.items,
       ...state.feed.flatMap((x) => x.items),
+      ...(state.reportOutfits || []).flatMap((x) => x.items),
       ...(state.current?.items || []),
     ].find((x) => x.id === id);
   }
@@ -886,7 +894,7 @@
       const outfit=normalizeOutfit(data,state.items);
       state.outfits=uniqueItems([outfit,...state.outfits]);
       if(state.page!=='builder'){notify('搭配已保存到衣帽间。');return;}
-      state.current=outfit;state.selected=new Set(itemIds);state.result='';preflight=null;
+      state.current=outfit;state.selected=new Set(itemIds);state.result='';
       if(tryAfter){state.styling=true;go('mirror',true,false);await startTry();}
       else {state.closetCategory='set';go('closet');notify('搭配已保存。');}
     } catch(e){state.builderError=e.message || '保存失败，请重试。';}
@@ -897,14 +905,14 @@
     if (!outfit) return;
     state.current = outfit;
     state.returnPage = "closet";
-    state.result = ""; preflight = null;
+    state.result = "";
     modal(outfit.name, `${outfit.raw?.can_delete ? '<button class="garment-delete" data-action="delete-outfit" aria-label="删除穿搭"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13M10 10v7m4-7v7"/></svg></button>' : ''}<span class="sheet-handle" aria-hidden="true"></span>${image(outfit.src,outfit.name,'garment-sheet-image')}<button class="primary garment-sheet-cta" data-action="try">立即试穿</button>`);
     $("#sheet").classList.add("garment-sheet", "outfit-sheet");
   }
   function showDetail(id) {
     state.current = lookup(id);
     state.result = "";
-    preflight = null;
+
     if (!state.current) return;
     if (state.page === "closet" && state.current.kind !== "note") {openOutfitSheet(id);return;}
     state.returnPage = state.page;
@@ -964,10 +972,9 @@
     state.photo = id === "self" ? state.personalPhoto : saved.model.image_url;
     state.file = id === "self" ? state.personalFile : null;
     state.result = "";
-    preflight = null;
+
     $("#sheet").close();
     render();
-    notify(id === "self" ? "已选择我的照片" : `已选择${saved.model.name}`);
     if (state.pendingTry) {
       state.pendingTry = false;
       await startTry();
@@ -998,7 +1005,7 @@
       };
     }
     state.selected = new Set(reference ? [id] : state.current.items.map(item => item.id));
-    preflight = null;
+
     state.styling = true;
     go("mirror");
     if (scrollPosition) {
@@ -1008,16 +1015,16 @@
     }
     notify(`已选${x.name}`);
   }
-  async function photoFile() {
-    if (state.file) return state.file;
-    if (!state.photo) throw Error("先选择模特或上传全身照。");
-    const response = await fetch(mediaURL(state.photo));
+  async function photoFile(photo = state.photo, file = state.file, modelId = state.modelId) {
+    if (file) return file;
+    if (!photo) throw Error("先选择模特或上传全身照。");
+    const response = await fetch(mediaURL(photo));
     if (!response.ok) throw Error("这张照片暂时无法使用，请重新上传。");
     const blob = await response.blob();
     return new File(
       [blob],
-      state.modelId && state.modelId !== "self"
-        ? new URL(state.photo, location.origin).pathname.split("/").pop()
+      modelId && modelId !== "self"
+        ? new URL(photo, location.origin).pathname.split("/").pop()
         : "my-photo.png",
       {
         type: blob.type || "image/png",
@@ -1053,45 +1060,7 @@
       modal("试穿这张照片中的搭配", `${image(target.src,target.name,'progress-art')}<p>参考这张穿搭照片，生成你的试穿效果。</p><button class="primary" data-action="generate-note">生成试穿图</button>`);
       return;
     }
-    modal("确认试穿", '<p role="status">正在确认照片中可替换的单品…</p>');
-    try {
-      if (!target.id) {
-        const saved = await api("/selfit/try-on/outfits", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            item_ids: (target.items || []).map((x) => x.id),
-            title: "我的搭配",
-          }),
-        });
-        target.id = saved.outfit_id;
-      }
-      const file = await photoFile(),
-        body = new FormData();
-      body.append("person_image", file);
-      body.append("outfit_id", target.id);
-      body.append("photo_mode", "standard");
-      const plan = await api("/selfit/try-on/preview-plan", {
-        method: "POST",
-        body,
-      });
-      preflight = { plan, file, outfitId: target.id, target, photo: state.photo };
-      requestId = crypto.randomUUID();
-      state.selected = new Set(
-        (plan.pieces || [])
-          .filter((p) => p.status !== "not_visible")
-          .map((p) => String(p.item_id)),
-      );
-      modal(
-        "确认试穿",
-        `<p>${esc(plan.photo_summary || "选择这次想替换的单品")}</p><div class="piece-options">${(plan.pieces || []).map((p) => `<label><input type="checkbox" data-piece="${esc(p.item_id)}" ${p.status === "not_visible" ? "disabled" : "checked"}>${p.image_path ? image(p.image_path, "") : ""}<span>${esc(p.category_label || p.slot)}${p.status === "not_visible" ? " · 未入镜" : ""}</span></label>`).join("")}</div><button class="primary" data-action="generate">生成试穿图</button>`,
-      );
-    } catch (e) {
-      modal(
-        "这次还不能试穿",
-        `<p>${esc(e.message)}</p><button class="secondary" data-action="model">更换照片</button><button class="primary" data-action="try">重新尝试</button>`,
-      );
-    }
+    await generate();
   }
   function beginMirrorGeneration(target, photo) {
     state.generating = {target, photo};
@@ -1127,38 +1096,37 @@
     finally { generationBusy = false; }
   }
   async function generate() {
-    if (!preflight || !state.selected.size)
-      return notify("至少选择一件可替换的单品。");
-    const slots = new Set(
-      preflight.plan.pieces
-        .filter((p) => state.selected.has(String(p.item_id)))
-        .map((p) => p.slot),
-    );
-    if (
-      slots.has("dress") &&
-      ["top", "outer", "bottom", "skirt"].some((s) => slots.has(s))
-    )
-      return notify("连衣装与上下装只能选择一种穿法。");
     if (generationBusy) return;
+    const target = state.current, photo = state.photo, inputFile = state.file, modelId = state.modelId;
+    const itemIds = [...new Set((target?.items || []).map(item => item.id).filter(Boolean))];
+    if (!itemIds.length) return notify("这套搭配还没有可试穿的单品，请换一套。");
     generationBusy = true;
-    const submission = preflight;
-    beginMirrorGeneration(submission.target || lookup(submission.outfitId), submission.photo);
+    state.selected = new Set(itemIds);
+    const signature = JSON.stringify([target.id, itemIds, photo]);
+    if (state.outfitRequest?.signature !== signature)
+      state.outfitRequest = {signature, id: crypto.randomUUID()};
+    const submissionId = state.outfitRequest.id;
+    beginMirrorGeneration(target, photo);
     try {
+      const file = await photoFile(photo, inputFile, modelId);
+      if (!target.id) {
+        const saved = await api("/selfit/try-on/outfits", {
+          method: "POST", headers: {"Content-Type": "application/json"},
+          body: JSON.stringify({item_ids: itemIds, title: "我的搭配"}),
+        });
+        target.id = saved.outfit_id;
+        state.outfitRequest.signature = JSON.stringify([target.id, itemIds, photo]);
+      }
       const body = new FormData();
-      body.append("person_image", submission.file);
-      body.append("outfit_id", submission.outfitId);
+      body.append("person_image", file);
+      body.append("outfit_id", target.id);
       body.append("photo_mode", "standard");
-      body.append("selected_item_ids", JSON.stringify([...state.selected]));
-      body.append("client_request_id", requestId);
-      state.job = await api("/selfit/try-on/jobs", { method: "POST", body });
-      sessionStorage.setItem(
-        "selfit.studio.job",
-        JSON.stringify({
-          job_id: state.job.job_id,
-          outfit_id: submission.outfitId,
-        }),
-      );
-      state.jobPhoto = submission.photo;
+      body.append("selected_item_ids", JSON.stringify(itemIds));
+      body.append("wear_all_items", "true");
+      body.append("client_request_id", submissionId);
+      state.job = await api("/selfit/try-on/jobs", {method: "POST", body});
+      sessionStorage.setItem("selfit.studio.job", JSON.stringify({job_id: state.job.job_id, outfit_id: target.id}));
+      state.jobPhoto = photo;
       poll();
     } catch (e) {
       failure(e.message);
@@ -1199,10 +1167,13 @@
         state.generating = null;
         const completed = {src,job,original:job.original_image_path || state.jobPhoto || '',
           outfit:note || (job.result?.outfit ? normalizeOutfit(job.result.outfit,state.items) : lookup(job.outfit_id) || {id:job.outfit_id,name:'这次试穿',items:[],src})};
+        const reportOutfit = state.source === "report" && state.reportOutfits?.find(outfit => outfit.id === completed.outfit.id);
+        if (reportOutfit) completed.outfit = {...completed.outfit, name: reportOutfit.name, reportNote: reportOutfit.reportNote};
         if (!["mirror","result-viewer"].includes(state.page) ||
             (state.page === "result-viewer" && (state.viewerPhoto || state.viewerLoading || state.viewRecordId))) {
           state.completedTryon=completed;
           state.noteRequest=null;
+          state.outfitRequest=null;
           sessionStorage.removeItem("selfit.studio.job");
           if ($("#completionNotice")) $("#completionNotice").hidden=false;
           return;
@@ -1211,6 +1182,7 @@
         state.result = src;
         state.current = completed.outfit;
         state.noteRequest = null;
+        state.outfitRequest = null;
         state.resultOriginal = job.original_image_path || state.jobPhoto || '';
         state.photo = state.resultOriginal || state.photo;
         state.styling = false;
@@ -1363,6 +1335,45 @@
       raw: x,
     };
   }
+  async function loadReportOutfits() {
+    const query = new URLSearchParams(location.search);
+    if (query.get("from") !== "report" || !query.has("report_notes")) return;
+    const request = new URLSearchParams({persona: query.get("persona") || "", note_ids: query.get("report_notes")});
+    if (query.has("report_template")) request.set("template_id", query.get("report_template"));
+    if (query.has("report_assets")) request.set("note_assets", query.get("report_assets"));
+    state.reportOutfits = [];
+    state.reportOutfitsKey = "";
+    state.current = null;
+    state.source = "report";
+    const response = await api(`/selfit/try-on/report-outfits?${request}`);
+    state.reportOutfits = response.outfits.map((row) => ({
+      ...normalizeOutfit(row, state.items),
+      name: `${row.report_note.title}${response.mode === "mock" ? " · 示例搭配" : ""}`,
+      reportNote: row.report_note,
+    }));
+    state.reportOutfitsMode = response.mode;
+    if (response.resolved_legacy_assets) {
+      const assets = response.outfits.map(row => row.report_note.image_asset_id).join(',');
+      const url = new URL(location.href);
+      url.searchParams.set('report_assets', assets);
+      url.searchParams.set('report_template', response.template_id);
+      history.replaceState(history.state, '', url);
+      request.set('note_assets', assets);
+      request.set('template_id', response.template_id);
+    }
+    state.reportOutfitsKey = request.toString();
+  }
+  async function restoreSelectedOutfit(id, job) {
+    if (state.source === "report") {
+      state.current = state.reportOutfits.find((row) => row.id === id) || state.reportOutfits[0] || null;
+      state.selected = new Set((state.current?.items || []).map((item) => item.id));
+    } else if (id) {
+      const existing = [...state.outfits, ...state.feed, ...state.savedNotes].find((row) => row.id === id);
+      state.current = existing || (job?.job_id ? null : normalizeOutfit(
+        await api(`/closet/outfits/${encodeURIComponent(id)}`), state.items,
+      ));
+    } else state.current ||= state.feed.find((row) => row.kind !== "note") || null;
+  }
   async function loadPhoto() {
     if (state.photo) return;
     try {
@@ -1499,6 +1510,7 @@
           notify("穿搭库暂时无法更新，可重试加载。");
         }),
       ]);
+      await loadReportOutfits();
       if (!state.photo) state.photo = fallback || "";
       state.personalPhoto = state.photo;
       state.personalFile = state.file;
@@ -1535,17 +1547,7 @@
       } catch {}
       if (!job?.job_id && state.page === 'result-viewer' && params.get('job')) job={job_id:params.get('job')};
       const id = new URLSearchParams(location.search).get("outfit");
-      if (id) {
-        const existing = [...state.outfits, ...state.feed, ...state.savedNotes].find(
-          (x) => x.id === id,
-        );
-        state.current =
-          existing || (job?.job_id ? null :
-          normalizeOutfit(
-            await api(`/closet/outfits/${encodeURIComponent(id)}`),
-            state.items,
-          ));
-      } else state.current ||= state.feed.find(x => x.kind !== "note") || null;
+      await restoreSelectedOutfit(id, job);
       state.error = "";
       if (id && state.current)
         state.page = ["mirror", "closet", "inspiration", "detail", "chat", "profile", "profile-edit", "import-review", "result-viewer", "topic", "builder"].includes(params.get("screen")) ? params.get("screen") : "mirror";
@@ -1645,7 +1647,7 @@
         rememberCanvas();
         state.current={...state.current,id:"",name:"我的搭配",items:state.current.items.filter(p=>p.id!==id)};
         state.selected=new Set(state.current.items.map(p=>p.id));
-        state.result=""; preflight=null;
+        state.result="";
         render(); notify("已从画布移除，可撤回恢复"); return;
       }
       if (["undo-canvas","redo-canvas"].includes(b.dataset.action)) {
@@ -1658,7 +1660,7 @@
         state.current=previous.current;
         state.canvasSelection=previous.selection;
         state.selected=new Set((state.current?.items || []).map(p=>p.id));
-        state.result=""; preflight=null;
+        state.result="";
         $("#sheet").close(); state.styling=true;
         render(); notify(redo ? "已重做上一步" : "已撤回上一步"); return;
       }
@@ -1697,7 +1699,7 @@
           state.current = lookup(b.dataset.outfit);
           state.selected = new Set((state.current?.items || []).map(item => item.id));
           state.result = "";
-          preflight = null;
+
           go("mirror");
           if ($(".strip")) $(".strip").scrollLeft = scrollLeft;
           return;
@@ -1713,7 +1715,7 @@
       if (b.dataset.try) {
         state.current = lookup(b.dataset.try);
         state.result = "";
-        preflight = null;
+
         await startTry();
         return;
       }
@@ -1772,7 +1774,7 @@
             }
             if(state.current?.items?.some(item=>item.id===id)) {
               state.current={...state.current,id:"",items:state.current.items.filter(item=>item.id!==id)};
-              state.result=""; preflight=null;
+              state.result="";
             }
             state.selected.delete(id);
             state.canvasHistory=[]; state.canvasFuture=[]; state.canvasSelection="";
@@ -1890,7 +1892,7 @@
             }
           state.current = null;
           state.selected.clear();
-          preflight = null;
+
           state.result = "";
           $("#sheet").close();
           go("closet", false);
@@ -1909,10 +1911,6 @@
           break;
         case "try":
           await startTry();
-          break;
-        case "generate":
-          b.disabled = true;
-          await generate();
           break;
         case "more":
           b.disabled = true;
@@ -1999,12 +1997,6 @@
     } catch (error) {
       b.disabled = false;
       notify(error.message || "请稍后再试。");
-    }
-  });
-  $("#sheet").addEventListener("change", (e) => {
-    if (e.target.dataset.piece) {
-      if (e.target.checked) state.selected.add(e.target.dataset.piece);
-      else state.selected.delete(e.target.dataset.piece);
     }
   });
   $("#photoInput").addEventListener("change", async (e) => {
@@ -2163,6 +2155,18 @@
   $("#studio").addEventListener("keyup", restore);
   window.addEventListener("popstate", async () => {
     const p = new URLSearchParams(location.search);
+    if (!reference && p.get("from") === "report" && p.has("report_notes")) {
+      try {
+        const request = new URLSearchParams({persona: p.get("persona") || "", note_ids: p.get("report_notes")});
+        if (p.has("report_template")) request.set("template_id", p.get("report_template"));
+        if (p.has("report_assets")) request.set("note_assets", p.get("report_assets"));
+        const key = request.toString();
+        if (key !== state.reportOutfitsKey) await loadReportOutfits();
+        state.source = "report";
+        state.error = "";
+        await restoreSelectedOutfit(p.get("outfit"));
+      } catch (error) { state.error = error.message; state.current = null; }
+    } else if (state.source === "report") state.source = "inspiration";
     state.viewerPhoto = p.get("preview") === "photo";
     state.styling = p.get("mode") === "styling";
     if (!reference && p.get("screen") === "result-viewer" && !state.viewerPhoto && p.get("record")) {
@@ -2185,7 +2189,7 @@
       await poll();
       return;
     }
-    if (!reference && p.get("outfit")) {
+    if (!reference && state.source !== "report" && p.get("outfit")) {
       try {
         state.current =
           lookup(p.get("outfit")) ||

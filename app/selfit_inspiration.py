@@ -8,6 +8,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel, StrictBool
 
 from app.auth import get_current_user
+from app.material_assets import resolve_image_references
 from app.recommendation_profile import resolve_profile
 from app.selfit_report import _personality_template_catalog
 from app.storage import storage_context, user_storage
@@ -16,7 +17,7 @@ router = APIRouter(prefix="/selfit/try-on/inspiration-notes")
 
 
 def persona_notes(persona: str) -> list[dict]:
-    template = _personality_template_catalog()["types"].get(persona, {})
+    template = resolve_image_references(_personality_template_catalog()["types"].get(persona, {}))
     items = template.get("recommendations", {}).get("outfits", {}).get("items", [])
     notes = []
     for item in items:

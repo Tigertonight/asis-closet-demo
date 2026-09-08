@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 import re
+from pathlib import Path
 
 from fastapi.testclient import TestClient
 
@@ -120,7 +121,8 @@ def test_selfit_latest_onboarding_geometry_and_loading_brandmark_are_locked() ->
     assert '#D3D3D3' in markup.text
     assert '#B1B2D1' in markup.text
     assert '/static/selfit/assets/splash-signature@2x.png' in markup.text
-    assert '.loading-art-frame { position: absolute; top: 244px;' in styles.text
+    assert '.loading-art-frame { position: relative;' in styles.text
+    assert markup.text.index('id="loadingPercent"') < markup.text.index('id="loadingLines"')
     assert '--loading-art-width: 240px; --loading-art-height: 162px;' in styles.text
     assert '.loading-story img[data-stage="75"]' in styles.text
     assert '.loading-brandmark' in styles.text
@@ -469,7 +471,11 @@ def test_selfit_personality_catalog_keeps_all_colors_but_renders_first_five() ->
         assert template["typeId"] == type_id
         hero = template["hero"]["image"]
         assert hero["placeholder"] is False
-        assert hero["src"] == f"/static/selfit/assets/personality/{type_id}/hero.png?v=20260907-config-v2"
+        from app.material_assets import asset_id_for_bytes, MaterialRegistry
+        assert "src" not in hero
+        original = Path(f"app/static/selfit/assets/personality/{type_id}/hero.png")
+        assert hero["assetId"] == asset_id_for_bytes(original.read_bytes())
+        assert MaterialRegistry().get(hero["assetId"])["sha256"] == hero["assetId"][6:]
         assert (hero["width"], hero["height"]) == (1484, 1072)
         assert len(template["colors"]["items"]) >= 5
         assert len(template["recommendations"]["makeup"]) == 2
@@ -492,13 +498,13 @@ def test_selfit_personality_catalog_keeps_all_colors_but_renders_first_five() ->
     assert ".slice(0, personalityCatalog.renderRules?.outfits?.limit || 4)" in runtime.text
     assert "replace(/^\\s*建议\\s*[：:]\\s*/, '')" in runtime.text
 
-    # 瞬时静态资源失败会自动重试；loading 换帧要等新图就绪，不能暴露破图。
+    # 瞬时静态资源失败会自动重试；loading 插画使用同一重试加载器。
     assert "const IMAGE_RETRY_DELAYS_MS = [350, 1200]" in runtime.text
     assert "const assignedSource = image.getAttribute('src')" in runtime.text
     assert "if (!assignedSource) return" in runtime.text
     assert "imageRetryUrl(originalSource, attempt)" in runtime.text
-    assert "void loadLoadingStage(stage.src).then" in runtime.text
-    assert "if (loadedSource) art.src = loadedSource" in runtime.text
+    assert "loadImage: loadLoadingStage" in runtime.text
+    assert client.get('/static/selfit/selfit-loading.js').status_code == 200
 
     for template in catalog["types"].values():
         assert all(

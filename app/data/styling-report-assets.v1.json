@@ -1,0 +1,545 @@
+{
+  "schemaVersion": "1.0",
+  "files": {
+    "selfit/assets/personality/bolt/hero.png": {
+      "assetId": "asset_9db142c2025a3b4980c7758accbf710d77eb96a69a36ec47b9cbb94106e287c2"
+    },
+    "selfit/assets/personality/bolt/report-hair-01.webp": {
+      "assetId": "asset_a6004ba4d4f7a777bc5ae73997f8b1906fafef27f0e58180fc5916e41a0a522c"
+    },
+    "selfit/assets/personality/bolt/report-hair-02.webp": {
+      "assetId": "asset_d364815cd31760a9bf0796bc118652deb0cee4c44283f1cd155f74ee373557b9"
+    },
+    "selfit/assets/personality/bolt/report-makeup-01.webp": {
+      "assetId": "asset_615d9c9beaa2737e397b78cb69f686741f6b7780aa99b4484c850fc9f177d27e"
+    },
+    "selfit/assets/personality/bolt/report-makeup-02.webp": {
+      "assetId": "asset_155943a5b0b1d9688b91922c61f3ef33b8221ca340ee8717e99d987ba1823499"
+    },
+    "selfit/assets/personality/bolt/report-outfits-01-6722b182fad31894.jpg": {
+      "assetId": "asset_6722b182fad3189490064a70d9445bce68ae0855b07d0968a398d6b468681832"
+    },
+    "selfit/assets/personality/bolt/report-outfits-02-949bb999c862c42a.jpg": {
+      "assetId": "asset_949bb999c862c42a2f48207afa96fc9b05fdcacf8430d23d19df9f1e21389de3"
+    },
+    "selfit/assets/personality/bolt/report-outfits-03-a7cc1306facc7e11.jpg": {
+      "assetId": "asset_a7cc1306facc7e1172e1d751857ee8b2752fcebc8f62599404014deab5a067fb"
+    },
+    "selfit/assets/personality/bolt/report-outfits-04-8b880f66d9f8929b.webp": {
+      "assetId": "asset_8b880f66d9f8929be8e04f9443c26052292ce69a3341e2f476c5767fa45d7854"
+    },
+    "selfit/assets/personality/ease/hero.png": {
+      "assetId": "asset_632ce4d40ce8538c6fd2fe216e876cccb9875b5460ba36774ebeea394941793f"
+    },
+    "selfit/assets/personality/ease/report-hair-01.webp": {
+      "assetId": "asset_30b63dde18e2be9f80245e5afadd02127e5e5cbb0f79304cd0dea1f496e88fb7"
+    },
+    "selfit/assets/personality/ease/report-hair-02.webp": {
+      "assetId": "asset_9e22cd58eced293f53b2a08a0f746cf02a148efb15d065b1fd4607ea9b70c867"
+    },
+    "selfit/assets/personality/ease/report-makeup-01.webp": {
+      "assetId": "asset_7166bcedf879c43d57b9c83d255f74c1dc393b56de32abc75f63c67dd99bc629"
+    },
+    "selfit/assets/personality/ease/report-makeup-02.webp": {
+      "assetId": "asset_b19e155f5783eeb7d21a0de6c35c287a4060f67dc38bea3ce2bf092d334ffe0b"
+    },
+    "selfit/assets/personality/ease/report-outfits-01-aa4ead590a58c683.webp": {
+      "assetId": "asset_aa4ead590a58c683e42af427b8307cac783da5d2b18c132294c18adebebdbefd"
+    },
+    "selfit/assets/personality/ease/report-outfits-02-086a233fd6e6d58e.webp": {
+      "assetId": "asset_086a233fd6e6d58e28ea95e9e322888036117f511932c6798e9e9e5419fd4a63"
+    },
+    "selfit/assets/personality/ease/report-outfits-03-f0b0a045de0fd350.jpg": {
+      "assetId": "asset_f0b0a045de0fd350cf354302b23141b4f7a893e8451512a0cf7b29017e6cc913"
+    },
+    "selfit/assets/personality/ease/report-outfits-04-95c6a05b4d30ba7d.jpg": {
+      "assetId": "asset_95c6a05b4d30ba7d883f036678097d05e28a76e6c14a58ab93f4bb318c5148b9"
+    },
+    "selfit/assets/personality/edge/hero.png": {
+      "assetId": "asset_98dc509a0adcc92fe69adef981f70aa76cbeafb9d112ac69eac2a23dd3756441"
+    },
+    "selfit/assets/personality/edge/report-hair-01.webp": {
+      "assetId": "asset_dfba2d57ecc576b0b03b36e0ed29d72f4df5cc48d2fc53fd7e66d3bf57a8a587"
+    },
+    "selfit/assets/personality/edge/report-hair-02.webp": {
+      "assetId": "asset_c6a4b49d1c55d5fa6c2349e30dc2623b2bf4a834177d598e48fabe5b1cbc7360"
+    },
+    "selfit/assets/personality/edge/report-makeup-01.webp": {
+      "assetId": "asset_3d3defd66553b5fc394d7ea2c0d0195bd30c3c7f01da2545e1f6015a20754ca3"
+    },
+    "selfit/assets/personality/edge/report-makeup-02.webp": {
+      "assetId": "asset_de7122f673eae663308d9dbee52ea065fea3d77192efc0ed4fe897170fc753e3"
+    },
+    "selfit/assets/personality/edge/report-outfits-01-3546b7d6b791a183.jpg": {
+      "assetId": "asset_3546b7d6b791a183d258182f98b661f5ad5900ab2f0f781b82fc98a13c0aec21"
+    },
+    "selfit/assets/personality/edge/report-outfits-02-1b77c77a9ee2c575.jpg": {
+      "assetId": "asset_1b77c77a9ee2c5752e2a1d96037b5470aa04562d0fae10ded234cc37d319af8c"
+    },
+    "selfit/assets/personality/edge/report-outfits-03-18596b58e2d78665.jpg": {
+      "assetId": "asset_18596b58e2d786659cf8afc5105ce82988ea8cf2eed9c934d339514af8c569a8"
+    },
+    "selfit/assets/personality/edge/report-outfits-04-763cedc764690c3e.webp": {
+      "assetId": "asset_763cedc764690c3eaf825838b529c1ef6d215c54e045bc34d667db7b356ff9e4"
+    },
+    "selfit/assets/personality/film/hero.png": {
+      "assetId": "asset_abe1d56f8984bca15a52eabbc21760649cf33d5da92ef0f30414dae449afc9c6"
+    },
+    "selfit/assets/personality/film/report-hair-01.webp": {
+      "assetId": "asset_b9467f4335a872adfd7c07be220491294b558093e0a1233f053947ce229bbd55"
+    },
+    "selfit/assets/personality/film/report-hair-02.webp": {
+      "assetId": "asset_b9fd07e74641117e99c48ef976d386631d0d49de4460a3dde9f19b3bd377c3dd"
+    },
+    "selfit/assets/personality/film/report-makeup-01.webp": {
+      "assetId": "asset_aa93ac99c082b36363a1d583de75e90bdf4f5cd4bf406a8fc854815f7f148f35"
+    },
+    "selfit/assets/personality/film/report-makeup-02.webp": {
+      "assetId": "asset_7a843d0f286b671816b689b45472bce51e7a01fdd0d9465f059099169cac0b24"
+    },
+    "selfit/assets/personality/film/report-outfits-01-1ea0a2ab469ba4b1.webp": {
+      "assetId": "asset_1ea0a2ab469ba4b12333a57c2bad0bb840f824e07aef3a24fb79ef191160c60b"
+    },
+    "selfit/assets/personality/film/report-outfits-02-48d1758aee76680f.webp": {
+      "assetId": "asset_48d1758aee76680fdd20bb26a22a152c01ef4bf69ebdaa41140beadbbeaed38b"
+    },
+    "selfit/assets/personality/film/report-outfits-03-d6369519f8704b53.webp": {
+      "assetId": "asset_d6369519f8704b53019ece47ceb5793d5236adbc35842f6285e7be46c6729c46"
+    },
+    "selfit/assets/personality/film/report-outfits-04-dab06a69cab399f7.webp": {
+      "assetId": "asset_dab06a69cab399f7d1d94bcf9d17f8c3601e30ca37eb32b77898ac241090730b"
+    },
+    "selfit/assets/personality/film-curvy/report-hair-01-9ef4d0ca010a1322.webp": {
+      "assetId": "asset_9ef4d0ca010a1322f5472e22465a580de3d6ad5c4ee893745bf6f92f31d6fcd1"
+    },
+    "selfit/assets/personality/film-curvy/report-hair-02-9f349fdd00d44dcb.webp": {
+      "assetId": "asset_9f349fdd00d44dcb4260187a16b58a82c88d4b1952a249d7c72b69994ecf412b"
+    },
+    "selfit/assets/personality/film-curvy/report-hero-01-41c428631ca4397b.png": {
+      "assetId": "asset_41c428631ca4397b251d9315b8cc7f3a7494db8cabf5b0a1b29bf6f514640326"
+    },
+    "selfit/assets/personality/film-curvy/report-makeup-01-3a97fef498355a67.webp": {
+      "assetId": "asset_3a97fef498355a67317422bc8a2b2c68f2cbed177ea926c462e7815c1963ab2a"
+    },
+    "selfit/assets/personality/film-curvy/report-makeup-02-62c5c5112e29e5a0.jpg": {
+      "assetId": "asset_62c5c5112e29e5a0dc6368193c3744bf7c0a14a9a58e3bc56451a2f3de939a73"
+    },
+    "selfit/assets/personality/film-curvy/report-outfits-01-d2eaa0e9a81ecfb7.jpg": {
+      "assetId": "asset_d2eaa0e9a81ecfb7ba2485f367ba0db685c8f16e1ce3719e3bff7e457afec5f4"
+    },
+    "selfit/assets/personality/film-curvy/report-outfits-02-928e274210bd03f9.jpg": {
+      "assetId": "asset_928e274210bd03f90a68dc9a52d6c852d6e4ae9fb2d882ada80a20b145c48e6b"
+    },
+    "selfit/assets/personality/film-curvy/report-outfits-03-5943cc7c524343cb.jpg": {
+      "assetId": "asset_5943cc7c524343cba17274cb9005131f14d861da988b3796534ffca70289b075"
+    },
+    "selfit/assets/personality/film-curvy/report-outfits-04-c74c93756a5b47da.jpg": {
+      "assetId": "asset_c74c93756a5b47da96c5d1999b43df98bcc882ab21522bf1d81857c67394fcf9"
+    },
+    "selfit/assets/personality/flou/hero.png": {
+      "assetId": "asset_50f8d73c8d27019b2ffa29305795b3f9b7f01dfa65d416f6d9bec3dd043848f8"
+    },
+    "selfit/assets/personality/flou/report-hair-01.webp": {
+      "assetId": "asset_8806e1a9e91e12e6b26322bf2119339439c47887c711c41c74d0d1eebca4e67b"
+    },
+    "selfit/assets/personality/flou/report-hair-02.webp": {
+      "assetId": "asset_eaaf8cb417de1fbde74d02b8af51b06410474085f43ede762bd81a74ec4257e9"
+    },
+    "selfit/assets/personality/flou/report-makeup-01.webp": {
+      "assetId": "asset_a50a40c8f7eb75ad168349d4a7db45f6911f862298cfdf6d89b6219efcb4fd9c"
+    },
+    "selfit/assets/personality/flou/report-makeup-02.webp": {
+      "assetId": "asset_0cf2590a28e130381cdac8ac52343095441d4ecbbc9bbf2278d170355d352928"
+    },
+    "selfit/assets/personality/flou/report-outfits-01-6af96c2710ae04b5.webp": {
+      "assetId": "asset_6af96c2710ae04b595535d6b88b3eb19987fcee7e8132786314bd570edbb31ff"
+    },
+    "selfit/assets/personality/flou/report-outfits-02-8deb72077d5dee77.webp": {
+      "assetId": "asset_8deb72077d5dee77f90233e45bffda048828ea301d26e4a52ca03ce65df67a2a"
+    },
+    "selfit/assets/personality/flou/report-outfits-03-083b8c0d489398cd.jpg": {
+      "assetId": "asset_083b8c0d489398cd61cc7ecf093535fa8338a00ac4f4de0c074b0cecab7c7a0b"
+    },
+    "selfit/assets/personality/flou/report-outfits-04-13f98d2dce38f77b.jpg": {
+      "assetId": "asset_13f98d2dce38f77b8bf32a0ff64ddf5f59dcdd1cb9f249d9e90ae587f4147465"
+    },
+    "selfit/assets/personality/heir/hero.png": {
+      "assetId": "asset_587d233713928922752e7c9cd31ec55251d6a9e3c58df335704d63f4063f60b8"
+    },
+    "selfit/assets/personality/heir/report-hair-01.webp": {
+      "assetId": "asset_59478c4e2cc8e5938cafc7c31848a993c59d13a89d433fbe73add7af646fe27c"
+    },
+    "selfit/assets/personality/heir/report-hair-02.webp": {
+      "assetId": "asset_505942f3780c9526a26b8d340b830c926fa9ab49ff2224a9e9a810a8553bd42b"
+    },
+    "selfit/assets/personality/heir/report-makeup-01.webp": {
+      "assetId": "asset_2ed86ae43e3b1b1bcd15a8e1114995b39277a28366bdd620ddbc29103b7a3d8d"
+    },
+    "selfit/assets/personality/heir/report-makeup-02.webp": {
+      "assetId": "asset_b5a0d49e5e1e18841fdff9086339ade3451734fac80fbc7771d93275f7443d76"
+    },
+    "selfit/assets/personality/heir/report-outfits-01-c4314d2354f25c45.jpg": {
+      "assetId": "asset_c4314d2354f25c451e52fadfdaca8bc2bd3dc047cc4df9bfdc1e104b5cc0a395"
+    },
+    "selfit/assets/personality/heir/report-outfits-02-f9379c062c7f4a01.jpg": {
+      "assetId": "asset_f9379c062c7f4a01bfb656b3dac1fd5fdae536a2c077fc0c1cf4f66e74390912"
+    },
+    "selfit/assets/personality/heir/report-outfits-03-02c886eafc957e48.webp": {
+      "assetId": "asset_02c886eafc957e48872efdf6f8f35cb0b90ac3ffc059406f39dcb5b74c693f5c"
+    },
+    "selfit/assets/personality/heir/report-outfits-04-ab0997bb77386efb.jpg": {
+      "assetId": "asset_ab0997bb77386efba7a7df24da7222c10f244202d976673dfea8a55ef0158ffe"
+    },
+    "selfit/assets/personality/iced/hero.png": {
+      "assetId": "asset_c6f8acedca333c57b10c72cf542ce52d03a67c1034905c3b3a4d91af0386527d"
+    },
+    "selfit/assets/personality/iced/report-hair-01.webp": {
+      "assetId": "asset_270543f068a3d077e7d73fc048bd6bd0f9ebc8ab98637088734509c2ad05ca6d"
+    },
+    "selfit/assets/personality/iced/report-hair-02.webp": {
+      "assetId": "asset_5afaaaf86c75215f64096396c65750a50f3208e44a7098b3795075a0c31a815e"
+    },
+    "selfit/assets/personality/iced/report-makeup-01.webp": {
+      "assetId": "asset_712d822b8ef424455e72277e0345f301b4b8a48db55622b4b3bf7f027ced2f27"
+    },
+    "selfit/assets/personality/iced/report-makeup-02.webp": {
+      "assetId": "asset_395bbcd795eab9535542fb8713b4fbc74970536ac82510e622357da3b8424e95"
+    },
+    "selfit/assets/personality/iced/report-outfits-01-4d5b66a95b422883.webp": {
+      "assetId": "asset_4d5b66a95b422883f16778910639feb756924732335b914e2e43baeb9a737b23"
+    },
+    "selfit/assets/personality/iced/report-outfits-02-0c5c47b709e25871.jpg": {
+      "assetId": "asset_0c5c47b709e258719fe0b58967147a5c0c57c4b8cded305bed5cfe8d2314ccb2"
+    },
+    "selfit/assets/personality/iced/report-outfits-03-868adb97bd64828b.jpg": {
+      "assetId": "asset_868adb97bd64828b933c6803e3f6bd782501dbf9452b14f802a0f308f0f03453"
+    },
+    "selfit/assets/personality/iced/report-outfits-04-da9557473fc7eb6c.jpg": {
+      "assetId": "asset_da9557473fc7eb6c3085bed7e8e69d696af65f262f2b27bc90f03d4d962c91ea"
+    },
+    "selfit/assets/personality/jade/hero.png": {
+      "assetId": "asset_515782a2f33c8bd51b89047c339ac1ef223c5ca52087787bae26569ee74f8dfc"
+    },
+    "selfit/assets/personality/jade/report-hair-01.webp": {
+      "assetId": "asset_0c915bd9565b3adf09e5168e0a6a347c6c90756b6ffd261299ec28f36ad96265"
+    },
+    "selfit/assets/personality/jade/report-hair-02.webp": {
+      "assetId": "asset_32e6fd84bd7dbfb093c9c25b9990ecb5b5af5228191e4a88fa0a78b81b0e1eec"
+    },
+    "selfit/assets/personality/jade/report-makeup-01.webp": {
+      "assetId": "asset_a1117d8b0d3153ffa2ebbc59857772f9cfd8a0e961cfd0e35301eff289a9529d"
+    },
+    "selfit/assets/personality/jade/report-makeup-02.webp": {
+      "assetId": "asset_5248715eb1ccda3617f0e54c0f659604732b8c5eeff3559985a70c3b0309deeb"
+    },
+    "selfit/assets/personality/jade/report-outfits-01-4f945efe0c2fdb17.jpg": {
+      "assetId": "asset_4f945efe0c2fdb176ff117014e5efbcca5966236af88db3de749eda6c13cc05a"
+    },
+    "selfit/assets/personality/jade/report-outfits-02-e96a9e75950c8196.webp": {
+      "assetId": "asset_e96a9e75950c8196d51a8c49950f14ca963de02058b843979f20174a64755774"
+    },
+    "selfit/assets/personality/jade/report-outfits-03-81c1e000830ed8ef.webp": {
+      "assetId": "asset_81c1e000830ed8efb48e6270c2176123c8a324446242b0583c122963a4979dcc"
+    },
+    "selfit/assets/personality/jade/report-outfits-04-8fd2402fb61e2a09.webp": {
+      "assetId": "asset_8fd2402fb61e2a09332605472c23eb8ff18e654760fc647b4f404174f674d941"
+    },
+    "selfit/assets/personality/loop/hero.png": {
+      "assetId": "asset_ec5921875ef695c5e761a7ada6608b643aac27b3a99adc7712774335beebb8f5"
+    },
+    "selfit/assets/personality/loop/report-hair-01.webp": {
+      "assetId": "asset_19f650b18e4f8cc60ee902824a658c2a1181ec856ae3bbd5034d007bc1e1539e"
+    },
+    "selfit/assets/personality/loop/report-hair-02.webp": {
+      "assetId": "asset_2ebe18e99e0a3eb5c5ccba6c3c4089317b140744695ff9f8ef86628ac4ba4b5e"
+    },
+    "selfit/assets/personality/loop/report-makeup-01.webp": {
+      "assetId": "asset_c12fcb3ec9cabe234d617e2a5be3e0241dd49db84a71e779770727ba62765cca"
+    },
+    "selfit/assets/personality/loop/report-makeup-02.webp": {
+      "assetId": "asset_7464c28b0f24fa664982ba33ef283c7a05097f8d66bba4288ea2868da913993e"
+    },
+    "selfit/assets/personality/loop/report-outfits-01-be619dd481d3c887.jpg": {
+      "assetId": "asset_be619dd481d3c887f256c7ecd4ca3179fa7307e943845caa2a3dc0369499affa"
+    },
+    "selfit/assets/personality/loop/report-outfits-02-b4ea0228539c90e5.webp": {
+      "assetId": "asset_b4ea0228539c90e570d4dcb2d6f1541bc788a3c438353ab025873ff81a36cd55"
+    },
+    "selfit/assets/personality/loop/report-outfits-03-18ea6a9bbc1a2255.jpg": {
+      "assetId": "asset_18ea6a9bbc1a2255fa407e492c518e6c4370664b971ea98a9e22d24e0ee558a5"
+    },
+    "selfit/assets/personality/neon/report-outfits-02-18ea6a9bbc1a2255.jpg": {
+      "assetId": "asset_18ea6a9bbc1a2255fa407e492c518e6c4370664b971ea98a9e22d24e0ee558a5"
+    },
+    "selfit/assets/personality/loop/report-outfits-04-c2b770506bde0f1f.webp": {
+      "assetId": "asset_c2b770506bde0f1f3222931298ea6567654929eb901082dcff193e4241be9f0c"
+    },
+    "selfit/assets/personality/loop-curvy/report-hair-01-9ec60358af9ac93b.webp": {
+      "assetId": "asset_9ec60358af9ac93b6670782930987003dbeb45d94e437d2ac81e3c047a858abb"
+    },
+    "selfit/assets/personality/loop-curvy/report-hair-02-4cf95752ba7f2194.jpg": {
+      "assetId": "asset_4cf95752ba7f21943c4572c42d82f0f26cade97ee2d728a02d470e1fbedd20cd"
+    },
+    "selfit/assets/personality/loop-curvy/report-hero-01-31491a01e967c83e.png": {
+      "assetId": "asset_31491a01e967c83ea6825cb5f9f7d3a2bebda4c5dc58471fda3c4f12ae7f68db"
+    },
+    "selfit/assets/personality/loop-curvy/report-makeup-01-8ee8036abff08bed.webp": {
+      "assetId": "asset_8ee8036abff08bedd9ec83ff07897e995ed8108d7ac804121325a960f1834cc6"
+    },
+    "selfit/assets/personality/loop-curvy/report-makeup-02-2ce8e264c7008d2e.jpg": {
+      "assetId": "asset_2ce8e264c7008d2e1ec58b08356bac5fbf65741c24a15d2794bd0b960b2c606e"
+    },
+    "selfit/assets/personality/loop-curvy/report-outfits-01-54e100bc85112c25.jpg": {
+      "assetId": "asset_54e100bc85112c2544d283716079fe7a86bb4b3195cf1cc8e76f4cc9d14c7c92"
+    },
+    "selfit/assets/personality/loop-curvy/report-outfits-02-d72a25a4f1ee2dc7.jpg": {
+      "assetId": "asset_d72a25a4f1ee2dc737de5a4020d5f49a17ee9647f6dd6280339667a6dbdcb5cb"
+    },
+    "selfit/assets/personality/loop-curvy/report-outfits-03-9992b11742f38a21.jpg": {
+      "assetId": "asset_9992b11742f38a210bbac88f858c2764010f789da1429e09426302655cbb0446"
+    },
+    "selfit/assets/personality/loop-curvy/report-outfits-04-0d4140536228bcaa.jpg": {
+      "assetId": "asset_0d4140536228bcaa34d262ad910553b03a215b23c54170d0df8953005f0dbfc1"
+    },
+    "selfit/assets/personality/melt/hero.png": {
+      "assetId": "asset_000344c4d660df7586d04b529275337f3e5ae48bcf50717f40b7ed87d284b17d"
+    },
+    "selfit/assets/personality/melt/report-hair-01.webp": {
+      "assetId": "asset_07050be3edebc442bd926cb8ad4b4f857571551499bb26d06e185537edec4bce"
+    },
+    "selfit/assets/personality/melt/report-hair-02.webp": {
+      "assetId": "asset_bbae6b2fa7fc8fc07ab7eb40bb054b17b754fa6faeb580545de213ce428efad1"
+    },
+    "selfit/assets/personality/melt/report-makeup-01.webp": {
+      "assetId": "asset_93817b036b7cc9df686c455f1cba3d8dd6efe16d00c9021f112eed5cde224499"
+    },
+    "selfit/assets/personality/melt/report-makeup-02.webp": {
+      "assetId": "asset_c75f81b1cc6d33e70b4283e7cf7203fc8457b7d7aed1510b334cf49707dd7833"
+    },
+    "selfit/assets/personality/melt/report-outfits-01-eeedbe171aa2b0c3.jpg": {
+      "assetId": "asset_eeedbe171aa2b0c3f2e1f5613afa5a5995e4d87321f146608970d0a796a90162"
+    },
+    "selfit/assets/personality/melt/report-outfits-02-03ba676fa56cb394.webp": {
+      "assetId": "asset_03ba676fa56cb3946ae4efc989ab3fbdd75bc508f20b0908ef2562cbfd1bb47d"
+    },
+    "selfit/assets/personality/melt/report-outfits-03-fceda281ccdada91.webp": {
+      "assetId": "asset_fceda281ccdada918edd581d8b63a5b08ccd32d0d73f5fb3db551466fb330848"
+    },
+    "selfit/assets/personality/melt/report-outfits-04-095f8e29fd3ff931.jpg": {
+      "assetId": "asset_095f8e29fd3ff931af25b8aac7375e980502fc465eb1adc49ad5b7db5afd2b48"
+    },
+    "selfit/assets/personality/mute/hero.png": {
+      "assetId": "asset_af4e0c5d33ad8e48b8e83775a04ddaac2b669267a152b38ac1d5c13ee5875dc3"
+    },
+    "selfit/assets/personality/mute/report-hair-01.webp": {
+      "assetId": "asset_bcc68a805b0c5b17f73948e286db4abf2359ec980e48b6c6971eb161d1a4b6df"
+    },
+    "selfit/assets/personality/mute/report-hair-02.webp": {
+      "assetId": "asset_bcd61fcfe6b29f22e04c985f02f23c72c97803d82c7cbf818b04c6622d6863a7"
+    },
+    "selfit/assets/personality/mute/report-makeup-01.webp": {
+      "assetId": "asset_356bc5f62f24006a841c89c073be260aba90daa42f6a19cf08bfc153a524a703"
+    },
+    "selfit/assets/personality/mute/report-makeup-02.webp": {
+      "assetId": "asset_c7ae20e9b2c105000a5ca36e5db3bb09f4593d769ffa41ccbbde283f2c063b61"
+    },
+    "selfit/assets/personality/mute/report-outfits-01-309a9c45531306aa.jpg": {
+      "assetId": "asset_309a9c45531306aabd63ad3698cdedf756b9909591db037c27d117fcc0eeb340"
+    },
+    "selfit/assets/personality/mute/report-outfits-02-b611b9302eceb7b5.jpg": {
+      "assetId": "asset_b611b9302eceb7b50a33a165f772a46e8b7f8bb602408753c7e30c2bf5117bc9"
+    },
+    "selfit/assets/personality/mute/report-outfits-03-4d66e5756cfadd21.jpg": {
+      "assetId": "asset_4d66e5756cfadd2164dcc728a8e131f6c8634eb5d7b7cf108b95b2bff68e821c"
+    },
+    "selfit/assets/personality/mute/report-outfits-04-1a195e32be8909e7.jpg": {
+      "assetId": "asset_1a195e32be8909e7b259e04a3ebcbf93d96ca876c2e00f9909dc783468a0d2e0"
+    },
+    "selfit/assets/personality/neon/hero.png": {
+      "assetId": "asset_9c7cf79a671cfb7dd0124dd2aa788147aea6519b5c8a20861e67aa1102321272"
+    },
+    "selfit/assets/personality/neon/report-hair-01.webp": {
+      "assetId": "asset_4301eeef00ef20acda09b9726e0eb8cc5e596e8a7ebcdda076d247ab17821854"
+    },
+    "selfit/assets/personality/neon/report-hair-02.webp": {
+      "assetId": "asset_dffdd89ee342ca6e6f703f4ab9a0bed9dafbdb97b0cd570b697dce2b99611346"
+    },
+    "selfit/assets/personality/neon/report-makeup-01.webp": {
+      "assetId": "asset_0f9bea0cfa75628109e20aaeb3c51cfc49bc225ac7feeafb20a1be8f9878d74b"
+    },
+    "selfit/assets/personality/neon/report-makeup-02.webp": {
+      "assetId": "asset_db31b21fbe0edc3ad7014053bdd3471369cd22f757cb42a58aadae56a30f9f22"
+    },
+    "selfit/assets/personality/neon/report-outfits-01-f164e27c7fc94392.jpg": {
+      "assetId": "asset_f164e27c7fc943920d42d98b132f5c27104ded9a528d15499fba128b8bee01c4"
+    },
+    "selfit/assets/personality/neon/report-outfits-03-ebc180ea0318f2ae.jpg": {
+      "assetId": "asset_ebc180ea0318f2ae6cf0cd58a058c940739987ff313e2cf67b9b0ca1cecc261c"
+    },
+    "selfit/assets/personality/neon/report-outfits-04-19c352c642a03bfc.jpg": {
+      "assetId": "asset_19c352c642a03bfcefe55160717f91dd74bb860bc791bbe249f5c0220753c41a"
+    },
+    "selfit/assets/personality/noir/hero.png": {
+      "assetId": "asset_197900f8a529003c929e71c676e1409338d0c8f85b0cb040b8b5ab2769099903"
+    },
+    "selfit/assets/personality/noir/report-hair-01.webp": {
+      "assetId": "asset_3b56ab3f9b7b99ab5d6b1c0b1dba67c73cc1d38364336905e52119290336a5bd"
+    },
+    "selfit/assets/personality/noir/report-hair-02.webp": {
+      "assetId": "asset_6de7e753fa581b2f160b3d86158b43beb5992291dc49aacb569e82e3ca0d2752"
+    },
+    "selfit/assets/personality/noir/report-makeup-01.webp": {
+      "assetId": "asset_4bb937f849ca74c0d7d8d8225094c0f250b0410ddcea7fd838fb080a61b2fb61"
+    },
+    "selfit/assets/personality/noir/report-makeup-02.webp": {
+      "assetId": "asset_c2651c9d0c345d1a5e8d9cfe64a5d457f049f603796f4cf6a3ed3027292e4c80"
+    },
+    "selfit/assets/personality/noir/report-outfits-01-009483e5dfb53c94.webp": {
+      "assetId": "asset_009483e5dfb53c9450b91c599ea1e6f79d5c91208a316b7119b63950ff9cd5fe"
+    },
+    "selfit/assets/personality/noir/report-outfits-02-66ce2052dd350f9a.jpg": {
+      "assetId": "asset_66ce2052dd350f9a90b168ae667d89ce2f692b444e65b83a7590cc622f4fc21e"
+    },
+    "selfit/assets/personality/noir/report-outfits-03-4a03a2e243133b83.jpg": {
+      "assetId": "asset_4a03a2e243133b83e2afd00a6c2e3d15c63d62abaf7873c6db20d5b789b9d0aa"
+    },
+    "selfit/assets/personality/noir/report-outfits-04-691e89217446f57b.jpg": {
+      "assetId": "asset_691e89217446f57bc80e43895557bb04a4b446cc2c3a5266f4d21473321a5138"
+    },
+    "selfit/assets/personality/oops/hero.png": {
+      "assetId": "asset_bd8e9d30cefccf78fe7a245d71731b8b539524a948df5c25126ea94f11988797"
+    },
+    "selfit/assets/personality/oops/report-hair-01.webp": {
+      "assetId": "asset_6e647bf067b8410e4c785fce65e2a6bc3fbabfc58af2423e74d8821cc16e3b68"
+    },
+    "selfit/assets/personality/oops/report-hair-02.webp": {
+      "assetId": "asset_465fb3884a670192b02a1e6bdde67cbc174ab2495bf195913eb05ba06387bb85"
+    },
+    "selfit/assets/personality/oops/report-makeup-01.webp": {
+      "assetId": "asset_77349c4f615312671846faead2b72003c559f7f8701d1206bcec6fce4abb767a"
+    },
+    "selfit/assets/personality/oops/report-makeup-02.webp": {
+      "assetId": "asset_7c79435655e78698915f9cddb1ce567f4a05dca940d27d3f96a617e21fac16fc"
+    },
+    "selfit/assets/personality/oops/report-outfits-01-a7fe8c8fdb016227.jpg": {
+      "assetId": "asset_a7fe8c8fdb0162271ac16963e760cf59117ce3574d3491f73e6ef695fe726975"
+    },
+    "selfit/assets/personality/oops/report-outfits-02-00284b0539b1dec7.webp": {
+      "assetId": "asset_00284b0539b1dec7c5d47f63ab693d89588b7277f5a0c15daf4a37c652e1bb71"
+    },
+    "selfit/assets/personality/oops/report-outfits-03-38dbe762b9004f2d.webp": {
+      "assetId": "asset_38dbe762b9004f2d55be174fe316df5604d050c0c169adedb879be7e17403034"
+    },
+    "selfit/assets/personality/oops/report-outfits-04-26358579655b5307.jpg": {
+      "assetId": "asset_26358579655b53073ef546d5f7b7e623aae14a0024a663bd548605d8e93d1fa8"
+    },
+    "selfit/assets/personality/void/hero.png": {
+      "assetId": "asset_5117465ba3963af25a2c988efb8ad29c9f56ff59f4bc3740ab5013e89549ffbe"
+    },
+    "selfit/assets/personality/void/report-hair-01.webp": {
+      "assetId": "asset_c25483943275343fd31496f197a30bbaf3fb373fd839cfd7e2af500ff685c6cf"
+    },
+    "selfit/assets/personality/void/report-hair-02.webp": {
+      "assetId": "asset_2932a830f2f0c0ab23e3837002dda9bd22a18b86f4b6e7b95b60e25b6e3cff07"
+    },
+    "selfit/assets/personality/void/report-makeup-01.webp": {
+      "assetId": "asset_39cde2cf9b3861078b3e810863e37baf0b0c3954bd08f042a5ae1f0bd7a6e9d8"
+    },
+    "selfit/assets/personality/void/report-makeup-02.webp": {
+      "assetId": "asset_12867960cf9f9149031115c193895ea143d9db89d3987d71344a77e05189180d"
+    },
+    "selfit/assets/personality/void/report-outfits-01-8b9089927a7b589b.jpg": {
+      "assetId": "asset_8b9089927a7b589b0a25b1448bdeb1620462e0a4c892a8fed696f30a970b3fc8"
+    },
+    "selfit/assets/personality/void/report-outfits-02-3dd11895cf250a60.jpg": {
+      "assetId": "asset_3dd11895cf250a6025fd9aea7750955877eeed484fcfb78ee68e5c9efed0a208"
+    },
+    "selfit/assets/personality/void/report-outfits-03-631c913ce8a0f33b.jpg": {
+      "assetId": "asset_631c913ce8a0f33b16ccf89f8c1c42c768d29b36fbba2d5c046b86c91429c510"
+    },
+    "selfit/assets/personality/void/report-outfits-04-473099844e01e520.jpg": {
+      "assetId": "asset_473099844e01e520d094e3a920a4136562fbcca8ebd0ca64288f07474e59ac21"
+    },
+    "selfit/assets/personality/void-curvy/report-hair-01-8513490fad1e4f98.jpg": {
+      "assetId": "asset_8513490fad1e4f98ee7040749b2d3710aa0ae9179f4581090234e5910e669bac"
+    },
+    "selfit/assets/personality/void-curvy/report-hair-02-812aa4cddde0ccb9.jpg": {
+      "assetId": "asset_812aa4cddde0ccb93602b4336dd56f5825c2060b26d467d4c7cc1764eb2eef05"
+    },
+    "selfit/assets/personality/void-curvy/report-hero-01-fd2dac0e1f842043.png": {
+      "assetId": "asset_fd2dac0e1f8420431f419429e2f41d92fa31c4ae3aecb06b73bc8196eab58083"
+    },
+    "selfit/assets/personality/void-curvy/report-makeup-01-0244b42bb8bdbd79.jpg": {
+      "assetId": "asset_0244b42bb8bdbd79a932f971eb01996db5a9db5a6569594c1ab952f18a4e3c55"
+    },
+    "selfit/assets/personality/void-curvy/report-makeup-02-70351134340ed6e0.jpg": {
+      "assetId": "asset_70351134340ed6e0b00df3012608be42543b759bc31af9c7cd264fb2a9499df2"
+    },
+    "selfit/assets/personality/void-curvy/report-outfits-01-d564e8ec86c7cf55.jpg": {
+      "assetId": "asset_d564e8ec86c7cf555143be9e0ae27ec7d44abd0f75b560a432ba326e3b2370f4"
+    },
+    "selfit/assets/personality/void-curvy/report-outfits-02-48de43f0a948e6a0.jpg": {
+      "assetId": "asset_48de43f0a948e6a0c13057c1a57939e20c0486c56a199972f868730f3c73c055"
+    },
+    "selfit/assets/personality/void-curvy/report-outfits-03-1d3bc07d9cd5ed1e.jpg": {
+      "assetId": "asset_1d3bc07d9cd5ed1e73c8cb85323806f6b6ccdfb41daed97b28e582062314e021"
+    },
+    "selfit/assets/personality/void-curvy/report-outfits-04-6bfe709e46421f10.jpg": {
+      "assetId": "asset_6bfe709e46421f100c7d17ffe9575ed9e375b233ceb02e8229baf0c5002aefa7"
+    },
+    "selfit/assets/personality/wabi/hero.png": {
+      "assetId": "asset_11b3b2dd01c8991ccadf34a088952ab313b7b5f33936172cf51cbac8fa8d05bc"
+    },
+    "selfit/assets/personality/wabi/report-hair-01.webp": {
+      "assetId": "asset_aa6f996ad31c33e37d75f3d517b56da40a33d99b7212dbd2740dc11c8bbe7c35"
+    },
+    "selfit/assets/personality/wabi/report-hair-02.webp": {
+      "assetId": "asset_2d274ad21131ba2ddf7ebabbfbc5111885fb048a377848b69edfa2a7a3641380"
+    },
+    "selfit/assets/personality/wabi/report-makeup-01.webp": {
+      "assetId": "asset_fbee64f26dce55972bcc56e19db57a1a56b8c077beae7571ba0fa0c7216b1b4f"
+    },
+    "selfit/assets/personality/wabi/report-makeup-02.webp": {
+      "assetId": "asset_2c52ace34d4d08897eb605afc5100e790aedb98ea1b32d61b3b37065f0b2e21b"
+    },
+    "selfit/assets/personality/wabi/report-outfits-01-66c2be1a79e29412.webp": {
+      "assetId": "asset_66c2be1a79e29412b7954ebf2f8a266a26ebad178c2d582cc6170498ab7d23fd"
+    },
+    "selfit/assets/personality/wabi/report-outfits-02-5636dd3244f219df.webp": {
+      "assetId": "asset_5636dd3244f219df41c94687b608b56c014700612a09f8ab04bcfd47ade7f82b"
+    },
+    "selfit/assets/personality/wabi/report-outfits-03-8cf21008f43de4bc.webp": {
+      "assetId": "asset_8cf21008f43de4bc1979005cb80ece8519b1e26098a9c1fa8a48e98777930c23"
+    },
+    "selfit/assets/personality/wabi/report-outfits-04-2ac49871a5a0b33c.webp": {
+      "assetId": "asset_2ac49871a5a0b33c627e2df4e03da39cf7ca8aa649fb958f524ea862f51cfdab"
+    },
+    "selfit/assets/personality/wabi-curvy/report-hair-01-122deb05fe59f18e.jpg": {
+      "assetId": "asset_122deb05fe59f18e6b1d07db4f31b8ef3394f13f41f7197ab1ea0cdf304e8ad7"
+    },
+    "selfit/assets/personality/wabi-curvy/report-hair-02-df3f6815c96bb046.jpg": {
+      "assetId": "asset_df3f6815c96bb046577fd9d99a85b485bee1740e8668803db60b10333cfc5524"
+    },
+    "selfit/assets/personality/wabi-curvy/report-hero-01-72013a90ef36d819.png": {
+      "assetId": "asset_72013a90ef36d819e4e03718cebdfba231e3c8076b74e086e09cbabb766cfde8"
+    },
+    "selfit/assets/personality/wabi-curvy/report-makeup-01-04ffebcc9ee4c539.jpg": {
+      "assetId": "asset_04ffebcc9ee4c539490fca69db95bba42b977f5c474bdc9f32f067dca68aa542"
+    },
+    "selfit/assets/personality/wabi-curvy/report-makeup-02-49462f3a24ac6dfe.jpg": {
+      "assetId": "asset_49462f3a24ac6dfefdfba0b70052facb985873d4a0549a7a1282ed0a858a7bc2"
+    },
+    "selfit/assets/personality/wabi-curvy/report-outfits-01-10768421a8f84625.jpg": {
+      "assetId": "asset_10768421a8f8462596017c14ed41148cc6164fe9e50d700088d8eb38f8deef2f"
+    },
+    "selfit/assets/personality/wabi-curvy/report-outfits-02-673dcade464d5afc.jpg": {
+      "assetId": "asset_673dcade464d5afcde8ce383e4dc26b890cc89b02d881ff0c7dff681d2c9e08e"
+    },
+    "selfit/assets/personality/wabi-curvy/report-outfits-03-8d0998bfe2c663a3.jpg": {
+      "assetId": "asset_8d0998bfe2c663a3c61cf3e2f9d40675872d0de9939eee4c324282b0436253f5"
+    },
+    "selfit/assets/personality/wabi-curvy/report-outfits-04-8c8459c43243764f.jpg": {
+      "assetId": "asset_8c8459c43243764f90d6aa42f7bb3b5ae2e84aa7f63c02bc4731f2fda02ee365"
+    }
+  }
+}
