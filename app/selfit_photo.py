@@ -122,7 +122,7 @@ class PhotoInspection:
     attributes 为算法识别出的属性标签（如肤色/脸型/身型），键为属性名、
     值为 {"label", "confidence", "status", "evidence", ...}；仅在
     accepted=True 时有意义，接口层把它存进会话记录供报告任务消费，
-    详细字段的用户视角投影见 `public_analysis()`。
+    详细字段的用户视角投影见 `public_analysis()`，原始数值由 /suit 的 photoAnalysis 提供。
     notes 为照片级 warn 提示（{"message", "suggestion"}，用户语言），
     如「脸部略贴近画面边缘，已继续分析」；不拦截上传，仅供结果页解释
     为什么某个属性被标为存疑。

@@ -1,3 +1,5 @@
+import pytest
+
 from app.selfit_suit import suit_summary, DESCRIPTIONS
 from app.selfit_onboarding import MANUAL_FIELDS
 from tests.test_selfit_onboarding_api import _use_tmp_store, _create_session, API
@@ -17,6 +19,108 @@ def test_summary_uses_inference_and_manual_override():
     assert corrected['source'] == 'manual'
     assert corrected['description'] != result['features'][0]['description']
     assert all(value in DESCRIPTIONS for options in MANUAL_FIELDS.values() for value in options)
+
+
+def test_photo_analysis_handles_missing_and_legacy_attributes():
+    assert all(feature['photoAnalysis'] is None for feature in suit_summary({})['features'])
+    record = {'photos': {'face': {'status': 'accepted', 'attributes': {
+        'face_shape': {'label': '椭圆脸', 'confidence': 0.0},
+        'skin_tone': {'label': '中性自然肤'},
+    }}}}
+    face, skin, body = suit_summary(record)['features']
+    assert face['photoAnalysis'] == {
+        'label': '椭圆脸', 'confidence': 0.0, 'candidates': [],
+        'metrics': {'lengthWidthRatio': None, 'jawCheekRatio': None, 'foreheadCheekRatio': None},
+    }
+    assert skin['photoAnalysis'] == {
+        'label': '中性自然肤', 'confidence': None, 'metrics': {'lStar': None, 'itaDegrees': None},
+    }
+    assert body['photoAnalysis'] is None
+    record['photos']['face']['status'] = 'rejected'
+    assert all(feature['photoAnalysis'] is None for feature in suit_summary(record)['features'])
+
+
+@pytest.mark.parametrize('backend', ['json', 'sqlite'])
+def test_suit_returns_saved_measurements_and_keeps_manual_labels_separate(monkeypatch, tmp_path, backend):
+    import io
+    from copy import deepcopy
+    from PIL import Image
+    import app.attribute_pipeline as pipeline
+    import app.selfit_photo as photo
+
+    _use_tmp_store(monkeypatch, tmp_path)
+    monkeypatch.setenv('SELFIT_ONBOARDING_STORE_BACKEND', backend)
+    calls = []
+    face_result = {'status': 'pass', 'issues': [], 'attributes': {
+        'face_shape': {
+            'status': 'pass', 'label': '椭圆脸', 'confidence': 0.76,
+            'candidates': [{'label': '椭圆脸', 'score': 0.58}, {'label': '心形脸', 'score': 0.406}],
+            'evidence': {'method': 'internal', 'features': {
+                'length_width_ratio': 1.281, 'jaw_cheek_ratio': 0.738,
+                'forehead_cheek_ratio': 1.036, 'jaw_angle_deg': 120,
+            }},
+        },
+        'skin_tone': {
+            'status': 'pass', 'label': '中性自然肤', 'confidence': 0.72,
+            'evidence': {'l_star': 65.17, 'ita_deg': 52.6, 'rgb': [150, 130, 120]},
+        },
+    }}
+
+    def analyze_face(image):
+        calls.append('face')
+        return deepcopy(face_result)
+
+    def analyze_body(image):
+        calls.append('body')
+        return {'status': 'pass', 'issues': [], 'attributes': {
+            'body_shape': {'status': 'pass', 'label': '梨型', 'confidence': 0.68},
+        }}
+
+    monkeypatch.setattr(pipeline, 'analyze_face_photo', analyze_face)
+    monkeypatch.setattr(pipeline, 'analyze_body_photo', analyze_body)
+    monkeypatch.setattr(photo, 'inspect_photo', photo.attribute_inspector)
+    monkeypatch.setattr('app.selfit_onboarding._archive_photo_to_qa', lambda *args: None)
+    client = TestClient(app)
+    base = f"{API}/sessions/{_create_session(client)['session']['sessionId']}"
+    image = io.BytesIO()
+    Image.new('RGB', (600, 800), '#a08070').save(image, 'PNG')
+
+    def upload(kind):
+        response = client.post(base + '/photos/' + kind, files={'image': ('photo.png', image.getvalue(), 'image/png')})
+        assert response.status_code == 200
+        assert response.json()['photo']['status'] == 'accepted'
+        assert set(response.json()['photo']) == {'kind', 'assetId', 'status', 'code', 'message', 'issues'}
+
+    upload('face')
+    upload('body')
+    response = client.get(base + '/suit')
+    assert response.status_code == 200 and response.headers['cache-control'] == 'no-store'
+    assert response.json()['photos'] == {'face': True, 'body': True}
+    face, skin, body = response.json()['features']
+    assert face['photoAnalysis'] == {
+        'label': '椭圆脸', 'confidence': 0.76,
+        'candidates': [{'label': '椭圆脸', 'score': 0.58}, {'label': '心形脸', 'score': 0.406}],
+        'metrics': {'lengthWidthRatio': 1.281, 'jawCheekRatio': 0.738, 'foreheadCheekRatio': 1.036},
+    }
+    assert skin['photoAnalysis'] == {
+        'label': '中性自然肤', 'confidence': 0.72, 'metrics': {'lStar': 65.17, 'itaDegrees': 52.6},
+    }
+    assert body['photoAnalysis'] == {'label': '梨型', 'confidence': 0.68}
+    assert client.patch(base + '/profile', json={'manual': {'faceShape': '方脸', 'skin': '暖白肤'}}).status_code == 200
+    corrected = client.get(base + '/suit').json()['features']
+    assert [(item['value'], item['source']) for item in corrected[:2]] == [('方脸', 'manual'), ('暖白肤', 'manual')]
+    assert [item['photoAnalysis'] for item in corrected] == [item['photoAnalysis'] for item in (face, skin, body)]
+    assert calls == ['face', 'body']  # GET and manual edits consume saved values without running detection.
+
+    # A replacement face whose shape is unrecognizable must not reuse the old candidates/ratios.
+    face_result['attributes']['face_shape'] = {'status': 'warn', 'label': None, 'confidence': 0.4}
+    face_result['attributes']['skin_tone']['evidence'] = {'l_star': 64.0, 'ita_deg': 0.0}
+    upload('face')
+    replaced = client.get(base + '/suit').json()['features']
+    assert replaced[0]['value'] is None and replaced[0]['photoAnalysis'] is None
+    assert replaced[1]['value'] == '中性自然肤' and replaced[1]['source'] == 'photo'
+    assert replaced[1]['photoAnalysis']['metrics'] == {'lStar': 64.0, 'itaDegrees': 0.0}
+    assert replaced[2]['photoAnalysis'] == body['photoAnalysis']
 
 
 def test_suit_endpoint_and_optional_palette(monkeypatch, tmp_path):

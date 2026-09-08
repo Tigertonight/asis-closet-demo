@@ -20,6 +20,30 @@ DESCRIPTIONS = {
     '苹果型': ('身体量感较集中在腰腹，上下肢相对轻盈。', '试试有垂感的面料和清晰纵向线条，保留舒适空间。'),
 }
 
+def _photo_analysis(record, kind, attribute_name):
+    """Original photo inference, independent of any later manual correction."""
+    photo = (record.get('photos') or {}).get(kind) or {}
+    attribute = (photo.get('attributes') or {}).get(attribute_name)
+    if photo.get('status') != 'accepted' or not attribute:
+        return None
+    analysis = {'label': attribute.get('label'), 'confidence': attribute.get('confidence')}
+    evidence = attribute.get('evidence') or {}
+    if attribute_name == 'face_shape':
+        analysis['candidates'] = [
+            {'label': candidate['label'], 'score': candidate['score']}
+            for candidate in (attribute.get('candidates') or [])
+        ]
+        measurements = evidence.get('features') or {}
+        analysis['metrics'] = {
+            'lengthWidthRatio': measurements.get('length_width_ratio'),
+            'jawCheekRatio': measurements.get('jaw_cheek_ratio'),
+            'foreheadCheekRatio': measurements.get('forehead_cheek_ratio'),
+        }
+    elif attribute_name == 'skin_tone':
+        analysis['metrics'] = {'lStar': evidence.get('l_star'), 'itaDegrees': evidence.get('ita_deg')}
+    return analysis
+
+
 def suit_summary(record):
     resolved = resolve_suit_profile(record)
     fields = [('faceShape', 'face_shape', '脸型'), ('skin', 'skin', '肤色'), ('bodyShape', 'body_shape', '身材比例')]
@@ -28,6 +52,8 @@ def suit_summary(record):
         value = resolved.get(source_key)
         description, advice = DESCRIPTIONS.get(value, ('照片中还看不清这项特点，你可以手动选择。', '选择更接近自己的特点，帮助我们完善推荐。'))
         features.append(dict(key=key, title=title, value=value, description=description, advice=advice,
-                             source='manual' if (record.get('manual') or {}).get(key) else ('photo' if value else 'unknown')))
+                             source='manual' if (record.get('manual') or {}).get(key) else ('photo' if value else 'unknown'),
+                             photoAnalysis=_photo_analysis(record, 'body' if key == 'bodyShape' else 'face',
+                                                           'skin_tone' if key == 'skin' else source_key)))
     return {'revision': record.get('revision', 1), 'features': features,
             'photos': {kind: bool((record.get('photos', {}).get(kind) or {}).get('status') == 'accepted') for kind in ('face', 'body')}}

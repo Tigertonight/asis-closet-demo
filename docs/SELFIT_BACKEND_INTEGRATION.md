@@ -21,7 +21,7 @@ API 基路径：`/api/v1/selfit`
 | 帮我搭一套 | 发起意图、反馈排队状态 | 建立穿搭请求及后续生命周期 | `POST /reports/{id}/outfit-requests` |
 | 保存并分享 | 轮播选择、渠道选择、下载/唤起 | 合成分享图片、返回可访问资源 | `POST /reports/{id}/share-assets` |
 
-原则：前端不读取原始模型分数、mask、provider、pipeline 或内部标签。后端可复用现有 `/analyze` 能力，但必须转换成本文的稳定业务响应。
+原则：后端将算法输出转换成本文的稳定业务响应。照片分析数值按 4.2.1 的 `photoAnalysis` 契约提供；mask、provider、pipeline 等内部调试数据不进入主流程接口。
 
 ## 2. 运行模式
 
@@ -161,6 +161,58 @@ window.__SELFIT_CONFIG__ = {
 ```
 
 建议问题枚举：`insufficient_light`、`blurred`、`face_not_found`、`multiple_people`、`body_not_complete`、`unsupported_content`。协议/大小错误使用 `400/413/415`。
+
+### 4.2.1 获取 suit 特征与照片分析数值
+
+`GET /sessions/{sessionId}/suit`
+
+上传路径中，两张照片均返回 `accepted` 后停留在上传页并启用“帮我识别”；用户点击后先展示 loading，再调用本接口获取已保存的分析结果。上传完成本身不触发此 GET。请求失败时回到上传页，保留照片供点击重试。
+
+响应包含 `revision`、`photos: {face, body}`、`analyses` 和 `features`（依次为 `faceShape`、`skin`、`bodyShape`）。每项保留 `key`、`title`、`value`、`source`、`description`、`advice`，新增 `photoAnalysis`。
+
+以下为脸型和肤色的示例片段，数值仅用于说明结构：
+
+```json
+{
+  "features": [
+    {
+      "key": "faceShape",
+      "value": "椭圆脸",
+      "source": "photo",
+      "photoAnalysis": {
+        "label": "椭圆脸",
+        "confidence": 0.76,
+        "candidates": [
+          {"label": "椭圆脸", "score": 0.58},
+          {"label": "心形脸", "score": 0.406}
+        ],
+        "metrics": {
+          "lengthWidthRatio": 1.281,
+          "jawCheekRatio": 0.738,
+          "foreheadCheekRatio": 1.036
+        }
+      }
+    },
+    {
+      "key": "skin",
+      "value": "中性自然肤",
+      "source": "photo",
+      "photoAnalysis": {
+        "label": "中性自然肤",
+        "confidence": 0.72,
+        "metrics": {"lStar": 65.17, "itaDegrees": 52.6}
+      }
+    }
+  ]
+}
+```
+
+- `photoAnalysis` 始终表示当前会话对应照片的原始识别结果。用户手动修改后，外层 `value/source` 更新，`photoAnalysis.label` 和测量值保留，不能将照片评分解释成手动标签的评分。
+- `candidates` 按评分从高到低排列，当前最多两项，第二项是次选脸型。`score` 是规则匹配分数，`confidence` 是识别可信度，均不是统计概率。
+- `lengthWidthRatio`、`jawCheekRatio`、`foreheadCheekRatio` 分别是脸部长度/颧骨宽、下颌宽/颧骨宽、额宽/颧骨宽，无单位。`lStar` 是肤色 L* 明度，`itaDegrees` 是 ITA 角度（度）。
+- `bodyShape.photoAnalysis` 仅包含已有的 `label` 和 `confidence`。
+- 没有可用的属性识别结果时，`photoAnalysis` 为 `null`。旧记录若仅存了标签/可信度，仍返回这些值，缺少的数值为 `null`、候选为 `[]`；不会填 `0`、推测数值或在 GET 请求中重新计算。重新上传照片可保存并返回新字段。
+- 数值在上传检测时保存；上传 POST 保留 4.2 中 `photo` 的接受/拒绝结构，接受时新增顶层 `analysis`。GET 的 `analyses.face/body` 提供同样的展示结构：`kind`、`attributes`，各属性包含 `label/status/confidence`、格式化的 `metrics`、`notes`，脸型可包含 `runnerUp`；原始数值仍由 `features[].photoAnalysis` 提供。照片预览通过 `GET /sessions/{sessionId}/photos/{kind}/preview` 单独返回图片。
 
 ### 4.3 保存手动 suit 信息
 

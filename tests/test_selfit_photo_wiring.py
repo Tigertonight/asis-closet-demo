@@ -45,8 +45,8 @@ def _upload(client: TestClient, session_id: str, kind: str, path: Path) -> dict:
     return response.json()
 
 
-def _stored_session(tmp_path: Path, session_id: str) -> dict:
-    store = json.loads((tmp_path / "outputs" / "selfit_onboarding" / "sessions.json").read_text(encoding="utf-8"))
+def _stored_session(session_id: str) -> dict:
+    store = selfit_onboarding._load_store()
     return next(record for record in store["sessions"] if record["session_id"] == session_id)
 
 
@@ -61,6 +61,16 @@ def test_inspector_accepts_clear_face_with_attributes() -> None:
     assert inspection.issues == []
     assert inspection.attributes["skin_tone"]["label"] in {"冷白肤", "暖白肤", "中性自然肤", "暖黄肤", "橄榄肤", "小麦色"}
     assert inspection.attributes["face_shape"]["label"] in {"椭圆脸", "圆脸", "方脸", "心形脸", "菱形脸"}
+    face = inspection.attributes["face_shape"]
+    assert len(face["candidates"]) == 2
+    assert face["candidates"][0]["label"] == face["label"]
+    assert face["candidates"][0]["score"] >= face["candidates"][1]["score"]
+    for key in ("length_width_ratio", "jaw_cheek_ratio", "forehead_cheek_ratio"):
+        value = face["evidence"]["features"][key]
+        assert isinstance(value, (int, float)) and value > 0
+    skin = inspection.attributes["skin_tone"]["evidence"]
+    assert 0 <= skin["l_star"] <= 100
+    assert -180 <= skin["ita_deg"] <= 180
 
 
 def test_inspector_accepts_bangs_forehead() -> None:
@@ -114,7 +124,7 @@ def test_upload_real_face_photo_accepted_and_attributes_stored(monkeypatch: pyte
     assert photo["code"] == "photo.accepted"
     assert photo["assetId"].startswith("asset_face_")
 
-    stored = _stored_session(tmp_path, session_id)
+    stored = _stored_session(session_id)
     attributes = stored["photos"]["face"]["attributes"]
     assert attributes["skin_tone"]["label"]
     assert attributes["face_shape"]["label"]
@@ -132,7 +142,7 @@ def test_upload_bangs_photo_accepted_with_skin_attributes(monkeypatch: pytest.Mo
     assert photo["code"] == "photo.accepted"
     assert photo["assetId"].startswith("asset_face_")
 
-    stored = _stored_session(tmp_path, session_id)
+    stored = _stored_session(session_id)
     attributes = stored["photos"]["face"]["attributes"]
     assert attributes["skin_tone"]["label"]
     assert "face_shape" not in attributes or not attributes["face_shape"].get("label")
@@ -147,7 +157,7 @@ def test_upload_full_body_photo_accepted(monkeypatch: pytest.MonkeyPatch, tmp_pa
     photo = payload["photo"]
     assert photo["status"] == "accepted"
 
-    stored = _stored_session(tmp_path, session_id)
+    stored = _stored_session(session_id)
     assert stored["photos"]["body"]["attributes"]["body_shape"]["label"]
 
 
@@ -249,7 +259,7 @@ def test_upload_and_suit_return_user_analysis(monkeypatch: pytest.MonkeyPatch, t
     if face:
         assert any(metric["key"] == "lengthWidth" for metric in face["metrics"])
 
-    stored = _stored_session(tmp_path, session_id)
+    stored = _stored_session(session_id)
     stored_face = stored["photos"]["face"]
     assert stored_face["attributes"]["skin_tone"]["evidence"]["l_star"] is not None
     assert isinstance(stored_face.get("notes"), list)

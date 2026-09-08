@@ -562,7 +562,12 @@
       const img = document.createElement('img'); img.alt = kind === 'face' ? '脸型与肤色采样分析图' : '肩腰胯比例分析图'; img.hidden = true;
       const status = document.createElement('span'); status.className = 'suit-photo-placeholder'; status.textContent = '照片加载中…';
       media.append(img, status);
-      const caption = document.createElement('figcaption'); caption.textContent = kind === 'face' ? '脸型 · 肤色' : '身体线条 · 比例';
+      const caption = document.createElement('figcaption');
+      const featureKeys = kind === 'face' ? ['faceShape', 'skin'] : ['bodyShape'];
+      const featureValues = featureKeys.map(key => summary.features.find(feature => feature.key === key)?.value || '暂未识别');
+      caption.textContent = `${kind === 'face' ? '【脸型 肤色】' : '【身材比例】'}：`;
+      const values = document.createElement('span'); values.className = 'suit-photo-values'; values.textContent = featureValues.join(' ');
+      caption.append(values);
       const action = document.createElement('button'); action.type = 'button'; action.className = 'suit-photo-action'; action.textContent = '照片加载中…';
       figure.append(media, caption);
       ((analyses[kind] || {}).notes || []).forEach(note => {
@@ -596,6 +601,16 @@
       await load();
     }));
   };
+  const openUploadedSuit = async () => {
+    if (state.screen !== 'suit' || !Object.values(state.photoStatus).every(status => status === 'valid')) return;
+    showScreen('suit-processing');
+    try {
+      await renderSuit();
+    } catch {
+      showScreen('suit');
+      toast('照片已处理完成，结果暂时无法加载，请点击下方按钮重试。');
+    }
+  };
   const bindUpload = (id, kind) => {
     const input = document.querySelector(`#${id}`);
     const card = document.querySelector(`[data-upload-card="${kind}"]`);
@@ -612,7 +627,6 @@
       state[kind === 'face' ? 'facePhoto' : 'bodyPhoto'] = file;
       renderPhotoPreview(card, file, kind);
       setPhotoState(kind, 'checking', '正在处理照片…');
-      showScreen('suit-processing');
 
       try {
         const sessionId = await ensureSession();
@@ -624,22 +638,17 @@
         state.revision = result.revision || state.revision;
         track('photo_upload_result', { kind, accepted, code: result.photo?.code || '' });
         setPhotoState(kind, accepted ? 'valid' : 'invalid', result.photo?.message || (accepted ? '照片可用' : '请重新上传'));
-        if (accepted && Object.values(state.photoStatus).every(status => status === 'valid')) {
-          try { await renderSuit(); } catch (error) { showScreen('suit'); toast('照片已处理完成，结果暂时无法加载，请点击下方按钮重试。'); }
-        }
-        else showScreen('suit');
       } catch (requestError) {
         if (controller.signal.aborted) return;
         track('photo_upload_result', { kind, accepted: false, code: 'network' });
         setPhotoState(kind, 'invalid', requestError.message || '照片检测失败，请重试');
-        showScreen('suit');
       }
     });
   };
   bindUpload('facePhoto', 'face'); bindUpload('bodyPhoto', 'body');
   const analysisHintDialog = document.querySelector('#analysisHintDialog');
   analysisHintDialog?.addEventListener('click', (event) => { if (event.target === analysisHintDialog) analysisHintDialog.close(); });
-  document.querySelector('#suitNext').addEventListener('click', event => runButtonAction(event.currentTarget, renderSuit));
+  document.querySelector('#suitNext').addEventListener('click', event => runButtonAction(event.currentTarget, openUploadedSuit));
 
   document.querySelector('.manual-form').addEventListener('click', (event) => {
     const button = event.target.closest('[data-manual]'); if (!button) return;
