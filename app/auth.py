@@ -213,6 +213,19 @@ def verify_invite_login(invite_code: str, client_ip: str) -> dict[str, Any]:
     }
 
 
+def create_guest_session(client_ip: str) -> dict[str, Any]:
+    """Give each visitor an isolated identity without an interactive login."""
+    now = datetime.now(timezone.utc)
+    data = _load_store()
+    user = {"user_id": "guest_" + secrets.token_hex(16), "status": "active",
+            "created_at": now.isoformat(), "last_login_at": now.isoformat()}
+    data["users"].append(user)
+    token = _issue_session(data, user, now, "guest", client_ip)
+    _write_store(data)
+    return {"status": "ok", "access_token": token, "token_type": "bearer",
+            "expires_in_seconds": TOKEN_TTL_HOURS * 3600, "user": _public_user(user)}
+
+
 def _phone_direct_enabled() -> bool:
     # 线下路演默认放开免短信验证码的手机号直接登录；正式运营可设 SELFIT_AUTH_ALLOW_PHONE_DIRECT=0 关闭。
     return env_flag("SELFIT_AUTH_ALLOW_PHONE_DIRECT", True)

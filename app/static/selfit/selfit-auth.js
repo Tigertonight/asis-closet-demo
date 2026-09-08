@@ -78,6 +78,13 @@
       }
     }
 
+    async ensureVisitor() {
+      const stored = this.readStoredSession();
+      if (stored) { this.session = stored; return stored; }
+      if (this.mode === 'mock') return null;
+      return this.persist(await this.request('/guest', { method: 'POST' }));
+    }
+
     async restore() {
       const stored = this.readStoredSession();
       if (!stored) return null;

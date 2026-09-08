@@ -307,3 +307,17 @@ def test_phone_direct_login_not_throttled_by_admin_auth_rule(monkeypatch, tmp_pa
     second_admin = client.post("/admin/api/login", json={"password": "whatever"}, headers=headers)
     assert second_admin.status_code == 429
     assert second_admin.json()["error"]["code"] == "request.rate_limited"
+
+
+def test_guests_can_enter_without_login_and_remain_isolated(monkeypatch, tmp_path):
+    _use_tmp_runtime(monkeypatch, tmp_path)
+    client = TestClient(app)
+    first = client.post('/auth/guest').json()
+    second = client.post('/auth/guest').json()
+    assert first['user']['user_id'] != second['user']['user_id']
+    for session in (first, second):
+        headers = {'Authorization': f"Bearer {session['access_token']}"}
+        assert client.get('/auth/me', headers=headers).json()['user']['user_id'] == session['user']['user_id']
+        response = client.get('/selfit/try-on/wardrobe', headers=headers)
+        assert response.status_code == 200
+        assert response.json()['items'] == []

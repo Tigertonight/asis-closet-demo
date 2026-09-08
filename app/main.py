@@ -30,6 +30,7 @@ from app.auth import (
     start_phone_login,
     verify_phone_login,
     verify_phone_direct_login,
+    create_guest_session,
     verify_invite_login,
     client_ip_from_request,
 )
@@ -400,6 +401,11 @@ def health_dependencies() -> dict[str, Any]:
         "deployment": deployment_guard_report(),
         "missing_actions": report["missing_actions"],
     }
+
+
+@app.post("/auth/guest")
+def auth_guest(request: Request) -> dict[str, Any]:
+    return create_guest_session(client_ip_from_request(request))
 
 
 @app.post("/auth/phone/start")
