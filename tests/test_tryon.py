@@ -779,14 +779,18 @@ def test_runway_google_payload_uses_person_garment_and_mask_images() -> None:
 
 def test_fit_image_to_reference_canvas_preserves_model_size() -> None:
     reference = TRYON_MODEL_FIXTURE_DIR / "female_medium_1.png"
-    generated = Image.new("RGB", (1195, 896), "white")
-
-    normalized, evidence = _fit_image_to_reference_canvas(generated, reference)
-
     with Image.open(reference) as image:
-        assert normalized.size == image.size
+        size = image.size
+    generated = Image.new("RGB", (size[0] * 2, size[1] * 2), "white")
+    normalized, evidence = _fit_image_to_reference_canvas(generated, reference)
+    assert normalized.size == size
     assert evidence["normalized"] is True
-    assert evidence["rule"] == "center_crop_to_image_a_canvas"
+
+
+def test_fit_image_rejects_landscape_collage_instead_of_cropping_person() -> None:
+    reference = TRYON_MODEL_FIXTURE_DIR / "female_medium_1.png"
+    with pytest.raises(ValueError, match="构图异常"):
+        _fit_image_to_reference_canvas(Image.new("RGB", (1195, 896), "white"), reference)
 
 
 def test_runway_google_extracts_inline_image() -> None:
@@ -825,3 +829,32 @@ def test_runway_google_provider_handles_missing_key() -> None:
     assert result["image_path"] is None
     assert result["stage"]["status"] == "fail"
     assert result["stage"]["evidence"]["provider"] == "runway_google_generate_content"
+
+
+def test_failed_outfit_quality_is_not_published_as_review(monkeypatch):
+    person = _load_upload(TRYON_MODEL_FIXTURE_DIR / "male_medium_1.png", "person_test")
+    plan = {"model_photo_mode": "face_covered", "items": [
+        {"slot": "top", "category": "top", "image_path": str(FIXTURE_DIR / "card_missing.jpg")}
+    ]}
+    monkeypatch.setattr(tryon, "_review_outfit_tryon_quality", lambda *a, **k:
+        tryon._stage("fail", 0.1, {}, [tryon._issue("quality.face_changed", "人物发生变化", "请重新生成")]))
+    result = run_try_on_from_outfit_plan(person, plan, MockTryOnProvider())
+    assert result["status"] == "failed"
+
+
+def test_failed_first_pass_stops_accessory_generation(monkeypatch, tmp_path):
+    person = _load_upload(TRYON_MODEL_FIXTURE_DIR / "male_medium_1.png", "person_test")
+    calls = []
+    class Provider:
+        mode = "test"
+        def edit(self, **kwargs):
+            calls.append(kwargs)
+            return {"stage": tryon._stage("pass", 1, {}, []), "image_path": person["saved_path"]}
+    monkeypatch.setattr(tryon, "_review_tryon_quality", lambda *a, **k:
+        tryon._stage("fail", 0, {}, [tryon._issue("quality.face_changed", "人物发生变化", "请重试")]))
+    plan = {"items": [{"slot": slot, "category": slot, "image_path": str(FIXTURE_DIR / "card_missing.jpg")}
+                      for slot in ["top", "bag"]]}
+    result = tryon._run_staged_outfit_edit(Provider(), person["saved_path"], plan, _detect_person(person["image"]), tmp_path)
+    assert len(calls) == 1
+    assert result["stage"]["status"] == "fail"
+    assert result["image_path"] is None

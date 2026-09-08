@@ -49,7 +49,7 @@ XHS_ALLOWED_HOST_PARTS = ("xiaohongshu.com", "xhslink.com", "xhscdn.com")
 MAX_XHS_IMAGES = 12
 FASHION_ITEM_CATEGORIES = {"top", "outer", "bottom", "skirt", "dress", "shoes", "bag", "accessory"}
 OUTFIT_PHOTO_MODES = {"standard", "mirror_selfie", "face_covered", "scene_photo"}
-OUTFIT_TRYON_PIPELINE_VERSION = "outfit_tryon_v4_controllable_pieces"
+OUTFIT_TRYON_PIPELINE_VERSION = "outfit_tryon_v5_framing_quality_gate"
 TRYON_JOB_EXECUTOR = ThreadPoolExecutor(max_workers=2, thread_name_prefix="selfit-tryon")
 TRYON_JOB_LOCK = threading.Lock()
 OUTFIT_REQUIRED_GROUPS = {
@@ -1184,7 +1184,7 @@ def run_try_on_from_outfit_plan(
                     user_message = f"已替换画面中可见的单品；{skipped_copy}未入镜，本次自动跳过。"
                 else:
                     user_message = "已生成整套穿搭试穿图，建议重点观察单品是否完整、比例和整体氛围。"
-            elif pipeline["image_edit"]["status"] == "pass" and result_image_path:
+            elif pipeline["image_edit"]["status"] == "pass" and result_image_path and pipeline["quality_review"]["status"] == "warn":
                 status = "review"
                 user_message = "试穿图已生成，但有些细节建议复核；你可以先查看，也可以重新生成一版。"
             else:
@@ -1705,6 +1705,8 @@ def _fit_image_to_reference_canvas(image: Image.Image, reference_path: Path) -> 
         return image, {"normalized": False, "source_size": {"width": source_size[0], "height": source_size[1]}, "target_size": {"width": target_size[0], "height": target_size[1]}}
     src_aspect = source_size[0] / max(1, source_size[1])
     target_aspect = target_size[0] / max(1, target_size[1])
+    if abs(src_aspect / target_aspect - 1) > 0.08:
+        raise ValueError("试穿图构图异常，请重新生成；不能将横向拼图裁成竖向人像。")
     if src_aspect > target_aspect:
         crop_width = int(source_size[1] * target_aspect)
         left = max(0, (source_size[0] - crop_width) // 2)
@@ -2006,7 +2008,14 @@ class RunwayGoogleTryOnProvider(TryOnProvider):
             raw = base64.b64decode(b64_data)
             image = Image.open(io.BytesIO(raw)).convert("RGB")
             image.load()
-            image, canvas_normalization = _fit_image_to_reference_canvas(image, person_image)
+            try:
+                image, canvas_normalization = _fit_image_to_reference_canvas(image, person_image)
+            except ValueError:
+                return {"stage": _stage("fail", 0.0, {"provider": self.mode,
+                    "source_size": {"width": image.width, "height": image.height},
+                    "target_size": _image_size_evidence(person_image)},
+                    [_issue("quality.framing_changed", "试穿图构图异常", "请重新生成，保持原照片中的人物与构图。")]),
+                    "image_path": None}
             output_path = output_dir / "result_runway_google.png"
             _save_png_atomically(image, output_path)
             return {
@@ -4242,6 +4251,16 @@ def _run_staged_outfit_edit(
         confidences.append(float(result_stage.get("confidence") or 0.0))
         if result_stage.get("status") in {"fail", "pending"} or not result_path:
             final_status = str(result_stage.get("status") or "fail")
+            break
+        quality = _review_tryon_quality(
+            Image.open(current_person).convert("RGB"), Path(result_path),
+            person_detection, Path(mask["evidence"]["mask_path"]),
+        )
+        stage_evidence[-1]["quality_review"] = quality
+        if quality["status"] == "fail":
+            issues.extend(quality.get("issues", []))
+            final_status = "fail"
+            final_path = None
             break
         final_path = Path(result_path)
         current_person = final_path
