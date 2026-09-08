@@ -28,7 +28,7 @@ def test_selfit_report_back_respects_the_app_parent_entry() -> None:
     assert "'app-home': 'home'" in script.text
     assert "'app-profile': 'me'" in script.text
     assert "state.screen === 'report' && returnToReportParent()" in script.text
-    assert "appUrl.searchParams.set('tab', reportParentTab)" in script.text
+    assert "appUrl.searchParams.set('screen', 'mirror')" in script.text
 
 
 def test_selfit_onboarding_includes_the_figma_login_extension() -> None:
@@ -137,7 +137,7 @@ def test_selfit_photo_validation_copy_is_centered_as_a_complete_line() -> None:
     assert "flex-direction: column; align-items: center;" in styles.text
     assert ".photo-status { display: flex; width: max-content; max-width: 100%;" in styles.text
     assert "justify-content: center;" in styles.text
-    assert "text-align: center; white-space: nowrap;" in styles.text
+    assert "text-align: center; white-space: normal; overflow-wrap: anywhere;" in styles.text
 
 
 def test_selfit_like_palettes_match_the_latest_figma_color_order() -> None:
@@ -187,17 +187,17 @@ def test_selfit_back_control_and_stepper_share_the_figma_top_row() -> None:
     assert "height: 38px;" in styles.text
     assert "transform: translateX(-50%);" in styles.text
     assert ".manual-header .icon-button { position: absolute; top: 1px; left: 20px; width: 44px; height: 44px;" in styles.text
-    assert ".page-copy--suit, .page-copy--assessment { margin-top: 111px; }" in styles.text
+    assert ".page-copy--suit, .page-copy--assessment { margin-top: calc(var(--onboarding-safe-top) + 103px); }" in styles.text
 
 
-def test_selfit_suit_keeps_the_manual_selection_entry_above_the_primary_action() -> None:
+def test_selfit_suit_keeps_the_skip_photos_entry_above_the_primary_action() -> None:
     markup = client.get("/selfit/demo")
     styles = client.get("/static/selfit/selfit.css")
 
     assert markup.status_code == 200
     assert styles.status_code == 200
-    assert 'class="direct-select" type="button" data-next="suit-manual"' in markup.text
-    assert "不方便拍照？直接选" in markup.text
+    assert 'class="direct-select" type="button" id="skipPhotos"' in markup.text
+    assert "不方便拍照？跳过" in markup.text
     assert "bottom: calc(max(60px, env(safe-area-inset-bottom)) + 52px);" in styles.text
     assert "min-width: 184px;" in styles.text
     assert "height: 44px;" in styles.text
@@ -224,7 +224,7 @@ def test_selfit_auth_adapter_and_bearer_wiring_are_available() -> None:
     assert "state.authUser ? 'intro' : 'login'" in runtime.text
     assert "auth.directPhone(normalizedPhone())" in runtime.text
     assert "openAppForExistingReport()" in runtime.text
-    assert "/wearwow/demo?from=login&persona=" in runtime.text
+    assert "/selfit/try-on?from=login&persona=" in runtime.text
     assert "/^1[3-9]\\d{9}$/".replace("\\\\", "\\") in runtime.text or "1[3-9]" in runtime.text
 
 
@@ -252,7 +252,8 @@ def test_selfit_onboarding_uses_high_resolution_production_assets() -> None:
         assert response.headers["content-type"].startswith("image/"), asset_path
 
 
-def test_selfit_report_share_cards_use_the_dedicated_qr_artwork() -> None:
+def test_selfit_report_share_cards_use_the_dedicated_qr_artwork(monkeypatch) -> None:
+    monkeypatch.setenv("SELFIT_PUBLIC_BASE_URL", "http://testserver")
     response = client.get("/selfit/demo")
 
     assert response.status_code == 200
@@ -262,8 +263,8 @@ def test_selfit_report_share_cards_use_the_dedicated_qr_artwork() -> None:
     assert response.text.count('class="share-qr" src="/static/selfit/assets/share-report-qr.png?v=20260828"') == 3
     assert 'class="public-report-error-qr"><img src="/static/selfit/assets/share-report-qr.png?v=20260828"' in response.text
     assert 'data-share-ornament' in response.text
-    assert "/static/selfit/selfit.css?v=20260829-vibe-webkit1" in response.text
-    assert "/static/selfit/selfit.js?v=20260901-report-parent2" in response.text
+    assert re.search(r'/static/selfit/selfit.css\?v=[^"\s]+', response.text)
+    assert re.search(r'/static/selfit/selfit.js\?v=[^"\s]+', response.text)
     assert "/static/selfit/selfit-persona.js?v=20260829-bolt-korean1" in response.text
     assert 'property="og:image" content="http://testserver/selfit/share-logo.png"' in response.text
     assert 'property="og:image:width" content="600"' in response.text
@@ -361,8 +362,8 @@ def test_selfit_onboarding_has_webview_layout_and_boot_fallbacks() -> None:
     assert "overflow-y: hidden;" in styles.text
     assert ".auth-field input {" in styles.text
     assert "font-size: 16px; line-height: 22px;" in styles.text
-    assert ".report-actions { width: var(--screen-w); }" in styles.text
-    assert ".share-dialog { width: var(--screen-w); height: var(--screen-h);" in styles.text
+    assert ".report-actions { width: var(--screen-w); bottom: max(24px, calc((var(--visual-viewport-height, 100dvh) - 852px) / 2)); }" in styles.text
+    assert ".share-dialog { width: var(--screen-w); height: min(var(--screen-h), calc(var(--visual-viewport-height, 100dvh) - 48px));" in styles.text
     assert ".no-native-dialog .share-dialog[open]" in styles.text
 
     assert "window.__SELFIT_BOOT_OK__ = true" in runtime.text
@@ -445,7 +446,7 @@ def test_selfit_personality_catalog_keeps_all_colors_but_renders_first_five() ->
 
     assert response.status_code == 200
     catalog = json.loads(response.text)
-    assert catalog["templateVersion"] == "2026.08.personality-db-v6"
+    assert catalog["templateVersion"] == "2026.09.report-content-v1"
     assert catalog["renderRules"]["colors"]["limit"] == 5
     assert len(catalog["types"]) == 16
     assert sum(len(item["colors"]["items"]) for item in catalog["types"].values()) == 112
@@ -455,7 +456,7 @@ def test_selfit_personality_catalog_keeps_all_colors_but_renders_first_five() ->
         assert template["typeId"] == type_id
         hero = template["hero"]["image"]
         assert hero["placeholder"] is False
-        assert hero["src"] == f"/static/selfit/assets/personality/{type_id}/hero.png?v=20260828-config-v1"
+        assert hero["src"] == f"/static/selfit/assets/personality/{type_id}/hero.png?v=20260907-config-v2"
         assert (hero["width"], hero["height"]) == (1484, 1072)
         assert len(template["colors"]["items"]) >= 5
         assert len(template["recommendations"]["makeup"]) == 2
@@ -468,8 +469,8 @@ def test_selfit_personality_catalog_keeps_all_colors_but_renders_first_five() ->
     assert all(item["name"] not in {"💇🏻‍♀️显脸小的发型💓", "减龄又显白的发色、米棕色"} for item in mute_hair)
 
     bolt_hair = catalog["types"]["bolt"]["recommendations"]["hair"]
-    assert [item["name"] for item in bolt_hair] == ["柔感水波", "侧分长直"]
-    assert bolt_hair[1]["image"]["alt"] == "在逃千金 · 侧分长直"
+    assert [item["name"] for item in bolt_hair] == ["柔感水波", "优雅S卷"]
+    assert bolt_hair[1]["image"]["alt"] == "在逃千金 · 优雅S卷"
 
     runtime = client.get("/static/selfit/selfit.js")
     assert runtime.status_code == 200

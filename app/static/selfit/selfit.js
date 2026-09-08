@@ -14,8 +14,8 @@
   // Persistent nav config per onboarding screen: where "back" goes, which step
   // is current, and how far the progress fill should reach.
   const ONBOARDING_NAV = {
-    suit: { back: 'intro', progress: 'suit', current: 'suit', done: [] },
-    'suit-manual': { back: 'suit', progress: 'suit', current: 'suit', done: [] },
+    'suit-manual': { back: 'intro', progress: 'suit', current: 'suit', done: [] },
+    suit: { back: 'suit-manual', progress: 'suit', current: 'suit', done: [] },
     like: { back: 'suit', progress: 'like', current: 'like', done: ['suit'] },
     vibe: { back: 'like', progress: 'vibe', current: 'vibe', done: ['suit', 'like'] },
   };
@@ -30,6 +30,8 @@
       const key = step.dataset.step;
       step.classList.toggle('is-current', key === config.current);
       step.classList.toggle('is-done', config.done.includes(key));
+      if (key === config.current) step.setAttribute('aria-current', 'step');
+      else step.removeAttribute('aria-current');
     });
   };
   const SESSION_STORAGE_KEY = 'selfit.onboarding.session.v1';
@@ -351,6 +353,7 @@
 
   const validatePhoto = (file) => {
     if (!file) return '请选择照片';
+    if (!file.type.startsWith('image/') && !/\.(heic|heif|jpe?g|png|webp|avif)$/i.test(file.name)) return '请选择一张照片，再试一次';
     if (file.size > 20 * 1024 * 1024) return '照片请小于 20MB';
     return '';
   };
@@ -390,22 +393,31 @@
     const card = document.querySelector(`[data-upload-card="${kind}"]`);
     let activeController = null;
     input.addEventListener('change', async () => {
-      const file = input.files?.[0]; const error = validatePhoto(file);
+      const file = input.files?.[0];
+      if (!file) return;
+      // A rejected image can be selected again, including after a network retry.
+      input.value = '';
+      activeController?.abort();
+      const controller = new AbortController();
+      activeController = controller;
+      state.photoAssets[kind] = null;
+      const error = validatePhoto(file);
       if (error) { setPhotoState(kind, 'invalid', error); return; }
       state[kind === 'face' ? 'facePhoto' : 'bodyPhoto'] = file;
       renderPhotoPreview(card, file, kind);
       setPhotoState(kind, 'checking', '照片检测中...');
-      activeController?.abort(); activeController = new AbortController();
       try {
         const sessionId = await ensureSession();
-        const result = await api.checkPhoto(sessionId, kind, file, { signal: activeController.signal });
+        if (controller.signal.aborted) return;
+        const result = await api.checkPhoto(sessionId, kind, file, { signal: controller.signal });
+        if (controller.signal.aborted) return;
         const accepted = result.photo?.status === 'accepted';
         state.photoAssets[kind] = accepted ? result.photo.assetId : null;
         state.revision = result.revision || state.revision;
         track('photo_upload_result', { kind, accepted, code: result.photo?.code || '' });
         setPhotoState(kind, accepted ? 'valid' : 'invalid', result.photo?.message || (accepted ? '照片可用' : '请重新上传'));
       } catch (requestError) {
-        if (activeController.signal.aborted) return;
+        if (controller.signal.aborted) return;
         track('photo_upload_result', { kind, accepted: false, code: 'network' });
         setPhotoState(kind, 'invalid', requestError.message || '照片检测失败，请重试');
       }
@@ -413,6 +425,11 @@
   };
   bindUpload('facePhoto', 'face'); bindUpload('bodyPhoto', 'body');
   document.querySelector('#suitNext').addEventListener('click', () => showScreen('like'));
+  document.querySelector('#skipPhotos').addEventListener('click', () => {
+    // Normal entry has already saved all three choices. A direct preview of
+    // the upload screen still needs those choices before skipping photos.
+    showScreen(Object.values(state.manual).every(Boolean) ? 'like' : 'suit-manual');
+  });
 
   document.querySelector('.manual-form').addEventListener('click', (event) => {
     const button = event.target.closest('[data-manual]'); if (!button) return;
@@ -429,7 +446,7 @@
     const result = await api.saveManualProfile(sessionId, state.manual);
     state.revision = result.session?.revision || state.revision;
     track('manual_saved');
-    showScreen('like');
+    showScreen('suit');
   }));
 
   document.querySelector('#paletteGrid').addEventListener('click', (event) => {
@@ -459,7 +476,10 @@
       item.classList.toggle('is-selected', selected);
       item.setAttribute('aria-pressed', String(selected));
     });
-    document.querySelector('#vibeNext').disabled = Object.keys(state.answers).length !== 3;
+    const complete = Object.keys(state.answers).length === 3;
+    const next = document.querySelector('#vibeNext');
+    next.disabled = !complete;
+    next.textContent = complete ? '生成风格报告' : '下一步';
   });
 
   const loadingStages = [
@@ -822,6 +842,9 @@
     reportNodes.heroImage.hidden = !fullHero;
     reportNodes.eyebrow.textContent = data.eyebrow;
     reportNodes.title.textContent = data.title;
+    // The current onboarding report keeps retake/share available from its first
+    // viewport. Shared reports and incomplete data never expose owner actions.
+    document.querySelector('.report-actions').hidden = !data.title || Boolean(publicShareToken);
     reportNodes.traits.replaceChildren(...data.traits.map((trait) => {
       const card = Object.assign(document.createElement('span'), { className: 'report-trait' });
       const lace = Object.assign(document.createElement('img'), {
@@ -1012,26 +1035,6 @@
     finally { button.removeAttribute('aria-busy'); button.disabled = false; }
   };
   if (shell.dataset.reportEndpoint) loadReport(shell.dataset.reportEndpoint).catch((error) => toast(error.message));
-  const reportScreen = document.querySelector('[data-screen="report"]');
-  const reportActions = document.querySelector('.report-actions');
-  const outfitList = document.querySelector('.outfit-list');
-  let reportScrollFrame = 0;
-  const syncReportActions = () => {
-    reportScrollFrame = 0;
-    const reportRect = reportScreen.getBoundingClientRect();
-    const outfitRect = outfitList.getBoundingClientRect();
-    const shouldDock = reportScreen.classList.contains('is-active')
-      && reportScreen.scrollTop > 0
-      && outfitRect.top <= reportRect.bottom - 112;
-    reportActions.classList.toggle('is-docked', shouldDock);
-    reportActions.toggleAttribute('inert', !shouldDock);
-    reportActions.setAttribute('aria-hidden', shouldDock ? 'false' : 'true');
-  };
-  reportActions.toggleAttribute('inert', true);
-  reportActions.setAttribute('aria-hidden', 'true');
-  reportScreen.addEventListener('scroll', () => {
-    if (!reportScrollFrame) reportScrollFrame = requestAnimationFrame(syncReportActions);
-  }, { passive: true });
   const shareDialog = document.querySelector('#shareDialog');
   const shareCloseButton = shareDialog.querySelector('button[value="cancel"]');
   const supportsNativeDialog = typeof shareDialog.showModal === 'function';
