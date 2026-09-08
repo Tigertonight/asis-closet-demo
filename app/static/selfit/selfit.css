@@ -1287,6 +1287,30 @@ body.is-share-gallery .app-shell { display: none; }
 .suit-photo-dialog button { width: 44px; height: 44px; border: 0; background: none; color: #51423b; font-size: 28px; }
 .suit-photo-dialog > img { display: block; max-width: 100%; max-height: calc(90dvh - 80px); margin: auto; object-fit: contain; }
 
+/* Photo-analysis evidence: status badge, measurement rows and plain-language notes. */
+.suit-feature-value { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: 8px 0; }
+.suit-feature-value h2 { margin: 0; }
+.analysis-badge { flex: none; min-height: 0; margin: -2px 0; padding: 5px 12px; border: 0; border-radius: 999px; font-size: 12px; line-height: 18px; font-weight: 600; cursor: pointer; }
+.analysis-badge--pass { background: #ecf4ec; color: #3d7a4e; }
+.analysis-badge--warn { background: #faf0dc; color: #9a6b1f; }
+.suit-analysis { margin-top: 12px; padding: 2px 14px; border-radius: 12px; background: #faf6f4; }
+.suit-analysis-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 0; font-size: 14px; line-height: 22px; }
+.suit-analysis-row + .suit-analysis-row { border-top: 1px solid #f0e7e3; }
+.suit-analysis-row--runner { font-size: 13px; }
+.suit-analysis-label { display: inline-flex; align-items: center; gap: 7px; min-width: 0; color: #79695f; }
+.suit-analysis-row > b { flex: none; color: #51423b; font-weight: 600; font-variant-numeric: tabular-nums; }
+.analysis-hint { flex: none; width: 20px; height: 20px; margin: -4px 0; padding: 0; border: 1px solid #ddccc4; border-radius: 50%; background: #fff; color: #a08a7e; font-size: 12px; line-height: 18px; font-weight: 600; min-height: 0; cursor: pointer; }
+.suit-analysis-notes { margin-top: 12px; padding: 10px 14px; border-radius: 12px; background: #faf0dc; }
+.suit-analysis-notes p { margin: 0; font-size: 13px; line-height: 21px; color: #8a6420; }
+.suit-analysis-notes p + p { margin-top: 6px; }
+.suit-photo-note { margin: 0; padding: 0 12px 10px; font-size: 13px; line-height: 21px; color: #9a6b1f; }
+.analysis-hint-dialog { width: min(100%,var(--screen-w)); margin: auto 0 0; padding: 26px 26px calc(22px + env(safe-area-inset-bottom)); border: 0; border-radius: 24px 24px 0 0; background: #fff; box-shadow: 0 -10px 44px rgba(0,0,0,.14); }
+.analysis-hint-dialog::backdrop { background: rgba(0,0,0,.42); }
+.analysis-hint-dialog h2 { margin: 0 0 12px; color: #51423b; font-size: 17px; line-height: 26px; }
+.analysis-hint-dialog p { margin: 0 0 22px; color: #79695f; font-size: 14px; line-height: 24px; }
+.analysis-hint-dialog form { display: block; }
+.analysis-hint-dialog .primary-action { width: 100%; margin: 0; }
+
 /* Single-feature edits use larger, centered options; initial setup stays compact. */
 .manual-form[data-mode="edit"] .skin-options,
 .manual-form[data-mode="edit"] .manual-visual-options {

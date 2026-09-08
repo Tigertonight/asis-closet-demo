@@ -151,6 +151,114 @@ def test_upload_full_body_photo_accepted(monkeypatch: pytest.MonkeyPatch, tmp_pa
     assert stored["photos"]["body"]["attributes"]["body_shape"]["label"]
 
 
+# ---------------------------------------------------------------------------
+# 用户视角分析投影（onboarding 结果页的参数与提示）
+# ---------------------------------------------------------------------------
+
+def test_public_analysis_projects_evidence_without_internals() -> None:
+    attributes = {
+        "skin_tone": {
+            "label": "中性自然肤",
+            "confidence": 0.72,
+            "status": "warn",
+            "candidates": None,
+            "issues": [
+                {"code": "photo.color_cast", "message": "照片整体有偏色", "suggestion": "关闭滤镜、用自然光原图，肤色判断会更准。"}
+            ],
+            "evidence": {
+                "method": "landmark_region_median_lab",
+                "l_star": 63.75,
+                "ita_deg": 45.3,
+                "skin_lightness": "自然中等",
+                "skin_undertone": "中性",
+                "regions": [{"name": "left_cheek", "skin_ratio": 0.9, "stable": True}],
+            },
+        },
+        "face_shape": {
+            "label": "圆脸",
+            "confidence": 0.86,
+            "status": "pass",
+            "sub_label": None,
+            "candidates": [
+                {"label": "圆脸", "score": 0.86},
+                {"label": "心形脸", "score": 0.4},
+            ],
+            "issues": [],
+            "evidence": {
+                "method": "face_oval_landmark_ratios",
+                "features": {
+                    "length_width_ratio": 1.074,
+                    "jaw_cheek_ratio": 0.787,
+                    "forehead_cheek_ratio": 0.98,
+                },
+                "scores": {"圆脸": 0.86, "心形脸": 0.4},
+                "margin": 0.46,
+            },
+        },
+    }
+    notes = [{"message": "脸部略贴近画面边缘，已继续分析", "suggestion": "下次可以把手机拿远一点，让脸部更完整。"}]
+
+    projected = selfit_photo.public_analysis(attributes, notes, "face")
+
+    skin = projected["attributes"]["skin"]
+    assert skin["label"] == "中性自然肤"
+    assert skin["status"] == "warn"
+    assert skin["confidence"] == 0.72
+    assert [metric["key"] for metric in skin["metrics"]] == ["lStar", "ita", "undertone"]
+    assert skin["metrics"][0]["value"] == "63.8"
+    assert skin["metrics"][1]["value"] == "45.3°"
+    assert skin["notes"] == [{"message": "照片整体有偏色", "suggestion": "关闭滤镜、用自然光原图，肤色判断会更准。"}]
+
+    face = projected["attributes"]["faceShape"]
+    assert face["label"] == "圆脸"
+    assert face["runnerUp"] == {"label": "心形脸", "score": 0.4}
+    assert [metric["key"] for metric in face["metrics"]] == ["lengthWidth", "jawCheek", "foreheadCheek"]
+    assert face["metrics"][0]["value"] == "1.074"
+    # 照片级提示（脸部贴边）归入脸型卡，不重复出现在肤色卡
+    assert face["notes"][0]["message"] == "脸部略贴近画面边缘，已继续分析"
+    assert all(note["message"] != "脸部略贴近画面边缘，已继续分析" for note in skin["notes"])
+
+    dumped = json.dumps(projected, ensure_ascii=False)
+    for internal in ("code", "method", "regions", "scores", "margin", "skin_lightness"):
+        assert internal not in dumped
+
+
+def test_public_analysis_degrades_for_legacy_attributes() -> None:
+    projected = selfit_photo.public_analysis(
+        {"skin_tone": {"label": "暖白肤", "confidence": 0.8}}, [], "face"
+    )
+    assert projected["attributes"]["skin"]["label"] == "暖白肤"
+    assert projected["attributes"]["skin"]["metrics"] == []
+    assert "faceShape" not in projected["attributes"]
+
+
+def test_upload_and_suit_return_user_analysis(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
+    _use_tmp_store(monkeypatch, tmp_path)
+    client = TestClient(app)
+    session_id = _create_session(client)
+
+    payload = _upload(client, session_id, "face", FIXTURE_IMAGES / "real_warm_indoor_light_no_card.jpg")
+    assert payload["photo"]["status"] == "accepted"
+    analysis = payload["analysis"]
+    assert analysis["kind"] == "face"
+    skin = analysis["attributes"]["skin"]
+    assert skin["label"]
+    assert skin["confidence"] > 0
+    assert any(metric["key"] == "lStar" for metric in skin["metrics"])
+    face = analysis["attributes"].get("faceShape") or {}
+    if face:
+        assert any(metric["key"] == "lengthWidth" for metric in face["metrics"])
+
+    stored = _stored_session(tmp_path, session_id)
+    stored_face = stored["photos"]["face"]
+    assert stored_face["attributes"]["skin_tone"]["evidence"]["l_star"] is not None
+    assert isinstance(stored_face.get("notes"), list)
+
+    suit = client.get(f"{API}/sessions/{session_id}/suit").json()
+    assert suit["analyses"]["face"]["attributes"]["skin"]["label"] == skin["label"]
+    assert suit["analyses"]["face"]["kind"] == "face"
+
+
 def test_upload_face_as_body_rejected(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
     _use_tmp_store(monkeypatch, tmp_path)
     client = TestClient(app)

@@ -120,13 +120,18 @@ class PhotoInspection:
     """算法检测结果。accepted=True 时 issues 必须为空。
 
     attributes 为算法识别出的属性标签（如肤色/脸型/身型），键为属性名、
-    值为 {"label", "confidence"}；仅在 accepted=True 时有意义，接口层把它
-    存进会话记录供报告任务消费，不回传给前端契约。
+    值为 {"label", "confidence", "status", "evidence", ...}；仅在
+    accepted=True 时有意义，接口层把它存进会话记录供报告任务消费，
+    详细字段的用户视角投影见 `public_analysis()`。
+    notes 为照片级 warn 提示（{"message", "suggestion"}，用户语言），
+    如「脸部略贴近画面边缘，已继续分析」；不拦截上传，仅供结果页解释
+    为什么某个属性被标为存疑。
     """
 
     accepted: bool
     issues: list[str] = field(default_factory=list)
     attributes: dict = field(default_factory=dict)
+    notes: list[dict] = field(default_factory=list)
 
 
 PhotoInspector = Callable[[Image.Image, str], PhotoInspection]
@@ -217,7 +222,8 @@ def attribute_inspector(image: Image.Image, kind: str) -> PhotoInspection:
 
     - 任一「重拍级」问题（见映射表）都会拒绝并返回对应枚举；
     - warn 级提示（偏色/轮廓接近/衣物宽松等）不拦截，只降低属性置信度；
-    - accepted 时把识别出的属性标签放进 PhotoInspection.attributes；
+    - accepted 时把识别出的属性标签放进 PhotoInspection.attributes，
+      并保留 status/evidence/次选等详情，供结果页展示与后台回看；
     - 并发受信号量保护（=CPU 核数）：高峰期公平排队，超载请求不会把
       CPU 打满拖垮其他接口；face 输入预缩到长边 1280 提速 3 倍。
     """
@@ -235,11 +241,169 @@ def attribute_inspector(image: Image.Image, kind: str) -> PhotoInspection:
         issues = [ISSUE_UNSUPPORTED_CONTENT]
 
     attributes: dict[str, dict[str, Any]] = {}
+    notes: list[dict[str, str]] = []
     if not issues:
+        # 照片级 warn 提示（脸部贴边/细节偏软等）转成用户可读 note；
+        # 已归属到具体属性的问题（偏色→肤色、宽松→身型）不重复收集。
+        attribute_issue_messages = {
+            str(issue.get("message") or "")
+            for attribute in analysis.get("attributes", {}).values()
+            for issue in attribute.get("issues", [])
+        }
+        for issue in analysis.get("issues", []):
+            code = str(issue.get("code", ""))
+            if code not in _ISSUE_CODE_TO_ENUM or _ISSUE_CODE_TO_ENUM[code] is not None:
+                continue
+            message = str(issue.get("message") or "").strip()
+            if not message or message in attribute_issue_messages:
+                continue
+            notes.append({"message": message, "suggestion": str(issue.get("suggestion") or "").strip()})
         for name, attribute in analysis.get("attributes", {}).items():
             if attribute.get("status") in {"pass", "warn"} and attribute.get("label"):
                 attributes[name] = {
                     "label": attribute["label"],
                     "confidence": attribute.get("confidence", 0.0),
+                    "status": attribute.get("status"),
+                    "sub_label": attribute.get("sub_label"),
+                    "candidates": [
+                        dict(candidate)
+                        for candidate in (attribute.get("candidates") or [])
+                        if isinstance(candidate, dict)
+                    ],
+                    "issues": [
+                        {
+                            "message": str(item.get("message") or "").strip(),
+                            "suggestion": str(item.get("suggestion") or "").strip(),
+                        }
+                        for item in attribute.get("issues", [])
+                        if str(item.get("message") or "").strip()
+                    ],
+                    "evidence": dict(attribute.get("evidence") or {}),
                 }
-    return PhotoInspection(accepted=not issues, issues=issues, attributes=attributes)
+    return PhotoInspection(accepted=not issues, issues=issues, attributes=attributes, notes=notes)
+
+
+# ---------------------------------------------------------------------------
+# 用户视角投影：把存储的属性详情转成 onboarding 结果页可展示的结构。
+#
+# 只输出用户能理解的内容：判定标签、状态、置信度、关键量测值和大白话
+# 提示；算法内部字段（issue code、method、采样区域明细、像素宽度）一律
+# 不透出。参数的名词解释（如「L* 是什么」）由前端文案负责。
+# ---------------------------------------------------------------------------
+
+_ATTRIBUTE_PUBLIC_KEYS = {
+    "skin_tone": "skin",
+    "face_shape": "faceShape",
+    "body_shape": "bodyShape",
+}
+
+
+def _public_metric(key: str, label: str, value: Any, *, digits: int = 3, suffix: str = "") -> dict[str, str]:
+    if isinstance(value, (int, float)):
+        text = f"{round(float(value), digits):g}"
+    else:
+        text = str(value)
+    return {"key": key, "label": label, "value": f"{text}{suffix}"}
+
+
+def public_analysis(attributes: dict[str, Any] | None, notes: list[dict[str, Any]] | None, kind: str) -> dict[str, Any]:
+    """属性详情 → 用户视角的分析结果（camelCase）。
+
+    - attributes：session 里存的属性详情（label/confidence/status/...），
+      旧数据只有 {label, confidence} 时也能降级输出（metrics 为空）；
+    - notes：照片级 warn 提示，face 归入脸型（无脸型时归入肤色）、
+      body 归入身型，按 message 与属性自身提示去重。
+    """
+    photo_notes = [
+        {"message": str(item.get("message") or "").strip(), "suggestion": str(item.get("suggestion") or "").strip()}
+        for item in (notes or [])
+        if str(item.get("message") or "").strip()
+    ]
+    out: dict[str, Any] = {"kind": kind, "attributes": {}}
+
+    def merge_notes(attribute: dict[str, Any], *, include_photo_notes: bool = False) -> list[dict[str, str]]:
+        merged: list[dict[str, str]] = []
+        seen: set[str] = set()
+        source = list(attribute.get("issues") or [])
+        if include_photo_notes:
+            source = source + photo_notes
+        for item in source:
+            message = str(item.get("message") or "").strip()
+            if not message or message in seen:
+                continue
+            seen.add(message)
+            merged.append({"message": message, "suggestion": str(item.get("suggestion") or "").strip()})
+        return merged
+
+    skin = (attributes or {}).get("skin_tone")
+    if skin and skin.get("label"):
+        evidence = skin.get("evidence") or {}
+        metrics: list[dict[str, str]] = []
+        if evidence.get("l_star") is not None:
+            metrics.append(_public_metric("lStar", "肤色明度 L*", evidence["l_star"], digits=1))
+        if evidence.get("ita_deg") is not None:
+            metrics.append(_public_metric("ita", "白皙度 ITA", evidence["ita_deg"], digits=1, suffix="°"))
+        if evidence.get("skin_undertone"):
+            metrics.append(_public_metric("undertone", "肤色底调", evidence["skin_undertone"]))
+        out["attributes"]["skin"] = {
+            "label": skin["label"],
+            "status": skin.get("status") or "pass",
+            "confidence": round(float(skin.get("confidence") or 0.0), 2),
+            "metrics": metrics,
+            "notes": merge_notes(skin),
+        }
+
+    face = (attributes or {}).get("face_shape")
+    if face and face.get("label"):
+        evidence = face.get("evidence") or {}
+        features = evidence.get("features") or {}
+        metrics = []
+        for key, public_key, label in (
+            ("length_width_ratio", "lengthWidth", "脸长 / 脸宽"),
+            ("jaw_cheek_ratio", "jawCheek", "下颌宽 / 颧骨宽"),
+            ("forehead_cheek_ratio", "foreheadCheek", "额头宽 / 颧骨宽"),
+        ):
+            if features.get(key) is not None:
+                metrics.append(_public_metric(public_key, label, features[key]))
+        entry: dict[str, Any] = {
+            "label": face["label"],
+            "status": face.get("status") or "pass",
+            "confidence": round(float(face.get("confidence") or 0.0), 2),
+            "metrics": metrics,
+            # 照片级提示（脸部贴边/细节偏软）与脸型轮廓最相关，归入脸型卡。
+            "notes": merge_notes(face, include_photo_notes=True),
+        }
+        if face.get("sub_label"):
+            entry["subLabel"] = str(face["sub_label"])
+        candidates = [item for item in (face.get("candidates") or []) if isinstance(item, dict)]
+        if len(candidates) > 1 and candidates[1].get("label"):
+            entry["runnerUp"] = {
+                "label": str(candidates[1]["label"]),
+                "score": round(float(candidates[1].get("score") or 0.0), 2),
+            }
+        out["attributes"]["faceShape"] = entry
+
+    body = (attributes or {}).get("body_shape")
+    if body and body.get("label"):
+        evidence = body.get("evidence") or {}
+        ratios = (evidence.get("classification") or {}).get("ratios") or {}
+        metrics = []
+        for key, public_key, label in (
+            ("hip_over_shoulder", "hipShoulder", "胯宽 / 肩宽"),
+            ("waist_over_hip", "waistHip", "腰宽 / 胯宽"),
+        ):
+            if ratios.get(key) is not None:
+                metrics.append(_public_metric(public_key, label, ratios[key]))
+        out["attributes"]["bodyShape"] = {
+            "label": body["label"],
+            "status": body.get("status") or "pass",
+            "confidence": round(float(body.get("confidence") or 0.0), 2),
+            "metrics": metrics,
+            "notes": merge_notes(body, include_photo_notes=True),
+        }
+
+    # 照片级提示兜底：两个属性都不可用时（极少见），挂在顶层，
+    # 保证用户仍能看到「为什么这张照片读得不稳」。
+    if photo_notes and not out["attributes"]:
+        out["notes"] = photo_notes
+    return out

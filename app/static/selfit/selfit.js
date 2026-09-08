@@ -358,6 +358,114 @@
     }
   });
 
+  const ANALYSIS_HINTS = {
+    confidence: {
+      title: '「通过 / 存疑」和百分比是什么意思？',
+      body: '「通过」表示照片质量足够、判断比较可靠；「存疑」表示照片存在干扰（光线、角度、遮挡、宽松衣物等），把握较低。百分比是算法对这个结论的把握程度，低于 70% 时建议点「修改」自己确认一下。',
+    },
+    lStar: {
+      title: '肤色明度 L* 是什么？',
+      body: 'L* 是国际通用的颜色明度刻度，范围 0–100：数字越大肤色越明亮，越小越深邃。我们取了你脸上额头、两颊等最接近素颜的几个区域，平均后得到这个数。',
+    },
+    ita: {
+      title: '白皙度 ITA 是什么？',
+      body: 'ITA° 是色彩学里衡量肤色白皙程度的角度，由明度和黄度一起算出。角度越大越偏白皙，越小越偏小麦色或更深。它和 L* 互相印证，用来判断你的肤色档位。',
+    },
+    undertone: {
+      title: '肤色底调是什么？',
+      body: '底调指肤色的冷暖倾向：冷调偏粉、暖调偏黄、橄榄调偏青灰，中性则介于冷暖之间。挑粉底、口红和衣服颜色时，底调比深浅更重要。',
+    },
+    lengthWidth: {
+      title: '「脸长 / 脸宽」是什么？',
+      body: '脸的长度除以脸的宽度。越接近 1 越圆润饱满，超过 1.3 左右会显得修长。这是区分圆脸和鹅蛋脸最主要的指标。',
+    },
+    jawCheek: {
+      title: '「下颌宽 / 颧骨宽」是什么？',
+      body: '下颌最宽处除以颧骨最宽处。数值小说明下颌收得比较紧（偏尖、偏心形脸），接近 1 说明下颌和颧骨差不多宽（偏方脸或圆脸）。',
+    },
+    foreheadCheek: {
+      title: '「额头宽 / 颧骨宽」是什么？',
+      body: '额头最宽处除以颧骨最宽处。大于 1 说明额头比颧骨宽（偏心形脸），小于 1 说明颧骨更突出（偏菱形脸）。',
+    },
+    hipShoulder: {
+      title: '「胯宽 / 肩宽」是什么？',
+      body: '胯部宽度除以肩部宽度。大于 1 说明胯比肩宽（梨型特征），小于 1 说明肩比胯宽（倒三角特征）。',
+    },
+    waistHip: {
+      title: '「腰宽 / 胯宽」是什么？',
+      body: '腰部宽度除以胯部宽度。数值越小说明腰线越明显（沙漏型特征），接近 1 说明腰和胯差不多宽（矩型特征）。',
+    },
+    runnerUp: {
+      title: '「也比较接近」是什么意思？',
+      body: '算法把你的照片和几种常见类型逐一比对，选出最接近的一种。当两种类型得分很接近时，会额外标注第二接近的选项和它的得分——这种情况建议以你自己的判断为准，点上方「修改」就能调整。',
+    },
+  };
+  const openAnalysisHint = (key) => {
+    const hint = ANALYSIS_HINTS[key];
+    if (!hint) return;
+    document.querySelector('#analysisHintTitle').textContent = hint.title;
+    document.querySelector('#analysisHintBody').textContent = hint.body;
+    document.querySelector('#analysisHintDialog').showModal();
+  };
+  const buildAnalysisHintButton = (key, label) => {
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'analysis-hint';
+    button.textContent = '?';
+    button.setAttribute('aria-label', `${label}是什么意思`);
+    button.onclick = () => openAnalysisHint(key);
+    return button;
+  };
+  const buildAnalysisBadge = (analysis) => {
+    const badge = document.createElement('button');
+    badge.type = 'button';
+    const pass = analysis.status !== 'warn';
+    badge.className = `analysis-badge analysis-badge--${pass ? 'pass' : 'warn'}`;
+    badge.textContent = `${pass ? '通过' : '存疑'} · ${Math.round((analysis.confidence || 0) * 100)}%`;
+    badge.setAttribute('aria-label', `照片分析把握程度：${badge.textContent}`);
+    badge.onclick = () => openAnalysisHint('confidence');
+    return badge;
+  };
+  const buildAnalysisMetrics = (analysis) => {
+    const wrap = document.createElement('div');
+    wrap.className = 'suit-analysis';
+    (analysis.metrics || []).forEach((metric) => {
+      const row = document.createElement('div');
+      row.className = 'suit-analysis-row';
+      const label = document.createElement('span');
+      label.className = 'suit-analysis-label';
+      label.textContent = metric.label;
+      label.append(buildAnalysisHintButton(metric.key, metric.label));
+      const value = document.createElement('b');
+      value.textContent = metric.value;
+      row.append(label, value);
+      wrap.append(row);
+    });
+    if (analysis.runnerUp?.label) {
+      const runner = document.createElement('div');
+      runner.className = 'suit-analysis-row suit-analysis-row--runner';
+      const label = document.createElement('span');
+      label.className = 'suit-analysis-label';
+      label.textContent = '也比较接近';
+      label.append(buildAnalysisHintButton('runnerUp', '也比较接近'));
+      const value = document.createElement('b');
+      value.textContent = `${analysis.runnerUp.label} · ${(analysis.runnerUp.score ?? 0).toFixed(2)}`;
+      runner.append(label, value);
+      wrap.append(runner);
+    }
+    return wrap;
+  };
+  const buildAnalysisNotes = (notes) => {
+    const wrap = document.createElement('div');
+    wrap.className = 'suit-analysis-notes';
+    notes.forEach((note) => {
+      const item = document.createElement('p');
+      item.textContent = note.suggestion ? `${note.message}——${note.suggestion}` : note.message;
+      wrap.append(item);
+    });
+    return wrap;
+  };
+
   const validatePhoto = (file) => {
     if (!file) return '请选择照片';
     if (!file.type.startsWith('image/') && !/\.(heic|heif|jpe?g|png|webp|avif)$/i.test(file.name)) return '请选择一张照片，再试一次';
@@ -417,20 +525,32 @@
   const renderSuit = async () => {
     const sessionId = await ensureSession();
     const summary = await api.getSuit(sessionId);
+    const analyses = summary.analyses || {};
     const container = document.querySelector('#suitFeatures');
     container.replaceChildren();
     summary.features.forEach(feature => {
       state.manual[feature.key] = feature.value || null;
+      const analysis = (analyses[feature.key === 'bodyShape' ? 'body' : 'face'] || {}).attributes?.[feature.key] || null;
       const card = document.createElement('article'); card.className = 'suit-feature';
       const header = document.createElement('header');
       const title = document.createElement('span'); title.textContent = feature.title;
       const edit = document.createElement('button'); edit.type = 'button'; edit.textContent = '修改'; edit.setAttribute('aria-label', `修改${feature.title}`); edit.onclick = () => openManual(feature.key);
       header.append(title, edit);
-      const value = document.createElement('h2'); value.textContent = feature.value || '等你补充';
+      const valueRow = document.createElement('div'); valueRow.className = 'suit-feature-value';
+      const value = document.createElement('h2');
+      value.textContent = feature.value || '等你补充';
+      if (analysis?.subLabel && feature.source === 'photo' && feature.value === analysis.label) value.textContent = `${feature.value} · ${analysis.subLabel}`;
+      valueRow.append(value);
+      if (analysis) valueRow.append(buildAnalysisBadge(analysis));
       const source = document.createElement('small'); source.textContent = feature.source === 'manual' ? '由你选择' : feature.source === 'photo' ? '照片分析结果' : '暂时无法判断';
       const description = document.createElement('p'); description.textContent = feature.description;
+      card.append(header, valueRow, source, description);
+      if (analysis) {
+        if (analysis.metrics?.length) card.append(buildAnalysisMetrics(analysis));
+        if (analysis.notes?.length) card.append(buildAnalysisNotes(analysis.notes));
+      }
       const advice = document.createElement('p'); advice.className = 'suit-advice'; advice.textContent = `穿搭可以这样试 · ${feature.advice}`;
-      card.append(header, value, source, description, advice); container.append(card);
+      card.append(advice); container.append(card);
     });
     const photos = document.querySelector('#suitResultPhotos'); photos.replaceChildren();
     const photoKinds = ['face', 'body'].filter(kind => summary.photos?.[kind] || (api.mode !== 'live' && state[kind === 'face' ? 'facePhoto' : 'bodyPhoto']));
@@ -444,7 +564,13 @@
       media.append(img, status);
       const caption = document.createElement('figcaption'); caption.textContent = kind === 'face' ? '脸型 · 肤色' : '身体线条 · 比例';
       const action = document.createElement('button'); action.type = 'button'; action.className = 'suit-photo-action'; action.textContent = '照片加载中…';
-      figure.append(media, caption, action); photos.append(figure);
+      figure.append(media, caption);
+      ((analyses[kind] || {}).notes || []).forEach(note => {
+        const item = document.createElement('p'); item.className = 'suit-photo-note';
+        item.textContent = note.suggestion ? `${note.message}——${note.suggestion}` : note.message;
+        figure.append(item);
+      });
+      figure.append(action); photos.append(figure);
       const load = async () => {
         status.hidden = false; status.textContent = '照片加载中…'; action.disabled = true;
         try {
@@ -511,6 +637,8 @@
     });
   };
   bindUpload('facePhoto', 'face'); bindUpload('bodyPhoto', 'body');
+  const analysisHintDialog = document.querySelector('#analysisHintDialog');
+  analysisHintDialog?.addEventListener('click', (event) => { if (event.target === analysisHintDialog) analysisHintDialog.close(); });
   document.querySelector('#suitNext').addEventListener('click', event => runButtonAction(event.currentTarget, renderSuit));
 
   document.querySelector('.manual-form').addEventListener('click', (event) => {

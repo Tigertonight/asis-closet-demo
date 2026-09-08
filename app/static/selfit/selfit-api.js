@@ -14,6 +14,47 @@
     }
   }
 
+  const MOCK_PHOTO_ANALYSES = {
+    face: {
+      kind: 'face',
+      attributes: {
+        skin: {
+          label: '中性自然肤', status: 'warn', confidence: 0.72,
+          metrics: [
+            { key: 'lStar', label: '肤色明度 L*', value: '63.8' },
+            { key: 'ita', label: '白皙度 ITA', value: '45.3°' },
+            { key: 'undertone', label: '肤色底调', value: '中性' },
+          ],
+          notes: [{ message: '照片整体有偏色', suggestion: '关闭滤镜、用自然光原图，肤色判断会更准。' }],
+        },
+        faceShape: {
+          label: '圆脸', status: 'pass', confidence: 0.86, runnerUp: { label: '心形脸', score: 0.4 },
+          metrics: [
+            { key: 'lengthWidth', label: '脸长 / 脸宽', value: '1.074' },
+            { key: 'jawCheek', label: '下颌宽 / 颧骨宽', value: '0.787' },
+            { key: 'foreheadCheek', label: '额头宽 / 颧骨宽', value: '0.98' },
+          ],
+          notes: [{ message: '脸部略贴近画面边缘，已继续分析', suggestion: '下次可以把手机拿远一点，让脸部更完整。' }],
+        },
+      },
+      notes: [],
+    },
+    body: {
+      kind: 'body',
+      attributes: {
+        bodyShape: {
+          label: '梨型', status: 'pass', confidence: 0.78,
+          metrics: [
+            { key: 'hipShoulder', label: '胯宽 / 肩宽', value: '1.12' },
+            { key: 'waistHip', label: '腰宽 / 胯宽', value: '0.72' },
+          ],
+          notes: [{ message: '衣服比较宽松，身形判断可能不准', suggestion: '宽松衣物会遮住腰线；穿修身一些的照片会更准。' }],
+        },
+      },
+      notes: [],
+    },
+  };
+
   class SelfitApiClient {
     constructor({ mode = 'mock', baseUrl = '/api/v1/selfit', timeoutMs = 15000, buildMockReport, getAccessToken } = {}) {
       this.mode = mode === 'live' ? 'live' : 'mock';
@@ -84,6 +125,8 @@
       }
       const invalid = /dark|invalid|暗|黑/i.test(file.name);
       const label = kind === 'face' ? '面部照' : '全身照';
+      const session = this.mockSessions.get(sessionId);
+      if (session && !invalid) session.photoAnalyses = { ...(session.photoAnalyses || {}), [kind]: MOCK_PHOTO_ANALYSES[kind] };
       return wait(560).then(() => ({
         revision: this.bumpRevision(sessionId),
         photo: {
@@ -91,15 +134,22 @@
           code: invalid ? 'photo.insufficient_light' : 'photo.accepted',
           message: invalid ? `${label}光线不充足` : `${label} 可用`, issues: invalid ? ['insufficient_light'] : [],
         },
+        ...(invalid ? {} : { analysis: MOCK_PHOTO_ANALYSES[kind] }),
       }));
     }
 
     getSuit(sessionId) {
       if (this.mode === 'live') return this.request(`/sessions/${encodeURIComponent(sessionId)}/suit`);
       const session = this.mockSessions.get(sessionId) || {};
-      return Promise.resolve({ revision: session.revision, photos: {}, features: [
+      const analyses = session.photoAnalyses || {};
+      return Promise.resolve({ revision: session.revision, photos: {}, analyses, features: [
         ['faceShape', '脸型'], ['skin', '肤色'], ['bodyShape', '身材比例'],
-      ].map(([key, title]) => ({ key, title, value: session.manual?.[key] || null, source: session.manual?.[key] ? 'manual' : 'unknown', description: '预览模式：真实照片分析需连接服务。', advice: '可手动选择更接近自己的特点。' })) });
+      ].map(([key, title]) => {
+        const analysis = (analyses[key === 'bodyShape' ? 'body' : 'face'] || {}).attributes?.[key] || null;
+        const value = session.manual?.[key] || analysis?.label || null;
+        const source = session.manual?.[key] ? 'manual' : (analysis ? 'photo' : 'unknown');
+        return { key, title, value, source, description: analysis ? '预览模式：以下分析数值为示例数据。' : '预览模式：真实照片分析需连接服务。', advice: '可手动选择更接近自己的特点。' };
+      }) });
     }
 
     getSuitPhoto(sessionId, kind) {

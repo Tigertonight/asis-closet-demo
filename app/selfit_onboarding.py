@@ -227,6 +227,9 @@ def _index_user_photo(data: dict[str, Any], record: dict[str, Any], kind: str) -
         "width": photo.get("width"),
         "height": photo.get("height"),
         "source": photo.get("source") or ("mirror" if record.get("source") == "mirror_handoff" else "app"),
+        # 分析详情随索引一起持久化，跨 session 回填照片时结果页仍能展示依据。
+        "attributes": dict(photo.get("attributes") or {}),
+        "notes": list(photo.get("notes") or []),
         "updated_at": _iso(_now()),
     }
     entry["updated_at"] = _iso(_now())
@@ -467,6 +470,7 @@ def _accepted_photo_record(
         "width": image.width,
         "height": image.height,
         "attributes": dict(inspection.attributes),
+        "notes": list(inspection.notes),
         "source": source,
     }
 
@@ -935,7 +939,15 @@ async def get_session_suit(session_id: str, user: dict[str, Any] | None = Depend
     if isinstance(record, JSONResponse):
         return record
     summary = suit_summary(record)
+    analyses: dict[str, Any] = {}
+    for kind in selfit_photo.PHOTO_KINDS:
+        photo = _suit_photo(data, record, kind)
+        if photo and photo.get("status") == "accepted":
+            analyses[kind] = selfit_photo.public_analysis(
+                photo.get("attributes") or {}, photo.get("notes") or [], kind
+            )
     summary["photos"] = {kind: bool(_suit_photo(data, record, kind)) for kind in selfit_photo.PHOTO_KINDS}
+    summary["analyses"] = analyses
     return JSONResponse(content=summary, headers={"Cache-Control": "no-store"})
 
 
@@ -1280,8 +1292,10 @@ async def upload_session_photo(
             "format": stored_format,
             "width": pil_image.width,
             "height": pil_image.height,
-            # 算法推断的肤色/脸型/身型标签，供报告任务与「手动纠正优先」合并消费。
+            # 算法推断的肤色/脸型/身型标签，供报告任务与「手动纠正优先」合并消费；
+            # 详细依据（状态/量测值/次选/warn 提示）由 public_analysis 投影给前端。
             "attributes": dict(inspection.attributes),
+            "notes": list(inspection.notes),
         }
         # A newly accepted photo replaces earlier choices for its attributes.
         # Later explicit edits still take precedence over this photo's inference.
@@ -1301,6 +1315,8 @@ async def upload_session_photo(
             message=f"{label}可用",
             issues=[],
         )
+        # 用户视角的分析依据（通过/存疑、关键量测值、次选、大白话提示）。
+        body["analysis"] = selfit_photo.public_analysis(inspection.attributes, inspection.notes, kind)
     else:
         if not issues:
             issues = [selfit_photo.ISSUE_UNSUPPORTED_CONTENT]
