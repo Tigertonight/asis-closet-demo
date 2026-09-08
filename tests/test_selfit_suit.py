@@ -10,14 +10,15 @@ from app.main import app
 def test_summary_uses_inference_and_manual_override():
     record = {'photos': {'face': {'status': 'accepted', 'attributes': {'face_shape': {'label': '圆脸'}, 'skin_tone': {'label': '暖白肤'}}}}}
     result = suit_summary(record)
-    assert result['features'][0]['value'] == '圆脸'
-    assert result['features'][0]['source'] == 'photo'
+    assert result['features'][0]['key'] == 'skin' and result['features'][0]['value'] == '暖白肤'
+    assert result['features'][1]['value'] == '圆脸'
+    assert result['features'][1]['source'] == 'photo'
     assert result['features'][2]['value'] is None
     record['manual'] = {'faceShape': '方脸'}
-    corrected = suit_summary(record)['features'][0]
+    corrected = suit_summary(record)['features'][1]
     assert corrected['value'] == '方脸'
     assert corrected['source'] == 'manual'
-    assert corrected['description'] != result['features'][0]['description']
+    assert corrected['description'] != result['features'][1]['description']
     assert all(value in DESCRIPTIONS for options in MANUAL_FIELDS.values() for value in options)
 
 
@@ -27,7 +28,7 @@ def test_photo_analysis_handles_missing_and_legacy_attributes():
         'face_shape': {'label': '椭圆脸', 'confidence': 0.0},
         'skin_tone': {'label': '中性自然肤'},
     }}}}
-    face, skin, body = suit_summary(record)['features']
+    skin, face, body = suit_summary(record)['features']
     assert face['photoAnalysis'] == {
         'label': '椭圆脸', 'confidence': 0.0, 'candidates': [],
         'metrics': {'lengthWidthRatio': None, 'jawCheekRatio': None, 'foreheadCheekRatio': None},
@@ -96,7 +97,7 @@ def test_suit_returns_saved_measurements_and_keeps_manual_labels_separate(monkey
     response = client.get(base + '/suit')
     assert response.status_code == 200 and response.headers['cache-control'] == 'no-store'
     assert response.json()['photos'] == {'face': True, 'body': True}
-    face, skin, body = response.json()['features']
+    skin, face, body = response.json()['features']
     assert face['photoAnalysis'] == {
         'label': '椭圆脸', 'confidence': 0.76,
         'candidates': [{'label': '椭圆脸', 'score': 0.58}, {'label': '心形脸', 'score': 0.406}],
@@ -108,8 +109,8 @@ def test_suit_returns_saved_measurements_and_keeps_manual_labels_separate(monkey
     assert body['photoAnalysis'] == {'label': '梨型', 'confidence': 0.68}
     assert client.patch(base + '/profile', json={'manual': {'faceShape': '方脸', 'skin': '暖白肤'}}).status_code == 200
     corrected = client.get(base + '/suit').json()['features']
-    assert [(item['value'], item['source']) for item in corrected[:2]] == [('方脸', 'manual'), ('暖白肤', 'manual')]
-    assert [item['photoAnalysis'] for item in corrected] == [item['photoAnalysis'] for item in (face, skin, body)]
+    assert [(item['value'], item['source']) for item in corrected[:2]] == [('暖白肤', 'manual'), ('方脸', 'manual')]
+    assert [item['photoAnalysis'] for item in corrected] == [item['photoAnalysis'] for item in (skin, face, body)]
     assert calls == ['face', 'body']  # GET and manual edits consume saved values without running detection.
 
     # A replacement face whose shape is unrecognizable must not reuse the old candidates/ratios.
@@ -117,9 +118,9 @@ def test_suit_returns_saved_measurements_and_keeps_manual_labels_separate(monkey
     face_result['attributes']['skin_tone']['evidence'] = {'l_star': 64.0, 'ita_deg': 0.0}
     upload('face')
     replaced = client.get(base + '/suit').json()['features']
-    assert replaced[0]['value'] is None and replaced[0]['photoAnalysis'] is None
-    assert replaced[1]['value'] == '中性自然肤' and replaced[1]['source'] == 'photo'
-    assert replaced[1]['photoAnalysis']['metrics'] == {'lStar': 64.0, 'itaDegrees': 0.0}
+    assert replaced[0]['value'] == '中性自然肤' and replaced[0]['source'] == 'photo'
+    assert replaced[0]['photoAnalysis']['metrics'] == {'lStar': 64.0, 'itaDegrees': 0.0}
+    assert replaced[1]['value'] is None and replaced[1]['photoAnalysis'] is None
     assert replaced[2]['photoAnalysis'] == body['photoAnalysis']
 
 
@@ -134,7 +135,7 @@ def test_suit_endpoint_and_optional_palette(monkeypatch, tmp_path):
     assert client.patch(base + '/preferences', json={'palette': 'mono'}).status_code == 200
     assert client.patch(base + '/preferences', json={'palette': None}).status_code == 200
     assert client.patch(base + '/profile', json={'manual': {'faceShape': '菱形脸'}}).status_code == 200
-    feature = client.get(base + '/suit').json()['features'][0]
+    feature = client.get(base + '/suit').json()['features'][1]
     assert feature['value'] == '菱形脸' and feature['source'] == 'manual'
     assert '颧骨' in feature['description']
 
@@ -172,8 +173,14 @@ def test_onboarding_flow_and_vibe_semantic_order():
     assert 'disabled' not in like_button
     expression = re.search(r'<fieldset data-question="expression">(.*?)</fieldset>', markup).group(1)
     assert re.findall(r'data-answer="([A-E])"', expression) == ['A', 'B', 'E', 'D', 'C']
-    assert 'id="suitResultPhotos"' in markup and 'id="suitFeatures"' in markup
-    assert "showScreen('suit-processing')" in runtime
+    assert 'id="suitFeatures"' in markup
+    assert 'id="suitResultPhotos"' not in markup
+    assert 'suit-privacy' not in markup
+    assert 'id="suitPhotoDialog"' not in markup
+    assert 'data-screen="suit-result"' not in markup and 'data-screen="suit-processing"' not in markup
+    suit_next = re.search(r'<button[^>]*id="suitNext"[^>]*>', markup).group()
+    assert 'data-next="vibe"' in suit_next and 'disabled' in suit_next
+    assert "showScreen('suit-processing')" not in runtime
     assert "await delay(650);\n      document.querySelector('#continueToApp')" in runtime
     assert "showScreen('report');" in runtime
 
@@ -241,7 +248,7 @@ def test_upload_replaces_previous_choices_and_edits_only_change_one_source(monke
     content = io.BytesIO(); Image.new('RGB', (600, 800), '#a08070').save(content, 'PNG')
     assert client.post(base + '/photos/face', files={'image': ('face.png', content.getvalue(), 'image/png')}).status_code == 200
     features = client.get(base + '/suit').json()['features']
-    assert [(x['value'], x['source']) for x in features] == [('椭圆脸', 'photo'), ('暖白肤', 'photo'), ('梨型', 'manual')]
+    assert [(x['value'], x['source']) for x in features] == [('暖白肤', 'photo'), ('椭圆脸', 'photo'), ('梨型', 'manual')]
     client.patch(base + '/profile', json={'manual': {'faceShape': '方脸'}})
     features = client.get(base + '/suit').json()['features']
-    assert [(x['value'], x['source']) for x in features[:2]] == [('方脸', 'manual'), ('暖白肤', 'photo')]
+    assert [(x['value'], x['source']) for x in features[:2]] == [('暖白肤', 'photo'), ('方脸', 'manual')]

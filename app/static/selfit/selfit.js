@@ -16,9 +16,8 @@
   const ONBOARDING_NAV = {
     suit: { back: 'like', progress: 'suit', current: 'suit', done: ['like'] },
     'suit-manual': { back: 'suit', progress: 'suit', current: 'suit', done: ['like'] },
-    'suit-result': { back: 'suit', progress: 'suit', current: 'suit', done: ['like'] },
     like: { back: 'intro', progress: 'like', current: 'like', done: [] },
-    vibe: { back: 'suit-result', progress: 'vibe', current: 'vibe', done: ['suit', 'like'] },
+    vibe: { back: 'suit', progress: 'vibe', current: 'vibe', done: ['suit', 'like'] },
   };
   const updateOnboardingNav = (name) => {
     if (!onboardingNav) return;
@@ -59,6 +58,7 @@
     screen: 'splash', facePhoto: null, bodyPhoto: null,
     photoStatus: { face: 'empty', body: 'empty' },
     photoAssets: { face: null, body: null },
+    photoControllers: { face: null, body: null },
     manual: { skin: null, faceShape: null, bodyShape: null },
     axes: { shape: 42, energy: 64, trend: 42 },
     palette: null, answers: {}, sessionId: null, revision: 0, reportJobId: null, reportId: null, currentReportTypeId: '', authUser: null, publicShare: null,
@@ -251,7 +251,6 @@
     if (next) {
       if (document.activeElement?.matches?.('input, textarea, [contenteditable="true"]')) await dismissKeyboard();
       if (next.dataset.next !== 'intro') clearIntroMotion();
-      if (next.dataset.next === 'suit-manual') { openManual(); return; }
       showScreen(next.dataset.next);
     }
     if (back) {
@@ -359,10 +358,6 @@
   });
 
   const ANALYSIS_HINTS = {
-    confidence: {
-      title: '「通过 / 存疑」和百分比是什么意思？',
-      body: '「通过」表示照片质量足够、判断比较可靠；「存疑」表示照片存在干扰（光线、角度、遮挡、宽松衣物等），把握较低。百分比是算法对这个结论的把握程度，低于 70% 时建议点「修改」自己确认一下。',
-    },
     lStar: {
       title: '肤色明度 L* 是什么？',
       body: 'L* 是国际通用的颜色明度刻度，范围 0–100：数字越大肤色越明亮，越小越深邃。我们取了你脸上额头、两颊等最接近素颜的几个区域，平均后得到这个数。',
@@ -395,10 +390,6 @@
       title: '「腰宽 / 胯宽」是什么？',
       body: '腰部宽度除以胯部宽度。数值越小说明腰线越明显（沙漏型特征），接近 1 说明腰和胯差不多宽（矩型特征）。',
     },
-    runnerUp: {
-      title: '「也比较接近」是什么意思？',
-      body: '算法把你的照片和几种常见类型逐一比对，选出最接近的一种。当两种类型得分很接近时，会额外标注第二接近的选项和它的得分——这种情况建议以你自己的判断为准，点上方「修改」就能调整。',
-    },
   };
   const openAnalysisHint = (key) => {
     const hint = ANALYSIS_HINTS[key];
@@ -416,16 +407,6 @@
     button.onclick = () => openAnalysisHint(key);
     return button;
   };
-  const buildAnalysisBadge = (analysis) => {
-    const badge = document.createElement('button');
-    badge.type = 'button';
-    const pass = analysis.status !== 'warn';
-    badge.className = `analysis-badge analysis-badge--${pass ? 'pass' : 'warn'}`;
-    badge.textContent = `${pass ? '通过' : '存疑'} · ${Math.round((analysis.confidence || 0) * 100)}%`;
-    badge.setAttribute('aria-label', `照片分析把握程度：${badge.textContent}`);
-    badge.onclick = () => openAnalysisHint('confidence');
-    return badge;
-  };
   const buildAnalysisMetrics = (analysis) => {
     const wrap = document.createElement('div');
     wrap.className = 'suit-analysis';
@@ -441,18 +422,6 @@
       row.append(label, value);
       wrap.append(row);
     });
-    if (analysis.runnerUp?.label) {
-      const runner = document.createElement('div');
-      runner.className = 'suit-analysis-row suit-analysis-row--runner';
-      const label = document.createElement('span');
-      label.className = 'suit-analysis-label';
-      label.textContent = '也比较接近';
-      label.append(buildAnalysisHintButton('runnerUp', '也比较接近'));
-      const value = document.createElement('b');
-      value.textContent = `${analysis.runnerUp.label} · ${(analysis.runnerUp.score ?? 0).toFixed(2)}`;
-      runner.append(label, value);
-      wrap.append(runner);
-    }
     return wrap;
   };
   const buildAnalysisNotes = (notes) => {
@@ -505,12 +474,11 @@
   };
   let editingFeature = null;
   let manualBeforeEdit = null;
-  const suitPhotoUrls = {};
+  const analysisOverlayUrls = {};
   const openManual = (key = null) => {
     manualBeforeEdit = { ...state.manual };
     editingFeature = key;
     document.querySelector('.manual-form').dataset.mode = key ? 'edit' : 'setup';
-    ONBOARDING_NAV['suit-manual'].back = key ? 'suit-result' : 'suit';
     document.querySelector('#manualTitle').textContent = key ? `修改${({skin:'肤色',faceShape:'脸型',bodyShape:'身材比例'})[key]}` : '选择更接近自己的特点';
     document.querySelectorAll('.manual-group').forEach(group => { group.hidden = Boolean(key && group.querySelector('[data-manual]').dataset.manual !== key); });
     document.querySelectorAll('[data-manual]').forEach(button => {
@@ -522,13 +490,18 @@
     document.querySelector('#manualNext').disabled = key ? !state.manual[key] : !Object.values(state.manual).every(Boolean);
     showScreen('suit-manual');
   };
+  let suitRenderSeq = 0;
   const renderSuit = async () => {
+    const seq = ++suitRenderSeq;
     const sessionId = await ensureSession();
     const summary = await api.getSuit(sessionId);
+    if (seq !== suitRenderSeq) return;
     const analyses = summary.analyses || {};
+    const bodyPhotoReady = Boolean(summary.photos?.body || (api.mode !== 'live' && state.bodyPhoto));
+    const visibleFeatures = summary.features.filter(feature => feature.key !== 'bodyShape' || bodyPhotoReady || feature.value);
     const container = document.querySelector('#suitFeatures');
     container.replaceChildren();
-    summary.features.forEach(feature => {
+    visibleFeatures.forEach(feature => {
       state.manual[feature.key] = feature.value || null;
       const analysis = (analyses[feature.key === 'bodyShape' ? 'body' : 'face'] || {}).attributes?.[feature.key] || null;
       const card = document.createElement('article'); card.className = 'suit-feature';
@@ -541,10 +514,14 @@
       value.textContent = feature.value || '等你补充';
       if (analysis?.subLabel && feature.source === 'photo' && feature.value === analysis.label) value.textContent = `${feature.value} · ${analysis.subLabel}`;
       valueRow.append(value);
-      if (analysis) valueRow.append(buildAnalysisBadge(analysis));
-      const source = document.createElement('small'); source.textContent = feature.source === 'manual' ? '由你选择' : feature.source === 'photo' ? '照片分析结果' : '暂时无法判断';
       const description = document.createElement('p'); description.textContent = feature.description;
-      card.append(header, valueRow, source, description);
+      card.append(header, valueRow);
+      if (feature.source !== 'photo') {
+        const source = document.createElement('small');
+        source.textContent = feature.source === 'manual' ? '由你选择' : '暂时无法判断';
+        card.append(source);
+      }
+      card.append(description);
       if (analysis) {
         if (analysis.metrics?.length) card.append(buildAnalysisMetrics(analysis));
         if (analysis.notes?.length) card.append(buildAnalysisNotes(analysis.notes));
@@ -552,103 +529,89 @@
       const advice = document.createElement('p'); advice.className = 'suit-advice'; advice.textContent = `穿搭可以这样试 · ${feature.advice}`;
       card.append(advice); container.append(card);
     });
-    const photos = document.querySelector('#suitResultPhotos'); photos.replaceChildren();
-    const photoKinds = ['face', 'body'].filter(kind => summary.photos?.[kind] || (api.mode !== 'live' && state[kind === 'face' ? 'facePhoto' : 'bodyPhoto']));
-    photos.hidden = photoKinds.length === 0;
-    showScreen('suit-result');
-    await Promise.all(photoKinds.map(async kind => {
-      const figure = document.createElement('figure');
-      const media = document.createElement('button'); media.type = 'button'; media.className = 'suit-photo-media';
-      const img = document.createElement('img'); img.alt = kind === 'face' ? '脸型与肤色采样分析图' : '肩腰胯比例分析图'; img.hidden = true;
-      const status = document.createElement('span'); status.className = 'suit-photo-placeholder'; status.textContent = '照片加载中…';
-      media.append(img, status);
-      const caption = document.createElement('figcaption');
-      const featureKeys = kind === 'face' ? ['faceShape', 'skin'] : ['bodyShape'];
-      const featureValues = featureKeys.map(key => summary.features.find(feature => feature.key === key)?.value || '暂未识别');
-      caption.textContent = `${kind === 'face' ? '【脸型 肤色】' : '【身材比例】'}：`;
-      const values = document.createElement('span'); values.className = 'suit-photo-values'; values.textContent = featureValues.join(' ');
-      caption.append(values);
-      const action = document.createElement('button'); action.type = 'button'; action.className = 'suit-photo-action'; action.textContent = '照片加载中…';
-      figure.append(media, caption);
-      ((analyses[kind] || {}).notes || []).forEach(note => {
-        const item = document.createElement('p'); item.className = 'suit-photo-note';
-        item.textContent = note.suggestion ? `${note.message}——${note.suggestion}` : note.message;
-        figure.append(item);
-      });
-      figure.append(action); photos.append(figure);
-      const load = async () => {
-        status.hidden = false; status.textContent = '照片加载中…'; action.disabled = true;
-        try {
-          const blob = api.mode === 'live' ? await api.getSuitPhoto(sessionId, kind) : state[kind === 'face' ? 'facePhoto' : 'bodyPhoto'];
-          const url = URL.createObjectURL(blob);
-          try {
-            img.src = url; await img.decode();
-          } catch (error) { URL.revokeObjectURL(url); throw error; }
-          if (suitPhotoUrls[kind]) URL.revokeObjectURL(suitPhotoUrls[kind]);
-          suitPhotoUrls[kind] = url;
-          img.hidden = false; status.hidden = true; action.textContent = '查看分析大图 ↗';
-          const openPhoto = () => {
-            const dialog = document.querySelector('#suitPhotoDialog');
-            dialog.querySelector('img').src = url; dialog.querySelector('img').alt = img.alt;
-            dialog.showModal();
-          };
-          media.onclick = openPhoto; action.onclick = openPhoto;
-        } catch {
-          img.hidden = true; status.textContent = '照片暂时未能加载'; action.textContent = '重新加载 →';
-          media.onclick = load; action.onclick = load;
-        } finally { action.disabled = false; }
-      };
-      await load();
-    }));
+    document.querySelector('#suitNext').disabled = !visibleFeatures.every(feature => feature.value);
   };
-  const openUploadedSuit = async () => {
-    if (state.screen !== 'suit' || !Object.values(state.photoStatus).every(status => status === 'valid')) return;
-    showScreen('suit-processing');
+  // Draw the analysis lines directly on the uploaded photo inside its upload card.
+  const applyAnalysisOverlay = async (kind, sessionId) => {
+    if (api.mode !== 'live') return;
+    const card = document.querySelector(`[data-upload-card="${kind}"]`);
+    const preview = card?.querySelector('.upload-preview');
+    if (!preview) return;
     try {
-      await renderSuit();
-    } catch {
-      showScreen('suit');
-      toast('照片已处理完成，结果暂时无法加载，请点击下方按钮重试。');
+      const blob = await api.getSuitPhoto(sessionId, kind);
+      const url = URL.createObjectURL(blob);
+      const image = Object.assign(document.createElement('img'), {
+        className: 'analysis-overlay',
+        alt: kind === 'face' ? '面部照（含分析标记）' : '全身照（含分析标记）',
+      });
+      image.addEventListener('error', () => URL.revokeObjectURL(url), { once: true });
+      image.src = url;
+      try { await image.decode(); } catch { URL.revokeObjectURL(url); return; }
+      if (state.photoStatus[kind] !== 'valid') { URL.revokeObjectURL(url); return; }
+      if (analysisOverlayUrls[kind]) URL.revokeObjectURL(analysisOverlayUrls[kind]);
+      analysisOverlayUrls[kind] = url;
+      preview.replaceChildren(image);
+    } catch { /* Analysis lines are an enhancement; keep the plain upload preview. */ }
+  };
+  const uploadPhoto = async (kind, file) => {
+    state.photoControllers[kind]?.abort();
+    const controller = new AbortController();
+    state.photoControllers[kind] = controller;
+    state.photoAssets[kind] = null;
+    const error = validatePhoto(file);
+    if (error) { setPhotoState(kind, 'invalid', error); return; }
+    state[kind === 'face' ? 'facePhoto' : 'bodyPhoto'] = file;
+    renderPhotoPreview(document.querySelector(`[data-upload-card="${kind}"]`), file, kind);
+    setPhotoState(kind, 'checking', '正在处理照片…');
+
+    try {
+      const sessionId = await ensureSession();
+      if (controller.signal.aborted) return;
+      const result = await api.checkPhoto(sessionId, kind, file, { signal: controller.signal });
+      if (controller.signal.aborted) return;
+      const accepted = result.photo?.status === 'accepted';
+      state.photoAssets[kind] = accepted ? result.photo.assetId : null;
+      state.revision = result.revision || state.revision;
+      track('photo_upload_result', { kind, accepted, code: result.photo?.code || '' });
+      setPhotoState(kind, accepted ? 'valid' : 'invalid', result.photo?.message || (accepted ? '照片可用' : '请重新上传'));
+      if (accepted && state.screen === 'suit') {
+        renderSuit().catch(() => toast('照片已处理完成，结果暂时无法加载，请重新上传试试。'));
+        await applyAnalysisOverlay(kind, sessionId);
+      }
+    } catch (requestError) {
+      if (controller.signal.aborted) return;
+      track('photo_upload_result', { kind, accepted: false, code: 'network' });
+      setPhotoState(kind, 'invalid', requestError.message || '照片检测失败，请重试');
     }
   };
   const bindUpload = (id, kind) => {
     const input = document.querySelector(`#${id}`);
-    const card = document.querySelector(`[data-upload-card="${kind}"]`);
-    let activeController = null;
-    input.addEventListener('change', async () => {
+    input.addEventListener('change', () => {
       const file = input.files?.[0]; if (!file) return;
       input.value = '';
-      activeController?.abort();
-      const controller = new AbortController();
-      activeController = controller;
-      state.photoAssets[kind] = null;
-      const error = validatePhoto(file);
-      if (error) { setPhotoState(kind, 'invalid', error); return; }
-      state[kind === 'face' ? 'facePhoto' : 'bodyPhoto'] = file;
-      renderPhotoPreview(card, file, kind);
-      setPhotoState(kind, 'checking', '正在处理照片…');
-
-      try {
-        const sessionId = await ensureSession();
-        if (controller.signal.aborted) return;
-        const result = await api.checkPhoto(sessionId, kind, file, { signal: controller.signal });
-        if (controller.signal.aborted) return;
-        const accepted = result.photo?.status === 'accepted';
-        state.photoAssets[kind] = accepted ? result.photo.assetId : null;
-        state.revision = result.revision || state.revision;
-        track('photo_upload_result', { kind, accepted, code: result.photo?.code || '' });
-        setPhotoState(kind, accepted ? 'valid' : 'invalid', result.photo?.message || (accepted ? '照片可用' : '请重新上传'));
-      } catch (requestError) {
-        if (controller.signal.aborted) return;
-        track('photo_upload_result', { kind, accepted: false, code: 'network' });
-        setPhotoState(kind, 'invalid', requestError.message || '照片检测失败，请重试');
-      }
+      void uploadPhoto(kind, file);
     });
   };
   bindUpload('facePhoto', 'face'); bindUpload('bodyPhoto', 'body');
+  // Built-in sample photos let visitors experience the analysis without their own uploads.
+  const SAMPLE_PHOTOS = {
+    face: '/static/selfit/assets/samples/face-sample.jpg',
+    body: '/static/selfit/assets/samples/body-sample.jpg',
+  };
+  document.querySelectorAll('[data-sample-photo]').forEach((button) => {
+    button.addEventListener('click', () => runButtonAction(button, async () => {
+      const kind = button.dataset.samplePhoto;
+      const url = SAMPLE_PHOTOS[kind];
+      if (!url) throw new Error('示例图暂时无法加载，请稍后再试。');
+      const response = await fetch(url);
+      if (!response.ok) throw new Error('示例图暂时无法加载，请稍后再试。');
+      const blob = await response.blob();
+      track('sample_photos_used', { kind });
+      await uploadPhoto(kind, new File([blob], url.split('/').pop(), { type: blob.type || 'image/jpeg' }));
+    }));
+  });
   const analysisHintDialog = document.querySelector('#analysisHintDialog');
   analysisHintDialog?.addEventListener('click', (event) => { if (event.target === analysisHintDialog) analysisHintDialog.close(); });
-  document.querySelector('#suitNext').addEventListener('click', event => runButtonAction(event.currentTarget, openUploadedSuit));
 
   document.querySelector('.manual-form').addEventListener('click', (event) => {
     const button = event.target.closest('[data-manual]'); if (!button) return;
@@ -665,6 +628,7 @@
     const result = await api.saveManualProfile(sessionId, editingFeature ? { [editingFeature]: state.manual[editingFeature] } : state.manual);
     state.revision = result.session?.revision || state.revision;
     track('manual_saved');
+    showScreen('suit');
     await renderSuit();
   }));
 
@@ -1759,12 +1723,19 @@
     input.remove();
     if (!copied) throw new Error('当前浏览器无法自动复制，请稍后重试。');
   };
-  document.querySelector('#reportLogout').addEventListener('click', () => {
+  const logoutSelfitUser = () => {
+    const token = auth.accessToken;
     auth.clear();
     sessionStorage.removeItem('selfit.studio.job');
+    sessionStorage.removeItem('selfit.studio.import');
     localStorage.removeItem(SESSION_STORAGE_KEY);
-    window.location.replace('/selfit');
-  });
+    if (token) {
+      void fetch('/auth/logout', { method: 'POST', headers: { Authorization: `Bearer ${token}` }, keepalive: true }).catch(() => {});
+    }
+    window.location.replace('/selfit?entry=login');
+  };
+  document.querySelector('#reportLogout').addEventListener('click', logoutSelfitUser);
+  document.querySelector('.intro-logout').addEventListener('click', logoutSelfitUser);
   document.querySelectorAll('[data-share]').forEach((button) => button.addEventListener('click', () => runButtonAction(button, async () => {
     if (button.dataset.share === 'report-link') {
       const created = await ensurePublicShare(shareSlideIndex);

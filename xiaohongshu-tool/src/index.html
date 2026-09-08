@@ -1,0 +1,235 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+<meta name="theme-color" content="#8a011b" />
+<title>selfit 风格测试 · 你是哪种风格人格？</title>
+<link rel="stylesheet" href="./selfit-tool.css" />
+</head>
+<body>
+<main class="app-shell" id="appShell">
+
+<section class="screen screen--splash is-active" data-screen="splash" aria-label="selfit 适我">
+  <button class="splash-enter" id="splashEnter" type="button" aria-label="进入 selfit">
+    <img class="splash-frame-art" src="./assets/ui/onboarding-splash.webp" alt="" aria-hidden="true" />
+    <img class="splash-signature" src="./assets/ui/splash-signature.png" width="200" height="133" alt="" aria-hidden="true" />
+  </button>
+</section>
+
+<section class="screen screen--intro" data-screen="intro" aria-labelledby="introTitle">
+  <header class="brand-row"><img class="wordmark-art" src="./assets/ui/selfit-wordmark.svg" width="55" height="20" alt="selfit" /></header>
+  <div class="intro-copy"><h1 id="introTitle">先认识自己，再决定怎么穿</h1></div>
+  <div class="dna-copy"><p>个人风格DNA =</p><p>你适合的&nbsp; × &nbsp;你喜欢的&nbsp; × &nbsp;你表达的</p></div>
+  <div class="dna-stage" aria-label="个人风格由 suit、like、vibe 组成">
+    <article class="dna-card dna-card--suit" aria-label="suit 你适合的"><img class="card-art" src="./assets/ui/suit-card-base.webp" alt="" /><img class="word-art" src="./assets/ui/suit-word@2x.png" alt="" /></article>
+    <article class="dna-card dna-card--like" aria-label="like 你喜欢的"><img class="card-art" src="./assets/ui/like-card-base.webp" alt="" /><img class="word-art" src="./assets/ui/like-word@2x.png" alt="" /></article>
+    <article class="dna-card dna-card--vibe" aria-label="vibe 你表达的"><img class="card-art" src="./assets/ui/vibe-card-base.webp" alt="" /><img class="word-art" src="./assets/ui/vibe-word@2x.png" alt="" /></article>
+  </div>
+  <button class="primary-action intro-action" type="button" data-next="suit-manual">去认识自己</button>
+</section>
+
+<div class="onboarding-nav" id="onboardingNav" data-onboarding-nav hidden>
+  <button class="icon-button onboarding-nav-back" type="button" data-onboarding-back aria-label="返回">‹</button>
+  <nav class="stepper" data-onboarding-stepper data-progress="suit" aria-label="进度">
+    <span class="step" data-step="suit"><i>1</i><b>suit</b></span><span class="step-line"></span>
+    <span class="step" data-step="like"><i>2</i><b>like</b></span><span class="step-line"></span>
+    <span class="step" data-step="vibe"><i>3</i><b>vibe</b></span>
+  </nav>
+</div>
+
+<section class="screen" data-screen="suit-manual" aria-labelledby="manualTitle">
+  <div class="manual-form">
+    <h1 class="manual-title" id="manualTitle">信息选择</h1>
+    <fieldset class="manual-group"><legend>肤色</legend>
+      <div class="skin-options">
+        <button type="button" data-manual="skin" data-value="冷白肤" aria-pressed="false"><i style="--tone:#FFDED7"></i><span>冷白</span></button>
+        <button type="button" data-manual="skin" data-value="暖白肤" aria-pressed="false"><i style="--tone:#FCD1BB"></i><span>暖白</span></button>
+        <button type="button" data-manual="skin" data-value="中性自然肤" aria-pressed="false"><i style="--tone:#F2C9B8"></i><span>中性</span></button>
+        <button type="button" data-manual="skin" data-value="橄榄肤" aria-pressed="false"><i style="--tone:#E6D3AF"></i><span>橄榄</span></button>
+        <button type="button" data-manual="skin" data-value="暖黄肤" aria-pressed="false"><i style="--tone:#E6BEAA"></i><span>暖黄</span></button>
+        <button type="button" data-manual="skin" data-value="小麦色" aria-pressed="false"><i style="--tone:#CB956C"></i><span>小麦</span></button>
+      </div>
+    </fieldset>
+    <fieldset class="manual-group"><legend>脸型</legend>
+      <div class="manual-visual-options manual-visual-options--face">
+        <button type="button" data-manual="faceShape" data-value="菱形脸" aria-pressed="false"><span class="manual-art"><img src="./assets/manual/face-diamond.webp" alt="菱形脸示意" /></span><span class="manual-option-label">菱型脸</span></button>
+        <button type="button" data-manual="faceShape" data-value="方脸" aria-pressed="false"><span class="manual-art"><img src="./assets/manual/face-square.webp" alt="方形脸示意" /></span><span class="manual-option-label">方型脸</span></button>
+        <button type="button" data-manual="faceShape" data-value="圆脸" aria-pressed="false"><span class="manual-art"><img src="./assets/manual/face-round.webp" alt="圆形脸示意" /></span><span class="manual-option-label">圆型脸</span></button>
+        <button type="button" data-manual="faceShape" data-value="椭圆脸" aria-pressed="false"><span class="manual-art"><img src="./assets/manual/face-oval.webp" alt="鹅蛋脸示意" /></span><span class="manual-option-label">鹅蛋脸</span></button>
+        <button type="button" data-manual="faceShape" data-value="心形脸" aria-pressed="false"><span class="manual-art"><img src="./assets/manual/face-heart.webp" alt="心形脸示意" /></span><span class="manual-option-label">心型脸</span></button>
+      </div>
+    </fieldset>
+    <fieldset class="manual-group"><legend>身型</legend>
+      <div class="manual-visual-options manual-visual-options--body">
+        <button type="button" data-manual="bodyShape" data-value="梨型" aria-pressed="false"><span class="manual-art"><img src="./assets/manual/body-pear.webp" alt="梨型身型示意" /></span><span class="manual-option-label">梨型</span></button>
+        <button type="button" data-manual="bodyShape" data-value="倒三角型" aria-pressed="false"><span class="manual-art"><img src="./assets/manual/body-inverted-triangle.webp" alt="倒三角型身型示意" /></span><span class="manual-option-label">倒三角型</span></button>
+        <button type="button" data-manual="bodyShape" data-value="沙漏型" aria-pressed="false"><span class="manual-art"><img src="./assets/manual/body-hourglass.webp" alt="沙漏型身型示意" /></span><span class="manual-option-label">沙漏型</span></button>
+        <button type="button" data-manual="bodyShape" data-value="矩型" aria-pressed="false"><span class="manual-art"><img src="./assets/manual/body-rectangle.webp" alt="矩型身型示意" /></span><span class="manual-option-label">矩型</span></button>
+        <button type="button" data-manual="bodyShape" data-value="苹果型" aria-pressed="false"><span class="manual-art"><img src="./assets/manual/body-apple.webp" alt="苹果型身型示意" /></span><span class="manual-option-label">苹果型</span></button>
+      </div>
+    </fieldset>
+  </div>
+  <button class="primary-action bottom-action" id="manualNext" type="button" disabled>下一步</button>
+</section>
+
+<section class="screen" data-screen="like" aria-labelledby="likeTitle">
+  <div class="page-copy page-copy--assessment"><h1 id="likeTitle">再告诉我一些你的喜好吧</h1></div>
+  <div class="preference-panel">
+    <div class="spectrum"><div class="spectrum-label"><span>硬朗锐利</span><span>柔和温柔</span></div><input type="range" id="shapeRange" min="0" max="100" value="42" aria-label="硬朗锐利到柔和温柔" /></div>
+    <div class="spectrum"><div class="spectrum-label"><span>简约克制</span><span>精致繁复</span></div><input type="range" id="energyRange" min="0" max="100" value="64" aria-label="简约克制到精致繁复" /></div>
+    <div class="spectrum"><div class="spectrum-label"><span>经典耐看</span><span>时髦先锋</span></div><input type="range" id="trendRange" min="0" max="100" value="42" aria-label="经典耐看到时髦先锋" /></div>
+    <fieldset class="palette-field" aria-label="颜色组合">
+      <legend>选一组你最喜欢的配色</legend>
+      <div class="palette-grid" id="paletteGrid">
+        <button type="button" class="palette" data-palette="mono" aria-pressed="false"><i style="--c:#D3D3D3"></i><i style="--c:#A8A8A8"></i><i style="--c:#656464"></i><i style="--c:#403F3E"></i></button>
+        <button type="button" class="palette" data-palette="earth" aria-pressed="false"><i style="--c:#E8D3B8"></i><i style="--c:#C08A52"></i><i style="--c:#8A4B2A"></i><i style="--c:#4A3428"></i></button>
+        <button type="button" class="palette" data-palette="ocean" aria-pressed="false"><i style="--c:#9EB5C8"></i><i style="--c:#506F7E"></i><i style="--c:#50668D"></i><i style="--c:#65568D"></i></button>
+        <button type="button" class="palette" data-palette="jewel" aria-pressed="false"><i style="--c:#A79873"></i><i style="--c:#6A5D30"></i><i style="--c:#642218"></i><i style="--c:#432F1F"></i></button>
+        <button type="button" class="palette" data-palette="bright" aria-pressed="false"><i style="--c:#DF4F53"></i><i style="--c:#ECAE24"></i><i style="--c:#A9A921"></i><i style="--c:#91B0D1"></i></button>
+        <button type="button" class="palette" data-palette="pastel" aria-pressed="false"><i style="--c:#D4B9A5"></i><i style="--c:#C8D3D0"></i><i style="--c:#E6D8D7"></i><i style="--c:#B1B2D1"></i></button>
+      </div>
+    </fieldset>
+  </div>
+  <button class="primary-action bottom-action" id="likeNext" type="button" disabled>下一步</button>
+</section>
+
+<section class="screen" data-screen="vibe" aria-labelledby="vibeTitle">
+  <div class="vibe-scroll">
+    <div class="page-copy page-copy--assessment page-copy--vibe"><h1 id="vibeTitle">几个问题，了解你想表达的</h1></div>
+    <div class="vibe-questionnaire" id="vibeQuestions">
+      <fieldset data-question="occasion"><legend>1. 出门前突然觉得这身少了点什么</legend>
+        <button type="button" data-answer="A">A. 少什么？能出门就行</button>
+        <button type="button" data-answer="B">B. 加一个配饰，给今天留点尊严</button>
+        <button type="button" data-answer="C">C. 全部脱掉，我要重新做人</button>
+      </fieldset>
+      <fieldset data-question="wardrobe"><legend>2. 你的收藏夹和真实衣柜</legend>
+        <button type="button" data-answer="A">A. 基本是同一个人</button>
+        <button type="button" data-answer="B">B. 收藏夹在巴黎，衣柜在赶早八</button>
+        <button type="button" data-answer="C">C. 每张收藏图都很好看，但互相不认识</button>
+      </fieldset>
+      <fieldset data-question="expression"><legend>3. 只能选一套造型出门，你选</legend>
+        <button type="button" data-answer="A">A. 宽松叠穿、自然妆发、舒服最重要</button>
+        <button type="button" data-answer="B">B. 水光妆、精致发型、配色必须统一</button>
+        <button type="button" data-answer="C">C. 修身剪裁、立体妆容、气场必须到位</button>
+        <button type="button" data-answer="D">D. 东方元素、利落眉眼、含蓄但有神韵</button>
+        <button type="button" data-answer="E">E. 衬衫牛仔、微乱卷发、再加一抹红唇</button>
+      </fieldset>
+    </div>
+  </div>
+  <div class="vibe-action-dock"><button class="primary-action questionnaire-action" id="vibeNext" type="button" disabled>生成风格报告</button></div>
+</section>
+
+<section class="screen screen--loading" data-screen="loading" aria-label="正在生成风格报告">
+  <div class="loading-story">
+    <div class="loading-art-frame" aria-hidden="true"><img id="loadingArt" src="./assets/ui/loading-stage-25.webp" alt="" data-stage="25" /></div>
+    <p id="loadingLine">先看见真实的你</p>
+  </div>
+  <img class="loading-brandmark" src="./assets/ui/splash-signature.png" alt="" aria-hidden="true" />
+  <p class="loading-percent" id="loadingPercent">25%</p>
+</section>
+
+<section class="screen screen--report" data-screen="report" aria-labelledby="reportTitle">
+  <header class="report-nav">
+    <button class="icon-button" type="button" data-back="vibe" aria-label="返回修改问卷">‹</button>
+    <h2>风格报告</h2>
+    <span class="header-spacer" aria-hidden="true"></span>
+  </header>
+  <header class="report-hero report-hero--full" data-report-hero>
+    <img class="report-hero-image" data-report-hero-image src="./assets/ui/placeholder-hero.svg" alt="" hidden />
+    <div class="report-hero-copy">
+      <h1 id="reportTitle" data-report-title></h1>
+      <small data-report-eyebrow></small>
+    </div>
+  </header>
+  <div class="report-intro">
+    <div class="report-traits" id="reportTraits" aria-label="风格关键词"></div>
+    <div class="report-summary report-markdown" data-report-summary></div>
+  </div>
+  <div class="report-body">
+    <section data-report-section="colors"><h2>这些颜色很衬你</h2><div class="report-colors" id="reportColors"></div></section>
+    <section data-report-section="makeup"><h2>你适合的妆容</h2><div class="report-image-grid" id="reportMakeup"></div></section>
+    <section data-report-section="hair"><h2>你适合的发型</h2><div class="report-image-grid" id="reportHair"></div></section>
+    <section class="report-outfit-section" data-report-section="outfits">
+      <h2>你最适合的穿搭</h2>
+      <div class="report-outfit-summary report-markdown" data-report-outfit-summary></div>
+      <p class="report-proof"><img class="report-proof-logo" data-report-source-logo src="./assets/ui/xiaohongshu-badge@2x.png" alt="小红书" /><span data-report-source-copy></span><img class="report-proof-avatars" data-report-source-avatars src="./assets/ui/report-user-avatar-stack@4x.png" alt="真实用户素材" /></p>
+      <div class="outfit-list" id="reportOutfits"></div>
+    </section>
+    <aside class="report-advice" id="reportAdvice">
+      <h2>你的风格解读</h2>
+      <div class="report-advice-intro report-markdown" data-report-advice-intro></div>
+      <div class="report-advice-list" data-report-advice-list></div>
+    </aside>
+    <aside class="tool-cta" aria-label="完整版 selfit 体验">
+      <small>完整版体验</small>
+      <p>这只是开始。上 selfit 上传照片，解锁完整风格报告与试穿搭配。</p>
+      <div class="tool-cta-qr">
+        <img src="./assets/ui/group-chat-qr.jpeg" width="220" height="220" alt="小红书selfit群聊二维码" />
+        <div class="tool-cta-copy"><b>扫码加入 selfit 群聊</b><span>进群体验完整风格测试与试穿</span></div>
+      </div>
+    </aside>
+    <div class="report-signoff" aria-hidden="true">
+      <img class="report-signoff-lace" src="./assets/ui/lace-card.webp" alt="" />
+      <span class="report-signoff-dots"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span>
+      <img class="report-signoff-wordmark" src="./assets/ui/selfit-wordmark.svg" alt="" />
+    </div>
+  </div>
+  <div class="report-actions">
+    <button type="button" id="retakeBtn">再测一次</button>
+    <button type="button" id="openShare">保存并分享</button>
+  </div>
+</section>
+
+</main>
+
+<dialog class="share-dialog" id="shareDialog">
+  <form method="dialog" class="share-sheet">
+    <header><button value="cancel" aria-label="关闭">×</button><h2>分享风格报告</h2><span></span></header>
+    <div class="share-carousel" aria-roledescription="轮播图" aria-label="风格报告分享卡片">
+      <div class="share-track" id="shareTrack" tabindex="0">
+        <div class="share-card-slot"><article class="share-card share-card--identity is-current" data-share-slide aria-roledescription="幻灯片" aria-label="1 / 3，风格摘要" aria-current="true">
+          <div class="share-card-meta"><span>我的 selfit 风格报告</span></div>
+          <div class="share-card-identity"><strong data-share-title></strong><small data-share-eyebrow></small><p data-share-summary></p><figure class="share-card-ornament is-standalone" data-share-ornament><img data-share-illustration alt="" /></figure></div>
+          <footer><img src="./assets/ui/selfit-wordmark.svg" alt="selfit" /><img class="share-qr" src="./assets/ui/group-chat-qr.jpeg" alt="小红书selfit群聊二维码" /></footer>
+        </article></div>
+        <div class="share-card-slot"><article class="share-card share-card--colors" data-share-slide aria-roledescription="幻灯片" aria-label="2 / 3，适配色板">
+          <div class="share-card-meta"><span>我的 selfit 风格报告</span></div>
+          <div class="share-card-copy"><small>这些颜色很衬你</small><strong data-share-color-title></strong><div class="share-card-colors" id="shareCardColors"></div></div>
+          <footer><img src="./assets/ui/selfit-wordmark.svg" alt="selfit" /><img class="share-qr" src="./assets/ui/group-chat-qr.jpeg" alt="小红书selfit群聊二维码" /></footer>
+        </article></div>
+        <div class="share-card-slot"><article class="share-card share-card--inspiration" data-share-slide aria-roledescription="幻灯片" aria-label="3 / 3，风格灵感">
+          <div class="share-card-meta"><span>我的 selfit 风格报告</span></div>
+          <div class="share-card-copy"><strong data-share-inspiration-title></strong><div class="share-card-images" id="shareCardImages"></div></div>
+          <footer><img src="./assets/ui/selfit-wordmark.svg" alt="selfit" /><img class="share-qr" src="./assets/ui/group-chat-qr.jpeg" alt="小红书selfit群聊二维码" /></footer>
+        </article></div>
+      </div>
+    </div>
+    <nav class="share-dots" aria-label="选择分享卡片">
+      <button type="button" data-share-dot="0" aria-label="查看第 1 张：风格摘要" aria-current="true"></button>
+      <button type="button" data-share-dot="1" aria-label="查看第 2 张：适配色板" aria-current="false"></button>
+      <button type="button" data-share-dot="2" aria-label="查看第 3 张：风格灵感" aria-current="false"></button>
+    </nav>
+    <p class="visually-hidden" id="shareSlideStatus" aria-live="polite">第 1 张，共 3 张</p>
+    <div class="share-actions">
+      <button id="saveShareCard" type="button" data-share="save-card"><i class="share-action-icon icon-save" aria-hidden="true"></i><span data-share-save-label>生成并保存</span></button>
+      <button id="postNoteBtn" type="button" data-share="post-note"><i class="share-action-icon icon-xiaohongshu" aria-hidden="true"></i><span>发布笔记</span></button>
+    </div>
+    <p class="share-expiry-note">保存卡片发到你的笔记，让大家来测测自己的风格</p>
+  </form>
+</dialog>
+
+<section class="save-image-guide" id="saveImageGuide" role="dialog" aria-modal="true" aria-labelledby="saveImageGuideTitle" hidden>
+  <div class="save-image-guide-panel">
+    <header><button type="button" data-close-save-guide aria-label="关闭保存引导">×</button><h2 id="saveImageGuideTitle">截图保存这张卡片</h2></header>
+    <img id="saveImagePreview" alt="selfit 风格报告卡片预览" />
+  </div>
+</section>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script src="./persona.js" defer></script>
+<script src="./templates.js" defer></script>
+<script src="./selfit-tool.js" defer></script>
+</body>
+</html>

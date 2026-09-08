@@ -190,21 +190,31 @@ def test_selfit_back_control_and_stepper_share_the_figma_top_row() -> None:
     assert ".page-copy--suit, .page-copy--assessment { margin-top: 111px; }" in styles.text
 
 
-def test_selfit_suit_keeps_the_manual_selection_entry_above_the_primary_action() -> None:
+def test_selfit_suit_offers_sample_photos_instead_of_a_manual_entry() -> None:
     markup = client.get("/selfit/demo")
     styles = client.get("/static/selfit/selfit.css")
+    runtime = client.get("/static/selfit/selfit.js")
 
     assert markup.status_code == 200
     assert styles.status_code == 200
-    assert 'class="direct-select" type="button" data-next="suit-manual"' in markup.text
-    assert "不想上传照片？" in markup.text
-    assert "没关系，你也可以自己告诉我这些特征。" in markup.text
-    assert "照片仅用于个人风格分析，不会公开" in markup.text
-    assert "bottom: calc(max(60px, env(safe-area-inset-bottom)) + 52px);" in styles.text
-    assert "min-width: 184px;" in styles.text
-    assert "height: 44px;" in styles.text
-    assert "top: auto;" in styles.text
-    assert "bottom: calc(max(18px, env(safe-area-inset-bottom)) + 52px);" in styles.text
+    assert runtime.status_code == 200
+    assert '<div class="upload-slot"><label class="upload-card" data-upload-card="face">' in markup.text
+    assert '<div class="upload-slot"><label class="upload-card" data-upload-card="body">' in markup.text
+    assert 'data-sample-photo="face"' in markup.text
+    assert 'data-sample-photo="body"' in markup.text
+    assert "使用示例照片" in markup.text
+    assert "想先看看效果？" not in markup.text
+    assert 'id="useSamplePhotos"' not in markup.text
+    assert "direct-select" not in markup.text
+    assert 'data-next="suit-manual"' not in markup.text
+    assert "不想上传照片？" not in markup.text
+    assert 'data-screen="suit-manual"' in markup.text  # manual edit screen stays for the 修改 buttons
+    assert "data-sample-photo" in runtime.text
+    assert "SAMPLE_PHOTOS[kind]" in runtime.text
+    assert "upload-sample" in styles.text
+    assert "[data-screen=\"suit\"] .upload-sample { align-self: center; min-height: 44px;" in styles.text
+    assert ".upload-slot { min-width: 0; display: flex; flex-direction: column; }" in styles.text
+    assert "suit-sample-entry" not in styles.text
 
 
 def test_selfit_auth_adapter_and_bearer_wiring_are_available() -> None:
@@ -290,7 +300,7 @@ def test_selfit_report_share_cards_use_the_dedicated_qr_artwork(monkeypatch) -> 
     assert response.text.count('accept="image/*,.heic,.heif"') == 2
     assert "['image/jpeg', 'image/png', 'image/webp'].includes(file.type)" not in runtime.text
     assert "file.size > 20 * 1024 * 1024" in runtime.text
-    assert "renderPhotoPreview(card, file, kind)" in runtime.text
+    assert "renderPhotoPreview(document.querySelector(`[data-upload-card=\"${kind}\"]`), file, kind)" in runtime.text
     assert "upload-preview-fallback" in runtime.text
     assert "share-ornament.webp?v=20260829-webp-v1" in runtime.text
     assert "drawContainImage(context, image" in runtime.text

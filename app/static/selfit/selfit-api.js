@@ -143,7 +143,7 @@
       const session = this.mockSessions.get(sessionId) || {};
       const analyses = session.photoAnalyses || {};
       return Promise.resolve({ revision: session.revision, photos: {}, analyses, features: [
-        ['faceShape', '脸型'], ['skin', '肤色'], ['bodyShape', '身材比例'],
+        ['skin', '肤色'], ['faceShape', '脸型'], ['bodyShape', '身材比例'],
       ].map(([key, title]) => {
         const analysis = (analyses[key === 'bodyShape' ? 'body' : 'face'] || {}).attributes?.[key] || null;
         const value = session.manual?.[key] || analysis?.label || null;

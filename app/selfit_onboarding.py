@@ -1300,7 +1300,7 @@ async def upload_session_photo(
         # A newly accepted photo replaces earlier choices for its attributes.
         # Later explicit edits still take precedence over this photo's inference.
         manual = record.get("manual") or {}
-        for field in (("faceShape", "skin") if kind == "face" else ("bodyShape",)):
+        for field in (("skin", "faceShape") if kind == "face" else ("bodyShape",)):
             manual.pop(field, None)
         record["manual"] = manual
         _index_user_photo(data, record, kind)

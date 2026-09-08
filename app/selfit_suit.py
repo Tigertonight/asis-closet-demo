@@ -46,7 +46,7 @@ def _photo_analysis(record, kind, attribute_name):
 
 def suit_summary(record):
     resolved = resolve_suit_profile(record)
-    fields = [('faceShape', 'face_shape', '脸型'), ('skin', 'skin', '肤色'), ('bodyShape', 'body_shape', '身材比例')]
+    fields = [('skin', 'skin', '肤色'), ('faceShape', 'face_shape', '脸型'), ('bodyShape', 'body_shape', '身材比例')]
     features = []
     for key, source_key, title in fields:
         value = resolved.get(source_key)
