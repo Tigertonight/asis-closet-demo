@@ -18,6 +18,10 @@ The latest user corrections in this section supersede all older ordering, valida
 - Vibe uses the prototype's reflective copy. In question 3 the displayed order is Japanese, Korean, French, Chinese, Western; wire codes remain **A, B, E, D, C** to preserve the existing regional meaning. No persona weights, thresholds or centers change.
 - Suit API: `GET /api/v1/selfit/sessions/{id}/suit`; edits use the existing `PATCH .../profile`; protected `GET .../photos/{kind}/preview` supplies an orientation-corrected, metadata-free WebP analysis image up to 1200px. Reuse backend face geometry / skin sampling and body proportion overlays; omit QA metrics. Cache derived assets separately and resolve history only for the same authenticated user. Never draw fictitious recognition landmarks.
 
+## Default wardrobe update — 2026-09-08
+
+Per user request, all personas now receive three shared starter items: white T-shirt, blue jeans and white Converse low-top sneakers. These defaults supersede the empty-wardrobe rule below. Preserve personal uploads, edits and deletion choices; never regenerate deleted defaults.
+
 ## 1. Source of Truth
 
 Use this priority when implementation details conflict:

@@ -18,7 +18,7 @@ def personal_wardrobe() -> dict[str, Any]:
     from app import closet
 
     items = closet.list_closet_items()["items"]
-    personal = [item for item in items if item.get("favorite") or
+    personal = [item for item in items if item.get("is_default") or item.get("favorite") or
                 item.get("source", {}).get("type") in {"upload", "xhs_link", "web_link", "reprocess"} or
                 item.get("source", {}).get("upload")]
     owned_ids = {item["item_id"] for item in personal}
