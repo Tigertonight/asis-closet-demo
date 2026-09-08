@@ -122,7 +122,7 @@ def test_extract_look_compatibility_route_uses_native_closet_pipeline(monkeypatc
     assert payload["request_id"].startswith("look_")
     assert payload["prompt_version"] == closet.WARDROBE_EXTRACTION_PROMPT_VERSION
     assert payload["items"]
-    assert client.get("/closet/items").json()["total"] == len(payload["items"])
+    assert {item["item_id"] for item in client.get("/closet/items").json()["items"] if not item.get("is_default")} == {item["item_id"] for item in payload["items"]}
     assert (tmp_path / "closet_manifest.json").exists()
 
 
@@ -200,7 +200,7 @@ def test_outfit_upload_splits_every_inventory_item_into_unique_transparent_pngs(
         assert cutout_path is not None and cutout_path.exists()
         assert Image.open(cutout_path).mode == "RGBA"
         assert closet._has_meaningful_transparency(Image.open(cutout_path)) is True
-    assert client.get("/closet/items").json()["total"] == 3
+    assert {item["item_id"] for item in client.get("/closet/items").json()["items"] if not item.get("is_default")} == {item["item_id"] for item in data["items"]}
     assert data["draft_outfit"]["origin"] == "auto_split"
     assert data["draft_outfit"]["draft"] is True
     assert set(data["draft_outfit"]["item_ids"]) == {item["item_id"] for item in data["items"]}
@@ -785,7 +785,9 @@ def test_closet_list_patch_and_delete(monkeypatch, tmp_path: Path) -> None:
 
     deleted = client.delete(f"/closet/items/{created['item_id']}")
     assert deleted.status_code == 200
-    assert client.get("/closet/items").json()["total"] == 0
+    remaining = client.get("/closet/items").json()["items"]
+    assert all(item.get("is_default") for item in remaining)
+    assert created["item_id"] not in {item["item_id"] for item in remaining}
 
 
 def test_closet_preferences_persist_current_model(monkeypatch, tmp_path: Path) -> None:
