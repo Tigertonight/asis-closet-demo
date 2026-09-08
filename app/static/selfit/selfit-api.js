@@ -26,7 +26,7 @@
       this.mockReports = new Map();
     }
 
-    async request(path, { method = 'GET', body, formData, signal, idempotencyKey, timeoutMs = this.timeoutMs } = {}) {
+    async request(path, { method = 'GET', body, formData, signal, idempotencyKey, timeoutMs = this.timeoutMs, blob = false } = {}) {
       const controller = new AbortController();
       const timeout = setTimeout(() => controller.abort('timeout'), timeoutMs);
       if (signal) signal.addEventListener('abort', () => controller.abort(signal.reason), { once: true });
@@ -39,6 +39,7 @@
           method, credentials: 'include', headers, signal: controller.signal,
           body: formData || (body === undefined ? undefined : JSON.stringify(body)),
         });
+        if (blob && response.ok) return response.blob();
         const payload = await response.json().catch(() => ({}));
         if (!response.ok) {
           const error = payload.error || {};
@@ -93,9 +94,21 @@
       }));
     }
 
+    getSuit(sessionId) {
+      if (this.mode === 'live') return this.request(`/sessions/${encodeURIComponent(sessionId)}/suit`);
+      const session = this.mockSessions.get(sessionId) || {};
+      return Promise.resolve({ revision: session.revision, photos: {}, features: [
+        ['faceShape', '脸型'], ['skin', '肤色'], ['bodyShape', '身材比例'],
+      ].map(([key, title]) => ({ key, title, value: session.manual?.[key] || null, source: session.manual?.[key] ? 'manual' : 'unknown', description: '预览模式：真实照片分析需连接服务。', advice: '可手动选择更接近自己的特点。' })) });
+    }
+
+    getSuitPhoto(sessionId, kind) {
+      return this.request(`/sessions/${encodeURIComponent(sessionId)}/photos/${encodeURIComponent(kind)}/preview`, { blob: true, timeoutMs: 45000 });
+    }
+
     saveManualProfile(sessionId, profile) {
       if (this.mode === 'live') return this.patchSession(sessionId, '/profile', { manual: profile });
-      return this.mockPatch(sessionId, { manual: profile });
+      return this.mockPatch(sessionId, { manual: { ...this.mockSessions.get(sessionId)?.manual, ...profile } });
     }
 
     savePreferences(sessionId, preferences) {

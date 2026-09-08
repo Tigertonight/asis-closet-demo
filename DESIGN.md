@@ -2,6 +2,22 @@
 
 This file is the frontend source of truth for the consumer product in the Figma file `🪞 适我`.
 
+## Onboarding update — 2026-09-08
+
+The supplied product prototype supersedes the older ordering and validation rules below:
+
+- Initial entry includes login before onboarding; restore existing signed-in users, but do not treat a visitor session as completed login. Direct mirror entry retains isolated visitor support. Report actions stay visible and equally sized, with “保存并分享” and “去试穿”; no retake button.
+- Journey: intro → **like → suit → suit results → vibe → report**.
+- Like palettes are optional; no selection is persisted as `null`, including clearing an earlier choice. Sliders remain adjustable.
+- Suit surfaces retain the original near-white canvas (`#fafafa`), white cards and neutral gray image wells/borders. The prototype informs layout and copy, not its beige background colors (user correction, 2026-09-08).
+- Suit copy follows the supplied warm prototype: warm brown headings, muted brown helper text, restrained red emphasis on “适合你” and “手动选择”, photo-purpose subtitles, privacy reassurance, and a separate manual-entry heading/helper/action.
+- Suit explains why photos help; upload enters a warm, dedicated processing state. Accepted photos and server-resolved face / skin / body observations appear together. Unknown attributes stay unknown and offer manual selection.
+- Manual setup shows all three questions with compact single-row options per question. Single-feature edits use larger illustrations/swatches with centered wrapping: five choices use 3 + 2 (second row centered), six choices use 3 + 3. Keep content scrollable above the save action.
+- Each observation opens only its corresponding manual selection group. Save returns to the result with updated server copy; cancel discards that edit. Explicit edits override photo inference. A newly accepted upload clears previous choices only for its own attributes (face/skin or body); the result displays “照片分析结果” until that attribute is manually edited again.
+- Report generation opens the report first. The report retains the fused personality cover, keywords, summary, five colors and recommendations, with warm spacing and readable editorial hierarchy. Its primary action enters the existing try-on mirror; share remains available. This supersedes the older automatic redirect after onboarding.
+- Vibe uses the prototype's reflective copy. In question 3 the displayed order is Japanese, Korean, French, Chinese, Western; wire codes remain **A, B, E, D, C** to preserve the existing regional meaning. No persona weights, thresholds or centers change.
+- Suit API: `GET /api/v1/selfit/sessions/{id}/suit`; edits use the existing `PATCH .../profile`; protected `GET .../photos/{kind}/preview` supplies an orientation-corrected, metadata-free WebP analysis image up to 1200px. Reuse backend face geometry / skin sampling and body proportion overlays; omit QA metrics. Cache derived assets separately and resolve history only for the same authenticated user. Never draw fictitious recognition landmarks.
+
 ## 1. Source of Truth
 
 Use this priority when implementation details conflict:

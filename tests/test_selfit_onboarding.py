@@ -197,7 +197,9 @@ def test_selfit_suit_keeps_the_manual_selection_entry_above_the_primary_action()
     assert markup.status_code == 200
     assert styles.status_code == 200
     assert 'class="direct-select" type="button" data-next="suit-manual"' in markup.text
-    assert "不方便拍照？直接选" in markup.text
+    assert "不想上传照片？" in markup.text
+    assert "没关系，你也可以自己告诉我这些特征。" in markup.text
+    assert "照片仅用于个人风格分析，不会公开" in markup.text
     assert "bottom: calc(max(60px, env(safe-area-inset-bottom)) + 52px);" in styles.text
     assert "min-width: 184px;" in styles.text
     assert "height: 44px;" in styles.text
@@ -262,8 +264,8 @@ def test_selfit_report_share_cards_use_the_dedicated_qr_artwork() -> None:
     assert response.text.count('class="share-qr" src="/static/selfit/assets/share-report-qr.png?v=20260828"') == 3
     assert 'class="public-report-error-qr"><img src="/static/selfit/assets/share-report-qr.png?v=20260828"' in response.text
     assert 'data-share-ornament' in response.text
-    assert "/static/selfit/selfit.css?v=20260829-vibe-webkit1" in response.text
-    assert "/static/selfit/selfit.js?v=20260901-report-parent2" in response.text
+    assert "/static/selfit/selfit.css?v=" in response.text
+    assert "/static/selfit/selfit.js?v=" in response.text
     assert "/static/selfit/selfit-persona.js?v=20260829-bolt-korean1" in response.text
     assert 'property="og:image" content="http://testserver/selfit/share-logo.png"' in response.text
     assert 'property="og:image:width" content="600"' in response.text

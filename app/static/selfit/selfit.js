@@ -14,10 +14,11 @@
   // Persistent nav config per onboarding screen: where "back" goes, which step
   // is current, and how far the progress fill should reach.
   const ONBOARDING_NAV = {
-    suit: { back: 'intro', progress: 'suit', current: 'suit', done: [] },
-    'suit-manual': { back: 'suit', progress: 'suit', current: 'suit', done: [] },
-    like: { back: 'suit', progress: 'like', current: 'like', done: ['suit'] },
-    vibe: { back: 'like', progress: 'vibe', current: 'vibe', done: ['suit', 'like'] },
+    suit: { back: 'like', progress: 'suit', current: 'suit', done: ['like'] },
+    'suit-manual': { back: 'suit', progress: 'suit', current: 'suit', done: ['like'] },
+    'suit-result': { back: 'suit', progress: 'suit', current: 'suit', done: ['like'] },
+    like: { back: 'intro', progress: 'like', current: 'like', done: [] },
+    vibe: { back: 'suit-result', progress: 'vibe', current: 'vibe', done: ['suit', 'like'] },
   };
   const updateOnboardingNav = (name) => {
     if (!onboardingNav) return;
@@ -34,6 +35,9 @@
   };
   const SESSION_STORAGE_KEY = 'selfit.onboarding.session.v1';
   const entryParams = new URLSearchParams(window.location.search);
+  const archiveReportEntry = entryParams.get('from') === 'mirror' && entryParams.get('return_screen') === 'profile';
+  document.body.classList.toggle('is-archive-report', archiveReportEntry);
+  if(archiveReportEntry) {document.querySelector('.report-nav h2').textContent='型格报告';}
   const handoffToken = entryParams.get('handoff') || '';
   const sharedReportEntry = entryParams.get('from') === 'shared-report';
   const sharedReportType = (entryParams.get('shared_type') || '').trim().slice(0, 24);
@@ -44,7 +48,7 @@
   })[entryParams.get('from')] || '';
   const reportBack = document.querySelector('[data-screen="report"] [data-back]');
   if (reportParentTab && reportBack) {
-    reportBack.setAttribute('aria-label', '返回试衣镜');
+    reportBack.setAttribute('aria-label', entryParams.get('return_screen') === 'profile' ? '返回我的档案' : '返回试衣镜');
   }
   let api;
   let auth;
@@ -153,6 +157,7 @@
     updateOnboardingNav(name);
     themeColor?.setAttribute('content', ['splash', 'loading'].includes(name) ? '#8a011b' : '#fafafa');
     next.scrollTop = 0;
+    if(name === 'report') requestAnimationFrame(()=>syncReportActions());
   };
 
   const returnToReportParent = () => {
@@ -160,7 +165,7 @@
     const appUrl = new URL('/selfit/try-on', window.location.origin);
     const typeId = String(entryParams.get('type') || state.currentReportTypeId || '').trim().toLowerCase();
     if (typeId) appUrl.searchParams.set('persona', typeId);
-    appUrl.searchParams.set('screen', 'mirror');
+    appUrl.searchParams.set('screen', entryParams.get('return_screen') === 'profile' ? 'profile' : 'mirror');
     window.location.assign(`${appUrl.pathname}${appUrl.search}`);
     return true;
   };
@@ -244,11 +249,13 @@
     if (next) {
       if (document.activeElement?.matches?.('input, textarea, [contenteditable="true"]')) await dismissKeyboard();
       if (next.dataset.next !== 'intro') clearIntroMotion();
+      if (next.dataset.next === 'suit-manual') { openManual(); return; }
       showScreen(next.dataset.next);
     }
     if (back) {
       if (document.activeElement?.matches?.('input, textarea, [contenteditable="true"]')) await dismissKeyboard();
       if (state.screen === 'report' && returnToReportParent()) return;
+      if (state.screen === 'suit-manual' && manualBeforeEdit) state.manual = { ...manualBeforeEdit };
       showScreen(back.dataset.back);
       if (back.dataset.back === 'intro') playIntro();
     }
@@ -385,34 +392,118 @@
     state.photoStatus[kind] = status;
     syncSuitButton();
   };
+  let editingFeature = null;
+  let manualBeforeEdit = null;
+  const suitPhotoUrls = {};
+  const openManual = (key = null) => {
+    manualBeforeEdit = { ...state.manual };
+    editingFeature = key;
+    document.querySelector('.manual-form').dataset.mode = key ? 'edit' : 'setup';
+    ONBOARDING_NAV['suit-manual'].back = key ? 'suit-result' : 'suit';
+    document.querySelector('#manualTitle').textContent = key ? `修改${({skin:'肤色',faceShape:'脸型',bodyShape:'身材比例'})[key]}` : '选择更接近自己的特点';
+    document.querySelectorAll('.manual-group').forEach(group => { group.hidden = Boolean(key && group.querySelector('[data-manual]').dataset.manual !== key); });
+    document.querySelectorAll('[data-manual]').forEach(button => {
+      const selected = state.manual[button.dataset.manual] === button.dataset.value;
+      button.classList.toggle('is-selected', selected);
+      button.setAttribute('aria-pressed', String(selected));
+    });
+    document.querySelector('#manualNext').textContent = key ? '保存修改' : '看看我的特点 →';
+    document.querySelector('#manualNext').disabled = key ? !state.manual[key] : !Object.values(state.manual).every(Boolean);
+    showScreen('suit-manual');
+  };
+  const renderSuit = async () => {
+    const sessionId = await ensureSession();
+    const summary = await api.getSuit(sessionId);
+    const container = document.querySelector('#suitFeatures');
+    container.replaceChildren();
+    summary.features.forEach(feature => {
+      state.manual[feature.key] = feature.value || null;
+      const card = document.createElement('article'); card.className = 'suit-feature';
+      const header = document.createElement('header');
+      const title = document.createElement('span'); title.textContent = feature.title;
+      const edit = document.createElement('button'); edit.type = 'button'; edit.textContent = '修改'; edit.setAttribute('aria-label', `修改${feature.title}`); edit.onclick = () => openManual(feature.key);
+      header.append(title, edit);
+      const value = document.createElement('h2'); value.textContent = feature.value || '等你补充';
+      const source = document.createElement('small'); source.textContent = feature.source === 'manual' ? '由你选择' : feature.source === 'photo' ? '照片分析结果' : '暂时无法判断';
+      const description = document.createElement('p'); description.textContent = feature.description;
+      const advice = document.createElement('p'); advice.className = 'suit-advice'; advice.textContent = `穿搭可以这样试 · ${feature.advice}`;
+      card.append(header, value, source, description, advice); container.append(card);
+    });
+    const photos = document.querySelector('#suitResultPhotos'); photos.replaceChildren();
+    const photoKinds = ['face', 'body'].filter(kind => summary.photos?.[kind] || (api.mode !== 'live' && state[kind === 'face' ? 'facePhoto' : 'bodyPhoto']));
+    photos.hidden = photoKinds.length === 0;
+    showScreen('suit-result');
+    await Promise.all(photoKinds.map(async kind => {
+      const figure = document.createElement('figure');
+      const media = document.createElement('button'); media.type = 'button'; media.className = 'suit-photo-media';
+      const img = document.createElement('img'); img.alt = kind === 'face' ? '脸型与肤色采样分析图' : '肩腰胯比例分析图'; img.hidden = true;
+      const status = document.createElement('span'); status.className = 'suit-photo-placeholder'; status.textContent = '照片加载中…';
+      media.append(img, status);
+      const caption = document.createElement('figcaption'); caption.textContent = kind === 'face' ? '脸型 · 肤色' : '身体线条 · 比例';
+      const action = document.createElement('button'); action.type = 'button'; action.className = 'suit-photo-action'; action.textContent = '照片加载中…';
+      figure.append(media, caption, action); photos.append(figure);
+      const load = async () => {
+        status.hidden = false; status.textContent = '照片加载中…'; action.disabled = true;
+        try {
+          const blob = api.mode === 'live' ? await api.getSuitPhoto(sessionId, kind) : state[kind === 'face' ? 'facePhoto' : 'bodyPhoto'];
+          const url = URL.createObjectURL(blob);
+          try {
+            img.src = url; await img.decode();
+          } catch (error) { URL.revokeObjectURL(url); throw error; }
+          if (suitPhotoUrls[kind]) URL.revokeObjectURL(suitPhotoUrls[kind]);
+          suitPhotoUrls[kind] = url;
+          img.hidden = false; status.hidden = true; action.textContent = '查看分析大图 ↗';
+          const openPhoto = () => {
+            const dialog = document.querySelector('#suitPhotoDialog');
+            dialog.querySelector('img').src = url; dialog.querySelector('img').alt = img.alt;
+            dialog.showModal();
+          };
+          media.onclick = openPhoto; action.onclick = openPhoto;
+        } catch {
+          img.hidden = true; status.textContent = '照片暂时未能加载'; action.textContent = '重新加载 →';
+          media.onclick = load; action.onclick = load;
+        } finally { action.disabled = false; }
+      };
+      await load();
+    }));
+  };
   const bindUpload = (id, kind) => {
     const input = document.querySelector(`#${id}`);
     const card = document.querySelector(`[data-upload-card="${kind}"]`);
     let activeController = null;
     input.addEventListener('change', async () => {
-      const file = input.files?.[0]; const error = validatePhoto(file);
+      const file = input.files?.[0]; if (!file) return;
+      const error = validatePhoto(file);
       if (error) { setPhotoState(kind, 'invalid', error); return; }
       state[kind === 'face' ? 'facePhoto' : 'bodyPhoto'] = file;
       renderPhotoPreview(card, file, kind);
-      setPhotoState(kind, 'checking', '照片检测中...');
+      setPhotoState(kind, 'checking', '正在处理照片…');
+      showScreen('suit-processing');
       activeController?.abort(); activeController = new AbortController();
+      const controller = activeController;
       try {
         const sessionId = await ensureSession();
-        const result = await api.checkPhoto(sessionId, kind, file, { signal: activeController.signal });
+        const result = await api.checkPhoto(sessionId, kind, file, { signal: controller.signal });
+        if (controller.signal.aborted) return;
         const accepted = result.photo?.status === 'accepted';
         state.photoAssets[kind] = accepted ? result.photo.assetId : null;
         state.revision = result.revision || state.revision;
         track('photo_upload_result', { kind, accepted, code: result.photo?.code || '' });
         setPhotoState(kind, accepted ? 'valid' : 'invalid', result.photo?.message || (accepted ? '照片可用' : '请重新上传'));
+        if (accepted && Object.values(state.photoStatus).every(status => status === 'valid')) {
+          try { await renderSuit(); } catch (error) { showScreen('suit'); toast('照片已处理完成，结果暂时无法加载，请点击下方按钮重试。'); }
+        }
+        else showScreen('suit');
       } catch (requestError) {
-        if (activeController.signal.aborted) return;
+        if (controller.signal.aborted) return;
         track('photo_upload_result', { kind, accepted: false, code: 'network' });
         setPhotoState(kind, 'invalid', requestError.message || '照片检测失败，请重试');
+        showScreen('suit');
       }
     });
   };
   bindUpload('facePhoto', 'face'); bindUpload('bodyPhoto', 'body');
-  document.querySelector('#suitNext').addEventListener('click', () => showScreen('like'));
+  document.querySelector('#suitNext').addEventListener('click', event => runButtonAction(event.currentTarget, renderSuit));
 
   document.querySelector('.manual-form').addEventListener('click', (event) => {
     const button = event.target.closest('[data-manual]'); if (!button) return;
@@ -422,20 +513,20 @@
       item.classList.toggle('is-selected', selected);
       item.setAttribute('aria-pressed', String(selected));
     });
-    document.querySelector('#manualNext').disabled = !Object.values(state.manual).every(Boolean);
+    document.querySelector('#manualNext').disabled = editingFeature ? !state.manual[editingFeature] : !Object.values(state.manual).every(Boolean);
   });
   document.querySelector('#manualNext').addEventListener('click', (event) => runButtonAction(event.currentTarget, async () => {
     const sessionId = await ensureSession();
-    const result = await api.saveManualProfile(sessionId, state.manual);
+    const result = await api.saveManualProfile(sessionId, editingFeature ? { [editingFeature]: state.manual[editingFeature] } : state.manual);
     state.revision = result.session?.revision || state.revision;
     track('manual_saved');
-    showScreen('like');
+    await renderSuit();
   }));
 
   document.querySelector('#paletteGrid').addEventListener('click', (event) => {
     const button = event.target.closest('[data-palette]'); if (!button) return;
-    state.palette = button.dataset.palette;
-    document.querySelectorAll('[data-palette]').forEach((item) => { const selected = item === button; item.classList.toggle('is-selected', selected); item.setAttribute('aria-pressed', String(selected)); });
+    state.palette = state.palette === button.dataset.palette ? null : button.dataset.palette;
+    document.querySelectorAll('[data-palette]').forEach((item) => { const selected = item.dataset.palette === state.palette; item.classList.toggle('is-selected', selected); item.setAttribute('aria-pressed', String(selected)); });
     document.querySelector('#likeNext').disabled = false;
   });
   document.querySelector('#likeNext').addEventListener('click', (event) => runButtonAction(event.currentTarget, async () => {
@@ -448,7 +539,7 @@
     const result = await api.savePreferences(sessionId, { axes: state.axes, palette: state.palette });
     state.revision = result.session?.revision || state.revision;
     track('preferences_saved', { palette: state.palette });
-    showScreen('vibe');
+    showScreen('suit');
   }));
 
   document.querySelector('#vibeQuestions').addEventListener('click', (event) => {
@@ -554,7 +645,9 @@
     baseUrl: runtimeConfig.authBase || '/auth',
     timeoutMs: runtimeConfig.timeoutMs || 15000,
   });
-  authReady = auth.restore().then((session) => {
+  // A visitor session supports try-on but does not replace the initial login step.
+  const storedVisitor = auth.readStoredSession()?.user?.user_id?.startsWith('guest_');
+  authReady = (storedVisitor ? Promise.resolve(null) : auth.restore()).then((session) => {
     state.authUser = session?.user || null;
     return session;
   }).catch(() => null);
@@ -589,6 +682,7 @@
     if (state.sessionId) return state.sessionId;
     if (sessionPromise) return sessionPromise;
     sessionPromise = (async () => {
+      await authReady;
       const stored = readPersistedSession();
       if (stored) {
         try {
@@ -965,7 +1059,8 @@
       setLoadingProgress(100);
       renderReport(preparedReport);
       await delay(650);
-      window.location.replace(`/selfit/try-on?from=onboarding&persona=${encodeURIComponent(report?.typeId || '')}`);
+      document.querySelector('#continueToApp').href = `/selfit/try-on?from=report&persona=${encodeURIComponent(report?.typeId || '')}`;
+      showScreen('report');
     } catch (error) {
       track('report_failed', { message: error.message || '' });
       showScreen('vibe');
@@ -1014,15 +1109,10 @@
   if (shell.dataset.reportEndpoint) loadReport(shell.dataset.reportEndpoint).catch((error) => toast(error.message));
   const reportScreen = document.querySelector('[data-screen="report"]');
   const reportActions = document.querySelector('.report-actions');
-  const outfitList = document.querySelector('.outfit-list');
   let reportScrollFrame = 0;
   const syncReportActions = () => {
     reportScrollFrame = 0;
-    const reportRect = reportScreen.getBoundingClientRect();
-    const outfitRect = outfitList.getBoundingClientRect();
-    const shouldDock = reportScreen.classList.contains('is-active')
-      && reportScreen.scrollTop > 0
-      && outfitRect.top <= reportRect.bottom - 112;
+    const shouldDock = reportScreen.classList.contains('is-active');
     reportActions.classList.toggle('is-docked', shouldDock);
     reportActions.toggleAttribute('inert', !shouldDock);
     reportActions.setAttribute('aria-hidden', shouldDock ? 'false' : 'true');
@@ -1478,7 +1568,7 @@
   const ensurePublicShare = async (slideIndex = shareSlideIndex) => {
     if (state.publicShare?.share) return state.publicShare;
     const reportId = currentReportId();
-    if (!reportId) throw new window.SelfitApi.SelfitApiError('报告仍在准备中，请稍后再试。', { code: 'report.not_ready' });
+    if (!reportId) throw new window.SelfitApi.SelfitApiError(entryParams.get('preview') ? '这是设计预览，生成真实报告后可保存分享。' : '报告仍在准备中，请稍后再试。', { code: 'report.not_ready' });
     state.publicShare = await api.createPublicShare(reportId, { slideIndex });
     applyPublicShareQr(state.publicShare.share);
     track('share_link_created', {
@@ -1524,7 +1614,6 @@
     localStorage.removeItem(SESSION_STORAGE_KEY);
     window.location.replace('/selfit');
   });
-  document.querySelector('#retakeBtn').addEventListener('click', () => { track('retake_clicked'); showScreen('vibe'); });
   document.querySelectorAll('[data-share]').forEach((button) => button.addEventListener('click', () => runButtonAction(button, async () => {
     if (button.dataset.share === 'report-link') {
       const created = await ensurePublicShare(shareSlideIndex);
@@ -1551,7 +1640,7 @@
       return;
     }
     const reportId = currentReportId();
-    if (!reportId) throw new window.SelfitApi.SelfitApiError('报告仍在准备中，请稍后再试。', { code: 'report.not_ready' });
+    if (!reportId) throw new window.SelfitApi.SelfitApiError(entryParams.get('preview') ? '这是设计预览，生成真实报告后可保存分享。' : '报告仍在准备中，请稍后再试。', { code: 'report.not_ready' });
     const result = await api.createShareAsset(reportId, { slideIndex: shareSlideIndex, channel: button.dataset.share, format: 'png' });
     track('share_saved', { slideIndex: shareSlideIndex, channel: button.dataset.share });
     toast(`${button.dataset.share}已准备好`);
