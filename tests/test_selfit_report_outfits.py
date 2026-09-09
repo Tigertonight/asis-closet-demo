@@ -104,6 +104,42 @@ def test_backend_report_card_exposes_compatible_asset_ids():
     assert card['assetId'] == card['imageAssetId'] == asset_id
 
 
+def test_home_random_notes_have_six_unique_photos_and_real_outfits(client, monkeypatch):
+    endpoint = '/selfit/try-on/report-outfits/random'
+    monkeypatch.setattr(report.random, 'sample', lambda rows, count: rows[:count])
+    response = client.get(endpoint)
+    assert response.status_code == 200
+    rows = response.json()['outfits']
+    assert len(rows) == len({o['outfit_id'] for o in rows}) == len({o['source_asset_id'] for o in rows}) == 6
+    for row in rows:
+        assert row['cover_path'] == row['report_note']['image_url']
+        assert row['title'] == row['report_note']['title']
+        resolved = closet.get_outfit(row['outfit_id'])
+        assert row['items'] == resolved['items']
+        assert row['item_ids'] == row['layer_sequence_inner_to_outer']
+    monkeypatch.setattr(report.random, 'sample', lambda rows, count: rows[-count:])
+    refreshed = client.get(endpoint).json()['outfits']
+    assert {o['outfit_id'] for o in refreshed} != {o['outfit_id'] for o in rows}
+    chosen = rows[2]
+    pinned = client.get(endpoint, params={'selected_outfit_id': chosen['outfit_id']}).json()['outfits']
+    assert pinned[0] == chosen
+    assert len(pinned) == len({o['source_asset_id'] for o in pinned}) == 6
+    assert len(client.get(endpoint, params={'selected_outfit_id': 'outfit_bolt_master_01'}).json()['outfits']) == 6
+
+
+def test_home_notes_require_auth_and_fail_without_delivery(monkeypatch):
+    app = FastAPI()
+    app.include_router(report.router)
+    client = TestClient(app)
+    endpoint = '/selfit/try-on/report-outfits/random'
+    assert client.get(endpoint).status_code == 401
+    app.dependency_overrides[get_current_user] = lambda: {'user_id': 'visitor'}
+    monkeypatch.setattr(report, 'delivery_looks', lambda: [])
+    response = client.get(endpoint)
+    assert response.status_code == 503
+    assert response.json()['detail'] == '穿搭笔记暂时无法加载，请稍后重试。'
+
+
 def test_missing_data_or_asset_never_substitutes_mock(monkeypatch, client):
     endpoint = '/selfit/try-on/report-outfits?persona=void&note_ids=outfits-01'
     original = styling.delivery_looks()

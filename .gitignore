@@ -24,6 +24,17 @@ tests/fixtures/tryon_models/female_models_triptych_*.png
 # Runtime uploads and generated artifacts
 uploads/
 outputs/
+# Keep generated try-on batches and image-review exports local; do not commit.
+/outputs/tryon-examples/
+/outputs/试穿图片汇总-*/
+/outputs/最终试穿结果-*/
+# Local material copies; shared catalog entries use cloud asset IDs instead.
+/app/static/selfit/assets/styling-cutouts/
+/app/static/selfit/assets/styling-delivery/
+/app/static/selfit/assets/personality/*/report-outfits-*
+/qa_photos/face/user_face_*.jpg
+/qa_photos/body/user_body_*.jpg
+/:memory:.ses
 red_square_test.png
 openclaw-workspace-state.json
 .cowork-deploy/

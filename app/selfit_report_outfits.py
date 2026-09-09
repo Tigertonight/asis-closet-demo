@@ -2,15 +2,59 @@
 from __future__ import annotations
 
 import re
+import random
 
 from fastapi import APIRouter, Depends, HTTPException, Query
 
 from app.auth import get_current_user
 from app.material_assets import asset_content_url
 from app.selfit_report import _personality_template_catalog
-from app.styling_catalog import adapt_outfit, delivery_looks
+from app.styling_catalog import adapt_outfit, delivery_looks, outfit_id
 
 router = APIRouter(prefix="/selfit/try-on/report-outfits")
+
+
+def _note_outfit(look: dict, note: dict) -> dict:
+    binding = look["note_binding"]
+    asset_id = look["source_asset"]["assetId"]
+    source = re.search(r"https://[^\s<>]+", note.get("sourceUrl") or "")
+    return {**adapt_outfit(look), "report_note": {
+        "id": f"note:{binding['templateId']}:{binding['noteId']}", "kind": "note",
+        "persona": binding["persona"], "template_id": binding["templateId"],
+        "title": note["name"], "byline": note.get("byline", ""),
+        "image_url": asset_content_url(asset_id), "image_asset_id": asset_id,
+        "width": note["image"].get("width"), "height": note["image"].get("height"),
+        "source_url": source.group(0) if source else "", "favorite": False,
+    }}
+
+
+@router.get("/random")
+def random_home_notes(
+    selected_outfit_id: str | None = Query(default=None, max_length=160),
+    current_user: dict = Depends(get_current_user),
+):
+    """Sample six real notebook photos; retain a selected note on page refresh."""
+    try:
+        catalog = _personality_template_catalog()
+        templates = {**catalog.get("types", {}), **catalog.get("variants", {})}
+        candidates = []
+        for look in delivery_looks():
+            binding = look["note_binding"]
+            notes = templates.get(binding["templateId"], {}).get("recommendations", {}).get("outfits", {}).get("items", [])
+            note = next((n for n in notes if n["id"] == binding["noteId"]), None)
+            if note and note["image"].get("assetId") == look["source_asset"]["assetId"] and note["name"] == binding["name"]:
+                candidates.append((look, note))
+        pinned = next((pair for pair in candidates if outfit_id(pair[0]) == selected_outfit_id), None)
+        # Some templates share a notebook photo. Show it only once in the strip.
+        unique = {pair[0]["source_asset"]["assetId"]: pair for pair in candidates}
+        if pinned:
+            unique.pop(pinned[0]["source_asset"]["assetId"], None)
+        selected = ([pinned] if pinned else []) + random.sample(list(unique.values()), min(5 if pinned else 6, len(unique)))
+        if not selected:
+            raise ValueError("No delivered notebook available")
+        return {"mode": "live", "outfits": [_note_outfit(look, note) for look, note in selected]}
+    except (OSError, ValueError, KeyError, TypeError) as exc:
+        raise HTTPException(503, "穿搭笔记暂时无法加载，请稍后重试。") from exc
 
 
 def report_outfits(persona: str, note_ids: list[str], template_id: str | None = None,
@@ -41,14 +85,7 @@ def report_outfits(persona: str, note_ids: list[str], template_id: str | None = 
             # a concrete but different asset ID must still fail the version check.
             if note_assets is not None and note_assets[index] not in {"legacy", asset_id}:
                 raise HTTPException(409, "报告穿搭素材已更新，请重新生成报告后再试。")
-            source = re.search(r"https://[^\s<>]+", note.get("sourceUrl") or "")
-            outfits.append({**adapt_outfit(look), "report_note": {
-                "id": f"note:{key}:{note_id}", "kind": "note", "persona": persona, "template_id": key,
-                "title": note["name"], "byline": note.get("byline", ""),
-                "image_url": asset_content_url(asset_id), "image_asset_id": asset_id,
-                "width": note["image"].get("width"), "height": note["image"].get("height"),
-                "source_url": source.group(0) if source else "", "favorite": False,
-            }})
+            outfits.append(_note_outfit(look, note))
     except (OSError, ValueError, KeyError, TypeError) as exc:
         raise HTTPException(503, "报告搭配的素材暂时无法加载，请稍后重试。") from exc
     return {"persona": persona, "template_id": key, "mode": "live", "outfits": outfits,

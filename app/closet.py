@@ -205,6 +205,14 @@ def _closet_disk_path(public_path: str | None) -> Path | None:
     return Path(public_path)
 
 
+def _closet_item_image_path(item: dict[str, Any]) -> Path | None:
+    assets = item.get("assets") or {}
+    if assets.get("asset_id"):
+        from app.material_assets import material_image_path
+        return material_image_path(assets["asset_id"])
+    return _closet_disk_path(assets.get("cutout_path") or assets.get("preview_path"))
+
+
 def _published_catalog_outfits(*, include_archived: bool = False) -> list[dict[str, Any]]:
     """Adapt reviewed global content into the main app's outfit contract."""
 
@@ -325,6 +333,8 @@ def _ensure_manifest() -> dict[str, Any]:
     try:
         data = json.loads(_closet_manifest_path().read_text(encoding="utf-8"))
         if isinstance(data, dict) and isinstance(data.get("items"), list):
+            from app.styling_catalog import resolve_saved_item_assets
+            data["items"] = resolve_saved_item_assets(data["items"])
             return _with_default_items(data)
     except json.JSONDecodeError:
         pass
@@ -2141,7 +2151,7 @@ def outfit_as_tryon_plan(outfit_id: str, photo_mode: str | None = None, scene_la
             continue
         slot = _outfit_item_slot(item)
         public_path = item.get("assets", {}).get("cutout_path") or item.get("assets", {}).get("preview_path")
-        disk_path = _closet_disk_path(public_path)
+        disk_path = _closet_item_image_path(item)
         if disk_path is None or not disk_path.exists():
             continue
         plan_items.append(
@@ -2184,6 +2194,8 @@ def outfit_as_tryon_plan(outfit_id: str, photo_mode: str | None = None, scene_la
 
 
 def _outfit_item_wearing_instruction(slot: str, item: dict[str, Any]) -> str:
+    if item.get("wearing_instruction"):
+        return str(item["wearing_instruction"])
     label = item.get("category_label") or _slot_label(slot)
     return {
         "top": f"{label}穿在上半身，保留领口、袖长、衣长和图案。",
@@ -2501,7 +2513,9 @@ def _valid_item_ids(value: Any) -> list[str]:
         raise HTTPException(status_code=400, detail="请至少选择一件衣物")
     for item_id in item_ids:
         get_closet_item(item_id)
-    return item_ids[:8]
+    if len(item_ids) > 16:
+        raise HTTPException(status_code=422, detail="一套搭配最多选择 16 件单品。")
+    return item_ids
 
 
 def _resolve_outfit(outfit: dict[str, Any], items_by_id: dict[str, dict[str, Any]] | None = None) -> dict[str, Any]:
@@ -2597,12 +2611,24 @@ def _outfit_completeness_score(outfit: dict[str, Any]) -> tuple[int, int, int, i
 
 def _build_outfit_cover(outfit_id: str, items: list[dict[str, Any]], custom_layout: list[dict[str, Any]] | None = None) -> dict[str, Any]:
     normalized = _normalize_outfit_layout_items(items)
+    if custom_layout is not None:
+        # The editor already lays out every piece, including layered tops and
+        # multiple accessories. Its saved cover must not apply legacy slot caps.
+        entries, accessory_count = [], 0
+        for item in items:
+            slot = _outfit_item_slot(item)
+            if slot == "accessory":
+                accessory_count += 1
+                slot = f"accessory_{accessory_count}"
+            entries.append({"item": item, "slot": slot})
+        normalized = {"display_entries": entries, "overflow_items": [], "warnings": [],
+                      "has_dress": any(entry["slot"] == "dress" for entry in entries)}
     canvas_width, canvas_height = OUTFIT_CANVAS_SIZE
     canvas = Image.new("RGBA", OUTFIT_CANVAS_SIZE, BACKGROUND)
     prepared: list[dict[str, Any]] = []
     for entry in normalized["display_entries"]:
         item = entry["item"]
-        source = _closet_disk_path(item.get("assets", {}).get("cutout_path") or item.get("assets", {}).get("preview_path"))
+        source = _closet_item_image_path(item)
         if source is None or not source.exists():
             normalized["warnings"].append(f"{item.get('category_label') or '单品'} 暂时没有可用于排版的图片。")
             continue
@@ -2619,7 +2645,9 @@ def _build_outfit_cover(outfit_id: str, items: list[dict[str, Any]], custom_layo
     slots = [entry["slot"] for entry in prepared]
     layered = is_layered(slots)
     placements: list[dict[str, Any]] = []
-    if len(prepared) == 1:
+    if custom_layout is not None:
+        pass  # Validated editor coordinates are applied below, without legacy slot limits.
+    elif len(prepared) == 1:
         only_slot = str(prepared[0]["slot"])
         only_box = outfit_box(only_slot, slots)
         placements.append(_fit_flatlay_entry(prepared[0], only_box, column=0, row=0, vertical_align=vertical_align(only_slot, slots)))

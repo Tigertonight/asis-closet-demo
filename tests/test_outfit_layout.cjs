@@ -20,14 +20,14 @@ test('hat and bag do not overlap; long skirt gets more height than short skirt',
  const short=layout([p('t','top'),p('s','skirt','短裙')]).find(b=>b.id==='s');assert.ok(boxes.find(b=>b.id==='s').h>short.h);
 });
 
-test('main garments stay centred with a bag and tall boots have room',()=>{
+test('two columns keep complete tall boots clear of the garments',()=>{
  const items=[p('t','top'),p('s','skirt'),p('b','bag'),{...p('f','shoes'),raw:{title:'黑色长靴'}}];
  const boxes=layout(items);
- for(const id of ['t','s','f']){const b=boxes.find(b=>b.id===id);assert.equal(b.x+b.w/2,50);}
+ assert.equal(new Set(boxes.map(b=>b.zone.x)).size,2);
  const boot=boxes.find(b=>b.id==='f'),skirt=boxes.find(b=>b.id==='s');
  const flat=layout([p('f','shoes','芭蕾鞋')])[0];
- assert.ok(boot.h>=20 && boot.h>flat.h);
- assert.ok(skirt.y+skirt.h<boot.y);
+ assert.ok(boot.h/boot.w>flat.h/flat.w);
+ assert.ok(skirt.x+skirt.w<boot.x || boot.x+boot.w<skirt.x || skirt.y+skirt.h<boot.y || boot.y+boot.h<skirt.y);
  const bag=boxes.find(b=>b.id==='b');assert.ok(bag.x+bag.w<=94);
 });
 

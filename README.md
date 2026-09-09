@@ -83,6 +83,14 @@ python scripts/check_runtime_readiness.py
 
 完整配置项和安全默认值请查看 `.env.example` 与 `.env.demo.example`。
 
+本地衣帽间的“帮我搭配”也可以使用已登录的 Codex CLI：安装 Codex 并执行
+`codex login`，在 `.env` 中设置 `SELFIT_OUTFIT_MATCH_PROVIDER=codex`，然后重启服务。
+它会识别所选单品、比较笔记库中的完整穿搭描述，并替换选中套装里同品类的一件单品。
+这需要联网并消耗当前登录账户的 Codex 额度；仅限本地开发，不更改试穿图片生成接口。
+默认 `tryon` 仍复用原有试穿模型服务。可选 `SELFIT_CODEX_BIN` 指定 CLI 路径、
+`SELFIT_CODEX_MODEL` 指定模型；留空时自动寻找 CLI 并使用其默认模型。
+调用不加载个人 Codex 配置，使用临时目录、只读沙箱和结构化 JSON 输出；每阶段最长等待 120 秒。
+
 新 clone 的仓库如果需要本地 OpenClaw 和小红书 MCP，先准备 runtime：
 
 ```bash

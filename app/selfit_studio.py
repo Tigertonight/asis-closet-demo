@@ -35,49 +35,19 @@ def studio_wardrobe(user: dict[str, Any] = Depends(get_current_user)) -> dict[st
 
 @router.post("/items/{item_id}/outfits")
 def studio_item_outfits(item_id: str, user: dict[str, Any] = Depends(get_current_user)) -> dict[str, Any]:
-    """Keep the user's selected garment as the anchor of each generated outfit."""
     from app import closet
-    from app.recommendation_profile import resolve_profile
-    from app.selfit_report import _personality_template_catalog
+    from app.selfit_outfit_match import match_notebook_outfit
 
     with user_storage(user["user_id"]):
         anchor = closet.get_closet_item(item_id)
-        profile = resolve_profile(user["user_id"])
-        persona = _personality_template_catalog()["types"].get(profile.get("persona_id"), {})
-        candidates = closet.recommend_outfits({"persona": persona, "source": "inspiration", "limit": 20})["outfits"]
-        def slot_for(item):
-            slot = closet._outfit_item_slot(item)
-            return "bottom" if slot == "skirt" else slot
-
-        slot = slot_for(anchor)
-        generated, seen = [], set()
-        for candidate in candidates:
-            pieces = candidate.get("items", [])
-            if not any(slot_for(item) == slot for item in pieces):
-                continue
-            others = [item for item in pieces if slot_for(item) != slot]
-            # A dress and separate upper/lower garments are mutually exclusive.
-            if slot == "dress":
-                others = [item for item in others if slot_for(item) not in {"top", "bottom"}]
-            elif slot in {"top", "bottom"}:
-                others = [item for item in others if slot_for(item) != "dress"]
-            ids = [item_id, *[item["item_id"] for item in others if item["item_id"] != item_id]][:8]
-            signature = tuple(sorted(ids))
-            if len(ids) < 2 or signature in seen:
-                continue
-            seen.add(signature)
-            generated.append(save_studio_outfit(StudioOutfit(item_ids=ids, title="围绕我的单品搭配")))
-            if len(generated) == 3:
-                break
-        if not generated:
-            raise HTTPException(422, "暂时没有适合这件衣服的组合，可以先试穿单品或自由搭配。")
-        return {"outfits": generated, "anchor_item_id": item_id, "personalized": bool(persona)}
+        return match_notebook_outfit(anchor)
 
 
 class StudioOutfit(BaseModel):
-    item_ids: list[str] = Field(min_length=1, max_length=8)
+    item_ids: list[str] = Field(min_length=1, max_length=16)
     title: str = Field(default="我的搭配", max_length=48)
     favorite: bool = False
+    canvas_layout: list[dict[str, Any]] | None = Field(default=None, max_length=16)
 
 
 def save_studio_outfit(payload: StudioOutfit) -> dict[str, Any]:
@@ -92,6 +62,11 @@ def save_studio_outfit(payload: StudioOutfit) -> dict[str, Any]:
             for outfit in closet._published_catalog_outfits()
             for x in outfit.get("items", [])
         }
+        # Notebook cutouts are public library assets too, but are copied only on save.
+        from app.styling_catalog import OUTFIT_PREFIX, get_delivered_outfit
+        for oid in {key.rsplit("_", 1)[0] for key in ids if key not in owned and key.startswith(OUTFIT_PREFIX)}:
+            for item in get_delivered_outfit(oid)["items"]:
+                published[item["item_id"]] = item
         missing = [key for key in ids if key not in owned and key not in published]
         if missing:
             raise HTTPException(404, "部分单品已不可用，请重新选择穿搭。")
@@ -109,7 +84,7 @@ def save_studio_outfit(payload: StudioOutfit) -> dict[str, Any]:
                 if payload.favorite and not outfit.get("favorite"):
                     return closet.update_outfit(outfit["outfit_id"], {"favorite": True})
                 return outfit
-        return closet.create_outfit({"item_ids": ids, "title": payload.title, "favorite": payload.favorite})
+        return closet.create_outfit({"item_ids": ids, "title": payload.title, "favorite": payload.favorite, "canvas_layout": payload.canvas_layout})
 
 
 @router.post("/outfits")

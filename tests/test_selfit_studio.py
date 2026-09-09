@@ -8,6 +8,11 @@ from app.auth import get_current_user
 from app.main import app
 from app.selfit_studio import StudioOutfit, save_studio_outfit
 
+@pytest.fixture(autouse=True)
+def no_default_wardrobe_items(monkeypatch):
+    monkeypatch.setattr(closet, '_with_default_items', lambda data: data)
+
+
 @pytest.fixture
 def library(monkeypatch, tmp_path):
     monkeypatch.setattr(storage, 'ROOT_DIR', tmp_path)
@@ -55,29 +60,6 @@ def test_wardrobe_does_not_treat_library_tryon_as_ownership(library):
         assert personal_wardrobe() == {'items': [], 'outfits': []}
 
 
-def test_uploaded_anchor_generation_and_user_isolation(library, monkeypatch):
-    from app.selfit_studio import personal_wardrobe, studio_item_outfits
-    from app import recommendation_profile
-    monkeypatch.setattr(recommendation_profile, 'resolve_profile', lambda user_id: {'persona_id': None})
-    with storage.user_storage('studio_anchor_owner'):
-        anchor = deepcopy(library['items'][0])
-        anchor.update(item_id='uploaded_anchor', source={'type': 'upload'})
-        manifest = closet._ensure_manifest()
-        manifest['items'].append(anchor)
-        closet._write_manifest(manifest)
-    result = studio_item_outfits('uploaded_anchor', {'user_id': 'studio_anchor_owner'})
-    assert result['outfits']
-    for row in result['outfits']:
-        assert 'uploaded_anchor' in row['item_ids']
-        assert library['items'][0]['item_id'] not in row['item_ids']
-    with storage.user_storage('studio_anchor_owner'):
-        wardrobe = personal_wardrobe()
-        assert [item['item_id'] for item in wardrobe['items']] == ['uploaded_anchor']
-        assert wardrobe['outfits']
-    with pytest.raises(HTTPException) as error:
-        studio_item_outfits('uploaded_anchor', {'user_id': 'studio_anchor_other'})
-    assert error.value.status_code == 404
-
 
 def test_legacy_app_link_routes_to_mirror_detail():
     client = TestClient(app)
@@ -102,7 +84,7 @@ def test_route_requires_auth_and_rejects_too_many_items(library):
     assert client.post('/selfit/try-on/outfits',json={'item_ids':library['item_ids']}).status_code==401
     app.dependency_overrides[get_current_user]=lambda:{'user_id':'studio_route_test'}
     try:
-        assert client.post('/selfit/try-on/outfits',json={'item_ids':['x']*9}).status_code==422
+        assert client.post('/selfit/try-on/outfits',json={'item_ids':['x']*17}).status_code==422
         r=client.post('/selfit/try-on/outfits',json={'item_ids':library['item_ids']})
         assert r.status_code==200
         assert client.get('/closet/outfits/'+r.json()['outfit_id']).json()['item_ids']==library['item_ids']

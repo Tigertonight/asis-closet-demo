@@ -1131,6 +1131,17 @@ dialog .secondary {
 /* Match the arch silhouette as a final guard against image overflow. */
 .outfit-composition { border-radius:50% 50% 10% 10% / 24% 24% 5% 5%; overflow:hidden; }
 .composition-piece img { width:100%; height:100%; object-fit:contain; display:block; }
+.mirror-filter-definitions { position:absolute; pointer-events:none; }
+.composition-piece.delicate-piece img { filter:url(#mirror-fine-accessory); }
+.mirror-piece-preview { display:block; width:100%; height:160px; object-fit:contain; margin:16px auto; }
+.mirror-piece-name { text-align:center; font-size:14px; }
+.mirror-category-options { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px; margin:16px 0; }
+.mirror-category-options button { min-height:44px; padding:8px 4px; border:1px solid var(--line,#e7e7e7); border-radius:12px; font-size:14px; background:#fff; color:#666; }
+.mirror-category-options button[aria-pressed="true"] { color:#8a011b; border-color:#8a011b; background:#fff5f6; }
+.mirror-size-controls { display:flex; justify-content:center; align-items:center; gap:16px; margin:16px 0; font-size:14px; }
+.mirror-size-controls button { width:44px; min-height:44px; border-radius:50%; background:#f5eeee; color:#8a011b; font-size:20px; }
+.mirror-piece-hint { color:#777; font-size:14px; line-height:1.6; }
+.mirror-piece-sheet > .primary { width:100%; margin-top:16px; }
 
 /* The SVG preserves 207:437 internally: use the same box for the artwork
    and garment coordinates so its transparent side margins are not usable space. */
@@ -1190,6 +1201,7 @@ button.composition-piece:focus-visible { outline:2px solid #8a011b; outline-offs
 .empty-mirror-butterfly { position:absolute; width:62px; height:50px; object-fit:contain; left:39px; top:48px; transform:rotate(-12deg); }
 
 .wardrobe-empty h2 { margin: 0; font-size: 18px; line-height: 28px; color: #493b38; font-weight: 600; }
+.wardrobe-empty h2 + .primary { margin-top:26px; }
 .wardrobe-empty p { margin: 12px 0 26px; font-size: 14px; line-height: 25px; color: #82736e; }
 .wardrobe-empty > .primary { width: 224px; max-width: 100%; min-height: 44px; border-radius: 18px; font-size: 14px; }
 .empty-browse { margin-top: 8px; min-height: 44px; font-size: 14px; color: #8a6567; }
@@ -1206,9 +1218,23 @@ button.composition-piece:focus-visible { outline:2px solid #8a011b; outline-offs
 .wardrobe-header [aria-selected="true"]::after { content:""; position:absolute; left:0; right:0; bottom:5px; height:1px; background:#8a011b; }
 .wardrobe-add { flex-shrink:0; width:44px; height:44px; border:0; padding:5px; border-radius:50%; background:transparent; }
 .wardrobe-add svg { width:34px; height:34px; background:#8a011b; border-radius:50%; padding:7px; fill:none; stroke:white; stroke-width:1.6; }
-.wardrobe-filters { display:flex; gap:8px; height:38px; margin:0 0 20px; overflow-x:auto; scrollbar-width:none; flex-shrink:0; }
-.wardrobe-filters button { height:38px; flex:0 0 58px; padding:0 8px; border:1px solid transparent; border-radius:12px; background:#f0f0f0; color:#666; font-size:12px; white-space:nowrap; }
-.wardrobe-filters button[aria-selected="true"] { background:#f6ebed; color:#8a011b; border-color:#e5b5c0; }
+.wardrobe-groups { min-width:0; }
+.wardrobe-group + .wardrobe-group { margin-top:24px; }
+.wardrobe-group h2 { display:flex; align-items:center; gap:8px; margin:0 0 12px; font-size:16px; line-height:26px; font-weight:600; color:#555; }
+.wardrobe-group h2 > span { display:grid; place-items:center; width:26px; height:26px; border-radius:50%; background:#efeeee; font-size:17px; }
+.wardrobe-items-row { display:grid; grid-auto-flow:column; grid-auto-columns:calc((100% - 24px)/3); gap:12px; min-width:0; overflow-x:auto; padding-bottom:6px; scroll-snap-type:x proximity; overscroll-behavior-x:contain; scrollbar-width:thin; scrollbar-color:#d9cbcd transparent; }
+.wardrobe-items-row:focus-visible { outline:2px solid #8a011b; outline-offset:3px; border-radius:12px; }
+.wardrobe-items-row .item-card { position:relative; display:flex; flex-direction:column; gap:8px; align-items:center; min-width:0; height:176px; aspect-ratio:auto; padding:10px; border-radius:16px; background:white; box-shadow:none; scroll-snap-align:start; }
+.wardrobe-item-photo { display:block; flex:1; min-height:0; width:100%; padding:0; border:0; background:transparent; border-radius:8px; touch-action:pan-x pan-y; user-select:none; -webkit-user-select:none; -webkit-touch-callout:none; }
+.wardrobe-item-photo > img { display:block; width:100%; height:100%; margin:0; object-fit:contain; object-position:center; -webkit-touch-callout:none; }
+.wardrobe-style { flex-shrink:0; width:100%; min-height:44px; padding:0 4px; border:1px solid #edd8dd; border-radius:999px; background:#fff6f8; color:var(--brand); font-size:12px; line-height:18px; font-weight:600; white-space:nowrap; }
+.wardrobe-style:active { background:#f7e7ec; }
+.wardrobe-item-delete { position:absolute; top:2px; right:2px; display:grid; place-items:center; width:44px; height:44px; padding:10px; border:0; border-radius:50%; background:#fff1f4; color:var(--brand); box-shadow:0 2px 8px #6335401a; }
+.wardrobe-item-delete[hidden] { display:none; }
+.wardrobe-item-delete svg { width:24px; height:24px; fill:none; stroke:currentColor; stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round; }
+.wardrobe-items-row .show-delete { box-shadow:inset 0 0 0 1px #ecd1d8; }
+.wardrobe-items-row [aria-busy="true"] .wardrobe-item-photo { opacity:.5; }
+.wardrobe-items-row button:disabled { cursor:wait; opacity:.5; }
 .wardrobe-source-layout .closet-grid { gap:12px; }
 .wardrobe-source-layout .closet-grid .card { height:150px; aspect-ratio:auto; padding:8px; border-radius:12px; box-shadow:none; background:#fff; }
 .wardrobe-source-layout .closet-grid .card > img:not(.favorite-star) { display:block; height:100%; width:100%; margin:0; object-fit:contain; object-position:center; }
@@ -1413,7 +1439,12 @@ button.composition-piece:focus-visible { outline:2px solid #8a011b; outline-offs
 .mirror-profile-card { left:78.88%; top:61.09%; width:21.12%; aspect-ratio:83/76;
   padding:0; background:url('/static/selfit-tryon/assets/main-app/mirror-profile.svg?v=20260908-assets7') center/100% 100% no-repeat; }
 .mirror-profile-card > span { visibility:hidden; }
-.model-mode .arch { left:24.17%; top:14.64%; width:51.66%; height:90.59%; border:2px solid #ccc3b8; }
+.model-mode .arch, .model-mode .mirror-photo-frame { left:24.17%; top:14.64%; width:51.66%; height:90.59%; }
+.model-mode .arch { border:2px solid #ccc3b8; }
+.has-framed-photo .arch { visibility:hidden; }
+.mirror-photo-frame { position:absolute; z-index:2; display:flex; align-items:center; justify-content:center; }
+/* Round the fitted image itself, so contain never exposes a separate frame. */
+.mirror-photo-frame > .model-photo.personal { position:static; display:block; flex:none; width:auto; height:auto; max-width:100%; max-height:100%; border-radius:110px 110px 22px 22px; background:#f4f0ec; object-fit:contain; object-position:center; }
 .model-mode .stage-control { background:#ffffffdd; color:#777; }
 .model-mode .mode-control { background:url('/static/selfit-tryon/assets/main-app/mirror-mode.svg') center/contain no-repeat; }
 .mirror-generation { inset:0; width:100%; height:100%; display:block; }
@@ -1597,6 +1628,19 @@ button.composition-piece:focus-visible { outline:2px solid #8a011b; outline-offs
 .outfit-builder { padding:58px 20px 110px; }
 .outfit-builder header { display:flex;align-items:center;gap:16px;margin-bottom:20px; }
 .outfit-builder h1 { font-size:20px;margin:0; }
+.builder-match-state { min-height:420px; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:24px 12px; }
+.builder-match-state > img { width:160px; height:190px; object-fit:contain; margin-bottom:24px; }
+.builder-match-state > .primary { min-height:44px; min-width:180px; margin-top:20px; border-radius:999px; }
+.builder-match-spinner { width:24px; height:24px; border:2px solid #eedce1; border-top-color:var(--brand); border-radius:50%; animation:match-spin 1s linear infinite; }
+.builder-match-note { margin:18px 0; padding:14px; background:white; border:1px solid #f0e6e8; border-radius:18px; }
+.builder-match-note > div { display:flex; gap:12px; align-items:center; }
+.builder-match-note img { width:54px; height:72px; object-fit:cover; border-radius:8px; flex-shrink:0; }
+.builder-match-note > div > div { display:flex; flex-direction:column; gap:5px; min-width:0; }
+.builder-match-note span { color:#8a7378; font-size:11px; }
+.builder-match-note strong { font-size:14px; line-height:1.5; overflow-wrap:anywhere; }
+.outfit-builder .builder-match-note p { margin:12px 0 0; color:#65575a; font-size:13px; line-height:1.7; }
+@keyframes match-spin { to { transform:rotate(360deg); } }
+@media(prefers-reduced-motion:reduce) { .builder-match-spinner { animation:none; } }
 .outfit-builder h2 { font-size:15px;margin:18px 0 12px; }
 .outfit-builder p,.outfit-builder small { color:#888;font-size:12px;line-height:1.7; }
 .outfit-builder small { float:right;font-weight:400; }

@@ -61,6 +61,41 @@ def _asset_url(reference: dict) -> str:
     return asset_content_url(asset_id)
 
 
+def resolve_saved_item_assets(items: list[dict]) -> list[dict]:
+    """Upgrade saved library copies through the exact original-to-cutout mapping.
+
+    Item IDs, personal edits and composition slots remain stable. Only the image
+    reference is derived from the current catalog, including for try-on inputs.
+    """
+    if not any((item.get("source") or {}).get("type") == "styling_delivery" for item in items):
+        return items
+    try:
+        replacements = {
+            (raw["item_id"], raw["image_asset"]["sourceAssetId"]): raw["image_asset"]
+            for look in delivery_looks() for raw in look["items"]
+            if raw.get("image_asset", {}).get("sourceAssetId")
+        }
+    except (OSError, ValueError, KeyError, TypeError):
+        # Saved outfits can still be opened if their source catalog is unavailable.
+        return items
+    resolved = []
+    for item in items:
+        source, assets = item.get("source") or {}, item.get("assets") or {}
+        reference = replacements.get((source.get("source_item_id"), assets.get("asset_id")))
+        if source.get("type") == "styling_delivery" and reference and reference["assetId"] != assets.get("asset_id"):
+            try:
+                url = _asset_url(reference)
+            except (OSError, ValueError, KeyError):
+                resolved.append(item)
+                continue
+            item = {**item, "image_id": reference["assetId"], "assets": {
+                **assets, "asset_id": reference["assetId"], "source_asset_id": reference["sourceAssetId"],
+                "cutout_path": url, "preview_path": url,
+            }}
+        resolved.append(item)
+    return resolved
+
+
 def adapt_outfit(look: dict) -> dict:
     binding = look["note_binding"]
     oid = outfit_id(look)
