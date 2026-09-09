@@ -16,6 +16,7 @@ import pytest
 from fastapi.testclient import TestClient
 from PIL import Image
 
+import app.attribute_pipeline as ap
 import app.selfit_onboarding as selfit_onboarding
 import app.selfit_photo as selfit_photo
 from app.main import app
@@ -74,7 +75,7 @@ def test_inspector_accepts_clear_face_with_attributes() -> None:
 
 
 def test_inspector_accepts_bangs_forehead() -> None:
-    # 产品口径（内测定版）：刘海照不拦截上传，脸型交给用户手动确认。
+    # 产品口径（2026-09 更新）：刘海照不拦截上传，脸型仍识别（低置信度 + 不准提示）。
     image = Image.open(FIXTURE_IMAGES / "real_bangs_forehead.jpg")
     inspection = selfit_photo.attribute_inspector(image, "face")
     assert inspection.accepted is True
@@ -130,8 +131,9 @@ def test_upload_real_face_photo_accepted_and_attributes_stored(monkeypatch: pyte
     assert attributes["face_shape"]["label"]
 
 
-def test_upload_bangs_photo_accepted_with_skin_attributes(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
-    # 产品口径（内测定版）：刘海照不拦截上传；肤色照常识别，脸型无预选标签。
+def test_upload_bangs_photo_accepted_with_attributes(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
+    # 产品口径（2026-09 更新）：刘海照不拦截上传；肤色、脸型都照常识别，
+    # 脸型带低置信度 + 「识别可能不准」提示。
     _use_tmp_store(monkeypatch, tmp_path)
     client = TestClient(app)
     session_id = _create_session(client)
@@ -145,7 +147,7 @@ def test_upload_bangs_photo_accepted_with_skin_attributes(monkeypatch: pytest.Mo
     stored = _stored_session(session_id)
     attributes = stored["photos"]["face"]["attributes"]
     assert attributes["skin_tone"]["label"]
-    assert "face_shape" not in attributes or not attributes["face_shape"].get("label")
+    assert attributes["face_shape"]["label"] in ap.FACE_SHAPE_LABELS
 
 
 def test_upload_full_body_photo_accepted(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
@@ -240,6 +242,42 @@ def test_public_analysis_degrades_for_legacy_attributes() -> None:
     assert projected["attributes"]["skin"]["label"] == "暖白肤"
     assert projected["attributes"]["skin"]["metrics"] == []
     assert "faceShape" not in projected["attributes"]
+
+
+def test_public_analysis_hides_shape_close_note() -> None:
+    # 产品口径（2026-09 定版）：「脸型介于两种之间」是长相特征而非照片质量
+    # 问题，重拍无法改善，suit 页不提示；新数据按 code 过滤，旧数据按
+    # message 兜底。刘海提示（可重拍改善）保留展示。
+    shape_close = {
+        "code": "face.shape_close",
+        "message": "脸型介于两种之间",
+        "suggestion": "更接近圆脸，也可能偏心形脸；以你自己选的为准。",
+    }
+    bangs = {
+        "code": "face.bangs_forehead",
+        "message": "刘海遮住了额头，脸型识别可能不准",
+        "suggestion": "拨开刘海重拍一张会更准；也可以直接点“修改”调整结果。",
+    }
+    face_shape = {
+        "label": "圆脸",
+        "confidence": 0.62,
+        "status": "warn",
+        "issues": [shape_close, bangs],
+        "evidence": {"features": {"length_width_ratio": 1.07, "jaw_cheek_ratio": 0.79, "forehead_cheek_ratio": 0.98}},
+    }
+
+    projected = selfit_photo.public_analysis({"face_shape": face_shape}, [], "face")
+    face = projected["attributes"]["faceShape"]
+    assert face["label"] == "圆脸"
+    assert face["notes"] == [
+        {"message": "刘海遮住了额头，脸型识别可能不准", "suggestion": "拨开刘海重拍一张会更准；也可以直接点“修改”调整结果。"}
+    ]
+    assert "脸型介于两种之间" not in json.dumps(projected, ensure_ascii=False)
+
+    # 旧 session 的属性 issues 无 code 字段，按 message 兜底过滤
+    legacy_issues = [{key: value for key, value in shape_close.items() if key != "code"}]
+    legacy = selfit_photo.public_analysis({"face_shape": {**face_shape, "issues": legacy_issues}}, [], "face")
+    assert legacy["attributes"]["faceShape"]["notes"] == []
 
 
 def test_upload_and_suit_return_user_analysis(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:

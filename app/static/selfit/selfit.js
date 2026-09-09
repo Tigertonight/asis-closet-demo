@@ -166,6 +166,9 @@
     themeColor?.setAttribute('content', ['splash', 'loading'].includes(name) ? '#8a011b' : '#fafafa');
     next.scrollTop = 0;
     if(name === 'report') requestAnimationFrame(()=>syncReportActions());
+    // 进入 suit 屏时同步渲染：旧 session/跨账号照片回填要让上传槽和特征卡一起恢复，
+    // 否则会出现「只传了全身照，肤色脸型却自动出来了」的隐形旧数据。
+    if (name === 'suit') renderSuit().catch(() => {});
   };
 
   const returnToReportParent = () => {
@@ -504,6 +507,14 @@
     if (seq !== suitRenderSeq) return;
     const analyses = summary.analyses || {};
     const bodyPhotoReady = Boolean(summary.photos?.body || (api.mode !== 'live' && state.bodyPhoto));
+    // 服务端还有本 session 之前（或同账号回填）的照片时，把上传槽恢复成可用状态，
+    // 让用户看见「已经用了哪张照片」，而不是照片在隐形生效。
+    for (const kind of ['face', 'body']) {
+      if (summary.photos?.[kind] && state.photoStatus[kind] !== 'valid') {
+        setPhotoState(kind, 'valid', kind === 'face' ? '已使用之前上传的面部照，可重新上传替换' : '已使用之前上传的全身照，可重新上传替换');
+        void applyAnalysisOverlay(kind, sessionId);
+      }
+    }
     const visibleFeatures = summary.features.filter(feature => feature.key !== 'bodyShape' || bodyPhotoReady || feature.value);
     const container = document.querySelector('#suitFeatures');
     container.replaceChildren();
@@ -524,7 +535,8 @@
       card.append(header, valueRow);
       if (feature.source !== 'photo') {
         const source = document.createElement('small');
-        source.textContent = feature.source === 'manual' ? '由你选择' : '暂时无法判断';
+        const photoKind = feature.key === 'bodyShape' ? 'body' : 'face';
+        source.textContent = feature.source === 'manual' ? '由你选择' : (summary.photos?.[photoKind] ? '暂时无法判断' : '还没有上传照片');
         card.append(source);
       }
       card.append(description);
@@ -635,7 +647,6 @@
     state.revision = result.session?.revision || state.revision;
     track('manual_saved');
     showScreen('suit');
-    await renderSuit();
   }));
 
   document.querySelector('#paletteGrid').addEventListener('click', (event) => {

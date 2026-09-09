@@ -450,13 +450,14 @@ def _face_shape_attribute(rgb: np.ndarray, face: dict[str, Any], points: dict[in
         )
 
     bangs = _bangs_forehead_ratio(rgb, points, face)
+    bangs_issue = None
     if bangs is not None and bangs < BANGS_SKIN_RATIO_REJECT:
-        # 产品口径：刘海照不拦截上传。额宽特征被刘海污染时脸型标签不可信，
-        # 降级为 warn + 无预选标签，脸型交给用户在 onboarding 里手动确认。
-        return _attribute(
-            "warn", 0.4, None,
-            [_issue("face.bangs_forehead", "刘海遮住了额头，脸型自动识别不可用", "照片可用；请在下一步手动选择你的脸型。")],
-            {"forehead_skin_ratio": round(bangs, 3)},
+        # 产品口径（2026-09 更新）：刘海照不拦截上传，仍照常给出脸型标签；
+        # 额宽特征被刘海污染会拉低置信度，并提示识别可能不准，用户可手动修改。
+        bangs_issue = _issue(
+            "face.bangs_forehead",
+            "刘海遮住了额头，脸型识别可能不准",
+            "拨开刘海重拍一张会更准；也可以直接点“修改”调整结果。",
         )
 
     features = _face_shape_features(points)
@@ -473,10 +474,15 @@ def _face_shape_attribute(rgb: np.ndarray, face: dict[str, Any], points: dict[in
     margin = score - ranked[1][1]
     issues: list[dict[str, str]] = []
     status = "pass"
+    if bangs_issue is not None:
+        status = "warn"
+        issues.append(bangs_issue)
     if margin < 0.12:
         status = "warn"
         issues.append(_issue("face.shape_close", "脸型介于两种之间", f"更接近{label}，也可能偏{ranked[1][0]}；以你自己选的为准。"))
     confidence = 0.58 + min(0.24, margin) + min(0.08, score * 0.1)
+    if bangs_issue is not None:
+        confidence -= 0.15
     candidates = [
         {"label": name, "score": round(value, 3)}
         for name, value in ranked[:2]

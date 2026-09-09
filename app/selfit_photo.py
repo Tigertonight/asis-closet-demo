@@ -201,7 +201,7 @@ _ISSUE_CODE_TO_ENUM: dict[str, str | None] = {
     "face.blurry": ISSUE_BLURRED,
     "face.soft_detail": None,
     "face.edge_close": None,
-    "face.bangs_forehead": None,  # 产品口径：刘海照不拦截上传，脸型交给用户手动确认
+    "face.bangs_forehead": None,  # 产品口径（2026-09 更新）：刘海照不拦截上传，仍给脸型标签 + 提示可能不准
     "face.side_pose": ISSUE_SIDE_POSE,
     "face.shape_close": None,
     "skin.sample_failed": ISSUE_UNSUPPORTED_CONTENT,
@@ -272,6 +272,7 @@ def attribute_inspector(image: Image.Image, kind: str) -> PhotoInspection:
                     ],
                     "issues": [
                         {
+                            "code": str(item.get("code") or "").strip(),
                             "message": str(item.get("message") or "").strip(),
                             "suggestion": str(item.get("suggestion") or "").strip(),
                         }
@@ -296,6 +297,20 @@ _ATTRIBUTE_PUBLIC_KEYS = {
     "face_shape": "faceShape",
     "body_shape": "bodyShape",
 }
+
+# 产品口径（2026-09 定版）：这类提示描述的是长相特征（脸型介于两档之间），
+# 不是照片质量问题，重拍也无法改善，不在 suit 页向用户展示；
+# 算法层仍照常产生 issue 作为内部低置信度信号。
+_HIDDEN_ISSUE_CODES = {"face.shape_close"}
+# 旧 session 存储的属性 issues 没有 code 字段，按 message 精确匹配兜底过滤。
+_HIDDEN_ISSUE_MESSAGES = {"脸型介于两种之间"}
+
+
+def _is_hidden_note(item: dict[str, Any]) -> bool:
+    code = str(item.get("code") or "").strip()
+    if code:
+        return code in _HIDDEN_ISSUE_CODES
+    return str(item.get("message") or "").strip() in _HIDDEN_ISSUE_MESSAGES
 
 
 def _public_metric(key: str, label: str, value: Any, *, digits: int = 3, suffix: str = "") -> dict[str, str]:
@@ -330,6 +345,8 @@ def public_analysis(attributes: dict[str, Any] | None, notes: list[dict[str, Any
         for item in source:
             message = str(item.get("message") or "").strip()
             if not message or message in seen:
+                continue
+            if _is_hidden_note(item):
                 continue
             seen.add(message)
             merged.append({"message": message, "suggestion": str(item.get("suggestion") or "").strip()})
@@ -405,5 +422,5 @@ def public_analysis(attributes: dict[str, Any] | None, notes: list[dict[str, Any
     # 照片级提示兜底：两个属性都不可用时（极少见），挂在顶层，
     # 保证用户仍能看到「为什么这张照片读得不稳」。
     if photo_notes and not out["attributes"]:
-        out["notes"] = photo_notes
+        out["notes"] = [note for note in photo_notes if not _is_hidden_note(note)]
     return out

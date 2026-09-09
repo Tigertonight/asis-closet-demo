@@ -1,5 +1,6 @@
 import pytest
 
+import app.selfit_onboarding as onboarding
 from app.selfit_suit import suit_summary, DESCRIPTIONS
 from app.selfit_onboarding import MANUAL_FIELDS
 from tests.test_selfit_onboarding_api import _use_tmp_store, _create_session, API
@@ -14,12 +15,62 @@ def test_summary_uses_inference_and_manual_override():
     assert result['features'][1]['value'] == '圆脸'
     assert result['features'][1]['source'] == 'photo'
     assert result['features'][2]['value'] is None
+    assert '还没有上传全身照' in result['features'][2]['description']
     record['manual'] = {'faceShape': '方脸'}
     corrected = suit_summary(record)['features'][1]
     assert corrected['value'] == '方脸'
     assert corrected['source'] == 'manual'
     assert corrected['description'] != result['features'][1]['description']
     assert all(value in DESCRIPTIONS for options in MANUAL_FIELDS.values() for value in options)
+
+
+def test_fallback_copy_distinguishes_missing_photo_from_unclear_analysis():
+    missing = suit_summary({})['features']
+    assert missing[0]['description'] == '还没有上传面部照，上传后可以自动识别；也可以直接手动选择。'
+    assert missing[1]['description'] == '还没有上传面部照，上传后可以自动识别；也可以直接手动选择。'
+    assert missing[2]['description'] == '还没有上传全身照，上传后可以自动识别；也可以直接手动选择。'
+    record = {'photos': {
+        'face': {'status': 'accepted', 'attributes': {'skin_tone': {'label': None}}},
+        'body': {'status': 'accepted', 'attributes': {}},
+    }}
+    unclear = suit_summary(record)['features']
+    assert all(feature['value'] is None for feature in unclear)
+    assert all(feature['description'] == '照片中还看不清这项特点，你可以手动选择。' for feature in unclear)
+    rejected = {'photos': {'face': {'status': 'rejected', 'attributes': {}}}}
+    assert '还没有上传面部照' in suit_summary(rejected)['features'][0]['description']
+
+
+@pytest.mark.parametrize('backend', ['json', 'sqlite'])
+def test_suit_backfills_previous_photo_consistently(monkeypatch, tmp_path, backend):
+    """同账号新 session 只传 body 时：旧面部照回填后 features/photos/analyses 三端一致。"""
+    import io
+    from PIL import Image
+    import app.selfit_photo as photo
+    _use_tmp_store(monkeypatch, tmp_path)
+    monkeypatch.setenv('SELFIT_ONBOARDING_STORE_BACKEND', backend)
+    monkeypatch.setattr(photo, 'inspect_photo', lambda image, kind: photo.PhotoInspection(accepted=True, attributes={
+        'skin_tone': {'label': '暖白肤'}, 'face_shape': {'label': '圆脸'},
+    } if kind == 'face' else {'body_shape': {'label': '梨型'}}))
+    monkeypatch.setattr('app.selfit_onboarding._archive_photo_to_qa', lambda *args: None)
+    client = TestClient(app)
+    app.dependency_overrides[onboarding.get_optional_user] = lambda: {'user_id': 'photo-owner'}
+    try:
+        image = io.BytesIO()
+        Image.new('RGB', (600, 800), '#a08070').save(image, 'PNG')
+        files = {'image': ('p.png', image.getvalue(), 'image/png')}
+        first = _create_session(client)['session']['sessionId']
+        assert client.post(f'{API}/sessions/{first}/photos/face', files=files).status_code == 200
+        second = _create_session(client)['session']['sessionId']
+        assert client.post(f'{API}/sessions/{second}/photos/body', files=files).status_code == 200
+        suit = client.get(f'{API}/sessions/{second}/suit').json()
+        assert suit['photos'] == {'face': True, 'body': True}
+        assert [(item['key'], item['value'], item['source']) for item in suit['features']] == [
+            ('skin', '暖白肤', 'photo'), ('faceShape', '圆脸', 'photo'), ('bodyShape', '梨型', 'photo'),
+        ]
+        assert set(suit['analyses']) == {'face', 'body'}
+        assert suit['analyses']['face']['attributes']['skin']['label'] == '暖白肤'
+    finally:
+        app.dependency_overrides.pop(onboarding.get_optional_user, None)
 
 
 def test_photo_analysis_handles_missing_and_legacy_attributes():
@@ -190,7 +241,8 @@ def test_saved_suit_photos_are_scoped_to_session_owner():
     from app.selfit_onboarding import _suit_photo
     saved = {'session_id': 'old', 'asset_id': 'asset_face', 'format': 'JPEG'}
     data = {'user_photos': [{'user_id': 'alice', 'photos': {'face': saved}}], 'sessions': []}
-    assert _suit_photo(data, {'session_id': 'new', 'user_id': 'alice'}, 'face') == saved
+    # 旧索引数据没有 status；回填时补齐 accepted，供 /suit 的 features/analyses 判定。
+    assert _suit_photo(data, {'session_id': 'new', 'user_id': 'alice'}, 'face') == {**saved, 'status': 'accepted'}
     assert _suit_photo(data, {'session_id': 'new', 'user_id': 'bob'}, 'face') is None
     assert _suit_photo(data, {'session_id': 'new'}, 'face') is None
     current = {'status': 'accepted', 'asset_id': 'new_face', 'format': 'PNG'}
