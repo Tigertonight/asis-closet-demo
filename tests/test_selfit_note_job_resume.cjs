@@ -1,6 +1,6 @@
 const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/strict');
 const code=fs.readFileSync('app/static/selfit-tryon/studio.js','utf8');
-const poll=code.slice(code.indexOf('  async function poll()'),code.indexOf('  async function importGarment('));
+const poll=code.slice(code.indexOf('  async function poll('),code.indexOf('  async function importGarment('));
 (async()=>{
  const state={page:'result-viewer',job:{job_id:'note-job'},current:{id:'other-outfit'},photo:'different-person'};
  const note={id:'note:mute:1',title:'stored note',image_url:'note.jpg',width:1080,height:1440};

@@ -389,6 +389,7 @@ def create_outfit_tryon_job(
     retry_item_id: str | None = None,
     retry_reason: str | None = None,
     wear_all_items: bool = False,
+    model_id: str | None = None,
 ) -> dict[str, Any]:
     person = _read_upload_image(person_raw, person_filename, "person")
     selected_ids = list(dict.fromkeys(str(item_id).strip() for item_id in (selected_item_ids or []) if str(item_id).strip()))
@@ -426,6 +427,7 @@ def create_outfit_tryon_job(
         "force_regenerate": bool(force_regenerate),
         "selected_item_ids": selected_ids if selected_item_ids is not None else None,
         "wear_all_items": bool(wear_all_items),
+        "model_id": model_id,
         "client_request_id": request_key or None,
         "base_job_id": str(base_job_id or "") or None,
         "retry_item_id": str(retry_item_id or "") or None,
@@ -435,6 +437,24 @@ def create_outfit_tryon_job(
         "result": None,
         "error": None,
     }
+    if wear_all_items and not force_regenerate and not base_job_id and not retry_item_id:
+        from app.selfit_tryon_presets import find_preset
+        preset = find_preset(outfit_id, model_id, person_raw, job["selected_item_ids"])
+        if preset:
+            from app.closet import record_selfit_tryon_result
+            result = {"status": "review", "tryon_id": job_id, "source_mode": "from_outfit",
+                      "generation_strategy": "preset", "preset_id": preset["example_id"],
+                      "outfit": preset["outfit"], "photo_mode": job["photo_mode"],
+                      "original_image_path": job["original_image_path"],
+                      "requested_item_ids": preset["outfit"]["item_ids"],
+                      "pipeline": {"quality_review": preset["quality_review"]},
+                      "result": {"image_path": preset["image_path"]}}
+            record = record_selfit_tryon_result(outfit_id, result)
+            if record:
+                result["record"] = record
+            job.update(status="completed", phase="completed", progress=100, result=result)
+            _write_tryon_job(job)
+            return _public_tryon_job(job)
     _write_tryon_job(job)
     TRYON_JOB_EXECUTOR.submit(_run_outfit_tryon_job, user_id, job_id)
     return _public_tryon_job(job)
@@ -799,6 +819,8 @@ async def extract_xhs_link(url: str) -> dict[str, Any]:
 
 
 def tryon_capabilities() -> dict[str, Any]:
+    from app.local_codex_image import enabled
+    local_codex_enabled = enabled()
     base_url = _openai_base_url()
     chat_supported = bool(base_url and _openai_chat_or_responses_supported(base_url))
     image_edit_supported = bool(base_url and _openai_images_api_supported(base_url))
@@ -815,13 +837,16 @@ def tryon_capabilities() -> dict[str, Any]:
             "runway_google_url": _runway_google_url(),
             "runway_google_configured": runway_google_supported,
             "runway_google_note": "configured_only_image_output_must_be_verified_by_generation",
+            "local_codex_bridge_enabled": local_codex_enabled,
         },
         "features": {
             "garment_analysis": "vlm" if chat_supported or has_key else "local_cv_fallback",
             "fashion_item_detection": "top_only_local_mvp",
             "clean_item_reference": "local_crop_placeholder",
             "image_edit": (
-                "runway_google_generate_content"
+                "local_codex_imagegen"
+                if local_codex_enabled
+                else "runway_google_generate_content"
                 if runway_google_supported
                 else "openai_compatible"
                 if image_edit_supported or has_key
@@ -862,7 +887,9 @@ def tryon_capabilities() -> dict[str, Any]:
             "required_capability": "Runway Google generateContent image output or OpenAI-compatible images.edit",
         },
         "message": (
-            "Runway Google 代理已配置，生成时会验证是否支持图片输出。"
+            "本地 Codex 试穿桥接已启用，生成时使用已登录账号的图片工具。"
+            if local_codex_enabled
+            else "Runway Google 代理已配置，生成时会验证是否支持图片输出。"
             if runway_google_supported
             else
             "真实图片编辑能力可用。"
@@ -956,7 +983,7 @@ def run_try_on(person: dict[str, Any], garment: dict[str, Any], provider: "TryOn
         "model_plan": {
             "validation": [
                 "对齐色彩测试 MVP：验证期使用本地 CV、测试 fixture 和 MockTryOnProvider 稳定回归",
-                "服务运行时不依赖 Codex 内部授权实时出图",
+                "本地调试可显式启用 Codex CLI 图片桥接；生产环境使用独立图片服务",
                 "验收脚本默认验证接口、上衣提取、mask、质量校验和可展示结果结构",
             ],
             "production": [
@@ -1195,6 +1222,13 @@ def run_try_on_from_outfit_plan(
             pipeline["quality_review"] = _stage("pending", 0.0, {"skipped": True, "reason": "worker_pending"}, [])
             status = "pending"
             user_message = "已提交生成，正在把整套穿搭穿到模特身上。"
+        elif pipeline["image_edit"]["status"] == "fail" and any(
+            issue.get("code", "").startswith("image_edit.") for issue in pipeline["image_edit"].get("issues", [])
+        ):
+            pipeline["quality_review"] = _stage("unknown", 0, {"skipped": True, "reason": "image_generation_failed"}, [])
+            status = "failed"
+            user_message = next(issue["message"] for issue in pipeline["image_edit"]["issues"]
+                                if issue.get("code", "").startswith("image_edit."))
         else:
             pipeline["quality_review"] = _review_outfit_tryon_quality(
                 person["image"],
@@ -2083,6 +2117,27 @@ class UnavailableTryOnProvider(TryOnProvider):
             ]),
             "image_path": None,
         }
+
+
+class LocalCodexImageGenTryOnProvider(TryOnProvider):
+    mode = "local_codex_imagegen"
+
+    def edit(self, person_image: Path, garment_image: Path, mask_image: Path, prompt: str, output_dir: Path) -> dict[str, Any]:
+        from app.local_codex_image import generate_image
+
+        try:
+            generated, evidence = generate_image(person_image, garment_image, mask_image,
+                                                _build_provider_prompt_with_mask_contract(prompt), output_dir)
+            with Image.open(generated) as image:
+                image, normalization = _fit_image_to_reference_canvas(image.convert("RGB"), person_image)
+            target = generated.with_name("result.png")
+            _save_png_atomically(image, target)
+            return {"stage": _stage("pass", 0.8, {**evidence, "result_path": str(target),
+                    "canvas_normalization": normalization}, []), "image_path": target}
+        except (HTTPException, OSError, ValueError) as error:
+            message = str(error.detail) if isinstance(error, HTTPException) else "试穿图片无法读取，请重新生成。"
+            return {"stage": _stage("fail", 0, {"provider": self.mode}, [
+                _issue("image_edit.local_codex_failed", message, "请稍后重试。")]), "image_path": None}
 
 
 class CodexImageGenBridgeTryOnProvider(TryOnProvider):
@@ -3679,6 +3734,9 @@ def _review_tryon_quality(original: Image.Image, result_path: Path | None, perso
 
 
 def _default_provider() -> TryOnProvider:
+    from app.local_codex_image import enabled
+    if enabled():
+        return LocalCodexImageGenTryOnProvider()
     if _has_runway_google_provider():
         return RunwayGoogleTryOnProvider()
     if _has_openai_image_edit_provider():

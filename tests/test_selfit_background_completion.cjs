@@ -1,6 +1,6 @@
 const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/strict');
 const src=fs.readFileSync('app/static/selfit-tryon/studio.js','utf8');
-const poll=src.slice(src.indexOf('  async function poll()'),src.indexOf('  async function importGarment('));
+const poll=src.slice(src.indexOf('  async function poll('),src.indexOf('  async function importGarment('));
 const go=src.slice(src.indexOf('  function go('),src.indexOf('  function categoryGroup('));
 (async()=>{
  for(const page of ['inspiration','detail','profile-edit']){

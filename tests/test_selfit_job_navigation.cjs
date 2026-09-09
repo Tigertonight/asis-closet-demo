@@ -1,6 +1,6 @@
 const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/strict');
 const source=fs.readFileSync('app/static/selfit-tryon/studio.js','utf8');
-const fn=source.slice(source.indexOf('  async function poll()'),source.indexOf('  async function importGarment('));
+const fn=source.slice(source.indexOf('  async function poll('),source.indexOf('  async function importGarment('));
 (async()=>{
  const requests=[];let failures=0;const notice={hidden:true};
  const state={page:'result-viewer',job:{job_id:'a'},result:'visible.png',viewerPhoto:false,viewRecordId:''};

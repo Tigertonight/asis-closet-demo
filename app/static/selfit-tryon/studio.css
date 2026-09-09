@@ -452,6 +452,9 @@ a {
   opacity: 0.7;
 }
 .try-chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   position: absolute;
   bottom: 7px;
   right: 7px;
@@ -1050,15 +1053,16 @@ dialog .secondary {
   text-align: center;
   transform: rotate(-4deg);
 }
-.mirror-stage .try-outfit-tools {
-  top: max(8px, env(safe-area-inset-top));
-  left: auto;
-  right: 16px;
-}
-.try-outfit-tools button { border-radius: 999px; color: #8a011b; font-weight: 600; }
 .mirror-screen .outfit-card[aria-pressed="true"] {
   outline: 2px solid #8a011b;
   outline-offset: -2px;
+}
+.mirror-screen .outfit-card[data-try] .try-chip { pointer-events: none; }
+.mirror-screen .outfit-card[data-try] .outfit-state {
+  top: 7px;
+  left: 7px;
+  right: auto;
+  bottom: auto;
 }
 .outfit-selected-label {
   position: absolute;
@@ -1405,12 +1409,19 @@ button.composition-piece:focus-visible { outline:2px solid #8a011b; outline-offs
 
 .resume-import { width:100%;padding:12px;margin-bottom:12px;border-radius:12px;background:#f4edef;color:#8a011b;font-size:12px; }
 
-/* Source1092:12499: expanded result retains the original mirror frame. */
+/* Source1092:12499: the design reference retains its composite mirror frame. */
 .result-viewer { position:relative;min-height:0;height:100%;background:#f5f5f5; }
 .result-viewer-background,.result-viewer-reference { position:absolute;inset:0;width:100%;height:100%;object-fit:fill; }
 .result-viewer-photo { position:absolute;left:8.78%;top:8.745%;width:82.43%;height:81.925%;object-fit:contain;border-radius:50% 50% 8% 8% / 24% 24% 4% 4%; }
 .viewer-collapse { position:absolute;left:11.93%;top:84.65%;width:44px;height:44px;padding:10px; }
 .viewer-collapse img { width:24px;height:24px;display:block; }
+/* Live images own their rounded edges; the background contains no empty mirror.
+   Reserve a separate row for the close action so it never covers the photo. */
+.result-viewer.is-photo { display:flex;flex-direction:column;align-items:center;gap:16px;padding:24px 20px max(24px, env(safe-area-inset-bottom)); }
+.result-viewer.is-photo .result-viewer-background { bottom:auto;height:auto;max-height:61%;object-fit:cover;object-position:top;pointer-events:none; }
+.result-viewer-photo-area { position:relative;z-index:1;display:flex;align-items:center;justify-content:center;flex:1;min-height:0;width:100%; }
+.result-viewer.is-photo .result-viewer-photo { position:static;display:block;flex:none;width:auto;height:auto;max-width:100%;max-height:100%;border-radius:24px;object-fit:contain; }
+.result-viewer.is-photo .viewer-collapse { position:relative;z-index:1;left:auto;top:auto;flex:none;display:flex;align-items:center;justify-content:center;gap:8px;width:auto;min-width:132px;height:44px;padding:10px 20px;border-radius:999px;background:#fff;color:#666;font-size:14px; }
 .result-expand { position:absolute;z-index:4;left:24%;bottom:-5%;width:44px;height:44px;padding:14px;color:#999; }
 .result-expand svg { display:block;width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.5; }
 
@@ -1445,6 +1456,10 @@ button.composition-piece:focus-visible { outline:2px solid #8a011b; outline-offs
 .mirror-photo-frame { position:absolute; z-index:2; display:flex; align-items:center; justify-content:center; }
 /* Round the fitted image itself, so contain never exposes a separate frame. */
 .mirror-photo-frame > .model-photo.personal { position:static; display:block; flex:none; width:auto; height:auto; max-width:100%; max-height:100%; border-radius:110px 110px 22px 22px; background:#f4f0ec; object-fit:contain; object-position:center; }
+/* Portraits keep their complete vertical extent at a stable mirror height.
+   Clip excess width at the arch, without stretching the body or trimming head/feet. */
+.mirror-photo-frame[data-fit="height"] { overflow:hidden; border-radius:110px 110px 22px 22px; }
+.mirror-photo-frame[data-fit="height"] > .model-photo.personal { height:100%; max-width:none; }
 .model-mode .stage-control { background:#ffffffdd; color:#777; }
 .model-mode .mode-control { background:url('/static/selfit-tryon/assets/main-app/mirror-mode.svg') center/contain no-repeat; }
 .mirror-generation { inset:0; width:100%; height:100%; display:block; }
@@ -1452,8 +1467,8 @@ button.composition-piece:focus-visible { outline:2px solid #8a011b; outline-offs
 
 /* Source 1092:15337: compact controls within the mirror and paged outfit strip. */
 .mirror-favorite { position:absolute; z-index:4; left:64.12%; top:95.81%; width:44px; height:44px;
-  padding:14px; color:#ccc; border:0; background:transparent; }
-.mirror-favorite svg { width:16px; height:16px; fill:currentColor; }
+  padding:10px; color:#ccc; border:0; background:transparent; }
+.mirror-favorite svg { width:24px; height:24px; fill:currentColor; }
 .mirror-favorite[aria-pressed="true"] { color:#8a011b; }
 .model-mode .result-expand { left:24.17%; top:95.81%; bottom:auto; }
 .mirror-screen .strip { padding:0 17px; margin-top:62px; }
@@ -1477,22 +1492,12 @@ button.composition-piece:focus-visible { outline:2px solid #8a011b; outline-offs
 .feed-favorite[aria-pressed="true"] { color:#8a011b; }
 .feed-favorite:disabled { opacity:.5; }
 
-.topic-card { display:block; padding:0; width:100%; overflow:hidden; border-radius:8px; background:white; color:#333; text-align:left; }
-.topic-cover { display:block; width:100%; aspect-ratio:1; object-fit:cover; }
-.topic-previews { display:flex; height:87px; align-items:center; justify-content:center; gap:2px; padding:7px 4px 0; }
-.topic-previews img { width:31%; height:78px; object-fit:contain; }
-.topic-previews img:first-child { transform:rotate(-5deg); }
-.topic-previews img:last-child { transform:rotate(5deg); }
-.topic-caption { display:flex; align-items:center; justify-content:space-between; gap:4px; height:40px; padding:0 8px; }
-.topic-caption strong { font-size:12px; font-weight:500; }
-.topic-caption > span { font-size:10px; color:#999; white-space:nowrap; }
 .topic-screen { min-height:100%; padding:60px 9px 32px; }
 .topic-screen header { height:44px; display:flex; align-items:center; justify-content:center; position:relative; margin-bottom:23px; }
 .topic-screen .back { position:absolute; left:3px; width:44px; height:44px; padding:12px; }
 .topic-screen .back svg { width:20px; height:20px; fill:none; stroke:currentColor; stroke-width:2; }
 .topic-screen h1 { font-size:16px; font-weight:600; line-height:22px; margin:0 48px; }
 
-.topic-screen .try-chip { display:none; }
 
 .tryon-history { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px; }
 .tryon-history button { aspect-ratio:3/4; padding:0; overflow:hidden; border-radius:16px; background:#f5f3f1; }

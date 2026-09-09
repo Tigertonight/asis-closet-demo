@@ -45,6 +45,7 @@
       entry.promise = new Promise(resolve => {
         const image = new Image();
         let finished = false;
+        let fit = "contain";
         const finish = (displaySrc = src, crop = null) => {
           if (finished) {
             if (displaySrc !== src) URL.revokeObjectURL(displaySrc);
@@ -53,7 +54,7 @@
           finished = true;
           clearTimeout(timer);
           image.onload = image.onerror = null;
-          resolve({src:displaySrc, crop});
+          resolve({src:displaySrc, crop, fit});
           // The active decoded image remains usable after revocation, while
           // old model/result previews cannot accumulate without a bound.
           while (cache.size > 12) {
@@ -66,6 +67,10 @@
         image.crossOrigin = "anonymous";
         image.onerror = () => finish();
         image.onload = () => {
+          // Full-body portraits share a vertical scale before and after try-on.
+          // Keep wide/unknown photos contained instead of magnifying a narrow slice.
+          const aspect = image.naturalWidth / image.naturalHeight;
+          fit = aspect > 0 && aspect <= .75 ? "height" : "contain";
           try {
             // Keep normal model photos at native resolution. A 512px probe
             // rounded the crop outward and left a visible one-pixel seam.
@@ -86,8 +91,8 @@
               image.naturalHeight * crop.y, w, h, 0, 0, output.width, output.height);
             output.toBlob(blob => finish(blob ? URL.createObjectURL(blob) : src, blob ? crop : null), "image/png");
           } catch {
-            // Cross-origin pixels, unsupported canvas and decode failures all
-            // fall back to the complete original photo with CSS contain.
+            // If pixel inspection is unavailable, retain the original source;
+            // its decoded dimensions still determine the display fit.
             finish();
           }
         };
@@ -103,11 +108,13 @@
       photo.src = src;
       photo.style.backgroundColor = "";
       frame.dataset.trimmed = "false";
+      frame.dataset.fit = "contain";
       prepare(src).then(display => {
         if (!photo.isConnected || photo.dataset.mirrorSource !== src) return;
         photo.src = display.src;
         photo.style.backgroundColor = display.crop?.background || "";
         frame.dataset.trimmed = String(Boolean(display.crop));
+        frame.dataset.fit = display.fit;
       });
     }
     function clear() {

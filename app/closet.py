@@ -2380,6 +2380,7 @@ def record_selfit_tryon_result(outfit_id: str, tryon_result: dict[str, Any]) -> 
         "user_id": storage_context().user_id,
         "mode": "selfit_from_outfit_plan",
         "status": tryon_result.get("status") or "generated",
+        "original_image_path": tryon_result.get("original_image_path"),
         "tryon_id": tryon_id or None,
         "outfit_id": outfit_id,
         "outfit_title": outfit.get("title") or "我的搭配",

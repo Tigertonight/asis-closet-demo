@@ -1208,6 +1208,7 @@ async def selfit_try_on_job_create(
     selected_item_ids: str | None = Form(None),
     client_request_id: str | None = Form(None),
     wear_all_items: bool = Form(False),
+    model_id: str | None = Form(None),
     current_user: dict[str, Any] = Depends(get_current_user),
 ) -> dict[str, Any]:
     with user_storage(current_user["user_id"]):
@@ -1222,6 +1223,7 @@ async def selfit_try_on_job_create(
             _parse_selected_item_ids(selected_item_ids, limit=None if wear_all_items else 8),
             client_request_id,
             wear_all_items=wear_all_items,
+            model_id=model_id,
         )
 
 

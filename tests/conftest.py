@@ -17,6 +17,12 @@ def _disable_rate_limit_by_default(monkeypatch: pytest.MonkeyPatch) -> None:
 
 
 @pytest.fixture(autouse=True)
+def _disable_live_codex_images_by_default(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Local developer settings must never make ordinary tests consume image usage."""
+    monkeypatch.delenv("TRYON_LOCAL_CODEX_BRIDGE", raising=False)
+
+
+@pytest.fixture(autouse=True)
 def _isolate_qa_photo_dir(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
     """QA 数据集目录隔离到临时目录：上传 accepted 会归档进 qa_photos，
     不隔离的话测试会把 user_*.jpg 写进真实数据集。"""

@@ -17,7 +17,7 @@ CATEGORY_SLOTS = {
     "上装内搭": "top", "上装外套": "outer", "下装": "bottom", "连衣裙": "dress",
     "鞋子": "shoes", "包": "bag", "帽子": "hat", "袜子": "socks",
     "配饰": "accessory", "项链": "accessory", "腰带": "accessory", "耳环": "accessory",
-    "戒指": "accessory", "手表": "accessory", "手链": "accessory",
+    "戒指": "accessory", "手表": "accessory", "手链": "accessory", "手套": "accessory",
 }
 
 
@@ -108,7 +108,7 @@ def adapt_outfit(look: dict) -> dict:
             slot = "skirt"
         category = "top" if slot == "outer" else "accessory" if slot in {"hat", "socks"} else slot
         url = _asset_url(raw["image_asset"])
-        styling = {k: v for k, v in raw.items() if k not in {"image_asset", "asset_filename"}}
+        styling = {k: v for k, v in raw.items() if k not in {"image_asset", "asset_filename", "cutout"}}
         styling.update(source_item_id=source_id, item_id=_item_id(look, source_id),
                        paired_with_item_ids=[_item_id(look, paired) for paired in raw.get("paired_with_item_ids", [])])
         items.append({
@@ -127,16 +127,20 @@ def adapt_outfit(look: dict) -> dict:
         "cover_path": _asset_url(look["source_asset"]), "source_asset_id": look["source_asset"]["assetId"],
         "primary_persona": binding["persona"], "template_id": binding["templateId"],
         "source": "styling_delivery", "can_delete": False, "favorite": False, "deleted": False,
-        "tryon_ready": True, "scene_tags": [], "warnings": [],
+        "tryon_ready": True, "scene_tags": list(look.get("scene_tags", [])), "warnings": [],
         "layer_sequence_inner_to_outer": [_item_id(look, source_id) for source_id in look["layer_sequence_inner_to_outer"]],
     }
 
 
 def get_delivered_outfit(oid: str) -> dict:
     try:
-        look = next((look for look in delivery_looks() if outfit_id(look) == oid), None)
+        from app.inspiration_catalog import TEMPLATE_PREFIX, inspiration_looks
+        is_inspiration = oid.startswith(OUTFIT_PREFIX + TEMPLATE_PREFIX)
+        looks = inspiration_looks() if is_inspiration else delivery_looks()
+        look = next((look for look in looks if outfit_id(look) == oid), None)
         if look is None:
-            raise HTTPException(404, "这套报告搭配已更新，请返回报告重新选择。")
+            raise HTTPException(404, "这套搭配已更新，请返回灵感库重新选择。" if is_inspiration
+                                else "这套报告搭配已更新，请返回报告重新选择。")
         return adapt_outfit(look)
     except (OSError, ValueError, KeyError, TypeError) as exc:
         raise HTTPException(503, "这套搭配的素材暂时无法加载，请稍后重试。") from exc

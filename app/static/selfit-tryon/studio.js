@@ -235,12 +235,13 @@
       .join("") + `<button class="nav-ai" data-action="open-chat" aria-label="AI 搭配对话">${image(`${A}main-app/nav-ai.webp`,"")}</button>`;
   }
   function card(x, kind = "item", i = 0) {
+    const directTry = !reference && state.page === "mirror" && kind === "outfit";
     const target = state.generating?.target || state.current;
     const targetIds = [target?.id, target?.personalId].filter(Boolean);
     const activeOutfit = state.page === "mirror" && kind === "outfit" &&
       [x.id, x.personalId].some(id => id && targetIds.includes(id));
     const pending = activeOutfit && Boolean(state.generating || (reference && params.get("mirror_state") === "generating"));
-    return `<button class="card ${kind === "outfit" ? "outfit-card" : "item-card"}" data-${kind}="${esc(x.id)}" data-kind="${esc(x.id)}" aria-label="${esc(x.name)}"${activeOutfit || state.selected.has(x.id) ? ' aria-pressed="true"' : ' aria-pressed="false"'}>${image(x.src, x.name)}${x.saved ? image(asset("star"), "已收藏", "favorite-star") : ""}${activeOutfit ? `<span class="outfit-state ${pending ? 'pending' : ''}" aria-label="${pending ? '正在试穿' : '已选中'}">${pending ? '' : '✓'}</span>` : ""}</button>`;
+    return `<button class="card ${kind === "outfit" ? "outfit-card" : "item-card"}" data-${directTry ? "try" : kind}="${esc(x.id)}" data-kind="${esc(x.id)}" aria-label="${directTry ? '试穿' : ''}${esc(x.name)}"${activeOutfit || state.selected.has(x.id) ? ' aria-pressed="true"' : ' aria-pressed="false"'}>${image(x.src, x.name)}${x.saved ? image(asset("star"), "已收藏", "favorite-star") : ""}${directTry ? '<span class="try-chip" aria-hidden="true">试穿</span>' : ''}${activeOutfit ? `<span class="outfit-state ${pending ? 'pending' : ''}" aria-label="${pending ? '正在试穿' : '已选中'}">${pending ? '' : '✓'}</span>` : ""}</button>`;
   }
   function empty(text) {
     return `<div class="empty">${esc(text)}<br>${!reference && !savedSession?.accessToken ? '<a href="/selfit">登录 selfit</a>' : state.error ? '<button class="secondary" data-action="reload">重新加载</button>' : '<button class="secondary" data-action="add">添加衣服</button>'}</div>`;
@@ -321,7 +322,7 @@
                 `model-photo ${!reference || state.file ? "personal" : ""}`,
               )}${!reference || state.file ? '</div>' : ''}`
             : '<div class="empty-stage"><span>先放入你的全身照</span><button data-action="model">选择模特</button></div>'
-    }${styling && !reference ? canvasTools() : ""}${pending ? `<div class="mirror-generation" role="status" aria-live="polite">${image(`${A}main-app/mirror-loading.svg`, '正在试穿')}</div>` : ""}${!styling && !pending ? `<button class="mirror-result-actions" data-action="result-actions" aria-label="试穿图片与记录">${image(`${A}main-app/mirror-result-actions.svg`, "")}</button>` : ""}${!styling && !pending && !state.result ? `<button class="mirror-history" data-action="tryon-history" aria-label="试穿记录">${image(`${A}main-app/mirror-history.svg`, "")}</button>` : ""}${!pending ? `<div class="mirror-edit-tools" role="group" aria-label="试衣镜工具"><button data-action="toggle" aria-label="翻转：${styling ? '切换到模特试穿' : '切换到自由搭配'}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 8a8 8 0 0 0-14-2L3 9m0-5v5h5M4 16a8 8 0 0 0 14 2l3-3m0 5v-5h-5"/></svg><span>翻转</span></button><button data-action="model" aria-label="替换模特或上传我的照片"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="7" r="4"/><path d="M4 21v-3a8 8 0 0 1 16 0v3Z"/></svg><span>替换模特</span></button></div>` : ''}${!pending && !reference && !state.result && state.current?.items?.length ? '<div class="result-tools try-outfit-tools"><button data-action="try">试穿这套搭配</button></div>' : ""}${!styling && !pending && (state.result || state.photo) ? `<button class="result-expand" data-action="open-viewer" aria-label="${state.result ? '查看试穿大图' : '查看模特大图'}">${image(`${A}main-app/mirror-expand.svg`, "")}</button>${state.current ? `<button class="mirror-favorite" data-action="favorite" aria-label="${state.current.saved ? '取消收藏搭配' : '收藏搭配'}" aria-pressed="${Boolean(state.current.saved)}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.9-6.2-3.3-6.2 3.3L7 14.2l-5-4.9 6.9-1Z"/></svg></button>` : ""}` : ""}</div>${
+    }${styling && !reference ? canvasTools() : ""}${pending ? `<div class="mirror-generation" role="status" aria-live="polite">${image(`${A}main-app/mirror-loading.svg`, '正在试穿')}</div>` : ""}${!styling && !pending ? `<button class="mirror-result-actions" data-action="result-actions" aria-label="试穿图片与记录">${image(`${A}main-app/mirror-result-actions.svg`, "")}</button>` : ""}${!styling && !pending && !state.result ? `<button class="mirror-history" data-action="tryon-history" aria-label="试穿记录">${image(`${A}main-app/mirror-history.svg`, "")}</button>` : ""}${!pending ? `<div class="mirror-edit-tools" role="group" aria-label="试衣镜工具"><button data-action="toggle" aria-label="翻转：${styling ? '切换到模特试穿' : '切换到自由搭配'}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 8a8 8 0 0 0-14-2L3 9m0-5v5h5M4 16a8 8 0 0 0 14 2l3-3m0 5v-5h-5"/></svg><span>翻转</span></button><button data-action="model" aria-label="替换模特或上传我的照片"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="7" r="4"/><path d="M4 21v-3a8 8 0 0 1 16 0v3Z"/></svg><span>替换模特</span></button></div>` : ''}${!styling && !pending && (state.result || state.photo) ? `<button class="result-expand" data-action="open-viewer" aria-label="${state.result ? '查看试穿大图' : '查看模特大图'}">${image(`${A}main-app/mirror-expand.svg`, "")}</button>${state.current ? `<button class="mirror-favorite" data-action="favorite" aria-label="${state.current.saved ? '取消收藏搭配' : '收藏搭配'}" aria-pressed="${Boolean(state.current.saved)}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.9-6.2-3.3-6.2 3.3L7 14.2l-5-4.9 6.9-1Z"/></svg></button>` : ""}` : ""}</div>${
       state.loading
         ? empty("正在整理你的搭配…")
         : state.error || (homeNotes && state.homeNotesError)
@@ -519,9 +520,6 @@
   function feedCard(x) {
     return `<article class="feed-card ${x.flat ? "flat" : ""} ${x.kind === "note" ? "note-card" : ""}" ${x.kind === "note" ? `style="aspect-ratio:${x.width || 184}/${x.height || 245}"` : ""}><button class="feed-open" data-detail="${esc(x.id)}" aria-label="查看${esc(x.name)}">${image(x.src, x.name)}</button>${`<button class="feed-favorite" data-action="favorite" data-favorite-id="${esc(x.id)}" aria-label="${x.saved ? '取消收藏' : '收藏'}${esc(x.name)}" aria-pressed="${Boolean(x.saved)}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.9-6.2-3.3-6.2 3.3L7 14.2l-5-4.9 6.9-1Z"/></svg></button>`}<button class="try-chip" data-try="${esc(x.id)}">试穿</button></article>`;
   }
-  function topicCard(topic) {
-    return `<button class="topic-card" data-topic="${esc(topic.id)}" aria-label="主题穿搭：${esc(topic.title)}">${image(topic.cover,topic.title,'topic-cover')}<span class="topic-previews">${topic.previews.slice(0,3).map(src=>image(src,'')).join('')}</span><span class="topic-caption"><strong>#${esc(topic.title)}</strong><span>主题穿搭 ›</span></span></button>`;
-  }
   function topic() {
     const selected=(state.topics || []).find(x=>x.id===state.topicId);
     if (state.loading) return '<section class="topic-screen"><p class="empty" role="status">正在打开主题穿搭…</p></section>';
@@ -536,7 +534,7 @@
     ]
       .map(
         (col) =>
-          `<div class="feed-column">${col===0 ? (state.topics || []).map(topicCard).join('') : ''}${state.feed
+          `<div class="feed-column">${state.feed
             .filter((_, i) => i % 2 === col)
             .map(feedCard)
             .join("")}</div>`,
@@ -738,6 +736,7 @@
     if (!src && !reference && (state.loading || (state.job?.job_id && !["completed","failed"].includes(state.job.status))))
       return '<section class="result-viewer"><p class="empty" role="status">正在准备试穿大图…</p><button class="secondary" data-page="mirror">返回试衣镜</button></section>';
     if (!src && !reference) return `<section class="result-viewer"><p class="empty">还没有可查看的试穿图。<button class="secondary" data-page="mirror">返回试衣镜</button></p></section>`;
+    if (!reference || state.file) return `<section class="result-viewer is-photo" aria-label="试穿大图">${image(`${A}main-app/mirror-background.svg`,'','result-viewer-background')}<div class="result-viewer-photo-area">${image(src,state.viewerPhoto ? '当前模特大图' : '试穿结果大图','result-viewer-photo')}</div><button class="viewer-collapse" data-action="close-viewer" aria-label="收起大图，返回试衣镜">${image(`${A}main-app/result-viewer-collapse.svg`,'')}<span>收起大图</span></button></section>`;
     return `<section class="result-viewer" aria-label="试穿大图">${image(`${A}main-app/result-viewer-background.svg`,'','result-viewer-background')}${reference && !state.file ? image(`${A}main-app/result-viewer-model.svg`,state.viewerPhoto ? '当前模特大图' : '原稿试穿示例','result-viewer-reference') : image(src,state.viewerPhoto ? '当前模特大图' : '试穿结果大图','result-viewer-photo')}<button class="viewer-collapse" data-action="close-viewer" aria-label="收起大图，返回试衣镜">${image(`${A}main-app/result-viewer-collapse.svg`,'')}</button></section>`;
   }
   function importReview() {
@@ -856,6 +855,7 @@
     }
     if (page !== "profile-edit") state.profileEditingField=null;
     if (page !== "result-viewer") {
+      state.viewerJobId = "";
       state.viewerRequest = (state.viewerRequest || 0) + 1;
       state.viewerLoading = false;
       state.viewerError = "";
@@ -1149,6 +1149,22 @@
     }
     notify(`已选${x.name}`);
   }
+  async function tryFromCard(id) {
+    if (generationBusy || (state.job && !["completed", "failed"].includes(state.job.status)))
+      return notify("上一张试穿图还在生成，请稍等。");
+    const target = lookup(id);
+    if (!target) return notify("这套搭配暂时无法打开，请刷新后重试。");
+    const scrollLeft = state.page === "mirror" ? $(".strip")?.scrollLeft : null;
+    if (state.page === "mirror") rememberCanvas();
+    state.current = target;
+    state.selected = new Set((target.items || []).map(item => item.id));
+    state.result = "";
+    state.completedTryon = null;
+    const pending = startTry();
+    if (state.page === "mirror" && scrollLeft != null && $(".strip")) $(".strip").scrollLeft = scrollLeft;
+    await pending;
+    if (state.page === "mirror" && scrollLeft != null && $(".strip")) $(".strip").scrollLeft = scrollLeft;
+  }
   async function photoFile(photo = state.photo, file = state.file, modelId = state.modelId) {
     if (file) return file;
     if (!photo) throw Error("先选择模特或上传全身照。");
@@ -1177,7 +1193,7 @@
       models();
       return;
     }
-    if (!reference && !state.personalPhoto && !state.exampleAccepted) {
+    if (!reference && !state.personalPhoto && !state.exampleAccepted && !state.modelId) {
       state.pendingTry = true;
       modal("用你的照片，看看是否适合你", '<p>上传一张清晰全身照，试穿更贴近自己的效果。也可以先用示例模特看看。</p><button class="primary" data-action="upload-photo">上传我的全身照</button><button class="secondary" data-action="use-example">先用示例模特试穿</button>');
       return;
@@ -1240,6 +1256,7 @@
     if (state.outfitRequest?.signature !== signature)
       state.outfitRequest = {signature, id: crypto.randomUUID()};
     const submissionId = state.outfitRequest.id;
+    const loadingStartedAt = Date.now();
     beginMirrorGeneration(target, photo);
     try {
       const file = await photoFile(photo, inputFile, modelId);
@@ -1257,31 +1274,47 @@
       body.append("photo_mode", "standard");
       body.append("selected_item_ids", JSON.stringify(itemIds));
       body.append("wear_all_items", "true");
+      if (modelId && modelId !== "self" && !inputFile) body.append("model_id", modelId);
       body.append("client_request_id", submissionId);
       state.job = await api("/selfit/try-on/jobs", {method: "POST", body});
       sessionStorage.setItem("selfit.studio.job", JSON.stringify({job_id: state.job.job_id, outfit_id: target.id}));
       state.jobPhoto = photo;
-      poll();
+      const submitted = state.job;
+      if (submitted.result?.generation_strategy === "preset") {
+        await waitForPresetResult(submitted, loadingStartedAt);
+        if (state.job?.job_id !== submitted.job_id) return;
+        await poll(submitted);
+      } else poll();
     } catch (e) {
       failure(e.message);
     } finally {
       generationBusy = false;
     }
   }
+  async function waitForPresetResult(job, startedAt) {
+    const preview = new Image();
+    preview.src = mediaURL(job.result.result.image_path);
+    try {
+      await Promise.all([
+        preview.decode(),
+        new Promise(resolve => setTimeout(resolve, Math.max(0, 3000 - (Date.now() - startedAt)))),
+      ]);
+    } catch (_) { throw Error("试穿图片暂时无法加载，请稍后重试。"); }
+  }
   function failure(message) {
     state.generating = null;
     if (state.page === "mirror") render();
     modal(
       "试穿暂未完成",
-      `<p>${esc(message || "请稍后重试，你选择的照片和搭配都已保留。")}</p><button class="primary" data-action="${state.job?.job_id ? "retry-job" : "try"}">重新尝试</button><button class="secondary" data-action="model">更换照片</button>`,
+      `<p>${esc(message || "请稍后重试，你选择的照片和搭配都已保留。")}</p><button class="primary" data-action="${state.job?.job_id && state.job.result?.generation_strategy !== 'preset' ? "retry-job" : "try"}">重新尝试</button><button class="secondary" data-action="model">更换照片</button>`,
     );
   }
-  async function poll() {
+  async function poll(completedJob = null) {
     clearTimeout(pollTimer);
     if (!state.job?.job_id) return;
     const requestedJobId = state.job.job_id;
     try {
-      const job = await api(
+      const job = completedJob || await api(
         `/selfit/try-on/jobs/${encodeURIComponent(requestedJobId)}`,
       );
       if (state.job?.job_id !== requestedJobId) return;
@@ -1303,6 +1336,16 @@
           outfit:note || (job.result?.outfit ? normalizeOutfit(job.result.outfit,state.items) : lookup(job.outfit_id) || {id:job.outfit_id,name:'这次试穿',items:[],src})};
         const reportOutfit = state.source === "report" && state.reportOutfits?.find(outfit => outfit.id === completed.outfit.id);
         if (reportOutfit) completed.outfit = {...completed.outfit, name: reportOutfit.name, reportNote: reportOutfit.reportNote};
+        const requestedViewerJob = state.page === "result-viewer" && !state.viewerPhoto &&
+          !state.viewRecordId && state.viewerJobId === job.job_id;
+        if (job.result?.generation_strategy === "preset" && !requestedViewerJob &&
+            (state.current?.id !== job.outfit_id || state.modelId !== job.model_id)) {
+          state.noteRequest=null;
+          state.outfitRequest=null;
+          sessionStorage.removeItem("selfit.studio.job");
+          if (state.page === "mirror") render();
+          return;
+        }
         if (!["mirror","result-viewer"].includes(state.page) ||
             (state.page === "result-viewer" && (state.viewerPhoto || state.viewerLoading || state.viewRecordId))) {
           state.completedTryon=completed;
@@ -1310,6 +1353,7 @@
           state.outfitRequest=null;
           sessionStorage.removeItem("selfit.studio.job");
           if ($("#completionNotice")) $("#completionNotice").hidden=false;
+          if (state.page === "mirror") render();
           return;
         }
         state.completedTryon=null;
@@ -1319,11 +1363,14 @@
         state.outfitRequest = null;
         state.resultOriginal = job.original_image_path || state.jobPhoto || '';
         state.photo = state.resultOriginal || state.photo;
+        if (requestedViewerJob && job.result?.generation_strategy === "preset") {
+          state.modelId = job.model_id;
+          state.file = null;
+        }
         state.styling = false;
         $("#sheet").close();
         sessionStorage.removeItem("selfit.studio.job");
         go(state.page === "result-viewer" ? "result-viewer" : "mirror", state.page !== "result-viewer");
-        notify(state.resultOriginal ? "试穿图已经好了，按住可查看原图。" : "试穿图已经好了，可查看大图。");
         return;
       }
       if (job.status === "failed") {
@@ -1518,7 +1565,7 @@
       state.current = state.reportOutfits.find((row) => row.id === id) || state.reportOutfits[0] || null;
       state.selected = new Set((state.current?.items || []).map((item) => item.id));
     } else if (id) {
-      const existing = [...(state.homeOutfits || []), ...state.outfits, ...state.feed, ...state.savedNotes].find((row) => row.id === id);
+      const existing = [...(state.homeOutfits || []), ...state.outfits, ...state.feed, ...(state.topics || []).flatMap(x=>x.entries), ...state.savedNotes].find((row) => row.id === id);
       state.current = existing || (job?.job_id ? null : normalizeOutfit(
         await api(`/closet/outfits/${encodeURIComponent(id)}`), state.items,
       ));
@@ -1569,7 +1616,8 @@
           cursor: append ? state.feedCursor : null,
           exclude_outfit_ids: append ? state.feed.filter(x => x.kind !== "note").map((x) => x.id) : [],
         }),
-      }), append ? Promise.resolve({notes:[]}) : api("/selfit/try-on/inspiration-notes")]);
+      }), append ? Promise.resolve({notes:[]}) : api("/selfit/try-on/inspiration-notes"),
+        append ? Promise.resolve(null) : api("/selfit/try-on/inspiration-topics")]);
       if (append && responses[0].status === "rejected") throw responses[0].reason;
       if (responses.every(r => r.status === "rejected")) throw responses[0].reason;
       const data = responses[0].value || {};
@@ -1580,8 +1628,13 @@
       const notes = (responses[1].value?.notes || []).map(normalizeNote);
       if (!append && responses[1].status === "fulfilled")
         state.savedNotes = (responses[1].value.saved_notes || []).map(normalizeNote);
+      if (!append && responses[2].status === "fulfilled")
+        state.topics = (responses[2].value?.topics || []).map(topic => ({
+          ...topic, entries: (topic.outfits || []).map(row => normalizeOutfit(row, state.items)),
+        }));
       state.feedError = responses.some(r => r.status === "rejected") ? "部分灵感暂未加载，点击重试。" : "";
       const incoming = [
+        ...(append ? [] : (state.topics || []).flatMap(topic => topic.outfits || [])),
         ...(append ? [] : data.carousel || []),
         ...(data.outfits || []),
       ].map((x) => normalizeOutfit(x, state.items));
@@ -1591,7 +1644,7 @@
         if (incoming[i]) mixed.push(incoming[i]);
       }
       state.feed = uniqueItems([...(append ? state.feed : []), ...mixed]);
-      for (const row of state.feed) {
+      for (const row of [...state.feed, ...(state.topics || []).flatMap(topic=>topic.entries)]) {
         const ids = row.items
           .map((x) => x.id)
           .sort()
@@ -1696,7 +1749,8 @@
       try {
         job = JSON.parse(sessionStorage.getItem("selfit.studio.job") || "null");
       } catch {}
-      if (!job?.job_id && state.page === 'result-viewer' && params.get('job')) job={job_id:params.get('job')};
+      state.viewerJobId = state.page === 'result-viewer' && !state.viewerPhoto && !params.get('record') ? params.get('job') || '' : '';
+      if (state.viewerJobId) job={job_id:state.viewerJobId};
       const id = new URLSearchParams(location.search).get("outfit");
       await restoreSelectedOutfit(id, job);
       state.error = "";
@@ -1887,10 +1941,7 @@
         return;
       }
       if (b.dataset.try) {
-        state.current = lookup(b.dataset.try);
-        state.result = "";
-
-        await startTry();
+        await tryFromCard(b.dataset.try);
         return;
       }
       if (b.dataset.slot) {
@@ -2001,7 +2052,11 @@
             state.items = (wardrobe.items || []).map(normalizeItem);
             state.outfits = (wardrobe.outfits || []).map(x => normalizeOutfit(x, state.items));
           }
-          for (const row of state.feed) if (row.id === target.id || row.personalId === (target.personalId || target.id)) row.saved = saved;
+          for (const row of [...state.feed, ...(state.topics || []).flatMap(topic=>topic.entries)])
+            if (row.id === target.id || row.personalId === (target.personalId || target.id)) {
+              row.saved = saved;
+              if (target.personalId) row.personalId = target.personalId;
+            }
           render();
           notify(saved ? "收藏成功" : "已取消收藏", saved && state.page === "detail" && state.current?.id === target.id ? "favorite" : "");
           break;
@@ -2316,6 +2371,7 @@
       } catch (error) { state.error = error.message; state.current = null; }
     } else if (state.source === "report") state.source = "inspiration";
     state.viewerPhoto = p.get("preview") === "photo";
+    state.viewerJobId = "";
     state.styling = p.get("mode") === "styling";
     if (!reference && p.get("screen") === "result-viewer" && !state.viewerPhoto && p.get("record")) {
       state.viewerLoading = true;
@@ -2333,6 +2389,7 @@
       state.resultOriginal = "";
       state.jobPhoto = "";
       state.job = {job_id:p.get("job")};
+      state.viewerJobId = p.get("job");
       go("result-viewer", false);
       await poll();
       return;

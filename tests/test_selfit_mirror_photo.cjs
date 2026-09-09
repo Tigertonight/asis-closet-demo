@@ -25,16 +25,16 @@ const edgeSubject=pixels();
 edgeSubject.data[(70*100)*4]=25;
 assert.equal(detectSolidFrame(edgeSubject),null,'An edge-touching subject cannot be cropped');
 
-function harness({tainted=false}={}) {
+function harness({tainted=false, width=100, height=150, framed=true}={}) {
   const images=[], revoked=[], timers=new Map(); let nextTimer=0, blobs=0;
   class Image {
-    constructor() { this.naturalWidth=100;this.naturalHeight=150;images.push(this); }
+    constructor() { this.naturalWidth=width;this.naturalHeight=height;images.push(this); }
   }
   const presenter=createPresenter({Image,
     setTimeout:fn=>{timers.set(++nextTimer,fn);return nextTimer;},
     clearTimeout:id=>timers.delete(id),
     document:{createElement:()=>({
-      getContext:()=>({drawImage(){},getImageData(){if(tainted)throw Error('SecurityError');return pixels();}}),
+      getContext:()=>({drawImage(){},getImageData(){if(tainted)throw Error('SecurityError');return framed ? pixels() : pixels({left:0,right:0,top:0,bottom:0});}}),
       toBlob:done=>done({}),
     })},
     URL:{createObjectURL:()=>`blob:preview-${++blobs}`,revokeObjectURL:url=>revoked.push(url)},
@@ -50,6 +50,7 @@ function harness({tainted=false}={}) {
   h.images[1].onload(); await Promise.resolve();
   assert.equal(h.photo.src,'blob:preview-1');
   assert.equal(h.frame.dataset.trimmed,'true');
+  assert.equal(h.frame.dataset.fit,'height');
   assert.equal(h.frame.style.backgroundColor,undefined,'The sizing container cannot expose a solid letterbox');
   assert.equal(h.photo.style.backgroundColor,'rgb(100,85,60)');
   h.images[0].onload(); await Promise.resolve();
@@ -62,6 +63,20 @@ function harness({tainted=false}={}) {
   assert.deepEqual(h.revoked.sort(),['blob:preview-1','blob:preview-2']);
   assert.equal(h.timers.size,0);
 
+  const result=harness({framed:false});
+  result.presenter.show(result.photo,'/tryon-result.png');
+  result.images[0].onload(); await Promise.resolve();
+  assert.equal(result.frame.dataset.trimmed,'false');
+  assert.equal(result.frame.dataset.fit,'height','An unframed portrait uses the same vertical fit as the trimmed model');
+  assert.equal(result.photo.src,'/tryon-result.png','Display fitting must not rewrite the result file');
+
+  for (const [width,height] of [[150,100],[100,100],[0,0]]) {
+    const wide=harness({width,height,framed:false});
+    wide.presenter.show(wide.photo,'/wide-photo.png');
+    wide.images[0].onload(); await Promise.resolve();
+    assert.equal(wide.frame.dataset.fit,'contain','Wide or unknown images retain complete-image fitting');
+  }
+
   const cors=harness({tainted:true});
   cors.presenter.show(cors.photo,'https://external.example/photo.jpg');
   cors.images[0].onload(); await Promise.resolve();
@@ -72,6 +87,7 @@ function harness({tainted=false}={}) {
   slow.presenter.show(slow.photo,'/slow.jpg');
   slow.timers.values().next().value(); await Promise.resolve();
   assert.equal(slow.photo.src,'/slow.jpg','Timeout retains the original');
+  assert.equal(slow.frame.dataset.fit,'contain','Unknown dimensions cannot enable width clipping');
   assert.equal(slow.images[0].onload,null);
 
   const bounded=harness();

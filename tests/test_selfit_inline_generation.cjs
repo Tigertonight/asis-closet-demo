@@ -1,7 +1,7 @@
 const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/strict');
 const code=fs.readFileSync('app/static/selfit-tryon/studio.js','utf8');
 const begin=code.slice(code.indexOf('  function beginMirrorGeneration('),code.indexOf('  async function generateNote('));
-const poll=code.slice(code.indexOf('  async function poll()'),code.indexOf('  async function importGarment('));
+const poll=code.slice(code.indexOf('  async function poll('),code.indexOf('  async function importGarment('));
 (async()=>{
  const state={page:'detail',photo:'current-photo',result:'old-result',styling:true};
  const target={id:'submitted-outfit'};let rendered=0,closed=0,scheduled=0;
