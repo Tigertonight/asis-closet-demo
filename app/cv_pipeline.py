@@ -118,9 +118,9 @@ def run_face_cv(image: Image.Image) -> dict[str, Any]:
     if ratio < 0.035 and min(box["width"], box["height"]) < 160:
         return _stage("fail", 0.84, {"face_count": 1, "primary_face": face}, [_issue("face.too_small", "脸部占比过小", "请靠近一些拍摄，让脸部更清晰。")])
 
-    crop_issue = _face_crop_issue(box, w, h)
-    if crop_issue and crop_issue["blocking"]:
-        return _stage("fail", 0.82, {"face_count": 1, "primary_face": face, "cropped": True, "crop_edges": crop_issue["edges"]}, [crop_issue["issue"]])
+    crop_issue = _face_crop_issue(box)
+    if crop_issue:
+        return _stage("fail", 0.82, {"face_count": 1, "primary_face": face, "cropped": True}, [crop_issue["issue"]])
 
     crop = gray[box["y"] : box["y"] + box["height"], box["x"] : box["x"] + box["width"]]
     sharpness = _sharpness(crop)
@@ -148,16 +148,15 @@ def run_face_cv(image: Image.Image) -> dict[str, Any]:
             [occlusion_issue["issue"]],
         )
 
-    issues = [issue for issue in [crop_issue["issue"] if crop_issue else None, blur_issue] if issue]
+    issues = [issue for issue in [blur_issue] if issue]
     return _stage(
         "warn" if issues else "pass",
-        0.74 if blur_issue else 0.78 if crop_issue else 0.86,
+        0.74 if blur_issue else 0.86,
         {
             "model": "mediapipe_face_detection_with_haar_fallback",
             "face_count": 1,
             "primary_face": face,
             "face_sharpness": sharpness,
-            **({"crop_edges": crop_issue["edges"]} if crop_issue else {}),
         },
         issues,
     )
@@ -874,33 +873,15 @@ def _keep_dominant_face_if_clear(faces: list[dict[str, Any]]) -> list[dict[str, 
     return ranked
 
 
-def _face_crop_issue(box: dict[str, int], image_width: int, image_height: int) -> dict[str, Any] | None:
-    x, y, w, h = [int(box[k]) for k in ["x", "y", "width", "height"]]
-    margin_x = w * 0.08
-    margin_y = h * 0.08
-    edges = {
-        "left": x < margin_x,
-        "top": y < margin_y,
-        "right": x + w > image_width - margin_x,
-        "bottom": y + h > image_height - margin_y,
-    }
-    touched = [edge for edge, value in edges.items() if value]
-    if not touched:
+def _face_crop_issue(box: dict[str, int]) -> dict[str, Any] | None:
+    """脸颊/下巴贴近画面边缘是超近大头照的正常构图，不影响肤色与脸型测量，
+    不再提示；唯一拦截的场景是额头被画面边缘切掉（脸型没法量）。"""
+    y = int(box["y"])
+    if y > 2:
         return None
-
-    # 超近大头照左右脸颊贴边、下巴贴底都是正常构图，只提示不拦截；
-    # 唯一硬拦的场景是额头被画面边缘切掉（脸型没法量）。
-    forehead_cut = y <= 2
-    if forehead_cut:
-        return {
-            "blocking": True,
-            "edges": edges,
-            "issue": _issue("face.cropped", "额头被画面裁掉了", "请把手机拿远一点，让额头完整入镜后重拍。"),
-        }
     return {
-        "blocking": False,
-        "edges": edges,
-        "issue": _issue("face.edge_close", "脸部略贴近画面边缘，已继续分析", "这张照片可以继续测；下次可以把手机拿远一点，让脸部更完整。"),
+        "blocking": True,
+        "issue": _issue("face.cropped", "额头被画面裁掉了", "请把手机拿远一点，让额头完整入镜后重拍。"),
     }
 
 

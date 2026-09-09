@@ -208,7 +208,7 @@ def test_public_analysis_projects_evidence_without_internals() -> None:
             },
         },
     }
-    notes = [{"message": "脸部略贴近画面边缘，已继续分析", "suggestion": "下次可以把手机拿远一点，让脸部更完整。"}]
+    notes = [{"message": "脸部细节略软，已继续分析", "suggestion": "这张照片可以先测；更清晰的原图会让结果更稳定。"}]
 
     projected = selfit_photo.public_analysis(attributes, notes, "face")
 
@@ -226,9 +226,9 @@ def test_public_analysis_projects_evidence_without_internals() -> None:
     assert face["runnerUp"] == {"label": "心形脸", "score": 0.4}
     assert [metric["key"] for metric in face["metrics"]] == ["lengthWidth", "jawCheek", "foreheadCheek"]
     assert face["metrics"][0]["value"] == "1.074"
-    # 照片级提示（脸部贴边）归入脸型卡，不重复出现在肤色卡
-    assert face["notes"][0]["message"] == "脸部略贴近画面边缘，已继续分析"
-    assert all(note["message"] != "脸部略贴近画面边缘，已继续分析" for note in skin["notes"])
+    # 照片级提示（细节略软）归入脸型卡，不重复出现在肤色卡
+    assert face["notes"][0]["message"] == "脸部细节略软，已继续分析"
+    assert all(note["message"] != "脸部细节略软，已继续分析" for note in skin["notes"])
 
     dumped = json.dumps(projected, ensure_ascii=False)
     for internal in ("code", "method", "regions", "scores", "margin", "skin_lightness"):

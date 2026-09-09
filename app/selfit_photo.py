@@ -124,7 +124,7 @@ class PhotoInspection:
     accepted=True 时有意义，接口层把它存进会话记录供报告任务消费，
     详细字段的用户视角投影见 `public_analysis()`，原始数值由 /suit 的 photoAnalysis 提供。
     notes 为照片级 warn 提示（{"message", "suggestion"}，用户语言），
-    如「脸部略贴近画面边缘，已继续分析」；不拦截上传，仅供结果页解释
+    如「脸部细节略软，已继续分析」；不拦截上传，仅供结果页解释
     为什么某个属性被标为存疑。
     """
 
@@ -200,7 +200,6 @@ _ISSUE_CODE_TO_ENUM: dict[str, str | None] = {
     "face.multiple_faces": ISSUE_MULTIPLE_PEOPLE,
     "face.blurry": ISSUE_BLURRED,
     "face.soft_detail": None,
-    "face.edge_close": None,
     "face.bangs_forehead": None,  # 产品口径（2026-09 更新）：刘海照不拦截上传，仍给脸型标签 + 提示可能不准
     "face.side_pose": ISSUE_SIDE_POSE,
     "face.shape_close": None,
@@ -243,7 +242,7 @@ def attribute_inspector(image: Image.Image, kind: str) -> PhotoInspection:
     attributes: dict[str, dict[str, Any]] = {}
     notes: list[dict[str, str]] = []
     if not issues:
-        # 照片级 warn 提示（脸部贴边/细节偏软等）转成用户可读 note；
+        # 照片级 warn 提示（偏色/细节偏软等）转成用户可读 note；
         # 已归属到具体属性的问题（偏色→肤色、宽松→身型）不重复收集。
         attribute_issue_messages = {
             str(issue.get("message") or "")

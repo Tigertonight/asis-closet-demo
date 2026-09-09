@@ -3946,7 +3946,7 @@
       "expected_status": "analyzed",
       "expected_stage_status": {
         "input_quality": "pass",
-        "face_cv": "warn",
+        "face_cv": "pass",
         "color_card_cv": "warn",
         "vl_review": "warn",
         "color_correction": "pass",
@@ -3963,19 +3963,11 @@
       ],
       "stages": {
         "face_cv": {
-          "status": "warn",
-          "confidence": 0.72,
+          "status": "pass",
+          "confidence": 0.86,
           "evidence": {},
-          "issues": [
-            {
-              "code": "face.blurry",
-              "message": "人脸姿态有轻微风险但仍可分析",
-              "suggestion": "存在轻微风险，本次继续分析并在结果中标记。"
-            }
-          ],
-          "suggestions": [
-            "存在轻微风险，本次继续分析并在结果中标记。"
-          ]
+          "issues": [],
+          "suggestions": []
         },
         "color_card_cv": {
           "status": "warn",

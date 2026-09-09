@@ -34,7 +34,7 @@
             { key: 'jawCheek', label: '下颌宽 / 颧骨宽', value: '0.787' },
             { key: 'foreheadCheek', label: '额头宽 / 颧骨宽', value: '0.98' },
           ],
-          notes: [{ message: '脸部略贴近画面边缘，已继续分析', suggestion: '下次可以把手机拿远一点，让脸部更完整。' }],
+          notes: [{ message: '脸部细节略软，已继续分析', suggestion: '这张照片可以先测；更清晰的原图会让结果更稳定。' }],
         },
       },
       notes: [],

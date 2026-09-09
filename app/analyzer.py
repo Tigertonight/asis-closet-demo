@@ -55,7 +55,6 @@ SOFT_RECOVERABLE_ISSUES = {
         "face.auto_cropped",
         "face.blurry",
         "face.soft_detail",
-        "face.edge_close",
     },
     "color_card_cv": {
         "card.missing",
@@ -82,7 +81,6 @@ ISSUE_LABELS = {
     "image.auto_cropped": "已自动裁剪照片",
     "face.too_small": "脸部偏小",
     "face.soft_detail": "脸部细节略软",
-    "face.edge_close": "脸部靠近边缘",
     "face.cropped": "脸部不完整",
     "face.blurry": "脸部偏糊",
     "face.no_face": "未检测到可用人像",
@@ -675,7 +673,6 @@ def mvp_policy_rules() -> dict[str, Any]:
                     "face.auto_cropped",
                     "image.auto_cropped",
                     "face.soft_detail",
-                    "face.edge_close",
                     "vl.beauty_filter",
                     "vl.blush",
                     "vl.lipstick",
@@ -687,7 +684,7 @@ def mvp_policy_rules() -> dict[str, Any]:
                 "examples": [
                     "没有色卡、色卡不完整、色卡反光或疑似非标准色卡",
                     "脸部偏小但已自动裁剪到可分析范围",
-                    "轻微贴边、轻微模糊、轻微姿态异常",
+                    "轻微模糊、轻微姿态异常",
                     "轻微美颜、口红、腮红、刘海或彩瞳等局部风险",
                 ],
             },
@@ -3886,7 +3883,6 @@ def render_demo_page() -> str:
       if (code === "face.blurry") return "脸部细节略软，已继续分析；更清晰的原图会提升可信度。";
       if (code === "face.soft_detail") return "脸部细节略软，已继续分析；更清晰的原图会提升可信度。";
       if (code === "face.cropped") return "脸部位置略贴边，已继续分析；完整正脸照片会更稳定。";
-      if (code === "face.edge_close") return "脸部略贴近画面边缘，已继续分析；下次可以把手机拿远一点。";
       if (code === "vl.beauty_filter") return "照片可能有轻微美颜，结果会稍微降低置信度。";
       if (code === "vl.color_filter") return "照片可能有轻微滤镜，已用当前照片继续分析。";
       if (code === "vl.not_checked") return "本次先基于照片完成初步分析，妆容/滤镜等细节复核后续会继续增强。";
@@ -5322,7 +5318,7 @@ def _summary_capture(pipeline: dict[str, dict[str, Any]], decision: dict[str, An
         if code.startswith("card.")
         or code.startswith("correction.")
         or code.startswith("vl.")
-        or code in {"face.auto_cropped", "image.auto_cropped", "image.sharpness", "face.soft_detail", "face.edge_close", "seasonal.low_confidence", "seasonal.consumer_confidence_cap"}
+        or code in {"face.auto_cropped", "image.auto_cropped", "image.sharpness", "face.soft_detail", "seasonal.low_confidence", "seasonal.consumer_confidence_cap"}
     ])
     user_visible_risk_codes = [code for code in soft_risk_codes if code != "seasonal.consumer_confidence_cap"]
     reference_only = bool(user_visible_risk_codes) or color_card_state != "used"
@@ -5433,7 +5429,6 @@ def _summary_result_tier(soft_risk_codes: list[str], color_card_state: str) -> s
         "face.auto_cropped",
         "image.auto_cropped",
         "face.soft_detail",
-        "face.edge_close",
         "skin.temperature_ambiguous",
         "vl.beauty_filter",
         "vl.blush",
@@ -5465,7 +5460,6 @@ def _sort_issue_codes(codes: list[str]) -> list[str]:
         "face.blurry": 30,
         "image.sharpness": 31,
         "face.soft_detail": 32,
-        "face.edge_close": 33,
         "vl.pose_side": 40,
         "vl.pose_tilted": 41,
         "vl.hat_bangs": 50,
@@ -5592,7 +5586,7 @@ def _consumer_confidence_cap(pipeline: dict[str, dict[str, Any]]) -> tuple[float
         caps.append((0.74, "局部妆容、遮挡或姿态会影响部分判断"))
     if {"card.missing", "card.cropped", "card.too_far", "card.glare", "card.fake", "card.occluded", "card.wrong_lighting", "correction.no_card_fallback"} & issue_codes:
         caps.append((0.70, "这次未使用色卡，结果为初步参考"))
-    if {"face.auto_cropped", "image.auto_cropped", "image.aspect_ratio", "image.sharpness", "face.blurry", "face.soft_detail", "face.cropped", "face.edge_close"} & issue_codes:
+    if {"face.auto_cropped", "image.auto_cropped", "image.aspect_ratio", "image.sharpness", "face.blurry", "face.soft_detail", "face.cropped"} & issue_codes:
         caps.append((0.75, "照片经过自动裁剪或清晰度略弱"))
     if not caps:
         return None, []
