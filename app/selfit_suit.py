@@ -20,6 +20,19 @@ DESCRIPTIONS = {
     '苹果型': ('身体量感较集中在腰腹，上下肢相对轻盈。', '试试有垂感的面料和清晰纵向线条，保留舒适空间。'),
 }
 
+FALLBACK_UNCLEAR = '照片中还看不清这项特点，你可以手动选择。'
+FALLBACK_ADVICE = '选择更接近自己的特点，帮助我们完善推荐。'
+PHOTO_LABELS = {'face': '面部照', 'body': '全身照'}
+
+
+def _fallback_description(record, kind):
+    """区分「没上传照片」与「上传了但分析不出来」两种未知态。"""
+    photo = (record.get('photos') or {}).get(kind) or {}
+    if photo.get('status') == 'accepted':
+        return FALLBACK_UNCLEAR
+    return f'还没有上传{PHOTO_LABELS[kind]}，上传后可以自动识别；也可以直接手动选择。'
+
+
 def _photo_analysis(record, kind, attribute_name):
     """Original photo inference, independent of any later manual correction."""
     photo = (record.get('photos') or {}).get(kind) or {}
@@ -50,10 +63,14 @@ def suit_summary(record):
     features = []
     for key, source_key, title in fields:
         value = resolved.get(source_key)
-        description, advice = DESCRIPTIONS.get(value, ('照片中还看不清这项特点，你可以手动选择。', '选择更接近自己的特点，帮助我们完善推荐。'))
+        kind = 'body' if key == 'bodyShape' else 'face'
+        if value in DESCRIPTIONS:
+            description, advice = DESCRIPTIONS[value]
+        else:
+            description, advice = _fallback_description(record, kind), FALLBACK_ADVICE
         features.append(dict(key=key, title=title, value=value, description=description, advice=advice,
                              source='manual' if (record.get('manual') or {}).get(key) else ('photo' if value else 'unknown'),
-                             photoAnalysis=_photo_analysis(record, 'body' if key == 'bodyShape' else 'face',
-                                                           'skin_tone' if key == 'skin' else source_key)))
+                             photoAnalysis=_photo_analysis(record, kind,
+                                                            'skin_tone' if key == 'skin' else source_key)))
     return {'revision': record.get('revision', 1), 'features': features,
             'photos': {kind: bool((record.get('photos', {}).get(kind) or {}).get('status') == 'accepted') for kind in ('face', 'body')}}

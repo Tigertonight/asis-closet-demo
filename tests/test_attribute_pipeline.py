@@ -203,11 +203,13 @@ def _load_fixture(name: str) -> Image.Image:
     return Image.open(FIXTURE_IMAGES / "images" / name)
 
 
-def test_face_photo_bangs_downgrades_face_shape_but_keeps_photo_usable() -> None:
-    # 产品口径（内测定版）：刘海照不拦截上传，脸型降级为 warn（无预选标签，用户手动确认）。
+def test_face_photo_bangs_returns_label_with_warn() -> None:
+    # 产品口径（2026-09 更新）：刘海照不拦截上传，仍照常给出脸型标签，
+    # 降为 warn + 扣减置信度，并提示识别可能不准（用户可手动修改）。
     result = ap.analyze_face_photo(_load_fixture("real_bangs_forehead.jpg"))
     face_shape = result["attributes"]["face_shape"]
     assert face_shape["status"] == "warn"
+    assert face_shape["label"] in ap.FACE_SHAPE_LABELS
     assert any(issue["code"] == "face.bangs_forehead" for issue in face_shape["issues"])
     assert result["attributes"]["skin_tone"]["status"] in {"pass", "warn"}
     assert result["status"] in {"pass", "warn"}

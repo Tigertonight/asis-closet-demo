@@ -221,6 +221,9 @@ def _index_user_photo(data: dict[str, Any], record: dict[str, Any], kind: str) -
         entry = {"user_id": user_id, "photos": {}}
         data["user_photos"].append(entry)
     entry.setdefault("photos", {})[kind] = {
+        # status 一并持久化：跨 session 回填的照片要能通过 accepted 判定，
+        # 否则 /suit 的 photos 标记与 analyses/features 会互相矛盾。
+        "status": "accepted",
         "session_id": record.get("session_id"),
         "asset_id": photo.get("asset_id"),
         "format": photo.get("format"),
@@ -242,7 +245,8 @@ def _latest_user_photo(data: dict[str, Any], user_id: str, kind: str) -> dict[st
     )
     indexed = (entry.get("photos") or {}).get(kind) if entry else None
     if isinstance(indexed, dict) and indexed.get("asset_id"):
-        return indexed
+        # 旧索引数据没有 status 字段；索引只收录 accepted 照片，这里补齐。
+        return {**indexed, "status": indexed.get("status") or "accepted"}
 
     # 兼容上线前已经完成 onboarding、但尚未写入持久索引的账号。
     candidates = [
@@ -938,15 +942,20 @@ async def get_session_suit(session_id: str, user: dict[str, Any] | None = Depend
     record = _load_active_session(data, session_id, user)
     if isinstance(record, JSONResponse):
         return record
-    summary = suit_summary(record)
+    # features/photos/analyses 必须基于同一份照片视图：当前 session 优先，
+    # 缺失时回填该用户最近上传的 accepted 照片，避免「肤色脸型自动出来了」
+    # 但上传槽、分析详情对不上的三端不一致。
+    photos_view: dict[str, Any] = {}
     analyses: dict[str, Any] = {}
     for kind in selfit_photo.PHOTO_KINDS:
         photo = _suit_photo(data, record, kind)
         if photo and photo.get("status") == "accepted":
+            photos_view[kind] = photo
             analyses[kind] = selfit_photo.public_analysis(
                 photo.get("attributes") or {}, photo.get("notes") or [], kind
             )
-    summary["photos"] = {kind: bool(_suit_photo(data, record, kind)) for kind in selfit_photo.PHOTO_KINDS}
+    summary = suit_summary({**record, "photos": photos_view})
+    summary["photos"] = {kind: bool(photos_view.get(kind)) for kind in selfit_photo.PHOTO_KINDS}
     summary["analyses"] = analyses
     return JSONResponse(content=summary, headers={"Cache-Control": "no-store"})
 

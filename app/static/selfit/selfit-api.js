@@ -142,13 +142,18 @@
       if (this.mode === 'live') return this.request(`/sessions/${encodeURIComponent(sessionId)}/suit`);
       const session = this.mockSessions.get(sessionId) || {};
       const analyses = session.photoAnalyses || {};
-      return Promise.resolve({ revision: session.revision, photos: {}, analyses, features: [
+      const photoLabels = { face: '面部照', body: '全身照' };
+      return Promise.resolve({ revision: session.revision, photos: { face: Boolean(analyses.face), body: Boolean(analyses.body) }, analyses, features: [
         ['skin', '肤色'], ['faceShape', '脸型'], ['bodyShape', '身材比例'],
       ].map(([key, title]) => {
-        const analysis = (analyses[key === 'bodyShape' ? 'body' : 'face'] || {}).attributes?.[key] || null;
+        const kind = key === 'bodyShape' ? 'body' : 'face';
+        const analysis = (analyses[kind] || {}).attributes?.[key] || null;
         const value = session.manual?.[key] || analysis?.label || null;
         const source = session.manual?.[key] ? 'manual' : (analysis ? 'photo' : 'unknown');
-        return { key, title, value, source, description: analysis ? '预览模式：以下分析数值为示例数据。' : '预览模式：真实照片分析需连接服务。', advice: '可手动选择更接近自己的特点。' };
+        const description = analysis ? '预览模式：以下分析数值为示例数据。'
+          : (analyses[kind] ? '照片中还看不清这项特点，你可以手动选择。'
+            : `还没有上传${photoLabels[kind]}，上传后可以自动识别；也可以直接手动选择。`);
+        return { key, title, value, source, description, advice: '可手动选择更接近自己的特点。' };
       }) });
     }
 
