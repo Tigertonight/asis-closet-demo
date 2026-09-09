@@ -83,7 +83,7 @@ const timeout = setTimeout(() => { console.error('Upload flow did not settle'); 
 const flush = () => new Promise(resolve => setImmediate(resolve));
 const accepted = (id) => ({revision: 2, photo: {status: 'accepted', assetId: id}});
 function setup() {
-  const node = () => ({files: [], value: '', disabled: true, dataset: {}, classList: {toggle() {}}, addEventListener(event, fn) {this[event] = fn;}, onclick: null});
+  const node = () => ({files: [], value: '', disabled: true, dataset: {}, hidden: false, classList: {toggle() {}, remove() {}, add() {}}, replaceChildren() {}, addEventListener(event, fn) {this[event] = fn;}, onclick: null});
   const nodes = {'#facePhoto': node(), '#bodyPhoto': node(), '#suitNext': node()};
   const state = {screen: 'suit', photoStatus: {face: 'empty', body: 'empty'}, photoAssets: {face: null, body: null}, photoControllers: {face: null, body: null}, revision: 0};
   const requests = [], renders = [], overlays = [], messages = [];
@@ -114,7 +114,7 @@ function setup() {
     assert.equal(t.renders.length, 0, 'a pending upload must not render results');
     t.requests[0].resolve(accepted(firstKind)); await flush(); await flush();
     assert.equal(t.state.screen, 'suit', 'results render inline without leaving the upload page');
-    assert.equal(t.renders.length, 1, 'each accepted photo immediately refreshes the inline cards');
+    assert.equal(t.renders.length, 1, 'each accepted photo re-runs the suit summary render');
     assert.equal(t.button.disabled, true, 'one accepted photo alone keeps the primary action locked');
     t.select(secondKind); await flush();
     t.requests[1].resolve(accepted(secondKind)); await flush(); await flush();

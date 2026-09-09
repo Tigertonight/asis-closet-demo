@@ -1162,7 +1162,7 @@ body.is-share-gallery .app-shell { display: none; }
 .suit-feature { margin: 12px 0; padding: 16px; border-radius: 16px; background: #fff; border: 1px solid #ece4e2; }
 .suit-feature header { display: flex; justify-content: space-between; align-items: center; color: #666; font-size: 14px; }
 .suit-feature header button { min-height: 44px; min-width: 44px; margin: -8px -4px -8px 0; border: 0; background: none; color: #8a011b; font-size: 14px; }
-.suit-feature h2 { margin: 12px 0 8px; font-size: 20px; }
+.suit-feature h2, .suit-feature h3 { margin: 12px 0 8px; font-size: 20px; }
 .suit-feature small { font-size: 14px; color: #666; }
 .suit-feature p { font-size: 14px; line-height: 1.8; margin: 12px 0 0; color: #555; }
 .suit-feature .suit-advice { padding-top: 12px; border-top: 1px solid #f0e8e6; }
@@ -1229,15 +1229,48 @@ body.is-share-gallery .app-shell { display: none; }
 .screen[data-screen="suit"] .bottom-action:disabled { background: #c4c4c4; color: #fff; }
 /* Photo-led suit results share the upload screen's warm editorial hierarchy. */
 [data-screen="suit"] #suitFeatures { margin: 12px 32px; }
+
+/* 两张照片集齐后的分析动效：照片上扫过柔光，结果区显示呼吸点与文案。 */
+.suit-analyzing { display: flex; margin: 20px 32px 0; padding: 30px 16px 26px; flex-direction: column; align-items: center; gap: 16px; border-radius: 16px; border: 1px solid #e8e8e8; background: #fff; animation: suit-analyzing-in .35s ease-out backwards; }
+.suit-analyzing[hidden] { display: none; }
+.suit-analyzing p { margin: 0; color: var(--suit-secondary); font-size: 14px; line-height: 22px; letter-spacing: .5px; }
+.suit-analyzing-dots { display: flex; gap: 7px; }
+.suit-analyzing-dots i { width: 7px; height: 7px; border-radius: 50%; background: var(--suit-accent); opacity: .25; animation: suit-analyzing-dot 1.15s ease-in-out infinite; }
+.suit-analyzing-dots i:nth-child(2) { animation-delay: .15s; }
+.suit-analyzing-dots i:nth-child(3) { animation-delay: .3s; }
+[data-screen="suit"].is-analyzing .upload-card .upload-preview::before { content: ""; position: absolute; z-index: 2; left: 0; right: 0; top: 0; height: 46%; background: linear-gradient(180deg, transparent, rgba(197,29,60,.14) 55%, rgba(197,29,60,.26) 88%, rgba(197,29,60,.34)); animation: suit-scan 1.7s ease-in-out infinite; }
+@keyframes suit-analyzing-in { from { opacity: 0; transform: translateY(10px); } }
+@keyframes suit-analyzing-dot { 0%, 100% { opacity: .25; transform: translateY(0); } 45% { opacity: 1; transform: translateY(-4px); } }
+@keyframes suit-scan { 0% { transform: translateY(-100%); } 60%, 100% { transform: translateY(232%); } }
+
+/* 揭示后：上传照片收缩为居中的素材缩略图，结果卡成为页面主体。 */
+[data-screen="suit"].is-condensed .page-copy { margin-top: 14px; }
+[data-screen="suit"].is-condensed .page-copy p { margin-top: 6px; }
+[data-screen="suit"].is-condensed .upload-grid { grid-template-columns: repeat(2, minmax(0, 104px)); justify-content: center; gap: 14px; margin: 18px 32px 0; }
+[data-screen="suit"].is-condensed .upload-card b { margin: 0 0 8px; font-size: 13px; line-height: 18px; text-align: center; }
+[data-screen="suit"].is-condensed .upload-card b small { display: none; }
+[data-screen="suit"].is-condensed .upload-preview { border-radius: 10px; }
+[data-screen="suit"].is-condensed .upload-sample { display: none; }
+[data-screen="suit"].is-condensed .photo-status-list { display: none; }
+[data-screen="suit"].is-condensed #suitFeatures { margin-top: 22px; }
+.suit-features-heading { margin: 2px 0 0; color: var(--suit-heading); font-size: 15px; line-height: 24px; font-weight: 600; letter-spacing: 0; }
+#suitFeatures.is-revealed .suit-feature--enter { animation: suit-card-in .55s cubic-bezier(.22,1,.36,1) backwards; }
+@keyframes suit-card-in { from { opacity: 0; transform: translateY(22px); } }
+@media (prefers-reduced-motion: reduce) {
+  .suit-analyzing { animation: none; }
+  .suit-analyzing-dots i,
+  [data-screen="suit"].is-analyzing .upload-card .upload-preview::before,
+  #suitFeatures.is-revealed .suit-feature--enter { animation: none; }
+}
 .suit-feature { border-color: #e8e8e8; padding: 14px; background: #fff; }
-.suit-feature h2 { font-size: 18px; margin: 8px 0; }
+.suit-feature h2, .suit-feature h3 { font-size: 18px; margin: 8px 0; }
 .suit-feature header, .suit-feature small { color: #857167; }
 .suit-feature p { color: #79695f; }
 .suit-feature .suit-advice { border-color: #e8e8e8; }
 
 /* Photo-analysis evidence: status badge, measurement rows and plain-language notes. */
 .suit-feature-value { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: 8px 0; }
-.suit-feature-value h2 { margin: 0; }
+.suit-feature-value h2, .suit-feature-value h3 { margin: 0; }
 .suit-analysis { margin-top: 12px; padding: 2px 14px; border-radius: 12px; background: #faf6f4; }
 .suit-analysis-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 0; font-size: 14px; line-height: 22px; }
 .suit-analysis-row + .suit-analysis-row { border-top: 1px solid #f0e7e3; }

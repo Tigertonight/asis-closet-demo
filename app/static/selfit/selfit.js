@@ -470,6 +470,15 @@
     image.src = objectUrl;
   };
   const syncSuitButton = () => { document.querySelector('#suitNext').disabled = !(state.photoStatus.face === 'valid' && state.photoStatus.body === 'valid'); };
+  const resetSuitReveal = () => {
+    const screen = document.querySelector('[data-screen="suit"]');
+    const container = document.querySelector('#suitFeatures');
+    container?.classList.remove('is-revealed');
+    container?.replaceChildren();
+    const analyzing = document.querySelector('#suitAnalyzing');
+    if (analyzing) analyzing.hidden = true;
+    screen?.classList.remove('is-condensed', 'is-analyzing');
+  };
   const setPhotoState = (kind, status, copy) => {
     const card = document.querySelector(`[data-upload-card="${kind}"]`);
     const statusLine = document.querySelector(`[data-photo-status="${kind}"]`);
@@ -479,6 +488,8 @@
     statusLine.dataset.state = status;
     statusLine.textContent = copy;
     state.photoStatus[kind] = status;
+    // 任一照片离开可用态（重传 / 校验失败）时清空结果区，等待两张照片重新集齐。
+    if (status !== 'valid') resetSuitReveal();
     syncSuitButton();
   };
   let editingFeature = null;
@@ -500,6 +511,8 @@
     showScreen('suit-manual');
   };
   let suitRenderSeq = 0;
+  const SUIT_ANALYSIS_HOLD_MS = 2600;
+  const suitResultsReady = () => state.photoStatus.face === 'valid' && state.photoStatus.body === 'valid';
   const renderSuit = async () => {
     const seq = ++suitRenderSeq;
     const sessionId = await ensureSession();
@@ -515,10 +528,28 @@
         void applyAnalysisOverlay(kind, sessionId);
       }
     }
-    const visibleFeatures = summary.features.filter(feature => feature.key !== 'bodyShape' || bodyPhotoReady || feature.value);
     const container = document.querySelector('#suitFeatures');
+    const screen = document.querySelector('[data-screen="suit"]');
+    // 两张照片都通过检测之前，结果区保持空白；集齐后先播放分析动效，再一次性揭示卡片。
+    if (!suitResultsReady()) { resetSuitReveal(); return; }
+    const firstReveal = !container.classList.contains('is-revealed');
+    if (firstReveal) {
+      const analyzing = document.querySelector('#suitAnalyzing');
+      if (analyzing) analyzing.hidden = false;
+      screen?.classList.add('is-analyzing');
+      await new Promise((resolve) => setTimeout(resolve, SUIT_ANALYSIS_HOLD_MS));
+      if (seq !== suitRenderSeq) return;
+      if (analyzing) analyzing.hidden = true;
+      screen?.classList.remove('is-analyzing');
+    }
+    const visibleFeatures = summary.features.filter(feature => feature.key !== 'bodyShape' || bodyPhotoReady || feature.value);
     container.replaceChildren();
-    visibleFeatures.forEach(feature => {
+    const heading = document.createElement('h2');
+    heading.className = 'suit-features-heading';
+    if (firstReveal) heading.classList.add('suit-feature--enter');
+    heading.textContent = '从照片里认识到的你';
+    container.append(heading);
+    visibleFeatures.forEach((feature, index) => {
       state.manual[feature.key] = feature.value || null;
       const analysis = (analyses[feature.key === 'bodyShape' ? 'body' : 'face'] || {}).attributes?.[feature.key] || null;
       const card = document.createElement('article'); card.className = 'suit-feature';
@@ -527,7 +558,7 @@
       const edit = document.createElement('button'); edit.type = 'button'; edit.textContent = '修改'; edit.setAttribute('aria-label', `修改${feature.title}`); edit.onclick = () => openManual(feature.key);
       header.append(title, edit);
       const valueRow = document.createElement('div'); valueRow.className = 'suit-feature-value';
-      const value = document.createElement('h2');
+      const value = document.createElement('h3');
       value.textContent = feature.value || '等你补充';
       if (analysis?.subLabel && feature.source === 'photo' && feature.value === analysis.label) value.textContent = `${feature.value} · ${analysis.subLabel}`;
       valueRow.append(value);
@@ -545,9 +576,25 @@
         if (analysis.notes?.length) card.append(buildAnalysisNotes(analysis.notes));
       }
       const advice = document.createElement('p'); advice.className = 'suit-advice'; advice.textContent = `穿搭可以这样试 · ${feature.advice}`;
-      card.append(advice); container.append(card);
+      card.append(advice);
+      if (firstReveal) {
+        card.classList.add('suit-feature--enter');
+        card.style.animationDelay = `${110 + index * 120}ms`;
+      }
+      container.append(card);
     });
     document.querySelector('#suitNext').disabled = !visibleFeatures.every(feature => feature.value);
+    if (firstReveal) {
+      container.classList.add('is-revealed');
+      screen?.classList.add('is-condensed');
+      // 揭示后照片收缩为素材缩略图，把结果卡滚动到视口顶部成为视觉主体。
+      requestAnimationFrame(() => {
+        if (seq !== suitRenderSeq || state.screen !== 'suit' || !screen) return;
+        const screenRect = screen.getBoundingClientRect();
+        const targetTop = screen.scrollTop + container.getBoundingClientRect().top - screenRect.top - 8;
+        screen.scrollTo({ top: Math.max(0, targetTop), behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+      });
+    }
   };
   // Draw the analysis lines directly on the uploaded photo inside its upload card.
   const applyAnalysisOverlay = async (kind, sessionId) => {
