@@ -25,7 +25,39 @@ const edgeSubject=pixels();
 edgeSubject.data[(70*100)*4]=25;
 assert.equal(detectSolidFrame(edgeSubject),null,'An edge-touching subject cannot be cropped');
 
-function harness({tainted=false, width=100, height=150, framed=true}={}) {
+function generatedFrame({left=14,right=14,top=0,bottom=0,gradient=false}={}) {
+  const width=100,height=150,data=new Uint8ClampedArray(width*height*4);
+  for(let y=0;y<height;y++) for(let x=0;x<width;x++) {
+    const border=x<left || x>=width-right || y<top || y>=height-bottom;
+    const noise=(x*3+y*7)%5-2;
+    const distance=Math.max(0,Math.min(x-left,width-right-1-x));
+    const rgb=gradient ? [248-distance*.5,246-distance*.5,242-distance*.5]
+      : border ? [248+noise,246+noise,242+noise] : [232+x%3,220+y%3,215];
+    data.set([...rgb,255],(y*width+x)*4);
+  }
+  return {width,height,data};
+}
+const sideFrame=generatedFrame(), sideOriginal=sideFrame.data.slice();
+const sideCrop=detectSolidFrame(sideFrame);
+assert.equal(sideCrop.x,.15);
+assert.equal(sideCrop.width,.7);
+assert.equal(sideCrop.y,0);
+assert.equal(sideCrop.height,1,'Side-border removal retains the complete head-to-foot extent');
+assert.deepEqual(sideFrame.data,sideOriginal,'Generated originals remain unchanged');
+const horizontalCrop=detectSolidFrame(generatedFrame({left:0,right:0,top:6,bottom:6}));
+assert.equal(horizontalCrop.x,0);
+assert.equal(horizontalCrop.width,1);
+assert.equal(horizontalCrop.y,7/150);
+assert.equal(horizontalCrop.height,136/150);
+assert(detectSolidFrame(generatedFrame({top:6,bottom:6})),'Noisy four-sided frames are also recognized');
+for (const input of [generatedFrame({left:0}), generatedFrame({right:5}),
+  generatedFrame({top:6}), generatedFrame({gradient:true})])
+  assert.equal(detectSolidFrame(input),null,'Unpaired borders and gradual studio lighting must be preserved');
+const noisyEdgeSubject=generatedFrame();
+noisyEdgeSubject.data[(70*100)*4]=30;
+assert.equal(detectSolidFrame(noisyEdgeSubject),null,'Even a small subject at the edge blocks trimming');
+
+function harness({tainted=false, width=100, height=150, framed=true, sourcePixels, area='.mirror-photo-frame'}={}) {
   const images=[], revoked=[], timers=new Map(); let nextTimer=0, blobs=0;
   class Image {
     constructor() { this.naturalWidth=width;this.naturalHeight=height;images.push(this); }
@@ -34,12 +66,12 @@ function harness({tainted=false, width=100, height=150, framed=true}={}) {
     setTimeout:fn=>{timers.set(++nextTimer,fn);return nextTimer;},
     clearTimeout:id=>timers.delete(id),
     document:{createElement:()=>({
-      getContext:()=>({drawImage(){},getImageData(){if(tainted)throw Error('SecurityError');return framed ? pixels() : pixels({left:0,right:0,top:0,bottom:0});}}),
+      getContext:()=>({drawImage(){},getImageData(){if(tainted)throw Error('SecurityError');return sourcePixels || (framed ? pixels() : pixels({left:0,right:0,top:0,bottom:0}));}}),
       toBlob:done=>done({}),
     })},
     URL:{createObjectURL:()=>`blob:preview-${++blobs}`,revokeObjectURL:url=>revoked.push(url)},
   });
-  const frame={style:{},dataset:{}}, photo={isConnected:true,style:{},dataset:{},closest:()=>frame};
+  const frame={style:{},dataset:{}}, photo={isConnected:true,style:{},dataset:{},closest:selector=>selector.split(', ').includes(area) ? frame : null};
   return {presenter,images,revoked,timers,frame,photo};
 }
 
@@ -63,12 +95,34 @@ function harness({tainted=false, width=100, height=150, framed=true}={}) {
   assert.deepEqual(h.revoked.sort(),['blob:preview-1','blob:preview-2']);
   assert.equal(h.timers.size,0);
 
+  const viewer=harness({area:'.result-viewer-photo-area'});
+  viewer.presenter.show(viewer.photo,'/original-model.png',{fit:'contain'});
+  viewer.images[0].onload(); await Promise.resolve();
+  assert.equal(viewer.frame.dataset.trimmed,'true','The expanded model removes the same source border as the mirror');
+  assert.equal(viewer.frame.dataset.fit,'contain','The viewer retains the entire trimmed photo, including both sides');
+  assert.equal(viewer.photo.src,'blob:preview-1');
+  assert.equal(viewer.photo.dataset.mirrorSource,'/original-model.png','Original model inputs remain unchanged');
+  const mirrorFrame={style:{},dataset:{}}, mirrorPhoto={isConnected:true,style:{},dataset:{},closest:()=>mirrorFrame};
+  viewer.presenter.show(mirrorPhoto,'/original-model.png'); await Promise.resolve();
+  assert.equal(mirrorPhoto.src,viewer.photo.src,'Mirror and viewer reuse the same cached border trim');
+  assert.equal(mirrorFrame.dataset.fit,'height','Viewer fitting does not alter the cached mirror fitting');
+  assert.equal(viewer.images.length,1);
+  viewer.presenter.clear(); await Promise.resolve();
+
   const result=harness({framed:false});
   result.presenter.show(result.photo,'/tryon-result.png');
   result.images[0].onload(); await Promise.resolve();
   assert.equal(result.frame.dataset.trimmed,'false');
   assert.equal(result.frame.dataset.fit,'height','An unframed portrait uses the same vertical fit as the trimmed model');
   assert.equal(result.photo.src,'/tryon-result.png','Display fitting must not rewrite the result file');
+
+  const borderedResult=harness({sourcePixels:generatedFrame()});
+  borderedResult.presenter.show(borderedResult.photo,'/tryon-result-with-side-borders.png');
+  borderedResult.images[0].onload(); await Promise.resolve();
+  assert.equal(borderedResult.frame.dataset.trimmed,'true');
+  assert.equal(borderedResult.frame.dataset.fit,'height');
+  assert.equal(borderedResult.photo.src,'blob:preview-1');
+  assert.equal(borderedResult.photo.dataset.mirrorSource,'/tryon-result-with-side-borders.png');
 
   for (const [width,height] of [[150,100],[100,100],[0,0]]) {
     const wide=harness({width,height,framed:false});

@@ -49,11 +49,10 @@ fs.mkdirSync(dir,{recursive:true});
    const expectedPath=new URL(completed.result.result.image_path,base).pathname;
    assert.equal(new URL(await page.locator('.model-photo').getAttribute('src'),base).pathname,expectedPath);
    await shot('03-result');
-   await page.locator('[data-action="result-actions"]').click();
    await page.locator('[data-action="tryon-history"]').click();
-   await page.locator('#sheet [data-record]').waitFor();
-   assert.equal(await page.locator('#sheet [data-record]').count(),1);
-   await page.locator('#sheet [data-record]').click();
+   await page.locator('.history-screen [data-record]').waitFor();
+   assert.equal(await page.locator('.history-screen [data-record]').count(),1);
+   await page.locator('.history-screen [data-record]').click();
    const record=new URL(page.url()).searchParams.get('record');assert(record);
    await page.reload();
    await page.locator('.result-viewer-photo').waitFor();
@@ -65,8 +64,10 @@ fs.mkdirSync(dir,{recursive:true});
    assert.equal(new URL(page.url()).searchParams.get('record'),record);
    assert.equal(new URL(await page.locator('.result-viewer-photo').getAttribute('src'),base).pathname,expectedPath);
    await page.goForward();
+   await page.locator('.history-screen').waitFor();
+   assert.equal(new URL(page.url()).searchParams.get('screen'),'tryon-history');
+   await page.locator('.history-header [data-page="mirror"]').click();
    await page.locator('.mirror-stage.has-result').waitFor();
-   assert.equal(new URL(page.url()).searchParams.get('screen'),'mirror');
    assert.deepEqual(errors,[]);
    fs.writeFileSync(path.join(dir,'result.json'),JSON.stringify({passed:true,jobId:created.job_id,recordId:record,
      elapsedSeconds:(Date.now()-start)/1000,resultStatus:completed.result.status,

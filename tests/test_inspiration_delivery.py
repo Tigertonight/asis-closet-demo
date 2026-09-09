@@ -45,9 +45,30 @@ def test_topics_require_auth_but_no_personality_test_and_fail_closed(monkeypatch
     response = client.get(url)
     assert response.status_code == 200
     data = response.json()
-    assert data['total'] == 16
-    assert [len(topic['outfits']) for topic in data['topics']] == [4] * 4
-    assert sum(len(outfit['items']) for topic in data['topics'] for outfit in topic['outfits']) == 103
+    assert data['total'] == 96
+    assert len(data['topics']) == 20
+    scene_topics, persona_topics = data['topics'][:4], data['topics'][4:]
+    assert [len(topic['outfits']) for topic in scene_topics] == [4] * 4
+    assert sum(len(outfit['items']) for topic in scene_topics for outfit in topic['outfits']) == 103
+    from app.selfit_report import _personality_template_catalog
+    templates = _personality_template_catalog()['types']
+    assert [topic['persona'] for topic in persona_topics] == list(templates)
+    expected = {styling_catalog.outfit_id(look): look for look in styling_catalog.delivery_looks()}
+    actual = [outfit['outfit_id'] for topic in persona_topics for outfit in topic['outfits']]
+    assert len(actual) == len(set(actual)) == 80
+    assert set(actual) == set(expected), 'keep every delivered audience variant, exactly once'
+    for topic in persona_topics:
+        code = topic['persona']
+        assert topic['id'] == f'persona-{code}'
+        assert topic['title'] == templates[code]['metadata']['name']
+        assert topic['cover'] == topic['outfits'][0]['cover_path']
+        assert topic['previews'] == [outfit['cover_path'] for outfit in topic['outfits'][1:4]]
+        assert [outfit['body_profile'] for outfit in topic['outfits'][:4]] == ['standard'] * 4
+        for outfit in topic['outfits']:
+            binding = expected[outfit['outfit_id']]['note_binding']
+            assert outfit['primary_persona'] == binding['persona'] == code
+            assert outfit['body_profile'] == binding['bodyProfile']
+            assert outfit['item_ids'] == outfit['layer_sequence_inner_to_outer']
     broken = tmp_path / 'delivery.json'
     payload = inspiration_catalog.inspiration_delivery()
     payload['uploadStatus'] = 'pending'

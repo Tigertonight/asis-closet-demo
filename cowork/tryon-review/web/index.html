@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>selfit · 试穿素材审核</title><link rel="icon" href="data:,"><link rel="stylesheet" href="web/style.css"></head>
+<body>
+<header class="topbar"><a class="brand" href="./">selfit<span>素材审核</span></a><div class="top-actions"><span id="identity"></span><button id="export">导出审核记录 ↗</button></div></header>
+<div id="loading" class="loading" role="status">正在整理穿搭与试穿结果…</div>
+<div id="application" hidden>
+  <section class="overview"><div><p class="eyebrow">试穿素材库 / 2026.09</p><h1>每一套，都值得仔细看</h1><p class="muted">对照原图，确认人物、单品与上身效果。</p></div><div id="stats" class="stats"></div></section>
+  <div class="layout">
+    <aside><div class="filters"><label class="search"><span>⌕</span><input id="search" aria-label="搜索穿搭" placeholder="搜索主题、穿搭、作者"></label><div class="filter-row"><select id="persona" aria-label="人格主题"><option value="">所有人格</option></select><select id="status" aria-label="审核筛选"><option value="">全部状态</option><option value="pending">待审核</option><option value="approved">全部通过</option><option value="redo">需重做</option><option value="adjusted">有调整版</option><option value="missing">缺少结果</option><option value="quality">自动检查未通过</option></select></div><p id="listCount" class="muted"></p></div><nav id="outfits" aria-label="穿搭列表"></nav></aside>
+    <main id="workspace" tabindex="-1"></main>
+  </div>
+  <footer><span id="expiry"></span><span>审核记录保存在云端 · 点击图片可放大对照</span></footer>
+</div>
+<div id="toast" class="toast" role="status" hidden></div>
+<dialog id="zoom"><div class="zoom-top"><h2 id="zoomTitle">图片对照</h2><button id="closeZoom" aria-label="关闭大图">关闭 ✕</button></div><div id="zoomImages"></div></dialog>
+<script src="web/app.js"></script>
+</body></html>

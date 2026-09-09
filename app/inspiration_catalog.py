@@ -1,4 +1,4 @@
-"""Scene and trend deliveries for the inspiration library, separate from personas."""
+"""Scene, trend and personality collections for the inspiration library."""
 from __future__ import annotations
 
 import json
@@ -39,7 +39,8 @@ def inspiration_looks() -> list[dict]:
 
 
 def inspiration_topics() -> dict:
-    from app.styling_catalog import adapt_outfit
+    from app.selfit_report import _personality_template_catalog
+    from app.styling_catalog import adapt_outfit, delivery_looks
 
     data = inspiration_delivery()
     topics = []
@@ -52,4 +53,18 @@ def inspiration_topics() -> dict:
                        "cover": asset_content_url(topic["coverAssetId"]),
                        "previews": [outfit["cover_path"] for outfit in outfits[1:4]],
                        "outfits": outfits})
-    return {"topics": topics, "total": len(data["looks"])}
+    templates = _personality_template_catalog()["types"]
+    persona_looks = delivery_looks()
+    if {look["note_binding"]["persona"] for look in persona_looks} != set(templates):
+        raise ValueError("Personality collections do not match the report catalog")
+    for code, template in sorted(templates.items(), key=lambda row: row[1]["index"]):
+        looks = sorted((look for look in persona_looks if look["note_binding"]["persona"] == code),
+                       key=lambda look: (look["note_binding"]["bodyProfile"] != "standard",
+                                         look["note_binding"]["templateId"], look["note_binding"]["position"]))
+        outfits = [{**adapt_outfit(look), "body_profile": look["note_binding"]["bodyProfile"]}
+                   for look in looks]
+        topics.append({"id": f"persona-{code}", "title": template["metadata"]["name"],
+                       "kind": "persona", "persona": code, "cover": outfits[0]["cover_path"],
+                       "previews": [outfit["cover_path"] for outfit in outfits[1:4]],
+                       "outfits": outfits})
+    return {"topics": topics, "total": sum(len(topic["outfits"]) for topic in topics)}

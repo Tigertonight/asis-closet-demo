@@ -1,6 +1,6 @@
 const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/strict');
 const source=fs.readFileSync('app/static/selfit-tryon/studio.js','utf8');
-const code=source.slice(source.indexOf('  function restoreTryonRecord('),source.indexOf('  async function tryonHistory('));
+const code=source.slice(source.indexOf('  function restoreTryonRecord('),source.indexOf('  function tryonHistory('));
 (async()=>{
  const state={page:'result-viewer',result:'old.png',viewerPhoto:false};const requests=[];
  const ctx={state,lookup:()=>null,render(){},api:()=>new Promise((resolve,reject)=>requests.push({resolve,reject}))};

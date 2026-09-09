@@ -1,6 +1,6 @@
 const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/strict');
 const src=fs.readFileSync('app/static/selfit-tryon/studio.js','utf8');
-const restore=src.slice(src.indexOf('  function restoreTryonRecord('),src.indexOf('  async function tryonHistory('));
+const restore=src.slice(src.indexOf('  function restoreTryonRecord('),src.indexOf('  function tryonHistory('));
 const state={current:{id:'unrelated'},job:{job_id:'old'},styling:true};
 const ctx={state,lookup:()=>null};vm.createContext(ctx);vm.runInContext(restore+';this.restore=restoreTryonRecord;',ctx);
 ctx.restore({record_id:'record-a',image_path:'saved-result.png',original_image_path:'original-a.png',note_id:'note-a'});

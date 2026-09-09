@@ -3,7 +3,7 @@ const fs = require('node:fs');
 const vm = require('node:vm');
 const source = fs.readFileSync('app/static/selfit-tryon/studio.js', 'utf8');
 const loader = source.slice(source.indexOf('  async function loadFeed('), source.indexOf('  async function load()'));
-const topics = ['commute', 'date', 'vacation', 'trend'].map(id => ({
+const topics = ['commute', 'date', 'vacation', 'trend', ...Array.from({length:16}, (_,i)=>`persona-${i}`)].map(id => ({
   id, title: id, cover: `${id}.jpg`, previews: [],
   outfits: Array.from({length: 4}, (_, i) => ({
     outfit_id: `${id}-${i}`, title: `${id} ${i}`, cover_path: `${id}-${i}.jpg`,
@@ -29,7 +29,7 @@ function normalized(row) {
       }
       if (url.endsWith('inspiration-topics')) {
         if (topicsFail) throw Error('topics unavailable');
-        return {topics, total: 16};
+        return {topics, total: 80};
       }
       const request = JSON.parse(options.body);
       return {outfits: request.offset ? [topics[0].outfits[0]] : [], has_more: true, next_offset: 12};
@@ -37,13 +37,14 @@ function normalized(row) {
   });
   vm.runInContext(loader, context);
   await vm.runInContext('loadFeed()', context);
-  assert.equal(state.topics.length, 4);
-  assert.equal(state.feed.length, 16, 'topics remain visible if persona notes fail');
-  assert.equal(state.topics.flatMap(x => x.entries).length, 16);
+  assert.equal(state.topics.length, 20);
+  assert.equal(state.feed.length, 80, 'topics remain available if persona notes fail');
+  assert.equal(state.topics.flatMap(x => x.entries).length, 80);
+  assert.equal(state.topicsError, '', 'unrelated recommendations must not show a collection error');
   assert(state.feed.every(x => x.kind === 'outfit' && x.items.length === 2), 'use structured try-on, not photo-only note jobs');
   assert(state.feedError);
   await vm.runInContext('loadFeed(true)', context);
-  assert.equal(state.feed.length, 16, 'pagination must not duplicate topic outfits');
+  assert.equal(state.feed.length, 80, 'pagination must not duplicate topic outfits');
   assert.equal(calls.filter(x => x.endsWith('inspiration-topics')).length, 1);
   state.outfits = [{id: 'personal-copy', saved: true, items: [{id: 'commute-0-top'}, {id: 'commute-0-shoes'}]}];
   notesFail = false;
@@ -54,8 +55,20 @@ function normalized(row) {
   }
   topicsFail = true;
   await vm.runInContext('loadFeed()', context);
-  assert.equal(state.topics.length, 4, 'a recoverable refresh failure retains visible themes');
+  assert.equal(state.topics.length, 20, 'a recoverable refresh failure retains visible themes');
   assert(state.feedError);
+  assert(state.topicsError);
   assert.equal(state.feedBusy, false);
-  console.log('Four inspiration themes: structured outfits, partial recovery, pagination and favorites passed.');
+  Object.assign(context, {esc:x=>String(x), image:(src,alt,cls='')=>`<img class="${cls}" src="${src}" alt="${alt}">`});
+  vm.runInContext(source.slice(source.indexOf('  function feedCard('), source.indexOf('  function detail()')), context);
+  const landing = vm.runInContext('inspiration()', context);
+  assert.equal((landing.match(/class="topic-card"/g) || []).length, 20);
+  assert(!landing.includes('data-try='), 'individual outfits appear only inside collections');
+  state.topicId = topics[0].id;
+  assert.equal((vm.runInContext('topic()', context).match(/data-try=/g) || []).length, 4);
+  state.topics[0].entries.push({...state.topics[0].entries[0], id:'curvy-1', raw:{body_profile:'curvy'}});
+  const withCurvy = vm.runInContext('topic()', context);
+  assert(withCurvy.includes('微胖穿搭'));
+  assert.equal((withCurvy.match(/data-try=/g) || []).length, 5, 'variants stay inside one collection');
+  console.log('Twenty collections: grouped browsing, structured outfits, variants, partial recovery and favorites passed.');
 })().catch(error => {console.error(error); process.exitCode = 1;});

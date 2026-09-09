@@ -4,6 +4,7 @@ const vm = require('node:vm');
 const source = fs.readFileSync('app/static/selfit-tryon/studio.js', 'utf8');
 const startCode = source.slice(source.indexOf('  async function startTry()'), source.indexOf('  function beginMirrorGeneration('));
 const generateCode = source.slice(source.indexOf('  async function generate()'), source.indexOf('  function failure('));
+const generateNoteCode = source.slice(source.indexOf('  async function generateNote()'), source.indexOf('  async function generate()'));
 const outfit = () => ({id: 'set-a', kind: 'outfit', items: ['top', 'bottom', 'shoes', 'bag'].map(id => ({id}))});
 
 (async () => {
@@ -22,11 +23,11 @@ const outfit = () => ({id: 'set-a', kind: 'outfit', items: ['top', 'bottom', 'sh
       calls.push({url, options});
       if (failRequest) throw Error('network unavailable');
       if (url === '/selfit/try-on/outfits') return {outfit_id: 'saved-set'};
-      assert.equal(url, '/selfit/try-on/jobs', 'no preview request');
+      assert(['/selfit/try-on/jobs', '/selfit/try-on/inspiration-jobs'].includes(url), 'no preview request');
       return {job_id: 'job-a', status: 'queued'};
     },
   });
-  vm.runInContext(startCode + generateCode, context);
+  vm.runInContext(startCode + generateCode + generateNoteCode, context);
   const pending = vm.runInContext('startTry()', context);
   assert.equal(state.generating.target.id, 'set-a', 'show loading before preparing the photo');
   await vm.runInContext('startTry()', context);
@@ -62,5 +63,32 @@ const outfit = () => ({id: 'set-a', kind: 'outfit', items: ['top', 'bottom', 'sh
   state.job = null; state.photo = '';
   await vm.runInContext('startTry()', context);
   assert.equal(dialogs.at(-1), 'models');
-  console.log('Direct full-outfit submission, immediate loading, duplicate prevention, snapshot, save, retry and photo recovery passed.');
+  state.current = {id:'note:mute:outfits-01', kind:'note', items:[]};
+  state.photo = 'photo-a'; state.job = null;
+  const before = calls.length, dialogCount = dialogs.length;
+  const note = vm.runInContext('startTry()', context);
+  assert.equal(state.generating.target.id, 'note:mute:outfits-01', 'notes show loading immediately');
+  assert.equal(dialogs.length, dialogCount, 'notes do not require a confirmation click');
+  await vm.runInContext('startTry()', context);
+  assert.equal(calls.length, before + 1, 'repeated note clicks must not duplicate the request');
+  resolvePhoto(new Blob(['photo-a'])); await note;
+  assert.equal(calls.at(-1).url, '/selfit/try-on/inspiration-jobs');
+  assert.equal(calls.at(-1).options.body.get('note_id'), 'note:mute:outfits-01');
+  assert(calls.at(-1).options.body.get('person_image'));
+  assert(calls.at(-1).options.body.get('client_request_id'));
+  // Browsing a notebook image must not replace a finished result or submit a try-on.
+  const previewCode = source.slice(source.indexOf('  function openNotePreview('), source.indexOf('  function showDetail('));
+  state.current = outfit(); state.result = '/completed-result.png'; state.page = 'mirror';
+  const original = JSON.stringify(state), beforePreview = calls.length;
+  const previewNote = {id:'another-note', name:'另一张笔记', src:'/notebook-original.png'};
+  let preview;
+  Object.assign(context, {lookup:id=>id===previewNote.id ? previewNote : null, esc:s=>s,
+    image:(src,alt)=>({src,alt}), modal:(title,body)=>{preview={title,body};},
+    $:()=>({classList:{add(){}}})});
+  vm.runInContext(previewCode, context);
+  vm.runInContext("openNotePreview('another-note')", context);
+  assert.equal(preview.body.src,previewNote.src,'show the exact notebook image');
+  assert.equal(JSON.stringify(state),original,'keep result, selection and active page');
+  assert.equal(calls.length,beforePreview,'image preview never starts generation');
+  console.log('Direct outfit and note submission, immediate loading, duplicate prevention, snapshot, save, retry and photo recovery passed.');
 })().catch(error => {console.error(error); process.exitCode = 1;});

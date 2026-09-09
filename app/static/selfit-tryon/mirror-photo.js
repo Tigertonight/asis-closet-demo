@@ -1,7 +1,16 @@
 /* Display-only photo framing. Original files and try-on inputs are never changed. */
 ((root) => {
   "use strict";
-  function detectSolidFrame({data, width, height}) {
+  function frameCrop({data, width, height}, left, right, top, bottom) {
+    const corners = [[left, top], [width - 1 - right, top],
+      [left, height - 1 - bottom], [width - 1 - right, height - 1 - bottom]];
+    const fill = [0, 1, 2].map(channel => Math.round(corners.reduce((sum, [x, y]) =>
+      sum + data[(y * width + x) * 4 + channel], 0) / corners.length));
+    return {x:left / width, y:top / height, width:(width - left - right) / width,
+      height:(height - top - bottom) / height, background:`rgb(${fill.join(',')})`};
+  }
+
+  function detectUniformFrame({data, width, height}) {
     if (width < 32 || height < 32) return null;
     const background = Array.from(data.slice(0, 3));
     const matches = (x, y) => {
@@ -28,12 +37,57 @@
         Math.max(left, right) >= width * .22 || Math.max(top, bottom) >= height * .12 ||
         Math.abs(left - right) > Math.max(2, width * .02) ||
         Math.abs(top - bottom) > Math.max(2, height * .02)) return null;
-    const corners = [[left, top], [width - 1 - right, top],
-      [left, height - 1 - bottom], [width - 1 - right, height - 1 - bottom]];
-    const fill = [0, 1, 2].map(channel => Math.round(corners.reduce((sum, [x, y]) =>
-      sum + data[(y * width + x) * 4 + channel], 0) / corners.length));
-    return {x:left / width, y:top / height, width:(width - left - right) / width,
-      height:(height - top - bottom) / height, background:`rgb(${fill.join(',')})`};
+    return frameCrop({data, width, height}, left, right, top, bottom);
+  }
+
+  function detectLightPairedFrame({data, width, height}) {
+    if (width < 32 || height < 32) return null;
+    // Generated results may retain only two borders, with slight image noise.
+    // Require narrow, symmetric light bands and a sharp, nearly continuous seam.
+    const corners = [[0, 0], [width - 1, 0], [0, height - 1], [width - 1, height - 1]];
+    const background = [0, 1, 2].map(k => {
+      const values = corners.map(([x,y]) => data[(y * width + x) * 4 + k]).sort((a,b) => a-b);
+      return (values[1] + values[2]) / 2;
+    });
+    if (Math.min(...background) < 225 || Math.max(...background) - Math.min(...background) > 18) return null;
+    const axis = vertical => {
+      const size = vertical ? width : height, length = vertical ? height : width;
+      const limit = size * (vertical ? .22 : .12);
+      const index = (position, along) => (vertical ? along * width + position : position * width + along) * 4;
+      const uniform = position => {
+        for (let along = 0; along < length; along++) {
+          const i = index(position, along);
+          if (data[i+3] < 250 || background.some((c,k) => Math.abs(data[i+k] - c) > 6)) return false;
+        }
+        return true;
+      };
+      let before = 0, after = 0;
+      while (before < limit && uniform(before)) before++;
+      while (after < limit && uniform(size - 1 - after)) after++;
+      if (!before && !after) return [0, 0];
+      if (Math.min(before, after) < size * .01 || Math.max(before, after) >= limit ||
+          Math.abs(before - after) > Math.max(2, size * .02)) return null;
+      const sharp = (border, reverse) => {
+        const outside = reverse ? size - border + 1 : border - 2;
+        const inside = reverse ? size - border - 3 : border + 2;
+        let jumps = 0;
+        for (let along = 0; along < length; along++) {
+          const a = index(outside, along), b = index(inside, along);
+          if ([0,1,2].some(k => Math.abs(data[a+k] - data[b+k]) >= 8)) jumps++;
+        }
+        return jumps >= length * .7;
+      };
+      if (before < 2 || after < 2 || !sharp(before, false) || !sharp(after, true)) return null;
+      // Exclude the one-pixel antialiased seam, without changing the photo's extent on the other axis.
+      return [before + 1, after + 1];
+    };
+    const horizontal = axis(true), vertical = axis(false);
+    if (!horizontal || !vertical || ![...horizontal, ...vertical].some(Boolean)) return null;
+    return frameCrop({data, width, height}, ...horizontal, ...vertical);
+  }
+
+  function detectSolidFrame(image) {
+    return detectUniformFrame(image) || detectLightPairedFrame(image);
   }
 
   function createPresenter({Image, document, URL, setTimeout, clearTimeout}) {
@@ -100,9 +154,9 @@
       });
       return entry.promise;
     }
-    function show(photo, src) {
+    function show(photo, src, {fit} = {}) {
       if (!photo) return;
-      const frame = photo.closest(".mirror-photo-frame");
+      const frame = photo.closest(".mirror-photo-frame, .result-viewer-photo-area");
       photo.dataset.mirrorSource = src;
       if (!frame) { photo.src = src; return; }
       photo.src = src;
@@ -114,7 +168,7 @@
         photo.src = display.src;
         photo.style.backgroundColor = display.crop?.background || "";
         frame.dataset.trimmed = String(Boolean(display.crop));
-        frame.dataset.fit = display.fit;
+        frame.dataset.fit = fit || display.fit;
       });
     }
     function clear() {

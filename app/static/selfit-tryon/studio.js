@@ -96,7 +96,7 @@
     }
   }
   const state = {
-    page: ["mirror", "closet", "inspiration", "detail", "chat", "profile", "profile-edit", "import-review", "result-viewer", "topic", "builder"].includes(
+    page: ["mirror", "closet", "inspiration", "detail", "chat", "profile", "profile-edit", "import-review", "result-viewer", "tryon-history", "topic", "builder"].includes(
       params.get("screen"),
     )
       ? params.get("screen")
@@ -132,6 +132,8 @@
     bottom: "pants",
     result: "",
     resultOriginal: "",
+    historyRecords: [], historyLoading: true, historyError: "", historyRequest: 0,
+    viewerReturnPage: params.get("viewer_from") === "history" ? "tryon-history" : "mirror",
     loading: !reference,
     error: "",
     selected: new Set(),
@@ -221,7 +223,7 @@
     }
   }
   function nav() {
-    const visible = !["detail","chat","profile","profile-edit","import-review","result-viewer","topic","builder"].includes(state.page);
+    const visible = !["detail","chat","profile","profile-edit","import-review","result-viewer","tryon-history","topic","builder"].includes(state.page);
     $("#navigation").hidden = !visible;
     $("#navigation").innerHTML = [
       ["mirror", "试衣镜"],
@@ -235,13 +237,15 @@
       .join("") + `<button class="nav-ai" data-action="open-chat" aria-label="AI 搭配对话">${image(`${A}main-app/nav-ai.webp`,"")}</button>`;
   }
   function card(x, kind = "item", i = 0) {
-    const directTry = !reference && state.page === "mirror" && kind === "outfit";
+    const mirrorNote = !reference && state.page === "mirror" && kind === "outfit";
     const target = state.generating?.target || state.current;
     const targetIds = [target?.id, target?.personalId].filter(Boolean);
     const activeOutfit = state.page === "mirror" && kind === "outfit" &&
       [x.id, x.personalId].some(id => id && targetIds.includes(id));
     const pending = activeOutfit && Boolean(state.generating || (reference && params.get("mirror_state") === "generating"));
-    return `<button class="card ${kind === "outfit" ? "outfit-card" : "item-card"}" data-${directTry ? "try" : kind}="${esc(x.id)}" data-kind="${esc(x.id)}" aria-label="${directTry ? '试穿' : ''}${esc(x.name)}"${activeOutfit || state.selected.has(x.id) ? ' aria-pressed="true"' : ' aria-pressed="false"'}>${image(x.src, x.name)}${x.saved ? image(asset("star"), "已收藏", "favorite-star") : ""}${directTry ? '<span class="try-chip" aria-hidden="true">试穿</span>' : ''}${activeOutfit ? `<span class="outfit-state ${pending ? 'pending' : ''}" aria-label="${pending ? '正在试穿' : '已选中'}">${pending ? '' : '✓'}</span>` : ""}</button>`;
+    const mark = activeOutfit ? `<span class="outfit-state ${pending ? "pending" : ""}" aria-label="${pending ? "正在试穿" : "已选中"}">${pending ? "" : "✓"}</span>` : "";
+    if (mirrorNote) return `<article class="card outfit-card mirror-note-card" data-kind="${esc(x.id)}" data-active="${activeOutfit}"><button class="mirror-note-open" data-note-preview="${esc(x.id)}" aria-label="查看${esc(x.name)}大图">${image(x.src, x.name)}</button>${mark}<button class="try-chip" data-try="${esc(x.id)}" aria-label="试穿${esc(x.name)}">试穿</button></article>`;
+    return `<button class="card ${kind === "outfit" ? "outfit-card" : "item-card"}" data-${kind}="${esc(x.id)}" data-kind="${esc(x.id)}" aria-label="${esc(x.name)}" aria-pressed="${activeOutfit || state.selected.has(x.id)}">${image(x.src, x.name)}${mark}</button>`;
   }
   function empty(text) {
     return `<div class="empty">${esc(text)}<br>${!reference && !savedSession?.accessToken ? '<a href="/selfit">登录 selfit</a>' : state.error ? '<button class="secondary" data-action="reload">重新加载</button>' : '<button class="secondary" data-action="add">添加衣服</button>'}</div>`;
@@ -322,7 +326,7 @@
                 `model-photo ${!reference || state.file ? "personal" : ""}`,
               )}${!reference || state.file ? '</div>' : ''}`
             : '<div class="empty-stage"><span>先放入你的全身照</span><button data-action="model">选择模特</button></div>'
-    }${styling && !reference ? canvasTools() : ""}${pending ? `<div class="mirror-generation" role="status" aria-live="polite">${image(`${A}main-app/mirror-loading.svg`, '正在试穿')}</div>` : ""}${!styling && !pending ? `<button class="mirror-result-actions" data-action="result-actions" aria-label="试穿图片与记录">${image(`${A}main-app/mirror-result-actions.svg`, "")}</button>` : ""}${!styling && !pending && !state.result ? `<button class="mirror-history" data-action="tryon-history" aria-label="试穿记录">${image(`${A}main-app/mirror-history.svg`, "")}</button>` : ""}${!pending ? `<div class="mirror-edit-tools" role="group" aria-label="试衣镜工具"><button data-action="toggle" aria-label="翻转：${styling ? '切换到模特试穿' : '切换到自由搭配'}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 8a8 8 0 0 0-14-2L3 9m0-5v5h5M4 16a8 8 0 0 0 14 2l3-3m0 5v-5h-5"/></svg><span>翻转</span></button><button data-action="model" aria-label="替换模特或上传我的照片"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="7" r="4"/><path d="M4 21v-3a8 8 0 0 1 16 0v3Z"/></svg><span>替换模特</span></button></div>` : ''}${!styling && !pending && (state.result || state.photo) ? `<button class="result-expand" data-action="open-viewer" aria-label="${state.result ? '查看试穿大图' : '查看模特大图'}">${image(`${A}main-app/mirror-expand.svg`, "")}</button>${state.current ? `<button class="mirror-favorite" data-action="favorite" aria-label="${state.current.saved ? '取消收藏搭配' : '收藏搭配'}" aria-pressed="${Boolean(state.current.saved)}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.9-6.2-3.3-6.2 3.3L7 14.2l-5-4.9 6.9-1Z"/></svg></button>` : ""}` : ""}</div>${
+    }${styling && !reference ? canvasTools() : ""}${pending ? `<div class="mirror-generation" role="status" aria-live="polite">${image(`${A}main-app/mirror-loading.svg`, '正在试穿')}</div>` : ""}${!styling && !pending ? `<button class="mirror-result-actions" data-action="result-actions" aria-label="绑定智能穿衣镜">${image(`${A}main-app/mirror-result-actions.svg`, "")}</button>` : ""}${!styling && !pending ? `<button class="mirror-history" data-action="tryon-history" aria-label="试穿历史">${image(`${A}main-app/mirror-history.svg`, "")}</button>` : ""}${!pending ? `<div class="mirror-edit-tools" role="group" aria-label="试衣镜工具"><button data-action="toggle" aria-label="${styling ? '全身镜' : '看单品'}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 8a8 8 0 0 0-14-2L3 9m0-5v5h5M4 16a8 8 0 0 0 14 2l3-3m0 5v-5h-5"/></svg><span>${styling ? '全身镜' : '看单品'}</span></button><button data-action="model" aria-label="替换模特或上传我的照片"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="7" r="4"/><path d="M4 21v-3a8 8 0 0 1 16 0v3Z"/></svg><span>替换模特</span></button></div>` : ''}${!styling && !pending && (state.result || state.photo) ? `<button class="result-expand" data-action="open-viewer" aria-label="${state.result ? '查看试穿大图' : '查看模特大图'}">${image(`${A}main-app/mirror-expand.svg`, "")}</button>${state.current ? `<button class="mirror-favorite" data-action="favorite" aria-label="${state.current.saved ? '取消收藏搭配' : '收藏搭配'}" aria-pressed="${Boolean(state.current.saved)}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.9-6.2-3.3-6.2 3.3L7 14.2l-5-4.9 6.9-1Z"/></svg></button>` : ""}` : ""}</div>${
       state.loading
         ? empty("正在整理你的搭配…")
         : state.error || (homeNotes && state.homeNotesError)
@@ -520,37 +524,34 @@
   function feedCard(x) {
     return `<article class="feed-card ${x.flat ? "flat" : ""} ${x.kind === "note" ? "note-card" : ""}" ${x.kind === "note" ? `style="aspect-ratio:${x.width || 184}/${x.height || 245}"` : ""}><button class="feed-open" data-detail="${esc(x.id)}" aria-label="查看${esc(x.name)}">${image(x.src, x.name)}</button>${`<button class="feed-favorite" data-action="favorite" data-favorite-id="${esc(x.id)}" aria-label="${x.saved ? '取消收藏' : '收藏'}${esc(x.name)}" aria-pressed="${Boolean(x.saved)}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.9-6.2-3.3-6.2 3.3L7 14.2l-5-4.9 6.9-1Z"/></svg></button>`}<button class="try-chip" data-try="${esc(x.id)}">试穿</button></article>`;
   }
+  function topicCard(collection) {
+    return `<button class="topic-card" data-topic="${esc(collection.id)}" aria-label="查看${esc(collection.title)}合集，共${collection.entries.length}套穿搭">${image(collection.cover, "", "topic-cover")}<span class="topic-badge">#${esc(collection.title)}</span><span class="topic-previews" aria-hidden="true">${(collection.previews || []).slice(0,3).map(src=>image(src, "")).join("")}</span></button>`;
+  }
   function topic() {
     const selected=(state.topics || []).find(x=>x.id===state.topicId);
     if (state.loading) return '<section class="topic-screen"><p class="empty" role="status">正在打开主题穿搭…</p></section>';
     if (!selected) return '<section class="topic-screen"><p class="empty">这个主题暂时不可用。<button class="secondary" data-page="inspiration">返回灵感库</button></p></section>';
-    return `<section class="topic-screen" aria-label="主题穿搭"><header><button class="back" data-page="inspiration" aria-label="返回灵感库"><svg viewBox="0 0 24 24"><path d="m15 4-7 8 7 8"/></svg></button><h1>#${esc(selected.title)}</h1></header><div class="feed">${[0,1].map(col=>`<div class="feed-column">${selected.entries.filter((_,i)=>i%2===col).map(feedCard).join('')}</div>`).join('')}</div></section>`;
+    const hasCurvy = selected.entries.some(entry=>entry.raw?.body_profile === "curvy");
+    const groups = hasCurvy ? [
+      {title:"风格穿搭", entries:selected.entries.filter(entry=>entry.raw?.body_profile !== "curvy")},
+      {title:"微胖穿搭", entries:selected.entries.filter(entry=>entry.raw?.body_profile === "curvy")},
+    ] : [{title:"", entries:selected.entries}];
+    return `<section class="topic-screen" aria-label="主题穿搭"><header><button class="back" data-page="inspiration" aria-label="返回灵感库"><svg viewBox="0 0 24 24"><path d="m15 4-7 8 7 8"/></svg></button><h1>#${esc(selected.title)}</h1></header>${groups.map(group=>`${group.title ? `<h2 class="topic-group-title">${group.title}</h2>` : ""}<div class="feed">${[0,1].map(col=>`<div class="feed-column">${group.entries.filter((_,i)=>i%2===col).map(feedCard).join('')}</div>`).join('')}</div>`).join("")}</section>`;
   }
   function inspiration() {
     if (state.loading)
       return `<section class="inspiration-screen"><p class="empty" role="status">正在整理穿搭库…</p></section>`;
-    return `<section class="inspiration-screen" aria-label="灵感库"><div class="feed">${[
-      0, 1,
-    ]
-      .map(
-        (col) =>
-          `<div class="feed-column">${state.feed
-            .filter((_, i) => i % 2 === col)
-            .map(feedCard)
-            .join("")}</div>`,
-      )
-      .join(
-        "",
-      )}</div>${!state.feed.length ? `<div class="empty">${esc(state.feedError || "暂时没有可用的推荐穿搭。")}${state.profileRequired ? '<a href="/selfit">完成风格测试</a>' : '<button class="secondary" data-action="reload">重新加载推荐</button>'}</div>` : ""}${state.feed.length && state.feedError ? `<button class="secondary load-more" data-action="reload">${esc(state.feedError)}</button>` : ""}${!reference && state.feedMore ? `<button class="secondary load-more" data-action="more">${state.feedBusy ? "正在加载…" : "查看更多穿搭"}</button>` : ""}</section>`;
+    const collections = state.topics || [];
+    return `<section class="inspiration-screen" aria-label="灵感库"><div class="topic-grid">${collections.map(topicCard).join("")}</div>${!collections.length ? `<div class="empty">${esc(state.topicsError || "暂时没有可用的主题穿搭。")}<button class="secondary" data-action="reload">重新加载合集</button></div>` : state.topicsError ? `<button class="secondary load-more" data-action="reload">${esc(state.topicsError)}</button>` : ""}</section>`;
   }
   function detail() {
     if (state.loading)
       return `<section class="detail-screen"><p class="empty" role="status">正在打开这套穿搭…</p></section>`;
     const x = state.current;
     if (!x) return empty("先选择一套搭配。");
-    if (x.kind === "note") return `<section class="note-detail" aria-label="穿搭详情"><header><button class="back" data-action="back" aria-label="返回"><svg viewBox="0 0 24 24"><path d="m15 4-7 8 7 8"/></svg></button><h1>${esc(x.name)}</h1><button class="favorite" data-action="favorite" aria-label="${x.saved ? '取消收藏' : '收藏穿搭'}" aria-pressed="${Boolean(x.saved)}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.9-6.2-3.3-6.2 3.3L7 14.2l-5-4.9 6.9-1Z"/></svg></button></header>${image(x.src,x.name,'note-detail-photo')}<div class="note-attribution">${esc(x.byline)}${x.sourceUrl ? `<a href="${esc(x.sourceUrl)}" target="_blank" rel="noopener noreferrer">查看原笔记 ↗</a>` : ''}</div></section><div class="detail-dock note-dock"><button class="secondary" data-action="favorite">${x.saved ? '取消收藏' : '收藏穿搭'}</button><button class="primary" data-action="try">立即试穿</button></div>`;
+    if (x.kind === "note") return `<section class="note-detail" aria-label="穿搭详情"><header><button class="back" data-action="back" aria-label="返回"><svg viewBox="0 0 24 24"><path d="m15 4-7 8 7 8"/></svg></button><h1>${esc(x.name)}</h1></header>${image(x.src,x.name,'note-detail-photo')}<div class="note-attribution">${esc(x.byline)}${x.sourceUrl ? `<a href="${esc(x.sourceUrl)}" target="_blank" rel="noopener noreferrer">查看原笔记 ↗</a>` : ''}</div></section><div class="detail-dock note-dock"><button class="secondary" data-action="favorite">${x.saved ? '取消收藏' : '收藏穿搭'}</button><button class="primary" data-action="try">立即试穿</button></div>`;
     const items = x.items || [];
-    return `<section class="note-detail outfit-source-detail" aria-label="套装详情"><header><button class="back" data-action="back" aria-label="返回"><svg viewBox="0 0 24 24"><path d="m15 4-7 8 7 8"/></svg></button><h1>${esc(x.name)}</h1><button class="favorite" data-action="favorite" aria-label="${x.saved ? '取消收藏' : '收藏套装'}" aria-pressed="${Boolean(x.saved)}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.9-6.2-3.3-6.2 3.3L7 14.2l-5-4.9 6.9-1Z"/></svg></button></header>${image(x.src,x.name,'outfit-detail-image')}<div class="outfit-detail-pieces">${items.map(i=>card(i)).join('')}</div>${x.raw?.can_delete ? '<button class="detail-remove" data-action="delete-outfit" aria-label="删除穿搭"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13M10 10v7m4-7v7"/></svg></button>' : ''}</section><div class="detail-dock note-dock"><button class="secondary" data-action="favorite">${x.saved ? '取消收藏' : '收藏套装'}</button><button class="primary" data-action="try">立即试穿</button></div>`;
+    return `<section class="note-detail outfit-source-detail" aria-label="套装详情"><header><button class="back" data-action="back" aria-label="返回"><svg viewBox="0 0 24 24"><path d="m15 4-7 8 7 8"/></svg></button><h1>${esc(x.name)}</h1></header>${image(x.src,x.name,'outfit-detail-image')}<div class="outfit-detail-pieces">${items.map(i=>card(i)).join('')}</div>${x.raw?.can_delete ? '<button class="detail-remove" data-action="delete-outfit" aria-label="删除穿搭"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13M10 10v7m4-7v7"/></svg></button>' : ''}</section><div class="detail-dock note-dock"><button class="secondary" data-action="favorite">${x.saved ? '取消收藏' : '收藏套装'}</button><button class="primary" data-action="try">立即试穿</button></div>`;
   }
   const mirrorImages = new Map();
   function mirrorLoading(message = "正在准备你的试衣镜…", failed = false) {
@@ -717,27 +718,51 @@
       }
     }
   }
-  async function tryonHistory() {
-    modal("试穿记录", '<p role="status">正在打开试穿记录…</p>');
+  function tryonHistory() {
+    const header = `<header class="history-header"><button data-page="mirror" aria-label="返回试衣镜"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 4-8 8 8 8"/></svg></button><h1 id="historyTitle">试穿历史</h1></header>`;
+    let content;
+    if (state.historyLoading) content = '<div class="history-empty" role="status">正在加载试穿历史…</div>';
+    else if (state.historyError) content = `<div class="history-empty" role="status"><p>${esc(state.historyError)}</p><button class="secondary" data-action="reload-tryon-history">重新加载</button></div>`;
+    else if (!state.historyRecords.length) content = '<div class="history-empty"><p>还没有试穿历史</p><span>完成一次试穿，就能在这里找回结果。</span><button class="secondary" data-page="mirror">去试穿</button></div>';
+    else content = `<div class="tryon-history">${state.historyRecords.map(row => {
+      const date = new Date(row.created_at || NaN);
+      const dateLabel = Number.isNaN(date.getTime()) ? '' : `${date.getFullYear()}/${date.getMonth()+1}/${date.getDate()}`;
+      const title = row.outfit_title || '试穿结果';
+      return `<button class="history-card" data-record="${esc(row.record_id)}" aria-label="查看${esc(title)}${dateLabel ? '，'+dateLabel : ''}">${image(row.image_path,title)}${dateLabel ? `<time datetime="${esc(row.created_at)}">${dateLabel}</time>` : '<span></span>'}</button>`;
+    }).join('')}</div>`;
+    return `<section class="history-screen" aria-labelledby="historyTitle">${header}${content}</section>`;
+  }
+  async function loadTryonHistory() {
+    const request = ++state.historyRequest;
+    state.historyLoading = true;
+    state.historyError = '';
+    render();
     try {
-      const data = reference ? {records:[]} : await api("/closet/tryon-records");
+      if (!reference) await ensureVisitorSession();
+      const data = reference ? {records:[]} : await api('/closet/tryon-records');
+      if (request !== state.historyRequest || state.page !== 'tryon-history') return;
       state.historyRecords = data.records || [];
-      modal("试穿记录", state.historyRecords.length
-        ? `<div class="tryon-history">${state.historyRecords.map(row=>`<button data-record="${esc(row.record_id)}" aria-label="查看${esc(row.outfit_title || '试穿结果')}">${image(row.image_path,row.outfit_title || '试穿结果')}</button>`).join('')}</div>`
-        : `<p>${reference ? '设计预览没有真实试穿记录。' : '还没有试穿记录。完成一次试穿后，可以在这里找回结果。'}</p>`);
-    } catch (error) {
-      modal("试穿记录", `<p>${esc(error.message)}</p><button class="secondary" data-action="tryon-history">重新加载</button>`);
+    } catch {
+      if (request !== state.historyRequest || state.page !== 'tryon-history') return;
+      state.historyError = '试穿历史暂时无法加载，请稍后重试。';
+    } finally {
+      if (request === state.historyRequest && state.page === 'tryon-history') {
+        state.historyLoading = false;
+        render();
+      }
     }
   }
   function resultViewer() {
-    if (state.viewerLoading) return '<section class="result-viewer"><p class="empty" role="status">正在打开试穿记录…</p><button class="secondary" data-page="mirror">返回试衣镜</button></section>';
-    if (state.viewerError) return `<section class="result-viewer"><p class="empty">${esc(state.viewerError)}</p><button class="secondary" data-action="retry-history-viewer">重新加载</button><button class="secondary" data-page="mirror">返回试衣镜</button></section>`;
+    const returnLabel = state.viewerReturnPage === "tryon-history" ? "返回试穿历史" : "返回试衣镜";
+    const back = `<button class="secondary" data-action="close-viewer">${returnLabel}</button>`;
+    if (state.viewerLoading) return `<section class="result-viewer"><p class="empty" role="status">正在打开试穿记录…</p>${back}</section>`;
+    if (state.viewerError) return `<section class="result-viewer"><p class="empty">${esc(state.viewerError)}</p><button class="secondary" data-action="retry-history-viewer">重新加载</button>${back}</section>`;
     const src=state.viewerPhoto ? state.photo : state.result;
     if (!src && !reference && (state.loading || (state.job?.job_id && !["completed","failed"].includes(state.job.status))))
-      return '<section class="result-viewer"><p class="empty" role="status">正在准备试穿大图…</p><button class="secondary" data-page="mirror">返回试衣镜</button></section>';
-    if (!src && !reference) return `<section class="result-viewer"><p class="empty">还没有可查看的试穿图。<button class="secondary" data-page="mirror">返回试衣镜</button></p></section>`;
-    if (!reference || state.file) return `<section class="result-viewer is-photo" aria-label="试穿大图">${image(`${A}main-app/mirror-background.svg`,'','result-viewer-background')}<div class="result-viewer-photo-area">${image(src,state.viewerPhoto ? '当前模特大图' : '试穿结果大图','result-viewer-photo')}</div><button class="viewer-collapse" data-action="close-viewer" aria-label="收起大图，返回试衣镜">${image(`${A}main-app/result-viewer-collapse.svg`,'')}<span>收起大图</span></button></section>`;
-    return `<section class="result-viewer" aria-label="试穿大图">${image(`${A}main-app/result-viewer-background.svg`,'','result-viewer-background')}${reference && !state.file ? image(`${A}main-app/result-viewer-model.svg`,state.viewerPhoto ? '当前模特大图' : '原稿试穿示例','result-viewer-reference') : image(src,state.viewerPhoto ? '当前模特大图' : '试穿结果大图','result-viewer-photo')}<button class="viewer-collapse" data-action="close-viewer" aria-label="收起大图，返回试衣镜">${image(`${A}main-app/result-viewer-collapse.svg`,'')}</button></section>`;
+      return `<section class="result-viewer"><p class="empty" role="status">正在准备试穿大图…</p>${back}</section>`;
+    if (!src && !reference) return `<section class="result-viewer"><p class="empty">还没有可查看的试穿图。${back}</p></section>`;
+    if (!reference || state.file) return `<section class="result-viewer is-photo" aria-label="试穿大图">${image(`${A}main-app/mirror-background.svg`,'','result-viewer-background')}<div class="result-viewer-photo-area">${image(src,state.viewerPhoto ? '当前模特大图' : '试穿结果大图','result-viewer-photo')}</div><button class="viewer-collapse" data-action="close-viewer" aria-label="收起大图，${returnLabel}">${image(`${A}main-app/result-viewer-collapse.svg`,'')}<span>收起大图</span></button></section>`;
+    return `<section class="result-viewer" aria-label="试穿大图">${image(`${A}main-app/result-viewer-background.svg`,'','result-viewer-background')}${reference && !state.file ? image(`${A}main-app/result-viewer-model.svg`,state.viewerPhoto ? '当前模特大图' : '原稿试穿示例','result-viewer-reference') : image(src,state.viewerPhoto ? '当前模特大图' : '试穿结果大图','result-viewer-photo')}<button class="viewer-collapse" data-action="close-viewer" aria-label="收起大图，${returnLabel}">${image(`${A}main-app/result-viewer-collapse.svg`,'')}</button></section>`;
   }
   function importReview() {
     if (!reference && state.error) return `<section class="import-review">${empty(state.error)}</section>`;
@@ -766,6 +791,7 @@
   }
   function render() {
     wardrobeGestures.reset();
+    const detailScroll = state.page === "detail" && $("#studio").dataset.screen === "detail" ? $(".note-detail")?.scrollTop : null;
     const keepWardrobePosition = state.page === 'closet' && $('#studio').dataset.screen === 'closet';
     const wardrobePosition = keepWardrobePosition ? {screen:$('#screen').scrollTop, rows:Array.from(document.querySelectorAll('.wardrobe-group'), group => [group.getAttribute('aria-labelledby'), group.querySelector('.wardrobe-items-row').scrollLeft])} : null;
     const browseKey = JSON.stringify([state.page, state.source, state.category]);
@@ -779,11 +805,12 @@
     if (reference) $("#studio").setAttribute("data-reference", "true");
     nav();
     $("#completionNotice").hidden = !state.completedTryon && !(reference && params.get("notice") === "success" && state.page === "inspiration");
-    $("#screen").innerHTML = { mirror: readyMirror, closet, inspiration, topic, builder: outfitBuilder, detail, chat, profile, "profile-edit": profileEdit, "import-review": importReview, "result-viewer": resultViewer }[
+    $("#screen").innerHTML = { mirror: readyMirror, closet, inspiration, topic, builder: outfitBuilder, detail, chat, profile, "profile-edit": profileEdit, "import-review": importReview, "result-viewer": resultViewer, "tryon-history": tryonHistory }[
       state.page
     ]();
     $("#studio").dataset.screen = state.page;
     $("#studio").dataset.mode = state.styling ? "styling" : "model";
+    if (detailScroll != null && $(".note-detail")) $(".note-detail").scrollTop = detailScroll;
     if (wardrobePosition) {
       const positions = new Map(wardrobePosition.rows);
       document.querySelectorAll('.wardrobe-group').forEach(group => { group.querySelector('.wardrobe-items-row').scrollLeft = positions.get(group.getAttribute('aria-labelledby')) || 0; });
@@ -792,6 +819,8 @@
     $("#addGarmentFloating").hidden = true;
     const mirrorPhoto = $(".mirror-photo-frame .model-photo");
     if (mirrorPhoto) window.SelfitMirrorPhoto.show(mirrorPhoto, mirrorPhoto.getAttribute("src"));
+    const viewerPhoto = $(".result-viewer-photo-area .result-viewer-photo");
+    if (viewerPhoto) window.SelfitMirrorPhoto.show(viewerPhoto, viewerPhoto.getAttribute("src"), {fit:"contain"});
     // Image preparation can render again after selection; keep the same browsing context still.
     if (keepPosition) {
       if ($(".strip")) $(".strip").scrollLeft = mirrorBrowsePosition.strip;
@@ -871,13 +900,17 @@
     if (state.current && state.source === "report" && !state.current.reportNote)
       state.source = "inspiration";
     state.page = page;
+    if (page === "tryon-history") state.historyLoading = true;
+    else state.historyRequest++;
     render();
+    if(page === "tryon-history") loadTryonHistory();
     if(page === "chat") loadChat();
     if(["profile","profile-edit"].includes(page)) loadProfile();
     $("#screen").scrollTop = 0;
     if (push) {
       const u = new URL(location.href);
       u.searchParams.set("screen", page);
+      if (page === "result-viewer" && state.viewerReturnPage === "tryon-history") u.searchParams.set("viewer_from", "history"); else u.searchParams.delete("viewer_from");
       if (state.source && state.source !== "report") u.searchParams.delete("report_notes");
       if ((page === "topic" || (page === "detail" && state.returnPage === "topic")) && state.topicId) u.searchParams.set("topic",state.topicId); else u.searchParams.delete("topic");
       if (page === "result-viewer" && state.viewerPhoto) u.searchParams.set("preview","photo"); else u.searchParams.delete("preview");
@@ -1039,6 +1072,12 @@
     modal(outfit.name, `${outfit.raw?.can_delete ? '<button class="garment-delete" data-action="delete-outfit" aria-label="删除穿搭"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13M10 10v7m4-7v7"/></svg></button>' : ''}<span class="sheet-handle" aria-hidden="true"></span>${image(outfit.src,outfit.name,'garment-sheet-image')}<button class="primary garment-sheet-cta" data-action="try">立即试穿</button>`);
     $("#sheet").classList.add("garment-sheet", "outfit-sheet");
   }
+  function openNotePreview(id) {
+    const note = lookup(id);
+    if (!note?.src) return notify("这张图片暂时无法打开，请刷新后重试。");
+    modal(esc(note.name || "穿搭大图"), image(note.src, note.name || "穿搭大图", "note-preview-image"));
+    $("#sheet").classList.add("note-preview-sheet");
+  }
   function showDetail(id) {
     state.current = lookup(id);
     state.result = "";
@@ -1050,7 +1089,7 @@
   }
   function modal(title, body) {
     delete $("#sheet").dataset.importFlow;
-    $("#sheet").classList.remove("garment-sheet", "outfit-sheet", "model-sheet");
+    $("#sheet").classList.remove("garment-sheet", "outfit-sheet", "model-sheet", "mirror-binding-sheet", "note-preview-sheet");
     $("#sheet").innerHTML =
       `<h2 id="sheetTitle">${esc(title)}</h2><button class="close" data-action="close" aria-label="关闭">×</button>${body}`;
     if (!$("#sheet").open) $("#sheet").showModal();
@@ -1207,7 +1246,7 @@
     }
     const target = state.current;
     if (target.kind === "note") {
-      modal("试穿这张照片中的搭配", `${image(target.src,target.name,'progress-art')}<p>参考这张穿搭照片，生成你的试穿效果。</p><button class="primary" data-action="generate-note">生成试穿图</button>`);
+      await generateNote();
       return;
     }
     await generate();
@@ -1619,6 +1658,7 @@
       }), append ? Promise.resolve({notes:[]}) : api("/selfit/try-on/inspiration-notes"),
         append ? Promise.resolve(null) : api("/selfit/try-on/inspiration-topics")]);
       if (append && responses[0].status === "rejected") throw responses[0].reason;
+      if (!append) state.topicsError = responses[2].status === "rejected" ? "主题合集暂未加载，点击重试。" : "";
       if (responses.every(r => r.status === "rejected")) throw responses[0].reason;
       const data = responses[0].value || {};
       const normalizeNote = x => ({
@@ -1754,8 +1794,6 @@
       const id = new URLSearchParams(location.search).get("outfit");
       await restoreSelectedOutfit(id, job);
       state.error = "";
-      if (id && state.current)
-        state.page = ["mirror", "closet", "inspiration", "detail", "chat", "profile", "profile-edit", "import-review", "result-viewer", "topic", "builder"].includes(params.get("screen")) ? params.get("screen") : "mirror";
       if (job?.job_id && !params.get("record") && !state.viewerPhoto) {
         state.job = job;
         state.jobPhoto = job.original_image_path || "";
@@ -1785,6 +1823,11 @@
     if(e.clientX<rect.left || e.clientX>rect.right || e.clientY<rect.top || e.clientY>rect.bottom) $("#sheet").close();
   });
   $("#studio").addEventListener("input", e=>{if(e.target.id==='chatInput'){state.chatDraft=e.target.value;const send=$('#chatComposer button[type=submit]');if(send)send.disabled=state.chatBusy||state.chatLoading||!state.chatDraft.trim();}});
+  $("#studio").addEventListener("input", e => {
+    if (e.target.id !== "mirrorDeviceCode") return;
+    const digits = e.target.value.replace(/\D/g, "").slice(0, 4);
+    if (e.target.value !== digits) e.target.value = digits;
+  });
   $("#studio").addEventListener("submit", e=>{if(e.target.id==='chatComposer'){e.preventDefault();sendChat();}});
   $("#studio").addEventListener("click", async (e) => {
     const b = e.target.closest("button");
@@ -1833,7 +1876,7 @@
       if (b.dataset.record) {
         const record=(state.historyRecords || []).find(row=>row.record_id===b.dataset.record);
         if (!record) return;
-        restoreTryonRecord(record);state.viewerPhoto=false;$("#sheet").close();go("result-viewer");return;
+        restoreTryonRecord(record);state.viewerReturnPage="tryon-history";go("result-viewer");return;
       }
       if (b.dataset.topic) {state.topicId=b.dataset.topic;go("topic");return;}
       if (b.dataset.importPiece) {
@@ -1917,6 +1960,7 @@
         render();
         return;
       }
+      if (b.dataset.notePreview) {openNotePreview(b.dataset.notePreview);return;}
       if (b.dataset.detail) {
         showDetail(b.dataset.detail);
         return;
@@ -1950,11 +1994,10 @@
         return;
       }
       switch (b.dataset.action) {
-        case "generate-note": await generateNote(); break;
         case "confirm-import": await confirmImport(); break;
         case "retry-history-viewer": await restoreHistoryRoute(state.viewRecordId); break;
-        case "open-viewer": state.viewerError=""; state.viewerPhoto=!state.result; go('result-viewer'); break;
-        case "close-viewer": go('mirror'); break;
+        case "open-viewer": state.viewerReturnPage="mirror"; state.viewerError=""; state.viewerPhoto=!state.result; go('result-viewer'); break;
+        case "close-viewer": go(state.viewerReturnPage || "mirror"); break;
         case "leave-import": go('closet'); break;
         case "resume-import": await resumeImport(); break;
         case "view-current":
@@ -2158,9 +2201,11 @@
           $("#sheet").close(); go("mirror"); await poll();
           break;
         case "view-completed": go("mirror"); break;
-        case "tryon-history": await tryonHistory(); break;
+        case "tryon-history": go("tryon-history"); break;
+        case "reload-tryon-history": await loadTryonHistory(); break;
         case "result-actions":
-          modal("试衣镜", `${state.result ? '<button class="primary" data-action="save-result">保存试穿图</button><button class="secondary" data-action="result-compare">对比原图</button>' : ''}<button class="secondary" data-action="tryon-history">试穿记录</button><button class="secondary" data-action="model">更换照片</button><button class="secondary" data-action="result-styling">继续自由搭配</button>`);
+          modal("绑定你的智能穿衣镜", '<p id="mirrorBindingDescription">每日记录身材和穿搭</p><input id="mirrorDeviceCode" class="mirror-device-code" type="text" inputmode="numeric" minlength="4" maxlength="4" pattern="[0-9]{4}" autocomplete="off" placeholder="请输入设备码" aria-label="设备码" aria-describedby="mirrorBindingDescription" required>');
+          $("#sheet").classList.add("mirror-binding-sheet");
           break;
         case "result-compare":
           $("#sheet").close();
@@ -2345,7 +2390,7 @@
   window.addEventListener("pointercancel", restore);
   window.addEventListener("blur", restore);
   $("#studio").addEventListener("keydown", (e) => {
-    if (e.key === "Escape" && state.page === "result-viewer") {go("mirror"); return;}
+    if (e.key === "Escape" && state.page === "result-viewer") {go(state.viewerReturnPage || "mirror"); return;}
     if (
       e.target.closest("[data-action=compare]") &&
       [" ", "Enter"].includes(e.key)
@@ -2370,6 +2415,7 @@
         await restoreSelectedOutfit(p.get("outfit"));
       } catch (error) { state.error = error.message; state.current = null; }
     } else if (state.source === "report") state.source = "inspiration";
+    state.viewerReturnPage = p.get("viewer_from") === "history" ? "tryon-history" : "mirror";
     state.viewerPhoto = p.get("preview") === "photo";
     state.viewerJobId = "";
     state.styling = p.get("mode") === "styling";
@@ -2407,7 +2453,7 @@
       }
     }
     go(
-      ["mirror", "closet", "inspiration", "detail", "chat", "profile", "profile-edit", "import-review", "result-viewer", "topic", "builder"].includes(p.get("screen"))
+      ["mirror", "closet", "inspiration", "detail", "chat", "profile", "profile-edit", "import-review", "result-viewer", "tryon-history", "topic", "builder"].includes(p.get("screen"))
         ? p.get("screen")
         : "mirror",
       false,
@@ -2434,6 +2480,7 @@
     state.uploadURLs.forEach(URL.revokeObjectURL);
   });
   render();
+  if(state.page === "tryon-history") loadTryonHistory();
   if(state.page === "chat") loadChat();
   if(["profile","profile-edit"].includes(state.page)) loadProfile();
   load();
