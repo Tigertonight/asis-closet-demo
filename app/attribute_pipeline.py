@@ -93,7 +93,13 @@ _SKIN_TONE_BY_DERIVED = {
 # 32 以下才真正暗到肤色读数不可信。
 FACE_TOO_DARK_V = 32.0
 FACE_TOO_BRIGHT_V = 96.0
-FACE_STRONG_CAST = 42.0
+# 偏色告警分通道阈值（2026-09 标定，判定结构对齐 demo 链路 cv_pipeline 的 vl.color_filter）：
+# 蓝/绿主导是冷调滤镜/屏幕光的典型特征，皮肤像素天然不会出现 → 从严 >18 告警；
+# 红主导是暖肤的天然底色（人脸框内 R−B 普遍 40~80，qa_photos 21 张实测），
+# 旧口径不分通道统一 >42 会把 57% 的正常暖肤照误判为偏色 → 只拦极端暖光 >65。
+# 已知局限：暖黄滤镜与暖肤的通道特征同构，红主导场景此判定分不出来（warn 不拦截，代价可控）。
+FACE_COOL_CAST = 18.0
+FACE_WARM_CAST = 65.0
 
 # ---------------------------------------------------------------------------
 # 脸型门禁与规则
@@ -301,6 +307,13 @@ def analyze_body_photo(image: Image.Image) -> dict[str, Any]:
 # 肤色属性
 # ---------------------------------------------------------------------------
 
+def _cast_suspect(cast: dict[str, Any]) -> bool:
+    """分通道偏色判定：蓝/绿主导从严（冷调滤镜特征），红主导只拦极端（暖肤天然底色）。"""
+    if cast["dominant_channel"] in {"blue", "green"}:
+        return cast["cast_strength"] > FACE_COOL_CAST
+    return cast["cast_strength"] > FACE_WARM_CAST
+
+
 def _skin_tone_attribute(rgb: np.ndarray, face: dict[str, Any], points: dict[int, tuple[int, int]]) -> dict[str, Any]:
     box = face["box"]
     crop = rgb[box["y"] : box["y"] + box["height"], box["x"] : box["x"] + box["width"]]
@@ -352,7 +365,7 @@ def _skin_tone_attribute(rgb: np.ndarray, face: dict[str, Any], points: dict[int
     issues: list[dict[str, str]] = []
     status = "pass"
     cast = _channel_cast_score(crop)
-    if cast["cast_strength"] > FACE_STRONG_CAST:
+    if _cast_suspect(cast):
         status = "warn"
         issues.append(_issue("photo.color_cast", "照片整体有偏色", "关闭滤镜、用自然光原图，肤色判断会更准。"))
     confidence = 0.6 + min(0.22, boundary_gap / 10.0) - (0.1 if status == "warn" else 0.0)

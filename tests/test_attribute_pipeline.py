@@ -88,6 +88,28 @@ def test_classify_skin_tone_boundary_gap_nonnegative() -> None:
 
 
 # ---------------------------------------------------------------------------
+# 偏色告警分通道口径（2026-09 标定）
+# ---------------------------------------------------------------------------
+
+@pytest.mark.parametrize(
+    "cast,expected",
+    [
+        # 红主导 = 暖肤天然底色（R−B 普遍 40~80），只拦极端暖光
+        ({"cast_strength": 58.0, "dominant_channel": "red"}, False),   # 正常暖肤，不告警
+        ({"cast_strength": 65.0, "dominant_channel": "red"}, False),   # 边界值不触发
+        ({"cast_strength": 70.0, "dominant_channel": "red"}, True),    # 极端暖光
+        # 蓝/绿主导 = 冷调滤镜/屏幕光特征，对齐 demo 链路从严
+        ({"cast_strength": 12.0, "dominant_channel": "blue"}, False),
+        ({"cast_strength": 25.0, "dominant_channel": "blue"}, True),
+        ({"cast_strength": 25.0, "dominant_channel": "green"}, True),
+        ({"cast_strength": 0.0, "dominant_channel": "none"}, False),   # 空 crop 兜底
+    ],
+)
+def test_cast_suspect_channel_thresholds(cast: dict[str, object], expected: bool) -> None:
+    assert ap._cast_suspect(cast) is expected
+
+
+# ---------------------------------------------------------------------------
 # 脸型 4 类
 # ---------------------------------------------------------------------------
 
