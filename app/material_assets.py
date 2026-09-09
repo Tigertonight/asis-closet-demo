@@ -7,10 +7,8 @@ SHA-256 of the bytes, so re-uploading or moving a CDN does not change references
 from __future__ import annotations
 
 import copy
-import base64
 import fcntl
 import hashlib
-import hmac
 import json
 import os
 import re
@@ -19,15 +17,40 @@ import time
 from functools import lru_cache
 from pathlib import Path
 from typing import Any
-from urllib.parse import unquote, urlsplit
+from urllib.parse import parse_qs, unquote, urlsplit, urlunsplit
 
 from fastapi import APIRouter, HTTPException
-from fastapi.responses import RedirectResponse
+from fastapi.responses import JSONResponse, RedirectResponse
 
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_REGISTRY_PATH = ROOT / "app/data/material-assets.v1.json"
 ID_PATTERN = re.compile(r"asset_[0-9a-f]{64}")
 IMAGE_ID_FIELDS = {"assetId": "src", "imageAssetId": "imageUrl"}
+
+
+class MaterialUrlUnavailable(ValueError):
+    def __init__(self, code: str, message: str) -> None:
+        super().__init__(message)
+        self.code = code
+
+
+def material_source_url(record: dict[str, Any]) -> str:
+    """Stable object URL for upload deduplication and operator refresh."""
+    url = record.get("sourceUrl") or record["url"]
+    if record.get("storage", {}).get("provider") != "qiniu":
+        return url
+    parsed = urlsplit(url)
+    query = "&".join(part for part in parsed.query.split("&")
+                     if part and unquote(part.split("=", 1)[0]) not in {"e", "token"})
+    return urlunsplit(parsed._replace(query=query))
+
+
+def _store_temporary_url(record: dict[str, Any], ttl_seconds: int | None = None) -> dict[str, Any]:
+    from app.material_asset_signing import sign_qiniu_url
+
+    source_url = material_source_url(record)
+    url, expires_at = sign_qiniu_url(source_url, ttl_seconds=ttl_seconds)
+    return {**record, "sourceUrl": source_url, "url": url, "urlExpiresAt": expires_at}
 
 
 def validate_public_url(url: str) -> str:
@@ -121,32 +144,62 @@ class MaterialRegistry:
             previous = payload["assets"].get(asset_id)
             if previous and not replace_url:
                 return asset_id
+            if storage and storage.get("private"):
+                record = _store_temporary_url(record)
             if previous != record:
                 payload["assets"][asset_id] = record
                 payload["assets"] = dict(sorted(payload["assets"].items()))
                 write_json_atomic(self.path, payload)
         return asset_id
 
+    def refresh_temporary_urls(self, *, ttl_seconds: int | None = None,
+                               within_seconds: int = 86400, force: bool = False) -> int:
+        """Operator action: sign and atomically publish missing/expiring URL mappings.
+
+        Merge under the same lock as uploads. A signing failure leaves the original
+        JSON intact; concurrent uploads and unrelated metadata are preserved.
+        """
+        if within_seconds < 0:
+            raise ValueError("Refresh window must not be negative")
+        self.path.parent.mkdir(parents=True, exist_ok=True)
+        with self.path.with_suffix(self.path.suffix + ".lock").open("a") as lock:
+            fcntl.flock(lock, fcntl.LOCK_EX)
+            payload = _read_registry(self.path)
+            refreshed = 0
+            for asset_id, record in payload["assets"].items():
+                storage = record.get("storage", {})
+                if storage.get("provider") != "qiniu" or not storage.get("private"):
+                    continue
+                try:
+                    material_download_url(record)
+                    needs_refresh = record["urlExpiresAt"] <= time.time() + within_seconds
+                except MaterialUrlUnavailable:
+                    needs_refresh = True
+                if force or needs_refresh:
+                    payload["assets"][asset_id] = _store_temporary_url(record, ttl_seconds)
+                    refreshed += 1
+            if refreshed:
+                write_json_atomic(self.path, payload)
+            return refreshed
+
 
 def resolve_asset_url(asset_id: str, registry: MaterialRegistry | None = None) -> str:
-    return (registry or MaterialRegistry()).get(asset_id)["url"]
+    return material_download_url((registry or MaterialRegistry()).get(asset_id))
 
 
 def material_download_url(record: dict[str, Any]) -> str:
-    """Generate private download authorization at read time; never persist tokens."""
+    """Read the published temporary URL, without credentials or runtime signing."""
     storage = record.get("storage", {})
     if storage.get("provider") != "qiniu" or not storage.get("private"):
         return record["url"]
-    from dotenv import dotenv_values
-    values = dotenv_values(Path(os.getenv("QINIU_ENV_FILE") or ROOT / ".env.qiniu"))
-    access_key = os.getenv("QINIU_ACCESS_KEY") or values.get("QINIU_ACCESS_KEY")
-    secret_key = os.getenv("QINIU_SECRET_KEY") or values.get("QINIU_SECRET_KEY")
-    if not access_key or not secret_key:
-        raise ValueError("Qiniu download credentials are not configured")
-    url = record["url"]
-    unsigned = f"{url}{'&' if '?' in url else '?'}e={int(time.time()) + 3600}"
-    signature = base64.urlsafe_b64encode(hmac.new(secret_key.encode(), unsigned.encode(), hashlib.sha1).digest()).decode()
-    return f"{unsigned}&token={access_key}:{signature}"
+    expires_at = record.get("urlExpiresAt")
+    params = parse_qs(urlsplit(record["url"]).query)
+    if (not isinstance(expires_at, int) or params.get("e") != [str(expires_at)]
+            or len(params.get("token", [])) != 1 or not params["token"][0]):
+        raise MaterialUrlUnavailable("material.url_not_published", "素材临时链接尚未发布，请同步最新素材清单。")
+    if expires_at <= time.time():
+        raise MaterialUrlUnavailable("material.url_expired", "素材临时链接已过期，请同步刷新后的素材清单。")
+    return record["url"]
 
 
 def material_image_path(asset_id: str, registry: MaterialRegistry | None = None) -> Path:
@@ -203,8 +256,8 @@ def resolve_image_references(value: Any, registry: MaterialRegistry | None = Non
     for id_field, url_field in IMAGE_ID_FIELDS.items():
         if result.get(id_field):
             asset_id = result[id_field]
-            url = resolve_asset_url(asset_id, registry)
-            result[url_field] = asset_content_url(asset_id) if indirect else url
+            record = registry.get(asset_id)
+            result[url_field] = asset_content_url(asset_id) if indirect else material_download_url(record)
     return result
 
 
@@ -218,11 +271,22 @@ def _public_record(asset_id: str) -> dict[str, Any]:
         raise HTTPException(status_code=404, detail="素材不存在") from None
 
 
+def _url_error_response(exc: MaterialUrlUnavailable) -> JSONResponse:
+    # Return directly so the application's generic upload error handler does not
+    # replace the actionable expiry message with a generic request failure.
+    return JSONResponse({"error": {"code": exc.code, "message": str(exc)}},
+                        status_code=410 if exc.code == "material.url_expired" else 503,
+                        headers={"Cache-Control": "no-store"})
+
+
 @router.get("/{asset_id}")
 def material_metadata(asset_id: str):
-    from fastapi.responses import JSONResponse
-
-    return JSONResponse({"assetId": asset_id, **_public_record(asset_id)}, headers={"Cache-Control": "no-store"})
+    record = _public_record(asset_id)
+    try:
+        record["url"] = material_download_url(record)
+    except MaterialUrlUnavailable as exc:
+        return _url_error_response(exc)
+    return JSONResponse({"assetId": asset_id, **record}, headers={"Cache-Control": "no-store"})
 
 
 @router.get("/{asset_id}/content")
@@ -233,6 +297,8 @@ def material_content(asset_id: str):
         from fastapi.responses import FileResponse
         try:
             path = material_image_path(asset_id)
+        except MaterialUrlUnavailable as exc:
+            return _url_error_response(exc)
         except (OSError, ValueError, httpx.HTTPError):
             raise HTTPException(503, "素材暂时无法读取，请稍后重试。") from None
         # Same-origin delivery supports HTTPS pages even with an HTTP-only origin.

@@ -22,7 +22,7 @@ from urllib.parse import quote, urlsplit
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
-from app.material_assets import MaterialRegistry, asset_id_for_bytes, validate_public_url, write_json_atomic
+from app.material_assets import MaterialRegistry, MaterialUrlUnavailable, asset_id_for_bytes, material_download_url, material_source_url, validate_public_url, write_json_atomic
 
 CONTENT_TYPES = {".jpg": "image/jpeg", ".jpeg": "image/jpeg", ".png": "image/png", ".webp": "image/webp"}
 
@@ -84,15 +84,23 @@ def upload_directory(source: Path, *, client: Any, bucket: str, public_base: str
 
     def upload(asset_id: str) -> str:
         path, key, url, content_type = jobs[asset_id]
+        renew_url = False
         try:
-            already_uploaded = registry.get(asset_id)["url"] == url
+            existing = registry.get(asset_id)
+            already_uploaded = material_source_url(existing) == url
+            if already_uploaded:
+                try:
+                    material_download_url(existing)
+                except MaterialUrlUnavailable:
+                    renew_url = True
         except KeyError:
             already_uploaded = False
-        if not already_uploaded:
+        if not already_uploaded or renew_url:
             data = path.read_bytes()
             if asset_id_for_bytes(data) != asset_id:
                 raise ValueError("Source image changed during upload")
-            client.put_object(Bucket=bucket, Key=key, Body=data, ContentType=content_type)
+            if not already_uploaded:
+                client.put_object(Bucket=bucket, Key=key, Body=data, ContentType=content_type)
             # Failed uploads never publish a new URL; each success is durable.
             storage = client.storage_metadata(key) if hasattr(client, "storage_metadata") else None
             registry.register(data, url, content_type, storage=storage)

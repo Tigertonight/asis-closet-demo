@@ -8,8 +8,16 @@ from fastapi.testclient import TestClient
 from PIL import Image
 
 import app.material_assets as materials
+import app.material_asset_signing as signing
 from app.material_assets import MaterialRegistry, material_download_url, router
 from scripts.qiniu_material_upload import QiniuUploadClient
+
+
+@pytest.fixture(autouse=True)
+def operator_credentials(monkeypatch, tmp_path):
+    monkeypatch.setenv('QINIU_ACCESS_KEY', 'test-ak')
+    monkeypatch.setenv('QINIU_SECRET_KEY', 'test-sk')
+    monkeypatch.setenv('QINIU_ENV_FILE', str(tmp_path / 'unused.env'))
 
 
 def test_qiniu_upload_checks_destination_and_checksum(monkeypatch):
@@ -33,16 +41,22 @@ def test_qiniu_upload_checks_destination_and_checksum(monkeypatch):
         client.put_object(**args)
 
 
-def test_private_download_signing_matches_official_sdk_without_storing_token(monkeypatch, tmp_path):
+def test_upload_persists_temporary_url_matching_official_sdk(monkeypatch, tmp_path):
     qiniu = pytest.importorskip('qiniu')
     monkeypatch.setenv('QINIU_ACCESS_KEY', 'test-ak')
     monkeypatch.setenv('QINIU_SECRET_KEY', 'test-sk')
     monkeypatch.setenv('QINIU_ENV_FILE', str(tmp_path / 'unused.env'))
     monkeypatch.setattr(materials.time, 'time', lambda: 1788900000)
-    record = {'url': 'http://example.com/path/a.png', 'storage': {'provider': 'qiniu', 'private': True}}
-    expected = qiniu.Auth('test-ak', 'test-sk').private_download_url(record['url'], expires=3600)
+    registry = MaterialRegistry(tmp_path / 'materials.json')
+    source = 'http://example.com/path/a.png'
+    asset_id = registry.register(b'image', source, 'image/png',
+        storage={'provider': 'qiniu', 'bucket': 'materials', 'key': 'path/a.png', 'private': True})
+    record = registry.get(asset_id)
+    expected = qiniu.Auth('test-ak', 'test-sk').private_download_url(source, expires=signing.DEFAULT_URL_TTL_SECONDS)
     assert material_download_url(record) == expected
-    assert '?' not in record['url']
+    assert record['sourceUrl'] == source
+    assert record['urlExpiresAt'] == 1788900000 + signing.DEFAULT_URL_TTL_SECONDS
+    assert 'token=' in record['url']
 
 
 def test_private_material_is_served_from_verified_cache_without_redirect_or_token(monkeypatch, tmp_path):
@@ -63,7 +77,7 @@ def test_private_material_is_served_from_verified_cache_without_redirect_or_toke
     assert response.status_code == 200
     assert response.content == data
     assert 'location' not in response.headers
-    assert 'token=' not in registry.path.read_text()
+    assert 'token=' in registry.get(asset_id)['url']
     (cache / (asset_id + '.image')).write_bytes(b'corrupt')
     response = TestClient(app).get(f'/api/v1/material-assets/{asset_id}/content')
     assert response.status_code == 503
