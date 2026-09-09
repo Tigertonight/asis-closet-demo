@@ -1070,3 +1070,93 @@ def test_account_profile_edit_is_owned_versioned_and_survives_expiry(monkeypatch
     assert restored['manual']['bodyShape'] == '梨型'
     assert restored['manual']['skin'] == '中性自然肤'
     assert selfit_onboarding._load_store()['reports'][0]['data']['typeId'] == 'flou'
+
+
+def test_profile_photo_replacement_updates_archive_and_serves_annotated_overlay(monkeypatch, tmp_path: Path) -> None:
+    """档案页换照：/me/profile 指向新照片的标注版（overlay），照片不再停留在旧图。"""
+    import io as _io
+
+    from PIL import Image
+
+    import app.selfit_photo as photo
+    _use_tmp_store(monkeypatch, tmp_path)
+    monkeypatch.setattr(auth, "AUTH_DIR", tmp_path / "auth")
+    monkeypatch.setattr(auth, "AUTH_STORE_PATH", tmp_path / "auth" / "auth_store.json")
+    monkeypatch.setattr(photo, "inspect_photo", lambda *args: photo.PhotoInspection(accepted=True))
+    monkeypatch.setattr(selfit_onboarding, '_archive_photo_to_qa', lambda *args: None)
+    client = TestClient(app)
+    result = client.post('/auth/phone/direct', json={'phone': '13800000690'}).json()
+    owner = {'Authorization': f"Bearer {result['access_token']}"}
+
+    def jpeg(color):
+        img = Image.new('RGB', (400, 700), color)
+        out = _io.BytesIO(); img.save(out, format='JPEG'); return out.getvalue()
+
+    # 第一次 onboarding 上传旧照片
+    first = _create_session(client, headers=owner)['session']['sessionId']
+    old = client.post(f'{API}/sessions/{first}/photos/face', files={'image': ('old.jpg', jpeg('#806050'), 'image/jpeg')}, headers=owner)
+    assert old.status_code == 200 and old.json()['photo']['status'] == 'accepted'
+    data = selfit_onboarding._load_store()
+    data['reports'].append({'report_id': 'rep_photo_swap', 'user_id': old.json()['photo']['assetId'] and data['sessions'][0]['user_id'],
+                            'session_id': first, 'created_at': '2026-09-09T00:00:00Z', 'data': {'typeId': 'flou', 'title': '造梦浪漫'}})
+    selfit_onboarding._write_store(data)
+
+    profile = client.get(f'{API}/me/profile', headers=owner).json()['profile']
+    assert profile['photos']['face'] == '/api/v1/selfit/me/photos/face?overlay=1'
+
+    # 档案页更换照片：新 session 上传（前端 replaceProfilePhoto 的路径）
+    second = _create_session(client, headers=owner)['session']['sessionId']
+    new = client.post(f'{API}/sessions/{second}/photos/face', files={'image': ('new.jpg', jpeg('#a08060'), 'image/jpeg')}, headers=owner)
+    assert new.status_code == 200
+
+    refreshed = client.get(f'{API}/me/profile', headers=owner).json()['profile']
+    assert refreshed['photos']['face'] == '/api/v1/selfit/me/photos/face?overlay=1'
+    # 索引必须已指向新照片，而不是停留在旧照片。
+    store = selfit_onboarding._load_store()
+    indexed = store['user_photos'][0]['photos']['face']
+    assert indexed['asset_id'] == new.json()['photo']['assetId']
+    assert indexed['asset_id'] != old.json()['photo']['assetId']
+
+    # overlay=1 返回带标注的 WebP 预览；无参数仍返回原图。
+    annotated = client.get(f'{API}/me/photos/face?overlay=1', headers=owner)
+    assert annotated.status_code == 200 and annotated.headers['content-type'] == 'image/webp'
+    assert Image.open(_io.BytesIO(annotated.content)).format == 'WEBP'
+    original = client.get(f'{API}/me/photos/face', headers=owner)
+    assert original.status_code == 200
+
+
+def test_account_profile_carries_suit_module_data(monkeypatch, tmp_path: Path) -> None:
+    _use_tmp_store(monkeypatch, tmp_path)
+    monkeypatch.setattr(auth, "AUTH_DIR", tmp_path / "auth")
+    monkeypatch.setattr(auth, "AUTH_STORE_PATH", tmp_path / "auth" / "auth_store.json")
+    client = TestClient(app)
+    result = client.post('/auth/phone/direct', json={'phone': '13800000685'}).json()
+    owner = {'Authorization': f"Bearer {result['access_token']}"}
+    session_id = _create_session(client, headers=owner)['session']['sessionId']
+    data = selfit_onboarding._load_store()
+    session = next(s for s in data['sessions'] if s['session_id'] == session_id)
+    session['photos'] = {'face': {'status': 'accepted', 'asset_id': 'asset_face', 'format': 'JPEG', 'attributes': {
+        'skin_tone': {'label': '中性自然肤', 'confidence': 0.72, 'status': 'warn', 'evidence': {'l_star': 63.8, 'ita_deg': 45.3, 'skin_undertone': '中性'}},
+        'face_shape': {'label': '圆脸', 'confidence': 0.86, 'status': 'pass', 'evidence': {}},
+    }, 'notes': []}}
+    data['reports'].append({'report_id': 'rep_suit_module', 'user_id': session['user_id'], 'session_id': session_id,
+                            'created_at': '2026-09-09T00:00:00Z', 'data': {'typeId': 'flou', 'title': '造梦浪漫'}})
+    selfit_onboarding._write_store(data)
+
+    profile = client.get(f'{API}/me/profile', headers=owner).json()['profile']
+    suit = profile['suit']
+    assert [f['key'] for f in suit['features']] == ['skin', 'faceShape', 'bodyShape']
+    skin_feature = suit['features'][0]
+    assert skin_feature['value'] == '中性自然肤' and skin_feature['source'] == 'photo'
+    face_analysis = suit['analyses']['face']['attributes']
+    assert face_analysis['skin']['label'] == '中性自然肤'
+    assert any(metric['key'] == 'lStar' for metric in face_analysis['skin']['metrics'])
+    assert suit['photos'] == {'face': True, 'body': False}
+    assert suit['features'][2]['value'] is None  # 没有全身照 → 身材比例未知
+
+    # 档案里手动纠正后，suit 模块以档案 manual 为准（source 变为 manual）。
+    saved = client.patch(f'{API}/me/profile', headers={**owner, 'If-Match': '1'},
+                         json={'reportId': 'rep_suit_module', 'manual': {'skin': '小麦色'}})
+    assert saved.status_code == 200
+    updated = saved.json()['profile']['suit']['features'][0]
+    assert updated['value'] == '小麦色' and updated['source'] == 'manual'

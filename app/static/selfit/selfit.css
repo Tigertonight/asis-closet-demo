@@ -1151,6 +1151,8 @@ body.is-share-gallery .app-shell { display: none; }
 /* Onboarding: preference first, then an editable suit observation. */
 [data-onboarding-stepper][data-progress="like"]::after { width: 0; }
 [data-onboarding-stepper][data-progress="suit"]::after { width: 102.5px; }
+/* 重新测试：stepper 只保留 like / vibe 两个圆圈与一段连线（suit 步隐藏，连线端点不变）。 */
+.is-retest .step[data-step="suit"] { display: none; }
 [data-screen="suit"] .page-copy { margin-top: 122px; }
 [data-screen="suit"] .page-copy p { line-height: 1.75; }
 [data-screen="suit"] .upload-grid { margin: 28px 32px 0; gap: 16px; }
@@ -1159,13 +1161,7 @@ body.is-share-gallery .app-shell { display: none; }
 [data-screen="like"] .preference-panel { padding-bottom: 112px; }
 .palette { position: relative; padding-bottom: 24px; }
 .palette::after { content: attr(aria-label); position: absolute; bottom: 6px; left: 0; right: 0; font-size: 14px; color: #666; }
-.suit-feature { margin: 12px 0; padding: 16px; border-radius: 16px; background: #fff; border: 1px solid #ece4e2; }
-.suit-feature header { display: flex; justify-content: space-between; align-items: center; color: #666; font-size: 14px; }
-.suit-feature header button { min-height: 44px; min-width: 44px; margin: -8px -4px -8px 0; border: 0; background: none; color: #8a011b; font-size: 14px; }
-.suit-feature h2, .suit-feature h3 { margin: 12px 0 8px; font-size: 20px; }
-.suit-feature small { font-size: 14px; color: #666; }
-.suit-feature p { font-size: 14px; line-height: 1.8; margin: 12px 0 0; color: #555; }
-.suit-feature .suit-advice { padding-top: 12px; border-top: 1px solid #f0e8e6; }
+/* suit 特征卡本体样式在 selfit-suit-cards.css（与「我的档案」共享）。 */
 .manual-group[hidden] { display: none; }
 [data-screen="vibe"] .vibe-questionnaire button { height: auto; min-height: 44px; white-space: normal; line-height: 1.65; padding: 12px 16px; text-align: left; }
 .screen--report .report-intro { padding-top: 24px; }
@@ -1253,39 +1249,11 @@ body.is-share-gallery .app-shell { display: none; }
 [data-screen="suit"].is-condensed .upload-sample { display: none; }
 [data-screen="suit"].is-condensed .photo-status-list { display: none; }
 [data-screen="suit"].is-condensed #suitFeatures { margin-top: 22px; }
-.suit-features-heading { margin: 2px 0 0; color: var(--suit-heading); font-size: 15px; line-height: 24px; font-weight: 600; letter-spacing: 0; }
-#suitFeatures.is-revealed .suit-feature--enter { animation: suit-card-in .55s cubic-bezier(.22,1,.36,1) backwards; }
-@keyframes suit-card-in { from { opacity: 0; transform: translateY(22px); } }
 @media (prefers-reduced-motion: reduce) {
   .suit-analyzing { animation: none; }
   .suit-analyzing-dots i,
-  [data-screen="suit"].is-analyzing .upload-card .upload-preview::before,
-  #suitFeatures.is-revealed .suit-feature--enter { animation: none; }
+  [data-screen="suit"].is-analyzing .upload-card .upload-preview::before { animation: none; }
 }
-.suit-feature { border-color: #e8e8e8; padding: 14px; background: #fff; }
-.suit-feature h2, .suit-feature h3 { font-size: 18px; margin: 8px 0; }
-.suit-feature header, .suit-feature small { color: #857167; }
-.suit-feature p { color: #79695f; }
-.suit-feature .suit-advice { border-color: #e8e8e8; }
-
-/* Photo-analysis evidence: status badge, measurement rows and plain-language notes. */
-.suit-feature-value { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: 8px 0; }
-.suit-feature-value h2, .suit-feature-value h3 { margin: 0; }
-.suit-analysis { margin-top: 12px; padding: 2px 14px; border-radius: 12px; background: #faf6f4; }
-.suit-analysis-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 0; font-size: 14px; line-height: 22px; }
-.suit-analysis-row + .suit-analysis-row { border-top: 1px solid #f0e7e3; }
-.suit-analysis-label { display: inline-flex; align-items: center; gap: 7px; min-width: 0; color: #79695f; }
-.suit-analysis-row > b { flex: none; color: #51423b; font-weight: 600; font-variant-numeric: tabular-nums; }
-.analysis-hint { flex: none; width: 20px; height: 20px; margin: -4px 0; padding: 0; border: 1px solid #ddccc4; border-radius: 50%; background: #fff; color: #a08a7e; font-size: 12px; line-height: 18px; font-weight: 600; min-height: 0; cursor: pointer; }
-.suit-analysis-notes { margin-top: 12px; padding: 10px 14px; border-radius: 12px; background: #faf0dc; }
-.suit-analysis-notes p { margin: 0; font-size: 13px; line-height: 21px; color: #8a6420; }
-.suit-analysis-notes p + p { margin-top: 6px; }
-.analysis-hint-dialog { width: min(100%,var(--screen-w)); margin: auto 0 0; padding: 26px 26px calc(22px + env(safe-area-inset-bottom)); border: 0; border-radius: 24px 24px 0 0; background: #fff; box-shadow: 0 -10px 44px rgba(0,0,0,.14); }
-.analysis-hint-dialog::backdrop { background: rgba(0,0,0,.42); }
-.analysis-hint-dialog h2 { margin: 0 0 12px; color: #51423b; font-size: 17px; line-height: 26px; }
-.analysis-hint-dialog p { margin: 0 0 22px; color: #79695f; font-size: 14px; line-height: 24px; }
-.analysis-hint-dialog form { display: block; }
-.analysis-hint-dialog .primary-action { width: 100%; margin: 0; }
 
 /* Single-feature edits use larger, centered options; initial setup stays compact. */
 .manual-form[data-mode="edit"] .skin-options,

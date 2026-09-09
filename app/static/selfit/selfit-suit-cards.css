@@ -1,0 +1,53 @@
+/* 适我 suit 特征卡共享样式：onboarding suit 步骤与「我的档案」共用（selfit-suit-cards.js）。 */
+.selfit-suit-cards {
+  --suit-cards-heading: #51423b;
+  --suit-cards-secondary: #857167;
+  --suit-cards-ink: #79695f;
+  --suit-cards-border: #e8e8e8;
+  --suit-cards-surface: #fff;
+  --suit-cards-edit: #8a011b;
+  --suit-cards-analysis-bg: #faf6f4;
+  --suit-cards-analysis-border: #f0e7e3;
+  --suit-cards-note-bg: #faf0dc;
+  --suit-cards-note-ink: #8a6420;
+}
+.suit-feature { margin: 12px 0; padding: 14px; border-radius: 16px; background: var(--suit-cards-surface); border: 1px solid var(--suit-cards-border); }
+.suit-feature header { display: flex; justify-content: space-between; align-items: center; color: var(--suit-cards-secondary); font-size: 14px; }
+.suit-feature header button { min-height: 44px; min-width: 44px; margin: -8px -4px -8px 0; border: 0; background: none; color: var(--suit-cards-edit); font-size: 14px; }
+.suit-feature h2, .suit-feature h3 { margin: 8px 0; font-size: 18px; color: var(--suit-cards-heading); }
+.suit-feature small { font-size: 14px; color: var(--suit-cards-secondary); }
+.suit-feature p { font-size: 14px; line-height: 1.8; margin: 12px 0 0; color: var(--suit-cards-ink); }
+.suit-features-heading { margin: 2px 0 0; color: var(--suit-cards-heading); font-size: 15px; line-height: 24px; font-weight: 600; letter-spacing: 0; }
+
+/* Photo-analysis evidence: measurement rows and plain-language notes. */
+.suit-feature-value { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: 8px 0; }
+.suit-feature-value h2, .suit-feature-value h3 { margin: 0; }
+.suit-analysis { margin-top: 12px; padding: 2px 14px; border-radius: 12px; background: var(--suit-cards-analysis-bg); }
+.suit-analysis-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 0; font-size: 14px; line-height: 22px; }
+.suit-analysis-row + .suit-analysis-row { border-top: 1px solid var(--suit-cards-analysis-border); }
+.suit-analysis-label { display: inline-flex; align-items: center; gap: 7px; min-width: 0; color: var(--suit-cards-ink); }
+.suit-analysis-row > b { flex: none; color: var(--suit-cards-heading); font-weight: 600; font-variant-numeric: tabular-nums; }
+.analysis-hint { flex: none; width: 20px; height: 20px; margin: -4px 0; padding: 0; border: 1px solid #ddccc4; border-radius: 50%; background: #fff; color: #a08a7e; font-size: 12px; line-height: 18px; font-weight: 600; min-height: 0; cursor: pointer; }
+.suit-analysis-notes { margin-top: 12px; padding: 10px 14px; border-radius: 12px; background: var(--suit-cards-note-bg); }
+.suit-analysis-notes p { margin: 0; font-size: 13px; line-height: 21px; color: var(--suit-cards-note-ink); }
+.suit-analysis-notes p + p { margin-top: 6px; }
+
+/* 穿搭建议：分隔线 + 小标签 + 正文。 */
+.suit-advice { padding-top: 12px; border-top: 1px solid var(--suit-cards-border); }
+.suit-advice-label { display: block; margin-bottom: 2px; color: var(--suit-cards-secondary); font-size: 12px; line-height: 18px; font-weight: 600; letter-spacing: 1px; }
+
+/* 参数说明弹窗（组件自带，两个页面共用）。 */
+.selfit-suit-hint-dialog { width: min(100%, 393px); margin: auto 0 0; padding: 26px 26px calc(22px + env(safe-area-inset-bottom)); border: 0; border-radius: 24px 24px 0 0; background: #fff; box-shadow: 0 -10px 44px rgba(0,0,0,.14); }
+.selfit-suit-hint-dialog::backdrop { background: rgba(0,0,0,.42); }
+.selfit-suit-hint-dialog h2 { margin: 0 0 12px; color: #51423b; font-size: 17px; line-height: 26px; }
+.selfit-suit-hint-dialog p { margin: 0 0 22px; color: #79695f; font-size: 14px; line-height: 24px; }
+.selfit-suit-hint-dialog form { display: block; }
+.selfit-suit-hint-dialog .suit-hint-close { display: block; width: 100%; min-height: 46px; border: 0; border-radius: 999px; background: #8a011b; color: #fff; font-size: 16px; font-weight: 600; cursor: pointer; }
+.selfit-suit-hint-dialog .suit-hint-close:active { opacity: .85; }
+
+/* 首次揭示的阶梯入场（仅 onboarding reveal 时使用）。 */
+.selfit-suit-cards .suit-feature--enter { animation: suit-card-in .55s cubic-bezier(.22,1,.36,1) backwards; }
+@keyframes suit-card-in { from { opacity: 0; transform: translateY(22px); } }
+@media (prefers-reduced-motion: reduce) {
+  .selfit-suit-cards .suit-feature--enter { animation: none; }
+}

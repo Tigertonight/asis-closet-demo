@@ -1116,10 +1116,37 @@ def _account_profile(data: dict[str, Any], user_id: str) -> dict[str, Any]:
         "tested": report is not None,
         "revision": int(stored.get("revision") or 1),
         "manual": stored.get("manual") if "manual" in stored else _profile_manual(session or {}),
-        "photos": {kind: f"/api/v1/selfit/me/photos/{kind}" if _latest_user_photo(data, user_id, kind) else None for kind in ("face", "body")},
+        "photos": {kind: f"/api/v1/selfit/me/photos/{kind}?overlay=1" if _latest_user_photo(data, user_id, kind) else None for kind in ("face", "body")},
         "report": {"reportId": report["report_id"], "typeId": report_data.get("typeId"),
                    "title": report_data.get("title"), "heroImage": report_data.get("heroImage") or {}} if report else None,
+        "suit": _account_suit_summary(data, user_id, session, stored),
     }
+
+
+def _account_suit_summary(data: dict[str, Any], user_id: str, session: dict[str, Any] | None, stored: dict[str, Any]) -> dict[str, Any]:
+    """我的档案顶部的 suit 模块数据：与 /sessions/{id}/suit 同构。
+
+    手动纠正以档案里保存的 manual 为准（档案编辑优先于照片推断），
+    照片视图沿用「session 优先、同账号最近 accepted 回填」的口径。
+    """
+    from app.selfit_suit import suit_summary
+    record = dict(session or {"session_id": "", "user_id": user_id})
+    # 只有档案/session 里真实保存过的手动选择才进 manual，
+    # 否则照片推断值会被误标成「由你选择」（source 口径与 /sessions/{id}/suit 一致）。
+    record["manual"] = stored.get("manual") if "manual" in stored else ((session or {}).get("manual") or {})
+    photos_view: dict[str, Any] = {}
+    analyses: dict[str, Any] = {}
+    for kind in selfit_photo.PHOTO_KINDS:
+        photo = _suit_photo(data, record, kind)
+        if photo and photo.get("status") == "accepted":
+            photos_view[kind] = photo
+            analyses[kind] = selfit_photo.public_analysis(
+                photo.get("attributes") or {}, photo.get("notes") or [], kind
+            )
+    summary = suit_summary({**record, "photos": photos_view})
+    summary["photos"] = {kind: bool(photos_view.get(kind)) for kind in selfit_photo.PHOTO_KINDS}
+    summary["analyses"] = analyses
+    return summary
 
 
 @router.get("/me/profile")
@@ -1150,9 +1177,15 @@ async def update_my_profile(request: Request, user: dict[str, Any] = Depends(get
 @router.get("/me/photos/{kind}")
 async def get_my_onboarding_photo(
     kind: str,
+    overlay: str = "",
     user: dict[str, Any] = Depends(get_current_user),
 ) -> Response:
-    """Serve the signed-in user's latest accepted onboarding photo."""
+    """Serve the signed-in user's latest accepted onboarding photo.
+
+    ``?overlay=1`` returns the same annotated analysis preview the onboarding
+    suit screen shows (orientation-corrected, WebP, with the colored
+    measurement lines drawn on the photo).
+    """
 
     if kind not in selfit_photo.PHOTO_KINDS:
         return _error_response(404, "photo.not_found", "没有找到这张照片。")
@@ -1175,6 +1208,30 @@ async def get_my_onboarding_photo(
     path = store.local_path(key)
     if path is None:
         return _error_response(404, "photo.not_found", "这张照片暂时无法读取。")
+
+    if overlay in {"1", "true"}:
+        overlay_key = f"{session_id}/{asset_id}_analysis-v1.webp"
+        cached = store.local_path(overlay_key)
+        if cached is not None and cached.exists():
+            return FileResponse(cached, media_type="image/webp", headers={"Cache-Control": "no-store"})
+
+        def render_annotated() -> bytes:
+            from app.qa_onboarding import _render_face_overlay, _render_body_overlay
+            with Image.open(path) as original:
+                preview = ImageOps.exif_transpose(original).convert("RGB")
+                preview.thumbnail((1200, 1200))
+                renderer = _render_face_overlay if kind == "face" else _render_body_overlay
+                with selfit_photo._INSPECT_SEMAPHORE:
+                    annotated = renderer(preview, {}, include_details=False)
+                output = io.BytesIO()
+                annotated.save(output, format="WEBP", quality=86, method=4)
+                content = output.getvalue()
+                store.save(overlay_key, content, "image/webp")
+                return content
+
+        content = await run_in_threadpool(render_annotated)
+        return Response(content=content, media_type="image/webp", headers={"Cache-Control": "no-store"})
+
     content_type = {".jpg": "image/jpeg", ".png": "image/png", ".webp": "image/webp"}[suffix]
     return FileResponse(path, media_type=content_type, headers={"Cache-Control": "private, max-age=300"})
 

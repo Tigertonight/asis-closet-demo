@@ -235,7 +235,7 @@ def test_selfit_auth_adapter_and_bearer_wiring_are_available() -> None:
     assert "headers.Authorization = `Bearer ${accessToken}`" in api.text
     assert "getLatestReport()" in api.text
     assert "getAccessToken: () => auth.accessToken" in runtime.text
-    assert "state.authUser ? 'intro' : 'login'" in runtime.text
+    assert "state.authUser ? (retestEntry ? 'like' : 'intro') : 'login'" in runtime.text
     assert "auth.directPhone(normalizedPhone())" in runtime.text
     assert "openAppForExistingReport()" in runtime.text
     assert "/selfit/try-on?from=login&persona=" in runtime.text

@@ -237,6 +237,38 @@ def test_onboarding_flow_and_vibe_semantic_order():
     assert "showScreen('report');" in runtime
 
 
+def test_retest_entry_skips_intro_and_suit_steps():
+    """档案页「重新测试」跳过过场直达 like 并跳过 suit；首次 onboarding 完整流程不变。"""
+    from pathlib import Path
+    runtime = Path('app/static/selfit/selfit.js').read_text()
+    # boot 分支：retest 不进 splash，直接 showScreen('like')，未登录才退回登录页。
+    assert "if (retestEntry) {" in runtime
+    assert "showScreen('like');\n    void authReady.then((session) => {\n      if (!session?.user) showScreen('login');" in runtime
+    assert "state.authUser ? (retestEntry ? 'like' : 'intro') : 'login'" in runtime
+    assert "showScreen(retestEntry ? 'vibe' : 'suit')" in runtime
+    # retest 模式下 stepper 只显示 like / vibe 两步；vibe 的返回回到 like。
+    assert "back: 'like', progress: 'vibe', current: 'vibe', done: ['like']" in runtime
+    assert "name === 'like') config = { back: '', progress: 'like', current: 'like', done: [] }" in runtime
+    assert "onboardingBack.hidden = !config.back" in runtime
+    css = Path('app/static/selfit/selfit.css').read_text()
+    assert '.is-retest .step[data-step="suit"] { display: none; }' in css
+
+
+def test_feature_edit_returns_to_previous_scroll_position():
+    """特征卡「修改」保存/取消后回到点击前的位置，而不是回到顶部。"""
+    from pathlib import Path
+    runtime = Path('app/static/selfit/selfit.js').read_text()
+    studio = Path('app/static/selfit-tryon/studio.js').read_text()
+    # onboarding：openManual 记录位置；showScreen 返回 suit 时恢复并在重渲染后校准。
+    assert 'let suitReturnScroll = null;' in runtime
+    assert "suitReturnScroll = suitScreen ? suitScreen.scrollTop : null;" in runtime
+    assert "previous === 'suit-manual' && suitReturnScroll != null" in runtime
+    assert "renderSuit().then(() => {" in runtime
+    # 我的档案：onEdit 记录位置；go('profile') 返回时恢复。
+    assert "profileReturnScroll=$(\"#screen\").scrollTop;" in studio
+    assert 'if (page === "profile" && profileReturnScroll != null)' in studio
+
+
 def test_saved_suit_photos_are_scoped_to_session_owner():
     from app.selfit_onboarding import _suit_photo
     saved = {'session_id': 'old', 'asset_id': 'asset_face', 'format': 'JPEG'}

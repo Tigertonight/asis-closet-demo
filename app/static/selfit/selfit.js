@@ -21,9 +21,19 @@
   };
   const updateOnboardingNav = (name) => {
     if (!onboardingNav) return;
-    const config = ONBOARDING_NAV[name];
+    // 重新测试（从「我的档案」进入）：无过场直接从 like 开始，跳过 suit 环节，
+    // stepper 只显示 like / vibe 两个圆圈（.is-retest 隐藏 suit 步）；
+    // 首次 onboarding 仍走完整 intro → like → suit → vibe。
+    let config = ONBOARDING_NAV[name];
+    if (retestEntry && config) {
+      if (name === 'vibe') config = { back: 'like', progress: 'vibe', current: 'vibe', done: ['like'] };
+      else if (name === 'like') config = { back: '', progress: 'like', current: 'like', done: [] };
+      else config = null;
+    }
     onboardingNav.hidden = !config;
     if (!config) return;
+    // like 是 retest 的第一步：没有可返回的上一屏，隐藏返回键。
+    if (onboardingBack) onboardingBack.hidden = !config.back;
     onboardingBack?.setAttribute('data-back', config.back);
     onboardingStepper?.setAttribute('data-progress', config.progress);
     onboardingSteps.forEach((step) => {
@@ -39,6 +49,7 @@
   const retestEntry = entryParams.get('entry') === 'retest';
   const archiveReportEntry = entryParams.get('from') === 'mirror' && entryParams.get('return_screen') === 'profile';
   document.body.classList.toggle('is-archive-report', archiveReportEntry);
+  document.body.classList.toggle('is-retest', retestEntry);
   if(archiveReportEntry) {document.querySelector('.report-nav h2').textContent='型格报告';}
   const handoffToken = entryParams.get('handoff') || '';
   const sharedReportEntry = entryParams.get('from') === 'shared-report';
@@ -164,11 +175,22 @@
     if (previous !== name) track('screen_view', { from: previous, to: name });
     updateOnboardingNav(name);
     themeColor?.setAttribute('content', ['splash', 'loading'].includes(name) ? '#8a011b' : '#fafafa');
-    next.scrollTop = 0;
+    // 从 suit-manual 返回 suit 时保持点击「修改」前的位置；其余进入仍从顶部开始。
+    if (name === 'suit' && previous === 'suit-manual' && suitReturnScroll != null) next.scrollTop = suitReturnScroll;
+    else next.scrollTop = 0;
     if(name === 'report') requestAnimationFrame(()=>syncReportActions());
     // 进入 suit 屏时同步渲染：旧 session/跨账号照片回填要让上传槽和特征卡一起恢复，
     // 否则会出现「只传了全身照，肤色脸型却自动出来了」的隐形旧数据。
-    if (name === 'suit') renderSuit().catch(() => {});
+    if (name === 'suit') {
+      const returnScroll = previous === 'suit-manual' ? suitReturnScroll : null;
+      suitReturnScroll = null;
+      // 卡片重渲染后高度可能微移，渲染完成后再校准一次位置。
+      renderSuit().then(() => {
+        if (returnScroll == null || state.screen !== 'suit') return;
+        const suitScreen = document.querySelector('[data-screen="suit"]');
+        if (suitScreen) suitScreen.scrollTop = returnScroll;
+      }).catch(() => {});
+    }
   };
 
   const returnToReportParent = () => {
@@ -218,7 +240,7 @@
     splashTransitioning = true; clearTimeout(splashTimer); splash.classList.add('is-leaving');
     setTimeout(async () => {
       await authReady;
-      let destination = state.authUser ? 'intro' : 'login';
+      let destination = state.authUser ? (retestEntry ? 'like' : 'intro') : 'login';
       if (handoffToken) destination = state.authUser ? 'like' : 'phone-login';
       if (handoffToken && state.authUser) {
         try { await claimPendingHandoff(); }
@@ -311,6 +333,8 @@
       return;
     }
     if (await openAppForExistingReport()) return;
+    // 重新测试跳过 intro 过场，直接进入 like。
+    if (retestEntry) { showScreen('like'); return; }
     showScreen('intro');
     playIntro();
   };
@@ -366,83 +390,7 @@
     }
   });
 
-  const ANALYSIS_HINTS = {
-    lStar: {
-      title: '肤色明度 L* 是什么？',
-      body: 'L* 是国际通用的颜色明度刻度，范围 0–100：数字越大肤色越明亮，越小越深邃。我们取了你脸上额头、两颊等最接近素颜的几个区域，平均后得到这个数。',
-    },
-    ita: {
-      title: '白皙度 ITA 是什么？',
-      body: 'ITA° 是色彩学里衡量肤色白皙程度的角度，由明度和黄度一起算出。角度越大越偏白皙，越小越偏小麦色或更深。它和 L* 互相印证，用来判断你的肤色档位。',
-    },
-    undertone: {
-      title: '肤色底调是什么？',
-      body: '底调指肤色的冷暖倾向：冷调偏粉、暖调偏黄、橄榄调偏青灰，中性则介于冷暖之间。挑粉底、口红和衣服颜色时，底调比深浅更重要。',
-    },
-    lengthWidth: {
-      title: '「脸长 / 脸宽」是什么？',
-      body: '脸的长度除以脸的宽度。越接近 1 越圆润饱满，超过 1.3 左右会显得修长。这是区分圆脸和鹅蛋脸最主要的指标。',
-    },
-    jawCheek: {
-      title: '「下颌宽 / 颧骨宽」是什么？',
-      body: '下颌最宽处除以颧骨最宽处。数值小说明下颌收得比较紧（偏尖、偏心形脸），接近 1 说明下颌和颧骨差不多宽（偏方脸或圆脸）。',
-    },
-    foreheadCheek: {
-      title: '「额头宽 / 颧骨宽」是什么？',
-      body: '额头最宽处除以颧骨最宽处。大于 1 说明额头比颧骨宽（偏心形脸），小于 1 说明颧骨更突出（偏菱形脸）。',
-    },
-    hipShoulder: {
-      title: '「胯宽 / 肩宽」是什么？',
-      body: '胯部宽度除以肩部宽度。大于 1 说明胯比肩宽（梨型特征），小于 1 说明肩比胯宽（倒三角特征）。',
-    },
-    waistHip: {
-      title: '「腰宽 / 胯宽」是什么？',
-      body: '腰部宽度除以胯部宽度。数值越小说明腰线越明显（沙漏型特征），接近 1 说明腰和胯差不多宽（矩型特征）。',
-    },
-  };
-  const openAnalysisHint = (key) => {
-    const hint = ANALYSIS_HINTS[key];
-    if (!hint) return;
-    document.querySelector('#analysisHintTitle').textContent = hint.title;
-    document.querySelector('#analysisHintBody').textContent = hint.body;
-    document.querySelector('#analysisHintDialog').showModal();
-  };
-  const buildAnalysisHintButton = (key, label) => {
-    const button = document.createElement('button');
-    button.type = 'button';
-    button.className = 'analysis-hint';
-    button.textContent = '?';
-    button.setAttribute('aria-label', `${label}是什么意思`);
-    button.onclick = () => openAnalysisHint(key);
-    return button;
-  };
-  const buildAnalysisMetrics = (analysis) => {
-    const wrap = document.createElement('div');
-    wrap.className = 'suit-analysis';
-    (analysis.metrics || []).forEach((metric) => {
-      const row = document.createElement('div');
-      row.className = 'suit-analysis-row';
-      const label = document.createElement('span');
-      label.className = 'suit-analysis-label';
-      label.textContent = metric.label;
-      label.append(buildAnalysisHintButton(metric.key, metric.label));
-      const value = document.createElement('b');
-      value.textContent = metric.value;
-      row.append(label, value);
-      wrap.append(row);
-    });
-    return wrap;
-  };
-  const buildAnalysisNotes = (notes) => {
-    const wrap = document.createElement('div');
-    wrap.className = 'suit-analysis-notes';
-    notes.forEach((note) => {
-      const item = document.createElement('p');
-      item.textContent = note.suggestion ? `${note.message}——${note.suggestion}` : note.message;
-      wrap.append(item);
-    });
-    return wrap;
-  };
+  // suit 特征卡由共享组件渲染（与「我的档案」共用），参数说明弹窗也由组件自带。
 
   const validatePhoto = (file) => {
     if (!file) return '请选择照片';
@@ -494,10 +442,14 @@
   };
   let editingFeature = null;
   let manualBeforeEdit = null;
+  // 进入 suit-manual 时记录 suit 屏的滚动位置，保存/取消返回后恢复原位而不是回到顶部。
+  let suitReturnScroll = null;
   const analysisOverlayUrls = {};
   const openManual = (key = null) => {
     manualBeforeEdit = { ...state.manual };
     editingFeature = key;
+    const suitScreen = document.querySelector('[data-screen="suit"]');
+    suitReturnScroll = suitScreen ? suitScreen.scrollTop : null;
     document.querySelector('.manual-form').dataset.mode = key ? 'edit' : 'setup';
     document.querySelector('#manualTitle').textContent = key ? `修改${({skin:'肤色',faceShape:'脸型',bodyShape:'身材比例'})[key]}` : '选择更接近自己的特点';
     document.querySelectorAll('.manual-group').forEach(group => { group.hidden = Boolean(key && group.querySelector('[data-manual]').dataset.manual !== key); });
@@ -543,45 +495,14 @@
       screen?.classList.remove('is-analyzing');
     }
     const visibleFeatures = summary.features.filter(feature => feature.key !== 'bodyShape' || bodyPhotoReady || feature.value);
-    container.replaceChildren();
-    const heading = document.createElement('h2');
-    heading.className = 'suit-features-heading';
-    if (firstReveal) heading.classList.add('suit-feature--enter');
-    heading.textContent = '从照片里认识到的你';
-    container.append(heading);
-    visibleFeatures.forEach((feature, index) => {
-      state.manual[feature.key] = feature.value || null;
-      const analysis = (analyses[feature.key === 'bodyShape' ? 'body' : 'face'] || {}).attributes?.[feature.key] || null;
-      const card = document.createElement('article'); card.className = 'suit-feature';
-      const header = document.createElement('header');
-      const title = document.createElement('span'); title.textContent = feature.title;
-      const edit = document.createElement('button'); edit.type = 'button'; edit.textContent = '修改'; edit.setAttribute('aria-label', `修改${feature.title}`); edit.onclick = () => openManual(feature.key);
-      header.append(title, edit);
-      const valueRow = document.createElement('div'); valueRow.className = 'suit-feature-value';
-      const value = document.createElement('h3');
-      value.textContent = feature.value || '等你补充';
-      if (analysis?.subLabel && feature.source === 'photo' && feature.value === analysis.label) value.textContent = `${feature.value} · ${analysis.subLabel}`;
-      valueRow.append(value);
-      const description = document.createElement('p'); description.textContent = feature.description;
-      card.append(header, valueRow);
-      if (feature.source !== 'photo') {
-        const source = document.createElement('small');
-        const photoKind = feature.key === 'bodyShape' ? 'body' : 'face';
-        source.textContent = feature.source === 'manual' ? '由你选择' : (summary.photos?.[photoKind] ? '暂时无法判断' : '还没有上传照片');
-        card.append(source);
-      }
-      card.append(description);
-      if (analysis) {
-        if (analysis.metrics?.length) card.append(buildAnalysisMetrics(analysis));
-        if (analysis.notes?.length) card.append(buildAnalysisNotes(analysis.notes));
-      }
-      const advice = document.createElement('p'); advice.className = 'suit-advice'; advice.textContent = `穿搭可以这样试 · ${feature.advice}`;
-      card.append(advice);
-      if (firstReveal) {
-        card.classList.add('suit-feature--enter');
-        card.style.animationDelay = `${110 + index * 120}ms`;
-      }
-      container.append(card);
+    visibleFeatures.forEach(feature => { state.manual[feature.key] = feature.value || null; });
+    window.SelfitSuitCards.render(container, {
+      features: visibleFeatures,
+      analyses,
+      photos: summary.photos || {},
+      heading: true,
+      entrance: firstReveal,
+      onEdit: (key) => openManual(key),
     });
     document.querySelector('#suitNext').disabled = !visibleFeatures.every(feature => feature.value);
     if (firstReveal) {
@@ -675,8 +596,6 @@
       await uploadPhoto(kind, new File([blob], url.split('/').pop(), { type: blob.type || 'image/jpeg' }));
     }));
   });
-  const analysisHintDialog = document.querySelector('#analysisHintDialog');
-  analysisHintDialog?.addEventListener('click', (event) => { if (event.target === analysisHintDialog) analysisHintDialog.close(); });
 
   document.querySelector('.manual-form').addEventListener('click', (event) => {
     const button = event.target.closest('[data-manual]'); if (!button) return;
@@ -712,7 +631,8 @@
     const result = await api.savePreferences(sessionId, { axes: state.axes, palette: state.palette });
     state.revision = result.session?.revision || state.revision;
     track('preferences_saved', { palette: state.palette });
-    showScreen('suit');
+    // 重新测试时跳过 suit 环节（照片在档案页维护），直接进入 vibe。
+    showScreen(retestEntry ? 'vibe' : 'suit');
   }));
 
   document.querySelector('#vibeQuestions').addEventListener('click', (event) => {
@@ -1950,6 +1870,16 @@
     document.querySelectorAll('[data-public-report-try]').forEach((link) => link.addEventListener('click', () => {
       track('shared_report_try_clicked', { placement: link.dataset.publicReportTry || '', typeId: link.dataset.sharedTypeId || '' });
     }));
+    return;
+  }
+
+  if (retestEntry) {
+    // 重新测试：跳过「适我」过场，直达 like；未登录时才退回登录页。
+    shell.classList.add('is-ready');
+    showScreen('like');
+    void authReady.then((session) => {
+      if (!session?.user) showScreen('login');
+    }).catch(() => showScreen('login'));
     return;
   }
 

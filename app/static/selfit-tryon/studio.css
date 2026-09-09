@@ -1305,18 +1305,25 @@ button.composition-piece:focus-visible { outline:2px solid #8a011b; outline-offs
 .profile-header button:disabled { opacity:.25; }
 .profile-header svg { width:24px; height:24px; fill:none; stroke:currentColor; stroke-width:1.5; stroke-linecap:round; stroke-linejoin:round; }
 .profile-analysis { background:white; border-radius:20px; padding:20px; }
-.profile-analysis h2,.profile-more h2 { font-weight:400; font-size:14px; line-height:20px; margin:0 0 8px; }
-.profile-analysis p { font-size:12px; line-height:18px; color:#999; min-height:36px; margin:0 0 16px; }
-.profile-analysis-row { display:grid; grid-template-columns:73.4px 1fr 1fr; align-items:start; column-gap:24px; }
-.profile-analysis section+section { margin-top:16px; padding-top:14px; border-top:1px dashed #00000014; }
-.profile-analysis section+section p { min-height:18px; line-height:18px; margin-bottom:16px; }
+.profile-more h2 { font-weight:400; font-size:14px; line-height:20px; margin:0 0 8px; }
+/* 我的档案顶部 suit 模块：照片并排 + 共享特征卡（卡片样式在 selfit-suit-cards.css）。 */
+.profile-suit-photos { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+.profile-suit-photos .profile-photo { width:100%; height:auto; aspect-ratio:166/203; border-radius:12px; }
+.profile-suit-photos .profile-photo-empty { font-size:13px; }
+.profile-suit-cards { margin-top:4px; }
+/* 照片直接点击替换：与 onboarding 的 suit 页一致（档案页无编辑按钮）。 */
+.profile-photo-replace { position:relative; display:block; cursor:pointer; }
+.profile-photo-replace input { position:absolute; inset:0; width:100%; height:100%; opacity:0; cursor:pointer; }
+.profile-photo-replace:focus-within { outline:2px solid #8a011b; outline-offset:3px; }
+.profile-photo-swap { position:absolute; right:6px; bottom:6px; width:24px; height:24px; border-radius:50%; display:grid; place-items:center; background:rgba(138,1,27,.85); color:#fff; font-size:15px; line-height:1; pointer-events:none; }
+.profile-photo-replace:active img { opacity:.8; }
+.profile-photo-replace.is-replacing::after { content:"正在更换…"; position:absolute; inset:0; display:grid; place-items:center; background:rgba(255,255,255,.72); color:#8a011b; font-size:13px; }
 .profile-photo { width:73.4px; height:88px; border-radius:7px; overflow:hidden; background:#f3f1ef; }
 .profile-photo>img { width:100%; height:100%; object-fit:cover; display:block; }
 .profile-photo-empty { height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px; font-size:12px; color:#999; }
 .profile-photo-empty small { font-size:10px; }
 .profile-attribute { display:flex; flex-direction:column; align-items:center; gap:8px; font-size:14px; white-space:nowrap; }
 .profile-attribute-art { height:56px; width:36px; object-fit:contain; }
-.profile-analysis section+section .profile-attribute-art { height:65px; width:23px; }
 .profile-skin { display:block; width:40px; height:40px; border-radius:50%; margin:8px 0; flex-shrink:0; }
 .profile-unknown { display:grid; place-items:center; height:56px; width:36px; color:#bbb; }
 .profile-report-card { position:relative; width:100%; max-width:361px; margin:24px auto 0; }
@@ -1360,14 +1367,10 @@ button.composition-piece:focus-visible { outline:2px solid #8a011b; outline-offs
 .mirror-profile-card { border:0; }
 .profile-more button>img { width:28px; height:46px; object-fit:contain; }
 .profile-more button>span { min-width:0; font-size:12px; }
-.profile-analysis section+section .profile-attribute { line-height:15px; }
 .profile-test-invite strong { font-size:20px; line-height:20px; font-weight:400; }
 .profile-test-invite>img { width:234.648px; height:100px; object-fit:contain; }
 .profile-test-invite>span,.profile-retest { display:grid; place-items:center; min-height:44px; width:118px; border-radius:22px; background:transparent; color:#333; font-size:14px; margin-top:-4px; position:relative; isolation:isolate; }
 .profile-retest { position:absolute; left:50%; bottom:12px; transform:translateX(-50%); margin:0; text-decoration:none; }
-.profile-photo-add { position:relative; border:0; padding:0; cursor:pointer; }
-.profile-photo-add>img { opacity:.55; object-fit:contain; }
-.profile-photo-add>span { position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); border-radius:50%; background:#8a011b; color:white; width:24px; height:24px; display:grid; place-items:center; font-size:18px; }
 .profile-test-invite>* { flex-shrink:0; }
 .profile-test-invite>span::before,.profile-retest::before { content:""; position:absolute; inset:4px 0; background:white; border-radius:18px; z-index:-1; }
 @media(max-width:430px) { .profile-edit-screen { min-height:100dvh; } }

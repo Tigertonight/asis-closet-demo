@@ -109,7 +109,7 @@
     closetCategory: "all",
     wardrobeDeleting: "",
     builderMatching:false, builderRequest:0, builderAnchor:null, builderItems:[], builderMatch:null, builderMatchError:"",
-    profile: null, profileLoading: false, profileError: "", profileSaving: false, profileDraft: null, profilePhotoDraft: {},
+    profile: null, profileLoading: false, profileError: "", profileSaving: false, profileDraft: null, profilePhotoDraft: {}, profileSuit: null, profileReplacing: "",
     chatMessages: [], chatDraft: "", chatBusy: false, chatLoaded: false, chatLoading: false, chatError: "", chatReturn: "mirror",
     items: reference ? fixtures : [],
     outfits: reference ? fixtureOutfits : [],
@@ -599,30 +599,33 @@
     return image(['face-oval','body-rectangle'].includes(key) ? `${A}main-app/archive-${key}.svg` : `/static/selfit/assets/manual-selection/${key}@4x.png`, '', 'profile-attribute-art');
   }
   function profileHeader(edit=false) {
-    return `<header class="profile-header"><button data-page="${edit ? 'profile' : 'mirror'}" aria-label="${edit ? '返回我的档案' : '返回试衣镜'}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 5-7 7 7 7"/></svg></button><h1>${edit ? '编辑档案' : '我的档案'}</h1>${edit || !state.profile?.tested ? '<span aria-hidden="true"></span>' : `<button data-action="edit-profile" aria-label="编辑档案"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 4 5 5M4 20l5-1L20 8a2 2 0 0 0-5-5L4 14z"/></svg></button>`}</header>`;
+    return `<header class="profile-header"><button data-page="${edit ? 'profile' : 'mirror'}" aria-label="${edit ? '返回我的档案' : '返回试衣镜'}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 5-7 7 7 7"/></svg></button><h1>${edit ? '编辑档案' : '我的档案'}</h1><span aria-hidden="true"></span></header>`;
   }
   function profilePhoto(kind, editable=false) {
+    const replacing = state.profileReplacing===kind;
     const src=(editable ? state.profilePhotoDraft[kind]?.url : '') || state.profile?.photos?.[kind];
     const label=kind==='face' ? '正面照' : '全身照';
     const content=src ? image(src,label) : `<span class="profile-photo-empty">${label}<small>还未上传</small></span>`;
-    if(!src && !editable && state.profile?.tested) return `<button class="profile-photo profile-photo-add" data-action="edit-profile" aria-label="上传${label}">${image(`/static/selfit/assets/${kind}-upload-guide@2x.png`, '')}<span aria-hidden="true">＋</span></button>`;
-    return editable ? `<label class="profile-photo edit-photo">${content}<span class="profile-photo-plus" aria-hidden="true">＋</span><input type="file" accept="image/*" data-profile-photo="${kind}" aria-label="更换${label}" ${state.profileSaving ? 'disabled' : ''}></label>` : `<div class="profile-photo">${content}</div>`;
+    // 与 onboarding 的 suit 页一致：照片本身就是替换入口，点击直接换图。
+    if(editable) return `<label class="profile-photo edit-photo">${content}<span class="profile-photo-plus" aria-hidden="true">＋</span><input type="file" accept="image/*" data-profile-photo="${kind}" aria-label="更换${label}" ${state.profileSaving ? 'disabled' : ''}></label>`;
+    return `<label class="profile-photo profile-photo-replace ${replacing ? 'is-replacing' : ''}" title="更换${label}">${content}${src ? '<span class="profile-photo-swap" aria-hidden="true">＋</span>' : ''}<input type="file" accept="image/*" data-profile-photo="${kind}" aria-label="更换${label}" ${replacing ? 'disabled' : ''}></label>`;
   }
   function profileStatus(edit=false) {
     return `<section class="profile-screen">${profileHeader(edit)}<div class="profile-status" role="status">${state.profileError ? `<p>${esc(state.profileError)}</p>${!savedSession?.accessToken && !reference ? '<a href="/selfit?entry=login">去登录</a>' : '<button data-action="reload-profile">重新加载</button>'}` : '<p>正在整理你的档案…</p>'}</div></section>`;
   }
+  // 从档案特征卡进入编辑时记录的滚动位置，返回档案页后恢复原位而不是回到顶部。
+  let profileReturnScroll = null;
   function profile() {
     if(!state.profile || state.profileLoading) return profileStatus();
-    const p=state.profile,m=p.manual || {},r=p.report;
-    const attribute=(field)=>`<div class="profile-attribute">${profileArt(field,m[field])}<span>${esc(m[field] || '待完善')}</span></div>`;
-    return `<section class="profile-screen">${profileHeader()}${p.tested ? `<div class="profile-analysis"><section><h2>面部分析</h2><p>了解脸型与肤色，找到衬托你的风格。</p><div class="profile-analysis-row">${profilePhoto('face')}${attribute('faceShape')}${attribute('skin')}</div></section><section><h2>身型分析</h2><p>了解身体线条，找到适合你的穿搭比例。</p><div class="profile-analysis-row">${profilePhoto('body')}${attribute('bodyShape')}</div></section></div>` : ''}${r ? `<div class="profile-report-card"><a class="profile-report" href="/selfit?from=mirror&amp;report=latest&amp;return_screen=profile" aria-label="查看我的风格报告">${r.heroImage?.src ? image(r.heroImage.src,r.title || '我的风格报告') : `<strong>${esc(r.typeId?.toUpperCase())}<br>${esc(r.title || '我的风格报告')}</strong>`}</a><a class="profile-retest" href="/selfit?from=mirror&amp;entry=retest">重新测试 →</a></div>` : `<a class="profile-test-invite" href="/selfit?from=mirror">${image(`${A}main-app/profile-test-pin.svg`, "", "profile-test-pin")}<strong>selfit 16 型格测试</strong>${image(`${A}main-app/profile-test-art.svg`, 'suit · like · vibe')}<span>去测试 →</span></a>`}<section class="profile-more"><h2>更多测试</h2><div><button disabled>${image(`${A}main-app/archive-more-mirror.webp`, "")}<span>专业脸型风格<small>即将开放</small></span></button><button disabled>${image(`${A}main-app/archive-more-flower.webp`, "")}<span>十二季肤色<small>即将开放</small></span></button></div></section>${!reference ? '<button class="profile-logout" data-action="logout">退出登录</button>' : ''}</section>`;
+    const p=state.profile,r=p.report;
+    return `<section class="profile-screen">${profileHeader()}${p.tested ? `<div class="profile-analysis profile-suit"><div class="profile-suit-photos">${profilePhoto('face')}${profilePhoto('body')}</div><div class="profile-suit-cards" data-selfit-suit-cards aria-label="身体特征分析"></div></div>` : ''}${r ? `<div class="profile-report-card"><a class="profile-report" href="/selfit?from=mirror&amp;report=latest&amp;return_screen=profile" aria-label="查看我的风格报告">${r.heroImage?.src ? image(r.heroImage.src,r.title || '我的风格报告') : `<strong>${esc(r.typeId?.toUpperCase())}<br>${esc(r.title || '我的风格报告')}</strong>`}</a><a class="profile-retest" href="/selfit?from=mirror&amp;entry=retest">重新测试 →</a></div>` : `<a class="profile-test-invite" href="/selfit?from=mirror">${image(`${A}main-app/profile-test-pin.svg`, "", "profile-test-pin")}<strong>selfit 16 型格测试</strong>${image(`${A}main-app/profile-test-art.svg`, 'suit · like · vibe')}<span>去测试 →</span></a>`}<section class="profile-more"><h2>更多测试</h2><div><button disabled>${image(`${A}main-app/archive-more-mirror.webp`, "")}<span>专业脸型风格<small>即将开放</small></span></button><button disabled>${image(`${A}main-app/archive-more-flower.webp`, "")}<span>十二季肤色<small>即将开放</small></span></button></div></section>${!reference ? '<button class="profile-logout" data-action="logout">退出登录</button>' : ''}</section>`;
   }
   function profileFeatureEdit() {
     const field = state.profileEditingField;
     const values = field === 'faceShape' ? ['菱形脸','方脸','圆脸','椭圆脸','心形脸'] : field === 'skin' ? ['冷白肤','暖白肤','中性自然肤','橄榄肤','暖黄肤','小麦色'] : profileOptions[field];
     const assetKeys = {'菱形脸':'face-diamond','方脸':'face-square','圆脸':'face-round','椭圆脸':'face-oval','心形脸':'face-heart','梨型':'body-pear','倒三角型':'body-inverted-triangle','沙漏型':'body-hourglass','矩型':'body-rectangle','苹果型':'body-apple'};
     const colors = {'冷白肤':'#FFDED7','暖白肤':'#FCD1BB','中性自然肤':'#F2C9B8','橄榄肤':'#E6D3AF','暖黄肤':'#E6BEAA','小麦色':'#CB956C'};
-    return `<section class="profile-screen profile-feature-screen"><header class="profile-header"><button data-action="cancel-profile-feature" aria-label="返回编辑档案"><svg viewBox="0 0 24 24"><path d="m15 5-7 7 7 7"/></svg></button><h1>修改${profileLabels[field]}</h1></header><div class="profile-feature-content"><h2>${profileLabels[field]}</h2><div class="profile-feature-options" data-kind="${field}" role="group" aria-label="选择${profileLabels[field]}">${values.map(value=>`<button data-profile-choice="${value}" aria-pressed="${state.profileFeatureValue===value}"><span class="profile-feature-art">${field==='skin'?`<i style="background:${colors[value]}"></i>`:image('/static/selfit/assets/manual-selection/'+assetKeys[value]+'@4x.png',value+'示意')}</span><span>${esc(value)}</span></button>`).join('')}</div></div><button class="primary profile-save" data-action="confirm-profile-feature" ${state.profileFeatureValue?'':'disabled'}>保存修改</button></section>`;
+    return `<section class="profile-screen profile-feature-screen"><header class="profile-header"><button data-action="cancel-profile-feature" aria-label="返回我的档案"><svg viewBox="0 0 24 24"><path d="m15 5-7 7 7 7"/></svg></button><h1>修改${profileLabels[field]}</h1></header><div class="profile-feature-content"><h2>${profileLabels[field]}</h2><div class="profile-feature-options" data-kind="${field}" role="group" aria-label="选择${profileLabels[field]}">${values.map(value=>`<button data-profile-choice="${value}" aria-pressed="${state.profileFeatureValue===value}"><span class="profile-feature-art">${field==='skin'?`<i style="background:${colors[value]}"></i>`:image('/static/selfit/assets/manual-selection/'+assetKeys[value]+'@4x.png',value+'示意')}</span><span>${esc(value)}</span></button>`).join('')}</div></div><button class="primary profile-save" data-action="confirm-profile-feature" ${state.profileFeatureValue?'':'disabled'}>保存修改</button></section>`;
   }
   function profileEdit() {
     if(!state.profile || state.profileLoading) return profileStatus(true);
@@ -631,13 +634,42 @@
     if (state.profileEditingField) return profileFeatureEdit();
     return `<section class="profile-screen profile-edit-screen">${profileHeader(true)}<div class="profile-edit-photos">${profilePhoto('face',true)}${profilePhoto('body',true)}</div><div class="profile-edit-fields"><p class="profile-edit-hint">点击下方信息，修改你的档案</p>${Object.keys(profileOptions).map(field=>`<button type="button" class="profile-field-row" data-profile-edit="${field}" aria-label="修改${profileLabels[field]}" ${state.profileSaving ? 'disabled' : ''}><span class="profile-field-label">${profileLabels[field]}</span><strong class="profile-field-value">${esc(draft[field] || '请选择')}</strong>${profileArt(field,draft[field])}<svg class="profile-field-chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 7 7-7 7"/></svg></button>`).join('')}</div>${state.profileError ? `<p class="profile-save-error" role="alert">${esc(state.profileError)}</p>` : ''}<button class="primary profile-save" data-action="save-profile" ${state.profileSaving ? 'disabled' : ''}>${state.profileSaving ? '正在保存…' : '保存修改'}</button></section>`;
   }
+  const REFERENCE_PROFILE_SUIT = {
+    photos: {face: true, body: true},
+    analyses: {
+      face: {kind: 'face', attributes: {
+        skin: {label: '中性自然肤', status: 'warn', confidence: 0.72, metrics: [
+          {key: 'lStar', label: '肤色明度 L*', value: '63.8'},
+          {key: 'ita', label: '白皙度 ITA', value: '45.3°'},
+          {key: 'undertone', label: '肤色底调', value: '中性'},
+        ], notes: []},
+        faceShape: {label: '椭圆脸', status: 'pass', confidence: 0.86, metrics: [
+          {key: 'lengthWidth', label: '脸长 / 脸宽', value: '1.074'},
+          {key: 'jawCheek', label: '下颌宽 / 颧骨宽', value: '0.787'},
+          {key: 'foreheadCheek', label: '额头宽 / 颧骨宽', value: '0.98'},
+        ], notes: []},
+      }, notes: []},
+      body: {kind: 'body', attributes: {
+        bodyShape: {label: '矩型', status: 'pass', confidence: 0.78, metrics: [
+          {key: 'hipShoulder', label: '胯宽 / 肩宽', value: '0.94'},
+          {key: 'waistHip', label: '腰宽 / 胯宽', value: '0.87'},
+        ], notes: []},
+      }, notes: []},
+    },
+    features: [
+      {key: 'skin', title: '肤色', value: '中性自然肤', source: 'photo', description: '肤色明度自然，冷暖倾向较平衡。', advice: '从柔和中性色开始，比较不同配色在自然光下的效果。'},
+      {key: 'faceShape', title: '脸型', value: '椭圆脸', source: 'photo', description: '额头与颧骨宽度接近，下颌收窄，轮廓连接较圆润。', advice: '领口选择比较灵活，可以从方领、V 领试起。'},
+      {key: 'bodyShape', title: '身材比例', value: '矩型', source: 'photo', description: '肩、腰、胯的宽度变化较小。', advice: '用腰线、叠穿和不同材质增加轮廓层次。'},
+    ],
+  };
   async function loadProfile(force=false) {
     if(state.profileLoading || (state.profile && !force)) return;
     state.profileLoading=true;state.profileError='';
     if(reference) {
-      state.profile={tested:true,revision:1,manual:{faceShape:'椭圆脸',skin:'中性自然肤',bodyShape:'矩型'},photos:{face:`${A}main-app/archive-face-reference.svg`,body:`${A}main-app/archive-body-reference.svg`},report:{reportId:'reference',typeId:'flou',title:'造梦浪漫',heroImage:{src:'/static/selfit/assets/personality/flou/hero.png?v=20260907-config-v2'}}};
+      state.profile={tested:true,revision:1,manual:{faceShape:'椭圆脸',skin:'中性自然肤',bodyShape:'矩型'},photos:{face:`${A}main-app/archive-face-reference.svg`,body:`${A}main-app/archive-body-reference.svg`},report:{reportId:'reference',typeId:'flou',title:'造梦浪漫',heroImage:{src:'/static/selfit/assets/personality/flou/hero.png?v=20260907-config-v2'}},suit:REFERENCE_PROFILE_SUIT};
       if(params.get('profile_state')==='untested') state.profile={tested:false,manual:{},photos:{},report:null,revision:1};
       if(params.get('profile_state')==='no-photo') state.profile.photos={face:null,body:null};
+      state.profileSuit=state.profile.suit || null;
       state.profileLoading=false;render();return;
     }
     try {
@@ -650,8 +682,37 @@
         else throw new Error('照片暂时无法加载，请重试。');
       }
       state.profile=p;
+      state.profileSuit=p.suit || null;
     } catch(e) { state.profileError=e.message; }
     finally {state.profileLoading=false;if(['profile','profile-edit'].includes(state.page)) render();}
+  }
+  async function uploadProfilePhoto(kind, file, previewUrl) {
+    if(reference) { state.profile.photos[kind]=previewUrl; return; }
+    const {session}=await api('/api/v1/selfit/sessions',{method:'POST',body:JSON.stringify({schemaVersion:'selfit-onboarding-v1',locale:'zh-CN'})});
+    const form=new FormData();form.append('image',file);
+    const result=await api(`/api/v1/selfit/sessions/${encodeURIComponent(session.sessionId)}/photos/${kind}`,{method:'POST',body:form});
+    if(result.photo?.status!=='accepted') throw new Error(result.photo?.message || '照片不合适，请换一张。');
+    if(kind==='body') {
+      const modelForm=new FormData();modelForm.append('image',file);
+      await api('/closet/preferences/model-photo',{method:'POST',body:modelForm});
+      state.personalPhoto=previewUrl;state.personalFile=file;
+      if(state.modelId==='self') {state.photo=previewUrl;state.file=file;state.result='';}
+    }
+  }
+  async function replaceProfilePhoto(kind, file) {
+    if(state.profileReplacing || !state.profile?.tested) return;
+    const url=URL.createObjectURL(file);
+    state.uploadURLs.push(url);
+    state.profileReplacing=kind;
+    render();notify('正在更换照片…');
+    try {
+      const photo=new Image();photo.src=url;await photo.decode();
+      if(kind==='body' && (photo.naturalWidth<240 || photo.naturalHeight<320)) throw new Error('全身照分辨率偏低，请选择更清晰的照片。');
+      await uploadProfilePhoto(kind, file, url);
+      if(!reference) await loadProfile(true); else {state.profile.photos[kind]=url;render();}
+      notify('照片已更新');
+    } catch(e) { notify(e.message || '照片暂时无法更换，请重试。'); }
+    finally { state.profileReplacing='';if(['profile','profile-edit'].includes(state.page)) render(); }
   }
   async function saveProfile() {
     if(state.profileSaving || !state.profile?.tested) return;
@@ -660,25 +721,13 @@
     if(reference) {state.profile.manual=manual;Object.entries(state.profilePhotoDraft).forEach(([k,v])=>state.profile.photos[k]=v.url);state.profilePhotoDraft={};go('profile');notify('已更新预览档案');return;}
     state.profileSaving=true;state.profileError='';render();
     try {
-      const files=Object.entries(state.profilePhotoDraft);
-      if(files.length) {
-        const {session}=await api('/api/v1/selfit/sessions',{method:'POST',body:JSON.stringify({schemaVersion:'selfit-onboarding-v1',locale:'zh-CN'})});
-        for(const [kind,entry] of files) {
-          const form=new FormData();form.append('image',entry.file);
-          const result=await api(`/api/v1/selfit/sessions/${encodeURIComponent(session.sessionId)}/photos/${kind}`,{method:'POST',body:form});
-          if(result.photo?.status!=='accepted') throw new Error(result.photo?.message || '照片不合适，请换一张。');
-          if(kind==='body') {
-            const modelForm=new FormData();modelForm.append('image',entry.file);
-            await api('/closet/preferences/model-photo',{method:'POST',body:modelForm});
-            state.personalPhoto=entry.url;state.personalFile=entry.file;
-            if(state.modelId==='self') {state.photo=entry.url;state.file=entry.file;state.result='';}
-          }
-          state.profile.photos[kind]=entry.url;
-          delete state.profilePhotoDraft[kind];
-        }
+      for(const [kind,entry] of Object.entries(state.profilePhotoDraft)) {
+        await uploadProfilePhoto(kind, entry.file, entry.url);
+        state.profile.photos[kind]=entry.url;
+        delete state.profilePhotoDraft[kind];
       }
       const saved=await api('/api/v1/selfit/me/profile',{method:'PATCH',headers:{'If-Match':String(state.profile.revision)},body:JSON.stringify({reportId:state.profile.report.reportId,manual})});
-      state.profile={...saved.profile,photos:state.profile.photos};state.profileDraft=null;go('profile');notify('档案已保存');
+      state.profile={...saved.profile,photos:state.profile.photos};state.profileSuit=saved.profile.suit || null;state.profileDraft=null;go('profile');notify('档案已保存');
     } catch(e) {state.profileError=e.status===409 ? '档案已更新，请返回档案页重新加载，再保存修改。' : e.message;}
     finally {state.profileSaving=false;render();}
   }
@@ -811,6 +860,27 @@
     $("#studio").dataset.screen = state.page;
     $("#studio").dataset.mode = state.styling ? "styling" : "model";
     if (detailScroll != null && $(".note-detail")) $(".note-detail").scrollTop = detailScroll;
+    // 我的档案顶部的 suit 特征卡：共享组件渲染，分析参数默认全部展开；
+    // 照片直接点击替换（与 onboarding suit 页一致），特征值通过卡片上的「修改」进入单字段编辑。
+    const suitHost = document.querySelector('[data-selfit-suit-cards]');
+    if (suitHost && window.SelfitSuitCards) {
+      const suit = state.profileSuit;
+      const manual = state.profile?.manual || {};
+      const features = suit?.features?.length ? suit.features : [
+        {key:'skin',title:'肤色',value:manual.skin,source:manual.skin?'manual':'unknown'},
+        {key:'faceShape',title:'脸型',value:manual.faceShape,source:manual.faceShape?'manual':'unknown'},
+        {key:'bodyShape',title:'身材比例',value:manual.bodyShape,source:manual.bodyShape?'manual':'unknown'},
+      ];
+      window.SelfitSuitCards.render(suitHost, {features, analyses:(suit && suit.analyses) || {}, photos:(suit && suit.photos) || {}, onEdit:(key)=>{
+        // 记录离开档案页时的滚动位置，保存/取消返回后恢复原位而不是回到顶部。
+        profileReturnScroll=$("#screen").scrollTop;
+        state.profileDraft={...(state.profileDraft || state.profile.manual)};
+        state.profilePhotoDraft={};
+        state.profileEditingField=key;
+        state.profileFeatureValue=state.profileDraft[key] || '';
+        go('profile-edit');
+      }});
+    }
     if (wardrobePosition) {
       const positions = new Map(wardrobePosition.rows);
       document.querySelectorAll('.wardrobe-group').forEach(group => { group.querySelector('.wardrobe-items-row').scrollLeft = positions.get(group.getAttribute('aria-labelledby')) || 0; });
@@ -907,6 +977,8 @@
     if(page === "chat") loadChat();
     if(["profile","profile-edit"].includes(page)) loadProfile();
     $("#screen").scrollTop = 0;
+    // 从特征编辑返回档案页时恢复进入编辑前的滚动位置。
+    if (page === "profile" && profileReturnScroll != null) { $("#screen").scrollTop = profileReturnScroll; profileReturnScroll = null; }
     if (push) {
       const u = new URL(location.href);
       u.searchParams.set("screen", page);
@@ -1615,6 +1687,7 @@
     try {
       const r = await fetch("/api/v1/selfit/me/photos/body", {
         headers: { Authorization: `Bearer ${savedSession.accessToken}` },
+        cache: "reload",
       });
       if (r.ok && r.status !== 204) {
         const file = await r.blob();
@@ -1839,8 +1912,12 @@
     }
     if (b.dataset.profileChoice) {state.profileFeatureValue=b.dataset.profileChoice;render();return;}
     if (b.dataset.action==='cancel-profile-feature' || b.dataset.action==='confirm-profile-feature') {
-      if(b.dataset.action==='confirm-profile-feature') state.profileDraft={...(state.profileDraft || state.profile.manual),[state.profileEditingField]:state.profileFeatureValue};
-      state.profileEditingField=null;state.profileFeatureValue=null;render();return;
+      if(b.dataset.action==='confirm-profile-feature') {
+        state.profileDraft={...(state.profileDraft || state.profile.manual),[state.profileEditingField]:state.profileFeatureValue};
+        state.profileEditingField=null;state.profileFeatureValue=null;
+        await saveProfile();return;
+      }
+      state.profileEditingField=null;state.profileFeatureValue=null;state.profileDraft=null;go('profile');return;
     }
 
     if (b.dataset.chatPrompt !== undefined) {
@@ -2467,6 +2544,7 @@
     const file=event.target.files?.[0];if(!file)return;
     const maxMB=kind==='body' ? 15 : 20;
     if(file.size>maxMB*1024*1024) {notify(`请选择 ${maxMB}MB 以内的照片。`);return;}
+    if(state.page!=='profile-edit') { await replaceProfilePhoto(kind,file); return; }
     const url=URL.createObjectURL(file);
     try {const photo=new Image();photo.src=url;await photo.decode();if(kind==='body' && (photo.naturalWidth<240 || photo.naturalHeight<320)) {URL.revokeObjectURL(url);notify('全身照分辨率偏低，请选择更清晰的照片。');return;}state.uploadURLs.push(url);state.profilePhotoDraft[kind]={file,url};render();}
     catch {URL.revokeObjectURL(url);notify('照片无法读取，请换一张。');}

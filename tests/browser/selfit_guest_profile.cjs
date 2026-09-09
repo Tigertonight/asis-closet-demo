@@ -27,31 +27,29 @@ const dir=path.resolve('docs/audits/20260908-main-app/evidence/live-guest-profil
   }
   assert.equal(reportJob.status,'completed');
   await page.locator('[data-page="profile"]').first().click();
-  await page.locator('.profile-analysis').waitFor();
-  await page.locator('.profile-header [data-action="edit-profile"]').click();
-  await page.locator('[data-profile-field="faceShape"]').selectOption({label:'心形脸'});
-  await page.locator('[data-profile-field="skin"]').selectOption({label:'小麦色'});
-  await page.locator('[data-profile-field="bodyShape"]').selectOption({label:'苹果型'});
+  await page.locator('.profile-suit-cards .suit-feature').first().waitFor();
+  // 照片直接点击替换（无编辑按钮，与 onboarding suit 页一致）
   await page.locator('[data-profile-photo="body"]').setInputFiles(path.resolve('tests/fixtures/tryon_models/female_medium_1.png'));
-  await page.locator('.edit-photo img').waitFor();
+  await page.waitForResponse(r=>new URL(r.url()).pathname==='/api/v1/selfit/me/profile'&&r.request().method()==='GET',{timeout:90000});
+  // 特征卡「修改」→ 单字段编辑 → 保存
+  await page.locator('.profile-suit-cards .suit-feature header button').first().click();
+  await page.locator('.profile-feature-options[data-kind="faceShape"]').waitFor();
+  await page.locator('[data-profile-choice="心形脸"]').click();
   const saved=page.waitForResponse(r=>new URL(r.url()).pathname==='/api/v1/selfit/me/profile'&&r.request().method()==='PATCH',{timeout:90000});
-  await page.locator('[data-action="save-profile"]').click();
+  await page.locator('[data-action="confirm-profile-feature"]').click();
   assert.equal((await saved).ok(),true);
-  await page.locator('.profile-analysis').waitFor();
-  await page.reload();await page.locator('.profile-analysis').waitFor();
+  await page.locator('.profile-suit-cards .suit-feature').first().waitFor();
+  await page.reload();await page.locator('.profile-suit-cards .suit-feature').first().waitFor();
   const profile=(await api('/api/v1/selfit/me/profile')).profile;
-  assert.deepEqual(profile.manual,{faceShape:'心形脸',skin:'小麦色',bodyShape:'苹果型'});
+  assert.equal(profile.manual.faceShape,'心形脸');
   assert(profile.photos.body);
-  assert.equal(await page.locator('.profile-analysis .profile-photo img[alt="全身照"]').evaluate(async i=>{await i.decode();return i.naturalWidth>0}),true);
+  assert.equal(await page.locator('.profile-suit-photos .profile-photo img[alt="全身照"]').evaluate(async i=>{await i.decode();return i.naturalWidth>0}),true);
   for(const width of [393,430,1280]){
    await page.setViewportSize({width,height:852});
    assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);
    await page.screenshot({path:path.join(dir,'saved-'+width+'.png')});
   }
-  await page.locator('.profile-header [data-action="edit-profile"]').click();
-  await page.locator('[data-profile-field="faceShape"]').selectOption({label:'圆脸'});
-  await page.locator('.profile-header [data-page="profile"]').click();
-  assert((await page.locator('.profile-analysis').innerText()).includes('心形脸'));
+  assert((await page.locator('.profile-suit-cards').innerText()).includes('心形脸'));
   await page.locator('.profile-report').click();
   await page.locator('[data-screen="login"].is-active').waitFor();
   assert.deepEqual(errors,[]);
