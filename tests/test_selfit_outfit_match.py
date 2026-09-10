@@ -35,8 +35,10 @@ def choose(monkeypatch, slot='top', candidate_index=-1):
             return {'slot': slot, 'description': '白色短袖，廓形简洁宽松，适合与利落下装搭配。'}
         candidates=json.loads(prompt.split('\n',1)[1])['candidates']
         candidate=candidates[candidate_index]
-        return {'candidate_id':candidate['candidate_id'], 'replace_item_id':candidate['replaceable_items'][0]['item_id'],
-                'reason':'白色短袖能延续套装的清爽配色，与保留的下装和鞋包形成协调的日常组合。'}
+        return {'no_match': False, 'matches': [{
+            'candidate_id': candidate['candidate_id'],
+            'replace_item_id': candidate['replaceable_items'][0]['item_id'],
+            'reason': '白色短袖能延续套装的清爽配色，与保留的下装和鞋包形成协调的日常组合。'}]}
     monkeypatch.setattr(matching, 'ask_vision', answer)
     return calls
 
@@ -55,7 +57,7 @@ def test_ai_reads_all_eligible_descriptions_and_replaces_exactly_one(notes, monk
     assert [x['outfit_description'] for x in data['candidates']]==[x['outfit_description'] for x in eligible]
     source=styling_catalog.adapt_outfit(eligible[-1])
     row=result['outfits'][0]
-    old_id=result['match']['replaced_item_id']
+    old_id=result['matches'][0]['replaced_item_id']
     assert row['item_ids']==['owned-shirt' if key==old_id else key for key in source['item_ids']]
     assert next(x for x in row['items'] if x['item_id']=='owned-shirt')['assets']==anchor()['assets']
     for item in row['items']:
@@ -80,11 +82,13 @@ def test_accessory_kinds_and_layer_roles_do_not_cross(notes, monkeypatch):
 
 
 @pytest.mark.parametrize('decision',[
-    {'candidate_id':'invented','replace_item_id':'anything','reason':'匹配'},
-    {'candidate_id':'C1','replace_item_id':{},'reason':'匹配'},
-    {'candidate_id':'C1','replace_item_id':'not-in-this-note','reason':'匹配'},
-    {'candidate_id':[],'replace_item_id':'anything','reason':'匹配'},
-    {'no_match':True},
+    {'no_match': False, 'matches': [{'candidate_id': 'invented', 'replace_item_id': 'anything', 'reason': '匹配'}]},
+    {'no_match': False, 'matches': [{'candidate_id': 'C1', 'replace_item_id': {}, 'reason': '匹配'}]},
+    {'no_match': False, 'matches': [{'candidate_id': 'C1', 'replace_item_id': 'not-in-this-note', 'reason': '匹配'}]},
+    {'no_match': False, 'matches': [{'candidate_id': [], 'replace_item_id': 'anything', 'reason': '匹配'}]},
+    {'no_match': False, 'matches': []},
+    {'no_match': False},
+    {'no_match': True, 'matches': []},
 ])
 def test_rejects_invalid_or_unsuitable_ai_result(notes,monkeypatch,decision):
     responses=iter([{'slot':'top','description':'白 T'},decision])
@@ -160,3 +164,61 @@ def test_saved_notebook_match_keeps_every_piece_and_material_paths_for_tryon(not
             if item['item_id']!='owned-shirt': assert item['wearing_instruction']
     with storage.user_storage('someone-else'):
         with pytest.raises(HTTPException): closet.get_outfit(saved['outfit_id'])
+
+
+def test_default_white_tee_uses_fixture_matches_without_model_calls(notes, monkeypatch):
+    monkeypatch.setattr(matching, 'ask_vision', lambda *args: pytest.fail('fixture path must not call the model'))
+    tee = {**anchor(), 'item_id': '6cfcffd0a4c66d10', 'title': '白 T', 'is_default': True}
+    result = matching.match_notebook_outfit(tee)
+    assert result['mode'] == 'fixture_notebook_match'
+    assert result['anchor_item_id'] == '6cfcffd0a4c66d10'
+    assert len(result['outfits']) == len(result['matches']) == 3
+    for outfit, note in zip(result['outfits'], result['matches']):
+        assert '6cfcffd0a4c66d10' in outfit['item_ids']
+        assert note['replaced_item_id'] not in outfit['item_ids']
+        assert note['reason'] and note['image_url'] and note['title']
+    titles = [note['title'] for note in result['matches']]
+    assert len(set(titles)) == 3
+
+
+def test_ai_returns_up_to_three_ranked_matches(notes, monkeypatch):
+    monkeypatch.setattr(matching, '_anchor_image', lambda anchor: Image.new('RGB', (32, 32)))
+    monkeypatch.setattr(styling_catalog, '_asset_url', lambda ref: '/static/' + ref['assetId'] + '.png')
+    captured = []
+    def answer(image, prompt, schema):
+        captured.append(prompt)
+        if len(captured) == 1:
+            return {'slot': 'top', 'description': '白色短袖。'}
+        candidates = json.loads(prompt.split('\n', 1)[1])['candidates']
+        picks = candidates[:3]
+        return {'no_match': False, 'matches': [
+            {'candidate_id': c['candidate_id'], 'replace_item_id': c['replaceable_items'][0]['item_id'],
+             'reason': f'第{i + 1}套与白 T 的配色和比例协调。'} for i, c in enumerate(picks)]}
+    monkeypatch.setattr(matching, 'ask_vision', answer)
+    result = matching.match_notebook_outfit(anchor())
+    assert result['mode'] == 'ai_notebook_match'
+    assert len(result['outfits']) == len(result['matches']) == 3
+    for outfit, note in zip(result['outfits'], result['matches']):
+        assert 'owned-shirt' in outfit['item_ids']
+        assert note['replaced_item_id'] not in outfit['item_ids']
+        assert note['candidate_count'] >= 3
+    assert len({note['source_outfit_id'] for note in result['matches']}) == 3
+
+
+def test_duplicate_or_extra_ai_matches_are_deduplicated_and_capped(notes, monkeypatch):
+    monkeypatch.setattr(matching, '_anchor_image', lambda anchor: Image.new('RGB', (32, 32)))
+    monkeypatch.setattr(styling_catalog, '_asset_url', lambda ref: '/static/' + ref['assetId'] + '.png')
+    captured = []
+    def answer(image, prompt, schema):
+        captured.append(prompt)
+        if len(captured) == 1:
+            return {'slot': 'top', 'description': '白色短袖。'}
+        candidates = json.loads(prompt.split('\n', 1)[1])['candidates']
+        picks = [candidates[0], candidates[0], *candidates[1:5]]
+        return {'no_match': False, 'matches': [
+            {'candidate_id': c['candidate_id'], 'replace_item_id': c['replaceable_items'][0]['item_id'],
+             'reason': '这套与用户单品的色彩衔接自然。'} for c in picks]}
+    monkeypatch.setattr(matching, 'ask_vision', answer)
+    result = matching.match_notebook_outfit(anchor())
+    assert len(result['outfits']) == len(result['matches']) == 3
+    assert len({note['source_outfit_id'] for note in result['matches']}) == 3

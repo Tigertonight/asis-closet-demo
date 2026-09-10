@@ -78,7 +78,7 @@ function deletion(api) {
   const code=studio.slice(studio.indexOf('  async function deleteWardrobeItem('),studio.indexOf('  async function generateForItem('));
   const item={id:'one'}, other={id:'two'}, notices=[], calls=[];
   const state={items:[item,other],outfits:[{id:'set',items:[item,other]}],current:{items:[item,other]},
-    selected:new Set(['one','two']), builderIds:new Set(['one']), builderBoxes:{one:{}}, builderActive:'one',
+    selected:new Set(['one','two']), builderIds:new Set(['one']),
     result:'old-result',canvasHistory:[{}],canvasFuture:[],wardrobeDeleting:''};
   const context=vm.createContext({state,reference:false,encodeURIComponent,api:async(...args)=>{calls.push(args);return api(...args);},
     normalizeItem:x=>x,normalizeOutfit:x=>x,document:{activeElement:null},render(){},updateWardrobeBusy(){},notify:x=>notices.push(x)});
@@ -92,7 +92,7 @@ test('delete persists through endpoint, refreshes outfits and clears selections'
   assert.deepEqual(d.calls.map(([url,options])=>[url,options?.method]),[['/closet/items/one','DELETE'],['/selfit/try-on/wardrobe',undefined]]);
   assert.deepEqual(Array.from(d.state.items,x=>x.id),['two']);
   assert.equal(d.state.outfits.length,0); assert.equal(d.state.selected.has('one'),false);
-  assert.equal(d.state.builderIds.has('one'),false); assert.equal(d.state.builderBoxes.one,undefined);
+  assert.equal(d.state.builderIds.has('one'),false);
   assert.equal(d.state.current.items.length,1); assert.equal(d.state.result,'');
   assert.equal(d.state.wardrobeDeleting,''); assert.equal(d.notices.at(-1),'已删除单品');
 });

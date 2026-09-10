@@ -127,6 +127,7 @@
     closetCategory: "all",
     wardrobeDeleting: "",
     builderMatching:false, builderRequest:0, builderAnchor:null, builderItems:[], builderMatch:null, builderMatchError:"",
+    builderMatches:[], builderMatchIndex:0,
     profile: null, profileLoading: false, profileError: "", profileSaving: false, profileDraft: null, profilePhotoDraft: {}, profileSuit: null, profileReplacing: "",
     chatMessages: [], chatDraft: "", chatBusy: false, chatLoaded: false, chatLoading: false, chatError: "", chatReturn: "mirror",
     items: reference ? fixtures : [],
@@ -1077,8 +1078,6 @@
       }
       state.selected.delete(id);
       state.builderIds?.delete(id);
-      if (state.builderBoxes) delete state.builderBoxes[id];
-      if (state.builderActive === id) state.builderActive = '';
       state.canvasHistory = []; state.canvasFuture = []; state.canvasSelection = '';
       if (!reference) {
         try {
@@ -1106,33 +1105,37 @@
     if (!anchor) return;
     const request = ++state.builderRequest;
     state.builderAnchor=anchor; state.builderMatching=true; state.builderMatchError=''; state.builderMatch=null;
-    state.builderItems=[]; state.builderIds=new Set([id]); state.builderBoxes={};
-    state.builderActive=id; state.builderCategory='all'; state.builderError='';
+    state.builderMatches=[]; state.builderMatchIndex=0;
+    state.builderItems=[]; state.builderIds=new Set([id]); state.builderError='';
     $("#sheet").close(); go('builder');
+    const started=Date.now();
     try {
       if (reference) throw Error('请在衣帽间上传自己的单品，再让搭配助手为你挑选。');
       const result=await api(`/selfit/try-on/items/${encodeURIComponent(id)}/outfits`,{method:'POST'},260000);
+      const entries=(result.outfits || []).map((outfit,index)=>({outfit, match:(result.matches || [])[index]}))
+        .filter(entry=>entry.match && (entry.outfit.items || []).length>=2 && entry.outfit.items.some(item=>item.item_id===id));
       if (request!==state.builderRequest || state.page!=='builder') return;
-      const items=(result.outfits?.[0]?.items || []).map(normalizeItem);
-      if (items.length<2 || !items.some(item=>item.id===id) || !result.match) throw Error('搭配结果暂时不完整，请再试一次。');
-      state.builderItems=items; state.builderIds=new Set(items.map(item=>item.id)); state.builderMatch=result.match;
+      if (!entries.length) throw Error('搭配结果暂时不完整，请再试一次。');
+      state.builderMatches=entries;
+      selectBuilderMatch(0);
     } catch (error) {
       if (request===state.builderRequest && state.page==='builder') state.builderMatchError=error.message || '这次没有完成搭配，请再试一次。';
     } finally {
+      const remain=(state.builderMatchMinMs ?? 3000)-(Date.now()-started);
+      if (remain>0) await new Promise(resolve=>setTimeout(resolve,remain));
       if (request===state.builderRequest && state.page==='builder') {state.builderMatching=false;render();}
     }
   }
+  function selectBuilderMatch(index) {
+    const entry=(state.builderMatches || [])[index];
+    if (!entry) return;
+    state.builderMatchIndex=index;
+    const items=(entry.outfit.items || []).map(normalizeItem);
+    state.builderItems=items; state.builderIds=new Set(items.map(item=>item.id));
+    state.builderMatch=entry.match; state.builderError='';
+  }
   function builderCatalog() {
     return uniqueItems([...(state.builderItems || []), ...state.items]);
-  }
-  function builderCanvas(chosen) {
-    state.builderBoxes ||= {};
-    chosen.forEach(p=>preparePiece(p.src));
-    const defaults=window.SelfitOutfitLayout.templateLayout(chosen.map(p=>({...p,aspect:trimmedPieces.get(p.src)?.aspect})));
-    for(const box of defaults) if(!state.builderBoxes[box.id]?.manual) state.builderBoxes[box.id]={...box};
-    const active=chosen.some(p=>p.id===state.builderActive) ? state.builderBoxes[state.builderActive] : null;
-    const controls=active ? `<div class="builder-selection" style="left:${active.x}%;top:${active.y}%;width:${active.w}%;height:${active.h}%" role="group" aria-label="选中单品操作">${[['smaller','拖动缩放','↖'],['larger','拖动缩放','↘'],['rotate','拖动旋转','↻'],['remove','移除','×']].map(([action,label,icon])=>`<button data-builder-adjust="${action}" aria-label="${label}选中单品" title="${label}">${icon}</button>`).join('')}</div>` : '';
-    return `<div class="builder-canvas" aria-label="搭配画布">${chosen.map(p=>{const b=state.builderBoxes[p.id];return `<button class="builder-piece" data-builder-piece="${esc(p.id)}" aria-label="移动${esc(p.name)}" aria-pressed="${state.builderActive===p.id}" style="left:${b.x}%;top:${b.y}%;width:${b.w}%;height:${b.h}%;z-index:${b.z || 1}">${image(trimmedPieces.get(p.src)?.src || p.src,p.name).replace('<img ',`<img style="transform:rotate(${b.rotation || 0}deg)" `)}</button>`;}).join('') || '<p>从下方添加单品到画布</p>'}${controls}<button class="builder-auto-layout" data-builder-adjust="reset" aria-label="自动排版">▦ 自动排版</button></div>`;
   }
   function outfitBuilder() {
     const selected = state.builderIds || new Set();
@@ -1140,18 +1143,20 @@
     const chosen=[...selected].map(id=>catalog.find(item=>item.id===id)).filter(Boolean);
     const header='<header><button class="back" data-page="closet" aria-label="返回衣帽间">‹</button><h1>单品搭配</h1></header>';
     if(state.builderMatching || state.builderMatchError) return `<section class="outfit-builder" aria-label="单品搭配">${header}<div class="builder-match-state">${state.builderAnchor?image(state.builderAnchor.src,state.builderAnchor.name):''}${state.builderMatching?'<span class="builder-match-spinner" aria-hidden="true"></span><h2 role="status">正在从笔记库挑选搭配…</h2><p>结合单品特点与套装描述，寻找适合你的组合。</p>':`<p role="alert">${esc(state.builderMatchError)}</p><button class="primary" data-action="retry-item-match">重新搭配</button>`}</div></section>`;
+    const anchor=state.builderAnchor;
+    const anchorFigure=anchor?`<figure class="builder-anchor">${image(anchor.src,anchor.name)}<figcaption>${esc(anchor.name)}</figcaption></figure>`:'';
     const match=state.builderMatch;
-    const note=match?`<aside class="builder-match-note" aria-label="搭配推荐理由"><div>${image(match.image_url,'参考笔记中的原始穿搭')}<div><span>参考笔记</span><strong>${esc(match.title)}</strong><span>已换入你的${esc(state.builderAnchor?.name || '单品')}</span></div></div><p>${esc(match.reason)}</p></aside>`:'';
-    const category = state.builderCategory || 'all';
-    const candidates = state.items.filter(x=>category==='all' || categoryGroup(x.category)===category);
-    return `<section class="outfit-builder" aria-label="单品搭配">${header}${builderCanvas(chosen)}${note}<h2>从衣帽间添加</h2><div class="categories">${[['all','全部'],['top','上装'],['bottom','下装'],['shoes','鞋子'],['accessory','配饰']].map(([key,label])=>`<button data-builder-category="${key}" aria-selected="${key===category}">${label}</button>`).join('')}</div><div class="builder-grid">${candidates.map(x=>`<button data-builder-item="${esc(x.id)}" aria-label="${esc(x.name)}" aria-pressed="${selected.has(x.id)}" ${state.builderSaving?'disabled':''}>${image(x.src,x.name)}<span>${selected.has(x.id)?'✓':''}</span></button>`).join('')}</div>${!candidates.length?'<p>这个分类还没有单品，可以返回衣帽间添加。</p>':''}${state.builderError?`<p role="alert">${esc(state.builderError)}</p>`:''}</section><div class="detail-dock note-dock"><button class="secondary" data-action="save-builder" ${chosen.length<2 || state.builderSaving?'disabled':''}>保存搭配</button><button class="primary" data-action="try-builder" ${chosen.length<2 || state.builderSaving?'disabled':''}>${state.builderSaving?'正在保存…':'保存并试穿'}</button></div>`;
+    const note=match?`<aside class="builder-match-note" aria-label="搭配推荐理由"><div>${image(match.image_url,'参考笔记中的原始穿搭')}<div><span>参考笔记</span><strong>${esc(match.title)}</strong><span>已换入你的${esc(anchor?.name || '单品')}</span></div></div><p>${esc(match.reason)}</p></aside>`:'';
+    const matches=state.builderMatches || [];
+    const notes=matches.length?`<h2>为你挑选的搭配笔记</h2><div class="builder-notes" role="listbox" aria-label="匹配的搭配笔记">${matches.map((entry,index)=>{const m=entry.match;return `<button class="builder-note-card" data-builder-match="${index}" role="option" aria-selected="${index===state.builderMatchIndex}" aria-label="${esc(m.title)}" ${state.builderSaving?'disabled':''}>${image(m.image_url,m.title)}<span class="builder-note-name">${esc(m.title)}</span><i aria-hidden="true">✓</i></button>`;}).join('')}</div>`:'';
+    return `<section class="outfit-builder" aria-label="单品搭配">${header}${anchorFigure}${note}${notes}${state.builderError?`<p role="alert">${esc(state.builderError)}</p>`:''}</section><div class="detail-dock note-dock"><button class="secondary" data-action="save-builder" ${chosen.length<2 || state.builderSaving?'disabled':''}>保存搭配</button><button class="primary" data-action="try-builder" ${chosen.length<2 || state.builderSaving?'disabled':''}>${state.builderSaving?'正在保存…':'保存并试穿'}</button></div>`;
   }
   async function saveBuilder(tryAfter = false) {
     if (state.builderSaving || state.builderMatching || state.builderMatchError || (state.builderIds?.size || 0)<2) return;
     const itemIds = [...state.builderIds];
     state.builderSaving=true;state.builderError='';render();
     try {
-      const data=await api('/selfit/try-on/outfits',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({item_ids:itemIds,title:'我的搭配',favorite:true,canvas_layout:itemIds.map(id=>({...state.builderBoxes[id],id}))})},180000);
+      const data=await api('/selfit/try-on/outfits',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({item_ids:itemIds,title:'我的搭配',favorite:true})},180000);
       const outfit=normalizeOutfit(data,builderCatalog());
       state.outfits=uniqueItems([outfit,...state.outfits]);
       if(state.page!=='builder'){notify('搭配已保存到衣帽间。');return;}
@@ -1953,27 +1958,9 @@
       return;
     }
     try {
-      if (b.dataset.builderPiece) {state.builderActive=b.dataset.builderPiece;render();return;}
-      if (b.dataset.builderAdjust) {
+      if (b.dataset.builderMatch!==undefined) {
         if(state.builderSaving)return;
-        if(e.detail>0 && ['smaller','larger','rotate'].includes(b.dataset.builderAdjust))return;
-        const id=state.builderActive, box=state.builderBoxes?.[id];
-        if(b.dataset.builderAdjust==='reset')state.builderBoxes={};
-        else if(box && b.dataset.builderAdjust==='remove'){state.builderIds.delete(id);state.builderBoxes={};}
-        else if(box && b.dataset.builderAdjust==='rotate'){box.manual=true;box.rotation=((box.rotation || 0)+15)%360;}
-        else if(box){box.manual=true;const factor=b.dataset.builderAdjust==='larger'?1.1:1/1.1;box.w=Math.max(8,Math.min(95,box.w*factor));box.h=Math.max(8,Math.min(95,box.h*factor));box.x=Math.min(box.x,100-box.w);box.y=Math.min(box.y,100-box.h);}
-        render();return;
-      }
-      if (b.dataset.builderCategory) {state.builderCategory=b.dataset.builderCategory;render();return;}
-      if (b.dataset.builderItem) {
-        if(state.builderSaving)return;
-        const selected=state.builderIds || (state.builderIds=new Set());
-        if(selected.has(b.dataset.builderItem))selected.delete(b.dataset.builderItem);
-        else if(selected.size<16)selected.add(b.dataset.builderItem);
-        else {notify('一套搭配最多选择 16 件单品。');return;}
-        state.builderBoxes={};
-        state.builderActive=selected.has(b.dataset.builderItem)?b.dataset.builderItem:null;
-        render();return;
+        selectBuilderMatch(Number(b.dataset.builderMatch));render();return;
       }
       if(['save-builder','try-builder'].includes(b.dataset.action)){await saveBuilder(b.dataset.action==='try-builder');return;}
       if (b.dataset.record) {
@@ -2445,58 +2432,6 @@
       notify("图片无法读取，请换一张。");
     }
     e.target.value = "";
-  });
-  let builderDrag = null;
-  function transformBuilderDrag(d, clientX, clientY) {
-    const box={...d.box};
-    if(d.mode==='rotate') {
-      const angle=Math.atan2(clientY-d.cy,clientX-d.cx);
-      box.rotation=((d.box.rotation || 0)+(angle-d.angle)*180/Math.PI+360)%360;
-    } else if(d.mode==='scale') {
-      const distance=Math.hypot(clientX-d.cx,clientY-d.cy);
-      const centerX=d.box.x+d.box.w/2,centerY=d.box.y+d.box.h/2;
-      const maximum=Math.min(2*Math.min(centerX,100-centerX)/d.box.w,2*Math.min(centerY,100-centerY)/d.box.h);
-      const minimum=Math.min(maximum,Math.max(8/d.box.w,8/d.box.h));
-      const factor=Math.max(minimum,Math.min(maximum,distance/Math.max(1,d.distance)));
-      box.w=d.box.w*factor;box.h=d.box.h*factor;
-      box.x=centerX-box.w/2;box.y=centerY-box.h/2;
-    } else {
-      box.x=Math.max(0,Math.min(100-box.w,d.box.x+(clientX-d.x)/d.rect.width*100));
-      box.y=Math.max(0,Math.min(100-box.h,d.box.y+(clientY-d.y)/d.rect.height*100));
-    }
-    return box;
-  }
-  $("#studio").addEventListener('pointerdown', e=>{
-    if(builderDrag || state.builderSaving || (e.button!==0 && e.pointerType==='mouse'))return;
-    const handle=e.target.closest('[data-builder-adjust]');
-    const action=handle?.dataset.builderAdjust;
-    if(handle && !['smaller','larger','rotate'].includes(action))return;
-    const piece=handle ? [...document.querySelectorAll('[data-builder-piece]')].find(p=>p.dataset.builderPiece===state.builderActive) : e.target.closest('[data-builder-piece]');
-    if(!piece)return;
-    const id=piece.dataset.builderPiece,box=state.builderBoxes[id],rect=piece.parentElement.getBoundingClientRect();
-    state.builderActive=id;
-    const cx=rect.left+(box.x+box.w/2)/100*rect.width,cy=rect.top+(box.y+box.h/2)/100*rect.height;
-    builderDrag={id,box:{...box},x:e.clientX,y:e.clientY,rect,piece,pointerId:e.pointerId,
-      mode:handle ? action==='rotate'?'rotate':'scale' : 'move',cx,cy,
-      angle:Math.atan2(e.clientY-cy,e.clientX-cx),distance:Math.hypot(e.clientX-cx,e.clientY-cy)};
-    (handle || piece).setPointerCapture(e.pointerId);e.preventDefault();
-  });
-  $("#studio").addEventListener('pointermove',e=>{
-    if(!builderDrag || builderDrag.pointerId!==e.pointerId)return;
-    const d=builderDrag,b=transformBuilderDrag(d,e.clientX,e.clientY);
-    b.manual=true;state.builderBoxes[d.id]=b;
-    const frame=$('.builder-selection');
-    for(const node of [d.piece,frame].filter(Boolean)){
-      node.style.left=b.x+'%';node.style.top=b.y+'%';node.style.width=b.w+'%';node.style.height=b.h+'%';
-    }
-    d.piece.querySelector('img').style.transform=`rotate(${b.rotation || 0}deg)`;
-    e.preventDefault();
-  });
-  for(const event of ['pointerup','pointercancel']) $('#studio').addEventListener(event,e=>{
-    if(builderDrag && builderDrag.pointerId===e.pointerId){
-      if(event==='pointercancel')state.builderBoxes[builderDrag.id]=builderDrag.box;
-      builderDrag=null;render();
-    }
   });
   $("#studio").addEventListener("pointerdown", (e) => {
     if (e.target.closest("[data-action=compare]")) {
