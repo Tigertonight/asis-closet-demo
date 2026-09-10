@@ -358,13 +358,27 @@
       </section>
       <section class="report-list-panel" id="reportPanelRejected" role="tabpanel" aria-labelledby="reportTabRejected" data-report-panel="rejected" hidden>
         <h3>检测被拒的照片（算法优化素材）</h3>
-        <p class="panel-hint">用户上传或镜拍回填时被检测拦截的照片会完整留存在这里——看得到原图和拦截原因，用于评估检测阈值是否过严。这些照片只做算法分析，不对外展示。</p>
+        <p class="panel-hint">用户上传或镜拍回填时被检测拦截的照片会完整留存在这里——看得到原图和拦截原因，用于评估检测阈值是否过严。这些照片只做算法分析，不对外展示。「算法版本」标示拦截时用的检测算法；算法迭代后可按版本筛选，只看新版本的拒绝数据（旧版算法产生的记录标为「旧版」）。</p>
         <div class="toolbar" style="margin-bottom:12px">
           <button class="mini-btn" type="button" id="rejectedRefresh">刷新</button>
           <small id="rejectedUpdatedAt"></small>
         </div>
         <div id="rejectedBreakdown" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px"></div>
-        <div class="table-scroll"><table><thead><tr><th>上传时间</th><th>照片类型</th><th>来源</th><th>手机号</th><th>拦截原因</th><th>预览</th><th>操作</th></tr></thead><tbody id="rejectedRows"></tbody></table></div>
+        <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:12px">
+          <select id="rejectedKindFilter" aria-label="筛选照片类型" style="border:1px solid var(--line);border-radius:8px;padding:6px 10px;font:inherit;font-size:13px;background:#fff">
+            <option value="">全部类型</option>
+            <option value="face">面部照</option>
+            <option value="body">全身照</option>
+          </select>
+          <select id="rejectedIssueFilter" aria-label="筛选拦截原因" style="border:1px solid var(--line);border-radius:8px;padding:6px 10px;font:inherit;font-size:13px;background:#fff;max-width:220px">
+            <option value="">全部原因</option>
+          </select>
+          <select id="rejectedAlgorithmFilter" aria-label="筛选算法版本" style="border:1px solid var(--line);border-radius:8px;padding:6px 10px;font:inherit;font-size:13px;background:#fff">
+            <option value="">全部版本</option>
+          </select>
+          <small id="rejectedFilterCount" style="color:var(--muted)"></small>
+        </div>
+        <div class="table-scroll"><table><thead><tr><th>上传时间</th><th>照片类型</th><th>来源</th><th>手机号</th><th>拦截原因</th><th>算法版本</th><th>预览</th><th>操作</th></tr></thead><tbody id="rejectedRows"></tbody></table></div>
         <div class="report-list-footer"><small id="rejectedCount"></small><button class="report-load-more" type="button" id="rejectedLoadMore" hidden>加载更多</button></div>
       </section>
     </div>
@@ -560,13 +574,13 @@
   const reportListState = {
     submissions: { rows: [], visible: REPORT_PAGE_SIZE, loaded: false, loading: false },
     captures: { rows: [], visible: REPORT_PAGE_SIZE, loaded: false, loading: false },
-    rejected: { rows: [], breakdown: [], visible: REPORT_PAGE_SIZE, loaded: false, loading: false },
+    rejected: { rows: [], breakdown: [], visible: REPORT_PAGE_SIZE, loaded: false, loading: false, filters: null, kind: '', issue: '', algorithm: '' },
   };
   const reportRequests = {};
   const reportConfig = {
     submissions: { path: '/admin/api/submissions', key: 'submissions', body: 'submissionRows', count: 'submissionsCount', more: 'submissionsLoadMore', updated: 'submissionsUpdatedAt', columns: 6 },
     captures: { path: '/admin/api/mirror-captures', key: 'captures', body: 'captureRows', count: 'capturesCount', more: 'capturesLoadMore', updated: 'capturesUpdatedAt', columns: 6 },
-    rejected: { path: '/admin/api/rejected-photos', key: 'rejected', body: 'rejectedRows', count: 'rejectedCount', more: 'rejectedLoadMore', updated: 'rejectedUpdatedAt', columns: 7 },
+    rejected: { path: '/admin/api/rejected-photos', key: 'rejected', body: 'rejectedRows', count: 'rejectedCount', more: 'rejectedLoadMore', updated: 'rejectedUpdatedAt', columns: 8 },
   };
 
   const photoThumb = (photo, meta = '') => {
@@ -668,6 +682,48 @@
 
   const REJECTED_SOURCE = { app: 'App 上传', mirror: '智能镜', mirror_head_crop: '智能镜·头部裁剪' };
 
+  const renderRejectedFilterOptions = () => {
+    const list = reportListState.rejected;
+    const filters = list.filters;
+    const kindSelect = $('rejectedKindFilter');
+    const issueSelect = $('rejectedIssueFilter');
+    const algorithmSelect = $('rejectedAlgorithmFilter');
+    const kindLabels = { face: '面部照', body: '全身照' };
+    kindSelect.innerHTML = '<option value="">全部类型</option>'
+      + Object.entries(filters?.kindCounts || {}).map(([kind, count]) =>
+        `<option value="${esc(kind)}" ${list.kind === kind ? 'selected' : ''}>${esc(kindLabels[kind] || kind)}（${count}）</option>`).join('');
+    const currentIssues = (filters?.issueFilters || []).filter((item) => !list.kind || item.kind === list.kind);
+    issueSelect.innerHTML = '<option value="">全部原因</option>'
+      + currentIssues.map((item) =>
+        `<option value="${esc(item.issue)}" ${list.issue === item.issue ? 'selected' : ''}>${esc(item.label)}（${item.count}）</option>`).join('');
+    algorithmSelect.innerHTML = '<option value="">全部版本</option>'
+      + (filters?.algorithmFilters || []).map((item) =>
+        `<option value="${esc(item.algorithm)}" ${list.algorithm === item.algorithm ? 'selected' : ''}>${esc(item.label)}（${item.count}）</option>`).join('');
+    issueSelect.disabled = false;
+  };
+
+  const applyRejectedFilters = async () => {
+    const list = reportListState.rejected;
+    const params = new URLSearchParams();
+    if (list.kind) params.set('kind', list.kind);
+    if (list.issue) params.set('issue', list.issue);
+    if (list.algorithm) params.set('algorithm', list.algorithm);
+    const query = params.toString();
+    const path = `/admin/api/rejected-photos${query ? `?${query}` : ''}`;
+    setReportLoading('rejected');
+    try {
+      const payload = await api(path);
+      list.rows = payload.rejected || [];
+      list.breakdown = payload.breakdown || [];
+      list.filters = payload.filters || null;
+      list.visible = REPORT_PAGE_SIZE;
+      renderRejectedFilterOptions();
+      renderReportList('rejected');
+    } catch (error) {
+      setReportError('rejected', error.message);
+    }
+  };
+
   const renderRejected = (rows, breakdown) => {
     const chips = $('rejectedBreakdown');
     chips.replaceChildren(...(breakdown || []).map((item) => {
@@ -680,7 +736,7 @@
     const tbody = $('rejectedRows');
     if (!rows.length) {
       tbody.replaceChildren(Object.assign(document.createElement('tr'), {
-        innerHTML: '<td colspan="7" class="empty">还没有被拒照片</td>',
+        innerHTML: '<td colspan="8" class="empty">还没有被拒照片</td>',
       }));
       return;
     }
@@ -689,11 +745,15 @@
       const thumb = row.previewUrl
         ? photoThumb({ previewUrl: row.previewUrl, downloadUrl: row.downloadUrl, label: `被拒照片 · ${(row.issueLabels || []).join('、')}` }, fmtTime(row.createdAt))
         : '<span class="tag tag-muted">无</span>';
+      const versionCell = row.algorithmLabel && row.algorithmLabel !== '旧版'
+        ? `<span class="tag tag-app">${esc(row.algorithmLabel)}</span>`
+        : '<span class="tag tag-muted" title="版本号引入之前的旧算法记录">旧版</span>';
       tr.innerHTML = `<td>${fmtTime(row.createdAt)}</td>`
         + `<td>${esc(row.kindLabel || row.kind || '—')}</td>`
         + `<td>${esc(REJECTED_SOURCE[row.source] || row.source || '—')}</td>`
         + `<td title="${esc(row.phone || '')}">${row.phone ? maskPhone(row.phone) : '—'}</td>`
         + `<td>${(row.issueLabels || []).map((label) => `<span class="tag tag-muted" style="margin-right:4px">${esc(label)}</span>`).join('')}</td>`
+        + `<td>${versionCell}</td>`
         + `<td>${thumb}</td>`
         + `<td>${row.downloadUrl ? `<a class="dl-link" href="${esc(row.downloadUrl)}">下载</a>` : '—'}</td>`;
       return tr;
@@ -727,7 +787,11 @@
     try {
       const payload = await api(config.path, { signal: controller.signal });
       list.rows = payload[config.key] || [];
-      if (tab === 'rejected') list.breakdown = payload.breakdown || [];
+      if (tab === 'rejected') {
+        list.breakdown = payload.breakdown || [];
+        list.filters = payload.filters || null;
+        renderRejectedFilterOptions();
+      }
       list.loaded = true;
       renderReportList(tab);
       $(config.updated).textContent = `更新于 ${new Date().toLocaleTimeString('zh-CN', { hour12: false })}`;
@@ -1318,6 +1382,20 @@
   $('submissionsRefresh').addEventListener('click', () => loadReportTab('submissions', { force: true }));
   $('capturesRefresh').addEventListener('click', () => loadReportTab('captures', { force: true }));
   $('rejectedRefresh').addEventListener('click', () => loadReportTab('rejected', { force: true }));
+  $('rejectedKindFilter').addEventListener('change', () => {
+    const list = reportListState.rejected;
+    list.kind = $('rejectedKindFilter').value;
+    list.issue = '';  // 切换照片类型后原因列表联动，清空已选原因
+    void applyRejectedFilters();
+  });
+  $('rejectedIssueFilter').addEventListener('change', () => {
+    reportListState.rejected.issue = $('rejectedIssueFilter').value;
+    void applyRejectedFilters();
+  });
+  $('rejectedAlgorithmFilter').addEventListener('change', () => {
+    reportListState.rejected.algorithm = $('rejectedAlgorithmFilter').value;
+    void applyRejectedFilters();
+  });
   $('personaGuideRefresh').addEventListener('click', () => loadPersonaGuide({ force: true }));
   document.addEventListener('click', (event) => {
     const goto = event.target.closest('[data-goto]');

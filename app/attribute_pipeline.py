@@ -36,6 +36,11 @@ import cv2
 import numpy as np
 from PIL import Image
 
+# 照片检测算法版本：门禁阈值、量测逻辑、分型口径任何一处调整都必须递增，
+# 并同步 docs/SELFIT_BACKEND_INTEGRATION.md。被拒照片留存记录会带此版本，
+# 管理后台按版本筛选——算法迭代后旧版本产生的拒绝记录可以直接过滤掉。
+PHOTO_ALGORITHM_VERSION = "photo-v1"
+
 try:
     import mediapipe as mp
     from mediapipe.tasks.python import BaseOptions, vision

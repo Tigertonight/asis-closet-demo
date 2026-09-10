@@ -445,6 +445,122 @@ def test_rejected_upload_photo_is_kept_and_listed(monkeypatch, tmp_path: Path) -
     assert payload["rejected"] == []
 
 
+def test_rejected_photos_carry_algorithm_version(monkeypatch, tmp_path: Path) -> None:
+    """新被拒记录带照片检测算法版本；历史无版本记录展示为「旧版」。"""
+
+    from app.attribute_pipeline import PHOTO_ALGORITHM_VERSION
+
+    _use_tmp_stores(monkeypatch, tmp_path)
+    client = TestClient(app)
+    admin_headers = _admin_login(client, monkeypatch)
+
+    def rejecting_inspector(image, kind):
+        return selfit_photo.PhotoInspection(accepted=False, issues=[selfit_photo.ISSUE_BODY_UNCLEAR])
+
+    monkeypatch.setattr(selfit_photo, "_inspector", rejecting_inspector)
+    session_id = client.post(f"{API}/sessions", json={}).json()["session"]["sessionId"]
+    upload = client.post(
+        f"{API}/sessions/{session_id}/photos/body",
+        files={"image": ("body.jpg", _jpeg_bytes("#9a8f86"), "image/jpeg")},
+    )
+    assert upload.status_code == 200
+    assert upload.json()["photo"]["status"] == "rejected"
+
+    payload = client.get("/admin/api/rejected-photos", headers=admin_headers).json()
+    assert len(payload["rejected"]) == 1
+    row = payload["rejected"][0]
+    assert row["algorithmVersion"] == PHOTO_ALGORITHM_VERSION
+    assert row["algorithmLabel"] == PHOTO_ALGORITHM_VERSION
+
+    # 伪造一条无版本的历史记录：展示为旧版，进 legacy 筛选
+    import app.selfit_onboarding as selfit_onboarding
+
+    data = selfit_onboarding._load_store()
+    data["rejected_photos"].append(
+        {
+            "record_id": "rej_legacy_0001",
+            "session_id": "ses_legacy",
+            "user_id": "u_legacy",
+            "kind": "face",
+            "asset_id": "asset_face_legacy",
+            "format": "JPEG",
+            "width": 100,
+            "height": 100,
+            "issues": ["face_not_found"],
+            "primary_issue": "face_not_found",
+            "source": "app",
+            "created_at": "2026-01-01T00:00:00+00:00",
+        }
+    )
+    selfit_onboarding._write_store(data)
+
+    payload = client.get("/admin/api/rejected-photos", headers=admin_headers).json()
+    assert len(payload["rejected"]) == 2
+    legacy_row = next(r for r in payload["rejected"] if r["recordId"] == "rej_legacy_0001")
+    assert legacy_row["algorithmVersion"] == ""
+    assert legacy_row["algorithmLabel"] == "旧版"
+    # 筛选项数据
+    assert payload["filters"]["kindCounts"] == {"face": 1, "body": 1}
+    assert {item["algorithm"] for item in payload["filters"]["algorithmFilters"]} == {
+        PHOTO_ALGORITHM_VERSION,
+        "legacy",
+    }
+    face_issues = [f for f in payload["filters"]["issueFilters"] if f["kind"] == "face"]
+    assert face_issues == [{"kind": "face", "issue": "face_not_found", "label": "检测不到人脸", "count": 1}]
+
+
+def test_rejected_photos_filters_by_kind_issue_and_algorithm(monkeypatch, tmp_path: Path) -> None:
+    """被拒照片列表按 kind / issue / algorithm 过滤。"""
+
+    from app.attribute_pipeline import PHOTO_ALGORITHM_VERSION
+
+    _use_tmp_stores(monkeypatch, tmp_path)
+    client = TestClient(app)
+    admin_headers = _admin_login(client, monkeypatch)
+
+    import app.selfit_onboarding as selfit_onboarding
+
+    data = selfit_onboarding._load_store()
+    base = {
+        "session_id": "ses_f1",
+        "user_id": "u_f1",
+        "asset_id": "asset_body_f1",
+        "format": "JPEG",
+        "width": 100,
+        "height": 100,
+        "source": "app",
+    }
+    data["rejected_photos"] = [
+        {**base, "record_id": "rej_body_a", "kind": "body", "issues": ["body_unclear"], "primary_issue": "body_unclear",
+         "algorithm_version": PHOTO_ALGORITHM_VERSION, "created_at": "2026-09-10T01:00:00+00:00"},
+        {**base, "record_id": "rej_body_b", "kind": "body", "issues": ["body_not_complete"], "primary_issue": "body_not_complete",
+         "algorithm_version": "", "created_at": "2026-09-10T02:00:00+00:00"},
+        {**base, "record_id": "rej_face_a", "kind": "face", "issues": ["face_not_found", "blurred"], "primary_issue": "blurred",
+         "algorithm_version": PHOTO_ALGORITHM_VERSION, "created_at": "2026-09-10T03:00:00+00:00"},
+    ]
+    selfit_onboarding._write_store(data)
+
+    def records(**params):
+        query = "&".join(f"{k}={v}" for k, v in params.items())
+        payload = client.get(f"/admin/api/rejected-photos{query and f'?{query}'}", headers=admin_headers).json()
+        return sorted(r["recordId"] for r in payload["rejected"])
+
+    assert records() == ["rej_body_a", "rej_body_b", "rej_face_a"]
+    assert records(kind="body") == ["rej_body_a", "rej_body_b"]
+    assert records(kind="face") == ["rej_face_a"]
+    # issue 命中 issues 或 primary_issue 都算
+    assert records(kind="body", issue="body_unclear") == ["rej_body_a"]
+    assert records(kind="face", issue="blurred") == ["rej_face_a"]
+    assert records(issue="body_unclear") == ["rej_body_a"]
+    assert records(kind="face", issue="body_unclear") == []
+    # algorithm 过滤：legacy 表示未记录版本的旧数据
+    assert records(algorithm=PHOTO_ALGORITHM_VERSION) == ["rej_body_a", "rej_face_a"]
+    assert records(algorithm="legacy") == ["rej_body_b"]
+    assert records(kind="body", algorithm="legacy") == ["rej_body_b"]
+    # 无效 kind 参数不过滤
+    assert records(kind="whatever") == ["rej_body_a", "rej_body_b", "rej_face_a"]
+
+
 def test_rejected_mirror_hydration_is_recorded(monkeypatch, tmp_path: Path) -> None:
     """镜拍 claim 回填失败：留存在 rejected_photos，下载指向镜子原图。"""
 

@@ -446,6 +446,14 @@ REJECTED_ISSUE_LABELS = {
     "body_unclear": "身形轮廓不稳定",
 }
 
+# 历史记录没有 algorithm_version 字段时展示的占位（引入版本号之前的旧算法）。
+REJECTED_LEGACY_ALGORITHM_LABEL = "旧版"
+
+
+def _rejected_algorithm_label(version: Any) -> str:
+    value = str(version or "").strip()
+    return value or REJECTED_LEGACY_ALGORITHM_LABEL
+
 
 def _rejected_row(
     item: dict[str, Any], phones: dict[str, str]
@@ -455,6 +463,7 @@ def _rejected_row(
     kind = str(item.get("kind") or "")
     source = str(item.get("source") or "app")
     issues = list(item.get("issues") or [])
+    algorithm_version = str(item.get("algorithm_version") or "").strip()
     row: dict[str, Any] = {
         "recordId": record_id,
         "sessionId": session_id,
@@ -466,6 +475,8 @@ def _rejected_row(
         "primaryIssue": item.get("primary_issue") or (
             issues[0] if issues else "unsupported_content"
         ),
+        "algorithmVersion": algorithm_version,
+        "algorithmLabel": _rejected_algorithm_label(algorithm_version),
         "width": item.get("width"),
         "height": item.get("height"),
         "createdAt": item.get("created_at"),
@@ -491,16 +502,42 @@ def _rejected_row(
 
 
 @router.get("/rejected-photos")
-async def list_rejected_photos(admin: dict[str, Any] = Depends(get_admin_user)) -> JSONResponse:
+async def list_rejected_photos(
+    kind: str | None = None,
+    issue: str | None = None,
+    algorithm: str | None = None,
+    admin: dict[str, Any] = Depends(get_admin_user),
+) -> JSONResponse:
+    """被拒照片列表。
+
+    可选过滤参数（前端两级筛选 + 版本筛选的服务端支持）：
+    - kind: face | body
+    - issue: 具体拦截原因枚举（primary_issue 或 issues 命中即算）
+    - algorithm: 算法版本（"legacy" 表示未记录版本的旧数据）
+    """
+
     data = selfit_onboarding._load_store()
     phones = _phone_by_user()
     hidden = _load_hidden()
     hidden_submissions = set(hidden["submissions"])
-    rows = [
-        _rejected_row(item, phones)
-        for item in data.get("rejected_photos", [])
-        if item.get("session_id") not in hidden_submissions
-    ]
+    kind_filter = kind if kind in {"face", "body"} else None
+    issue_filter = issue.strip() if issue and issue.strip() else None
+    algorithm_filter = algorithm.strip() if algorithm and algorithm.strip() else None
+    rows = []
+    for item in data.get("rejected_photos", []):
+        if item.get("session_id") in hidden_submissions:
+            continue
+        if kind_filter and str(item.get("kind") or "") != kind_filter:
+            continue
+        if issue_filter:
+            item_issues = list(item.get("issues") or [])
+            if issue_filter not in item_issues and str(item.get("primary_issue") or "") != issue_filter:
+                continue
+        if algorithm_filter:
+            version = str(item.get("algorithm_version") or "").strip()
+            if (version or "legacy") != algorithm_filter:
+                continue
+        rows.append(_rejected_row(item, phones))
     rows.sort(key=lambda row: str(row.get("createdAt") or ""), reverse=True)
     # 按主问题聚合，快速看出哪类拦截最多（算法优化的第一入口）
     counter: dict[str, int] = {}
@@ -510,8 +547,56 @@ async def list_rejected_photos(admin: dict[str, Any] = Depends(get_admin_user)) 
         {"issue": issue, "label": REJECTED_ISSUE_LABELS.get(issue, issue), "count": count}
         for issue, count in sorted(counter.items(), key=lambda kv: kv[1], reverse=True)
     ]
+    # 筛选项数据：kind 计数 / 各 kind 下出现过的原因 / 算法版本计数。
+    # 从全量（仅排除隐藏）统计，保证筛选项不受当前过滤影响。
+    all_rows = [
+        _rejected_row(item, phones)
+        for item in data.get("rejected_photos", [])
+        if item.get("session_id") not in hidden_submissions
+    ]
+    kind_counts = {"face": 0, "body": 0}
+    issues_by_kind: dict[str, dict[str, int]] = {"face": {}, "body": {}}
+    algorithm_counts: dict[str, int] = {}
+    for row in all_rows:
+        row_kind = str(row["kind"]) if row["kind"] in {"face", "body"} else ""
+        if row_kind:
+            kind_counts[row_kind] += 1
+            row_issue_codes = {str(row["primaryIssue"] or ""), *(row["issues"] or [])}
+            for code in row_issue_codes:
+                if code:
+                    issues_by_kind[row_kind][code] = issues_by_kind[row_kind].get(code, 0) + 1
+        version = str(row["algorithmVersion"]) or "legacy"
+        algorithm_counts[version] = algorithm_counts.get(version, 0) + 1
+    issue_filters = [
+        {
+            "kind": row_kind,
+            "issue": code,
+            "label": REJECTED_ISSUE_LABELS.get(code, code),
+            "count": count,
+        }
+        for row_kind in ("face", "body")
+        for code, count in sorted(
+            issues_by_kind[row_kind].items(), key=lambda kv: kv[1], reverse=True
+        )
+    ]
+    algorithm_filters = [
+        {
+            "algorithm": version,
+            "label": _rejected_algorithm_label(version) if version != "legacy" else REJECTED_LEGACY_ALGORITHM_LABEL,
+            "count": count,
+        }
+        for version, count in sorted(algorithm_counts.items(), key=lambda kv: kv[0], reverse=True)
+    ]
     return JSONResponse(
-        content={"rejected": rows, "breakdown": breakdown},
+        content={
+            "rejected": rows,
+            "breakdown": breakdown,
+            "filters": {
+                "kindCounts": kind_counts,
+                "issueFilters": issue_filters,
+                "algorithmFilters": algorithm_filters,
+            },
+        },
         headers={"Cache-Control": "no-store"},
     )
 

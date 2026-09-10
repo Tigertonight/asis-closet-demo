@@ -1291,6 +1291,8 @@ def _save_rejected_photo_record(
     不会因为保存失败让用户上传失败路径出错（留存是旁路）。
     """
 
+    from app.attribute_pipeline import PHOTO_ALGORITHM_VERSION
+
     record = {
         "record_id": "rej_" + secrets.token_urlsafe(12),
         "session_id": session_id,
@@ -1303,6 +1305,7 @@ def _save_rejected_photo_record(
         "issues": list(issues),
         "primary_issue": selfit_photo.primary_issue(issues),
         "source": source or "app",
+        "algorithm_version": PHOTO_ALGORITHM_VERSION,
         "created_at": _iso(_now()),
     }
     data["rejected_photos"].append(record)
