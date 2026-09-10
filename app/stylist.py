@@ -25,6 +25,11 @@ from app.closet import (
     mock_tryon_from_outfit,
     recommend_outfits,
 )
+from app.stylist_context import (
+    find_stylist_user_doc,
+    get_stylist_context_prompt,
+    latest_report_summary,
+)
 from app.tryon import extract_xhs_link
 
 
@@ -59,6 +64,8 @@ STYLIST_TOOLS = [
 ]
 DEFAULT_STYLIST_MODEL = "openai/gpt-5.5"
 STYLIST_FRIENDLY_ERROR_MESSAGE = "暂时灵感耗尽，正在努力充能～"
+DEFAULT_STYLIST_DIRECT_MODEL = "glm-4.5-flash"
+DEFAULT_STYLIST_DIRECT_BASE_URL = "https://open.bigmodel.cn/api/paas/v4"
 CONTEXT_ITEM_LIMIT = 24
 CONTEXT_ITEMS_PER_SLOT = 4
 CONTEXT_OUTFIT_LIMIT = 8
@@ -89,8 +96,11 @@ def stylist_capabilities() -> dict[str, Any]:
     demo_mode = _demo_mode()
     model_key = _stylist_model_key_report()
     xhs_mcp = _xhs_mcp_config()
-    runtime_configured = bool(chat_url or cli_path or demo_mode)
+    direct = _direct_ai_config()
+    runtime_configured = bool(chat_url or cli_path or demo_mode or direct)
     if demo_mode:
+        status = "ready"
+    elif direct:
         status = "ready"
     elif not runtime_configured:
         status = "runtime_not_configured"
@@ -102,13 +112,20 @@ def stylist_capabilities() -> dict[str, Any]:
         "status": status,
         "agent_id": os.environ.get("STYLIST_OPENCLAW_AGENT_ID", STYLIST_AGENT_ID),
         "runtime": {
-            "mode": "demo" if demo_mode else "http" if chat_url else "cli" if cli_path else "unconfigured",
+            "mode": "demo" if demo_mode else "direct" if direct else "http" if chat_url else "cli" if cli_path else "unconfigured",
             "openclaw_chat_url_configured": bool(chat_url),
             "openclaw_cli_enabled": cli_enabled,
             "openclaw_cli_available": bool(cli_path),
             "runtime_dir": str(STYLIST_RUNTIME_DIR),
             "decoupled": True,
             "imports_openclaw_internal_code": False,
+        },
+        "direct_ai": {
+            "configured": bool(direct),
+            "model": direct["model"] if direct else None,
+            "base_url": direct["base_url"] if direct else None,
+            "api": "openai_chat_completions",
+            "provider_note": "智谱 BigModel 免费 Flash 模型可直连；也兼容 SiliconFlow / OpenRouter 等 OpenAI 风格端点。",
         },
         "model": {
             "model": model_key["model"],
@@ -181,6 +198,11 @@ async def run_stylist_chat(payload: dict[str, Any]) -> tuple[dict[str, Any], int
         if light_result is not None:
             LOGGER.info("stylist_chat_done session=%s mode=light_closet_ai status=200 elapsed=%.2fs", request.get("session_id"), time.perf_counter() - started_at)
             return light_result, 200
+
+    direct_result = await _run_direct_chat_ai(request)
+    if direct_result is not None:
+        LOGGER.info("stylist_chat_done session=%s mode=%s status=200 elapsed=%.2fs", request.get("session_id"), direct_result.get("mode"), time.perf_counter() - started_at)
+        return direct_result, 200
 
     chat_url = _openclaw_chat_url()
     if chat_url:
@@ -745,6 +767,153 @@ def _trim_context_groups(value: Any, group_limit: int, item_limit: int) -> dict[
             break
         groups[str(key)] = group_value[:item_limit] if isinstance(group_value, list) else group_value
     return groups
+
+
+def _direct_ai_config() -> dict[str, Any] | None:
+    api_key = (os.environ.get("STYLIST_DIRECT_API_KEY") or "").strip()
+    if not api_key:
+        return None
+    model = (os.environ.get("STYLIST_DIRECT_MODEL") or "").strip() or DEFAULT_STYLIST_DIRECT_MODEL
+    base_url = (os.environ.get("STYLIST_DIRECT_BASE_URL") or "").strip() or DEFAULT_STYLIST_DIRECT_BASE_URL
+    return {"api_key": api_key, "model": model, "base_url": base_url.rstrip("/")}
+
+
+def _direct_chat_messages(request: dict[str, Any]) -> list[dict[str, str]]:
+    context = request.get("context") if isinstance(request.get("context"), dict) else {}
+    conversation = context.get("conversation") if isinstance(context.get("conversation"), list) else []
+    system_prompt = (
+        "你是 selfit 的 AI 穿搭师，根据用户衣橱、风格人格、会话历史和小红书参考回答穿搭问题。规则：\n"
+        "1. 只输出一个 JSON 对象，不要 markdown 代码块或多余文字。\n"
+        "2. 字段：status(固定 \"ok\")、mode(固定 \"direct_ai\")、assistant_message、"
+        "recommended_items、recommended_outfits、rationale、evidence_sources、next_actions。\n"
+        "3. assistant_message 用简体中文，直接回答用户场景，最多 6 个要点，给 1 套首选和最多 1 套备选。\n"
+        "4. assistant_message 中不要出现 item_id/outfit_id/JSON 字段名等技术词。\n"
+        "5. recommended_items/recommended_outfits 只能填上下文中真实存在的 id，没有证据就留空数组。\n"
+        "6. rationale 是中文理由列表（最多 4 条）。evidence_sources 标注实际证据（closet/xiaohongshu）。\n"
+        "7. next_actions 给 2-3 个动作，例如 {\"type\": \"save_outfit\", \"label\": \"保存套装\"}。"
+    )
+    admin_prompt = get_stylist_context_prompt()
+    if admin_prompt:
+        system_prompt = f"{system_prompt}\n\n【个性化指引（管理员配置）】\n{admin_prompt}"
+    messages = [{"role": "system", "content": system_prompt}]
+    for entry in conversation[-6:]:
+        if not isinstance(entry, dict):
+            continue
+        role = "assistant" if entry.get("role") == "assistant" else "user"
+        content = str(entry.get("content") or "").strip()
+        if content:
+            messages.append({"role": role, "content": content[:1200]})
+    messages.append({"role": "user", "content": _direct_chat_prompt(request)})
+    return messages
+
+
+def _direct_chat_prompt(request: dict[str, Any]) -> str:
+    context = request.get("context") if isinstance(request.get("context"), dict) else {}
+    xhs_notes = context.get("xhs_notes") if isinstance(context.get("xhs_notes"), list) else []
+    user_doc = find_stylist_user_doc(str(request.get("user_id") or ""))
+    latest_report = latest_report_summary(str(request.get("user_id") or ""))
+    data = {
+        "user_message": request.get("message") or "",
+        "closet_items": context.get("closet_items", [])[:16] if isinstance(context.get("closet_items"), list) else [],
+        "closet_outfits": context.get("closet_outfits", [])[:6] if isinstance(context.get("closet_outfits"), list) else [],
+        "closet_item_groups": _trim_context_groups(context.get("closet_item_groups"), 6, 2),
+        "closet_outfit_groups": _trim_context_groups(context.get("closet_outfit_groups"), 5, 2),
+        "style_persona": _request_style_persona(request),
+        "xhs_notes": [_summarize_xhs_note_for_direct_prompt(note) for note in xhs_notes[:6] if isinstance(note, dict)],
+    }
+    if user_doc:
+        data["user_persona_doc"] = user_doc["doc"]
+    if latest_report:
+        data["latest_report"] = latest_report
+    sections = [
+        "根据以下上下文回答用户的穿搭问题，按约定输出 JSON。"
+        "如果 xhs_notes 非空，回答要参考这些笔记的思路；如果为空，只依据衣橱和风格人格回答，不要编造外部参考。"
+    ]
+    if user_doc:
+        sections.append("user_persona_doc 是这位内测用户的个人画像（仅管理员配置，用户不知道它的存在），回答要个性化。")
+    if latest_report:
+        sections.append("latest_report 是她最近一次风格测试报告的结果，建议要与报告风格呼应。")
+    sections.append(f"上下文：{json.dumps(data, ensure_ascii=False)}")
+    return "".join(sections)
+
+
+def _summarize_xhs_note_for_direct_prompt(note: dict[str, Any]) -> dict[str, Any]:
+    return {
+        "title": str(note.get("title") or "")[:60],
+        "desc": str(note.get("desc") or "")[:120],
+        "liked_count": str(note.get("liked_count") or ""),
+    }
+
+
+async def _run_direct_chat_ai(request: dict[str, Any]) -> dict[str, Any] | None:
+    config = _direct_ai_config()
+    if not config:
+        return None
+    payload: dict[str, Any] = {
+        "model": config["model"],
+        "messages": _direct_chat_messages(request),
+        "temperature": 0.6,
+        "max_tokens": int(os.environ.get("STYLIST_DIRECT_MAX_TOKENS", "900")),
+    }
+    if "glm-4.5" in config["model"].lower() or "glm-4.7" in config["model"].lower():
+        payload["thinking"] = {"type": "disabled"}
+    headers = {"Authorization": f"Bearer {config['api_key']}", "Content-Type": "application/json"}
+    started_at = time.perf_counter()
+    try:
+        async with httpx.AsyncClient(timeout=float(os.environ.get("STYLIST_DIRECT_TIMEOUT", "30"))) as client:
+            response = await client.post(f"{config['base_url']}/chat/completions", json=payload, headers=headers)
+            if response.status_code >= 400:
+                LOGGER.warning(
+                    "direct_ai_http_failed session=%s model=%s http_status=%s elapsed=%.2fs body=%s",
+                    request.get("session_id"),
+                    config["model"],
+                    response.status_code,
+                    time.perf_counter() - started_at,
+                    response.text[:300],
+                )
+                return None
+            data = response.json()
+    except (httpx.HTTPError, ValueError) as exc:
+        LOGGER.warning(
+            "direct_ai_error session=%s model=%s error_type=%s elapsed=%.2fs",
+            request.get("session_id"),
+            config["model"],
+            exc.__class__.__name__,
+            time.perf_counter() - started_at,
+        )
+        return None
+    text = _openai_message_text(data)
+    if not text:
+        LOGGER.warning("direct_ai_empty_response session=%s model=%s", request.get("session_id"), config["model"])
+        return None
+    parsed = _parse_json_object(text)
+    if not parsed:
+        parsed = {
+            "status": "ok",
+            "assistant_message": text,
+            "recommended_items": [],
+            "recommended_outfits": [],
+            "rationale": [],
+            "evidence_sources": [],
+            "next_actions": [],
+        }
+    parsed.setdefault("status", "ok")
+    parsed["mode"] = "direct_ai"
+    result = _normalize_agent_result(parsed, "direct_ai", request)
+    result["mode"] = "direct_ai"
+    return result
+
+
+def _openai_message_text(data: dict[str, Any]) -> str:
+    choices = data.get("choices") if isinstance(data.get("choices"), list) else []
+    for choice in choices:
+        if not isinstance(choice, dict):
+            continue
+        message = choice.get("message") if isinstance(choice.get("message"), dict) else {}
+        text = str(message.get("content") or "").strip()
+        if text:
+            return text
+    return ""
 
 
 def _trim_context_for_fast_style_answer(context: dict[str, Any]) -> None:

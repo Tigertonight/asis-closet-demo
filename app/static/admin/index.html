@@ -277,6 +277,7 @@
     <button type="button" data-tab="submissions">用户报告</button>
     <button type="button" data-tab="invites">邀请码</button>
     <button type="button" data-tab="personas">十六型人格</button>
+    <button type="button" data-tab="stylistContext">AI 上下文</button>
     <a href="/qa/onboarding-attributes">实验数据 QA</a>
     <button type="button" data-tab="debug">调试工具</button>
     <a href="/mvp" target="_blank" rel="noopener">MVP 状态</a>
@@ -393,6 +394,36 @@
       <div id="personaJudge" class="pg-section"></div>
       <div id="personaMatrix" class="pg-section"></div>
       <div id="personaCards" class="pg-section"></div>
+    </div>
+    <div class="panel" id="stylistContextPanel" data-tab-panel="stylistContext" hidden>
+      <h2>AI 问答上下文</h2>
+      <p class="panel-hint">给 AI 穿搭师补充上下文：下方 prompt 会追加到对话的系统指引里（所有用户生效）；「用户画像」只对配置了手机号的内测用户生效——她问穿搭时，AI 会结合这份画像个性化回答。没配置的用户跟普通问答完全一样。</p>
+      <div class="toolbar" style="margin-bottom:12px">
+        <button class="mini-btn" type="button" id="stylistContextRefresh">刷新</button>
+        <small id="stylistContextUpdatedAt"></small>
+      </div>
+      <h3 style="margin:18px 0 8px">个性化 Prompt（全局）</h3>
+      <textarea id="stylistPromptInput" rows="8" style="width:100%;box-sizing:border-box;border:1px solid var(--line);border-radius:10px;padding:10px 12px;font:inherit;font-size:13px;line-height:1.7" placeholder="追加到 AI 穿搭师 system prompt 的个性化指引"></textarea>
+      <div style="display:flex;gap:8px;margin-top:8px">
+        <button class="mini-btn" type="button" id="stylistPromptSave">保存 Prompt</button>
+        <small id="stylistPromptMsg" style="align-self:center"></small>
+      </div>
+      <h3 style="margin:24px 0 8px">内测用户画像</h3>
+      <div class="table-scroll"><table><thead><tr><th>昵称</th><th>手机号</th><th>小红书 uid</th><th>画像长度</th><th>更新时间</th><th>操作</th></tr></thead><tbody id="stylistContextRows"></tbody></table></div>
+      <div id="stylistContextForm" style="margin-top:14px;padding:14px;border:1px solid var(--line);border-radius:12px;display:grid;gap:8px">
+        <input type="hidden" id="scEntryId" />
+        <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px">
+          <input id="scNicknameInput" type="text" maxlength="40" placeholder="昵称（如：叶瑄）" aria-label="昵称" />
+          <input id="scPhoneInput" type="text" maxlength="20" placeholder="登录手机号（如 13821028659）" aria-label="手机号" />
+          <input id="scUidInput" type="text" maxlength="40" placeholder="小红书 uid（备注用）" aria-label="小红书 uid" />
+        </div>
+        <textarea id="scDocInput" rows="10" style="width:100%;box-sizing:border-box;border:1px solid var(--line);border-radius:10px;padding:10px 12px;font:inherit;font-size:13px;line-height:1.7" placeholder="画像文档（纯文本粘贴）：她是谁、审美偏好、消费习惯、雷区……"></textarea>
+        <div style="display:flex;gap:8px">
+          <button class="mini-btn" type="button" id="scSaveBtn">保存用户</button>
+          <button class="mini-btn" type="button" id="scClearBtn" style="background:transparent;color:var(--brand)">清空表单</button>
+          <small id="scFormMsg" style="align-self:center"></small>
+        </div>
+      </div>
     </div>
     <div class="panel" id="debugPanel" data-tab-panel="debug" hidden>
       <h2>调试工具</h2>
@@ -1403,6 +1434,7 @@
     if (tab === 'analytics') void load();
     if (tab === 'invites') void loadInvites();
     if (tab === 'personas') void loadPersonaGuide();
+    if (tab === 'stylistContext') void loadStylistContext();
     if (tab === 'submissions') {
       const selected = document.querySelector('[data-report-tab][aria-selected="true"]');
       void loadReportTab(selected?.dataset.reportTab || 'submissions');
@@ -1487,6 +1519,111 @@
   document.querySelectorAll('[data-tab]').forEach((button) => button.addEventListener('click', () => {
     activateTab(button.dataset.tab);
   }));
+
+  const stylistContextState = { rows: [] };
+  const scAdminFetch = async (url, options = {}) => {
+    const response = await fetch(url, {
+      ...options,
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${state.token}`, ...(options.headers || {}) },
+    });
+    const payload = await response.json().catch(() => ({}));
+    if (!response.ok) throw new Error(payload.detail || '操作失败');
+    return payload;
+  };
+  const renderStylistContext = () => {
+    const rows = stylistContextState.rows.map((row) => {
+      const docLen = (row.doc || '').length;
+      const esc = (value) => String(value || '').replace(/[<>&"']/g, (ch) => ({ '<': '&lt;', '>': '&gt;', '&': '&amp;', '"': '&quot;', "'": '&#39;' }[ch]));
+      return `<tr>
+        <td>${esc(row.nickname) || '—'}</td>
+        <td>${esc(row.phone) || '—'}</td>
+        <td><code style="font-size:11px">${esc(row.xhs_uid) || '—'}</code></td>
+        <td>${docLen ? `${docLen} 字` : '—'}</td>
+        <td>${fmtDate(row.updated_at)}</td>
+        <td>
+          <button class="mini-btn" type="button" data-sc-id="${esc(row.entry_id)}" data-sc-act="edit">编辑</button>
+          <button class="mini-btn" type="button" data-sc-id="${esc(row.entry_id)}" data-sc-act="delete">删除</button>
+        </td>
+      </tr>`;
+    }).join('');
+    $('stylistContextRows').innerHTML = rows || '<tr><td colspan="6" style="color:var(--muted)">还没有配置用户画像；在下方表单新增。</td></tr>';
+    $('stylistContextUpdatedAt').textContent = `更新于 ${new Date().toLocaleTimeString('zh-CN', { hour12: false })}`;
+  };
+  const loadStylistContext = async () => {
+    try {
+      const payload = await scAdminFetch('/admin/api/stylist-context');
+      stylistContextState.rows = payload.users || [];
+      if (document.activeElement !== $('stylistPromptInput')) $('stylistPromptInput').value = payload.prompt || '';
+      renderStylistContext();
+    } catch (error) {
+      $('stylistContextUpdatedAt').textContent = error.message || '加载失败';
+    }
+  };
+  $('stylistContextRefresh').addEventListener('click', () => void loadStylistContext());
+  $('stylistPromptSave').addEventListener('click', async () => {
+    const button = $('stylistPromptSave');
+    button.disabled = true;
+    try {
+      await scAdminFetch('/admin/api/stylist-context/prompt', { method: 'PUT', body: JSON.stringify({ prompt: $('stylistPromptInput').value }) });
+      $('stylistPromptMsg').textContent = '已保存';
+    } catch (error) {
+      $('stylistPromptMsg').textContent = error.message || '保存失败';
+    } finally {
+      button.disabled = false;
+      setTimeout(() => { $('stylistPromptMsg').textContent = ''; }, 3000);
+    }
+  });
+  const scFillForm = (row) => {
+    $('scEntryId').value = row?.entry_id || '';
+    $('scNicknameInput').value = row?.nickname || '';
+    $('scPhoneInput').value = row?.phone || '';
+    $('scUidInput').value = row?.xhs_uid || '';
+    $('scDocInput').value = row?.doc || '';
+    $('scFormMsg').textContent = row ? '正在编辑既有条目，保存后覆盖' : '';
+  };
+  $('scClearBtn').addEventListener('click', () => scFillForm(null));
+  $('scSaveBtn').addEventListener('click', async () => {
+    const button = $('scSaveBtn');
+    button.disabled = true;
+    try {
+      const body = {
+        entry_id: $('scEntryId').value || null,
+        nickname: $('scNicknameInput').value || '',
+        phone: $('scPhoneInput').value || '',
+        xhs_uid: $('scUidInput').value || '',
+        doc: $('scDocInput').value || '',
+      };
+      await scAdminFetch('/admin/api/stylist-context/users', { method: 'POST', body: JSON.stringify(body) });
+      scFillForm(null);
+      await loadStylistContext();
+      $('scFormMsg').textContent = '已保存';
+    } catch (error) {
+      $('scFormMsg').textContent = error.message || '保存失败';
+    } finally {
+      button.disabled = false;
+      setTimeout(() => { $('scFormMsg').textContent = ''; }, 3000);
+    }
+  });
+  $('stylistContextRows').addEventListener('click', async (event) => {
+    const button = event.target.closest('[data-sc-act]');
+    if (!button) return;
+    const row = stylistContextState.rows.find((item) => item.entry_id === button.dataset.scId);
+    if (!row) return;
+    if (button.dataset.scAct === 'edit') {
+      scFillForm(row);
+      $('scDocInput').focus();
+      return;
+    }
+    if (!window.confirm(`删除 ${row.nickname || row.phone || row.xhs_uid} 的画像配置？`)) return;
+    button.disabled = true;
+    try {
+      await scAdminFetch(`/admin/api/stylist-context/users/${encodeURIComponent(row.entry_id)}`, { method: 'DELETE' });
+      await loadStylistContext();
+    } catch (error) {
+      $('scFormMsg').textContent = error.message || '删除失败';
+      button.disabled = false;
+    }
+  });
   $('logoutBtn').addEventListener('click', () => {
     fetch('/auth/logout', { method: 'POST', headers: { Authorization: `Bearer ${state.token}` } }).catch(() => {});
     showLogin();

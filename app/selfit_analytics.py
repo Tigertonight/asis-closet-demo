@@ -432,4 +432,90 @@ async def admin_invite_create(payload: AdminInviteCreatePayload, admin: dict[str
 @admin_router.patch("/invites/{code_id}")
 async def admin_invite_update(code_id: str, payload: AdminInviteUpdatePayload, admin: dict[str, Any] = Depends(get_admin_user)) -> JSONResponse:
     record = update_invite_code(code_id, payload.max_seats, payload.status)
+    if record is None:
+        return JSONResponse(status_code=404, content={"detail": "邀请码不存在"})
     return JSONResponse(content={"status": "ok", "invite": record})
+
+
+class StylistContextUserPayload(BaseModel):
+    entry_id: str | None = None
+    phone: str = ""
+    xhs_uid: str = ""
+    nickname: str = ""
+    doc: str = ""
+
+
+@admin_router.get("/stylist-context")
+async def admin_stylist_context(admin: dict[str, Any] = Depends(get_admin_user)) -> JSONResponse:
+    """AI 问答上下文配置：全局 prompt + 内测用户画像列表。"""
+
+    import app.stylist_context as stylist_context
+
+    config = stylist_context.load_stylist_context_config()
+    users = [
+        {
+            "entry_id": entry.get("entry_id"),
+            "phone": entry.get("phone") or "",
+            "xhs_uid": entry.get("xhs_uid") or "",
+            "nickname": entry.get("nickname") or "",
+            "doc": entry.get("doc") or "",
+            "updated_at": entry.get("updated_at") or entry.get("created_at") or "",
+        }
+        for entry in config["users"]
+    ]
+    users.sort(key=lambda row: str(row.get("updated_at") or ""), reverse=True)
+    return JSONResponse(
+        content={"prompt": config.get("prompt") or "", "users": users},
+        headers={"Cache-Control": "no-store"},
+    )
+
+
+@admin_router.put("/stylist-context/prompt")
+async def admin_stylist_context_prompt_update(
+    payload: dict[str, Any], admin: dict[str, Any] = Depends(get_admin_user)
+) -> JSONResponse:
+    import app.stylist_context as stylist_context
+
+    try:
+        prompt = stylist_context.update_stylist_context_prompt(str(payload.get("prompt") or ""))
+    except ValueError as exc:
+        return JSONResponse(status_code=400, content={"detail": str(exc)})
+    return JSONResponse(content={"status": "ok", "prompt": prompt})
+
+
+@admin_router.post("/stylist-context/users")
+async def admin_stylist_context_user_create(
+    payload: StylistContextUserPayload, admin: dict[str, Any] = Depends(get_admin_user)
+) -> JSONResponse:
+    import app.stylist_context as stylist_context
+
+    try:
+        entry = stylist_context.upsert_stylist_context_user(payload.model_dump())
+    except ValueError as exc:
+        return JSONResponse(status_code=400, content={"detail": str(exc)})
+    return JSONResponse(content={"status": "ok", "entry": entry})
+
+
+@admin_router.put("/stylist-context/users/{entry_id}")
+async def admin_stylist_context_user_update(
+    entry_id: str, payload: StylistContextUserPayload, admin: dict[str, Any] = Depends(get_admin_user)
+) -> JSONResponse:
+    import app.stylist_context as stylist_context
+
+    try:
+        entry = stylist_context.upsert_stylist_context_user({**payload.model_dump(), "entry_id": entry_id})
+    except ValueError as exc:
+        return JSONResponse(status_code=400, content={"detail": str(exc)})
+    return JSONResponse(content={"status": "ok", "entry": entry})
+
+
+@admin_router.delete("/stylist-context/users/{entry_id}")
+async def admin_stylist_context_user_delete(
+    entry_id: str, admin: dict[str, Any] = Depends(get_admin_user)
+) -> JSONResponse:
+    import app.stylist_context as stylist_context
+
+    deleted = stylist_context.delete_stylist_context_user(entry_id)
+    if not deleted:
+        return JSONResponse(status_code=404, content={"detail": "条目不存在"})
+    return JSONResponse(content={"status": "ok"})

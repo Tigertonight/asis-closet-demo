@@ -5,7 +5,9 @@ import io
 import itertools
 import json
 from pathlib import Path
+from typing import Any
 
+import httpx
 from fastapi.testclient import TestClient
 from PIL import Image
 
@@ -14,6 +16,7 @@ import app.auth as auth
 import app.main as main_module
 import app.storage as storage
 import app.stylist as stylist
+import app.stylist_context as stylist_context
 from app.main import app
 
 
@@ -110,6 +113,11 @@ def _clear_stylist_env(monkeypatch) -> None:
         "STYLIST_OPENCLAW_API_KEY",
         "MINIMAX_API_KEY",
         "MINIMAX_OAUTH_TOKEN",
+        "STYLIST_DIRECT_API_KEY",
+        "STYLIST_DIRECT_MODEL",
+        "STYLIST_DIRECT_BASE_URL",
+        "STYLIST_DIRECT_TIMEOUT",
+        "STYLIST_DIRECT_MAX_TOKENS",
     ]:
         monkeypatch.delenv(key, raising=False)
 
@@ -148,6 +156,262 @@ def test_stylist_inspiration_fails_closed_when_ai_key_missing(monkeypatch) -> No
     assert result.get("mode") != "degraded_openclaw"
     assert "我会这样搭" not in result["assistant_message"]
     assert "生日主角" not in result["assistant_message"]
+
+
+def _mock_direct_transport(monkeypatch, handler) -> None:
+    original_client = httpx.AsyncClient
+
+    def patched_client(*args: Any, **kwargs: Any) -> httpx.AsyncClient:
+        kwargs["transport"] = httpx.MockTransport(handler)
+        return original_client(*args, **kwargs)
+
+    monkeypatch.setattr(stylist.httpx, "AsyncClient", patched_client)
+
+
+def test_stylist_direct_ai_uses_openai_compatible_endpoint(monkeypatch) -> None:
+    _clear_stylist_env(monkeypatch)
+    monkeypatch.setenv("STYLIST_DIRECT_API_KEY", "test-direct-key")
+    monkeypatch.setenv("STYLIST_DIRECT_MODEL", "glm-4.5-flash")
+    monkeypatch.setenv("STYLIST_DIRECT_BASE_URL", "http://direct.test/v4")
+
+    captured: dict[str, Any] = {}
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        captured["url"] = str(request.url)
+        captured["headers"] = dict(request.headers)
+        captured["payload"] = json.loads(request.content.decode("utf-8"))
+        return httpx.Response(
+            200,
+            json={
+                "choices": [
+                    {
+                        "message": {
+                            "role": "assistant",
+                            "content": json.dumps(
+                                {
+                                    "status": "ok",
+                                    "mode": "direct_ai",
+                                    "assistant_message": "面试建议穿低饱和衬衫加直筒裤，备选深色针织加西装裤。",
+                                    "recommended_items": ["item_top_1"],
+                                    "recommended_outfits": [],
+                                    "rationale": ["优先正式感和低噪色彩"],
+                                    "evidence_sources": [{"type": "closet", "label": "本地衣橱", "count": 1}],
+                                    "next_actions": [{"type": "save_outfit", "label": "保存套装"}],
+                                },
+                                ensure_ascii=False,
+                            ),
+                        }
+                    }
+                ]
+            },
+        )
+
+    _mock_direct_transport(monkeypatch, handler)
+
+    result, status = asyncio.run(
+        stylist.run_stylist_chat({"message": "明天面试怎么穿", "context": {"source": "closet_tab"}})
+    )
+
+    assert status == 200
+    assert result["status"] == "ok"
+    assert result["mode"] == "direct_ai"
+    assert "面试" in result["assistant_message"]
+    assert result["recommended_items"] == ["item_top_1"]
+    assert captured["url"] == "http://direct.test/v4/chat/completions"
+    assert captured["headers"]["authorization"] == "Bearer test-direct-key"
+    assert captured["payload"]["model"] == "glm-4.5-flash"
+    assert captured["payload"]["thinking"] == {"type": "disabled"}
+    assert captured["payload"]["messages"][0]["role"] == "system"
+    assert any("明天面试怎么穿" in str(message.get("content") or "") for message in captured["payload"]["messages"])
+
+
+def test_stylist_direct_ai_falls_back_when_provider_fails(monkeypatch) -> None:
+    _clear_stylist_env(monkeypatch)
+    monkeypatch.setenv("STYLIST_DIRECT_API_KEY", "test-direct-key")
+    monkeypatch.setenv("STYLIST_DIRECT_BASE_URL", "http://direct.test/v4")
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        return httpx.Response(500, json={"error": {"message": "provider boom"}})
+
+    _mock_direct_transport(monkeypatch, handler)
+
+    result, status = asyncio.run(
+        stylist.run_stylist_chat({"message": "明天面试怎么穿", "context": {"source": "closet_tab"}})
+    )
+
+    assert status == 503
+    assert result["status"] == "failed"
+    assert result["error"]["code"] == "agent_runtime_unavailable"
+
+
+def test_stylist_direct_ai_plain_text_response_still_works(monkeypatch) -> None:
+    _clear_stylist_env(monkeypatch)
+    monkeypatch.setenv("STYLIST_DIRECT_API_KEY", "test-direct-key")
+    monkeypatch.setenv("STYLIST_DIRECT_MODEL", "some-other-model")
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        return httpx.Response(
+            200,
+            json={"choices": [{"message": {"role": "assistant", "content": "今天推荐浅色针织衫搭配牛仔裤。"}}]},
+        )
+
+    _mock_direct_transport(monkeypatch, handler)
+
+    result, status = asyncio.run(
+        stylist.run_stylist_chat({"message": "今天穿什么", "context": {"source": "closet_tab"}})
+    )
+
+    assert status == 200
+    assert result["status"] == "ok"
+    assert result["mode"] == "direct_ai"
+    assert "针织衫" in result["assistant_message"]
+    assert result["recommended_items"] == []
+
+
+def _use_tmp_stylist_context(monkeypatch, tmp_path: Path) -> None:
+    monkeypatch.setattr(stylist_context, "STYLIST_CONTEXT_CONFIG_PATH", tmp_path / "stylist_context_config.json")
+
+
+def test_stylist_direct_ai_injects_user_persona_doc_and_admin_prompt(monkeypatch, tmp_path: Path) -> None:
+    _clear_stylist_env(monkeypatch)
+    _use_tmp_stylist_context(monkeypatch, tmp_path)
+    monkeypatch.setenv("STYLIST_DIRECT_API_KEY", "test-direct-key")
+
+    phone_user_id = stylist_context.user_id_from_phone("13800001111")
+    assert phone_user_id
+    stylist_context.upsert_stylist_context_user(
+        {"phone": "13800001111", "xhs_uid": "uid-test-1", "nickname": "小画像", "doc": "她是二次元圈内人，喜欢Lolita和少女暴君审美。"}
+    )
+    stylist_context.update_stylist_context_prompt("把画像当作最高优先级的个性化依据。")
+
+    captured: dict[str, Any] = {}
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        captured["payload"] = json.loads(request.content.decode("utf-8"))
+        return httpx.Response(
+            200,
+            json={
+                "choices": [
+                    {
+                        "message": {
+                            "role": "assistant",
+                            "content": json.dumps(
+                                {"status": "ok", "assistant_message": "推荐带剑气感的搭配。", "recommended_items": []},
+                                ensure_ascii=False,
+                            ),
+                        }
+                    }
+                ]
+            },
+        )
+
+    _mock_direct_transport(monkeypatch, handler)
+
+    result, status = asyncio.run(
+        stylist.run_stylist_chat(
+            {
+                "message": "周末漫展怎么穿",
+                "user_id": phone_user_id,
+                "context": {"source": "closet_tab"},
+            }
+        )
+    )
+
+    assert status == 200
+    assert result["mode"] == "direct_ai"
+    messages = captured["payload"]["messages"]
+    system_prompt = messages[0]["content"]
+    assert "个性化指引（管理员配置）" in system_prompt
+    assert "把画像当作最高优先级的个性化依据" in system_prompt
+    user_prompt = messages[-1]["content"]
+    assert "user_persona_doc" in user_prompt
+    assert "Lolita" in user_prompt
+
+
+def test_stylist_direct_ai_plain_user_gets_no_persona_doc(monkeypatch, tmp_path: Path) -> None:
+    _clear_stylist_env(monkeypatch)
+    _use_tmp_stylist_context(monkeypatch, tmp_path)
+    monkeypatch.setenv("STYLIST_DIRECT_API_KEY", "test-direct-key")
+
+    captured: dict[str, Any] = {}
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        captured["payload"] = json.loads(request.content.decode("utf-8"))
+        return httpx.Response(
+            200,
+            json={"choices": [{"message": {"role": "assistant", "content": "推荐通勤衬衫。"}}]},
+        )
+
+    _mock_direct_transport(monkeypatch, handler)
+
+    result, status = asyncio.run(
+        stylist.run_stylist_chat(
+            {
+                "message": "明天上班怎么穿",
+                "user_id": "u_unconfigured_user",
+                "context": {"source": "closet_tab"},
+            }
+        )
+    )
+
+    assert status == 200
+    assert result["mode"] == "direct_ai"
+    user_prompt = captured["payload"]["messages"][-1]["content"]
+    assert "user_persona_doc" not in user_prompt
+    assert "latest_report" not in user_prompt
+
+
+def test_stylist_direct_ai_injects_latest_report(monkeypatch, tmp_path: Path) -> None:
+    _clear_stylist_env(monkeypatch)
+    _use_tmp_stylist_context(monkeypatch, tmp_path)
+    monkeypatch.setenv("STYLIST_DIRECT_API_KEY", "test-direct-key")
+
+    report_user_id = "u_report_user"
+    monkeypatch.setattr(
+        stylist,
+        "latest_report_summary",
+        lambda user_id: (
+            {
+                "type_id": "MELT",
+                "title": "奶油治愈",
+                "traits": ["甜感装饰", "柔和治愈"],
+                "summary": "柔和、甜色、装饰感",
+                "recommended_colors": ["奶油白", "蜜桃粉"],
+                "outfit_summary": "",
+                "advice": [],
+                "created_at": "2026-09-10T00:00:00+00:00",
+            }
+            if user_id == report_user_id
+            else None
+        ),
+    )
+
+    captured: dict[str, Any] = {}
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        captured["payload"] = json.loads(request.content.decode("utf-8"))
+        return httpx.Response(
+            200,
+            json={"choices": [{"message": {"role": "assistant", "content": "推荐奶油色系。"}}]},
+        )
+
+    _mock_direct_transport(monkeypatch, handler)
+
+    result, status = asyncio.run(
+        stylist.run_stylist_chat(
+            {
+                "message": "今天穿什么",
+                "user_id": report_user_id,
+                "context": {"source": "closet_tab"},
+            }
+        )
+    )
+
+    assert status == 200
+    user_prompt = captured["payload"]["messages"][-1]["content"]
+    assert "latest_report" in user_prompt
+    assert "奶油治愈" in user_prompt
+    assert "蜜桃粉" in user_prompt
 
 
 def test_stylist_attaches_real_closet_context_for_agent(monkeypatch) -> None:

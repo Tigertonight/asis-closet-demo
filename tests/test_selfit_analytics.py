@@ -155,3 +155,98 @@ def test_admin_page_is_served(monkeypatch, tmp_path: Path) -> None:
     assert "调试工具" in response.text
     assert "/report-builder" in response.text
     assert "/try-on/demo" in response.text
+
+
+def _use_tmp_stylist_context(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
+    import app.stylist_context as stylist_context
+
+    monkeypatch.setattr(
+        stylist_context, "STYLIST_CONTEXT_CONFIG_PATH", tmp_path / "stylist_context_config.json"
+    )
+
+
+def test_admin_stylist_context_crud(monkeypatch, tmp_path: Path) -> None:
+    _use_tmp_stores(monkeypatch, tmp_path)
+    _use_tmp_stylist_context(monkeypatch, tmp_path)
+    client = TestClient(app)
+
+    # 未登录不可见（登录前先验证，TestClient 登录后会带 admin cookie）
+    assert client.get("/admin/api/stylist-context").status_code == 401
+
+    admin_headers = _admin_login(client, monkeypatch)
+
+    # 初始：默认 prompt + 空列表
+    initial = client.get("/admin/api/stylist-context", headers=admin_headers).json()
+    assert initial["users"] == []
+    assert "画像" in initial["prompt"]
+
+    # 更新 prompt
+    updated = client.put(
+        "/admin/api/stylist-context/prompt",
+        headers=admin_headers,
+        json={"prompt": "测试指引 v2"},
+    )
+    assert updated.status_code == 200
+    assert client.get("/admin/api/stylist-context", headers=admin_headers).json()["prompt"] == "测试指引 v2"
+    assert client.put(
+        "/admin/api/stylist-context/prompt", headers=admin_headers, json={"prompt": " "}
+    ).status_code == 400
+
+    # 新增用户画像
+    created = client.post(
+        "/admin/api/stylist-context/users",
+        headers=admin_headers,
+        json={"phone": "13800001111", "xhs_uid": "uid-a", "nickname": "小画像", "doc": "她喜欢洛丽塔。"},
+    )
+    assert created.status_code == 200
+    entry_id = created.json()["entry"]["entry_id"]
+
+    # 手机号非法 / 文档为空被拒
+    assert client.post(
+        "/admin/api/stylist-context/users",
+        headers=admin_headers,
+        json={"phone": "123", "doc": "x"},
+    ).status_code == 400
+    assert client.post(
+        "/admin/api/stylist-context/users",
+        headers=admin_headers,
+        json={"phone": "13800002222"},
+    ).status_code == 400
+
+    # 同 uid 再次提交走更新（幂等）
+    again = client.post(
+        "/admin/api/stylist-context/users",
+        headers=admin_headers,
+        json={"xhs_uid": "uid-a", "doc": "更新后的画像。"},
+    )
+    assert again.status_code == 200
+    assert again.json()["entry"]["entry_id"] == entry_id
+
+    listing = client.get("/admin/api/stylist-context", headers=admin_headers).json()
+    assert len(listing["users"]) == 1
+    assert listing["users"][0]["doc"] == "更新后的画像。"
+
+    # 删除
+    assert client.delete(f"/admin/api/stylist-context/users/{entry_id}", headers=admin_headers).status_code == 200
+    assert client.get("/admin/api/stylist-context", headers=admin_headers).json()["users"] == []
+    assert client.delete(f"/admin/api/stylist-context/users/{entry_id}", headers=admin_headers).status_code == 404
+
+
+def test_stylist_context_matches_phone_hash_user_id(monkeypatch, tmp_path: Path) -> None:
+    import app.stylist_context as stylist_context
+
+    _use_tmp_stylist_context(monkeypatch, tmp_path)
+
+    stylist_context.upsert_stylist_context_user(
+        {"phone": "13821028659", "xhs_uid": "6346eddc", "nickname": "叶瑄", "doc": "画像文本"}
+    )
+    user_id = stylist_context.user_id_from_phone("13821028659")
+    assert user_id and user_id.startswith("u_")
+
+    matched = stylist_context.find_stylist_user_doc(user_id)
+    assert matched is not None
+    assert matched["nickname"] == "叶瑄"
+    assert matched["doc"] == "画像文本"
+
+    assert stylist_context.find_stylist_user_doc("u_somebody_else") is None
+    assert stylist_context.find_stylist_user_doc("local_user") is None
