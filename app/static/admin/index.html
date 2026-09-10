@@ -44,6 +44,7 @@
   .toolbar small { color: var(--muted); }
   .debug-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 12px; }
   .debug-card { display: flex; flex-direction: column; gap: 4px; padding: 14px 16px; background: var(--card); border: 1px solid var(--line); border-radius: 14px; text-decoration: none; color: var(--ink); transition: border-color .15s ease, transform .15s ease; }
+  button.debug-card { font: inherit; text-align: left; cursor: pointer; }
   .debug-card:hover { border-color: var(--rose); transform: translateY(-1px); }
   .debug-card b { font-size: 14px; }
   .debug-card span { color: var(--muted); font-size: 12px; line-height: 1.5; }
@@ -276,11 +277,9 @@
     <button class="is-active" data-tab="analytics" type="button">数据分析</button>
     <button type="button" data-tab="submissions">用户报告</button>
     <button type="button" data-tab="invites">邀请码</button>
-    <button type="button" data-tab="personas">十六型人格</button>
-    <button type="button" data-tab="stylistContext">AI 上下文</button>
-    <a href="/qa/onboarding-attributes">实验数据 QA</a>
+    <button type="button" data-tab="stylistContext">AI agent</button>
+    <a href="/qa/onboarding-attributes">智能评测</a>
     <button type="button" data-tab="debug">调试工具</button>
-    <a href="/mvp" target="_blank" rel="noopener">MVP 状态</a>
     <button type="button" id="settingsBtn" hidden>修改密码</button>
     <button type="button" id="logoutBtn" hidden>退出</button>
   </nav>
@@ -398,6 +397,7 @@
       <div class="table-scroll"><table><thead><tr><th>邀请码</th><th>席位</th><th>过期时间</th><th>状态</th><th>备注</th><th>操作</th></tr></thead><tbody id="inviteRows"></tbody></table></div>
     </div>
     <div class="panel" id="personaGuidePanel" data-tab-panel="personas" hidden>
+      <button class="mini-btn" type="button" data-tab="debug" style="margin:0 0 12px">‹ 返回调试工具</button>
       <h2>十六型人格 · 判定手册</h2>
       <p class="panel-hint">判断某个人属于什么型格：先看下方「坐标系与判定规则」理解 7 个维度，再用「手动判定器」把此人的 7 维得分拖进去得到分型结果；16 型档案卡片给出每型的中心点分数、核心维度（权重 ×1.5 的判定首要依据）、蛛网图与易混淆型。</p>
       <div class="toolbar" style="margin-bottom:12px">
@@ -442,17 +442,11 @@
     </div>
     <div class="panel" id="debugPanel" data-tab-panel="debug" hidden>
       <h2>调试工具</h2>
-      <p style="margin:0 0 14px;color:var(--muted);font-size:13px">开发中功能的内部入口。所有页面均已纳入管理员密码保护，普通用户无法访问；点击新标签页打开。</p>
+      <p style="margin:0 0 14px;color:var(--muted);font-size:13px">开发中功能的内部入口。所有页面均已纳入管理员密码保护，普通用户无法访问；「十六型人格」在当前页打开，其余在新标签页打开。</p>
       <div class="debug-grid">
         <a class="debug-card" href="/report-builder" target="_blank" rel="noopener"><b>风格报告配置后台</b><span>16 人格模板的编辑与导出（改完需手动合入模板库）</span></a>
+        <button class="debug-card" type="button" data-tab="personas"><b>十六型人格</b><span>7 维坐标系、手动判定器与 16 型档案卡片</span></button>
         <a class="debug-card" href="/demo" target="_blank" rel="noopener"><b>十二季型色彩诊断</b><span>色卡检测 + 4/12/24 季候选的原始 Demo</span></a>
-        <a class="debug-card" href="/try-on/demo" target="_blank" rel="noopener"><b>AI 上衣试穿</b><span>人像 + 服装理解、mask 与试穿生成的调试页</span></a>
-        <a class="debug-card" href="/closet/demo" target="_blank" rel="noopener"><b>电子衣橱</b><span>单品入柜、链接导入、搭配组合的调试页</span></a>
-        <a class="debug-card" href="/mvp" target="_blank" rel="noopener"><b>MVP 状态总览</b><span>产品门禁、算法契约与回归状态</span></a>
-        <a class="debug-card" href="/qa" target="_blank" rel="noopener"><b>MVP 自测</b><span>色彩测试链路的自测页</span></a>
-        <a class="debug-card" href="/self-test" target="_blank" rel="noopener"><b>算法自测</b><span>fixture 样本回归与稳定性</span></a>
-        <a class="debug-card" href="/selfit/mirror?preview=processing&stage=50" target="_blank" rel="noopener"><b>镜子处理中预览</b><span>镜子端各进度阶段的视觉走查</span></a>
-        <a class="debug-card" href="/selfit?preview=report&type=neon" target="_blank" rel="noopener"><b>报告页预览</b><span>直接查看指定人格的报告渲染（type 参数可换）</span></a>
       </div>
     </div>
   </section>

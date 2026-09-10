@@ -151,10 +151,17 @@ def test_admin_page_is_served(monkeypatch, tmp_path: Path) -> None:
 
     assert response.status_code == 200
     assert "管理后台" in response.text
-    # 调试工具 tab 收纳内部页面入口
+    # 导航整理：AI agent / 智能评测；MVP 状态入口已移除
+    assert "AI agent" in response.text
+    assert "智能评测" in response.text
+    assert 'href="/mvp"' not in response.text
+    # 调试工具 tab 只保留三个入口；十六型人格在当前页打开
     assert "调试工具" in response.text
     assert "/report-builder" in response.text
-    assert "/try-on/demo" in response.text
+    assert "十二季型色彩诊断" in response.text
+    assert 'data-tab="personas"' in response.text
+    assert "/try-on/demo" not in response.text
+    assert "/closet/demo" not in response.text
 
 
 def _use_tmp_stylist_context(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
