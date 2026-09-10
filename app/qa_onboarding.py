@@ -770,10 +770,11 @@ def render_qa_page(content: str, active_tab: str, source_counts: dict[str, int] 
         ("", "智能评测", "/qa/onboarding-attributes"),
         ("debug", "调试工具", "/admin#debug"),
     ]
-    main_tabs_html = "".join(
-        f'<a{" class=\"is-active\"" if key == "" else ""} href="{href}">{label}</a>'
-        for key, label, href in main_tabs
-    )
+    main_tab_parts = []
+    for key, label, href in main_tabs:
+        active_attr = ' class="is-active"' if key == "" else ""
+        main_tab_parts.append(f"<a{active_attr} href=\"{href}\">{label}</a>")
+    main_tabs_html = "".join(main_tab_parts)
 
     # QA 内部子导航（pill 风格，与管理后台「用户报告」的 report-tabs 一致）
     qa_tabs = [("results", "实验结果"), ("annotate", "数据标注"), ("dataset", "数据分布")]
