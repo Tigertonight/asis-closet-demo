@@ -51,7 +51,10 @@ def test_qa_page_renders_entries(monkeypatch: pytest.MonkeyPatch, admin_client: 
     response = client.get("/qa/onboarding-attributes")
     assert response.status_code == 200
     text = response.text
-    assert "onboarding 属性识别 QA" in text
+    # 顶部横 bar 与管理后台统一：智能评测高亮，其余 tab 链回 /admin
+    assert "selfit 管理后台" in text
+    assert 'class="is-active" href="/qa/onboarding-attributes">智能评测' in text
+    assert 'href="/admin#submissions">用户报告' in text
     assert "中性自然肤" in text and "椭圆脸" in text and "梨型" in text
     assert "photo.color_cast" in text
     assert "重新分析" in text

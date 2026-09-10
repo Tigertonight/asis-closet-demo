@@ -760,8 +760,27 @@ def render_qa_page(content: str, active_tab: str, source_counts: dict[str, int] 
     source_query = f"&source={active_source}" if active_source else ""
     total = sum(source_counts.values())
 
-    def tab(key: str, label: str) -> str:
-        return f'<a class="tab{" is-active" if active_tab == key else ""}" href="/qa/onboarding-attributes?tab={key}{source_query}">{label}</a>'
+    # 顶部主导航：与管理后台同构（数据/AI agent 等回 /admin 并用 hash 直达对应 tab），
+    # 「智能评测」即本页，高亮显示。
+    main_tabs = [
+        ("analytics", "数据分析", "/admin#analytics"),
+        ("submissions", "用户报告", "/admin#submissions"),
+        ("invites", "邀请码", "/admin#invites"),
+        ("stylistContext", "AI agent", "/admin#stylistContext"),
+        ("", "智能评测", "/qa/onboarding-attributes"),
+        ("debug", "调试工具", "/admin#debug"),
+    ]
+    main_tabs_html = "".join(
+        f'<a{" class=\"is-active\"" if key == "" else ""} href="{href}">{label}</a>'
+        for key, label, href in main_tabs
+    )
+
+    # QA 内部子导航（pill 风格，与管理后台「用户报告」的 report-tabs 一致）
+    qa_tabs = [("results", "实验结果"), ("annotate", "数据标注"), ("dataset", "数据分布")]
+    qa_tabs_html = "".join(
+        f'<a class="qa-tab{" is-active" if active_tab == key else ""}" href="/qa/onboarding-attributes?tab={key}{source_query}">{label}</a>'
+        for key, label in qa_tabs
+    )
 
     def source_filter(value: str, label: str, count: int) -> str:
         is_active = active_source == value
@@ -779,40 +798,51 @@ def render_qa_page(content: str, active_tab: str, source_counts: dict[str, int] 
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>onboarding 属性识别 QA</title>
+  <title>selfit 管理后台 · 智能评测</title>
   <link rel="icon" type="image/svg+xml" href="/static/brand/favicon.svg" />
   <link rel="icon" type="image/png" sizes="32x32" href="/static/brand/favicon-32.png" />
   <style>
-    body {{ margin: 0; background: #f7f3ef; color: #191719; font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Segoe UI", sans-serif; }}
-    .layout {{ display: flex; min-height: 100vh; }}
-    .sidebar {{ width: 172px; flex-shrink: 0; background: #fff; border-right: 1px solid #e7ded9; padding: 24px 14px; position: sticky; top: 0; height: 100vh; box-sizing: border-box; }}
-    .sidebar .logo {{ font-weight: 900; font-size: 15px; margin-bottom: 18px; }}
-    .tab {{ display: block; padding: 10px 12px; border-radius: 12px; color: #4c4441; text-decoration: none; font-size: 14px; font-weight: 700; margin-bottom: 6px; }}
-    .tab.is-active {{ background: #ffe4ee; color: #9b344b; }}
-    main {{ flex: 1; min-width: 0; padding: 28px 26px 48px; }}
-    h1 {{ font-size: 24px; margin: 0 0 4px; }}
-    h2 {{ font-size: 19px; margin: 26px 0 12px; }}
-    .sub {{ color: #6c6260; font-size: 13px; margin: 0 0 14px; }}
-    .source-filter-bar {{ display: flex; flex-wrap: wrap; gap: 8px; align-items: center; background: #fff; border: 1px solid #e7ded9; border-radius: 14px; padding: 10px 14px; margin: 0 0 16px; }}
-    .source-filter-label {{ font-size: 12px; font-weight: 800; color: #8a807d; }}
-    .src-filter {{ background: #faf6f3; border: 1px solid #e7ded9; border-radius: 999px; padding: 6px 13px; font-size: 12px; font-weight: 700; color: #4c4441; text-decoration: none; }}
+    /* 与管理后台一致的视觉 token */
+    :root {{ --brand: #8a011b; --rose: #ff4f86; --ink: #1f1a1a; --muted: rgba(31,26,26,.55); --line: rgba(31,26,26,.10); --bg: #faf7f5; --card: #ffffff; }}
+    * {{ box-sizing: border-box; }}
+    body {{ margin: 0; background: var(--bg); color: var(--ink); font: 14px/1.6 -apple-system, BlinkMacSystemFont, "PingFang SC", "Segoe UI", sans-serif; }}
+    /* 顶部主导航：类名与样式同步自 app/static/admin/index.html */
+    header.topbar {{ position: sticky; top: 0; z-index: 40; display: flex; align-items: center; gap: 16px; padding: 12px 28px; background: rgba(255,255,255,.92); backdrop-filter: blur(8px); border-bottom: 1px solid var(--line); }}
+    header.topbar h1 {{ margin: 0; font-size: 16px; font-weight: 700; }}
+    header.topbar h1 small {{ color: var(--muted); font-weight: 400; margin-left: 8px; }}
+    nav.tabs {{ display: flex; gap: 4px; margin-left: auto; }}
+    nav.tabs a {{ padding: 6px 14px; border: 0; border-radius: 999px; background: transparent; color: var(--muted); text-decoration: none; font-size: 13px; cursor: pointer; }}
+    nav.tabs .is-active, nav.tabs a:hover {{ background: #f6e7ea; color: var(--brand); }}
+    main {{ max-width: 1200px; margin: 0 auto; padding: 22px 28px 64px; }}
+    h1 {{ font-size: 21px; margin: 0 0 4px; }}
+    h2 {{ font-size: 17px; margin: 26px 0 12px; }}
+    .sub {{ color: var(--muted); font-size: 13px; margin: 0 0 14px; }}
+    /* QA 子导航 pill */
+    .qa-tabs {{ display: flex; gap: 4px; margin: 0 0 16px; padding: 4px; border: 1px solid var(--line); border-radius: 12px; background: #f5efec; overflow-x: auto; scrollbar-width: thin; }}
+    .qa-tab {{ flex: 0 0 auto; min-height: 36px; display: inline-flex; align-items: center; padding: 7px 14px; border: 0; border-radius: 9px; background: transparent; color: var(--muted); font-size: 13px; font-weight: 600; text-decoration: none; transition: background .15s ease, color .15s ease, box-shadow .15s ease; }}
+    .qa-tab:hover {{ color: var(--brand); }}
+    .qa-tab.is-active {{ background: #fff; color: var(--brand); box-shadow: 0 1px 5px rgba(60,21,25,.08); }}
+    .source-filter-bar {{ display: flex; flex-wrap: wrap; gap: 8px; align-items: center; background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 10px 14px; margin: 0 0 16px; }}
+    .source-filter-label {{ font-size: 12px; font-weight: 800; color: var(--muted); }}
+    .src-filter {{ background: #faf6f3; border: 1px solid var(--line); border-radius: 999px; padding: 6px 13px; font-size: 12px; font-weight: 700; color: var(--ink); text-decoration: none; }}
     .src-filter b {{ font-weight: 800; margin-left: 2px; }}
-    .src-filter:hover {{ border-color: #ff4f86; color: #ff4f86; }}
-    .src-filter.is-active {{ background: #ff4f86; border-color: #ff4f86; color: #fff; }}
+    .src-filter:hover {{ border-color: var(--rose); color: var(--rose); }}
+    .src-filter.is-active {{ background: var(--rose); border-color: var(--rose); color: #fff; }}
     .src-badge {{ display: inline-block; border-radius: 8px; padding: 2px 8px; font-size: 11px; font-weight: 800; margin-right: 6px; }}
     .src-badge--builtin {{ background: #f1edf3; color: #6d5b7a; }}
     .src-badge--admin {{ background: #e8f0fa; color: #2d5f8a; }}
     .src-badge--mirror {{ background: #e7f5ea; color: #166534; }}
     .src-badge--app {{ background: #ffe4ee; color: #9b344b; }}
     .toolbar {{ display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 12px 0 16px; }}
-    .pill {{ background: #fff; border: 1px solid #e7ded9; border-radius: 999px; padding: 6px 12px; font-size: 12px; font-weight: 700; }}
+    .pill {{ background: var(--card); border: 1px solid var(--line); border-radius: 999px; padding: 6px 12px; font-size: 12px; font-weight: 700; }}
     .pill--pass {{ background: #e7f5ea; border-color: #cde7d4; }}
     .pill--warn {{ background: #fff4d8; border-color: #f0d48c; }}
     .pill--fail {{ background: #fde8e8; border-color: #f3c2c2; }}
-    .refresh {{ margin-left: auto; background: #191719; color: #fff; border-radius: 999px; padding: 8px 14px; font-size: 12px; font-weight: 800; text-decoration: none; }}
+    a.pill {{ text-decoration: none; color: inherit; }}
+    .refresh {{ margin-left: auto; background: var(--ink); color: #fff; border-radius: 999px; padding: 8px 14px; font-size: 12px; font-weight: 800; text-decoration: none; }}
     .grid {{ display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 14px; }}
     .grid--anno {{ grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); }}
-    .card {{ background: #fff; border: 1px solid #e7ded9; border-radius: 16px; overflow: hidden; display: flex; flex-direction: column; }}
+    .card {{ background: var(--card); border: 1px solid var(--line); border-radius: 16px; box-shadow: 0 4px 14px rgba(60,21,25,.04); overflow: hidden; display: flex; flex-direction: column; }}
     .card--fail {{ border-color: #f3c2c2; }}
     .card--warn {{ border-color: #f0d48c; }}
     .card--diff {{ border-color: #f3c2c2; box-shadow: 0 0 0 2px rgba(220, 38, 38, .18); }}
@@ -831,78 +861,81 @@ def render_qa_page(content: str, active_tab: str, source_counts: dict[str, int] 
     .status--warn {{ background: #fff4d8; color: #8a5a00; }}
     .status--fail {{ background: #fde8e8; color: #b91c1c; }}
     .attrs {{ display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0 4px; }}
-    .attr {{ border: 1px solid #eee6e1; border-radius: 12px; padding: 6px 10px; display: flex; flex-direction: column; min-width: 76px; }}
+    .attr {{ border: 1px solid var(--line); border-radius: 12px; padding: 6px 10px; display: flex; flex-direction: column; min-width: 76px; }}
     .attr--fail {{ border-color: #f3c2c2; background: #fffafa; }}
     .attr--warn {{ border-color: #f0d48c; background: #fffdf6; }}
-    .attr-name {{ font-size: 11px; color: #8a807d; font-weight: 700; }}
+    .attr-name {{ font-size: 11px; color: var(--muted); font-weight: 700; }}
     .attr b {{ font-size: 15px; margin: 2px 0; }}
-    .attr-meta {{ font-size: 11px; color: #8a807d; }}
-    .candidates {{ font-size: 11px; color: #8a807d; margin: 2px 0 6px; }}
+    .attr-meta {{ font-size: 11px; color: var(--muted); }}
+    .candidates {{ font-size: 11px; color: var(--muted); margin: 2px 0 6px; }}
     .metrics {{ width: 100%; border-collapse: collapse; font-size: 12px; margin-top: 6px; }}
-    .metrics td {{ border-top: 1px solid #f3ede8; padding: 4px 0; color: #4c4441; }}
-    .metrics td:first-child {{ color: #8a807d; width: 40%; }}
+    .metrics td {{ border-top: 1px solid #f3ede8; padding: 4px 0; color: var(--ink); }}
+    .metrics td:first-child {{ color: var(--muted); width: 40%; }}
     .issues {{ margin: 8px 0 0; padding-left: 16px; font-size: 12px; color: #8a5a00; }}
-    .issues code {{ background: #f7f3ef; border-radius: 6px; padding: 1px 5px; font-size: 11px; }}
+    .issues code {{ background: var(--bg); border-radius: 6px; padding: 1px 5px; font-size: 11px; }}
     .source {{ margin-top: 8px; font-size: 11px; color: #b0a6a2; }}
     .source a {{ color: #9b344b; }}
-    .new-task input, .task-switch select {{ border: 1px solid #e7ded9; border-radius: 10px; padding: 8px 10px; font-size: 13px; background: #fff; }}
-    .new-task button {{ background: #191719; color: #fff; border: 0; border-radius: 10px; padding: 8px 14px; font-size: 13px; font-weight: 800; cursor: pointer; }}
+    .new-task input, .task-switch select {{ border: 1px solid var(--line); border-radius: 10px; padding: 8px 10px; font-size: 13px; background: var(--card); }}
+    .new-task button {{ background: var(--ink); color: #fff; border: 0; border-radius: 10px; padding: 8px 14px; font-size: 13px; font-weight: 800; cursor: pointer; }}
     .new-task, .task-switch {{ display: inline-flex; gap: 8px; margin: 0; }}
     .anno-group {{ border-top: 1px solid #f3ede8; padding: 8px 0 4px; }}
     .anno-group-head {{ display: flex; justify-content: space-between; font-size: 12px; font-weight: 800; margin-bottom: 6px; }}
-    .anno-group-head small {{ color: #8a807d; font-weight: 600; }}
+    .anno-group-head small {{ color: var(--muted); font-weight: 600; }}
     .anno-group.is-diff .anno-group-head span {{ color: #b91c1c; }}
     .anno-options {{ display: flex; flex-wrap: wrap; gap: 6px; }}
-    .anno-opt {{ border: 1px solid #e7ded9; background: #fff; border-radius: 999px; padding: 6px 12px; font-size: 12px; font-weight: 700; cursor: pointer; color: #4c4441; }}
-    .anno-opt:hover {{ border-color: #ff4f86; color: #ff4f86; }}
-    .anno-opt.is-sel {{ background: #ff4f86; border-color: #ff4f86; color: #fff; }}
+    .anno-opt {{ border: 1px solid var(--line); background: var(--card); border-radius: 999px; padding: 6px 12px; font-size: 12px; font-weight: 700; cursor: pointer; color: var(--ink); }}
+    .anno-opt:hover {{ border-color: var(--rose); color: var(--rose); }}
+    .anno-opt.is-sel {{ background: var(--rose); border-color: var(--rose); color: #fff; }}
     .diff-badge {{ display: inline-block; margin-top: 6px; font-size: 11px; color: #b91c1c; background: #fde8e8; border-radius: 8px; padding: 3px 8px; }}
-    .task-table {{ width: 100%; border-collapse: collapse; background: #fff; border: 1px solid #e7ded9; border-radius: 16px; overflow: hidden; margin-top: 16px; }}
+    .task-table {{ width: 100%; border-collapse: collapse; background: var(--card); border: 1px solid var(--line); border-radius: 16px; overflow: hidden; margin-top: 16px; }}
     .task-table th, .task-table td {{ text-align: left; padding: 12px 16px; border-top: 1px solid #f3ede8; font-size: 13px; }}
-    .task-table th {{ border-top: 0; background: #faf6f3; font-size: 12px; color: #8a807d; }}
-    .task-table small {{ color: #8a807d; }}
-    .detail-link {{ color: #ff4f86; font-weight: 800; text-decoration: none; }}
-    .save-bar {{ position: fixed; left: 50%; transform: translateX(-50%); bottom: 22px; z-index: 30; display: flex; gap: 14px; align-items: center; background: #191719; color: #fff; border-radius: 999px; padding: 10px 18px; box-shadow: 0 14px 34px rgba(25,23,25,.28); font-size: 13px; }}
-    .save-bar button {{ background: #ff4f86; color: #fff; border: 0; border-radius: 999px; padding: 9px 20px; font-size: 13px; font-weight: 800; cursor: pointer; }}
-    a.pill {{ text-decoration: none; color: inherit; }}
-    .upload-card {{ background: #fff; border: 1px dashed #f0b9cd; border-radius: 16px; padding: 16px 18px; margin: 10px 0 20px; }}
+    .task-table th {{ border-top: 0; background: #faf6f3; font-size: 12px; color: var(--muted); }}
+    .task-table small {{ color: var(--muted); }}
+    .detail-link {{ color: var(--rose); font-weight: 800; text-decoration: none; }}
+    .save-bar {{ position: fixed; left: 50%; transform: translateX(-50%); bottom: 22px; z-index: 30; display: flex; gap: 14px; align-items: center; background: var(--ink); color: #fff; border-radius: 999px; padding: 10px 18px; box-shadow: 0 14px 34px rgba(25,23,25,.28); font-size: 13px; }}
+    .save-bar button {{ background: var(--rose); color: #fff; border: 0; border-radius: 999px; padding: 9px 20px; font-size: 13px; font-weight: 800; cursor: pointer; }}
+    .upload-card {{ background: var(--card); border: 1px dashed #f0b9cd; border-radius: 16px; padding: 16px 18px; margin: 10px 0 20px; }}
     .upload-card b {{ font-size: 14px; }}
     .upload-row {{ display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin: 10px 0 8px; }}
-    .upload-row select, .upload-row input {{ border: 1px solid #e7ded9; border-radius: 10px; padding: 8px 10px; font-size: 13px; background: #fff; }}
-    .upload-row button {{ background: #ff4f86; color: #fff; border: 0; border-radius: 999px; padding: 9px 22px; font-size: 13px; font-weight: 800; cursor: pointer; }}
-    .upload-card small {{ color: #8a807d; }}
+    .upload-row select, .upload-row input {{ border: 1px solid var(--line); border-radius: 10px; padding: 8px 10px; font-size: 13px; background: var(--card); }}
+    .upload-row button {{ background: var(--rose); color: #fff; border: 0; border-radius: 999px; padding: 9px 22px; font-size: 13px; font-weight: 800; cursor: pointer; }}
+    .upload-card small {{ color: var(--muted); }}
     .upload-notice {{ border-radius: 12px; padding: 10px 14px; font-size: 13px; background: #fff4d8; }}
     .upload-notice--ok {{ background: #e7f5ea; }}
     .upload-notice--err {{ background: #fde8e8; }}
     .dist-section {{ margin-bottom: 26px; }}
-    .dist-section h2 small {{ color: #8a807d; font-weight: 600; }}
-    .dist-table {{ width: 100%; border-collapse: collapse; background: #fff; border: 1px solid #e7ded9; border-radius: 16px; overflow: hidden; }}
+    .dist-section h2 small {{ color: var(--muted); font-weight: 600; }}
+    .dist-table {{ width: 100%; border-collapse: collapse; background: var(--card); border: 1px solid var(--line); border-radius: 16px; overflow: hidden; }}
     .dist-table th, .dist-table td {{ text-align: left; padding: 10px 14px; border-top: 1px solid #f3ede8; font-size: 13px; }}
-    .dist-table th {{ border-top: 0; background: #faf6f3; font-size: 12px; color: #8a807d; }}
+    .dist-table th {{ border-top: 0; background: #faf6f3; font-size: 12px; color: var(--muted); }}
     .dist-label {{ width: 110px; font-weight: 800; }}
     .dist-label--unknown {{ color: #b0a6a2; }}
     .dist-bar-cell {{ width: 46%; }}
     .dist-bar {{ height: 14px; border-radius: 999px; }}
-    .dist-bar--algo {{ background: #ff4f86; }}
+    .dist-bar--algo {{ background: var(--rose); }}
     .dist-bar--unknown {{ background: #d8d0cc; }}
-    .dist-num {{ width: 110px; color: #4c4441; }}
+    .dist-num {{ width: 110px; color: var(--ink); }}
     .dist-num--anno {{ color: #166534; font-weight: 800; }}
     .scarce {{ margin-left: 6px; background: #fde8e8; color: #b91c1c; border-radius: 8px; padding: 2px 7px; font-size: 11px; }}
-    .dist-note {{ color: #8a807d; font-size: 12px; margin: 8px 0 0; }}
-    @media (max-width: 760px) {{ .layout {{ flex-direction: column; }} .sidebar {{ width: 100%; height: auto; position: static; display: flex; gap: 8px; align-items: center; }} .tab {{ margin-bottom: 0; }} }}
+    .dist-note {{ color: var(--muted); font-size: 12px; margin: 8px 0 0; }}
+    @media (max-width: 900px) {{
+      header.topbar {{ flex-wrap: wrap; padding: 12px 16px; gap: 8px; }}
+      nav.tabs {{ width: 100%; margin-left: 0; overflow-x: auto; }}
+      nav.tabs a {{ flex: 0 0 auto; }}
+      main {{ padding: 18px 16px 56px; }}
+    }}
   </style>
 </head>
 <body>
-  <div class="layout">
-    <aside class="sidebar">
-      <div class="logo">onboarding QA</div>
-      <a class="tab" href="/admin" style="margin-bottom:14px">← 管理后台</a>
-      {tab("results", "实验结果")}
-      {tab("annotate", "数据标注")}
-      {tab("dataset", "数据分布")}
-    </aside>
-    <main>{filter_bar}{content}</main>
-  </div>
+  <header class="topbar">
+    <h1>selfit 管理后台 <small>智能评测</small></h1>
+    <nav class="tabs">{main_tabs_html}</nav>
+  </header>
+  <main>
+    <nav class="qa-tabs" aria-label="智能评测模块">{qa_tabs_html}</nav>
+    {filter_bar}
+    {content}
+  </main>
 </body>
 </html>"""
 

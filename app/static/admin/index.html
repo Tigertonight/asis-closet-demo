@@ -1785,6 +1785,11 @@
   });
 
   if (state.token) showDashboard(); else showLogin();
+  // 支持 hash 直达 tab（如 /admin#submissions，智能评测页顶部导航回跳用）
+  const hashTab = (location.hash || '').replace('#', '');
+  if (hashTab && hashTab !== 'analytics' && document.querySelector(`[data-tab="${CSS.escape(hashTab)}"]`)) {
+    activateTab(hashTab);
+  }
 })();
 </script>
 </body>
