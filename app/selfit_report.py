@@ -4,6 +4,7 @@
 docs/SELFIT_BACKEND_INTEGRATION.md 4.6 / 4.7 节；人格分型口径见
 app/selfit_persona.py。报告内容固定读取前后端共用的人格默认模板，不再根据
 肤色、脸型、体型、次人格或地域风格执行个性化选择与排序。
+用户明确选择的 gender 独立用于挑选同一人格的性别模板，不改变分型评分。
 
 算法接入说明
 ------------
@@ -17,7 +18,8 @@ app/selfit_persona.py。报告内容固定读取前后端共用的人格默认�
 约束：
 - 输入 `session` 是内部 snake_case 会话记录，可用字段：
   `photos`（face/body 资产与状态）、`manual`（skin/faceShape/bodyShape）、
-  `preferences`（axes/palette）、`vibe`（问卷答案）、`locale`。
+  `preferences`（axes/palette）、`vibe`（问卷答案）、`locale`、
+  `gender`（用户选择的 female/male；旧记录可为空）。
 - 输出 dict 的字段名与报告数据契约一致（camelCase，如 imageUrl）；
   未返回的顶层字段前端会使用 Figma 默认数据。
 - 图片地址使用本站静态路径或完整 HTTPS URL。
@@ -71,14 +73,21 @@ def _template_card(item: dict[str, Any]) -> dict[str, Any]:
     }
 
 
-def default_personality_report(persona_code: str) -> dict[str, Any]:
-    """把指定人格的默认模板转换为报告契约，不做个性化计算或内容排序。"""
+def default_personality_report(persona_code: str, gender: str | None = None) -> dict[str, Any]:
+    """转换同一人格的性别模板；缺少男版素材时明确留空，不套用女性示例。"""
 
     catalog = _personality_template_catalog()
     type_id = str(persona_code or "").lower()
     template = (catalog.get("types") or {}).get(type_id)
     if not isinstance(template, dict):
         raise ValueError(f"personality report template missing: {type_id}")
+
+    template_id = type_id
+    requested_id = f"{type_id}-{gender}" if gender in ("female", "male") else type_id
+    variant = (catalog.get("variants") or {}).get(requested_id)
+    matching_variant = isinstance(variant, dict) and variant.get("gender") == gender
+    if matching_variant:
+        template, template_id = variant, requested_id
 
     template = resolve_image_references(template)
 
@@ -106,6 +115,8 @@ def default_personality_report(persona_code: str) -> dict[str, Any]:
 
     report = {
         "typeId": type_id,
+        "templateId": template_id,
+        "gender": gender,
         "templateVersion": str(catalog.get("templateVersion") or ""),
         "title": str(metadata.get("name") or ""),
         "eyebrow": str(metadata.get("code") or persona_code or ""),
@@ -122,6 +133,17 @@ def default_personality_report(persona_code: str) -> dict[str, Any]:
         "adviceIntro": str(conclusion.get("intro") or ""),
         "advice": copy.deepcopy(conclusion.get("points") or []),
     }
+    # Published legacy "unisex" templates are female-led reference material.
+    # A missing male variant must not silently produce a female-specific report.
+    if gender == "male" and not matching_variant and template.get("gender") != "male":
+        report.update({
+            "templateId": requested_id,
+            "recommendationStatus": "pending_gender_content",
+            "recommendationNotice": "已记下你的性别。男性专属穿搭参考正在准备中，先看看你的型格与配色。",
+            "heroImage": {}, "makeup": [], "hair": [], "outfits": [],
+            "source": {}, "outfitSummary": "", "adviceIntro": "", "advice": [],
+            "summary": "这份型格来自你的风格偏好与表达选择，性别不会改变你的型格评分。",
+        })
     return report
 
 
@@ -139,7 +161,7 @@ def default_report_builder(session: dict[str, Any]) -> dict[str, Any]:
 
     vector = selfit_persona.build_user_vector(session)
     classification = selfit_persona.classify_persona(vector)
-    return default_personality_report(classification["primary_persona"])
+    return default_personality_report(classification["primary_persona"], session.get("gender"))
 
 
 _builder: ReportBuilder = default_report_builder

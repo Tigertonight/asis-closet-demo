@@ -25,7 +25,10 @@
     // stepper 只显示 like / vibe 两个圆圈（.is-retest 隐藏 suit 步）；
     // 首次 onboarding 仍走完整 intro → like → suit → vibe。
     let config = ONBOARDING_NAV[name];
-    if (retestEntry && config) {
+    if (name === 'suit' && config) {
+      config = { ...config, back: choosingGender() ? 'like' : 'suit-gender' };
+    }
+    if (retestEntry && config && name !== 'suit' && name !== 'suit-manual') {
       if (name === 'vibe') config = { back: 'like', progress: 'vibe', current: 'vibe', done: ['like'] };
       else if (name === 'like') config = { back: '', progress: 'like', current: 'like', done: [] };
       else config = null;
@@ -35,6 +38,7 @@
     // like 是 retest 的第一步：没有可返回的上一屏，隐藏返回键。
     if (onboardingBack) onboardingBack.hidden = !config.back;
     onboardingBack?.setAttribute('data-back', config.back);
+    onboardingBack?.setAttribute('aria-label', config.back === 'suit-gender' ? '返回选择性别' : '返回');
     onboardingStepper?.setAttribute('data-progress', config.progress);
     onboardingSteps.forEach((step) => {
       const key = step.dataset.step;
@@ -67,7 +71,7 @@
   let auth;
   let authReady = Promise.resolve(null);
   const state = {
-    screen: 'splash', facePhoto: null, bodyPhoto: null,
+    screen: 'splash', facePhoto: null, bodyPhoto: null, gender: null, genderBusy: false, genderEditing: false,
     photoStatus: { face: 'empty', body: 'empty' },
     photoAssets: { face: null, body: null },
     photoControllers: { face: null, body: null },
@@ -182,6 +186,7 @@
     // 进入 suit 屏时同步渲染：旧 session/跨账号照片回填要让上传槽和特征卡一起恢复，
     // 否则会出现「只传了全身照，肤色脸型却自动出来了」的隐形旧数据。
     if (name === 'suit') {
+      syncGenderControls();
       const returnScroll = previous === 'suit-manual' ? suitReturnScroll : null;
       suitReturnScroll = null;
       // 卡片重渲染后高度可能微移，渲染完成后再校准一次位置。
@@ -285,10 +290,13 @@
     const back = event.target.closest('[data-back]');
     if (next) {
       if (document.activeElement?.matches?.('input, textarea, [contenteditable="true"]')) await dismissKeyboard();
+      if (next.classList.contains('intro-action') && !handoffToken) startNewAssessment();
       if (next.dataset.next !== 'intro') clearIntroMotion();
       showScreen(next.dataset.next);
     }
     if (back) {
+      if (state.screen === 'suit' && state.genderBusy) return;
+      if (back.dataset.back === 'suit-gender') { openGenderSelection(); return; }
       if (document.activeElement?.matches?.('input, textarea, [contenteditable="true"]')) await dismissKeyboard();
       if (state.screen === 'report' && returnToReportParent()) return;
       if (state.screen === 'suit-manual' && manualBeforeEdit) state.manual = { ...manualBeforeEdit };
@@ -478,7 +486,73 @@
     preview.replaceChildren(image);
     image.src = objectUrl;
   };
-  const syncSuitButton = () => { document.querySelector('#suitNext').disabled = !(state.photoStatus.face === 'valid' && state.photoStatus.body === 'valid'); };
+  const choosingGender = () => !['female', 'male'].includes(state.gender) || state.genderEditing;
+  const genderReady = () => !choosingGender() && !state.genderBusy;
+  const syncSuitButton = () => { document.querySelector('#suitNext').disabled = !(genderReady() && state.photoStatus.face === 'valid' && state.photoStatus.body === 'valid'); };
+  const syncGenderControls = () => {
+    const ready = genderReady();
+    const choosing = choosingGender();
+    document.querySelector('[data-screen="suit"]').classList.toggle('is-choosing-gender', choosing);
+    document.querySelector('.gender-card').hidden = !choosing;
+    document.querySelector('[data-suit-photos]').hidden = choosing;
+    document.querySelector('#suitTitle').textContent = choosing ? '选择你的性别' : '看看什么真的适合你';
+    document.querySelectorAll('[data-gender]').forEach(button => {
+      const selected = state.gender === button.dataset.gender;
+      button.classList.toggle('is-selected', selected);
+      button.setAttribute('aria-pressed', String(selected));
+      button.disabled = state.genderBusy || Object.values(state.photoStatus).includes('checking');
+    });
+    document.querySelectorAll('[data-upload-card] input, [data-sample-photo]').forEach(control => { control.disabled = !ready; });
+    if (state.screen === 'suit') {
+      updateOnboardingNav('suit');
+      if (onboardingBack) onboardingBack.disabled = state.genderBusy;
+    }
+    syncSuitButton();
+  };
+  const openGenderSelection = () => {
+    if (state.genderBusy) return;
+    state.genderEditing = true;
+    // Stop a pending result reveal from scrolling the gender selection offscreen.
+    ++suitRenderSeq;
+    syncGenderControls();
+    document.querySelector('[data-screen="suit"]').scrollTo({ top: 0, behavior: 'instant' });
+  };
+  document.querySelectorAll('[data-gender]').forEach(button => {
+    button.addEventListener('click', () => runButtonAction(button, async () => {
+      if (state.genderBusy) return;
+      const gender = button.dataset.gender;
+      state.genderBusy = true;
+      try {
+        syncGenderControls();
+        const sessionId = await ensureSession();
+        const result = await api.saveGender(sessionId, gender);
+        state.gender = gender;
+        state.genderEditing = false;
+        state.revision = result.session?.revision || state.revision;
+      } finally {
+        state.genderBusy = false;
+        syncGenderControls();
+      }
+      await renderSuit();
+    }));
+  });
+  const uploadPlaceholders = new Map([...document.querySelectorAll('[data-upload-card]')].map(card =>
+    [card.dataset.uploadCard, [...card.querySelector('.upload-preview').childNodes].map(node => node.cloneNode(true))]));
+  const resetOnboardingPhotos = () => {
+    ++suitRenderSeq;
+    for (const kind of ['face', 'body']) {
+      state.photoControllers[kind]?.abort();
+      state.photoAssets[kind] = null;
+      state[kind === 'face' ? 'facePhoto' : 'bodyPhoto'] = null;
+      const card = document.querySelector(`[data-upload-card="${kind}"]`);
+      card.querySelector('input').value = '';
+      card.querySelector('.upload-preview').replaceChildren(...uploadPlaceholders.get(kind).map(node => node.cloneNode(true)));
+      if (analysisOverlayUrls[kind]) URL.revokeObjectURL(analysisOverlayUrls[kind]);
+      delete analysisOverlayUrls[kind];
+      setPhotoState(kind, 'empty', '');
+    }
+    syncGenderControls();
+  };
   const resetSuitReveal = () => {
     const screen = document.querySelector('[data-screen="suit"]');
     const container = document.querySelector('#suitFeatures');
@@ -497,17 +571,20 @@
     statusLine.dataset.state = status;
     statusLine.textContent = copy;
     state.photoStatus[kind] = status;
+    syncGenderControls();
     // 任一照片离开可用态（重传 / 校验失败）时清空结果区，等待两张照片重新集齐。
     if (status !== 'valid') resetSuitReveal();
     syncSuitButton();
   };
   let editingFeature = null;
   let manualBeforeEdit = null;
+  const manualSelections = new Set();
   // 进入 suit-manual 时记录 suit 屏的滚动位置，保存/取消返回后恢复原位而不是回到顶部。
   let suitReturnScroll = null;
   const analysisOverlayUrls = {};
   const openManual = (key = null) => {
     manualBeforeEdit = { ...state.manual };
+    manualSelections.clear();
     editingFeature = key;
     const suitScreen = document.querySelector('[data-screen="suit"]');
     suitReturnScroll = suitScreen ? suitScreen.scrollTop : null;
@@ -520,7 +597,7 @@
       button.setAttribute('aria-pressed', String(selected));
     });
     document.querySelector('#manualNext').textContent = key ? '保存修改' : '看看我的特点 →';
-    document.querySelector('#manualNext').disabled = key ? !state.manual[key] : !Object.values(state.manual).every(Boolean);
+    document.querySelector('#manualNext').disabled = true;
     showScreen('suit-manual');
   };
   let suitRenderSeq = 0;
@@ -529,6 +606,9 @@
   const renderSuit = async () => {
     const seq = ++suitRenderSeq;
     const sessionId = await ensureSession();
+    if (seq !== suitRenderSeq) return;
+    syncGenderControls();
+    if (!genderReady()) return;
     const summary = await api.getSuit(sessionId);
     if (seq !== suitRenderSeq) return;
     const analyses = summary.analyses || {};
@@ -601,6 +681,7 @@
     } catch { /* Analysis lines are an enhancement; keep the plain upload preview. */ }
   };
   const uploadPhoto = async (kind, file) => {
+    if (!genderReady()) { toast('请先选择你的性别'); return; }
     state.photoControllers[kind]?.abort();
     const controller = new AbortController();
     state.photoControllers[kind] = controller;
@@ -648,6 +729,7 @@
   document.querySelectorAll('[data-sample-photo]').forEach((button) => {
     button.addEventListener('click', () => runButtonAction(button, async () => {
       const kind = button.dataset.samplePhoto;
+      if (!genderReady()) return;
       const url = SAMPLE_PHOTOS[kind];
       if (!url) throw new Error('示例图暂时无法加载，请稍后再试。');
       const response = await fetch(url);
@@ -661,18 +743,22 @@
   document.querySelector('.manual-form').addEventListener('click', (event) => {
     const button = event.target.closest('[data-manual]'); if (!button) return;
     const key = button.dataset.manual; state.manual[key] = button.dataset.value;
+    manualSelections.add(key);
     document.querySelectorAll(`[data-manual="${key}"]`).forEach((item) => {
       const selected = item === button;
       item.classList.toggle('is-selected', selected);
       item.setAttribute('aria-pressed', String(selected));
     });
-    document.querySelector('#manualNext').disabled = editingFeature ? !state.manual[editingFeature] : !Object.values(state.manual).every(Boolean);
+    document.querySelector('#manualNext').disabled = editingFeature ? !manualSelections.has(editingFeature) : !manualSelections.size || !Object.values(state.manual).every(Boolean);
   });
   document.querySelector('#manualNext').addEventListener('click', (event) => runButtonAction(event.currentTarget, async () => {
+    const selectedFields = editingFeature ? [editingFeature].filter(key => manualSelections.has(key)) : [...manualSelections];
+    if (!selectedFields.length) return;
     const sessionId = await ensureSession();
-    const result = await api.saveManualProfile(sessionId, editingFeature ? { [editingFeature]: state.manual[editingFeature] } : state.manual);
+    const result = await api.saveManualProfile(sessionId, Object.fromEntries(selectedFields.map(key => [key, state.manual[key]])));
     state.revision = result.session?.revision || state.revision;
     track('manual_saved');
+    manualSelections.clear();
     showScreen('suit');
   }));
 
@@ -693,7 +779,7 @@
     state.revision = result.session?.revision || state.revision;
     track('preferences_saved', { palette: state.palette });
     // 重新测试时跳过 suit 环节（照片在档案页维护），直接进入 vibe。
-    showScreen(retestEntry ? 'vibe' : 'suit');
+    showScreen(retestEntry && state.gender ? 'vibe' : 'suit');
   }));
 
   // 「先不测试，去 App 逛逛」：内测用户直进主站；未解锁用户进邀请码解锁屏
@@ -779,7 +865,7 @@
     if (!persona) return { typeId: 'mute' };
     const vector = persona.buildUserVector(session);
     const classification = persona.classifyPersona(vector);
-    return { typeId: classification.primary_persona.toLowerCase() };
+    return { typeId: classification.primary_persona.toLowerCase(), gender: session.gender || null };
   };
   const runtimeConfig = window.__SELFIT_CONFIG__ || {};
   const publicShareToken = String(runtimeConfig.publicShareToken || '');
@@ -815,6 +901,19 @@
     });
   }
   let sessionPromise = null;
+  let startFreshSession = false;
+  const startNewAssessment = () => {
+    // Starting again is a new test, not a restoration of the previous answers.
+    // Keep old reports/photos intact; only stop reusing the old session pointer.
+    state.sessionId = null;
+    state.revision = 1;
+    state.manual = { skin: null, faceShape: null, bodyShape: null };
+    state.gender = null;
+    state.genderEditing = false;
+    manualSelections.clear();
+    startFreshSession = true;
+    resetOnboardingPhotos();
+  };
   const persistSession = (session) => {
     localStorage.setItem(SESSION_STORAGE_KEY, JSON.stringify({ sessionId: session.sessionId, expiresAt: session.expiresAt, userId: state.authUser?.user_id || null }));
   };
@@ -830,18 +929,21 @@
     if (sessionPromise) return sessionPromise;
     sessionPromise = (async () => {
       await authReady;
-      const stored = retestEntry ? null : readPersistedSession();
+      const stored = retestEntry || startFreshSession ? null : readPersistedSession();
       if (stored) {
         try {
           const restored = await api.getSession(stored.sessionId);
           state.sessionId = restored.session.sessionId;
           state.revision = restored.session.revision || 0;
+          state.gender = restored.session.gender || null;
           return state.sessionId;
         } catch { localStorage.removeItem(SESSION_STORAGE_KEY); }
       }
-      const created = await api.createSession({ schemaVersion: 'selfit-onboarding-v1', locale: document.documentElement.lang || 'zh-CN' });
+      const created = await api.createSession({ schemaVersion: 'selfit-onboarding-v1', locale: document.documentElement.lang || 'zh-CN', onboardingMode: retestEntry ? 'retest' : 'new' });
       state.sessionId = created.session.sessionId;
       state.revision = created.session.revision || 1;
+      state.gender = created.session.gender || null;
+      startFreshSession = false;
       persistSession(created.session);
       return state.sessionId;
     })().finally(() => { sessionPromise = null; });
@@ -933,16 +1035,28 @@
   };
   const resolvePersonalityPayload = (payload = {}) => {
     if (!payload?.typeId) return payload;
-    const template = personalityCatalog.variants?.[payload.templateId] || personalityCatalog.types?.[String(payload.typeId).toLowerCase()];
+    const genderId = `${String(payload.typeId).toLowerCase()}-${payload.gender}`;
+    const candidate = personalityCatalog.variants?.[genderId];
+    const genderTemplate = candidate?.gender === payload.gender ? candidate : null;
+    const template = personalityCatalog.variants?.[payload.templateId] || genderTemplate || personalityCatalog.types?.[String(payload.typeId).toLowerCase()];
     if (!template) return payload;
     const base = templateToReportData(template);
+    if (!payload.templateVersion && payload.gender === 'male' && !genderTemplate) {
+      Object.assign(payload = { ...payload }, {
+        templateId: genderId, recommendationStatus: 'pending_gender_content',
+        recommendationNotice: '已记下你的性别。男性专属穿搭参考正在准备中，先看看你的型格与配色。',
+        heroImage: {}, makeup: [], hair: [], outfits: [], source: { name: '', copy: '', avatars: {} },
+        outfitSummary: '', adviceIntro: '', advice: [],
+        summary: '这份型格来自你的风格偏好与表达选择，性别不会改变你的型格评分。',
+      });
+    }
     const personalization = payload.personalization && typeof payload.personalization === 'object' ? payload.personalization : {};
     return {
       ...base,
       ...payload,
       ...personalization,
       heroImage: personalization.heroImage || payload.heroImage || base.heroImage,
-      source: { ...base.source, ...(payload.source || {}), ...(personalization.source || {}) },
+      source: payload.recommendationStatus === 'pending_gender_content' ? {} : { ...base.source, ...(payload.source || {}), ...(personalization.source || {}) },
     };
   };
   const cleanAdviceCopy = (value) => String(value || '').replace(/^\s*建议\s*[：:]\s*/, '').trim();
@@ -1068,6 +1182,9 @@
     const reportTypeId = String(data.typeId || 'mute').toLowerCase();
     state.currentReportTypeId = reportTypeId;
     const continueToApp = document.querySelector('#continueToApp');
+    const pendingGenderContent = data.recommendationStatus === 'pending_gender_content';
+    if (continueToApp) continueToApp.hidden = pendingGenderContent;
+    document.querySelector('.report-actions').classList.toggle('is-pending-gender', pendingGenderContent);
     const fullHero = Boolean(data.heroImage?.src);
     const heroSource = fullHero ? mobileHeroSource(data.heroImage.src) : '';
     reportNodes.hero.classList.toggle('report-hero--full', fullHero);
@@ -1094,6 +1211,9 @@
     reportNodes.illustration.closest('figure').hidden = fullHero || !data.illustration.imageUrl;
     reportNodes.summary.innerHTML = renderReportMarkdown(data.summary);
     reportNodes.summary.hidden = !data.summary;
+    const genderNotice = document.querySelector('[data-report-gender-notice]');
+    genderNotice.textContent = data.recommendationNotice || '';
+    genderNotice.hidden = !data.recommendationNotice;
     const visibleColors = data.colors.slice(0, personalityCatalog.renderRules?.colors?.limit || 5);
     reportNodes.colors.replaceChildren(...visibleColors.map((color) => {
       const swatch = Object.assign(document.createElement('span'), { textContent: color.name || '' });

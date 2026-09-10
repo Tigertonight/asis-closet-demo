@@ -124,11 +124,15 @@
     }
     valueRow.append(value);
     header.prepend(valueRow);
-    if (feature.source !== 'photo') {
+    if (feature.source === 'manual') {
+      const badge = document.createElement('small');
+      badge.className = 'suit-feature-calibration';
+      badge.textContent = '手动校准';
+      valueRow.append(badge);
+    } else if (feature.source !== 'photo') {
       const source = document.createElement('small');
       const photoKind = feature.key === 'bodyShape' ? 'body' : 'face';
-      source.textContent = feature.source === 'manual' ? '由你选择'
-        : (photos[photoKind] ? '暂时无法判断' : `还没有上传${PHOTO_LABELS[photoKind]}`);
+      source.textContent = photos[photoKind] ? '暂时无法判断' : `还没有上传${PHOTO_LABELS[photoKind]}`;
       card.append(source);
     }
     if (feature.description) {

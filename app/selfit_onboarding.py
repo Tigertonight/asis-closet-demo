@@ -167,7 +167,7 @@ def _prune_store(data: dict[str, Any]) -> dict[str, Any]:
         if report.get("user_id") and "profile" not in report:
             source = _find_session(data, str(report.get("session_id") or ""))
             if source and source.get("user_id") == report["user_id"]:
-                report["profile"] = {"manual": _profile_manual(source), "revision": 1}
+                report["profile"] = _profile_snapshot(source)
     sessions = []
     for record in data["sessions"]:
         expires_at = _parse_iso(record.get("expires_at"))
@@ -296,6 +296,8 @@ def _public_session(record: dict[str, Any]) -> dict[str, Any]:
         "revision": int(record.get("revision") or 1),
         "expiresAt": record["expires_at"],
         "completedSteps": _completed_steps(record),
+        "gender": record.get("gender"),
+        "requiresGender": bool(record.get("requires_gender")),
     }
 
 
@@ -766,6 +768,9 @@ async def create_session(
     payload = await _read_json_object(request)
     if isinstance(payload, JSONResponse):
         return payload
+    mode = payload.get("onboardingMode")
+    if mode not in (None, "new", "retest"):
+        return _error_response(422, "validation.invalid_enum", "测试入口不正确，请重新开始。")
     data = _prune_store(_load_store())
     scope = _idempotency_scope(request, user)
     idempotency_key = request.headers.get("x-idempotency-key")
@@ -788,7 +793,14 @@ async def create_session(
         "manual": {},
         "preferences": {},
         "vibe": {},
+        "requires_gender": mode is not None,
+        "reuse_account_photos": mode != "new",
+        "gender": None,
     }
+    if mode == "retest" and user:
+        # Reuse only a self-declared value, never infer gender from a photo.
+        profile = _account_profile(data, user["user_id"])
+        record["gender"] = profile.get("gender")
     data["sessions"].append(record)
     status_code, body = _session_response(record, status_code=201)
     _idempotency_store(data, scope, idempotency_key, status_code, body)
@@ -931,6 +943,10 @@ def _suit_photo(data: dict[str, Any], record: dict[str, Any], kind: str) -> dict
     photo = (record.get("photos") or {}).get(kind) or {}
     if photo.get("status") == "accepted" and photo.get("asset_id"):
         return {**photo, "session_id": record["session_id"]}
+    if record.get("reuse_account_photos") is False:
+        return None
+    if record.get("requires_gender") and not record.get("gender"):
+        return None
     user_id = record.get("user_id")
     return _latest_user_photo(data, str(user_id), kind) if user_id else None
 
@@ -1002,6 +1018,22 @@ async def get_session_photo_preview(session_id: str, kind: str, user: dict[str, 
     content = await run_in_threadpool(render_preview)
     return Response(content=content, media_type="image/webp", headers={"Cache-Control": "no-store"})
 
+
+
+@router.patch("/sessions/{session_id}/gender")
+async def patch_session_gender(
+    session_id: str,
+    request: Request,
+    user: dict[str, Any] | None = Depends(get_optional_user),
+) -> JSONResponse:
+    def apply(record: dict[str, Any], payload: dict[str, Any]) -> dict[str, Any] | JSONResponse:
+        gender = payload.get("gender")
+        if gender not in ("female", "male"):
+            return _error_response(422, "validation.invalid_enum", "请选择你的性别。")
+        record["gender"] = gender
+        return record
+
+    return await _patch_session(request, session_id, user, apply)
 
 
 @router.patch("/sessions/{session_id}/profile")
@@ -1099,6 +1131,30 @@ def _profile_manual(session: dict[str, Any]) -> dict[str, str]:
     return {field: resolved[key] for field, key in keys.items() if resolved.get(key)}
 
 
+def _manual_selections(record: dict[str, Any]) -> dict[str, str]:
+    return {field: value for field, value in (record.get("manual") or {}).items()
+            if field in MANUAL_FIELDS and value in MANUAL_FIELDS[field]}
+
+
+def _profile_snapshot(session: dict[str, Any]) -> dict[str, Any]:
+    # manual is the legacy display/edit contract; provenance is stored separately.
+    return {"manual": _profile_manual(session), "manualOverrides": _manual_selections(session),
+            "gender": session.get("gender"), "revision": 1}
+
+
+def _profile_overrides(session: dict[str, Any] | None, stored: dict[str, Any]) -> dict[str, str]:
+    if isinstance(stored.get("manualOverrides"), dict):
+        return _manual_selections({"manual": stored["manualOverrides"]})
+    # Older reports flattened photo inference into manual. Recover only choices
+    # evidenced by the source session or a later profile edit, not the snapshot.
+    overrides = _manual_selections(session or {})
+    if session and int(stored.get("revision") or 1) > 1:
+        original = _profile_manual(session)
+        overrides.update({field: value for field, value in _manual_selections(stored).items()
+                          if value != original.get(field)})
+    return overrides
+
+
 def _account_profile_report(data: dict[str, Any], user_id: str) -> dict[str, Any] | None:
     reports = [r for r in data["reports"] if r.get("user_id") == user_id
                and isinstance(r.get("data"), dict) and (r["data"].get("typeId") or "").strip()]
@@ -1112,14 +1168,17 @@ def _account_profile(data: dict[str, Any], user_id: str) -> dict[str, Any]:
         session = None
     stored = (report or {}).get("profile") or {}
     report_data = (report or {}).get("data") or {}
+    suit = _account_suit_summary(data, user_id, session, stored)
     return {
         "tested": report is not None,
+        "gender": stored.get("gender") or report_data.get("gender") or (session or {}).get("gender"),
         "revision": int(stored.get("revision") or 1),
-        "manual": stored.get("manual") if "manual" in stored else _profile_manual(session or {}),
+        "manual": {feature["key"]: feature["value"] for feature in suit["features"] if feature.get("value")},
+        "manualOverrides": _profile_overrides(session, stored),
         "photos": {kind: f"/api/v1/selfit/me/photos/{kind}?overlay=1" if _latest_user_photo(data, user_id, kind) else None for kind in ("face", "body")},
         "report": {"reportId": report["report_id"], "typeId": report_data.get("typeId"),
                    "title": report_data.get("title"), "heroImage": report_data.get("heroImage") or {}} if report else None,
-        "suit": _account_suit_summary(data, user_id, session, stored),
+        "suit": suit,
     }
 
 
@@ -1132,9 +1191,8 @@ def _account_suit_summary(data: dict[str, Any], user_id: str, session: dict[str,
     """
     from app.selfit_suit import suit_summary
     record = dict(session or {"session_id": "", "user_id": user_id})
-    # 只有档案/session 里真实保存过的手动选择才进 manual，
-    # 否则照片推断值会被误标成「由你选择」（source 口径与 /sessions/{id}/suit 一致）。
-    record["manual"] = stored.get("manual") if "manual" in stored else ((session or {}).get("manual") or {})
+    # Display values must never be interpreted as evidence of a manual choice.
+    record["manual"] = _profile_overrides(session, stored)
     photos_view: dict[str, Any] = {}
     analyses: dict[str, Any] = {}
     for kind in selfit_photo.PHOTO_KINDS:
@@ -1170,11 +1228,13 @@ def _clear_manual_for_photo(data: dict[str, Any], user_id: str, kind: str) -> No
     if session and session.get("user_id") == user_id and isinstance(session.get("manual"), dict):
         targets.append(session)
     for target in targets:
-        manual = target.get("manual") or {}
-        if not any(manual.get(field) for field in fields):
-            continue
-        target["manual"] = {key: value for key, value in manual.items() if not (key in fields and value)}
-        if target is stored:
+        changed = False
+        for source_key in ("manual", "manualOverrides"):
+            manual = target.get(source_key) or {}
+            if any(manual.get(field) for field in fields):
+                target[source_key] = {key: value for key, value in manual.items() if key not in fields}
+                changed = True
+        if changed and target is stored:
             stored["revision"] = int(stored.get("revision") or 1) + 1
 
 
@@ -1198,7 +1258,9 @@ async def update_my_profile(request: Request, user: dict[str, Any] = Depends(get
     current = _account_profile(data, user["user_id"])
     if payload.get("reportId") != report["report_id"] or request.headers.get("if-match") != str(current["revision"]):
         return _error_response(409, "profile.revision_conflict", "档案已更新，请刷新后再保存。")
-    report["profile"] = {"manual": {**current["manual"], **manual}, "revision": current["revision"] + 1}
+    report["profile"] = {"manual": {**current["manual"], **manual},
+                         "manualOverrides": {**current["manualOverrides"], **manual},
+                         "revision": current["revision"] + 1}
     _write_store(data)
     return JSONResponse({"profile": _account_profile(data, user["user_id"])})
 
@@ -1337,6 +1399,9 @@ async def upload_session_photo(
     record = _load_active_session(data, session_id, user)
     if isinstance(record, JSONResponse):
         return record
+
+    if record.get("requires_gender") and record.get("gender") not in ("female", "male"):
+        return _error_response(422, "profile.gender_required", "请先选择性别，再上传照片。")
 
     form = await request.form()
     upload = form.get("image")
@@ -1618,7 +1683,7 @@ def _run_report_job(job_id: str) -> None:
         "user_id": session.get("user_id"),
         "created_at": _iso(_now()),
         "data": report_data,
-        "profile": {"manual": _profile_manual(session), "revision": 1},
+        "profile": _profile_snapshot(session),
     }
     data["reports"].append(report)
     job["status"] = "completed"
@@ -1669,6 +1734,9 @@ async def create_report_job(
     record = _load_active_session(data, session_id, user)
     if isinstance(record, JSONResponse):
         return record
+
+    if record.get("requires_gender") and record.get("gender") not in ("female", "male"):
+        return _error_response(422, "profile.gender_required", "请先选择性别，再生成型格报告。")
 
     job = {
         "job_id": "job_" + secrets.token_urlsafe(12),

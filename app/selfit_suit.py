@@ -69,7 +69,7 @@ def suit_summary(record):
         else:
             description, advice = _fallback_description(record, kind), FALLBACK_ADVICE
         features.append(dict(key=key, title=title, value=value, description=description, advice=advice,
-                             source='manual' if (record.get('manual') or {}).get(key) else ('photo' if value else 'unknown'),
+                             source='manual' if value and (record.get('manual') or {}).get(key) == value else ('photo' if value else 'unknown'),
                              photoAnalysis=_photo_analysis(record, kind,
                                                             'skin_tone' if key == 'skin' else source_key)))
     return {'revision': record.get('revision', 1), 'features': features,

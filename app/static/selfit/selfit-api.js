@@ -103,7 +103,7 @@
 
     createSession(payload = {}) {
       if (this.mode === 'live') return this.request('/sessions', { method: 'POST', body: payload, idempotencyKey: uid('session') });
-      const session = { sessionId: uid('ses'), status: 'draft', revision: 1, expiresAt: new Date(Date.now() + 86400000).toISOString(), ...payload };
+      const session = { sessionId: uid('ses'), status: 'draft', revision: 1, expiresAt: new Date(Date.now() + 86400000).toISOString(), ...payload, requiresGender: Boolean(payload.onboardingMode), gender: null };
       this.mockSessions.set(session.sessionId, session);
       return wait(120).then(() => ({ session }));
     }
@@ -126,7 +126,11 @@
       const invalid = /dark|invalid|暗|黑/i.test(file.name);
       const label = kind === 'face' ? '面部照' : '全身照';
       const session = this.mockSessions.get(sessionId);
-      if (session && !invalid) session.photoAnalyses = { ...(session.photoAnalyses || {}), [kind]: MOCK_PHOTO_ANALYSES[kind] };
+      if (session && !invalid) {
+        if (session.requiresGender && !session.gender) return Promise.reject(new SelfitApiError('请先选择性别，再上传照片。'));
+        session.photoAnalyses = { ...(session.photoAnalyses || {}), [kind]: MOCK_PHOTO_ANALYSES[kind] };
+        for (const key of (kind === 'face' ? ['skin', 'faceShape'] : ['bodyShape'])) delete (session.manual || {})[key];
+      }
       return wait(560).then(() => ({
         revision: this.bumpRevision(sessionId),
         photo: {
@@ -161,6 +165,12 @@
       return this.request(`/sessions/${encodeURIComponent(sessionId)}/photos/${encodeURIComponent(kind)}/preview`, { blob: true, timeoutMs: 45000 });
     }
 
+    saveGender(sessionId, gender) {
+      if (this.mode === 'live') return this.patchSession(sessionId, '/gender', { gender });
+      if (!['female', 'male'].includes(gender)) return Promise.reject(new SelfitApiError('请选择你的性别。'));
+      return this.mockPatch(sessionId, { gender });
+    }
+
     saveManualProfile(sessionId, profile) {
       if (this.mode === 'live') return this.patchSession(sessionId, '/profile', { manual: profile });
       return this.mockPatch(sessionId, { manual: { ...this.mockSessions.get(sessionId)?.manual, ...profile } });
@@ -191,6 +201,7 @@
       if (this.mode === 'live') return this.request(`/sessions/${encodeURIComponent(sessionId)}/report-jobs`, { method: 'POST', body: {}, idempotencyKey: uid('report') });
       const session = this.requireMockSession(sessionId);
       const job = { jobId: uid('job'), sessionId, status: 'queued', progress: 0, stage: 'queued', startedAt: Date.now(), reportId: uid('rep') };
+      if (session.requiresGender && !session.gender) return Promise.reject(new SelfitApiError('请先选择性别，再生成型格报告。'));
       this.mockJobs.set(job.jobId, job);
       const report = this.buildMockReport ? this.buildMockReport(session) : {};
       this.mockReports.set(job.reportId, report);

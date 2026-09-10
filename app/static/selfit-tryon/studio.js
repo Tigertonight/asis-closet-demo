@@ -128,7 +128,7 @@
     wardrobeDeleting: "",
     builderMatching:false, builderRequest:0, builderAnchor:null, builderItems:[], builderMatch:null, builderMatchError:"",
     builderMatches:[], builderMatchIndex:0,
-    profile: null, profileLoading: false, profileError: "", profileSaving: false, profileDraft: null, profilePhotoDraft: {}, profileSuit: null, profileReplacing: "",
+    profile: null, profileLoading: false, profileError: "", profileSaving: false, profileDraft: null, profileManualChanges: {}, profileFeatureTouched: false, profilePhotoDraft: {}, profileSuit: null, profileReplacing: "",
     chatMessages: [], chatDraft: "", chatBusy: false, chatLoaded: false, chatLoading: false, chatError: "", chatReturn: "mirror",
     items: reference ? fixtures : [],
     outfits: reference ? fixtureOutfits : [],
@@ -649,7 +649,7 @@
     const values = field === 'faceShape' ? ['菱形脸','方脸','圆脸','椭圆脸','心形脸'] : field === 'skin' ? ['冷白肤','暖白肤','中性自然肤','橄榄肤','暖黄肤','小麦色'] : profileOptions[field];
     const assetKeys = {'菱形脸':'face-diamond','方脸':'face-square','圆脸':'face-round','椭圆脸':'face-oval','心形脸':'face-heart','梨型':'body-pear','倒三角型':'body-inverted-triangle','沙漏型':'body-hourglass','矩型':'body-rectangle','苹果型':'body-apple'};
     const colors = {'冷白肤':'#FFDED7','暖白肤':'#FCD1BB','中性自然肤':'#F2C9B8','橄榄肤':'#E6D3AF','暖黄肤':'#E6BEAA','小麦色':'#CB956C'};
-    return `<section class="profile-screen profile-feature-screen"><header class="profile-header"><button data-action="cancel-profile-feature" aria-label="返回我的档案"><svg viewBox="0 0 24 24"><path d="m15 5-7 7 7 7"/></svg></button><h1>修改${profileLabels[field]}</h1></header><div class="profile-feature-content"><h2>${profileLabels[field]}</h2><div class="profile-feature-options" data-kind="${field}" role="group" aria-label="选择${profileLabels[field]}">${values.map(value=>`<button data-profile-choice="${value}" aria-pressed="${state.profileFeatureValue===value}"><span class="profile-feature-art">${field==='skin'?`<i style="background:${colors[value]}"></i>`:image('/static/selfit/assets/manual-selection/'+assetKeys[value]+'@4x.png',value+'示意')}</span><span>${esc(value)}</span></button>`).join('')}</div></div><button class="primary profile-save" data-action="confirm-profile-feature" ${state.profileFeatureValue?'':'disabled'}>保存修改</button></section>`;
+    return `<section class="profile-screen profile-feature-screen"><header class="profile-header"><button data-action="cancel-profile-feature" aria-label="返回我的档案"><svg viewBox="0 0 24 24"><path d="m15 5-7 7 7 7"/></svg></button><h1>修改${profileLabels[field]}</h1></header><div class="profile-feature-content"><h2>${profileLabels[field]}</h2><div class="profile-feature-options" data-kind="${field}" role="group" aria-label="选择${profileLabels[field]}">${values.map(value=>`<button data-profile-choice="${value}" aria-pressed="${state.profileFeatureValue===value}"><span class="profile-feature-art">${field==='skin'?`<i style="background:${colors[value]}"></i>`:image('/static/selfit/assets/manual-selection/'+assetKeys[value]+'@4x.png',value+'示意')}</span><span>${esc(value)}</span></button>`).join('')}</div></div><button class="primary profile-save" data-action="confirm-profile-feature" ${state.profileFeatureValue && state.profileFeatureTouched?'':'disabled'}>保存修改</button></section>`;
   }
   function profileEdit() {
     if(!state.profile || state.profileLoading) return profileStatus(true);
@@ -740,9 +740,10 @@
   }
   async function saveProfile() {
     if(state.profileSaving || !state.profile?.tested) return;
-    const manual=Object.fromEntries(Object.entries(state.profileDraft || state.profile.manual).filter(([,v])=>v));
-    if(!Object.keys(manual).length) {state.profileError='请至少选择一项档案信息。';render();return;}
-    if(reference) {state.profile.manual=manual;Object.entries(state.profilePhotoDraft).forEach(([k,v])=>state.profile.photos[k]=v.url);state.profilePhotoDraft={};go('profile');notify('已更新预览档案');return;}
+    const manual=Object.fromEntries(Object.entries(state.profileManualChanges || {}).filter(([,v])=>v));
+    if(!Object.keys(manual).length && !Object.keys(state.profilePhotoDraft).length) {state.profileError='请至少选择一项档案信息。';render();return;}
+    if(reference) {state.profile.manual={...state.profile.manual,...manual};state.profile.manualOverrides={...state.profile.manualOverrides,...manual};state.profileManualChanges={};Object.entries(state.profilePhotoDraft).forEach(([k,v])=>state.profile.photos[k]=v.url);state.profilePhotoDraft={};go('profile');notify('已更新预览档案');return;}
+    const hasPhotoChanges=Object.keys(state.profilePhotoDraft).length > 0;
     state.profileSaving=true;state.profileError='';render();
     try {
       for(const [kind,entry] of Object.entries(state.profilePhotoDraft)) {
@@ -750,8 +751,9 @@
         state.profile.photos[kind]=entry.url;
         delete state.profilePhotoDraft[kind];
       }
-      const saved=await api('/api/v1/selfit/me/profile',{method:'PATCH',headers:{'If-Match':String(state.profile.revision)},body:JSON.stringify({reportId:state.profile.report.reportId,manual})});
-      state.profile={...saved.profile,photos:state.profile.photos};state.profileSuit=saved.profile.suit || null;state.profileDraft=null;go('profile');notify('档案已保存');
+      const current=hasPhotoChanges ? await api('/api/v1/selfit/me/profile') : {profile:state.profile};
+      const saved=Object.keys(manual).length ? await api('/api/v1/selfit/me/profile',{method:'PATCH',headers:{'If-Match':String(current.profile.revision)},body:JSON.stringify({reportId:state.profile.report.reportId,manual})}) : current;
+      state.profile={...saved.profile,photos:state.profile.photos};state.profileSuit=saved.profile.suit || null;state.profileDraft=null;state.profileManualChanges={};go('profile');notify('档案已保存');
     } catch(e) {state.profileError=e.status===409 ? '档案已更新，请返回档案页重新加载，再保存修改。' : e.message;}
     finally {state.profileSaving=false;render();}
   }
@@ -890,16 +892,18 @@
     if (suitHost && window.SelfitSuitCards) {
       const suit = state.profileSuit;
       const manual = state.profile?.manual || {};
+      const overrides = state.profile?.manualOverrides || {};
       const features = suit?.features?.length ? suit.features : [
-        {key:'skin',title:'肤色',value:manual.skin,source:manual.skin?'manual':'unknown'},
-        {key:'faceShape',title:'脸型',value:manual.faceShape,source:manual.faceShape?'manual':'unknown'},
-        {key:'bodyShape',title:'身材比例',value:manual.bodyShape,source:manual.bodyShape?'manual':'unknown'},
+        {key:'skin',title:'肤色',value:manual.skin,source:overrides.skin?'manual':'unknown'},
+        {key:'faceShape',title:'脸型',value:manual.faceShape,source:overrides.faceShape?'manual':'unknown'},
+        {key:'bodyShape',title:'身材比例',value:manual.bodyShape,source:overrides.bodyShape?'manual':'unknown'},
       ];
       window.SelfitSuitCards.render(suitHost, {features, analyses:(suit && suit.analyses) || {}, photos:(suit && suit.photos) || {}, onEdit:(key)=>{
         // 记录离开档案页时的滚动位置，保存/取消返回后恢复原位而不是回到顶部。
         profileReturnScroll=$("#screen").scrollTop;
         state.profileDraft={...(state.profileDraft || state.profile.manual)};
         state.profilePhotoDraft={};
+        state.profileManualChanges={};state.profileFeatureTouched=false;
         state.profileEditingField=key;
         state.profileFeatureValue=state.profileDraft[key] || '';
         go('profile-edit');
@@ -983,7 +987,7 @@
       state.viewerLoading = false;
       state.viewerError = "";
     }
-    if(page === 'profile' && state.page === 'profile-edit' && !state.profileSaving) {state.profileDraft=null;state.profilePhotoDraft={};}
+    if(page === 'profile' && state.page === 'profile-edit' && !state.profileSaving) {state.profileDraft=null;state.profilePhotoDraft={};state.profileManualChanges={};state.profileFeatureTouched=false;}
     if(page === 'profile' && state.page === 'profile-edit' && state.profileError) {state.profile=null;state.profileError='';}
     if (page === "mirror" && acceptCompleted && state.completedTryon) {
       const completed=state.completedTryon;
@@ -1934,13 +1938,15 @@
     const b = e.target.closest("button");
     if (!b) return;
     if (b.dataset.profileEdit) {
-      state.profileEditingField=b.dataset.profileEdit;
+      state.profileEditingField=b.dataset.profileEdit;state.profileFeatureTouched=false;
       state.profileFeatureValue=(state.profileDraft || state.profile.manual)[state.profileEditingField] || '';
       render(); $('#screen').scrollTop=0; return;
     }
-    if (b.dataset.profileChoice) {state.profileFeatureValue=b.dataset.profileChoice;render();return;}
+    if (b.dataset.profileChoice) {state.profileFeatureValue=b.dataset.profileChoice;state.profileFeatureTouched=true;render();return;}
     if (b.dataset.action==='cancel-profile-feature' || b.dataset.action==='confirm-profile-feature') {
       if(b.dataset.action==='confirm-profile-feature') {
+        if(!state.profileFeatureTouched || !state.profileFeatureValue) return;
+        state.profileManualChanges[state.profileEditingField]=state.profileFeatureValue;
         state.profileDraft={...(state.profileDraft || state.profile.manual),[state.profileEditingField]:state.profileFeatureValue};
         state.profileEditingField=null;state.profileFeatureValue=null;
         await saveProfile();return;
@@ -2023,7 +2029,7 @@
         $("#sheet").close(); state.styling=true;
         render(); notify(redo ? "已重做上一步" : "已撤回上一步"); return;
       }
-      if(b.dataset.action === "edit-profile") {state.profileDraft={...state.profile.manual};state.profilePhotoDraft={};state.profileError='';go('profile-edit');return;}
+      if(b.dataset.action === "edit-profile") {state.profileDraft={...state.profile.manual};state.profileManualChanges={};state.profilePhotoDraft={};state.profileError='';go('profile-edit');return;}
       if(b.dataset.action === "reload-profile") {await loadProfile(true);return;}
       if(b.dataset.action === "save-profile") {await saveProfile();return;}
       if (b.dataset.action === "open-chat") { state.chatReturn=state.page; go("chat"); return; }
@@ -2520,7 +2526,7 @@
   });
   $("#studio").addEventListener("change", async (event)=>{
     const field=event.target.dataset.profileField;
-    if(field) {state.profileDraft={...(state.profileDraft || state.profile.manual),[field]:event.target.value};render();return;}
+    if(field) {state.profileManualChanges[field]=event.target.value;state.profileDraft={...(state.profileDraft || state.profile.manual),[field]:event.target.value};render();return;}
     const kind=event.target.dataset.profilePhoto;
     if(!kind) return;
     const file=event.target.files?.[0];if(!file)return;

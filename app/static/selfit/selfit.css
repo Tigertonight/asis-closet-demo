@@ -1312,6 +1312,21 @@ body.is-share-gallery .app-shell { display: none; }
   [data-screen="suit"].is-analyzing .upload-card .upload-preview::before { animation: none; }
 }
 
+/* A self-declared choice precedes all photo uploads and examples. */
+.gender-card { margin: 28px 32px 0; }
+.gender-card[hidden], [data-suit-photos][hidden] { display: none; }
+.gender-options { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.gender-options button { display: flex; align-items: center; justify-content: center; gap: 16px; min-height: 64px; border: 1px solid #e5dcd6; border-radius: 16px; background: #fcf9f6; color: #6c5950; font-size: 16px; transition: background .2s, border-color .2s; }
+.gender-options i { display: grid; place-items: center; width: 15px; height: 15px; border: 1px solid #dacdc5; border-radius: 50%; font-style: normal; font-size: 10px; color: transparent; }
+.gender-options button.is-selected { background: #f7ecec; border-color: #a70020; color: #8a011b; }
+.gender-options button.is-selected i { background: #8a011b; border-color: #8a011b; color: #fff; }
+.gender-options button:focus-visible { outline: 2px solid #8a011b; outline-offset: 3px; }
+.gender-options button:disabled { opacity: .65; }
+[data-screen="suit"].is-choosing-gender .page-copy { margin-top: 20px; }
+.report-gender-notice { margin: 20px 0; padding: 16px; border-radius: 16px; background: #faf3ec; color: #857167; font-size: 13px; line-height: 1.8; }
+.report-actions .report-app-action[hidden] { display: none; }
+.report-actions.is-pending-gender #openShare { grid-column: 1 / -1; }
+
 /* Single-feature edits use larger, centered options; initial setup stays compact. */
 .manual-form[data-mode="edit"] .skin-options,
 .manual-form[data-mode="edit"] .manual-visual-options {

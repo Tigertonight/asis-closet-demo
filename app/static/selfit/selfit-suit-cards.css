@@ -13,15 +13,16 @@
 }
 .suit-feature { margin: 12px 0; padding: 14px; border-radius: 16px; background: var(--suit-cards-surface); border: 1px solid var(--suit-cards-border); }
 .suit-feature header { display: flex; justify-content: space-between; align-items: center; color: var(--suit-cards-secondary); font-size: 14px; }
-.suit-feature header button { min-height: 44px; min-width: 44px; margin: -8px -4px -8px 0; border: 0; background: none; color: var(--suit-cards-edit); font-size: 14px; }
+.suit-feature header button { flex-shrink: 0; min-height: 44px; min-width: 44px; margin: -8px -4px -8px 0; border: 0; background: none; color: var(--suit-cards-edit); font-size: 14px; }
 .suit-feature h2, .suit-feature h3 { margin: 8px 0; font-size: 18px; color: var(--suit-cards-heading); }
 .suit-feature small { font-size: 14px; color: var(--suit-cards-secondary); }
 .suit-feature p { font-size: 14px; line-height: 1.8; margin: 12px 0 0; color: var(--suit-cards-ink); }
 .suit-features-heading { margin: 2px 0 0; color: var(--suit-cards-heading); font-size: 15px; line-height: 24px; font-weight: 600; letter-spacing: 0; }
 
 /* Photo-analysis evidence: measurement rows and plain-language notes. */
-.suit-feature-value { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: 8px 0; }
+.suit-feature-value { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; min-width: 0; margin: 8px 0; }
 .suit-feature-value h2, .suit-feature-value h3 { margin: 0; }
+.suit-feature .suit-feature-calibration { flex: none; color: #9b8c85; font-size: 11px; font-weight: 400; line-height: 16px; white-space: nowrap; }
 .suit-analysis { margin-top: 12px; padding: 2px 14px; border-radius: 12px; background: var(--suit-cards-analysis-bg); }
 .suit-analysis-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 0; font-size: 14px; line-height: 22px; }
 .suit-analysis-row + .suit-analysis-row { border-top: 1px solid var(--suit-cards-analysis-border); }
