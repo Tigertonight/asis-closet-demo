@@ -397,7 +397,7 @@
     </div>
     <div class="panel" id="stylistContextPanel" data-tab-panel="stylistContext" hidden>
       <h2>AI 问答上下文</h2>
-      <p class="panel-hint">给 AI 穿搭师补充上下文：下方 prompt 会追加到对话的系统指引里（所有用户生效）；「用户画像」只对配置了手机号的内测用户生效——她问穿搭时，AI 会结合这份画像个性化回答。没配置的用户跟普通问答完全一样。</p>
+      <p class="panel-hint">给 AI 穿搭师补充上下文：下方 prompt 会追加到对话的系统指引里（所有用户生效）；「内测用户画像」只对配置了手机号的内测用户生效——她问穿搭时，AI 会结合这份画像个性化回答。没配置的用户跟普通问答完全一样。</p>
       <div class="toolbar" style="margin-bottom:12px">
         <button class="mini-btn" type="button" id="stylistContextRefresh">刷新</button>
         <small id="stylistContextUpdatedAt"></small>
@@ -409,6 +409,7 @@
         <small id="stylistPromptMsg" style="align-self:center"></small>
       </div>
       <h3 style="margin:24px 0 8px">内测用户画像</h3>
+      <p class="panel-hint" id="stylistContextLockHint" hidden>画像内容已锁定（保护内测成员隐私）：列表仅保留手机号 / uid / 昵称等索引信息，AI 问答不受影响。如需编辑，请先征得成员同意，在服务器 .env.demo 设置 SELFIT_STYLIST_CONTEXT_EDITABLE=1 并重启。</p>
       <div class="table-scroll"><table><thead><tr><th>昵称</th><th>手机号</th><th>小红书 uid</th><th>画像长度</th><th>更新时间</th><th>操作</th></tr></thead><tbody id="stylistContextRows"></tbody></table></div>
       <div id="stylistContextForm" style="margin-top:14px;padding:14px;border:1px solid var(--line);border-radius:12px;display:grid;gap:8px">
         <input type="hidden" id="scEntryId" />
@@ -1520,7 +1521,7 @@
     activateTab(button.dataset.tab);
   }));
 
-  const stylistContextState = { rows: [] };
+  const stylistContextState = { rows: [], editable: false };
   const scAdminFetch = async (url, options = {}) => {
     const response = await fetch(url, {
       ...options,
@@ -1532,28 +1533,32 @@
   };
   const renderStylistContext = () => {
     const rows = stylistContextState.rows.map((row) => {
-      const docLen = (row.doc || '').length;
+      const docLen = row.doc_chars ?? (row.doc || '').length;
       const esc = (value) => String(value || '').replace(/[<>&"']/g, (ch) => ({ '<': '&lt;', '>': '&gt;', '&': '&amp;', '"': '&quot;', "'": '&#39;' }[ch]));
+      const actions = stylistContextState.editable
+        ? `<button class="mini-btn" type="button" data-sc-id="${esc(row.entry_id)}" data-sc-act="edit">编辑</button>
+           <button class="mini-btn" type="button" data-sc-id="${esc(row.entry_id)}" data-sc-act="delete">删除</button>`
+        : '<span style="color:var(--muted)">已锁定</span>';
       return `<tr>
         <td>${esc(row.nickname) || '—'}</td>
         <td>${esc(row.phone) || '—'}</td>
         <td><code style="font-size:11px">${esc(row.xhs_uid) || '—'}</code></td>
         <td>${docLen ? `${docLen} 字` : '—'}</td>
         <td>${fmtDate(row.updated_at)}</td>
-        <td>
-          <button class="mini-btn" type="button" data-sc-id="${esc(row.entry_id)}" data-sc-act="edit">编辑</button>
-          <button class="mini-btn" type="button" data-sc-id="${esc(row.entry_id)}" data-sc-act="delete">删除</button>
-        </td>
+        <td>${actions}</td>
       </tr>`;
     }).join('');
-    $('stylistContextRows').innerHTML = rows || '<tr><td colspan="6" style="color:var(--muted)">还没有配置用户画像；在下方表单新增。</td></tr>';
+    $('stylistContextRows').innerHTML = rows || '<tr><td colspan="6" style="color:var(--muted)">还没有配置用户画像。</td></tr>';
     $('stylistContextUpdatedAt').textContent = `更新于 ${new Date().toLocaleTimeString('zh-CN', { hour12: false })}`;
   };
   const loadStylistContext = async () => {
     try {
       const payload = await scAdminFetch('/admin/api/stylist-context');
       stylistContextState.rows = payload.users || [];
+      stylistContextState.editable = Boolean(payload.editable);
       if (document.activeElement !== $('stylistPromptInput')) $('stylistPromptInput').value = payload.prompt || '';
+      $('stylistContextLockHint').hidden = stylistContextState.editable;
+      $('stylistContextForm').hidden = !stylistContextState.editable;
       renderStylistContext();
     } catch (error) {
       $('stylistContextUpdatedAt').textContent = error.message || '加载失败';

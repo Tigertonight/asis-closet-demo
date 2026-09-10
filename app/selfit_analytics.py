@@ -447,26 +447,50 @@ class StylistContextUserPayload(BaseModel):
 
 @admin_router.get("/stylist-context")
 async def admin_stylist_context(admin: dict[str, Any] = Depends(get_admin_user)) -> JSONResponse:
-    """AI 问答上下文配置：全局 prompt + 内测用户画像列表。"""
+    """AI 问答上下文配置：全局 prompt + 内测用户画像列表。
+
+    画像默认锁定（SELFIT_STYLIST_CONTEXT_EDITABLE 未开启时）：
+    只返回手机号/uid/昵称/长度等索引信息，不返回画像全文。
+    """
 
     import app.stylist_context as stylist_context
 
     config = stylist_context.load_stylist_context_config()
-    users = [
-        {
+    editable = stylist_context.stylist_context_editable()
+    users = []
+    for entry in config["users"]:
+        row = {
             "entry_id": entry.get("entry_id"),
             "phone": entry.get("phone") or "",
             "xhs_uid": entry.get("xhs_uid") or "",
             "nickname": entry.get("nickname") or "",
-            "doc": entry.get("doc") or "",
+            "doc_chars": len(str(entry.get("doc") or "")),
             "updated_at": entry.get("updated_at") or entry.get("created_at") or "",
         }
-        for entry in config["users"]
-    ]
+        if editable:
+            row["doc"] = entry.get("doc") or ""
+        users.append(row)
     users.sort(key=lambda row: str(row.get("updated_at") or ""), reverse=True)
     return JSONResponse(
-        content={"prompt": config.get("prompt") or "", "users": users},
+        content={"prompt": config.get("prompt") or "", "users": users, "editable": editable},
         headers={"Cache-Control": "no-store"},
+    )
+
+
+def _stylist_context_locked_response() -> JSONResponse | None:
+    import app.stylist_context as stylist_context
+
+    if stylist_context.stylist_context_editable():
+        return None
+    return JSONResponse(
+        status_code=403,
+        content={
+            "detail": (
+                "画像内容已锁定（保护内测成员隐私）：列表仅保留手机号/uid 等索引信息，"
+                "AI 问答不受影响。如需编辑，请先征得成员同意，"
+                "在服务器 .env.demo 设置 SELFIT_STYLIST_CONTEXT_EDITABLE=1 后重启。"
+            )
+        },
     )
 
 
@@ -489,6 +513,9 @@ async def admin_stylist_context_user_create(
 ) -> JSONResponse:
     import app.stylist_context as stylist_context
 
+    locked = _stylist_context_locked_response()
+    if locked is not None:
+        return locked
     try:
         entry = stylist_context.upsert_stylist_context_user(payload.model_dump())
     except ValueError as exc:
@@ -502,6 +529,9 @@ async def admin_stylist_context_user_update(
 ) -> JSONResponse:
     import app.stylist_context as stylist_context
 
+    locked = _stylist_context_locked_response()
+    if locked is not None:
+        return locked
     try:
         entry = stylist_context.upsert_stylist_context_user({**payload.model_dump(), "entry_id": entry_id})
     except ValueError as exc:
@@ -515,6 +545,9 @@ async def admin_stylist_context_user_delete(
 ) -> JSONResponse:
     import app.stylist_context as stylist_context
 
+    locked = _stylist_context_locked_response()
+    if locked is not None:
+        return locked
     deleted = stylist_context.delete_stylist_context_user(entry_id)
     if not deleted:
         return JSONResponse(status_code=404, content={"detail": "条目不存在"})

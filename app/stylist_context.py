@@ -14,6 +14,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
 import re
 import secrets
 import threading
@@ -40,6 +41,17 @@ DEFAULT_STYLIST_CONTEXT_PROMPT = (
 )
 
 _lock = threading.Lock()
+
+
+def stylist_context_editable() -> bool:
+    """画像内容在管理后台是否可见/可编辑。
+
+    默认 False（隐私保护）：管理后台只展示手机号/uid 等索引信息，
+    画像全文不出 API；AI 问答不受影响（直接读本地配置文件）。
+    征得成员同意后在 .env.demo 设 SELFIT_STYLIST_CONTEXT_EDITABLE=1 打开。
+    """
+
+    return os.environ.get("SELFIT_STYLIST_CONTEXT_EDITABLE", "").strip().lower() in {"1", "true", "yes", "on"}
 
 
 def _empty_config() -> dict[str, Any]:

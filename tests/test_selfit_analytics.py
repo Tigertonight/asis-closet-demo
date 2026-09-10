@@ -168,6 +168,7 @@ def _use_tmp_stylist_context(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) ->
 def test_admin_stylist_context_crud(monkeypatch, tmp_path: Path) -> None:
     _use_tmp_stores(monkeypatch, tmp_path)
     _use_tmp_stylist_context(monkeypatch, tmp_path)
+    monkeypatch.setenv("SELFIT_STYLIST_CONTEXT_EDITABLE", "1")
     client = TestClient(app)
 
     # 未登录不可见（登录前先验证，TestClient 登录后会带 admin cookie）
@@ -230,6 +231,58 @@ def test_admin_stylist_context_crud(monkeypatch, tmp_path: Path) -> None:
     assert client.delete(f"/admin/api/stylist-context/users/{entry_id}", headers=admin_headers).status_code == 200
     assert client.get("/admin/api/stylist-context", headers=admin_headers).json()["users"] == []
     assert client.delete(f"/admin/api/stylist-context/users/{entry_id}", headers=admin_headers).status_code == 404
+
+
+def test_admin_stylist_context_locked_by_default(monkeypatch, tmp_path: Path) -> None:
+    """画像内容默认锁定：API 不返回画像全文，写操作 403，索引信息保留。"""
+
+    _use_tmp_stores(monkeypatch, tmp_path)
+    _use_tmp_stylist_context(monkeypatch, tmp_path)
+    monkeypatch.delenv("SELFIT_STYLIST_CONTEXT_EDITABLE", raising=False)
+    client = TestClient(app)
+    admin_headers = _admin_login(client, monkeypatch)
+
+    import app.stylist_context as stylist_context
+
+    stylist_context.upsert_stylist_context_user(
+        {"phone": "13800003333", "xhs_uid": "uid-locked", "nickname": "隐私画像", "doc": "这是一份隐私画像。"}
+    )
+
+    listing = client.get("/admin/api/stylist-context", headers=admin_headers)
+    assert listing.status_code == 200
+    payload = listing.json()
+    assert payload["editable"] is False
+    assert len(payload["users"]) == 1
+    row = payload["users"][0]
+    # 索引信息保留，画像全文不出现
+    assert row["phone"] == "13800003333"
+    assert row["xhs_uid"] == "uid-locked"
+    assert row["nickname"] == "隐私画像"
+    assert row["doc_chars"] == len("这是一份隐私画像。")
+    assert "doc" not in row
+    assert "这是一份隐私画像" not in listing.text
+
+    # 写操作全部 403
+    assert client.post(
+        "/admin/api/stylist-context/users",
+        headers=admin_headers,
+        json={"phone": "13800004444", "doc": "新画像"},
+    ).status_code == 403
+    assert client.put(
+        f"/admin/api/stylist-context/users/{row['entry_id']}",
+        headers=admin_headers,
+        json={"doc": "改画像"},
+    ).status_code == 403
+    assert client.delete(
+        f"/admin/api/stylist-context/users/{row['entry_id']}", headers=admin_headers
+    ).status_code == 403
+
+    # prompt 编辑不受锁影响
+    assert client.put(
+        "/admin/api/stylist-context/prompt",
+        headers=admin_headers,
+        json={"prompt": "锁定状态下仍可改 prompt"},
+    ).status_code == 200
 
 
 def test_stylist_context_matches_phone_hash_user_id(monkeypatch, tmp_path: Path) -> None:
