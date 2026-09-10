@@ -583,3 +583,93 @@ def test_persona_breakdown_endpoint_returns_full_math(monkeypatch, tmp_path: Pat
     # 匿名不可访问
     anon = TestClient(app)
     assert anon.get(f"/admin/api/submissions/{session_id}/persona-breakdown").status_code == 401
+
+
+def test_persona_guide_endpoint_returns_manual(monkeypatch, tmp_path: Path) -> None:
+    """十六型判定手册：16 型档案 + 7 维坐标系 + 阈值 + 易混淆，匿名不可访问。"""
+
+    _use_tmp_stores(monkeypatch, tmp_path)
+    client = TestClient(app)
+    admin_headers = _admin_login(client, monkeypatch)
+
+    response = client.get("/admin/api/persona-guide", headers=admin_headers)
+    assert response.status_code == 200
+    payload = response.json()
+
+    assert payload["algorithmVersion"]
+    assert len(payload["dimensions"]) == 7
+    assert len(payload["personas"]) == 16
+
+    mute = next(p for p in payload["personas"] if p["code"] == "MUTE")
+    assert mute["name"] == "静音时髦"
+    assert mute["center"]["silhouette"] == 75
+    assert "silhouette" in mute["coreDimensions"]
+    # 判定信号：7 维齐全、按强度降序、核心维度带标记
+    assert len(mute["signals"]) == 7
+    strengths = [s["strength"] for s in mute["signals"]]
+    assert strengths == sorted(strengths, reverse=True)
+    assert any(s["isCore"] for s in mute["signals"])
+    # 易混淆：最近两个、按距离升序
+    assert len(mute["confusions"]) == 2
+    assert mute["confusions"][0]["distance"] <= mute["confusions"][1]["distance"]
+
+    # 维度两端语义（判定手册的坐标系说明）
+    silhouette_dim = next(d for d in payload["dimensions"] if d["key"] == "silhouette")
+    assert silhouette_dim["low"] == "柔和曲线"
+    assert silhouette_dim["high"] == "硬朗直线"
+    assert "滑杆" in silhouette_dim["source"]
+
+    anon = TestClient(app)
+    assert anon.get("/admin/api/persona-guide").status_code == 401
+
+
+def test_persona_guide_classify_endpoint(monkeypatch, tmp_path: Path) -> None:
+    """手动判定：7 维得分 → 分型 + 16 型排行；缺失维度按 50、非法地域不计罚。"""
+
+    _use_tmp_stores(monkeypatch, tmp_path)
+    client = TestClient(app)
+    admin_headers = _admin_login(client, monkeypatch)
+
+    from app.selfit_persona import PERSONAS
+
+    noir = PERSONAS["NOIR"].center
+    response = client.post(
+        "/admin/api/persona-guide/classify",
+        headers=admin_headers,
+        json={**noir, "regionalStyle": "欧美系"},
+    )
+    assert response.status_code == 200
+    payload = response.json()
+    assert payload["classification"]["primary_persona"] == "NOIR"
+    assert len(payload["ranking"]) == 16
+    distances = [row["totalDistance"] for row in payload["ranking"]]
+    assert distances == sorted(distances)
+    assert payload["ranking"][0]["code"] == "NOIR"
+    # NOIR 主风格为「无倾向」：地域不产生罚分；维度明细齐全
+    assert payload["ranking"][0]["regionPenalty"] is None
+    assert len(payload["ranking"][0]["dimensions"]) == 7
+
+    # 有主风格的人格吃地域罚分：FILM（法式）遇到欧美系 = 不匹配 +15
+    film = PERSONAS["FILM"].center
+    mismatch = client.post(
+        "/admin/api/persona-guide/classify",
+        headers=admin_headers,
+        json={**film, "regionalStyle": "欧美系"},
+    )
+    assert mismatch.status_code == 200
+    film_row = next(r for r in mismatch.json()["ranking"] if r["code"] == "FILM")
+    assert film_row["regionPenalty"] == 15.0
+
+    # 缺失维度按中性 50、非法地域忽略
+    partial = client.post(
+        "/admin/api/persona-guide/classify",
+        headers=admin_headers,
+        json={"silhouette": 90, "regionalStyle": "不存在的风格"},
+    )
+    assert partial.status_code == 200
+    assert partial.json()["regionalStyle"] is None
+    assert len(partial.json()["ranking"]) == 16
+
+    # 匿名不可访问
+    anon = TestClient(app)
+    assert anon.post("/admin/api/persona-guide/classify", json={}).status_code == 401

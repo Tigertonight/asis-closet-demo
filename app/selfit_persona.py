@@ -47,6 +47,18 @@ DIMENSION_LABELS = {
     "individuality": "个性",
 }
 
+# 每个维度 0 / 100 两端的语义（展示用，方向与 DIMENSIONS 注释一致；
+# 不参与分型计算，口径变化见 ALGORITHM_VERSION 注释）。
+DIMENSION_POLES = {
+    "silhouette": ("柔和曲线", "硬朗直线"),
+    "complexity": ("简约留白", "繁复装饰"),
+    "time_orientation": ("经典复古", "先锋新潮"),
+    "saturation": ("无彩低饱和", "高饱和撞色"),
+    "temperature": ("冷调", "暖调"),
+    "completion": ("随意松弛", "精修全套"),
+    "individuality": ("稳定统一", "游移混搭"),
+}
+
 REGIONAL_STYLES = ("日系", "韩系", "欧美系", "中式", "法式", "轻亚", "无倾向")
 
 # 算法版本指纹：每次修改分型口径（中心点/权重/阈值/换算）必须递增并说明变更，
@@ -454,15 +466,12 @@ VECTOR_VALUE_SOURCES = {
 }
 
 
-def persona_breakdown(session: dict[str, Any]) -> dict[str, Any]:
-    """完整人格匹配分解：用户向量来源 + 16 型逐维度距离贡献 + 排名。
+def rank_personas(vector: dict[str, Any]) -> list[dict[str, Any]]:
+    """16 型按总距离升序排行，每行含逐维贡献明细。
 
-    供管理后台「人格匹配」展示与客服对齐用。输出结构与 classify_persona
-    同源同口径——展示直接复用分型代码路径，算法改动自动反映到这里。
+    persona_breakdown 与管理后台「手动判定」接口（persona-guide/classify）
+    共用本函数，排行与 classify_persona 的分型结果永远同源。
     """
-
-    vector = build_user_vector(session)
-    classification = classify_persona(vector)
 
     rows = []
     for persona in PERSONAS.values():
@@ -508,6 +517,20 @@ def persona_breakdown(session: dict[str, Any]) -> dict[str, Any]:
             }
         )
     rows.sort(key=lambda row: row["totalDistance"])
+    return rows
+
+
+def persona_breakdown(session: dict[str, Any]) -> dict[str, Any]:
+    """完整人格匹配分解：用户向量来源 + 16 型逐维度距离贡献 + 排名。
+
+    供管理后台「人格匹配」展示与客服对齐用。输出结构与 classify_persona
+    同源同口径——展示直接复用分型代码路径，算法改动自动反映到这里。
+    """
+
+    vector = build_user_vector(session)
+    classification = classify_persona(vector)
+
+    rows = rank_personas(vector)
 
     user_vector_view = [
         {
@@ -535,6 +558,94 @@ def persona_breakdown(session: dict[str, Any]) -> dict[str, Any]:
         "regionalStyle": vector.get("regional_style"),
         "classification": classification,
         "ranking": rows,
+    }
+
+
+def persona_guide() -> dict[str, Any]:
+    """十六型人格判定手册：7 维坐标系 + 16 型完整档案。
+
+    供管理后台「十六型人格」报告页（自行判断某人属于什么型格用）。
+    数据全部由 PERSONAS / 常量导出——算法口径变化时本导出自动同步，
+    不引入第二份人格配置。不参与分型计算。
+    """
+
+    personas = []
+    for persona in PERSONAS.values():
+        # 判定信号：按中心点偏离中性值 50 的强度降序，核心维度带标记。
+        signals = sorted(
+            (
+                {
+                    "dimension": dimension,
+                    "label": DIMENSION_LABELS[dimension],
+                    "low": DIMENSION_POLES[dimension][0],
+                    "high": DIMENSION_POLES[dimension][1],
+                    "center": persona.center[dimension],
+                    "isCore": dimension in persona.core_dimensions,
+                    "strength": abs(persona.center[dimension] - 50),
+                }
+                for dimension in DIMENSIONS
+            ),
+            key=lambda item: -item["strength"],
+        )
+        # 易混淆：把其他型的中心点当作用户向量代入本型的距离公式，
+        # 取距离最近的两个——判定时优先跟它们做区分。
+        confusions = []
+        for other in PERSONAS.values():
+            if other.code == persona.code:
+                continue
+            probe = dict(other.center)
+            probe["regional_style"] = (
+                None if other.primary_region == "无倾向" else other.primary_region
+            )
+            _, total = _persona_distance(persona, probe)
+            confusions.append(
+                {"code": other.code, "name": other.name, "distance": round(total, 1)}
+            )
+        confusions.sort(key=lambda item: item["distance"])
+        personas.append(
+            {
+                "code": persona.code,
+                "name": persona.name,
+                "signature": persona.signature,
+                "traits": list(persona.traits),
+                "primaryRegion": persona.primary_region,
+                "compatibleRegions": list(persona.compatible_regions),
+                "makeupPrimary": persona.makeup_primary,
+                "makeupCompatible": list(persona.makeup_compatible),
+                "center": {d: persona.center[d] for d in DIMENSIONS},
+                "coreDimensions": list(persona.core_dimensions),
+                "signals": signals,
+                "confusions": confusions[:2],
+            }
+        )
+
+    return {
+        "algorithmVersion": ALGORITHM_VERSION,
+        "dimensions": [
+            {
+                "key": dimension,
+                "label": DIMENSION_LABELS[dimension],
+                "low": DIMENSION_POLES[dimension][0],
+                "high": DIMENSION_POLES[dimension][1],
+                "source": VECTOR_VALUE_SOURCES[dimension],
+            }
+            for dimension in DIMENSIONS
+        ],
+        "regionStyles": list(REGIONAL_STYLES),
+        "makeupStyles": list(MAKEUP_STYLES),
+        "thresholds": {
+            "coreWeight": CORE_DIMENSION_WEIGHT,
+            "baseWeight": BASE_DIMENSION_WEIGHT,
+            "crossSideDelta": CROSS_SIDE_DELTA_THRESHOLD,
+            "regionPenalties": {
+                "primary": REGION_PRIMARY_PENALTY,
+                "compatible": REGION_COMPATIBLE_PENALTY,
+                "mismatch": REGION_MISMATCH_PENALTY,
+            },
+            "confidenceHigh": CONFIDENCE_HIGH,
+            "confidenceMid": CONFIDENCE_MID,
+        },
+        "personas": personas,
     }
 
 

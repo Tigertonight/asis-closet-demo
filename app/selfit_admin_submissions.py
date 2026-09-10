@@ -21,12 +21,20 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Body, Depends, HTTPException
 from fastapi.responses import FileResponse, JSONResponse, RedirectResponse, Response
 
 from app import selfit_assets, selfit_mirror_handoff, selfit_onboarding, selfit_photo
 from app.auth import get_admin_user
-from app.selfit_persona import persona_breakdown
+from app.selfit_persona import (
+    ALGORITHM_VERSION,
+    DIMENSIONS,
+    REGIONAL_STYLES,
+    classify_persona,
+    persona_breakdown,
+    persona_guide,
+    rank_personas,
+)
 from app.storage import ROOT_DIR
 
 router = APIRouter(prefix="/admin/api", tags=["selfit-admin-submissions"])
@@ -298,6 +306,49 @@ async def get_submission_persona_breakdown(
     except Exception:
         return JSONResponse(status_code=422, content={"detail": "这份提交的问卷输入不完整，无法计算人格匹配"})
     return JSONResponse(content=breakdown, headers={"Cache-Control": "no-store"})
+
+
+@router.get("/persona-guide")
+async def get_persona_guide(admin: dict[str, Any] = Depends(get_admin_user)) -> JSONResponse:
+    """十六型人格判定手册：7 维坐标系 + 16 型档案（中心点 / 核心 / 信号 / 易混淆）。
+
+    给管理后台「十六型人格」报告页用：判断某个人属于什么型格的参考资料。
+    数据由 selfit_persona.persona_guide 从 PERSONAS 唯一来源导出，算法
+    口径变化时自动同步，无需前端维护第二份人格配置。
+    """
+
+    return JSONResponse(content=persona_guide(), headers={"Cache-Control": "no-store"})
+
+
+@router.post("/persona-guide/classify")
+async def post_persona_guide_classify(
+    payload: dict[str, Any] = Body(...), admin: dict[str, Any] = Depends(get_admin_user)
+) -> JSONResponse:
+    """手动判定：输入某人 7 维得分（0-100，算法坐标系）+ 地域倾向，返回分型结果。
+
+    与问卷分型共用 classify_persona / rank_personas 同一代码路径，
+    缺失维度按中性值 50 计算，地域传「无倾向」或不传不计罚分。
+    """
+
+    vector: dict[str, Any] = {}
+    for dimension in DIMENSIONS:
+        value = payload.get(dimension)
+        if isinstance(value, bool) or not isinstance(value, (int, float)):
+            vector[dimension] = 50.0
+        else:
+            vector[dimension] = float(min(100.0, max(0.0, value)))
+    regional = payload.get("regionalStyle")
+    vector["regional_style"] = regional if regional in REGIONAL_STYLES else None
+
+    return JSONResponse(
+        content={
+            "algorithmVersion": ALGORITHM_VERSION,
+            "regionalStyle": vector["regional_style"],
+            "classification": classify_persona(vector),
+            "ranking": rank_personas(vector),
+        },
+        headers={"Cache-Control": "no-store"},
+    )
 
 
 @router.get("/submissions/{session_id}/photos/{kind}")

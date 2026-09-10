@@ -161,6 +161,63 @@
   .dim-core { background: #e8f0fa; color: #2d5f8a; }
   .dim-cross { background: #fff4d8; color: #8a5a00; }
   .empty-inline { padding: 6px 0; color: var(--muted); font-size: 13px; }
+  /* 十六型人格判定手册 */
+  .pg-section { margin-top: 24px; }
+  .pg-section > h3 { margin: 0 0 4px; font-size: 14px; font-weight: 700; }
+  .pg-section > .panel-hint { margin: 0 0 12px; }
+  .pg-rules { margin: 0 0 12px; padding-left: 18px; font-size: 13px; color: var(--ink); }
+  .pg-rules li { margin-bottom: 4px; }
+  .pg-rules code { background: #fff; border: 1px solid var(--line); border-radius: 6px; padding: 0 5px; font-size: 12px; }
+  .pg-judge { display: grid; grid-template-columns: minmax(260px, 2fr) minmax(300px, 3fr); gap: 20px; padding: 16px; border: 1px solid var(--line); border-radius: 14px; background: #fbf8f7; }
+  .judge-box h4 { margin: 0 0 10px; font-size: 13px; color: var(--muted); font-weight: 600; }
+  .slider-row { display: grid; grid-template-columns: 58px 1fr 34px; align-items: center; gap: 8px; margin-bottom: 8px; font-size: 12px; }
+  .slider-row label { font-weight: 700; }
+  .slider-row input { width: 100%; margin: 0; accent-color: var(--rose); }
+  .slider-row b { text-align: right; font-variant-numeric: tabular-nums; }
+  .slider-poles { grid-column: 1 / -1; display: flex; justify-content: space-between; color: var(--muted); font-size: 11px; margin-top: -6px; }
+  .judge-region { display: flex; align-items: center; gap: 8px; margin: 12px 0 4px; font-size: 12px; }
+  .judge-region select { flex: 1; height: 34px; padding: 0 10px; border: 1px solid var(--line); border-radius: 9px; background: #fff; font: inherit; font-size: 13px; }
+  .judge-result-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 14px; margin-bottom: 10px; }
+  .judge-primary { font-size: 18px; font-weight: 700; }
+  .judge-primary .code-chip { margin-left: 6px; font-size: 11px; font-weight: 800; vertical-align: 2px; background: var(--rose); color: #fff; border-radius: 6px; padding: 1px 7px; }
+  .judge-sub, .judge-conf { color: var(--muted); font-size: 12px; }
+  .judge-plot { display: flex; justify-content: center; padding: 4px 0 8px; }
+  .judge-legend { display: flex; justify-content: center; gap: 16px; color: var(--muted); font-size: 11px; margin-bottom: 10px; }
+  .judge-legend i { display: inline-block; width: 14px; height: 3px; border-radius: 2px; vertical-align: 3px; margin-right: 4px; font-style: normal; }
+  .pg-rank-mini { width: 100%; border-collapse: collapse; background: #fff; border: 1px solid var(--line); border-radius: 10px; overflow: hidden; font-size: 12px; }
+  .pg-rank-mini th { padding: 6px 8px; background: #faf6f3; color: var(--muted); font-size: 11px; }
+  .pg-rank-mini td { padding: 5px 8px; border-top: 1px solid #f5eef0; }
+  .pg-rank-mini tr.is-primary td { background: #ffe4ee; font-weight: 700; }
+  .pg-matrix-wrap { width: 100%; overflow-x: auto; }
+  .pg-matrix { border-collapse: separate; border-spacing: 0; font-size: 12px; min-width: 720px; }
+  .pg-matrix th { position: sticky; top: 0; background: #faf6f3; color: var(--muted); font-weight: 600; font-size: 11px; }
+  .pg-matrix th:first-child, .pg-matrix td:first-child { position: sticky; left: 0; background: #fff; z-index: 1; text-align: left; white-space: nowrap; }
+  .pg-matrix td { text-align: center; border-top: 1px solid #f5eef0; border-left: 1px solid #f5eef0; font-variant-numeric: tabular-nums; }
+  .pg-matrix tr:hover td { background: #fdf7f8; }
+  .pg-matrix td.is-core { background: #ffe4ee; color: #9b344b; font-weight: 800; }
+  .pg-matrix tr { cursor: pointer; }
+  .pg-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(330px, 1fr)); gap: 16px; }
+  .pg-card { display: flex; flex-direction: column; gap: 10px; padding: 16px 18px; border: 1px solid var(--line); border-radius: 16px; background: #fff; scroll-margin-top: 84px; }
+  .pg-card-head { display: flex; flex-direction: column; gap: 4px; }
+  .pg-card-title { display: flex; align-items: baseline; gap: 8px; font-size: 16px; font-weight: 700; }
+  .pg-card-title code { font-size: 11px; color: var(--muted); background: #f5efe9; border-radius: 6px; padding: 1px 7px; }
+  .pg-signature { margin: 0; color: var(--muted); font-size: 12px; }
+  .pg-card-meta { display: flex; flex-wrap: wrap; gap: 4px 12px; font-size: 11px; color: var(--muted); }
+  .pg-card-meta b { color: var(--ink); font-weight: 600; }
+  .pg-radar { display: flex; justify-content: center; margin: 0; }
+  .pg-dim-rows { display: flex; flex-direction: column; gap: 3px; }
+  .pg-dim-row { display: grid; grid-template-columns: 64px 1fr 30px; gap: 8px; align-items: center; font-size: 11px; }
+  .pg-dim-row.is-core .pg-dim-label { color: var(--brand); font-weight: 800; }
+  .pg-dim-label .star { color: var(--rose); margin-right: 1px; }
+  .pg-dim-row .pv-bar { height: 10px; }
+  .pg-dim-row b { text-align: right; font-variant-numeric: tabular-nums; }
+  .pg-signals { display: flex; flex-direction: column; gap: 3px; padding: 10px 12px; border-radius: 10px; background: #fbf8f7; font-size: 12px; }
+  .pg-signals b { display: block; margin-bottom: 2px; font-size: 11px; color: var(--muted); }
+  .pg-signal { display: flex; align-items: center; gap: 6px; }
+  .pg-signal .sig-core { font-size: 9px; font-weight: 800; color: #2d5f8a; background: #e8f0fa; border-radius: 4px; padding: 0 4px; }
+  .pg-signal .sig-word { color: var(--muted); }
+  .pg-confuse { font-size: 11px; color: var(--muted); }
+  .pg-confuse button { padding: 0; border: 0; background: none; color: var(--brand); font: inherit; font-size: 11px; cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
   .link-btn.danger { color: #a90020; }
   body.has-modal { overflow: hidden; }
   .photo-lightbox { position: fixed; inset: 0; z-index: 80; display: grid; grid-template-rows: auto minmax(0, 1fr) auto; padding: 18px; background: rgba(20,16,17,.92); color: #fff; }
@@ -193,6 +250,9 @@
     nav.tabs a, nav.tabs button { flex: 0 0 auto; }
     main { padding: 16px 12px 48px; }
     .panel { padding: 16px; }
+    .pg-judge { grid-template-columns: 1fr; }
+    .judge-plot svg { max-width: 100%; height: auto; }
+    .pg-cards { grid-template-columns: 1fr; }
     .photo-lightbox { padding: 10px; }
     .lightbox-stage { padding: 10px 0 62px; }
     .lightbox-nav { top: auto; bottom: 8px; transform: none; }
@@ -216,6 +276,7 @@
     <button class="is-active" data-tab="analytics" type="button">数据分析</button>
     <button type="button" data-tab="submissions">用户报告</button>
     <button type="button" data-tab="invites">邀请码</button>
+    <button type="button" data-tab="personas">十六型人格</button>
     <button type="button" data-tab="debug">调试工具</button>
     <a href="/mvp" target="_blank" rel="noopener">MVP 状态</a>
     <button type="button" id="settingsBtn" hidden>修改密码</button>
@@ -319,6 +380,18 @@
         <button type="button" id="inviteCreateSubmit">生成</button>
       </div>
       <div class="table-scroll"><table><thead><tr><th>邀请码</th><th>席位</th><th>过期时间</th><th>状态</th><th>备注</th><th>操作</th></tr></thead><tbody id="inviteRows"></tbody></table></div>
+    </div>
+    <div class="panel" id="personaGuidePanel" data-tab-panel="personas" hidden>
+      <h2>十六型人格 · 判定手册</h2>
+      <p class="panel-hint">判断某个人属于什么型格：先看下方「坐标系与判定规则」理解 7 个维度，再用「手动判定器」把此人的 7 维得分拖进去得到分型结果；16 型档案卡片给出每型的中心点分数、核心维度（权重 ×1.5 的判定首要依据）、蛛网图与易混淆型。</p>
+      <div class="toolbar" style="margin-bottom:12px">
+        <button class="mini-btn" type="button" id="personaGuideRefresh">刷新</button>
+        <small id="personaGuideUpdatedAt"></small>
+      </div>
+      <div id="personaGuideIntro" class="pg-section"></div>
+      <div id="personaJudge" class="pg-section"></div>
+      <div id="personaMatrix" class="pg-section"></div>
+      <div id="personaCards" class="pg-section"></div>
     </div>
     <div class="panel" id="debugPanel" data-tab-panel="debug" hidden>
       <h2>调试工具</h2>
@@ -814,6 +887,253 @@
     mount.querySelectorAll('.pr-row.is-primary, .pr-row.is-secondary').forEach((row) => row.click());
   };
 
+  // ---------------------------------------------------------------------------
+  // 十六型人格判定手册（数据来自 /admin/api/persona-guide，算法口径单一来源）
+  // ---------------------------------------------------------------------------
+
+  let personaGuideData = null;
+  const personaGuideState = { loaded: false, loading: false };
+  const personaJudgeState = { vector: null, region: '', timer: 0 };
+  let personaJudgeRequest = null;
+
+  const pgScoreWord = (value, low, high) => {
+    if (value <= 20) return `极${low}`;
+    if (value <= 40) return `偏${low}`;
+    if (value < 60) return '中性';
+    if (value < 80) return `偏${high}`;
+    return `极${high}`;
+  };
+
+  // 7 维蛛网图（雷达图）：rows = [{label, value(0-100), isCore}]，
+  // compare 可叠加第二组数值（虚线描边，如主人格中心点）。
+  const pgRadarSVG = ({ rows, size = 250, compare = null }) => {
+    const cx = size / 2;
+    const cy = size / 2;
+    const r = size * 0.25;
+    const labelR = r + size * 0.066;
+    const n = rows.length;
+    const angle = (i) => -Math.PI / 2 + (2 * Math.PI * i) / n;
+    const pt = (i, radius) => [cx + Math.cos(angle(i)) * radius, cy + Math.sin(angle(i)) * radius];
+    const at = (i, v) => pt(i, (r * v) / 100);
+    const poly = (vals) => vals.map((v, i) => at(i, v).map((x) => x.toFixed(1)).join(',')).join(' ');
+    const values = rows.map((row) => row.value);
+    const fontSize = Math.max(9, Math.round(size * 0.042));
+    let svg = `<svg viewBox="0 0 ${size} ${size}" width="${size}" height="${size}" role="img" aria-label="七维分数蛛网图">`;
+    [25, 50, 75].forEach((ring) => {
+      svg += `<polygon points="${poly(Array(n).fill(ring))}" fill="none" stroke="#f0e2e5" stroke-width="1"/>`;
+    });
+    svg += `<polygon points="${poly(Array(n).fill(100))}" fill="#fdf9fa" stroke="#eddcdf" stroke-width="1"/>`;
+    rows.forEach((row, i) => {
+      const [ax, ay] = at(i, 100);
+      svg += `<line x1="${cx.toFixed(1)}" y1="${cy.toFixed(1)}" x2="${ax.toFixed(1)}" y2="${ay.toFixed(1)}" stroke="${row.isCore ? 'rgba(138,1,27,.32)' : '#f0e2e5'}" stroke-width="${row.isCore ? 1.4 : 1}"/>`;
+      const [lx, ly] = pt(i, labelR);
+      const anchor = Math.abs(lx - cx) < 8 ? 'middle' : (lx > cx ? 'start' : 'end');
+      svg += `<text x="${lx.toFixed(1)}" y="${ly.toFixed(1)}" text-anchor="${anchor}" dominant-baseline="middle" font-size="${fontSize}" font-weight="${row.isCore ? 800 : 500}" fill="${row.isCore ? '#8a011b' : 'rgba(31,26,26,.55)'}">${esc(row.label)} ${row.value}</text>`;
+    });
+    if (compare) {
+      svg += `<polygon points="${poly(compare)}" fill="none" stroke="#8a011b" stroke-width="1.6" stroke-dasharray="5 4" stroke-linejoin="round"/>`;
+    }
+    svg += `<polygon points="${poly(values)}" fill="rgba(255,79,134,.16)" stroke="#ff4f86" stroke-width="2" stroke-linejoin="round"/>`;
+    values.forEach((v, i) => {
+      const [x, y] = at(i, v);
+      svg += `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${Math.max(2, size * 0.011).toFixed(1)}" fill="#ff4f86"/>`;
+    });
+    svg += '</svg>';
+    return svg;
+  };
+
+  const renderPersonaIntro = (data) => {
+    const t = data.thresholds || {};
+    const dimRows = data.dimensions.map((d) =>
+      `<tr><td><b>${esc(d.label)}</b> <code>${esc(d.key)}</code></td><td>${esc(d.low)}</td><td>${esc(d.high)}</td><td style="white-space:normal;min-width:220px">${esc(d.source)}</td></tr>`).join('');
+    const rules = [
+      `分型 = 距离最近的型：对 16 型各算加权绝对距离 <code>Σ wᵢ·|userᵢ - centerᵢ|</code>，最近为主人格，次近为次人格。`,
+      `核心维度权重 <code>×${t.coreWeight}</code>（档案里 ★ 标记，判定某型时的首要依据），普通维度 <code>×${t.baseWeight}</code>。`,
+      `跨侧冲突：某维度差距 <code>|Δ| &gt; ${t.crossSideDelta}</code>（此人与该型分处量表两端）时，不论是否核心一律按 <code>×${t.coreWeight}</code> 计。`,
+      `地域罚分：命中主风格 <code>+0</code> / 兼容 <code>+${t.regionPenalties?.compatible}</code> / 不匹配 <code>+${t.regionPenalties?.mismatch}</code>；主风格「无倾向」的型、或未答地域，不计罚。`,
+      `置信度 =（次距离 − 主距离）/ 次距离：<code>≥${Math.round((t.confidenceHigh ?? 0.2) * 100)}%</code> 高、<code>≥${Math.round((t.confidenceMid ?? 0.1) * 100)}%</code> 中、其余低——置信度低说明此人横跨两型。`,
+    ].map((rule) => `<li>${rule}</li>`).join('');
+    $('personaGuideIntro').innerHTML = `
+      <h3>坐标系与判定规则 <small style="font-weight:400;color:var(--muted)">（7 个数值维度均为 0-100，算法坐标系）</small></h3>
+      <div class="table-scroll" style="margin-bottom:12px"><table><thead><tr><th>维度</th><th>0 分一端</th><th>100 分一端</th><th>问卷来源</th></tr></thead><tbody>${dimRows}</tbody></table></div>
+      <ul class="pg-rules">${rules}</ul>`;
+  };
+
+  const renderPersonaJudgeResult = (result) => {
+    const mount = $('personaJudgeResult');
+    if (!mount || !personaGuideData) return;
+    const guide = personaGuideData;
+    const cls = result.classification || {};
+    const primary = guide.personas.find((p) => p.code === cls.primary_persona);
+    const secondary = guide.personas.find((p) => p.code === cls.secondary_persona);
+    if (!primary) {
+      mount.innerHTML = '<div class="empty-inline">无法计算，请检查输入</div>';
+      return;
+    }
+    const tierLabels = { high: '高', mid: '中', low: '低' };
+    const vector = personaJudgeState.vector || {};
+    const userRows = guide.dimensions.map((d) => ({
+      label: d.label,
+      value: vector[d.key] ?? 50,
+      isCore: primary.coreDimensions.includes(d.key),
+    }));
+    const centerValues = guide.dimensions.map((d) => primary.center[d.key]);
+    const top = (result.ranking || []).slice(0, 5);
+    const rankRows = top.map((row, index) =>
+      `<tr${index === 0 ? ' class="is-primary"' : ''}><td>${index + 1}</td>`
+      + `<td><b>${esc(row.name)}</b> <small>${esc(row.code)}</small></td>`
+      + `<td>${row.totalDistance}${row.regionPenalty ? `<small class="penalty">含地域罚 +${row.regionPenalty}</small>` : ''}</td>`
+      + `<td>${esc((row.coreDimensions || []).join(' / '))}</td></tr>`).join('');
+    mount.innerHTML = `
+      <div class="judge-result-head">
+        <span class="judge-primary">${esc(primary.name)}<span class="code-chip">${esc(primary.code)}</span></span>
+        <span class="judge-sub">次人格 ${esc(secondary?.name || '—')}（${esc(secondary?.code || '—')}）</span>
+        <span class="judge-conf">置信度 ${Math.round((cls.persona_confidence || 0) * 100)}%（${tierLabels[cls.confidence_tier] || '—'}）· 主距离 ${cls.primary_distance}</span>
+      </div>
+      <div class="judge-legend"><span><i style="background:#ff4f86"></i>此人得分</span><span><i style="background:none;border-top:2px dashed #8a011b;height:0"></i>${esc(primary.name)}中心点</span></div>
+      <div class="judge-plot">${pgRadarSVG({ rows: userRows, size: 330, compare: centerValues })}</div>
+      <table class="pg-rank-mini"><thead><tr><th>#</th><th>人格</th><th>总距离</th><th>核心维度</th></tr></thead><tbody>${rankRows}</tbody></table>`;
+  };
+
+  const runPersonaJudge = async () => {
+    const mount = $('personaJudgeResult');
+    if (!mount) return;
+    personaJudgeRequest?.abort();
+    const controller = new AbortController();
+    personaJudgeRequest = controller;
+    const payload = { ...(personaJudgeState.vector || {}) };
+    if (personaJudgeState.region) payload.regionalStyle = personaJudgeState.region;
+    try {
+      const response = await fetch('/admin/api/persona-guide/classify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${state.token}` },
+        body: JSON.stringify(payload),
+        signal: controller.signal,
+      });
+      if (response.status === 401 || response.status === 403) {
+        showLogin();
+        return;
+      }
+      if (!response.ok) throw new Error(`请求失败（${response.status}）`);
+      const result = await response.json();
+      if (personaJudgeRequest === controller) renderPersonaJudgeResult(result);
+    } catch (error) {
+      if (error.name === 'AbortError') return;
+      mount.innerHTML = `<div class="empty-inline">${esc(error.message || '计算失败')}</div>`;
+    } finally {
+      if (personaJudgeRequest === controller) personaJudgeRequest = null;
+    }
+  };
+
+  const schedulePersonaJudge = () => {
+    clearTimeout(personaJudgeState.timer);
+    personaJudgeState.timer = setTimeout(() => { void runPersonaJudge(); }, 250);
+  };
+
+  const initPersonaJudge = (data) => {
+    const mount = $('personaJudge');
+    personaJudgeState.vector = Object.fromEntries(data.dimensions.map((d) => [d.key, 50]));
+    personaJudgeState.region = '';
+    const regionOptions = ['未答 / 不计罚分', ...data.regionStyles]
+      .map((region, index) => `<option value="${index === 0 ? '' : esc(region)}">${esc(region)}</option>`).join('');
+    const sliders = data.dimensions.map((d) =>
+      `<div class="slider-row" data-dim="${esc(d.key)}">`
+      + `<label>${esc(d.label)}</label><input type="range" min="0" max="100" step="5" value="50" aria-label="${esc(d.label)}，0 为${esc(d.low)}，100 为${esc(d.high)}" />`
+      + `<b>50</b><div class="slider-poles"><span>0 ${esc(d.low)}</span><span>100 ${esc(d.high)}</span></div></div>`).join('');
+    mount.innerHTML = `
+      <h3>手动判定器</h3>
+      <p class="panel-hint">按此人的穿搭倾向拖出 7 维分数（可对照下方 16 型蛛网图的形状），选地域后实时计算最近的型格；拿不准的维度保持 50（中性）。</p>
+      <div class="pg-judge">
+        <div class="judge-box"><h4>7 维得分（算法坐标系）</h4>${sliders}
+          <div class="judge-region"><label for="personaJudgeRegion">地域倾向</label><select id="personaJudgeRegion">${regionOptions}</select></div>
+        </div>
+        <div class="judge-box"><h4>判定结果</h4><div id="personaJudgeResult"><div class="empty-inline">计算中…</div></div></div>
+      </div>`;
+    mount.querySelectorAll('.slider-row input').forEach((input) => {
+      input.addEventListener('input', () => {
+        const row = input.closest('.slider-row');
+        personaJudgeState.vector[row.dataset.dim] = Number(input.value);
+        row.querySelector('b').textContent = input.value;
+        schedulePersonaJudge();
+      });
+    });
+    $('personaJudgeRegion').addEventListener('change', (event) => {
+      personaJudgeState.region = event.target.value;
+      schedulePersonaJudge();
+    });
+    schedulePersonaJudge();
+  };
+
+  const renderPersonaMatrix = (data) => {
+    const head = `<tr><th>人格</th>${data.dimensions.map((d) => `<th title="0 ${esc(d.low)} ↔ 100 ${esc(d.high)}">${esc(d.label)}</th>`).join('')}<th>主地域</th></tr>`;
+    const rows = data.personas.map((p) =>
+      `<tr data-goto="${esc(p.code)}"><td><b>${esc(p.name)}</b> <small>${esc(p.code)}</small></td>`
+      + data.dimensions.map((d) => `<td class="${p.coreDimensions.includes(d.key) ? 'is-core' : ''}">${p.center[d.key]}</td>`).join('')
+      + `<td>${esc(p.primaryRegion)}</td></tr>`).join('');
+    $('personaMatrix').innerHTML = `
+      <h3>16 型速查矩阵 <small style="font-weight:400;color:var(--muted)">（数字 = 中心点分数，粉色格 = 该型核心维度；点击行跳到档案卡片）</small></h3>
+      <div class="pg-matrix-wrap"><table class="pg-matrix"><thead>${head}</thead><tbody>${rows}</tbody></table></div>`;
+  };
+
+  const renderPersonaCards = (data) => {
+    const cards = data.personas.map((p) => {
+      const rows = data.dimensions.map((d) => ({
+        key: d.key, label: d.label, value: p.center[d.key], isCore: p.coreDimensions.includes(d.key),
+      }));
+      const radar = pgRadarSVG({ rows });
+      const dimRows = rows.map((row) =>
+        `<div class="pg-dim-row${row.isCore ? ' is-core' : ''}">`
+        + `<span class="pg-dim-label">${row.isCore ? '<span class="star">★</span>' : ''}${esc(row.label)}</span>`
+        + `<div class="pv-bar"><i style="width:${Math.max(2, row.value)}%"></i></div>`
+        + `<b>${row.value}</b></div>`).join('');
+      const ordered = [...p.signals].sort((a, b) => (Number(b.isCore) - Number(a.isCore)) || (b.strength - a.strength));
+      const signalItems = ordered.slice(0, 4).map((s) =>
+        `<div class="pg-signal"><span>${esc(s.label)} <b>${s.center}</b> <span class="sig-word">${esc(pgScoreWord(s.center, s.low, s.high))}</span></span>${s.isCore ? '<span class="sig-core">核心 ×1.5</span>' : ''}</div>`).join('');
+      const confusions = (p.confusions || []).map((c) =>
+        `<button type="button" data-goto="${esc(c.code)}">${esc(c.code)} ${esc(c.name)}</button>（中心距 ${c.distance}）`).join('、');
+      return `<article class="pg-card" id="personaCard-${esc(p.code)}">`
+        + `<div class="pg-card-head"><div class="pg-card-title">${esc(p.name)} <code>${esc(p.code)}</code></div>`
+        + `<p class="pg-signature">${esc(p.signature)}</p>`
+        + `<div class="trait-tags">${p.traits.map((trait) => `<i>${esc(trait)}</i>`).join('')}</div></div>`
+        + `<div class="pg-card-meta"><span>主地域 <b>${esc(p.primaryRegion)}</b></span>`
+        + (p.compatibleRegions.length ? `<span>兼容 <b>${esc(p.compatibleRegions.join(' / '))}</b></span>` : '')
+        + `<span>妆容 <b>${esc(p.makeupPrimary)}</b>${p.makeupCompatible.length ? `（兼容 ${esc(p.makeupCompatible.join(' / '))}）` : ''}</span></div>`
+        + `<figure class="pg-radar">${radar}</figure>`
+        + `<div class="pg-dim-rows">${dimRows}</div>`
+        + `<div class="pg-signals"><b>判定要点（先看 ★ 核心维度）</b>${signalItems}</div>`
+        + (confusions ? `<div class="pg-confuse">易混淆：${confusions}</div>` : '')
+        + `</article>`;
+    }).join('');
+    $('personaCards').innerHTML = `
+      <h3>16 型档案 <small style="font-weight:400;color:var(--muted)">（蛛网图 = 中心点分数形状；★ = 核心维度，权重 ×1.5；判定要点按信号强度排序）</small></h3>
+      <div class="pg-cards">${cards}</div>`;
+  };
+
+  const renderPersonaGuide = (data) => {
+    personaGuideData = data;
+    renderPersonaIntro(data);
+    initPersonaJudge(data);
+    renderPersonaMatrix(data);
+    renderPersonaCards(data);
+  };
+
+  const loadPersonaGuide = async ({ force = false } = {}) => {
+    if (personaGuideState.loading || (personaGuideState.loaded && !force)) return;
+    personaGuideState.loading = true;
+    $('personaGuideUpdatedAt').textContent = '正在加载…';
+    try {
+      const data = await api('/admin/api/persona-guide');
+      renderPersonaGuide(data);
+      personaGuideState.loaded = true;
+      $('personaGuideUpdatedAt').textContent = `算法版本 ${data.algorithmVersion} · 更新于 ${new Date().toLocaleTimeString('zh-CN', { hour12: false })}`;
+    } catch (error) {
+      if (error.status) showLogin();
+      else $('personaGuideUpdatedAt').textContent = error.message || '加载失败';
+    } finally {
+      personaGuideState.loading = false;
+    }
+  };
+
   const openSubmissionDetail = async (sessionId) => {
     $('submissionModalMeta').textContent = sessionId;
     $('submissionModalBody').innerHTML = '<div class="empty-inline">加载中…</div>';
@@ -965,6 +1285,13 @@
   $('submissionsRefresh').addEventListener('click', () => loadReportTab('submissions', { force: true }));
   $('capturesRefresh').addEventListener('click', () => loadReportTab('captures', { force: true }));
   $('rejectedRefresh').addEventListener('click', () => loadReportTab('rejected', { force: true }));
+  $('personaGuideRefresh').addEventListener('click', () => loadPersonaGuide({ force: true }));
+  document.addEventListener('click', (event) => {
+    const goto = event.target.closest('[data-goto]');
+    if (!goto) return;
+    const card = document.getElementById(`personaCard-${goto.dataset.goto}`);
+    if (card) card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
   Object.keys(reportConfig).forEach((tab) => {
     $(reportConfig[tab].more).addEventListener('click', () => {
       reportListState[tab].visible += REPORT_PAGE_SIZE;
@@ -1074,6 +1401,7 @@
     $('toolbar').hidden = tab !== 'analytics';
     if (tab === 'analytics') void load();
     if (tab === 'invites') void loadInvites();
+    if (tab === 'personas') void loadPersonaGuide();
     if (tab === 'submissions') {
       const selected = document.querySelector('[data-report-tab][aria-selected="true"]');
       void loadReportTab(selected?.dataset.reportTab || 'submissions');
