@@ -1126,8 +1126,9 @@ def _account_profile(data: dict[str, Any], user_id: str) -> dict[str, Any]:
 def _account_suit_summary(data: dict[str, Any], user_id: str, session: dict[str, Any] | None, stored: dict[str, Any]) -> dict[str, Any]:
     """我的档案顶部的 suit 模块数据：与 /sessions/{id}/suit 同构。
 
-    手动纠正以档案里保存的 manual 为准（档案编辑优先于照片推断），
-    照片视图沿用「session 优先、同账号最近 accepted 回填」的口径。
+    档案展示「账号当前状态」：照片一律取该用户最近一次 accepted（含档案页
+    换照产生的新 session），不能被生成报告的旧 session 照片遮住；
+    手动纠正以档案里保存的 manual 为准（档案编辑优先于照片推断）。
     """
     from app.selfit_suit import suit_summary
     record = dict(session or {"session_id": "", "user_id": user_id})
@@ -1137,7 +1138,7 @@ def _account_suit_summary(data: dict[str, Any], user_id: str, session: dict[str,
     photos_view: dict[str, Any] = {}
     analyses: dict[str, Any] = {}
     for kind in selfit_photo.PHOTO_KINDS:
-        photo = _suit_photo(data, record, kind)
+        photo = _latest_user_photo(data, user_id, kind)
         if photo and photo.get("status") == "accepted":
             photos_view[kind] = photo
             analyses[kind] = selfit_photo.public_analysis(
@@ -1147,6 +1148,34 @@ def _account_suit_summary(data: dict[str, Any], user_id: str, session: dict[str,
     summary["photos"] = {kind: bool(photos_view.get(kind)) for kind in selfit_photo.PHOTO_KINDS}
     summary["analyses"] = analyses
     return summary
+
+
+def _clear_manual_for_photo(data: dict[str, Any], user_id: str, kind: str) -> None:
+    """新照片通过检测后，清除档案侧该照片对应属性的手动选择。
+
+    对齐 onboarding 口径「新 accepted 照片清除自己属性的旧选择」：
+    档案视图的 manual 来自报告 profile 与报告 session 两处，都要清，
+    否则换照后特征卡仍被换照前的手动选择压住，看不到新算法结果。
+    """
+
+    fields = ("skin", "faceShape") if kind == "face" else ("bodyShape",)
+    report = _account_profile_report(data, user_id)
+    if report is None:
+        return
+    targets: list[dict[str, Any]] = []
+    stored = report.get("profile")
+    if isinstance(stored, dict) and isinstance(stored.get("manual"), dict):
+        targets.append(stored)
+    session = _find_session(data, str(report.get("session_id") or ""))
+    if session and session.get("user_id") == user_id and isinstance(session.get("manual"), dict):
+        targets.append(session)
+    for target in targets:
+        manual = target.get("manual") or {}
+        if not any(manual.get(field) for field in fields):
+            continue
+        target["manual"] = {key: value for key, value in manual.items() if not (key in fields and value)}
+        if target is stored:
+            stored["revision"] = int(stored.get("revision") or 1) + 1
 
 
 @router.get("/me/profile")
@@ -1370,6 +1399,10 @@ async def upload_session_photo(
             manual.pop(field, None)
         record["manual"] = manual
         _index_user_photo(data, record, kind)
+        # 档案语义：换新照片后，档案里该照片对应属性的手动选择一并失效，
+        # 「我的档案」的 suit 卡片才能立刻展示新照片的算法结果。
+        if user:
+            _clear_manual_for_photo(data, str(user.get("user_id") or ""), kind)
         label = selfit_photo.KIND_LABELS[kind]
         body = _photo_response(
             request_id,
