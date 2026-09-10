@@ -4,6 +4,7 @@ from contextlib import contextmanager
 from contextvars import ContextVar
 from dataclasses import dataclass
 import json
+import secrets
 import shutil
 from pathlib import Path
 from typing import Iterator
@@ -200,3 +201,93 @@ def _patch_manifest_user_id_to(path: Path, collection_key: str, user_id: str) ->
     if changed:
         path.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
     return changed
+
+
+# 绑定手机号合并账号时的清单映射：文件名 → (集合键, 主键)。
+_MERGE_MANIFEST_SPECS: list[tuple[str, str, str]] = [
+    ("closet_manifest.json", "items", "item_id"),
+    ("outfits_manifest.json", "outfits", "outfit_id"),
+    ("tryon_records_manifest.json", "records", "record_id"),
+]
+
+
+def _merge_manifest(source: Path, target: Path, collection_key: str, id_key: str, user_id: str) -> int:
+    """把 source 清单并入 target：按主键去重，同 id 冲突取 updated_at 新者。"""
+    if not source.exists():
+        return 0
+    try:
+        source_data = json.loads(source.read_text(encoding="utf-8"))
+    except json.JSONDecodeError:
+        return 0
+    incoming = source_data.get(collection_key)
+    if not isinstance(incoming, list):
+        return 0
+    target_data: dict[str, object] = {"version": 1, collection_key: []}
+    if target.exists():
+        try:
+            parsed = json.loads(target.read_text(encoding="utf-8"))
+            if isinstance(parsed, dict) and isinstance(parsed.get(collection_key), list):
+                target_data = parsed
+        except json.JSONDecodeError:
+            pass
+    collection = target_data.setdefault(collection_key, [])
+    if not isinstance(collection, list):
+        collection = []
+        target_data[collection_key] = collection
+    existing = {str(item.get(id_key) or ""): item for item in collection if isinstance(item, dict)}
+    merged = 0
+    for item in incoming:
+        if not isinstance(item, dict):
+            continue
+        item_id = str(item.get(id_key) or "")
+        if not item_id:
+            continue
+        current = existing.get(item_id)
+        if current is None:
+            entry = {**item, "user_id": user_id}
+            collection.append(entry)
+            existing[item_id] = entry
+            merged += 1
+        elif str(item.get("updated_at") or "") > str(current.get("updated_at") or ""):
+            current.update({**item, "user_id": user_id})
+    target.parent.mkdir(parents=True, exist_ok=True)
+    tmp_path = target.with_name(f"{target.name}.{secrets.token_hex(4)}.tmp")
+    tmp_path.write_text(json.dumps(target_data, ensure_ascii=False, indent=2), encoding="utf-8")
+    tmp_path.replace(target)
+    return merged
+
+
+def merge_user_data(from_user_id: str, to_user_id: str) -> dict[str, object]:
+    """绑定手机号撞上已有账号时，把 from 账号的数据并入 to 账号。
+
+    文件只补拷不覆盖；三份清单（单品 / 搭配 / 试穿记录）按主键去重合并，
+    冲突取 updated_at 新者，合并后的条目 user_id 归属 to 账号。
+    """
+    source = storage_context(from_user_id)
+    target = storage_context(to_user_id)
+    copied: list[str] = []
+    for source_dir, target_dir in [
+        (source.closet_source_dir, target.closet_source_dir),
+        (source.closet_item_dir, target.closet_item_dir),
+        (source.outfit_dir, target.outfit_dir),
+        (source.tryon_record_dir, target.tryon_record_dir),
+        (source.tryon_output_dir, target.tryon_output_dir),
+        (source.upload_dir, target.upload_dir),
+    ]:
+        _copy_missing(source_dir, target_dir, copied)
+    merged: dict[str, int] = {}
+    for filename, collection_key, id_key in _MERGE_MANIFEST_SPECS:
+        merged[collection_key] = _merge_manifest(
+            source.closet_output_dir / filename,
+            target.closet_output_dir / filename,
+            collection_key,
+            id_key,
+            target.user_id,
+        )
+    return {
+        "status": "ok",
+        "from_user_id": source.user_id,
+        "to_user_id": target.user_id,
+        "copied_files": len(copied),
+        "merged": merged,
+    }

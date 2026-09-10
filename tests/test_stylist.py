@@ -26,7 +26,25 @@ def _auth_client(phone: str | None = None) -> TestClient:
     start = client.post("/auth/phone/start", json={"phone": phone}).json()
     token = client.post("/auth/phone/verify", json={"phone": phone, "code": start["dev_code"]}).json()["access_token"]
     client.headers.update({"Authorization": f"Bearer {token}"})
+    # 问 AI 是内测行为：测试账号用邀请码解锁（门槛行为见 test_invite_beta_access.py）。
+    import os
+
+    _ensure_test_invite_code("STYLIST-PIPELINE")
+    unlocked = client.post(
+        "/auth/invite/upgrade",
+        json={"invite_code": "STYLIST-PIPELINE", "device_id": f"device-stylist-{next(_phone_counter):06d}"},
+    )
+    assert unlocked.status_code == 200, unlocked.text
     return client
+
+
+def _ensure_test_invite_code(code: str) -> None:
+    """追加式注册测试邀请码：全量跑时其他文件可能已设置过 env，不能覆盖。"""
+    import os
+
+    current = os.environ.get("SELFIT_INVITE_CODES", "")
+    if code not in current:
+        os.environ["SELFIT_INVITE_CODES"] = f"{current},{code}".lstrip(",")
 
 
 def _png_bytes(image: Image.Image) -> bytes:

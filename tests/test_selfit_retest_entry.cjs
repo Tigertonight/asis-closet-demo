@@ -30,7 +30,7 @@ async function checkEntry(href, retest) {
   let stored = JSON.stringify({sessionId: 'previous-session', userId: 'user-1'});
   const context = vm.createContext({
     entryParams: new URL(href, 'http://localhost').searchParams,
-    state: {authUser: {user_id: 'user-1'}, sessionId: null},
+    state: {authUser: {user_id: 'user-1', beta_qualified: true}, sessionId: null},
     authReady: Promise.resolve(), SESSION_STORAGE_KEY: 'session',
     document: {documentElement: {lang: 'zh-CN'}}, track() {},
     window: {location: {replace: url => redirects.push(url)}},

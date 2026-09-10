@@ -32,7 +32,15 @@ from app.auth import (
     verify_phone_direct_login,
     create_guest_session,
     verify_invite_login,
+    bind_phone_to_current_user,
+    upgrade_with_invite,
     client_ip_from_request,
+)
+from app.beta_access import (
+    consume_tryon_quota,
+    quota_payload,
+    require_beta_tryon,
+    require_beta_user,
 )
 from app.ops import deployment_guard_report, env_flag, request_guard_middleware
 from app.analyzer import (
@@ -360,6 +368,10 @@ async def http_exception_handler(request: Request, exc: StarletteHTTPException) 
     if request.url.path.startswith("/auth"):
         code = f"auth.http_{int(exc.status_code)}"
         return _friendly_error(code, detail, detail, int(exc.status_code))
+    if int(exc.status_code) in {403, 410, 429}:
+        # 门槛 / 席位 / 额度类文案本身就是用户导向的，直接透传而不是套上传错误模板。
+        code = f"request.http_{int(exc.status_code)}"
+        return _friendly_error(code, detail, detail, int(exc.status_code))
     code, message, suggestion = _upload_error_for_detail(detail, int(exc.status_code))
     return _friendly_error(code, message, suggestion, int(exc.status_code))
 
@@ -437,12 +449,38 @@ async def auth_phone_direct(request: Request) -> dict[str, Any]:
 @app.post("/auth/invite/verify")
 async def auth_invite_verify(request: Request) -> dict[str, Any]:
     payload = await request.json()
-    return verify_invite_login(str(payload.get("invite_code") or ""), client_ip_from_request(request))
+    return verify_invite_login(
+        str(payload.get("invite_code") or ""),
+        client_ip_from_request(request),
+        payload.get("device_id"),
+    )
+
+
+@app.post("/auth/bind-phone")
+async def auth_bind_phone(request: Request, current_user: dict[str, Any] = Depends(get_current_user)) -> dict[str, Any]:
+    payload = await request.json()
+    return bind_phone_to_current_user(
+        current_user,
+        str(payload.get("phone") or ""),
+        client_ip_from_request(request),
+        payload.get("device_id"),
+    )
+
+
+@app.post("/auth/invite/upgrade")
+async def auth_invite_upgrade(request: Request, current_user: dict[str, Any] = Depends(get_current_user)) -> dict[str, Any]:
+    payload = await request.json()
+    return upgrade_with_invite(
+        current_user,
+        str(payload.get("invite_code") or ""),
+        client_ip_from_request(request),
+        payload.get("device_id"),
+    )
 
 
 @app.get("/auth/me")
 async def auth_me(current_user: dict[str, Any] = Depends(get_current_user)) -> dict[str, Any]:
-    return {"status": "ok", "user": current_user}
+    return {"status": "ok", "user": current_user, "quota": quota_payload(str(current_user["user_id"]))}
 
 
 @app.post("/auth/logout")
@@ -637,27 +675,29 @@ async def try_on(
     person_image: UploadFile = File(...),
     garment_image: UploadFile | None = File(None),
     closet_item_id: str | None = Form(None),
-    current_user: dict[str, Any] = Depends(get_current_user),
+    current_user: dict[str, Any] = Depends(require_beta_tryon),
 ) -> dict[str, Any]:
     with user_storage(current_user["user_id"]):
-        return await run_try_on_upload(person_image, garment_image, closet_item_id)
+        result = await run_try_on_upload(person_image, garment_image, closet_item_id)
+        consume_tryon_quota(str(current_user["user_id"]))
+        return result
 
 
 @app.post("/closet/import/upload")
-async def closet_import_upload(images: list[UploadFile] = File(...), current_user: dict[str, Any] = Depends(get_current_user)) -> dict[str, Any]:
+async def closet_import_upload(images: list[UploadFile] = File(...), current_user: dict[str, Any] = Depends(require_beta_user)) -> dict[str, Any]:
     with user_storage(current_user["user_id"]):
         return await import_closet_uploads(images)
 
 
 @app.post("/api/extract-look")
-async def wardrobe_extract_look(image: UploadFile = File(...), current_user: dict[str, Any] = Depends(get_current_user)) -> dict[str, Any]:
+async def wardrobe_extract_look(image: UploadFile = File(...), current_user: dict[str, Any] = Depends(require_beta_user)) -> dict[str, Any]:
     """Compatibility entry for the delivered wardrobe extraction capability."""
     with user_storage(current_user["user_id"]):
         return await import_closet_uploads([image])
 
 
 @app.post("/closet/import/jobs")
-async def closet_import_job_create(images: list[UploadFile] = File(...), require_confirmation: bool = Form(False), current_user: dict[str, Any] = Depends(get_current_user)) -> dict[str, Any]:
+async def closet_import_job_create(images: list[UploadFile] = File(...), require_confirmation: bool = Form(False), current_user: dict[str, Any] = Depends(require_beta_user)) -> dict[str, Any]:
     with user_storage(current_user["user_id"]):
         return await create_import_upload_job(images, current_user["user_id"], require_confirmation=require_confirmation)
 
@@ -961,8 +1001,8 @@ def _selfit_index_html(
         "authMode": os.getenv("SELFIT_AUTH_FRONTEND_MODE") or os.getenv("SELFIT_ONBOARDING_API_MODE", "live"),
         "authBase": "/auth",
         "timeoutMs": 15000,
-        # 邀请码登录仅内部测试用，默认对用户隐藏（SELFIT_SHOW_INVITE_LOGIN=1 打开）。
-        "showInviteLogin": env_flag("SELFIT_SHOW_INVITE_LOGIN", False),
+        # 邀请码登录是内测主入口，默认展示；SELFIT_SHOW_INVITE_LOGIN=0 可隐藏。
+        "showInviteLogin": env_flag("SELFIT_SHOW_INVITE_LOGIN", True),
     }
     config.update(config_overrides or {})
     tag = "<script>window.__SELFIT_CONFIG__ = " + json.dumps(config, ensure_ascii=False) + ";</script>"
@@ -1180,7 +1220,7 @@ async def selfit_try_on_from_outfit(
     scene_label: str | None = Form(None),
     force_regenerate: bool = Form(False),
     selected_item_ids: str | None = Form(None),
-    current_user: dict[str, Any] = Depends(get_current_user),
+    current_user: dict[str, Any] = Depends(require_beta_tryon),
 ) -> dict[str, Any]:
     with user_storage(current_user["user_id"]):
         result = await run_try_on_from_outfit_upload(
@@ -1191,6 +1231,7 @@ async def selfit_try_on_from_outfit(
             force_regenerate,
             _parse_selected_item_ids(selected_item_ids),
         )
+        consume_tryon_quota(str(current_user["user_id"]))
         result["selfit_mode"] = "product_tryon"
         record = record_selfit_tryon_result(outfit_id, result)
         if record:
@@ -1209,10 +1250,10 @@ async def selfit_try_on_job_create(
     client_request_id: str | None = Form(None),
     wear_all_items: bool = Form(False),
     model_id: str | None = Form(None),
-    current_user: dict[str, Any] = Depends(get_current_user),
+    current_user: dict[str, Any] = Depends(require_beta_tryon),
 ) -> dict[str, Any]:
     with user_storage(current_user["user_id"]):
-        return create_outfit_tryon_job(
+        result = create_outfit_tryon_job(
             await person_image.read(),
             person_image.filename,
             outfit_id,
@@ -1225,13 +1266,15 @@ async def selfit_try_on_job_create(
             wear_all_items=wear_all_items,
             model_id=model_id,
         )
+        consume_tryon_quota(str(current_user["user_id"]))
+        return result
 
 
 @app.post("/selfit/try-on/inspiration-jobs")
 async def selfit_inspiration_job_create(
     person_image: UploadFile = File(...), note_id: str = Form(...),
     client_request_id: str | None = Form(None),
-    current_user: dict[str, Any] = Depends(get_current_user),
+    current_user: dict[str, Any] = Depends(require_beta_tryon),
 ) -> dict[str, Any]:
     from app.selfit_inspiration import list_notes
     catalog = list_notes(current_user)
@@ -1240,7 +1283,9 @@ async def selfit_inspiration_job_create(
         raise HTTPException(404, "这条穿搭灵感暂时不可用")
     raw = await person_image.read()
     with user_storage(current_user["user_id"]):
-        return await run_in_threadpool(create_inspiration_tryon_job,raw,person_image.filename,note,current_user["user_id"],client_request_id)
+        result = await run_in_threadpool(create_inspiration_tryon_job,raw,person_image.filename,note,current_user["user_id"],client_request_id)
+        consume_tryon_quota(str(current_user["user_id"]))
+        return result
 
 
 @app.post("/selfit/try-on/preview-plan")
@@ -1266,7 +1311,8 @@ def selfit_try_on_job(job_id: str, current_user: dict[str, Any] = Depends(get_cu
 
 
 @app.post("/selfit/try-on/jobs/{job_id}/retry")
-def selfit_try_on_job_retry(job_id: str, current_user: dict[str, Any] = Depends(get_current_user)) -> dict[str, Any]:
+def selfit_try_on_job_retry(job_id: str, current_user: dict[str, Any] = Depends(require_beta_user)) -> dict[str, Any]:
+    # 失败重试是对同一笔已计额度任务的补救，不重复扣当日次数。
     with user_storage(current_user["user_id"]):
         return retry_outfit_tryon_job(job_id, current_user["user_id"])
 
@@ -1276,7 +1322,7 @@ async def selfit_try_on_piece_retry(
     job_id: str,
     item_id: str,
     request: Request,
-    current_user: dict[str, Any] = Depends(get_current_user),
+    current_user: dict[str, Any] = Depends(require_beta_user),
 ) -> dict[str, Any]:
     try:
         payload = await request.json()
@@ -1378,7 +1424,7 @@ def _stylist_conversation_context(conversation: list[dict[str, Any]], current_qu
 
 
 @app.post("/stylist/chat")
-async def stylist_chat(request: Request, current_user: dict[str, Any] = Depends(get_current_user)) -> JSONResponse:
+async def stylist_chat(request: Request, current_user: dict[str, Any] = Depends(require_beta_user)) -> JSONResponse:
     try:
         payload = await request.json()
         payload["user_id"] = current_user["user_id"]
@@ -1437,14 +1483,14 @@ async def stylist_chat(request: Request, current_user: dict[str, Any] = Depends(
 
 
 @app.get("/stylist/chat/stream")
-async def stylist_chat_stream(message: str, session_id: str = "default", current_user: dict[str, Any] = Depends(get_current_user)) -> StreamingResponse:
+async def stylist_chat_stream(message: str, session_id: str = "default", current_user: dict[str, Any] = Depends(require_beta_user)) -> StreamingResponse:
     payload = {"message": message, "session_id": session_id, "user_id": current_user["user_id"]}
     with user_storage(current_user["user_id"]):
         return StreamingResponse(stream_stylist_chat(payload), media_type="text/event-stream")
 
 
 @app.post("/stylist/tools/{tool_name}")
-async def stylist_tool(tool_name: str, request: Request, current_user: dict[str, Any] = Depends(get_current_user)) -> JSONResponse:
+async def stylist_tool(tool_name: str, request: Request, current_user: dict[str, Any] = Depends(require_beta_user)) -> JSONResponse:
     payload = await request.json()
     payload["user_id"] = current_user["user_id"]
     with user_storage(current_user["user_id"]):

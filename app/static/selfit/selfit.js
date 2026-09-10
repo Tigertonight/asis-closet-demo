@@ -321,12 +321,12 @@
   const syncInviteLogin = () => {
     authNodes.inviteSubmit.disabled = authNodes.invite.value.trim().length < 4 || authNodes.inviteSubmit.getAttribute('aria-busy') === 'true';
   };
-  const completeAuth = async (session) => {
+  const completeAuth = async (session, provider = 'phone') => {
     state.authUser = session?.user || auth.user || null;
     state.sessionId = null;
     state.revision = 0;
     localStorage.removeItem(SESSION_STORAGE_KEY);
-    track('login_success', { provider: 'phone' });
+    track('login_success', { provider });
     await dismissKeyboard();
     if (handoffToken) {
       await claimPendingHandoff();
@@ -343,9 +343,19 @@
     const result = await api.getLatestReport();
     const typeId = String(result?.report?.typeId || '').trim().toLowerCase();
     if (!typeId) return false;
+    // 内测门槛：有报告但未解锁（普通手机号账号）停在解锁页，输邀请码后进主站。
+    if (!state.authUser?.beta_qualified) {
+      enterBetaUnlock('report');
+      return true;
+    }
     track('existing_report_app_entered', { typeId, reportId: result.report.reportId || '' });
     window.location.replace(`/selfit/try-on?from=login&persona=${encodeURIComponent(typeId)}`);
     return true;
+  };
+  const enterBetaUnlock = (backTo = 'report') => {
+    const backButton = document.querySelector('[data-screen="beta-unlock"] [data-back]');
+    if (backButton) backButton.dataset.back = backTo;
+    showScreen('beta-unlock');
   };
   const setAuthBusy = (button, busy) => {
     button.toggleAttribute('aria-busy', busy);
@@ -364,7 +374,7 @@
     setAuthBusy(authNodes.phoneSubmit, true);
     setAuthMessage(authNodes.phoneMessage, '正在登录…');
     try {
-      await completeAuth(await auth.directPhone(normalizedPhone()));
+      await completeAuth(await auth.directPhone(normalizedPhone()), 'phone');
     } catch (error) {
       track('login_failed', { provider: 'phone', message: error.message || '' });
       setAuthMessage(authNodes.phoneMessage, error.message || '登录失败，请重试。', 'error');
@@ -380,15 +390,49 @@
     setAuthBusy(authNodes.inviteSubmit, true);
     setAuthMessage(authNodes.inviteMessage, '正在登录…');
     try {
-      await completeAuth(await auth.verifyInvite(authNodes.invite.value.trim()));
+      await completeAuth(await auth.verifyInvite(authNodes.invite.value.trim()), 'invite');
     } catch (error) {
-      const copy = error.status === 404 ? '邀请码登录接口尚未接入，请先使用手机号登录。' : (error.message || '邀请码登录失败，请重试。');
-      setAuthMessage(authNodes.inviteMessage, copy, 'error');
+      track('login_failed', { provider: 'invite', message: error.message || '' });
+      setAuthMessage(authNodes.inviteMessage, error.message || '邀请码登录失败，请重试。', 'error');
     } finally {
       setAuthBusy(authNodes.inviteSubmit, false);
       syncInviteLogin();
     }
   });
+  const betaUnlockNodes = {
+    form: document.querySelector('#betaUnlockForm'),
+    code: document.querySelector('#betaUnlockCode'),
+    submit: document.querySelector('#betaUnlockSubmit'),
+    message: document.querySelector('#betaUnlockMessage'),
+  };
+  const syncBetaUnlock = () => {
+    if (!betaUnlockNodes.form) return;
+    betaUnlockNodes.submit.disabled = betaUnlockNodes.code.value.trim().length < 4 || betaUnlockNodes.submit.getAttribute('aria-busy') === 'true';
+  };
+  if (betaUnlockNodes.form) {
+    betaUnlockNodes.code.addEventListener('input', () => { setAuthMessage(betaUnlockNodes.message); syncBetaUnlock(); });
+    betaUnlockNodes.form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      if (betaUnlockNodes.submit.disabled) return;
+      setAuthBusy(betaUnlockNodes.submit, true);
+      setAuthMessage(betaUnlockNodes.message, '正在解锁…');
+      try {
+        const payload = await auth.upgradeInvite(betaUnlockNodes.code.value.trim());
+        state.authUser = payload?.user || auth.user || state.authUser;
+        track('beta_unlocked', {});
+        setAuthMessage(betaUnlockNodes.message, '已解锁，正在进入…');
+        const result = await api.getLatestReport();
+        const typeId = String(result?.report?.typeId || '').trim().toLowerCase();
+        window.location.replace(typeId ? `/selfit/try-on?from=login&persona=${encodeURIComponent(typeId)}` : '/selfit/try-on?from=login');
+      } catch (error) {
+        track('login_failed', { provider: 'invite_upgrade', message: error.message || '' });
+        setAuthMessage(betaUnlockNodes.message, error.message || '解锁失败，请检查邀请码后重试。', 'error');
+      } finally {
+        setAuthBusy(betaUnlockNodes.submit, false);
+        syncBetaUnlock();
+      }
+    });
+  }
 
   // suit 特征卡由共享组件渲染（与「我的档案」共用），参数说明弹窗也由组件自带。
 

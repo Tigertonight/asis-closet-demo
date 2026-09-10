@@ -183,23 +183,27 @@ def test_phone_direct_login_can_be_disabled(monkeypatch, tmp_path: Path) -> None
     assert response.status_code == 503
 
 
-def test_invite_login_stays_ip_bound_for_internal_use(monkeypatch, tmp_path: Path) -> None:
+def test_invite_login_uses_device_identity_not_ip(monkeypatch, tmp_path: Path) -> None:
+    """邀请码身份 = 邀请码 + device_id（与 IP 无关）：同 WiFi 不同设备不串号，
+    同设备换 IP 仍是同一账号。详细席位/过期用例见 tests/test_invite_beta_access.py。"""
     _use_tmp_runtime(monkeypatch, tmp_path)
     monkeypatch.setenv("SELFIT_INVITE_CODES", "ROADSHOW-2026")
     client = TestClient(app)
-    ip_headers = {"x-real-ip": "198.51.100.20"}
 
-    invited = client.post("/auth/invite/verify", json={"invite_code": "ROADSHOW-2026"}, headers=ip_headers)
-    direct = client.post(
-        "/auth/phone/direct",
-        json={"phone": "13800000016"},
-        headers=ip_headers,
-    )
+    device_a = {"x-real-ip": "198.51.100.20"}
+    first = client.post("/auth/invite/verify", json={"invite_code": "ROADSHOW-2026", "device_id": "device-aaaa-0001"}, headers=device_a)
+    # 同一设备换了 IP（手机切流量）：仍是同一账号，不占新席位。
+    device_a_new_ip = {"x-real-ip": "198.51.100.99"}
+    again = client.post("/auth/invite/verify", json={"invite_code": "ROADSHOW-2026", "device_id": "device-aaaa-0001"}, headers=device_a_new_ip)
+    # 同一 WiFi 下另一台设备：独立账号（历史 bug：按 IP 建号会串号）。
+    other_device = client.post("/auth/invite/verify", json={"invite_code": "ROADSHOW-2026", "device_id": "device-bbbb-0002"}, headers=device_a)
 
-    # 邀请码登录保留 IP 绑定（内部测试）；手机号登录走独立账号
-    assert invited.status_code == 200
-    assert direct.status_code == 200
-    assert direct.json()["user"]["user_id"] != invited.json()["user"]["user_id"]
+    assert first.status_code == 200
+    assert again.status_code == 200
+    assert other_device.status_code == 200
+    assert again.json()["user"]["user_id"] == first.json()["user"]["user_id"]
+    assert other_device.json()["user"]["user_id"] != first.json()["user"]["user_id"]
+    assert first.json()["user"]["beta_qualified"] is True
 
 
 def test_xhs_image_proxy_uses_disk_cache(monkeypatch, tmp_path: Path) -> None:
@@ -221,9 +225,14 @@ def test_xhs_image_proxy_uses_disk_cache(monkeypatch, tmp_path: Path) -> None:
 
 def test_closet_requires_login_and_isolates_user_data(monkeypatch, tmp_path: Path) -> None:
     _use_tmp_runtime(monkeypatch, tmp_path)
+    monkeypatch.setenv("SELFIT_INVITE_CODES", "TEST-CLOSET")
     client = TestClient(app)
     user_a = _login(client, "13800000003")
     user_b = _login(client, "13800000004")
+    # 衣橱 AI 抠图属于主站消耗行为，内测门槛开启后需要先解锁（见 test_invite_beta_access.py）。
+    for headers, device in ((user_a, "device-a"), (user_b, "device-b")):
+        unlocked = client.post("/auth/invite/upgrade", json={"invite_code": "TEST-CLOSET", "device_id": device}, headers=headers)
+        assert unlocked.status_code == 200
 
     anonymous = client.get("/closet/items")
     created = client.post(
@@ -236,8 +245,9 @@ def test_closet_requires_login_and_isolates_user_data(monkeypatch, tmp_path: Pat
     b_detail = client.get(f"/closet/items/{created['item_id']}", headers=user_b)
 
     assert anonymous.status_code == 401
-    assert a_items["total"] == 1
-    assert b_items["total"] == 0
+    # 2026-09-09 起每个新用户都有默认白 T，所以只断言导入项存在 + 跨账号隔离。
+    assert any(item["item_id"] == created["item_id"] for item in a_items["items"])
+    assert all(item["item_id"] != created["item_id"] for item in b_items["items"])
     assert b_detail.status_code == 404
     assert created["user_id"] != "local_user"
     assert (tmp_path / "outputs" / "users" / created["user_id"] / "closet" / "closet_manifest.json").exists()
@@ -245,9 +255,13 @@ def test_closet_requires_login_and_isolates_user_data(monkeypatch, tmp_path: Pat
 
 def test_user_assets_are_read_under_current_user_only(monkeypatch, tmp_path: Path) -> None:
     _use_tmp_runtime(monkeypatch, tmp_path)
+    monkeypatch.setenv("SELFIT_INVITE_CODES", "TEST-ASSETS")
     client = TestClient(app)
     user_a = _login(client, "13800000005")
     user_b = _login(client, "13800000006")
+    for headers, device in ((user_a, "device-a"), (user_b, "device-b")):
+        unlocked = client.post("/auth/invite/upgrade", json={"invite_code": "TEST-ASSETS", "device_id": device}, headers=headers)
+        assert unlocked.status_code == 200
 
     created = client.post(
         "/closet/import/upload",

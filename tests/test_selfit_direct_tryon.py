@@ -7,6 +7,7 @@ from PIL import Image
 
 from app import closet, storage, tryon
 from app.auth import get_current_user
+from app.beta_access import require_beta_tryon, require_beta_user
 from app.main import app
 
 
@@ -81,6 +82,8 @@ def test_job_endpoint_and_retry_preserve_full_outfit_mode(monkeypatch, pipeline,
 
     monkeypatch.setattr(tryon, 'TRYON_JOB_EXECUTOR', ImmediateExecutor())
     app.dependency_overrides[get_current_user] = lambda: {'user_id': 'direct-tryon-test'}
+    app.dependency_overrides[require_beta_user] = lambda: {'user_id': 'direct-tryon-test', 'beta_qualified': True}
+    app.dependency_overrides[require_beta_tryon] = lambda: {'user_id': 'direct-tryon-test', 'beta_qualified': True}
     try:
         client = TestClient(app)
         import json
@@ -101,6 +104,8 @@ def test_job_endpoint_and_retry_preserve_full_outfit_mode(monkeypatch, pipeline,
         assert client.get(f'/selfit/try-on/jobs/{job_id}').json()['wear_all_items'] is True
     finally:
         app.dependency_overrides.pop(get_current_user, None)
+        app.dependency_overrides.pop(require_beta_user, None)
+        app.dependency_overrides.pop(require_beta_tryon, None)
 
 
 def test_delivered_dress_and_trousers_keep_intentional_layering(pipeline):

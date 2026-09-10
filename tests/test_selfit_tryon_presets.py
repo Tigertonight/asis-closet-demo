@@ -7,6 +7,7 @@ from fastapi.testclient import TestClient
 
 from app import closet, storage, tryon, selfit_tryon_presets as presets
 from app.auth import get_current_user
+from app.beta_access import require_beta_tryon, require_beta_user
 from app.main import app
 from app.styling_catalog import delivery_looks, adapt_outfit
 
@@ -64,6 +65,8 @@ def test_job_uses_preset_without_generation_and_keeps_history(preset_case, monke
         def submit(self, *args): submitted.append(args)
     monkeypatch.setattr(tryon, 'TRYON_JOB_EXECUTOR', Executor())
     app.dependency_overrides[get_current_user] = lambda: {'user_id': 'preset-test'}
+    app.dependency_overrides[require_beta_user] = lambda: {'user_id': 'preset-test', 'beta_qualified': True}
+    app.dependency_overrides[require_beta_tryon] = lambda: {'user_id': 'preset-test', 'beta_qualified': True}
     try:
         client = TestClient(app)
         data = {'outfit_id': outfit['outfit_id'], 'model_id': example['modelId'],
@@ -89,3 +92,5 @@ def test_job_uses_preset_without_generation_and_keeps_history(preset_case, monke
         assert len(submitted) == 2
     finally:
         app.dependency_overrides.pop(get_current_user, None)
+        app.dependency_overrides.pop(require_beta_user, None)
+        app.dependency_overrides.pop(require_beta_tryon, None)

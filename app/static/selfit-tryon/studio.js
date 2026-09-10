@@ -60,8 +60,16 @@
   }));
   let savedSession = null;
   try {
+    // 与 selfit-auth.js 同口径：v2 存 localStorage（跨会话保持），v1（sessionStorage）做一次性迁移。
+    const legacySession = sessionStorage.getItem("selfit.auth.session.v1");
+    if (legacySession && !localStorage.getItem("selfit.auth.session.v2")) {
+      localStorage.setItem("selfit.auth.session.v2", legacySession);
+      sessionStorage.removeItem("selfit.auth.session.v1");
+    }
     savedSession = JSON.parse(
-      sessionStorage.getItem("selfit.auth.session.v1") || "null",
+      localStorage.getItem("selfit.auth.session.v2")
+        || sessionStorage.getItem("selfit.auth.session.v1")
+        || "null",
     );
   } catch {}
   if (
@@ -69,6 +77,16 @@
     Date.parse(savedSession.expiresAt) <= Date.now()
   )
     savedSession = null;
+  // 内测门槛：已登录的非内测账号（普通手机号用户）不进主站，回到 onboarding 解锁。
+  if (
+    savedSession?.user &&
+    !String(savedSession.user.user_id || "").startsWith("guest_") &&
+    savedSession.user.beta_qualified === false &&
+    !reference
+  ) {
+    window.location.replace("/selfit?entry=login");
+    throw new Error("redirect-to-unlock");
+  }
   let visitorReady = null;
   function ensureVisitorSession() {
     if (!visitorReady) visitorReady = window.SelfitAuth.createClient({mode:'live'}).ensureVisitor().then(session => {
@@ -199,14 +217,22 @@
       if (!r.ok) {
         if (r.status === 401) {
           savedSession = null;
-          sessionStorage.removeItem("selfit.auth.session.v1");
+          try {
+            localStorage.removeItem("selfit.auth.session.v2");
+            sessionStorage.removeItem("selfit.auth.session.v1");
+          } catch {}
         }
         const reportDetail = (path.startsWith('/selfit/try-on/report-outfits?') || /^\/selfit\/try-on\/items\/[^/]+\/outfits$/.test(path)) &&
           [404, 409, 422, 429, 502, 503, 504].includes(r.status) && typeof data?.detail === 'string' ? data.detail : '';
+        const gateDetail = typeof data?.detail === 'string' ? data.detail : '';
         const e = Error(
           r.status === 401
             ? "请先登录，再查看你的衣橱。"
-            : reportDetail || "这次操作没有完成，请稍后重试。",
+            : r.status === 403
+              ? (gateDetail || "内测名额有限，输入邀请码解锁完整体验。")
+              : r.status === 429
+                ? (gateDetail || "操作太频繁了，请稍后再试。")
+                : reportDetail || "这次操作没有完成，请稍后再试。",
         );
         e.status = r.status;
         throw e;
@@ -618,7 +644,7 @@
   function profile() {
     if(!state.profile || state.profileLoading) return profileStatus();
     const p=state.profile,r=p.report;
-    return `<section class="profile-screen">${profileHeader()}${p.tested ? `<div class="profile-analysis profile-suit"><div class="profile-suit-photos">${profilePhoto('face')}${profilePhoto('body')}</div><div class="profile-suit-cards" data-selfit-suit-cards aria-label="身体特征分析"></div></div>` : ''}${r ? `<div class="profile-report-card"><a class="profile-report" href="/selfit?from=mirror&amp;report=latest&amp;return_screen=profile" aria-label="查看我的风格报告">${r.heroImage?.src ? image(r.heroImage.src,r.title || '我的风格报告') : `<strong>${esc(r.typeId?.toUpperCase())}<br>${esc(r.title || '我的风格报告')}</strong>`}</a><a class="profile-retest" href="/selfit?from=mirror&amp;entry=retest">重新测试 →</a></div>` : `<a class="profile-test-invite" href="/selfit?from=mirror">${image(`${A}main-app/profile-test-pin.svg`, "", "profile-test-pin")}<strong>selfit 16 型格测试</strong>${image(`${A}main-app/profile-test-art.svg`, 'suit · like · vibe')}<span>去测试 →</span></a>`}<section class="profile-more"><h2>更多测试</h2><div><button disabled>${image(`${A}main-app/archive-more-mirror.webp`, "")}<span>专业脸型风格<small>即将开放</small></span></button><button disabled>${image(`${A}main-app/archive-more-flower.webp`, "")}<span>十二季肤色<small>即将开放</small></span></button></div></section>${!reference ? '<button class="profile-logout" data-action="logout">退出登录</button>' : ''}</section>`;
+    return `<section class="profile-screen">${profileHeader()}${p.tested ? `<div class="profile-analysis profile-suit"><div class="profile-suit-photos">${profilePhoto('face')}${profilePhoto('body')}</div><div class="profile-suit-cards" data-selfit-suit-cards aria-label="身体特征分析"></div></div>` : ''}${r ? `<div class="profile-report-card"><a class="profile-report" href="/selfit?from=mirror&amp;report=latest&amp;return_screen=profile" aria-label="查看我的风格报告">${r.heroImage?.src ? image(r.heroImage.src,r.title || '我的风格报告') : `<strong>${esc(r.typeId?.toUpperCase())}<br>${esc(r.title || '我的风格报告')}</strong>`}</a><a class="profile-retest" href="/selfit?from=mirror&amp;entry=retest">重新测试 →</a></div>` : `<a class="profile-test-invite" href="/selfit?from=mirror">${image(`${A}main-app/profile-test-pin.svg`, "", "profile-test-pin")}<strong>selfit 16 型格测试</strong>${image(`${A}main-app/profile-test-art.svg`, 'suit · like · vibe')}<span>去测试 →</span></a>`}<section class="profile-more"><h2>更多测试</h2><div><button disabled>${image(`${A}main-app/archive-more-mirror.webp`, "")}<span>专业脸型风格<small>即将开放</small></span></button><button disabled>${image(`${A}main-app/archive-more-flower.webp`, "")}<span>十二季肤色<small>即将开放</small></span></button></div></section>${!reference && typeof savedSession !== "undefined" && savedSession?.user && !String(savedSession.user.user_id || "").startsWith?.('guest_') && !savedSession.user.phone_e164 ? '<button class="profile-bind-phone" data-action="bind-phone">绑定手机号，换设备不丢数据</button>' : ''}${!reference ? '<button class="profile-logout" data-action="logout">退出登录</button>' : ''}</section>`;
   }
   function profileFeatureEdit() {
     const field = state.profileEditingField;
@@ -2284,6 +2310,21 @@
           modal("绑定你的智能穿衣镜", '<p id="mirrorBindingDescription">每日记录身材和穿搭</p><input id="mirrorDeviceCode" class="mirror-device-code" type="text" inputmode="numeric" minlength="4" maxlength="4" pattern="[0-9]{4}" autocomplete="off" placeholder="请输入设备码" aria-label="设备码" aria-describedby="mirrorBindingDescription" required>');
           $("#sheet").classList.add("mirror-binding-sheet");
           break;
+        case "bind-phone":
+          modal("绑定手机号", '<p id="bindPhoneDescription">绑定后，换设备或清理浏览器也能用手机号找回你的试穿数据和内测资格。</p><input id="bindPhoneInput" class="mirror-device-code" type="tel" inputmode="numeric" maxlength="11" autocomplete="tel-national" placeholder="请输入手机号" aria-label="手机号" aria-describedby="bindPhoneDescription" required><button class="primary" data-action="confirm-bind-phone">绑定</button>');
+          break;
+        case "confirm-bind-phone": {
+          const input = $("#bindPhoneInput");
+          const phone = (input?.value || "").replace(/\D/g, "");
+          if (!/^1[3-9]\d{9}$/.test(phone)) { notify("请输入正确的手机号"); input?.focus(); return; }
+          const deviceId = (() => { try { return localStorage.getItem("selfit.device.v1") || undefined; } catch { return undefined; } })();
+          const payload = await api("/auth/bind-phone", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ phone, device_id: deviceId }) });
+          $("#sheet").close();
+          if (savedSession && payload?.user) savedSession = { ...savedSession, user: payload.user };
+          notify(payload?.merged ? "绑定成功，两个账号的数据已合并" : "绑定成功，数据已同步到云端");
+          if (state.page === "profile") render();
+          break;
+        }
         case "result-compare":
           $("#sheet").close();
           if (!state.resultOriginal && !reference) return notify("这张历史试穿图没有保留原图。");
@@ -2311,7 +2352,11 @@
           } catch {}
           savedSession = null;
           visitorReady = null;
-          sessionStorage.removeItem("selfit.auth.session.v1");
+          try {
+            localStorage.removeItem("selfit.auth.session.v2");
+            localStorage.removeItem("selfit.auth.invite.v1");
+            sessionStorage.removeItem("selfit.auth.session.v1");
+          } catch {}
           sessionStorage.removeItem("selfit.studio.job");
           sessionStorage.removeItem("selfit.studio.import");
           localStorage.removeItem("selfit.onboarding.session.v1");

@@ -13,7 +13,7 @@ from typing import Any
 from fastapi import Depends, HTTPException, Request
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 
-from app.ops import env_flag, is_public_demo_mode
+from app.ops import env_flag, env_int, is_public_demo_mode
 from app.storage import LOCAL_USER_ID, ROOT_DIR, hydrate_user_from_demo_data, sanitize_user_id
 
 
@@ -27,6 +27,15 @@ DEFAULT_LOCAL_PHONE = "+8600000000000"
 TOKEN_TTL_HOURS = 24
 CODE_TTL_MINUTES = 10
 MAX_CODE_ATTEMPTS = 5
+# 内测（邀请码）账号：30 天滑动过期，活跃用户不掉登录态。
+INVITE_SESSION_TTL_HOURS = 24 * 30
+INVITE_SESSION_RENEW_THRESHOLD = 0.5
+# 共享邀请码 + 席位制：每个码最多绑定 max_seats 个账号（user），码本身也会过期。
+DEFAULT_INVITE_MAX_SEATS = 20
+DEFAULT_INVITE_CODE_EXPIRY_DAYS = 30
+INVITE_CODE_ID_LENGTH = 16
+DEVICE_ID_MIN_LENGTH = 8
+DEVICE_ID_MAX_LENGTH = 128
 
 _bearer = HTTPBearer(auto_error=False)
 
@@ -66,7 +75,7 @@ def _hash_secret(secret: str) -> str:
 
 def _load_store() -> dict[str, Any]:
     if not AUTH_STORE_PATH.exists():
-        return {"version": 1, "users": [], "phone_login_codes": [], "auth_sessions": []}
+        return {"version": 1, "users": [], "phone_login_codes": [], "auth_sessions": [], "invite_codes": []}
     try:
         data = json.loads(AUTH_STORE_PATH.read_text(encoding="utf-8"))
         if isinstance(data, dict):
@@ -74,10 +83,11 @@ def _load_store() -> dict[str, Any]:
             data.setdefault("users", [])
             data.setdefault("phone_login_codes", [])
             data.setdefault("auth_sessions", [])
+            data.setdefault("invite_codes", [])
             return data
     except json.JSONDecodeError:
         pass
-    return {"version": 1, "users": [], "phone_login_codes": [], "auth_sessions": []}
+    return {"version": 1, "users": [], "phone_login_codes": [], "auth_sessions": [], "invite_codes": []}
 
 
 def _write_store(data: dict[str, Any]) -> None:
@@ -149,7 +159,82 @@ def _invite_codes() -> list[str]:
     return [item.strip() for item in raw.split(",") if item.strip()]
 
 
-def _issue_session(data: dict[str, Any], user: dict[str, Any], now: datetime, provider: str, client_ip: str | None) -> str:
+def _normalize_device_id(device_id: str | None) -> str:
+    text = str(device_id or "").strip()
+    if not DEVICE_ID_MIN_LENGTH <= len(text) <= DEVICE_ID_MAX_LENGTH:
+        raise HTTPException(status_code=400, detail="设备标识异常，请刷新页面后重试")
+    return "".join(ch if ch.isalnum() or ch in {"_", "-"} else "_" for ch in text)
+
+
+def _seed_invite_codes(data: dict[str, Any]) -> bool:
+    """把 SELFIT_INVITE_CODES 环境变量里的码物化成持久记录（只补不删）。
+
+    邀请码属于服务器数据（席位、过期时间、备注都可能在后台调整），
+    必须落盘而不能每次读 env。
+    """
+    existing = {str(item.get("code") or "") for item in data.get("invite_codes", [])}
+    created = False
+    now = datetime.now(timezone.utc)
+    for code in _invite_codes():
+        if code in existing:
+            continue
+        data["invite_codes"].append(
+            {
+                "code_id": secrets.token_urlsafe(8),
+                "code": code,
+                "max_seats": max(1, env_int("SELFIT_INVITE_MAX_SEATS", DEFAULT_INVITE_MAX_SEATS)),
+                "expires_at": (now + timedelta(days=max(1, env_int("SELFIT_INVITE_EXPIRY_DAYS", DEFAULT_INVITE_CODE_EXPIRY_DAYS)))).isoformat(),
+                "status": "active",
+                "note": "seed",
+                "created_at": now.isoformat(),
+            }
+        )
+        created = True
+    return created
+
+
+def _find_active_invite_record(data: dict[str, Any], submitted: str) -> tuple[dict[str, Any] | None, str]:
+    """按码找记录。返回 (record, reject_reason)；reject_reason 为空表示可用。"""
+    for record in data.get("invite_codes", []):
+        if hmac.compare_digest(submitted, str(record.get("code") or "")):
+            if record.get("status") != "active":
+                return None, "exhausted"
+            expires_at = _parse_iso(record.get("expires_at"))
+            if expires_at is not None and expires_at < datetime.now(timezone.utc):
+                return None, "exhausted"
+            return record, ""
+    return None, "invalid"
+
+
+def _invite_seat_usage(data: dict[str, Any], code_id: str) -> int:
+    return sum(
+        1
+        for item in data["users"]
+        if item.get("invite_code_id") == code_id and item.get("status") == "active"
+    )
+
+
+def _find_user_by_device(data: dict[str, Any], device_id: str) -> dict[str, Any] | None:
+    return next(
+        (
+            item
+            for item in data["users"]
+            if item.get("device_id") == device_id and item.get("status") == "active"
+        ),
+        None,
+    )
+
+
+def _issue_session(
+    data: dict[str, Any],
+    user: dict[str, Any],
+    now: datetime,
+    provider: str,
+    client_ip: str | None,
+) -> str:
+    # 内测账号（beta_qualified）给 30 天滑动过期；其余（普通手机号、游客、admin）保持 24 小时。
+    beta = bool(user.get("beta_qualified")) and provider != "admin"
+    ttl_hours = INVITE_SESSION_TTL_HOURS if beta else TOKEN_TTL_HOURS
     token = secrets.token_urlsafe(32)
     session = {
         "session_id": secrets.token_urlsafe(12),
@@ -159,47 +244,78 @@ def _issue_session(data: dict[str, Any], user: dict[str, Any], now: datetime, pr
         "auth_provider": provider,
         "source_ip": client_ip,
         "created_at": now.isoformat(),
-        "expires_at": (now + timedelta(hours=TOKEN_TTL_HOURS)).isoformat(),
+        "expires_at": (now + timedelta(hours=ttl_hours)).isoformat(),
+        "ttl_hours": ttl_hours,
+        "sliding": beta,
         "revoked_at": None,
     }
     data["auth_sessions"].append(session)
     return token
 
 
-def verify_invite_login(invite_code: str, client_ip: str) -> dict[str, Any]:
+def verify_invite_login(invite_code: str, client_ip: str, device_id: str | None = None) -> dict[str, Any]:
+    """邀请码登录（内测主入口）。
+
+    身份 = 邀请码 + 设备本地 device_id（前端生成并持久化），与 IP 无关：
+    同一 WiFi 下不同设备不再串号；同一设备重登不消耗席位。
+    席位按「该码绑定的活跃账号数」计，新账号才占席位；码过期/席满只拦新用户，
+    已绑定老用户始终可以重新登录。
+    """
     submitted = str(invite_code or "").strip()
-    allowed = _invite_codes()
-    if not allowed:
-        raise HTTPException(status_code=503, detail="邀请码登录未配置，请联系管理员")
-    if not submitted or not any(hmac.compare_digest(submitted, item) for item in allowed):
-        raise HTTPException(status_code=400, detail="邀请码不正确，请检查后重试")
+    if not submitted:
+        raise HTTPException(status_code=400, detail="请输入邀请码")
 
     now = datetime.now(timezone.utc)
     data = _load_store()
-    user = next(
-        (
-            item
-            for item in data["users"]
-            if item.get("auth_provider") == "invite" and item.get("source_ip") == client_ip and item.get("status") == "active"
-        ),
-        None,
-    )
-    if user is None:
-        user_id = sanitize_user_id("u_g" + hashlib.sha256(client_ip.encode("utf-8")).hexdigest()[:16])
-        user = next((item for item in data["users"] if item.get("user_id") == user_id), None)
-        if user is None:
-            user = {
-                "user_id": user_id,
-                "phone_e164": None,
-                "status": "active",
-                "auth_provider": "invite",
-                "source_ip": client_ip,
-                "created_at": now.isoformat(),
-                "last_login_at": now.isoformat(),
-            }
-            data["users"].append(user)
-    else:
+    if _seed_invite_codes(data):
+        _write_store(data)
+        data = _load_store()
+
+    device = _normalize_device_id(device_id)
+    user = _find_user_by_device(data, device)
+    if user is not None and bool(user.get("beta_qualified")):
+        # 老评委回访：即使码已过期/席满也不拦截，直接续登录（否则评委会被锁在门外）。
         user["last_login_at"] = now.isoformat()
+        hydrate_user_from_demo_data(str(user["user_id"]))
+        token = _issue_session(data, user, now, "invite", client_ip)
+        _write_store(data)
+        return {
+            "status": "ok",
+            "access_token": token,
+            "token_type": "bearer",
+            "expires_in_seconds": INVITE_SESSION_TTL_HOURS * 3600,
+            "user": _public_user(user),
+        }
+
+    record, reject = _find_active_invite_record(data, submitted)
+    if reject == "invalid":
+        raise HTTPException(status_code=400, detail="邀请码不正确，请检查后重试")
+    if reject == "exhausted" or record is None:
+        raise HTTPException(status_code=410, detail="该邀请码名额已用尽或已过期，请使用其他邀请码")
+
+    if user is not None:
+        # 同一设备上已有的普通手机号账号，输码后原地升级为内测账号（占 1 席位）。
+        if _invite_seat_usage(data, record["code_id"]) >= int(record.get("max_seats") or DEFAULT_INVITE_MAX_SEATS):
+            raise HTTPException(status_code=410, detail="该邀请码名额已用尽或已过期，请使用其他邀请码")
+        user["beta_qualified"] = True
+        user["invite_code_id"] = record["code_id"]
+        user["last_login_at"] = now.isoformat()
+    else:
+        if _invite_seat_usage(data, record["code_id"]) >= int(record.get("max_seats") or DEFAULT_INVITE_MAX_SEATS):
+            raise HTTPException(status_code=410, detail="该邀请码名额已用尽或已过期，请使用其他邀请码")
+        user = {
+            "user_id": sanitize_user_id("u_i" + secrets.token_hex(8)),
+            "phone_e164": None,
+            "status": "active",
+            "auth_provider": "invite",
+            "source_ip": client_ip,
+            "device_id": device,
+            "invite_code_id": record["code_id"],
+            "beta_qualified": True,
+            "created_at": now.isoformat(),
+            "last_login_at": now.isoformat(),
+        }
+        data["users"].append(user)
 
     hydrate_user_from_demo_data(str(user["user_id"]))
     token = _issue_session(data, user, now, "invite", client_ip)
@@ -208,7 +324,7 @@ def verify_invite_login(invite_code: str, client_ip: str) -> dict[str, Any]:
         "status": "ok",
         "access_token": token,
         "token_type": "bearer",
-        "expires_in_seconds": TOKEN_TTL_HOURS * 3600,
+        "expires_in_seconds": INVITE_SESSION_TTL_HOURS * 3600,
         "user": _public_user(user),
     }
 
@@ -290,6 +406,186 @@ def verify_phone_direct_login(phone: str, client_ip: str) -> dict[str, Any]:
         "token_type": "bearer",
         "expires_in_seconds": TOKEN_TTL_HOURS * 3600,
         "user": _public_user(user),
+    }
+
+
+def _find_active_user(data: dict[str, Any], user_id: str) -> dict[str, Any] | None:
+    return next(
+        (item for item in data["users"] if item.get("user_id") == user_id and item.get("status") == "active"),
+        None,
+    )
+
+
+def _revoke_user_sessions(data: dict[str, Any], user_id: str) -> None:
+    for session in data["auth_sessions"]:
+        if session.get("user_id") == user_id and session.get("status") == "active":
+            session["status"] = "revoked"
+            session["revoked_at"] = _now_iso()
+
+
+def bind_phone_to_current_user(
+    current_user: dict[str, Any],
+    phone: str,
+    client_ip: str,
+    device_id: str | None = None,
+) -> dict[str, Any]:
+    """给当前登录账号绑定手机号（内测数据找回的唯一路径）。
+
+    - 手机号没有别的账号：当前账号直接挂上手机号（数据零迁移，内测资格保留）。
+    - 手机号已有账号：双边数据合并——文件补拷、清单按 id 去重（冲突取 updated_at 新者），
+      当前账号为幸存身份；旧账号标记 merged 并吊销其会话，手机号登录随后落到幸存账号。
+    """
+    phone_e164 = _normalize_phone(phone)
+    now = datetime.now(timezone.utc)
+    data = _load_store()
+    current = _find_active_user(data, str(current_user.get("user_id") or ""))
+    if current is None:
+        raise HTTPException(status_code=401, detail="请先登录")
+
+    merged = False
+    if current.get("phone_e164") != phone_e164:
+        other = next(
+            (
+                item
+                for item in data["users"]
+                if item.get("phone_e164") == phone_e164 and item.get("status") == "active" and item.get("user_id") != current["user_id"]
+            ),
+            None,
+        )
+        if other is not None:
+            from app.storage import merge_user_data
+
+            merge_user_data(str(other["user_id"]), str(current["user_id"]))
+            current["beta_qualified"] = bool(current.get("beta_qualified")) or bool(other.get("beta_qualified"))
+            if not current.get("invite_code_id") and other.get("invite_code_id"):
+                current["invite_code_id"] = other.get("invite_code_id")
+            other["status"] = "merged"
+            other["merged_into"] = current["user_id"]
+            other["merged_at"] = now.isoformat()
+            other["phone_e164"] = None
+            _revoke_user_sessions(data, str(other["user_id"]))
+            merged = True
+        current["phone_e164"] = phone_e164
+
+    if device_id and not current.get("device_id"):
+        current["device_id"] = _normalize_device_id(device_id)
+    current["last_login_at"] = now.isoformat()
+    _write_store(data)
+    return {"status": "ok", "merged": merged, "user": _public_user(current)}
+
+
+def upgrade_with_invite(
+    current_user: dict[str, Any],
+    invite_code: str,
+    client_ip: str,
+    device_id: str | None = None,
+) -> dict[str, Any]:
+    """普通手机号账号在解锁页输邀请码：原地升级为内测账号（占 1 席位，数据不迁移）。"""
+    submitted = str(invite_code or "").strip()
+    if not submitted:
+        raise HTTPException(status_code=400, detail="请输入邀请码")
+
+    now = datetime.now(timezone.utc)
+    data = _load_store()
+    if _seed_invite_codes(data):
+        _write_store(data)
+        data = _load_store()
+
+    # 注意：必须在 seed 重载之后再取 user 引用，否则改动会写回旧对象。
+    current = _find_active_user(data, str(current_user.get("user_id") or ""))
+    if current is None:
+        raise HTTPException(status_code=401, detail="请先登录")
+    if bool(current.get("beta_qualified")):
+        # 已是内测账号：幂等返回，不重复校验码、不占新席位。
+        return {"status": "ok", "user": _public_user(current)}
+
+    record, reject = _find_active_invite_record(data, submitted)
+    if reject == "invalid":
+        raise HTTPException(status_code=400, detail="邀请码不正确，请检查后重试")
+    if reject == "exhausted" or record is None:
+        raise HTTPException(status_code=410, detail="该邀请码名额已用尽或已过期，请使用其他邀请码")
+
+    if _invite_seat_usage(data, record["code_id"]) >= int(record.get("max_seats") or DEFAULT_INVITE_MAX_SEATS):
+        raise HTTPException(status_code=410, detail="该邀请码名额已用尽或已过期，请使用其他邀请码")
+    current["beta_qualified"] = True
+    current["invite_code_id"] = record["code_id"]
+    if device_id and not current.get("device_id"):
+        current["device_id"] = _normalize_device_id(device_id)
+    current["last_login_at"] = now.isoformat()
+    _write_store(data)
+    return {"status": "ok", "user": _public_user(current)}
+
+
+def list_invite_codes() -> list[dict[str, Any]]:
+    """管理后台：邀请码列表（含席位用量）。"""
+    data = _load_store()
+    if _seed_invite_codes(data):
+        _write_store(data)
+    records = []
+    for record in data.get("invite_codes", []):
+        records.append(
+            {
+                "code_id": record.get("code_id"),
+                "code": record.get("code"),
+                "max_seats": int(record.get("max_seats") or DEFAULT_INVITE_MAX_SEATS),
+                "seats_used": _invite_seat_usage(data, str(record.get("code_id") or "")),
+                "expires_at": record.get("expires_at"),
+                "status": record.get("status"),
+                "note": record.get("note") or "",
+                "created_at": record.get("created_at"),
+            }
+        )
+    records.sort(key=lambda item: str(item.get("created_at") or ""), reverse=True)
+    return records
+
+
+def create_invite_code(max_seats: int, note: str, expires_in_days: int) -> dict[str, Any]:
+    """管理后台：新建邀请码（不可猜测的 10 位大写十六进制）。"""
+    now = datetime.now(timezone.utc)
+    data = _load_store()
+    record = {
+        "code_id": secrets.token_urlsafe(8),
+        "code": secrets.token_hex(INVITE_CODE_ID_LENGTH // 2).upper(),
+        "max_seats": max(1, min(int(max_seats or DEFAULT_INVITE_MAX_SEATS), 500)),
+        "expires_at": (now + timedelta(days=max(1, int(expires_in_days or DEFAULT_INVITE_CODE_EXPIRY_DAYS)))).isoformat(),
+        "status": "active",
+        "note": str(note or "")[:120],
+        "created_at": now.isoformat(),
+    }
+    data["invite_codes"].append(record)
+    _write_store(data)
+    return {
+        "code_id": record["code_id"],
+        "code": record["code"],
+        "max_seats": record["max_seats"],
+        "seats_used": 0,
+        "expires_at": record["expires_at"],
+        "status": record["status"],
+        "note": record["note"],
+        "created_at": record["created_at"],
+    }
+
+
+def update_invite_code(code_id: str, max_seats: int | None = None, status: str | None = None) -> dict[str, Any]:
+    """管理后台：调整席位 / 停用启用邀请码。"""
+    data = _load_store()
+    record = next((item for item in data.get("invite_codes", []) if item.get("code_id") == code_id), None)
+    if record is None:
+        raise HTTPException(status_code=404, detail="邀请码不存在")
+    if max_seats is not None:
+        record["max_seats"] = max(1, min(int(max_seats), 500))
+    if status in {"active", "disabled"}:
+        record["status"] = status
+    _write_store(data)
+    return {
+        "code_id": record["code_id"],
+        "code": record["code"],
+        "max_seats": int(record.get("max_seats") or DEFAULT_INVITE_MAX_SEATS),
+        "seats_used": _invite_seat_usage(data, code_id),
+        "expires_at": record.get("expires_at"),
+        "status": record.get("status"),
+        "note": record.get("note") or "",
+        "created_at": record.get("created_at"),
     }
 
 
@@ -382,6 +678,7 @@ def _public_user(user: dict[str, Any]) -> dict[str, Any]:
         "user_id": user.get("user_id"),
         "phone_e164": user.get("phone_e164"),
         "status": user.get("status"),
+        "beta_qualified": bool(user.get("beta_qualified")),
         "created_at": user.get("created_at"),
         "last_login_at": user.get("last_login_at"),
     }
@@ -406,6 +703,13 @@ def resolve_token(token: str) -> dict[str, Any]:
         session["status"] = "expired"
         _write_store(data)
         raise HTTPException(status_code=401, detail="登录已过期，请重新登录")
+    if session.get("sliding"):
+        # 滑动续期：剩余不到一半 TTL 就顺延，活跃内测用户不掉登录态。
+        ttl_hours = float(session.get("ttl_hours") or INVITE_SESSION_TTL_HOURS)
+        remaining = (expires_at - now).total_seconds()
+        if remaining < ttl_hours * 3600 * INVITE_SESSION_RENEW_THRESHOLD:
+            session["expires_at"] = (now + timedelta(hours=ttl_hours)).isoformat()
+            _write_store(data)
     user = next((item for item in data["users"] if item.get("user_id") == session.get("user_id")), None)
     if user is None or user.get("status") != "active":
         raise HTTPException(status_code=401, detail="用户不可用")
@@ -536,8 +840,11 @@ def admin_token_from_request(request: Request) -> str | None:
 
 
 def resolve_admin_user(token: str) -> dict[str, Any]:
-    """校验 admin/invite session 并返回用户；普通用户 token 一律 403。"""
+    """校验 admin session 并返回用户；邀请码/普通用户 token 一律 403。
 
+    邀请码是发给外部评委的共享凭证，绝不能凭它进入管理后台
+    （2026-09-10 安全修复：移除 invite 提供方的后台访问权）。
+    """
     user = resolve_token(token)
     data = _load_store()
     token_hash = _hash_secret(token)
@@ -549,7 +856,7 @@ def resolve_admin_user(token: str) -> dict[str, Any]:
         ),
         None,
     )
-    if session is None or session.get("auth_provider") not in {"admin", "invite"}:
+    if session is None or session.get("auth_provider") != "admin":
         raise HTTPException(status_code=403, detail="需要管理员权限")
     return user
 
@@ -558,9 +865,9 @@ async def get_admin_user(
     request: Request,
     credentials: HTTPAuthorizationCredentials | None = Depends(_bearer),
 ) -> dict[str, Any]:
-    """管理后台鉴权：仅 admin 密码登录或邀请码登录的内部账号可访问。
+    """管理后台鉴权：仅 admin 密码登录的内部账号可访问 /admin/api/*。
 
-    普通用户（手机号登录）即使拿到 token 也无权访问 /admin/api/*。
+    普通用户（手机号登录）和邀请码用户即使拿到 token 也无权访问。
     """
 
     token = (credentials.credentials if credentials else "") or request.cookies.get(ADMIN_COOKIE_NAME)

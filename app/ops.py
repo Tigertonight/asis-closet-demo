@@ -159,7 +159,7 @@ def _rate_rules() -> list[LimitRule]:
         ),
         LimitRule(
             "auth",
-            ("/auth/invite/verify", "/admin/api/login"),
+            ("/auth/invite/verify", "/auth/invite/upgrade", "/auth/bind-phone", "/admin/api/login"),
             env_int("SELFIT_AUTH_RATE_LIMIT", 20),
             env_int("SELFIT_AUTH_RATE_WINDOW_SECONDS", 3600),
         ),

@@ -46,8 +46,10 @@ def test_selfit_onboarding_includes_the_figma_login_extension() -> None:
     assert "Fit yourself, not in." in response.text
     assert "手机号登录" in response.text
     assert "邀请码登录" in response.text
-    # 邀请码登录默认隐藏（内部测试用），由运行时配置 SELFIT_SHOW_INVITE_LOGIN 决定
-    assert 'data-invite-login hidden' in response.text
+    # 邀请码登录是内测主入口（默认可见，SELFIT_SHOW_INVITE_LOGIN=0 可隐藏）
+    assert 'data-invite-login' in response.text
+    assert 'data-screen="beta-unlock"' in response.text
+    assert 'id="betaUnlockForm"' in response.text
     assert "无需验证码，输入手机号直接登录" in response.text
     assert 'id="loginPin"' not in response.text
     assert 'id="loginCode"' not in response.text
@@ -229,7 +231,9 @@ def test_selfit_auth_adapter_and_bearer_wiring_are_available() -> None:
     assert "verifyPhone(phone, code)" in auth.text
     assert "directPhone(phone)" in auth.text
     assert "verifyInvite(inviteCode)" in auth.text
-    assert "sessionStorage.setItem(AUTH_STORAGE_KEY" in auth.text
+    # v2 起凭证存 localStorage（跨会话保持），v1 sessionStorage 只做迁移来源。
+    assert "localStorage.setItem(AUTH_STORAGE_KEY" in auth.text
+    assert "device_id: this.deviceId()" in auth.text
     assert "this.request('/invite/verify'" in auth.text
     assert "this.request('/phone/direct'" in auth.text
     assert "headers.Authorization = `Bearer ${accessToken}`" in api.text

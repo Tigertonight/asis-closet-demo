@@ -215,7 +215,7 @@
   <nav class="tabs">
     <button class="is-active" data-tab="analytics" type="button">数据分析</button>
     <button type="button" data-tab="submissions">用户报告</button>
-    <a href="/qa/onboarding-attributes">实验数据 QA</a>
+    <button type="button" data-tab="invites">邀请码</button>
     <button type="button" data-tab="debug">调试工具</button>
     <a href="/mvp" target="_blank" rel="noopener">MVP 状态</a>
     <button type="button" id="settingsBtn" hidden>修改密码</button>
@@ -304,6 +304,21 @@
         <div class="table-scroll"><table><thead><tr><th>上传时间</th><th>照片类型</th><th>来源</th><th>手机号</th><th>拦截原因</th><th>预览</th><th>操作</th></tr></thead><tbody id="rejectedRows"></tbody></table></div>
         <div class="report-list-footer"><small id="rejectedCount"></small><button class="report-load-more" type="button" id="rejectedLoadMore" hidden>加载更多</button></div>
       </section>
+    </div>
+    <div class="panel" id="invitesPanel" data-tab-panel="invites" hidden>
+      <h2>内测邀请码</h2>
+      <p class="panel-hint">共享码 + 席位制：每个码最多绑定 max_seats 个账号，码过期或席满只拦新用户，已绑定的评委不受影响。邀请码用户不能再访问本后台。</p>
+      <div class="toolbar" style="margin-bottom:12px">
+        <button type="button" id="inviteCreateBtn">新建邀请码</button>
+        <small id="inviteUpdatedAt"></small>
+      </div>
+      <div id="inviteCreateForm" hidden style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-bottom:14px">
+        <input id="inviteSeatsInput" type="number" min="1" max="500" value="20" placeholder="席位数" aria-label="席位数" />
+        <input id="inviteDaysInput" type="number" min="1" value="30" placeholder="有效天数" aria-label="有效天数" />
+        <input id="inviteNoteInput" type="text" maxlength="120" placeholder="备注（如：材料报告第 1 批）" aria-label="备注" />
+        <button type="button" id="inviteCreateSubmit">生成</button>
+      </div>
+      <div class="table-scroll"><table><thead><tr><th>邀请码</th><th>席位</th><th>过期时间</th><th>状态</th><th>备注</th><th>操作</th></tr></thead><tbody id="inviteRows"></tbody></table></div>
     </div>
     <div class="panel" id="debugPanel" data-tab-panel="debug" hidden>
       <h2>调试工具</h2>
@@ -1058,11 +1073,88 @@
     $('kpis').hidden = tab !== 'analytics';
     $('toolbar').hidden = tab !== 'analytics';
     if (tab === 'analytics') void load();
+    if (tab === 'invites') void loadInvites();
     if (tab === 'submissions') {
       const selected = document.querySelector('[data-report-tab][aria-selected="true"]');
       void loadReportTab(selected?.dataset.reportTab || 'submissions');
     }
   };
+
+  const fmtDate = (value) => {
+    if (!value) return '—';
+    try { return new Date(value).toLocaleString('zh-CN', { hour12: false }); } catch { return value; }
+  };
+  const inviteState = { rows: [] };
+  const renderInvites = () => {
+    const rows = inviteState.rows.map((row) => {
+      const expired = row.expires_at && Date.parse(row.expires_at) <= Date.now();
+      const status = row.status !== 'active' ? '已停用' : expired ? '已过期' : '生效中';
+      return `<tr>
+        <td><code style="font-size:13px">${row.code}</code></td>
+        <td>${row.seats_used} / ${row.max_seats}</td>
+        <td>${fmtDate(row.expires_at)}</td>
+        <td>${status}</td>
+        <td>${row.note ? String(row.note).replace(/[<>&]/g, '') : '—'}</td>
+        <td>
+          <button class="mini-btn" type="button" data-invite-id="${row.code_id}" data-invite-act="seats" ${row.seats_used >= row.max_seats ? '' : 'hidden'}>扩容到 ${row.max_seats + 10} 席</button>
+          <button class="mini-btn" type="button" data-invite-id="${row.code_id}" data-invite-act="${row.status === 'active' ? 'disable' : 'enable'}">${row.status === 'active' ? '停用' : '启用'}</button>
+        </td>
+      </tr>`;
+    }).join('');
+    $('inviteRows').innerHTML = rows || '<tr><td colspan="6" style="color:var(--muted)">还没有邀请码；也可在服务器 .env.demo 配 SELFIT_INVITE_CODES 自动生成。</td></tr>';
+    $('inviteUpdatedAt').textContent = `更新于 ${new Date().toLocaleTimeString('zh-CN', { hour12: false })}`;
+  };
+  const loadInvites = async () => {
+    try {
+      const payload = await api('/admin/api/invites');
+      inviteState.rows = payload.invites || [];
+      renderInvites();
+    } catch (error) {
+      $('inviteUpdatedAt').textContent = error.message || '加载失败';
+    }
+  };
+  $('inviteCreateBtn').addEventListener('click', () => { $('inviteCreateForm').hidden = !$('inviteCreateForm').hidden; });
+  $('inviteCreateSubmit').addEventListener('click', async () => {
+    const button = $('inviteCreateSubmit');
+    button.disabled = true;
+    try {
+      await fetch('/admin/api/invites', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${state.token}` },
+        body: JSON.stringify({
+          max_seats: Number($('inviteSeatsInput').value) || 20,
+          expires_in_days: Number($('inviteDaysInput').value) || 30,
+          note: $('inviteNoteInput').value || '',
+        }),
+      }).then(async (response) => { if (!response.ok) throw new Error((await response.json().catch(() => ({}))).detail || '生成失败'); });
+      $('inviteCreateForm').hidden = true;
+      $('inviteNoteInput').value = '';
+      await loadInvites();
+    } catch (error) {
+      $('inviteUpdatedAt').textContent = error.message || '生成失败';
+    } finally {
+      button.disabled = false;
+    }
+  });
+  $('inviteRows').addEventListener('click', async (event) => {
+    const button = event.target.closest('[data-invite-act]');
+    if (!button) return;
+    button.disabled = true;
+    try {
+      const act = button.dataset.inviteAct;
+      const current = inviteState.rows.find((row) => row.code_id === button.dataset.inviteId);
+      const body = act === 'seats' ? { max_seats: (current?.max_seats || 20) + 10 } : { status: act === 'disable' ? 'disabled' : 'active' };
+      await fetch(`/admin/api/invites/${button.dataset.inviteId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${state.token}` },
+        body: JSON.stringify(body),
+      }).then(async (response) => { if (!response.ok) throw new Error((await response.json().catch(() => ({}))).detail || '操作失败'); });
+      await loadInvites();
+    } catch (error) {
+      $('inviteUpdatedAt').textContent = error.message || '操作失败';
+      button.disabled = false;
+    }
+  });
   document.querySelectorAll('[data-tab]').forEach((button) => button.addEventListener('click', () => {
     activateTab(button.dataset.tab);
   }));

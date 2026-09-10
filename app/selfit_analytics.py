@@ -23,10 +23,13 @@ from pydantic import BaseModel, Field
 from app.auth import (
     ADMIN_COOKIE_NAME,
     TOKEN_TTL_HOURS,
+    create_invite_code,
     get_admin_user,
     issue_admin_session,
+    list_invite_codes,
     revoke_admin_sessions,
     set_admin_password,
+    update_invite_code,
     verify_admin_password,
 )
 from app.storage import ROOT_DIR
@@ -117,6 +120,17 @@ class AdminLoginPayload(BaseModel):
 class AdminPasswordChangePayload(BaseModel):
     current_password: str
     new_password: str
+
+
+class AdminInviteCreatePayload(BaseModel):
+    max_seats: int = 20
+    note: str = ""
+    expires_in_days: int = 30
+
+
+class AdminInviteUpdatePayload(BaseModel):
+    max_seats: int | None = None
+    status: str | None = None
 
 
 @admin_router.post("/login")
@@ -401,3 +415,21 @@ async def analytics_users(admin: dict[str, Any] = Depends(get_admin_user)) -> JS
     ]
     rows.sort(key=lambda row: str(row.get("last_login_at") or ""), reverse=True)
     return JSONResponse(content={"users": rows}, headers={"Cache-Control": "no-store"})
+
+
+@admin_router.get("/invites")
+async def admin_invites(admin: dict[str, Any] = Depends(get_admin_user)) -> JSONResponse:
+    """邀请码列表（含席位用量），供内测运营调整名额。"""
+    return JSONResponse(content={"invites": list_invite_codes()}, headers={"Cache-Control": "no-store"})
+
+
+@admin_router.post("/invites")
+async def admin_invite_create(payload: AdminInviteCreatePayload, admin: dict[str, Any] = Depends(get_admin_user)) -> JSONResponse:
+    record = create_invite_code(payload.max_seats, payload.note, payload.expires_in_days)
+    return JSONResponse(content={"status": "ok", "invite": record})
+
+
+@admin_router.patch("/invites/{code_id}")
+async def admin_invite_update(code_id: str, payload: AdminInviteUpdatePayload, admin: dict[str, Any] = Depends(get_admin_user)) -> JSONResponse:
+    record = update_invite_code(code_id, payload.max_seats, payload.status)
+    return JSONResponse(content={"status": "ok", "invite": record})
