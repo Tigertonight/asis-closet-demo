@@ -180,13 +180,7 @@
     importJob = null,
     importEpoch = 0,
     generationBusy = false;
-  function notify(text, presentation = "") {
-    $("#notice").classList.toggle("favorite-notice", presentation === "favorite");
-    $("#notice").style.removeProperty("top");
-    if (presentation === "favorite") {
-      const photo=$(".note-detail-photo, .outfit-detail-image");
-      if (photo?.getBoundingClientRect().height) $("#notice").style.top=`${photo.getBoundingClientRect().bottom - $("#studio").getBoundingClientRect().top - 88}px`;
-    }
+  function notify(text) {
     $("#notice").textContent = text;
     $("#notice").classList.add("visible");
     clearTimeout(toastTimer);
@@ -226,14 +220,17 @@
         const reportDetail = (path.startsWith('/selfit/try-on/report-outfits?') || /^\/selfit\/try-on\/items\/[^/]+\/outfits$/.test(path)) &&
           [404, 409, 422, 429, 502, 503, 504].includes(r.status) && typeof data?.detail === 'string' ? data.detail : '';
         const gateDetail = typeof data?.detail === 'string' ? data.detail : '';
+        const retryAfter = Number(r.headers.get('Retry-After'));
+        const rateLimitMessage = r.status === 429
+          ? (gateDetail || (typeof data?.error?.message === 'string' ? data.error.message : '访问太频繁了，请稍后再试。')) +
+            (Number.isFinite(retryAfter) && retryAfter > 0 ? ` 请约 ${Math.ceil(retryAfter / 60)} 分钟后重试。` : '')
+          : '';
         const e = Error(
           r.status === 401
             ? "请先登录，再查看你的衣橱。"
             : r.status === 403
               ? (gateDetail || "内测名额有限，输入邀请码解锁完整体验。")
-              : r.status === 429
-                ? (gateDetail || "操作太频繁了，请稍后再试。")
-                : reportDetail || "这次操作没有完成，请稍后再试。",
+              : reportDetail || rateLimitMessage || "这次操作没有完成，请稍后重试。",
         );
         e.status = r.status;
         throw e;
@@ -261,7 +258,7 @@
         ([id, label]) =>
           `<button class="nav-item" data-page="${id}" ${state.page === id ? 'aria-current="page"' : ""}><span>${label}</span>${state.page === id ? (id === "mirror" ? image(asset("mirror"), "", "nav-ornament") : id === "inspiration" ? image(asset("butterfly"), "", "nav-ornament butterfly") : image(`${A}main-app/nav-shirt.webp`, "", "nav-shirt")) : ""}</button>`,
       )
-      .join("") + `<button class="nav-ai" data-action="open-chat" aria-label="AI 搭配对话">${image(`${A}main-app/nav-ai.webp`,"")}</button>`;
+      .join("") + `<button class="nav-ai" data-action="open-chat" aria-label="AI 搭配对话">${image(`${A}main-app/nav-ai-lace.png?v=20260910`,"")}</button>`;
   }
   function card(x, kind = "item", i = 0) {
     const mirrorNote = !reference && state.page === "mirror" && kind === "outfit";
@@ -353,12 +350,12 @@
                 `model-photo ${!reference || state.file ? "personal" : ""}`,
               )}${!reference || state.file ? '</div>' : ''}`
             : '<div class="empty-stage"><span>先放入你的全身照</span><button data-action="model">选择模特</button></div>'
-    }${styling && !reference ? canvasTools() : ""}${pending ? `<div class="mirror-generation" role="status" aria-live="polite">${image(`${A}main-app/mirror-loading.svg`, '正在试穿')}</div>` : ""}${!styling && !pending ? `<button class="mirror-result-actions" data-action="result-actions" aria-label="绑定智能穿衣镜">${image(`${A}main-app/mirror-result-actions.svg`, "")}</button>` : ""}${!styling && !pending ? `<button class="mirror-history" data-action="tryon-history" aria-label="试穿历史">${image(`${A}main-app/mirror-history.svg`, "")}</button>` : ""}${!pending ? `<div class="mirror-edit-tools" role="group" aria-label="试衣镜工具"><button data-action="toggle" aria-label="${styling ? '全身镜' : '看单品'}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 8a8 8 0 0 0-14-2L3 9m0-5v5h5M4 16a8 8 0 0 0 14 2l3-3m0 5v-5h-5"/></svg><span>${styling ? '全身镜' : '看单品'}</span></button><button data-action="model" aria-label="替换模特或上传我的照片"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="7" r="4"/><path d="M4 21v-3a8 8 0 0 1 16 0v3Z"/></svg><span>替换模特</span></button></div>` : ''}${!styling && !pending && (state.result || state.photo) ? `<button class="result-expand" data-action="open-viewer" aria-label="${state.result ? '查看试穿大图' : '查看模特大图'}">${image(`${A}main-app/mirror-expand.svg`, "")}</button>${state.current ? `<button class="mirror-favorite" data-action="favorite" aria-label="${state.current.saved ? '取消收藏搭配' : '收藏搭配'}" aria-pressed="${Boolean(state.current.saved)}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.9-6.2-3.3-6.2 3.3L7 14.2l-5-4.9 6.9-1Z"/></svg></button>` : ""}` : ""}</div>${
+    }${styling && !reference ? canvasTools() : ""}${pending ? `<div class="mirror-generation" role="status" aria-live="polite">${image(`${A}main-app/mirror-loading.svg`, '正在试穿')}</div>` : ""}${!styling && !pending ? `<button class="mirror-result-actions" data-action="result-actions" aria-label="绑定智能穿衣镜">${image(`${A}main-app/mirror-result-actions.svg`, "")}</button>` : ""}${!styling && !pending ? `<button class="mirror-history" data-action="tryon-history" aria-label="试穿历史">${image(`${A}main-app/mirror-history.svg`, "")}</button>` : ""}${!pending ? `<div class="mirror-edit-tools" role="group" aria-label="试衣镜工具"><button data-action="toggle" aria-label="${styling ? '看上身' : '看单品'}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 8a8 8 0 0 0-14-2L3 9m0-5v5h5M4 16a8 8 0 0 0 14 2l3-3m0 5v-5h-5"/></svg><span>${styling ? '看上身' : '看单品'}</span></button><button data-action="model" aria-label="换模特或上传我的照片"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="7" r="4"/><path d="M4 21v-3a8 8 0 0 1 16 0v3Z"/></svg><span>换模特</span></button></div>` : ''}${!styling && !pending && (state.result || state.photo) ? `<button class="result-expand" data-action="open-viewer" aria-label="${state.result ? '查看试穿大图' : '查看模特大图'}">${image(`${A}main-app/mirror-expand.svg`, "")}</button>${state.current ? `<button class="mirror-favorite" data-action="favorite" aria-label="${state.current.saved ? '取消收藏搭配' : '收藏搭配'}" aria-pressed="${Boolean(state.current.saved)}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.9-6.2-3.3-6.2 3.3L7 14.2l-5-4.9 6.9-1Z"/></svg></button>` : ""}` : ""}</div>${
       state.loading
         ? empty("正在整理你的搭配…")
         : state.error || (homeNotes && state.homeNotesError)
           ? empty(state.error || state.homeNotesError)
-          : `${state.source === "report" ? `<div class="report-outfit-context" aria-live="polite"><span>来自你的风格报告${state.reportOutfitsMode === "mock" ? " · 示例搭配" : ""}</span><strong>${esc(state.current?.reportNote?.title || "选择一套喜欢的搭配")}</strong></div>` : ""}<div class="strip" aria-label="${homeNotes ? "选择穿搭笔记" : category === "set" ? "选择套装" : "选择单品"}">${items.map((x, i) => card(x, category === "set" ? "outfit" : "item", i)).join("") || empty(homeNotes ? "穿搭笔记暂时无法加载，请稍后重试。" : "这里还没有搭配，先添加一件喜欢的衣服。")}</div>`
+          : `${state.source === "report" ? `<div class="report-outfit-context" aria-live="polite"><strong>${esc(state.current?.reportNote?.title || "选择一套喜欢的搭配")}</strong><span>来自你的型格推荐${state.reportOutfitsMode === "mock" ? " · 示例搭配" : ""}</span></div>` : ""}<div class="strip" aria-label="${homeNotes ? "选择穿搭笔记" : category === "set" ? "选择套装" : "选择单品"}">${items.map((x, i) => card(x, category === "set" ? "outfit" : "item", i)).join("") || empty(homeNotes ? "穿搭笔记暂时无法加载，请稍后重试。" : "这里还没有搭配，先添加一件喜欢的衣服。")}</div>`
     }${items.length > 3 ? `<div class="mirror-pagination" aria-label="套装分页">${Array.from({length:Math.ceil(items.length/3)},(_,i)=>`<span data-strip-page="${i}" ${i===0?'data-active="true"':''}></span>`).join('')}</div>` : ''}</section>`;
   }
   const trimmedPieces = new Map();

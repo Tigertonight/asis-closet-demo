@@ -106,9 +106,6 @@
     card.className = 'suit-feature';
     card.dataset.featureKey = feature.key;
     const header = document.createElement('header');
-    const title = document.createElement('span');
-    title.textContent = feature.title;
-    header.append(title);
     if (typeof onEdit === 'function') {
       const edit = document.createElement('button');
       edit.type = 'button';
@@ -126,7 +123,7 @@
       value.textContent = `${feature.value} · ${analysis.subLabel}`;
     }
     valueRow.append(value);
-    card.append(valueRow);
+    header.prepend(valueRow);
     if (feature.source !== 'photo') {
       const source = document.createElement('small');
       const photoKind = feature.key === 'bodyShape' ? 'body' : 'face';
@@ -145,10 +142,8 @@
     if (feature.advice) {
       const advice = document.createElement('p');
       advice.className = 'suit-advice';
-      const label = document.createElement('b');
-      label.className = 'suit-advice-label';
-      label.textContent = '穿搭建议';
-      advice.append(label, feature.advice);
+      const adviceCopy = String(feature.advice).replace(/^可以试试\s*/, '').replace(/[。\s]+$/, '');
+      advice.textContent = `搭配建议：${adviceCopy}`;
       card.append(advice);
     }
     return card;

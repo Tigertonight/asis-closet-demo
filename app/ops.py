@@ -173,6 +173,14 @@ def _rate_rules() -> list[LimitRule]:
             methods=("GET",),
         ),
         LimitRule(
+            # 页面初始化会读取多个列表；只读请求不消耗上传/生成额度。
+            "tryon_read",
+            ("/selfit/try-on/", "/try-on"),
+            env_int("SELFIT_TRYON_READ_RATE_LIMIT", 1200),
+            env_int("SELFIT_TRYON_READ_RATE_WINDOW_SECONDS", 3600),
+            methods=("GET", "HEAD"),
+        ),
+        LimitRule(
             "upload",
             ("/analyze", "/demo/analyze", "/closet/import/upload", "/try-on", "/try-on/", "/selfit/try-on/"),
             env_int("SELFIT_UPLOAD_RATE_LIMIT", 60),

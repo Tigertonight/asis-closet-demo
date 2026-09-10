@@ -719,9 +719,8 @@
   });
 
   const loadingStages = [
-    { percent: 25, line: '先看见真实的你', src: '/static/selfit/assets/loading-stage-25@2x.png?v=20260826' },
-    { percent: 50, line: '寻找你同频的灵感', src: '/static/selfit/assets/loading-stage-50@2x.png?v=20260826' },
-    { percent: 75, line: '拼出更像你的样子', src: '/static/selfit/assets/loading-stage-75@2x.png?v=20260826' },
+    { percent: 33, artStage: 25, line: '先看见真实的你', src: '/static/selfit/assets/loading-stage-25@2x.png?v=20260826' },
+    { percent: 67, artStage: 50, line: '寻找你同频的灵感', src: '/static/selfit/assets/loading-stage-50@2x.png?v=20260826' },
     { percent: 100, line: '我们认识你了...', src: '/static/selfit/assets/loading-stage-100@2x.png?v=20260826' },
   ];
   const loadingStagePromises = new Map();
@@ -1214,9 +1213,9 @@
         failedCount: resourceOutcome.results.filter((item) => !item.loaded).length,
       });
       track('report_completed', { reportId: state.reportId, typeId: report?.typeId || '' });
-      setLoadingProgress(100);
+      await setLoadingProgress(100);
       renderReport(preparedReport);
-      await delay(650);
+      await delay(1200);
       showScreen('report');
     } catch (error) {
       track('report_failed', { message: error.message || '' });
