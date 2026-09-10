@@ -704,6 +704,14 @@
     enterBetaUnlock('like', 'generic');
   });
 
+  // 报告页「去试穿」：未解锁用户直接进邀请码解锁屏，不再绕道主站被门槛弹回。
+  document.querySelector('#continueToApp')?.addEventListener('click', (event) => {
+    const user = state.authUser;
+    if (!user || String(user.user_id || '').startsWith('guest_') || user.beta_qualified !== false) return;
+    event.preventDefault();
+    enterBetaUnlock('report');
+  });
+
   document.querySelector('#vibeQuestions').addEventListener('click', (event) => {
     const button = event.target.closest('[data-answer]'); if (!button) return;
     const field = button.closest('[data-question]'); state.answers[field.dataset.question] = button.dataset.answer;
@@ -1995,6 +2003,22 @@
       setAuthMessage(authNodes.phoneMessage, error.message || '暂时无法读取你的风格档案，请重试。', 'error');
     });
     shell.classList.add('is-ready');
+    return;
+  }
+
+  if (entryParams.get('entry') === 'unlock') {
+    // 从主站被门槛弹回（entry=unlock）：跳过「适我」过场，直达解锁屏。
+    shell.classList.add('is-ready');
+    showScreen('beta-unlock');
+    void authReady.then(async (session) => {
+      const user = session?.user;
+      if (!user) { showScreen('login'); return; }
+      if (user.beta_qualified !== false) { window.location.replace('/selfit/try-on?from=login'); return; }
+      try {
+        if (await openAppForExistingReport()) return;
+      } catch { /* 拉取报告失败也停在解锁屏，输码即可进主站 */ }
+      enterBetaUnlock('like', 'generic');
+    }).catch(() => showScreen('login'));
     return;
   }
 

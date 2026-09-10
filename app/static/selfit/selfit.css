@@ -247,6 +247,8 @@ button {
 .auth-submit { position: absolute; right: auto; bottom: max(56px, calc(env(safe-area-inset-bottom) + 40px)); left: 50%; width: min(313px, calc(100% - 80px)); transform: translateX(-50%); }
 .auth-submit:active { transform: translateX(-50%) scale(.985); }
 .auth-submit[aria-busy="true"] { cursor: progress; }
+/* 解锁屏有两个底部按钮：主按钮保持在其他登录屏同一位置，次按钮叠放在其上方。 */
+.screen[data-screen="beta-unlock"] .auth-submit.secondary-action { bottom: calc(max(56px, calc(env(safe-area-inset-bottom) + 40px)) + 56px); }
 
 /* Onboarding: Figma geometry with simulated OS status chrome removed. */
 .screen--intro {
