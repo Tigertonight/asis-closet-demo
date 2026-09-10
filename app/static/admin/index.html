@@ -79,6 +79,17 @@
   .photo-cell { display: inline-flex; align-items: center; gap: 8px; }
   .report-list-footer { display: flex; align-items: center; justify-content: center; gap: 12px; min-height: 38px; margin-top: 14px; }
   .report-list-footer small { color: var(--muted); }
+  /* 列表顶部统计条：数量 + 占比（分母为全部条目，含未显示部分） */
+  .stats-strip { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 0 0 14px; }
+  .stats-strip:empty { display: none; }
+  .stats-strip .stats-total { color: var(--muted); font-size: 12px; margin-right: 4px; }
+  .stat-chip { display: inline-flex; align-items: baseline; gap: 6px; padding: 6px 14px; border: 1px solid var(--line); border-radius: 999px; background: #fff; font-size: 12px; line-height: 1.5; }
+  .stat-chip b { font-size: 15px; font-weight: 700; color: var(--ink); }
+  .stat-chip span { color: var(--muted); }
+  .stat-chip small { color: var(--muted); font-size: 11px; }
+  .stat-chip.is-ok { border-color: #d8e8db; background: #f4f9f5; }
+  .stat-chip.is-ok b { color: #2f6a3c; }
+  .stat-chip.is-muted b { color: var(--muted); }
   .report-load-more { min-height: 36px; padding: 7px 18px; border: 1px solid rgba(138,1,27,.25); border-radius: 999px; background: #fff; color: var(--brand); font: inherit; font-size: 13px; font-weight: 600; cursor: pointer; }
   .report-load-more:hover { background: #fbf1f3; }
   .report-load-more:focus-visible { outline: 2px solid rgba(138,1,27,.35); outline-offset: 2px; }
@@ -350,6 +361,7 @@
           <button class="mini-btn" type="button" id="submissionsRefresh">刷新</button>
           <small id="submissionsUpdatedAt"></small>
         </div>
+        <div class="stats-strip" id="submissionsStats" aria-label="测试提交统计"></div>
         <div class="table-scroll"><table><thead><tr><th>提交时间</th><th>手机号</th><th>来源</th><th>报告</th><th>照片</th><th>操作</th></tr></thead><tbody id="submissionRows"></tbody></table></div>
         <div class="report-list-footer"><small id="submissionsCount"></small><button class="report-load-more" type="button" id="submissionsLoadMore" hidden>加载更多</button></div>
       </section>
@@ -360,6 +372,7 @@
           <button class="mini-btn" type="button" id="capturesRefresh">刷新</button>
           <small id="capturesUpdatedAt"></small>
         </div>
+        <div class="stats-strip" id="capturesStats" aria-label="镜子拍摄统计"></div>
         <div class="table-scroll"><table><thead><tr><th>拍摄时间</th><th>状态</th><th>领取手机号</th><th>原始照片（算法留存）</th><th>美颜照片（打印用）</th><th>操作</th></tr></thead><tbody id="captureRows"></tbody></table></div>
         <div class="report-list-footer"><small id="capturesCount"></small><button class="report-load-more" type="button" id="capturesLoadMore" hidden>加载更多</button></div>
       </section>
@@ -616,6 +629,51 @@
     $(config.more).hidden = visible >= list.rows.length;
   };
 
+  const statChip = (label, count, total, tone = '') => {
+    const pct = total > 0 ? Math.round((count / total) * 100) : 0;
+    const node = document.createElement('span');
+    node.className = `stat-chip${tone ? ` is-${tone}` : ''}`;
+    node.innerHTML = `<b>${count}</b><span>${esc(label)}</span><small>${pct}%</small>`;
+    return node;
+  };
+
+  // 统计基于全部条目（不只是当前分页），分母 = 列表总数。
+  const renderSubmissionsStats = (rows) => {
+    const strip = $('submissionsStats');
+    const total = rows.length;
+    strip.replaceChildren();
+    if (!total) return;
+    const withReport = rows.filter((row) => row.report).length;
+    const hasPhoto = (row) => (row.photos && row.photos.length > 0)
+      || (row.mirrorPhotos && Object.values(row.mirrorPhotos).some(Boolean));
+    const withPhotos = rows.filter(hasPhoto).length;
+    strip.append(
+      Object.assign(document.createElement('small'), { className: 'stats-total', textContent: `共 ${total} 条` }),
+      statChip('报告已生成', withReport, total, 'ok'),
+      statChip('报告未生成', total - withReport, total, 'muted'),
+      statChip('有照片', withPhotos, total),
+      statChip('无照片', total - withPhotos, total, 'muted'),
+    );
+  };
+
+  const renderCapturesStats = (rows) => {
+    const strip = $('capturesStats');
+    const total = rows.length;
+    strip.replaceChildren();
+    if (!total) return;
+    const byStatus = { claimed: 0, pending: 0, expired: 0 };
+    rows.forEach((row) => { if (row.status in byStatus) byStatus[row.status] += 1; });
+    const withPhotos = rows.filter((row) => row.original || row.retouched).length;
+    strip.append(
+      Object.assign(document.createElement('small'), { className: 'stats-total', textContent: `共 ${total} 条` }),
+      statChip('已领取', byStatus.claimed, total, 'ok'),
+      statChip('待领取', byStatus.pending, total),
+      statChip('已过期', byStatus.expired, total, 'muted'),
+      statChip('有照片', withPhotos, total),
+      statChip('无照片', total - withPhotos, total, 'muted'),
+    );
+  };
+
   const renderSubmissions = (rows) => {
     const tbody = $('submissionRows');
     if (!rows.length) {
@@ -765,8 +823,8 @@
   const renderReportList = (tab) => {
     const list = reportListState[tab];
     const visibleRows = list.rows.slice(0, list.visible);
-    if (tab === 'submissions') renderSubmissions(visibleRows);
-    if (tab === 'captures') renderCaptures(visibleRows);
+    if (tab === 'submissions') { renderSubmissions(visibleRows); renderSubmissionsStats(list.rows); }
+    if (tab === 'captures') { renderCaptures(visibleRows); renderCapturesStats(list.rows); }
     if (tab === 'rejected') renderRejected(visibleRows, list.breakdown || []);
     updateReportFooter(tab);
   };

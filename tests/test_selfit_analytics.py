@@ -182,6 +182,11 @@ def test_admin_page_is_served(monkeypatch, tmp_path: Path) -> None:
     assert 'data-tab="personas"' in response.text
     assert "/try-on/demo" not in response.text
     assert "/closet/demo" not in response.text
+    # 用户报告两个列表的统计条（数量 + 占比）
+    assert 'id="submissionsStats"' in response.text
+    assert 'id="capturesStats"' in response.text
+    assert "报告已生成" in response.text
+    assert "报告未生成" in response.text
 
 
 def _use_tmp_stylist_context(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
