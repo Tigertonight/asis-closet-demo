@@ -36,7 +36,7 @@ def test_all_80_delivered_notes_keep_exact_assets_items_and_layers(monkeypatch):
             assert all(i['styling']['wearing_method'] == i['wearing_instruction'] for i in outfit['items'])
             assert closet.get_outfit(outfit['outfit_id']) == {k:v for k,v in outfit.items() if k != 'report_note'}
             total += len(outfit['items'])
-    assert len(all_ids) == 80 and total == 461
+    assert len(all_ids) == 80 and total == 468
 
 
 @pytest.fixture

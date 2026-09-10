@@ -4,7 +4,7 @@
 
 ## 数据来源
 
-`app/data/styling-delivery.v1.json` 是真实拆款交付清单：20 组、80 套、461 个单品。16 组标准人格与 4 组微胖版本独立绑定，不自动推断用户体型。每套通过 `note_binding.templateId + noteId` 对应报告，原图资产 ID 必须与报告模板一致。旧报告只有 `legacy` 占位符时，按原模板及笔记编号加载当前交付，返回 `resolved_legacy_assets: true`；前端将 URL 改写为真实素材 ID，不展示加载成功提示。已有具体图片 ID 但不匹配时仍返回 409，避免无提示地替换已绑定的素材。
+`app/data/styling-delivery.v1.json` 是真实拆款交付清单：20 组、80 套、468 个单品。16 组标准人格与 4 组微胖版本独立绑定，不自动推断用户体型。每套通过 `note_binding.templateId + noteId` 对应报告，原图资产 ID 必须与报告模板一致。旧报告只有 `legacy` 占位符时，按原模板及笔记编号加载当前交付，返回 `resolved_legacy_assets: true`；前端将 URL 改写为真实素材 ID，不展示加载成功提示。已有具体图片 ID 但不匹配时仍返回 409，避免无提示地替换已绑定的素材。
 
 `app/styling_catalog.py` 适配原图、单品图、名称、穿法、开合状态、遮挡关系、关联单品和由内至外的叠穿顺序。套装和单品使用独立的版本化 ID；既有示例内容库和用户衣帽间不受影响。旧的 `report-note-outfits.v1.json` mock 映射已移除，接口固定返回 `mode: live`。
 
@@ -12,7 +12,7 @@
 
 ## 图片就绪
 
-本次交付及报告选用素材已上传七牛 `selfit` 私有空间：共 704 张不同图片，包含全部 461 张单品图。素材接口在服务端生成签名，下载并校验后以同源地址提供图片；不会把过期签名写入报告。连接配置、清单说明和复核方式见 [Siri Styling 素材与拆款交付](SELFIT_STYLING_DELIVERY.md)。也可在尚未登记素材的新环境本地导入：
+当前原始拆款与报告选用素材已上传七牛 `selfit` 私有空间：两个来源清单共 711 张不同图片，包含全部 468 张原始单品图；当前透明图通过 `styling-cutout-assets.v1.json` 单独映射。素材接口在服务端生成签名，下载并校验后以同源地址提供图片；不会把过期签名写入报告。连接配置、清单说明和复核方式见 [Siri Styling 素材与拆款交付](SELFIT_STYLING_DELIVERY.md)。也可在尚未登记素材的新环境本地导入：
 
 ```sh
 .venv/bin/python scripts/import_styling_materials.py --source /path/to/拆款交付-siri-styling

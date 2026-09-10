@@ -5,7 +5,10 @@ from urllib.parse import urlsplit
 
 import pytest
 
-from app.material_assets import MaterialRegistry, resolve_image_references
+from app.material_assets import (
+    IMAGE_ID_FIELDS, MaterialRegistry, asset_content_url, material_source_url,
+    resolve_image_references,
+)
 from app.report_template_identity import template_identity
 from scripts.import_selfit_report_data import build_pool, build_runtime
 from scripts.upload_content_pool import OssUploadClient
@@ -40,7 +43,7 @@ def test_default_candidate_pool_is_not_affected_by_body_variants():
     assert build_pool(master) == build_pool(defaults)
 
 
-def test_delivery_binds_all_80_notes_and_461_items_to_material_ids():
+def test_delivery_binds_all_80_notes_and_468_items_to_material_ids():
     delivery = json.loads((ROOT / 'app/data/styling-delivery.v1.json').read_text())
     runtime = json.loads(RUNTIME.read_text())
     keys = set()
@@ -56,14 +59,21 @@ def test_delivery_binds_all_80_notes_and_461_items_to_material_ids():
         for item in look['items']:
             assert item['image_asset']['assetId'].startswith('asset_')
     assert len(keys) == 80
-    assert sum(len(l['items']) for l in delivery['looks']) == 461
+    assert sum(len(l['items']) for l in delivery['looks']) == 468
 
 
 def test_runtime_images_resolve_without_private_editor_urls():
     registry = MaterialRegistry()
-    runtime = resolve_image_references(json.loads(RUNTIME.read_text()), registry, indirect=False)
+    runtime = resolve_image_references(json.loads(RUNTIME.read_text()), registry)
     def check(value):
         if isinstance(value, dict):
+            for id_field, url_field in IMAGE_ID_FIELDS.items():
+                if value.get(id_field):
+                    assert value[url_field] == asset_content_url(value[id_field])
+                    source = material_source_url(registry.get(value[id_field]))
+                    assert not source.startswith('/api/assets/')
+                    if source.startswith('/static/'):
+                        assert (ROOT / 'app' / urlsplit(source).path.lstrip('/')).is_file()
             for key, item in value.items():
                 if key in {'src', 'imageUrl'} and item:
                     assert not item.startswith('/api/assets/')
