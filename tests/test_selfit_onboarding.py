@@ -50,6 +50,10 @@ def test_selfit_onboarding_includes_the_figma_login_extension() -> None:
     assert 'data-invite-login' in response.text
     assert 'data-screen="beta-unlock"' in response.text
     assert 'id="betaUnlockForm"' in response.text
+    assert 'id="betaUnlockHint"' in response.text
+    # 退出登录二次确认弹窗（防误触）
+    assert 'id="logoutConfirmDialog"' in response.text
+    assert "退出登录？" in response.text
     assert "无需验证码，输入手机号直接登录" in response.text
     assert 'id="loginPin"' not in response.text
     assert 'id="loginCode"' not in response.text
@@ -244,6 +248,11 @@ def test_selfit_auth_adapter_and_bearer_wiring_are_available() -> None:
     assert "openAppForExistingReport()" in runtime.text
     assert "/selfit/try-on?from=login&persona=" in runtime.text
     assert "/^1[3-9]\\d{9}$/".replace("\\\\", "\\") in runtime.text or "1[3-9]" in runtime.text
+    # 「先不测试，去 App 逛逛」对未解锁用户进邀请码解锁屏；主站门槛弹回用 entry=unlock。
+    assert "enterBetaUnlock('like', 'generic')" in runtime.text
+    assert "entryParams.get('entry') === 'unlock'" in runtime.text
+    assert "logoutConfirmDialog" in runtime.text
+    assert "proceedLogout" in runtime.text
 
 
 def test_selfit_vibe_question_keys_match_backend_contract() -> None:

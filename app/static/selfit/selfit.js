@@ -240,8 +240,11 @@
     splashTransitioning = true; clearTimeout(splashTimer); splash.classList.add('is-leaving');
     setTimeout(async () => {
       await authReady;
+      const unlockEntry = entryParams.get('entry') === 'unlock';
       let destination = state.authUser ? (retestEntry ? 'like' : 'intro') : 'login';
       if (handoffToken) destination = state.authUser ? 'like' : 'phone-login';
+      // 从主站被门槛弹回的用户（entry=unlock）意图明确：直接给解锁屏。
+      if (unlockEntry && state.authUser && !state.authUser.beta_qualified) destination = 'beta-unlock';
       if (handoffToken && state.authUser) {
         try { await claimPendingHandoff(); }
         catch (error) {
@@ -252,7 +255,8 @@
       } else if (state.authUser) {
         try {
           if (await openAppForExistingReport()) return;
-          showScreen(destination);
+          if (destination === 'beta-unlock') enterBetaUnlock('report', 'generic');
+          else showScreen(destination);
         } catch (error) {
           destination = 'phone-login';
           showScreen(destination);
@@ -352,10 +356,23 @@
     window.location.replace(`/selfit/try-on?from=login&persona=${encodeURIComponent(typeId)}`);
     return true;
   };
-  const enterBetaUnlock = (backTo = 'report') => {
-    const backButton = document.querySelector('[data-screen="beta-unlock"] [data-back]');
+  const enterBetaUnlock = (backTo = 'report', context = 'report') => {
+    // context 决定文案：report=报告已生成后解锁；generic=like 跳过测试/主站弹回等无报告场景。
+    const unlockScreen = document.querySelector?.('[data-screen="beta-unlock"]');
+    const backButton = unlockScreen?.querySelector('[data-back]');
     if (backButton) backButton.dataset.back = backTo;
-    showScreen('beta-unlock');
+    const hintNode = document.querySelector?.('#betaUnlockHint');
+    const secondaryButton = unlockScreen?.querySelector('.auth-submit.secondary-action');
+    if (hintNode) {
+      hintNode.textContent = context === 'report'
+        ? '你的风格报告已生成。试穿、AI 搭配等完整功能正在内测中，输入邀请码即可解锁。'
+        : '试穿、AI 搭配等完整功能正在内测中，输入邀请码即可解锁。';
+    }
+    if (secondaryButton) {
+      secondaryButton.textContent = context === 'report' ? '先看看我的报告' : '返回继续测试';
+      secondaryButton.hidden = false;
+    }
+    if (typeof showScreen === 'function') showScreen('beta-unlock');
   };
   const setAuthBusy = (button, busy) => {
     button.toggleAttribute('aria-busy', busy);
@@ -678,6 +695,14 @@
     // 重新测试时跳过 suit 环节（照片在档案页维护），直接进入 vibe。
     showScreen(retestEntry ? 'vibe' : 'suit');
   }));
+
+  // 「先不测试，去 App 逛逛」：内测用户直进主站；未解锁用户进邀请码解锁屏
+  // （此前未解锁用户会被主站门槛弹回登录页，体验断裂）。
+  document.querySelector('.assessment-skip')?.addEventListener('click', (event) => {
+    if (state.authUser?.beta_qualified) return;
+    event.preventDefault();
+    enterBetaUnlock('like', 'generic');
+  });
 
   document.querySelector('#vibeQuestions').addEventListener('click', (event) => {
     const button = event.target.closest('[data-answer]'); if (!button) return;
@@ -1740,16 +1765,47 @@
     input.remove();
     if (!copied) throw new Error('当前浏览器无法自动复制，请稍后重试。');
   };
+  const logoutConfirmDialog = document.querySelector('#logoutConfirmDialog');
   const logoutSelfitUser = () => {
-    const token = auth.accessToken;
-    auth.clear();
-    sessionStorage.removeItem('selfit.studio.job');
-    sessionStorage.removeItem('selfit.studio.import');
-    localStorage.removeItem(SESSION_STORAGE_KEY);
-    if (token) {
-      void fetch('/auth/logout', { method: 'POST', headers: { Authorization: `Bearer ${token}` }, keepalive: true }).catch(() => {});
+    const proceedLogout = () => {
+      const token = auth.accessToken;
+      auth.clear();
+      sessionStorage.removeItem('selfit.studio.job');
+      sessionStorage.removeItem('selfit.studio.import');
+      localStorage.removeItem(SESSION_STORAGE_KEY);
+      if (token) {
+        void fetch('/auth/logout', { method: 'POST', headers: { Authorization: `Bearer ${token}` }, keepalive: true }).catch(() => {});
+      }
+      window.location.replace('/selfit?entry=login');
+    };
+    // 二次确认防误触：取消可返回，确认才真正退出。
+    if (!logoutConfirmDialog) { proceedLogout(); return; }
+    const supportsNativeDialog = typeof logoutConfirmDialog.showModal === 'function';
+    const cleanupLogoutConfirm = () => {
+      logoutConfirmDialog.removeEventListener('close', onLogoutConfirmClose);
+      logoutConfirmDialog.removeEventListener('click', onLogoutConfirmClick, true);
+    };
+    const onLogoutConfirmClose = () => {
+      cleanupLogoutConfirm();
+      if (logoutConfirmDialog.returnValue === 'confirm') proceedLogout();
+    };
+    const onLogoutConfirmClick = (event) => {
+      const submit = event.target.closest('button[value]');
+      if (!submit || supportsNativeDialog) return;
+      event.preventDefault();
+      logoutConfirmDialog.returnValue = submit.value;
+      logoutConfirmDialog.removeAttribute('open');
+      document.documentElement.classList.remove('has-open-dialog');
+      onLogoutConfirmClose();
+    };
+    logoutConfirmDialog.addEventListener('close', onLogoutConfirmClose);
+    logoutConfirmDialog.addEventListener('click', onLogoutConfirmClick, true);
+    logoutConfirmDialog.returnValue = '';
+    if (supportsNativeDialog) logoutConfirmDialog.showModal();
+    else {
+      logoutConfirmDialog.setAttribute('open', '');
+      document.documentElement.classList.add('has-open-dialog');
     }
-    window.location.replace('/selfit?entry=login');
   };
   document.querySelector('#reportLogout').addEventListener('click', logoutSelfitUser);
   document.querySelector('.intro-logout').addEventListener('click', logoutSelfitUser);

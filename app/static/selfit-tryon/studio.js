@@ -77,14 +77,14 @@
     Date.parse(savedSession.expiresAt) <= Date.now()
   )
     savedSession = null;
-  // 内测门槛：已登录的非内测账号（普通手机号用户）不进主站，回到 onboarding 解锁。
+  // 内测门槛：已登录的非内测账号（普通手机号用户）不进主站，回 onboarding 解锁屏。
   if (
     savedSession?.user &&
     !String(savedSession.user.user_id || "").startsWith("guest_") &&
     savedSession.user.beta_qualified === false &&
     !reference
   ) {
-    window.location.replace("/selfit?entry=login");
+    window.location.replace("/selfit?entry=unlock");
     throw new Error("redirect-to-unlock");
   }
   let visitorReady = null;
@@ -2333,6 +2333,11 @@
           break;
         }
         case "logout": {
+          // 二次确认防误触：确认后才执行登出清理。
+          modal("退出登录？", '<p>退出后需要重新登录，才能查看你的衣橱和试穿记录。</p><button class="primary" data-action="confirm-logout">退出登录</button><button class="secondary" data-action="close">取消</button>');
+          break;
+        }
+        case "confirm-logout": {
           b.disabled = true;
           try {
             if (savedSession?.accessToken) await api("/auth/logout", { method: "POST" });
