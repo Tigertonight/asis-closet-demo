@@ -1051,7 +1051,8 @@ def test_account_profile_edit_is_owned_versioned_and_survives_expiry(monkeypatch
     url = f'{API}/me/profile'
     assert client.get(url).status_code == 401
     profile = client.get(url, headers=owner).json()['profile']
-    assert profile['manual'] == {'faceShape': '椭圆脸', 'bodyShape': '矩型', 'skin': '中性自然肤'}
+    # 照片推断的肤色不冒充手动校准（8fd9db1 起只跟踪真正的 manual 选择）
+    assert profile['manual'] == {'faceShape': '椭圆脸', 'bodyShape': '矩型'}
     assert client.get(url, headers=other).json()['profile']['tested'] is False
     data = selfit_onboarding._load_store()
     next(s for s in data['sessions'] if s['session_id'] == session_id)['expires_at'] = '2000-01-01T00:00:00Z'
@@ -1068,7 +1069,7 @@ def test_account_profile_edit_is_owned_versioned_and_survives_expiry(monkeypatch
     assert client.patch(url, headers={**owner, 'If-Match': '1'}, json=payload).status_code == 409
     restored = client.get(url, headers=owner).json()['profile']
     assert restored['manual']['bodyShape'] == '梨型'
-    assert restored['manual']['skin'] == '中性自然肤'
+    assert 'skin' not in restored['manual']
     assert selfit_onboarding._load_store()['reports'][0]['data']['typeId'] == 'flou'
 
 
