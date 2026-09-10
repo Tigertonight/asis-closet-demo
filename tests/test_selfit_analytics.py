@@ -100,17 +100,24 @@ def test_admin_summary_aggregates_funnel_and_users(monkeypatch, tmp_path: Path) 
     client = TestClient(app)
     admin_headers = _admin_login(client, monkeypatch)
 
-    # 两个用户各走一程
+    # 两个用户各走一程（主流程实际顺序：login → intro → like → suit → vibe）
     events = []
     for session_id, user_id, screens in (
-        ("ses_a", "u_a", ["splash", "login", "phone-login", "intro", "suit", "like", "vibe", "loading", "report"]),
-        ("ses_b", "u_b", ["splash", "login", "phone-login"]),
+        ("ses_a", "u_a", ["login", "intro", "like", "suit", "vibe", "loading", "report"]),
+        ("ses_b", "u_b", ["login", "intro", "like"]),
+        # u_a 重复登录：登录 KPI 按去重用户，不应把她算成 2 人
+        ("ses_c", "u_a", ["login"]),
     ):
         for screen in screens:
             events.append({"event": "screen_view", "screen": screen, "sessionId": session_id, "userId": user_id})
     events.append({"event": "login_success", "sessionId": "ses_a", "userId": "u_a"})
+    events.append({"event": "login_success", "sessionId": "ses_c", "userId": "u_a"})
+    events.append({"event": "login_success", "sessionId": "ses_b", "userId": "u_b"})
     events.append({"event": "report_completed", "sessionId": "ses_a", "userId": "u_a"})
+    # 镜子端：同一台镜子（同 IP）拍照两次——按次数统计应为 2，不是 1
     events.append({"event": "mirror_capture_started", "props": {}})
+    events.append({"event": "mirror_capture_confirmed", "props": {}})
+    events.append({"event": "mirror_capture_confirmed", "props": {}})
     events.append({"event": "mirror_qr_claim_detected", "props": {}})
     response = client.post("/api/v1/selfit/events", json={"events": events})
     assert response.status_code == 204
@@ -118,13 +125,26 @@ def test_admin_summary_aggregates_funnel_and_users(monkeypatch, tmp_path: Path) 
     summary = client.get("/admin/api/analytics/summary", headers=admin_headers).json()
 
     assert summary["totals"]["events"] == len(events)
-    assert summary["totals"]["sessions"] == 2
+    assert summary["totals"]["sessions"] == 3
     assert summary["totals"]["users"] == 2
+    # 登录 KPI 按去重用户：u_a 两次登录只算 1
+    assert summary["totals"]["logins"] == 2
     assert summary["totals"]["reportsCompleted"] == 1
-    assert summary["totals"]["mirrorCaptures"] == 1
-    funnel = {row["screen"]: row["views"] for row in summary["appFunnel"]}
-    assert funnel["splash"] == 2
-    assert funnel["report"] == 1
+    # 镜子 KPI 按次数：确认照片 2 张（started 试拍不计）
+    assert summary["totals"]["mirrorCaptures"] == 2
+    assert summary["totals"]["mirrorClaims"] == 1
+    # 漏斗按去重人数：u_a 到过 report，u_b 只到 like
+    funnel = {row["screen"]: row for row in summary["appFunnel"]}
+    assert funnel["report"]["reach"] == 1
+    assert funnel["like"]["reach"] == 2
+    assert funnel["like"]["views"] == 2
+    # 漏斗顺序 = 实际问卷顺序 like → suit → vibe
+    screens = [row["screen"] for row in summary["appFunnel"]]
+    assert screens.index("like") < screens.index("suit") < screens.index("vibe")
+    assert "splash" not in screens and "phone-login" not in screens
+    # 镜子漏斗按次数
+    mirror = {row["event"]: row["count"] for row in summary["mirrorFunnel"]}
+    assert mirror["mirror_capture_confirmed"] == 2
     user_rows = {row["user_id"]: row for row in summary["users"]}
     assert user_rows["u_a"]["events"] == 11
 
