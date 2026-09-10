@@ -160,7 +160,8 @@ from scripts.check_runtime_readiness import readiness as runtime_readiness
 
 load_dotenv(Path(__file__).resolve().parents[1] / ".env", override=True)
 
-app = FastAPI(title="selfit", version="0.2.0")
+# /docs 让给官网首页（site_home.py）；API 文档挪到 /api-docs（顺带不对外暴露默认路径）。
+app = FastAPI(title="selfit", version="0.2.0", docs_url="/api-docs", redoc_url=None)
 app.middleware("http")(request_guard_middleware)
 app.include_router(material_assets_router)
 app.include_router(selfit_onboarding_router)

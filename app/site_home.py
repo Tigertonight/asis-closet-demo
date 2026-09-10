@@ -19,7 +19,7 @@ from pathlib import Path
 from typing import Any
 
 from fastapi import APIRouter
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, RedirectResponse
 
 from app.storage import ROOT_DIR
 
@@ -274,7 +274,19 @@ def render_site_html(content: dict[str, Any]) -> str:
 </html>"""
 
 
-@router.get("/", include_in_schema=False, response_class=HTMLResponse)
-@router.get("/home", include_in_schema=False, response_class=HTMLResponse)
+@router.get("/docs", include_in_schema=False, response_class=HTMLResponse)
 def site_home_page() -> HTMLResponse:
     return HTMLResponse(render_site_html(load_site_content()), headers={"Cache-Control": "no-store"})
+
+
+# 根路径历史上曾长期 308 永久重定向到 /selfit——访问过的浏览器已永久缓存该跳转，
+# 服务端无法撤销。因此官网换到 /docs；根路径用 302（临时，不缓存）引到官网，
+# 老访客的缓存 308 依旧直达测试页，新访客落到官网。
+@router.get("/", include_in_schema=False)
+def root_page() -> RedirectResponse:
+    return RedirectResponse(url="/docs", status_code=302, headers={"Cache-Control": "no-store"})
+
+
+@router.get("/home", include_in_schema=False)
+def home_alias_page() -> RedirectResponse:
+    return RedirectResponse(url="/docs", status_code=302, headers={"Cache-Control": "no-store"})

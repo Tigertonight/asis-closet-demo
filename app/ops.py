@@ -33,7 +33,7 @@ def is_public_demo_mode() -> bool:
 
 # 对外（用户）可访问的页面路径前缀/精确路径。API/静态资源走各自鉴权。
 PUBLIC_PAGE_PREFIXES = ("/selfit", "/wearwow", "/static", "/user-assets")
-PUBLIC_PAGE_EXACT = ("/", "/favicon.ico", "/admin")
+PUBLIC_PAGE_EXACT = ("/", "/home", "/docs", "/favicon.ico", "/admin")
 
 # 需要管理员登录的内部页面（页面级；数据 API 由各自路由的鉴权保护）。
 INTERNAL_PAGE_RULES = (
