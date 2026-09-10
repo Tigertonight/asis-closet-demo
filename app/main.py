@@ -152,6 +152,7 @@ from app.selfit_report_outfits import router as selfit_report_outfits_router
 from app.selfit_analytics import admin_router as selfit_admin_router, router as selfit_analytics_router
 from app.selfit_admin_submissions import router as selfit_admin_submissions_router
 from app.qa_onboarding import QA_PHOTO_DIR, router as qa_onboarding_router
+from app.site_home import router as site_home_router
 from app.storage import hydrate_user_from_demo_data, storage_context, user_storage
 from scripts.generate_qa_artifacts import generate_qa_artifacts
 from scripts.check_runtime_readiness import readiness as runtime_readiness
@@ -171,6 +172,7 @@ app.include_router(selfit_analytics_router)
 app.include_router(selfit_admin_router)
 app.include_router(selfit_admin_submissions_router)
 app.include_router(qa_onboarding_router)
+app.include_router(site_home_router)
 SELFIT_INDEX_PATH = Path(__file__).resolve().parent / "static" / "selfit" / "index.html"
 ADMIN_INDEX_PATH = Path(__file__).resolve().parent / "static" / "admin" / "index.html"
 FAVICON_PATH = Path(__file__).resolve().parent / "static" / "brand" / "favicon.ico"
@@ -1043,11 +1045,6 @@ def _selfit_index_html(
         )
         html_text = html_text.replace("<head>", "<head>" + meta_tags, 1)
     return html_text
-
-
-@app.get("/", include_in_schema=False)
-def root_page() -> RedirectResponse:
-    return RedirectResponse(url="/selfit", status_code=308)
 
 
 @app.get("/favicon.ico", include_in_schema=False)
