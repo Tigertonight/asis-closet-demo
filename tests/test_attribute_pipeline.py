@@ -280,6 +280,30 @@ def test_body_photo_full_body_returns_label() -> None:
     assert measurements["hip_width"] > 0
 
 
+def test_body_photo_hands_on_hip_falls_back_to_bone_hip() -> None:
+    """叉腰全身照（内测实录，photo-v1 前被误拒为 body_unclear）。
+
+    手腕贴髋使髋部量测行全部不可靠，髋宽退回骨骼估计
+    （hip_source=bone_estimate），照片通过并给出分型，
+    置信度因骨骼兜底小幅下调。
+    """
+
+    result = ap.analyze_body_photo(_load_body_fixture("female_hands_on_hip_1.png"))
+    body = result["attributes"]["body_shape"]
+    # 不再因轮廓「不稳定」拒绝
+    assert result["status"] in {"pass", "warn"}
+    assert not any(issue["code"] == "body.silhouette_unclear" for issue in result["issues"])
+    assert body["label"] in ap.BODY_SHAPE_LABELS
+    evidence = body["evidence"]
+    assert evidence["hip_source"] == "bone_estimate"
+    measurements = evidence["measurements"]
+    assert measurements["hip_width"] > 0
+    # 骨骼兜底的髋宽 = 骨骼髋距 × 1.15
+    assert abs(measurements["hip_width"] - evidence["bone_hip_width"] * 1.15) < 0.5
+    # 手臂贴身提示保留（warn 级，不拦截）
+    assert any(issue["code"] == "body.arms_attached" for issue in result["issues"])
+
+
 def test_body_photo_face_only_fails_with_no_person() -> None:
     result = ap.analyze_body_photo(_load_fixture("real_clear_glasses.jpg"))
     body = result["attributes"]["body_shape"]

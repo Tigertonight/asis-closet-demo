@@ -39,7 +39,8 @@ from PIL import Image
 # 照片检测算法版本：门禁阈值、量测逻辑、分型口径任何一处调整都必须递增，
 # 并同步 docs/SELFIT_BACKEND_INTEGRATION.md。被拒照片留存记录会带此版本，
 # 管理后台按版本筛选——算法迭代后旧版本产生的拒绝记录可以直接过滤掉。
-PHOTO_ALGORITHM_VERSION = "photo-v1"
+# photo-v1.1：髋部量测行全被手臂遮挡（叉腰）时退回骨骼估计（此前整张拒绝）。
+PHOTO_ALGORITHM_VERSION = "photo-v1.1"
 
 try:
     import mediapipe as mp
@@ -297,6 +298,9 @@ def analyze_body_photo(image: Image.Image) -> dict[str, Any]:
         confidence -= 0.12
     if measure_meta.get("loose_clothing_suspect"):
         confidence -= 0.1
+    if measure_meta.get("hip_source") == "bone_estimate":
+        # 髋宽来自骨骼估计（叉腰等遮挡场景），分型证据弱一档
+        confidence -= 0.08
     status = "pass" if not issues else "warn"
     attr = _attribute(
         status,
@@ -826,10 +830,17 @@ def _measure_body_widths(mask: np.ndarray | None, pose: list[Any], img_w: int, i
 
     hip_ratio_reliable = hip_reliable_rows / max(len(hip_widths), 1)
     if hip_ratio_reliable < 0.2:
-        # 髋部各行都被手/手臂挡住，轮廓不可信
-        return None, {**meta, "hip_reliable_row_ratio": round(hip_ratio_reliable, 3)}
-
-    hip_w = float(np.percentile(hip_widths, 90))
+        # 髋部各行都被手/手臂挡住（典型：叉腰、手垂在髋侧）。
+        # 与肩宽同口径退回骨骼估计：手腕贴髋时手不外扩轮廓，
+        # 骨骼读数比挖残的 mask 更可靠；置信度层面由
+        # hip_source=bone_estimate 体现（分型置信度小幅下调）。
+        hip_w = bone_hip * 1.15
+        meta["hip_source"] = "bone_estimate"
+        meta["hip_reliable_row_ratio"] = round(hip_ratio_reliable, 3)
+    else:
+        hip_w = float(np.percentile(hip_widths, 90))
+        meta["hip_source"] = "silhouette"
+        meta["hip_reliable_row_ratio"] = round(hip_ratio_reliable, 3)
     waist_ratio_reliable = waist_reliable_rows / max(len(waist_widths), 1)
     waist_reliable = bool(waist_widths) and waist_ratio_reliable >= 0.4
     waist_w = float(np.percentile(waist_widths, 10)) if waist_reliable else None
