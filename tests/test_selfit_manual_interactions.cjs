@@ -16,6 +16,7 @@ function harness() {
   const state = { manual: { skin: '暖黄肤', faceShape: '椭圆脸', bodyShape: '矩型' }, authUser: { user_id: 'test-user' }, sessionId: 'old' };
   let created = 0, restored = 0;
   const context = {
+    window: {SelfitManualOptions: {renderOnboarding() {}}},
     state, document: { querySelector: node, querySelectorAll: () => [], documentElement: { lang: 'zh-CN' } },
     showScreen: name => screens.push(name), setPhotoState() {}, resetOnboardingPhotos() {}, track() {},
     runButtonAction: (_, action) => action(), authReady: Promise.resolve(), retestEntry: false,

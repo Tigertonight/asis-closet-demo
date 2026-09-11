@@ -262,9 +262,11 @@
   }
   function card(x, kind = "item", i = 0) {
     const mirrorNote = !reference && state.page === "mirror" && kind === "outfit";
+    // The default recommendation is browsing context, not evidence of a try-on.
+    const hasTryon = Boolean(state.generating || state.result || (reference && params.get("mirror_state") === "generating"));
     const target = state.generating?.target || state.current;
     const targetIds = [target?.id, target?.personalId].filter(Boolean);
-    const activeOutfit = state.page === "mirror" && kind === "outfit" &&
+    const activeOutfit = hasTryon && state.page === "mirror" && kind === "outfit" &&
       [x.id, x.personalId].some(id => id && targetIds.includes(id));
     const pending = activeOutfit && Boolean(state.generating || (reference && params.get("mirror_state") === "generating"));
     const mark = activeOutfit ? `<span class="outfit-state ${pending ? "pending" : ""}" aria-label="${pending ? "正在试穿" : "已选中"}">${pending ? "" : "✓"}</span>` : "";
@@ -617,6 +619,11 @@
   };
   const profileLabels = {faceShape:'脸型',skin:'肤色',bodyShape:'身型'};
   function profileArt(field, value) {
+    if (state.profile?.gender === 'male') {
+      const option = window.SelfitManualOptions.findOption('male', field, value);
+      if (!option) return '<span class="profile-unknown">—</span>';
+      return field === 'skin' ? `<i class="profile-skin" style="background:${option.color}"></i>` : image(option.src, option.label + '示意', 'profile-attribute-art');
+    }
     if(field === 'skin') return `<i class="profile-skin" style="background:${{'冷白肤':'#f5ddd0','暖白肤':'#f7dbc1','中性自然肤':'#fcd1bb','暖黄肤':'#dfb48a','橄榄肤':'#bbaa83','小麦色':'#b68c66'}[value] || '#eee'}"></i>`;
     const key = {'椭圆脸':'face-oval','圆脸':'face-round','方脸':'face-square','心形脸':'face-heart','菱形脸':'face-diamond','梨型':'body-pear','倒三角型':'body-inverted-triangle','沙漏型':'body-hourglass','矩型':'body-rectangle','苹果型':'body-apple'}[value];
     if(!key) return '<span class="profile-unknown">—</span>';
@@ -646,10 +653,9 @@
   }
   function profileFeatureEdit() {
     const field = state.profileEditingField;
-    const values = field === 'faceShape' ? ['菱形脸','方脸','圆脸','椭圆脸','心形脸'] : field === 'skin' ? ['冷白肤','暖白肤','中性自然肤','橄榄肤','暖黄肤','小麦色'] : profileOptions[field];
-    const assetKeys = {'菱形脸':'face-diamond','方脸':'face-square','圆脸':'face-round','椭圆脸':'face-oval','心形脸':'face-heart','梨型':'body-pear','倒三角型':'body-inverted-triangle','沙漏型':'body-hourglass','矩型':'body-rectangle','苹果型':'body-apple'};
-    const colors = {'冷白肤':'#FFDED7','暖白肤':'#FCD1BB','中性自然肤':'#F2C9B8','橄榄肤':'#E6D3AF','暖黄肤':'#E6BEAA','小麦色':'#CB956C'};
-    return `<section class="profile-screen profile-feature-screen"><header class="profile-header"><button data-action="cancel-profile-feature" aria-label="返回我的档案"><svg viewBox="0 0 24 24"><path d="m15 5-7 7 7 7"/></svg></button><h1>修改${profileLabels[field]}</h1></header><div class="profile-feature-content"><h2>${profileLabels[field]}</h2><div class="profile-feature-options" data-kind="${field}" role="group" aria-label="选择${profileLabels[field]}">${values.map(value=>`<button data-profile-choice="${value}" aria-pressed="${state.profileFeatureValue===value}"><span class="profile-feature-art">${field==='skin'?`<i style="background:${colors[value]}"></i>`:image('/static/selfit/assets/manual-selection/'+assetKeys[value]+'@4x.png',value+'示意')}</span><span>${esc(value)}</span></button>`).join('')}</div></div><button class="primary profile-save" data-action="confirm-profile-feature" ${state.profileFeatureValue && state.profileFeatureTouched?'':'disabled'}>保存修改</button></section>`;
+    const options = window.SelfitManualOptions.getOptions(state.profile?.gender, field);
+    const male = state.profile?.gender === 'male';
+    return `<section class="profile-screen profile-feature-screen"><header class="profile-header"><button data-action="cancel-profile-feature" aria-label="返回我的档案"><svg viewBox="0 0 24 24"><path d="m15 5-7 7 7 7"/></svg></button><h1>修改${profileLabels[field]}</h1></header><div class="profile-feature-content"><h2>${profileLabels[field]}</h2><div class="profile-feature-options" data-kind="${field}" data-gender="${male ? 'male' : 'female'}" role="group" aria-label="选择${profileLabels[field]}">${options.map(option=>`<button data-profile-choice="${esc(option.value)}" aria-pressed="${window.SelfitManualOptions.matches(option,state.profileFeatureValue)}"><span class="profile-feature-art">${field==='skin'?`<i style="background:${option.color}"></i>`:image(option.src,option.label+'示意')}</span><span>${esc(male ? option.label : option.value)}</span></button>`).join('')}</div></div><button class="primary profile-save" data-action="confirm-profile-feature" ${state.profileFeatureValue && state.profileFeatureTouched?'':'disabled'}>保存修改</button></section>`;
   }
   function profileEdit() {
     if(!state.profile || state.profileLoading) return profileStatus(true);
@@ -690,7 +696,7 @@
     if(state.profileLoading || (state.profile && !force)) return;
     state.profileLoading=true;state.profileError='';
     if(reference) {
-      state.profile={tested:true,revision:1,manual:{faceShape:'椭圆脸',skin:'中性自然肤',bodyShape:'矩型'},photos:{face:`${A}main-app/archive-face-reference.svg`,body:`${A}main-app/archive-body-reference.svg`},report:{reportId:'reference',typeId:'flou',title:'造梦浪漫',heroImage:{src:'/static/selfit/assets/personality/flou/hero.png?v=20260907-config-v2'}},suit:REFERENCE_PROFILE_SUIT};
+      state.profile={tested:true,revision:1,gender:params.get('profile_gender')==='male'?'male':'female',manual:{faceShape:'椭圆脸',skin:'中性自然肤',bodyShape:'矩型'},photos:{face:`${A}main-app/archive-face-reference.svg`,body:params.get('profile_gender')==='male'?`${A}main-app/archive-body-reference.svg`:'/static/selfit/assets/samples/female-body-sample-v2.jpg'},report:{reportId:'reference',typeId:'flou',title:'造梦浪漫',heroImage:{src:'/static/selfit/assets/personality/flou/hero.png?v=20260907-config-v2'}},suit:REFERENCE_PROFILE_SUIT};
       if(params.get('profile_state')==='untested') state.profile={tested:false,manual:{},photos:{},report:null,revision:1};
       if(params.get('profile_state')==='no-photo') state.profile.photos={face:null,body:null};
       state.profileSuit=state.profile.suit || null;

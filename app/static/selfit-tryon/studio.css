@@ -1665,6 +1665,11 @@ button.composition-piece:focus-visible { outline:2px solid #8a011b; outline-offs
 .profile-feature-options[data-kind="skin"] button[aria-pressed="true"] .profile-feature-art { border-color:transparent; background:none; }
 .profile-feature-options button[aria-pressed="true"] i { outline:1px solid #8a011b; outline-offset:3px; }
 .profile-feature-screen .profile-save { flex-shrink:0; width:calc(100% - 32px); min-height:48px; }
+.profile-feature-options[data-gender="male"][data-kind="faceShape"] .profile-feature-art { height:188px; }
+.profile-feature-options[data-gender="male"][data-kind="bodyShape"] .profile-feature-art { height:230px; }
+.profile-feature-options[data-gender="male"]:not([data-kind="skin"]) .profile-feature-art { grid-template-rows:minmax(0,1fr); overflow:hidden; padding:0; background:transparent; border-color:transparent; }
+.profile-feature-options[data-gender="male"]:not([data-kind="skin"]) img { width:100%; height:100%; object-fit:contain; }
+.profile-feature-options[data-gender="male"]:not([data-kind="skin"]) button[aria-pressed="true"] .profile-feature-art { outline:1px solid #8a011b; outline-offset:2px; }
 
 .import-approximate { display:block; padding:4px 5px; color:#8a011b; font-size:10px; line-height:1.5; }
 

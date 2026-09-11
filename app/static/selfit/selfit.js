@@ -493,9 +493,12 @@
     const ready = genderReady();
     const choosing = choosingGender();
     document.querySelector('[data-screen="suit"]').classList.toggle('is-choosing-gender', choosing);
+    document.querySelector('[data-screen="suit"]').setAttribute('aria-labelledby', choosing ? 'genderTitle' : 'suitTitle');
     document.querySelector('.gender-card').hidden = !choosing;
     document.querySelector('[data-suit-photos]').hidden = choosing;
-    document.querySelector('#suitTitle').textContent = choosing ? '选择你的性别' : '看看什么真的适合你';
+    document.querySelector('#suitTitle').textContent = '看看什么真的适合你';
+    document.querySelector('.gender-card').setAttribute('aria-busy', String(state.genderBusy));
+    document.querySelector('[data-suit-photos]').inert = choosing || state.genderBusy;
     document.querySelectorAll('[data-gender]').forEach(button => {
       const selected = state.gender === button.dataset.gender;
       button.classList.toggle('is-selected', selected);
@@ -509,13 +512,44 @@
     }
     syncSuitButton();
   };
-  const openGenderSelection = () => {
-    if (state.genderBusy) return;
-    state.genderEditing = true;
-    // Stop a pending result reveal from scrolling the gender selection offscreen.
-    ++suitRenderSeq;
+  const animateSuitPhase = async (panel, entering) => {
+    if (state.screen !== 'suit' || matchMedia('(prefers-reduced-motion: reduce)').matches || !panel?.animate) return;
+    // Animation is progressive enhancement: cancellation or an older browser must
+    // never prevent a saved choice from opening the upload controls.
+    let animation;
+    try {
+      animation = panel.animate(entering
+        ? [{ opacity: 0, transform: 'translateY(10px)' }, { opacity: 1, transform: 'translateY(0)' }]
+        : [{ opacity: 1, transform: 'translateY(0)' }, { opacity: 0, transform: 'translateY(-6px)' }],
+      { duration: entering ? 180 : 120, easing: 'cubic-bezier(.22,.61,.36,1)', fill: 'both' });
+      await animation.finished;
+    } catch { /* Keep the two-step flow usable even if motion is unavailable. */ }
+    finally { animation?.cancel(); }
+  };
+  const transitionSuitPhase = async (choosing) => {
+    const outgoing = document.querySelector(choosing ? '[data-suit-photos]' : '.gender-card');
+    const incoming = document.querySelector(choosing ? '.gender-card' : '[data-suit-photos]');
+    await animateSuitPhase(outgoing, false);
+    state.genderEditing = choosing;
     syncGenderControls();
-    document.querySelector('[data-screen="suit"]').scrollTo({ top: 0, behavior: 'instant' });
+    await animateSuitPhase(incoming, true);
+  };
+  const openGenderSelection = async () => {
+    if (state.genderBusy) return;
+    return runButtonAction(onboardingBack, async () => {
+      state.genderBusy = true;
+      // Stop a pending result reveal from scrolling the gender selection offscreen.
+      ++suitRenderSeq;
+      try {
+        syncGenderControls();
+        document.querySelector('[data-screen="suit"]').scrollTo({ top: 0, behavior: 'instant' });
+        await transitionSuitPhase(true);
+      } finally {
+        state.genderBusy = false;
+        syncGenderControls();
+      }
+      if (state.screen === 'suit') document.querySelector('[data-gender].is-selected')?.focus({ preventScroll: true });
+    });
   };
   document.querySelectorAll('[data-gender]').forEach(button => {
     button.addEventListener('click', () => runButtonAction(button, async () => {
@@ -527,12 +561,18 @@
         const sessionId = await ensureSession();
         const result = await api.saveGender(sessionId, gender);
         state.gender = gender;
-        state.genderEditing = false;
+        state.genderEditing = true;
         state.revision = result.session?.revision || state.revision;
+        syncGenderControls();
+        // Give the successful selection a brief, visible acknowledgement before
+        // replacing it in place. Reduced-motion users skip the pause and motion.
+        if (!matchMedia('(prefers-reduced-motion: reduce)').matches) await new Promise(resolve => setTimeout(resolve, 200));
+        await transitionSuitPhase(false);
       } finally {
         state.genderBusy = false;
         syncGenderControls();
       }
+      if (state.screen === 'suit') document.querySelector('[data-suit-photos]')?.focus({ preventScroll: true });
       await renderSuit();
     }));
   });
@@ -586,13 +626,15 @@
     manualBeforeEdit = { ...state.manual };
     manualSelections.clear();
     editingFeature = key;
+    window.SelfitManualOptions.renderOnboarding(document.querySelector('.manual-form'), state.gender);
     const suitScreen = document.querySelector('[data-screen="suit"]');
     suitReturnScroll = suitScreen ? suitScreen.scrollTop : null;
     document.querySelector('.manual-form').dataset.mode = key ? 'edit' : 'setup';
     document.querySelector('#manualTitle').textContent = key ? `修改${({skin:'肤色',faceShape:'脸型',bodyShape:'身材比例'})[key]}` : '选择更接近自己的特点';
     document.querySelectorAll('.manual-group').forEach(group => { group.hidden = Boolean(key && group.querySelector('[data-manual]').dataset.manual !== key); });
     document.querySelectorAll('[data-manual]').forEach(button => {
-      const selected = state.manual[button.dataset.manual] === button.dataset.value;
+      const option = window.SelfitManualOptions.findOption(state.gender, button.dataset.manual, button.dataset.value);
+      const selected = option && window.SelfitManualOptions.matches(option, state.manual[button.dataset.manual]);
       button.classList.toggle('is-selected', selected);
       button.setAttribute('aria-pressed', String(selected));
     });
@@ -723,14 +765,20 @@
   bindUpload('facePhoto', 'face'); bindUpload('bodyPhoto', 'body');
   // Built-in sample photos let visitors experience the analysis without their own uploads.
   const SAMPLE_PHOTOS = {
-    face: '/static/selfit/assets/samples/face-sample.jpg',
-    body: '/static/selfit/assets/samples/body-sample.jpg',
+    female: {
+      face: '/static/selfit/assets/samples/female-face-sample.png',
+      body: '/static/selfit/assets/samples/female-body-sample-v2.jpg',
+    },
+    male: {
+      face: '/static/selfit/assets/samples/male-face-sample.png',
+      body: '/static/selfit/assets/samples/male-body-sample.png',
+    },
   };
   document.querySelectorAll('[data-sample-photo]').forEach((button) => {
     button.addEventListener('click', () => runButtonAction(button, async () => {
       const kind = button.dataset.samplePhoto;
       if (!genderReady()) return;
-      const url = SAMPLE_PHOTOS[kind];
+      const url = SAMPLE_PHOTOS[state.gender]?.[kind];
       if (!url) throw new Error('示例图暂时无法加载，请稍后再试。');
       const response = await fetch(url);
       if (!response.ok) throw new Error('示例图暂时无法加载，请稍后再试。');

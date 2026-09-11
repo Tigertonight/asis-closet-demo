@@ -22,6 +22,7 @@ from app import selfit_photo, selfit_report, selfit_share
 from app.auth import get_current_user, get_optional_user
 from app.ops import env_int
 from app.storage import ROOT_DIR
+from app.selfit_recommend import MANUAL_FACE_SHAPE_OPTIONS, MANUAL_BODY_SHAPE_OPTIONS
 
 # iPhone 手机直拍默认是 HEIC/HEIF；不注册 opener 的话 PIL 直接打不开，
 # 用户会看到「格式不对」（内测反馈：接真实链路后手机直拍全部被拦）。
@@ -58,8 +59,8 @@ REPORT_ESTIMATED_STAGES = (
 )
 
 SKIN_OPTIONS = {"冷白肤", "暖白肤", "中性自然肤", "暖黄肤", "橄榄肤", "小麦色"}
-FACE_SHAPE_OPTIONS = {"椭圆脸", "圆脸", "方脸", "心形脸", "菱形脸"}
-BODY_SHAPE_OPTIONS = {"梨型", "倒三角型", "沙漏型", "矩型", "苹果型"}
+FACE_SHAPE_OPTIONS = set(MANUAL_FACE_SHAPE_OPTIONS)
+BODY_SHAPE_OPTIONS = set(MANUAL_BODY_SHAPE_OPTIONS)
 MANUAL_FIELDS = {"skin": SKIN_OPTIONS, "faceShape": FACE_SHAPE_OPTIONS, "bodyShape": BODY_SHAPE_OPTIONS}
 
 PREFERENCE_AXES = {"shape", "energy", "trend"}
@@ -1260,6 +1261,7 @@ async def update_my_profile(request: Request, user: dict[str, Any] = Depends(get
         return _error_response(409, "profile.revision_conflict", "档案已更新，请刷新后再保存。")
     report["profile"] = {"manual": {**current["manual"], **manual},
                          "manualOverrides": {**current["manualOverrides"], **manual},
+                         "gender": current.get("gender"),
                          "revision": current["revision"] + 1}
     _write_store(data)
     return JSONResponse({"profile": _account_profile(data, user["user_id"])})
