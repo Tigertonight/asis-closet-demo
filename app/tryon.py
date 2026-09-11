@@ -23,6 +23,7 @@ from fastapi import HTTPException, UploadFile
 from PIL import Image, ImageDraw, ImageFilter, UnidentifiedImageError
 
 from app.storage import storage_context, user_asset_public_path, user_storage
+from app import vertex_image
 
 
 ROOT_DIR = Path(__file__).resolve().parents[1]
@@ -225,6 +226,8 @@ def _default_tryon_vision_model() -> str:
 
 def image_edit_model() -> str:
     """The single model selection point for try-on and garment cutout."""
+    if vertex_image.enabled():
+        return vertex_image.model()
     return os.getenv("TRYON_IMAGE_MODEL") or "nano-banana"
 
 
@@ -820,6 +823,8 @@ async def extract_xhs_link(url: str) -> dict[str, Any]:
 
 def tryon_capabilities() -> dict[str, Any]:
     from app.local_codex_image import enabled
+    vertex_selected = vertex_image.enabled()
+    vertex_configured = vertex_image.configured()
     local_codex_enabled = enabled()
     base_url = _openai_base_url()
     chat_supported = bool(base_url and _openai_chat_or_responses_supported(base_url))
@@ -838,13 +843,18 @@ def tryon_capabilities() -> dict[str, Any]:
             "runway_google_configured": runway_google_supported,
             "runway_google_note": "configured_only_image_output_must_be_verified_by_generation",
             "local_codex_bridge_enabled": local_codex_enabled,
+            "vertex_adc_selected": vertex_selected,
+            "vertex_adc_configured": vertex_configured,
+            "image_model": image_edit_model(),
         },
         "features": {
             "garment_analysis": "vlm" if chat_supported or has_key else "local_cv_fallback",
             "fashion_item_detection": "top_only_local_mvp",
             "clean_item_reference": "local_crop_placeholder",
             "image_edit": (
-                "local_codex_imagegen"
+                (vertex_image.MODE if vertex_configured else "unavailable")
+                if vertex_selected
+                else "local_codex_imagegen"
                 if local_codex_enabled
                 else "runway_google_generate_content"
                 if runway_google_supported
@@ -875,6 +885,7 @@ def tryon_capabilities() -> dict[str, Any]:
             "openai_compatible_text_or_vision": chat_supported,
             "openai_compatible_images_edit": image_edit_supported,
             "runway_google_generate_content": runway_google_supported,
+            "vertex_adc_generate_content": vertex_configured,
         },
         "validation": {
             "status": "ready",
@@ -883,11 +894,13 @@ def tryon_capabilities() -> dict[str, Any]:
             "source": "same_pattern_as_color_mvp_fixture_validation",
         },
         "production": {
-            "status": "ready" if image_edit_supported or has_key else "runway_google_configured" if runway_google_supported else "image_edit_pending",
-            "required_capability": "Runway Google generateContent image output or OpenAI-compatible images.edit",
+            "status": ("vertex_adc_configured" if vertex_configured else "image_edit_pending") if vertex_selected else "ready" if image_edit_supported or has_key else "runway_google_configured" if runway_google_supported else "image_edit_pending",
+            "required_capability": "Vertex ADC / Runway Google generateContent image output or OpenAI-compatible images.edit",
         },
         "message": (
-            "本地 Codex 试穿桥接已启用，生成时使用已登录账号的图片工具。"
+            ("图片生成授权已配置，生成时会验证图片输出能力。" if vertex_configured else "图片生成授权尚未就绪，请联系管理员。")
+            if vertex_selected
+            else "本地 Codex 试穿桥接已启用，生成时使用已登录账号的图片工具。"
             if local_codex_enabled
             else "Runway Google 代理已配置，生成时会验证是否支持图片输出。"
             if runway_google_supported
@@ -1378,6 +1391,9 @@ def _load_completed_tryon_cache(path: Path) -> dict[str, Any] | None:
         data = json.loads(path.read_text(encoding="utf-8"))
         if data.get("pipeline_version") != OUTFIT_TRYON_PIPELINE_VERSION:
             return None
+        expected_backend = f"{vertex_image.MODE}:{vertex_image.model()}" if vertex_image.enabled() else None
+        if data.get("image_backend") != expected_backend:
+            return None
         public_path = str(data.get("result", {}).get("image_path") or "")
         if public_path.startswith("/user-assets/tryon/"):
             disk_path = _tryon_output_dir() / public_path.replace("/user-assets/tryon/", "", 1)
@@ -1396,6 +1412,8 @@ def _load_completed_tryon_cache(path: Path) -> dict[str, Any] | None:
 
 def _write_completed_tryon_cache(path: Path, payload: dict[str, Any]) -> None:
     cached = {**payload, "pipeline_version": OUTFIT_TRYON_PIPELINE_VERSION, "cached": False}
+    if vertex_image.enabled():
+        cached["image_backend"] = f"{vertex_image.MODE}:{vertex_image.model()}"
     tmp_path = path.with_suffix(".tmp")
     tmp_path.write_text(json.dumps(cached, ensure_ascii=False, indent=2), encoding="utf-8")
     tmp_path.replace(path)
@@ -2028,24 +2046,30 @@ class RunwayGoogleTryOnProvider(TryOnProvider):
         self.url = url or _runway_google_url()
         self.api_key = api_key or _runway_google_api_key()
 
+    def _available(self) -> bool:
+        return bool(self.api_key)
+
+    def _request(self, payload: dict[str, Any], person_image: Path) -> dict[str, Any]:
+        response = httpx.post(
+            self.url,
+            headers={**_runway_google_auth_headers(self.url, self.api_key), "Content-Type": "application/json"},
+            json=payload,
+            timeout=180,
+        )
+        response.raise_for_status()
+        return response.json()
+
     def edit(self, person_image: Path, garment_image: Path, mask_image: Path, prompt: str, output_dir: Path) -> dict[str, Any]:
-        if not self.api_key:
+        if not self._available():
             return {
                 "stage": _stage("fail", 0.0, {"provider": self.mode, "url": self.url}, [
-                    _issue("image_edit.provider_unavailable", "未配置 Runway 图片代理授权", "请配置 Runway Google 代理 key 后再生成。")
+                    _issue("image_edit.provider_unavailable", "图片生成服务尚未就绪", "请联系管理员检查图片服务授权。")
                 ]),
                 "image_path": None,
             }
         try:
             payload = _build_runway_google_tryon_payload(person_image, garment_image, mask_image, prompt)
-            response = httpx.post(
-                self.url,
-                headers={**_runway_google_auth_headers(self.url, self.api_key), "Content-Type": "application/json"},
-                json=payload,
-                timeout=180,
-            )
-            response.raise_for_status()
-            data = response.json()
+            data = self._request(payload, person_image)
             provider_error = _runway_google_error_summary(data)
             if provider_error:
                 return {
@@ -2079,12 +2103,13 @@ class RunwayGoogleTryOnProvider(TryOnProvider):
                     "target_size": _image_size_evidence(person_image)},
                     [_issue("quality.framing_changed", "试穿图构图异常", "请重新生成，保持原照片中的人物与构图。")]),
                     "image_path": None}
-            output_path = output_dir / "result_runway_google.png"
+            output_path = output_dir / ("result_vertex_adc.png" if self.mode == vertex_image.MODE else "result_runway_google.png")
             _save_png_atomically(image, output_path)
             return {
                 "stage": _stage("pass", 0.82, {
                     "provider": self.mode,
                     "url": self.url,
+                    "model": image_edit_model(),
                     "result_path": str(output_path),
                     "mime_type": mime_type,
                     "target_size": _image_size_evidence(person_image),
@@ -2097,10 +2122,36 @@ class RunwayGoogleTryOnProvider(TryOnProvider):
         except Exception as exc:  # pragma: no cover - depends on external proxy availability
             return {
                 "stage": _stage("fail", 0.0, {"provider": self.mode, "url": self.url, "error": str(exc)}, [
-                    _issue("image_edit.provider_error", "Runway 图片代理调用失败", "请检查代理地址、key 或稍后重试。")
+                    _issue("image_edit.provider_error", "图片生成暂时失败", "请稍后重试，若持续失败请联系管理员。")
                 ]),
                 "image_path": None,
             }
+
+
+class VertexADCTryOnProvider(RunwayGoogleTryOnProvider):
+    mode = vertex_image.MODE
+
+    def __init__(self) -> None:
+        # An explicitly selected ADC backend must not fall back to another vendor.
+        try:
+            self.url = vertex_image.endpoint()
+        except ValueError:
+            self.url = ""
+
+    def _available(self) -> bool:
+        return vertex_image.configured()
+
+    def _request(self, payload: dict[str, Any], person_image: Path) -> dict[str, Any]:
+        with Image.open(person_image) as source:
+            ratio = source.width / source.height
+        ratios = {"1:1": 1, "2:3": 2/3, "3:2": 3/2, "3:4": 3/4, "4:3": 4/3,
+                  "4:5": 4/5, "5:4": 5/4, "9:16": 9/16, "16:9": 16/9, "21:9": 21/9}
+        payload["generationConfig"]["imageConfig"] = {
+            "aspectRatio": min(ratios, key=lambda key: abs(ratios[key] - ratio)),
+            "imageSize": "2K",
+        }
+        payload["generationConfig"]["candidateCount"] = 1
+        return vertex_image.generate_content(payload)
 
 
 class UnavailableTryOnProvider(TryOnProvider):
@@ -3734,6 +3785,8 @@ def _review_tryon_quality(original: Image.Image, result_path: Path | None, perso
 
 
 def _default_provider() -> TryOnProvider:
+    if vertex_image.enabled():
+        return VertexADCTryOnProvider()
     from app.local_codex_image import enabled
     if enabled():
         return LocalCodexImageGenTryOnProvider()
@@ -4538,7 +4591,19 @@ def _review_outfit_semantics(result_path: Path, plan: dict[str, Any]) -> dict[st
     try:
         payload: dict[str, Any]
         provider = ""
-        if _has_openai_compatible_provider():
+        if vertex_image.enabled():
+            data = vertex_image.generate_content({
+                "contents": [{"role": "user", "parts": [{"text": prompt}, _path_to_runway_inline_data(result_path)]}],
+                "generationConfig": {"temperature": 0, "maxOutputTokens": 4096},
+            }, timeout=90)
+            text = "\n".join(
+                part["text"] for candidate in data.get("candidates", [])
+                for part in candidate.get("content", {}).get("parts", [])
+                if isinstance(part.get("text"), str) and not part.get("thought")
+            )
+            payload = _extract_json_object(text)
+            provider = "vertex_adc_vision"
+        elif _has_openai_compatible_provider():
             from openai import OpenAI
 
             client = _openai_compatible_client(OpenAI)

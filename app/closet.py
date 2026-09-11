@@ -20,6 +20,7 @@ import httpx
 from fastapi import HTTPException, UploadFile
 from PIL import Image, ImageDraw, ImageFilter, ImageOps, UnidentifiedImageError
 
+from app import vertex_image
 from app.storage import storage_context, user_asset_public_path
 from app.selfit_recommend import content_pool as selfit_content_pool
 from app.recommendation_diversity import select_diverse_outfits, style_family_map
@@ -538,6 +539,8 @@ class AIGarmentCutoutProvider:
         enabled = os.environ.get("SELFIT_GARMENT_AI_ENABLED", "1").strip().lower()
         if enabled in {"0", "false", "no", "off"}:
             return None
+        if vertex_image.enabled():
+            return vertex_image.MODE if vertex_image.configured() else None
         config_signature = (
             enabled,
             os.environ.get("TRYON_RUNWAY_GOOGLE_URL"),
@@ -568,10 +571,12 @@ class AIGarmentCutoutProvider:
         if os.environ.get("SELFIT_GARMENT_AI_ENABLED", "1").strip().lower() in {"0", "false", "no", "off"}:
             return "disabled_by_env"
         provider = self._provider_kind()
+        if provider == vertex_image.MODE:
+            return "available_via_vertex_adc"
         return "available_via_runway" if provider == "runway_google_generate_content" else "available_via_openai" if provider else "provider_not_configured"
 
     def _uses_runway(self) -> bool:
-        return self._provider_kind() == "runway_google_generate_content"
+        return self._provider_kind() in {"runway_google_generate_content", vertex_image.MODE}
 
     def _uses_openai(self) -> bool:
         return self._provider_kind() == "openai_image_edit"
@@ -757,9 +762,6 @@ class AIGarmentCutoutProvider:
         return _normalize_inventory_candidates(payload.get("items"))
 
     def _analyze_inventory_with_runway(self, image: Image.Image, prompt: str) -> str:
-        api_key = _runway_google_api_key()
-        if not api_key:
-            return ""
         buffer = io.BytesIO()
         image.convert("RGB").save(buffer, "JPEG", quality=92)
         payload = {
@@ -772,18 +774,11 @@ class AIGarmentCutoutProvider:
             # the image model to generate a wasteful image response.
             "generationConfig": {"temperature": 0.1, "maxOutputTokens": 4096},
         }
-        response = httpx.post(
-            _runway_google_url(),
-            headers={**_runway_google_auth_headers(_runway_google_url(), api_key), "Content-Type": "application/json"},
-            json=payload,
-            timeout=90,
-        )
-        response.raise_for_status()
-        data = response.json()
+        data = self._google_request(payload, timeout=90)
         texts: list[str] = []
         for candidate in data.get("candidates") or []:
             for part in ((candidate.get("content") or {}).get("parts") or []):
-                if isinstance(part.get("text"), str):
+                if isinstance(part.get("text"), str) and not part.get("thought"):
                     texts.append(part["text"])
         return "\n".join(texts)
 
@@ -823,10 +818,21 @@ class AIGarmentCutoutProvider:
             return self._generate_openai_cutout(source_path, category)
         return None
 
-    def _generate_runway_cutout(self, source_path: Path, category: str | None = None) -> Image.Image | None:
+    def _google_request(self, payload: dict[str, Any], *, timeout: float) -> dict[str, Any]:
+        if vertex_image.enabled():
+            return vertex_image.generate_content(payload, timeout=timeout)
         api_key = _runway_google_api_key()
         if not api_key:
-            return None
+            return {}
+        response = httpx.post(
+            _runway_google_url(),
+            headers={**_runway_google_auth_headers(_runway_google_url(), api_key), "Content-Type": "application/json"},
+            json=payload, timeout=timeout,
+        )
+        response.raise_for_status()
+        return response.json()
+
+    def _generate_runway_cutout(self, source_path: Path, category: str | None = None) -> Image.Image | None:
         prompt = (
             f"请从输入图片中提取唯一的{_fashion_category_label(category) if category else '主服饰/鞋/包'}单品，生成忠实的商品抠图。"
             "完整保留原始单品的轮廓、颜色、面料纹理、蕾丝、纽扣、印花、鞋带、背带和边缘。"
@@ -851,14 +857,10 @@ class AIGarmentCutoutProvider:
             ],
         }
         try:
-            response = httpx.post(
-                _runway_google_url(),
-                headers={**_runway_google_auth_headers(_runway_google_url(), api_key), "Content-Type": "application/json"},
-                json=payload,
-                timeout=180,
-            )
-            response.raise_for_status()
-            data = response.json()
+            if vertex_image.enabled():
+                payload["generationConfig"]["imageConfig"] = {"imageSize": "2K"}
+                payload["generationConfig"]["candidateCount"] = 1
+            data = self._google_request(payload, timeout=180)
             provider_error = _runway_google_error_summary(data)
             if provider_error:
                 self.last_attempt.update({"status": "failed", "reason": "runway_provider_error", "provider_error": provider_error})
