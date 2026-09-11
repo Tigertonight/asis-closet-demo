@@ -4,6 +4,7 @@ This file is the frontend source of truth for the consumer product in the Figma 
 
 ## Public website — 2026-09-11
 
+- Keep the existing `/docs` homepage hero, copy, 16-style gallery and all three consumer sections. Remove the “三步体验 / 16 型风格 / 为什么是 selfit” navigation cards and their divider from the homepage hero; retain the actual sections and original hero actions. The shared top navigation uses “首页 / 穿搭智能 / 技术体系 / 用户研究 / 实践与合作”; each project topic opens its own `/docs/<slug>` second-level page, with a current-page state and home link. Remove the “本页内容” chapter navigation from every second-level page and center its reading column without reserving sidebar space (user correction, 2026-09-11). Do not replace the homepage with project-research content or make the top project tabs scroll within the homepage.
 - The public website at `/docs` keeps its mobile reading flow and centered desktop layout. Use consistent side gutters, vertically stacked hero actions on phones, and a two-column personality grid; expand columns only when there is room.
 - All website artwork scales proportionally. The hero uses its actual intrinsic dimensions with responsive width and automatic height. Personality cards use complete-image `contain` fitting; never stretch or crop the fused artwork to fill a card.
 - Keep the primary test entry at least 44px tall, allow card captions to wrap, and offset section anchors below the sticky header. Verify narrow phones, 390–430px phones, tablets and desktop without horizontal overflow.

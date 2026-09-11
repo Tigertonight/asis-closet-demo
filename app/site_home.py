@@ -3,6 +3,7 @@
 内容驱动：默认文案在 `app/static/site/content.json`（随 git 发布）；
 服务器可用 `outputs/site/content.json` 覆盖（数据目录，改完刷新即生效，
 无需重新部署）。改文案 / 增删板块 / 调整顺序都只动 JSON。
+项目介绍二级页在 `app/static/site/project-pages.json`，通过 `/docs/{slug}` 公开访问。
 
 支持的板块类型：
 - steps   标题 + 编号步骤列表
@@ -18,13 +19,14 @@ import json
 from pathlib import Path
 from typing import Any
 
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException
 from fastapi.responses import HTMLResponse, RedirectResponse
 
 from app.storage import ROOT_DIR
 
 DEFAULT_CONTENT_PATH = Path(__file__).resolve().parent / "static" / "site" / "content.json"
 OVERRIDE_CONTENT_PATH = ROOT_DIR / "outputs" / "site" / "content.json"
+PROJECT_PAGES_PATH = DEFAULT_CONTENT_PATH.with_name("project-pages.json")
 
 router = APIRouter(tags=["site-home"])
 
@@ -62,6 +64,49 @@ def _hero_image(code: str) -> str:
     if lowered and asset.exists():
         return f"/static/selfit/assets/personality/{_esc(lowered)}/hero.png"
     return "/static/selfit/assets/personality/placeholder-card.svg"
+
+
+def load_project_pages() -> list[dict[str, Any]]:
+    """二级页与全站导航一起随代码发布；首页文案覆盖不会覆盖页面路由。"""
+    return json.loads(PROJECT_PAGES_PATH.read_text(encoding="utf-8"))["pages"]
+
+
+def _project_body(page: dict[str, Any]) -> str:
+    chapters = page.get("chapters") or []
+    sections = []
+    for index, chapter in enumerate(chapters, start=1):
+        paragraphs = "".join(f'<p>{_esc(text)}</p>' for text in chapter.get("paragraphs", []))
+        points = "".join(f'<li>{_esc(text)}</li>' for text in chapter.get("points", []))
+        points_html = f'<ul class="chapter-points">{points}</ul>' if points else ""
+        cards = "".join(
+            f'<article class="chapter-card"><h3>{_esc(item.get("title"))}</h3><p>{_esc(item.get("text"))}</p></article>'
+            for item in chapter.get("cards", [])
+        )
+        cards_html = f'<div class="chapter-cards">{cards}</div>' if cards else ""
+        metrics = "".join(
+            f'<div><dt>{_esc(item.get("label"))}</dt><dd>{_esc(item.get("value"))}</dd></div>'
+            for item in chapter.get("metrics", [])
+        )
+        metrics_html = f'<dl class="chapter-metrics">{metrics}</dl>' if metrics else ""
+        note = f'<p class="chapter-note">{_esc(chapter.get("note"))}</p>' if chapter.get("note") else ""
+        sections.append(
+            f'<section class="chapter" id="chapter-{index}" aria-labelledby="chapter-title-{index}">'
+            f'<p class="chapter-index">{index:02d} / {_esc(chapter.get("eyebrow"))}</p>'
+            f'<h2 id="chapter-title-{index}">{_esc(chapter.get("title"))}</h2>'
+            f'{paragraphs}{metrics_html}{cards_html}{points_html}{note}</section>'
+        )
+    return (
+        '<div class="project-page container">'
+        f'<nav class="breadcrumb" aria-label="当前位置"><a href="/docs">首页</a><span aria-hidden="true">/</span><span>{_esc(page.get("label"))}</span></nav>'
+        '<header class="project-intro">'
+        f'<p class="eyebrow">{_esc(page.get("eyebrow"))}</p>'
+        f'<h1>{_esc(page.get("title"))}</h1><p class="project-lead">{_esc(page.get("lead"))}</p>'
+        f'<p class="project-byline">{_esc(page.get("byline"))}</p></header>'
+        f'<div class="project-chapters">{"".join(sections)}</div>'
+        '<div class="project-end"><p>从了解 selfit，到认识自己。</p>'
+        '<a class="btn btn--ghost" href="/docs">返回首页</a>'
+        '<a class="btn btn--primary" href="/selfit">免费测我的风格</a></div></div>'
+    )
 
 
 def _section_steps(section: dict[str, Any]) -> str:
@@ -114,15 +159,18 @@ _SECTION_RENDERERS = {
 }
 
 
-def render_site_html(content: dict[str, Any]) -> str:
+def render_site_html(content: dict[str, Any], page: dict[str, Any] | None = None) -> str:
     site = content.get("site") or {}
     hero = content.get("hero") or {}
     primary = hero.get("primaryCta") or {}
     secondary = hero.get("secondaryCta") or {}
-    nav_links = "".join(
-        f'<a href="{_safe_href(item.get("href"))}">{_esc(item.get("label"))}</a>'
-        for item in (content.get("nav") or [])
-    )
+    nav_items = [{"slug": "", "label": "首页"}, *load_project_pages()]
+    current_slug = page["slug"] if page else ""
+    nav_links = ""
+    for item in nav_items:
+        href = f'/docs/{item["slug"]}' if item["slug"] else "/docs"
+        active = ' aria-current="page"' if item["slug"] == current_slug else ""
+        nav_links += f'<a href="{_safe_href(href)}"{active}>{_esc(item.get("label"))}</a>'
     # 普通板块走窄容器；cta 板块通栏（酒红底色要铺满屏幕宽）。
     inline_sections = []
     cta_sections = []
@@ -140,14 +188,36 @@ def render_site_html(content: dict[str, Any]) -> str:
     )
     name = site.get("name") or "selfit"
     tagline = site.get("tagline") or ""
+    page_title = page.get("label") if page else "先认识自己，再决定怎么穿"
+    description = page.get("lead") if page else hero.get("subtitle") or "1 分钟，找到真正衬你的风格"
+    secondary_html = (
+        f'<a class="btn btn--ghost btn--lg" href="{_safe_href(secondary.get("href"))}">{_esc(secondary.get("label"))}</a>'
+        if secondary.get("label") else ""
+    )
+    body_html = _project_body(page) if page else f"""
+    <div class="hero container">
+      <div class="hero-inner">
+        <p class="eyebrow">{_esc(hero.get("eyebrow"))}</p>
+        <h1>{_esc(hero.get("title"))}</h1>
+        <p class="sub">{_esc(hero.get("subtitle"))}</p>
+        <div class="hero-actions">
+          <a class="btn btn--primary btn--lg" href="{_safe_href(primary.get("href"))}">{_esc(primary.get("label"))}</a>
+          {secondary_html}
+        </div>
+      </div>
+      <img class="hero-board" src="/static/selfit/assets/login-persona-board@2x.png" alt="selfit 风格人格展示" width="2808" height="3208" fetchpriority="high" />
+    </div>
+    <div class="container">{sections_html}</div>
+    {cta_html}
+    """
 
     return f"""<!doctype html>
 <html lang="zh-CN">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>{_esc(name)} · {_esc(tagline)} | 先认识自己，再决定怎么穿</title>
-  <meta name="description" content="{_esc(hero.get("subtitle") or "1 分钟，找到真正衬你的风格")}" />
+  <title>{_esc(name)} · {_esc(tagline)} | {_esc(page_title)}</title>
+  <meta name="description" content="{_esc(description)}" />
   <link rel="icon" type="image/svg+xml" href="/static/brand/favicon.svg" />
   <link rel="icon" type="image/png" sizes="32x32" href="/static/brand/favicon-32.png" />
   <link rel="apple-touch-icon" href="/static/brand/apple-touch-icon.png" />
@@ -167,9 +237,9 @@ def render_site_html(content: dict[str, Any]) -> str:
     .topbar {{ position: sticky; top: 0; z-index: 40; display: flex; flex-wrap: wrap; align-items: center; gap: 12px; padding: max(12px, env(safe-area-inset-top)) max(var(--page-gutter), env(safe-area-inset-right)) 12px max(var(--page-gutter), env(safe-area-inset-left)); background: rgba(255,255,255,.92); backdrop-filter: blur(8px); border-bottom: 1px solid var(--line); }}
     .wordmark {{ display: inline-flex; align-items: center; min-height: 44px; font-size: 18px; font-weight: 800; letter-spacing: .5px; color: var(--brand); text-decoration: none; }}
     .wordmark small {{ margin-left: 8px; color: var(--muted); font-weight: 500; font-size: 14px; }}
-    .topnav {{ display: none; gap: 22px; margin-left: auto; }}
-    .topnav a {{ display: inline-flex; align-items: center; min-height: 44px; color: var(--muted); text-decoration: none; font-size: 14px; }}
-    .topnav a:hover {{ color: var(--brand); }}
+    .topnav {{ order: 3; display: flex; flex-wrap: wrap; flex: 1 0 100%; gap: 2px; min-width: 0; }}
+    .topnav a {{ display: inline-flex; flex-shrink: 0; align-items: center; justify-content: center; min-width: 44px; min-height: 44px; padding: 8px 3px; border-radius: 999px; color: var(--muted); text-decoration: none; font-size: 14px; white-space: nowrap; }}
+    .topnav a:hover, .topnav a[aria-current="page"] {{ color: var(--brand); background: #f8ecef; }}
     .topbar .btn {{ margin-left: auto; min-height: 44px; padding: 10px 18px; font-size: 14px; }}
 
     .container {{ width: 100%; max-width: 1080px; margin: 0 auto; padding-inline: max(var(--page-gutter), env(safe-area-inset-left)) max(var(--page-gutter), env(safe-area-inset-right)); }}
@@ -189,7 +259,7 @@ def render_site_html(content: dict[str, Any]) -> str:
     .btn--ghost:hover {{ background: #fbf4f5; }}
     .btn--lg {{ min-height: 52px; padding: 12px 24px; font-size: 16px; }}
 
-    .section {{ padding: 40px 0 8px; scroll-margin-top: 96px; }}
+    .section {{ padding: 40px 0 8px; scroll-margin-top: 144px; }}
     .section h2 {{ margin: 0 0 8px; font-size: 24px; letter-spacing: -.3px; text-align: center; text-wrap: balance; }}
     .section-note {{ margin: 0 0 24px; color: var(--muted); text-align: center; font-size: 14px; }}
 
@@ -224,13 +294,43 @@ def render_site_html(content: dict[str, Any]) -> str:
     footer a {{ color: var(--muted); text-decoration: none; }}
     footer a:hover {{ color: var(--brand); }}
 
+    .project-page {{ max-width: 840px; padding-bottom: 20px; }}
+    .breadcrumb {{ display: flex; gap: 12px; align-items: center; padding-top: 16px; color: var(--muted); font-size: 14px; }}
+    .breadcrumb a {{ display: inline-flex; align-items: center; min-height: 44px; color: var(--brand); text-decoration: none; }}
+    .project-intro {{ padding: 28px 0 36px; border-bottom: 1px solid var(--line); }}
+    .project-intro .eyebrow {{ margin: 0 0 12px; color: var(--brand); font-size: 14px; font-weight: 600; }}
+    .project-intro h1 {{ max-width: 780px; margin: 0 0 18px; font-size: clamp(28px, 6vw, 44px); line-height: 1.4; text-wrap: balance; letter-spacing: -.5px; }}
+    .project-lead {{ max-width: 760px; margin: 0; color: var(--muted); font-size: 16px; line-height: 1.9; }}
+    .project-byline {{ margin: 24px 0 0; color: var(--muted); font-size: 14px; }}
+    .project-chapters {{ min-width: 0; }}
+    .chapter {{ padding: 28px 0 36px; border-bottom: 1px solid var(--line); scroll-margin-top: 144px; }}
+    .chapter-index {{ margin: 0 0 8px; color: var(--brand); font-size: 14px; }}
+    .chapter h2 {{ margin: 0 0 16px; font-size: 25px; line-height: 1.5; }}
+    .chapter > p:not(.chapter-index) {{ color: var(--muted); line-height: 1.9; }}
+    .chapter-cards {{ display: grid; gap: 12px; margin-top: 24px; }}
+    .chapter-card {{ min-width: 0; padding: 22px; border: 1px solid var(--line); border-radius: 20px; background: #fff; }}
+    .chapter-card h3 {{ margin: 0 0 8px; font-size: 17px; line-height: 1.5; }}
+    .chapter-card p {{ margin: 0; color: var(--muted); font-size: 14px; line-height: 1.85; }}
+    .chapter-points {{ margin: 22px 0 0; padding-left: 20px; color: var(--muted); }}
+    .chapter-points li {{ padding-left: 4px; margin: 10px 0; }}
+    .chapter-points li::marker {{ color: var(--brand); }}
+    .chapter-metrics {{ display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin: 24px 0; }}
+    .chapter-metrics > div {{ display: flex; flex-direction: column; gap: 4px; min-width: 0; padding: 20px; background: #f8edef; border-radius: 20px; }}
+    .chapter-metrics dt {{ color: var(--muted); font-size: 14px; }}
+    .chapter-metrics dd {{ order: -1; margin: 0; color: var(--brand); font-size: 30px; font-weight: 600; line-height: 1.4; }}
+    .chapter .chapter-note {{ margin-top: 24px; padding: 16px 20px; background: #f4f1f1; border-radius: 16px; font-size: 14px; }}
+    .project-end {{ display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; margin-top: 40px; padding: 32px 20px; border-radius: 24px; background: #f8edef; }}
+    .project-end p {{ flex-basis: 100%; margin: 0 0 8px; font-size: 20px; text-align: center; }}
+
     @media (min-width: 600px) {{
       :root {{ --page-gutter: 24px; }}
       .hero-actions {{ flex-direction: row; flex-wrap: wrap; }}
       .type-grid {{ grid-template-columns: repeat(3, minmax(0, 1fr)); }}
+      .chapter-cards {{ grid-template-columns: repeat(2, minmax(0, 1fr)); }}
     }}
     @media (min-width: 960px) {{
-      .topnav {{ display: flex; }}
+      .topnav {{ order: initial; flex: 0 1 auto; gap: 14px; margin-left: auto; overflow: visible; }}
+      .topnav a {{ padding-inline: 12px; }}
       .topnav ~ .btn {{ margin-left: 0; }}
       .hero {{ padding-block: 72px 48px; display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, .9fr); gap: 48px; align-items: center; }}
       .hero-inner {{ max-width: none; }}
@@ -240,6 +340,14 @@ def render_site_html(content: dict[str, Any]) -> str:
       .steps {{ grid-template-columns: repeat(3, minmax(0, 1fr)); }}
       .type-grid {{ grid-template-columns: repeat(4, minmax(0, 1fr)); }}
       .features {{ grid-template-columns: repeat(3, minmax(0, 1fr)); }}
+      .section, .chapter {{ scroll-margin-top: 96px; }}
+      .project-intro {{ padding-block: 42px 48px; }}
+      .chapter {{ padding-top: 36px; }}
+      .chapter-metrics {{ grid-template-columns: repeat(4, minmax(0, 1fr)); }}
+      .chapter-metrics > div {{ padding: 16px; }}
+    }}
+    @media (max-width: 374px) {{
+      .section, .chapter {{ scroll-margin-top: 200px; }}
     }}
     @media (prefers-reduced-motion: reduce) {{
       html {{ scroll-behavior: auto; }}
@@ -249,28 +357,13 @@ def render_site_html(content: dict[str, Any]) -> str:
 </head>
 <body>
   <header class="topbar">
-    <a class="wordmark" href="/">{_esc(name)}<small>{_esc(tagline)}</small></a>
-    <nav class="topnav">{nav_links}</nav>
+    <a class="wordmark" href="/docs" aria-label="{_esc(name)} 首页">{_esc(name)}<small>{_esc(tagline)}</small></a>
+    <nav class="topnav" aria-label="全站导航">{nav_links}</nav>
     <a class="btn btn--primary" href="{_safe_href(primary.get("href"))}">{_esc(primary.get("label") or "开始")}</a>
   </header>
 
   <main>
-    <div class="hero container">
-      <div class="hero-inner">
-        <p class="eyebrow">{_esc(hero.get("eyebrow"))}</p>
-        <h1>{_esc(hero.get("title"))}</h1>
-        <p class="sub">{_esc(hero.get("subtitle"))}</p>
-        <div class="hero-actions">
-          <a class="btn btn--primary btn--lg" href="{_safe_href(primary.get("href"))}">{_esc(primary.get("label"))}</a>
-          {f'<a class="btn btn--ghost btn--lg" href="{_safe_href(secondary.get("href"))}">{_esc(secondary.get("label"))}</a>' if secondary.get("label") else ""}
-        </div>
-      </div>
-      <img class="hero-board" src="/static/selfit/assets/login-persona-board@2x.png" alt="selfit 风格人格展示" width="2808" height="3208" fetchpriority="high" />
-    </div>
-    <div class="container">
-      {sections_html}
-    </div>
-    {cta_html}
+    {body_html}
   </main>
   <footer>
     <div class="container">
@@ -285,6 +378,14 @@ def render_site_html(content: dict[str, Any]) -> str:
 @router.get("/docs", include_in_schema=False, response_class=HTMLResponse)
 def site_home_page() -> HTMLResponse:
     return HTMLResponse(render_site_html(load_site_content()), headers={"Cache-Control": "no-store"})
+
+
+@router.get("/docs/{slug}", include_in_schema=False, response_class=HTMLResponse)
+def site_project_page(slug: str) -> HTMLResponse:
+    page = next((item for item in load_project_pages() if item["slug"] == slug), None)
+    if page is None:
+        raise HTTPException(status_code=404, detail="页面不存在")
+    return HTMLResponse(render_site_html(load_site_content(), page), headers={"Cache-Control": "no-store"})
 
 
 # 根路径历史上曾长期 308 永久重定向到 /selfit——访问过的浏览器已永久缓存该跳转，
