@@ -45,7 +45,12 @@ def find_preset(outfit_key: str, model_id: str | None, person_raw: bytes,
         return None
     try:
         index = json.loads(INDEX_PATH.read_text())
-        look = next((row for row in delivery_looks() if outfit_id(row) == outfit_key), None)
+        if outfit_key.startswith("report_inspiration_"):
+            from app.inspiration_catalog import inspiration_looks
+            catalog = inspiration_looks()
+        else:
+            catalog = delivery_looks()
+        look = next((row for row in catalog if outfit_id(row) == outfit_key), None)
         if look is None:
             return None
         binding = look["note_binding"]
@@ -60,6 +65,14 @@ def find_preset(outfit_key: str, model_id: str | None, person_raw: bytes,
         # Only published, verified results are usable; rejected attempts stay out.
         if example.get("status") != "uploaded" or result.get("verified") is not True:
             return None
+        if example.get("strategy") == "complete_outfit_single_call":
+            visual = example.get("visualReview") or {}
+            if (example.get("outfitId") != outfit_key
+                    or example.get("qualityReview", {}).get("status") != "pass"
+                    or visual.get("status") != "pass" or visual.get("verified") is not True
+                    or visual.get("resultSha256") != result.get("sha256")
+                    or visual.get("reviewedItemIds") != example.get("itemIds")):
+                return None
         source_ids = [item["item_id"] for item in look["items"]]
         if (example.get("sourceAssetId") != look["source_asset"]["assetId"]
                 or example.get("itemIds") != source_ids):

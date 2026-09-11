@@ -43912,11 +43912,600 @@
           }
         }
       ]
+    },
+    {
+      "id": "female_slim_1--white-tee-e6e370560d65dc10",
+      "modelId": "female_slim_1",
+      "key": "white-tee-e6e370560d65dc10",
+      "outfitId": "white-tee-e6e370560d65dc10",
+      "recipeFingerprint": "de16a26837819bbc465e920f72e5c34a86c3b1430601d0e9f64d7259d10d44a5",
+      "gender": "female",
+      "pick": {
+        "candidate_id": "TREND_潮流趋势_outfits_02_柔性薄荷",
+        "replace_item_id": "TREND_潮流趋势_outfits_02_柔性薄荷_item_02",
+        "reason": "纯白T恤换下薄荷刺绣旗袍上衣，把蕾丝叠穿裤与冰薄荷褶裙的复杂层次集中到腰下。薄荷绿粉蕾丝背心作为内层被白T自然遮住，白袖套、孔眼腰带与罗纹袜继续堆叠同色细节，实验性冲突里多了一块稳定底色。"
+      },
+      "noteBinding": {
+        "templateId": "inspiration_trend",
+        "noteId": "outfits-02",
+        "position": 2,
+        "name": "柔性薄荷",
+        "persona": null,
+        "gender": "female",
+        "byline": "@内八",
+        "sourceUrl": "67 【hh后面不好意思把它摘掉了. - 内八 | 小红书 - 你的生活兴趣社区】 😆 9MpO5yQFirxz7bd 😆 https://www.xiaohongshu.com/discovery/item/6a805e780000000025010a13?source=webshare&xhsshare=pc_web&xsec_token=ABy1S_6TitxHWPhhJGaKoDLtJQ02IIrehyNAXG4DpTsFc=&xsec_source=pc_share",
+        "sourceTitle": "hh后面不好意思把它摘掉了."
+      },
+      "itemIds": [
+        "report_inspiration_trend_outfits-02_d4da0510dbd6_46cd121630",
+        "report_inspiration_trend_outfits-02_d4da0510dbd6_3ec1b32307",
+        "6cfcffd0a4c66d10",
+        "report_inspiration_trend_outfits-02_d4da0510dbd6_98fc870d51",
+        "report_inspiration_trend_outfits-02_d4da0510dbd6_ba89147ee2",
+        "report_inspiration_trend_outfits-02_d4da0510dbd6_6a04db9e46",
+        "report_inspiration_trend_outfits-02_d4da0510dbd6_fe06a4a8c1",
+        "report_inspiration_trend_outfits-02_d4da0510dbd6_6882a53bb8",
+        "report_inspiration_trend_outfits-02_d4da0510dbd6_dd4418e538"
+      ],
+      "model": {
+        "file": "female_slim_1.png",
+        "gender": "female",
+        "gender_label": "女",
+        "body_type": "slim",
+        "body_type_label": "瘦",
+        "display_name": "纤细型",
+        "variant": 1,
+        "description": "用户提供的纤细型女模特原图：黑色长发，白色短袖、白色短裤和白色运动鞋，手持手机对镜自拍，全身展示",
+        "width": 1792,
+        "height": 2400,
+        "active": true,
+        "sort_order": 1,
+        "localPath": "tests/fixtures/tryon_models/female_slim_1.png",
+        "sha256": "8dedd0555421d14026ffbea8b4102ce58a042d6c6d737c44d359668e685b0501"
+      },
+      "provider": "google_cloud_nano_banana_2_adc",
+      "strategy": "white_tee_complete_outfit",
+      "status": "uploaded",
+      "createdAt": "2026-09-11T05:27:21.594370+00:00",
+      "artifactDir": "outputs/tryon-examples/soft-mint-nano-20260911/female_slim_1/retry-03",
+      "requestPath": "outputs/tryon-examples/soft-mint-nano-20260911/female_slim_1/retry-03/request.json",
+      "sourceUpdate": "20260911-soft-mint",
+      "sourceCatalogPublished": true,
+      "attempt": 4,
+      "retryReason": "Original references only; arm warmers must cover elbows and upper arms, with smooth jersey texture.",
+      "nativeResult": {
+        "localPath": "outputs/tryon-examples/soft-mint-nano-20260911/female_slim_1/retry-03/native.png",
+        "sha256": "89c4a361d65ffcacbdef3ef81cf252a3d466932dfa5ca25a95abf93ee270cd0c",
+        "dimensions": [
+          1792,
+          2400
+        ]
+      },
+      "qualityReview": {
+        "status": "pass",
+        "confidence": 0.82,
+        "evidence": {
+          "result_exists": true,
+          "result_size": {
+            "width": 1792,
+            "height": 2400
+          },
+          "face_diff": 4.21,
+          "protected_region_diff": 0.94,
+          "mask_editable_ratio": 0.3314,
+          "mask_contract": "fail_if_protected_face_or_background_changes",
+          "semantic_review": {
+            "status": "pass",
+            "reviewedAt": "2026-09-11T05:30:17.118032+00:00",
+            "reviewer": "codex_visual_inspection",
+            "resultSha256": "89c4a361d65ffcacbdef3ef81cf252a3d466932dfa5ca25a95abf93ee270cd0c",
+            "checks": {
+              "adultModelIdentityAndPose": "preserved",
+              "bodyProportions": "consistent with source model",
+              "fullBodyFeetAndCanvas": "complete, no crop",
+              "whiteTee": "opaque plain white crew-neck short sleeves; no camisole overlay",
+              "camisole": "correctly hidden beneath tee, not directly visually verifiable",
+              "skirtAndWaistLayers": "ice-mint gathered midi skirt; two distinct triangular lace hip panels separated at the center front; white double-eyelet belt above them",
+              "armWarmers": "paired smooth white fingerless extra-long arm warmers; both elbows and upper arms covered",
+              "bag": "white small drawstring shoulder bag on the lowered-arm shoulder; pose retained. Shoulder side varies from suggested prompt placement, accepted as natural wearing variation.",
+              "socks": "paired white ribbed calf socks",
+              "shoes": "black ring-laced toe ballet flats; no added instep straps",
+              "artifacts": "no obvious limb deformation, floating garment or text"
+            },
+            "note": "AI generated visual reference; microscopic texture and lace pattern are not verified as manufacturing-exact.",
+            "verified": true,
+            "reviewedItemIds": [
+              "report_inspiration_trend_outfits-02_d4da0510dbd6_46cd121630",
+              "report_inspiration_trend_outfits-02_d4da0510dbd6_3ec1b32307",
+              "6cfcffd0a4c66d10",
+              "report_inspiration_trend_outfits-02_d4da0510dbd6_98fc870d51",
+              "report_inspiration_trend_outfits-02_d4da0510dbd6_ba89147ee2",
+              "report_inspiration_trend_outfits-02_d4da0510dbd6_6a04db9e46",
+              "report_inspiration_trend_outfits-02_d4da0510dbd6_fe06a4a8c1",
+              "report_inspiration_trend_outfits-02_d4da0510dbd6_6882a53bb8",
+              "report_inspiration_trend_outfits-02_d4da0510dbd6_dd4418e538"
+            ],
+            "observations": "adultModelIdentityAndPose: preserved; bodyProportions: consistent with source model; fullBodyFeetAndCanvas: complete, no crop; whiteTee: opaque plain white crew-neck short sleeves; no camisole overlay; camisole: correctly hidden beneath tee, not directly visually verifiable; skirtAndWaistLayers: ice-mint gathered midi skirt; two distinct triangular lace hip panels separated at the center front; white double-eyelet belt above them; armWarmers: paired smooth white fingerless extra-long arm warmers; both elbows and upper arms covered; bag: white small drawstring shoulder bag on the lowered-arm shoulder; pose retained. Shoulder side varies from suggested prompt placement, accepted as natural wearing variation.; socks: paired white ribbed calf socks; shoes: black ring-laced toe ballet flats; no added instep straps; artifacts: no obvious limb deformation, floating garment or text"
+          }
+        },
+        "issues": [],
+        "suggestions": []
+      },
+      "visualReview": {
+        "status": "pass",
+        "reviewedAt": "2026-09-11T05:30:17.118032+00:00",
+        "reviewer": "codex_visual_inspection",
+        "resultSha256": "89c4a361d65ffcacbdef3ef81cf252a3d466932dfa5ca25a95abf93ee270cd0c",
+        "checks": {
+          "adultModelIdentityAndPose": "preserved",
+          "bodyProportions": "consistent with source model",
+          "fullBodyFeetAndCanvas": "complete, no crop",
+          "whiteTee": "opaque plain white crew-neck short sleeves; no camisole overlay",
+          "camisole": "correctly hidden beneath tee, not directly visually verifiable",
+          "skirtAndWaistLayers": "ice-mint gathered midi skirt; two distinct triangular lace hip panels separated at the center front; white double-eyelet belt above them",
+          "armWarmers": "paired smooth white fingerless extra-long arm warmers; both elbows and upper arms covered",
+          "bag": "white small drawstring shoulder bag on the lowered-arm shoulder; pose retained. Shoulder side varies from suggested prompt placement, accepted as natural wearing variation.",
+          "socks": "paired white ribbed calf socks",
+          "shoes": "black ring-laced toe ballet flats; no added instep straps",
+          "artifacts": "no obvious limb deformation, floating garment or text"
+        },
+        "note": "AI generated visual reference; microscopic texture and lace pattern are not verified as manufacturing-exact.",
+        "verified": true,
+        "reviewedItemIds": [
+          "report_inspiration_trend_outfits-02_d4da0510dbd6_46cd121630",
+          "report_inspiration_trend_outfits-02_d4da0510dbd6_3ec1b32307",
+          "6cfcffd0a4c66d10",
+          "report_inspiration_trend_outfits-02_d4da0510dbd6_98fc870d51",
+          "report_inspiration_trend_outfits-02_d4da0510dbd6_ba89147ee2",
+          "report_inspiration_trend_outfits-02_d4da0510dbd6_6a04db9e46",
+          "report_inspiration_trend_outfits-02_d4da0510dbd6_fe06a4a8c1",
+          "report_inspiration_trend_outfits-02_d4da0510dbd6_6882a53bb8",
+          "report_inspiration_trend_outfits-02_d4da0510dbd6_dd4418e538"
+        ],
+        "observations": "adultModelIdentityAndPose: preserved; bodyProportions: consistent with source model; fullBodyFeetAndCanvas: complete, no crop; whiteTee: opaque plain white crew-neck short sleeves; no camisole overlay; camisole: correctly hidden beneath tee, not directly visually verifiable; skirtAndWaistLayers: ice-mint gathered midi skirt; two distinct triangular lace hip panels separated at the center front; white double-eyelet belt above them; armWarmers: paired smooth white fingerless extra-long arm warmers; both elbows and upper arms covered; bag: white small drawstring shoulder bag on the lowered-arm shoulder; pose retained. Shoulder side varies from suggested prompt placement, accepted as natural wearing variation.; socks: paired white ribbed calf socks; shoes: black ring-laced toe ballet flats; no added instep straps; artifacts: no obvious limb deformation, floating garment or text"
+      },
+      "result": {
+        "localPath": "outputs/tryon-examples/soft-mint-nano-20260911/female_slim_1/retry-03/native.png",
+        "sha256": "89c4a361d65ffcacbdef3ef81cf252a3d466932dfa5ca25a95abf93ee270cd0c",
+        "dimensions": [
+          1792,
+          2400
+        ],
+        "verified": true,
+        "assetId": "asset_89c4a361d65ffcacbdef3ef81cf252a3d466932dfa5ca25a95abf93ee270cd0c",
+        "contentUrl": "/api/v1/material-assets/asset_89c4a361d65ffcacbdef3ef81cf252a3d466932dfa5ca25a95abf93ee270cd0c/content",
+        "url": "http://tk7xxzqgj.hd-bkt.clouddn.com/selfit/tryon-examples/soft-mint-nano-20260911/asset_89c4a361d65ffcacbdef3ef81cf252a3d466932dfa5ca25a95abf93ee270cd0c.png",
+        "storage": {
+          "provider": "qiniu",
+          "bucket": "selfit",
+          "key": "selfit/tryon-examples/soft-mint-nano-20260911/asset_89c4a361d65ffcacbdef3ef81cf252a3d466932dfa5ca25a95abf93ee270cd0c.png",
+          "private": true
+        },
+        "verifiedAt": "2026-09-11T05:33:20.342014+00:00"
+      },
+      "imageEdit": {
+        "status": "pass",
+        "provider": "google_cloud_nano_banana_2_adc",
+        "evidence": {
+          "httpStatus": 200,
+          "requestId": "7b901a877df1acc899ebeb0e98c1f74319f3e3a1827749024e8eab2a87c6b424",
+          "nativeOutputSha256": "89c4a361d65ffcacbdef3ef81cf252a3d466932dfa5ca25a95abf93ee270cd0c"
+        }
+      },
+      "generationStages": [
+        {
+          "provider": "google_cloud_adc",
+          "model": "gemini-3.1-flash-image",
+          "requestId": "7b901a877df1acc899ebeb0e98c1f74319f3e3a1827749024e8eab2a87c6b424",
+          "requestPath": "outputs/tryon-examples/soft-mint-nano-20260911/female_slim_1/retry-03/request.json",
+          "responsePath": "outputs/tryon-examples/soft-mint-nano-20260911/female_slim_1/retry-03/google-response.json",
+          "nativePath": "outputs/tryon-examples/soft-mint-nano-20260911/female_slim_1/retry-03/native.png",
+          "sha256": "89c4a361d65ffcacbdef3ef81cf252a3d466932dfa5ca25a95abf93ee270cd0c",
+          "dimensions": [
+            1792,
+            2400
+          ]
+        }
+      ],
+      "updatedAt": "2026-09-11T05:33:20.343547+00:00"
+    },
+    {
+      "id": "female_medium_1--white-tee-e6e370560d65dc10",
+      "modelId": "female_medium_1",
+      "key": "white-tee-e6e370560d65dc10",
+      "outfitId": "white-tee-e6e370560d65dc10",
+      "recipeFingerprint": "de16a26837819bbc465e920f72e5c34a86c3b1430601d0e9f64d7259d10d44a5",
+      "gender": "female",
+      "pick": {
+        "candidate_id": "TREND_潮流趋势_outfits_02_柔性薄荷",
+        "replace_item_id": "TREND_潮流趋势_outfits_02_柔性薄荷_item_02",
+        "reason": "纯白T恤换下薄荷刺绣旗袍上衣，把蕾丝叠穿裤与冰薄荷褶裙的复杂层次集中到腰下。薄荷绿粉蕾丝背心作为内层被白T自然遮住，白袖套、孔眼腰带与罗纹袜继续堆叠同色细节，实验性冲突里多了一块稳定底色。"
+      },
+      "noteBinding": {
+        "templateId": "inspiration_trend",
+        "noteId": "outfits-02",
+        "position": 2,
+        "name": "柔性薄荷",
+        "persona": null,
+        "gender": "female",
+        "byline": "@内八",
+        "sourceUrl": "67 【hh后面不好意思把它摘掉了. - 内八 | 小红书 - 你的生活兴趣社区】 😆 9MpO5yQFirxz7bd 😆 https://www.xiaohongshu.com/discovery/item/6a805e780000000025010a13?source=webshare&xhsshare=pc_web&xsec_token=ABy1S_6TitxHWPhhJGaKoDLtJQ02IIrehyNAXG4DpTsFc=&xsec_source=pc_share",
+        "sourceTitle": "hh后面不好意思把它摘掉了."
+      },
+      "itemIds": [
+        "report_inspiration_trend_outfits-02_d4da0510dbd6_46cd121630",
+        "report_inspiration_trend_outfits-02_d4da0510dbd6_3ec1b32307",
+        "6cfcffd0a4c66d10",
+        "report_inspiration_trend_outfits-02_d4da0510dbd6_98fc870d51",
+        "report_inspiration_trend_outfits-02_d4da0510dbd6_ba89147ee2",
+        "report_inspiration_trend_outfits-02_d4da0510dbd6_6a04db9e46",
+        "report_inspiration_trend_outfits-02_d4da0510dbd6_fe06a4a8c1",
+        "report_inspiration_trend_outfits-02_d4da0510dbd6_6882a53bb8",
+        "report_inspiration_trend_outfits-02_d4da0510dbd6_dd4418e538"
+      ],
+      "model": {
+        "file": "female_medium_1.png",
+        "gender": "female",
+        "gender_label": "女",
+        "body_type": "medium",
+        "body_type_label": "中",
+        "display_name": "匀称型",
+        "default_for_gender": true,
+        "variant": 1,
+        "description": "用户提供的匀称型女模特原图：黑色长发，白色短袖、白色短裤和白色运动鞋，手持手机对镜自拍，全身展示",
+        "width": 1792,
+        "height": 2400,
+        "active": true,
+        "sort_order": 2,
+        "localPath": "tests/fixtures/tryon_models/female_medium_1.png",
+        "sha256": "637cb742b8d5447b11e1f53509f6279b15fe0a023facaca0b15769eae940bc87"
+      },
+      "provider": "google_cloud_nano_banana_2_adc",
+      "strategy": "white_tee_complete_outfit",
+      "status": "uploaded",
+      "createdAt": "2026-09-11T05:26:36.875181+00:00",
+      "artifactDir": "outputs/tryon-examples/soft-mint-nano-20260911/female_medium_1/retry-03",
+      "requestPath": "outputs/tryon-examples/soft-mint-nano-20260911/female_medium_1/retry-03/request.json",
+      "sourceUpdate": "20260911-soft-mint",
+      "sourceCatalogPublished": true,
+      "attempt": 4,
+      "retryReason": "Original inputs only; preserve exact two-panel waist accessory geometry along with plain tee and strap-free shoes.",
+      "nativeResult": {
+        "localPath": "outputs/tryon-examples/soft-mint-nano-20260911/female_medium_1/retry-03/native.png",
+        "sha256": "0b413d6d338353e356940395da5c7f458362a17fcd60003249d6dabcbca903f1",
+        "dimensions": [
+          1792,
+          2400
+        ]
+      },
+      "qualityReview": {
+        "status": "pass",
+        "confidence": 0.82,
+        "evidence": {
+          "result_exists": true,
+          "result_size": {
+            "width": 1792,
+            "height": 2400
+          },
+          "face_diff": 4.04,
+          "protected_region_diff": 0.94,
+          "mask_editable_ratio": 0.333,
+          "mask_contract": "fail_if_protected_face_or_background_changes",
+          "semantic_review": {
+            "status": "pass",
+            "reviewedAt": "2026-09-11T05:28:32.662935+00:00",
+            "reviewer": "codex_visual_inspection",
+            "resultSha256": "0b413d6d338353e356940395da5c7f458362a17fcd60003249d6dabcbca903f1",
+            "checks": {
+              "adultModelIdentityAndPose": "preserved",
+              "bodyProportions": "consistent with source model",
+              "fullBodyFeetAndCanvas": "complete, no crop",
+              "whiteTee": "opaque plain white crew-neck short sleeves; no camisole overlay",
+              "camisole": "correctly hidden beneath tee, not directly visually verifiable",
+              "skirtAndWaistLayers": "ice-mint gathered midi skirt; two distinct triangular lace hip panels separated at the center front; white double-eyelet belt above them",
+              "armWarmers": "paired white fingerless long arm warmers",
+              "bag": "white small drawstring shoulder bag",
+              "socks": "paired white ribbed calf socks",
+              "shoes": "black ring-laced toe ballet flats; no added instep straps",
+              "artifacts": "no obvious limb deformation, floating garment or text"
+            },
+            "note": "AI generated visual reference; microscopic texture and lace pattern are not verified as manufacturing-exact.",
+            "verified": true,
+            "reviewedItemIds": [
+              "report_inspiration_trend_outfits-02_d4da0510dbd6_46cd121630",
+              "report_inspiration_trend_outfits-02_d4da0510dbd6_3ec1b32307",
+              "6cfcffd0a4c66d10",
+              "report_inspiration_trend_outfits-02_d4da0510dbd6_98fc870d51",
+              "report_inspiration_trend_outfits-02_d4da0510dbd6_ba89147ee2",
+              "report_inspiration_trend_outfits-02_d4da0510dbd6_6a04db9e46",
+              "report_inspiration_trend_outfits-02_d4da0510dbd6_fe06a4a8c1",
+              "report_inspiration_trend_outfits-02_d4da0510dbd6_6882a53bb8",
+              "report_inspiration_trend_outfits-02_d4da0510dbd6_dd4418e538"
+            ],
+            "observations": "adultModelIdentityAndPose: preserved; bodyProportions: consistent with source model; fullBodyFeetAndCanvas: complete, no crop; whiteTee: opaque plain white crew-neck short sleeves; no camisole overlay; camisole: correctly hidden beneath tee, not directly visually verifiable; skirtAndWaistLayers: ice-mint gathered midi skirt; two distinct triangular lace hip panels separated at the center front; white double-eyelet belt above them; armWarmers: paired white fingerless long arm warmers; bag: white small drawstring shoulder bag; socks: paired white ribbed calf socks; shoes: black ring-laced toe ballet flats; no added instep straps; artifacts: no obvious limb deformation, floating garment or text"
+          }
+        },
+        "issues": [],
+        "suggestions": []
+      },
+      "visualReview": {
+        "status": "pass",
+        "reviewedAt": "2026-09-11T05:28:32.662935+00:00",
+        "reviewer": "codex_visual_inspection",
+        "resultSha256": "0b413d6d338353e356940395da5c7f458362a17fcd60003249d6dabcbca903f1",
+        "checks": {
+          "adultModelIdentityAndPose": "preserved",
+          "bodyProportions": "consistent with source model",
+          "fullBodyFeetAndCanvas": "complete, no crop",
+          "whiteTee": "opaque plain white crew-neck short sleeves; no camisole overlay",
+          "camisole": "correctly hidden beneath tee, not directly visually verifiable",
+          "skirtAndWaistLayers": "ice-mint gathered midi skirt; two distinct triangular lace hip panels separated at the center front; white double-eyelet belt above them",
+          "armWarmers": "paired white fingerless long arm warmers",
+          "bag": "white small drawstring shoulder bag",
+          "socks": "paired white ribbed calf socks",
+          "shoes": "black ring-laced toe ballet flats; no added instep straps",
+          "artifacts": "no obvious limb deformation, floating garment or text"
+        },
+        "note": "AI generated visual reference; microscopic texture and lace pattern are not verified as manufacturing-exact.",
+        "verified": true,
+        "reviewedItemIds": [
+          "report_inspiration_trend_outfits-02_d4da0510dbd6_46cd121630",
+          "report_inspiration_trend_outfits-02_d4da0510dbd6_3ec1b32307",
+          "6cfcffd0a4c66d10",
+          "report_inspiration_trend_outfits-02_d4da0510dbd6_98fc870d51",
+          "report_inspiration_trend_outfits-02_d4da0510dbd6_ba89147ee2",
+          "report_inspiration_trend_outfits-02_d4da0510dbd6_6a04db9e46",
+          "report_inspiration_trend_outfits-02_d4da0510dbd6_fe06a4a8c1",
+          "report_inspiration_trend_outfits-02_d4da0510dbd6_6882a53bb8",
+          "report_inspiration_trend_outfits-02_d4da0510dbd6_dd4418e538"
+        ],
+        "observations": "adultModelIdentityAndPose: preserved; bodyProportions: consistent with source model; fullBodyFeetAndCanvas: complete, no crop; whiteTee: opaque plain white crew-neck short sleeves; no camisole overlay; camisole: correctly hidden beneath tee, not directly visually verifiable; skirtAndWaistLayers: ice-mint gathered midi skirt; two distinct triangular lace hip panels separated at the center front; white double-eyelet belt above them; armWarmers: paired white fingerless long arm warmers; bag: white small drawstring shoulder bag; socks: paired white ribbed calf socks; shoes: black ring-laced toe ballet flats; no added instep straps; artifacts: no obvious limb deformation, floating garment or text"
+      },
+      "result": {
+        "localPath": "outputs/tryon-examples/soft-mint-nano-20260911/female_medium_1/retry-03/native.png",
+        "sha256": "0b413d6d338353e356940395da5c7f458362a17fcd60003249d6dabcbca903f1",
+        "dimensions": [
+          1792,
+          2400
+        ],
+        "verified": true,
+        "assetId": "asset_0b413d6d338353e356940395da5c7f458362a17fcd60003249d6dabcbca903f1",
+        "contentUrl": "/api/v1/material-assets/asset_0b413d6d338353e356940395da5c7f458362a17fcd60003249d6dabcbca903f1/content",
+        "url": "http://tk7xxzqgj.hd-bkt.clouddn.com/selfit/tryon-examples/soft-mint-nano-20260911/asset_0b413d6d338353e356940395da5c7f458362a17fcd60003249d6dabcbca903f1.png",
+        "storage": {
+          "provider": "qiniu",
+          "bucket": "selfit",
+          "key": "selfit/tryon-examples/soft-mint-nano-20260911/asset_0b413d6d338353e356940395da5c7f458362a17fcd60003249d6dabcbca903f1.png",
+          "private": true
+        },
+        "verifiedAt": "2026-09-11T05:33:23.025847+00:00"
+      },
+      "imageEdit": {
+        "status": "pass",
+        "provider": "google_cloud_nano_banana_2_adc",
+        "evidence": {
+          "httpStatus": 200,
+          "requestId": "c0ac6fd7e089337f0c371e3af36e2433bda6e3f5e0a6bb51b0cf47099deb079e",
+          "nativeOutputSha256": "0b413d6d338353e356940395da5c7f458362a17fcd60003249d6dabcbca903f1"
+        }
+      },
+      "generationStages": [
+        {
+          "provider": "google_cloud_adc",
+          "model": "gemini-3.1-flash-image",
+          "requestId": "c0ac6fd7e089337f0c371e3af36e2433bda6e3f5e0a6bb51b0cf47099deb079e",
+          "requestPath": "outputs/tryon-examples/soft-mint-nano-20260911/female_medium_1/retry-03/request.json",
+          "responsePath": "outputs/tryon-examples/soft-mint-nano-20260911/female_medium_1/retry-03/google-response.json",
+          "nativePath": "outputs/tryon-examples/soft-mint-nano-20260911/female_medium_1/retry-03/native.png",
+          "sha256": "0b413d6d338353e356940395da5c7f458362a17fcd60003249d6dabcbca903f1",
+          "dimensions": [
+            1792,
+            2400
+          ]
+        }
+      ],
+      "updatedAt": "2026-09-11T05:33:23.038212+00:00"
+    },
+    {
+      "id": "female_plus_1--white-tee-e6e370560d65dc10",
+      "modelId": "female_plus_1",
+      "key": "white-tee-e6e370560d65dc10",
+      "outfitId": "white-tee-e6e370560d65dc10",
+      "recipeFingerprint": "de16a26837819bbc465e920f72e5c34a86c3b1430601d0e9f64d7259d10d44a5",
+      "gender": "female",
+      "pick": {
+        "candidate_id": "TREND_潮流趋势_outfits_02_柔性薄荷",
+        "replace_item_id": "TREND_潮流趋势_outfits_02_柔性薄荷_item_02",
+        "reason": "纯白T恤换下薄荷刺绣旗袍上衣，把蕾丝叠穿裤与冰薄荷褶裙的复杂层次集中到腰下。薄荷绿粉蕾丝背心作为内层被白T自然遮住，白袖套、孔眼腰带与罗纹袜继续堆叠同色细节，实验性冲突里多了一块稳定底色。"
+      },
+      "noteBinding": {
+        "templateId": "inspiration_trend",
+        "noteId": "outfits-02",
+        "position": 2,
+        "name": "柔性薄荷",
+        "persona": null,
+        "gender": "female",
+        "byline": "@内八",
+        "sourceUrl": "67 【hh后面不好意思把它摘掉了. - 内八 | 小红书 - 你的生活兴趣社区】 😆 9MpO5yQFirxz7bd 😆 https://www.xiaohongshu.com/discovery/item/6a805e780000000025010a13?source=webshare&xhsshare=pc_web&xsec_token=ABy1S_6TitxHWPhhJGaKoDLtJQ02IIrehyNAXG4DpTsFc=&xsec_source=pc_share",
+        "sourceTitle": "hh后面不好意思把它摘掉了."
+      },
+      "itemIds": [
+        "report_inspiration_trend_outfits-02_d4da0510dbd6_46cd121630",
+        "report_inspiration_trend_outfits-02_d4da0510dbd6_3ec1b32307",
+        "6cfcffd0a4c66d10",
+        "report_inspiration_trend_outfits-02_d4da0510dbd6_98fc870d51",
+        "report_inspiration_trend_outfits-02_d4da0510dbd6_ba89147ee2",
+        "report_inspiration_trend_outfits-02_d4da0510dbd6_6a04db9e46",
+        "report_inspiration_trend_outfits-02_d4da0510dbd6_fe06a4a8c1",
+        "report_inspiration_trend_outfits-02_d4da0510dbd6_6882a53bb8",
+        "report_inspiration_trend_outfits-02_d4da0510dbd6_dd4418e538"
+      ],
+      "model": {
+        "file": "female_plus_1.png",
+        "gender": "female",
+        "gender_label": "女",
+        "body_type": "plus",
+        "body_type_label": "胖",
+        "display_name": "丰满型",
+        "variant": 1,
+        "description": "用户提供的丰满型女模特原图：黑色长发，白色短袖、白色短裤和白色运动鞋，手持手机对镜自拍，全身展示",
+        "width": 1792,
+        "height": 2400,
+        "active": true,
+        "sort_order": 3,
+        "localPath": "tests/fixtures/tryon_models/female_plus_1.png",
+        "sha256": "365001c4e926a8bb8747a2ada7afeda8e5471cc439bfc5741b6c11fc8dc058e7"
+      },
+      "provider": "google_cloud_nano_banana_2_adc",
+      "strategy": "white_tee_complete_outfit",
+      "status": "uploaded",
+      "createdAt": "2026-09-11T05:21:26.383866+00:00",
+      "artifactDir": "outputs/tryon-examples/soft-mint-nano-20260911/female_plus_1/retry-01",
+      "requestPath": "outputs/tryon-examples/soft-mint-nano-20260911/female_plus_1/retry-01/request.json",
+      "sourceUpdate": "20260911-soft-mint",
+      "sourceCatalogPublished": true,
+      "attempt": 2,
+      "retryReason": "Original reference inputs only; exact shoe opening without added straps.",
+      "nativeResult": {
+        "localPath": "outputs/tryon-examples/soft-mint-nano-20260911/female_plus_1/retry-01/native.png",
+        "sha256": "1e457bb94555d9bd2e2265235555fd34fe43b750736a585268938bee93cfc72f",
+        "dimensions": [
+          1792,
+          2400
+        ]
+      },
+      "qualityReview": {
+        "status": "pass",
+        "confidence": 0.82,
+        "evidence": {
+          "result_exists": true,
+          "result_size": {
+            "width": 1792,
+            "height": 2400
+          },
+          "face_diff": 3.69,
+          "protected_region_diff": 0.95,
+          "mask_editable_ratio": 0.3302,
+          "mask_contract": "fail_if_protected_face_or_background_changes",
+          "semantic_review": {
+            "status": "pass",
+            "reviewedAt": "2026-09-11T05:25:00.893722+00:00",
+            "reviewer": "codex_visual_inspection",
+            "resultSha256": "1e457bb94555d9bd2e2265235555fd34fe43b750736a585268938bee93cfc72f",
+            "checks": {
+              "adultModelIdentityAndPose": "preserved",
+              "bodyProportions": "consistent with source model",
+              "fullBodyFeetAndCanvas": "complete, no crop",
+              "whiteTee": "opaque plain white crew-neck short sleeves; no camisole overlay",
+              "camisole": "correctly hidden beneath tee, not directly visually verifiable",
+              "skirtAndWaistLayers": "ice-mint gathered midi skirt with mint lace triangular overlay and white double-eyelet belt",
+              "armWarmers": "paired white fingerless long arm warmers",
+              "bag": "white small drawstring shoulder bag",
+              "socks": "paired white ribbed calf socks",
+              "shoes": "black ring-laced toe ballet flats; no added instep straps",
+              "artifacts": "no obvious limb deformation, floating garment or text"
+            },
+            "note": "AI generated visual reference; microscopic texture and lace pattern are not verified as manufacturing-exact.",
+            "verified": true,
+            "reviewedItemIds": [
+              "report_inspiration_trend_outfits-02_d4da0510dbd6_46cd121630",
+              "report_inspiration_trend_outfits-02_d4da0510dbd6_3ec1b32307",
+              "6cfcffd0a4c66d10",
+              "report_inspiration_trend_outfits-02_d4da0510dbd6_98fc870d51",
+              "report_inspiration_trend_outfits-02_d4da0510dbd6_ba89147ee2",
+              "report_inspiration_trend_outfits-02_d4da0510dbd6_6a04db9e46",
+              "report_inspiration_trend_outfits-02_d4da0510dbd6_fe06a4a8c1",
+              "report_inspiration_trend_outfits-02_d4da0510dbd6_6882a53bb8",
+              "report_inspiration_trend_outfits-02_d4da0510dbd6_dd4418e538"
+            ],
+            "observations": "adultModelIdentityAndPose: preserved; bodyProportions: consistent with source model; fullBodyFeetAndCanvas: complete, no crop; whiteTee: opaque plain white crew-neck short sleeves; no camisole overlay; camisole: correctly hidden beneath tee, not directly visually verifiable; skirtAndWaistLayers: ice-mint gathered midi skirt with mint lace triangular overlay and white double-eyelet belt; armWarmers: paired white fingerless long arm warmers; bag: white small drawstring shoulder bag; socks: paired white ribbed calf socks; shoes: black ring-laced toe ballet flats; no added instep straps; artifacts: no obvious limb deformation, floating garment or text"
+          }
+        },
+        "issues": [],
+        "suggestions": []
+      },
+      "visualReview": {
+        "status": "pass",
+        "reviewedAt": "2026-09-11T05:25:00.893722+00:00",
+        "reviewer": "codex_visual_inspection",
+        "resultSha256": "1e457bb94555d9bd2e2265235555fd34fe43b750736a585268938bee93cfc72f",
+        "checks": {
+          "adultModelIdentityAndPose": "preserved",
+          "bodyProportions": "consistent with source model",
+          "fullBodyFeetAndCanvas": "complete, no crop",
+          "whiteTee": "opaque plain white crew-neck short sleeves; no camisole overlay",
+          "camisole": "correctly hidden beneath tee, not directly visually verifiable",
+          "skirtAndWaistLayers": "ice-mint gathered midi skirt with mint lace triangular overlay and white double-eyelet belt",
+          "armWarmers": "paired white fingerless long arm warmers",
+          "bag": "white small drawstring shoulder bag",
+          "socks": "paired white ribbed calf socks",
+          "shoes": "black ring-laced toe ballet flats; no added instep straps",
+          "artifacts": "no obvious limb deformation, floating garment or text"
+        },
+        "note": "AI generated visual reference; microscopic texture and lace pattern are not verified as manufacturing-exact.",
+        "verified": true,
+        "reviewedItemIds": [
+          "report_inspiration_trend_outfits-02_d4da0510dbd6_46cd121630",
+          "report_inspiration_trend_outfits-02_d4da0510dbd6_3ec1b32307",
+          "6cfcffd0a4c66d10",
+          "report_inspiration_trend_outfits-02_d4da0510dbd6_98fc870d51",
+          "report_inspiration_trend_outfits-02_d4da0510dbd6_ba89147ee2",
+          "report_inspiration_trend_outfits-02_d4da0510dbd6_6a04db9e46",
+          "report_inspiration_trend_outfits-02_d4da0510dbd6_fe06a4a8c1",
+          "report_inspiration_trend_outfits-02_d4da0510dbd6_6882a53bb8",
+          "report_inspiration_trend_outfits-02_d4da0510dbd6_dd4418e538"
+        ],
+        "observations": "adultModelIdentityAndPose: preserved; bodyProportions: consistent with source model; fullBodyFeetAndCanvas: complete, no crop; whiteTee: opaque plain white crew-neck short sleeves; no camisole overlay; camisole: correctly hidden beneath tee, not directly visually verifiable; skirtAndWaistLayers: ice-mint gathered midi skirt with mint lace triangular overlay and white double-eyelet belt; armWarmers: paired white fingerless long arm warmers; bag: white small drawstring shoulder bag; socks: paired white ribbed calf socks; shoes: black ring-laced toe ballet flats; no added instep straps; artifacts: no obvious limb deformation, floating garment or text"
+      },
+      "result": {
+        "localPath": "outputs/tryon-examples/soft-mint-nano-20260911/female_plus_1/retry-01/native.png",
+        "sha256": "1e457bb94555d9bd2e2265235555fd34fe43b750736a585268938bee93cfc72f",
+        "dimensions": [
+          1792,
+          2400
+        ],
+        "verified": true,
+        "assetId": "asset_1e457bb94555d9bd2e2265235555fd34fe43b750736a585268938bee93cfc72f",
+        "contentUrl": "/api/v1/material-assets/asset_1e457bb94555d9bd2e2265235555fd34fe43b750736a585268938bee93cfc72f/content",
+        "url": "http://tk7xxzqgj.hd-bkt.clouddn.com/selfit/tryon-examples/soft-mint-nano-20260911/asset_1e457bb94555d9bd2e2265235555fd34fe43b750736a585268938bee93cfc72f.png",
+        "storage": {
+          "provider": "qiniu",
+          "bucket": "selfit",
+          "key": "selfit/tryon-examples/soft-mint-nano-20260911/asset_1e457bb94555d9bd2e2265235555fd34fe43b750736a585268938bee93cfc72f.png",
+          "private": true
+        },
+        "verifiedAt": "2026-09-11T05:33:26.285352+00:00"
+      },
+      "imageEdit": {
+        "status": "pass",
+        "provider": "google_cloud_nano_banana_2_adc",
+        "evidence": {
+          "httpStatus": 200,
+          "requestId": "7fddbe3c63a57afb0f1b0c491d9d3547e01cc5858cba70b4223352a14cb4989d",
+          "nativeOutputSha256": "1e457bb94555d9bd2e2265235555fd34fe43b750736a585268938bee93cfc72f"
+        }
+      },
+      "generationStages": [
+        {
+          "provider": "google_cloud_adc",
+          "model": "gemini-3.1-flash-image",
+          "requestId": "7fddbe3c63a57afb0f1b0c491d9d3547e01cc5858cba70b4223352a14cb4989d",
+          "requestPath": "outputs/tryon-examples/soft-mint-nano-20260911/female_plus_1/retry-01/request.json",
+          "responsePath": "outputs/tryon-examples/soft-mint-nano-20260911/female_plus_1/retry-01/google-response.json",
+          "nativePath": "outputs/tryon-examples/soft-mint-nano-20260911/female_plus_1/retry-01/native.png",
+          "sha256": "1e457bb94555d9bd2e2265235555fd34fe43b750736a585268938bee93cfc72f",
+          "dimensions": [
+            1792,
+            2400
+          ]
+        }
+      ],
+      "updatedAt": "2026-09-11T05:33:26.286088+00:00"
     }
   ],
   "counts": {
     "expected": 192,
-    "uploaded": 189
+    "uploaded": 192
   },
   "activeModelIds": [
     "female_medium_1",
@@ -43924,13 +44513,13 @@
     "female_slim_1",
     "male_standard_1"
   ],
-  "femaleStatus": "in_progress",
-  "status": "in_progress",
-  "updatedAt": "2026-09-11T02:58:47.538591+00:00",
+  "femaleStatus": "complete",
+  "status": "complete",
+  "updatedAt": "2026-09-11T05:33:26.721428+00:00",
   "countsByGender": {
     "female": {
       "expected": 180,
-      "uploaded": 177
+      "uploaded": 180
     },
     "male": {
       "expected": 12,

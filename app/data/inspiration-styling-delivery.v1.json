@@ -864,18 +864,6 @@
       "width": 1080,
       "height": 1440
     },
-    "TREND_潮流趋势_女/TREND_潮流趋势-2-柔性薄荷-拆款/01_上装内搭_玫粉色蕾丝文胸.png": {
-      "assetId": "asset_5be3f1a45d7f8578312b2b3abc5b4d2e27a13f04ef5587ad5e6ecd924917bb08",
-      "url": "http://tk7xxzqgj.hd-bkt.clouddn.com/selfit/materials/inspiration-scenes-trend-v1/cutouts/asset_5be3f1a45d7f8578312b2b3abc5b4d2e27a13f04ef5587ad5e6ecd924917bb08.png",
-      "contentUrl": "/api/v1/material-assets/asset_5be3f1a45d7f8578312b2b3abc5b4d2e27a13f04ef5587ad5e6ecd924917bb08/content",
-      "storage": {
-        "provider": "qiniu",
-        "bucket": "selfit",
-        "key": "selfit/materials/inspiration-scenes-trend-v1/cutouts/asset_5be3f1a45d7f8578312b2b3abc5b4d2e27a13f04ef5587ad5e6ecd924917bb08.png",
-        "private": true
-      },
-      "sourceAssetId": "asset_8474e5cf17e394458d0fa40ef061c78c27f49630d4c85045a8a5c4ce142e9bca"
-    },
     "TREND_潮流趋势_女/TREND_潮流趋势-2-柔性薄荷-拆款/02_上装内搭_薄荷灰刺绣改良旗袍上衣.png": {
       "assetId": "asset_be96f9bfd39e48b3affaa0390efad5e1d3b08094db97a44789b925c1fa8e5630",
       "url": "http://tk7xxzqgj.hd-bkt.clouddn.com/selfit/materials/inspiration-scenes-trend-v1/reviewed-cutouts/asset_be96f9bfd39e48b3affaa0390efad5e1d3b08094db97a44789b925c1fa8e5630.png",
@@ -1493,6 +1481,18 @@
         "private": true
       },
       "sourceAssetId": "asset_5a6449e72b3a03dbb35e0b302a4c5222ef52f7a2ebb8a09e2e1fc11f5bc2d1f8"
+    },
+    "TREND_潮流趋势_女/TREND_潮流趋势-2-柔性薄荷-拆款/01_上装内搭_薄荷绿粉蕾丝边细肩带背心.png": {
+      "assetId": "asset_d2ad2b1e3b069f30293f5ebab717aba51402284b27128093851fbd3ae81c58a2",
+      "url": "http://tk7xxzqgj.hd-bkt.clouddn.com/selfit/materials/inspiration-scenes-trend-v1/replacements/20260911-soft-mint/asset_d2ad2b1e3b069f30293f5ebab717aba51402284b27128093851fbd3ae81c58a2.png",
+      "contentUrl": "/api/v1/material-assets/asset_d2ad2b1e3b069f30293f5ebab717aba51402284b27128093851fbd3ae81c58a2/content",
+      "storage": {
+        "provider": "qiniu",
+        "bucket": "selfit",
+        "key": "selfit/materials/inspiration-scenes-trend-v1/replacements/20260911-soft-mint/asset_d2ad2b1e3b069f30293f5ebab717aba51402284b27128093851fbd3ae81c58a2.png",
+        "private": true
+      },
+      "sourceAssetId": "asset_d2ad2b1e3b069f30293f5ebab717aba51402284b27128093851fbd3ae81c58a2"
     }
   },
   "looks": [
@@ -5123,20 +5123,21 @@
       "items": [
         {
           "item_id": "TREND_潮流趋势_outfits_02_柔性薄荷_item_01",
-          "asset_filename": "01_上装内搭_玫粉色蕾丝文胸.png",
+          "asset_filename": "01_上装内搭_薄荷绿粉蕾丝边细肩带背心.png",
           "category": "上装内搭",
-          "garment_name": "玫粉色蕾丝文胸",
-          "wearing_method": "贴身作为最内层穿着，仅有玫粉色罩杯上缘从薄荷色上衣胸口处露出。",
+          "garment_name": "薄荷绿粉蕾丝边细肩带背心",
+          "wearing_method": "贴身作为最内层穿着，薄荷绿细肩带落在肩上；V领浅粉蕾丝花边从外层上衣胸前镂空处露出，衣身被薄荷灰刺绣上衣覆盖。",
           "body_region": "upper_body",
           "layer_position": "inner",
           "layer_order": 10,
           "closure_state": "unknown",
-          "overlap_relation": "细肩带",
+          "overlap_relation": "位于薄荷灰刺绣改良旗袍上衣内侧，仅V领蕾丝上缘从胸口镂空露出。",
           "styling_details": [
-            "玫粉色",
-            "文胸式短款",
-            "蕾丝或薄纱罩杯",
-            "细肩带"
+            "薄荷绿棉质衣身",
+            "细肩带",
+            "V领",
+            "浅粉蕾丝花边",
+            "贴身背心长度"
           ],
           "restore_priority": "must_keep",
           "paired_with": [
@@ -5161,19 +5162,19 @@
           ],
           "unresolved_paired_with": [],
           "image_asset": {
-            "assetId": "asset_5be3f1a45d7f8578312b2b3abc5b4d2e27a13f04ef5587ad5e6ecd924917bb08",
-            "url": "http://tk7xxzqgj.hd-bkt.clouddn.com/selfit/materials/inspiration-scenes-trend-v1/cutouts/asset_5be3f1a45d7f8578312b2b3abc5b4d2e27a13f04ef5587ad5e6ecd924917bb08.png",
-            "contentUrl": "/api/v1/material-assets/asset_5be3f1a45d7f8578312b2b3abc5b4d2e27a13f04ef5587ad5e6ecd924917bb08/content",
+            "assetId": "asset_d2ad2b1e3b069f30293f5ebab717aba51402284b27128093851fbd3ae81c58a2",
+            "url": "http://tk7xxzqgj.hd-bkt.clouddn.com/selfit/materials/inspiration-scenes-trend-v1/replacements/20260911-soft-mint/asset_d2ad2b1e3b069f30293f5ebab717aba51402284b27128093851fbd3ae81c58a2.png",
+            "contentUrl": "/api/v1/material-assets/asset_d2ad2b1e3b069f30293f5ebab717aba51402284b27128093851fbd3ae81c58a2/content",
             "storage": {
               "provider": "qiniu",
               "bucket": "selfit",
-              "key": "selfit/materials/inspiration-scenes-trend-v1/cutouts/asset_5be3f1a45d7f8578312b2b3abc5b4d2e27a13f04ef5587ad5e6ecd924917bb08.png",
+              "key": "selfit/materials/inspiration-scenes-trend-v1/replacements/20260911-soft-mint/asset_d2ad2b1e3b069f30293f5ebab717aba51402284b27128093851fbd3ae81c58a2.png",
               "private": true
             },
-            "sourceAssetId": "asset_8474e5cf17e394458d0fa40ef061c78c27f49630d4c85045a8a5c4ce142e9bca"
+            "sourceAssetId": "asset_d2ad2b1e3b069f30293f5ebab717aba51402284b27128093851fbd3ae81c58a2"
           },
           "cutout": {
-            "method": "birefnet_two_pass_conservative_union",
+            "method": "provided_transparent_png",
             "rgbUnchanged": true,
             "visualReview": "accepted"
           }
@@ -5183,12 +5184,12 @@
           "asset_filename": "02_上装内搭_薄荷灰刺绣改良旗袍上衣.png",
           "category": "上装内搭",
           "garment_name": "薄荷灰刺绣改良旗袍上衣",
-          "wearing_method": "贴身单穿在玫粉内搭外，立领扣合，胸前水滴形镂空，衣身覆盖至低腰。",
+          "wearing_method": "贴身穿在薄荷绿背心外，立领扣合，胸前水滴形镂空露出内搭粉蕾丝花边，衣身覆盖至低腰。",
           "body_region": "upper_body",
           "layer_position": "middle",
           "layer_order": 20,
           "closure_state": "closed",
-          "overlap_relation": "贴身单穿在玫粉内搭外，立领扣合，胸前水滴形镂空，衣身覆盖至低腰。",
+          "overlap_relation": "覆盖薄荷绿粉蕾丝边细肩带背心主体，胸口镂空露出内搭V领蕾丝。",
           "styling_details": [
             "薄荷灰绿色",
             "改良立领",
@@ -5199,7 +5200,7 @@
           ],
           "restore_priority": "must_keep",
           "paired_with": [
-            "玫粉色蕾丝文胸",
+            "薄荷绿粉蕾丝边细肩带背心",
             "薄荷绿蕾丝系带三角叠穿裤",
             "冰薄荷色褶皱中长裙",
             "黑色金属环多带芭蕾鞋",
@@ -5356,7 +5357,7 @@
           ],
           "restore_priority": "must_keep",
           "paired_with": [
-            "玫粉色蕾丝文胸",
+            "薄荷绿粉蕾丝边细肩带背心",
             "薄荷灰刺绣改良旗袍上衣",
             "冰薄荷色褶皱中长裙",
             "黑色金属环多带芭蕾鞋",
@@ -5414,7 +5415,7 @@
           ],
           "restore_priority": "must_keep",
           "paired_with": [
-            "玫粉色蕾丝文胸",
+            "薄荷绿粉蕾丝边细肩带背心",
             "薄荷灰刺绣改良旗袍上衣",
             "薄荷绿蕾丝系带三角叠穿裤",
             "黑色金属环多带芭蕾鞋",
@@ -5472,7 +5473,7 @@
           ],
           "restore_priority": "must_keep",
           "paired_with": [
-            "玫粉色蕾丝文胸",
+            "薄荷绿粉蕾丝边细肩带背心",
             "薄荷灰刺绣改良旗袍上衣",
             "薄荷绿蕾丝系带三角叠穿裤",
             "冰薄荷色褶皱中长裙",
@@ -5530,7 +5531,7 @@
           ],
           "restore_priority": "must_keep",
           "paired_with": [
-            "玫粉色蕾丝文胸",
+            "薄荷绿粉蕾丝边细肩带背心",
             "薄荷灰刺绣改良旗袍上衣",
             "薄荷绿蕾丝系带三角叠穿裤",
             "冰薄荷色褶皱中长裙",
@@ -5587,7 +5588,7 @@
           ],
           "restore_priority": "must_keep",
           "paired_with": [
-            "玫粉色蕾丝文胸",
+            "薄荷绿粉蕾丝边细肩带背心",
             "薄荷灰刺绣改良旗袍上衣",
             "薄荷绿蕾丝系带三角叠穿裤",
             "冰薄荷色褶皱中长裙",
@@ -5644,7 +5645,7 @@
           ],
           "restore_priority": "must_keep",
           "paired_with": [
-            "玫粉色蕾丝文胸",
+            "薄荷绿粉蕾丝边细肩带背心",
             "薄荷灰刺绣改良旗袍上衣",
             "薄荷绿蕾丝系带三角叠穿裤",
             "冰薄荷色褶皱中长裙",
@@ -5701,7 +5702,7 @@
           ],
           "restore_priority": "must_keep",
           "paired_with": [
-            "玫粉色蕾丝文胸",
+            "薄荷绿粉蕾丝边细肩带背心",
             "薄荷灰刺绣改良旗袍上衣",
             "薄荷绿蕾丝系带三角叠穿裤",
             "冰薄荷色褶皱中长裙",
@@ -8093,6 +8094,23 @@
         "width": 1080,
         "height": 1439
       }
+    }
+  ],
+  "sourceUpdates": [
+    {
+      "sourceDelivery": "TREND_潮流趋势-2-柔性薄荷-拆款.zip",
+      "sourceArchiveSha256": "421705ec691f8f3f5a0c150c789f3518763058b5e3a960a48214f3b1f6ec1726",
+      "lookId": "TREND_潮流趋势_outfits_02_柔性薄荷",
+      "updatedAt": "2026-09-11T05:32:56.773702+00:00",
+      "uploadStatus": "verified",
+      "replacedItemIds": [
+        "TREND_潮流趋势_outfits_02_柔性薄荷_item_01"
+      ],
+      "oldOutfitId": "report_inspiration_trend_outfits-02_a468a6451f9d",
+      "newOutfitId": "report_inspiration_trend_outfits-02_d4da0510dbd6",
+      "oldAssetId": "asset_5be3f1a45d7f8578312b2b3abc5b4d2e27a13f04ef5587ad5e6ecd924917bb08",
+      "newAssetId": "asset_d2ad2b1e3b069f30293f5ebab717aba51402284b27128093851fbd3ae81c58a2",
+      "reusedCutouts": 8
     }
   ]
 }

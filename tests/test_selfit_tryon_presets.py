@@ -36,6 +36,10 @@ def preset_case(monkeypatch, tmp_path):
     example['model']['sha256'] = hashlib.sha256(raw).hexdigest()
     if current.get('image_asset_id'):
         example['model']['image_asset_id'] = current['image_asset_id']
+    # This fixture intentionally represents the legacy binding contract even
+    # after current selfie presets replace the historical catalog rows.
+    example['strategy'] = 'visible_clothing_then_accessories'
+    example['outfitId'] = 'legacy_before_cutout_update'
     path.write_text(json.dumps({'examples': [example]}))
     return example, outfit, raw, path
 
@@ -145,3 +149,44 @@ def test_asset_model_rejects_stale_inputs(male_asset_case,change):
 
 def test_asset_model_job_uses_preset_and_keeps_history(male_asset_case,monkeypatch):
     test_job_uses_preset_without_generation_and_keeps_history(male_asset_case,monkeypatch)
+
+
+@pytest.fixture
+def one_shot_case(preset_case):
+    example, outfit, raw, path = preset_case
+    example.update(strategy='complete_outfit_single_call', outfitId=outfit['outfit_id'],
+                   qualityReview={'status': 'pass'}, visualReview={
+                       'status': 'pass', 'verified': True,
+                       'resultSha256': example['result']['sha256'], 'reviewedItemIds': example['itemIds']})
+    path.write_text(json.dumps({'examples': [example]}))
+    return example, outfit, raw, path
+
+
+def test_one_shot_preset_reuses_verified_result(one_shot_case, monkeypatch):
+    test_job_uses_preset_without_generation_and_keeps_history(one_shot_case, monkeypatch)
+
+
+@pytest.mark.parametrize('change', ['recipe', 'quality', 'visual', 'unverified_visual', 'result_hash', 'reviewed_items'])
+def test_one_shot_rejects_changed_recipe_and_stale_reviews(one_shot_case, change):
+    example, outfit, raw, path = one_shot_case
+    if change == 'recipe': example['outfitId'] = 'report_changed_wearing_instructions'
+    if change == 'quality': example['qualityReview']['status'] = 'fail'
+    if change == 'visual': example['visualReview']['status'] = 'fail'
+    if change == 'unverified_visual': example['visualReview']['verified'] = False
+    if change == 'result_hash': example['visualReview']['resultSha256'] = 'changed'
+    if change == 'reviewed_items': example['visualReview']['reviewedItemIds'] = []
+    path.write_text(json.dumps({'examples': [example]}))
+    assert presets.find_preset(outfit['outfit_id'], example['modelId'], raw, outfit['item_ids']) is None
+
+
+def test_inspiration_one_shot_preset_skips_generation_and_saves_history(one_shot_case, monkeypatch):
+    from app.inspiration_catalog import inspiration_looks
+    example, _, raw, path = one_shot_case
+    look = inspiration_looks()[0]
+    outfit = adapt_outfit(look)
+    example.update(outfitId=outfit['outfit_id'], noteBinding=look['note_binding'],
+                   sourceAssetId=look['source_asset']['assetId'], itemIds=[i['item_id'] for i in look['items']],
+                   inputAssetIds=[i['image_asset']['assetId'] for i in look['items']])
+    example['visualReview']['reviewedItemIds'] = example['itemIds']
+    path.write_text(json.dumps({'examples': [example]}))
+    test_job_uses_preset_without_generation_and_keeps_history((example, outfit, raw, path), monkeypatch)
