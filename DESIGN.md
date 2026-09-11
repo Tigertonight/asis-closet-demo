@@ -2,6 +2,12 @@
 
 This file is the frontend source of truth for the consumer product in the Figma file `🪞 适我`.
 
+## Public website — 2026-09-11
+
+- The public website at `/docs` keeps its mobile reading flow and centered desktop layout. Use consistent side gutters, vertically stacked hero actions on phones, and a two-column personality grid; expand columns only when there is room.
+- All website artwork scales proportionally. The hero uses its actual intrinsic dimensions with responsive width and automatic height. Personality cards use complete-image `contain` fitting; never stretch or crop the fused artwork to fill a card.
+- Keep the primary test entry at least 44px tall, allow card captions to wrap, and offset section anchors below the sticky header. Verify narrow phones, 390–430px phones, tablets and desktop without horizontal overflow.
+
 ## Onboarding update — 2026-09-08
 
 - Item and outfit cards do not show a decorative favorite-star corner badge. Preserve saved state and the existing favorite actions; mirror selection and pending indicators remain separate (user correction, 2026-09-10).

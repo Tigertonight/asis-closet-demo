@@ -155,83 +155,91 @@ def render_site_html(content: dict[str, Any]) -> str:
     :root {{
       --brand: #8a011b; --brand-pressed: #720015; --ink: #222; --muted: #666; --faint: #999;
       --line: #e7e7e7; --canvas: #fafafa; --card: #fff; --shadow: rgba(0, 0, 0, .06);
+      --page-gutter: 20px;
     }}
     * {{ box-sizing: border-box; }}
     html {{ scroll-behavior: smooth; }}
     body {{ margin: 0; background: var(--canvas); color: var(--ink); font: 15px/1.75 -apple-system, BlinkMacSystemFont, "PingFang SC", "Segoe UI", sans-serif; -webkit-font-smoothing: antialiased; }}
     a {{ color: inherit; }}
-    img {{ max-width: 100%; display: block; }}
+    img {{ display: block; max-width: 100%; height: auto; object-fit: contain; }}
+    a:focus-visible {{ outline: 3px solid var(--brand); outline-offset: 4px; }}
 
-    .topbar {{ position: sticky; top: 0; z-index: 40; display: flex; align-items: center; gap: 20px; padding: 14px 24px; background: rgba(255,255,255,.92); backdrop-filter: blur(8px); border-bottom: 1px solid var(--line); }}
-    .wordmark {{ font-size: 18px; font-weight: 800; letter-spacing: .5px; color: var(--brand); text-decoration: none; }}
-    .wordmark small {{ margin-left: 8px; color: var(--muted); font-weight: 500; font-size: 13px; }}
+    .topbar {{ position: sticky; top: 0; z-index: 40; display: flex; flex-wrap: wrap; align-items: center; gap: 12px; padding: max(12px, env(safe-area-inset-top)) max(var(--page-gutter), env(safe-area-inset-right)) 12px max(var(--page-gutter), env(safe-area-inset-left)); background: rgba(255,255,255,.92); backdrop-filter: blur(8px); border-bottom: 1px solid var(--line); }}
+    .wordmark {{ display: inline-flex; align-items: center; min-height: 44px; font-size: 18px; font-weight: 800; letter-spacing: .5px; color: var(--brand); text-decoration: none; }}
+    .wordmark small {{ margin-left: 8px; color: var(--muted); font-weight: 500; font-size: 14px; }}
     .topnav {{ display: none; gap: 22px; margin-left: auto; }}
-    .topnav a {{ color: var(--muted); text-decoration: none; font-size: 14px; }}
+    .topnav a {{ display: inline-flex; align-items: center; min-height: 44px; color: var(--muted); text-decoration: none; font-size: 14px; }}
     .topnav a:hover {{ color: var(--brand); }}
-    .topbar .btn {{ margin-left: auto; }}
-    .topnav ~ .btn {{ margin-left: 0; }}
+    .topbar .btn {{ margin-left: auto; min-height: 44px; padding: 10px 18px; font-size: 14px; }}
 
-    .container {{ max-width: 1080px; margin: 0 auto; padding: 0 24px; }}
+    .container {{ width: 100%; max-width: 1080px; margin: 0 auto; padding-inline: max(var(--page-gutter), env(safe-area-inset-left)) max(var(--page-gutter), env(safe-area-inset-right)); }}
 
-    .hero {{ padding: 56px 0 40px; }}
-    .hero-inner {{ max-width: 640px; }}
-    .hero .eyebrow {{ color: var(--brand); font-size: 13px; font-weight: 700; letter-spacing: 2px; margin: 0 0 12px; }}
-    .hero h1 {{ margin: 0 0 16px; font-size: 34px; line-height: 1.3; letter-spacing: -.5px; text-wrap: balance; }}
-    .hero .sub {{ margin: 0 0 28px; color: var(--muted); font-size: 16px; text-wrap: pretty; }}
-    .hero-actions {{ display: flex; flex-wrap: wrap; gap: 12px; }}
-    .hero-board {{ margin-top: 44px; border-radius: 20px; overflow: hidden; box-shadow: 0 18px 50px var(--shadow); background: #fff; }}
+    .hero {{ padding-block: 36px 24px; }}
+    .hero-inner {{ min-width: 0; max-width: 640px; margin-inline: auto; }}
+    .hero .eyebrow {{ color: var(--brand); font-size: 14px; font-weight: 700; margin: 0 0 12px; }}
+    .hero h1 {{ margin: 0 0 16px; font-size: clamp(28px, 7.6vw, 34px); line-height: 1.35; letter-spacing: -.5px; text-wrap: balance; }}
+    .hero .sub {{ margin: 0 0 24px; color: var(--muted); font-size: 15px; text-wrap: pretty; }}
+    .hero-actions {{ display: flex; flex-direction: column; gap: 12px; }}
+    .hero-board {{ width: 100%; max-width: 480px; height: auto; min-width: 0; margin: 28px auto 0; border-radius: 20px; box-shadow: 0 18px 50px var(--shadow); background: #fff; }}
 
-    .btn {{ display: inline-flex; align-items: center; justify-content: center; min-height: 48px; padding: 0 28px; border-radius: 999px; font-size: 15px; font-weight: 600; text-decoration: none; transition: background .16s ease, transform .16s ease; }}
+    .btn {{ display: inline-flex; align-items: center; justify-content: center; max-width: 100%; min-height: 48px; padding: 12px 28px; border-radius: 999px; font-size: 15px; font-weight: 600; line-height: 1.5; text-align: center; text-decoration: none; transition: background .16s ease, transform .16s ease; }}
     .btn--primary {{ background: var(--brand); color: #fff; }}
     .btn--primary:active {{ background: var(--brand-pressed); transform: scale(.985); }}
     .btn--ghost {{ border: 1px solid rgba(138,1,27,.28); background: #fff; color: var(--brand); }}
     .btn--ghost:hover {{ background: #fbf4f5; }}
-    .btn--lg {{ min-height: 54px; padding: 0 36px; font-size: 16px; }}
+    .btn--lg {{ min-height: 52px; padding: 12px 24px; font-size: 16px; }}
 
-    .section {{ padding: 52px 0 8px; }}
+    .section {{ padding: 40px 0 8px; scroll-margin-top: 96px; }}
     .section h2 {{ margin: 0 0 8px; font-size: 24px; letter-spacing: -.3px; text-align: center; text-wrap: balance; }}
     .section-note {{ margin: 0 0 24px; color: var(--muted); text-align: center; font-size: 14px; }}
 
     .steps {{ list-style: none; margin: 28px 0 0; padding: 0; display: grid; gap: 14px; }}
-    .step {{ display: flex; gap: 16px; align-items: flex-start; padding: 20px 22px; background: var(--card); border: 1px solid var(--line); border-radius: 18px; box-shadow: 0 4px 14px rgba(0,0,0,.03); }}
+    .step {{ display: flex; gap: 12px; align-items: flex-start; padding: 20px; background: var(--card); border: 1px solid var(--line); border-radius: 18px; box-shadow: 0 4px 14px rgba(0,0,0,.03); }}
+    .step-body {{ min-width: 0; }}
     .step-no {{ flex: 0 0 34px; height: 34px; display: grid; place-items: center; border-radius: 999px; background: #f6e7ea; color: var(--brand); font-weight: 800; font-size: 15px; }}
     .step-body b {{ display: block; font-size: 16px; margin-bottom: 4px; }}
     .step-body p {{ margin: 0; color: var(--muted); font-size: 14px; }}
 
-    .type-grid {{ display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-top: 26px; }}
-    .type-card {{ margin: 0; background: var(--card); border: 1px solid var(--line); border-radius: 16px; overflow: hidden; transition: transform .16s ease, box-shadow .16s ease; }}
+    .type-grid {{ display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin-top: 24px; }}
+    .type-card {{ min-width: 0; margin: 0; background: var(--card); border: 1px solid var(--line); border-radius: 16px; overflow: hidden; transition: transform .16s ease, box-shadow .16s ease; }}
     .type-card:hover {{ transform: translateY(-2px); box-shadow: 0 12px 28px rgba(0,0,0,.08); }}
-    .type-card img {{ width: 100%; aspect-ratio: 1484 / 1072; object-fit: cover; background: #f2eded; }}
-    .type-card figcaption {{ display: flex; align-items: baseline; justify-content: space-between; padding: 10px 14px; }}
+    .type-card img {{ width: 100%; height: auto; aspect-ratio: 1484 / 1072; object-fit: contain; background: #f2eded; }}
+    .type-card figcaption {{ display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 2px 8px; padding: 10px 12px; }}
     .type-card b {{ font-size: 14px; }}
-    .type-card small {{ color: var(--faint); font-size: 11px; letter-spacing: 1px; }}
+    .type-card small {{ color: var(--muted); font-size: 14px; }}
 
     .features {{ display: grid; gap: 14px; margin-top: 26px; }}
-    .feature {{ padding: 22px 24px; background: var(--card); border: 1px solid var(--line); border-radius: 18px; }}
+    .feature {{ min-width: 0; padding: 20px; background: var(--card); border: 1px solid var(--line); border-radius: 18px; }}
     .feature b {{ display: block; font-size: 16px; margin-bottom: 6px; }}
     .feature p {{ margin: 0; color: var(--muted); font-size: 14px; }}
 
-    .cta-band {{ margin: 60px 0 0; padding: 56px 24px 64px; background: var(--brand); color: #fff; text-align: center; }}
+    .cta-band {{ margin: 48px 0 0; padding: 40px max(var(--page-gutter), env(safe-area-inset-right)) 48px max(var(--page-gutter), env(safe-area-inset-left)); background: var(--brand); color: #fff; text-align: center; }}
     .cta-band h2 {{ margin: 0 0 10px; font-size: 26px; letter-spacing: -.3px; }}
     .cta-band p {{ margin: 0 0 26px; opacity: .82; }}
     .cta-band .btn--primary {{ background: #fff; color: var(--brand); }}
     .cta-band .btn--primary:active {{ background: #f6e7ea; }}
 
-    footer {{ padding: 26px 0 34px; color: var(--faint); font-size: 13px; }}
+    footer {{ padding: 24px 0 max(28px, env(safe-area-inset-bottom)); color: var(--muted); font-size: 14px; text-align: center; }}
     footer .container {{ display: flex; flex-wrap: wrap; gap: 8px 18px; align-items: center; justify-content: center; }}
     footer a {{ color: var(--muted); text-decoration: none; }}
     footer a:hover {{ color: var(--brand); }}
 
-    @media (min-width: 720px) {{
+    @media (min-width: 600px) {{
+      :root {{ --page-gutter: 24px; }}
+      .hero-actions {{ flex-direction: row; flex-wrap: wrap; }}
+      .type-grid {{ grid-template-columns: repeat(3, minmax(0, 1fr)); }}
+    }}
+    @media (min-width: 960px) {{
       .topnav {{ display: flex; }}
-      .hero {{ padding: 88px 0 56px; display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, .9fr); gap: 48px; align-items: center; }}
+      .topnav ~ .btn {{ margin-left: 0; }}
+      .hero {{ padding-block: 72px 48px; display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, .9fr); gap: 48px; align-items: center; }}
       .hero-inner {{ max-width: none; }}
       .hero h1 {{ font-size: 44px; }}
       .hero .sub {{ font-size: 17px; }}
       .hero-board {{ margin-top: 0; }}
-      .steps {{ grid-template-columns: repeat(3, 1fr); }}
-      .type-grid {{ grid-template-columns: repeat(4, 1fr); }}
-      .features {{ grid-template-columns: repeat(3, 1fr); }}
+      .steps {{ grid-template-columns: repeat(3, minmax(0, 1fr)); }}
+      .type-grid {{ grid-template-columns: repeat(4, minmax(0, 1fr)); }}
+      .features {{ grid-template-columns: repeat(3, minmax(0, 1fr)); }}
     }}
     @media (prefers-reduced-motion: reduce) {{
       html {{ scroll-behavior: auto; }}
@@ -257,7 +265,7 @@ def render_site_html(content: dict[str, Any]) -> str:
           {f'<a class="btn btn--ghost btn--lg" href="{_safe_href(secondary.get("href"))}">{_esc(secondary.get("label"))}</a>' if secondary.get("label") else ""}
         </div>
       </div>
-      <img class="hero-board" src="/static/selfit/assets/login-persona-board@2x.png" alt="selfit 风格人格展示" width="716" height="640" />
+      <img class="hero-board" src="/static/selfit/assets/login-persona-board@2x.png" alt="selfit 风格人格展示" width="2808" height="3208" fetchpriority="high" />
     </div>
     <div class="container">
       {sections_html}
