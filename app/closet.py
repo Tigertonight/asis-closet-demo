@@ -3630,7 +3630,7 @@ def render_selfit_demo_page() -> str:
     .widget-card.ai {
       --widget-bg:
         linear-gradient(180deg, rgba(255,255,255,.02), rgba(20,12,18,.18)),
-        var(--widget-image, url("/tryon-models/female_slim_1.webp?v=fullbody-20260705")),
+        var(--widget-image, url("/tryon-models/female_medium_1.png?v=mirror-selfie-20260911")),
         radial-gradient(circle at 20% 22%, rgba(255,255,255,.96) 0 11%, transparent 12%),
         radial-gradient(circle at 72% 28%, rgba(255,255,255,.92) 0 12%, transparent 13%),
         linear-gradient(145deg, rgba(255,246,241,.96), rgba(239,249,255,.98) 58%, rgba(255,239,247,.94));
@@ -5894,13 +5894,14 @@ def render_selfit_demo_page() -> str:
     const categoryOrder = ["all", "top", "bottom", "skirt", "dress", "shoes", "bag", "accessory"];
     const aiScenes = ["旅行计划", "OOTD服饰拆解", "参加重要面试", "参加婚礼", "户外运动", "朋友的生日派对", "二人世界"];
     const modelOptions = [
-      { id: "female_slim_1", src: "/tryon-models/female_slim_1.webp?v=female-v4-20260705", name: "纤细型", tags: ["纤细型", "直筒"] },
-      { id: "female_medium_1", src: "/tryon-models/female_medium_1.webp?v=female-v4-20260705", name: "沙漏型", tags: ["沙漏型", "匀称"] },
-      { id: "female_plus_1", src: "/tryon-models/female_plus_1.webp?v=female-v4-20260705", name: "丰满型", tags: ["丰满型", "柔和"] },
+      { id: "female_slim_1", src: "/tryon-models/female_slim_1.png?v=mirror-selfie-20260911", name: "纤细型", tags: ["纤细型", "直筒"] },
+      { id: "female_medium_1", src: "/tryon-models/female_medium_1.png?v=mirror-selfie-20260911", name: "匀称型", tags: ["匀称型", "匀称"] },
+      { id: "female_plus_1", src: "/tryon-models/female_plus_1.png?v=mirror-selfie-20260911", name: "丰满型", tags: ["丰满型", "柔和"] },
       { id: "male_slim_1", src: "/tryon-models/male_slim_1.webp?v=fullbody-20260705", name: "男纤细", tags: ["男生", "纤细"] },
       { id: "male_medium_1", src: "/tryon-models/male_medium_1.webp?v=fullbody-20260705", name: "男匀称", tags: ["男生", "匀称"] },
       { id: "male_plus_1", src: "/tryon-models/male_plus_1.webp?v=fullbody-20260705", name: "男宽松", tags: ["男生", "宽松"] },
     ];
+    const defaultModelOption = modelOptions.find(model => model.id === "female_medium_1") || modelOptions[0];
 
     function $(selector) { return document.querySelector(selector); }
     function $all(selector) { return [...document.querySelectorAll(selector)]; }
@@ -5977,7 +5978,7 @@ def render_selfit_demo_page() -> str:
     function publicCutoutImg(item) { return withVersion(item?.assets?.cutout_path || item?.assets?.preview_path || "", item); }
     function currentModel() {
       if (state.currentModelId === "self" && state.selfModelUrl) return { id: "self", src: state.selfModelUrl, name: "我的照片", tags: ["我的照片"] };
-      return modelOptions.find(model => model.id === state.currentModelId) || modelOptions[0];
+      return modelOptions.find(model => model.id === state.currentModelId) || defaultModelOption;
     }
     function renderSelfModelPhoto() {
       const zone = $("#selfUploadZone");
@@ -6147,7 +6148,7 @@ def render_selfit_demo_page() -> str:
       $("#sessionActionPopover")?.classList.remove("open");
     }
     function openModelSheet() {
-      state.pendingModelId = state.currentModelId === "self" ? modelOptions[0].id : state.currentModelId;
+      state.pendingModelId = state.currentModelId === "self" ? defaultModelOption.id : state.currentModelId;
       $("#modelSheet").dataset.mode = "preset";
       $all("[data-model-mode]").forEach(btn => btn.classList.toggle("active", btn.dataset.modelMode === "preset"));
       renderModelPicker();
@@ -6228,7 +6229,7 @@ def render_selfit_demo_page() -> str:
     }
     function confirmPresetModel() {
       const returnTarget = state.modelSheetReturn;
-      state.currentModelId = state.pendingModelId || modelOptions[0].id;
+      state.currentModelId = state.pendingModelId || defaultModelOption.id;
       updateCurrentModelUI();
       closeSheet("modelSheet");
       saveCurrentModelPreference();

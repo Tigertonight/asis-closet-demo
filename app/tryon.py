@@ -50,7 +50,7 @@ XHS_ALLOWED_HOST_PARTS = ("xiaohongshu.com", "xhslink.com", "xhscdn.com")
 MAX_XHS_IMAGES = 12
 FASHION_ITEM_CATEGORIES = {"top", "outer", "bottom", "skirt", "dress", "shoes", "bag", "accessory"}
 OUTFIT_PHOTO_MODES = {"standard", "mirror_selfie", "face_covered", "scene_photo"}
-OUTFIT_TRYON_PIPELINE_VERSION = "outfit_tryon_v5_framing_quality_gate"
+OUTFIT_TRYON_PIPELINE_VERSION = "outfit_tryon_v6_detected_face_geometry"
 TRYON_JOB_EXECUTOR = ThreadPoolExecutor(max_workers=2, thread_name_prefix="selfit-tryon")
 TRYON_JOB_LOCK = threading.Lock()
 OUTFIT_REQUIRED_GROUPS = {
@@ -294,12 +294,6 @@ def preview_outfit_tryon_plan(
     plan = _normalize_outfit_tryon_plan(outfit_plan)
     person = _read_upload_image(person_raw, person_filename, "person_preview")
     person_detection = _detect_person(person["image"])
-    if person_detection.get("status") == "fail":
-        person_detection = _relax_outfit_person_detection_for_ai_tryon(
-            person["image"],
-            person_detection,
-            _stage("pass", 0.7, {"preview": True}, []),
-        )
     coverage = _outfit_body_coverage_stage(person["image"], person_detection, plan)
     coverage_evidence = coverage.get("evidence", {})
     skipped_slots = set(coverage_evidence.get("skipped_slots") or [])
@@ -961,7 +955,7 @@ def run_try_on(person: dict[str, Any], garment: dict[str, Any], provider: "TryOn
             if any(issue.get("code") == "image_edit.provider_unavailable" for issue in pipeline["image_edit"].get("issues", [])):
                 user_message = "当前还没有接入真实 AI 试穿模型，暂时不能生成可信试穿图。"
             else:
-                user_message = "这次试穿图质量没有达标，暂不建议展示给用户。"
+                user_message = _tryon_failure_message(pipeline["image_edit"], pipeline["quality_review"])
 
     return {
         "status": status,
@@ -1071,7 +1065,7 @@ def run_try_on_from_inspiration(
             user_message = "已根据穿搭照片生成试穿效果，请查看服装与人物细节。" if full_outfit else "已根据灵感图生成上衣试穿效果，建议重点观察条纹、领口和整体版型。"
         elif pipeline["image_edit"]["status"] != "pending":
             status = "failed"
-            user_message = "这次灵感试穿没有达标，暂不建议展示给用户。"
+            user_message = _tryon_failure_message(pipeline["image_edit"], pipeline["quality_review"])
 
     return {
         "status": status,
@@ -1156,7 +1150,6 @@ def run_try_on_from_outfit_plan(
     reference_board = Image.open(full_reference_board_path).convert("RGB")
     raw_input_quality = _input_quality_stage(person["image"], reference_board)
     person_detection = _detect_person(person["image"])
-    person_detection = _relax_outfit_person_detection_for_ai_tryon(person["image"], person_detection, raw_input_quality)
     input_quality = _relax_preset_model_blur_for_outfit_tryon(person, raw_input_quality, person_detection)
     plan_stage = _outfit_plan_stage(requested_plan)
     body_coverage = _outfit_body_coverage_stage(person["image"], person_detection, requested_plan)
@@ -1222,13 +1215,19 @@ def run_try_on_from_outfit_plan(
             pipeline["quality_review"] = _stage("pending", 0.0, {"skipped": True, "reason": "worker_pending"}, [])
             status = "pending"
             user_message = "已提交生成，正在把整套穿搭穿到模特身上。"
-        elif pipeline["image_edit"]["status"] == "fail" and any(
-            issue.get("code", "").startswith("image_edit.") for issue in pipeline["image_edit"].get("issues", [])
-        ):
-            pipeline["quality_review"] = _stage("unknown", 0, {"skipped": True, "reason": "image_generation_failed"}, [])
+        elif pipeline["image_edit"]["status"] == "fail":
+            failed_quality = next((
+                stage["quality_review"]
+                for stage in pipeline["image_edit"].get("evidence", {}).get("stages", [])
+                if stage.get("quality_review", {}).get("status") == "fail"
+            ), None)
+            # Preserve the failed pass's review; reviewing a discarded result would
+            # replace the real cause with a misleading "missing result" error.
+            pipeline["quality_review"] = failed_quality or _stage(
+                "unknown", 0, {"skipped": True, "reason": "image_generation_failed"}, [],
+            )
             status = "failed"
-            user_message = next(issue["message"] for issue in pipeline["image_edit"]["issues"]
-                                if issue.get("code", "").startswith("image_edit."))
+            user_message = _tryon_failure_message(pipeline["quality_review"], pipeline["image_edit"])
         else:
             pipeline["quality_review"] = _review_outfit_tryon_quality(
                 person["image"],
@@ -1252,7 +1251,7 @@ def run_try_on_from_outfit_plan(
                 user_message = "试穿图已生成，但有些细节建议复核；你可以先查看，也可以重新生成一版。"
             else:
                 status = "failed"
-                user_message = "这次整套试穿图质量没有达标，暂不建议展示给用户。"
+                user_message = _tryon_failure_message(pipeline["quality_review"], pipeline["image_edit"])
 
     response_payload = {
         "status": status,
@@ -3043,7 +3042,8 @@ def render_tryon_demo_page() -> str:
       runBtn.disabled = tryonMode === "outfit" ? !(hasSavedOutfit || hasDirectOutfit) : !hasTopInput;
     }
     function modelUrl(file) {
-      return `/tryon-models/${encodeURIComponent(file)}?v=fullbody-20260704`;
+      const version = /^female_(slim|medium|plus)_1\.png$/.test(file) ? "mirror-selfie-20260911" : "fullbody-20260704";
+      return `/tryon-models/${encodeURIComponent(file)}?v=${version}`;
     }
     function setPersonPreview(src) {
       const img = document.getElementById("personPreview");
@@ -3470,19 +3470,24 @@ def _detect_person(image: Image.Image) -> dict[str, Any]:
     gray = cv2.cvtColor(bgr, cv2.COLOR_BGR2GRAY)
     cascade = cv2.CascadeClassifier(cv2.data.haarcascades + "haarcascade_frontalface_default.xml")
     detections = cascade.detectMultiScale(gray, scaleFactor=1.08, minNeighbors=4, minSize=(72, 72))
+    detector = "haar_frontal"
+    if len(detections) == 0:
+        # Retry with a second local detector/contrast normalization, never a
+        # guessed box: this geometry controls both the edit mask and identity QA.
+        cascade = cv2.CascadeClassifier(cv2.data.haarcascades + "haarcascade_frontalface_alt2.xml")
+        detections = cascade.detectMultiScale(cv2.equalizeHist(gray), scaleFactor=1.05, minNeighbors=5, minSize=(72, 72))
+        detector = "haar_frontal_alt2"
     h, w = gray.shape[:2]
     faces = []
     for x, y, fw, fh in detections:
-        area_ratio = (fw * fh) / (w * h)
-        if area_ratio >= 0.012:
-            faces.append({"box": {"x": int(x), "y": int(y), "width": int(fw), "height": int(fh)}, "area_ratio": round(area_ratio, 4)})
+        area_ratio = (int(fw) * int(fh)) / (w * h)
+        # The detector's 72px minimum ensures usable detail. A frame-area cutoff
+        # incorrectly removes clear faces in full-body photos (e.g. 217px/2400px).
+        faces.append({"box": {"x": int(x), "y": int(y), "width": int(fw), "height": int(fh)}, "area_ratio": round(area_ratio, 4), "detector": detector})
     if not faces:
-        fallback_face = _clean_center_portrait_fallback(image)
-        if fallback_face is not None:
-            return _stage("warn", 0.58, {"face_count": 1, "primary_face": fallback_face, "fallback": "clean_center_portrait"}, [
-                _issue("person.face_detector_fallback", "已按清晰单人模特继续", "这张图像接近干净模特照，已继续生成试穿。")
-            ])
-        return _stage("fail", 0.82, {"face_count": 0}, [_issue("person.no_face", "未检测到单人正脸", "请上传本人单人半身或全身照片。")])
+        return _stage("fail", 0.82, {"face_count": 0, "detectors_attempted": ["haar_frontal", "haar_frontal_alt2"]}, [
+            _issue("person.no_face", "未能确认人脸位置", "请换一张脸部清晰、未被遮挡的单人半身或全身照片。")
+        ])
     faces.sort(key=lambda item: (item["box"]["y"], -item["area_ratio"]))
     face = faces[0]
     if len(faces) > 1:
@@ -3579,78 +3584,6 @@ def _visible_outfit_plan(plan: dict[str, Any], coverage: dict[str, Any]) -> dict
     return {**plan, "items": items}
 
 
-def _clean_center_portrait_fallback(image: Image.Image) -> dict[str, Any] | None:
-    rgb = image.convert("RGB")
-    arr = np.asarray(rgb)
-    h, w = arr.shape[:2]
-    if min(h, w) < 640:
-        return None
-    corner = np.concatenate(
-        [
-            arr[:80, :80].reshape(-1, 3),
-            arr[:80, -80:].reshape(-1, 3),
-            arr[-80:, :80].reshape(-1, 3),
-            arr[-80:, -80:].reshape(-1, 3),
-        ]
-    )
-    if float(corner.std()) > 8:
-        return None
-    background = np.median(corner, axis=0)
-    diff = np.linalg.norm(arr.astype(float) - background, axis=2)
-    foreground = diff > 35
-    center_ratio = float(foreground[:, w // 3 : (w * 2) // 3].mean())
-    full_ratio = float(foreground.mean())
-    head_band_ratio = float(foreground[int(h * 0.07) : int(h * 0.17), w // 3 : (w * 2) // 3].mean())
-    if center_ratio < 0.42 or full_ratio < 0.18 or head_band_ratio < 0.08:
-        return None
-    fw = max(96, int(w * 0.16))
-    fh = max(96, int(h * 0.13))
-    x = (w - fw) // 2
-    y = int(h * 0.08)
-    return {"box": {"x": x, "y": y, "width": fw, "height": fh}, "area_ratio": round((fw * fh) / (w * h), 4)}
-
-
-def _relax_outfit_person_detection_for_ai_tryon(
-    image: Image.Image,
-    person_detection: dict[str, Any],
-    input_quality: dict[str, Any],
-) -> dict[str, Any]:
-    if person_detection.get("status") != "fail":
-        return person_detection
-    issue_codes = {issue.get("code") for issue in person_detection.get("issues", [])}
-    if "person.multiple_faces" in issue_codes:
-        return person_detection
-    if input_quality.get("status") == "fail":
-        return person_detection
-    width, height = image.size
-    if min(width, height) < MIN_PERSON_EDGE:
-        return person_detection
-    face_width = max(96, int(width * 0.14))
-    face_height = max(96, int(height * 0.10))
-    fallback_face = {
-        "box": {
-            "x": int((width - face_width) / 2),
-            "y": int(height * 0.34),
-            "width": face_width,
-            "height": face_height,
-        },
-        "area_ratio": round((face_width * face_height) / (width * height), 4),
-    }
-    return _stage("warn", 0.52, {
-        **person_detection.get("evidence", {}),
-        "face_count": person_detection.get("evidence", {}).get("face_count", 0),
-        "primary_face": fallback_face,
-        "fallback": "ai_tryon_identity_preserve",
-        "reason": "local_face_detector_missed_real_world_photo",
-    }, [
-        _issue(
-            "person.face_detector_relaxed_for_ai_tryon",
-            "本地人脸检测未命中，已交给 AI 继续判断",
-            "真实生活照可能无法被本地检测器稳定识别，已继续生成试穿。",
-        )
-    ])
-
-
 def _generate_upper_body_mask(image: Image.Image, person_stage: dict[str, Any], output_path: Path) -> dict[str, Any]:
     box = person_stage["evidence"]["primary_face"]["box"]
     width, height = image.size
@@ -3724,7 +3657,7 @@ def _review_tryon_quality(original: Image.Image, result_path: Path | None, perso
         evidence["mask_editable_ratio"] = editable_ratio
         evidence["mask_contract"] = "fail_if_protected_face_or_background_changes"
         if face_diff > 28:
-            issues.append(_issue("quality.face_changed", "人脸区域变化过大", "请重新生成，避免改变用户本人特征。"))
+            issues.append(_issue("quality.face_changed", "生成图中的面部与原照片差异较大", "请重新尝试，保留原来的面部特征。"))
         if background_diff > 18:
             issues.append(_issue("quality.background_changed", "背景或非衣服区域变化较大", "请重新生成。"))
     else:
@@ -4748,10 +4681,11 @@ def _public_output_path(path: Path | None) -> str | None:
 
 
 def _load_tryon_model_manifest() -> dict[str, Any]:
+    from app.model_assets import load_model_manifest
     manifest_path = TRYON_MODEL_FIXTURE_DIR / "manifest.json"
     if not manifest_path.exists():
         return {"total": 0, "items": []}
-    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    manifest = load_model_manifest(TRYON_MODEL_FIXTURE_DIR)
     items = []
     for item in manifest.get("items", []):
         image_path = TRYON_MODEL_FIXTURE_DIR / item.get("file", "")
@@ -5799,6 +5733,18 @@ def _stage(status: str, confidence: float, evidence: dict[str, Any], issues: lis
         "issues": issues,
         "suggestions": [issue["suggestion"] for issue in issues if issue.get("suggestion")],
     }
+
+
+def _tryon_failure_message(*stages: dict[str, Any]) -> str:
+    for stage in stages:
+        if stage.get("status") != "fail":
+            continue
+        for issue in stage.get("issues", []):
+            message = str(issue.get("message") or "").strip()
+            if message:
+                suggestion = str(issue.get("suggestion") or "").strip()
+                return f"{message}。{suggestion}" if suggestion else message
+    return "这次试穿没有完成，请重新尝试。你选择的照片和搭配都已保留。"
 
 
 def _issue(code: str, message: str, suggestion: str) -> dict[str, str]:

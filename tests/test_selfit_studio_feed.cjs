@@ -2,7 +2,7 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const vm = require('node:vm');
 const code = fs.readFileSync('app/static/selfit-tryon/studio.js','utf8');
-const loadFeed = code.slice(code.indexOf('  async function loadFeed('),code.indexOf('  async function load()'));
+const loadFeed = code.slice(code.indexOf('  let inspirationNotesRequest'), code.indexOf('  let wardrobeRequest')) + code.slice(code.indexOf('  async function loadFeed('),code.indexOf('  async function load()'));
 (async () => {
   const calls=[];
   let page=0, failSets=false;

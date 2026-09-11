@@ -1,7 +1,7 @@
 """Save a personal outfit assembled from owned wardrobe or published library pieces."""
 from copy import deepcopy
 from threading import RLock
-from typing import Any
+from typing import Any, Literal
 
 from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel, Field
@@ -44,13 +44,15 @@ def studio_wardrobe(user: dict[str, Any] = Depends(get_current_user)) -> dict[st
 
 
 @router.post("/items/{item_id}/outfits")
-def studio_item_outfits(item_id: str, user: dict[str, Any] = Depends(get_current_user)) -> dict[str, Any]:
+def studio_item_outfits(item_id: str, user: dict[str, Any] = Depends(get_current_user),
+                       body_profile: Literal["standard", "curvy"] = "standard") -> dict[str, Any]:
     from app import closet
     from app.selfit_outfit_match import match_notebook_outfit
 
     with user_storage(user["user_id"]):
         anchor = closet.get_closet_item(item_id)
-        return match_notebook_outfit(anchor)
+        gender = "male" if user.get("gender") == "male" else "female"
+        return match_notebook_outfit(anchor, user["user_id"], body_profile, gender=gender)
 
 
 class StudioOutfit(BaseModel):
@@ -109,13 +111,15 @@ def model_library() -> dict[str, Any]:
     from pathlib import Path
     from urllib.parse import quote
     from app import tryon
+    from app.material_assets import MaterialRegistry, asset_content_url
+    from app.model_assets import load_model_manifest
 
     root = tryon.TRYON_MODEL_FIXTURE_DIR.resolve()
     manifest = root / "manifest.json"
     if not manifest.is_file():
         return {"items": [], "total": 0}
     try:
-        rows = json.loads(manifest.read_text()).get("items", [])
+        rows = load_model_manifest(root).get("items", [])
     except (ValueError, AttributeError):
         raise HTTPException(503, "模特库暂时无法读取，请稍后重试。")
     items = []
@@ -124,15 +128,26 @@ def model_library() -> dict[str, Any]:
             continue
         filename = str(row.get("file") or "")
         path = (root / filename).resolve()
-        if not filename or path.parent != root or not path.is_file() or path.suffix.lower() not in {".png", ".jpg", ".jpeg", ".webp"}:
-            continue
+        if row.get("image_asset_id"):
+            try:
+                MaterialRegistry().get(row["image_asset_id"])
+                image_url = asset_content_url(row["image_asset_id"])
+            except (KeyError, ValueError):
+                continue
+            if not row.get("id"):
+                continue
+        else:
+            if not filename or path.parent != root or not path.is_file() or path.suffix.lower() not in {".png", ".jpg", ".jpeg", ".webp"}:
+                continue
+            image_url = f"/tryon-models/{quote(filename)}?v={path.stat().st_mtime_ns}"
         items.append({
             "id": str(row.get("id") or Path(filename).stem),
             "name": row.get("display_name") or Path(filename).stem,
             "gender": row.get("gender"), "gender_label": row.get("gender_label"),
             "body_type": row.get("body_type"), "body_type_label": row.get("body_type_label"),
             "sort_order": row.get("sort_order") if isinstance(row.get("sort_order"), (int, float)) else 999,
-            "image_url": f"/tryon-models/{quote(filename)}?v={path.stat().st_mtime_ns}",
+            "image_url": image_url,
+            "default_for_gender": row.get("default_for_gender") is True,
         })
     items.sort(key=lambda x: (x["sort_order"], x["id"]))
     return {"items": items, "total": len(items)}

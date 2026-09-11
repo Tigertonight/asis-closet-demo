@@ -8,7 +8,7 @@ for (const file of ['seed-templates.js', 'body-variants.js']) {
 }
 const api = context.window.SELFIT_BODY_VARIANTS;
 const delivered = context.window.SELFIT_REPORT_MASTER_DATA.templates;
-const base = delivered.filter(item => item.bodyProfile !== 'curvy');
+const base = delivered.filter(item => item.bodyProfile !== 'curvy' && item.gender !== 'male');
 const copy = value => JSON.parse(JSON.stringify(value));
 
 test('four body variants keep persona identity and isolate unreviewed outfits', () => {
@@ -55,7 +55,7 @@ test('builder migrates saved v7 library and preserves body profile through JSON 
   const records = base.map((data, id) => ({id: String(id), data: copy(data)}));
   records[0].data.summary = '保留编辑';
   const migrated = builder.migrateLibrary({seedVersion: 7, activeId: '3', templates: records});
-  assert.equal(migrated.templates.length, 27);
+  assert.equal(migrated.templates.length, 28);
   assert.equal(migrated.activeId, '3');
   assert.equal(migrated.templates[0].data.summary, '保留编辑');
   const normalized = builder.normalize(copy(migrated.templates.find(item => api.key(item.data) === 'LOOP:curvy:unisex')));
@@ -63,7 +63,7 @@ test('builder migrates saved v7 library and preserves body profile through JSON 
   assert.equal(normalized.code, 'LOOP');
   assert.ok(normalized.outfits.every(item => item.image));
   assert.equal(builder.normalize(base[0]).bodyProfile, 'standard');
-  assert.equal(builder.migrateLibrary(migrated).templates.length, 27);
+  assert.equal(builder.migrateLibrary(migrated).templates.length, 28);
 });
 
 test('seven male templates retain exact names and keywords through import normalization', () => {
@@ -96,12 +96,12 @@ test('v8 migration preserves custom copy while filling previously empty curvy ca
   records[16].data.summary = '微胖版本已编辑';
   const before = JSON.stringify(records.slice(0, 16));
   const migrated = context.window.testBuilder.migrateLibrary({seedVersion: 8, activeId: '16', templates: records});
-  assert.equal(migrated.templates.length, 27);
+  assert.equal(migrated.templates.length, 28);
   assert.equal(migrated.activeId, '16');
   assert.ok(JSON.stringify(migrated.templates.slice(0, 16)) === before);
   assert.equal(migrated.templates[16].data.summary, '微胖版本已编辑');
   assert.ok(migrated.templates[16].data.outfits.every(item => item.image));
-  assert.equal(migrated.seedVersion, 14);
+  assert.equal(migrated.seedVersion, context.window.SELFIT_REPORT_MASTER_DATA.seedVersion);
 });
 
 test('Cowork editor preserves audience fields and exact male keywords with remote persistence', () => {
@@ -121,8 +121,8 @@ test('Cowork editor preserves audience fields and exact male keywords with remot
 
 test('delivered curvy sets retain their four configured cards without replacing defaults', () => {
   const seeds = api.seeds(delivered);
-  assert.equal(seeds.length, 27);
-  assert.equal(new Set(seeds.map(api.key)).size, 27);
+  assert.equal(seeds.length, 28);
+  assert.equal(new Set(seeds.map(api.key)).size, 28);
   for (const code of ['FILM', 'WABI', 'LOOP', 'VOID']) {
     const variant = seeds.find(item => api.key(item) === `${code}:curvy:unisex`);
     const standard = seeds.find(item => api.key(item) === `${code}:standard:unisex`);
@@ -132,6 +132,26 @@ test('delivered curvy sets retain their four configured cards without replacing 
   }
 });
 
+test('new male delivery fills empty saved placeholders and keeps custom outfits', () => {
+  for(const template of delivered.filter(item=>item.gender==='male')){
+    const normalized=context.window.testBuilder.normalize(copy(template));
+    assert(normalized.makeup.every(card=>!card.name&&!card.image), 'male makeup placeholders stay hidden');
+    assert.equal(normalized.hair.length,2);
+    assert(normalized.hair.every(card=>card.name&&card.image&&card.assetId), 'delivered male hair survives normalization');
+    assert.equal(normalized.outfits.filter(card=>card.image&&card.assetId).length,4);
+  }
+  const blank = api.seeds(base).find(item=>api.key(item)==='MUTE:standard:male');
+  const edited = copy(blank); edited.outfits[0].name = '自己的草稿';
+  const records = [{id:'empty',data:copy(blank)}, {id:'edited',data:edited}];
+  records[0].data.summary='自己的介绍';
+  const migrated=context.window.testBuilder.migrateLibrary({seedVersion:15,activeId:'edited',templates:records});
+  assert(migrated.templates.find(x=>x.id==='empty').data.outfits.every(x=>x.assetId&&x.image));
+  assert.equal(migrated.templates.find(x=>x.id==='empty').data.summary,'自己的介绍');
+  assert.equal(migrated.templates.find(x=>x.id==='edited').data.outfits[0].name,'自己的草稿');
+  assert.equal(migrated.activeId,'edited');
+  assert.equal(migrated.templates.filter(x=>api.key(x.data)==='EASE:standard:male').length,1);
+});
+
 test('legacy wrong bodyProfile is repaired by stable template ID before import matching', () => {
   const legacy = {code: 'FILM', templateId: 'film-curvy', name: '自定义标题', bodyProfile: 'standard'};
   const normalized = context.window.testBuilder.normalize(legacy);
@@ -139,6 +159,26 @@ test('legacy wrong bodyProfile is repaired by stable template ID before import m
   assert.equal(api.key(legacy), 'FILM:curvy:unisex');
   const byName = context.window.testBuilder.normalize({code: 'WABI', name: '手作侘寂-微胖', bodyProfile: 'standard'});
   assert.equal(byName.bodyProfile, 'curvy');
+});
+
+test('updated snapshot refreshes saved seed content and preserves custom fields', () => {
+  const builder=context.window.testBuilder;
+  const baseline=context.window.SELFIT_REPORT_MASTER_DATA.seedUpdateBaselines.templates;
+  const prior=baseline.find(item=>api.key(item)==='EDGE:standard:male');
+  const current=delivered.find(item=>api.key(item)==='EDGE:standard:male');
+  const plain={id:'original',data:builder.normalize(copy(prior))};
+  const edited={id:'custom',data:builder.normalize(copy(prior))};
+  edited.data.summary='我自己改写的介绍';
+  edited.data.outfits[0].name='我自己选择的搭配';
+  const migrated=builder.migrateLibrary({seedVersion:16,activeId:'custom',templates:[plain,edited]});
+  assert.deepEqual(copy(plain.data.hair),copy(builder.normalize(current).hair));
+  assert.equal(plain.data.hero,current.hero);
+  assert.equal(plain.data.summary,current.summary);
+  assert.equal(edited.data.summary,'我自己改写的介绍');
+  assert.equal(edited.data.outfits[0].name,'我自己选择的搭配');
+  assert.deepEqual(copy(edited.data.hair),copy(builder.normalize(current).hair));
+  assert.equal(migrated.activeId,'custom');
+  assert.deepEqual(copy(builder.migrateLibrary(migrated)),copy(migrated));
 });
 
 test('v14 migration updates older notes but preserves newer saved work', () => {

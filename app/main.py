@@ -19,6 +19,7 @@ from starlette.concurrency import run_in_threadpool
 from app.recommendation_profile import resolve_profile, preview_profile
 from app.recommendation_feed import create_feed, continue_feed, validate_feedback
 from app.recommendation_visual import attach_visual, load_visual
+from app.model_assets import ModelStaticFiles
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
 from app.auth import (
@@ -204,7 +205,7 @@ class CachedStaticFiles(StaticFiles):
 
 app.mount("/static", CachedStaticFiles(directory="app/static"), name="static")
 app.mount("/tryon-outputs", StaticFiles(directory="outputs/tryon"), name="tryon-outputs")
-app.mount("/tryon-models", StaticFiles(directory=TRYON_MODEL_FIXTURE_DIR), name="tryon-models")
+app.mount("/tryon-models", ModelStaticFiles(directory=TRYON_MODEL_FIXTURE_DIR), name="tryon-models")
 
 
 def _parse_selected_item_ids(value: str | None, *, limit: int | None = 8) -> list[str] | None:
@@ -736,7 +737,9 @@ async def closet_import_link(url: str = Form(...), current_user: dict[str, Any] 
 @app.get("/closet/preferences")
 def closet_preferences(current_user: dict[str, Any] = Depends(get_current_user)) -> dict[str, Any]:
     with user_storage(current_user["user_id"]):
-        return get_user_preferences()
+        # Use the current account record, not a possibly stale browser login snapshot.
+        gender = "male" if current_user.get("gender") == "male" else "female"
+        return {**get_user_preferences(), "gender": gender}
 
 
 @app.patch("/closet/preferences")

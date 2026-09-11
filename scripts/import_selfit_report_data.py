@@ -57,6 +57,11 @@ def _image(src: str, alt: str, existing: dict[str, Any] | None = None) -> dict[s
     result = dict(existing or {})
     result.pop("assetId", None)
     result.update({"src": src, "alt": alt})
+    # Editor exports may already reference registered materials, including heroes.
+    material = re.fullmatch(r"/api/v1/material-assets/(asset_[0-9a-f]{64})/content", src)
+    if material:
+        result["assetId"] = material.group(1)
+        result.pop("src", None)
     return result
 
 
@@ -68,6 +73,10 @@ def _card(item: dict[str, Any], *, card_id: str, type_name: str,
         f"{type_name} · {item.get('name') or '推荐参考'}",
         prior.get("image") if isinstance(prior.get("image"), dict) else None,
     )
+    # New deliveries already have registered content IDs; do not re-upload an API URL.
+    if item.get("assetId"):
+        image["assetId"] = str(item["assetId"])
+        image.pop("src", None)
     width = int(item.get("imageWidth") or item.get("width") or 0)
     height = int(item.get("imageHeight") or item.get("height") or 0)
     if width > 0 and height > 0:

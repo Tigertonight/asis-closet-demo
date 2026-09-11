@@ -126,6 +126,7 @@ def adapt_outfit(look: dict) -> dict:
         "item_ids": [i["item_id"] for i in items], "display_item_ids": [i["item_id"] for i in items],
         "cover_path": _asset_url(look["source_asset"]), "source_asset_id": look["source_asset"]["assetId"],
         "primary_persona": binding["persona"], "template_id": binding["templateId"],
+        "gender": binding.get("gender", "unisex"), "body_profile": binding.get("bodyProfile", "standard"),
         "source": "styling_delivery", "can_delete": False, "favorite": False, "deleted": False,
         "tryon_ready": True, "scene_tags": list(look.get("scene_tags", [])), "warnings": [],
         "layer_sequence_inner_to_outer": [_item_id(look, source_id) for source_id in look["layer_sequence_inner_to_outer"]],

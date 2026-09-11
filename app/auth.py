@@ -37,6 +37,11 @@ INVITE_CODE_ID_LENGTH = 16
 DEVICE_ID_MIN_LENGTH = 8
 DEVICE_ID_MAX_LENGTH = 128
 
+# 用户性别：当前产品默认女性向，存量账号与新建账号一律先按女性落库；
+# 男性入口开放后由用户画像/设置流程显式改写。
+USER_GENDERS = {"female", "male"}
+DEFAULT_USER_GENDER = "female"
+
 _bearer = HTTPBearer(auto_error=False)
 
 
@@ -84,6 +89,9 @@ def _load_store() -> dict[str, Any]:
             data.setdefault("phone_login_codes", [])
             data.setdefault("auth_sessions", [])
             data.setdefault("invite_codes", [])
+            for user in data["users"]:
+                if isinstance(user, dict) and user.get("gender") not in USER_GENDERS:
+                    user["gender"] = DEFAULT_USER_GENDER
             return data
     except json.JSONDecodeError:
         pass
@@ -107,6 +115,7 @@ def ensure_local_user() -> dict[str, Any]:
         "user_id": LOCAL_USER_ID,
         "phone_e164": DEFAULT_LOCAL_PHONE,
         "status": "active",
+        "gender": DEFAULT_USER_GENDER,
         "created_at": now,
         "last_login_at": now,
     }
@@ -312,6 +321,7 @@ def verify_invite_login(invite_code: str, client_ip: str, device_id: str | None 
             "device_id": device,
             "invite_code_id": record["code_id"],
             "beta_qualified": True,
+            "gender": DEFAULT_USER_GENDER,
             "created_at": now.isoformat(),
             "last_login_at": now.isoformat(),
         }
@@ -334,6 +344,7 @@ def create_guest_session(client_ip: str) -> dict[str, Any]:
     now = datetime.now(timezone.utc)
     data = _load_store()
     user = {"user_id": "guest_" + secrets.token_hex(16), "status": "active",
+            "gender": DEFAULT_USER_GENDER,
             "created_at": now.isoformat(), "last_login_at": now.isoformat()}
     data["users"].append(user)
     token = _issue_session(data, user, now, "guest", client_ip)
@@ -385,6 +396,7 @@ def verify_phone_direct_login(phone: str, client_ip: str) -> dict[str, Any]:
                 "status": "active",
                 "auth_provider": "phone_direct",
                 "source_ip": client_ip,
+                "gender": DEFAULT_USER_GENDER,
                 "created_at": now.isoformat(),
                 "last_login_at": now.isoformat(),
             }
@@ -652,6 +664,7 @@ def _find_or_create_user(data: dict[str, Any], phone_e164: str, now: datetime) -
             "user_id": LOCAL_USER_ID,
             "phone_e164": DEFAULT_LOCAL_PHONE,
             "status": "active",
+            "gender": DEFAULT_USER_GENDER,
             "created_at": now.isoformat(),
             "last_login_at": now.isoformat(),
         }
@@ -666,6 +679,7 @@ def _find_or_create_user(data: dict[str, Any], phone_e164: str, now: datetime) -
         "user_id": user_id,
         "phone_e164": phone_e164,
         "status": "active",
+        "gender": DEFAULT_USER_GENDER,
         "created_at": now.isoformat(),
         "last_login_at": now.isoformat(),
     }
@@ -679,6 +693,7 @@ def _public_user(user: dict[str, Any]) -> dict[str, Any]:
         "phone_e164": user.get("phone_e164"),
         "status": user.get("status"),
         "beta_qualified": bool(user.get("beta_qualified")),
+        "gender": user.get("gender") if user.get("gender") in USER_GENDERS else DEFAULT_USER_GENDER,
         "created_at": user.get("created_at"),
         "last_login_at": user.get("last_login_at"),
     }
@@ -806,6 +821,7 @@ def issue_admin_session(client_ip: str) -> str:
                 "phone_e164": None,
                 "status": "active",
                 "auth_provider": "admin",
+                "gender": DEFAULT_USER_GENDER,
                 "created_at": now.isoformat(),
                 "last_login_at": now.isoformat(),
             }

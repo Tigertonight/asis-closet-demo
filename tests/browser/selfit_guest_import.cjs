@@ -54,7 +54,7 @@ const dir=path.resolve('docs/audits/20260908-main-app/evidence/live-guest-import
    const generated=await generatedHTTP.json();
    assert.equal(generated.anchor_item_id,anchor);assert(generated.outfits.length>0);
    assert(generated.outfits.every(o=>o.items.some(i=>i.item_id===anchor)),'Every outfit retains selected garment');
-    await page.locator('.builder-anchor img').waitFor();
+    await page.locator('.builder-composition-canvas[aria-busy="false"] img').first().waitFor();
     const noteCards=page.locator('[data-builder-match]');
     assert.equal(await noteCards.count(),generated.matches.length,'One note card per matched outfit');
     assert.equal(await noteCards.first().getAttribute('aria-selected'),'true');

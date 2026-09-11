@@ -1,0 +1,689 @@
+{
+  "schema_version": 1,
+  "anchor_item_id": "6cfcffd0a4c66d10",
+  "anchor_name": "default-white-tee",
+  "matches_per_group": 3,
+  "candidate_pool_size": 96,
+  "candidate_pool_sizes": {
+    "standard": 80,
+    "curvy": 16
+  },
+  "persona_groups": {
+    "bolt": {
+      "standard": {
+        "persona": "BOLT_在逃千金型人格",
+        "body_profile": "standard",
+        "body_profile_label": "标准版",
+        "no_match": false,
+        "matches": [
+          {
+            "candidate_id": "BOLT_在逃千金型人格_outfits_01_高智衬衫",
+            "replace_item_id": "BOLT_在逃千金型人格_outfits_01_高智衬衫_item_01",
+            "reason": "纯白T恤延续白色高腰直筒裙与米白鞋包的高明度同色关系，换下高领泡袖衬衫后整体更清爽。衣摆塞入裙腰由棕色细腰带明确分界，金链包扣保留精致亮点，呈现端整又松弛的千金日常。"
+          },
+          {
+            "candidate_id": "HEIR_老钱新穿型人格_outfits_02_香槟冰面",
+            "replace_item_id": "HEIR_老钱新穿型人格_outfits_02_香槟冰面_item_01",
+            "reason": "哑光纯白T恤与香槟白缎面裙形成同色异质的对照，换下缎面衬衫后压住整身光泽不至过满。前摆塞入裙腰后承接金色粗链，棕色尖头鞋、深色迷你链包和黑框太阳镜稳住精致度，利落而不老成。"
+          },
+          {
+            "candidate_id": "DATE_约会场景_outfits_01_薄粉柔纱",
+            "replace_item_id": "DATE_约会场景_outfits_01_薄粉柔纱_item_01",
+            "reason": "纯白T恤为浅灰粉网纱裙留出干净底色，换下抽褶娃娃上衣后上简下柔的比例更清楚。米色芭蕾鞋延续轻盈，黑色金链小包与细链吊坠补入精致对比，浪漫里带点距离感，贴合千金气质。"
+          }
+        ]
+      }
+    },
+    "ease": {
+      "standard": {
+        "persona": "EASE_松弛讲究型人格",
+        "body_profile": "standard",
+        "body_profile_label": "标准版",
+        "no_match": false,
+        "matches": [
+          {
+            "candidate_id": "EASE_松弛讲究型人格_outfits_02_风衣叠穿",
+            "replace_item_id": "EASE_松弛讲究型人格_outfits_02_风衣叠穿_item_02",
+            "reason": "纯白T恤换下细条纹衬衫后，米色长风衣与白裙的层次更安静，低光泽圆领给敞开的外套留出呼吸感。衣摆自然覆盖裙腰，棕色船鞋与编织托特延续松弛质感，绿色中筒袜仍是克制的趣味亮点。"
+          },
+          {
+            "candidate_id": "EASE_松弛讲究型人格_outfits_03_亚麻球裤",
+            "replace_item_id": "EASE_松弛讲究型人格_outfits_03_亚麻球裤_item_02",
+            "reason": "白T作为灰褐交叠针织衫的内层，圆领与短袖从低V开口露出，比细肩带内搭多一分清爽留白。米灰灯笼裤保持宽松体积，刺绣穆勒鞋与琥珀色墨镜承接明暗细节，自然质感里保持讲究。"
+          },
+          {
+            "candidate_id": "HEIR_老钱新穿型人格_outfits_04_雾棕垂领",
+            "replace_item_id": "HEIR_老钱新穿型人格_outfits_04_雾棕垂领_item_01",
+            "reason": "纯白T恤与奶油白高腰短裤组成清爽近色基底，换下垂领上衣后宽直衣身自然放在裤腰外，弱化正式感。裸色尖头鞋与棕灰大托特保留成熟度，宽檐草帽补入度假式松弛，简洁而不随便。"
+          }
+        ]
+      }
+    },
+    "edge": {
+      "standard": {
+        "persona": "EDGE_甜酷轻亚型人格",
+        "body_profile": "standard",
+        "body_profile_label": "标准版",
+        "no_match": false,
+        "matches": [
+          {
+            "candidate_id": "EDGE_甜酷轻亚_outfits_02_黑皮波点",
+            "replace_item_id": "EDGE_甜酷轻亚_outfits_02_黑皮波点_item_02",
+            "reason": "纯白T恤放进宽松黑皮夹克内，圆领与短袖形成干净的黑白硬对比，并与白色过膝袜上下呼应。百褶短裙、玛丽珍鞋与缎带颈圈留住甜感，铆钉腰带和银色腋下包继续输出冷硬细节，甜酷比例刚好。"
+          },
+          {
+            "candidate_id": "EDGE_甜酷轻亚_outfits_04_波点紫裙",
+            "replace_item_id": "EDGE_甜酷轻亚_outfits_04_波点紫裙_item_02",
+            "reason": "白T的低信息量正好承接卡其夹克与做旧紫皮裙之间的色彩落差，轻落肩与宽袖和外套松量自然衔接。麂皮堆堆靴压住下段重量，黑色手提包收住综合色彩，甜酷造型保留旧感而不杂乱。"
+          },
+          {
+            "candidate_id": "TREND_潮流趋势_outfits_04_娜娜夜人",
+            "replace_item_id": "TREND_潮流趋势_outfits_04_娜娜夜人_item_01",
+            "reason": "纯白T恤让灰色拼片百褶裙的条纹与层次更突出，基础圆领与黑色多扣长靴形成乖巧和强势的反差。平顶军帽、珍珠圆坠项链与双腰带保留亚文化装饰密度，白色上身让整体更轻、更利落。"
+          }
+        ]
+      }
+    },
+    "film": {
+      "standard": {
+        "persona": "FILM_虚焦胶片型人格",
+        "body_profile": "standard",
+        "body_profile_label": "标准版",
+        "no_match": false,
+        "matches": [
+          {
+            "candidate_id": "FILM_虚焦胶片型人格_outfits_02_披衫牛仔",
+            "replace_item_id": "FILM_虚焦胶片型人格_outfits_02_披衫牛仔_item_01",
+            "reason": "这套的内搭本来就是宽松白T，你的白T能无缝接入原有结构：下摆塞入深蓝牛仔百慕大短裤，红白条纹针织衫披肩提亮，白袜与黑色厚底鞋完成复古分段，随手一拍就是胶片感的日常。"
+          },
+          {
+            "candidate_id": "FILM_虚焦胶片型人格_outfits_04_碎花蕾丝",
+            "replace_item_id": "FILM_虚焦胶片型人格_outfits_04_碎花蕾丝_item_01",
+            "reason": "纯白T恤换下细肩带背心，延续清浅底色并多一份松弛，塞入米色碎花蕾丝裙后上简下繁。黑白帆布鞋降低裙装甜度，米色腋下包与金色小坠补入温暖旧物感，像自然光下的复古生活切片。"
+          },
+          {
+            "candidate_id": "VACATION_度假场景_outfits_03_多彩长裙",
+            "replace_item_id": "VACATION_度假场景_outfits_03_多彩长裙_item_01",
+            "reason": "白T的大块留白能托住姜黄民俗刺绣长裙的繁复图案，宽直上身与流苏大摆形成朴素对照。正红玛丽珍鞋延续裙身亮色，棕灰绒面宽檐帽压低饱和度，整体像旅行旧照里的温暖颗粒。"
+          }
+        ]
+      },
+      "curvy": {
+        "persona": "FILM_虚焦胶片型人格",
+        "body_profile": "curvy",
+        "body_profile_label": "微胖版",
+        "no_match": false,
+        "matches": [
+          {
+            "candidate_id": "FILM_虚焦胶片-微胖_curvy_outfits_01_胶片carhartt",
+            "replace_item_id": "FILM_虚焦胶片-微胖_curvy_outfits_01_胶片carhartt_item_02",
+            "reason": "纯白T恤换下细条纹衬衫，作为焦糖工装夹克的内层，明亮圆领在深暖外套间形成干净焦点。衣摆不塞、自然落在黑色A字长裙上，厚底鞋、机能双肩包与米色软帽延续复古户外色调，松弛完整。"
+          },
+          {
+            "candidate_id": "FILM_虚焦胶片-微胖_curvy_outfits_03_斜肩针织",
+            "replace_item_id": "FILM_虚焦胶片-微胖_curvy_outfits_03_斜肩针织_item_02",
+            "reason": "白T置于米灰斜肩薄针织内，换下黑色挂脖背心后领口与短袖形成更轻的叠穿边界，降低上半身压迫感。黑色垂感阔腿裤拉出连续纵线，银色人字拖与黑框眼镜以冷光收尾，像低饱和街拍胶片。"
+          },
+          {
+            "candidate_id": "FILM_虚焦胶片-微胖_curvy_outfits_04_软雾碎花",
+            "replace_item_id": "FILM_虚焦胶片-微胖_curvy_outfits_04_软雾碎花_item_02",
+            "reason": "纯白T恤换下粉碎花荷叶吊带，穿在深棕麂皮衬衫外套内，用清楚的浅色中心减轻棕黑组合的厚重。宽直衣身与黑色阔腿裤保持松量一致，麂皮软肩包呼应外套，银色圆环耳环提亮，呈柔雾安静的复古日常。"
+          }
+        ]
+      }
+    },
+    "flou": {
+      "standard": {
+        "persona": "FLOU_造梦浪漫型人格",
+        "body_profile": "standard",
+        "body_profile_label": "标准版",
+        "no_match": false,
+        "matches": [
+          {
+            "candidate_id": "FLOU_造梦浪漫型人格_outfits_01_浪漫彩搭",
+            "replace_item_id": "FLOU_造梦浪漫型人格_outfits_01_浪漫彩搭_item_01",
+            "reason": "纯白T恤替代花卉高领内搭后，奶油黄露肩短上衣与浅紫抽褶半裙的冷暖对照更干净，圆领从宽领口处露出柔和白边。薰衣草紫连裤袜与金色鞋包延续梦幻亮色，白珠项链与格纹报童帽保留复古装饰，浪漫感轻盈而有序。"
+          },
+          {
+            "candidate_id": "FLOU_造梦浪漫型人格_outfits_03_vintage浪漫",
+            "replace_item_id": "FLOU_造梦浪漫型人格_outfits_03_vintage浪漫_item_02",
+            "reason": "白T换下花卉刺绣内搭，作为棕色毛领短外套的内层，用清爽圆领隔开毛绒领口与复古印花长裙，避免花纹同时拥挤。驼色过膝靴与焦糖结构包延续暖棕主轴，基础上身让旧日浪漫更自然可穿。"
+          },
+          {
+            "candidate_id": "FLOU_造梦浪漫型人格_outfits_02_薄荷蓝粉",
+            "replace_item_id": "FLOU_造梦浪漫型人格_outfits_02_薄荷蓝粉_item_01",
+            "reason": "纯白T恤换下蕾丝挂脖内搭后，薄荷蓝开衫与粉白条纹百褶裙的清甜配色有了更安静的底色，圆领从开衫敞口露出干净边界。粉色及膝长靴延续裙摆粉色，银蓝发箍与胸前挂饰保留梦幻细节，整体轻盈浪漫而不繁杂。"
+          }
+        ]
+      }
+    },
+    "heir": {
+      "standard": {
+        "persona": "HEIR_老钱新穿型人格",
+        "body_profile": "standard",
+        "body_profile_label": "标准版",
+        "no_match": false,
+        "matches": [
+          {
+            "candidate_id": "HEIR_老钱新穿型人格_outfits_01_条纹老钱",
+            "replace_item_id": "HEIR_老钱新穿型人格_outfits_01_条纹老钱_item_01",
+            "reason": "纯白T恤换下翻领衬衫塞入浅灰条纹百褶裙，简洁圆领与低装饰度让纵向条纹和褶裥更显利落。棕色花扣细腰带明确腰线，麂皮短靴与大号皮托特建立经典暖棕呼应，保留老钱秩序又更适合日常。"
+          },
+          {
+            "candidate_id": "HEIR_老钱新穿型人格_outfits_03_丝绒褶裙",
+            "replace_item_id": "HEIR_老钱新穿型人格_outfits_03_丝绒褶裙_item_01",
+            "reason": "白T的哑光纯色能平衡深棕丝绒围裹裙的厚重光泽，塞入高腰后由黑色金扣宽腰带收束比例。金色粗方链、棕色尖头鞋与藏蓝手拿包延续成熟质感，基础短袖让这套经典组合更现代、更克制。"
+          },
+          {
+            "candidate_id": "COMMUTE_通勤场景_outfits_03_柔性通勤",
+            "replace_item_id": "COMMUTE_通勤场景_outfits_03_柔性通勤_item_01",
+            "reason": "纯白T恤换下缎面衬衫放在米白短夹克内，与藏青直筒中长裙形成清楚的浅深分区，圆领更简洁也不抢外套结构。黑色细腰带、白色尖头鞋和银灰长围巾维持精致秩序，是轻松有分寸的通勤感。"
+          }
+        ]
+      }
+    },
+    "iced": {
+      "standard": {
+        "persona": "ICED_冷感冰面型人格",
+        "body_profile": "standard",
+        "body_profile_label": "标准版",
+        "no_match": false,
+        "matches": [
+          {
+            "candidate_id": "ICED_冷感冰面型人格_outfits_02_黑系冷感",
+            "replace_item_id": "ICED_冷感冰面型人格_outfits_02_黑系冷感_item_01",
+            "reason": "纯白T恤换下黑色抽绳T恤，把深蓝阔腿牛仔与黑色鞋包的低明度组合切开，形成干净锋利的黑白蓝对比。直筒衣身自然落在裤腰附近，黑色渐变薄纱围巾保留流动阴影，减少装饰反而强化冷静都市感。"
+          },
+          {
+            "candidate_id": "ICED_冷感冰面型人格_outfits_01_飘带伞裙",
+            "replace_item_id": "ICED_冷感冰面型人格_outfits_01_飘带伞裙_item_01",
+            "reason": "白T与浅灰百褶伞裙组成冷淡的近无彩组合，换下飘带衬衫后，上身平整直线正好平衡下装的放射褶量。黑色硬挺手提包与连裤袜建立明确边界，棕色麂皮低跟鞋略微回暖，清冷克制又不僵硬。"
+          },
+          {
+            "candidate_id": "DATE_约会场景_outfits_02_镂空打底",
+            "replace_item_id": "DATE_约会场景_outfits_02_镂空打底_item_01",
+            "reason": "纯白T恤换下镂空高领上衣，作为卡其灰长风衣的内层，与黑色缎面鱼尾裙形成极简明暗对照。圆领与短袖让叠穿更干净，漆皮玛丽珍、褶皱手拿包与半透袜保持统一冷调，像冰面般平滑疏离。"
+          }
+        ]
+      }
+    },
+    "jade": {
+      "standard": {
+        "persona": "JADE_东方玉骨型人格",
+        "body_profile": "standard",
+        "body_profile_label": "标准版",
+        "no_match": false,
+        "matches": [
+          {
+            "candidate_id": "JADE_东方玉骨型人格_outfits_02_龙纹衬衫",
+            "replace_item_id": "JADE_东方玉骨型人格_outfits_02_龙纹衬衫_item_01",
+            "reason": "纯白T恤换下龙纹立领衬衫塞入黑色暗纹长裙，去掉明显图案后，注意力留给裙面隐约纹理与纵长轮廓。黑色双带方跟凉鞋延续克制线条，银色流苏耳环提供细长冷光，黑白留白间呈现清峻的东方气质。"
+          },
+          {
+            "candidate_id": "JADE_东方玉骨型人格_outfits_01_暗纹拼接",
+            "replace_item_id": "JADE_东方玉骨型人格_outfits_01_暗纹拼接_item_02",
+            "reason": "白T置于米白棕领暗纹西装内，纯色圆领不与外套暗纹争夺焦点，并衔接深棕缎面曳地长裙的明暗过渡。金色方头平底鞋与细链垂坠项链提供含蓄亮点，整套保留东方纹理与修长骨架感。"
+          },
+          {
+            "candidate_id": "JADE_东方玉骨型人格_outfits_03_流苏长裙",
+            "replace_item_id": "JADE_东方玉骨型人格_outfits_03_流苏长裙_item_01",
+            "reason": "纯白T恤换下黑色立领上衣，与黑白镂空流苏长裙建立更直接的水墨式明暗关系，简洁衣身为裙摆密集纹理留出大块静区。黑白花卉束口包呼应裙身图案，黑色宽檐礼帽压住上部轮廓，清冷含蓄且有手工细节。"
+          }
+        ]
+      }
+    },
+    "loop": {
+      "standard": {
+        "persona": "LOOP_无限重启型人格",
+        "body_profile": "standard",
+        "body_profile_label": "标准版",
+        "no_match": false,
+        "matches": [
+          {
+            "candidate_id": "LOOP_无限重启型人格_outfits_02_自在都市",
+            "replace_item_id": "LOOP_无限重启型人格_outfits_02_自在都市_item_01",
+            "reason": "纯白T恤换下多色条纹背心，与藏蓝抽绳阔腿裤组成最基础的白蓝模块，宽直廓形彼此呼应、便于反复组合。米色流苏厚底拖鞋和蓝色牛仔钟形帽加入质感与复古趣味，简单结构里保留可重新排列的造型感。"
+          },
+          {
+            "candidate_id": "LOOP_无限重启型人格_outfits_03_亮黄点缀",
+            "replace_item_id": "LOOP_无限重启型人格_outfits_03_亮黄点缀_item_01",
+            "reason": "白T换下亮蓝长袖上衣后，米白前开衩长裙与亮黄针织、鞋、包和棒球帽之间有了稳定的中性支点，避免黄色连续堆叠。针织毛衣仍可在腰间系结造层次，圆领短袖保持基础模块感，鲜明又便于重组。"
+          },
+          {
+            "candidate_id": "MUTE_静音时髦型人格_outfits_03_叠穿上衣",
+            "replace_item_id": "MUTE_静音时髦型人格_outfits_03_叠穿上衣_item_02",
+            "reason": "你的白T直接替换浅灰T恤，继续作为黑色系带吊带束身上衣的内层，圆领与短袖从肩带和袖窿处露出。深灰垂坠阔腿裤延伸松直比例，厚底便鞋与大号软包压住下盘，黑白灰模块化叠穿很有重启感。"
+          }
+        ]
+      },
+      "curvy": {
+        "persona": "LOOP_无限重启型人格",
+        "body_profile": "curvy",
+        "body_profile_label": "微胖版",
+        "no_match": false,
+        "matches": [
+          {
+            "candidate_id": "LOOP_无限重启-微胖_curvy_outfits_04_正肩叠穿",
+            "replace_item_id": "LOOP_无限重启-微胖_curvy_outfits_04_正肩叠穿_item_01",
+            "reason": "这套的内搭本来就是白色圆领T恤，你的白T可直接入位：穿在红色修身背心内，领口、短袖与下摆自然露出。深色百慕大短裤与人字拖保留轻松体积，红白串珠与粉棕眼镜重复点色，层次清楚又方便拆组。"
+          },
+          {
+            "candidate_id": "LOOP_无限重启-微胖_curvy_outfits_01_黑丝皮衣",
+            "replace_item_id": "LOOP_无限重启-微胖_curvy_outfits_01_黑丝皮衣_item_02",
+            "reason": "纯白T恤换下褶皱抹胸，作为黑色短机车夹克的内层，用完整的肩袖建立更利落的黑白框架，下摆自然落向浅蓝斜襟迷你裙。黑色透肤袜与玛丽珍鞋延续深色下段，金色首饰与细框眼镜是可随时增减的小模块。"
+          },
+          {
+            "candidate_id": "LOOP_无限重启-微胖_curvy_outfits_03_斜肩上衣",
+            "replace_item_id": "LOOP_无限重启-微胖_curvy_outfits_03_斜肩上衣_item_01",
+            "reason": "白T换下黑色斜肩上衣，与军绿迷彩阔腿工装裤形成干净的基础对比，轻落肩与宽直衣身能承接下装大体积。灰褐厚底鞋稳住裤脚，银灰锁骨链、金色方表和戒指提供可增减的金属节点，组合灵活利落。"
+          }
+        ]
+      }
+    },
+    "melt": {
+      "standard": {
+        "persona": "MELT_奶油治愈型人格",
+        "body_profile": "standard",
+        "body_profile_label": "标准版",
+        "no_match": false,
+        "matches": [
+          {
+            "candidate_id": "MELT_奶油治愈型人格_outfits_01_粉系上衣",
+            "replace_item_id": "MELT_奶油治愈型人格_outfits_01_粉系上衣_item_02",
+            "reason": "纯白T恤换下藕粉纽扣上衣，穿在浅粉短开衫内，白色领口与衣摆提亮粉色层次，并与白色堆堆袜上下呼应。灰棕格纹蝴蝶结短裙添一点温柔复古，黑色厚底玛丽珍收住甜度，柔软亲近又不过分幼态。"
+          },
+          {
+            "candidate_id": "MELT_奶油治愈型人格_outfits_02_波点短裙",
+            "replace_item_id": "MELT_奶油治愈型人格_outfits_02_波点短裙_item_01",
+            "reason": "白T换下修身长袖上衣，塞入白底黑波点蕾丝半裙后延续同底色，纯色上身给波点与花边留出安静背景。白蓝休闲鞋与堆堆袜保持轻快，奶油黄软皮包补入一块温暖色，整体明亮柔和，治愈感自然成立。"
+          },
+          {
+            "candidate_id": "MELT_奶油治愈型人格_outfits_03_格纹蕾丝",
+            "replace_item_id": "MELT_奶油治愈型人格_outfits_03_格纹蕾丝_item_01",
+            "reason": "纯白T恤换下蓝白格纹泡泡袖衬衫，与白色层叠荷叶短裙组成清甜同色，低信息量上身让裙摆褶层、珍珠项链和波点迷你包各自清楚。粉色透明系带鞋带来轻柔彩色，像奶油底上撒了几粒小装饰，甜而不腻。"
+          }
+        ]
+      }
+    },
+    "mute": {
+      "standard": {
+        "persona": "MUTE_静音时髦型人格",
+        "body_profile": "standard",
+        "body_profile_label": "标准版",
+        "no_match": false,
+        "matches": [
+          {
+            "candidate_id": "MUTE_静音时髦型人格_outfits_01_时髦手袋",
+            "replace_item_id": "MUTE_静音时髦型人格_outfits_01_时髦手袋_item_02",
+            "reason": "纯白T恤换下灰蓝条纹内搭，置于米白深棕领夹克内，与米白及膝短裤组成更克制的浅色块，圆领与低光泽表面把焦点让给深棕领口。黑色尖头后绊鞋与迷你结构手袋建立利落边界，安静却有明确廓形。"
+          },
+          {
+            "candidate_id": "MUTE_静音时髦型人格_outfits_04_浅灰柔系",
+            "replace_item_id": "MUTE_静音时髦型人格_outfits_04_浅灰柔系_item_01",
+            "reason": "纯白T恤换下工字背心，与浅灰宽松束脚裤保持白灰低对比的安静基调，宽直上身与收脚下装形成自然松紧变化。黑色厚底夹趾鞋和软皮腋下包压出简洁重心，灰色宽发带留一点柔和纹理，低调但不失时髦。"
+          },
+          {
+            "candidate_id": "COMMUTE_通勤场景_outfits_01_藏青夹克",
+            "replace_item_id": "COMMUTE_通勤场景_outfits_01_藏青夹克_item_01",
+            "reason": "白T换下浅蓝T恤，作为藏青翻领夹克的内层，与卡其高腰宽腿裤组成稳定的海军蓝、白、卡其配色。衣摆塞入裤腰后，深棕细皮带与黑色乐福鞋强化秩序，印花丝巾与长坠项链只作局部变化，克制清楚又有都市感。"
+          }
+        ]
+      }
+    },
+    "neon": {
+      "standard": {
+        "persona": "NEON_灵动吸睛型人格",
+        "body_profile": "standard",
+        "body_profile_label": "标准版",
+        "no_match": false,
+        "matches": [
+          {
+            "candidate_id": "NEON_灵动吸睛型人格_outfits_02_蓝绿叠穿",
+            "replace_item_id": "NEON_灵动吸睛型人格_outfits_02_蓝绿叠穿_item_01",
+            "reason": "纯白T恤换下亮蓝长袖上衣，与象牙白前开衩长裙组成明亮底板，黄色分趾鞋、青柠黄腋下包和棒球帽因此更集中醒目。圆领短袖减少上身色彩竞争，衣摆停在裙腰附近保留轻快分段，鲜活却不失控。"
+          },
+          {
+            "candidate_id": "OOPS_搭配事故型人格_outfits_04_雨靴蓝袜",
+            "replace_item_id": "OOPS_搭配事故型人格_outfits_04_雨靴蓝袜_item_01",
+            "reason": "白T的大块纯色换下粉色格纹上衣，能稳稳托住粉色雨靴、雾绿袜、红心眼镜和金色手提包的多重亮点。黑色短裤提供中性分界，蕾丝腿环与人像项链继续制造俏皮细节，视觉轻快又足够吸睛。"
+          },
+          {
+            "candidate_id": "VACATION_度假场景_outfits_01_波点吊带",
+            "replace_item_id": "VACATION_度假场景_outfits_01_波点吊带_item_01",
+            "reason": "纯白T恤换下柠黄波点吊带，把波点直筒中长裙衬成明亮主角，宽直衣身与直筒裙摆连成轻松的度假轮廓。豆沙粉波点头巾带来二次点色，草编大袋与网面玛丽珍增加自然纹理，阳光、灵动又有清楚焦点。"
+          }
+        ]
+      }
+    },
+    "noir": {
+      "standard": {
+        "persona": "NOIR_暗黑肃杀型人格",
+        "body_profile": "standard",
+        "body_profile_label": "标准版",
+        "no_match": false,
+        "matches": [
+          {
+            "candidate_id": "NOIR_暗黑肃杀型人格_outfits_04_黑皮靴酷感",
+            "replace_item_id": "NOIR_暗黑肃杀型人格_outfits_04_黑皮靴酷感_item_01",
+            "reason": "纯白T恤换下黑色T恤塞入黑色五分裤，用最直接的一道白色切面替代全黑上身，轮廓依然简练。扣带中筒靴、编织托特与银色星球扣腰带集中硬质细节，白色不削弱冷酷，反而让黑色层次更锋利。"
+          },
+          {
+            "candidate_id": "NOIR_暗黑肃杀型人格_outfits_01_立体褶边",
+            "replace_item_id": "NOIR_暗黑肃杀型人格_outfits_01_立体褶边_item_01",
+            "reason": "白T换下黑色斜领卫衣，与黑色褶裙拼接束脚裤形成强烈的明暗断面，简洁圆领和直筒衣身让下装立体褶边成为唯一复杂焦点。绑带中筒靴、金属孔肩包与针织便帽封住深色调，整体肃静、硬朗且层次清楚。"
+          },
+          {
+            "candidate_id": "TREND_潮流趋势_outfits_01_阿普瑞风",
+            "replace_item_id": "TREND_潮流趋势_outfits_01_阿普瑞风_item_01",
+            "reason": "纯白T恤换下薄荷绿滚边抹胸，穿在黑白拼色风衣内，与白色泡泡褶皱迷你裙和及膝袜连成连续亮面，外套黑边像一圈外框。粉蝴蝶结芭蕾鞋与印花头巾保留异质甜感，黑白主体让整体依然冷冽有态度。"
+          }
+        ]
+      }
+    },
+    "oops": {
+      "standard": {
+        "persona": "OOPS_搭配事故型人格",
+        "body_profile": "standard",
+        "body_profile_label": "标准版",
+        "no_match": false,
+        "matches": [
+          {
+            "candidate_id": "OOPS_搭配事故型人格_outfits_01_撞色堆饰",
+            "replace_item_id": "OOPS_搭配事故型人格_outfits_01_撞色堆饰_item_01",
+            "reason": "白T换下黑色斜扣上衣，用最简单的无彩色块承接牛仔拼灰布蕾丝阔腿裤，也让酒红漆皮高跟鞋、青绿孔眼包和棕色渔夫帽继续彼此碰撞。基础上身像刻意留出的空白，使混搭显得大胆而非失序。"
+          },
+          {
+            "candidate_id": "TREND_潮流趋势_outfits_02_柔性薄荷",
+            "replace_item_id": "TREND_潮流趋势_outfits_02_柔性薄荷_item_02",
+            "reason": "纯白T恤换下薄荷刺绣旗袍上衣，把蕾丝叠穿裤与冰薄荷褶裙的复杂层次集中到腰下。玫粉蕾丝内搭保留隐约撞色，白袖套、孔眼腰带与罗纹袜继续堆叠同色细节，实验性冲突里多了一块稳定底色。"
+          },
+          {
+            "candidate_id": "TREND_潮流趋势_outfits_03_波点回潮",
+            "replace_item_id": "TREND_潮流趋势_outfits_03_波点回潮_item_01",
+            "reason": "白T换下雾蓝半透上衣，塞入奶油白黑波点荷叶中裙，用纯色上身隔开珍珠项链与裙面重复图案。酒红漆皮小包、猫跟凉鞋、窄框眼镜与半透系带袜分别带来复古、锐利和轻透质感，元素故意多元但仍有黑白主轴。"
+          }
+        ]
+      }
+    },
+    "void": {
+      "standard": {
+        "persona": "VOID_人间失格型人格",
+        "body_profile": "standard",
+        "body_profile_label": "标准版",
+        "no_match": false,
+        "matches": [
+          {
+            "candidate_id": "VOID_人间失格型人格_outfits_03_随意彩叠",
+            "replace_item_id": "VOID_人间失格型人格_outfits_03_随意彩叠_item_02",
+            "reason": "这套的内搭本来就是白色圆领T恤，你的白T可直接入位：继续穿在蓝色垂坠系结上衣内，圆领与短袖从领口和袖窿自然露出。黑底白点长裙、浅灰堆堆袜和夹趾凉鞋维持随意层次，玫红大托特像无心加入的醒目色块。"
+          },
+          {
+            "candidate_id": "VOID_人间失格型人格_outfits_02_舒服就行",
+            "replace_item_id": "VOID_人间失格型人格_outfits_02_舒服就行_item_02",
+            "reason": "纯白T恤换下橄榄绿毛绒开衫，放在黑棕长大衣内，明亮圆领能打破外套、黑靴与大托特的沉重，并与米白荷叶边工装裙呼应。直筒衣身自然覆盖裙腰，不强调精确收束，色彩低调、轮廓宽松，保留舒服优先的疏离感。"
+          },
+          {
+            "candidate_id": "VOID_人间失格型人格_outfits_04_快乐就行",
+            "replace_item_id": "VOID_人间失格型人格_outfits_04_快乐就行_item_01",
+            "reason": "白T换下浅灰罗纹背心，与米白高腰开衩亚麻长裙形成近色低对比的松弛基底，宽直衣身自然落在裙腰上方即可。红色漆皮蝴蝶结芭蕾鞋成为略显任性的单一亮点，米色钩织包与黑框眼镜一软一硬，随意却有记忆点。"
+          }
+        ]
+      },
+      "curvy": {
+        "persona": "VOID_人间失格型人格",
+        "body_profile": "curvy",
+        "body_profile_label": "微胖版",
+        "no_match": false,
+        "matches": [
+          {
+            "candidate_id": "VOID_人间失格-微胖_curvy_outfits_01_柔性静灰",
+            "replace_item_id": "VOID_人间失格-微胖_curvy_outfits_01_柔性静灰_item_01",
+            "reason": "纯白T恤换下灰色裹身上衣，与灰色超宽松束踝长裤保持清楚的白灰分区和宽松低压的体积。黑色分趾鞋与编织纹肩包稳定下段，灰色宽发带与银色大圆环补入柔软和冷光细节，简洁中仍有淡淡疏离感。"
+          },
+          {
+            "candidate_id": "VOID_人间失格-微胖_curvy_outfits_02_格纹叠穿",
+            "replace_item_id": "VOID_人间失格-微胖_curvy_outfits_02_格纹叠穿_item_03",
+            "reason": "白T换下灰色褶皱吊带，作为最内层穿在黑白小格纹衬衫与黑色长皮西装之下，圆领与袖口形成明亮的第三层边界。米白九分微喇裤延续中心亮色，深棕分趾鞋、黑腰带与银戒指收住色调，层次宽松而不乱。"
+          },
+          {
+            "candidate_id": "VOID_人间失格-微胖_curvy_outfits_03_遮胯长裤",
+            "replace_item_id": "VOID_人间失格-微胖_curvy_outfits_03_遮胯长裤_item_01",
+            "reason": "白T换下黑色斜肩上衣，与深灰叠层超宽腿工装裤形成直接的明暗和体积对照，直筒上身自然盖住裤腰、保持松散纵线。棕色短靴与细带手提包带来旧感，猫眼镜、花朵胸针和金色小配饰像随手叠加，疏离中带点怪趣。"
+          }
+        ]
+      }
+    },
+    "wabi": {
+      "standard": {
+        "persona": "WABI_手作侘寂型人格",
+        "body_profile": "standard",
+        "body_profile_label": "标准版",
+        "no_match": false,
+        "matches": [
+          {
+            "candidate_id": "WABI_手作侘寂型人格_outfits_03_做旧针织",
+            "replace_item_id": "WABI_手作侘寂型人格_outfits_03_做旧针织_item_02",
+            "reason": "白T换下米白高领打底，置于燕麦色宽松针织开衫内，纯白低光泽表面能衬出开衫针织、做旧米灰层叠裙与几何编织包的不同肌理。米白布面便鞋与针织钟形帽延续自然浅色，有留白、有磨旧感，朴素而温和。"
+          },
+          {
+            "candidate_id": "WABI_手作侘寂型人格_outfits_02_单肩百褶",
+            "replace_item_id": "WABI_手作侘寂型人格_outfits_02_单肩百褶_item_01",
+            "reason": "纯白T恤换下灰棕单肩上衣，与浅灰百褶长裙组成克制的白灰基底，简单圆领把视觉重点让给纵向褶裥、米白钩针长袋和做旧银圆珠腰链。浅棕方头平底鞋补入一点土色，材质从平整过渡到手作纹理，安静而有侘寂感。"
+          },
+          {
+            "candidate_id": "VACATION_度假场景_outfits_02_游牧叠裙",
+            "replace_item_id": "VACATION_度假场景_outfits_02_游牧叠裙_item_01",
+            "reason": "白T换下深棕蕾丝拼边上衣，穿在灰褐贴花短夹克内，与象牙白不规则荷叶叠层长裙形成清淡中心，直筒衣身平衡裙摆的多层曲线。深棕麂皮长靴、草编宽檐帽与轻薄长围巾叠出粗粝自然质感，像经时间磨软的游牧手作。"
+          }
+        ]
+      },
+      "curvy": {
+        "persona": "WABI_手作侘寂型人格",
+        "body_profile": "curvy",
+        "body_profile_label": "微胖版",
+        "no_match": false,
+        "matches": [
+          {
+            "candidate_id": "WABI_手作侘寂-微胖_curvy_outfits_01_高腰阔裤",
+            "replace_item_id": "WABI_手作侘寂-微胖_curvy_outfits_01_高腰阔裤_item_01",
+            "reason": "白T换下深棕薄透上衣，与金褐色高腰灯笼阔裤形成干净明暗对照，宽直衣身自然垂放，能承接裤腿的圆润大体积。米色抽象印花大包、深棕长围巾与金色小吊坠沿暖土色展开，黑色坡跟鞋压住下段，质朴中有层次。"
+          },
+          {
+            "candidate_id": "WABI_手作侘寂-微胖_curvy_outfits_02_A字伞裙",
+            "replace_item_id": "WABI_手作侘寂-微胖_curvy_outfits_02_A字伞裙_item_01",
+            "reason": "纯白T恤换下深棕高领上衣，作为深灰条纹短外套的内层，圆领与短袖提供清楚留白，并与米白弯月包相呼应。深棕A字长伞裙与灰棕针织围巾维持纵向暖灰层次，黑色圆头平底鞋收束轮廓，沉静、自然且不过度装饰。"
+          },
+          {
+            "candidate_id": "WABI_手作侘寂-微胖_curvy_outfits_04_蓝色花苞",
+            "replace_item_id": "WABI_手作侘寂-微胖_curvy_outfits_04_蓝色花苞_item_01",
+            "reason": "白T换下紫蓝针织上衣，与藏蓝花苞阔腿裤组成更干净的黑白蓝，宽直上身与收拢裤脚形成自然的上下体积变化。黑色软质手提袋、绑带方头鞋和炭色报童帽延续低光泽旧感，块状吊坠只作粗粝焦点，符合克制的手作气质。"
+          }
+        ]
+      }
+    }
+  },
+  "library_groups": {
+    "standard": {
+      "body_profile": "standard",
+      "body_profile_label": "标准版",
+      "no_match": false,
+      "matches": [
+        {
+          "candidate_id": "FILM_虚焦胶片型人格_outfits_02_披衫牛仔",
+          "replace_item_id": "FILM_虚焦胶片型人格_outfits_02_披衫牛仔_item_01",
+          "reason": "这套的内搭本来就是宽松白T，你的白T能无缝接入原有结构：下摆塞入深蓝牛仔百慕大短裤，红白条纹针织衫披肩提亮，白袜与黑色厚底鞋完成复古分段，随手一拍就是胶片感的日常。"
+        },
+        {
+          "candidate_id": "LOOP_无限重启型人格_outfits_02_自在都市",
+          "replace_item_id": "LOOP_无限重启型人格_outfits_02_自在都市_item_01",
+          "reason": "纯白T恤换下多色条纹背心，与藏蓝抽绳阔腿裤组成最基础的白蓝模块，宽直廓形彼此呼应、便于反复组合。米色流苏厚底拖鞋和蓝色牛仔钟形帽加入质感与复古趣味，简单结构里保留可重新排列的造型感。"
+        },
+        {
+          "candidate_id": "EASE_松弛讲究型人格_outfits_02_风衣叠穿",
+          "replace_item_id": "EASE_松弛讲究型人格_outfits_02_风衣叠穿_item_02",
+          "reason": "纯白T恤换下细条纹衬衫后，米色长风衣与白裙的层次更安静，低光泽圆领给敞开的外套留出呼吸感。衣摆自然覆盖裙腰，棕色船鞋与编织托特延续松弛质感，绿色中筒袜仍是克制的趣味亮点。"
+        }
+      ]
+    },
+    "curvy": {
+      "body_profile": "curvy",
+      "body_profile_label": "微胖版",
+      "no_match": false,
+      "matches": [
+        {
+          "candidate_id": "LOOP_无限重启-微胖_curvy_outfits_04_正肩叠穿",
+          "replace_item_id": "LOOP_无限重启-微胖_curvy_outfits_04_正肩叠穿_item_01",
+          "reason": "这套的内搭本来就是白色圆领T恤，你的白T可直接入位：穿在红色修身背心内，领口、短袖与下摆自然露出。深色百慕大短裤与人字拖保留轻松体积，红白串珠与粉棕眼镜重复点色，层次清楚又方便拆组。"
+        },
+        {
+          "candidate_id": "FILM_虚焦胶片-微胖_curvy_outfits_03_斜肩针织",
+          "replace_item_id": "FILM_虚焦胶片-微胖_curvy_outfits_03_斜肩针织_item_02",
+          "reason": "白T置于米灰斜肩薄针织内，换下黑色挂脖背心后领口与短袖形成更轻的叠穿边界，降低上半身压迫感。黑色垂感阔腿裤拉出连续纵线，银色人字拖与黑框眼镜以冷光收尾，像低饱和街拍胶片。"
+        },
+        {
+          "candidate_id": "WABI_手作侘寂-微胖_curvy_outfits_04_蓝色花苞",
+          "replace_item_id": "WABI_手作侘寂-微胖_curvy_outfits_04_蓝色花苞_item_01",
+          "reason": "白T换下紫蓝针织上衣，与藏蓝花苞阔腿裤组成更干净的黑白蓝，宽直上身与收拢裤脚形成自然的上下体积变化。黑色软质手提袋、绑带方头鞋和炭色报童帽延续低光泽旧感，块状吊坠只作粗粝焦点，符合克制的手作气质。"
+        }
+      ]
+    }
+  },
+  "male": {
+    "gender": "male",
+    "candidate_pool_size": 16,
+    "candidate_pool_sizes": {
+      "standard": 16
+    },
+    "persona_groups": {
+      "ease": {
+        "standard": {
+          "persona": "EASE_松弛讲究-男",
+          "gender": "male",
+          "body_profile": "standard",
+          "body_profile_label": "男生标准版",
+          "no_match": false,
+          "matches": [
+            {
+              "candidate_id": "EASE_松弛讲究-男_male_outfits_02_灰绿机能",
+              "replace_item_id": "EASE_松弛讲究-男_male_outfits_02_灰绿机能_item_01",
+              "reason": "白T换下灰绿色内搭后，为卡其工装夹克留出干净的浅色中心，敞开的前襟能形成清楚的内外层。灰色麻花针织仍系在腰间，与灰米工装短裤和船鞋衔接，深棕肩包、黑色腰带稳定暗色边界，保留松弛而有层次的日常感。"
+            },
+            {
+              "candidate_id": "EASE_松弛讲究-男_male_outfits_03_亨利针织",
+              "replace_item_id": "EASE_松弛讲究-男_male_outfits_03_亨利针织_item_01",
+              "reason": "白T替换深咖翻领针织后，与奶油白弯刀裤形成柔和的浅色组合，简洁圆领和裤腿弧线共同保留休闲松量。卡其系带鞋延续暖中性色，深藏蓝托特包、黑框眼镜与腕表集中补上深色，减少上身纹理后仍有清楚的轻重关系。"
+            },
+            {
+              "candidate_id": "EASE_松弛讲究-男_male_outfits_01_条纹亚麻",
+              "replace_item_id": "EASE_松弛讲究-男_male_outfits_01_条纹亚麻_item_01",
+              "reason": "白T换下蓝白条纹衬衫，与奶油白宽腿长裤形成连续的浅色基底，纯色上衣让裤装褶量和领口项链更清楚。黑色双扣凉拖、软包与窄框眼镜在周围呼应，金色叠链和银色腕饰保留细小亮点，整体从开领衬衫造型转为清爽随性的度假日常。"
+            }
+          ]
+        }
+      },
+      "edge": {
+        "standard": {
+          "persona": "EDGE_甜酷轻亚-男",
+          "gender": "male",
+          "body_profile": "standard",
+          "body_profile_label": "男生标准版",
+          "no_match": false,
+          "matches": [
+            {
+              "candidate_id": "EDGE_甜酷轻亚-男_male_outfits_04_蓝T牛仔",
+              "replace_item_id": "EDGE_甜酷轻亚-男_male_outfits_04_蓝T牛仔_item_03",
+              "reason": "这套本来就有白色打底T恤，可以用你的白T替换内层，保留外层蓝T与渔夫帽的同色呼应。白色领边、袖边和下摆适当露出，与蓝白运动鞋相接；灰蓝破洞阔腿裤、黑色气眼腰带和双肩包保持原有街头层次，不用增加其他单品。"
+            },
+            {
+              "candidate_id": "EDGE_甜酷轻亚-男_male_outfits_01_迷彩印花",
+              "replace_item_id": "EDGE_甜酷轻亚-男_male_outfits_01_迷彩印花_item_02",
+              "reason": "白T替换大面积印花上衣后，继续与黑色阔腿长裤形成鲜明的黑白对照，让迷彩棒球帽成为更集中的图案焦点。黑色银扣腰带与厚底皮鞋保留下半身的结构和重量，简洁上身承接宽裤轮廓，街头感仍在，视觉信息更有留白。"
+            },
+            {
+              "candidate_id": "EDGE_甜酷轻亚-男_male_outfits_03_点彩街头",
+              "replace_item_id": "EDGE_甜酷轻亚-男_male_outfits_03_点彩街头_item_02",
+              "reason": "白T换下黑色图案T恤后，提亮上身并减轻印花密度，让正红帽子与紫粉迷彩鞋分布在两端成为亮点。浅蓝宽腿牛仔七分裤提供柔和过渡，黑色中筒袜收住鞋口附近的色彩，纯色短袖与宽裤保留轻松体积，形成清爽的点彩街头组合。"
+            }
+          ]
+        }
+      },
+      "mute": {
+        "standard": {
+          "persona": "MUTE_静音时髦-男",
+          "gender": "male",
+          "body_profile": "standard",
+          "body_profile_label": "男生标准版",
+          "no_match": false,
+          "matches": [
+            {
+              "candidate_id": "MUTE_静音时髦-男_male_outfits_04_黑灰牛仔",
+              "replace_item_id": "MUTE_静音时髦-男_male_outfits_04_黑灰牛仔_item_01",
+              "reason": "原套装的内层就是白色圆领T恤，你的白T可以直接替换，继续衬在深灰竖纹针织上衣内。领口与下摆适当露白并呼应白色中筒袜，黑色百慕大短裤、乐福鞋和帽子稳住沉色，深靛蓝大肩袋补入克制的色相变化，层次安静而清楚。"
+            },
+            {
+              "candidate_id": "MUTE_静音时髦-男_male_outfits_03_哈灵顿夹克",
+              "replace_item_id": "MUTE_静音时髦-男_male_outfits_03_哈灵顿夹克_item_01",
+              "reason": "白T替换深棕立领衬衫后，与米白多袋夹克形成明亮而柔和的内外层，圆领让蓝棕格纹颈巾更容易成为局部重点。灰色双褶阔腿裤连接黑色宽带凉鞋，棕色腰带保留腰部边界，米灰软包延续浅色，整体比衬衫叠穿更轻松。"
+            },
+            {
+              "candidate_id": "MUTE_静音时髦-男_male_outfits_01_灰蓝针织",
+              "replace_item_id": "MUTE_静音时髦-男_male_outfits_01_灰蓝针织_item_01",
+              "reason": "白T替换亮蓝衬衫后，以简洁圆领承接灰色V领针织开衫，减少翻领和袖口的多重边界，让针织纹理成为上身重点。深靛蓝阔腿牛仔裤与黑色短靴保持沉稳的下段，银扣腰带留下小范围光泽，形成白、灰、深蓝的安静日常组合。"
+            }
+          ]
+        }
+      },
+      "wabi": {
+        "standard": {
+          "persona": "WABI_手作侘寂-男",
+          "gender": "male",
+          "body_profile": "standard",
+          "body_profile_label": "男生标准版",
+          "no_match": false,
+          "matches": [
+            {
+              "candidate_id": "WABI_手作侘寂-男_male_outfits_03_做旧针织",
+              "replace_item_id": "WABI_手作侘寂-男_male_outfits_03_做旧针织_item_01",
+              "reason": "白T替换灰褐亚麻衬衫内的黑色T恤后，在领部和前襟之间加入干净亮色，并与米白解构运动鞋上下呼应。深灰弧形阔腿裤维持下半身量感，灰褐斜挎包延续外衫色调，黑框眼镜和细珠项链保留小细节，旧感纹理仍由其余单品承接。"
+            },
+            {
+              "candidate_id": "WABI_手作侘寂-男_male_outfits_01_军绿工装",
+              "replace_item_id": "WABI_手作侘寂-男_male_outfits_01_军绿工装_item_01",
+              "reason": "白T换下深炭灰翻领毛衣后，让军绿工装短裤与腰间棕粉格纹衬衫拥有更清楚的浅色背景。格纹仍在腰间打结，灰蓝绿肩袋与灰米双扣拖鞋延续自然色调，帽子和黑色窄镜框保留配件层次，减少上身体积后呈现更轻松的复古工装感。"
+            },
+            {
+              "candidate_id": "WABI_手作侘寂-男_male_outfits_02_做旧亚麻",
+              "replace_item_id": "WABI_手作侘寂-男_male_outfits_02_做旧亚麻_item_01",
+              "reason": "白T替换灰色长衬衫后，与深炭灰超阔腿裤形成更清楚的明暗分区，简洁短袖把视觉重点留给裤面的旧感纹理和垂落褶量。黑色乐福鞋在脚部收住轮廓，三件组合仍然克制；换掉长衬衫也意味着不再保留原来的长摆覆盖效果。"
+            }
+          ]
+        }
+      }
+    },
+    "library_groups": {
+      "standard": {
+        "gender": "male",
+        "body_profile": "standard",
+        "body_profile_label": "男生标准版",
+        "no_match": false,
+        "matches": [
+          {
+            "candidate_id": "EASE_松弛讲究-男_male_outfits_02_灰绿机能",
+            "replace_item_id": "EASE_松弛讲究-男_male_outfits_02_灰绿机能_item_01",
+            "reason": "白T换下灰绿色内搭后，为卡其工装夹克留出干净的浅色中心，敞开的前襟能形成清楚的内外层。灰色麻花针织仍系在腰间，与灰米工装短裤和船鞋衔接，深棕肩包、黑色腰带稳定暗色边界，保留松弛而有层次的日常感。"
+          },
+          {
+            "candidate_id": "MUTE_静音时髦-男_male_outfits_04_黑灰牛仔",
+            "replace_item_id": "MUTE_静音时髦-男_male_outfits_04_黑灰牛仔_item_01",
+            "reason": "原套装的内层就是白色圆领T恤，你的白T可以直接替换，继续衬在深灰竖纹针织上衣内。领口与下摆适当露白并呼应白色中筒袜，黑色百慕大短裤、乐福鞋和帽子稳住沉色，深靛蓝大肩袋补入克制的色相变化，层次安静而清楚。"
+          },
+          {
+            "candidate_id": "WABI_手作侘寂-男_male_outfits_03_做旧针织",
+            "replace_item_id": "WABI_手作侘寂-男_male_outfits_03_做旧针织_item_01",
+            "reason": "白T替换灰褐亚麻衬衫内的黑色T恤后，在领部和前襟之间加入干净亮色，并与米白解构运动鞋上下呼应。深灰弧形阔腿裤维持下半身量感，灰褐斜挎包延续外衫色调，黑框眼镜和细珠项链保留小细节，旧感纹理仍由其余单品承接。"
+          }
+        ]
+      }
+    }
+  }
+}

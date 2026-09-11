@@ -20,6 +20,7 @@ htmlcov/
 tests/results/
 tests/fixtures/tryon_models/_backup_*/
 tests/fixtures/tryon_models/female_models_triptych_*.png
+/tests/fixtures/tryon_models/manifest.local.json
 
 # Runtime uploads and generated artifacts
 uploads/
@@ -31,6 +32,7 @@ outputs/
 # Local material copies; shared catalog entries use cloud asset IDs instead.
 /app/static/selfit/assets/styling-cutouts/
 /app/static/selfit/assets/styling-delivery/
+/app/static/selfit/assets/model-library/
 /app/static/selfit/assets/personality/*/report-outfits-*
 /qa_photos/face/user_face_*.jpg
 /qa_photos/body/user_body_*.jpg

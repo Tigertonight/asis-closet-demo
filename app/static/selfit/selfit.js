@@ -23,6 +23,7 @@
     if (!onboardingNav) return;
     // 重新测试（从「我的档案」进入）：无过场直接从 like 开始，跳过 suit 环节，
     // stepper 只显示 like / vibe 两个圆圈（.is-retest 隐藏 suit 步）；
+    // like 作为 retest 的第一步，返回键直达「我的档案」；
     // 首次 onboarding 仍走完整 intro → like → suit → vibe。
     let config = ONBOARDING_NAV[name];
     if (name === 'suit' && config) {
@@ -30,15 +31,18 @@
     }
     if (retestEntry && config && name !== 'suit' && name !== 'suit-manual') {
       if (name === 'vibe') config = { back: 'like', progress: 'vibe', current: 'vibe', done: ['like'] };
-      else if (name === 'like') config = { back: '', progress: 'like', current: 'like', done: [] };
+      else if (name === 'like') config = { back: 'profile', progress: 'like', current: 'like', done: [] };
       else config = null;
     }
     onboardingNav.hidden = !config;
     if (!config) return;
-    // like 是 retest 的第一步：没有可返回的上一屏，隐藏返回键。
-    if (onboardingBack) onboardingBack.hidden = !config.back;
+    if (onboardingBack) {
+      onboardingBack.hidden = !config.back;
+      const backLabel = config.back === 'suit-gender' ? '返回选择性别'
+        : retestEntry && config.back === 'profile' ? '返回我的档案' : '返回';
+      onboardingBack.setAttribute('aria-label', backLabel);
+    }
     onboardingBack?.setAttribute('data-back', config.back);
-    onboardingBack?.setAttribute('aria-label', config.back === 'suit-gender' ? '返回选择性别' : '返回');
     onboardingStepper?.setAttribute('data-progress', config.progress);
     onboardingSteps.forEach((step) => {
       const key = step.dataset.step;
@@ -208,6 +212,13 @@
     return true;
   };
 
+  // 重新测试时 like 是第一步，返回键离开 onboarding、直达「我的档案」。
+  const returnToProfile = () => {
+    const appUrl = new URL('/selfit/try-on', window.location.origin);
+    appUrl.searchParams.set('screen', 'profile');
+    window.location.assign(`${appUrl.pathname}${appUrl.search}`);
+  };
+
   let splashTimer = 0;
   let splashTransitioning = false;
   let introTimers = [];
@@ -298,6 +309,7 @@
       if (state.screen === 'suit' && state.genderBusy) return;
       if (back.dataset.back === 'suit-gender') { openGenderSelection(); return; }
       if (document.activeElement?.matches?.('input, textarea, [contenteditable="true"]')) await dismissKeyboard();
+      if (retestEntry && back.dataset.back === 'profile') { returnToProfile(); return; }
       if (state.screen === 'report' && returnToReportParent()) return;
       if (state.screen === 'suit-manual' && manualBeforeEdit) state.manual = { ...manualBeforeEdit };
       showScreen(back.dataset.back);
