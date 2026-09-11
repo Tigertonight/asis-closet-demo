@@ -11,3 +11,5 @@ mediapipe==0.10.35
 colour-checker-detection==0.2.3
 httpx>=0.28.1
 openai>=1.93.0
+google-auth[requests]==2.50.0
+requests==2.32.5

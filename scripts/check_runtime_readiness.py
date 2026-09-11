@@ -13,6 +13,9 @@ from dotenv import load_dotenv
 
 
 ROOT = Path(__file__).resolve().parents[1]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+from app import vertex_image
 SELFIT_RUNTIME_ROOT = ROOT / "selfit-agent-runtime"
 DEFAULT_STYLIST_MODEL = "openai/gpt-5.5"
 STYLIST_MODEL_KEY_ENV_BY_PROVIDER = {
@@ -118,6 +121,8 @@ def readiness(env_path: Path | None = None) -> dict[str, object]:
     }
     env = {
         "tryon": {
+            "vertex_adc_selected": vertex_image.enabled(),
+            "vertex_adc_configured": vertex_image.configured(),
             "openai_base_url": _env_present("TRYON_OPENAI_BASE_URL") or _env_present("OPENAI_BASE_URL"),
             "openai_api_key": _env_present("TRYON_OPENAI_API_KEY") or _env_present("OPENAI_API_KEY"),
             "runway_google_url": _env_present("TRYON_RUNWAY_GOOGLE_URL") or _env_present("RUNWAY_GOOGLE_URL"),
@@ -210,7 +215,7 @@ def readiness(env_path: Path | None = None) -> dict[str, object]:
             or sidecars["xiaohongshu_mcp"]["go_available"]
             or sidecars["xiaohongshu_mcp"]["vendored_go_available"]
         ),
-        "real_tryon": (env["tryon"]["openai_base_url"] and env["tryon"]["openai_api_key"]) or (env["tryon"]["runway_google_url"] and env["tryon"]["runway_google_api_key"]),
+        "real_tryon": env["tryon"]["vertex_adc_configured"] if env["tryon"]["vertex_adc_selected"] else (env["tryon"]["openai_base_url"] and env["tryon"]["openai_api_key"]) or (env["tryon"]["runway_google_url"] and env["tryon"]["runway_google_api_key"]),
     }
     missing_actions = []
     if not ready["multi_category_closet"]:

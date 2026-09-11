@@ -20,6 +20,7 @@ def _disable_rate_limit_by_default(monkeypatch: pytest.MonkeyPatch) -> None:
 def _disable_live_codex_images_by_default(monkeypatch: pytest.MonkeyPatch) -> None:
     """Local developer settings must never make ordinary tests consume image usage."""
     monkeypatch.delenv("TRYON_LOCAL_CODEX_BRIDGE", raising=False)
+    monkeypatch.delenv("TRYON_GOOGLE_BACKEND", raising=False)
 
 
 @pytest.fixture(autouse=True)
