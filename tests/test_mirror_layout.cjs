@@ -36,6 +36,14 @@ test('ten-piece outfit preserves every silhouette with margins and balanced colu
  }
  assert.ok(boxes.find(b=>b.id==='coat').z<boxes.find(b=>b.id==='top').z);
 });
+test('builder preview keeps complete silhouettes in its wider 3:4 frame',()=>{
+ const boxes=layout(outfit,{frameAspect:3/4,region:{x:4,y:4,w:92,h:92}});
+ assert.equal(boxes.length,outfit.length);separated(boxes);
+ for(const box of boxes) {
+  const item=outfit.find(item=>item.id===box.id);
+  assert.ok(Math.abs(box.w*(3/4)/box.h-item.aspect)<1e-8);
+ }
+});
 test('ordinary visible areas follow the agreed 1 : 2/3 : 2/9 ratios',()=>{
  const boxes=layout([piece('coat','outer'),piece('top','top'),piece('pants','bottom'),piece('shoe','shoes')]);
  const area=id=>{const b=boxes.find(b=>b.id===id);return b.w*b.h;};

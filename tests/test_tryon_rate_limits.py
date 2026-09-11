@@ -8,6 +8,7 @@ class TryonRateLimitTests(unittest.TestCase):
     def test_browsing_uses_separate_bucket(self):
         for path in (
             '/selfit/try-on/report-outfits', '/selfit/try-on/report-outfits/random',
+            '/selfit/try-on/report-outfits/home',
             '/selfit/try-on/wardrobe', '/selfit/try-on/models',
             '/selfit/try-on/inspiration-notes', '/selfit/try-on/inspiration-topics',
             '/try-on/capabilities',

@@ -1,5 +1,5 @@
 {
-  "total": 6,
+  "total": 7,
   "items": [
     {
       "file": "female_slim_1.png",
@@ -21,13 +21,14 @@
       "gender_label": "女",
       "body_type": "medium",
       "body_type_label": "中",
-      "display_name": "沙漏型",
+      "display_name": "匀称型",
       "variant": 1,
       "description": "成人亚洲女性中体型全身模特，同一身份，高颜值黑长发散发高颅顶，白色修身短袖+黑色紧身短裤",
       "width": 1024,
       "height": 1536,
       "active": true,
-      "sort_order": 2
+      "sort_order": 2,
+      "default_for_gender": true
     },
     {
       "file": "female_plus_1.png",
@@ -84,6 +85,23 @@
       "height": 1536,
       "active": true,
       "sort_order": 6
+    },
+    {
+      "id": "male_standard_1",
+      "file": "male_standard_1.png",
+      "image_asset_id": "asset_c8d51c837708940cfd92553d7695c93a5d54074b7f0e16f18b3c7ddb04d9c291",
+      "gender": "male",
+      "gender_label": "男",
+      "body_type": "medium",
+      "body_type_label": "中",
+      "display_name": "男标准型",
+      "variant": 1,
+      "description": "用户提供的男模特原图：白色短袖、白色短裤、白色运动鞋，手持手机，全身展示",
+      "width": 1792,
+      "height": 2400,
+      "active": true,
+      "default_for_gender": true,
+      "sort_order": 3.5
     }
   ]
 }

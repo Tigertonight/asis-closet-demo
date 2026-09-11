@@ -1,0 +1,74 @@
+{
+  "site": {
+    "name": "selfit",
+    "tagline": "适我"
+  },
+  "nav": [
+    { "label": "三步体验", "href": "#steps" },
+    { "label": "16 型风格", "href": "#types" },
+    { "label": "为什么是 selfit", "href": "#why" }
+  ],
+  "hero": {
+    "eyebrow": "先认识自己，再决定怎么穿",
+    "title": "1 分钟，找到真正衬你的风格",
+    "subtitle": "上传一张照片，selfit 从肤色、脸型与身型读懂你适合的颜色和廓形，生成专属的 16 型风格报告，还能直接试穿报告里的搭配。",
+    "primaryCta": { "label": "免费测我的风格", "href": "/selfit" },
+    "secondaryCta": { "label": "先看看 16 种风格", "href": "#types" }
+  },
+  "sections": [
+    {
+      "type": "steps",
+      "id": "steps",
+      "title": "三步，看见适合你的自己",
+      "items": [
+        { "title": "上传照片", "text": "一张面部照、一张全身照，算法自动识别肤色、脸型与身型。" },
+        { "title": "生成风格报告", "text": "16 型风格人格分型，专属于你的颜色、妆容与穿搭建议。" },
+        { "title": "试穿与搭配", "text": "报告里的搭配可以直接上身预览，AI 搭子帮你搭好每一套。" }
+      ]
+    },
+    {
+      "type": "types",
+      "id": "types",
+      "title": "16 种风格人格",
+      "text": "个人风格 DNA = 你适合的 × 你喜欢的 × 你表达的。",
+      "items": [
+        { "name": "静音时髦", "en": "MUTE" },
+        { "name": "冷感冰面", "en": "ICED" },
+        { "name": "老钱新穿", "en": "HEIR" },
+        { "name": "松弛讲究", "en": "EASE" },
+        { "name": "奶油治愈", "en": "MELT" },
+        { "name": "手作侘寂", "en": "WABI" },
+        { "name": "造梦浪漫", "en": "FLOU" },
+        { "name": "灵动吸睛", "en": "NEON" },
+        { "name": "甜酷轻亚", "en": "EDGE" },
+        { "name": "在逃千金", "en": "BOLT" },
+        { "name": "虚焦胶片", "en": "FILM" },
+        { "name": "东方玉骨", "en": "JADE" },
+        { "name": "无限重启", "en": "LOOP" },
+        { "name": "暗黑肃杀", "en": "NOIR" },
+        { "name": "人间失格", "en": "VOID" },
+        { "name": "搭配事故", "en": "OOPS" }
+      ]
+    },
+    {
+      "type": "features",
+      "id": "why",
+      "title": "为什么是 selfit",
+      "items": [
+        { "title": "算法读懂你", "text": "不是星座也不是玄学：肤色、脸型、身型的量测数据决定什么真正衬你。" },
+        { "title": "审美不跟风", "text": "先看你适合什么，再谈你喜欢什么——适合与喜欢交汇处，才是你的风格。" },
+        { "title": "所见即可穿", "text": "报告里的每一套搭配都能一键上身，看效果再决定要不要。" }
+      ]
+    },
+    {
+      "type": "cta",
+      "title": "轮到你了",
+      "text": "1 分钟测试，看看你是 16 型里的哪一种。",
+      "button": { "label": "免费测我的风格", "href": "/selfit" }
+    }
+  ],
+  "footer": {
+    "text": "© 2026 selfit · 先认识自己，再决定怎么穿",
+    "links": []
+  }
+}

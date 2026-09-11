@@ -239,7 +239,7 @@ def test_run_tryon_from_outfit_plan_top_and_shoes_only_reports_lower_missing() -
     assert result["pipeline"]["outfit_plan"]["status"] == "warn"
 
 
-def test_run_tryon_from_outfit_plan_relaxes_missed_face_for_ai_provider() -> None:
+def test_run_tryon_from_outfit_plan_never_invents_a_face_for_ai_provider() -> None:
     rng = np.random.default_rng(123)
     scenic = Image.fromarray(rng.integers(80, 220, size=(1100, 800, 3), dtype=np.uint8), "RGB")
     person = _read_upload_image(_png_bytes(scenic), "scenic_no_local_face.png", "person_test")
@@ -255,10 +255,12 @@ def test_run_tryon_from_outfit_plan_relaxes_missed_face_for_ai_provider() -> Non
 
     result = run_try_on_from_outfit_plan(person, plan, MockTryOnProvider())
 
-    assert result["status"] == "generated"
-    assert result["pipeline"]["person_detection"]["status"] == "warn"
-    assert result["pipeline"]["person_detection"]["evidence"]["fallback"] == "ai_tryon_identity_preserve"
-    assert not any(issue["code"] == "person.no_face" for issue in result["decision"]["blocking_errors"])
+    assert result["status"] == "needs_retake"
+    assert result["pipeline"]["person_detection"]["status"] == "fail"
+    assert "primary_face" not in result["pipeline"]["person_detection"]["evidence"]
+    assert any(issue["code"] == "person.no_face" for issue in result["decision"]["blocking_errors"])
+    assert result["pipeline"]["image_edit"]["evidence"]["skipped"]
+    assert result["result"]["image_path"] is None
 
 
 def test_run_tryon_from_outfit_plan_generates_with_mock_provider() -> None:
@@ -840,6 +842,7 @@ def test_failed_outfit_quality_is_not_published_as_review(monkeypatch):
         tryon._stage("fail", 0.1, {}, [tryon._issue("quality.face_changed", "人物发生变化", "请重新生成")]))
     result = run_try_on_from_outfit_plan(person, plan, MockTryOnProvider())
     assert result["status"] == "failed"
+    assert result["decision"]["user_message"] == "人物发生变化。请重新生成"
 
 
 def test_failed_first_pass_stops_accessory_generation(monkeypatch, tmp_path):
@@ -858,3 +861,92 @@ def test_failed_first_pass_stops_accessory_generation(monkeypatch, tmp_path):
     assert len(calls) == 1
     assert result["stage"]["status"] == "fail"
     assert result["image_path"] is None
+
+
+def test_small_full_body_face_drives_mask_and_quality_review(monkeypatch, tmp_path):
+    class Detector:
+        def detectMultiScale(self, *args, **kwargs):
+            return [(832, 224, 217, 217)]
+
+    monkeypatch.setattr(tryon.cv2, "CascadeClassifier", lambda _: Detector())
+    original = Image.new("RGB", (1792, 2400), "white")
+    detection = _detect_person(original)
+    assert detection["status"] == "pass"
+    assert detection["evidence"]["primary_face"]["box"] == {
+        "x": 832, "y": 224, "width": 217, "height": 217,
+    }
+    mask = tryon._generate_outfit_body_mask(original, detection, tmp_path / "mask.png")
+    mask_path = Path(mask["evidence"]["mask_path"])
+    alpha = Image.open(mask_path).getchannel("A")
+    assert alpha.getpixel((940, 300)) == 255  # Face remains protected.
+    assert alpha.getpixel((940, 500)) == 0  # Upper garment can change too.
+
+    changed = original.copy()
+    changed.paste("black", (771, 816, 1021, 1056))  # Old guessed face box was the waist.
+    changed_path = tmp_path / "changed.png"
+    changed.save(changed_path)
+    quality = _review_tryon_quality(original, changed_path, detection, mask_path)
+    assert quality["status"] == "pass"
+    assert quality["evidence"]["face_diff"] == 0
+
+    changed.paste("black", (832, 224, 1049, 441))
+    changed.save(changed_path)
+    quality = _review_tryon_quality(original, changed_path, detection, mask_path)
+    assert quality["status"] == "fail"
+    assert any(issue["code"] == "quality.face_changed" for issue in quality["issues"])
+
+
+def test_small_faces_in_group_photo_are_still_rejected(monkeypatch):
+    class Detector:
+        def detectMultiScale(self, *args, **kwargs):
+            return [(832, 224, 217, 217), (300, 245, 190, 190)]
+
+    monkeypatch.setattr(tryon.cv2, "CascadeClassifier", lambda _: Detector())
+    detection = _detect_person(Image.new("RGB", (1792, 2400), "white"))
+    assert detection["status"] == "fail"
+    assert detection["issues"][0]["code"] == "person.multiple_faces"
+
+
+def test_missed_face_retry_uses_detected_geometry(monkeypatch):
+    class Detector:
+        def __init__(self, path):
+            self.alternative = path.endswith("haarcascade_frontalface_alt2.xml")
+
+        def detectMultiScale(self, *args, **kwargs):
+            return [(230, 110, 100, 100)] if self.alternative else []
+
+    monkeypatch.setattr(tryon.cv2, "CascadeClassifier", Detector)
+    detection = _detect_person(Image.new("RGB", (800, 1100), "white"))
+    assert detection["status"] == "pass"
+    assert detection["evidence"]["primary_face"]["box"] == {
+        "x": 230, "y": 110, "width": 100, "height": 100,
+    }
+    assert detection["evidence"]["primary_face"]["detector"] == "haar_frontal_alt2"
+
+
+def test_clean_background_does_not_substitute_for_a_detected_face(monkeypatch):
+    class Detector:
+        def detectMultiScale(self, *args, **kwargs):
+            return []
+
+    monkeypatch.setattr(tryon.cv2, "CascadeClassifier", lambda _: Detector())
+    image = Image.new("RGB", (800, 1100), "white")
+    image.paste("black", (250, 80, 550, 1080))
+    detection = _detect_person(image)
+    assert detection["status"] == "fail"
+    assert "primary_face" not in detection["evidence"]
+
+
+def test_failed_outfit_pass_preserves_original_quality_error(monkeypatch):
+    person = _load_upload(TRYON_MODEL_FIXTURE_DIR / "male_medium_1.png", "person_test")
+    failed_quality = tryon._stage("fail", 0, {"face_diff": 76.09}, [
+        tryon._issue("quality.face_changed", "面部与原照片差异较大", "请重新尝试。"),
+    ])
+    monkeypatch.setattr(tryon, "_review_tryon_quality", lambda *a, **k: failed_quality)
+    monkeypatch.setattr(tryon, "_review_outfit_tryon_quality", lambda *a, **k: pytest.fail("Discarded result must not be reviewed"))
+    plan = {"items": [{"slot": "top", "image_path": str(FIXTURE_DIR / "card_missing.jpg")} ]}
+    result = run_try_on_from_outfit_plan(person, plan, MockTryOnProvider())
+    assert result["status"] == "failed"
+    assert result["pipeline"]["quality_review"] == failed_quality
+    assert result["decision"]["user_message"] == "面部与原照片差异较大。请重新尝试。"
+    assert result["result"]["image_path"] is None

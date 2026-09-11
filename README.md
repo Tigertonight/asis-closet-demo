@@ -156,7 +156,7 @@ curl http://127.0.0.1:8000/try-on/capabilities
 .venv/bin/pytest -q
 ```
 
-仓库当前可收集 235 个测试，覆盖鉴权、色彩分析、onboarding、衣橱、试穿、穿搭师与运行态。
+测试覆盖鉴权、色彩分析、onboarding、衣橱、试穿、穿搭师与运行态；以当前 `pytest --collect-only -q` 的收集结果为准。
 
 常用专项检查：
 
@@ -177,6 +177,21 @@ python scripts/selfit_full_stack_acceptance.py --strict
 ```
 
 QA 和调试结果会写入 `tests/results/` 或 `outputs/`，这些运行产物不应提交到 Git。
+
+### 素材、模特与试穿预设
+
+- [素材维护流程](docs/SELFIT_ASSET_WORKFLOW.md)：说明业务 JSON、OSS 图片、模特主表、生成批次与 Git 的边界。
+- [白 T 搭配与预设](docs/WHITE_TEE_MATCHES.md)：男女款搭配方案、固定模特预设、完整套装匹配与验证方式。
+- [男款拆款接入](docs/SELFIT_MALE_STYLING_DELIVERY.md)：四个人格的男款笔记和拆款数据。
+- [当前女模特](docs/SELFIT_FEMALE_MODELS_20260911.md)：三种体型的模特来源、替换与兼容规则。
+
+修改相关链路后可运行：
+
+```bash
+.venv/bin/python -m pytest -q tests/test_white_tee_presets.py tests/test_selfit_tryon_presets.py tests/test_selfit_model_gender.py tests/test_model_assets.py
+```
+
+素材集成检查会使用目录中的共享素材链接及本地 `outputs/material-cache/` 缓存；素材原图不随测试或代码提交。
 
 ## 部署 Demo
 

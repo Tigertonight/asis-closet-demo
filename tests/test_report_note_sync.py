@@ -29,7 +29,8 @@ def test_runtime_keeps_curvy_separate_and_rejects_duplicate_audiences():
     prior = json.loads(RUNTIME.read_text())
     result = build_runtime(master, prior)
     assert len(result['types']) == 16
-    assert set(result['variants']) == {'film-curvy', 'wabi-curvy', 'void-curvy', 'loop-curvy'}
+    assert set(result['variants']) == {'film-curvy', 'wabi-curvy', 'void-curvy', 'loop-curvy',
+                                       'ease-male', 'edge-male', 'mute-male', 'wabi-male'}
     assert result['types']['film']['recommendations']['outfits']['items'][0]['name'] == '牛仔工装'
     assert result['variants']['film-curvy']['recommendations']['outfits']['items'][0]['name'] == '胶片carhartt'
     master['templates'].append(copy.deepcopy(master['templates'][0]))
@@ -39,11 +40,12 @@ def test_runtime_keeps_curvy_separate_and_rejects_duplicate_audiences():
 
 def test_default_candidate_pool_is_not_affected_by_body_variants():
     master = json.loads(MASTER.read_text())
-    defaults = {**master, 'templates': [t for t in master['templates'] if t.get('bodyProfile') != 'curvy']}
+    defaults = {**master, 'templates': [t for t in master['templates']
+                                      if template_identity(t)[1:3] == ('standard', 'unisex')]}
     assert build_pool(master) == build_pool(defaults)
 
 
-def test_delivery_binds_all_80_notes_and_468_items_to_material_ids():
+def test_delivery_binds_all_96_notes_and_569_items_to_material_ids():
     delivery = json.loads((ROOT / 'app/data/styling-delivery.v1.json').read_text())
     runtime = json.loads(RUNTIME.read_text())
     keys = set()
@@ -58,8 +60,8 @@ def test_delivery_binds_all_80_notes_and_468_items_to_material_ids():
         assert card['image']['assetId'] == look['source_asset']['assetId']
         for item in look['items']:
             assert item['image_asset']['assetId'].startswith('asset_')
-    assert len(keys) == 80
-    assert sum(len(l['items']) for l in delivery['looks']) == 468
+    assert len(keys) == 96
+    assert sum(len(l['items']) for l in delivery['looks']) == 569
 
 
 def test_runtime_images_resolve_without_private_editor_urls():

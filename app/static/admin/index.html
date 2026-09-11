@@ -36,14 +36,21 @@
   th { color: var(--muted); font-weight: 500; font-size: 12px; }
   tr:last-child td { border-bottom: 0; }
   .rate { display: inline-block; min-width: 48px; padding: 1px 8px; border-radius: 999px; background: #f6e7ea; color: var(--brand); font-weight: 600; font-size: 12px; text-align: center; }
-  .bar { height: 6px; border-radius: 3px; background: #f1e6e8; overflow: hidden; min-width: 80px; }
+  .bar { display: inline-block; vertical-align: middle; height: 6px; border-radius: 3px; background: #f1e6e8; overflow: hidden; min-width: 80px; }
   .bar i { display: block; height: 100%; background: var(--rose); }
+  /* KPI 口径说明：小问号 + hover/focus/点击显示气泡 */
+  .kpi { position: relative; }
+  .kpi-info { position: absolute; top: 12px; right: 12px; width: 18px; height: 18px; padding: 0; border: 0; border-radius: 999px; background: #f1e6e8; color: var(--muted); font: 600 11px/18px -apple-system, "PingFang SC", sans-serif; cursor: help; }
+  .kpi-info:hover, .kpi-info:focus-visible { color: var(--brand); outline: none; }
+  .kpi-tip { position: absolute; z-index: 20; top: 36px; right: 12px; width: min(260px, calc(100vw - 48px)); padding: 10px 12px; border: 1px solid var(--line); border-radius: 12px; background: #fff; box-shadow: 0 10px 30px rgba(60,21,25,.14); color: var(--muted); font-size: 12px; line-height: 1.7; text-align: left; }
+  .kpi-tip[hidden] { display: none; }
   .empty { padding: 40px 0; text-align: center; color: var(--muted); }
   .toolbar { display: flex; gap: 10px; align-items: center; margin-bottom: 18px; }
   .toolbar button { padding: 7px 16px; border: 0; border-radius: 999px; background: var(--brand); color: #fff; font-size: 13px; cursor: pointer; }
   .toolbar small { color: var(--muted); }
   .debug-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 12px; }
   .debug-card { display: flex; flex-direction: column; gap: 4px; padding: 14px 16px; background: var(--card); border: 1px solid var(--line); border-radius: 14px; text-decoration: none; color: var(--ink); transition: border-color .15s ease, transform .15s ease; }
+  button.debug-card { font: inherit; text-align: left; cursor: pointer; }
   .debug-card:hover { border-color: var(--rose); transform: translateY(-1px); }
   .debug-card b { font-size: 14px; }
   .debug-card span { color: var(--muted); font-size: 12px; line-height: 1.5; }
@@ -72,6 +79,17 @@
   .photo-cell { display: inline-flex; align-items: center; gap: 8px; }
   .report-list-footer { display: flex; align-items: center; justify-content: center; gap: 12px; min-height: 38px; margin-top: 14px; }
   .report-list-footer small { color: var(--muted); }
+  /* 列表顶部统计条：数量 + 占比（分母为全部条目，含未显示部分） */
+  .stats-strip { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 0 0 14px; }
+  .stats-strip:empty { display: none; }
+  .stats-strip .stats-total { color: var(--muted); font-size: 12px; margin-right: 4px; }
+  .stat-chip { display: inline-flex; align-items: baseline; gap: 6px; padding: 6px 14px; border: 1px solid var(--line); border-radius: 999px; background: #fff; font-size: 12px; line-height: 1.5; }
+  .stat-chip b { font-size: 15px; font-weight: 700; color: var(--ink); }
+  .stat-chip span { color: var(--muted); }
+  .stat-chip small { color: var(--muted); font-size: 11px; }
+  .stat-chip.is-ok { border-color: #d8e8db; background: #f4f9f5; }
+  .stat-chip.is-ok b { color: #2f6a3c; }
+  .stat-chip.is-muted b { color: var(--muted); }
   .report-load-more { min-height: 36px; padding: 7px 18px; border: 1px solid rgba(138,1,27,.25); border-radius: 999px; background: #fff; color: var(--brand); font: inherit; font-size: 13px; font-weight: 600; cursor: pointer; }
   .report-load-more:hover { background: #fbf1f3; }
   .report-load-more:focus-visible { outline: 2px solid rgba(138,1,27,.35); outline-offset: 2px; }
@@ -276,11 +294,9 @@
     <button class="is-active" data-tab="analytics" type="button">数据分析</button>
     <button type="button" data-tab="submissions">用户报告</button>
     <button type="button" data-tab="invites">邀请码</button>
-    <button type="button" data-tab="personas">十六型人格</button>
-    <button type="button" data-tab="stylistContext">AI 上下文</button>
-    <a href="/qa/onboarding-attributes">实验数据 QA</a>
+    <button type="button" data-tab="stylistContext">AI agent</button>
+    <a href="/qa/onboarding-attributes">智能评测</a>
     <button type="button" data-tab="debug">调试工具</button>
-    <a href="/mvp" target="_blank" rel="noopener">MVP 状态</a>
     <button type="button" id="settingsBtn" hidden>修改密码</button>
     <button type="button" id="logoutBtn" hidden>退出</button>
   </nav>
@@ -310,11 +326,13 @@
     </div>
     <div class="kpis" id="kpis"></div>
     <div class="panel" data-tab-panel="analytics">
-      <h2>App 主流程漏斗</h2>
-      <table><thead><tr><th>步骤</th><th>屏</th><th>到达人数</th><th style="width:30%">进度</th><th>相对上步</th></tr></thead><tbody id="appFunnel"></tbody></table>
+      <h2>App 主流程到达人数</h2>
+      <p class="panel-hint">按去重用户统计（同一用户多次进入同一屏只算 1 人）。流程支持返回修改答案，老用户重新登录会直达报告，因此数字不严格递减，属正常现象。</p>
+      <table><thead><tr><th>步骤</th><th>屏</th><th>到达人数</th><th style="width:30%">占比</th></tr></thead><tbody id="appFunnel"></tbody></table>
     </div>
     <div class="panel" data-tab-panel="analytics">
-      <h2>镜子端漏斗（线下流程）</h2>
+      <h2>镜子端流程（按次数）</h2>
+      <p class="panel-hint">镜子无账号体系、多台镜子可能共用同一网络出口，无法按用户去重，这里按事件次数统计。「开始拍照」含用户重拍的试拍，「确认照片」是最终保留的张数。</p>
       <table><thead><tr><th>步骤</th><th>事件</th><th>次数</th><th>转化</th></tr></thead><tbody id="mirrorFunnel"></tbody></table>
     </div>
     <div class="panel" data-tab-panel="analytics">
@@ -343,6 +361,7 @@
           <button class="mini-btn" type="button" id="submissionsRefresh">刷新</button>
           <small id="submissionsUpdatedAt"></small>
         </div>
+        <div class="stats-strip" id="submissionsStats" aria-label="测试提交统计"></div>
         <div class="table-scroll"><table><thead><tr><th>提交时间</th><th>手机号</th><th>来源</th><th>报告</th><th>照片</th><th>操作</th></tr></thead><tbody id="submissionRows"></tbody></table></div>
         <div class="report-list-footer"><small id="submissionsCount"></small><button class="report-load-more" type="button" id="submissionsLoadMore" hidden>加载更多</button></div>
       </section>
@@ -353,6 +372,7 @@
           <button class="mini-btn" type="button" id="capturesRefresh">刷新</button>
           <small id="capturesUpdatedAt"></small>
         </div>
+        <div class="stats-strip" id="capturesStats" aria-label="镜子拍摄统计"></div>
         <div class="table-scroll"><table><thead><tr><th>拍摄时间</th><th>状态</th><th>领取手机号</th><th>原始照片（算法留存）</th><th>美颜照片（打印用）</th><th>操作</th></tr></thead><tbody id="captureRows"></tbody></table></div>
         <div class="report-list-footer"><small id="capturesCount"></small><button class="report-load-more" type="button" id="capturesLoadMore" hidden>加载更多</button></div>
       </section>
@@ -398,6 +418,7 @@
       <div class="table-scroll"><table><thead><tr><th>邀请码</th><th>席位</th><th>过期时间</th><th>状态</th><th>备注</th><th>操作</th></tr></thead><tbody id="inviteRows"></tbody></table></div>
     </div>
     <div class="panel" id="personaGuidePanel" data-tab-panel="personas" hidden>
+      <button class="mini-btn" type="button" data-tab="debug" style="margin:0 0 12px">‹ 返回调试工具</button>
       <h2>十六型人格 · 判定手册</h2>
       <p class="panel-hint">判断某个人属于什么型格：先看下方「坐标系与判定规则」理解 7 个维度，再用「手动判定器」把此人的 7 维得分拖进去得到分型结果；16 型档案卡片给出每型的中心点分数、核心维度（权重 ×1.5 的判定首要依据）、蛛网图与易混淆型。</p>
       <div class="toolbar" style="margin-bottom:12px">
@@ -442,17 +463,11 @@
     </div>
     <div class="panel" id="debugPanel" data-tab-panel="debug" hidden>
       <h2>调试工具</h2>
-      <p style="margin:0 0 14px;color:var(--muted);font-size:13px">开发中功能的内部入口。所有页面均已纳入管理员密码保护，普通用户无法访问；点击新标签页打开。</p>
+      <p style="margin:0 0 14px;color:var(--muted);font-size:13px">开发中功能的内部入口。所有页面均已纳入管理员密码保护，普通用户无法访问；「十六型人格」在当前页打开，其余在新标签页打开。</p>
       <div class="debug-grid">
         <a class="debug-card" href="/report-builder" target="_blank" rel="noopener"><b>风格报告配置后台</b><span>16 人格模板的编辑与导出（改完需手动合入模板库）</span></a>
+        <button class="debug-card" type="button" data-tab="personas"><b>十六型人格</b><span>7 维坐标系、手动判定器与 16 型档案卡片</span></button>
         <a class="debug-card" href="/demo" target="_blank" rel="noopener"><b>十二季型色彩诊断</b><span>色卡检测 + 4/12/24 季候选的原始 Demo</span></a>
-        <a class="debug-card" href="/try-on/demo" target="_blank" rel="noopener"><b>AI 上衣试穿</b><span>人像 + 服装理解、mask 与试穿生成的调试页</span></a>
-        <a class="debug-card" href="/closet/demo" target="_blank" rel="noopener"><b>电子衣橱</b><span>单品入柜、链接导入、搭配组合的调试页</span></a>
-        <a class="debug-card" href="/mvp" target="_blank" rel="noopener"><b>MVP 状态总览</b><span>产品门禁、算法契约与回归状态</span></a>
-        <a class="debug-card" href="/qa" target="_blank" rel="noopener"><b>MVP 自测</b><span>色彩测试链路的自测页</span></a>
-        <a class="debug-card" href="/self-test" target="_blank" rel="noopener"><b>算法自测</b><span>fixture 样本回归与稳定性</span></a>
-        <a class="debug-card" href="/selfit/mirror?preview=processing&stage=50" target="_blank" rel="noopener"><b>镜子处理中预览</b><span>镜子端各进度阶段的视觉走查</span></a>
-        <a class="debug-card" href="/selfit?preview=report&type=neon" target="_blank" rel="noopener"><b>报告页预览</b><span>直接查看指定人格的报告渲染（type 参数可换）</span></a>
       </div>
     </div>
   </section>
@@ -614,6 +629,51 @@
     $(config.more).hidden = visible >= list.rows.length;
   };
 
+  const statChip = (label, count, total, tone = '') => {
+    const pct = total > 0 ? Math.round((count / total) * 100) : 0;
+    const node = document.createElement('span');
+    node.className = `stat-chip${tone ? ` is-${tone}` : ''}`;
+    node.innerHTML = `<b>${count}</b><span>${esc(label)}</span><small>${pct}%</small>`;
+    return node;
+  };
+
+  // 统计基于全部条目（不只是当前分页），分母 = 列表总数。
+  const renderSubmissionsStats = (rows) => {
+    const strip = $('submissionsStats');
+    const total = rows.length;
+    strip.replaceChildren();
+    if (!total) return;
+    const withReport = rows.filter((row) => row.report).length;
+    const hasPhoto = (row) => (row.photos && row.photos.length > 0)
+      || (row.mirrorPhotos && Object.values(row.mirrorPhotos).some(Boolean));
+    const withPhotos = rows.filter(hasPhoto).length;
+    strip.append(
+      Object.assign(document.createElement('small'), { className: 'stats-total', textContent: `共 ${total} 条` }),
+      statChip('报告已生成', withReport, total, 'ok'),
+      statChip('报告未生成', total - withReport, total, 'muted'),
+      statChip('有照片', withPhotos, total),
+      statChip('无照片', total - withPhotos, total, 'muted'),
+    );
+  };
+
+  const renderCapturesStats = (rows) => {
+    const strip = $('capturesStats');
+    const total = rows.length;
+    strip.replaceChildren();
+    if (!total) return;
+    const byStatus = { claimed: 0, pending: 0, expired: 0 };
+    rows.forEach((row) => { if (row.status in byStatus) byStatus[row.status] += 1; });
+    const withPhotos = rows.filter((row) => row.original || row.retouched).length;
+    strip.append(
+      Object.assign(document.createElement('small'), { className: 'stats-total', textContent: `共 ${total} 条` }),
+      statChip('已领取', byStatus.claimed, total, 'ok'),
+      statChip('待领取', byStatus.pending, total),
+      statChip('已过期', byStatus.expired, total, 'muted'),
+      statChip('有照片', withPhotos, total),
+      statChip('无照片', total - withPhotos, total, 'muted'),
+    );
+  };
+
   const renderSubmissions = (rows) => {
     const tbody = $('submissionRows');
     if (!rows.length) {
@@ -763,8 +823,8 @@
   const renderReportList = (tab) => {
     const list = reportListState[tab];
     const visibleRows = list.rows.slice(0, list.visible);
-    if (tab === 'submissions') renderSubmissions(visibleRows);
-    if (tab === 'captures') renderCaptures(visibleRows);
+    if (tab === 'submissions') { renderSubmissions(visibleRows); renderSubmissionsStats(list.rows); }
+    if (tab === 'captures') { renderCaptures(visibleRows); renderCapturesStats(list.rows); }
     if (tab === 'rejected') renderRejected(visibleRows, list.breakdown || []);
     updateReportFooter(tab);
   };
@@ -1412,27 +1472,39 @@
 
   const render = (summary, users) => {
     const kpiDefs = [
-      ['logins', '手机号登录'],
-      ['mirrorCaptures', '镜子拍照'],
-      ['mirrorClaims', '扫码领取'],
-      ['reportsCompleted', '生成报告'],
-      ['users', '行为用户数'],
-      ['events', '总事件数'],
+      { key: 'logins', label: '登录用户数', info: '成功登录过（手机号或邀请码）的去重用户数。同一用户重复登录只算 1 人。' },
+      { key: 'users', label: '行为用户数', info: '上报过任意行为且携带用户身份的去重用户数（含游客身份）。未登录的纯浏览没有身份，不计入。' },
+      { key: 'reportsCompleted', label: '生成报告（次）', info: '累计生成的风格报告次数；重新测试会生成新报告。' },
+      { key: 'mirrorCaptures', label: '镜子拍照（张）', info: '用户在镜子前确认保留的照片张数（试拍与重拍不计）。' },
+      { key: 'mirrorClaims', label: '扫码领取（次）', info: '镜子端二维码被扫码领取的总次数。' },
+      { key: 'events', label: '总事件数', info: '全部埋点事件条数（含未登录浏览产生的匿名事件）。' },
     ];
-    $('kpis').replaceChildren(...kpiDefs.map(([key, label]) => {
+    $('kpis').replaceChildren(...kpiDefs.map(({ key, label, info }) => {
       const node = document.createElement('div');
       node.className = 'kpi';
       const value = summary.totals[key] ?? 0;
       node.innerHTML = `<b>${value}</b><span>${label}</span>`;
+      if (info) {
+        const button = Object.assign(document.createElement('button'), {
+          type: 'button', className: 'kpi-info', textContent: '?', ariaLabel: `${label}统计口径说明`,
+        });
+        const tip = Object.assign(document.createElement('div'), { className: 'kpi-tip', textContent: info, hidden: true });
+        const toggle = (show) => { tip.hidden = show === undefined ? !tip.hidden : !show; };
+        button.addEventListener('click', (event) => { event.stopPropagation(); toggle(); });
+        button.addEventListener('mouseenter', () => toggle(true));
+        button.addEventListener('mouseleave', () => toggle(false));
+        button.addEventListener('focus', () => toggle(true));
+        button.addEventListener('blur', () => toggle(false));
+        node.append(button, tip);
+      }
       return node;
     }));
 
-    const maxFunnel = Math.max(...summary.appFunnel.map((row) => row.views), 1);
-    $('appFunnel').replaceChildren(...summary.appFunnel.map((row, index) => {
+    const reachRows = summary.appFunnel.map((row) => ({ ...row, value: row.reach ?? row.views ?? 0 }));
+    const maxReach = Math.max(...reachRows.map((row) => row.value), 1);
+    $('appFunnel').replaceChildren(...reachRows.map((row) => {
       const tr = document.createElement('tr');
-      const prev = index > 0 ? summary.appFunnel[index - 1].views : null;
-      const rate = prev ? `<span class="rate">${prev ? Math.round(row.views / prev * 100) : 0}%</span>` : '—';
-      tr.innerHTML = `<td>${row.label}</td><td>${row.screen}</td><td>${row.views}</td><td><span class="bar"><i style="width:${Math.round(row.views / maxFunnel * 100)}%"></i></span></td><td>${rate}</td>`;
+      tr.innerHTML = `<td>${row.label}</td><td>${row.screen}</td><td>${row.value}</td><td><span class="bar"><i style="width:${Math.round(row.value / maxReach * 100)}%"></i></span></td>`;
       return tr;
     }));
 
@@ -1713,6 +1785,11 @@
   });
 
   if (state.token) showDashboard(); else showLogin();
+  // 支持 hash 直达 tab（如 /admin#submissions，智能评测页顶部导航回跳用）
+  const hashTab = (location.hash || '').replace('#', '');
+  if (hashTab && hashTab !== 'analytics' && document.querySelector(`[data-tab="${CSS.escape(hashTab)}"]`)) {
+    activateTab(hashTab);
+  }
 })();
 </script>
 </body>

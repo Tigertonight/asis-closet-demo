@@ -5,6 +5,7 @@ import re
 import random
 
 from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi.responses import JSONResponse
 
 from app.auth import get_current_user
 from app.material_assets import asset_content_url
@@ -33,7 +34,7 @@ def random_home_notes(
     selected_outfit_id: str | None = Query(default=None, max_length=160),
     current_user: dict = Depends(get_current_user),
 ):
-    """Sample six real notebook photos; retain a selected note on page refresh."""
+    """Sample four real notebook photos; retain a selected note on page refresh."""
     try:
         catalog = _personality_template_catalog()
         templates = {**catalog.get("types", {}), **catalog.get("variants", {})}
@@ -45,16 +46,56 @@ def random_home_notes(
             if note and note["image"].get("assetId") == look["source_asset"]["assetId"] and note["name"] == binding["name"]:
                 candidates.append((look, note))
         pinned = next((pair for pair in candidates if outfit_id(pair[0]) == selected_outfit_id), None)
+        # Keep an explicitly opened outfit, but sample new suggestions for the account.
+        male = current_user.get("gender") == "male" and any(t.get("gender") == "male" for t in templates.values())
+        candidates = [pair for pair in candidates if (pair[0]["note_binding"].get("gender") == "male") == male]
         # Some templates share a notebook photo. Show it only once in the strip.
         unique = {pair[0]["source_asset"]["assetId"]: pair for pair in candidates}
         if pinned:
             unique.pop(pinned[0]["source_asset"]["assetId"], None)
-        selected = ([pinned] if pinned else []) + random.sample(list(unique.values()), min(5 if pinned else 6, len(unique)))
-        if not selected:
-            raise ValueError("No delivered notebook available")
+        selected = ([pinned] if pinned else []) + random.sample(list(unique.values()), min(3 if pinned else 4, len(unique)))
+        if len(selected) != 4:
+            raise ValueError("Four distinct delivered notebooks are required")
         return {"mode": "live", "outfits": [_note_outfit(look, note) for look, note in selected]}
     except (OSError, ValueError, KeyError, TypeError) as exc:
         raise HTTPException(503, "穿搭笔记暂时无法加载，请稍后重试。") from exc
+
+
+def home_notes(current_user: dict, selected_outfit_id: str | None = None) -> dict:
+    """Use this account's latest completed report, without loading its photos."""
+    from app.selfit_onboarding import _account_profile_report, _load_store
+
+    try:
+        saved = _account_profile_report(_load_store(), current_user["user_id"])
+        if saved is None:
+            return {**random_home_notes(selected_outfit_id, current_user), "source": "random"}
+
+        report = saved["data"]
+        persona = str(report["typeId"]).strip().lower()
+        gender = report.get("gender") or current_user.get("gender")
+        key = str(report.get("templateId") or (f"{persona}-male" if gender == "male" else persona)).strip().lower()
+        catalog = _personality_template_catalog()
+        template = {**catalog.get("types", {}), **catalog.get("variants", {})}.get(key, {})
+        notes = template.get("recommendations", {}).get("outfits", {}).get("items", [])
+        ids = [note["id"] for note in notes]
+        if template.get("typeId") != persona or len(ids) != 4 or len(set(ids)) != 4:
+            raise ValueError("No complete four-note template for this report")
+        saved_ids = [note.get("id") for note in report.get("outfits") or []]
+        if len(saved_ids) == 4 and set(saved_ids) == set(ids):
+            ids = saved_ids
+        # Resolve current delivered assets, while keeping this report's template/order.
+        # An unrelated selected outfit must never displace one of these four notes.
+        return {**report_outfits(persona, ids, key), "source": "report"}
+    except (OSError, ValueError, KeyError, TypeError) as exc:
+        raise HTTPException(503, "你的型格穿搭暂时无法加载，请稍后重试。") from exc
+
+
+@router.get("/home")
+def list_home_notes(
+    selected_outfit_id: str | None = Query(default=None, max_length=160),
+    current_user: dict = Depends(get_current_user),
+):
+    return JSONResponse(home_notes(current_user, selected_outfit_id), headers={"Cache-Control": "private, no-store"})
 
 
 def report_outfits(persona: str, note_ids: list[str], template_id: str | None = None,

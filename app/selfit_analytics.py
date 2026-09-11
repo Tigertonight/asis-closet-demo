@@ -74,20 +74,21 @@ EVENT_WHITELIST = frozenset(
     }
 )
 
-# 漏斗顺序（app 主流程）
+# 漏斗顺序（app 主流程；like → suit → vibe 为实际问卷顺序，
+# phone-login / invite-login 是登录页的分支子屏，不单独列级。
+# splash 屏不走 showScreen 不产生 screen_view，无法统计，不列。）
 APP_FUNNEL = [
-    ("splash", "进入"),
-    ("login", "登录方式"),
-    ("phone-login", "手机号登录"),
+    ("login", "登录页"),
     ("intro", "介绍页"),
-    ("suit", "上传照片"),
     ("like", "偏好选择"),
+    ("suit", "上传照片"),
     ("vibe", "问卷"),
     ("loading", "生成中"),
     ("report", "查看报告"),
 ]
 
-# 镜子端漏斗
+# 镜子端流程（按事件次数统计：镜子无账号体系，同一台镜子共享 IP，
+# 按会话/IP 去重会把几百次拍照压成个位数，次数才是真实口径）。
 MIRROR_FUNNEL = [
     ("mirror_capture_started", "开始拍照"),
     ("mirror_capture_confirmed", "确认照片"),
@@ -264,14 +265,34 @@ def _screen_view_counts(events: list[dict[str, Any]]) -> Counter:
     return counts
 
 
-def _event_sessions(events: list[dict[str, Any]], event_name: str) -> set[str]:
+def _distinct_users(events: list[dict[str, Any]], event_name: str | None = None) -> set[str]:
+    """按 user_id 去重的用户数；可选只统计某个事件（如 login_success）。"""
+
     result: set[str] = set()
     for event in events:
-        if event.get("event") == event_name:
-            key = event.get("session_id") or event.get("client_ip") or event.get("ts")
-            if key:
-                result.add(str(key))
+        if event_name is not None and event.get("event") != event_name:
+            continue
+        user_id = event.get("user_id")
+        if user_id:
+            result.add(str(user_id))
     return result
+
+
+def _event_count(events: list[dict[str, Any]], event_name: str) -> int:
+    return sum(1 for event in events if event.get("event") == event_name)
+
+
+def _screen_reach(events: list[dict[str, Any]], screen: str) -> int:
+    """某屏的去重到达人数：优先 user_id，其次 session_id，最后 client_ip。"""
+
+    keys: set[str] = set()
+    for event in events:
+        if event.get("event") != "screen_view" or event.get("screen") != screen:
+            continue
+        key = event.get("user_id") or event.get("session_id") or event.get("client_ip")
+        if key:
+            keys.add(str(key))
+    return len(keys)
 
 
 def _dwell_seconds(events: list[dict[str, Any]]) -> dict[str, list[float]]:
@@ -351,17 +372,18 @@ async def analytics_summary(admin: dict[str, Any] = Depends(get_admin_user)) -> 
             "screen": screen,
             "label": label,
             "views": screen_counts.get(screen, 0),
+            "reach": _screen_reach(events, screen),
         }
         for screen, label in APP_FUNNEL
     ]
     mirror_funnel = []
     previous: int | None = None
     for event_name, label in MIRROR_FUNNEL:
-        sessions = len(_event_sessions(events, event_name))
-        row: dict[str, Any] = {"event": event_name, "label": label, "count": sessions}
+        count = _event_count(events, event_name)
+        row: dict[str, Any] = {"event": event_name, "label": label, "count": count}
         if previous is not None and previous > 0:
-            row["conversion"] = round(sessions / previous, 3)
-        previous = sessions
+            row["conversion"] = round(count / previous, 3)
+        previous = count
         mirror_funnel.append(row)
 
     dwell = _dwell_seconds(events)
@@ -380,11 +402,13 @@ async def analytics_summary(admin: dict[str, Any] = Depends(get_admin_user)) -> 
             "totals": {
                 "events": len(events),
                 "sessions": len({e.get("session_id") for e in events if e.get("session_id")}),
-                "users": len({e.get("user_id") for e in events if e.get("user_id")}),
-                "mirrorCaptures": len(_event_sessions(events, "mirror_capture_started")),
-                "mirrorClaims": len(_event_sessions(events, "mirror_qr_claim_detected")),
-                "reportsCompleted": len(_event_sessions(events, "report_completed")),
-                "logins": len(_event_sessions(events, "login_success")),
+                # 各 KPI 口径：登录/行为按去重用户；产出物（报告/拍照/领取）按次数。
+                # 镜子端无账号体系，按用户/IP 去重会把同一台镜子的多次拍照压成 1。
+                "users": len(_distinct_users(events)),
+                "mirrorCaptures": _event_count(events, "mirror_capture_confirmed"),
+                "mirrorClaims": _event_count(events, "mirror_qr_claim_detected"),
+                "reportsCompleted": _event_count(events, "report_completed"),
+                "logins": len(_distinct_users(events, "login_success")),
             },
             "appFunnel": funnel,
             "mirrorFunnel": mirror_funnel,

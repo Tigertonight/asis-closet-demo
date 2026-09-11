@@ -103,7 +103,7 @@ const goCode = studio.slice(studio.indexOf('  function go(page,'), studio.indexO
   assert.equal((onboarding.match(/continueToApp\.href\s*=/g) || []).length, 1, 'report generation must not overwrite the handoff');
   let errorStatus = 409;
   const errors = vm.createContext({AbortController, setTimeout, clearTimeout, savedSession:null,
-    fetch:async () => ({ok:false,status:errorStatus,json:async () => ({detail:'报告穿搭素材已更新，请重新生成报告后再试。'})})});
+    fetch:async () => ({ok:false,status:errorStatus,headers:{get:()=>null},json:async () => ({detail:'报告穿搭素材已更新，请重新生成报告后再试。'})})});
   vm.runInContext(studio.slice(studio.indexOf('  async function api('), studio.indexOf('  function nav()')), errors);
   await assert.rejects(() => vm.runInContext("api('/selfit/try-on/report-outfits?persona=void')", errors), /报告穿搭素材已更新/);
   errorStatus = 500;

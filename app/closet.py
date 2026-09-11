@@ -20,6 +20,7 @@ import httpx
 from fastapi import HTTPException, UploadFile
 from PIL import Image, ImageDraw, ImageFilter, ImageOps, UnidentifiedImageError
 
+from app import vertex_image
 from app.storage import storage_context, user_asset_public_path
 from app.selfit_recommend import content_pool as selfit_content_pool
 from app.recommendation_diversity import select_diverse_outfits, style_family_map
@@ -538,6 +539,8 @@ class AIGarmentCutoutProvider:
         enabled = os.environ.get("SELFIT_GARMENT_AI_ENABLED", "1").strip().lower()
         if enabled in {"0", "false", "no", "off"}:
             return None
+        if vertex_image.enabled():
+            return vertex_image.MODE if vertex_image.configured() else None
         config_signature = (
             enabled,
             os.environ.get("TRYON_RUNWAY_GOOGLE_URL"),
@@ -568,10 +571,12 @@ class AIGarmentCutoutProvider:
         if os.environ.get("SELFIT_GARMENT_AI_ENABLED", "1").strip().lower() in {"0", "false", "no", "off"}:
             return "disabled_by_env"
         provider = self._provider_kind()
+        if provider == vertex_image.MODE:
+            return "available_via_vertex_adc"
         return "available_via_runway" if provider == "runway_google_generate_content" else "available_via_openai" if provider else "provider_not_configured"
 
     def _uses_runway(self) -> bool:
-        return self._provider_kind() == "runway_google_generate_content"
+        return self._provider_kind() in {"runway_google_generate_content", vertex_image.MODE}
 
     def _uses_openai(self) -> bool:
         return self._provider_kind() == "openai_image_edit"
@@ -757,9 +762,6 @@ class AIGarmentCutoutProvider:
         return _normalize_inventory_candidates(payload.get("items"))
 
     def _analyze_inventory_with_runway(self, image: Image.Image, prompt: str) -> str:
-        api_key = _runway_google_api_key()
-        if not api_key:
-            return ""
         buffer = io.BytesIO()
         image.convert("RGB").save(buffer, "JPEG", quality=92)
         payload = {
@@ -772,18 +774,11 @@ class AIGarmentCutoutProvider:
             # the image model to generate a wasteful image response.
             "generationConfig": {"temperature": 0.1, "maxOutputTokens": 4096},
         }
-        response = httpx.post(
-            _runway_google_url(),
-            headers={**_runway_google_auth_headers(_runway_google_url(), api_key), "Content-Type": "application/json"},
-            json=payload,
-            timeout=90,
-        )
-        response.raise_for_status()
-        data = response.json()
+        data = self._google_request(payload, timeout=90)
         texts: list[str] = []
         for candidate in data.get("candidates") or []:
             for part in ((candidate.get("content") or {}).get("parts") or []):
-                if isinstance(part.get("text"), str):
+                if isinstance(part.get("text"), str) and not part.get("thought"):
                     texts.append(part["text"])
         return "\n".join(texts)
 
@@ -823,10 +818,21 @@ class AIGarmentCutoutProvider:
             return self._generate_openai_cutout(source_path, category)
         return None
 
-    def _generate_runway_cutout(self, source_path: Path, category: str | None = None) -> Image.Image | None:
+    def _google_request(self, payload: dict[str, Any], *, timeout: float) -> dict[str, Any]:
+        if vertex_image.enabled():
+            return vertex_image.generate_content(payload, timeout=timeout)
         api_key = _runway_google_api_key()
         if not api_key:
-            return None
+            return {}
+        response = httpx.post(
+            _runway_google_url(),
+            headers={**_runway_google_auth_headers(_runway_google_url(), api_key), "Content-Type": "application/json"},
+            json=payload, timeout=timeout,
+        )
+        response.raise_for_status()
+        return response.json()
+
+    def _generate_runway_cutout(self, source_path: Path, category: str | None = None) -> Image.Image | None:
         prompt = (
             f"请从输入图片中提取唯一的{_fashion_category_label(category) if category else '主服饰/鞋/包'}单品，生成忠实的商品抠图。"
             "完整保留原始单品的轮廓、颜色、面料纹理、蕾丝、纽扣、印花、鞋带、背带和边缘。"
@@ -851,14 +857,10 @@ class AIGarmentCutoutProvider:
             ],
         }
         try:
-            response = httpx.post(
-                _runway_google_url(),
-                headers={**_runway_google_auth_headers(_runway_google_url(), api_key), "Content-Type": "application/json"},
-                json=payload,
-                timeout=180,
-            )
-            response.raise_for_status()
-            data = response.json()
+            if vertex_image.enabled():
+                payload["generationConfig"]["imageConfig"] = {"imageSize": "2K"}
+                payload["generationConfig"]["candidateCount"] = 1
+            data = self._google_request(payload, timeout=180)
             provider_error = _runway_google_error_summary(data)
             if provider_error:
                 self.last_attempt.update({"status": "failed", "reason": "runway_provider_error", "provider_error": provider_error})
@@ -3630,7 +3632,7 @@ def render_selfit_demo_page() -> str:
     .widget-card.ai {
       --widget-bg:
         linear-gradient(180deg, rgba(255,255,255,.02), rgba(20,12,18,.18)),
-        var(--widget-image, url("/tryon-models/female_slim_1.webp?v=fullbody-20260705")),
+        var(--widget-image, url("/tryon-models/female_medium_1.png?v=mirror-selfie-20260911")),
         radial-gradient(circle at 20% 22%, rgba(255,255,255,.96) 0 11%, transparent 12%),
         radial-gradient(circle at 72% 28%, rgba(255,255,255,.92) 0 12%, transparent 13%),
         linear-gradient(145deg, rgba(255,246,241,.96), rgba(239,249,255,.98) 58%, rgba(255,239,247,.94));
@@ -5894,13 +5896,14 @@ def render_selfit_demo_page() -> str:
     const categoryOrder = ["all", "top", "bottom", "skirt", "dress", "shoes", "bag", "accessory"];
     const aiScenes = ["旅行计划", "OOTD服饰拆解", "参加重要面试", "参加婚礼", "户外运动", "朋友的生日派对", "二人世界"];
     const modelOptions = [
-      { id: "female_slim_1", src: "/tryon-models/female_slim_1.webp?v=female-v4-20260705", name: "纤细型", tags: ["纤细型", "直筒"] },
-      { id: "female_medium_1", src: "/tryon-models/female_medium_1.webp?v=female-v4-20260705", name: "沙漏型", tags: ["沙漏型", "匀称"] },
-      { id: "female_plus_1", src: "/tryon-models/female_plus_1.webp?v=female-v4-20260705", name: "丰满型", tags: ["丰满型", "柔和"] },
+      { id: "female_slim_1", src: "/tryon-models/female_slim_1.png?v=mirror-selfie-20260911", name: "纤细型", tags: ["纤细型", "直筒"] },
+      { id: "female_medium_1", src: "/tryon-models/female_medium_1.png?v=mirror-selfie-20260911", name: "匀称型", tags: ["匀称型", "匀称"] },
+      { id: "female_plus_1", src: "/tryon-models/female_plus_1.png?v=mirror-selfie-20260911", name: "丰满型", tags: ["丰满型", "柔和"] },
       { id: "male_slim_1", src: "/tryon-models/male_slim_1.webp?v=fullbody-20260705", name: "男纤细", tags: ["男生", "纤细"] },
       { id: "male_medium_1", src: "/tryon-models/male_medium_1.webp?v=fullbody-20260705", name: "男匀称", tags: ["男生", "匀称"] },
       { id: "male_plus_1", src: "/tryon-models/male_plus_1.webp?v=fullbody-20260705", name: "男宽松", tags: ["男生", "宽松"] },
     ];
+    const defaultModelOption = modelOptions.find(model => model.id === "female_medium_1") || modelOptions[0];
 
     function $(selector) { return document.querySelector(selector); }
     function $all(selector) { return [...document.querySelectorAll(selector)]; }
@@ -5977,7 +5980,7 @@ def render_selfit_demo_page() -> str:
     function publicCutoutImg(item) { return withVersion(item?.assets?.cutout_path || item?.assets?.preview_path || "", item); }
     function currentModel() {
       if (state.currentModelId === "self" && state.selfModelUrl) return { id: "self", src: state.selfModelUrl, name: "我的照片", tags: ["我的照片"] };
-      return modelOptions.find(model => model.id === state.currentModelId) || modelOptions[0];
+      return modelOptions.find(model => model.id === state.currentModelId) || defaultModelOption;
     }
     function renderSelfModelPhoto() {
       const zone = $("#selfUploadZone");
@@ -6147,7 +6150,7 @@ def render_selfit_demo_page() -> str:
       $("#sessionActionPopover")?.classList.remove("open");
     }
     function openModelSheet() {
-      state.pendingModelId = state.currentModelId === "self" ? modelOptions[0].id : state.currentModelId;
+      state.pendingModelId = state.currentModelId === "self" ? defaultModelOption.id : state.currentModelId;
       $("#modelSheet").dataset.mode = "preset";
       $all("[data-model-mode]").forEach(btn => btn.classList.toggle("active", btn.dataset.modelMode === "preset"));
       renderModelPicker();
@@ -6228,7 +6231,7 @@ def render_selfit_demo_page() -> str:
     }
     function confirmPresetModel() {
       const returnTarget = state.modelSheetReturn;
-      state.currentModelId = state.pendingModelId || modelOptions[0].id;
+      state.currentModelId = state.pendingModelId || defaultModelOption.id;
       updateCurrentModelUI();
       closeSheet("modelSheet");
       saveCurrentModelPreference();

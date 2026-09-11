@@ -15,7 +15,7 @@ from app.material_assets import MaterialRegistry
 from app.selfit_report import _personality_template_catalog
 
 
-def test_all_80_delivered_notes_keep_exact_assets_items_and_layers(monkeypatch):
+def test_all_96_delivered_notes_keep_exact_assets_items_and_layers(monkeypatch):
     # Verify the delivery contract independently of upload completion.
     monkeypatch.setattr(MaterialRegistry, 'get', lambda _, asset_id: {'url': '/static/fixture.png'})
     catalog = _personality_template_catalog()
@@ -36,7 +36,7 @@ def test_all_80_delivered_notes_keep_exact_assets_items_and_layers(monkeypatch):
             assert all(i['styling']['wearing_method'] == i['wearing_instruction'] for i in outfit['items'])
             assert closet.get_outfit(outfit['outfit_id']) == {k:v for k,v in outfit.items() if k != 'report_note'}
             total += len(outfit['items'])
-    assert len(all_ids) == 80 and total == 468
+    assert len(all_ids) == 96 and total == 569
 
 
 @pytest.fixture
@@ -104,13 +104,13 @@ def test_backend_report_card_exposes_compatible_asset_ids():
     assert card['assetId'] == card['imageAssetId'] == asset_id
 
 
-def test_home_random_notes_have_six_unique_photos_and_real_outfits(client, monkeypatch):
+def test_home_random_notes_have_four_unique_photos_and_real_outfits(client, monkeypatch):
     endpoint = '/selfit/try-on/report-outfits/random'
     monkeypatch.setattr(report.random, 'sample', lambda rows, count: rows[:count])
     response = client.get(endpoint)
     assert response.status_code == 200
     rows = response.json()['outfits']
-    assert len(rows) == len({o['outfit_id'] for o in rows}) == len({o['source_asset_id'] for o in rows}) == 6
+    assert len(rows) == len({o['outfit_id'] for o in rows}) == len({o['source_asset_id'] for o in rows}) == 4
     for row in rows:
         assert row['cover_path'] == row['report_note']['image_url']
         assert row['title'] == row['report_note']['title']
@@ -123,8 +123,8 @@ def test_home_random_notes_have_six_unique_photos_and_real_outfits(client, monke
     chosen = rows[2]
     pinned = client.get(endpoint, params={'selected_outfit_id': chosen['outfit_id']}).json()['outfits']
     assert pinned[0] == chosen
-    assert len(pinned) == len({o['source_asset_id'] for o in pinned}) == 6
-    assert len(client.get(endpoint, params={'selected_outfit_id': 'outfit_bolt_master_01'}).json()['outfits']) == 6
+    assert len(pinned) == len({o['source_asset_id'] for o in pinned}) == 4
+    assert len(client.get(endpoint, params={'selected_outfit_id': 'outfit_bolt_master_01'}).json()['outfits']) == 4
 
 
 def test_home_notes_require_auth_and_fail_without_delivery(monkeypatch):

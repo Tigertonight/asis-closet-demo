@@ -84,14 +84,18 @@ function profileHarness(reference, query = '') {
   const state = {profile:null,profileLoading:false,page:'profile',uploadURLs:[]};
   const fetched = [];
   const context = {state,reference,params:new URLSearchParams(query),
-    A:'/static/selfit-tryon/assets/',REFERENCE_PROFILE_SUIT:{},render(){},
+    A:'/static/selfit-tryon/assets/',REFERENCE_PROFILE_SUIT:{},render(){},refreshProfilePhoto(){},
     savedSession:{accessToken:'test-only'},
     api:async()=>({profile:{gender:'female',photos:{face:'/my-face',body:'/my-body'},suit:{}}}),
     fetch:async url=>{fetched.push(url);return {ok:true,status:200,blob:async()=>url};},
     URL:{createObjectURL:url=>`blob:${url}`}};
   vm.createContext(context);
-  vm.runInContext(studio.slice(studio.indexOf('  async function loadProfile('),studio.indexOf('  async function uploadProfilePhoto(')),context);
-  return {state,fetched,load:()=>context.loadProfile()};
+  vm.runInContext(studio.slice(studio.indexOf('  async function loadProfilePhoto('),studio.indexOf('  async function uploadProfilePhoto(')),context);
+  return {state,fetched,load:async()=>{
+    await context.loadProfile();
+    // Photo requests now finish independently after the profile is displayed.
+    await new Promise(resolve=>setImmediate(resolve));
+  }};
 }
 
 test('female profile preview shares the latest onboarding body sample; male preview stays unchanged',async()=>{
@@ -104,6 +108,7 @@ test('female profile preview shares the latest onboarding body sample; male prev
 
 test('real profiles keep the user’s saved photos, never replacing them with a sample',async()=>{
   const h=profileHarness(false);await h.load();
+  assert.equal(h.state.profileError,'');
   assert.deepEqual(h.fetched,['/my-face','/my-body']);
   assert.equal(h.state.profile.photos.body,'blob:/my-body');
 });

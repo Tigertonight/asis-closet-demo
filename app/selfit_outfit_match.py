@@ -5,11 +5,13 @@ from copy import deepcopy
 import json
 import logging
 import os
+from pathlib import Path
 
 from fastapi import HTTPException
 from PIL import Image
 
 from app import closet
+from app.inspiration_catalog import inspiration_looks
 from app.styling_catalog import adapt_outfit, delivery_looks
 
 LOGGER = logging.getLogger(__name__)
@@ -141,32 +143,100 @@ def _is_default_white_tee(anchor: dict) -> bool:
     return bool(anchor.get("is_default")) and anchor.get("category") == "top" and "白" in title
 
 
-def _fixture_matches(anchor: dict) -> dict:
-    """Deterministic top-3 for the starter white tee until curated matching data ships."""
+CURATED_WHITE_TEE_PATH = Path(__file__).resolve().parents[1] / "app" / "data" / "white-tee-persona-matches.v1.json"
+
+
+def _load_curated_white_tee() -> dict:
+    """Both persona and whole-library selections are persisted, ordered triples."""
     try:
-        looks = delivery_looks()
+        data = json.loads(CURATED_WHITE_TEE_PATH.read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        LOGGER.warning("Curated white-tee matches unavailable.")
+        raise HTTPException(503, "白 T 搭配暂时无法加载，请稍后重试。") from None
+    if not isinstance(data, dict) or not isinstance(data.get("persona_groups"), dict) or not isinstance(data.get("library_groups"), dict):
+        raise HTTPException(503, "白 T 搭配暂时无法加载，请稍后重试。")
+    return data
+
+
+def _user_persona_key(user_id: str | None) -> str | None:
+    """Account-owned persona code (e.g. "film"); never trust a client-supplied persona."""
+    if not user_id:
+        return None
+    try:
+        from app.recommendation_profile import resolve_profile
+        persona_id = str(resolve_profile(user_id).get("persona_id") or "").lower()
+    except Exception:
+        LOGGER.warning("Persona lookup failed for white-tee matching; using library backfill only.")
+        return None
+    return persona_id or None
+
+
+def _fixture_matches(anchor: dict, user_id: str | None = None, body_profile: str = "standard",
+                     *, gender: str = "female") -> dict:
+    """Read three saved selections, with same-gender and same-body library backfill."""
+    if body_profile not in {"standard", "curvy"}:
+        raise HTTPException(422, "请选择有效的搭配版本。")
+    if gender not in {"male", "female"}:
+        raise HTTPException(422, "请选择有效的搭配类型。")
+    curated = _load_curated_white_tee()
+    if curated.get("anchor_item_id") != anchor.get("item_id"):
+        raise HTTPException(422, "这件单品暂时没有预设搭配。")
+    # Keep the existing female groups at their historical paths. Male picks use
+    # the same structure in a separate namespace and can never fall back to them.
+    catalog = curated.get("male") if gender == "male" else curated
+    if (not isinstance(catalog, dict) or not isinstance(catalog.get("persona_groups"), dict)
+            or not isinstance(catalog.get("library_groups"), dict)):
+        raise HTTPException(503, "白 T 搭配暂时无法加载，请稍后重试。")
+    if gender == "male" and body_profile == "curvy" and body_profile not in catalog["library_groups"]:
+        raise HTTPException(422, "暂未提供男生微胖版白 T 搭配，请选择标准版。")
+    try:
+        looks = list(delivery_looks()) + list(inspiration_looks())
     except (OSError, ValueError, KeyError, TypeError):
         raise HTTPException(503, "穿搭笔记暂时无法加载，请稍后重试。") from None
-    reason = "白色 T 恤能自然衔接这套搭配的浅色基调，替换后整体配色与比例保持协调，是日常里不容易出错的组合。"
-    outfits, matches = [], []
-    for look in looks:
-        if len(matches) >= MAX_MATCHES:
-            break
-        replaceable = [item for item in look["items"] if notebook_slot(item) == "top"]
-        if not replaceable or len(look["items"]) < 2 or not look.get("outfit_description"):
-            continue
-        entry, note = _build_match(anchor, look, replaceable[0]["item_id"], reason)
-        outfits.append(entry)
-        matches.append(note)
-    if not matches:
-        raise HTTPException(422, "笔记库里还没有能替换这类单品的套装，可以稍后再试。")
+    by_look_id = {look.get("look_id"): look for look in looks}
+    outfits, matches, used = [], [], set()
+
+    group = catalog["persona_groups"].get(_user_persona_key(user_id), {}).get(body_profile)
+    library_group = catalog["library_groups"].get(body_profile)
+    for selected in (group, library_group):
+        for pick in (selected or {}).get("matches") or []:
+            if len(outfits) >= MAX_MATCHES:
+                break
+            if not isinstance(pick, dict) or not isinstance(pick.get("candidate_id"), str):
+                continue
+            look = by_look_id.get(pick["candidate_id"])
+            if look is None or look["look_id"] in used or len(look["items"]) < 2:
+                continue
+            look_gender = "male" if look["note_binding"].get("gender") == "male" else "female"
+            if look_gender != gender:
+                continue
+            if look["note_binding"].get("bodyProfile", "standard") != body_profile:
+                continue
+            replaced = next((item for item in look["items"] if item["item_id"] == pick.get("replace_item_id")), None)
+            reason = str(pick.get("reason") or "").strip()
+            if replaced is None or notebook_slot(replaced) != "top" or not reason:
+                continue
+            try:
+                entry, note = _build_match(anchor, look, replaced["item_id"], reason)
+            except HTTPException:
+                LOGGER.warning("Stale curated white-tee row skipped: %s", pick["candidate_id"])
+                continue
+            outfits.append(entry)
+            matches.append(note)
+            used.add(look["look_id"])
+    if len(matches) != MAX_MATCHES:
+        raise HTTPException(503, "白 T 搭配暂时不完整，请稍后重试。")
     return {"mode": "fixture_notebook_match", "anchor_item_id": anchor["item_id"],
+            "persona_group": (group or {}).get("persona"),
+            "gender": gender,
+            "body_profile": body_profile,
             "outfits": outfits, "matches": matches}
 
 
-def match_notebook_outfit(anchor: dict) -> dict:
+def match_notebook_outfit(anchor: dict, user_id: str | None = None, body_profile: str = "standard",
+                         *, gender: str = "female") -> dict:
     if _is_default_white_tee(anchor):
-        return _fixture_matches(anchor)
+        return _fixture_matches(anchor, user_id, body_profile, gender=gender)
     image = _anchor_image(anchor)
     evidence = {key: anchor.get(key) for key in ("title", "category_label", "category", "slot", "attributes", "note")}
     analysis = ask_vision(image, (

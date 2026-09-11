@@ -23,6 +23,7 @@ from fastapi import HTTPException, UploadFile
 from PIL import Image, ImageDraw, ImageFilter, UnidentifiedImageError
 
 from app.storage import storage_context, user_asset_public_path, user_storage
+from app import vertex_image
 
 
 ROOT_DIR = Path(__file__).resolve().parents[1]
@@ -50,7 +51,7 @@ XHS_ALLOWED_HOST_PARTS = ("xiaohongshu.com", "xhslink.com", "xhscdn.com")
 MAX_XHS_IMAGES = 12
 FASHION_ITEM_CATEGORIES = {"top", "outer", "bottom", "skirt", "dress", "shoes", "bag", "accessory"}
 OUTFIT_PHOTO_MODES = {"standard", "mirror_selfie", "face_covered", "scene_photo"}
-OUTFIT_TRYON_PIPELINE_VERSION = "outfit_tryon_v5_framing_quality_gate"
+OUTFIT_TRYON_PIPELINE_VERSION = "outfit_tryon_v6_detected_face_geometry"
 TRYON_JOB_EXECUTOR = ThreadPoolExecutor(max_workers=2, thread_name_prefix="selfit-tryon")
 TRYON_JOB_LOCK = threading.Lock()
 OUTFIT_REQUIRED_GROUPS = {
@@ -225,6 +226,8 @@ def _default_tryon_vision_model() -> str:
 
 def image_edit_model() -> str:
     """The single model selection point for try-on and garment cutout."""
+    if vertex_image.enabled():
+        return vertex_image.model()
     return os.getenv("TRYON_IMAGE_MODEL") or "nano-banana"
 
 
@@ -294,12 +297,6 @@ def preview_outfit_tryon_plan(
     plan = _normalize_outfit_tryon_plan(outfit_plan)
     person = _read_upload_image(person_raw, person_filename, "person_preview")
     person_detection = _detect_person(person["image"])
-    if person_detection.get("status") == "fail":
-        person_detection = _relax_outfit_person_detection_for_ai_tryon(
-            person["image"],
-            person_detection,
-            _stage("pass", 0.7, {"preview": True}, []),
-        )
     coverage = _outfit_body_coverage_stage(person["image"], person_detection, plan)
     coverage_evidence = coverage.get("evidence", {})
     skipped_slots = set(coverage_evidence.get("skipped_slots") or [])
@@ -820,6 +817,8 @@ async def extract_xhs_link(url: str) -> dict[str, Any]:
 
 def tryon_capabilities() -> dict[str, Any]:
     from app.local_codex_image import enabled
+    vertex_selected = vertex_image.enabled()
+    vertex_configured = vertex_image.configured()
     local_codex_enabled = enabled()
     base_url = _openai_base_url()
     chat_supported = bool(base_url and _openai_chat_or_responses_supported(base_url))
@@ -838,13 +837,18 @@ def tryon_capabilities() -> dict[str, Any]:
             "runway_google_configured": runway_google_supported,
             "runway_google_note": "configured_only_image_output_must_be_verified_by_generation",
             "local_codex_bridge_enabled": local_codex_enabled,
+            "vertex_adc_selected": vertex_selected,
+            "vertex_adc_configured": vertex_configured,
+            "image_model": image_edit_model(),
         },
         "features": {
             "garment_analysis": "vlm" if chat_supported or has_key else "local_cv_fallback",
             "fashion_item_detection": "top_only_local_mvp",
             "clean_item_reference": "local_crop_placeholder",
             "image_edit": (
-                "local_codex_imagegen"
+                (vertex_image.MODE if vertex_configured else "unavailable")
+                if vertex_selected
+                else "local_codex_imagegen"
                 if local_codex_enabled
                 else "runway_google_generate_content"
                 if runway_google_supported
@@ -875,6 +879,7 @@ def tryon_capabilities() -> dict[str, Any]:
             "openai_compatible_text_or_vision": chat_supported,
             "openai_compatible_images_edit": image_edit_supported,
             "runway_google_generate_content": runway_google_supported,
+            "vertex_adc_generate_content": vertex_configured,
         },
         "validation": {
             "status": "ready",
@@ -883,11 +888,13 @@ def tryon_capabilities() -> dict[str, Any]:
             "source": "same_pattern_as_color_mvp_fixture_validation",
         },
         "production": {
-            "status": "ready" if image_edit_supported or has_key else "runway_google_configured" if runway_google_supported else "image_edit_pending",
-            "required_capability": "Runway Google generateContent image output or OpenAI-compatible images.edit",
+            "status": ("vertex_adc_configured" if vertex_configured else "image_edit_pending") if vertex_selected else "ready" if image_edit_supported or has_key else "runway_google_configured" if runway_google_supported else "image_edit_pending",
+            "required_capability": "Vertex ADC / Runway Google generateContent image output or OpenAI-compatible images.edit",
         },
         "message": (
-            "本地 Codex 试穿桥接已启用，生成时使用已登录账号的图片工具。"
+            ("图片生成授权已配置，生成时会验证图片输出能力。" if vertex_configured else "图片生成授权尚未就绪，请联系管理员。")
+            if vertex_selected
+            else "本地 Codex 试穿桥接已启用，生成时使用已登录账号的图片工具。"
             if local_codex_enabled
             else "Runway Google 代理已配置，生成时会验证是否支持图片输出。"
             if runway_google_supported
@@ -961,7 +968,7 @@ def run_try_on(person: dict[str, Any], garment: dict[str, Any], provider: "TryOn
             if any(issue.get("code") == "image_edit.provider_unavailable" for issue in pipeline["image_edit"].get("issues", [])):
                 user_message = "当前还没有接入真实 AI 试穿模型，暂时不能生成可信试穿图。"
             else:
-                user_message = "这次试穿图质量没有达标，暂不建议展示给用户。"
+                user_message = _tryon_failure_message(pipeline["image_edit"], pipeline["quality_review"])
 
     return {
         "status": status,
@@ -1071,7 +1078,7 @@ def run_try_on_from_inspiration(
             user_message = "已根据穿搭照片生成试穿效果，请查看服装与人物细节。" if full_outfit else "已根据灵感图生成上衣试穿效果，建议重点观察条纹、领口和整体版型。"
         elif pipeline["image_edit"]["status"] != "pending":
             status = "failed"
-            user_message = "这次灵感试穿没有达标，暂不建议展示给用户。"
+            user_message = _tryon_failure_message(pipeline["image_edit"], pipeline["quality_review"])
 
     return {
         "status": status,
@@ -1156,7 +1163,6 @@ def run_try_on_from_outfit_plan(
     reference_board = Image.open(full_reference_board_path).convert("RGB")
     raw_input_quality = _input_quality_stage(person["image"], reference_board)
     person_detection = _detect_person(person["image"])
-    person_detection = _relax_outfit_person_detection_for_ai_tryon(person["image"], person_detection, raw_input_quality)
     input_quality = _relax_preset_model_blur_for_outfit_tryon(person, raw_input_quality, person_detection)
     plan_stage = _outfit_plan_stage(requested_plan)
     body_coverage = _outfit_body_coverage_stage(person["image"], person_detection, requested_plan)
@@ -1222,13 +1228,19 @@ def run_try_on_from_outfit_plan(
             pipeline["quality_review"] = _stage("pending", 0.0, {"skipped": True, "reason": "worker_pending"}, [])
             status = "pending"
             user_message = "已提交生成，正在把整套穿搭穿到模特身上。"
-        elif pipeline["image_edit"]["status"] == "fail" and any(
-            issue.get("code", "").startswith("image_edit.") for issue in pipeline["image_edit"].get("issues", [])
-        ):
-            pipeline["quality_review"] = _stage("unknown", 0, {"skipped": True, "reason": "image_generation_failed"}, [])
+        elif pipeline["image_edit"]["status"] == "fail":
+            failed_quality = next((
+                stage["quality_review"]
+                for stage in pipeline["image_edit"].get("evidence", {}).get("stages", [])
+                if stage.get("quality_review", {}).get("status") == "fail"
+            ), None)
+            # Preserve the failed pass's review; reviewing a discarded result would
+            # replace the real cause with a misleading "missing result" error.
+            pipeline["quality_review"] = failed_quality or _stage(
+                "unknown", 0, {"skipped": True, "reason": "image_generation_failed"}, [],
+            )
             status = "failed"
-            user_message = next(issue["message"] for issue in pipeline["image_edit"]["issues"]
-                                if issue.get("code", "").startswith("image_edit."))
+            user_message = _tryon_failure_message(pipeline["quality_review"], pipeline["image_edit"])
         else:
             pipeline["quality_review"] = _review_outfit_tryon_quality(
                 person["image"],
@@ -1252,7 +1264,7 @@ def run_try_on_from_outfit_plan(
                 user_message = "试穿图已生成，但有些细节建议复核；你可以先查看，也可以重新生成一版。"
             else:
                 status = "failed"
-                user_message = "这次整套试穿图质量没有达标，暂不建议展示给用户。"
+                user_message = _tryon_failure_message(pipeline["quality_review"], pipeline["image_edit"])
 
     response_payload = {
         "status": status,
@@ -1378,6 +1390,9 @@ def _load_completed_tryon_cache(path: Path) -> dict[str, Any] | None:
         data = json.loads(path.read_text(encoding="utf-8"))
         if data.get("pipeline_version") != OUTFIT_TRYON_PIPELINE_VERSION:
             return None
+        expected_backend = f"{vertex_image.MODE}:{vertex_image.model()}" if vertex_image.enabled() else None
+        if data.get("image_backend") != expected_backend:
+            return None
         public_path = str(data.get("result", {}).get("image_path") or "")
         if public_path.startswith("/user-assets/tryon/"):
             disk_path = _tryon_output_dir() / public_path.replace("/user-assets/tryon/", "", 1)
@@ -1396,6 +1411,8 @@ def _load_completed_tryon_cache(path: Path) -> dict[str, Any] | None:
 
 def _write_completed_tryon_cache(path: Path, payload: dict[str, Any]) -> None:
     cached = {**payload, "pipeline_version": OUTFIT_TRYON_PIPELINE_VERSION, "cached": False}
+    if vertex_image.enabled():
+        cached["image_backend"] = f"{vertex_image.MODE}:{vertex_image.model()}"
     tmp_path = path.with_suffix(".tmp")
     tmp_path.write_text(json.dumps(cached, ensure_ascii=False, indent=2), encoding="utf-8")
     tmp_path.replace(path)
@@ -2028,24 +2045,30 @@ class RunwayGoogleTryOnProvider(TryOnProvider):
         self.url = url or _runway_google_url()
         self.api_key = api_key or _runway_google_api_key()
 
+    def _available(self) -> bool:
+        return bool(self.api_key)
+
+    def _request(self, payload: dict[str, Any], person_image: Path) -> dict[str, Any]:
+        response = httpx.post(
+            self.url,
+            headers={**_runway_google_auth_headers(self.url, self.api_key), "Content-Type": "application/json"},
+            json=payload,
+            timeout=180,
+        )
+        response.raise_for_status()
+        return response.json()
+
     def edit(self, person_image: Path, garment_image: Path, mask_image: Path, prompt: str, output_dir: Path) -> dict[str, Any]:
-        if not self.api_key:
+        if not self._available():
             return {
                 "stage": _stage("fail", 0.0, {"provider": self.mode, "url": self.url}, [
-                    _issue("image_edit.provider_unavailable", "未配置 Runway 图片代理授权", "请配置 Runway Google 代理 key 后再生成。")
+                    _issue("image_edit.provider_unavailable", "图片生成服务尚未就绪", "请联系管理员检查图片服务授权。")
                 ]),
                 "image_path": None,
             }
         try:
             payload = _build_runway_google_tryon_payload(person_image, garment_image, mask_image, prompt)
-            response = httpx.post(
-                self.url,
-                headers={**_runway_google_auth_headers(self.url, self.api_key), "Content-Type": "application/json"},
-                json=payload,
-                timeout=180,
-            )
-            response.raise_for_status()
-            data = response.json()
+            data = self._request(payload, person_image)
             provider_error = _runway_google_error_summary(data)
             if provider_error:
                 return {
@@ -2079,12 +2102,13 @@ class RunwayGoogleTryOnProvider(TryOnProvider):
                     "target_size": _image_size_evidence(person_image)},
                     [_issue("quality.framing_changed", "试穿图构图异常", "请重新生成，保持原照片中的人物与构图。")]),
                     "image_path": None}
-            output_path = output_dir / "result_runway_google.png"
+            output_path = output_dir / ("result_vertex_adc.png" if self.mode == vertex_image.MODE else "result_runway_google.png")
             _save_png_atomically(image, output_path)
             return {
                 "stage": _stage("pass", 0.82, {
                     "provider": self.mode,
                     "url": self.url,
+                    "model": image_edit_model(),
                     "result_path": str(output_path),
                     "mime_type": mime_type,
                     "target_size": _image_size_evidence(person_image),
@@ -2097,10 +2121,36 @@ class RunwayGoogleTryOnProvider(TryOnProvider):
         except Exception as exc:  # pragma: no cover - depends on external proxy availability
             return {
                 "stage": _stage("fail", 0.0, {"provider": self.mode, "url": self.url, "error": str(exc)}, [
-                    _issue("image_edit.provider_error", "Runway 图片代理调用失败", "请检查代理地址、key 或稍后重试。")
+                    _issue("image_edit.provider_error", "图片生成暂时失败", "请稍后重试，若持续失败请联系管理员。")
                 ]),
                 "image_path": None,
             }
+
+
+class VertexADCTryOnProvider(RunwayGoogleTryOnProvider):
+    mode = vertex_image.MODE
+
+    def __init__(self) -> None:
+        # An explicitly selected ADC backend must not fall back to another vendor.
+        try:
+            self.url = vertex_image.endpoint()
+        except ValueError:
+            self.url = ""
+
+    def _available(self) -> bool:
+        return vertex_image.configured()
+
+    def _request(self, payload: dict[str, Any], person_image: Path) -> dict[str, Any]:
+        with Image.open(person_image) as source:
+            ratio = source.width / source.height
+        ratios = {"1:1": 1, "2:3": 2/3, "3:2": 3/2, "3:4": 3/4, "4:3": 4/3,
+                  "4:5": 4/5, "5:4": 5/4, "9:16": 9/16, "16:9": 16/9, "21:9": 21/9}
+        payload["generationConfig"]["imageConfig"] = {
+            "aspectRatio": min(ratios, key=lambda key: abs(ratios[key] - ratio)),
+            "imageSize": "2K",
+        }
+        payload["generationConfig"]["candidateCount"] = 1
+        return vertex_image.generate_content(payload)
 
 
 class UnavailableTryOnProvider(TryOnProvider):
@@ -3043,7 +3093,8 @@ def render_tryon_demo_page() -> str:
       runBtn.disabled = tryonMode === "outfit" ? !(hasSavedOutfit || hasDirectOutfit) : !hasTopInput;
     }
     function modelUrl(file) {
-      return `/tryon-models/${encodeURIComponent(file)}?v=fullbody-20260704`;
+      const version = /^female_(slim|medium|plus)_1\.png$/.test(file) ? "mirror-selfie-20260911" : "fullbody-20260704";
+      return `/tryon-models/${encodeURIComponent(file)}?v=${version}`;
     }
     function setPersonPreview(src) {
       const img = document.getElementById("personPreview");
@@ -3470,19 +3521,24 @@ def _detect_person(image: Image.Image) -> dict[str, Any]:
     gray = cv2.cvtColor(bgr, cv2.COLOR_BGR2GRAY)
     cascade = cv2.CascadeClassifier(cv2.data.haarcascades + "haarcascade_frontalface_default.xml")
     detections = cascade.detectMultiScale(gray, scaleFactor=1.08, minNeighbors=4, minSize=(72, 72))
+    detector = "haar_frontal"
+    if len(detections) == 0:
+        # Retry with a second local detector/contrast normalization, never a
+        # guessed box: this geometry controls both the edit mask and identity QA.
+        cascade = cv2.CascadeClassifier(cv2.data.haarcascades + "haarcascade_frontalface_alt2.xml")
+        detections = cascade.detectMultiScale(cv2.equalizeHist(gray), scaleFactor=1.05, minNeighbors=5, minSize=(72, 72))
+        detector = "haar_frontal_alt2"
     h, w = gray.shape[:2]
     faces = []
     for x, y, fw, fh in detections:
-        area_ratio = (fw * fh) / (w * h)
-        if area_ratio >= 0.012:
-            faces.append({"box": {"x": int(x), "y": int(y), "width": int(fw), "height": int(fh)}, "area_ratio": round(area_ratio, 4)})
+        area_ratio = (int(fw) * int(fh)) / (w * h)
+        # The detector's 72px minimum ensures usable detail. A frame-area cutoff
+        # incorrectly removes clear faces in full-body photos (e.g. 217px/2400px).
+        faces.append({"box": {"x": int(x), "y": int(y), "width": int(fw), "height": int(fh)}, "area_ratio": round(area_ratio, 4), "detector": detector})
     if not faces:
-        fallback_face = _clean_center_portrait_fallback(image)
-        if fallback_face is not None:
-            return _stage("warn", 0.58, {"face_count": 1, "primary_face": fallback_face, "fallback": "clean_center_portrait"}, [
-                _issue("person.face_detector_fallback", "已按清晰单人模特继续", "这张图像接近干净模特照，已继续生成试穿。")
-            ])
-        return _stage("fail", 0.82, {"face_count": 0}, [_issue("person.no_face", "未检测到单人正脸", "请上传本人单人半身或全身照片。")])
+        return _stage("fail", 0.82, {"face_count": 0, "detectors_attempted": ["haar_frontal", "haar_frontal_alt2"]}, [
+            _issue("person.no_face", "未能确认人脸位置", "请换一张脸部清晰、未被遮挡的单人半身或全身照片。")
+        ])
     faces.sort(key=lambda item: (item["box"]["y"], -item["area_ratio"]))
     face = faces[0]
     if len(faces) > 1:
@@ -3579,78 +3635,6 @@ def _visible_outfit_plan(plan: dict[str, Any], coverage: dict[str, Any]) -> dict
     return {**plan, "items": items}
 
 
-def _clean_center_portrait_fallback(image: Image.Image) -> dict[str, Any] | None:
-    rgb = image.convert("RGB")
-    arr = np.asarray(rgb)
-    h, w = arr.shape[:2]
-    if min(h, w) < 640:
-        return None
-    corner = np.concatenate(
-        [
-            arr[:80, :80].reshape(-1, 3),
-            arr[:80, -80:].reshape(-1, 3),
-            arr[-80:, :80].reshape(-1, 3),
-            arr[-80:, -80:].reshape(-1, 3),
-        ]
-    )
-    if float(corner.std()) > 8:
-        return None
-    background = np.median(corner, axis=0)
-    diff = np.linalg.norm(arr.astype(float) - background, axis=2)
-    foreground = diff > 35
-    center_ratio = float(foreground[:, w // 3 : (w * 2) // 3].mean())
-    full_ratio = float(foreground.mean())
-    head_band_ratio = float(foreground[int(h * 0.07) : int(h * 0.17), w // 3 : (w * 2) // 3].mean())
-    if center_ratio < 0.42 or full_ratio < 0.18 or head_band_ratio < 0.08:
-        return None
-    fw = max(96, int(w * 0.16))
-    fh = max(96, int(h * 0.13))
-    x = (w - fw) // 2
-    y = int(h * 0.08)
-    return {"box": {"x": x, "y": y, "width": fw, "height": fh}, "area_ratio": round((fw * fh) / (w * h), 4)}
-
-
-def _relax_outfit_person_detection_for_ai_tryon(
-    image: Image.Image,
-    person_detection: dict[str, Any],
-    input_quality: dict[str, Any],
-) -> dict[str, Any]:
-    if person_detection.get("status") != "fail":
-        return person_detection
-    issue_codes = {issue.get("code") for issue in person_detection.get("issues", [])}
-    if "person.multiple_faces" in issue_codes:
-        return person_detection
-    if input_quality.get("status") == "fail":
-        return person_detection
-    width, height = image.size
-    if min(width, height) < MIN_PERSON_EDGE:
-        return person_detection
-    face_width = max(96, int(width * 0.14))
-    face_height = max(96, int(height * 0.10))
-    fallback_face = {
-        "box": {
-            "x": int((width - face_width) / 2),
-            "y": int(height * 0.34),
-            "width": face_width,
-            "height": face_height,
-        },
-        "area_ratio": round((face_width * face_height) / (width * height), 4),
-    }
-    return _stage("warn", 0.52, {
-        **person_detection.get("evidence", {}),
-        "face_count": person_detection.get("evidence", {}).get("face_count", 0),
-        "primary_face": fallback_face,
-        "fallback": "ai_tryon_identity_preserve",
-        "reason": "local_face_detector_missed_real_world_photo",
-    }, [
-        _issue(
-            "person.face_detector_relaxed_for_ai_tryon",
-            "本地人脸检测未命中，已交给 AI 继续判断",
-            "真实生活照可能无法被本地检测器稳定识别，已继续生成试穿。",
-        )
-    ])
-
-
 def _generate_upper_body_mask(image: Image.Image, person_stage: dict[str, Any], output_path: Path) -> dict[str, Any]:
     box = person_stage["evidence"]["primary_face"]["box"]
     width, height = image.size
@@ -3724,7 +3708,7 @@ def _review_tryon_quality(original: Image.Image, result_path: Path | None, perso
         evidence["mask_editable_ratio"] = editable_ratio
         evidence["mask_contract"] = "fail_if_protected_face_or_background_changes"
         if face_diff > 28:
-            issues.append(_issue("quality.face_changed", "人脸区域变化过大", "请重新生成，避免改变用户本人特征。"))
+            issues.append(_issue("quality.face_changed", "生成图中的面部与原照片差异较大", "请重新尝试，保留原来的面部特征。"))
         if background_diff > 18:
             issues.append(_issue("quality.background_changed", "背景或非衣服区域变化较大", "请重新生成。"))
     else:
@@ -3734,6 +3718,8 @@ def _review_tryon_quality(original: Image.Image, result_path: Path | None, perso
 
 
 def _default_provider() -> TryOnProvider:
+    if vertex_image.enabled():
+        return VertexADCTryOnProvider()
     from app.local_codex_image import enabled
     if enabled():
         return LocalCodexImageGenTryOnProvider()
@@ -4538,7 +4524,19 @@ def _review_outfit_semantics(result_path: Path, plan: dict[str, Any]) -> dict[st
     try:
         payload: dict[str, Any]
         provider = ""
-        if _has_openai_compatible_provider():
+        if vertex_image.enabled():
+            data = vertex_image.generate_content({
+                "contents": [{"role": "user", "parts": [{"text": prompt}, _path_to_runway_inline_data(result_path)]}],
+                "generationConfig": {"temperature": 0, "maxOutputTokens": 4096},
+            }, timeout=90)
+            text = "\n".join(
+                part["text"] for candidate in data.get("candidates", [])
+                for part in candidate.get("content", {}).get("parts", [])
+                if isinstance(part.get("text"), str) and not part.get("thought")
+            )
+            payload = _extract_json_object(text)
+            provider = "vertex_adc_vision"
+        elif _has_openai_compatible_provider():
             from openai import OpenAI
 
             client = _openai_compatible_client(OpenAI)
@@ -4748,10 +4746,11 @@ def _public_output_path(path: Path | None) -> str | None:
 
 
 def _load_tryon_model_manifest() -> dict[str, Any]:
+    from app.model_assets import load_model_manifest
     manifest_path = TRYON_MODEL_FIXTURE_DIR / "manifest.json"
     if not manifest_path.exists():
         return {"total": 0, "items": []}
-    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    manifest = load_model_manifest(TRYON_MODEL_FIXTURE_DIR)
     items = []
     for item in manifest.get("items", []):
         image_path = TRYON_MODEL_FIXTURE_DIR / item.get("file", "")
@@ -5799,6 +5798,18 @@ def _stage(status: str, confidence: float, evidence: dict[str, Any], issues: lis
         "issues": issues,
         "suggestions": [issue["suggestion"] for issue in issues if issue.get("suggestion")],
     }
+
+
+def _tryon_failure_message(*stages: dict[str, Any]) -> str:
+    for stage in stages:
+        if stage.get("status") != "fail":
+            continue
+        for issue in stage.get("issues", []):
+            message = str(issue.get("message") or "").strip()
+            if message:
+                suggestion = str(issue.get("suggestion") or "").strip()
+                return f"{message}。{suggestion}" if suggestion else message
+    return "这次试穿没有完成，请重新尝试。你选择的照片和搭配都已保留。"
 
 
 def _issue(code: str, message: str, suggestion: str) -> dict[str, str]:

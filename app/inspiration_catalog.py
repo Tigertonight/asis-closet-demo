@@ -59,7 +59,8 @@ def inspiration_topics() -> dict:
         raise ValueError("Personality collections do not match the report catalog")
     for code, template in sorted(templates.items(), key=lambda row: row[1]["index"]):
         looks = sorted((look for look in persona_looks if look["note_binding"]["persona"] == code),
-                       key=lambda look: (look["note_binding"]["bodyProfile"] != "standard",
+                       key=lambda look: (look["note_binding"].get("gender") == "male",
+                                         look["note_binding"]["bodyProfile"] != "standard",
                                          look["note_binding"]["templateId"], look["note_binding"]["position"]))
         outfits = [{**adapt_outfit(look), "body_profile": look["note_binding"]["bodyProfile"]}
                    for look in looks]

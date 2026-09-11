@@ -19,6 +19,7 @@ from starlette.concurrency import run_in_threadpool
 from app.recommendation_profile import resolve_profile, preview_profile
 from app.recommendation_feed import create_feed, continue_feed, validate_feedback
 from app.recommendation_visual import attach_visual, load_visual
+from app.model_assets import ModelStaticFiles
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
 from app.auth import (
@@ -152,6 +153,7 @@ from app.selfit_report_outfits import router as selfit_report_outfits_router
 from app.selfit_analytics import admin_router as selfit_admin_router, router as selfit_analytics_router
 from app.selfit_admin_submissions import router as selfit_admin_submissions_router
 from app.qa_onboarding import QA_PHOTO_DIR, router as qa_onboarding_router
+from app.site_home import router as site_home_router
 from app.storage import hydrate_user_from_demo_data, storage_context, user_storage
 from scripts.generate_qa_artifacts import generate_qa_artifacts
 from scripts.check_runtime_readiness import readiness as runtime_readiness
@@ -159,7 +161,8 @@ from scripts.check_runtime_readiness import readiness as runtime_readiness
 
 load_dotenv(Path(__file__).resolve().parents[1] / ".env", override=True)
 
-app = FastAPI(title="selfit", version="0.2.0")
+# /docs 让给官网首页（site_home.py）；API 文档挪到 /api-docs（顺带不对外暴露默认路径）。
+app = FastAPI(title="selfit", version="0.2.0", docs_url="/api-docs", redoc_url=None)
 app.middleware("http")(request_guard_middleware)
 app.include_router(material_assets_router)
 app.include_router(selfit_onboarding_router)
@@ -171,6 +174,7 @@ app.include_router(selfit_analytics_router)
 app.include_router(selfit_admin_router)
 app.include_router(selfit_admin_submissions_router)
 app.include_router(qa_onboarding_router)
+app.include_router(site_home_router)
 SELFIT_INDEX_PATH = Path(__file__).resolve().parent / "static" / "selfit" / "index.html"
 ADMIN_INDEX_PATH = Path(__file__).resolve().parent / "static" / "admin" / "index.html"
 FAVICON_PATH = Path(__file__).resolve().parent / "static" / "brand" / "favicon.ico"
@@ -201,7 +205,7 @@ class CachedStaticFiles(StaticFiles):
 
 app.mount("/static", CachedStaticFiles(directory="app/static"), name="static")
 app.mount("/tryon-outputs", StaticFiles(directory="outputs/tryon"), name="tryon-outputs")
-app.mount("/tryon-models", StaticFiles(directory=TRYON_MODEL_FIXTURE_DIR), name="tryon-models")
+app.mount("/tryon-models", ModelStaticFiles(directory=TRYON_MODEL_FIXTURE_DIR), name="tryon-models")
 
 
 def _parse_selected_item_ids(value: str | None, *, limit: int | None = 8) -> list[str] | None:
@@ -733,7 +737,9 @@ async def closet_import_link(url: str = Form(...), current_user: dict[str, Any] 
 @app.get("/closet/preferences")
 def closet_preferences(current_user: dict[str, Any] = Depends(get_current_user)) -> dict[str, Any]:
     with user_storage(current_user["user_id"]):
-        return get_user_preferences()
+        # Use the current account record, not a possibly stale browser login snapshot.
+        gender = "male" if current_user.get("gender") == "male" else "female"
+        return {**get_user_preferences(), "gender": gender}
 
 
 @app.patch("/closet/preferences")
@@ -1043,11 +1049,6 @@ def _selfit_index_html(
         )
         html_text = html_text.replace("<head>", "<head>" + meta_tags, 1)
     return html_text
-
-
-@app.get("/", include_in_schema=False)
-def root_page() -> RedirectResponse:
-    return RedirectResponse(url="/selfit", status_code=308)
 
 
 @app.get("/favicon.ico", include_in_schema=False)

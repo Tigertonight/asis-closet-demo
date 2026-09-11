@@ -2,7 +2,7 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const vm = require('node:vm');
 const source = fs.readFileSync('app/static/selfit-tryon/studio.js', 'utf8');
-const loader = source.slice(source.indexOf('  async function loadFeed('), source.indexOf('  async function load()'));
+const loader = source.slice(source.indexOf('  let inspirationNotesRequest'), source.indexOf('  let wardrobeRequest')) + source.slice(source.indexOf('  async function loadFeed('), source.indexOf('  async function load()'));
 const topics = ['commute', 'date', 'vacation', 'trend', ...Array.from({length:16}, (_,i)=>`persona-${i}`)].map(id => ({
   id, title: id, cover: `${id}.jpg`, previews: [],
   outfits: Array.from({length: 4}, (_, i) => ({
@@ -70,5 +70,13 @@ function normalized(row) {
   const withCurvy = vm.runInContext('topic()', context);
   assert(withCurvy.includes('微胖穿搭'));
   assert.equal((withCurvy.match(/data-try=/g) || []).length, 5, 'variants stay inside one collection');
+  state.topics[0].entries.push({...state.topics[0].entries[0], id:'male-1', raw:{gender:'male', body_profile:'standard'}});
+  const withMale = vm.runInContext('topic()', context);
+  assert(withMale.includes('男生穿搭'));
+  assert.equal((withMale.match(/data-try=/g) || []).length, 6, 'male outfits appear once in their own group');
+  assert(withMale.indexOf('微胖穿搭') < withMale.indexOf('男生穿搭'));
+  state.topics[0].entries = state.topics[0].entries.filter(x=>x.raw?.gender === 'male');
+  const onlyMale = vm.runInContext('topic()', context);
+  assert(onlyMale.includes('男生穿搭') && !onlyMale.includes('微胖穿搭') && !onlyMale.includes('风格穿搭'));
   console.log('Twenty collections: grouped browsing, structured outfits, variants, partial recovery and favorites passed.');
 })().catch(error => {console.error(error); process.exitCode = 1;});

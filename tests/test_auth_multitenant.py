@@ -43,6 +43,41 @@ def _login(client: TestClient, phone: str) -> dict[str, str]:
     return {"Authorization": f"Bearer {verified['access_token']}"}
 
 
+def test_new_users_default_to_female_gender(monkeypatch, tmp_path: Path) -> None:
+    _use_tmp_runtime(monkeypatch, tmp_path)
+    client = TestClient(app)
+
+    phone = client.post("/auth/phone/direct", json={"phone": "13800000021"}).json()
+    guest = client.post("/auth/guest").json()
+
+    assert phone["user"]["gender"] == "female"
+    assert guest["user"]["gender"] == "female"
+    store = json.loads(auth.AUTH_STORE_PATH.read_text(encoding="utf-8"))
+    genders = {user["user_id"]: user["gender"] for user in store["users"]}
+    assert genders[phone["user"]["user_id"]] == "female"
+    assert genders[guest["user"]["user_id"]] == "female"
+
+
+def test_legacy_users_backfill_default_gender(monkeypatch, tmp_path: Path) -> None:
+    _use_tmp_runtime(monkeypatch, tmp_path)
+    auth.AUTH_DIR.mkdir(parents=True, exist_ok=True)
+    legacy = {
+        "user_id": "u_legacy",
+        "phone_e164": "+8613800000022",
+        "status": "active",
+        "created_at": "2026-01-01T00:00:00+00:00",
+        "last_login_at": "2026-01-01T00:00:00+00:00",
+    }
+    auth.AUTH_STORE_PATH.write_text(
+        json.dumps({"version": 1, "users": [legacy], "phone_login_codes": [], "auth_sessions": [], "invite_codes": []}),
+        encoding="utf-8",
+    )
+
+    data = auth._load_store()
+    assert data["users"][0]["gender"] == "female"
+    assert auth._public_user(data["users"][0])["gender"] == "female"
+
+
 def test_phone_login_creates_and_reuses_user(monkeypatch, tmp_path: Path) -> None:
     _use_tmp_runtime(monkeypatch, tmp_path)
     client = TestClient(app)
@@ -334,4 +369,5 @@ def test_guests_can_enter_without_login_and_remain_isolated(monkeypatch, tmp_pat
         assert client.get('/auth/me', headers=headers).json()['user']['user_id'] == session['user']['user_id']
         response = client.get('/selfit/try-on/wardrobe', headers=headers)
         assert response.status_code == 200
-        assert response.json()['items'] == []
+        from app.white_tee_presets import anchor_item
+        assert [item['item_id'] for item in response.json()['items']] == [anchor_item()['item_id']]

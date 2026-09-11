@@ -22,6 +22,8 @@ ADMIN_TEST_PASSWORD = "qa-admin-test-pw"
 def admin_client(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> TestClient:
     """已登录管理后台的 client（QA 页面现在需要管理员密码）。"""
 
+    monkeypatch.setattr(qa_onboarding, "analyze_face_photo", lambda image: _fake_entry("face")["result"])
+    monkeypatch.setattr(qa_onboarding, "analyze_body_photo", lambda image: _fake_entry("body")["result"])
     monkeypatch.setattr(auth, "ADMIN_PASSWORD_PATH", tmp_path / "auth" / "admin_password.json")
     monkeypatch.setenv("SELFIT_ADMIN_PASSWORD", ADMIN_TEST_PASSWORD)
     client = TestClient(app)
@@ -51,7 +53,10 @@ def test_qa_page_renders_entries(monkeypatch: pytest.MonkeyPatch, admin_client: 
     response = client.get("/qa/onboarding-attributes")
     assert response.status_code == 200
     text = response.text
-    assert "onboarding 属性识别 QA" in text
+    # 顶部横 bar 与管理后台统一：智能评测高亮，其余 tab 链回 /admin
+    assert "selfit 管理后台" in text
+    assert 'class="is-active" href="/qa/onboarding-attributes">智能评测' in text
+    assert 'href="/admin#submissions">用户报告' in text
     assert "中性自然肤" in text and "椭圆脸" in text and "梨型" in text
     assert "photo.color_cast" in text
     assert "重新分析" in text
@@ -178,6 +183,14 @@ def test_upload_photo_adds_to_manifest(monkeypatch: pytest.MonkeyPatch, tmp_path
     (photo_dir / "face").mkdir(parents=True)
     monkeypatch.setattr(qa_onboarding, "QA_PHOTO_DIR", photo_dir)
     monkeypatch.setattr(qa_onboarding, "QA_RESULTS_CACHE", photo_dir / "_results.json")
+    analyzed = []
+    result = _fake_entry("face")["result"]
+    def analyze(image):
+        analyzed.append(image.size)
+        return result
+    # This route test covers storage and analysis dispatch; native CV is tested
+    # separately and must not run on the synthetic solid-color upload here.
+    monkeypatch.setattr(qa_onboarding, "analyze_face_photo", analyze)
     client = admin_client
 
     import io as _io
@@ -200,6 +213,9 @@ def test_upload_photo_adds_to_manifest(monkeypatch: pytest.MonkeyPatch, tmp_path
     assert manifest[0]["kind"] == "face"
     assert manifest[0]["file"].startswith("face/upload_face_")
     assert (photo_dir / manifest[0]["file"]).exists()
+    assert analyzed == [(600, 800)]
+    cache = json.loads((photo_dir / "_results.json").read_text())
+    assert cache[manifest[0]["file"]]["result"] == result
     cache = json.loads((photo_dir / "_results.json").read_text(encoding="utf-8"))
     assert manifest[0]["file"] in cache  # 上传时已跑过算法
 

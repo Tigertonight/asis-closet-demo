@@ -65,4 +65,3 @@ Input image 1 is the actual edit target: an existing 328x800 portrait UI body-sh
 Change only the tiny Chinese label "椭圆形" and its small light-colored rounded plaque directly beneath the man's feet near the bottom. Remove both text and plaque completely and seamlessly restore the surrounding pale cream background there.
 Keep every other detail unchanged: same man, identical face/hair/expression, precise body proportions and pose, hands and feet, black tank top and shorts, gold torso geometry with identical shape/position/line width, lighting, shadows, cream background, thin rounded outer border, composition, framing and canvas aspect ratio 328:800. No cropping, no added space, no new text, no redesign, no retouching or changing the person. The illustration must remain the same apart from removing that little bottom label. Return one finished edited image.
 ```
-

@@ -38,7 +38,7 @@
     return ['neck','waist','accessory'].includes(kind) &&
       (/细链|细框|细金属|细戒|链|项链|耳环|耳饰|眼镜|镜框|手镯|chain|wire|necklace|earring|glasses|spectacles|bracelet|bangle/i.test(text(p)) || (p.inkRatio > 0 && p.inkRatio < .18));
   }
-  function dimensions(p) {
+  function dimensions(p, frameAspect) {
     const kind = category(p);
     const short = /短裙|迷你裙|超短|短裤|mini|shorts/i.test(text(p));
     const fallback = {outer:.8,top:1,pants:.45,skirt:short?1:.6,dress:.45,hat:1.3,neck:.65,waist:3,bag:1,accessory:1,socks:.4,shoes:/长靴|高筒|过膝|knee|tall.*boot/i.test(text(p))?.5:1.5};
@@ -46,7 +46,7 @@
     const weight = areaWeight(kind);
     // Use the trimmed silhouette envelope, not the original source canvas or
     // inverse ink coverage (which would make a fine chain enormous).
-    const w = Math.sqrt(weight * aspect / FRAME_ASPECT), h = w * FRAME_ASPECT / aspect;
+    const w = Math.sqrt(weight * aspect / frameAspect), h = w * frameAspect / aspect;
     return {p,kind,w,h,weight,delicate:delicate(p)};
   }
   const layer = kind => kind === 'outer' ? 1 : ['top','pants','skirt','dress'].includes(kind) ? 2 : 3;
@@ -107,9 +107,9 @@
     const belowUpper=leaders.length?Math.min(...leaders.map(rows=>rowHeight(rows[0],scale)))+GAP:0;
     return columns.map(rows=>rows[0]?.items.every(i=>['bag','accessory','waist'].includes(i.kind))?belowUpper:0);
   }
-  function layout(pieces, {previous=[],region=null} = {}) {
+  function layout(pieces, {previous=[],region=null,frameAspect=FRAME_ASPECT} = {}) {
     if (!pieces.length) return [];
-    const items = pieces.map(dimensions);
+    const items = pieces.map(p=>dimensions(p,frameAspect));
     const bounds=region || BOUNDS;
     if (items.some(item=>!item.kind)) return [];
     const old = new Map(previous.map(box=>[box.layoutId || box.id,box]));
@@ -140,7 +140,7 @@
         y+=h+GAP;
       }
       const bodyY=Math.max(BOUNDS.y,y);
-      return [...boxes,...layout(body.map(i=>i.p),{region:{...BOUNDS,y:bodyY,h:BOUNDS.y+BOUNDS.h-bodyY}})];
+      return [...boxes,...layout(body.map(i=>i.p),{region:{...BOUNDS,y:bodyY,h:BOUNDS.y+BOUNDS.h-bodyY},frameAspect})];
     }
     const bodyOrder=['outer','top','dress','hat','neck','waist','bag','accessory','pants','skirt','socks','shoes'];
     const ordered = [...items].sort((a,b)=>bodyOrder.indexOf(a.kind)-bodyOrder.indexOf(b.kind));

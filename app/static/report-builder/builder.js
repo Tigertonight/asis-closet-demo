@@ -2,7 +2,7 @@
   const ASSET = '/static/selfit/assets/';
   const STORAGE_KEY = 'selfit.report-library.v2';
   const LEGACY_KEY = 'selfit.report-builder.v1';
-  const SEED_VERSION = 14;
+  const SEED_VERSION = Math.max(14, Number(window.SELFIT_REPORT_MASTER_DATA?.seedVersion) || 0);
   const bodyVariants = window.SELFIT_BODY_VARIANTS;
   const KEYWORD_ALIASES = {'同明度秩序':'同调秩序','不费力精致':'松弛精致','低饱和治愈':'柔色治愈','华丽存在感':'华丽焦点'};
   const defaults = {
@@ -56,6 +56,9 @@
     if(Array.isArray(source.colors))next.colors=next.colors.map((item,index)=>({...item,...(source.colors[index]||{})}));
     if(source.source&&typeof source.source==='object')next.source={...next.source,...source.source,avatars:{...next.source.avatars,...(source.source.avatars||{})}};
     ['makeup','hair','outfits'].forEach(key=>{if(Array.isArray(source[key]))next[key]=next[key].map((item,index)=>{const merged={...item,...(source[key][index]||{})};merged.image=highResolutionAsset(merged.image);return merged})});
+    if(next.gender==='male'){
+      ['makeup','hair','outfits'].forEach(key=>{if(Array.isArray(source[key])&&!source[key].length)next[key]=next[key].map(()=>({name:'',byline:'',image:''}))});
+    }
     if(source.masterData&&typeof source.masterData==='object')next.masterData=clone(source.masterData);
     if(next.bodyProfile==='curvy'&&next.source.copy==='微胖穿搭素材待配置'&&next.outfits.every(item=>item.name&&item.image)){
       next.source.copy='已整理 4 条穿搭素材';next.masterData={...next.masterData,sourceCount:4};
@@ -82,6 +85,29 @@
         fields.forEach(key=>{if(seed[key]!==undefined)record.data[key]=clone(seed[key])});
         record.data.bodyProfile=bodyVariants.bodyProfile(seed);
         record.updatedAt=seed.updatedAt;record.data.updatedAt=seed.updatedAt;
+      });
+    }
+    if(next.seedVersion<16){
+      const seeds=new Map(masterSeeds().filter(seed=>seed.gender==='male'&&seed.source?.archive==='4男 拆款.zip').map(seed=>[bodyVariants.key(seed),seed]));
+      next.templates.forEach(record=>{
+        const seed=seeds.get(bodyVariants.key(record.data));if(!seed)return;
+        if(!(record.data.outfits||[]).every(item=>!item.image&&!item.name))return;
+        // Populate empty placeholders without replacing any saved outfit or edited copy.
+        ['outfits','outfitSummary','source','masterData'].forEach(key=>{record.data[key]=clone(seed[key])});
+        record.updatedAt=seed.updatedAt;record.data.updatedAt=seed.updatedAt;
+      });
+    }
+    const update=window.SELFIT_REPORT_MASTER_DATA?.seedUpdateBaselines;
+    if(update&&next.seedVersion<update.version){
+      const seeds=new Map(masterSeeds().map(seed=>[bodyVariants.key(seed),normalize(seed)]));
+      const baselines=new Map(update.templates.map(seed=>[bodyVariants.key(seed),normalize(seed)]));
+      next.templates.forEach(record=>{
+        const key=bodyVariants.key(record.data),previous=baselines.get(key),seed=seeds.get(key);
+        if(!previous||!seed)return;
+        // Update unchanged seed fields; keep locally edited copy and media groups intact.
+        update.fields.forEach(field=>{
+          if(JSON.stringify(record.data[field])===JSON.stringify(previous[field]))record.data[field]=clone(seed[field]);
+        });
       });
     }
     bodyVariants.appendMissing(next.templates,masterSeeds(),recordFrom);

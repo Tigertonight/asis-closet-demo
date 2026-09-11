@@ -13,7 +13,7 @@ from app.material_assets import MaterialRegistry
 
 def test_sixteen_inspiration_looks_keep_all_103_items_and_do_not_change_personas():
     data = inspiration_catalog.inspiration_delivery()
-    assert len(styling_catalog.delivery_looks()) == 80
+    assert len(styling_catalog.delivery_looks()) == 96
     assert [topic['id'] for topic in data['topics']] == ['commute', 'date', 'vacation', 'trend']
     assert len(data['looks']) == 16
     ids = set()
@@ -45,7 +45,7 @@ def test_topics_require_auth_but_no_personality_test_and_fail_closed(monkeypatch
     response = client.get(url)
     assert response.status_code == 200
     data = response.json()
-    assert data['total'] == 96
+    assert data['total'] == 112
     assert len(data['topics']) == 20
     scene_topics, persona_topics = data['topics'][:4], data['topics'][4:]
     assert [len(topic['outfits']) for topic in scene_topics] == [4] * 4
@@ -55,7 +55,7 @@ def test_topics_require_auth_but_no_personality_test_and_fail_closed(monkeypatch
     assert [topic['persona'] for topic in persona_topics] == list(templates)
     expected = {styling_catalog.outfit_id(look): look for look in styling_catalog.delivery_looks()}
     actual = [outfit['outfit_id'] for topic in persona_topics for outfit in topic['outfits']]
-    assert len(actual) == len(set(actual)) == 80
+    assert len(actual) == len(set(actual)) == 96
     assert set(actual) == set(expected), 'keep every delivered audience variant, exactly once'
     for topic in persona_topics:
         code = topic['persona']
