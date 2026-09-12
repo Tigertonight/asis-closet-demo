@@ -66,6 +66,11 @@ SKIN_OPTIONS = ("冷白肤", "暖白肤", "中性自然肤", "暖黄肤", "橄�
 FACE_SHAPE_OPTIONS = ("椭圆脸", "圆脸", "方脸", "心形脸", "菱形脸")
 BODY_SHAPE_OPTIONS = ("梨型", "倒三角型", "沙漏型", "矩型", "苹果型")
 
+# Extra self-declared male options; photo inference and legacy content taxonomies
+# remain unchanged. Keep the explicit choice intact in summaries and snapshots.
+MANUAL_FACE_SHAPE_OPTIONS = FACE_SHAPE_OPTIONS + ("倒三角脸",)
+MANUAL_BODY_SHAPE_OPTIONS = BODY_SHAPE_OPTIONS + ("梯形", "三角形", "倒三角形", "矩形", "椭圆形")
+
 # 肤色 →（skin_lightness, skin_undertone）派生表（映射方案「一、统一口径」）。
 SKIN_DERIVED = {
     "冷白肤": ("白皙", "冷调"),
@@ -99,9 +104,9 @@ def resolve_suit_profile(session: dict[str, Any]) -> dict[str, str | None]:
     manual = session.get("manual") or {}
     skin = _first_valid(manual.get("skin"), SKIN_OPTIONS) \
         or _first_valid(_photo_attribute(session, "face", "skin_tone"), SKIN_OPTIONS)
-    face_shape = _first_valid(manual.get("faceShape"), FACE_SHAPE_OPTIONS) \
+    face_shape = _first_valid(manual.get("faceShape"), MANUAL_FACE_SHAPE_OPTIONS) \
         or _first_valid(_photo_attribute(session, "face", "face_shape"), FACE_SHAPE_OPTIONS)
-    body_shape = _first_valid(manual.get("bodyShape"), BODY_SHAPE_OPTIONS) \
+    body_shape = _first_valid(manual.get("bodyShape"), MANUAL_BODY_SHAPE_OPTIONS) \
         or _first_valid(_photo_attribute(session, "body", "body_shape"), BODY_SHAPE_OPTIONS)
     return {"skin": skin, "face_shape": face_shape, "body_shape": body_shape}
 
