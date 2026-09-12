@@ -750,7 +750,7 @@ button {
 .vibe-action-dock { position: absolute; z-index: 4; right: 0; bottom: 0; left: 0; display: flex; height: 114px; justify-content: center; align-items: flex-start; padding: 10px 10px 0; background: linear-gradient(180deg, rgba(255,255,255,0) 0%, #fff 100%); backdrop-filter: blur(2px); pointer-events: none; }
 .questionnaire-action { position: relative; bottom: auto; margin: 0; pointer-events: auto; }
 
-.screen--loading { color: #fff; background: #8a011b url('/static/selfit/assets/splash-textile@2x.png') center/cover no-repeat; }
+.screen--loading { color: #fff; background: #8a011b url('/static/selfit/assets/splash-textile@2x.webp') center/cover no-repeat; }
 .screen--loading.is-active { display: flex; flex-direction: column; align-items: center; }
 .loading-story { position: relative; flex-shrink: 0; width: 100%; padding: clamp(48px, calc(65vh - 310px), 244px) 24px 40px; text-align: center; }
 @supports (height: 100dvh) { .loading-story { padding-top: clamp(48px, calc(65dvh - 310px), 244px); } }
@@ -1019,7 +1019,7 @@ html.has-open-dialog, html.has-open-dialog body { overflow: hidden; }
 .share-track::-webkit-scrollbar { display: none; }
 .share-track:focus-visible { outline: 2px solid rgba(138,1,27,.4); outline-offset: -2px; }
 .share-card-slot { position: relative; width: var(--share-card-preview-width); height: var(--share-card-preview-height); flex: 0 0 var(--share-card-preview-width); scroll-snap-align: center; scroll-snap-stop: always; }
-.share-card { display: flex; width: 324px; height: 522px; max-height: none; padding: 14px; overflow: hidden; flex-direction: column; border-radius: 14px; opacity: .4; color: #fff; background: #8a011b url('/static/selfit/assets/splash-textile@2x.png') center/cover; box-shadow: 0 6px 22px rgba(60,0,12,.12); transform: scale(var(--share-card-scale)); transform-origin: top left; transition: opacity .2s ease; }
+.share-card { display: flex; width: 324px; height: 522px; max-height: none; padding: 14px; overflow: hidden; flex-direction: column; border-radius: 14px; opacity: .4; color: #fff; background: #8a011b url('/static/selfit/assets/splash-textile@2x.webp') center/cover; box-shadow: 0 6px 22px rgba(60,0,12,.12); transform: scale(var(--share-card-scale)); transform-origin: top left; transition: opacity .2s ease; }
 .share-card.is-current { opacity: 1; }
 .share-card p { margin: 0; font-size: var(--font-report-small); line-height: var(--font-report-small-line); }
 .share-card strong { font-size: 25px; line-height: 34px; }

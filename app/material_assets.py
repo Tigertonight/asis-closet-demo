@@ -19,7 +19,7 @@ from pathlib import Path
 from typing import Any
 from urllib.parse import parse_qs, unquote, urlsplit, urlunsplit
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Request
 from fastapi.responses import JSONResponse, RedirectResponse
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -290,11 +290,11 @@ def material_metadata(asset_id: str):
 
 
 @router.get("/{asset_id}/content")
-def material_content(asset_id: str):
+def material_content(asset_id: str, request: Request):
     record = _public_record(asset_id)
-    if record.get("storage", {}).get("private"):
+    from app.image_delivery import ImageFileResponse as FileResponse, RASTER_TYPES, wants_webp
+    if record.get("storage", {}).get("private") or (record.get("contentType") in RASTER_TYPES and wants_webp(request.scope)):
         import httpx
-        from fastapi.responses import FileResponse
         try:
             path = material_image_path(asset_id)
         except MaterialUrlUnavailable as exc:
@@ -303,4 +303,4 @@ def material_content(asset_id: str):
             raise HTTPException(503, "素材暂时无法读取，请稍后重试。") from None
         # Same-origin delivery supports HTTPS pages even with an HTTP-only origin.
         return FileResponse(path, media_type=record["contentType"], headers={"Cache-Control": "public, max-age=3600"})
-    return RedirectResponse(record["url"], status_code=307, headers={"Cache-Control": "no-store"})
+    return RedirectResponse(record["url"], status_code=307, headers={"Cache-Control": "no-store", "Vary": "Accept"})

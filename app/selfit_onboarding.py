@@ -13,7 +13,8 @@ from typing import Any
 import cv2
 import numpy as np
 from fastapi import APIRouter, Depends, Request, Response
-from fastapi.responses import FileResponse, JSONResponse, RedirectResponse
+from fastapi.responses import JSONResponse, RedirectResponse
+from app.image_delivery import ImageFileResponse as FileResponse
 from PIL import Image, ImageOps, UnidentifiedImageError
 from starlette.concurrency import run_in_threadpool
 
@@ -1334,6 +1335,7 @@ async def update_my_profile(request: Request, user: dict[str, Any] = Depends(get
 @router.get("/me/photos/{kind}")
 async def get_my_onboarding_photo(
     kind: str,
+    request: Request,
     overlay: str = "",
     user: dict[str, Any] = Depends(get_current_user),
 ) -> Response:
@@ -1360,7 +1362,8 @@ async def get_my_onboarding_photo(
     key = f"{session_id}/{asset_id}{suffix}"
     store = _asset_store()
     public_url = store.public_url(key)
-    if public_url:
+    from app.image_delivery import wants_webp
+    if public_url and not wants_webp(request.scope) and overlay not in {"1", "true"}:
         return RedirectResponse(public_url, status_code=302)
     path = store.local_path(key)
     if path is None:

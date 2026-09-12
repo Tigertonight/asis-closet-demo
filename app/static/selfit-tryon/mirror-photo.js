@@ -143,7 +143,7 @@
             output.height = Math.max(1, Math.round(h * outputScale));
             output.getContext("2d").drawImage(image, image.naturalWidth * crop.x,
               image.naturalHeight * crop.y, w, h, 0, 0, output.width, output.height);
-            output.toBlob(blob => finish(blob ? URL.createObjectURL(blob) : src, blob ? crop : null), "image/png");
+            output.toBlob(blob => finish(blob ? URL.createObjectURL(blob) : src, blob ? crop : null), "image/webp", .92);
           } catch {
             // If pixel inspection is unavailable, retain the original source;
             // its decoded dimensions still determine the display fit.

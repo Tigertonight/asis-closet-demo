@@ -57,11 +57,11 @@ def test_selfit_onboarding_includes_the_figma_login_extension() -> None:
     assert "无需验证码，输入手机号直接登录" in response.text
     assert 'id="loginPin"' not in response.text
     assert 'id="loginCode"' not in response.text
-    assert "/static/selfit/assets/login-tagline-curved@2x.png" in response.text
-    assert "/static/selfit/assets/login-buttons-ring@2x.png" in response.text
-    assert "/static/selfit/assets/login-selfit-logo@2x.png" in response.text
+    assert "/static/selfit/assets/login-tagline-curved@2x.webp" in response.text
+    assert "/static/selfit/assets/login-buttons-ring@2x.webp" in response.text
+    assert "/static/selfit/assets/login-selfit-logo@2x.webp" in response.text
     assert "/static/selfit/assets/login-persona-board@2x.webp" in response.text
-    assert "/static/selfit/assets/login-persona-title@2x.png" in response.text
+    assert "/static/selfit/assets/login-persona-title@2x.webp" in response.text
     assert '/static/selfit/selfit-auth.js' in response.text
     assert '"authBase": "/auth"' in response.text
 
@@ -108,7 +108,7 @@ def test_selfit_intro_uses_complete_high_density_lace_card_assets() -> None:
     assert response.status_code == 200
     assert styles.status_code == 200
     for name in ("suit", "like", "vibe"):
-        assert f"/static/selfit/assets/{name}-card-base@2x.png" in response.text
+        assert f"/static/selfit/assets/{name}-card-base@2x.webp" in response.text
     assert "background-image: url('/static/selfit/assets/onboarding-intro-reference@2x.png')" not in styles.text
 
 
@@ -126,7 +126,7 @@ def test_selfit_latest_onboarding_geometry_and_loading_brandmark_are_locked() ->
     assert '#CB956C' in markup.text
     assert '#D3D3D3' in markup.text
     assert '#B1B2D1' in markup.text
-    assert '/static/selfit/assets/splash-signature@2x.png' in markup.text
+    assert '/static/selfit/assets/splash-signature@2x.webp' in markup.text
     assert '.loading-art-frame { position: relative;' in styles.text
     assert markup.text.index('id="loadingPercent"') < markup.text.index('id="loadingLines"')
     assert '--loading-art-width: 240px; --loading-art-height: 162px;' in styles.text
@@ -266,12 +266,12 @@ def test_selfit_vibe_question_keys_match_backend_contract() -> None:
 
 def test_selfit_onboarding_uses_high_resolution_production_assets() -> None:
     for asset_path in (
-        "/static/selfit/assets/face-upload-guide@4x.png",
+        "/static/selfit/assets/face-upload-guide@4x.webp",
         "/static/selfit/assets/manual-selection/face-diamond@4x.webp",
         "/static/selfit/assets/manual-selection/body-pear@4x.webp",
         "/static/selfit/assets/onboarding-loading-signature@2x.png",
-        "/static/selfit/assets/report-style-soft-cool@4x.png",
-        "/static/selfit/assets/figma-report/report-hero-reference.png",
+        "/static/selfit/assets/report-style-soft-cool@4x.webp",
+        "/static/selfit/assets/figma-report/report-hero-reference.webp",
         "/static/selfit/assets/figma-report/outfit-01@4x.png",
     ):
         response = client.get(asset_path)
@@ -287,8 +287,8 @@ def test_selfit_report_share_cards_use_the_dedicated_qr_artwork(monkeypatch) -> 
     assert "<small>你的风格灵感</small>" not in response.text
     assert "share-avatar" not in response.text
     assert response.text.count("<div class=\"share-card-meta\"><span>我的 selfit 风格报告</span></div>") == 3
-    assert response.text.count('class="share-qr" src="/static/selfit/assets/share-report-qr.png?v=20260828"') == 3
-    assert 'class="public-report-error-qr"><img src="/static/selfit/assets/share-report-qr.png?v=20260828"' in response.text
+    assert response.text.count('class="share-qr" src="/static/selfit/assets/share-report-qr.webp?v=20260828"') == 3
+    assert 'class="public-report-error-qr"><img src="/static/selfit/assets/share-report-qr.webp?v=20260828"' in response.text
     assert 'data-share-ornament' in response.text
     assert "/static/selfit/selfit.css?v=" in response.text
     assert "/static/selfit/selfit.js?v=" in response.text
@@ -298,7 +298,7 @@ def test_selfit_report_share_cards_use_the_dedicated_qr_artwork(monkeypatch) -> 
     assert 'property="og:title" content="selfit · 适我"' in response.text
     assert 'name="robots" content="index,follow"' in response.text
 
-    asset = client.get("/static/selfit/assets/share-report-qr.png")
+    asset = client.get("/static/selfit/assets/share-report-qr.webp")
     assert asset.status_code == 200
     assert asset.headers["content-type"].startswith("image/")
 
@@ -547,9 +547,9 @@ def test_selfit_personality_assets_and_runtime_catalog_are_available() -> None:
     for asset_path in (
         "/static/selfit/personality-report-templates.js",
         "/static/selfit/assets/personality/placeholder-hero.svg",
-        "/static/selfit/assets/personality/mute/hero.png",
-        "/static/selfit/assets/personality/flou/hero.png",
-        "/static/selfit/assets/personality/oops/hero.png",
+        "/static/selfit/assets/personality/mute/hero.webp",
+        "/static/selfit/assets/personality/flou/hero.webp",
+        "/static/selfit/assets/personality/oops/hero.webp",
         "/static/selfit/assets/personality/flou/color-card.png",
         "/static/selfit/assets/personality/flou/makeup-01.webp",
         "/static/selfit/assets/personality/flou/hair-01.webp",
@@ -585,11 +585,11 @@ def test_selfit_mirror_assets_are_available() -> None:
         "/static/selfit/assets/mirror-demo-full-body.webp",
         "/static/selfit/assets/mirror-home-manifesto@2x.png",
         "/static/selfit/assets/mirror-loading-ornament@2x.png",
-        "/static/selfit/assets/mirror-loading-stage-25@2x.png",
-        "/static/selfit/assets/mirror-loading-stage-50@2x.png",
-        "/static/selfit/assets/mirror-loading-stage-75@2x.png",
+        "/static/selfit/assets/mirror-loading-stage-25@2x.webp",
+        "/static/selfit/assets/mirror-loading-stage-50@2x.webp",
+        "/static/selfit/assets/mirror-loading-stage-75@2x.webp",
         "/static/selfit/assets/mirror-signature-know-yourself@2x.png",
-        "/static/selfit/assets/mirror-report-qr.png",
+        "/static/selfit/assets/mirror-report-qr.webp",
     ):
         response = client.get(asset_path)
         assert response.status_code == 200, asset_path

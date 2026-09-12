@@ -275,7 +275,7 @@ h2 {
   border-radius: 18px;
   background:
     linear-gradient(105deg, rgba(95, 0, 18, .08), rgba(95, 0, 18, .24)),
-    url("/static/selfit/assets/splash-textile@2x.png") center / cover no-repeat;
+    url("/static/selfit/assets/splash-textile@2x.webp") center / cover no-repeat;
   color: #fff;
   box-shadow: 0 14px 30px rgba(104, 0, 21, .18);
   grid-template-columns: minmax(0, 1fr) 46%;
@@ -326,7 +326,7 @@ h2 {
   position: absolute;
   z-index: 0;
   inset: 5px;
-  background: url("/static/selfit/assets/lace-card@4x.png") center / 100% 100% no-repeat;
+  background: url("/static/selfit/assets/lace-card@4x.webp") center / 100% 100% no-repeat;
   content: "";
   pointer-events: none;
 }
@@ -749,7 +749,7 @@ h2 {
   right: 32px;
   width: 74px;
   height: 102px;
-  background: url("/static/selfit/assets/lace-card@4x.png") center / contain no-repeat;
+  background: url("/static/selfit/assets/lace-card@4x.webp") center / contain no-repeat;
   opacity: .2;
   transform: rotate(7deg);
   pointer-events: none;
@@ -1330,7 +1330,7 @@ textarea:focus {
 .login-screen {
   width: min(100%, 393px);
   padding: max(32px, env(safe-area-inset-top)) 40px max(32px, env(safe-area-inset-bottom));
-  background: var(--sf-brand) url("/static/selfit/assets/splash-textile@2x.png") center / cover no-repeat;
+  background: var(--sf-brand) url("/static/selfit/assets/splash-textile@2x.webp") center / cover no-repeat;
   color: #ffffff;
 }
 
@@ -1542,7 +1542,7 @@ textarea:focus {
   margin: auto;
   overflow: hidden;
   color: #fff;
-  background: #8a011b url("/static/selfit/assets/splash-textile@2x.png") center / cover;
+  background: #8a011b url("/static/selfit/assets/splash-textile@2x.webp") center / cover;
   animation: handoff-in 600ms var(--sf-ease) both;
 }
 
@@ -1638,7 +1638,7 @@ textarea:focus {
   position: relative;
   height: 235px;
   overflow: hidden;
-  background: #8a011b url("/static/selfit/assets/splash-textile@2x.png") center / cover;
+  background: #8a011b url("/static/selfit/assets/splash-textile@2x.webp") center / cover;
 }
 
 .persona-card-media::after {
@@ -1748,7 +1748,7 @@ textarea:focus {
   border: 0;
   border-radius: 12px;
   color: #fff;
-  background: #8a011b url("/static/selfit/assets/splash-textile@2x.png") center / cover;
+  background: #8a011b url("/static/selfit/assets/splash-textile@2x.webp") center / cover;
   text-align: left;
 }
 .profile-persona-card::after { position: absolute; right: 12px; bottom: -16px; color: rgba(255,255,255,.08); font: 72px/1 Didot, "Bodoni 72", Georgia, serif; content: "selfit"; }

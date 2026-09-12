@@ -895,9 +895,9 @@
   });
 
   const loadingStages = [
-    { percent: 33, artStage: 25, line: '先看见真实的你', src: '/static/selfit/assets/loading-stage-25@2x.png?v=20260826' },
-    { percent: 67, artStage: 50, line: '寻找你同频的灵感', src: '/static/selfit/assets/loading-stage-50@2x.png?v=20260826' },
-    { percent: 100, line: '我们认识你了...', src: '/static/selfit/assets/loading-stage-100@2x.png?v=20260826' },
+    { percent: 33, artStage: 25, line: '先看见真实的你', src: '/static/selfit/assets/loading-stage-25@2x.webp?v=20260826' },
+    { percent: 67, artStage: 50, line: '寻找你同频的灵感', src: '/static/selfit/assets/loading-stage-50@2x.webp?v=20260826' },
+    { percent: 100, line: '我们认识你了...', src: '/static/selfit/assets/loading-stage-100@2x.webp?v=20260826' },
   ];
   const loadingStagePromises = new Map();
   const loadLoadingStage = (src) => {
@@ -1181,11 +1181,12 @@
       },
     };
   };
+  const displayImageURL = source => window.SelfitImageURL ? window.SelfitImageURL(source) : (source || '');
   const appendImageCards = (container, items) => {
     const cards = items.filter((item) => item && item.imageUrl).map((item) => {
       const figure = document.createElement('figure');
       const image = Object.assign(document.createElement('img'), {
-        src: item.imageUrl || '', alt: item.alt || item.name || '', loading: 'lazy', decoding: 'async',
+        src: displayImageURL(item.imageUrl), alt: item.alt || item.name || '', loading: 'lazy', decoding: 'async',
       });
       const caption = document.createElement('figcaption');
       caption.append(document.createTextNode(item.name || ''));
@@ -1202,7 +1203,7 @@
   const mobileHeroSource = (value) => {
     const source = String(value || '');
     const isBundledPersonalityHero = source.includes('/static/selfit/assets/personality/') && source.includes('/hero.webp');
-    return isBundledPersonalityHero ? source.replace('/hero.webp', '/hero-mobile.webp') : source;
+    return displayImageURL(isBundledPersonalityHero ? source.replace('/hero.webp', '/hero-mobile.webp') : source);
   };
   const REPORT_RESOURCE_MIN_HOLD_MS = 1200;
   const REPORT_RESOURCE_MAX_WAIT_MS = 8000;
@@ -1212,13 +1213,13 @@
     const urls = [
       mobileHeroSource(data.heroImage?.src),
       data.illustration?.imageUrl,
-      data.source?.avatars?.imageUrl || '/static/selfit/assets/report-user-avatar-stack@4x.png',
+      data.source?.avatars?.imageUrl || '/static/selfit/assets/report-user-avatar-stack@4x.webp',
       ...data.makeup.map((item) => item.imageUrl),
       ...data.hair.map((item) => item.imageUrl),
       ...data.outfits.map((item) => item.imageUrl),
       typeId ? `/static/selfit/assets/personality/${typeId}/share-ornament.webp?v=20260829-webp-v1` : '',
     ];
-    return [...new Set(urls.filter(Boolean))];
+    return [...new Set(urls.filter(Boolean).map(displayImageURL))];
   };
   const preloadReportResource = (src, heroSrc) => new Promise((resolve) => {
     const image = new Image();
@@ -1283,13 +1284,13 @@
     reportNodes.traits.replaceChildren(...data.traits.map((trait) => {
       const card = Object.assign(document.createElement('span'), { className: 'report-trait' });
       const lace = Object.assign(document.createElement('img'), {
-        src: '/static/selfit/assets/lace-card@4x.png?v=20260821', alt: '', width: 408, height: 604,
+        src: '/static/selfit/assets/lace-card@4x.webp?v=20260821', alt: '', width: 408, height: 604,
       });
       card.append(lace, Object.assign(document.createElement('b'), { textContent: trait }));
       return card;
     }));
     reportNodes.traits.hidden = data.traits.length === 0;
-    reportNodes.illustration.src = data.illustration.imageUrl || '';
+    reportNodes.illustration.src = displayImageURL(data.illustration.imageUrl);
     reportNodes.illustration.alt = data.illustration.alt || '';
     reportNodes.illustration.closest('figure').hidden = fullHero || !data.illustration.imageUrl;
     reportNodes.summary.innerHTML = renderReportMarkdown(data.summary);
@@ -1311,7 +1312,7 @@
     reportNodes.sourceLogo.alt = data.source.name || '小红书';
     reportNodes.sourceLogo.hidden = !hasSource;
     reportNodes.sourceCopy.textContent = data.source.copy || '';
-    reportNodes.sourceAvatars.src = data.source.avatars.imageUrl || '/static/selfit/assets/report-user-avatar-stack@4x.png';
+    reportNodes.sourceAvatars.src = displayImageURL(data.source.avatars.imageUrl || '/static/selfit/assets/report-user-avatar-stack@4x.webp');
     reportNodes.sourceAvatars.alt = data.source.avatars.alt || '3 位真实用户头像';
     reportNodes.sourceAvatars.hidden = !hasSource;
     proof.hidden = !hasSource;
@@ -1326,7 +1327,7 @@
     const outfitCards = visibleOutfits.map((item) => {
       const figure = document.createElement('figure');
       const image = Object.assign(document.createElement('img'), {
-        src: item.imageUrl, alt: item.alt || item.name || '', loading: 'lazy', decoding: 'async',
+        src: displayImageURL(item.imageUrl), alt: item.alt || item.name || '', loading: 'lazy', decoding: 'async',
       });
       const caption = document.createElement('figcaption');
       caption.append(document.createTextNode(item.name || ''));
@@ -1377,7 +1378,7 @@
     }));
     const shareImages = [...data.makeup.slice(0, 2), ...data.hair.slice(0, 1), ...data.outfits.slice(0, 1)];
     document.querySelector('#shareCardImages').replaceChildren(...shareImages.map((item) => Object.assign(document.createElement('img'), {
-      src: item.imageUrl || '', alt: item.alt || item.name || item.title || '', loading: 'lazy', decoding: 'async',
+      src: displayImageURL(item.imageUrl), alt: item.alt || item.name || item.title || '', loading: 'lazy', decoding: 'async',
     })));
     window.dispatchEvent(new CustomEvent('selfit:report-rendered', { detail: { data } }));
     return data;
@@ -1548,7 +1549,7 @@
     image.decoding = 'async';
     image.onload = () => resolve(image);
     image.onerror = () => reject(new Error('分享卡片图片加载失败，请稍后重试。'));
-    image.src = source;
+    image.src = displayImageURL(source);
   });
   const drawCoverImage = (context, image, x, y, width, height, focusX = 0.5, focusY = 0.5) => {
     const imageRatio = image.naturalWidth / image.naturalHeight;

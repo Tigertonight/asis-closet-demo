@@ -22,7 +22,8 @@ from pathlib import Path
 from typing import Any
 
 from fastapi import APIRouter, Body, Depends, HTTPException
-from fastapi.responses import FileResponse, JSONResponse, RedirectResponse, Response
+from fastapi.responses import JSONResponse, RedirectResponse, Response
+from app.image_delivery import ImageFileResponse as FileResponse
 
 from app import selfit_assets, selfit_mirror_handoff, selfit_onboarding, selfit_photo
 from app.auth import get_admin_user
@@ -114,12 +115,12 @@ def _serve_asset(
             headers={"Content-Disposition": f'attachment; filename="{filename}"'},
         )
     public_url = store.public_url(key)
-    if public_url:
-        return RedirectResponse(public_url, status_code=302)
     path = store.local_path(key)
     if path is None:
+        if public_url:
+            return RedirectResponse(public_url, status_code=302)
         raise HTTPException(status_code=404, detail="没有找到这个文件")
-    return FileResponse(path)
+    return FileResponse(path, headers={"Cache-Control": "private, max-age=300"})
 
 
 def _latest_report(data: dict[str, Any], session_id: str) -> dict[str, Any] | None:

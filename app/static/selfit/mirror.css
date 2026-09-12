@@ -49,7 +49,7 @@ html[data-mirror-state="confirm"], body[data-mirror-state="confirm"] { backgroun
 
 .mirror-screen { position: absolute; inset: 0; display: none; overflow: hidden; opacity: 0; }
 .mirror-screen.is-active { display: block; opacity: 1; animation: screen-in 240ms ease-out both; }
-.textile-screen { color: white; background: var(--textile) url("/static/selfit/assets/splash-textile@2x.png") center / cover; }
+.textile-screen { color: white; background: var(--textile) url("/static/selfit/assets/splash-textile@2x.webp") center / cover; }
 .textile-screen::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(72,0,12,.16), transparent 43%, rgba(72,0,12,.12)); pointer-events: none; }
 
 .mirror-wordmark { position: absolute; z-index: 5; left: 50%; top: 40px; width: 55px; height: 20px; transform: translateX(-50%); }
@@ -88,7 +88,7 @@ html[data-mirror-state="confirm"], body[data-mirror-state="confirm"] { backgroun
 
 .camera-loading-screen, .camera-screen { background: var(--textile); }
 .camera-screen[data-screen="confirm"] { background: transparent; }
-.camera-loading-brand { position: absolute; inset: 0; display: grid; place-items: center; align-content: center; gap: 18px; overflow: hidden; color: rgba(255,255,255,.9); background: var(--textile) url("/static/selfit/assets/splash-textile@2x.png") center / cover; }
+.camera-loading-brand { position: absolute; inset: 0; display: grid; place-items: center; align-content: center; gap: 18px; overflow: hidden; color: rgba(255,255,255,.9); background: var(--textile) url("/static/selfit/assets/splash-textile@2x.webp") center / cover; }
 .camera-loading-brand::before, .camera-loading-brand::after { content: ""; position: absolute; border: 1px solid rgba(255,255,255,.12); border-radius: 50%; transform: rotate(-12deg); }
 .camera-loading-brand::before { width: 430px; height: 265px; }
 .camera-loading-brand::after { width: 302px; height: 440px; transform: rotate(18deg); }

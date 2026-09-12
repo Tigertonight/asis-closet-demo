@@ -1064,7 +1064,7 @@ dialog .secondary {
   align-items: center;
   gap: 10px;
   padding: 12px 6px;
-  background: url('/static/selfit/assets/lace-card@4x.png') center / 100% 100% no-repeat;
+  background: url('/static/selfit/assets/lace-card@4x.webp') center / 100% 100% no-repeat;
   color: #715b54;
   text-decoration: none;
   font-size: 14px;
@@ -1135,7 +1135,7 @@ dialog .secondary {
   place-items: center;
   padding: 0;
   margin: 0;
-  background: #8a011b url("/static/selfit/assets/splash-textile@2x.png") center / cover;
+  background: #8a011b url("/static/selfit/assets/splash-textile@2x.webp") center / cover;
   box-shadow: inset 0 0 0 1px #ffffff26, 0 3px 8px #8a011b1a;
   z-index: 6;
 }
@@ -1283,7 +1283,7 @@ button.composition-piece:focus-visible { outline:2px solid #8a011b; outline-offs
 @media(max-height:500px) { #sheet.garment-sheet { height:90dvh; } .garment-sheet-image { top:40px; height:calc(90dvh - 124px); } #sheet.garment-sheet > .garment-sheet-cta { top:auto; bottom:20px; } }
 
 /* Source navigation1092:13869: contiguous lace and separate 55x56 AI button. */
-#navigation { height:109px; padding:0; display:block; background:url("assets/main-app/nav-background.svg?v=20260908-assets7") center / 100% 100% no-repeat; }
+#navigation { height:109px; padding:0; display:block; background:url("assets/main-app/nav-background.webp?v=20260908-assets7") center / 100% 100% no-repeat; }
 #navigation .nav-item { position:absolute; top:18px; height:60px; width:21%; background:transparent; border:0; font-size:14px; font-weight:400; }
 #navigation .nav-item:nth-child(1) { left:8.9%; }
 #navigation .nav-item:nth-child(2) { left:29%; }
@@ -1488,7 +1488,7 @@ button.composition-piece:focus-visible { outline:2px solid #8a011b; outline-offs
 @media (prefers-reduced-motion:reduce) { .outfit-state.pending { animation:none; } }
 
 .mirror-profile-card { left:78.88%; top:61.09%; width:21.12%; aspect-ratio:83/76;
-  padding:0; background:url('/static/selfit-tryon/assets/main-app/mirror-profile.svg?v=20260908-assets7') center/100% 100% no-repeat; }
+  padding:0; background:url('/static/selfit-tryon/assets/main-app/mirror-profile.webp?v=20260908-assets7') center/100% 100% no-repeat; }
 .mirror-profile-card > span { visibility:hidden; }
 .model-mode .arch, .model-mode .mirror-photo-frame { left:24.17%; top:14.64%; width:51.66%; height:90.59%; }
 .model-mode .arch { border:2px solid #ccc3b8; }
@@ -1501,7 +1501,7 @@ button.composition-piece:focus-visible { outline:2px solid #8a011b; outline-offs
 .mirror-photo-frame[data-fit="height"] { overflow:hidden; border-radius:110px 110px 22px 22px; }
 .mirror-photo-frame[data-fit="height"] > .model-photo.personal { height:100%; max-width:none; }
 .model-mode .stage-control { background:#ffffffdd; color:#777; }
-.model-mode .mode-control { background:url('/static/selfit-tryon/assets/main-app/mirror-mode.svg') center/contain no-repeat; }
+.model-mode .mode-control { background:url('/static/selfit-tryon/assets/main-app/mirror-mode.webp') center/contain no-repeat; }
 .mirror-generation { inset:0; width:100%; height:100%; display:block; }
 .mirror-generation img { width:100%; height:100%; }
 

@@ -334,6 +334,11 @@ def test_authenticated_user_can_reuse_latest_body_photo_after_session_cleanup(
     assert own_photo.status_code == 200
     assert own_photo.headers["content-type"] == "image/jpeg"
     assert client.get(f"{API}/me/photos/body", headers=other_headers).status_code == 204
+    display = client.get(f"{API}/me/photos/body?format=webp", headers=owner_headers)
+    assert display.status_code == 200 and display.headers["content-type"] == "image/webp"
+    assert Image.open(io.BytesIO(display.content)).format == "WEBP"
+    assert client.get(f"{API}/me/photos/body?format=webp", headers=other_headers).status_code == 204
+    assert client.get(f"{API}/me/photos/body?format=original", headers=owner_headers).content == own_photo.content
 
     # onboarding 草稿过期后，按用户索引的照片仍可供 App 试穿使用。
     data = selfit_onboarding._load_store()

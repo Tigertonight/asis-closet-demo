@@ -7,7 +7,7 @@ from threading import RLock
 from urllib.parse import quote
 
 from starlette.responses import RedirectResponse
-from starlette.staticfiles import StaticFiles
+from app.image_delivery import ImageStaticFiles as StaticFiles
 
 from app.material_assets import MaterialRegistry, asset_content_url
 

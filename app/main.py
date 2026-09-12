@@ -13,8 +13,9 @@ import httpx
 from dotenv import load_dotenv
 from fastapi import Depends, FastAPI, File, Form, HTTPException, Request, UploadFile
 from fastapi.exceptions import RequestValidationError
-from fastapi.responses import FileResponse, HTMLResponse, JSONResponse, PlainTextResponse, RedirectResponse, Response, StreamingResponse
-from fastapi.staticfiles import StaticFiles
+from fastapi.responses import HTMLResponse, JSONResponse, PlainTextResponse, RedirectResponse, Response, StreamingResponse
+from app.image_delivery import ImageFileResponse as FileResponse
+from app.image_delivery import ImageStaticFiles as StaticFiles
 from starlette.concurrency import run_in_threadpool
 from app.recommendation_profile import resolve_profile, preview_profile
 from app.recommendation_feed import create_feed, continue_feed, validate_feedback
@@ -521,7 +522,7 @@ async def user_asset(
             hydrate_user_from_demo_data(str(user["user_id"]))
         if not target.exists() or not target.is_file():
             raise StarletteHTTPException(status_code=404, detail="没有找到这个资源")
-        return FileResponse(target)
+        return FileResponse(target, headers={"Cache-Control": "private, max-age=300"})
 
 
 @app.post("/analyze")

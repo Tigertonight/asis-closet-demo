@@ -6,7 +6,7 @@
 
 支持的板块类型：
 - steps   标题 + 编号步骤列表
-- types   标题 + 16 型人格卡片墙（卡片图自动取 /static/selfit/assets/personality/<EN>/hero.png）
+- types   标题 + 16 型人格卡片墙（卡片图自动取 /static/selfit/assets/personality/<EN>/hero.webp）
 - features 标题 + 特性卡片
 - cta     结尾大按钮
 """
@@ -58,9 +58,9 @@ def load_site_content() -> dict[str, Any]:
 
 def _hero_image(code: str) -> str:
     lowered = str(code or "").strip().lower()
-    asset = Path(__file__).resolve().parent / "static" / "selfit" / "assets" / "personality" / lowered / "hero.png"
+    asset = Path(__file__).resolve().parent / "static" / "selfit" / "assets" / "personality" / lowered / "hero.webp"
     if lowered and asset.exists():
-        return f"/static/selfit/assets/personality/{_esc(lowered)}/hero.png"
+        return f"/static/selfit/assets/personality/{_esc(lowered)}/hero.webp"
     return "/static/selfit/assets/personality/placeholder-card.svg"
 
 
@@ -265,7 +265,7 @@ def render_site_html(content: dict[str, Any]) -> str:
           {f'<a class="btn btn--ghost btn--lg" href="{_safe_href(secondary.get("href"))}">{_esc(secondary.get("label"))}</a>' if secondary.get("label") else ""}
         </div>
       </div>
-      <img class="hero-board" src="/static/selfit/assets/login-persona-board@2x.png" alt="selfit 风格人格展示" width="2808" height="3208" fetchpriority="high" />
+      <img class="hero-board" src="/static/selfit/assets/login-persona-board@2x.webp" alt="selfit 风格人格展示" width="2808" height="3208" fetchpriority="high" />
     </div>
     <div class="container">
       {sections_html}

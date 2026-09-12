@@ -31,7 +31,7 @@
     id: `reference-${i}`,
     name: "灵感套装",
     raw: {can_delete:true},
-    src: `${A}main-app/outfit-reference-${i}.svg`,
+    src: `${A}main-app/outfit-reference-${i}.webp`,
     items: fixtures,
     saved: i === 5,
   }));
@@ -54,7 +54,7 @@
       "清爽学院穿搭",
       "海边灵感",
     ][i],
-    src: `${A}${n}-media.svg`,
+    src: `${A}${n}-media.webp`,
     flat: n.startsWith("outfit"),
     kind: n.startsWith("outfit") ? "outfit" : "note",
     width:184, height:245,
@@ -98,7 +98,7 @@
     }).catch(error => { visitorReady = null; throw error; });
     return visitorReady;
   }
-  function mediaURL(path) {
+  function mediaURL(path, original = false) {
     if (!path) return "";
     try {
       const url = new URL(path, location.origin);
@@ -111,7 +111,7 @@
         savedSession?.accessToken
       )
         url.searchParams.set("access_token", savedSession.accessToken);
-      return url.href;
+      return window.SelfitImageURL ? window.SelfitImageURL(url.href, { original }) : url.href;
     } catch {
       return "";
     }
@@ -143,7 +143,7 @@
     importItems: reference ? fixtures : [], importSelection: new Set(reference ? fixtures.map(x=>x.id) : []), importPhoto: reference ? feedFixtures[3].src : "", importSaving:false, importError:"",
     savedNotes: [],
     current: reference ? feedFixtures[3] : null,
-    photo: reference ? `${A}main-app/mirror-reference-photo.svg` : "",
+    photo: reference ? `${A}main-app/mirror-reference-photo.webp` : "",
     viewerPhoto: params.get("preview") === "photo",
     file: null,
     modelId: "",
@@ -266,7 +266,7 @@
         ([id, label]) =>
           `<button class="nav-item" data-page="${id}" ${state.page === id ? 'aria-current="page"' : ""}><span>${label}</span>${state.page === id ? (id === "mirror" ? image(asset("mirror"), "", "nav-ornament") : id === "inspiration" ? image(asset("butterfly"), "", "nav-ornament butterfly") : image(`${A}main-app/nav-shirt.webp`, "", "nav-shirt")) : ""}</button>`,
       )
-      .join("") + `<button class="nav-ai" data-action="open-chat" aria-label="AI 搭配对话">${image(`${A}main-app/nav-ai-lace.png?v=20260910`,"")}</button>`;
+      .join("") + `<button class="nav-ai" data-action="open-chat" aria-label="AI 搭配对话">${image(`${A}main-app/nav-ai-lace.webp?v=20260910`,"")}</button>`;
   }
   function card(x, kind = "item", i = 0) {
     const mirrorNote = !reference && state.page === "mirror" && kind === "outfit";
@@ -337,7 +337,7 @@
               category === "all" ||
               categoryGroup(x.category) === category,
           );
-    return `<section class="mirror-screen ${styling ? "styling-mode" : "model-mode"}" aria-label="试衣镜"><div class="mirror-stage ${styling ? "styling" : ""} ${pending ? "is-generating" : ""} ${state.result ? "has-result" : ""} ${framedPhoto ? "has-framed-photo" : ""}" aria-busy="${Boolean(pending)}">${image(styling ? `${A}mirror-styling-background.svg?v=20260908-aligned` : `${A}main-app/mirror-background.svg`, "", "stage-background")}<button class="mirror-profile-card" data-page="profile" aria-label="我的档案，查看风格报告"><span class="profile-card-title" aria-hidden="true">my<br>style</span><span>我的档案</span></button><div class="arch"></div>${
+    return `<section class="mirror-screen ${styling ? "styling-mode" : "model-mode"}" aria-label="试衣镜"><div class="mirror-stage ${styling ? "styling" : ""} ${pending ? "is-generating" : ""} ${state.result ? "has-result" : ""} ${framedPhoto ? "has-framed-photo" : ""}" aria-busy="${Boolean(pending)}">${image(styling ? `${A}mirror-styling-background.webp?v=20260908-aligned` : `${A}main-app/mirror-background.webp`, "", "stage-background")}<button class="mirror-profile-card" data-page="profile" aria-label="我的档案，查看风格报告"><span class="profile-card-title" aria-hidden="true">my<br>style</span><span>我的档案</span></button><div class="arch"></div>${
       styling && !reference
         ? livePieces()
         : styling
@@ -360,7 +360,7 @@
                 `model-photo ${!reference || state.file ? "personal" : ""}`,
               )}${!reference || state.file ? '</div>' : ''}`
             : '<div class="empty-stage"><span>先放入你的全身照</span><button data-action="model">选择模特</button></div>'
-    }${styling && !reference ? canvasTools() : ""}${pending ? `<div class="mirror-generation" role="status" aria-live="polite">${image(`${A}main-app/mirror-loading.svg`, '正在试穿')}</div>` : ""}${!styling && !pending ? `<button class="mirror-result-actions" data-action="result-actions" aria-label="绑定智能穿衣镜">${image(`${A}main-app/mirror-result-actions.svg`, "")}</button>` : ""}${!styling && !pending ? `<button class="mirror-history" data-action="tryon-history" aria-label="试穿历史">${image(`${A}main-app/mirror-history.svg`, "")}</button>` : ""}${!pending ? `<div class="mirror-edit-tools" role="group" aria-label="试衣镜工具"><button data-action="toggle" aria-label="${styling ? '看上身' : '看单品'}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 8a8 8 0 0 0-14-2L3 9m0-5v5h5M4 16a8 8 0 0 0 14 2l3-3m0 5v-5h-5"/></svg><span>${styling ? '看上身' : '看单品'}</span></button><button data-action="model" aria-label="换模特或上传我的照片"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="7" r="4"/><path d="M4 21v-3a8 8 0 0 1 16 0v3Z"/></svg><span>换模特</span></button></div>` : ''}${!styling && !pending && (state.result || state.photo) ? `<button class="result-expand" data-action="open-viewer" aria-label="${state.result ? '查看试穿大图' : '查看模特大图'}">${image(`${A}main-app/mirror-expand.svg`, "")}</button>${state.current ? `<button class="mirror-favorite" data-action="favorite" aria-label="${state.current.saved ? '取消收藏搭配' : '收藏搭配'}" aria-pressed="${Boolean(state.current.saved)}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.9-6.2-3.3-6.2 3.3L7 14.2l-5-4.9 6.9-1Z"/></svg></button>` : ""}` : ""}</div><div class="mirror-recommendations">${
+    }${styling && !reference ? canvasTools() : ""}${pending ? `<div class="mirror-generation" role="status" aria-live="polite">${image(`${A}main-app/mirror-loading.webp`, '正在试穿')}</div>` : ""}${!styling && !pending ? `<button class="mirror-result-actions" data-action="result-actions" aria-label="绑定智能穿衣镜">${image(`${A}main-app/mirror-result-actions.webp`, "")}</button>` : ""}${!styling && !pending ? `<button class="mirror-history" data-action="tryon-history" aria-label="试穿历史">${image(`${A}main-app/mirror-history.webp`, "")}</button>` : ""}${!pending ? `<div class="mirror-edit-tools" role="group" aria-label="试衣镜工具"><button data-action="toggle" aria-label="${styling ? '看上身' : '看单品'}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 8a8 8 0 0 0-14-2L3 9m0-5v5h5M4 16a8 8 0 0 0 14 2l3-3m0 5v-5h-5"/></svg><span>${styling ? '看上身' : '看单品'}</span></button><button data-action="model" aria-label="换模特或上传我的照片"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="7" r="4"/><path d="M4 21v-3a8 8 0 0 1 16 0v3Z"/></svg><span>换模特</span></button></div>` : ''}${!styling && !pending && (state.result || state.photo) ? `<button class="result-expand" data-action="open-viewer" aria-label="${state.result ? '查看试穿大图' : '查看模特大图'}">${image(`${A}main-app/mirror-expand.svg`, "")}</button>${state.current ? `<button class="mirror-favorite" data-action="favorite" aria-label="${state.current.saved ? '取消收藏搭配' : '收藏搭配'}" aria-pressed="${Boolean(state.current.saved)}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.9-6.2-3.3-6.2 3.3L7 14.2l-5-4.9 6.9-1Z"/></svg></button>` : ""}` : ""}</div><div class="mirror-recommendations">${
       state.loading || (state.source === "closet" && state.wardrobeLoading) || (homeNotes && state.homeNotesLoading)
         ? '<p class="empty" role="status">正在整理你的搭配…</p>'
         : state.error || (homeNotes && state.homeNotesError)
@@ -406,7 +406,7 @@
         crop.width=Math.ceil((right-left+1)/scale);crop.height=Math.ceil((bottom-top+1)/scale);
         crop.getContext("2d").drawImage(img,left/scale,top/scale,crop.width,crop.height,0,0,crop.width,crop.height);
         const inkRatio=ink/((right-left+1)*(bottom-top+1));
-        crop.toBlob(blob=>{if(!blob || done)return finish(src,crop.width/crop.height,inkRatio);const url=URL.createObjectURL(blob);state.uploadURLs.push(url);finish(url,crop.width/crop.height,inkRatio);},"image/png");
+        crop.toBlob(blob=>{if(!blob || done)return finish(src,crop.width/crop.height,inkRatio);const url=URL.createObjectURL(blob);state.uploadURLs.push(url);finish(url,crop.width/crop.height,inkRatio);},"image/webp",.92);
       } catch { finish(src); }
     };
     img.src=mediaURL(src);
@@ -455,7 +455,7 @@
     return `<div class="wardrobe-empty">${mirrorPairArt()}<h2>${title}</h2>${copy ? `<p>${copy.split('\n').join('<br>')}</p>` : ''}<button class="primary" ${saved || outfits ? 'data-page="inspiration"' : 'data-action="upload-garment"'}>${saved || outfits ? '去灵感库逛逛' : '上传第一件单品'}</button>${!saved && !outfits ? '<button class="empty-browse" data-page="inspiration">先看看穿搭灵感 <span aria-hidden="true">→</span></button>' : ''}</div>`;
   }
   function mirrorPairArt(className = "") {
-    return `<div class="wardrobe-empty-art ${className}" aria-hidden="true"><span class="empty-mirror empty-mirror--back">${image('/static/selfit/assets/lace-card@4x.png', '', 'empty-mirror-frame')}${image(asset('butterfly'), '', 'empty-mirror-butterfly')}</span><span class="empty-mirror empty-mirror--front">${image('/static/selfit/assets/lace-card@4x.png', '', 'empty-mirror-frame')}${image(`${A}closet-shirt.svg`, '', 'empty-mirror-shirt')}</span></div>`;
+    return `<div class="wardrobe-empty-art ${className}" aria-hidden="true"><span class="empty-mirror empty-mirror--back">${image('/static/selfit/assets/lace-card@4x.webp', '', 'empty-mirror-frame')}${image(asset('butterfly'), '', 'empty-mirror-butterfly')}</span><span class="empty-mirror empty-mirror--front">${image('/static/selfit/assets/lace-card@4x.webp', '', 'empty-mirror-frame')}${image(`${A}closet-shirt.webp`, '', 'empty-mirror-shirt')}</span></div>`;
   }
   const chatPrompts = [
     ['日常通勤', '想穿得利落，又不太正式', '想要一套利落但不太正式的通勤搭配，可以给我一些建议吗？'],
@@ -685,7 +685,7 @@
     if(field === 'skin') return `<i class="profile-skin" style="background:${{'冷白肤':'#f5ddd0','暖白肤':'#f7dbc1','中性自然肤':'#fcd1bb','暖黄肤':'#dfb48a','橄榄肤':'#bbaa83','小麦色':'#b68c66'}[value] || '#eee'}"></i>`;
     const key = {'椭圆脸':'face-oval','圆脸':'face-round','方脸':'face-square','心形脸':'face-heart','菱形脸':'face-diamond','梨型':'body-pear','倒三角型':'body-inverted-triangle','沙漏型':'body-hourglass','矩型':'body-rectangle','苹果型':'body-apple'}[value];
     if(!key) return '<span class="profile-unknown">—</span>';
-    return image(['face-oval','body-rectangle'].includes(key) ? `${A}main-app/archive-${key}.svg` : `/static/selfit/assets/manual-selection/${key}@4x.webp`, '', 'profile-attribute-art');
+    return image(['face-oval','body-rectangle'].includes(key) ? `${A}main-app/archive-${key}.webp` : `/static/selfit/assets/manual-selection/${key}@4x.webp`, '', 'profile-attribute-art');
   }
   function profileHeader(edit=false) {
     return `<header class="profile-header"><button data-page="${edit ? 'profile' : 'mirror'}" aria-label="${edit ? '返回我的档案' : '返回试衣镜'}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 5-7 7 7 7"/></svg></button><h1>${edit ? '编辑档案' : '我的档案'}</h1><span aria-hidden="true"></span></header>`;
@@ -721,7 +721,7 @@
     if(!state.profile) return profileStatus();
     const p=state.profile,r=p.report;
     const genderLabel=p.gender==='male'?'男性':p.gender==='female'?'女性':'请选择';
-    return `<section class="profile-screen">${profileHeader()}<button class="profile-gender-row" data-action="edit-gender" aria-label="修改性别"><span>性别</span><strong>${genderLabel}</strong><span aria-hidden="true">›</span></button>${p.tested ? `<div class="profile-analysis profile-suit"><div class="profile-suit-photos">${profilePhoto('face')}${profilePhoto('body')}</div><div class="profile-suit-cards" data-selfit-suit-cards aria-label="身体特征分析"></div></div>` : ''}${r ? `<div class="profile-report-card"><a class="profile-report" href="/selfit?from=mirror&amp;report=latest&amp;return_screen=profile" aria-label="查看我的风格报告">${r.heroImage?.src ? image(r.heroImage.src,r.title || '我的风格报告') : `<strong>${esc(r.typeId?.toUpperCase())}<br>${esc(r.title || '我的风格报告')}</strong>`}</a><a class="profile-retest" href="/selfit?from=mirror&amp;entry=retest">重新测试 →</a></div>` : `<a class="profile-test-invite" href="/selfit?from=mirror">${image(`${A}main-app/profile-test-pin.svg`, "", "profile-test-pin")}<strong>selfit 16 型格测试</strong>${image(`${A}main-app/profile-test-art.svg`, 'suit · like · vibe')}<span>去测试 →</span></a>`}<section class="profile-more"><h2>更多测试</h2><div><button disabled>${image(`${A}main-app/archive-more-mirror.webp`, "")}<span>专业脸型风格<small>即将开放</small></span></button><button disabled>${image(`${A}main-app/archive-more-flower.webp`, "")}<span>十二季肤色<small>即将开放</small></span></button></div></section>${!reference && typeof savedSession !== "undefined" && savedSession?.user && !String(savedSession.user.user_id || "").startsWith?.('guest_') && !savedSession.user.phone_e164 ? '<button class="profile-bind-phone" data-action="bind-phone">绑定手机号，换设备不丢数据</button>' : ''}${!reference ? '<button class="profile-logout" data-action="logout">退出登录</button>' : ''}</section>`;
+    return `<section class="profile-screen">${profileHeader()}<button class="profile-gender-row" data-action="edit-gender" aria-label="修改性别"><span>性别</span><strong>${genderLabel}</strong><span aria-hidden="true">›</span></button>${p.tested ? `<div class="profile-analysis profile-suit"><div class="profile-suit-photos">${profilePhoto('face')}${profilePhoto('body')}</div><div class="profile-suit-cards" data-selfit-suit-cards aria-label="身体特征分析"></div></div>` : ''}${r ? `<div class="profile-report-card"><a class="profile-report" href="/selfit?from=mirror&amp;report=latest&amp;return_screen=profile" aria-label="查看我的风格报告">${r.heroImage?.src ? image(r.heroImage.src,r.title || '我的风格报告') : `<strong>${esc(r.typeId?.toUpperCase())}<br>${esc(r.title || '我的风格报告')}</strong>`}</a><a class="profile-retest" href="/selfit?from=mirror&amp;entry=retest">重新测试 →</a></div>` : `<a class="profile-test-invite" href="/selfit?from=mirror">${image(`${A}main-app/profile-test-pin.webp`, "", "profile-test-pin")}<strong>selfit 16 型格测试</strong>${image(`${A}main-app/profile-test-art.webp`, 'suit · like · vibe')}<span>去测试 →</span></a>`}<section class="profile-more"><h2>更多测试</h2><div><button disabled>${image(`${A}main-app/archive-more-mirror.webp`, "")}<span>专业脸型风格<small>即将开放</small></span></button><button disabled>${image(`${A}main-app/archive-more-flower.webp`, "")}<span>十二季肤色<small>即将开放</small></span></button></div></section>${!reference && typeof savedSession !== "undefined" && savedSession?.user && !String(savedSession.user.user_id || "").startsWith?.('guest_') && !savedSession.user.phone_e164 ? '<button class="profile-bind-phone" data-action="bind-phone">绑定手机号，换设备不丢数据</button>' : ''}${!reference ? '<button class="profile-logout" data-action="logout">退出登录</button>' : ''}</section>`;
   }
   function profileFeatureEdit() {
     const field = state.profileEditingField;
@@ -809,7 +809,7 @@
     photo.loading=true;photo.error=false;
     refreshProfilePhoto(kind);
     try {
-      const response=await fetch(photo.source,{headers:{Authorization:`Bearer ${savedSession.accessToken}`}});
+      const response=await fetch(photo.source,{headers:{Authorization:`Bearer ${savedSession.accessToken}`,Accept:'image/webp,image/*'}});
       if(response.status===204 || response.status===404) {
         if(state.profilePhotos[kind]===photo && state.profile) {state.profile.photos[kind]=null;photo.source='';}
       } else {
@@ -830,7 +830,7 @@
     if(state.profileLoading || (state.profile && !force)) return;
     state.profileLoading=true;state.profileError='';
     if(reference) {
-      state.profile={tested:true,revision:1,gender:params.get('profile_gender')==='male'?'male':'female',manual:{faceShape:'椭圆脸',skin:'中性自然肤',bodyShape:'矩型'},photos:{face:`${A}main-app/archive-face-reference.svg`,body:params.get('profile_gender')==='male'?`${A}main-app/archive-body-reference.svg`:'/static/selfit/assets/samples/female-body-sample-v2.jpg'},report:{reportId:'reference',typeId:'flou',title:'造梦浪漫',heroImage:{src:'/static/selfit/assets/personality/flou/hero.png?v=20260907-config-v2'}},suit:REFERENCE_PROFILE_SUIT};
+      state.profile={tested:true,revision:1,gender:params.get('profile_gender')==='male'?'male':'female',manual:{faceShape:'椭圆脸',skin:'中性自然肤',bodyShape:'矩型'},photos:{face:`${A}main-app/archive-face-reference.webp`,body:params.get('profile_gender')==='male'?`${A}main-app/archive-body-reference.webp`:'/static/selfit/assets/samples/female-body-sample-v2.webp'},report:{reportId:'reference',typeId:'flou',title:'造梦浪漫',heroImage:{src:'/static/selfit/assets/personality/flou/hero.webp?v=20260907-config-v2'}},suit:REFERENCE_PROFILE_SUIT};
       if(params.get('profile_state')==='untested') state.profile={tested:false,manual:{},photos:{},report:null,revision:1};
       if(params.get('profile_state')==='no-photo') state.profile.photos={face:null,body:null};
       state.profileSuit=state.profile.suit || null;
@@ -975,8 +975,8 @@
     if (!src && !reference && (state.loading || (state.job?.job_id && !["completed","failed"].includes(state.job.status))))
       return `<section class="result-viewer"><p class="empty" role="status">正在准备试穿大图…</p>${back}</section>`;
     if (!src && !reference) return `<section class="result-viewer"><p class="empty">还没有可查看的试穿图。${back}</p></section>`;
-    if (!reference || state.file) return `<section class="result-viewer is-photo" aria-label="试穿大图">${image(`${A}main-app/mirror-background.svg`,'','result-viewer-background')}<div class="result-viewer-photo-area">${image(src,state.viewerPhoto ? '当前模特大图' : '试穿结果大图','result-viewer-photo')}</div><button class="viewer-collapse" data-action="close-viewer" aria-label="收起大图，${returnLabel}">${image(`${A}main-app/result-viewer-collapse.svg`,'')}<span>收起大图</span></button></section>`;
-    return `<section class="result-viewer" aria-label="试穿大图">${image(`${A}main-app/result-viewer-background.svg`,'','result-viewer-background')}${reference && !state.file ? image(`${A}main-app/result-viewer-model.svg`,state.viewerPhoto ? '当前模特大图' : '原稿试穿示例','result-viewer-reference') : image(src,state.viewerPhoto ? '当前模特大图' : '试穿结果大图','result-viewer-photo')}<button class="viewer-collapse" data-action="close-viewer" aria-label="收起大图，${returnLabel}">${image(`${A}main-app/result-viewer-collapse.svg`,'')}</button></section>`;
+    if (!reference || state.file) return `<section class="result-viewer is-photo" aria-label="试穿大图">${image(`${A}main-app/mirror-background.webp`,'','result-viewer-background')}<div class="result-viewer-photo-area">${image(src,state.viewerPhoto ? '当前模特大图' : '试穿结果大图','result-viewer-photo')}</div><button class="viewer-collapse" data-action="close-viewer" aria-label="收起大图，${returnLabel}">${image(`${A}main-app/result-viewer-collapse.svg`,'')}<span>收起大图</span></button></section>`;
+    return `<section class="result-viewer" aria-label="试穿大图">${image(`${A}main-app/result-viewer-background.webp`,'','result-viewer-background')}${reference && !state.file ? image(`${A}main-app/result-viewer-model.webp`,state.viewerPhoto ? '当前模特大图' : '原稿试穿示例','result-viewer-reference') : image(src,state.viewerPhoto ? '当前模特大图' : '试穿结果大图','result-viewer-photo')}<button class="viewer-collapse" data-action="close-viewer" aria-label="收起大图，${returnLabel}">${image(`${A}main-app/result-viewer-collapse.svg`,'')}</button></section>`;
   }
   function importReview() {
     if (!reference && state.error) return `<section class="import-review">${empty(state.error)}</section>`;
@@ -1474,7 +1474,7 @@
   async function photoFile(photo = state.photo, file = state.file, modelId = state.modelId) {
     if (file) return file;
     if (!photo) throw Error("先选择模特或上传全身照。");
-    const response = await fetch(mediaURL(photo));
+    const response = await fetch(mediaURL(photo, true));
     if (!response.ok) throw Error("这张照片暂时无法使用，请重新上传。");
     const blob = await response.blob();
     return new File(
@@ -2599,7 +2599,7 @@
         case "save-result": {
           if (!state.result) return;
           const a = document.createElement("a");
-          const response = await fetch(mediaURL(state.result));
+          const response = await fetch(mediaURL(state.result, true));
           if (!response.ok) throw Error("图片暂时无法保存，请重试。");
           const downloadURL = URL.createObjectURL(await response.blob());
           a.href = downloadURL;

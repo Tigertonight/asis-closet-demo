@@ -9,7 +9,8 @@
   };
   const assetUrl = (value) => {
     const source=String(value||'');
-    return source.startsWith('./assets/') ? `../assets/${source.slice('./assets/'.length)}` : source;
+    const url = source.startsWith('./assets/') ? `../assets/${source.slice('./assets/'.length)}` : source;
+    return window.SelfitImageURL ? window.SelfitImageURL(url) : url;
   };
   const escapeHtml = (value) => String(value ?? '').replace(/[&<>'"]/g, (character) => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', "'":'&#39;', '"':'&quot;' })[character]);
   const inlineMarkdown = (value) => escapeHtml(value).replace(/`([^`]+)`/g,'<code>$1</code>').replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g,'<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>').replace(/\*\*([^*]+)\*\*/g,'<strong>$1</strong>').replace(/~~([^~]+)~~/g,'<s>$1</s>').replace(/(^|[^*])\*([^*]+)\*/g,'$1<em>$2</em>');
@@ -24,11 +25,11 @@
   };
   const render = (data = {}) => {
     const heroSource=assetUrl(data.heroImage?.src);const usesReferenceCover=!heroSource&&data.title==='造梦浪漫型人'&&data.eyebrow==='LACE';nodes.hero.classList.toggle('report-hero--full',Boolean(heroSource));nodes.hero.classList.toggle('report-hero--reference',usesReferenceCover);nodes.heroImage.src=heroSource;nodes.heroImage.alt=data.heroImage?.alt||'';nodes.heroImage.hidden=!heroSource;nodes.title.textContent=data.title||'';nodes.eyebrow.textContent=data.eyebrow||'';nodes.illustration.src=assetUrl(data.illustration?.imageUrl);nodes.illustration.alt=data.illustration?.alt||'';nodes.illustration.closest('figure').hidden=usesReferenceCover||!data.illustration?.imageUrl;
-    nodes.traits.replaceChildren(...(data.traits||[]).map((trait)=>{const card=Object.assign(document.createElement('span'),{className:'report-trait'});card.append(Object.assign(document.createElement('img'),{src:'/static/selfit/assets/lace-card@4x.png',alt:''}),Object.assign(document.createElement('b'),{textContent:trait}));return card}));
+    nodes.traits.replaceChildren(...(data.traits||[]).map((trait)=>{const card=Object.assign(document.createElement('span'),{className:'report-trait'});card.append(Object.assign(document.createElement('img'),{src:'/static/selfit/assets/lace-card@4x.webp',alt:''}),Object.assign(document.createElement('b'),{textContent:trait}));return card}));
     nodes.summary.innerHTML=markdown(data.summary);nodes.summary.hidden=!data.summary;
     const colors=(data.colors||[]).slice(0,5);nodes.colors.replaceChildren(...colors.map((color)=>{const swatch=Object.assign(document.createElement('span'),{textContent:color.name||''});swatch.style.setProperty('--c',color.value||'transparent');return swatch}));section('colors',colors.length>0);
     section('makeup',cards(nodes.makeup,data.makeup)>0);section('hair',cards(nodes.hair,data.hair)>0);nodes.outfitSummary.innerHTML=markdown(data.outfitSummary);nodes.outfitSummary.hidden=!data.outfitSummary;section('outfits',Boolean(cards(nodes.outfits,data.outfits)||data.outfitSummary));
-    const source=data.source||{};const hasSource=Boolean(source.name||source.copy||source.avatars?.imageUrl);nodes.sourceLogo.alt=source.name||'小红书';nodes.sourceLogo.hidden=!hasSource;nodes.sourceCopy.textContent=source.copy||'';nodes.sourceAvatars.src=assetUrl(source.avatars?.imageUrl)||'/static/selfit/assets/report-user-avatar-stack@4x.png';nodes.sourceAvatars.alt=source.avatars?.alt||'3 位真实用户头像';nodes.sourceAvatars.hidden=!hasSource;nodes.sourceLogo.closest('.report-proof').hidden=!hasSource;
+    const source=data.source||{};const hasSource=Boolean(source.name||source.copy||source.avatars?.imageUrl);nodes.sourceLogo.alt=source.name||'小红书';nodes.sourceLogo.hidden=!hasSource;nodes.sourceCopy.textContent=source.copy||'';nodes.sourceAvatars.src=assetUrl(source.avatars?.imageUrl)||'/static/selfit/assets/report-user-avatar-stack@4x.webp';nodes.sourceAvatars.alt=source.avatars?.alt||'3 位真实用户头像';nodes.sourceAvatars.hidden=!hasSource;nodes.sourceLogo.closest('.report-proof').hidden=!hasSource;
     nodes.adviceIntro.innerHTML=markdown(data.adviceIntro);nodes.adviceIntro.hidden=!data.adviceIntro;nodes.advice.replaceChildren(...(data.advice||[]).map((copy)=>{const point=Object.assign(document.createElement('div'),{className:'report-advice-point'});point.innerHTML=markdown(copy);return point}));nodes.advicePanel.hidden=!(data.adviceIntro||(data.advice||[]).length);
     window.dispatchEvent(new CustomEvent('report-template:rendered',{detail:{data}}));return data;
   };

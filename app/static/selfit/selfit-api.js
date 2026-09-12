@@ -74,6 +74,7 @@
       if (signal?.aborted) onAbort();
       else if (signal) signal.addEventListener('abort', onAbort, { once: true });
       const headers = formData ? { Accept: 'application/json' } : { ...jsonHeaders };
+      if (blob) headers.Accept = 'image/webp,image/*';
       if (idempotencyKey) headers['X-Idempotency-Key'] = idempotencyKey;
       const accessToken = this.getAccessToken();
       if (accessToken) headers.Authorization = `Bearer ${accessToken}`;
