@@ -669,6 +669,17 @@ dialog .close {
   width: 44px;
   height: 44px;
   font-size: 26px;
+  border-radius: 50%;
+}
+/* Opening a dialog reads its title, rather than highlighting the close icon.
+   Keyboard users still get a soft circular focus state, never a square frame. */
+dialog #sheetTitle:focus,
+dialog .close:focus {
+  outline: none;
+}
+dialog .close:focus-visible {
+  background: #f3e8ea;
+  color: var(--brand);
 }
 .mirror-binding-sheet h2 { margin-bottom:8px; }
 .mirror-binding-sheet p { margin:0 0 20px; }

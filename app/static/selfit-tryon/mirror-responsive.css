@@ -1,0 +1,98 @@
+/* The H5 viewport excludes browser chrome. Reserve navigation before laying out
+   the hero and notes; very short screens scroll above, never behind, the tabs. */
+.studio[data-screen="mirror"] {
+  --mirror-safe-bottom: max(0px, calc(env(safe-area-inset-bottom, 0px) - 24px));
+  --mirror-navigation-height: calc(109px + var(--mirror-safe-bottom));
+  height: 100vh;
+  height: var(--visual-viewport-height, 100dvh);
+}
+
+#studio[data-screen="mirror"] > #screen {
+  bottom: var(--mirror-navigation-height);
+  overscroll-behavior-y: contain;
+}
+
+#studio[data-screen="mirror"] > #navigation {
+  height: var(--mirror-navigation-height);
+  background-size: 100% 109px;
+  background-position: center top;
+}
+
+#studio[data-screen="mirror"] .mirror-screen {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+  padding: env(safe-area-inset-top, 0px) 0 0;
+}
+
+#studio[data-screen="mirror"] .mirror-stage {
+  --mirror-top-gap: clamp(24px, 7%, 42px);
+  flex: 1 0 260px;
+  height: auto;
+  min-height: 260px;
+  max-height: none;
+}
+
+.mirror-recommendations {
+  flex: none;
+  min-width: 0;
+  padding: 12px 0;
+}
+
+.mirror-recommendations .report-outfit-context {
+  margin: 0 17px 10px;
+}
+
+.mirror-screen .mirror-recommendations .strip {
+  margin-top: 0;
+}
+
+.mirror-recommendations .mirror-pagination {
+  margin-top: 12px;
+}
+
+/* Keep the complete portrait and its actions inside the hero's allocated row. */
+#studio[data-screen="mirror"] .model-mode .stage-background {
+  height: calc(100% - 16px);
+}
+
+#studio[data-screen="mirror"] .model-mode .arch,
+#studio[data-screen="mirror"] .model-mode .mirror-photo-frame,
+#studio[data-screen="mirror"] .model-mode .model-photo:not(.personal) {
+  top: var(--mirror-top-gap);
+  height: calc(100% - var(--mirror-top-gap));
+}
+
+#studio[data-screen="mirror"] .model-mode .result-expand,
+#studio[data-screen="mirror"] .mirror-favorite {
+  top: auto;
+  bottom: 0;
+}
+
+#studio[data-screen="mirror"] .mirror-result-actions {
+  top: var(--mirror-top-gap);
+}
+
+#studio[data-screen="mirror"] .mirror-history {
+  top: calc(var(--mirror-top-gap) + 52px);
+}
+
+#studio[data-screen="mirror"] .mirror-edit-tools {
+  top: auto;
+  bottom: 18%;
+}
+
+/* The reverse keeps its shared garment-coordinate box and clear undo controls. */
+#studio[data-screen="mirror"] .styling .arch,
+#studio[data-screen="mirror"] .outfit-composition,
+#studio[data-screen="mirror"] .composition-actions {
+  top: 60px;
+  height: calc(100% - 60px);
+}
+
+@media (min-width: 700px) {
+  .studio[data-screen="mirror"] {
+    height: min(852px, calc(var(--visual-viewport-height, 100dvh) - 48px));
+  }
+}
