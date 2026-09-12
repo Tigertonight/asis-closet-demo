@@ -1536,6 +1536,10 @@ button.composition-piece:focus-visible { outline:2px solid #8a011b; outline-offs
 .feed-card .feed-favorite[aria-pressed="true"] { color:#8a011b; }
 
 .topic-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px; }
+.inspiration-notes { grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px; }
+.topic-grid + .inspiration-notes { margin-top:24px; }
+.inspiration-notes .feed-open > img { object-fit:contain; }
+.note-persona-badge { pointer-events:none; }
 .topic-card { position:relative; display:block; min-width:0; padding:0; overflow:hidden; border-radius:16px; background:#f0eceb; text-align:left; }
 .topic-cover { display:block; width:100%; aspect-ratio:1; object-fit:cover; }
 .topic-previews { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:4px; padding:9px 10px 10px; }

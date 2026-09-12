@@ -17,8 +17,8 @@
         })[c],
     );
   const asset = (n) => `${A}${n}.webp`;
-  const image = (src, alt = "", cls = "") =>
-    `<img src="${esc(mirrorImageSource(src))}" alt="${esc(alt)}" class="${cls}" draggable="false">`;
+  const image = (src, alt = "", cls = "", lazy = false) =>
+    `<img src="${esc(mirrorImageSource(src))}" alt="${esc(alt)}" class="${cls}" draggable="false"${lazy ? ' loading="lazy" decoding="async"' : ""}>`;
   function modelDisplayURL(src) {
     return state.modelCatalog?.find(model => model.image_url === src)?.preview_url || src;
   }
@@ -136,7 +136,7 @@
     items: reference ? fixtures : [],
     outfits: reference ? fixtureOutfits : [],
     feed: reference ? [feedFixtures[2],feedFixtures[1],feedFixtures[4],feedFixtures[3],feedFixtures[6],feedFixtures[5]] : [],
-    topics: reference ? [{id:"reference-date",title:"赴一场约会",cover:feedFixtures[0].src,
+    topics: reference ? [{id:"reference-date",kind:"scene",title:"赴一场约会",cover:feedFixtures[0].src,
       previews:[feedFixtures[1].src,feedFixtures[2].src,asset("outfit")],
       entries:[feedFixtures[4],feedFixtures[3],feedFixtures[5],feedFixtures[5]]}] : [],
     topicId: params.get("topic") || (reference ? "reference-date" : ""),
@@ -556,7 +556,8 @@
     return `<section class="closet-screen wardrobe-source-layout ${outfits ? "wardrobe-outfits" : ""}" aria-label="衣帽间">${tabs}${pendingImport()?.job_id ? `<button class="resume-import" data-action="resume-import">${importStatusCopy()}</button>` : ""}${state.wardrobeError ? `<div class="empty">${esc(state.wardrobeError)}<button class="secondary" data-action="reload">重新加载</button></div>` : `${outfits && state.savedNotesError ? `<div class="empty">${esc(state.savedNotesError)}<button class="secondary" data-action="reload">重新加载</button></div>` : ""}${content}${!list.length && !(outfits && state.savedNotesError) ? wardrobeEmpty() : ""}`}</section>`;
   }
   function feedCard(x) {
-    return `<article class="feed-card ${x.flat ? "flat" : ""} ${x.kind === "note" ? "note-card" : ""}" ${x.kind === "note" ? `style="aspect-ratio:${x.width || 184}/${x.height || 245}"` : ""}><button class="feed-open" data-detail="${esc(x.id)}" aria-label="查看${esc(x.name)}">${image(x.src, x.name)}</button>${`<button class="feed-favorite" data-action="favorite" data-favorite-id="${esc(x.id)}" aria-label="${x.saved ? '取消收藏' : '收藏'}${esc(x.name)}" aria-pressed="${Boolean(x.saved)}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.9-6.2-3.3-6.2 3.3L7 14.2l-5-4.9 6.9-1Z"/></svg></button>`}<button class="try-chip" data-try="${esc(x.id)}">试穿</button></article>`;
+    const personaBadge = x.personaLabel ? `<span class="topic-badge note-persona-badge">#${esc(x.personaLabel)}</span>` : "";
+    return `<article class="feed-card ${x.flat ? "flat" : ""} ${x.kind === "note" ? "note-card" : ""}" ${x.kind === "note" ? `style="aspect-ratio:${x.width || 184}/${x.height || 245}"` : ""}><button class="feed-open" data-detail="${esc(x.id)}" aria-label="查看${esc(x.name)}">${image(x.src, x.name, "", true)}</button>${personaBadge}${`<button class="feed-favorite" data-action="favorite" data-favorite-id="${esc(x.id)}" aria-label="${x.saved ? '取消收藏' : '收藏'}${esc(x.name)}" aria-pressed="${Boolean(x.saved)}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.9-6.2-3.3-6.2 3.3L7 14.2l-5-4.9 6.9-1Z"/></svg></button>`}<button class="try-chip" data-try="${esc(x.id)}">试穿</button></article>`;
   }
   function topicCard(collection) {
     return `<button class="topic-card" data-topic="${esc(collection.id)}" aria-label="查看${esc(collection.title)}合集，共${collection.entries.length}套穿搭">${image(collection.cover, "", "topic-cover")}<span class="topic-badge">#${esc(collection.title)}</span><span class="topic-previews" aria-hidden="true">${(collection.previews || []).slice(0,3).map(src=>image(src, "")).join("")}</span></button>`;
@@ -577,8 +578,15 @@
   function inspiration() {
     if (state.loading || state.libraryLoading)
       return `<section class="inspiration-screen"><p class="empty" role="status">正在整理穿搭库…</p></section>`;
-    const collections = state.topics || [];
-    return `<section class="inspiration-screen" aria-label="灵感库"><div class="topic-grid">${collections.map(topicCard).join("")}</div>${!collections.length ? `<div class="empty">${esc(state.topicsError || "暂时没有可用的主题穿搭。")}<button class="secondary" data-action="reload">重新加载合集</button></div>` : state.topicsError ? `<button class="secondary load-more" data-action="reload">${esc(state.topicsError)}</button>` : ""}</section>`;
+    const topics = state.topics || [];
+    const isScene = collection => ["scene", "trend"].includes(collection.kind);
+    const collections = topics.filter(isScene);
+    const notes = uniqueItems(topics.filter(collection => !isScene(collection)).flatMap(collection =>
+      (collection.entries || []).map(entry => ({...entry, personaLabel: collection.title}))
+    ));
+    const collectionGrid = collections.length ? `<div class="topic-grid" aria-label="场景合集">${collections.map(topicCard).join("")}</div>` : "";
+    const noteGrid = notes.length ? `<div class="feed inspiration-notes" aria-label="穿搭笔记">${[0,1].map(col => `<div class="feed-column">${notes.filter((_,i) => i%2 === col).map(feedCard).join("")}</div>`).join("")}</div>` : "";
+    return `<section class="inspiration-screen" aria-label="灵感库">${collectionGrid}${noteGrid}${!collections.length && !notes.length ? `<div class="empty">${esc(state.topicsError || "暂时没有可用的穿搭灵感。")}<button class="secondary" data-action="reload">重新加载</button></div>` : state.topicsError ? `<button class="secondary load-more" data-action="reload">${esc(state.topicsError)}</button>` : ""}</section>`;
   }
   function detail() {
     if (state.loading)
