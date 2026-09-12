@@ -7,6 +7,9 @@
     'silhouette', 'complexity', 'time_orientation',
     'saturation', 'temperature', 'completion', 'individuality',
   ];
+  const ALGORITHM_VERSION = 'v1.5-male-four';
+  // 与后端同步：素材补齐后再扩展男性候选，不改变距离计算或同分顺序。
+  const MALE_PERSONA_CODES = Object.freeze(['EASE', 'EDGE', 'MUTE', 'WABI']);
 
   // v1.3：VIBE1 定版三档映射（与后端 selfit_persona.py 同步，对拍测试强制一致）。
   const VIBE_COMPLETION_VALUES = { A: 20, B: 55, C: 90 };
@@ -152,8 +155,9 @@
     return { numeric: weightedDistance, total: penalty === null ? weightedDistance : weightedDistance + penalty };
   };
 
-  const classifyPersona = (vector) => {
+  const classifyPersona = (vector, gender = null) => {
     const ranked = PERSONAS
+      .filter((persona) => gender !== 'male' || MALE_PERSONA_CODES.includes(persona.code))
       .map((persona) => Object.assign({ persona }, personaDistance(persona, vector)))
       .sort((a, b) => a.total - b.total);
     const primary = ranked[0];
@@ -170,6 +174,8 @@
   };
 
   window.SelfitPersona = Object.freeze({
+    ALGORITHM_VERSION,
+    MALE_PERSONA_CODES,
     DIMENSIONS,
     PALETTE_SIGNALS,
     buildUserVector,

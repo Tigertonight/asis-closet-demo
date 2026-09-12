@@ -126,7 +126,10 @@ class GenderReportTests(unittest.TestCase):
             female_code = renderer.call_args.args[0]
             session['gender'] = 'male'
             selfit_report.default_report_builder(session)
-            self.assertEqual(renderer.call_args.args, (female_code, 'male'))
+            male_code = selfit_report.selfit_persona.classify_persona(
+                selfit_report.selfit_persona.build_user_vector(session), 'male')['primary_persona']
+            self.assertEqual(renderer.call_args.args, (male_code, 'male'))
+            self.assertIn(male_code, selfit_report.selfit_persona.MALE_PERSONA_CODES)
 
 
 if __name__ == '__main__':

@@ -836,6 +836,9 @@ button {
 .report-hero-copy { position: relative; z-index: 3; text-align: center; }
 .report-hero small { display: block; margin-top: 1px; font: 600 16px/21px "Comic Sans MS", "Bradley Hand", cursive; letter-spacing: .02em; opacity: 1; text-transform: uppercase; }
 .report-hero h1 { margin: 0; font: 300 20px/28px "Songti SC", STSong, Georgia, serif; letter-spacing: .04em; }
+.report-hero--text-only { aspect-ratio: auto; padding: 24px 20px 12px; color: var(--ink); }
+.report-hero--text-only h1 { font-weight: 600; }
+.report-hero--text-only small { margin-top: 4px; color: var(--muted); }
 .report-hero-art { align-self: end; justify-self: center; width: 188px; height: 180px; margin: -2px 0 0; }
 .report-hero-art img { display: block; width: 100%; height: 100%; object-fit: contain; }
 .report-hero-reference { position: absolute; z-index: 2; inset: 0; display: none; pointer-events: none; }

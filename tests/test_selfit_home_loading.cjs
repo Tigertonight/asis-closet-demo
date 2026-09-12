@@ -53,6 +53,7 @@ test('first mirror needs only preferences, models and its four notes; image star
   const ready=h.run('load()');await flush();
   assert.deepEqual(h.preloads,['/fixed.png']);
   assert.equal(h.state.loading,true);
+  assert.equal(h.state.initialModelReady,true,'the model is visible even while the notebook request waits');
   assert.equal(h.photos.length,0,'fixed model must not download the unused personal photo');
   notes.resolve({outfits:[{outfit_id:'picked',items:[],report_note:{title:'笔记',image_url:'/note.jpg'}}]});
   await ready;
@@ -159,7 +160,7 @@ test('opening model chooser later reads latest own photo, not the legacy prefere
 const genderCatalog = [
   {id:'fixed',gender:'female',image_url:'/female.png'},
   {id:'male_old',gender:'male',image_url:'/male-old.png'},
-  {id:'male_standard_1',gender:'male',image_url:'/api/v1/material-assets/male/content',default_for_gender:true},
+  {id:'male_standard_1',gender:'male',image_url:'/api/v1/material-assets/male/content',preview_url:'/models/male/preview',default_for_gender:true},
 ];
 test('switching back to female replaces a previously saved male model',async()=>{
   const h=harness('?screen=mirror',{api:url=>url==='/closet/preferences' ? {gender:'female',current_model_id:'male_standard_1'} :
@@ -203,25 +204,28 @@ test('female and unknown gender keep the female model library',async()=>{
   }
 });
 
-test('try-on submits the selected male model bytes and model ID',async()=>{
+for (const model of [genderCatalog.find(model=>model.id==='male_standard_1'),
+  ...['slim','medium','plus'].map(body=>({id:`female_${body}_1`,gender:'female',
+    image_url:`/tryon-models/female_${body}_1.png?v=original`,preview_url:`/models/female_${body}_1/preview`}))])
+test(`try-on submits original bytes instead of the display preview: ${model.id}`,async()=>{
   let submitted;
   const h=harness('?screen=mirror',{api:(url,options)=>{
-    if(url==='/closet/preferences')return {gender:'male',current_model_id:'fixed'};
-    if(url==='/selfit/try-on/models')return {items:genderCatalog};
-    if(url==='/selfit/try-on/jobs'){submitted=options.body;return {job_id:'male-test-job',status:'queued'};}
-  },photo:async()=>({ok:true,status:200,blob:async()=>new Blob(['selected-male-image'],{type:'image/png'})})});
+    if(url==='/closet/preferences')return {gender:model.gender,current_model_id:model.id};
+    if(url==='/selfit/try-on/models')return {items:[model]};
+    if(url==='/selfit/try-on/jobs'){submitted=options.body;return {job_id:'model-test-job',status:'queued'};}
+  },photo:async()=>({ok:true,status:200,blob:async()=>new Blob([`original-${model.id}`],{type:'image/png'})})});
   await h.run('load()');
   h.run(`let generationBusy=false;
-    const crypto={randomUUID:()=>"male-test-request"};
+    const crypto={randomUUID:()=>"model-test-request"};
     const mediaURL=path=>new URL(path,location.origin).href;
     function beginMirrorGeneration(target,photo){state.generating={target,photo};}
     function failure(message){throw Error(message);}
   `+slice('  async function photoFile(', '  async function startTry()')+
     slice('  async function generate()', '  async function waitForPresetResult('));
   await h.run('generate()');
-  assert.equal(submitted.get('model_id'),'male_standard_1');
-  assert.equal(await submitted.get('person_image').text(),'selected-male-image');
+  assert.equal(submitted.get('model_id'),model.id);
+  assert.equal(await submitted.get('person_image').text(),`original-${model.id}`);
   assert.equal(submitted.get('wear_all_items'),'true');
   assert.deepEqual(JSON.parse(submitted.get('selected_item_ids')),['top-1']);
-  assert.equal(h.photos.at(-1),'http://localhost/api/v1/material-assets/male/content');
+  assert.equal(h.photos.at(-1),'http://localhost'+model.image_url);
 });

@@ -924,7 +924,7 @@
     const persona = window.SelfitPersona || null;
     if (!persona) return { typeId: 'mute' };
     const vector = persona.buildUserVector(session);
-    const classification = persona.classifyPersona(vector);
+    const classification = persona.classifyPersona(vector, session.gender);
     return { typeId: classification.primary_persona.toLowerCase(), gender: session.gender || null };
   };
   const runtimeConfig = window.__SELFIT_CONFIG__ || {};
@@ -1248,6 +1248,7 @@
     const fullHero = Boolean(data.heroImage?.src);
     const heroSource = fullHero ? mobileHeroSource(data.heroImage.src) : '';
     reportNodes.hero.classList.toggle('report-hero--full', fullHero);
+    reportNodes.hero.classList.toggle('report-hero--text-only', !fullHero && !data.illustration.imageUrl);
     reportNodes.hero.classList.remove('report-hero--reference');
     reportNodes.heroImage.src = heroSource;
     reportNodes.heroImage.alt = fullHero ? (data.heroImage.alt || `${data.title} ${data.eyebrow} 人格封面`) : '';

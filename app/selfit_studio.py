@@ -112,7 +112,7 @@ def model_library() -> dict[str, Any]:
     from urllib.parse import quote
     from app import tryon
     from app.material_assets import MaterialRegistry, asset_content_url
-    from app.model_assets import load_model_manifest
+    from app.model_assets import load_model_manifest, model_preview_url
 
     root = tryon.TRYON_MODEL_FIXTURE_DIR.resolve()
     manifest = root / "manifest.json"
@@ -140,13 +140,15 @@ def model_library() -> dict[str, Any]:
             if not filename or path.parent != root or not path.is_file() or path.suffix.lower() not in {".png", ".jpg", ".jpeg", ".webp"}:
                 continue
             image_url = f"/tryon-models/{quote(filename)}?v={path.stat().st_mtime_ns}"
+        model_id = str(row.get("id") or Path(filename).stem)
         items.append({
-            "id": str(row.get("id") or Path(filename).stem),
+            "id": model_id,
             "name": row.get("display_name") or Path(filename).stem,
             "gender": row.get("gender"), "gender_label": row.get("gender_label"),
             "body_type": row.get("body_type"), "body_type_label": row.get("body_type_label"),
             "sort_order": row.get("sort_order") if isinstance(row.get("sort_order"), (int, float)) else 999,
             "image_url": image_url,
+            "preview_url": model_preview_url(model_id, image_url),
             "default_for_gender": row.get("default_for_gender") is True,
         })
     items.sort(key=lambda x: (x["sort_order"], x["id"]))
@@ -156,6 +158,22 @@ def model_library() -> dict[str, Any]:
 @router.get("/models")
 def studio_models() -> dict[str, Any]:
     return model_library()
+
+
+@router.get("/models/{model_id}/preview")
+def studio_model_preview(model_id: str):
+    import httpx
+    from fastapi.responses import FileResponse
+    from app import tryon
+    from app.model_assets import model_preview_path
+
+    try:
+        path = model_preview_path(tryon.TRYON_MODEL_FIXTURE_DIR, model_id)
+    except KeyError:
+        raise HTTPException(404, "这位模特已不可用，请重新选择。") from None
+    except (OSError, ValueError, httpx.HTTPError):
+        raise HTTPException(503, "模特图片暂时无法读取，请稍后重试。") from None
+    return FileResponse(path, media_type="image/webp", headers={"Cache-Control": "public, max-age=3600"})
 
 
 class ModelSelection(BaseModel):

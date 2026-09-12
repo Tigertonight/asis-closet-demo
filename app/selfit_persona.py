@@ -16,7 +16,8 @@
 （index.html 标签顺序「硬朗锐利 … 柔和温柔」），因此后端换算
 ``silhouette = 100 - shape``；energy/trend 与维度方向一致，直通。
 
-分型只依赖 LIKE 4 题 + VIBE 3 题；SUITE（肤色/脸型/体型）不介入分型。
+距离只依赖 LIKE 4 题 + VIBE 3 题；SUITE（肤色/脸型/体型）不介入分型。
+男性按已交付内容限制候选型格，女性保留完整 16 型。
 """
 
 from __future__ import annotations
@@ -64,7 +65,11 @@ REGIONAL_STYLES = ("日系", "韩系", "欧美系", "中式", "法式", "轻亚"
 # 算法版本指纹：每次修改分型口径（中心点/权重/阈值/换算）必须递增并说明变更，
 # 并同步三处：前端移植版 selfit-persona.js、管理后台人格匹配展示、
 # tests/test_selfit_persona.py 对拍测试。详见 docs/PERSONA_ALGORITHM.md。
-ALGORITHM_VERSION = "v1.4-bolt-korean"
+ALGORITHM_VERSION = "v1.5-male-four"
+
+# v1.5：男性暂时只在已交付素材的四型中选主/次人格，距离口径不变。
+# 补齐素材后扩展此名单，并同步前端名单、算法版本及对拍测试。
+MALE_PERSONA_CODES = ("EASE", "EDGE", "MUTE", "WABI")
 
 # v1.4：业务配置将 BOLT「在逃千金」主地域由法式改为韩系；欧美系仍为兼容地域。
 # VIBE 题 key（onboarding 契约）→ 维度。
@@ -417,13 +422,19 @@ def _persona_distance(persona: Persona, vector: dict[str, Any]) -> tuple[float, 
     return numeric_distance, total
 
 
-def classify_persona(vector: dict[str, Any]) -> dict[str, Any]:
+def candidate_persona_codes(gender: str | None = None) -> tuple[str, ...]:
+    """按当前内容开放范围选候选，保留原顺序以稳定处理同分。"""
+    return tuple(code for code in PERSONAS if gender != "male" or code in MALE_PERSONA_CODES)
+
+
+def classify_persona(vector: dict[str, Any], gender: str | None = None) -> dict[str, Any]:
     """计算主/次人格与置信度（用户输入×16型人格×内容标签映射方案第五节）。"""
 
     ranked = sorted(
         (
             {"persona": persona, "numeric": numeric, "total": total}
-            for persona in PERSONAS.values()
+            for code in candidate_persona_codes(gender)
+            for persona in (PERSONAS[code],)
             for numeric, total in (_persona_distance(persona, vector),)
         ),
         key=lambda item: item["total"],
@@ -466,15 +477,16 @@ VECTOR_VALUE_SOURCES = {
 }
 
 
-def rank_personas(vector: dict[str, Any]) -> list[dict[str, Any]]:
-    """16 型按总距离升序排行，每行含逐维贡献明细。
+def rank_personas(vector: dict[str, Any], gender: str | None = None) -> list[dict[str, Any]]:
+    """开放候选型按总距离升序排行，每行含逐维贡献明细。
 
     persona_breakdown 与管理后台「手动判定」接口（persona-guide/classify）
     共用本函数，排行与 classify_persona 的分型结果永远同源。
     """
 
     rows = []
-    for persona in PERSONAS.values():
+    for code in candidate_persona_codes(gender):
+        persona = PERSONAS[code]
         penalty = _region_penalty(persona, vector.get("regional_style"))
         dimensions = []
         numeric = 0.0
@@ -528,9 +540,10 @@ def persona_breakdown(session: dict[str, Any]) -> dict[str, Any]:
     """
 
     vector = build_user_vector(session)
-    classification = classify_persona(vector)
+    gender = session.get("gender")
+    classification = classify_persona(vector, gender)
 
-    rows = rank_personas(vector)
+    rows = rank_personas(vector, gender)
 
     user_vector_view = [
         {
@@ -544,6 +557,8 @@ def persona_breakdown(session: dict[str, Any]) -> dict[str, Any]:
 
     return {
         "algorithmVersion": ALGORITHM_VERSION,
+        "gender": gender,
+        "candidateCodes": list(candidate_persona_codes(gender)),
         "thresholds": {
             "coreWeight": CORE_DIMENSION_WEIGHT,
             "baseWeight": BASE_DIMENSION_WEIGHT,
@@ -621,6 +636,7 @@ def persona_guide() -> dict[str, Any]:
 
     return {
         "algorithmVersion": ALGORITHM_VERSION,
+        "maleCandidateCodes": list(candidate_persona_codes("male")),
         "dimensions": [
             {
                 "key": dimension,

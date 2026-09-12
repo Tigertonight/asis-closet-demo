@@ -261,6 +261,7 @@ def test_frontend_mock_persona_matches_backend() -> None:
     sessions.append({"preferences": {"palette": "mono"}})
     sessions.append({"answers": {"occasion": "D"}})
     sessions.append({})
+    sessions = [dict(session, gender=gender) for session in sessions for gender in (None, 'female', 'male')]
 
     runner = (
         "const fs=require('fs');global.window={};"
@@ -268,8 +269,10 @@ def test_frontend_mock_persona_matches_backend() -> None:
         "const P=global.window.SelfitPersona;"
         "const input=JSON.parse(fs.readFileSync(0,'utf-8'));"
         "const out=input.map((s)=>{const v=P.buildUserVector(s);"
-        "const c=P.classifyPersona(v);"
+        "const c=P.classifyPersona(v,s.gender);"
         "return {primary:c.primary_persona,secondary:c.secondary_persona,"
+        "version:P.ALGORITHM_VERSION,maleCodes:P.MALE_PERSONA_CODES,"
+        "confidence:Math.round(c.persona_confidence*10000)/10000,"
         "distance:Math.round(c.primary_distance*10000)/10000};});"
         "process.stdout.write(JSON.stringify(out));"
     )
@@ -289,13 +292,58 @@ def test_frontend_mock_persona_matches_backend() -> None:
             "preferences": session.get("preferences") or {},
             "vibe": session.get("answers") or session.get("vibe") or {},
         })
-        backend = classify_persona(vector)
+        backend = classify_persona(vector, session.get('gender'))
+        from app.selfit_persona import ALGORITHM_VERSION, MALE_PERSONA_CODES
+        assert front['version'] == ALGORITHM_VERSION
+        assert front['maleCodes'] == list(MALE_PERSONA_CODES)
+        assert abs(front['confidence'] - backend['persona_confidence']) < 0.0001, session
         covered.add(backend["primary_persona"])
         assert front["primary"] == backend["primary_persona"], session
         assert front["secondary"] == backend["secondary_persona"], session
         assert abs(front["distance"] - backend["primary_distance"]) < 0.0001, session
     # 分型多样性必须显著超过色板数（防止退化为「颜色查表」）。
     assert len(covered) >= 10
+
+
+@pytest.mark.parametrize('code', list(PERSONAS))
+def test_male_primary_secondary_and_confidence_use_only_open_candidates(code):
+    from app.selfit_persona import MALE_PERSONA_CODES, rank_personas
+    vector = {**PERSONAS[code].center, 'regional_style': None}
+    unrestricted = classify_persona(vector)
+    assert unrestricted['primary_persona'] == code
+    assert classify_persona(vector, 'female') == unrestricted
+    result = classify_persona(vector, 'male')
+    ranking = rank_personas(vector, 'male')
+    assert {row['code'] for row in ranking} == set(MALE_PERSONA_CODES)
+    assert result['primary_persona'] == ranking[0]['code']
+    assert result['secondary_persona'] == ranking[1]['code']
+    assert result['primary_distance'] == ranking[0]['totalDistance']
+    expected_confidence = (ranking[1]['totalDistance'] - ranking[0]['totalDistance']) / max(ranking[1]['totalDistance'], 1)
+    assert result['persona_confidence'] == round(expected_confidence, 4)
+
+
+def test_male_scope_can_expand_after_material_delivery(monkeypatch):
+    from app import selfit_persona as persona
+    vector = {**PERSONAS['LOOP'].center, 'regional_style': None}
+    assert classify_persona(vector, 'male')['primary_persona'] != 'LOOP'
+    monkeypatch.setattr(persona, 'MALE_PERSONA_CODES', (*persona.MALE_PERSONA_CODES, 'LOOP'))
+    assert classify_persona(vector, 'male')['primary_persona'] == 'LOOP'
+
+
+def test_male_admin_breakdown_and_delivered_templates_match_scope():
+    from app.selfit_persona import MALE_PERSONA_CODES, persona_breakdown
+    from app.selfit_report import default_personality_report
+    session = _session(gender='male')
+    breakdown = persona_breakdown(session)
+    assert set(breakdown['candidateCodes']) == set(MALE_PERSONA_CODES)
+    assert len(breakdown['ranking']) == 4
+    assert breakdown['classification'] == classify_persona(build_user_vector(session), 'male')
+    for code in MALE_PERSONA_CODES:
+        report = default_personality_report(code, 'male')
+        assert report['templateId'] == code.lower() + '-male'
+        assert report['heroImage']['src']
+        assert len(report['outfits']) == 4
+        assert not report.get('recommendationStatus')
 
 
 # ---------------------------------------------------------------------------

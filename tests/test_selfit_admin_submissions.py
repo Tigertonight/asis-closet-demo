@@ -658,11 +658,11 @@ def test_persona_breakdown_endpoint_returns_full_math(monkeypatch, tmp_path: Pat
     # 上面 patch 若字段拆分不匹配则退回直接改 store。
     import app.selfit_onboarding as onboarding_store
 
-    data = json.loads(onboarding_store.SELFIT_ONBOARDING_STORE_PATH.read_text(encoding="utf-8"))
+    data = onboarding_store._load_store()
     record = next(item for item in data["sessions"] if item["session_id"] == session_id)
     record["preferences"] = {"axes": {"shape": 20, "energy": 60, "trend": 50}, "palette": "earth"}
     record["vibe"] = {"occasion": "B", "wardrobe": "A", "expression": "B"}
-    onboarding_store.SELFIT_ONBOARDING_STORE_PATH.write_text(json.dumps(data, ensure_ascii=False), encoding="utf-8")
+    onboarding_store._write_store(data)
 
     response = client.get(
         f"/admin/api/submissions/{session_id}/persona-breakdown", headers=admin_headers
@@ -695,6 +695,14 @@ def test_persona_breakdown_endpoint_returns_full_math(monkeypatch, tmp_path: Pat
     assert "crossSide" in silhouette_dim and "effectiveWeight" in silhouette_dim
     # 明细贡献之和 = 数值距离（±0.5 舍入误差）
     assert abs(sum(d["weighted"] for d in top["dimensions"]) - top["numericDistance"]) < 0.5
+
+    record['gender'] = 'male'
+    onboarding_store._write_store(data)
+    male = client.get(f'/admin/api/submissions/{session_id}/persona-breakdown', headers=admin_headers).json()
+    assert male['gender'] == 'male'
+    assert set(male['candidateCodes']) == {'EASE', 'EDGE', 'MUTE', 'WABI'}
+    assert len(male['ranking']) == 4
+    assert male['classification']['primary_persona'] == male['ranking'][0]['code']
 
     # 匿名不可访问
     anon = TestClient(app)
@@ -785,6 +793,18 @@ def test_persona_guide_classify_endpoint(monkeypatch, tmp_path: Path) -> None:
     assert partial.status_code == 200
     assert partial.json()["regionalStyle"] is None
     assert len(partial.json()["ranking"]) == 16
+
+    # 同一输入按男性开放范围重排，主/次结果均有已交付素材。
+    male = client.post('/admin/api/persona-guide/classify', headers=admin_headers,
+                       json={**noir, 'gender': 'male'})
+    assert male.status_code == 200
+    male_data = male.json()
+    assert set(male_data['candidateCodes']) == {'EASE', 'EDGE', 'MUTE', 'WABI'}
+    assert {row['code'] for row in male_data['ranking']} == set(male_data['candidateCodes'])
+    assert male_data['classification']['primary_persona'] == male_data['ranking'][0]['code']
+    assert male_data['classification']['secondary_persona'] == male_data['ranking'][1]['code']
+    assert client.post('/admin/api/persona-guide/classify', headers=admin_headers,
+                       json={'gender': 'other'}).status_code == 422
 
     # 匿名不可访问
     anon = TestClient(app)

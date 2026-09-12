@@ -104,6 +104,31 @@ def test_missing_male_report_has_usable_same_gender_home(journey, monkeypatch):
     assert len(data['outfits'])==4 and all(x['gender']=='male' for x in data['outfits'])
 
 
+def test_new_male_report_constrains_loop_answers_before_selecting_materials(journey):
+    from app.selfit_persona import build_user_vector, classify_persona, MALE_PERSONA_CODES
+    client, url, _, _ = journey
+    preferences = {'axes': {'shape': 50, 'energy': 50, 'trend': 50}}
+    vibe = {'occasion': 'C', 'wardrobe': 'B', 'expression': 'B'}
+    assert classify_persona(build_user_vector({'preferences': preferences, 'vibe': vibe}))['primary_persona'] == 'LOOP'
+    assert client.patch(url+'/gender', json={'gender': 'male'}).status_code == 200
+    assert client.patch(url+'/preferences', json=preferences).status_code == 200
+    assert client.patch(url+'/vibe', json={'answers': vibe}).status_code == 200
+    created = client.post(url+'/report-jobs')
+    assert created.status_code == 202
+    job_id = created.json()['job']['jobId']
+    onboarding._run_report_job(job_id)
+    result = client.get('/api/v1/selfit/report-jobs/'+job_id).json()['job']
+    assert result['status'] == 'completed'
+    report = result['report']
+    assert report['typeId'].upper() in MALE_PERSONA_CODES
+    assert report['templateId'] == report['typeId']+'-male'
+    assert report['heroImage']['src'] and len(report['outfits']) == 4
+    assert not report.get('recommendationStatus')
+    home = client.get('/selfit/try-on/report-outfits/home').json()
+    assert home['source'] == 'report'
+    assert {item['template_id'] for item in home['outfits']} == {report['templateId']}
+
+
 def test_legacy_choice_survives_expiry_and_anonymous_cannot_change_account(journey):
     client, url, user_id, token = journey
     data=onboarding._load_store()

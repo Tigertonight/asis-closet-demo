@@ -4,7 +4,7 @@
 docs/SELFIT_BACKEND_INTEGRATION.md 4.6 / 4.7 节；人格分型口径见
 app/selfit_persona.py。报告内容固定读取前后端共用的人格默认模板，不再根据
 肤色、脸型、体型、次人格或地域风格执行个性化选择与排序。
-用户明确选择的 gender 独立用于挑选同一人格的性别模板，不改变分型评分。
+用户明确选择的 gender 用于限制开放候选及挑选性别模板，不改变各型的距离计算。
 
 算法接入说明
 ------------
@@ -176,7 +176,7 @@ def default_report_builder(session: dict[str, Any]) -> dict[str, Any]:
     _require_persona_inputs(session)
 
     vector = selfit_persona.build_user_vector(session)
-    classification = selfit_persona.classify_persona(vector)
+    classification = selfit_persona.classify_persona(vector, session.get("gender"))
     return default_personality_report(classification["primary_persona"], session.get("gender"))
 
 

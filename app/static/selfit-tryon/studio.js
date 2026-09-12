@@ -18,7 +18,10 @@
     );
   const asset = (n) => `${A}${n}.webp`;
   const image = (src, alt = "", cls = "") =>
-    `<img src="${esc(mediaURL(src))}" alt="${esc(alt)}" class="${cls}" draggable="false">`;
+    `<img src="${esc(mediaURL(modelDisplayURL(src)))}" alt="${esc(alt)}" class="${cls}" draggable="false">`;
+  function modelDisplayURL(src) {
+    return state.modelCatalog?.find(model => model.image_url === src)?.preview_url || src;
+  }
   const fixtures = [
     { id: "skirt", category: "bottom", name: "黑色半裙" },
     { id: "tee", category: "top", name: "白色短袖" },
@@ -156,6 +159,7 @@
     historyRecords: [], historyLoading: true, historyError: "", historyRequest: 0,
     viewerReturnPage: params.get("viewer_from") === "history" ? "tryon-history" : "mirror",
     loading: !reference,
+    initialModelReady: false,
     error: "",
     selected: new Set(),
     canvasSelection: "",
@@ -358,7 +362,7 @@
             : '<div class="empty-stage"><span>先放入你的全身照</span><button data-action="model">选择模特</button></div>'
     }${styling && !reference ? canvasTools() : ""}${pending ? `<div class="mirror-generation" role="status" aria-live="polite">${image(`${A}main-app/mirror-loading.svg`, '正在试穿')}</div>` : ""}${!styling && !pending ? `<button class="mirror-result-actions" data-action="result-actions" aria-label="绑定智能穿衣镜">${image(`${A}main-app/mirror-result-actions.svg`, "")}</button>` : ""}${!styling && !pending ? `<button class="mirror-history" data-action="tryon-history" aria-label="试穿历史">${image(`${A}main-app/mirror-history.svg`, "")}</button>` : ""}${!pending ? `<div class="mirror-edit-tools" role="group" aria-label="试衣镜工具"><button data-action="toggle" aria-label="${styling ? '看上身' : '看单品'}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 8a8 8 0 0 0-14-2L3 9m0-5v5h5M4 16a8 8 0 0 0 14 2l3-3m0 5v-5h-5"/></svg><span>${styling ? '看上身' : '看单品'}</span></button><button data-action="model" aria-label="换模特或上传我的照片"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="7" r="4"/><path d="M4 21v-3a8 8 0 0 1 16 0v3Z"/></svg><span>换模特</span></button></div>` : ''}${!styling && !pending && (state.result || state.photo) ? `<button class="result-expand" data-action="open-viewer" aria-label="${state.result ? '查看试穿大图' : '查看模特大图'}">${image(`${A}main-app/mirror-expand.svg`, "")}</button>${state.current ? `<button class="mirror-favorite" data-action="favorite" aria-label="${state.current.saved ? '取消收藏搭配' : '收藏搭配'}" aria-pressed="${Boolean(state.current.saved)}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.9-6.2-3.3-6.2 3.3L7 14.2l-5-4.9 6.9-1Z"/></svg></button>` : ""}` : ""}</div><div class="mirror-recommendations">${
       state.loading || (state.source === "closet" && state.wardrobeLoading) || (homeNotes && state.homeNotesLoading)
-        ? empty("正在整理你的搭配…")
+        ? '<p class="empty" role="status">正在整理你的搭配…</p>'
         : state.error || (homeNotes && state.homeNotesError)
           ? empty(state.error || state.homeNotesError)
           : `${homeNotes && state.homeNotesNotice ? `<p class="home-notes-notice" role="status">${esc(state.homeNotesNotice)}</p>` : ""}${state.source === "report" ? `<div class="report-outfit-context" aria-live="polite"><strong>${esc(state.current?.reportNote?.title || "选择一套喜欢的搭配")}</strong><span>来自你的型格推荐${state.reportOutfitsMode === "mock" ? " · 示例搭配" : ""}</span></div>` : ""}<div class="strip" aria-label="${homeNotes ? "选择穿搭笔记" : category === "set" ? "选择套装" : "选择单品"}">${items.map((x, i) => card(x, category === "set" ? "outfit" : "item", i)).join("") || empty(homeNotes ? "穿搭笔记暂时无法加载，请稍后重试。" : "这里还没有搭配，先添加一件喜欢的衣服。")}</div>`
@@ -586,30 +590,34 @@
     return `<section class="note-detail outfit-source-detail" aria-label="套装详情"><header><button class="back" data-action="back" aria-label="返回"><svg viewBox="0 0 24 24"><path d="m15 4-7 8 7 8"/></svg></button><h1>${esc(x.name)}</h1></header>${image(x.src,x.name,'outfit-detail-image')}<div class="outfit-detail-pieces">${items.map(i=>card(i)).join('')}</div>${x.raw?.can_delete ? '<button class="detail-remove" data-action="delete-outfit" aria-label="删除穿搭"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13M10 10v7m4-7v7"/></svg></button>' : ''}</section><div class="detail-dock note-dock"><button class="secondary" data-action="favorite">${x.saved ? '取消收藏' : '收藏套装'}</button><button class="primary" data-action="try">立即试穿</button></div>`;
   }
   const mirrorImages = new Map();
+  const mirrorImageRequests = new Map();
   function preloadMirrorImage(src) {
     if (!src || mirrorImages.has(src)) return;
     mirrorImages.set(src, "loading");
     const photo = new Image();
+    mirrorImageRequests.set(src, photo);
     photo.fetchPriority = "high";
     let settled = false;
-    const finish = status => {
-      if (settled) return;
-      settled = true;
+    const finish = (status, final = true) => {
+      if (settled || mirrorImageRequests.get(src) !== photo) return;
+      settled = final;
       clearTimeout(timeout);
       mirrorImages.set(src, status);
-      if (!state.loading && state.page === "mirror" && (state.result || state.photo) === src) render();
+      if ((!state.loading || state.initialModelReady) && state.page === "mirror" && (state.result || state.photo) === src) render();
     };
-    const timeout = setTimeout(() => finish("error"), 20000);
+    // A slow transfer may finish after the retry state appears. Accept that image;
+    // only a newer request for the same source may supersede this one.
+    const timeout = setTimeout(() => finish("error", false), 20000);
     photo.onload = () => photo.decode().then(() => finish("ready"), () => finish("error"));
     photo.onerror = () => finish("error");
-    photo.src = mediaURL(src);
+    photo.src = mediaURL(modelDisplayURL(src));
   }
   function mirrorLoading(message = "正在准备你的试衣镜…", failed = false) {
     return `<section class="mirror-loading" aria-label="试衣镜加载" aria-busy="${!failed}">${failed ? "" : '<span class="mirror-spinner" aria-hidden="true"></span>'}<p role="status">${esc(message)}</p>${failed ? '<button class="secondary" data-action="retry-mirror">重新加载</button>' : ""}</section>`;
   }
   function readyMirror() {
     if (reference) return mirror();
-    if (state.loading) return mirrorLoading();
+    if (state.loading && !state.initialModelReady) return mirrorLoading();
     if (!state.photo && (state.error || state.modelLoadFailed))
       return mirrorLoading(state.error || "模特暂时未能加载，请重试。", true);
     const src = state.result || state.photo;
@@ -2066,6 +2074,7 @@
   async function load() {
     if (reference) return;
     state.loading = true;
+    state.initialModelReady = false;
     state.error = "";
     state.modelLoadFailed = false;
     render();
@@ -2077,9 +2086,13 @@
       const preferencesReady = loadPreferences();
       const modelReady = Promise.all([preferencesReady, loadModels().catch(() => {
         state.modelLoadFailed = true;
-      })]).then(([preferences]) => prepareInitialModel(preferences));
-      // Only the visible collection belongs on the home page's critical path.
-      // Fetch it alongside model preparation, not after the complete library.
+      })]).then(async ([preferences]) => {
+        await prepareInitialModel(preferences);
+        state.initialModelReady = true;
+        if (state.page === "mirror") render();
+      });
+      // Keep outfit restoration ordered, but let the ready model appear while
+      // its notebook strip is still loading.
       const outfitsReady = preferencesReady.then(async () => {
         if (state.source === "report") await loadReportOutfits();
         else await ensureHomeNotes();
@@ -2655,7 +2668,7 @@
   $("#studio").addEventListener("pointerdown", (e) => {
     if (e.target.closest("[data-action=compare]")) {
       const im = $(".model-photo");
-      if (im) window.SelfitMirrorPhoto.show(im, mediaURL(state.resultOriginal || (reference ? state.photo : "")));
+      if (im) window.SelfitMirrorPhoto.show(im, mediaURL(modelDisplayURL(state.resultOriginal || (reference ? state.photo : ""))));
     }
   });
   const restore = () => {
@@ -2673,7 +2686,7 @@
     ) {
       e.preventDefault();
       const im = $(".model-photo");
-      if (im) window.SelfitMirrorPhoto.show(im, mediaURL(state.resultOriginal || (reference ? state.photo : "")));
+      if (im) window.SelfitMirrorPhoto.show(im, mediaURL(modelDisplayURL(state.resultOriginal || (reference ? state.photo : ""))));
     }
   });
   $("#studio").addEventListener("keyup", restore);

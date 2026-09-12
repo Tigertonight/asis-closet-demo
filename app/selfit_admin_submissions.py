@@ -30,6 +30,7 @@ from app.selfit_persona import (
     ALGORITHM_VERSION,
     DIMENSIONS,
     REGIONAL_STYLES,
+    candidate_persona_codes,
     classify_persona,
     persona_breakdown,
     persona_guide,
@@ -339,13 +340,18 @@ async def post_persona_guide_classify(
             vector[dimension] = float(min(100.0, max(0.0, value)))
     regional = payload.get("regionalStyle")
     vector["regional_style"] = regional if regional in REGIONAL_STYLES else None
+    gender = payload.get("gender")
+    if gender not in (None, "female", "male"):
+        return JSONResponse(status_code=422, content={"detail": "请选择有效的性别范围"})
 
     return JSONResponse(
         content={
             "algorithmVersion": ALGORITHM_VERSION,
+            "gender": gender,
+            "candidateCodes": list(candidate_persona_codes(gender)),
             "regionalStyle": vector["regional_style"],
-            "classification": classify_persona(vector),
-            "ranking": rank_personas(vector),
+            "classification": classify_persona(vector, gender),
+            "ranking": rank_personas(vector, gender),
         },
         headers={"Cache-Control": "no-store"},
     )

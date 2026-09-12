@@ -1028,10 +1028,11 @@
         <div class="pb-title"><b>${esc(cls.primary_persona || '')}</b> 主人格 · <b>${esc(cls.secondary_persona || '')}</b> 次人格
           <span class="pb-conf">置信度 ${Math.round((cls.persona_confidence || 0) * 100)}%（${tierLabels[cls.confidence_tier] || cls.confidence_tier}）</span></div>
         <div class="pb-meta">算法版本 <code>${esc(data.algorithmVersion || '')}</code> · 权重 核心×${data.thresholds?.coreWeight} / 普通×${data.thresholds?.baseWeight} / 跨侧冲突 |Δ|>${data.thresholds?.crossSideDelta}×${data.thresholds?.coreWeight} · 地域 ${esc(data.regionalStyle || '无倾向')}</div>
+        <div class="pb-meta">候选范围：${data.gender === 'male' ? '男性已开放素材' : '完整型格'} · ${esc((data.candidateCodes || []).join(' / '))}</div>
       </div>
       <h4>你的 7 维得分（来自问卷输入）</h4>
       <div class="pb-vector">${vectorBars}</div>
-      <h4>16 型距离排行 <small>（距离越小越匹配；点行展开每一维的贡献）</small></h4>
+      <h4>${(data.ranking || []).length} 型距离排行 <small>（在开放候选中选择主 / 次人格；点行展开维度贡献）</small></h4>
       <table class="pb-rank"><thead><tr><th>#</th><th>人格</th><th>总距离</th><th></th></tr></thead><tbody>${rankRows}</tbody></table>`;
     mount.querySelectorAll('.pr-row').forEach((row) => {
       row.addEventListener('click', () => {
@@ -1050,7 +1051,7 @@
 
   let personaGuideData = null;
   const personaGuideState = { loaded: false, loading: false };
-  const personaJudgeState = { vector: null, region: '', timer: 0 };
+  const personaJudgeState = { vector: null, region: '', gender: '', timer: 0 };
   let personaJudgeRequest = null;
 
   const pgScoreWord = (value, low, high) => {
@@ -1105,6 +1106,7 @@
       `<tr><td><b>${esc(d.label)}</b> <code>${esc(d.key)}</code></td><td>${esc(d.low)}</td><td>${esc(d.high)}</td><td style="white-space:normal;min-width:220px">${esc(d.source)}</td></tr>`).join('');
     const rules = [
       `分型 = 距离最近的型：对 16 型各算加权绝对距离 <code>Σ wᵢ·|userᵢ - centerᵢ|</code>，最近为主人格，次近为次人格。`,
+      `男性暂限已开放素材的 <code>${esc((data.maleCandidateCodes || []).join(' / '))}</code>；女性及未指定性别保留 16 型。主 / 次人格与置信度均在所选候选范围内计算。`,
       `核心维度权重 <code>×${t.coreWeight}</code>（档案里 ★ 标记，判定某型时的首要依据），普通维度 <code>×${t.baseWeight}</code>。`,
       `跨侧冲突：某维度差距 <code>|Δ| &gt; ${t.crossSideDelta}</code>（此人与该型分处量表两端）时，不论是否核心一律按 <code>×${t.coreWeight}</code> 计。`,
       `地域罚分：命中主风格 <code>+0</code> / 兼容 <code>+${t.regionPenalties?.compatible}</code> / 不匹配 <code>+${t.regionPenalties?.mismatch}</code>；主风格「无倾向」的型、或未答地域，不计罚。`,
@@ -1146,6 +1148,7 @@
         <span class="judge-primary">${esc(primary.name)}<span class="code-chip">${esc(primary.code)}</span></span>
         <span class="judge-sub">次人格 ${esc(secondary?.name || '—')}（${esc(secondary?.code || '—')}）</span>
         <span class="judge-conf">置信度 ${Math.round((cls.persona_confidence || 0) * 100)}%（${tierLabels[cls.confidence_tier] || '—'}）· 主距离 ${cls.primary_distance}</span>
+        <span class="judge-sub">候选范围：${result.gender === 'male' ? '男性已开放素材' : '完整型格'} · ${(result.candidateCodes || []).length} 型</span>
       </div>
       <div class="judge-legend"><span><i style="background:#ff4f86"></i>此人得分</span><span><i style="background:none;border-top:2px dashed #8a011b;height:0"></i>${esc(primary.name)}中心点</span></div>
       <div class="judge-plot">${pgRadarSVG({ rows: userRows, size: 330, compare: centerValues })}</div>
@@ -1159,6 +1162,7 @@
     const controller = new AbortController();
     personaJudgeRequest = controller;
     const payload = { ...(personaJudgeState.vector || {}) };
+    if (personaJudgeState.gender) payload.gender = personaJudgeState.gender;
     if (personaJudgeState.region) payload.regionalStyle = personaJudgeState.region;
     try {
       const response = await fetch('/admin/api/persona-guide/classify', {
@@ -1191,6 +1195,7 @@
     const mount = $('personaJudge');
     personaJudgeState.vector = Object.fromEntries(data.dimensions.map((d) => [d.key, 50]));
     personaJudgeState.region = '';
+    personaJudgeState.gender = '';
     const regionOptions = ['未答 / 不计罚分', ...data.regionStyles]
       .map((region, index) => `<option value="${index === 0 ? '' : esc(region)}">${esc(region)}</option>`).join('');
     const sliders = data.dimensions.map((d) =>
@@ -1202,6 +1207,7 @@
       <p class="panel-hint">按此人的穿搭倾向拖出 7 维分数（可对照下方 16 型蛛网图的形状），选地域后实时计算最近的型格；拿不准的维度保持 50（中性）。</p>
       <div class="pg-judge">
         <div class="judge-box"><h4>7 维得分（算法坐标系）</h4>${sliders}
+          <div class="judge-region"><label for="personaJudgeGender">候选范围</label><select id="personaJudgeGender"><option value="">未指定性别 · 16 型</option><option value="female">女性 · 16 型</option><option value="male">男性 · ${data.maleCandidateCodes.length} 型</option></select></div>
           <div class="judge-region"><label for="personaJudgeRegion">地域倾向</label><select id="personaJudgeRegion">${regionOptions}</select></div>
         </div>
         <div class="judge-box"><h4>判定结果</h4><div id="personaJudgeResult"><div class="empty-inline">计算中…</div></div></div>
@@ -1216,6 +1222,10 @@
     });
     $('personaJudgeRegion').addEventListener('change', (event) => {
       personaJudgeState.region = event.target.value;
+      schedulePersonaJudge();
+    });
+    $('personaJudgeGender').addEventListener('change', (event) => {
+      personaJudgeState.gender = event.target.value;
       schedulePersonaJudge();
     });
     schedulePersonaJudge();
