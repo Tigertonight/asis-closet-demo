@@ -18,7 +18,7 @@ from PIL import Image, ImageOps, UnidentifiedImageError
 from starlette.concurrency import run_in_threadpool
 
 from app import selfit_assets, selfit_onboarding_store as _store_module
-from app import selfit_photo, selfit_report, selfit_share
+from app import selfit_photo, selfit_report, selfit_share, selfit_samples
 from app.auth import get_current_user, get_optional_user
 from app.selfit_gender import GENDERS, declared_profile, save_gender
 from app.ops import env_int
@@ -239,6 +239,8 @@ def _index_user_photo(data: dict[str, Any], record: dict[str, Any], kind: str) -
         "width": photo.get("width"),
         "height": photo.get("height"),
         "source": photo.get("source") or ("mirror" if record.get("source") == "mirror_handoff" else "app"),
+        "sample_id": photo.get("sample_id"),
+        "sample_fingerprint": photo.get("sample_fingerprint"),
         # 分析详情随索引一起持久化，跨 session 回填照片时结果页仍能展示依据。
         "attributes": dict(photo.get("attributes") or {}),
         "notes": list(photo.get("notes") or []),
@@ -984,6 +986,7 @@ async def get_session_suit(session_id: str, user: dict[str, Any] | None = Depend
             )
     summary = suit_summary({**record, "photos": photos_view})
     summary["photos"] = {kind: bool(photos_view.get(kind)) for kind in selfit_photo.PHOTO_KINDS}
+    summary["samplePhotos"] = {kind: photo["sample_id"] for kind, photo in photos_view.items() if photo.get("sample_id")}
     summary["analyses"] = analyses
     return JSONResponse(content=summary, headers={"Cache-Control": "no-store"})
 
@@ -997,6 +1000,10 @@ async def get_session_photo_preview(session_id: str, kind: str, user: dict[str, 
     photo = _suit_photo(data, record, kind) if kind in selfit_photo.PHOTO_KINDS else None
     if not photo:
         return _error_response(404, "photo.not_found", "请先上传可用的照片。")
+    sample = selfit_samples.SAMPLES.get(photo.get("sample_id"))
+    if sample and photo.get("sample_fingerprint") == selfit_samples.analysis_fingerprint(sample):
+        cached = await run_in_threadpool(selfit_samples.preview_path, sample, overlay=True)
+        return FileResponse(cached, media_type="image/webp", headers={"Cache-Control": "no-store"})
     suffix = PHOTO_SUPPORTED_FORMATS.get(photo.get("format"))
     if not suffix:
         return _error_response(404, "photo.not_found", "请重新上传照片。")
@@ -1031,6 +1038,22 @@ async def get_session_photo_preview(session_id: str, kind: str, user: dict[str, 
     return Response(content=content, media_type="image/webp", headers={"Cache-Control": "no-store"})
 
 
+@router.get("/sample-photos/{sample_id}/preview")
+async def get_sample_photo_preview(sample_id: str, request: Request) -> Response:
+    sample = selfit_samples.SAMPLES.get(sample_id)
+    if sample is None:
+        return _error_response(404, "photo.sample_not_found", "示例照片不存在。")
+    try:
+        path = await run_in_threadpool(selfit_samples.preview_path, sample)
+    except (OSError, ValueError):
+        return _error_response(503, "photo.sample_unavailable", "示例图暂时无法加载，请稍后再试。", retryable=True)
+    etag = f'"{path.stem}"'
+    headers = {"Cache-Control": "public, no-cache", "ETag": etag}
+    if request.headers.get("if-none-match") == etag:
+        return Response(status_code=304, headers=headers)
+    return FileResponse(path, media_type="image/webp", headers=headers)
+
+
 
 @router.patch("/sessions/{session_id}/gender")
 async def patch_session_gender(
@@ -1042,8 +1065,15 @@ async def patch_session_gender(
         gender = payload.get("gender")
         if gender not in ("female", "male"):
             return _error_response(422, "validation.invalid_enum", "请选择你的性别。")
+        for kind, photo in list((record.get("photos") or {}).items()):
+            sample = selfit_samples.SAMPLES.get(photo.get("sample_id"))
+            if sample and sample.gender != gender:
+                record["photos"].pop(kind)
+                for field in (("skin", "faceShape") if kind == "face" else ("bodyShape",)):
+                    (record.get("manual") or {}).pop(field, None)
         record["gender"] = gender
         record["gender_selected_at"] = _iso(_now())
+        record.pop("photo_requests", None)
         return record
 
     def save_account(data: dict, record: dict) -> None:
@@ -1416,6 +1446,21 @@ async def upload_session_photo(
     request: Request,
     user: dict[str, Any] | None = Depends(get_optional_user),
 ) -> JSONResponse:
+    return await _process_session_photo(session_id, kind, request, user)
+
+
+@router.post("/sessions/{session_id}/photos/{kind}/sample")
+async def use_session_sample_photo(
+    session_id: str, kind: str, request: Request,
+    user: dict[str, Any] | None = Depends(get_optional_user),
+) -> JSONResponse:
+    return await _process_session_photo(session_id, kind, request, user, use_sample=True)
+
+
+async def _process_session_photo(
+    session_id: str, kind: str, request: Request, user: dict[str, Any] | None,
+    *, use_sample: bool = False,
+) -> JSONResponse:
     if kind not in selfit_photo.PHOTO_KINDS:
         return _error_response(
             422,
@@ -1425,25 +1470,46 @@ async def upload_session_photo(
         )
 
     data = _prune_store(_load_store())
-    scope = _idempotency_scope(request, user)
+    record = _load_active_session(data, session_id, user)
+    if isinstance(record, JSONResponse):
+        return record
+    scope = f"{_idempotency_scope(request, user)}:{session_id}:{kind}:{'sample' if use_sample else 'upload'}:{record.get('gender_selected_at', '')}"
     idempotency_key = request.headers.get("x-idempotency-key")
     replay = _idempotency_replay(data, scope, idempotency_key)
     if replay is not None:
         status_code, body = replay
         return JSONResponse(status_code=status_code, content=body)
 
-    record = _load_active_session(data, session_id, user)
-    if isinstance(record, JSONResponse):
-        return record
-
     if record.get("requires_gender") and record.get("gender") not in ("female", "male"):
         return _error_response(422, "profile.gender_required", "请先选择性别，再上传照片。")
 
-    form = await request.form()
-    upload = form.get("image")
-    if upload is None or not hasattr(upload, "read"):
-        return _error_response(400, "photo.image_missing", "请选择要上传的照片。")
-    raw = await upload.read()
+    # Reserve the slot before awaiting network/CPU work. Only the newest request
+    # may commit; face/body completions merge into the latest session snapshot.
+    request_token = secrets.token_urlsafe(16)
+    record.setdefault("photo_requests", {})[kind] = request_token
+    _write_store(data)
+    sample = None
+    sample_fingerprint = None
+    if use_sample:
+        payload = await _read_json_object(request)
+        if isinstance(payload, JSONResponse):
+            return payload
+        sample_id = payload.get("sampleId")
+        sample = selfit_samples.SAMPLES.get(sample_id) if isinstance(sample_id, str) else None
+        if not sample or sample.kind != kind:
+            return _error_response(422, "photo.invalid_sample", "请选择可用的示例照片。")
+        if record.get("gender") != sample.gender:
+            return _error_response(422, "photo.sample_gender_mismatch", "请按当前选择的性别使用示例照片。")
+        try:
+            raw = sample.path.read_bytes()
+        except OSError:
+            return _error_response(503, "photo.sample_unavailable", "示例图暂时无法加载，请稍后再试。", retryable=True)
+    else:
+        form = await request.form()
+        upload = form.get("image")
+        if upload is None or not hasattr(upload, "read"):
+            return _error_response(400, "photo.image_missing", "请选择要上传的照片。")
+        raw = await upload.read()
     if not raw:
         return _error_response(400, "photo.image_missing", "请选择要上传的照片。")
     if len(raw) > PHOTO_MAX_BYTES:
@@ -1472,19 +1538,33 @@ async def upload_session_photo(
         stored_format = "JPEG"
 
     # 照片检测为 CPU 密集的同步 CV 计算，丢线程池执行，避免阻塞事件循环。
-    inspection = await run_in_threadpool(selfit_photo.inspect_photo, pil_image.convert("RGB"), kind)
+    if sample:
+        inspection, sample_fingerprint = await run_in_threadpool(selfit_samples.inspect_sample, sample, pil_image.convert("RGB"))
+    else:
+        inspection = await run_in_threadpool(selfit_photo.inspect_photo, pil_image.convert("RGB"), kind)
     issues = selfit_photo.sanitize_issues(list(inspection.issues))
     accepted = bool(inspection.accepted) and not issues
 
+    # Never persist the snapshot read before analysis: another photo, gender or
+    # account update may have completed in the meantime.
+    data = _prune_store(_load_store())
+    record = _load_active_session(data, session_id, user)
+    if isinstance(record, JSONResponse):
+        return record
+    if ((record.get("photo_requests") or {}).get(kind) != request_token
+            or (sample and record.get("gender") != sample.gender)):
+        return _error_response(409, "photo.superseded", "照片选择已更新，请查看当前照片。")
+    record["photo_requests"].pop(kind, None)
     record["revision"] = int(record.get("revision") or 1) + 1
     photos = record.setdefault("photos", {})
     request_id = _request_id()
     if accepted:
         asset_id = _save_photo_asset(session_id, kind, raw, stored_format)
         # 用户照片归档进 QA 数据集：镜子流程（mirror_handoff）归 mirror，其余归 app。
-        _archive_photo_to_qa(
-            pil_image, kind, "mirror" if record.get("source") == "mirror_handoff" else "app"
-        )
+        if not sample:
+            _archive_photo_to_qa(
+                pil_image, kind, "mirror" if record.get("source") == "mirror_handoff" else "app"
+            )
         photos[kind] = {
             "asset_id": asset_id,
             "status": "accepted",
@@ -1495,6 +1575,7 @@ async def upload_session_photo(
             # 详细依据（状态/量测值/次选/warn 提示）由 public_analysis 投影给前端。
             "attributes": dict(inspection.attributes),
             "notes": list(inspection.notes),
+            **({"source": "sample", "sample_id": sample.id, "sample_fingerprint": sample_fingerprint} if sample else {}),
         }
         # A newly accepted photo replaces earlier choices for its attributes.
         # Later explicit edits still take precedence over this photo's inference.
@@ -1538,7 +1619,7 @@ async def upload_session_photo(
                 height=pil_image.height,
                 issues=issues,
                 user_id=record.get("user_id"),
-                source="app" if record.get("source") != "mirror_handoff" else "mirror",
+                source="sample" if sample else ("app" if record.get("source") != "mirror_handoff" else "mirror"),
             )
         except Exception:
             pass  # 留存失败不影响用户主流程

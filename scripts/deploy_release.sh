@@ -81,6 +81,9 @@ echo "[deploy] 运行核心测试…"
 cd "$APP_DIR"
 "$VENV/bin/python" -m pytest tests/test_selfit_persona.py tests/test_selfit_photo_wiring.py tests/test_selfit_admin_submissions.py -q
 
+# 原图留在服务器；提前生成四张示例的分析结果与预览，避免首位用户冷启动。
+"$VENV/bin/python" scripts/warm_selfit_samples.py || echo "[deploy] WARNING: 示例预热未完成，服务将按需重试。"
+
 # ---------- 5. 重启 + 健康检查 + 版本核对 ----------
 systemctl restart "$SERVICE"
 for i in $(seq 1 15); do

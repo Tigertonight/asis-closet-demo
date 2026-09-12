@@ -79,6 +79,7 @@
     photoStatus: { face: 'empty', body: 'empty' },
     photoAssets: { face: null, body: null },
     photoControllers: { face: null, body: null },
+    samplePhotos: { face: null, body: null },
     manual: { skin: null, faceShape: null, bodyShape: null },
     axes: { shape: 42, energy: 64, trend: 42 },
     palette: null, answers: {}, sessionId: null, revision: 0, reportJobId: null, reportId: null, currentReportTypeId: '', authUser: null, publicShare: null,
@@ -481,18 +482,19 @@
   };
   const renderPhotoPreview = (card, file, kind) => {
     const preview = card.querySelector('.upload-preview');
-    const objectUrl = URL.createObjectURL(file);
+    const remotePreview = typeof file === 'string';
+    const objectUrl = remotePreview ? file : URL.createObjectURL(file);
     const image = Object.assign(document.createElement('img'), {
       alt: kind === 'face' ? '面部照预览' : '全身照预览',
     });
-    const releaseObjectUrl = () => URL.revokeObjectURL(objectUrl);
+    const releaseObjectUrl = () => { if (!remotePreview) URL.revokeObjectURL(objectUrl); };
     image.addEventListener('load', releaseObjectUrl, { once: true });
     image.addEventListener('error', () => {
       releaseObjectUrl();
       if (!preview.contains(image)) return;
       const fallback = document.createElement('span');
       fallback.className = 'upload-preview-fallback';
-      fallback.textContent = '照片已选择';
+      fallback.textContent = remotePreview ? '示例照片已选择，预览暂时无法加载' : '照片已选择';
       preview.replaceChildren(fallback);
     }, { once: true });
     preview.replaceChildren(image);
@@ -517,7 +519,15 @@
       button.setAttribute('aria-pressed', String(selected));
       button.disabled = state.genderBusy || Object.values(state.photoStatus).includes('checking');
     });
-    document.querySelectorAll('[data-upload-card] input, [data-sample-photo]').forEach(control => { control.disabled = !ready; });
+    document.querySelectorAll('[data-upload-card] input').forEach(control => { control.disabled = !ready; });
+    document.querySelectorAll('[data-sample-photo]').forEach(control => {
+      const kind = control.dataset.samplePhoto;
+      const busy = state.photoStatus[kind] === 'checking';
+      control.disabled = !ready || busy;
+      control.setAttribute('aria-busy', String(busy));
+      control.textContent = busy && state.samplePhotos[kind] ? '正在分析示例照片…'
+        : state.photoStatus[kind] === 'invalid' && state.samplePhotos[kind] ? '重新使用示例照片' : '使用示例照片';
+    });
     if (state.screen === 'suit') {
       updateOnboardingNav('suit');
       if (onboardingBack) onboardingBack.disabled = state.genderBusy;
@@ -552,6 +562,7 @@
       state.genderBusy = true;
       // Stop a pending result reveal from scrolling the gender selection offscreen.
       ++suitRenderSeq;
+      resetOnboardingPhotos(Object.keys(state.photoStatus).filter(kind => state.photoStatus[kind] === 'checking'));
       try {
         syncGenderControls();
         document.querySelector('[data-screen="suit"]').scrollTo({ top: 0, behavior: 'instant' });
@@ -572,6 +583,7 @@
         syncGenderControls();
         const sessionId = await ensureSession();
         const result = await api.saveGender(sessionId, gender);
+        resetOnboardingPhotos(Object.keys(state.samplePhotos).filter(kind => state.samplePhotos[kind] && !state.samplePhotos[kind].startsWith(`${gender}-`)));
         state.gender = gender;
         state.genderEditing = true;
         state.revision = result.session?.revision || state.revision;
@@ -590,11 +602,13 @@
   });
   const uploadPlaceholders = new Map([...document.querySelectorAll('[data-upload-card]')].map(card =>
     [card.dataset.uploadCard, [...card.querySelector('.upload-preview').childNodes].map(node => node.cloneNode(true))]));
-  const resetOnboardingPhotos = () => {
+  const resetOnboardingPhotos = (kinds = ['face', 'body']) => {
     ++suitRenderSeq;
-    for (const kind of ['face', 'body']) {
+    for (const kind of kinds) {
       state.photoControllers[kind]?.abort();
+      state.photoControllers[kind] = null;
       state.photoAssets[kind] = null;
+      state.samplePhotos[kind] = null;
       state[kind === 'face' ? 'facePhoto' : 'bodyPhoto'] = null;
       const card = document.querySelector(`[data-upload-card="${kind}"]`);
       card.querySelector('input').value = '';
@@ -670,7 +684,8 @@
     // 服务端还有本 session 之前（或同账号回填）的照片时，把上传槽恢复成可用状态，
     // 让用户看见「已经用了哪张照片」，而不是照片在隐形生效。
     for (const kind of ['face', 'body']) {
-      if (summary.photos?.[kind] && state.photoStatus[kind] !== 'valid') {
+      if (summary.photos?.[kind] && state.photoStatus[kind] === 'empty') {
+        state.samplePhotos[kind] = summary.samplePhotos?.[kind] || null;
         setPhotoState(kind, 'valid', kind === 'face' ? '已使用之前上传的面部照，可重新上传替换' : '已使用之前上传的全身照，可重新上传替换');
         void applyAnalysisOverlay(kind, sessionId);
       }
@@ -684,7 +699,8 @@
       const analyzing = document.querySelector('#suitAnalyzing');
       if (analyzing) analyzing.hidden = false;
       screen?.classList.add('is-analyzing');
-      await new Promise((resolve) => setTimeout(resolve, SUIT_ANALYSIS_HOLD_MS));
+      const holdMs = state.samplePhotos.face && state.samplePhotos.body ? 450 : SUIT_ANALYSIS_HOLD_MS;
+      await new Promise((resolve) => setTimeout(resolve, holdMs));
       if (seq !== suitRenderSeq) return;
       if (analyzing) analyzing.hidden = true;
       screen?.classList.remove('is-analyzing');
@@ -718,8 +734,13 @@
     const card = document.querySelector(`[data-upload-card="${kind}"]`);
     const preview = card?.querySelector('.upload-preview');
     if (!preview) return;
+    const controller = state.photoControllers[kind];
+    const assetId = state.photoAssets[kind];
+    const isCurrent = () => !controller?.signal.aborted && state.photoControllers[kind] === controller
+      && state.photoAssets[kind] === assetId && state.photoStatus[kind] === 'valid';
     try {
-      const blob = await api.getSuitPhoto(sessionId, kind);
+      const blob = await api.getSuitPhoto(sessionId, kind, { signal: controller?.signal });
+      if (!isCurrent()) return;
       const url = URL.createObjectURL(blob);
       const image = Object.assign(document.createElement('img'), {
         className: 'analysis-overlay',
@@ -728,28 +749,32 @@
       image.addEventListener('error', () => URL.revokeObjectURL(url), { once: true });
       image.src = url;
       try { await image.decode(); } catch { URL.revokeObjectURL(url); return; }
-      if (state.photoStatus[kind] !== 'valid') { URL.revokeObjectURL(url); return; }
+      if (!isCurrent()) { URL.revokeObjectURL(url); return; }
       if (analysisOverlayUrls[kind]) URL.revokeObjectURL(analysisOverlayUrls[kind]);
       analysisOverlayUrls[kind] = url;
       preview.replaceChildren(image);
     } catch { /* Analysis lines are an enhancement; keep the plain upload preview. */ }
   };
-  const uploadPhoto = async (kind, file) => {
+  const uploadPhoto = async (kind, file, { sampleId = null } = {}) => {
     if (!genderReady()) { toast('请先选择你的性别'); return; }
     state.photoControllers[kind]?.abort();
     const controller = new AbortController();
     state.photoControllers[kind] = controller;
     state.photoAssets[kind] = null;
-    const error = validatePhoto(file);
+    state.samplePhotos[kind] = sampleId;
+    const error = sampleId ? '' : validatePhoto(file);
     if (error) { setPhotoState(kind, 'invalid', error); return; }
-    state[kind === 'face' ? 'facePhoto' : 'bodyPhoto'] = file;
-    renderPhotoPreview(document.querySelector(`[data-upload-card="${kind}"]`), file, kind);
-    setPhotoState(kind, 'checking', '正在处理照片…');
+    state[kind === 'face' ? 'facePhoto' : 'bodyPhoto'] = file || { sampleId };
+    const preview = sampleId ? `/api/v1/selfit/sample-photos/${encodeURIComponent(sampleId)}/preview` : file;
+    renderPhotoPreview(document.querySelector(`[data-upload-card="${kind}"]`), preview, kind);
+    setPhotoState(kind, 'checking', sampleId ? '正在分析示例照片…' : '正在处理照片…');
 
     try {
       const sessionId = await ensureSession();
       if (controller.signal.aborted) return;
-      const result = await api.checkPhoto(sessionId, kind, file, { signal: controller.signal });
+      const result = sampleId
+        ? await api.useSamplePhoto(sessionId, kind, sampleId, { signal: controller.signal })
+        : await api.checkPhoto(sessionId, kind, file, { signal: controller.signal });
       if (controller.signal.aborted) return;
       const accepted = result.photo?.status === 'accepted';
       state.photoAssets[kind] = accepted ? result.photo.assetId : null;
@@ -758,12 +783,12 @@
       setPhotoState(kind, accepted ? 'valid' : 'invalid', result.photo?.message || (accepted ? '照片可用' : '请重新上传'));
       if (accepted && state.screen === 'suit') {
         renderSuit().catch(() => toast('照片已处理完成，结果暂时无法加载，请重新上传试试。'));
-        await applyAnalysisOverlay(kind, sessionId);
+        void applyAnalysisOverlay(kind, sessionId);
       }
     } catch (requestError) {
       if (controller.signal.aborted) return;
       track('photo_upload_result', { kind, accepted: false, code: 'network' });
-      setPhotoState(kind, 'invalid', requestError.message || '照片检测失败，请重试');
+      setPhotoState(kind, 'invalid', requestError.message || (sampleId ? '示例照片分析未完成，请重试。' : '照片检测失败，请重试'));
     }
   };
   const bindUpload = (id, kind) => {
@@ -775,29 +800,26 @@
     });
   };
   bindUpload('facePhoto', 'face'); bindUpload('bodyPhoto', 'body');
-  // Built-in sample photos let visitors experience the analysis without their own uploads.
+  // Submit a fixed sample ID; analysis originals stay on the server.
   const SAMPLE_PHOTOS = {
     female: {
-      face: '/static/selfit/assets/samples/female-face-sample.png',
-      body: '/static/selfit/assets/samples/female-body-sample-v2.jpg',
+      face: 'female-face',
+      body: 'female-body',
     },
     male: {
-      face: '/static/selfit/assets/samples/male-face-sample.png',
-      body: '/static/selfit/assets/samples/male-body-sample.png',
+      face: 'male-face',
+      body: 'male-body',
     },
   };
   document.querySelectorAll('[data-sample-photo]').forEach((button) => {
-    button.addEventListener('click', () => runButtonAction(button, async () => {
+    button.addEventListener('click', async () => {
       const kind = button.dataset.samplePhoto;
-      if (!genderReady()) return;
-      const url = SAMPLE_PHOTOS[state.gender]?.[kind];
-      if (!url) throw new Error('示例图暂时无法加载，请稍后再试。');
-      const response = await fetch(url);
-      if (!response.ok) throw new Error('示例图暂时无法加载，请稍后再试。');
-      const blob = await response.blob();
+      if (!genderReady() || state.photoStatus[kind] === 'checking') return;
+      const sampleId = SAMPLE_PHOTOS[state.gender]?.[kind];
+      if (!sampleId) return;
       track('sample_photos_used', { kind });
-      await uploadPhoto(kind, new File([blob], url.split('/').pop(), { type: blob.type || 'image/jpeg' }));
-    }));
+      await uploadPhoto(kind, null, { sampleId });
+    });
   });
 
   document.querySelector('.manual-form').addEventListener('click', (event) => {

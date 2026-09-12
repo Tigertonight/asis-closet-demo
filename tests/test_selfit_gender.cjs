@@ -11,9 +11,9 @@ function harness() {
     classList:{toggle(){}}, scrollTo(){}, focus(){this.focused=true;}, setAttribute(k,v){this.attrs[k]=v;}, addEventListener(k,v){events[key+':'+k]=v;}};
   const choices = [node('female'),node('male')];
   const inputs = [node('face'),node('body'),node('sampleFace'),node('sampleBody')];
-  const state = {screen:'suit',gender:null,genderBusy:false,genderEditing:false,revision:1,photoStatus:{face:'empty',body:'empty'}};
+  const state = {screen:'suit',gender:null,genderBusy:false,genderEditing:false,revision:1,samplePhotos:{},photoStatus:{face:'empty',body:'empty'}};
   const context = {state, document:{querySelector:node, querySelectorAll:selector=>selector==='[data-gender]'?choices:inputs},
-    ensureSession:async ()=>'test',renderSuit:async()=>{},runButtonAction:(_,action)=>action(),
+    resetOnboardingPhotos(){},ensureSession:async ()=>'test',renderSuit:async()=>{},runButtonAction:(_,action)=>action(),
     updateOnboardingNav(){},onboardingBack:node('back'),suitRenderSeq:0,
     matchMedia:()=>({matches:true}),setTimeout:fn=>fn(),
     api:{saveGender:async (_,gender)=>{saved.push(gender);return {session:{revision:2}};}}};

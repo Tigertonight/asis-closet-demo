@@ -70,7 +70,9 @@
     async request(path, { method = 'GET', body, formData, signal, idempotencyKey, timeoutMs = this.timeoutMs, blob = false } = {}) {
       const controller = new AbortController();
       const timeout = setTimeout(() => controller.abort('timeout'), timeoutMs);
-      if (signal) signal.addEventListener('abort', () => controller.abort(signal.reason), { once: true });
+      const onAbort = () => controller.abort(signal.reason);
+      if (signal?.aborted) onAbort();
+      else if (signal) signal.addEventListener('abort', onAbort, { once: true });
       const headers = formData ? { Accept: 'application/json' } : { ...jsonHeaders };
       if (idempotencyKey) headers['X-Idempotency-Key'] = idempotencyKey;
       const accessToken = this.getAccessToken();
@@ -80,7 +82,7 @@
           method, credentials: 'include', headers, signal: controller.signal,
           body: formData || (body === undefined ? undefined : JSON.stringify(body)),
         });
-        if (blob && response.ok) return response.blob();
+        if (blob && response.ok) return await response.blob();
         const payload = await response.json().catch(() => ({}));
         if (!response.ok) {
           const error = payload.error || {};
@@ -98,6 +100,7 @@
         throw new SelfitApiError('网络连接失败，请稍后重试。', { code: 'network.unavailable', retryable: true, details: String(error) });
       } finally {
         clearTimeout(timeout);
+        signal?.removeEventListener('abort', onAbort);
       }
     }
 
@@ -129,6 +132,7 @@
       if (session && !invalid) {
         if (session.requiresGender && !session.gender) return Promise.reject(new SelfitApiError('请先选择性别，再上传照片。'));
         session.photoAnalyses = { ...(session.photoAnalyses || {}), [kind]: MOCK_PHOTO_ANALYSES[kind] };
+        delete (session.samplePhotos || {})[kind];
         for (const key of (kind === 'face' ? ['skin', 'faceShape'] : ['bodyShape'])) delete (session.manual || {})[key];
       }
       return wait(560).then(() => ({
@@ -142,12 +146,26 @@
       }));
     }
 
+    useSamplePhoto(sessionId, kind, sampleId, { signal, idempotencyKey = uid(`sample_${kind}`) } = {}) {
+      if (this.mode === 'live') {
+        return this.request(`/sessions/${encodeURIComponent(sessionId)}/photos/${encodeURIComponent(kind)}/sample`, {
+          method: 'POST', body: { sampleId }, signal, idempotencyKey, timeoutMs: 45000,
+        });
+      }
+      const session = this.mockSessions.get(sessionId);
+      if (!session || sampleId !== `${session.gender}-${kind}`) return Promise.reject(new SelfitApiError('请按当前选择的性别使用示例照片。'));
+      return this.checkPhoto(sessionId, kind, { name: sampleId }, { signal }).then(result => {
+        if (!signal?.aborted) session.samplePhotos = { ...(session.samplePhotos || {}), [kind]: sampleId };
+        return result;
+      });
+    }
+
     getSuit(sessionId) {
       if (this.mode === 'live') return this.request(`/sessions/${encodeURIComponent(sessionId)}/suit`);
       const session = this.mockSessions.get(sessionId) || {};
       const analyses = session.photoAnalyses || {};
       const photoLabels = { face: '面部照', body: '全身照' };
-      return Promise.resolve({ revision: session.revision, photos: { face: Boolean(analyses.face), body: Boolean(analyses.body) }, analyses, features: [
+      return Promise.resolve({ revision: session.revision, photos: { face: Boolean(analyses.face), body: Boolean(analyses.body) }, samplePhotos: session.samplePhotos || {}, analyses, features: [
         ['skin', '肤色'], ['faceShape', '脸型'], ['bodyShape', '身材比例'],
       ].map(([key, title]) => {
         const kind = key === 'bodyShape' ? 'body' : 'face';
@@ -161,13 +179,21 @@
       }) });
     }
 
-    getSuitPhoto(sessionId, kind) {
-      return this.request(`/sessions/${encodeURIComponent(sessionId)}/photos/${encodeURIComponent(kind)}/preview`, { blob: true, timeoutMs: 45000 });
+    getSuitPhoto(sessionId, kind, { signal } = {}) {
+      return this.request(`/sessions/${encodeURIComponent(sessionId)}/photos/${encodeURIComponent(kind)}/preview`, { blob: true, signal, timeoutMs: 45000 });
     }
 
     saveGender(sessionId, gender) {
       if (this.mode === 'live') return this.patchSession(sessionId, '/gender', { gender });
       if (!['female', 'male'].includes(gender)) return Promise.reject(new SelfitApiError('请选择你的性别。'));
+      const session = this.mockSessions.get(sessionId);
+      for (const [kind, sampleId] of Object.entries(session?.samplePhotos || {})) {
+        if (!sampleId.startsWith(`${gender}-`)) {
+          delete session.samplePhotos[kind];
+          delete (session.photoAnalyses || {})[kind];
+          for (const field of (kind === 'face' ? ['skin', 'faceShape'] : ['bodyShape'])) delete (session.manual || {})[field];
+        }
+      }
       return this.mockPatch(sessionId, { gender });
     }
 
