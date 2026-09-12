@@ -244,11 +244,24 @@ def request_item_context(catalog, overrides=None):
     return garment_only_context(items)
 
 
-def prompt_for(catalog, correction="", item_overrides=None):
-    return """Use case: identity-preserve. Create ONE photorealistic full-outfit virtual try-on photo by editing Image 1.
-This is a single complete outfit edit: replace clothing AND footwear and add ALL listed visible accessories in the SAME final image.
+def prompt_for(catalog, correction="", item_overrides=None, *, reviewed_candidate=False):
+    if reviewed_candidate:
+        opening = ("Use case: identity-preserve. Edit Image 2, the previously generated full-outfit candidate "
+                   "for this SAME adult woman, to fix the targeted errors below. Keep its already-correct "
+                   "outfit details. Return ONE complete seamless full-body photograph.\n")
+        image_two_role = ("Image 2 is the dressed editing base, not an accepted preset. Correct all known "
+                          "errors using Image 1 and the exact-item references. Image 1 overrides Image 2 "
+                          "for identity, hair placement, anatomy, phone, pose and canvas. Restore any drift "
+                          "in those regions from Image 1. Do not recreate already-correct garment details. ")
+    else:
+        opening = ("Use case: identity-preserve. Create ONE photorealistic full-outfit virtual try-on photo "
+                   "by editing Image 1.\n")
+        image_two_role = ("Image 2 provides clothing layering and wearing relationships ONLY. Never copy "
+                          "its person, face, hairstyle, anatomy, pose, scene, lettering, watermark or other "
+                          "people. Do not use the source person's proportions as the target body. ")
+    return opening + """This is a single complete outfit edit: include clothing AND footwear and ALL listed visible accessories in the SAME final image.
 Image 1 is the sole authority for the adult woman's identity, anatomy, face, hair, skin tone, body shape, framing, lighting, white background, phone and pose. Preserve these with minimal pixel changes. This is the same woman trying on clothes, not a new model.
-Image 2 provides clothing layering and wearing relationships ONLY. Never copy its person, face, hairstyle, anatomy, pose, scene, lettering, watermark or other people. All later images are individually labeled exact-item references. Use the structured instructions below for wearing relationships. Preserve item color, material, texture, construction, pattern and recognizable details. Do not use the source person's proportions as the target body.
+""" + image_two_role + """All later images are individually labeled exact-item references. Use the structured instructions below for wearing relationships. Preserve item color, material, texture, construction, pattern and recognizable details.
 
 FIXED SELFIE POSE: keep the phone and raised phone hand exactly at the original coordinates. The other arm hangs straight DOWN beside the body, with the hand at its original height. Do NOT put it in a pocket, bend it onto the waist, cross the arms or copy a pose from the outfit notes. Fit sleeves to the existing arm positions. Keep the leg stance and both feet at the original positions and orientations. Do not narrow the waist, slim or enlarge the body, lengthen legs, change head scale, move the face, change expression or retouch the face. Preserve existing hair lengths, hairline, parting, and hair hanging in FRONT of each shoulder. Put clothes under existing front hair; do not tuck hair back just to show a collar or accessory. Preserve exposed hands, fingers and skin. Accommodate the garments on this exact body.
 Put each item only on its intended body region. Respect inner-to-outer layering: if a skirt is worn over trousers, show both and do not merge them. Preserve scarves, bows, socks, belts, jewelry and shoes where visible. Replace original white shoes with the referenced shoes when supplied. Don't leave the original white T-shirt or shorts exposed when they should be replaced/covered. Do not invent extra accessories. A hidden underlayer may be occluded according to the outfit instructions.
@@ -380,7 +393,8 @@ def generate_attempt(path, row, correction=""):
     model_path = ROOT / row["model"]["localPath"]
     assert sha(model_path) == row["model"]["sha256"] == MODEL_SHA[row["modelId"]]
     refs = [image_ref(model_path, "IMAGE 1: exact target model; ONLY identity/pose/body/canvas authority")] + catalog["references"]
-    prompt = prompt_for(catalog, correction, row.get("itemContextOverrides"))
+    prompt = prompt_for(catalog, correction, row.get("itemContextOverrides"),
+                        reviewed_candidate=bool(row.get("retryOutfitReference")))
     if row.get("retryOutfitReference"):
         refs[1] = reviewed_outfit_reference(row)
         prompt += ("\nImage 2 is a PREVIOUSLY GENERATED candidate for this exact same model and outfit, "

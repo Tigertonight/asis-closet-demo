@@ -1,6 +1,22 @@
 from scripts.batch_female_nano_presets import garment_only_context, prompt_for
 
 
+def test_candidate_edit_has_one_base_and_retains_original_identity_and_item_authorities():
+    catalog = {"plan": {"title": "近完成套装"}, "itemContext": [
+        {"name": "上衣", "reference": "IMAGE 3", "wearing_method": "最上方纽扣扣合"},
+        {"name": "戒指", "reference": "IMAGE 4", "wearing_method": "只有一枚"}]}
+    prompt = prompt_for(catalog, "remove the duplicate ring", reviewed_candidate=True)
+    assert "Edit Image 2" in prompt and "by editing Image 1" not in prompt
+    assert "clothing layering and wearing relationships ONLY" not in prompt
+    assert "Image 1 is the sole authority" in prompt
+    assert "Image 1 overrides Image 2" in prompt
+    assert "IMAGE 3" in prompt and "IMAGE 4" in prompt
+    assert "最上方纽扣扣合" in prompt and "只有一枚" in prompt
+    assert "remove the duplicate ring" in prompt
+    original = prompt_for(catalog)
+    assert "by editing Image 1" in original and "Edit Image 2" not in original
+
+
 def test_reviewed_outfit_reference_requires_same_job_numeric_pass_and_hash_bound_failure(monkeypatch, tmp_path):
     from copy import deepcopy
     from PIL import Image
