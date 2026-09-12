@@ -37,8 +37,8 @@ INVITE_CODE_ID_LENGTH = 16
 DEVICE_ID_MIN_LENGTH = 8
 DEVICE_ID_MAX_LENGTH = 128
 
-# 用户性别：当前产品默认女性向，存量账号与新建账号一律先按女性落库；
-# 男性入口开放后由用户画像/设置流程显式改写。
+# 登录记录中的性别仅作为旧账号的回退值；用户声明保存在 selfit 账号画像中，
+# 通过 _public_user 统一提供给后续业务接口。
 USER_GENDERS = {"female", "male"}
 DEFAULT_USER_GENDER = "female"
 
@@ -688,12 +688,13 @@ def _find_or_create_user(data: dict[str, Any], phone_e164: str, now: datetime) -
 
 
 def _public_user(user: dict[str, Any]) -> dict[str, Any]:
+    from app.selfit_gender import account_gender
     return {
         "user_id": user.get("user_id"),
         "phone_e164": user.get("phone_e164"),
         "status": user.get("status"),
         "beta_qualified": bool(user.get("beta_qualified")),
-        "gender": user.get("gender") if user.get("gender") in USER_GENDERS else DEFAULT_USER_GENDER,
+        "gender": account_gender(user),
         "created_at": user.get("created_at"),
         "last_login_at": user.get("last_login_at"),
     }

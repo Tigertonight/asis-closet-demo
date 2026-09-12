@@ -99,7 +99,7 @@ def test_report_completion_and_retest_replace_random_or_previous_persona_on_next
 def test_missing_report_template_or_delivery_never_falls_back_to_random(home, monkeypatch):
     client, store, _ = home
     monkeypatch.setattr(outfits.random, 'sample', lambda *_: pytest.fail('must not show unrelated random notes'))
-    store['reports'] = [saved_report(templateId='flou-male', gender='male')]
+    store['reports'] = [saved_report(templateId='flou-missing', gender='female')]
     assert client.get(ENDPOINT).status_code == 503
     store['reports'] = [saved_report()]
     monkeypatch.setattr(outfits, 'delivery_looks', lambda: [])

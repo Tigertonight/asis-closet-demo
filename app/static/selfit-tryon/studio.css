@@ -1384,6 +1384,15 @@ button.composition-piece:focus-visible { outline:2px solid #8a011b; outline-offs
 .profile-logout:active { background:#720015; }
 .profile-save-error { color:#8a011b; font-size:13px; margin:0 20px 20px; line-height:1.6; }
 .profile-save:disabled { opacity:.6; }
+.profile-gender-row { display:flex; align-items:center; gap:12px; width:100%; min-height:56px; margin:0 0 20px; padding:12px 18px; border:1px solid #eadfe1; border-radius:20px; background:#fff; text-align:left; color:#685d60; }
+.profile-gender-row strong { margin-left:auto; color:#333; font-size:14px; }
+.profile-gender-help { max-width:353px; margin:8px auto 24px; padding:0 12px; color:#84777b; font-size:14px; line-height:1.7; }
+.profile-gender-options { display:grid; grid-template-columns:1fr 1fr; gap:12px; max-width:353px; margin:0 auto; padding:0 12px; }
+.profile-gender-options button { display:flex; align-items:center; justify-content:center; gap:12px; min-height:84px; border:1px solid #eadfe1; border-radius:20px; background:#fff; color:#685d60; font-size:16px; }
+.profile-gender-options button[aria-pressed="true"] { border-color:#ff4f86; background:#fff0f5; color:#a72250; }
+.profile-gender-screen .profile-save { background:#ff4f86; font-weight:600; }
+.profile-gender-options button:focus-visible,.profile-gender-row:focus-visible { outline:2px solid #ff4f86; outline-offset:3px; }
+.home-notes-notice { margin:0 16px 12px; color:#857477; font-size:12px; line-height:1.6; }
 .mirror-profile-card { border:0; }
 .profile-more button>img { width:28px; height:46px; object-fit:contain; }
 .profile-more button>span { min-width:0; font-size:12px; }

@@ -9,7 +9,7 @@ from fastapi.responses import JSONResponse
 
 from app.auth import get_current_user
 from app.material_assets import asset_content_url
-from app.selfit_report import _personality_template_catalog
+from app.selfit_report import _personality_template_catalog, report_for_gender
 from app.styling_catalog import adapt_outfit, delivery_looks, outfit_id
 
 router = APIRouter(prefix="/selfit/try-on/report-outfits")
@@ -47,7 +47,7 @@ def random_home_notes(
                 candidates.append((look, note))
         pinned = next((pair for pair in candidates if outfit_id(pair[0]) == selected_outfit_id), None)
         # Keep an explicitly opened outfit, but sample new suggestions for the account.
-        male = current_user.get("gender") == "male" and any(t.get("gender") == "male" for t in templates.values())
+        male = current_user.get("gender") == "male"
         candidates = [pair for pair in candidates if (pair[0]["note_binding"].get("gender") == "male") == male]
         # Some templates share a notebook photo. Show it only once in the strip.
         unique = {pair[0]["source_asset"]["assetId"]: pair for pair in candidates}
@@ -70,12 +70,17 @@ def home_notes(current_user: dict, selected_outfit_id: str | None = None) -> dic
         if saved is None:
             return {**random_home_notes(selected_outfit_id, current_user), "source": "random"}
 
-        report = saved["data"]
+        # Authentication resolves the current declaration; saved reports are snapshots.
+        report = report_for_gender(saved["data"], current_user.get("gender"))
         persona = str(report["typeId"]).strip().lower()
         gender = report.get("gender") or current_user.get("gender")
         key = str(report.get("templateId") or (f"{persona}-male" if gender == "male" else persona)).strip().lower()
         catalog = _personality_template_catalog()
         template = {**catalog.get("types", {}), **catalog.get("variants", {})}.get(key, {})
+        if gender == "male" and not template and key == f"{persona}-male":
+            return {**random_home_notes(None, {**current_user, "gender": "male"}),
+                    "source": "gender_library", "persona": persona,
+                    "notice": "这个型格的男生穿搭正在准备中，先试试男生穿搭参考。"}
         notes = template.get("recommendations", {}).get("outfits", {}).get("items", [])
         ids = [note["id"] for note in notes]
         if template.get("typeId") != persona or len(ids) != 4 or len(set(ids)) != 4:

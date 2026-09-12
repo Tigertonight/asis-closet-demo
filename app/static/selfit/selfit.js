@@ -1243,8 +1243,8 @@
     state.currentReportTypeId = reportTypeId;
     const continueToApp = document.querySelector('#continueToApp');
     const pendingGenderContent = data.recommendationStatus === 'pending_gender_content';
-    if (continueToApp) continueToApp.hidden = pendingGenderContent;
-    document.querySelector('.report-actions').classList.toggle('is-pending-gender', pendingGenderContent);
+    if (continueToApp) continueToApp.hidden = false;
+    document.querySelector('.report-actions').classList.remove('is-pending-gender');
     const fullHero = Boolean(data.heroImage?.src);
     const heroSource = fullHero ? mobileHeroSource(data.heroImage.src) : '';
     reportNodes.hero.classList.toggle('report-hero--full', fullHero);
@@ -1297,7 +1297,9 @@
     const visibleOutfits = data.outfits
       .filter((item) => item && item.imageUrl)
       .slice(0, personalityCatalog.renderRules?.outfits?.limit || 4);
-    if (continueToApp) continueToApp.href = reportTryOnUrl(reportTypeId, visibleOutfits, data.templateId || reportTypeId);
+    if (continueToApp) continueToApp.href = pendingGenderContent
+      ? '/selfit/try-on?screen=mirror'
+      : reportTryOnUrl(reportTypeId, visibleOutfits, data.templateId || reportTypeId);
     const outfitCards = visibleOutfits.map((item) => {
       const figure = document.createElement('figure');
       const image = Object.assign(document.createElement('img'), {

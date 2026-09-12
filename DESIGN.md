@@ -10,6 +10,9 @@ This file is the frontend source of truth for the consumer product in the Figma 
 
 ## Onboarding update — 2026-09-08
 
+- Gender selections persist in the account profile and drive model selection, sample photos, report variants and white-T matches. “我的档案” includes a gender row opening a dedicated two-option editor, available before or after testing. Save updates the current recommendations without changing the personality score or deleting photos/history; keep the header free of an edit icon. Use rose selection and save states, a 44px minimum touch target, and visible save/error feedback.
+- When a male personality template is not yet supplied, keep “去试穿” visible on the report. Open the normal mirror with four actual male-library outfits and the notice “这个型格的男生穿搭正在准备中，先试试男生穿搭参考。” This is explicitly labeled library content; do not present it as that personality's four original notes, and do not invent missing male templates. Broken existing deliveries still show retry states.
+
 - Item and outfit cards do not show a decorative favorite-star corner badge. Preserve saved state and the existing favorite actions; mirror selection and pending indicators remain separate (user correction, 2026-09-10).
 
 - Outfit and photo-note detail headers show only the back action and centered title; remove the duplicate favorite star. Keep the two existing favorite/try-on buttons in a stationary bottom row inside the app shell, with an opaque warm-white background across the full width and safe area and a short fade above it. Only detail content scrolls, with enough bottom space to reveal the last garment completely. Preserve content scroll when a favorite action rerenders the page.

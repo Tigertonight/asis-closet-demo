@@ -29,6 +29,7 @@ STORE_VERSION = 1
 
 # collection -> 文档主键字段
 COLLECTIONS = {
+    "user_profiles": "user_id",
     "sessions": "session_id",
     "idempotency": "key",
     "report_jobs": "job_id",

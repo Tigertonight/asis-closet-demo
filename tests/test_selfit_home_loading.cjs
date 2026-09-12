@@ -161,6 +161,13 @@ const genderCatalog = [
   {id:'male_old',gender:'male',image_url:'/male-old.png'},
   {id:'male_standard_1',gender:'male',image_url:'/api/v1/material-assets/male/content',default_for_gender:true},
 ];
+test('switching back to female replaces a previously saved male model',async()=>{
+  const h=harness('?screen=mirror',{api:url=>url==='/closet/preferences' ? {gender:'female',current_model_id:'male_standard_1'} :
+    url==='/selfit/try-on/models' ? {items:genderCatalog} : undefined});
+  await h.run('load()');
+  assert.equal(h.state.modelId,'fixed');
+  assert(h.state.modelLibrary.every(row=>row.gender==='female'));
+});
 for (const query of ['?screen=mirror','?screen=mirror&from=onboarding']) {
   test('male account replaces legacy female default with the supplied male model: '+query,async()=>{
     const h=harness(query,{api:url=>url==='/closet/preferences' ? {current_model_id:'fixed',gender:'male',self_model_path:'/own-old.jpg'} :

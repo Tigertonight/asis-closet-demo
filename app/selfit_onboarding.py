@@ -20,6 +20,7 @@ from starlette.concurrency import run_in_threadpool
 from app import selfit_assets, selfit_onboarding_store as _store_module
 from app import selfit_photo, selfit_report, selfit_share
 from app.auth import get_current_user, get_optional_user
+from app.selfit_gender import GENDERS, declared_profile, save_gender
 from app.ops import env_int
 from app.storage import ROOT_DIR
 from app.selfit_recommend import MANUAL_FACE_SHAPE_OPTIONS, MANUAL_BODY_SHAPE_OPTIONS
@@ -163,6 +164,13 @@ def _write_store(data: dict[str, Any]) -> None:
 
 def _prune_store(data: dict[str, Any]) -> dict[str, Any]:
     now = _now()
+    # Preserve legacy declarations before their source drafts expire.
+    indexed = {p.get("user_id") for p in data.setdefault("user_profiles", [])}
+    owners = {r.get("user_id") for r in [*data.get("sessions", []), *data.get("reports", [])] if r.get("user_id")}
+    for owner in owners - indexed:
+        selected = declared_profile(data, owner)
+        if selected:
+            data["user_profiles"].append(dict(selected))
     # Keep account profile inputs before expiring onboarding drafts.
     for report in data["reports"]:
         if report.get("user_id") and "profile" not in report:
@@ -910,6 +918,7 @@ async def _patch_session(
     session_id: str,
     user: dict[str, Any] | None,
     apply_patch: Any,
+    after_patch: Any = None,
 ) -> JSONResponse:
     payload = await _read_json_object(request)
     if isinstance(payload, JSONResponse):
@@ -932,6 +941,8 @@ async def _patch_session(
     patched = apply_patch(record, payload)
     if isinstance(patched, JSONResponse):
         return patched
+    if after_patch:
+        after_patch(data, record)
     record["revision"] = int(record.get("revision") or 1) + 1
     status_code, body = _session_response(record)
     _idempotency_store(data, scope, idempotency_key, status_code, body)
@@ -1032,9 +1043,14 @@ async def patch_session_gender(
         if gender not in ("female", "male"):
             return _error_response(422, "validation.invalid_enum", "请选择你的性别。")
         record["gender"] = gender
+        record["gender_selected_at"] = _iso(_now())
         return record
 
-    return await _patch_session(request, session_id, user, apply)
+    def save_account(data: dict, record: dict) -> None:
+        if record.get("user_id"):
+            save_gender(data, record["user_id"], record["gender"])
+
+    return await _patch_session(request, session_id, user, apply, save_account)
 
 
 @router.patch("/sessions/{session_id}/profile")
@@ -1168,11 +1184,13 @@ def _account_profile(data: dict[str, Any], user_id: str) -> dict[str, Any]:
     if session and session.get("user_id") != user_id:
         session = None
     stored = (report or {}).get("profile") or {}
-    report_data = (report or {}).get("data") or {}
+    selected = declared_profile(data, user_id)
+    report_data = selfit_report.report_for_gender((report or {}).get("data") or {}, selected.get("gender"))
     suit = _account_suit_summary(data, user_id, session, stored)
     return {
         "tested": report is not None,
-        "gender": stored.get("gender") or report_data.get("gender") or (session or {}).get("gender"),
+        "gender": selected.get("gender"),
+        "genderRevision": int(selected.get("gender_revision", 0)),
         "revision": int(stored.get("revision") or 1),
         "manual": {feature["key"]: feature["value"] for feature in suit["features"] if feature.get("value")},
         "manualOverrides": _profile_overrides(session, stored),
@@ -1242,6 +1260,22 @@ def _clear_manual_for_photo(data: dict[str, Any], user_id: str, kind: str) -> No
 @router.get("/me/profile")
 async def get_my_profile(user: dict[str, Any] = Depends(get_current_user)) -> dict[str, Any]:
     return {"profile": _account_profile(_load_store(), user["user_id"])}
+
+
+@router.patch("/me/gender")
+async def update_my_gender(request: Request, user: dict[str, Any] = Depends(get_current_user)) -> JSONResponse:
+    payload = await _read_json_object(request)
+    if isinstance(payload, JSONResponse):
+        return payload
+    if payload.get("gender") not in GENDERS:
+        return _error_response(422, "validation.invalid_enum", "请选择你的性别。")
+    data = _load_store()
+    current = declared_profile(data, user["user_id"])
+    if request.headers.get("if-match") != str(int(current.get("gender_revision", 0))):
+        return _error_response(409, "profile.revision_conflict", "性别信息已更新，请重新打开后再修改。")
+    save_gender(data, user["user_id"], payload["gender"])
+    _write_store(data)
+    return JSONResponse({"profile": _account_profile(data, user["user_id"])})
 
 
 @router.patch("/me/profile")
@@ -1665,6 +1699,9 @@ def _run_report_job(job_id: str) -> None:
     try:
         if session is None:
             raise ValueError("session missing")
+        selected = declared_profile(data, session.get("user_id", ""))
+        if selected:
+            session = {**session, "gender": selected["gender"]}
         report_data = selfit_report.build_report(session)
     except Exception:
         data = _load_store()
@@ -1776,6 +1813,9 @@ async def get_report_job(
         _write_store(data)
 
     report = _find_report(data, str(job.get("report_id") or "")) if job.get("report_id") else None
+    if report:
+        report = {**report, "data": selfit_report.report_for_gender(
+            report.get("data") or {}, declared_profile(data, (user or {}).get("user_id", "")).get("gender"))}
     return JSONResponse(
         status_code=200,
         content={"requestId": _request_id(), "job": _public_job(job, report)},
@@ -1829,7 +1869,8 @@ async def get_report(
         return _error_response(404, "report.not_found", "没有找到这份报告。")
     return JSONResponse(
         status_code=200,
-        content={"requestId": _request_id(), "report": report.get("data") or {}},
+        content={"requestId": _request_id(), "report": selfit_report.report_for_gender(
+            report.get("data") or {}, declared_profile(data, (user or {}).get("user_id", "")).get("gender"))},
     )
 
 
@@ -1878,7 +1919,8 @@ async def create_public_report_share(
     report = _load_visible_report(data, report_id, user)
     if isinstance(report, JSONResponse):
         return report
-    snapshot = selfit_share.sanitize_public_report(report.get("data") or {})
+    snapshot = selfit_share.sanitize_public_report(selfit_report.report_for_gender(
+        report.get("data") or {}, declared_profile(data, (user or {}).get("user_id", "")).get("gender")))
     if not snapshot.get("title") and not snapshot.get("typeId"):
         return _error_response(422, "share.report_incomplete", "这份报告还没有准备好。")
 
@@ -2097,7 +2139,9 @@ async def create_share_asset(
     slide_index, channel, image_format = validated
 
     try:
-        content = selfit_share.render_share_image(report.get("data") or {}, slide_index, channel, image_format)
+        content = selfit_share.render_share_image(selfit_report.report_for_gender(
+            report.get("data") or {}, declared_profile(data, (user or {}).get("user_id", "")).get("gender")),
+            slide_index, channel, image_format)
     except Exception:
         return _error_response(500, "share.render_failed", "分享图生成失败，请稍后重试。", retryable=True)
 

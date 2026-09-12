@@ -122,7 +122,7 @@
     styling: params.get("mode") === "styling",
     source: params.get("from") === "report" && params.has("report_notes") ? "report" : "inspiration",
     reportOutfits: [], reportOutfitsMode: "", reportOutfitsKey: "",
-    homeOutfits: [], homeNotesError: "",
+    homeOutfits: [], homeNotesError: "", homeNotesNotice: "",
     category: "all",
     closetCategory: "all",
     wardrobeDeleting: "",
@@ -361,7 +361,7 @@
         ? empty("正在整理你的搭配…")
         : state.error || (homeNotes && state.homeNotesError)
           ? empty(state.error || state.homeNotesError)
-          : `${state.source === "report" ? `<div class="report-outfit-context" aria-live="polite"><strong>${esc(state.current?.reportNote?.title || "选择一套喜欢的搭配")}</strong><span>来自你的型格推荐${state.reportOutfitsMode === "mock" ? " · 示例搭配" : ""}</span></div>` : ""}<div class="strip" aria-label="${homeNotes ? "选择穿搭笔记" : category === "set" ? "选择套装" : "选择单品"}">${items.map((x, i) => card(x, category === "set" ? "outfit" : "item", i)).join("") || empty(homeNotes ? "穿搭笔记暂时无法加载，请稍后重试。" : "这里还没有搭配，先添加一件喜欢的衣服。")}</div>`
+          : `${homeNotes && state.homeNotesNotice ? `<p class="home-notes-notice" role="status">${esc(state.homeNotesNotice)}</p>` : ""}${state.source === "report" ? `<div class="report-outfit-context" aria-live="polite"><strong>${esc(state.current?.reportNote?.title || "选择一套喜欢的搭配")}</strong><span>来自你的型格推荐${state.reportOutfitsMode === "mock" ? " · 示例搭配" : ""}</span></div>` : ""}<div class="strip" aria-label="${homeNotes ? "选择穿搭笔记" : category === "set" ? "选择套装" : "选择单品"}">${items.map((x, i) => card(x, category === "set" ? "outfit" : "item", i)).join("") || empty(homeNotes ? "穿搭笔记暂时无法加载，请稍后重试。" : "这里还没有搭配，先添加一件喜欢的衣服。")}</div>`
     }${items.length > 3 ? `<div class="mirror-pagination" aria-label="套装分页">${Array.from({length:Math.ceil(items.length/3)},(_,i)=>`<span data-strip-page="${i}" ${i===0?'data-active="true"':''}></span>`).join('')}</div>` : ''}</div></section>`;
   }
   const trimmedPieces = new Map();
@@ -671,20 +671,60 @@
   function profile() {
     if(!state.profile) return profileStatus();
     const p=state.profile,r=p.report;
-    return `<section class="profile-screen">${profileHeader()}${p.tested ? `<div class="profile-analysis profile-suit"><div class="profile-suit-photos">${profilePhoto('face')}${profilePhoto('body')}</div><div class="profile-suit-cards" data-selfit-suit-cards aria-label="身体特征分析"></div></div>` : ''}${r ? `<div class="profile-report-card"><a class="profile-report" href="/selfit?from=mirror&amp;report=latest&amp;return_screen=profile" aria-label="查看我的风格报告">${r.heroImage?.src ? image(r.heroImage.src,r.title || '我的风格报告') : `<strong>${esc(r.typeId?.toUpperCase())}<br>${esc(r.title || '我的风格报告')}</strong>`}</a><a class="profile-retest" href="/selfit?from=mirror&amp;entry=retest">重新测试 →</a></div>` : `<a class="profile-test-invite" href="/selfit?from=mirror">${image(`${A}main-app/profile-test-pin.svg`, "", "profile-test-pin")}<strong>selfit 16 型格测试</strong>${image(`${A}main-app/profile-test-art.svg`, 'suit · like · vibe')}<span>去测试 →</span></a>`}<section class="profile-more"><h2>更多测试</h2><div><button disabled>${image(`${A}main-app/archive-more-mirror.webp`, "")}<span>专业脸型风格<small>即将开放</small></span></button><button disabled>${image(`${A}main-app/archive-more-flower.webp`, "")}<span>十二季肤色<small>即将开放</small></span></button></div></section>${!reference && typeof savedSession !== "undefined" && savedSession?.user && !String(savedSession.user.user_id || "").startsWith?.('guest_') && !savedSession.user.phone_e164 ? '<button class="profile-bind-phone" data-action="bind-phone">绑定手机号，换设备不丢数据</button>' : ''}${!reference ? '<button class="profile-logout" data-action="logout">退出登录</button>' : ''}</section>`;
+    const genderLabel=p.gender==='male'?'男性':p.gender==='female'?'女性':'请选择';
+    return `<section class="profile-screen">${profileHeader()}<button class="profile-gender-row" data-action="edit-gender" aria-label="修改性别"><span>性别</span><strong>${genderLabel}</strong><span aria-hidden="true">›</span></button>${p.tested ? `<div class="profile-analysis profile-suit"><div class="profile-suit-photos">${profilePhoto('face')}${profilePhoto('body')}</div><div class="profile-suit-cards" data-selfit-suit-cards aria-label="身体特征分析"></div></div>` : ''}${r ? `<div class="profile-report-card"><a class="profile-report" href="/selfit?from=mirror&amp;report=latest&amp;return_screen=profile" aria-label="查看我的风格报告">${r.heroImage?.src ? image(r.heroImage.src,r.title || '我的风格报告') : `<strong>${esc(r.typeId?.toUpperCase())}<br>${esc(r.title || '我的风格报告')}</strong>`}</a><a class="profile-retest" href="/selfit?from=mirror&amp;entry=retest">重新测试 →</a></div>` : `<a class="profile-test-invite" href="/selfit?from=mirror">${image(`${A}main-app/profile-test-pin.svg`, "", "profile-test-pin")}<strong>selfit 16 型格测试</strong>${image(`${A}main-app/profile-test-art.svg`, 'suit · like · vibe')}<span>去测试 →</span></a>`}<section class="profile-more"><h2>更多测试</h2><div><button disabled>${image(`${A}main-app/archive-more-mirror.webp`, "")}<span>专业脸型风格<small>即将开放</small></span></button><button disabled>${image(`${A}main-app/archive-more-flower.webp`, "")}<span>十二季肤色<small>即将开放</small></span></button></div></section>${!reference && typeof savedSession !== "undefined" && savedSession?.user && !String(savedSession.user.user_id || "").startsWith?.('guest_') && !savedSession.user.phone_e164 ? '<button class="profile-bind-phone" data-action="bind-phone">绑定手机号，换设备不丢数据</button>' : ''}${!reference ? '<button class="profile-logout" data-action="logout">退出登录</button>' : ''}</section>`;
   }
   function profileFeatureEdit() {
     const field = state.profileEditingField;
+    if (field === "gender") return profileGenderEdit();
     const options = window.SelfitManualOptions.getOptions(state.profile?.gender, field);
     const male = state.profile?.gender === 'male';
     return `<section class="profile-screen profile-feature-screen"><header class="profile-header"><button data-action="cancel-profile-feature" aria-label="返回我的档案"><svg viewBox="0 0 24 24"><path d="m15 5-7 7 7 7"/></svg></button><h1>修改${profileLabels[field]}</h1></header><div class="profile-feature-content"><h2>${profileLabels[field]}</h2><div class="profile-feature-options" data-kind="${field}" data-gender="${male ? 'male' : 'female'}" role="group" aria-label="选择${profileLabels[field]}">${options.map(option=>`<button data-profile-choice="${esc(option.value)}" aria-pressed="${window.SelfitManualOptions.matches(option,state.profileFeatureValue)}"><span class="profile-feature-art">${field==='skin'?`<i style="background:${option.color}"></i>`:image(option.src,option.label+'示意')}</span><span>${esc(male ? option.label : option.value)}</span></button>`).join('')}</div></div><button class="primary profile-save" data-action="confirm-profile-feature" ${state.profileFeatureValue && state.profileFeatureTouched?'':'disabled'}>保存修改</button></section>`;
   }
   function profileEdit() {
     if(!state.profile) return profileStatus(true);
+    if(state.profileEditingField === 'gender') return profileGenderEdit();
     if(!state.profile.tested) return profile();
     const draft=state.profileDraft || state.profile.manual;
     if (state.profileEditingField) return profileFeatureEdit();
     return `<section class="profile-screen profile-edit-screen">${profileHeader(true)}<div class="profile-edit-photos">${profilePhoto('face',true)}${profilePhoto('body',true)}</div><div class="profile-edit-fields"><p class="profile-edit-hint">点击下方信息，修改你的档案</p>${Object.keys(profileOptions).map(field=>`<button type="button" class="profile-field-row" data-profile-edit="${field}" aria-label="修改${profileLabels[field]}" ${state.profileSaving ? 'disabled' : ''}><span class="profile-field-label">${profileLabels[field]}</span><strong class="profile-field-value">${esc(draft[field] || '请选择')}</strong>${profileArt(field,draft[field])}<svg class="profile-field-chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 7 7-7 7"/></svg></button>`).join('')}</div>${state.profileError ? `<p class="profile-save-error" role="alert">${esc(state.profileError)}</p>` : ''}<button class="primary profile-save" data-action="save-profile" ${state.profileSaving ? 'disabled' : ''}>${state.profileSaving ? '正在保存…' : '保存修改'}</button></section>`;
+  }
+  function profileGenderEdit() {
+    return `<section class="profile-screen profile-feature-screen profile-gender-screen"><header class="profile-header"><button data-action="cancel-gender" aria-label="返回我的档案" ${state.profileSaving?'disabled':''}><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 5-7 7 7 7"/></svg></button><h1>修改性别</h1><span aria-hidden="true"></span></header><div class="profile-feature-content"><p class="profile-gender-help">更新后，模特和穿搭参考会随之调整，型格结果保持不变。</p><div class="profile-gender-options" role="group" aria-label="选择性别">${[['female','女性'],['male','男性']].map(([value,label])=>`<button data-gender-choice="${value}" aria-pressed="${state.profileFeatureValue===value}" ${state.profileSaving?'disabled':''}>${label}<span aria-hidden="true">${state.profileFeatureValue===value?'✓':''}</span></button>`).join('')}</div>${state.profileError?`<p class="profile-save-error" role="alert">${esc(state.profileError)}</p>`:''}</div><button class="primary profile-save" data-action="save-gender" ${state.profileSaving || !state.profileFeatureTouched?'disabled':''}>${state.profileSaving?'正在保存…':'保存修改'}</button></section>`;
+  }
+  async function saveProfileGender() {
+    if(state.profileSaving || !state.profileFeatureTouched) return;
+    const gender=state.profileFeatureValue;
+    if(!['female','male'].includes(gender)) return;
+    state.profileSaving=true;state.profileError='';render();
+    try {
+      const saved=reference ? {profile:{...state.profile,gender,genderRevision:(state.profile.genderRevision||0)+1}} :
+        await api('/api/v1/selfit/me/gender',{method:'PATCH',headers:{'Content-Type':'application/json','If-Match':String(state.profile.genderRevision||0)},body:JSON.stringify({gender})});
+      state.profile={...saved.profile,photos:state.profile.photos};
+      state.profileSuit=saved.profile.suit || null;
+      if(savedSession?.user) savedSession.user.gender=gender;
+      // Let an older home request finish before dropping its cached recommendations.
+      if(homeNotesRequest) await homeNotesRequest;
+      state.homeOutfits=[];state.homeNotesLoaded=false;state.homeNotesNotice='';state.homeNotesError='';
+      state.reportOutfits=[];state.reportOutfitsKey='';state.current=null;state.result='';
+      state.builderRequest++;state.builderMatches=[];state.builderMatching=false;
+      state.source='inspiration';state.category='set';
+      const url=new URL(location.href);
+      for(const key of ['from','persona','outfit','report_notes','report_assets','report_template']) url.searchParams.delete(key);
+      history.replaceState(null,'',url);
+      if(!reference) {
+        try { await prepareInitialModel(await loadPreferences()); }
+        catch { state.photo='';state.modelLoadFailed=true; }
+      } else filterModelsByGender(gender);
+      state.profileEditingField=null;state.profileFeatureTouched=false;
+      go('profile');notify('性别已更新');
+    } catch(e) {
+      state.profileError=e.message || '暂时无法保存，请重试。';
+      if(e.status===409) {
+        const current=await api('/api/v1/selfit/me/profile').catch(()=>null);
+        if(current?.profile) state.profile={...current.profile,photos:state.profile.photos};
+      }
+    } finally {state.profileSaving=false;render();}
   }
   const REFERENCE_PROFILE_SUIT = {
     photos: {face: true, body: true},
@@ -1742,6 +1782,7 @@
     if (selected) request.set("selected_outfit_id", selected);
     try {
       const response = await api(`/selfit/try-on/report-outfits/home?${request}`);
+      state.homeNotesNotice = response.notice || "";
       state.homeOutfits = response.outfits.map(row => ({
         ...normalizeOutfit(row, state.items),
         name: row.report_note.title, src: row.report_note.image_url, homeNote: row.report_note,
@@ -1910,7 +1951,8 @@
     const defaultModel = state.modelLibrary.find(x => x.default_for_gender) || state.modelLibrary[0];
     // Migrate the former female-only default for male accounts. An explicit own-photo
     // choice and a previously selected model of the same gender remain respected.
-    const preferred = savedModel || (state.modelGender === "male" && preferences.current_model_id !== "self" ? defaultModel : null);
+    const mismatchedModel = state.modelCatalog.some(x => x.id === preferences.current_model_id && x.gender !== state.modelGender);
+    const preferred = savedModel || ((state.modelGender === "male" || mismatchedModel) && preferences.current_model_id !== "self" ? defaultModel : null);
     const fromOnboarding = new URLSearchParams(location.search).get("from") === "onboarding" && state.modelGender !== "male";
     // A selected fixed model needs no download of the user's full-resolution photo.
     state.personalPhotoFallback = preferences.self_model_path || "";
@@ -2095,6 +2137,16 @@
   $("#studio").addEventListener("click", async (e) => {
     const b = e.target.closest("button");
     if (!b) return;
+    if(b.dataset.action==='edit-gender') {
+      state.profileEditingField='gender';state.profileFeatureValue=state.profile.gender || '';
+      state.profileFeatureTouched=false;state.profileError='';go('profile-edit');return;
+    }
+    if(b.dataset.genderChoice) {
+      if(state.profileSaving)return;
+      state.profileFeatureValue=b.dataset.genderChoice;state.profileFeatureTouched=true;render();return;
+    }
+    if(b.dataset.action==='cancel-gender') {if(!state.profileSaving)go('profile');return;}
+    if(b.dataset.action==='save-gender') {await saveProfileGender();return;}
     if (b.dataset.profileEdit) {
       state.profileEditingField=b.dataset.profileEdit;state.profileFeatureTouched=false;
       state.profileFeatureValue=(state.profileDraft || state.profile.manual)[state.profileEditingField] || '';

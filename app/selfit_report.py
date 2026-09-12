@@ -147,6 +147,22 @@ def default_personality_report(persona_code: str, gender: str | None = None) -> 
     return report
 
 
+def report_for_gender(report: dict, gender: str | None) -> dict:
+    """Adapt the owner's current view; keep stored/shared historical reports intact."""
+    if not report.get("typeId") or gender not in ("female", "male"):
+        return report
+    previous = report.get("gender") or ("male" if str(report.get("templateId", "")).endswith("-male") else "female")
+    if previous == gender:
+        return report
+    updated = {**report, **default_personality_report(report["typeId"], gender)}
+    # Previous gender-specific overlays must not replace the newly selected content.
+    updated.pop("personalization", None)
+    if gender == "female":
+        updated.pop("recommendationStatus", None)
+        updated.pop("recommendationNotice", None)
+    return updated
+
+
 def _require_persona_inputs(session: dict[str, Any]) -> None:
     """分型核心输入全缺时让任务显式失败，而不是输出一份无意义报告。"""
 
