@@ -28,7 +28,7 @@ test('male body images use text-free assets and retain separate option labels',(
   catalog.renderOnboarding(form,'male');
   const html=nodes['.manual-visual-options--body'].innerHTML;
   for(const option of catalog.getOptions('male','bodyShape')) {
-    assert.match(option.src,/-no-label\.png$/);
+    assert.match(option.src,/-no-label\.webp$/);
     assert.ok(html.includes(`class="manual-option-label">${option.label}</span>`));
     assert.ok(html.includes(`alt="${option.label}示意"`));
   }

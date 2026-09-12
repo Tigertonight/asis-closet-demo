@@ -7,7 +7,7 @@
   const skin = (colors, labels) => skinValues.map((value, i) => ({value, label: labels[i], color: colors[i]}));
   const art = (value, label, name, male, body = false, aliases = []) => ({
     value, label, aliases,
-    src: root + (male ? 'male/' + name + '.png' : name + '@4x.png?v=20260826'),
+    src: root + (male ? 'male/' + name + '.webp' : name + '@4x.webp'),
     width: male ? (body ? 328 : 359) : (body ? 144 : 156),
     height: male ? (body ? 800 : 680) : (body ? 408 : 240),
   });

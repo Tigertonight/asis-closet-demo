@@ -18,7 +18,7 @@
     );
   const asset = (n) => `${A}${n}.webp`;
   const image = (src, alt = "", cls = "") =>
-    `<img src="${esc(mediaURL(modelDisplayURL(src)))}" alt="${esc(alt)}" class="${cls}" draggable="false">`;
+    `<img src="${esc(mirrorImageSource(src))}" alt="${esc(alt)}" class="${cls}" draggable="false">`;
   function modelDisplayURL(src) {
     return state.modelCatalog?.find(model => model.image_url === src)?.preview_url || src;
   }
@@ -591,7 +591,12 @@
   }
   const mirrorImages = new Map();
   const mirrorImageRequests = new Map();
-  function preloadMirrorImage(src) {
+  function mirrorImageSource(src) {
+    // Reuse the URL that actually loaded, including a network-retry cache key.
+    return mirrorImages.get(src) === "ready" && mirrorImageRequests.get(src)?.src
+      || mediaURL(modelDisplayURL(src));
+  }
+  function preloadMirrorImage(src, attempt = 0) {
     if (!src || mirrorImages.has(src)) return;
     mirrorImages.set(src, "loading");
     const photo = new Image();
@@ -602,18 +607,45 @@
       if (settled || mirrorImageRequests.get(src) !== photo) return;
       settled = final;
       clearTimeout(timeout);
+      if (final) clearTimeout(deadline);
       mirrorImages.set(src, status);
       if ((!state.loading || state.initialModelReady) && state.page === "mirror" && (state.result || state.photo) === src) render();
     };
-    // A slow transfer may finish after the retry state appears. Accept that image;
-    // only a newer request for the same source may supersede this one.
-    const timeout = setTimeout(() => finish("error", false), 20000);
-    photo.onload = () => photo.decode().then(() => finish("ready"), () => finish("error"));
-    photo.onerror = () => finish("error");
-    photo.src = mediaURL(modelDisplayURL(src));
+    // Slow is not failed. Keep accepting a late image until explicitly replaced.
+    const timeout = setTimeout(() => finish("slow", false), 20000);
+    const deadline = setTimeout(() => finish("error", false), 60000);
+    const failed = () => {
+      if (settled || mirrorImageRequests.get(src) !== photo) return;
+      if (attempt >= 2) return finish("error");
+      settled = true;
+      clearTimeout(timeout);
+      clearTimeout(deadline);
+      setTimeout(() => {
+        if (mirrorImageRequests.get(src) !== photo) return;
+        // Do not retry a photo after the user selected something else or left.
+        if (state.page !== "mirror" || (state.result || state.photo) !== src) {
+          mirrorImages.delete(src);
+          mirrorImageRequests.delete(src);
+          return;
+        }
+        mirrorImages.delete(src);
+        preloadMirrorImage(src, attempt + 1);
+      }, (attempt + 1) * 1000);
+    };
+    photo.onload = () => photo.decode().then(() => finish("ready"), failed);
+    photo.onerror = failed;
+    const url = mediaURL(modelDisplayURL(src));
+    photo.src = attempt && !url.startsWith("blob:") ? `${url}${url.includes("?") ? "&" : "?"}selfit_image_retry=${Date.now()}-${attempt}` : url;
   }
-  function mirrorLoading(message = "正在准备你的试衣镜…", failed = false) {
-    return `<section class="mirror-loading" aria-label="试衣镜加载" aria-busy="${!failed}">${failed ? "" : '<span class="mirror-spinner" aria-hidden="true"></span>'}<p role="status">${esc(message)}</p>${failed ? '<button class="secondary" data-action="retry-mirror">重新加载</button>' : ""}</section>`;
+  function retryMirrorImage() {
+    const src = state.result || state.photo;
+    if (!src) return load();
+    mirrorImages.delete(src);
+    preloadMirrorImage(src, 1);
+    render();
+  }
+  function mirrorLoading(message = "正在准备你的试衣镜…", failed = false, retryable = failed) {
+    return `<section class="mirror-loading" aria-label="试衣镜加载" aria-busy="${!failed}">${failed ? "" : '<span class="mirror-spinner" aria-hidden="true"></span>'}<p role="status">${esc(message)}</p>${retryable ? '<button class="secondary" data-action="retry-mirror">重新加载</button>' : ""}</section>`;
   }
   function readyMirror() {
     if (reference) return mirror();
@@ -623,8 +655,9 @@
     const src = state.result || state.photo;
     if (state.styling || !src) return mirror();
     preloadMirrorImage(src);
-    if (mirrorImages.get(src) === "error") return mirrorLoading("模特图片未能加载，请重试。", true);
-    if (mirrorImages.get(src) !== "ready") return mirrorLoading("正在加载模特…");
+    if (mirrorImages.get(src) === "error") return mirrorLoading(state.result ? "试穿图暂时未能加载，结果已保留，请重试。" : "照片暂时未能加载，请重试。", true);
+    if (mirrorImages.get(src) === "slow") return mirrorLoading("图片加载较慢，正在继续加载…", false, true);
+    if (mirrorImages.get(src) !== "ready") return mirrorLoading(state.result ? "正在加载试穿图…" : "正在加载模特…");
     return mirror();
   }
   let renderedBrowseKey = "";
@@ -644,7 +677,7 @@
     if(field === 'skin') return `<i class="profile-skin" style="background:${{'冷白肤':'#f5ddd0','暖白肤':'#f7dbc1','中性自然肤':'#fcd1bb','暖黄肤':'#dfb48a','橄榄肤':'#bbaa83','小麦色':'#b68c66'}[value] || '#eee'}"></i>`;
     const key = {'椭圆脸':'face-oval','圆脸':'face-round','方脸':'face-square','心形脸':'face-heart','菱形脸':'face-diamond','梨型':'body-pear','倒三角型':'body-inverted-triangle','沙漏型':'body-hourglass','矩型':'body-rectangle','苹果型':'body-apple'}[value];
     if(!key) return '<span class="profile-unknown">—</span>';
-    return image(['face-oval','body-rectangle'].includes(key) ? `${A}main-app/archive-${key}.svg` : `/static/selfit/assets/manual-selection/${key}@4x.png`, '', 'profile-attribute-art');
+    return image(['face-oval','body-rectangle'].includes(key) ? `${A}main-app/archive-${key}.svg` : `/static/selfit/assets/manual-selection/${key}@4x.webp`, '', 'profile-attribute-art');
   }
   function profileHeader(edit=false) {
     return `<header class="profile-header"><button data-page="${edit ? 'profile' : 'mirror'}" aria-label="${edit ? '返回我的档案' : '返回试衣镜'}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 5-7 7 7 7"/></svg></button><h1>${edit ? '编辑档案' : '我的档案'}</h1><span aria-hidden="true"></span></header>`;
@@ -1557,13 +1590,18 @@
     }
   }
   async function waitForPresetResult(job, startedAt) {
+    const src = job.result.result.image_path;
     const preview = new Image();
-    preview.src = mediaURL(job.result.result.image_path);
+    preview.src = mediaURL(src);
     try {
       await Promise.all([
         preview.decode(),
         new Promise(resolve => setTimeout(resolve, Math.max(0, 3000 - (Date.now() - startedAt)))),
       ]);
+      // The preset image is already decoded: entering the mirror must reuse it,
+      // rather than start another load that can fail after the try-on succeeded.
+      mirrorImages.set(src, "ready");
+      mirrorImageRequests.set(src, preview);
     } catch (_) { throw Error("试穿图片暂时无法加载，请稍后重试。"); }
   }
   function failure(message) {
@@ -1627,7 +1665,11 @@
         state.noteRequest = null;
         state.outfitRequest = null;
         state.resultOriginal = job.original_image_path || state.jobPhoto || '';
-        state.photo = state.resultOriginal || state.photo;
+        // Job inputs are full-size copies. Keep the fixed model's known URL so
+        // the next try-on still uses its cached display preview.
+        const fixedModel = job.model_id && job.model_id === state.modelId &&
+          state.modelCatalog?.find(model => model.id === job.model_id);
+        state.photo = fixedModel?.image_url || state.resultOriginal || state.photo;
         if (requestedViewerJob && job.result?.generation_strategy === "preset") {
           state.modelId = job.model_id;
           state.file = null;
@@ -2485,8 +2527,7 @@
           }
           break;
         case "retry-mirror":
-          mirrorImages.delete(state.result || state.photo);
-          await load();
+          await retryMirrorImage();
           break;
         case "reload":
           await load();

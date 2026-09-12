@@ -60,7 +60,7 @@ def test_selfit_onboarding_includes_the_figma_login_extension() -> None:
     assert "/static/selfit/assets/login-tagline-curved@2x.png" in response.text
     assert "/static/selfit/assets/login-buttons-ring@2x.png" in response.text
     assert "/static/selfit/assets/login-selfit-logo@2x.png" in response.text
-    assert "/static/selfit/assets/login-persona-board@2x.png" in response.text
+    assert "/static/selfit/assets/login-persona-board@2x.webp" in response.text
     assert "/static/selfit/assets/login-persona-title@2x.png" in response.text
     assert '/static/selfit/selfit-auth.js' in response.text
     assert '"authBase": "/auth"' in response.text
@@ -83,9 +83,9 @@ def test_selfit_manual_suit_selection_uses_the_figma_option_order() -> None:
     assert "菱型脸</span>" in response.text
     assert "方型脸</span>" in response.text
     assert "鹅蛋脸</span>" in response.text
-    assert "/static/selfit/assets/manual-selection/face-diamond@4x.png" in response.text
-    assert "/static/selfit/assets/manual-selection/face-square@4x.png" in response.text
-    assert "/static/selfit/assets/manual-selection/body-pear@4x.png" in response.text
+    assert "/static/selfit/assets/manual-selection/face-diamond@4x.webp" in response.text
+    assert "/static/selfit/assets/manual-selection/face-square@4x.webp" in response.text
+    assert "/static/selfit/assets/manual-selection/body-pear@4x.webp" in response.text
     assert "face-diamond-card@4x.png" not in response.text
     assert "body-pear@2x.png" not in response.text
 
@@ -267,8 +267,8 @@ def test_selfit_vibe_question_keys_match_backend_contract() -> None:
 def test_selfit_onboarding_uses_high_resolution_production_assets() -> None:
     for asset_path in (
         "/static/selfit/assets/face-upload-guide@4x.png",
-        "/static/selfit/assets/manual-selection/face-diamond@4x.png",
-        "/static/selfit/assets/manual-selection/body-pear@4x.png",
+        "/static/selfit/assets/manual-selection/face-diamond@4x.webp",
+        "/static/selfit/assets/manual-selection/body-pear@4x.webp",
         "/static/selfit/assets/onboarding-loading-signature@2x.png",
         "/static/selfit/assets/report-style-soft-cool@4x.png",
         "/static/selfit/assets/figma-report/report-hero-reference.png",

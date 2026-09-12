@@ -21,5 +21,9 @@ const poll=code.slice(code.indexOf('  async function poll('),code.indexOf('  asy
  job={...job,status:'completed',result:{outfit:{outfit_id:target.id},result:{image_path:'generated-image'}}};
  await ctx.poll();assert.equal(state.generating,null);assert.equal(state.result,'generated-image');assert.equal(state.current.id,target.id);
  assert.equal(state.resultOriginal,'stored-original');
+ state.modelId='male_standard_1';state.modelCatalog=[{id:'male_standard_1',image_url:'/models/male.png',preview_url:'/models/male/preview'}];
+ job={...job,model_id:'male_standard_1'};state.job=job;
+ await ctx.poll();assert.equal(state.photo,'/models/male.png');
+ assert.equal(state.resultOriginal,'stored-original','comparison still retains the submitted original');
  console.log('Inline generation: captured submission, resume, in-place completion passed');
 })().catch(e=>{console.error(e);process.exitCode=1;});
