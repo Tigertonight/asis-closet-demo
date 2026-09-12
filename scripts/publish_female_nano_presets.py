@@ -14,7 +14,8 @@ sys.path.insert(0, str(ROOT))
 from app.material_assets import MaterialRegistry, asset_content_url, asset_id_for_bytes, write_json_atomic
 from app.selfit_tryon_presets import _model_matches
 from app.styling_catalog import outfit_id
-from scripts.batch_female_nano_presets import BATCH, MODEL_DIR, MODEL_IDS, key_for, looks, now, read, sha
+from scripts.batch_female_nano_presets import BATCH, MODEL_DIR, MODEL_IDS, fixed_face, key_for, looks, now, read, sha
+from scripts.female_nano_quality import HEADWEAR_FEATURES_RULE, HEADWEAR_RULES, review_worn_hat
 
 INDEX = ROOT / "app/data/tryon-examples.v1.json"
 
@@ -35,7 +36,9 @@ def validate_row(path, current):
     assert result_path.is_relative_to(path.parent.resolve()) and sha(result_path) == result["sha256"]
     folder = (ROOT / row["selectedAttempt"]).resolve()
     assert folder.is_relative_to(path.parent.resolve()) and result_path.parent == folder
-    quality = read(folder / "quality-report.json")
+    quality_path = (ROOT / row["qualityReportPath"]).resolve() if row.get("qualityReportPath") else folder / "quality-report.json"
+    assert quality_path.parent == folder
+    quality = read(quality_path)
     assert quality["resultSha256"] == result["sha256"] and quality["qualityReview"]["status"] == "pass"
     assert row["qualityReview"] == quality["qualityReview"]
     visual = read(path.parent / "visual-review.json")
@@ -45,7 +48,23 @@ def validate_row(path, current):
     row["semanticReview"] = visual
     row["qualityReview"]["evidence"]["semantic_review"] = visual
     attempt = read(folder / "attempt.json")
-    assert attempt["status"] == "generated_local"
+    if attempt["status"] != "generated_local":
+        assert attempt["status"] == "failed_quality" and quality.get("recheck", {}).get("rule") in HEADWEAR_RULES
+        original_report_path = ROOT / quality["recheck"]["initialReportPath"]
+        assert original_report_path.resolve() == folder / "quality-report.json"
+        assert sha(original_report_path) == quality["recheck"]["initialReportSha256"]
+        initial = read(original_report_path)
+        assert initial["resultSha256"] == quality["resultSha256"] and initial["nativeSha256"] == quality["nativeSha256"]
+        assert initial.get("originalExpandedQualityReview", initial["qualityReview"]) == quality["originalExpandedQualityReview"]
+    face_metric = quality["qualityReview"]["evidence"].get("face_metric")
+    if face_metric in HEADWEAR_RULES:
+        from PIL import Image
+        catalog = read(BATCH / "catalog" / row["key"] / "catalog.json")
+        recomputed = review_worn_hat(Image.open(model).convert("RGB"), Image.open(result_path).convert("RGB"),
+                                    quality["originalExpandedQualityReview"], catalog["itemContext"],
+                                    fixed_face(row["modelId"])["evidence"]["primary_face"]["box"],
+                                    allow_forehead_occlusion=face_metric == HEADWEAR_FEATURES_RULE)
+        assert recomputed == quality["qualityReview"]
     assert sha(ROOT / attempt["nativePath"]) == attempt["nativeSha256"] == quality["nativeSha256"]
     if attempt.get("reused"):
         request = read(folder / "request-metadata.json")

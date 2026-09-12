@@ -18,6 +18,7 @@ def preset_case(monkeypatch, tmp_path):
     source = json.loads(presets.INDEX_PATH.read_text())
     example = copy.deepcopy(next(row for row in source['examples']
         if row['id'] == 'female_medium_1--bolt--outfits-01'))
+    example.pop('displayResult', None)  # Legacy fixture intentionally serves its original.
     path = tmp_path / 'presets.json'
     monkeypatch.setattr(presets, 'INDEX_PATH', path)
     monkeypatch.setattr(presets, 'material_download_url', lambda record: '/verified.png')
@@ -93,7 +94,8 @@ def test_job_uses_preset_without_generation_and_keeps_history(preset_case, monke
         job = response.json()
         assert job['status'] == 'completed'
         assert job['result']['generation_strategy'] == 'preset'
-        assert job['result']['result']['image_path'] == example['result']['contentUrl']
+        expected_image = (example.get('displayResult') or example['result'])['contentUrl']
+        assert job['result']['result']['image_path'] == expected_image
         assert job['result']['record']['original_image_path'] == job['original_image_path']
         assert job['result']['record']['generation_strategy'] == 'preset'
         assert submitted == [], 'no image-generation worker or model API is called'
@@ -164,6 +166,61 @@ def one_shot_case(preset_case):
 
 def test_one_shot_preset_reuses_verified_result(one_shot_case, monkeypatch):
     test_job_uses_preset_without_generation_and_keeps_history(one_shot_case, monkeypatch)
+
+
+@pytest.fixture
+def webp_case(one_shot_case, monkeypatch):
+    example, outfit, raw, path = one_shot_case
+    digest = '9' * 64
+    display = {'assetId': 'asset_' + digest, 'sha256': digest,
+               'sourceSha256': example['result']['sha256'],
+               'contentType': 'image/webp', 'dimensions': example['result']['dimensions'],
+               'verified': True, 'pixelIdentical': True}
+    display['contentUrl'] = presets.asset_content_url(display['assetId'])
+    example['displayResult'] = display
+    original_get = presets.MaterialRegistry.get
+    record = {'sha256': digest, 'contentType': 'image/webp', 'url': '/verified.webp'}
+    def get(registry, asset_id):
+        if asset_id == display['assetId']:
+            return record
+        return original_get(registry, asset_id)
+    monkeypatch.setattr(presets.MaterialRegistry, 'get', get)
+    path.write_text(json.dumps({'examples': [example]}))
+    return example, outfit, raw, path, record
+
+
+def test_webp_preset_reuses_same_reviewed_outfit(webp_case):
+    example, outfit, raw, _, _ = webp_case
+    found = presets.find_preset(outfit['outfit_id'], example['modelId'], raw, outfit['item_ids'])
+    assert found['image_path'] == example['displayResult']['contentUrl']
+    assert found['quality_review'] == example['qualityReview']
+
+
+def test_webp_preset_saves_webp_history_without_generation(webp_case, monkeypatch):
+    test_job_uses_preset_without_generation_and_keeps_history(webp_case[:4], monkeypatch)
+
+
+@pytest.mark.parametrize('change', ['source', 'verified', 'pixels', 'size', 'hash', 'mime', 'missing'])
+def test_stale_or_corrupt_webp_falls_back_to_reviewed_png(webp_case, change):
+    example, outfit, raw, path, record = webp_case
+    display = example['displayResult']
+    if change == 'source': display['sourceSha256'] = 'stale'
+    if change == 'verified': display['verified'] = False
+    if change == 'pixels': display['pixelIdentical'] = False
+    if change == 'size': display['dimensions'] = [1, 1]
+    if change == 'hash': record['sha256'] = 'corrupt'
+    if change == 'mime': record['contentType'] = 'image/png'
+    if change == 'missing': record.clear()
+    path.write_text(json.dumps({'examples': [example]}))
+    found = presets.find_preset(outfit['outfit_id'], example['modelId'], raw, outfit['item_ids'])
+    assert found['image_path'] == example['result']['contentUrl']
+
+
+def test_webp_cannot_bypass_failed_original_review(webp_case):
+    example, outfit, raw, path, _ = webp_case
+    example['visualReview']['status'] = 'fail'
+    path.write_text(json.dumps({'examples': [example]}))
+    assert presets.find_preset(outfit['outfit_id'], example['modelId'], raw, outfit['item_ids']) is None
 
 
 @pytest.mark.parametrize('change', ['recipe', 'quality', 'visual', 'unverified_visual', 'result_hash', 'reviewed_items'])

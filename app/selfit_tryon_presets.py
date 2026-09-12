@@ -12,6 +12,24 @@ from app.model_assets import load_model_manifest
 INDEX_PATH = Path(__file__).resolve().parent / "data/tryon-examples.v1.json"
 
 
+def _display_asset(example: dict, registry: MaterialRegistry) -> str:
+    """A display derivative never replaces the reviewed generation evidence."""
+    result = example["result"]
+    display = example.get("displayResult") or {}
+    if (display.get("verified") is True and display.get("pixelIdentical") is True
+            and display.get("sourceSha256") == result["sha256"]
+            and display.get("contentType") == "image/webp"
+            and display.get("dimensions") == result.get("dimensions")):
+        try:
+            record = registry.get(display["assetId"])
+            if record["sha256"] == display.get("sha256") and record["contentType"] == "image/webp":
+                material_download_url(record)
+                return display["assetId"]
+        except (KeyError, ValueError, HTTPException):
+            pass
+    return result["assetId"]
+
+
 def _model_matches(root: Path, model_id: str, model: dict, person_raw: bytes) -> bool:
     """Match the current model master record, including models stored as assets."""
     rows = load_model_manifest(root)["items"]
@@ -87,9 +105,12 @@ def find_preset(outfit_key: str, model_id: str | None, person_raw: bytes,
         if selected_ids is not None and set(selected_ids) != set(outfit["item_ids"]):
             return None
         asset_id = result["assetId"]
-        record = MaterialRegistry().get(asset_id)
+        registry = MaterialRegistry()
+        record = registry.get(asset_id)
         if record["sha256"] != result["sha256"]:
             return None
+        asset_id = _display_asset(example, registry)
+        record = registry.get(asset_id)
         material_download_url(record)
         return {"example_id": example["id"], "model_id": model_id, "outfit": outfit,
                 "image_path": asset_content_url(asset_id),
