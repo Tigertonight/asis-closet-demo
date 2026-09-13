@@ -121,10 +121,12 @@
         image.crossOrigin = "anonymous";
         image.onerror = () => finish();
         image.onload = () => {
-          // Full-body portraits share a vertical scale before and after try-on.
-          // Keep wide/unknown photos contained instead of magnifying a narrow slice.
+          // All portraits share a vertical scale before and after try-on.
+          // A strict 3:4 cutoff misclassified rounded previews (368x490) and
+          // ordinary 4:5 photos, shrinking them to half the mirror's height.
+          // Keep square, landscape and unknown photos fully contained.
           const aspect = image.naturalWidth / image.naturalHeight;
-          fit = aspect > 0 && aspect <= .75 ? "height" : "contain";
+          fit = aspect > 0 && aspect < 1 ? "height" : "contain";
           try {
             // Keep normal model photos at native resolution. A 512px probe
             // rounded the crop outward and left a visible one-pixel seam.

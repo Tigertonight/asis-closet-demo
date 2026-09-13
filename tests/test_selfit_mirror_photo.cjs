@@ -124,6 +124,20 @@ function harness({tainted=false, width=100, height=150, framed=true, sourcePixel
   assert.equal(borderedResult.photo.src,'blob:preview-1');
   assert.equal(borderedResult.photo.dataset.mirrorSource,'/tryon-result-with-side-borders.png');
 
+  for (const [width,height] of [[368,490],[369,490],[800,1000],[750,1000],[900,1600]]) {
+    const portrait=harness({width,height,framed:false});
+    for (const src of ['/model.webp','/result.webp']) {
+      portrait.presenter.show(portrait.photo,src);
+      portrait.images.at(-1).onload(); await Promise.resolve();
+      assert.equal(portrait.frame.dataset.fit,'height',`${width}x${height} portrait fills the mirror before and after try-on`);
+      assert.equal(portrait.photo.src,src,'Fitting preserves the original source');
+    }
+    portrait.presenter.show(portrait.photo,'/model.webp'); await Promise.resolve();
+    assert.equal(portrait.frame.dataset.fit,'height','Comparison retains portrait height');
+    portrait.presenter.show(portrait.photo,'/model.webp',{fit:'contain'}); await Promise.resolve();
+    assert.equal(portrait.frame.dataset.fit,'contain','Expanded viewer still fits the complete photo');
+  }
+
   for (const [width,height] of [[150,100],[100,100],[0,0]]) {
     const wide=harness({width,height,framed:false});
     wide.presenter.show(wide.photo,'/wide-photo.png');
