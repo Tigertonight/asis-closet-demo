@@ -4,8 +4,6 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from app.material_assets import asset_content_url
-
 DELIVERY_PATH = Path(__file__).resolve().parent / "data/inspiration-styling-delivery.v1.json"
 TEMPLATE_PREFIX = "inspiration_"
 
@@ -38,19 +36,28 @@ def inspiration_looks() -> list[dict]:
     return inspiration_delivery()["looks"]
 
 
-def inspiration_topics() -> dict:
+def inspiration_topics(gender: str = "female") -> dict:
     from app.selfit_report import _personality_template_catalog
     from app.styling_catalog import adapt_outfit, delivery_looks
+
+    gender = "male" if gender == "male" else "female"
+
+    def matches_gender(look: dict) -> bool:
+        # The original women's delivery was labelled "unisex". Match the home
+        # and report catalogs: only explicitly male bindings are men's notes.
+        return (look["note_binding"].get("gender") == "male") == (gender == "male")
 
     data = inspiration_delivery()
     topics = []
     for topic in data["topics"]:
         looks = sorted((look for look in data["looks"]
-                        if look["inspiration_binding"]["topicId"] == topic["id"]),
+                        if look["inspiration_binding"]["topicId"] == topic["id"] and matches_gender(look)),
                        key=lambda look: look["note_binding"]["position"])
-        outfits = [adapt_outfit(look) for look in looks]
+        if not looks:
+            continue
+        outfits = [{**adapt_outfit(look), "gender": gender} for look in looks]
         topics.append({"id": topic["id"], "title": topic["title"], "kind": topic["kind"],
-                       "cover": asset_content_url(topic["coverAssetId"]),
+                       "cover": outfits[0]["cover_path"],
                        "previews": [outfit["cover_path"] for outfit in outfits[1:4]],
                        "outfits": outfits})
     templates = _personality_template_catalog()["types"]
@@ -58,14 +65,17 @@ def inspiration_topics() -> dict:
     if {look["note_binding"]["persona"] for look in persona_looks} != set(templates):
         raise ValueError("Personality collections do not match the report catalog")
     for code, template in sorted(templates.items(), key=lambda row: row[1]["index"]):
-        looks = sorted((look for look in persona_looks if look["note_binding"]["persona"] == code),
+        looks = sorted((look for look in persona_looks
+                        if look["note_binding"]["persona"] == code and matches_gender(look)),
                        key=lambda look: (look["note_binding"].get("gender") == "male",
                                          look["note_binding"]["bodyProfile"] != "standard",
                                          look["note_binding"]["templateId"], look["note_binding"]["position"]))
-        outfits = [{**adapt_outfit(look), "body_profile": look["note_binding"]["bodyProfile"]}
+        if not looks:
+            continue
+        outfits = [{**adapt_outfit(look), "gender": gender, "body_profile": look["note_binding"]["bodyProfile"]}
                    for look in looks]
         topics.append({"id": f"persona-{code}", "title": template["metadata"]["name"],
                        "kind": "persona", "persona": code, "cover": outfits[0]["cover_path"],
                        "previews": [outfit["cover_path"] for outfit in outfits[1:4]],
                        "outfits": outfits})
-    return {"topics": topics, "total": sum(len(topic["outfits"]) for topic in topics)}
+    return {"gender": gender, "topics": topics, "total": sum(len(topic["outfits"]) for topic in topics)}

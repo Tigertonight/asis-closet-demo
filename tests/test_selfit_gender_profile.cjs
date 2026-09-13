@@ -1,11 +1,11 @@
 const test=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('node:vm');
 const source=fs.readFileSync('app/static/selfit-tryon/studio.js','utf8');
-const block=source.slice(source.indexOf('  function profileGenderEdit()'),source.indexOf('  const REFERENCE_PROFILE_SUIT'));
+const block=source.slice(source.indexOf('  let wardrobeRequest'),source.indexOf('  let homeNotesRequest')) + source.slice(source.indexOf('  function profileGenderEdit()'),source.indexOf('  const REFERENCE_PROFILE_SUIT'));
 function harness(failure=false){
   const calls=[];
   const state={profile:{gender:'female',genderRevision:3,photos:{body:'/own.jpg'}},profileFeatureValue:'male',
     profileFeatureTouched:true,profileSaving:false,profileEditingField:'gender',builderRequest:1,
-    homeOutfits:[{id:'old'}],reportOutfits:[{id:'old-report'}],builderMatches:[{}],current:{id:'old'},result:'/old-result'};
+    inspirationLimit:48,inspirationScroll:2400,topics:[{id:'old-library'}],feed:[{id:'old-feed'}],feedLoaded:true,libraryLoading:true,homeOutfits:[{id:'old'}],reportOutfits:[{id:'old-report'}],builderMatches:[{}],current:{id:'old'},result:'/old-result'};
   const context=vm.createContext({state,reference:false,URL,homeNotesRequest:null,savedSession:{user:{gender:'female'}},
     location:{href:'http://localhost/selfit/try-on?screen=profile-edit&from=report&outfit=old&report_notes=one'},
     esc:String,render(){},notify(){},history:{replaceState:(_,__,url)=>calls.push({url:String(url)})},
@@ -22,6 +22,8 @@ test('gender save updates the view, discards stale recommendations and keeps own
   assert.equal(h.calls[0].options.headers['If-Match'],'3');
   assert.deepEqual(JSON.parse(h.calls[0].options.body),{gender:'male'});
   assert.equal(h.state.profile.gender,'male');assert.equal(h.state.profile.photos.body,'/own.jpg');
+  assert.equal(h.state.inspirationLimit,12);assert.equal(h.state.inspirationScroll,0);
+  assert.equal(h.state.topics.length,0);assert.equal(h.state.feed.length,0);assert.equal(h.state.feedLoaded,false);
   assert.equal(h.state.modelGender,'male');assert.equal(h.state.page,'profile');
   assert.equal(h.state.homeOutfits.length,0);assert.equal(h.state.reportOutfits.length,0);
   assert.equal(h.state.builderMatches.length,0);assert.equal(h.state.current,null);

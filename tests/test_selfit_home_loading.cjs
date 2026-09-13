@@ -4,7 +4,7 @@ const vm = require('node:vm');
 const {test} = require('node:test');
 const code = fs.readFileSync('app/static/selfit-tryon/studio.js', 'utf8');
 const slice = (a, b) => code.slice(code.indexOf(a), code.indexOf(b));
-const loaders = slice('  async function loadModels()', '  function modelSheet(') +
+const loaders = slice('  function libraryTopics()', '  function feedCard(') + slice('  async function loadModels()', '  function modelSheet(') +
   slice('  async function loadHomeNotes()', '  $("#sheet").addEventListener("click"');
 const deferred = () => { let resolve; const promise = new Promise(r => resolve = r); return {promise, resolve}; };
 const flush = () => new Promise(resolve => setImmediate(resolve));
@@ -16,7 +16,7 @@ function harness(query = '?screen=mirror', overrides = {}) {
     wardrobeLoaded:false, feedLoaded:false};
   const outfit = {outfit_id:'look-1',items:[{item_id:'top-1'}],report_note:{title:'第一套',image_url:'/note.jpg'}};
   const location = {search:query,href:'http://localhost'+query,origin:'http://localhost'};
-  const normalizeOutfit = row => ({id:row.outfit_id,items:(row.items || []).map(x=>({id:x.item_id})),saved:!!row.favorite});
+  const normalizeOutfit = row => ({id:row.outfit_id,items:(row.items || []).map(x=>({id:x.item_id})),saved:!!row.favorite,raw:row});
   const context = vm.createContext({state, location, params:new URLSearchParams(query), reference:false,
     URL, URLSearchParams, Set, Promise, Date, File, Blob, FormData, AbortController, setTimeout, clearTimeout,
     savedSession:{accessToken:'test-only'}, visitorReady:null,
@@ -125,7 +125,7 @@ test('library loads on entry with favorite state, shares requests and recovers f
   await h.run('loadLibrary()');
   assert.equal(h.state.libraryLoading,false);
   assert(h.state.topicsError);
-  assert.equal(h.calls.filter(url=>url.endsWith('/inspiration-notes')).length,1,'wardrobe and feed share the in-flight notes request');
+  assert.equal(h.calls.filter(url=>url.endsWith('/inspiration-notes')).length,1,'only wardrobe loads the legacy saved notes');
   failed=false;
   await h.run('load()');await h.run('loadLibrary()');
   assert.equal(h.state.topicsError,'');
@@ -268,4 +268,33 @@ test('missing or failed historical preview keeps the existing saved photo as fal
     assert.equal(h.state.personalFile,null);
     assert.equal(h.state.uploadURLs.length,0);
   }
+});
+
+// A delayed wardrobe must never hold the public catalog behind its loading screen.
+test('library becomes usable before wardrobe, saved notes or mirror startup complete',async()=>{
+  const gate=deferred();
+  const h=harness('?screen=inspiration',{api:url=>
+    /wardrobe|inspiration-notes|report-outfits/.test(url) ? gate.promise : undefined});
+  const startup=h.run('load()');await flush();await h.run('loadLibrary()');
+  assert.equal(h.state.libraryLoading,false);
+  assert.equal(h.state.topics.length,1);
+  assert.equal(h.state.loading,true,'mirror startup is still waiting');
+  assert.equal(h.state.wardrobeLoading,true);
+  assert(!h.calls.some(url=>url.includes('recommendations')),'no unused legacy recommendations POST');
+  gate.resolve({items:[],outfits:[],saved_notes:[]});await startup;await h.run('loadWardrobe()');
+});
+test('late responses from the previous gender cannot overwrite the new catalog or its loading state',async()=>{
+  const female=deferred(),male=deferred();let request=0;
+  const h=harness('?screen=mirror',{api:url=>url.endsWith('inspiration-topics') ? (++request===1 ? female.promise : male.promise) : undefined});
+  await h.run('load()');h.state.page='inspiration';
+  const previous=h.run('loadLibrary()');
+  h.run('invalidateLibrary()');h.state.modelGender='male';
+  const current=h.run('loadLibrary()');
+  female.resolve({gender:'female',topics:[{id:'old',outfits:[{outfit_id:'female',gender:'female',items:[]}]}]});await previous;
+  assert.equal(h.state.libraryLoading,true,'old completion must not clear the active spinner');
+  assert.equal(h.state.topics.length,0);
+  male.resolve({gender:'male',topics:[{id:'new',outfits:[{outfit_id:'male',gender:'male',items:[]}]}]});await current;
+  assert.equal(h.state.libraryLoading,false);
+  assert.equal(h.state.topics[0].entries[0].id,'male');
+  assert.equal(h.state.libraryGender,'male');
 });

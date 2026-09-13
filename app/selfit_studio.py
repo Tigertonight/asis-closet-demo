@@ -3,7 +3,7 @@ from copy import deepcopy
 from threading import RLock
 from typing import Any, Literal
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Response
 from pydantic import BaseModel, Field
 
 from app.auth import get_current_user
@@ -14,11 +14,12 @@ _save_lock = RLock()
 
 
 @router.get("/inspiration-topics")
-def studio_inspiration_topics(user: dict[str, Any] = Depends(get_current_user)) -> dict[str, Any]:
+def studio_inspiration_topics(response: Response, user: dict[str, Any] = Depends(get_current_user)) -> dict[str, Any]:
     from app.inspiration_catalog import inspiration_topics
 
     try:
-        return inspiration_topics()
+        response.headers["Cache-Control"] = "private, no-store"
+        return inspiration_topics(gender=user.get("gender", "female"))
     except (OSError, ValueError, KeyError, TypeError) as exc:
         raise HTTPException(503, "主题穿搭暂时无法加载，请稍后重试。") from exc
 
