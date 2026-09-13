@@ -18,6 +18,7 @@ const failure = source.slice(source.indexOf('  function failure('), source.index
     const ctx = {
       state, pollTimer: null, clearTimeout() {}, api: async () => job, $: () => null,
       sessionStorage: {removeItem: key => {removed = key;}}, render() {},
+      startTry() {}, isTryonAccessError: () => false,
       esc: text => String(text).replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;'),
       modal: (title, body) => {dialog = {title, body};},
     };
@@ -27,6 +28,8 @@ const failure = source.slice(source.indexOf('  function failure('), source.index
     assert.equal(dialog.title, '试穿暂未完成');
     assert.ok(dialog.body.includes(`<p>${expected}</p>`));
     assert.ok(dialog.body.includes('data-action="retry-job"'));
+    assert.ok(dialog.body.includes('data-action="upload-photo">更换照片</button>'));
+    assert.ok(!dialog.body.includes('data-action="model">更换照片</button>'));
     assert.equal(state.generating, null);
     assert.equal(state.photo, 'original.png');
     assert.equal(removed, 'selfit.studio.job');

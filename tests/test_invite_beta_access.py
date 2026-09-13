@@ -3,8 +3,12 @@
 from __future__ import annotations
 
 import json
+import asyncio
 from pathlib import Path
 
+import pytest
+from fastapi import HTTPException
+from fastapi.security import HTTPAuthorizationCredentials
 from fastapi.testclient import TestClient
 
 import app.auth as auth
@@ -127,6 +131,82 @@ def test_beta_gate_blocks_tryon_and_stylist_for_normal_users(monkeypatch, tmp_pa
         headers=_bearer(normal),
     )
     assert tryon.status_code == 403
+    assert tryon.headers['X-Selfit-Access'] == 'invite-required'
+    assert tryon.json()['error']['code'] == 'auth.invite_required'
+
+
+@pytest.mark.parametrize(('mode', 'public', 'enabled', 'allowed'), [
+    ('local', '0', None, False),
+    ('local', '0', '0', False),
+    ('local', '0', '1', True),
+    ('local', '1', '1', False),
+    ('production', '0', '1', False),
+    ('prod', '0', '1', False),
+    ('demo', '0', '1', False),
+    ('staging', '0', '1', False),
+    ('test', '0', '1', False),
+])
+def test_local_invite_free_access_is_explicit_and_never_persisted(
+    monkeypatch, tmp_path, mode, public, enabled, allowed,
+) -> None:
+    _use_tmp_runtime(monkeypatch, tmp_path)
+    monkeypatch.setenv('SELFIT_ENV', mode)
+    monkeypatch.setenv('SELFIT_AUTH_SECRET', 'test-only-invite-boundary-secret')
+    monkeypatch.setenv('SELFIT_PUBLIC_DEMO', public)
+    if enabled is not None:
+        monkeypatch.setenv('SELFIT_LOCAL_BETA_ACCESS', enabled)
+    client = TestClient(app)
+    guest = client.post('/auth/guest').json()
+    assert guest['user']['beta_qualified'] is allowed
+    credentials = HTTPAuthorizationCredentials(scheme='Bearer', credentials=guest['access_token'])
+    if allowed:
+        user = asyncio.run(beta_access.require_beta_tryon(credentials))
+        assert user['user_id'] == guest['user']['user_id']
+    else:
+        with pytest.raises(HTTPException) as error:
+            asyncio.run(beta_access.require_beta_tryon(credentials))
+        assert error.value.status_code == 403
+        assert error.value.headers['X-Selfit-Access'] == 'invite-required'
+    data = json.loads(auth.AUTH_STORE_PATH.read_text())
+    raw_user = next(user for user in data['users'] if user['user_id'] == guest['user']['user_id'])
+    assert not raw_user.get('beta_qualified'), 'local access must not permanently qualify the account'
+    assert not raw_user.get('invite_code_id')
+    monkeypatch.setenv('SELFIT_ENV', 'production')
+    assert client.get('/auth/me', headers=_bearer(guest)).json()['user']['beta_qualified'] is False
+
+
+def test_guest_unlock_keeps_same_account_and_session(monkeypatch, tmp_path) -> None:
+    _use_tmp_runtime(monkeypatch, tmp_path)
+    monkeypatch.setenv('SELFIT_INVITE_CODES', 'GUEST-UPGRADE')
+    client = TestClient(app)
+    guest = client.post('/auth/guest').json()
+    headers = _bearer(guest)
+    invalid = client.post('/auth/invite/upgrade', json={'invite_code': 'WRONG'}, headers=headers)
+    assert invalid.status_code == 400
+    assert client.get('/auth/me', headers=headers).json()['user']['beta_qualified'] is False
+    upgraded = client.post('/auth/invite/upgrade', json={
+        'invite_code': 'GUEST-UPGRADE', 'device_id': 'guest-test-device',
+    }, headers=headers)
+    assert upgraded.status_code == 200
+    assert upgraded.json()['user']['user_id'] == guest['user']['user_id']
+    assert client.get('/auth/me', headers=headers).json()['user']['beta_qualified'] is True
+
+
+def test_local_access_still_requires_auth_and_respects_quota(monkeypatch, tmp_path) -> None:
+    _use_tmp_runtime(monkeypatch, tmp_path)
+    monkeypatch.setenv('SELFIT_ENV', 'local')
+    monkeypatch.setenv('SELFIT_PUBLIC_DEMO', '0')
+    monkeypatch.setenv('SELFIT_LOCAL_BETA_ACCESS', '1')
+    monkeypatch.setenv('SELFIT_TRYON_DAILY_LIMIT', '1')
+    with pytest.raises(HTTPException) as error:
+        asyncio.run(beta_access.require_beta_user(None))
+    assert error.value.status_code == 401
+    guest = TestClient(app).post('/auth/guest').json()
+    beta_access.consume_tryon_quota(guest['user']['user_id'])
+    credentials = HTTPAuthorizationCredentials(scheme='Bearer', credentials=guest['access_token'])
+    with pytest.raises(HTTPException) as error:
+        asyncio.run(beta_access.require_beta_tryon(credentials))
+    assert error.value.status_code == 429
 
 
 def test_tryon_daily_quota_enforced_and_resets_next_day(monkeypatch, tmp_path: Path) -> None:

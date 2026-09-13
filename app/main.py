@@ -370,6 +370,10 @@ async def validation_exception_handler(request: Request, exc: RequestValidationE
 @app.exception_handler(StarletteHTTPException)
 async def http_exception_handler(request: Request, exc: StarletteHTTPException) -> JSONResponse:
     detail = exc.detail if isinstance(exc.detail, str) else "这次请求没有完成。"
+    if int(exc.status_code) == 403 and (exc.headers or {}).get("X-Selfit-Access") == "invite-required":
+        response = _friendly_error("auth.invite_required", detail, detail, 403)
+        response.headers.update(exc.headers or {})
+        return response
     if request.url.path.startswith("/auth"):
         code = f"auth.http_{int(exc.status_code)}"
         return _friendly_error(code, detail, detail, int(exc.status_code))
