@@ -15,14 +15,16 @@ sys.path.insert(0, str(ROOT))
 from app.material_assets import MaterialRegistry, asset_content_url, asset_id_for_bytes, write_json_atomic
 from app.selfit_tryon_presets import _model_matches
 from app.styling_catalog import outfit_id
-from scripts.batch_female_nano_presets import BATCH, MODEL_DIR, MODEL_IDS, fixed_face, key_for, looks, now, read, sha
+from scripts.batch_female_nano_presets import BATCH, MODEL_DIR, MODEL_IDS, fixed_face, job_paths, key_for, looks, now, read, sha
 from scripts.female_nano_quality import HEADWEAR_FEATURES_RULE, HEADWEAR_RULES, review_worn_hat
 
 INDEX = ROOT / "app/data/tryon-examples.v1.json"
 
 
-def index_counts(examples, expected=304):
+def index_counts(examples, expected=None):
     """Recompute registry totals; never inherit counters from an older batch."""
+    if expected is None:
+        expected = len(looks()) * len(MODEL_IDS) + sum(row.get('model', {}).get('gender') == 'male' for row in examples)
     assert len({row['id'] for row in examples}) == len(examples)
     assert len(examples) <= expected
     uploaded = sum(row.get('status') == 'uploaded' for row in examples)
@@ -43,9 +45,10 @@ def index_counts(examples, expected=304):
 
 def refresh_progress():
     """Update progress without changing reviewed presets or historical evidence."""
-    jobs = [read(path) for path in sorted(BATCH.glob('female_*/*/job.json'))]
+    jobs = [read(path) for path in job_paths()]
     expected_ids = {mid + '--' + key_for(look) for mid in MODEL_IDS for look in looks()}
-    assert len(jobs) == 288 and {row['id'] for row in jobs} == expected_ids
+    expected = len(expected_ids)
+    assert len(jobs) == expected and {row['id'] for row in jobs} == expected_ids
     with INDEX.with_suffix(INDEX.suffix + '.lock').open('a') as lock:
         fcntl.flock(lock, fcntl.LOCK_EX)
         index = read(INDEX)
@@ -54,9 +57,10 @@ def refresh_progress():
                    and row.get('modelId') in MODEL_IDS}
         assert current == {row['id'] for row in jobs if row['status'] == 'uploaded'}
         index['counts'] = index_counts(index['examples'])
-        index['femaleOneShotBatch'].update(uploaded=len(current), unresolved=288-len(current),
+        index['femaleOneShotBatch'].update(expected=expected, uploaded=len(current), unresolved=expected-len(current),
             states=dict(sorted(Counter(row['status'] for row in jobs).items())),
-            status='complete' if len(current) == 288 else 'in_progress', progressUpdatedAt=now())
+            status='complete' if len(current) == expected else 'in_progress', progressUpdatedAt=now())
+        index['status'] = 'complete' if index['counts']['uploaded'] == index['counts']['expected'] else 'completed_with_issues'
         index['updatedAt'] = now()
         write_json_atomic(INDEX, index)
     return {'registryCounts': index['counts'], 'femaleBatch': index['femaleOneShotBatch']}
@@ -135,7 +139,7 @@ def validate_row(path, current):
 
 def ready_rows():
     current = {key_for(x): x for x in looks()}
-    return [(p, validate_row(p, current)) for p in sorted(BATCH.glob("female_*/*/job.json"))
+    return [(p, validate_row(p, current)) for p in job_paths()
             if read(p)["status"] == "reviewed"]
 
 
@@ -143,7 +147,7 @@ def verify_publication(finalize=False):
     """Audit current published rows and preserve the original male presets."""
     current = {key_for(x): x for x in looks()}
     expected = {mid + "--" + key for mid in MODEL_IDS for key in current}
-    assert len(expected) == 288
+    assert expected
     baseline = read(BATCH / "baseline-tryon-examples.v1.json")
     with INDEX.with_suffix(INDEX.suffix + ".lock").open("a") as lock:
         fcntl.flock(lock, fcntl.LOCK_EX)
@@ -156,7 +160,7 @@ def verify_publication(finalize=False):
         assert set(entries) <= expected | set(before_male)
         registry = MaterialRegistry()
         checked = []
-        for path in sorted(BATCH.glob("female_*/*/job.json")):
+        for path in job_paths():
             stored = read(path)
             if stored["status"] != "uploaded":
                 continue
@@ -178,19 +182,16 @@ def verify_publication(finalize=False):
         published = {r["id"] for r in index["examples"] if r.get("strategy") == "complete_outfit_single_call"
                      and r.get("modelId") in MODEL_IDS}
         assert published == set(checked)
-        report = {"verifiedAt": now(), "expected": 288, "uploaded": len(checked),
+        report = {"verifiedAt": now(), "expected": len(expected), "uploaded": len(checked),
                   "missing": sorted(expected - set(checked)), "malePreserved": 16,
                   "sourceAndModelAndResultBindingsVerified": True,
                   "status": "complete" if set(checked) == expected else "in_progress"}
         if finalize:
             assert not report["missing"], "Cannot finalize an incomplete batch"
-            assert len(entries) == 304 and all(r["status"] == "uploaded" for r in entries.values())
-            index.update(status="complete", updatedAt=now(), counts={
-                "expected": 304, "records": 304, "outfits": 112, "models": 4,
-                "generated": 304, "uploaded": 304, "failed": 0, "failedImages": 0,
-                "failedUploaded": 0, "blocked": 0, "pending": 0,
-                "totalImages": 304, "totalUploaded": 304, "processed": 304})
-            index["femaleOneShotBatch"].update(status="complete", uploaded=288,
+            assert len(entries) == len(expected) + len(before_male) and all(r["status"] == "uploaded" for r in entries.values())
+            index.update(status="complete", updatedAt=now(), counts=index_counts(index['examples']))
+            index["femaleOneShotBatch"].update(status="complete", expected=len(expected), uploaded=len(expected),
+                unresolved=0, states={'uploaded': len(expected)},
                 sourceSnapshot=str((BATCH / "source-snapshot.json").relative_to(ROOT)),
                 sourceSnapshotSha256=sha(BATCH / "source-snapshot.json"), verifiedAt=now())
             write_json_atomic(INDEX, index)
@@ -255,8 +256,9 @@ def publish():
             index["examples"] = list(merged.values())
             current_count = sum(r.get("strategy") == "complete_outfit_single_call" and r.get("status") == "uploaded"
                                 and r.get("modelId") in MODEL_IDS for r in merged.values())
-            index.update(updatedAt=now(), femaleOneShotBatch={"batchId": BATCH.name, "expected": 288,
-                          "uploaded": current_count, "status": "complete" if current_count == 288 else "in_progress",
+            expected = len(looks()) * len(MODEL_IDS)
+            index.update(updatedAt=now(), femaleOneShotBatch={"batchId": BATCH.name, "expected": expected,
+                          "uploaded": current_count, "status": "complete" if current_count == expected else "in_progress",
                           "provider": "vertex_adc_generate_content", "model": "gemini-3.1-flash-image"})
             index["counts"] = index_counts(index["examples"])
             write_json_atomic(INDEX, index)

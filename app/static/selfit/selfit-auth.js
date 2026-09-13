@@ -56,7 +56,7 @@
       } catch { /* 无痕模式下静默重登不可用，登录态仍按 token 有效期保持。 */ }
     }
 
-    readStoredSession() {
+    readStoredSession({ includeExpired = false } = {}) {
       try {
         // 旧版迁移：把 v1（sessionStorage）搬到 v2（localStorage）后清理旧键。
         const legacy = sessionStorage.getItem(LEGACY_AUTH_STORAGE_KEY);
@@ -67,7 +67,7 @@
       } catch { /* ignore */ }
       try {
         const stored = JSON.parse(localStorage.getItem(AUTH_STORAGE_KEY) || 'null');
-        if (!stored?.accessToken || (stored.expiresAt && Date.parse(stored.expiresAt) <= Date.now())) return null;
+        if (!stored?.accessToken || (!includeExpired && stored.expiresAt && Date.parse(stored.expiresAt) <= Date.now())) return null;
         return stored;
       } catch { return null; }
     }
@@ -105,7 +105,7 @@
           signal: controller.signal,
           body: body === undefined ? undefined : JSON.stringify(body),
         });
-        if (response.status === 401 && allowRelogin && this.mode === 'live' && !path.startsWith('/invite/verify')) {
+        if (response.status === 401 && token && allowRelogin && this.mode === 'live' && !path.startsWith('/invite/')) {
           // 静默重登：token 过期/丢失时，用本地保存的邀请码 + 设备标识无感换新 token。
           const creds = this.readInviteCredentials();
           if (creds?.invite_code) {
@@ -115,6 +115,9 @@
               allowRelogin: false,
               timeoutMs,
             });
+            if (this.user?.user_id && refreshed.user?.user_id !== this.user.user_id) {
+              throw new SelfitAuthError('登录账号已变化，请重新进入试衣镜。', { code: 'auth.account_changed', status: 401 });
+            }
             this.persist(refreshed);
             return this.request(path, { method, body, token: refreshed.access_token, timeoutMs, allowRelogin: false });
           }
@@ -137,30 +140,49 @@
     }
 
     async ensureVisitor() {
-      const stored = this.readStoredSession();
-      if (stored) { this.session = stored; return stored; }
+      // Only a first-time visitor gets a new identity. Expiry/network errors must
+      // never replace an existing account (and its wardrobe) with a fresh guest.
+      const stored = this.readStoredSession({ includeExpired: true });
+      if (stored || this.readInviteCredentials()?.invite_code) return this.restore({ strict: true });
       if (this.mode === 'mock') return null;
-      return this.persist(await this.request('/guest', { method: 'POST' }));
+      return this.persist(await this.request('/guest', { method: 'POST', allowRelogin: false }));
     }
 
-    async restore() {
-      const stored = this.readStoredSession();
-      if (!stored) return null;
+    async restore({ strict = false } = {}) {
+      // Local expiry can lag the server's sliding expiry. Ask /me first; a 401
+      // restores the same account using its saved invite and device identity.
+      const stored = this.readStoredSession({ includeExpired: true });
+      this.session = stored;
       if (this.mode === 'mock') {
-        this.session = stored;
         return stored;
       }
       try {
+        if (!stored) {
+          const creds = this.readInviteCredentials();
+          if (!creds?.invite_code) return null;
+          this.persist(await this.request('/invite/verify', {
+            method: 'POST', body: { invite_code: creds.invite_code, device_id: creds.device_id || this.deviceId() },
+            allowRelogin: false,
+          }));
+        }
         // 401 时 request 内部会先用邀请码静默重登，再重放 /me。
-        const result = await this.request('/me', { token: stored.accessToken });
-        this.session = { ...stored, accessToken: this.accessToken || stored.accessToken, user: result.user || stored.user };
+        const result = await this.request('/me', { token: this.accessToken });
+        // Keep the refreshed token AND expiry, rather than copying the old expiry.
+        this.session = { ...this.session, user: result.user || this.user };
         try { localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(this.session)); } catch { /* ignore */ }
         return this.session;
       } catch (error) {
-        // 网络抖动不丢登录态；确认 401（且静默重登也没救回来）才清理。
-        if (error instanceof SelfitAuthError && error.status === 401) { this.clear(); return null; }
-        this.session = stored;
-        return stored;
+        // clear() is reserved for explicit logout. Keep recovery credentials even
+        // when verification fails, and let protected actions require a live check.
+        if (strict) {
+          if (error.status >= 400 && error.status < 500 && error.status !== 429) error.status = 401;
+          throw error;
+        }
+        if (error.status >= 400 && error.status < 500 && error.status !== 429) {
+          this.session = null;
+          return null;
+        }
+        return this.session;
       }
     }
 

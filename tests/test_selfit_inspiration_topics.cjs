@@ -6,7 +6,7 @@ const loader = source.slice(source.indexOf('  let inspirationNotesRequest'), sou
 const topics = ['commute', 'date', 'vacation', 'trend', ...Array.from({length:16}, (_,i)=>`persona-${i}`)].map(id => ({
   id, kind: id.startsWith('persona-') ? 'persona' : id === 'trend' ? 'trend' : 'scene',
   title: id, cover: `${id}.jpg`, previews: [],
-  outfits: Array.from({length: 4}, (_, i) => ({
+  outfits: Array.from({length: ['date', 'vacation'].includes(id) ? 3 : 4}, (_, i) => ({
     outfit_id: `${id}-${i}`, title: `${id} ${i}`, cover_path: `${id}-${i}.jpg`,
     items: [{item_id: `${id}-${i}-top`}, {item_id: `${id}-${i}-shoes`}],
   })),
@@ -30,7 +30,7 @@ function normalized(row) {
       }
       if (url.endsWith('inspiration-topics')) {
         if (topicsFail) throw Error('topics unavailable');
-        return {topics, total: 80};
+        return {topics, total: 78};
       }
       const request = JSON.parse(options.body);
       return {outfits: request.offset ? [topics[0].outfits[0]] : [], has_more: true, next_offset: 12};
@@ -39,13 +39,13 @@ function normalized(row) {
   vm.runInContext(loader, context);
   await vm.runInContext('loadFeed()', context);
   assert.equal(state.topics.length, 20);
-  assert.equal(state.feed.length, 80, 'topics remain available if persona notes fail');
-  assert.equal(state.topics.flatMap(x => x.entries).length, 80);
+  assert.equal(state.feed.length, 78, 'topics remain available if persona notes fail');
+  assert.equal(state.topics.flatMap(x => x.entries).length, 78);
   assert.equal(state.topicsError, '', 'unrelated recommendations must not show a collection error');
   assert(state.feed.every(x => x.kind === 'outfit' && x.items.length === 2), 'use structured try-on, not photo-only note jobs');
   assert(state.feedError);
   await vm.runInContext('loadFeed(true)', context);
-  assert.equal(state.feed.length, 80, 'pagination must not duplicate topic outfits');
+  assert.equal(state.feed.length, 78, 'pagination must not duplicate topic outfits');
   assert.equal(calls.filter(x => x.endsWith('inspiration-topics')).length, 1);
   state.outfits = [{id: 'personal-copy', saved: true, items: [{id: 'commute-0-top'}, {id: 'commute-0-shoes'}]}];
   notesFail = false;
@@ -92,6 +92,12 @@ function normalized(row) {
   state.topics = [];
   assert(vm.runInContext('inspiration()', context).includes('data-action="reload"'), 'failed initial load offers recovery');
   state.topics = originalTopics;
+  for (const id of ['date', 'vacation']) {
+    state.topicId = id;
+    assert.equal((vm.runInContext('topic()', context).match(/data-try=/g) || []).length, 3);
+    assert(landing.includes(`查看${id}合集，共3套穿搭`));
+    assert(!vm.runInContext('topic()', context).includes(`data-detail="${id}-3"`));
+  }
   state.topicId = topics[0].id;
   assert.equal((vm.runInContext('topic()', context).match(/data-try=/g) || []).length, 4);
   state.topics[0].entries.push({...state.topics[0].entries[0], id:'curvy-1', raw:{body_profile:'curvy'}});

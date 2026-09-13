@@ -75,28 +75,32 @@
         || "null",
     );
   } catch {}
-  if (
-    savedSession?.expiresAt &&
-    Date.parse(savedSession.expiresAt) <= Date.now()
-  )
-    savedSession = null;
-  // 内测门槛：已登录的非内测账号（普通手机号用户）不进主站，回 onboarding 解锁屏。
-  if (
-    savedSession?.user &&
-    !String(savedSession.user.user_id || "").startsWith("guest_") &&
-    savedSession.user.beta_qualified === false &&
-    !reference
-  ) {
-    window.location.replace("/selfit?entry=unlock");
-    throw new Error("redirect-to-unlock");
-  }
+  // Keep the identity until the server checks it, including locally expired
+  // sessions. Browsing is allowed; generation checks beta access below.
+  const authClient = window.SelfitAuth.createClient({mode:'live'});
   let visitorReady = null;
+  let sessionRefresh = null;
+  function acceptSession(session) {
+    if (!session?.accessToken) throw Object.assign(Error("请重新登录后继续。"), {status:401});
+    if (savedSession?.user?.user_id && savedSession.user.user_id !== session.user?.user_id)
+      throw Object.assign(Error("登录账号已变化，请重新进入试衣镜。"), {status:401, code:'auth.account_changed'});
+    savedSession = session;
+    return session;
+  }
   function ensureVisitorSession() {
-    if (!visitorReady) visitorReady = window.SelfitAuth.createClient({mode:'live'}).ensureVisitor().then(session => {
-      savedSession = session;
-      return session;
-    }).catch(error => { visitorReady = null; throw error; });
+    if (!visitorReady) visitorReady = authClient.ensureVisitor().then(acceptSession)
+      .catch(error => { visitorReady = null; throw error; });
     return visitorReady;
+  }
+  function refreshSession() {
+    if (!sessionRefresh) sessionRefresh = authClient.restore({strict:true}).then(acceptSession)
+      .then(session => { visitorReady = Promise.resolve(session); return session; })
+      .catch(error => {
+        if (error.status >= 400 && error.status < 500 && error.status !== 429) error.status = 401;
+        throw error;
+      })
+      .finally(() => { sessionRefresh = null; });
+    return sessionRefresh;
   }
   function mediaURL(path, original = false) {
     if (!path) return "";
@@ -198,7 +202,7 @@
       3200,
     );
   }
-  async function api(path, options = {}, timeoutMs = 30000) {
+  async function api(path, options = {}, timeoutMs = 30000, allowAuthRetry = true) {
     const controller = new AbortController(),
       timer = setTimeout(() => controller.abort(), timeoutMs);
     try {
@@ -212,6 +216,13 @@
           ...options.headers,
         },
       });
+      // A rejected authentication dependency has not run the operation. Restore
+      // the same account and replay once; never retry a denied beta/quota check.
+      if (r.status === 401 && allowAuthRetry && path !== '/auth/logout') {
+        clearTimeout(timer);
+        await refreshSession();
+        return api(path, options, timeoutMs, false);
+      }
       let data;
       try {
         data = await r.json();
@@ -219,13 +230,6 @@
         throw Error("暂时无法连接，请稍后重试。");
       }
       if (!r.ok) {
-        if (r.status === 401) {
-          savedSession = null;
-          try {
-            localStorage.removeItem("selfit.auth.session.v2");
-            sessionStorage.removeItem("selfit.auth.session.v1");
-          } catch {}
-        }
         const reportDetail = (path.startsWith('/selfit/try-on/report-outfits?') || /^\/selfit\/try-on\/items\/[^/]+\/outfits$/.test(path)) &&
           [404, 409, 422, 429, 502, 503, 504].includes(r.status) && typeof data?.detail === 'string' ? data.detail : '';
         const gateDetail = typeof data?.detail === 'string' ? data.detail : '';
@@ -242,6 +246,7 @@
               : reportDetail || rateLimitMessage || "这次操作没有完成，请稍后重试。",
         );
         e.status = r.status;
+        e.path = path;
         throw e;
       }
       return data;
@@ -1357,6 +1362,68 @@
       `<h2 id="sheetTitle" tabindex="-1" autofocus>${esc(title)}</h2><button class="close" data-action="close" aria-label="关闭">×</button>${body}`;
     if (!$("#sheet").open) $("#sheet").showModal();
   }
+  async function requireTryonAccess() {
+    const session = await refreshSession();
+    if (!session.user?.beta_qualified)
+      throw Object.assign(Error("输入邀请码，解锁完整试穿体验。"), {status:403, code:'auth.beta_required'});
+  }
+  function isTryonAccessError(error) {
+    return error?.status === 401 || error?.code === 'auth.beta_required' ||
+      (error?.status === 403 && /^\/selfit\/try-on\/(?:jobs|inspiration-jobs)(?:\/|$)/.test(error.path || ''));
+  }
+  function showTryonAccess(error, resume = startTry) {
+    if (error?.code === 'auth.account_changed') {
+      modal('账号已切换', '<p>请重新进入试衣镜，加载当前账号的照片和搭配。</p><a class="primary tryon-access-link" href="/selfit/try-on">重新进入</a>');
+      return;
+    }
+    const needsLogin = error?.status === 401;
+    const selection = {target:state.current, photo:state.photo, file:state.file, modelId:state.modelId, page:state.page};
+    modal(needsLogin ? '登录已过期' : '解锁试穿', `<form id="tryonAccessForm" class="tryon-access-form">
+      <p id="tryonAccessDescription">${needsLogin ? '在新页面登录后，回到这里继续。已选照片和搭配会为你保留。' : '输入邀请码，解锁完整试穿体验。已选照片和搭配会为你保留。'}</p>
+      ${needsLogin ? '<a class="primary tryon-access-link" href="/selfit?entry=login" target="_blank" rel="noopener">重新登录 ↗</a>' : '<label for="tryonInviteCode">邀请码</label><input id="tryonInviteCode" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" minlength="4" maxlength="128" placeholder="请输入邀请码" aria-describedby="tryonAccessDescription tryonAccessMessage" required>'}
+      <p id="tryonAccessMessage" role="status" aria-live="polite"></p>
+      <button class="${needsLogin ? 'secondary' : 'primary'}" type="submit">${needsLogin ? '已登录，继续' : '解锁并继续'}</button>
+      <button class="secondary" type="button" data-action="close">继续浏览</button>
+    </form>`);
+    const form = $('#tryonAccessForm'), message = $('#tryonAccessMessage');
+    const submit = form.querySelector('button[type="submit"]');
+    const stillHere = () => $('#sheet').open && $('#tryonAccessForm') === form;
+    form.addEventListener('submit', async event => {
+      event.preventDefault();
+      if (submit.disabled) return;
+      submit.disabled = true;
+      submit.setAttribute('aria-busy', 'true');
+      message.textContent = needsLogin ? '正在恢复登录…' : '正在验证邀请码…';
+      try {
+        await refreshSession();
+        if (!needsLogin && !savedSession.user?.beta_qualified) {
+          await authClient.upgradeInvite(form.querySelector('input').value.trim());
+          acceptSession(authClient.session);
+        }
+        if (!stillHere()) return;
+        if (!savedSession.user?.beta_qualified) {
+          showTryonAccess({code:'auth.beta_required'}, resume);
+          return;
+        }
+        // Closing/replacing the sheet or changing the selection cancels auto-run.
+        if (state.current !== selection.target || state.photo !== selection.photo || state.file !== selection.file ||
+            state.modelId !== selection.modelId || state.page !== selection.page) {
+          $('#sheet').close();
+          notify('已解锁，请选择要试穿的搭配。');
+          return;
+        }
+        $('#sheet').close();
+        await resume();
+      } catch (failure) {
+        if (!stillHere()) return;
+        if (failure.status === 401 && (!needsLogin || failure.code === 'auth.account_changed')) showTryonAccess(failure, resume);
+        else message.textContent = failure.message || '验证没有完成，请稍后重试。';
+      } finally {
+        submit.disabled = false;
+        submit.removeAttribute('aria-busy');
+      }
+    });
+  }
   async function loadModels() {
     const data = await api("/selfit/try-on/models");
     state.modelCatalog = data.items || [];
@@ -1549,12 +1616,14 @@
   async function generateNote() {
     if (generationBusy || state.current?.kind !== "note") return;
     generationBusy = true;
-    const target = state.current, photo = state.photo;
+    const target = state.current, photo = state.photo, inputFile = state.file, modelId = state.modelId, page = state.page;
     const signature = `${target.id}:${photo}`;
     if (state.noteRequest?.signature !== signature) state.noteRequest={signature,id:crypto.randomUUID()};
-    beginMirrorGeneration(target, photo);
     try {
-      const file = await photoFile();
+      await requireTryonAccess();
+      if (state.current !== target || state.photo !== photo || state.file !== inputFile || state.modelId !== modelId || state.page !== page) return;
+      beginMirrorGeneration(target, photo);
+      const file = await photoFile(photo, inputFile, modelId);
       const body = new FormData();
       body.append("person_image", file);
       body.append("note_id", target.id);
@@ -1562,12 +1631,12 @@
       state.job = await api("/selfit/try-on/inspiration-jobs", {method:"POST",body});
       sessionStorage.setItem("selfit.studio.job",JSON.stringify({job_id:state.job.job_id}));
       poll();
-    } catch (e) { failure(e.message); }
+    } catch (e) { failure(e); }
     finally { generationBusy = false; }
   }
   async function generate() {
     if (generationBusy) return;
-    const target = state.current, photo = state.photo, inputFile = state.file, modelId = state.modelId;
+    const target = state.current, photo = state.photo, inputFile = state.file, modelId = state.modelId, page = state.page;
     const itemIds = [...new Set((target?.items || []).map(item => item.id).filter(Boolean))];
     if (!itemIds.length) return notify("这套搭配还没有可试穿的单品，请换一套。");
     generationBusy = true;
@@ -1576,9 +1645,11 @@
     if (state.outfitRequest?.signature !== signature)
       state.outfitRequest = {signature, id: crypto.randomUUID()};
     const submissionId = state.outfitRequest.id;
-    const loadingStartedAt = Date.now();
-    beginMirrorGeneration(target, photo);
     try {
+      await requireTryonAccess();
+      if (state.current !== target || state.photo !== photo || state.file !== inputFile || state.modelId !== modelId || state.page !== page) return;
+      const loadingStartedAt = Date.now();
+      beginMirrorGeneration(target, photo);
       const file = await photoFile(photo, inputFile, modelId);
       if (!target.id) {
         const saved = await api("/selfit/try-on/outfits", {
@@ -1606,7 +1677,7 @@
         await poll(submitted);
       } else poll();
     } catch (e) {
-      failure(e.message);
+      failure(e);
     } finally {
       generationBusy = false;
     }
@@ -1626,13 +1697,33 @@
       mirrorImageRequests.set(src, preview);
     } catch (_) { throw Error("试穿图片暂时无法加载，请稍后重试。"); }
   }
-  function failure(message) {
+  function failure(error, resume = startTry) {
     state.generating = null;
     if (state.page === "mirror") render();
+    if (isTryonAccessError(error)) return showTryonAccess(error, resume);
+    const message = typeof error === 'string' ? error : error?.message;
+    if (error?.status === 429) {
+      modal('稍后再试', `<p>${esc(message || '试穿次数暂时用完了，请稍后再来。')}</p><button class="primary" data-action="close">继续浏览</button>`);
+      return;
+    }
     modal(
       "试穿暂未完成",
       `<p>${esc(message || "请稍后重试，你选择的照片和搭配都已保留。")}</p><button class="primary" data-action="${state.job?.job_id && state.job.result?.generation_strategy !== 'preset' ? "retry-job" : "try"}">重新尝试</button><button class="secondary" data-action="model">更换照片</button>`,
     );
+  }
+  async function retryTryonJob() {
+    if (generationBusy || !state.job?.job_id) return;
+    generationBusy = true;
+    const jobId = state.job.job_id;
+    try {
+      // Backend retries remain free; require beta access but do not spend quota.
+      await requireTryonAccess();
+      if (state.job?.job_id !== jobId) return;
+      state.job = await api(`/selfit/try-on/jobs/${encodeURIComponent(jobId)}/retry`, {method:'POST'});
+      sessionStorage.setItem('selfit.studio.job', JSON.stringify({job_id:state.job.job_id}));
+      $('#sheet').close(); go('mirror'); await poll();
+    } catch (error) { failure(error, retryTryonJob); }
+    finally { generationBusy = false; }
   }
   async function poll(completedJob = null) {
     clearTimeout(pollTimer);
@@ -1715,7 +1806,7 @@
       pollTimer = setTimeout(poll, 1800);
     } catch (e) {
       if (state.job?.job_id !== requestedJobId) return;
-      failure(e.message);
+      failure(e, () => poll());
     }
   }
   async function importGarment(retry = false) {
@@ -2014,11 +2105,8 @@
   async function loadPreferences() {
     try { return await api("/closet/preferences"); }
     catch (error) {
-      if (error.status !== 401) return {};
-      window.SelfitAuth.createClient({mode:"live"}).clear();
-      visitorReady = null;
-      await ensureVisitorSession();
-      return api("/closet/preferences");
+      if (error.status === 401) throw error;
+      return {};
     }
   }
   async function prepareInitialModel(preferences) {
@@ -2198,6 +2286,7 @@
       }
     } catch (e) {
       state.error = e.message;
+      if (isTryonAccessError(e)) showTryonAccess(e, load);
     } finally {
       state.loading = false;
       render();
@@ -2578,11 +2667,7 @@
           notify("原稿示例效果，未调用生成服务。");
           break;
         case "retry-job":
-          if (!state.job?.job_id) return;
-          b.disabled=true;
-          state.job=await api(`/selfit/try-on/jobs/${encodeURIComponent(state.job.job_id)}/retry`,{method:"POST"});
-          sessionStorage.setItem("selfit.studio.job",JSON.stringify({job_id:state.job.job_id}));
-          $("#sheet").close(); go("mirror"); await poll();
+          await retryTryonJob();
           break;
         case "view-completed": go("mirror"); break;
         case "tryon-history": go("tryon-history"); break;

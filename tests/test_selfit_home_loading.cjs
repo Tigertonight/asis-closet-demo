@@ -21,7 +21,7 @@ function harness(query = '?screen=mirror', overrides = {}) {
     URL, URLSearchParams, Set, Promise, Date, File, Blob, FormData, AbortController, setTimeout, clearTimeout,
     savedSession:{accessToken:'test-only'}, visitorReady:null,
     window:{SelfitAuth:{createClient:()=>({clear(){}})}},
-    ensureVisitorSession:async()=>{}, pendingImport:()=>null, poll(){}, notify(){},
+    isTryonAccessError:()=>false, requireTryonAccess:async()=>{}, ensureVisitorSession:async()=>{}, pendingImport:()=>null, poll(){}, notify(){},
     history:{replaceState(_a,_b,url){location.href=url.href;location.search=url.search;}},
     sessionStorage:{getItem:()=>null,setItem(){}},
     normalizeOutfit, normalizeItem:x=>({id:x.item_id}),

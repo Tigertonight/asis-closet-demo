@@ -86,3 +86,18 @@ def test_native_continuation_rejects_forged_response_and_missing_signature(prior
     row["attempts"][0]["continuationResponse"] = batch.save_private_continuation({"candidates": [{"content": content}]}, folder)
     with pytest.raises(ValueError):
         batch.reviewed_conversation_request(row, "close button")
+
+
+def test_retired_notes_stay_out_of_retry_queue_without_changing_the_snapshot(monkeypatch, tmp_path):
+    kept = {'note_binding': {'templateId': 'inspiration_date', 'noteId': 'outfits-01'}}
+    retired = {'note_binding': {'templateId': 'inspiration_date', 'noteId': 'outfits-04'}}
+    monkeypatch.setattr(batch, 'BATCH', tmp_path)
+    monkeypatch.setattr(batch, 'looks', lambda: [kept])
+    snapshot = tmp_path / 'source-snapshot.json'
+    snapshot.write_text(json.dumps({'looks': [kept, retired]}))
+    before = snapshot.read_bytes()
+    assert batch.job_paths() == [tmp_path / mid / 'inspiration_date--outfits-01' / 'job.json' for mid in batch.MODEL_IDS]
+    assert snapshot.read_bytes() == before
+    monkeypatch.setattr(batch, 'looks', lambda: [{**kept, 'source_asset': {'assetId': 'changed'}}])
+    with pytest.raises(ValueError, match='snapshot'):
+        batch.job_paths()
