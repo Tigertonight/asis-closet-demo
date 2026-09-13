@@ -3518,18 +3518,36 @@ def _input_quality_stage(person: Image.Image, garment: Image.Image) -> dict[str,
     return _stage(status, confidence, evidence, issues)
 
 
+def _face_gate_relaxed() -> bool:
+    """临时放松人脸定位门禁：默认开启，TRYON_FACE_GATE_RELAXED=0 回退严格模式。
+
+    只增加检测手段（MediaPipe BlazeFace + 侧脸/镜像侧脸 cascade 兜底），
+    绝不猜测人脸框——该几何同时决定编辑 mask 与生图身份校验。
+    """
+    return os.getenv("TRYON_FACE_GATE_RELAXED", "1").strip().lower() not in {"0", "false", "no", "off"}
+
+
 def _detect_person(image: Image.Image) -> dict[str, Any]:
     bgr = _pil_to_bgr(image)
     gray = cv2.cvtColor(bgr, cv2.COLOR_BGR2GRAY)
     cascade = cv2.CascadeClassifier(cv2.data.haarcascades + "haarcascade_frontalface_default.xml")
     detections = cascade.detectMultiScale(gray, scaleFactor=1.08, minNeighbors=4, minSize=(72, 72))
     detector = "haar_frontal"
+    detectors_attempted = ["haar_frontal"]
     if len(detections) == 0:
         # Retry with a second local detector/contrast normalization, never a
         # guessed box: this geometry controls both the edit mask and identity QA.
         cascade = cv2.CascadeClassifier(cv2.data.haarcascades + "haarcascade_frontalface_alt2.xml")
         detections = cascade.detectMultiScale(cv2.equalizeHist(gray), scaleFactor=1.05, minNeighbors=5, minSize=(72, 72))
         detector = "haar_frontal_alt2"
+        detectors_attempted.append(detector)
+    relaxed_faces: list[tuple[int, int, int, int, str]] = []
+    if len(detections) == 0 and _face_gate_relaxed():
+        # 远景/逆光/小脸是 Haar 弱场景：复用色彩链路的多路检测再试一轮。
+        from app.cv_pipeline import _detect_face_candidates
+
+        relaxed_faces = _detect_face_candidates(bgr, gray)
+        detectors_attempted.extend(dict.fromkeys(source for *_, source in relaxed_faces))
     h, w = gray.shape[:2]
     faces = []
     for x, y, fw, fh in detections:
@@ -3537,8 +3555,11 @@ def _detect_person(image: Image.Image) -> dict[str, Any]:
         # The detector's 72px minimum ensures usable detail. A frame-area cutoff
         # incorrectly removes clear faces in full-body photos (e.g. 217px/2400px).
         faces.append({"box": {"x": int(x), "y": int(y), "width": int(fw), "height": int(fh)}, "area_ratio": round(area_ratio, 4), "detector": detector})
+    for x, y, fw, fh, source in relaxed_faces:
+        area_ratio = (int(fw) * int(fh)) / (w * h)
+        faces.append({"box": {"x": int(x), "y": int(y), "width": int(fw), "height": int(fh)}, "area_ratio": round(area_ratio, 4), "detector": source})
     if not faces:
-        return _stage("fail", 0.82, {"face_count": 0, "detectors_attempted": ["haar_frontal", "haar_frontal_alt2"]}, [
+        return _stage("fail", 0.82, {"face_count": 0, "detectors_attempted": detectors_attempted}, [
             _issue("person.no_face", "未能确认人脸位置", "请换一张脸部清晰、未被遮挡的单人半身或全身照片。")
         ])
     faces.sort(key=lambda item: (item["box"]["y"], -item["area_ratio"]))

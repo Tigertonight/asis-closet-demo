@@ -937,6 +937,48 @@ def test_clean_background_does_not_substitute_for_a_detected_face(monkeypatch):
     assert "primary_face" not in detection["evidence"]
 
 
+def test_relaxed_face_gate_falls_back_to_multipass_detection(monkeypatch):
+    """Haar 两路失败后，放松模式复用色彩链路的多路检测（MediaPipe/侧脸）兜底。"""
+
+    class Detector:
+        def detectMultiScale(self, *args, **kwargs):
+            return []
+
+    monkeypatch.setattr(tryon.cv2, "CascadeClassifier", lambda _: Detector())
+    import app.cv_pipeline as cv_pipeline
+
+    monkeypatch.setattr(
+        cv_pipeline, "_detect_face_candidates",
+        lambda bgr, gray: [(230, 110, 100, 100, "mediapipe_tasks_0.71")],
+    )
+    detection = _detect_person(Image.new("RGB", (800, 1100), "white"))
+    assert detection["status"] == "pass"
+    face = detection["evidence"]["primary_face"]
+    assert face["box"] == {"x": 230, "y": 110, "width": 100, "height": 100}
+    assert face["detector"] == "mediapipe_tasks_0.71"
+
+
+def test_relaxed_face_gate_can_be_disabled(monkeypatch):
+    """TRYON_FACE_GATE_RELAXED=0 回退严格模式：Haar 失败即拦截，不再兜底。"""
+
+    class Detector:
+        def detectMultiScale(self, *args, **kwargs):
+            return []
+
+    monkeypatch.setattr(tryon.cv2, "CascadeClassifier", lambda _: Detector())
+    monkeypatch.setenv("TRYON_FACE_GATE_RELAXED", "0")
+    import app.cv_pipeline as cv_pipeline
+
+    monkeypatch.setattr(
+        cv_pipeline, "_detect_face_candidates",
+        lambda bgr, gray: [(230, 110, 100, 100, "mediapipe_tasks_0.71")],
+    )
+    detection = _detect_person(Image.new("RGB", (800, 1100), "white"))
+    assert detection["status"] == "fail"
+    assert detection["issues"][0]["code"] == "person.no_face"
+    assert detection["evidence"]["detectors_attempted"] == ["haar_frontal", "haar_frontal_alt2"]
+
+
 def test_failed_outfit_pass_preserves_original_quality_error(monkeypatch):
     person = _load_upload(TRYON_MODEL_FIXTURE_DIR / "male_medium_1.png", "person_test")
     failed_quality = tryon._stage("fail", 0, {"face_diff": 76.09}, [
