@@ -1,4 +1,4 @@
-"""官网根路径与兼容入口（/docs、/home）的渲染测试。"""
+"""官网入口测试：/ 302 引流到 App，/docs、/home 渲染官网。"""
 
 from __future__ import annotations
 
@@ -12,7 +12,19 @@ import app.site_home as site_home
 from app.main import app
 
 
-@pytest.mark.parametrize("path", ["/", "/docs", "/home"])
+def test_root_redirects_to_app_with_temporary_redirect() -> None:
+    """裸域名 302（临时、不缓存）到 App；绝不用 308，避免再次被浏览器永久缓存。"""
+
+    client = TestClient(app)
+
+    response = client.get("/", follow_redirects=False)
+
+    assert response.status_code == 302
+    assert response.headers["location"] == "/selfit"
+    assert "no-store" in response.headers.get("cache-control", "")
+
+
+@pytest.mark.parametrize("path", ["/docs", "/home"])
 def test_site_page_is_public_and_renders_default_content(path: str) -> None:
     client = TestClient(app)
 
@@ -58,7 +70,7 @@ def test_fastapi_docs_moved_off_docs_path() -> None:
     assert "swagger" in api_docs.text.lower()
 
 
-@pytest.mark.parametrize("path", ["/", "/docs", "/home"])
+@pytest.mark.parametrize("path", ["/docs", "/home"])
 def test_site_content_override_takes_precedence(path: str, monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
     override = tmp_path / "site" / "content.json"
     override.parent.mkdir(parents=True)
@@ -91,7 +103,7 @@ def test_site_content_override_takes_precedence(path: str, monkeypatch: pytest.M
     assert "1 分钟" not in response.text
 
 
-@pytest.mark.parametrize("path", ["/", "/docs", "/home"])
+@pytest.mark.parametrize("path", ["/docs", "/home"])
 def test_site_escapes_user_content_and_blocks_external_links(path: str, monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
     override = tmp_path / "site" / "content.json"
     override.parent.mkdir(parents=True)

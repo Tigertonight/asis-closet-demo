@@ -19,7 +19,7 @@ from pathlib import Path
 from typing import Any
 
 from fastapi import APIRouter
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, RedirectResponse
 
 from app.storage import ROOT_DIR
 
@@ -282,9 +282,13 @@ def render_site_html(content: dict[str, Any]) -> str:
 </html>"""
 
 
-# 根路径直接展示官网；旧入口继续返回同一页面，避免已有链接失效。
-# 历史上缓存过 / -> /selfit 的 308 的浏览器，仍可通过 /docs 或 /home 访问官网。
-@router.get("/", include_in_schema=False, response_class=HTMLResponse)
+# 根路径 302 引流到 App（临时重定向 + no-store，绝不用 308——历史上 / 的 308 被
+# 浏览器永久缓存、服务端无法撤销，教训见 ffd8ab3/d4cfd7a）。官网保留在 /docs 与 /home。
+@router.get("/", include_in_schema=False)
+def root_page() -> RedirectResponse:
+    return RedirectResponse(url="/selfit", status_code=302, headers={"Cache-Control": "no-store"})
+
+
 @router.get("/docs", include_in_schema=False, response_class=HTMLResponse)
 @router.get("/home", include_in_schema=False, response_class=HTMLResponse)
 def site_home_page() -> HTMLResponse:
