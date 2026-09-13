@@ -13,7 +13,7 @@ from typing import Any
 from fastapi import Depends, HTTPException, Request
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 
-from app.ops import env_flag, env_int, is_public_demo_mode
+from app.ops import env_flag, env_int, is_public_demo_mode, local_beta_access_enabled
 from app.storage import LOCAL_USER_ID, ROOT_DIR, hydrate_user_from_demo_data, sanitize_user_id
 
 
@@ -693,7 +693,7 @@ def _public_user(user: dict[str, Any]) -> dict[str, Any]:
         "user_id": user.get("user_id"),
         "phone_e164": user.get("phone_e164"),
         "status": user.get("status"),
-        "beta_qualified": bool(user.get("beta_qualified")),
+        "beta_qualified": bool(user.get("beta_qualified")) or local_beta_access_enabled(),
         "gender": account_gender(user),
         "created_at": user.get("created_at"),
         "last_login_at": user.get("last_login_at"),

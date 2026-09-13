@@ -18,6 +18,7 @@ const failure = source.slice(source.indexOf('  function failure('), source.index
     const ctx = {
       state, pollTimer: null, clearTimeout() {}, api: async () => job, $: () => null,
       sessionStorage: {removeItem: key => {removed = key;}}, render() {},
+      startTry() {}, isTryonAccessError: () => false,
       esc: text => String(text).replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;'),
       modal: (title, body) => {dialog = {title, body};},
     };

@@ -103,7 +103,11 @@ async def require_beta_user(
 ) -> dict[str, Any]:
     user = await auth.get_current_user(credentials)
     if not user.get("beta_qualified"):
-        raise HTTPException(status_code=403, detail="内测名额有限，输入邀请码解锁完整体验")
+        raise HTTPException(
+            status_code=403,
+            detail="内测名额有限，输入邀请码解锁完整体验",
+            headers={"X-Selfit-Access": "invite-required"},
+        )
     return user
 
 

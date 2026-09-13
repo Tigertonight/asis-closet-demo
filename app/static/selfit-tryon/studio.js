@@ -243,11 +243,15 @@
           r.status === 401
             ? "请先登录，再查看你的衣橱。"
             : r.status === 403
-              ? (gateDetail || "内测名额有限，输入邀请码解锁完整体验。")
+              ? (gateDetail || "暂时没有权限进行这项操作。")
               : reportDetail || rateLimitMessage || "这次操作没有完成，请稍后重试。",
         );
         e.status = r.status;
         e.path = path;
+        // Also recognize the existing server message during staggered releases.
+        if (r.status === 403 && (data?.error?.code === 'auth.invite_required' ||
+            r.headers.get('X-Selfit-Access') === 'invite-required' ||
+            gateDetail === '内测名额有限，输入邀请码解锁完整体验')) e.code = 'invite_required';
         throw e;
       }
       return data;
@@ -1329,8 +1333,10 @@
   function builderCatalog() {
     return uniqueItems([...(state.builderItems || []), ...state.items]);
   }
-  function builderComposition(pieces) {
+  function builderComposition(pieces, options = {}) {
     if (!pieces.length) return '';
+    const compact=Boolean(options.compact);
+    const label=options.label || '整套单品搭配预览';
     const layout=window.SelfitMirrorLayout;
     pieces.forEach(piece=>preparePiece(piece.src,layout.delicate(piece)));
     const ready=pieces.every(piece=>trimmedPieces.get(piece.src)?.ready);
@@ -1340,10 +1346,10 @@
       inkRatio:trimmedPieces.get(piece.src)?.inkRatio,
     }));
     const boxes=ready?layout.layout(measured,{frameAspect:3/4,region:{x:4,y:4,w:92,h:92}}):[];
-    return `<figure class="builder-composition"><div class="builder-composition-canvas" role="group" aria-label="整套单品搭配预览" aria-busy="${!ready}">${ready?boxes.map(box=>{
+    return `<figure class="builder-composition${compact?' builder-composition--compact':''}"><div class="builder-composition-canvas" role="group" aria-label="${esc(label)}" aria-busy="${!ready}">${ready?boxes.map(box=>{
       const piece=pieces.find(piece=>piece.id===box.id);
       return `<div class="builder-composition-piece ${box.delicate?'delicate-piece':''}" data-builder-piece="${esc(piece.id)}" style="left:${box.x}%;top:${box.y}%;width:${box.w}%;height:${box.h}%;z-index:${box.z}">${image(trimmedPieces.get(piece.src)?.src || piece.src,piece.name)}</div>`;
-    }).join(''):'<span class="builder-composition-loading" role="status">正在整理搭配…</span>'}</div><figcaption>搭配预览 · ${pieces.length} 件单品</figcaption></figure>`;
+    }).join(''):'<span class="builder-composition-loading" role="status">正在整理搭配…</span>'}</div>${compact?'':`<figcaption>搭配预览 · ${pieces.length} 件单品</figcaption>`}</figure>`;
   }
   function outfitBuilder() {
     const selected = state.builderIds || new Set();
@@ -1352,12 +1358,16 @@
     const header='<header><button class="back" data-page="closet" aria-label="返回衣帽间">‹</button><h1>单品搭配</h1></header>';
     if(state.builderMatching || state.builderMatchError) return `<section class="outfit-builder" aria-label="单品搭配">${header}<div class="builder-match-state">${state.builderAnchor?image(state.builderAnchor.src,state.builderAnchor.name):''}${state.builderMatching?'<span class="builder-match-spinner" aria-hidden="true"></span><h2 role="status">正在从笔记库挑选搭配…</h2><p>结合单品特点与套装描述，寻找适合你的组合。</p>':`<p role="alert">${esc(state.builderMatchError)}</p><button class="primary" data-action="retry-item-match">重新搭配</button>`}</div></section>`;
     const anchor=state.builderAnchor;
-    const composition=builderComposition(chosen);
-    const match=state.builderMatch;
-    const note=match?`<aside class="builder-match-note" aria-label="搭配推荐理由"><div>${image(match.image_url,'参考笔记中的原始穿搭')}<div><span>参考笔记</span><strong>${esc(match.title)}</strong><span>已换入你的${esc(anchor?.name || '单品')}</span></div></div><p>${esc(match.reason)}</p></aside>`:'';
+    const anchorName=(anchor?.name || '单品').replace(/白\s+T/g,'白T');
     const matches=state.builderMatches || [];
-    const notes=matches.length?`<h2>为你挑选的搭配笔记</h2><div class="builder-notes" role="listbox" aria-label="匹配的搭配笔记">${matches.map((entry,index)=>{const m=entry.match;return `<button class="builder-note-card" data-builder-match="${index}" role="option" aria-selected="${index===state.builderMatchIndex}" aria-label="${esc(m.title)}" ${state.builderSaving?'disabled':''}>${image(m.image_url,m.title)}<span class="builder-note-name">${esc(m.title)}</span><i aria-hidden="true">✓</i></button>`;}).join('')}</div>`:'';
-    return `<section class="outfit-builder" aria-label="单品搭配">${header}${composition}${note}${notes}${state.builderError?`<p role="alert">${esc(state.builderError)}</p>`:''}</section><div class="detail-dock note-dock"><button class="secondary" data-action="save-builder" ${chosen.length<2 || state.builderSaving?'disabled':''}>收藏</button><button class="primary" data-action="try-builder" ${chosen.length<2 || state.builderSaving?'disabled':''}>${state.builderSaving?'正在保存…':'去试穿'}</button></div>`;
+    const notes=matches.length?`<h2>找到${matches.length}个适合你的搭配</h2><div class="builder-notes" role="listbox" aria-label="匹配的搭配笔记">${matches.map((entry,index)=>{
+      const m=entry.match;
+      const active=index===state.builderMatchIndex;
+      const items=(entry.outfit.items || []).map(normalizeItem);
+      const preview=builderComposition(items,{compact:true,label:`${m.title}拆款单品图`});
+      return `<article class="builder-note-entry"><button class="builder-note-card" data-builder-match="${index}" role="option" aria-selected="${active}" aria-expanded="${active}" aria-label="查看${esc(m.title)}的搭配说明" ${state.builderSaving?'disabled':''}><span class="builder-note-photo">${image(m.image_url,m.title)}<i aria-hidden="true">✓</i></span><span class="builder-note-flatlay">${preview}</span></button>${active?`<aside class="builder-match-note" aria-label="${esc(m.title)}搭配推荐理由"><strong>${esc(m.title)}</strong><span>右图已换入你的${esc(anchorName)}</span><p>${esc(m.reason)}</p></aside>`:''}</article>`;
+    }).join('')}</div>`:'';
+    return `<section class="outfit-builder" aria-label="单品搭配">${header}${notes}${state.builderError?`<p role="alert">${esc(state.builderError)}</p>`:''}</section><div class="detail-dock note-dock"><button class="secondary" data-action="save-builder" ${chosen.length<2 || state.builderSaving?'disabled':''}>收藏</button><button class="primary" data-action="try-builder" ${chosen.length<2 || state.builderSaving?'disabled':''}>${state.builderSaving?'正在保存…':'去试穿'}</button></div>`;
   }
   async function saveBuilder(tryAfter = false) {
     if (state.builderSaving || state.builderMatching || state.builderMatchError || (state.builderIds?.size || 0)<2) return;
@@ -1411,7 +1421,7 @@
       throw Object.assign(Error("输入邀请码，解锁完整试穿体验。"), {status:403, code:'auth.beta_required'});
   }
   function isTryonAccessError(error) {
-    return error?.status === 401 || error?.code === 'auth.beta_required' ||
+    return error?.status === 401 || error?.code === 'auth.beta_required' || error?.code === 'invite_required' ||
       (error?.status === 403 && /^\/selfit\/try-on\/(?:jobs|inspiration-jobs)(?:\/|$)/.test(error.path || ''));
   }
   function showTryonAccess(error, resume = startTry) {
@@ -2741,6 +2751,7 @@
       }
     } catch (error) {
       b.disabled = false;
+      if (error.code === 'invite_required') { showTryonAccess(error, async () => notify('已解锁完整体验')); return; }
       notify(error.message || "请稍后再试。");
     }
   });

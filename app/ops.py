@@ -26,6 +26,15 @@ def is_public_demo_mode() -> bool:
     return deployment_mode() in {"production", "prod", "demo", "staging"} or env_flag("SELFIT_PUBLIC_DEMO", False)
 
 
+def local_beta_access_enabled() -> bool:
+    """Explicit local-only access; never grant a durable invite seat to the account."""
+    return (
+        deployment_mode() == "local"
+        and not is_public_demo_mode()
+        and env_flag("SELFIT_LOCAL_BETA_ACCESS", False)
+    )
+
+
 # ---------------------------------------------------------------------------
 # 内部页面网关：线上只对用户开放主流程页，其余页面一律要求管理员登录。
 # 本地开发（SELFIT_ENV 缺省）不启用，避免影响日常调试。

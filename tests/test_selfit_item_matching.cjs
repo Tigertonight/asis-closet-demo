@@ -3,6 +3,7 @@ const assert=require('node:assert/strict');
 const fs=require('node:fs');
 const vm=require('node:vm');
 const studio=fs.readFileSync('app/static/selfit-tryon/studio.js','utf8');
+const styles=fs.readFileSync('app/static/selfit-tryon/studio.css','utf8');
 function harness() {
   const requests=[],notices=[];
   const state={page:'closet',items:[{id:'owned',name:'白 T',src:'/owned.png'}],outfits:[],builderRequest:0,builderMatching:false,builderMatchMinMs:0,selected:new Set()};
@@ -16,6 +17,36 @@ function harness() {
   return {state,requests,notices,run:code=>vm.runInContext(code,context)};
 }
 const response={anchor_item_id:'owned',outfits:[{items:[{item_id:'note-outer'},{item_id:'owned'},{item_id:'note-skirt'}]}],matches:[{title:'笔记',reason:'搭配理由'}]};
+
+test('builder copy shows the actual match count and explains the right image for every selected note',()=>{
+  const state={builderAnchor:{name:'白 T'},builderMatches:Array.from({length:3},(_,i)=>({outfit:{items:[]},match:{title:'笔记'+i,reason:'搭配理由',image_url:'/note.png'}})),builderMatchIndex:0};
+  const context=vm.createContext({state,Set,builderCatalog:()=>[],builderComposition:()=>'',normalizeItem:x=>x,image:()=>'',esc:s=>String(s)});
+  vm.runInContext(studio.slice(studio.indexOf('  function outfitBuilder('),studio.indexOf('  async function saveBuilder(')),context);
+  for(let i=0;i<3;i++){
+    state.builderMatchIndex=i;
+    const html=vm.runInContext('outfitBuilder()',context);
+    assert.match(html,/<h2>找到3个适合你的搭配<\/h2>/);
+    assert.match(html,new RegExp('<strong>笔记'+i+'</strong><span>右图已换入你的白T</span>'));
+    assert.doesNotMatch(html,/为你挑选的搭配笔记|已换入你的白 T/);
+  }
+  state.builderMatches.pop();state.builderMatchIndex=0;state.builderAnchor.name='蓝色衬衫';
+  const html=vm.runInContext('outfitBuilder()',context);
+  assert.match(html,/<h2>找到2个适合你的搭配<\/h2>/);
+  assert.match(html,/<span>右图已换入你的蓝色衬衫<\/span>/);
+});
+
+test('builder layout pairs each original note with its flat-lay without distorting the note image',()=>{
+  assert.match(studio,/builder-note-photo/);
+  assert.match(studio,/builder-note-flatlay/);
+  assert.match(studio,/builderComposition\(items,\{compact:true/);
+  const photoRule=styles.match(/\.builder-note-photo img \{[^}]+\}/)?.[0] || '';
+  assert.match(photoRule,/width:100%/);
+  assert.match(photoRule,/height:auto/);
+  assert.match(photoRule,/aspect-ratio:auto/);
+  assert.match(photoRule,/object-fit:contain/);
+  assert.doesNotMatch(photoRule,/height:100%/);
+  assert.match(styles,/\.screen > \.outfit-builder \+ \.detail-dock \{[^}]*position:static/);
+});
 
 test('matching uses backend result and keeps notebook pieces outside personal wardrobe',async()=>{
   const h=harness(),job=h.run('generateForItem("owned")');

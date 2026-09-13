@@ -6,6 +6,7 @@ const startCode = source.slice(source.indexOf('  async function startTry()'), so
 const generateCode = source.slice(source.indexOf('  async function generate()'), source.indexOf('  function failure('));
 const generateNoteCode = source.slice(source.indexOf('  async function generateNote()'), source.indexOf('  async function generate()'));
 const outfit = () => ({id: 'set-a', kind: 'outfit', items: ['top', 'bottom', 'shoes', 'bag'].map(id => ({id}))});
+const tick = () => new Promise(resolve => setImmediate(resolve));
 
 (async () => {
   const state = {current: outfit(), photo: 'photo-a', personalPhoto: 'photo-a', selected: new Set(['top'])};
@@ -13,6 +14,8 @@ const outfit = () => ({id: 'set-a', kind: 'outfit', items: ['top', 'bottom', 'sh
   let resolvePhoto, failRequest = false, uuid = 0;
   const context = vm.createContext({
     state, FormData, Set, reference: false, generationBusy: false,
+    savedSession: {user: {beta_qualified: true}},
+    requireTryonAccess: async () => {},
     crypto: {randomUUID: () => `request-${++uuid}`},
     photoFile: (photo) => {calls.push({photo}); return new Promise(resolve => {resolvePhoto = resolve;});},
     beginMirrorGeneration: (target, photo) => {state.generating = {target, photo}; state.job = null;},
@@ -29,7 +32,8 @@ const outfit = () => ({id: 'set-a', kind: 'outfit', items: ['top', 'bottom', 'sh
   });
   vm.runInContext(startCode + generateCode + generateNoteCode, context);
   const pending = vm.runInContext('startTry()', context);
-  assert.equal(state.generating.target.id, 'set-a', 'show loading before preparing the photo');
+  await tick();
+  assert.equal(state.generating.target.id, 'set-a', 'show loading after authorization, before preparing the photo');
   await vm.runInContext('startTry()', context);
   assert.equal(calls.length, 1, 'double click does not start another request');
   state.current = {id: 'set-b', items: [{id: 'different-top'}]};
@@ -45,6 +49,7 @@ const outfit = () => ({id: 'set-a', kind: 'outfit', items: ['top', 'bottom', 'sh
 
   state.current = outfit(); state.current.id = ''; state.job = null;
   const unsaved = vm.runInContext('startTry()', context);
+  await tick();
   resolvePhoto(new Blob(['photo-b'])); await unsaved;
   const create = calls.find(call => call.url === '/selfit/try-on/outfits');
   assert.deepEqual(JSON.parse(create.options.body).item_ids, ['top', 'bottom', 'shoes', 'bag']);
@@ -52,12 +57,14 @@ const outfit = () => ({id: 'set-a', kind: 'outfit', items: ['top', 'bottom', 'sh
 
   state.current = outfit(); state.job = null; failRequest = true;
   const failed = vm.runInContext('startTry()', context);
+  await tick();
   resolvePhoto(new Blob(['photo-b'])); await failed;
   assert.equal(state.generating, null);
   assert.equal(failures.length, 1);
   const retryId = calls.at(-1).options.body.get('client_request_id');
   failRequest = false;
   const retry = vm.runInContext('startTry()', context);
+  await tick();
   resolvePhoto(new Blob(['photo-b'])); await retry;
   assert.equal(calls.at(-1).options.body.get('client_request_id'), retryId, 'network retry is idempotent');
   state.job = null; state.photo = '';
@@ -67,6 +74,7 @@ const outfit = () => ({id: 'set-a', kind: 'outfit', items: ['top', 'bottom', 'sh
   state.photo = 'photo-a'; state.job = null;
   const before = calls.length, dialogCount = dialogs.length;
   const note = vm.runInContext('startTry()', context);
+  await tick();
   assert.equal(state.generating.target.id, 'note:mute:outfits-01', 'notes show loading immediately');
   assert.equal(dialogs.length, dialogCount, 'notes do not require a confirmation click');
   await vm.runInContext('startTry()', context);

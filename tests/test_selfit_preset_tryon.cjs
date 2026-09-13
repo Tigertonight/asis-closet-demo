@@ -18,6 +18,7 @@ const tick = () => new Promise(resolve => setImmediate(resolve));
     decode() { return new Promise((resolve,reject)=>{decode=resolve;rejectDecode=reject;}); }
   }
   const context = vm.createContext({state, FormData, Set, Image, Promise, reference:false,
+    savedSession: {user: {beta_qualified: true}},
     generationBusy:false, Date:{now:()=>now}, crypto:{randomUUID:()=> 'request-a'},
     setTimeout:(fn,ms)=>{timers.push({fn,ms});}, mediaURL:x=>x,
     requireTryonAccess:async()=>{}, mirrorImages:new Map(), mirrorImageRequests:new Map(),

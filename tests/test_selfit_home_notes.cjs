@@ -12,6 +12,8 @@ const slice = (start, end) => studio.slice(studio.indexOf(start), studio.indexOf
     cover_path:`/photo-${i}.jpg`, items:[{item_id:`top-${i}`},{item_id:`shoes-${i}`}],
     report_note:{id:`note:${i}`,title:`笔记 ${i}`,image_url:`/photo-${i}.jpg`}}));
   const context = vm.createContext({state, URLSearchParams, Set, FormData, reference:false,
+    savedSession: {user: {beta_qualified: true}},
+    requireTryonAccess: async () => {},
     location:{search:'?screen=mirror&outfit=real-note-2'}, window:{},
     normalizeItem:row=>({id:row.item_id}), generationBusy:false,
     crypto:{randomUUID:()=> 'home-notes-test'},
