@@ -1,6 +1,7 @@
 """Publish only reviewed current-source Nano presets to the existing private bucket."""
 import argparse
 from copy import deepcopy
+from collections import Counter
 import fcntl
 import hashlib
 import json
@@ -18,6 +19,47 @@ from scripts.batch_female_nano_presets import BATCH, MODEL_DIR, MODEL_IDS, fixed
 from scripts.female_nano_quality import HEADWEAR_FEATURES_RULE, HEADWEAR_RULES, review_worn_hat
 
 INDEX = ROOT / "app/data/tryon-examples.v1.json"
+
+
+def index_counts(examples, expected=304):
+    """Recompute registry totals; never inherit counters from an older batch."""
+    assert len({row['id'] for row in examples}) == len(examples)
+    assert len(examples) <= expected
+    uploaded = sum(row.get('status') == 'uploaded' for row in examples)
+    generated = sum(bool(row.get('result')) for row in examples)
+    failed = sum(str(row.get('status', '')).startswith(('failed_', 'blocked_')) for row in examples)
+    blocked = sum(str(row.get('status', '')).startswith('blocked_') for row in examples)
+    failed_images = sum(bool(row.get('failedResult')) for row in examples)
+    failed_uploaded = sum(bool(row.get('failedResult', {}).get('verified')) for row in examples)
+    pending = expected - len(examples) + sum(row.get('status') in {'queued', 'running', 'pending'} for row in examples)
+    return {'expected': expected, 'records': len(examples),
+            'outfits': len({row['outfitId'] for row in examples}),
+            'models': len({row['modelId'] for row in examples}),
+            'generated': generated, 'uploaded': uploaded, 'failed': failed,
+            'failedImages': failed_images, 'failedUploaded': failed_uploaded,
+            'blocked': blocked, 'pending': pending, 'totalImages': generated + failed_images,
+            'totalUploaded': uploaded + failed_uploaded, 'processed': expected - pending}
+
+
+def refresh_progress():
+    """Update progress without changing reviewed presets or historical evidence."""
+    jobs = [read(path) for path in sorted(BATCH.glob('female_*/*/job.json'))]
+    expected_ids = {mid + '--' + key_for(look) for mid in MODEL_IDS for look in looks()}
+    assert len(jobs) == 288 and {row['id'] for row in jobs} == expected_ids
+    with INDEX.with_suffix(INDEX.suffix + '.lock').open('a') as lock:
+        fcntl.flock(lock, fcntl.LOCK_EX)
+        index = read(INDEX)
+        current = {row['id'] for row in index['examples']
+                   if row.get('strategy') == 'complete_outfit_single_call' and row.get('status') == 'uploaded'
+                   and row.get('modelId') in MODEL_IDS}
+        assert current == {row['id'] for row in jobs if row['status'] == 'uploaded'}
+        index['counts'] = index_counts(index['examples'])
+        index['femaleOneShotBatch'].update(uploaded=len(current), unresolved=288-len(current),
+            states=dict(sorted(Counter(row['status'] for row in jobs).items())),
+            status='complete' if len(current) == 288 else 'in_progress', progressUpdatedAt=now())
+        index['updatedAt'] = now()
+        write_json_atomic(INDEX, index)
+    return {'registryCounts': index['counts'], 'femaleBatch': index['femaleOneShotBatch']}
 
 
 def validate_row(path, current):
@@ -44,11 +86,13 @@ def validate_row(path, current):
     visual = read(path.parent / "visual-review.json")
     assert visual["status"] == "pass" and visual["verified"] is True and visual.get("observations")
     assert visual["resultSha256"] == result["sha256"] and visual["reviewedItemIds"] == row["itemIds"]
+    from scripts.female_nano_user_acceptance import validate_user_acceptance
+    user_accepted = validate_user_acceptance(row, quality, visual)
     row["visualReview"] = visual
     row["semanticReview"] = visual
     row["qualityReview"]["evidence"]["semantic_review"] = visual
     attempt = read(folder / "attempt.json")
-    if attempt["status"] != "generated_local":
+    if attempt["status"] != "generated_local" and not user_accepted:
         assert attempt["status"] == "failed_quality" and quality.get("recheck", {}).get("rule") in HEADWEAR_RULES
         original_report_path = ROOT / quality["recheck"]["initialReportPath"]
         assert original_report_path.resolve() == folder / "quality-report.json"
@@ -56,6 +100,8 @@ def validate_row(path, current):
         initial = read(original_report_path)
         assert initial["resultSha256"] == quality["resultSha256"] and initial["nativeSha256"] == quality["nativeSha256"]
         assert initial.get("originalExpandedQualityReview", initial["qualityReview"]) == quality["originalExpandedQualityReview"]
+    if user_accepted:
+        assert attempt["status"] in {"generated_local", "failed_quality"}
     face_metric = quality["qualityReview"]["evidence"].get("face_metric")
     if face_metric in HEADWEAR_RULES:
         from PIL import Image
@@ -212,8 +258,7 @@ def publish():
             index.update(updatedAt=now(), femaleOneShotBatch={"batchId": BATCH.name, "expected": 288,
                           "uploaded": current_count, "status": "complete" if current_count == 288 else "in_progress",
                           "provider": "vertex_adc_generate_content", "model": "gemini-3.1-flash-image"})
-            index["counts"] = {**index.get("counts", {}), "expected": 304, "records": len(merged),
-                               "uploaded": sum(r.get("status") == "uploaded" for r in merged.values())}
+            index["counts"] = index_counts(index["examples"])
             write_json_atomic(INDEX, index)
             # Keep numeric review unchanged on the job; semantic review is separate.
             stored = read(path)
@@ -225,7 +270,7 @@ def publish():
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("action", choices=["preflight", "publish", "verify", "finalize"])
+    parser.add_argument("action", choices=["preflight", "publish", "verify", "finalize", "progress"])
     args = parser.parse_args()
     if args.action == "preflight":
         rows = ready_rows()
@@ -233,6 +278,8 @@ if __name__ == "__main__":
                   "images": [{"id": r["id"], "path": r["result"]["localPath"], "sha256": r["result"]["sha256"]} for _, r in rows]}
         write_json_atomic(BATCH / "publish-preflight.json", result)
         print(json.dumps({"ready": len(rows), "bucket": "selfit", "private": True}))
+    elif args.action == 'progress':
+        print(json.dumps(refresh_progress()))
     elif args.action in {"verify", "finalize"}:
         print(json.dumps(verify_publication(args.action == "finalize")))
     else:

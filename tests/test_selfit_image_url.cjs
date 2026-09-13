@@ -22,6 +22,15 @@ test('generation/downloads can retrieve original while local uploads/external UR
   assert.equal(display('/static/vector.svg'),'https://selfit.test/static/vector.svg');
   assert.equal(display(''),'');
 });
+test('historical face/body previews request WebP while original requests stay explicit', () => {
+  for (const kind of ['face','body']) {
+    const path = `/api/v1/selfit/me/photos/${kind}?overlay=1`;
+    const preview = new URL(display(path));
+    assert.equal(preview.searchParams.get('format'),'webp');
+    assert.equal(preview.searchParams.get('overlay'),'1');
+    assert.equal(new URL(display(path,{original:true})).searchParams.get('format'),'original');
+  }
+});
 test('static raster display and original fetch are isolated in mirror entry points', () => {
   assert.equal(new URL(display('/static/picture.webp?v=2')).searchParams.get('format'),'webp');
   const source=fs.readFileSync('app/static/selfit-tryon/studio.js','utf8');

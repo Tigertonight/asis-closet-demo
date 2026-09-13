@@ -30,7 +30,9 @@ ROOT_DIR = Path(__file__).resolve().parents[1]
 UPLOAD_DIR = ROOT_DIR / "uploads"
 TRYON_OUTPUT_DIR = ROOT_DIR / "outputs" / "tryon"
 CODEX_BRIDGE_DIR = TRYON_OUTPUT_DIR / "codex_bridge"
-TRYON_MODEL_FIXTURE_DIR = ROOT_DIR / "tests" / "fixtures" / "tryon_models"
+# Private replacement originals can be deployed as versioned runtime data.
+TRYON_MODEL_FIXTURE_DIR = Path(os.environ.get("SELFIT_TRYON_MODEL_DIR") or
+                               ROOT_DIR / "tests" / "fixtures" / "tryon_models").resolve()
 MAX_IMAGE_BYTES = 12 * 1024 * 1024
 MAX_OUTFIT_ITEMS = 16
 SUPPORTED_FORMATS = {"JPEG", "PNG", "WEBP"}

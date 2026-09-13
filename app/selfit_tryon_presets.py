@@ -5,11 +5,21 @@ from pathlib import Path
 
 from fastapi import HTTPException
 
-from app.material_assets import MaterialRegistry, asset_content_url, material_download_url
+from app.material_assets import (MaterialRegistry, MaterialUrlUnavailable, asset_content_url,
+                                 material_download_url, material_image_path)
 from app.styling_catalog import delivery_looks, outfit_id, adapt_outfit
 from app.model_assets import load_model_manifest
 
 INDEX_PATH = Path(__file__).resolve().parent / "data/tryon-examples.v1.json"
+
+
+def _available_material(record: dict, registry: MaterialRegistry) -> None:
+    try:
+        material_download_url(record)
+    except MaterialUrlUnavailable:
+        # URL expiry does not invalidate already downloaded, hash-verified bytes.
+        # With no cache, material_image_path raises before sending any request.
+        material_image_path("asset_" + record["sha256"], registry)
 
 
 def _display_asset(example: dict, registry: MaterialRegistry) -> str:
@@ -23,9 +33,9 @@ def _display_asset(example: dict, registry: MaterialRegistry) -> str:
         try:
             record = registry.get(display["assetId"])
             if record["sha256"] == display.get("sha256") and record["contentType"] == "image/webp":
-                material_download_url(record)
+                _available_material(record, registry)
                 return display["assetId"]
-        except (KeyError, ValueError, HTTPException):
+        except (OSError, KeyError, ValueError, HTTPException):
             pass
     return result["assetId"]
 
@@ -111,7 +121,7 @@ def find_preset(outfit_key: str, model_id: str | None, person_raw: bytes,
             return None
         asset_id = _display_asset(example, registry)
         record = registry.get(asset_id)
-        material_download_url(record)
+        _available_material(record, registry)
         return {"example_id": example["id"], "model_id": model_id, "outfit": outfit,
                 "image_path": asset_content_url(asset_id),
                 "quality_review": example.get("qualityReview", {})}

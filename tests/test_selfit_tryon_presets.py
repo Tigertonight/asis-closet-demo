@@ -247,3 +247,80 @@ def test_inspiration_one_shot_preset_skips_generation_and_saves_history(one_shot
     example['visualReview']['reviewedItemIds'] = example['itemIds']
     path.write_text(json.dumps({'examples': [example]}))
     test_job_uses_preset_without_generation_and_keeps_history((example, outfit, raw, path), monkeypatch)
+
+@pytest.mark.parametrize('cache_state', ['valid', 'missing', 'corrupt'])
+def test_expired_webp_uses_only_verified_cache_without_remote_requests(webp_case, monkeypatch, tmp_path, cache_state):
+    """A published preset survives URL expiry, but cannot serve changed bytes."""
+    import io
+    import httpx
+    from PIL import Image
+    from app import material_assets
+
+    example, outfit, raw, index, record = webp_case
+    output = io.BytesIO()
+    Image.new('RGB', tuple(example['result']['dimensions']), 'white').save(output, 'WEBP')
+    content = output.getvalue()
+    digest = hashlib.sha256(content).hexdigest()
+    display = example['displayResult']
+    display.update(assetId='asset_' + digest, sha256=digest,
+                   contentUrl=presets.asset_content_url('asset_' + digest))
+    record.update(sha256=digest, url='https://private.example.test/preview.webp?e=1&token=test-only',
+                  urlExpiresAt=1, storage={'provider': 'qiniu', 'private': True})
+    index.write_text(json.dumps({'examples': [example]}))
+    monkeypatch.setattr(material_assets, 'ROOT', tmp_path)
+    monkeypatch.setattr(presets, 'material_download_url', material_assets.material_download_url)
+    current_get = presets.MaterialRegistry.get
+
+    def get(registry, asset_id):
+        value = current_get(registry, asset_id)
+        if asset_id == example['result']['assetId']:
+            # The independently usable original is the fallback for an unavailable preview.
+            return {**value, 'storage': {}, 'url': 'https://public.example.test/original.png'}
+        return value
+
+    monkeypatch.setattr(presets.MaterialRegistry, 'get', get)
+    def no_network(*args, **kwargs):
+        raise AssertionError('Preset matching must never download or re-sign an expired URL')
+    monkeypatch.setattr(httpx, 'stream', no_network)
+    cached = tmp_path / 'outputs/material-cache' / (display['assetId'] + '.image')
+    if cache_state != 'missing':
+        cached.parent.mkdir(parents=True)
+        cached.write_bytes(content if cache_state == 'valid' else b'changed pixels')
+    found = presets.find_preset(outfit['outfit_id'], example['modelId'], raw, outfit['item_ids'])
+    assert found is not None
+    expected = display if cache_state == 'valid' else example['result']
+    assert found['image_path'] == expected['contentUrl']
+    if cache_state == 'corrupt':
+        assert cached.read_bytes() == b'changed pixels', 'Never silently accept or rewrite a corrupt cache'
+
+@pytest.mark.parametrize('cache_state', ['valid', 'missing', 'corrupt'])
+def test_expired_original_requires_matching_cached_bytes(preset_case, monkeypatch, tmp_path, cache_state):
+    import httpx
+    from app import material_assets
+
+    example, outfit, raw, _ = preset_case
+    result = example['result']
+    content = (Path.cwd() / result['localPath']).read_bytes()
+    assert hashlib.sha256(content).hexdigest() == result['sha256']
+    current_get = presets.MaterialRegistry.get
+    def get(registry, asset_id):
+        record = current_get(registry, asset_id)
+        if asset_id == result['assetId']:
+            return {**record, 'url': 'https://private.example.test/original.png?e=1&token=test-only',
+                    'urlExpiresAt': 1, 'storage': {'provider': 'qiniu', 'private': True}}
+        return record
+    monkeypatch.setattr(presets.MaterialRegistry, 'get', get)
+    monkeypatch.setattr(material_assets, 'ROOT', tmp_path)
+    monkeypatch.setattr(presets, 'material_download_url', material_assets.material_download_url)
+    def no_network(*args, **kwargs):
+        raise AssertionError('An expired original can be reused only from a verified local cache')
+    monkeypatch.setattr(httpx, 'stream', no_network)
+    cached = tmp_path / 'outputs/material-cache' / (result['assetId'] + '.image')
+    if cache_state != 'missing':
+        cached.parent.mkdir(parents=True)
+        cached.write_bytes(content if cache_state == 'valid' else b'wrong original')
+    found = presets.find_preset(outfit['outfit_id'], example['modelId'], raw, outfit['item_ids'])
+    if cache_state == 'valid':
+        assert found['image_path'] == result['contentUrl']
+    else:
+        assert found is None

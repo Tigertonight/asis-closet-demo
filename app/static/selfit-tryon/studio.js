@@ -152,6 +152,7 @@
     modelGender: savedSession?.user?.gender === "male" ? "male" : "female",
     personalPhoto: "",
     personalFile: null,
+    personalPhotoOriginals: {},
     top: "top",
     bottom: "pants",
     result: "",
@@ -1384,9 +1385,19 @@
   async function models() {
     modelSheet('<div class="model-sheet-status" role="status">正在为你准备模特…</div>');
     try {
-      await Promise.all([loadModels(), loadPhoto()]);
+      const personalReady = loadPhoto();
+      await loadModels();
       if (!$('#sheet').open || !$('#sheet').classList.contains('model-sheet')) return;
       modelSheet(`<div class="model-library" aria-label="试穿模特">${state.modelLibrary.map(m => `<button class="model-option" data-model-id="${esc(m.id)}" aria-label="选择${esc(m.name)}" aria-pressed="${state.modelId === m.id}"><div class="model-portrait">${image(m.image_url, m.name)}${state.modelId === m.id ? '<span class="model-selected-mark">✓ <span>使用中</span></span>' : ''}</div><div class="model-option-copy"><span>${esc(m.name)}</span></div></button>`).join('')}</div>${!state.modelLibrary.length ? '<div class="model-sheet-status">模特正在准备中<br>可以先使用自己的全身照</div>' : ''}`);
+      // An optional historical photo must not hold up the fixed-model cards.
+      void personalReady.then(() => {
+        if (!state.personalPhoto || !$('#sheet').open || !$('#sheet').classList.contains('model-sheet')) return;
+        const button = $('#sheet .model-sheet-footer [data-action="upload-photo"]');
+        if (!button) return;
+        delete button.dataset.action;
+        button.dataset.modelId = 'self';
+        button.innerHTML = '使用我的照片<span aria-hidden="true"> ↗</span>';
+      });
     } catch {
       if (!$('#sheet').open || !$('#sheet').classList.contains('model-sheet')) return;
       modelSheet('<div class="model-sheet-status"><p>模特暂时没有加载出来</p><button class="secondary" data-action="model">重新加载</button></div>');
@@ -1474,7 +1485,10 @@
   async function photoFile(photo = state.photo, file = state.file, modelId = state.modelId) {
     if (file) return file;
     if (!photo) throw Error("先选择模特或上传全身照。");
-    const response = await fetch(mediaURL(photo, true));
+    const original = state.personalPhotoOriginals?.[photo];
+    const response = original
+      ? await fetch(mediaURL(original, true), {cache: "reload", headers: {Authorization: `Bearer ${savedSession.accessToken}`}})
+      : await fetch(mediaURL(photo, true));
     if (!response.ok) throw Error("这张照片暂时无法使用，请重新上传。");
     const blob = await response.blob();
     return new File(
@@ -1896,8 +1910,8 @@
       const controller = new AbortController();
       const timer = setTimeout(() => controller.abort(), 15000);
       try {
-        const r = await fetch("/api/v1/selfit/me/photos/body", {
-          headers: { Authorization: `Bearer ${savedSession.accessToken}` },
+        const r = await fetch("/api/v1/selfit/me/photos/body?format=webp", {
+          headers: { Authorization: `Bearer ${savedSession.accessToken}`, Accept: "image/webp,image/*" },
           cache: "reload", signal: controller.signal,
         });
         if (r.ok && r.status !== 204) {
@@ -1905,7 +1919,11 @@
           if (file.size && !state.personalPhoto) {
             state.personalPhoto = URL.createObjectURL(file);
             state.uploadURLs.push(state.personalPhoto);
-            state.personalFile = new File([file], "my-photo.jpg", { type: file.type });
+            // Keep display bytes out of generation inputs. Resolve the original
+            // only when this specific preview is actually submitted for try-on.
+            state.personalPhotoOriginals ||= {};
+            state.personalPhotoOriginals[state.personalPhoto] = "/api/v1/selfit/me/photos/body?format=original";
+            state.personalFile = null;
           }
         }
       } catch {

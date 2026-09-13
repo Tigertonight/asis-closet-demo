@@ -296,6 +296,17 @@ def sanitize(response):
     return response
 
 
+def save_private_continuation(response, folder):
+    """Retain the native model turn, including opaque signatures, locally only."""
+    candidates = response.get("candidates", [])
+    if len(candidates) != 1 or not candidates[0].get("content"):
+        return None
+    target = folder / "continuation-response.json"
+    write_json_atomic(target, candidates[0]["content"])
+    target.chmod(0o600)
+    return {"localPath": str(target.relative_to(ROOT)), "sha256": sha(target)}
+
+
 def measure_quality(row, catalog, native, folder):
     from app import tryon
     model_path = ROOT / row["model"]["localPath"]
@@ -335,11 +346,33 @@ def identity_detail_reference(model_path, model_sha, folder, image_number, *, in
              "preserve this exact face, hair length, parting and front hair placement; "
              "identity and hair ONLY, ignore the original white shirt, not framing") if include_hair else (
              "unedited face detail cropped from Image 1; "
-             "same target woman, exact nose, cheeks, mouth and smile; identity only, not framing")
+             "same target woman, exact nose, cheeks, mouth and original expression; identity only, not framing")
     ref = image_ref(target, f"IMAGE {image_number}: " + label)
     ref["derivation"] = {"sourcePath": str(model_path), "sourceSha256": model_sha,
                          "operation": "lossless_crop", "cropBox": list(crop_box)}
     return ref
+
+
+def focused_item_references(catalog, item_ids, image_number, available_slots):
+    """Repeat exact catalog-bound cutouts at full detail without replacing any item."""
+    if not isinstance(item_ids, list) or len(item_ids) != len(set(item_ids)) or len(item_ids) > available_slots:
+        raise ValueError("Item details must be unique and fit the reference limit")
+    refs = []
+    packed_ids = {iid for ref in catalog["references"] for iid in ref.get("itemIds", [])}
+    for item_id in item_ids:
+        candidates = [ref for ref in catalog["sourceReferences"] if ref.get("itemIds") == [item_id]]
+        if item_id not in packed_ids or len(candidates) != 1:
+            raise ValueError("Item detail must belong to this outfit's existing references")
+        source = candidates[0]
+        if sha(Path(source["path"])) != source["sha256"]:
+            raise ValueError("Item detail source hash changed")
+        ref = image_ref(Path(source["path"]),
+                        f"IMAGE {image_number + len(refs)}: exact full-detail {source['label']}; "
+                        "the SAME item already shown in the accessory references, use it once", [item_id])
+        ref["derivation"] = {"operation": "unmodified_catalog_item_detail", "outfitId": catalog["outfitId"],
+                             "sourceSha256": source["sha256"]}
+        refs.append(ref)
+    return refs
 
 
 def garment_style_reference(source, crop_box, folder):
@@ -384,6 +417,102 @@ def reviewed_outfit_reference(row):
     return ref
 
 
+def correction_detail_reference(row, folder, image_number):
+    """Show a local defect at native detail, using only an audited input crop."""
+    source = reviewed_outfit_reference(row)
+    box = row.get("correctionDetailBox")
+    if not isinstance(box, list) or len(box) != 4 or not all(type(v) is int for v in box):
+        raise ValueError("Correction detail requires an explicit four-integer crop box")
+    with Image.open(source["path"]) as original:
+        left, top, right, bottom = box
+        if not (0 <= left < right <= original.width and 0 <= top < bottom <= original.height):
+            raise ValueError("Correction detail box is outside its verified candidate")
+        target = folder / "correction-detail.png"
+        original.crop(tuple(box)).save(target)
+    ref = image_ref(target, f"IMAGE {image_number}: unedited local detail of the defect in Image 2; "
+                    "apply the requested correction HERE in the full dressed photo, not a separate output or identity reference")
+    ref["derivation"] = {"operation": "lossless_reviewed_candidate_crop", "sourcePath": source["path"],
+                         "sourceSha256": source["sha256"], "cropBox": box,
+                         "candidateAudit": source["derivation"]}
+    return ref
+
+
+def candidate_first_request(references, prompt):
+    """Keep a reviewed editing canvas first without changing any input bytes."""
+    if (len(references) < 2 or references[0].get("sha256") not in MODEL_SHA.values()
+            or references[1].get("derivation", {}).get("operation") != "unmodified_reviewed_attempt_reference"):
+        raise ValueError("Candidate-first editing requires the exact original and a verified same-job candidate")
+    refs = json.loads(json.dumps(references))
+    refs[0], refs[1] = refs[1], refs[0]
+
+    def swap(text):
+        return re.sub(r"\b(image\s+)([12])(?!\d)",
+                      lambda match: match[1] + ("2" if match[2] == "1" else "1"), text, flags=re.I)
+
+    for ref in refs:
+        ref["label"] = swap(ref["label"])
+    return refs, swap(prompt) + ("\nImage 1 is the dressed editing canvas. Retain its already-correct garment pixels. "
+                               "Make the stated correction, preserving identity and pose from Image 2. "
+                               "Do not rebuild the outfit from the item cutouts when its details are already correct.")
+
+
+def reviewed_conversation_request(row, correction):
+    """Reconstruct one authentic prior model turn; never invent a signature."""
+    reviewed_outfit_reference(row)
+    attempt = next(a for a in row["attempts"] if a["path"] == row["retryOutfitReference"]["attemptPath"])
+    folder = ROOT / attempt["path"]
+    previous = read(folder / "request.json")
+    previous_id = previous.pop("requestId")
+    if (hashlib.sha256(json.dumps(previous, sort_keys=True, ensure_ascii=False).encode()).hexdigest() != previous_id
+            or previous_id != attempt["requestId"] or previous.get("conversation")
+            or previous["model"] != row["generationModel"] or previous["model"] != vertex_image.model()):
+        raise ValueError("Continuation requires an authentic same-model single-turn source")
+    refs = previous["images"]
+    catalog = read(BATCH / "catalog" / row["key"] / "catalog.json")
+    expected_items = {(item_id, ref["sha256"]) for ref in catalog["references"] for item_id in ref.get("itemIds", [])}
+    actual_items = {(item_id, ref["sha256"]) for ref in refs for item_id in ref.get("itemIds", [])}
+    if (row["model"]["sha256"] not in {r["sha256"] for r in refs}
+            or catalog["outfitId"] != row["outfitId"]
+            or row["itemIds"] != [item["item_id"] for item in catalog["look"]["items"]]
+            or not expected_items or not expected_items <= actual_items
+            or any(sha(r["path"]) != r["sha256"] for r in refs)):
+        raise ValueError("Continuation lost an original model or item reference")
+    previous_prompt = (folder / "prompt.txt").read_text()
+    if hashlib.sha256(previous_prompt.encode()).hexdigest() != previous["promptSha256"]:
+        raise ValueError("Continuation source prompt changed")
+    receipt = attempt.get("continuationResponse", {})
+    response_path = ROOT / receipt.get("localPath", "")
+    if response_path.parent != folder or not response_path.is_file() or sha(response_path) != receipt.get("sha256"):
+        raise ValueError("Continuation response is missing or changed")
+    model_content = read(response_path)
+    images = [p for p in model_content.get("parts", []) if p.get("inlineData", p.get("inline_data"))]
+    if (model_content.get("role") != "model" or len(images) != 1
+            or not images[0].get("thoughtSignature", images[0].get("thought_signature"))):
+        raise ValueError("Native image continuation requires the original provider signature")
+    block = images[0].get("inlineData", images[0].get("inline_data"))
+    if hashlib.sha256(base64.b64decode(block["data"])).hexdigest() != attempt["nativeSha256"]:
+        raise ValueError("Continuation model image differs from the audited native result")
+    native = ROOT / attempt["nativePath"]
+    if sha(native) != attempt["nativeSha256"]:
+        raise ValueError("Continuation native image changed")
+    previous_parts = []
+    for ref in refs:
+        previous_parts.extend([{"text": ref["label"]}, {"inlineData": {
+            "mimeType": Image.MIME[ref["format"]], "data": base64.b64encode(Path(ref["path"]).read_bytes()).decode()}}])
+    previous_parts.append({"text": previous_prompt})
+    prompt = ("Continue editing your last full-body photograph of this same adult woman. Make ONLY this correction: "
+              + correction + "\nKeep every other garment and accessory unchanged. The original woman in the white shirt "
+              "and her original detail crop in the preceding user message remain the exact face, hair, body and pose authority. "
+              "Return one complete full-body image with identical framing; no side-by-side panels or close-up output.")
+    contents = [{"role": "user", "parts": previous_parts}, model_content, {"role": "user", "parts": [{"text": prompt}]}]
+    return {"images": refs + [image_ref(native, "Previous native model output in conversation history")],
+            "prompt": prompt, "contents": contents,
+            "metadata": {"sourceAttempt": attempt["path"], "sourceRequestId": previous_id,
+                         "sourceResponse": receipt, "nativeSha256": attempt["nativeSha256"],
+                         "contentsSha256": hashlib.sha256(json.dumps(contents, sort_keys=True, ensure_ascii=False).encode()).hexdigest(),
+                         "rule": "authentic_single_turn_followup_v1"}}
+
+
 def generate_attempt(path, row, correction=""):
     catalog = read(BATCH / "catalog" / row["key"] / "catalog.json")
     if catalog["outfitId"] != row["outfitId"]:
@@ -408,12 +537,26 @@ def generate_attempt(path, row, correction=""):
         prompt += ("\nImage 2 is cropped below the source person's head to show outfit layering only. "
                    "All head accessories still have their exact individual references. "
                    "Retain Image 1's original hairstyle and front locks while adding those accessories.")
+    if row.get("correctionDetailBox"):
+        if not row.get("retryOutfitReference") or len(refs) >= 13:
+            raise ValueError("Correction detail requires a verified candidate and room for identity detail")
+        refs.append(correction_detail_reference(row, folder, len(refs) + 1))
+        prompt += ("\nThe additional correction-detail image is an unedited crop of the defect in Image 2. "
+                   "Use it to locate and fix the stated problem in the FULL original-size dressed image. "
+                   "It shows the BEFORE state to change, not a new item or a separate person. "
+                   "Do not return the crop or add a close-up panel.")
+    if row.get("focusItemIds"):
+        if row.get("continueReviewedAttempt"):
+            raise ValueError("New item detail inputs require a fresh request")
+        reserved = int(bool(row.get("useIdentityDetail") or row.get("useIdentityHairDetail")))
+        refs.extend(focused_item_references(catalog, row["focusItemIds"], len(refs) + 1, 14 - len(refs) - reserved))
     if row.get("useIdentityDetail") or row.get("useIdentityHairDetail"):
         assert len(refs) < 14, "Identity detail must fit the existing reference limit"
         refs.append(identity_detail_reference(model_path, row["model"]["sha256"], folder, len(refs) + 1,
                                               include_hair=bool(row.get("useIdentityHairDetail"))))
         prompt += ("\nThe LAST image is an unedited detail crop of the face in Image 1, not a new person. "
-                   "Use it to retain the exact original smile, mouth corners, nose and cheek contours. "
+                   "Use it to retain the exact original expression, closed-mouth shape, mouth corners, nose and cheek contours. "
+                   "Do not turn a neutral expression into a smile or add lipstick, blush or facial beautification. "
                    "Keep the original full-body canvas and all coordinates from Image 1. "
                    "Fit any required eyewear onto the unchanged original face; preserve visible features beneath it.")
         if row.get("useIdentityHairDetail"):
@@ -421,12 +564,23 @@ def generate_attempt(path, row, correction=""):
                        "shape and placement over the front of both shoulders, even if they partly obscure "
                        "necklaces, shoulder bows or collars. Do not tuck the hair behind the shoulders. "
                        "The white shirt in this identity detail is not part of the requested outfit.")
+    if row.get("candidateFirst"):
+        if not row.get("retryOutfitReference"):
+            raise ValueError("Candidate-first editing cannot be used without a reviewed outfit reference")
+        refs, prompt = candidate_first_request(refs, prompt)
+    conversation = reviewed_conversation_request(row, correction) if row.get("continueReviewedAttempt") else None
+    if conversation:
+        refs, prompt = conversation["images"], conversation["prompt"]
     (folder / "prompt.txt").write_text(prompt)
     request = {"model": vertex_image.model(), "endpoint": vertex_image.endpoint(), "provider": vertex_image.MODE,
                "images": refs, "generationConfig": CONFIG, "timeoutSeconds": 600,
                "promptSha256": hashlib.sha256(prompt.encode()).hexdigest()}
     if row.get("itemContextOverrides"):
         request["itemContextOverrides"] = row["itemContextOverrides"]
+    if row.get("candidateFirst"):
+        request["referenceOrder"] = "reviewed_candidate_then_exact_original"
+    if conversation:
+        request["conversation"] = conversation["metadata"]
     request["requestId"] = hashlib.sha256(json.dumps(request, sort_keys=True, ensure_ascii=False).encode()).hexdigest()
     write_json_atomic(folder / "request.json", request)
     parts = []
@@ -445,9 +599,17 @@ def generate_attempt(path, row, correction=""):
     write_json_atomic(folder / "attempt.json", attempt)
     started = time.monotonic()
     try:
-        response = vertex_image.generate_content({"contents": [{"role": "user", "parts": parts}], "generationConfig": CONFIG}, timeout=600)
+        contents = conversation["contents"] if conversation else [{"role": "user", "parts": parts}]
+        response = vertex_image.generate_content({"contents": contents, "generationConfig": CONFIG}, timeout=600)
         attempt["apiSeconds"] = round(time.monotonic() - started, 2)
         write_json_atomic(folder / "response.json", sanitize(response))
+        if row.get("saveContinuation"):
+            # Opaque provider signatures are required for native conversational
+            # edits. Keep them private in ignored runtime data, never in logs or
+            # the public registry. The standard sanitized response stays intact.
+            continuation = save_private_continuation(response, folder)
+            if continuation:
+                attempt["continuationResponse"] = continuation
         image_blocks = []
         for candidate in response.get("candidates", []):
             for part in candidate.get("content", {}).get("parts", []):

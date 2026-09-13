@@ -9,7 +9,7 @@ const loaders = slice('  async function loadModels()', '  function modelSheet(')
 const deferred = () => { let resolve; const promise = new Promise(r => resolve = r); return {promise, resolve}; };
 const flush = () => new Promise(resolve => setImmediate(resolve));
 function harness(query = '?screen=mirror', overrides = {}) {
-  const calls = [], preloads = [], renders = [], photos = [];
+  const calls = [], preloads = [], renders = [], photos = [], photoRequests = [];
   const state = {page:new URLSearchParams(query).get('screen') || 'mirror', source:query.includes('from=report') ? 'report' : 'inspiration',
     items:[], outfits:[], homeOutfits:[], reportOutfits:[], feed:[], topics:[], savedNotes:[], modelLibrary:[],
     selected:new Set(), photo:'', personalPhoto:'', file:null, personalFile:null, uploadURLs:[], loading:true,
@@ -28,7 +28,7 @@ function harness(query = '?screen=mirror', overrides = {}) {
     uniqueItems:rows=>[...new Map(rows.map(x=>[x.id,x])).values()],
     preloadMirrorImage:src=>preloads.push(src),
     render:()=>{vm.runInContext('loadPageData()', context);renders.push({page:state.page,loading:state.loading,wardrobe:state.wardrobeLoading,library:state.libraryLoading});},
-    fetch:async(url,options)=>{photos.push(url);return overrides.photo ? overrides.photo(url, options) : {ok:true,status:204};},
+    fetch:async(url,options)=>{photos.push(url);photoRequests.push({url,options});return overrides.photo ? overrides.photo(url, options) : {ok:true,status:204};},
     api:async(url,options)=>{
       calls.push(url);
       if(overrides.api) {const result=overrides.api(url,options);if(result!==undefined)return result;}
@@ -44,7 +44,7 @@ function harness(query = '?screen=mirror', overrides = {}) {
     },
   });
   vm.runInContext(loaders, context);
-  return {state,calls,preloads,renders,photos,run:expression=>vm.runInContext(expression,context)};
+  return {state,calls,preloads,renders,photos,photoRequests,run:expression=>vm.runInContext(expression,context)};
 }
 
 test('first mirror needs only preferences, models and its four notes; image starts before notes finish', async()=>{
@@ -74,13 +74,27 @@ test('report entry fetches its ordered outfits directly, no random or full libra
   assert.equal(broken.state.loading,false);
 });
 
-test('personal photo remains the selected generation input',async()=>{
+test('historical own-photo preview stays separate from its lazy original generation input',async()=>{
   const h=harness('?screen=mirror',{api:url=>url==='/closet/preferences' ? {current_model_id:'self'} : undefined,
-    photo:async()=>({ok:true,status:200,blob:async()=>new Blob(['personal-photo'],{type:'image/jpeg'})})});
+    photo:async(url)=>({ok:true,status:200,blob:async()=>new Blob([url.includes('format=original') ? 'original-personal-photo' : 'webp-preview'],{type:url.includes('format=original') ? 'image/jpeg' : 'image/webp'})})});
   await h.run('load()');
   assert.equal(h.state.modelId,'self');
   assert.equal(h.state.photo,h.state.personalPhoto);
-  assert.equal(await h.state.file.text(),'personal-photo');
+  assert.equal(h.state.file,null);
+  assert.equal(h.state.personalFile,null);
+  assert.equal(h.photos.length,1,'opening the mirror downloads only the preview');
+  assert.equal(h.photos[0],'/api/v1/selfit/me/photos/body?format=webp');
+  assert.equal(h.photoRequests[0].options.headers.Accept,'image/webp,image/*');
+  assert.equal(h.photoRequests[0].options.cache,'reload','replaced history photos must not be hidden by an old cached preview');
+  assert.equal((await fetch(h.state.photo)).headers.get('Content-Type'),'image/webp');
+  h.run(`const mediaURL=(path,original)=>new URL(path,location.origin).href;`+
+    slice('  async function photoFile(', '  async function startTry()'));
+  const original=await h.run('photoFile()');
+  assert.equal(await original.text(),'original-personal-photo');
+  assert.equal(original.type,'image/jpeg');
+  assert.equal(h.photos.at(-1),'http://localhost/api/v1/selfit/me/photos/body?format=original');
+  assert.equal(h.photoRequests.at(-1).options.headers.Authorization,'Bearer test-only');
+  assert.equal(h.photoRequests.at(-1).options.cache,'reload');
   h.state.uploadURLs.forEach(URL.revokeObjectURL);
 });
 
@@ -152,7 +166,9 @@ test('opening model chooser later reads latest own photo, not the legacy prefere
   assert.equal(h.photos.length,0);
   assert.equal(h.state.photo,'/fixed.png');
   await h.run('loadPhoto()');
-  assert.equal(await h.state.personalFile.text(),'latest-own-photo');
+  assert.equal(h.state.personalFile,null);
+  assert.equal(h.state.personalPhotoOriginals[h.state.personalPhoto],'/api/v1/selfit/me/photos/body?format=original');
+  assert.equal(h.photos[0],'/api/v1/selfit/me/photos/body?format=webp');
   assert.equal(h.state.photo,'/fixed.png','loading the optional own photo must not switch the current model');
   h.state.uploadURLs.forEach(URL.revokeObjectURL);
 });
@@ -228,4 +244,28 @@ test(`try-on submits original bytes instead of the display preview: ${model.id}`
   assert.equal(submitted.get('wear_all_items'),'true');
   assert.deepEqual(JSON.parse(submitted.get('selected_item_ids')),['top-1']);
   assert.equal(h.photos.at(-1),'http://localhost'+model.image_url);
+});
+
+test('concurrent historical previews are shared and cannot overwrite a fresh upload',async()=>{
+  const gate=deferred();
+  const h=harness('?screen=mirror',{photo:()=>gate.promise});
+  const first=h.run('loadPhoto()'),second=h.run('loadPhoto()');
+  assert.equal(h.photos.length,1);
+  const upload=new File(['new original'],'upload.png',{type:'image/png'});
+  h.state.personalPhoto='blob:new-upload';h.state.personalFile=upload;
+  gate.resolve({ok:true,status:200,blob:async()=>new Blob(['old preview'],{type:'image/webp'})});
+  await Promise.all([first,second]);
+  assert.equal(h.state.personalPhoto,'blob:new-upload');
+  assert.equal(h.state.personalFile,upload);
+  assert.equal(h.state.uploadURLs.length,0,'discard unused old preview without allocating a blob URL');
+});
+test('missing or failed historical preview keeps the existing saved photo as fallback',async()=>{
+  for(const response of [async()=>({ok:true,status:204}),async()=>{throw Error('offline');}]) {
+    const h=harness('?screen=mirror',{photo:response});
+    h.state.personalPhotoFallback='/user-assets/old.png';
+    await h.run('loadPhoto()');
+    assert.equal(h.state.personalPhoto,'/user-assets/old.png');
+    assert.equal(h.state.personalFile,null);
+    assert.equal(h.state.uploadURLs.length,0);
+  }
 });

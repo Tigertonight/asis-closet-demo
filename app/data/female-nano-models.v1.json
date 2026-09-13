@@ -1,0 +1,58 @@
+{
+  "schemaVersion": "1.0",
+  "purpose": "Runtime model originals matching female-nano-one-shot-20260911; image bytes are not stored in Git.",
+  "models": {
+    "female_slim_1": {
+      "sha256": "8dedd0555421d14026ffbea8b4102ce58a042d6c6d737c44d359668e685b0501",
+      "metadata": {
+        "file": "female_slim_1.png",
+        "gender": "female",
+        "gender_label": "女",
+        "body_type": "slim",
+        "body_type_label": "瘦",
+        "display_name": "纤细型",
+        "variant": 1,
+        "description": "用户提供的纤细型女模特原图：黑色长发，白色短袖、白色短裤和白色运动鞋，手持手机对镜自拍，全身展示",
+        "width": 1792,
+        "height": 2400,
+        "active": true,
+        "sort_order": 1
+      }
+    },
+    "female_medium_1": {
+      "sha256": "637cb742b8d5447b11e1f53509f6279b15fe0a023facaca0b15769eae940bc87",
+      "metadata": {
+        "file": "female_medium_1.png",
+        "gender": "female",
+        "gender_label": "女",
+        "body_type": "medium",
+        "body_type_label": "中",
+        "display_name": "匀称型",
+        "default_for_gender": true,
+        "variant": 1,
+        "description": "用户提供的匀称型女模特原图：黑色长发，白色短袖、白色短裤和白色运动鞋，手持手机对镜自拍，全身展示",
+        "width": 1792,
+        "height": 2400,
+        "active": true,
+        "sort_order": 2
+      }
+    },
+    "female_plus_1": {
+      "sha256": "365001c4e926a8bb8747a2ada7afeda8e5471cc439bfc5741b6c11fc8dc058e7",
+      "metadata": {
+        "file": "female_plus_1.png",
+        "gender": "female",
+        "gender_label": "女",
+        "body_type": "plus",
+        "body_type_label": "胖",
+        "display_name": "丰满型",
+        "variant": 1,
+        "description": "用户提供的丰满型女模特原图：黑色长发，白色短袖、白色短裤和白色运动鞋，手持手机对镜自拍，全身展示",
+        "width": 1792,
+        "height": 2400,
+        "active": true,
+        "sort_order": 3
+      }
+    }
+  }
+}

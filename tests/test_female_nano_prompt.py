@@ -1,6 +1,102 @@
 from scripts.batch_female_nano_presets import garment_only_context, prompt_for
 
 
+def test_item_detail_keeps_original_bytes_and_rejects_foreign_or_changed_sources(tmp_path):
+    from copy import deepcopy
+    from PIL import Image
+    import pytest
+    from scripts import batch_female_nano_presets as batch
+    source = tmp_path / "eyewear.png"
+    Image.new("RGB", (48, 24), "gray").save(source)
+    digest = batch.sha(source)
+    catalog = {"outfitId": "same-outfit", "references": [{"itemIds": ["eyewear", "scarf"]}],
+               "sourceReferences": [{"path": str(source), "sha256": digest, "itemIds": ["eyewear"], "label": "glasses"}]}
+    before = deepcopy(catalog)
+    ref = batch.focused_item_references(catalog, ["eyewear"], 9, 2)[0]
+    assert ref["sha256"] == digest and ref["itemIds"] == ["eyewear"]
+    assert ref["derivation"]["outfitId"] == "same-outfit" and catalog == before
+    for ids, slots in [(["unknown"], 2), (["eyewear", "eyewear"], 2), (["eyewear"], 0)]:
+        with pytest.raises(ValueError):
+            batch.focused_item_references(catalog, ids, 9, slots)
+    Image.new("RGB", (48, 24), "black").save(source)
+    with pytest.raises(ValueError):
+        batch.focused_item_references(catalog, ["eyewear"], 9, 2)
+
+
+def test_continuation_keeps_native_part_signatures_private_and_sanitized_receipt_safe(monkeypatch, tmp_path):
+    import base64
+    from scripts import batch_female_nano_presets as batch
+    monkeypatch.setattr(batch, "ROOT", tmp_path)
+    content = {"role": "model", "parts": [
+        {"text": "edited", "thoughtSignature": "opaque-text"},
+        {"inlineData": {"mimeType": "image/png", "data": base64.b64encode(b"image-bytes").decode()}, "thoughtSignature": "opaque-image"}]}
+    response = {"candidates": [{"content": content}]}
+    receipt = batch.save_private_continuation(response, tmp_path)
+    target = tmp_path / receipt["localPath"]
+    assert batch.read(target) == content and batch.sha(target) == receipt["sha256"]
+    assert target.stat().st_mode & 0o777 == 0o600
+    public_receipt = batch.sanitize(response)
+    assert "opaque-" not in str(public_receipt) and "inlineData" not in str(public_receipt)
+    assert batch.save_private_continuation({"candidates": []}, tmp_path) is None
+
+
+def test_correction_detail_is_pixel_exact_crop_with_full_candidate_provenance(monkeypatch, tmp_path):
+    from PIL import Image
+    from scripts import batch_female_nano_presets as batch
+    import numpy as np
+    source = tmp_path / "candidate.png"
+    pixels = np.arange(36 * 24 * 3, dtype=np.uint8).reshape((24, 36, 3))
+    Image.fromarray(pixels).save(source)
+    digest = batch.sha(source)
+    monkeypatch.setattr(batch, "reviewed_outfit_reference", lambda row: {
+        "path": str(source), "sha256": digest, "derivation": {"operation": "unmodified_reviewed_attempt_reference", "jobId": "same-job"}})
+    ref = batch.correction_detail_reference({"correctionDetailBox": [5, 6, 20, 22]}, tmp_path, 10)
+    assert np.array_equal(np.asarray(Image.open(ref["path"])), pixels[6:22, 5:20])
+    assert ref["derivation"]["sourceSha256"] == digest
+    assert ref["derivation"]["candidateAudit"]["jobId"] == "same-job"
+    assert batch.sha(source) == digest
+
+
+def test_correction_detail_rejects_invalid_box_and_unreviewed_candidate(monkeypatch, tmp_path):
+    from PIL import Image
+    from scripts import batch_female_nano_presets as batch
+    import pytest
+    with pytest.raises((KeyError, ValueError)):
+        batch.correction_detail_reference({"correctionDetailBox": [0, 0, 10, 10]}, tmp_path, 5)
+    source = tmp_path / "source.png"
+    Image.new("RGB", (20, 20)).save(source)
+    monkeypatch.setattr(batch, "reviewed_outfit_reference", lambda row: {"path": str(source)})
+    for box in ([0, 0, 21, 20], [10, 0, 5, 20], [0, 0, 20], [0, 0, 20.0, 20]):
+        with pytest.raises(ValueError):
+            batch.correction_detail_reference({"correctionDetailBox": box}, tmp_path, 5)
+
+
+def test_candidate_first_keeps_original_hash_and_all_item_bindings_without_renumbering_image_10():
+    from copy import deepcopy
+    from scripts.batch_female_nano_presets import candidate_first_request, MODEL_SHA
+    refs = [{"label": "IMAGE 1: exact target", "sha256": MODEL_SHA["female_medium_1"], "path": "original.png"},
+            {"label": "IMAGE 2: edit this candidate, identity from Image 1", "sha256": "candidate", "path": "candidate.png",
+             "derivation": {"operation": "unmodified_reviewed_attempt_reference", "jobId": "same-job"}},
+            {"label": "IMAGE 3: jacket", "sha256": "jacket", "itemIds": ["jacket"]},
+            {"label": "IMAGE 10: ring", "sha256": "ring", "itemIds": ["ring"]}]
+    original = deepcopy(refs)
+    result, prompt = candidate_first_request(refs, "Edit Image 2. Image 1 is the identity authority. Use IMAGE 3 and IMAGE 10.")
+    assert result[0]["path"] == "candidate.png" and result[1]["path"] == "original.png"
+    assert result[1]["sha256"] == MODEL_SHA["female_medium_1"] and result[0]["derivation"] == refs[1]["derivation"]
+    assert "Edit Image 1" in prompt and "Image 2 is the identity authority" in prompt
+    assert result[2:] == refs[2:] and "IMAGE 10" in prompt
+    assert refs == original
+
+
+def test_candidate_first_rejects_unknown_original_or_unreviewed_editing_canvas():
+    from scripts.batch_female_nano_presets import candidate_first_request, MODEL_SHA
+    import pytest
+    with pytest.raises(ValueError):
+        candidate_first_request([{"sha256": "wrong-original"}, {"derivation": {"operation": "unmodified_reviewed_attempt_reference"}}], "")
+    with pytest.raises(ValueError):
+        candidate_first_request([{"sha256": MODEL_SHA["female_slim_1"]}, {"derivation": {"operation": "unreviewed"}}], "")
+
+
 def test_candidate_edit_has_one_base_and_retains_original_identity_and_item_authorities():
     catalog = {"plan": {"title": "近完成套装"}, "itemContext": [
         {"name": "上衣", "reference": "IMAGE 3", "wearing_method": "最上方纽扣扣合"},

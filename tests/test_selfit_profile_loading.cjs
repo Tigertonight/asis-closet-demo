@@ -42,6 +42,7 @@ test('profile and report render before either photo; photos start together and u
   assert.equal(h.state.profileLoading,false);
   assert.deepEqual(h.photos.map(x=>x.url),['/photos/face','/photos/body']);
   assert(h.photos.every(x=>x.options.headers.Authorization==='Bearer test-only'));
+  assert(h.photos.every(x=>x.options.headers.Accept==='image/webp,image/*'));
   assert.equal(h.state.profileSuit.features[0].value,'中性自然肤');
   const html=h.renders.at(-1);
   assert.match(html,/查看我的风格报告/);
