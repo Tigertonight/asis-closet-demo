@@ -1631,7 +1631,7 @@
     if (state.page === "mirror") render();
     modal(
       "试穿暂未完成",
-      `<p>${esc(message || "请稍后重试，你选择的照片和搭配都已保留。")}</p><button class="primary" data-action="${state.job?.job_id && state.job.result?.generation_strategy !== 'preset' ? "retry-job" : "try"}">重新尝试</button><button class="secondary" data-action="model">更换照片</button>`,
+      `<p>${esc(message || "请稍后重试，你选择的照片和搭配都已保留。")}</p><button class="primary" data-action="${state.job?.job_id && state.job.result?.generation_strategy !== 'preset' ? "retry-job" : "try"}">重新尝试</button><button class="secondary" data-action="upload-photo">更换照片</button>`,
     );
   }
   async function poll(completedJob = null) {
