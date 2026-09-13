@@ -690,6 +690,15 @@ dialog .close:focus-visible {
 }
 .mirror-device-code::placeholder { color:#999; font-size:inherit; line-height:inherit; letter-spacing:normal; }
 .mirror-device-code:focus-visible { outline:2px solid var(--brand); outline-offset:2px; }
+.tryon-access-form { display:grid; gap:12px; }
+.tryon-access-form label { font-size:14px; color:#777; }
+.tryon-access-form input { width:100%; min-width:0; min-height:48px; padding:12px 16px; border:1px solid #e7c4cd; border-radius:16px; background:#fff; color:#333; font:inherit; font-size:16px; }
+.tryon-access-form input:focus-visible { outline:2px solid var(--brand); outline-offset:2px; }
+.tryon-access-form .primary, .tryon-access-form .secondary { width:100%; min-height:48px; margin:0; }
+.tryon-access-link { display:flex; align-items:center; justify-content:center; min-height:48px; text-decoration:none; }
+#tryonAccessDescription { margin:0 0 4px; }
+#tryonAccessMessage { margin:0; font-size:13px; color:var(--brand); overflow-wrap:anywhere; }
+#tryonAccessMessage:empty { display:none; }
 dialog .primary,
 dialog .secondary {
   width: 100%;
@@ -1542,8 +1551,8 @@ button.composition-piece:focus-visible { outline:2px solid #8a011b; outline-offs
 .note-persona-badge { pointer-events:none; }
 .topic-card { position:relative; display:block; min-width:0; padding:0; overflow:hidden; border-radius:16px; background:#f0eceb; text-align:left; }
 .topic-cover { display:block; width:100%; aspect-ratio:1; object-fit:cover; }
-.topic-previews { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:4px; padding:9px 10px 10px; }
-.topic-previews img { display:block; width:100%; aspect-ratio:3/4; object-fit:cover; }
+.topic-previews { display:flex; justify-content:center; gap:4px; padding:9px 10px 10px; }
+.topic-previews img { display:block; width:calc((100% - 8px)/3); aspect-ratio:3/4; object-fit:cover; }
 .topic-previews img:first-child { transform:rotate(-5deg); }
 .topic-previews img:last-child { transform:rotate(5deg); }
 .topic-badge { position:absolute; top:8px; left:8px; max-width:calc(100% - 16px); padding:6px 10px; border-radius:999px; background:rgba(240,240,240,.6); color:#333; box-shadow:0 2px 8px #0000000a; font-size:14px; font-weight:600; line-height:20px; overflow-wrap:anywhere; transform:scale(.7); transform-origin:top left; }

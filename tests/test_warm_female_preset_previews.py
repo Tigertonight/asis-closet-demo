@@ -32,6 +32,8 @@ def test_warms_only_verified_female_previews_and_rechecks_cached_bytes(tmp_path,
     result = warmer.warm(index, registry, expected=1)
     assert result == {'cachedPreviews': 1, 'bytes': target.stat().st_size, 'sha256Verified': True}
     assert len(calls) == 1
+    index['femaleOneShotBatch'] = {'expected': 1}
+    assert warmer.warm(index, registry) == result
     target.write_bytes(b'corrupt')
     with pytest.raises(ValueError, match='cache mismatch'):
         warmer.warm(index, registry, expected=1)

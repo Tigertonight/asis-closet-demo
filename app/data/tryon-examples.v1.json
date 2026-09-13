@@ -1,23 +1,23 @@
 {
   "schemaVersion": "1.0",
   "batchId": "styling-80-female-3-20260909",
-  "status": "completed_with_issues",
-  "updatedAt": "2026-09-13T10:33:19.868994+00:00",
+  "status": "complete",
+  "updatedAt": "2026-09-13T10:58:09.067554+00:00",
   "counts": {
-    "expected": 304,
-    "records": 299,
-    "outfits": 111,
+    "expected": 298,
+    "records": 298,
+    "outfits": 110,
     "models": 4,
-    "generated": 299,
-    "uploaded": 299,
+    "generated": 298,
+    "uploaded": 298,
     "failed": 0,
     "failedImages": 0,
     "failedUploaded": 0,
     "blocked": 0,
-    "pending": 5,
-    "totalImages": 299,
-    "totalUploaded": 299,
-    "processed": 299
+    "pending": 0,
+    "totalImages": 298,
+    "totalUploaded": 298,
+    "processed": 298
   },
   "examples": [
     {
@@ -98196,253 +98196,6 @@
       }
     },
     {
-      "id": "female_slim_1--inspiration_date--outfits-04",
-      "modelId": "female_slim_1",
-      "key": "inspiration_date--outfits-04",
-      "outfitId": "report_inspiration_date_outfits-04_26320924a6bd",
-      "noteBinding": {
-        "templateId": "inspiration_date",
-        "noteId": "outfits-04",
-        "position": 4,
-        "name": "黑白格系",
-        "persona": null,
-        "gender": "female",
-        "byline": "@屁桃酱睡衣日记",
-        "sourceUrl": "80 【这套睡裙也太慵懒了吧 - 屁桃酱睡衣日记 | 小红书 - 你的生活兴趣社区】 😆 CrNnfS1UQMfNBu4 😆 https://www.xiaohongshu.com/discovery/item/6a6ad233000000000f010b2b?source=webshare&xhsshare=pc_web&xsec_token=AB5muS3RfCycbLRbtRZrKhGExbeuzNSWtLAH39GDWg3mI=&xsec_source=pc_share",
-        "sourceTitle": "这套睡裙也太慵懒了吧"
-      },
-      "sourceAssetId": "asset_83f9800691c0c915aedd8989b990f85c4d49dc12534ec822bf7b2779cd1441e3",
-      "itemCount": 2,
-      "itemIds": [
-        "DATE_约会场景_outfits_04_黑白格系_item_01",
-        "DATE_约会场景_outfits_04_黑白格系_item_02"
-      ],
-      "inputAssetIds": [
-        "asset_39957df3cf434fcf76b9568a8b3119c8e23a3c5fc75c8568f50e655bb9805273",
-        "asset_622daa2231b0fb3a02143bb36371d4d0abe9c3608417874e42e017f821643341"
-      ],
-      "model": {
-        "file": "female_slim_1.png",
-        "gender": "female",
-        "gender_label": "女",
-        "body_type": "slim",
-        "body_type_label": "瘦",
-        "display_name": "纤细型",
-        "variant": 1,
-        "description": "用户提供的纤细型女模特原图：黑色长发，白色短袖、白色短裤和白色运动鞋，手持手机对镜自拍，全身展示",
-        "width": 1792,
-        "height": 2400,
-        "active": true,
-        "sort_order": 1,
-        "localPath": "tests/fixtures/tryon_models/female_slim_1.png",
-        "sha256": "8dedd0555421d14026ffbea8b4102ce58a042d6c6d737c44d359668e685b0501"
-      },
-      "provider": "vertex_adc_generate_content",
-      "strategy": "complete_outfit_single_call",
-      "generationModel": "gemini-3.1-flash-image",
-      "status": "uploaded",
-      "createdAt": "2026-09-11T08:59:01.337223+00:00",
-      "updatedAt": "2026-09-13T00:16:08.130036+00:00",
-      "artifactDir": "outputs/tryon-examples/female-nano-one-shot-20260911/female_slim_1/inspiration_date--outfits-04",
-      "attempts": [
-        {
-          "path": "outputs/tryon-examples/female-nano-one-shot-20260911/female_slim_1/inspiration_date--outfits-04/attempts/01",
-          "requestId": "be27690f3c74481a338a4aeeac3e0ba13f0abbcf62b867880ec3dbf2459b1d3a",
-          "status": "blocked_moderation",
-          "startedAt": "2026-09-12T19:16:49.912571+00:00",
-          "apiSeconds": 18.96,
-          "finishReasons": [
-            "IMAGE_SAFETY"
-          ],
-          "finishedAt": "2026-09-12T19:17:08.892555+00:00"
-        },
-        {
-          "path": "outputs/tryon-examples/female-nano-one-shot-20260911/female_slim_1/inspiration_date--outfits-04/attempts/02",
-          "requestId": "bcdbce765e4781ddea38037197a6076f5b35ec64a551a775884c851803dd1f5d",
-          "status": "generated_local",
-          "startedAt": "2026-09-13T00:13:09.587706+00:00",
-          "apiSeconds": 22.63,
-          "nativePath": "outputs/tryon-examples/female-nano-one-shot-20260911/female_slim_1/inspiration_date--outfits-04/attempts/02/native.png",
-          "nativeSha256": "149ba6499e4ebfcb7cc4bd5996a2b0ed4f7467349077b55e625a0d4c621b9140",
-          "dimensions": [
-            1792,
-            2400
-          ],
-          "usage": {
-            "promptTokenCount": 5939,
-            "candidatesTokenCount": 1680,
-            "totalTokenCount": 7619,
-            "trafficType": "ON_DEMAND",
-            "promptTokensDetails": [
-              {
-                "modality": "TEXT",
-                "tokenCount": 1459
-              },
-              {
-                "modality": "IMAGE",
-                "tokenCount": 4480
-              }
-            ],
-            "candidatesTokensDetails": [
-              {
-                "modality": "IMAGE",
-                "tokenCount": 1680
-              }
-            ]
-          },
-          "qualityReview": {
-            "status": "pass",
-            "confidence": 0.82,
-            "evidence": {
-              "result_exists": true,
-              "result_size": {
-                "width": 1792,
-                "height": 2400
-              },
-              "face_diff": 4.09,
-              "protected_region_diff": 0.57,
-              "mask_editable_ratio": 0.3315,
-              "mask_contract": "fail_if_protected_face_or_background_changes"
-            },
-            "issues": [],
-            "suggestions": []
-          },
-          "result": {
-            "localPath": "outputs/tryon-examples/female-nano-one-shot-20260911/female_slim_1/inspiration_date--outfits-04/attempts/02/result.png",
-            "sha256": "149ba6499e4ebfcb7cc4bd5996a2b0ed4f7467349077b55e625a0d4c621b9140",
-            "bytes": 4570996,
-            "dimensions": [
-              1792,
-              2400
-            ],
-            "verified": false
-          },
-          "finishedAt": "2026-09-13T00:13:33.432566+00:00"
-        }
-      ],
-      "moderationRetryAudit": {
-        "at": "2026-09-13T00:12:01.056846+00:00",
-        "priorStatus": "blocked_moderation",
-        "priorAttempt": "outputs/tryon-examples/female-nano-one-shot-20260911/female_slim_1/inspiration_date--outfits-04/attempts/01",
-        "explicitAuthorization": "authorization-20260913.json",
-        "sourceReview": "Actual sources visually inspected: adult plaid lace top/skirt fashion outfit; adult orange swim top under cardigan with jeans beach outfit. Ordinary clothing try-on in original standing mirror pose. No request to change safety settings, no source/body/coverage substitution.",
-        "safetySettingsChanged": false
-      },
-      "retryCorrection": "Neutral adult fashion-catalog try-on. Retain the relaxed standing mirror-selfie pose of Image 1 and every specified outfit item. Use the other photos only for garment appearance.",
-      "result": {
-        "localPath": "outputs/tryon-examples/female-nano-one-shot-20260911/female_slim_1/inspiration_date--outfits-04/attempts/02/result.png",
-        "sha256": "149ba6499e4ebfcb7cc4bd5996a2b0ed4f7467349077b55e625a0d4c621b9140",
-        "bytes": 4570996,
-        "dimensions": [
-          1792,
-          2400
-        ],
-        "verified": true,
-        "assetId": "asset_149ba6499e4ebfcb7cc4bd5996a2b0ed4f7467349077b55e625a0d4c621b9140",
-        "contentUrl": "/api/v1/material-assets/asset_149ba6499e4ebfcb7cc4bd5996a2b0ed4f7467349077b55e625a0d4c621b9140/content",
-        "verifiedAt": "2026-09-13T00:16:08.065890+00:00",
-        "storage": {
-          "provider": "qiniu",
-          "bucket": "selfit",
-          "key": "selfit/tryon-examples/female-nano-one-shot-20260911/asset_149ba6499e4ebfcb7cc4bd5996a2b0ed4f7467349077b55e625a0d4c621b9140.png",
-          "private": true
-        }
-      },
-      "qualityReview": {
-        "status": "pass",
-        "confidence": 0.82,
-        "evidence": {
-          "result_exists": true,
-          "result_size": {
-            "width": 1792,
-            "height": 2400
-          },
-          "face_diff": 4.09,
-          "protected_region_diff": 0.57,
-          "mask_editable_ratio": 0.3315,
-          "mask_contract": "fail_if_protected_face_or_background_changes",
-          "semantic_review": {
-            "modelId": "female_slim_1",
-            "key": "inspiration_date--outfits-04",
-            "resultSha256": "149ba6499e4ebfcb7cc4bd5996a2b0ed4f7467349077b55e625a0d4c621b9140",
-            "status": "pass",
-            "observations": "已查看原模特、两件单品及原搭配参考、结果整图、领口系带与两手细节。黑白灰格纹无袖短上衣的深V白蕾丝、前交叉系带与尖角衣摆保留；低腰迷你裙有侧腰系带及裙摆白蕾丝荷叶层，未合并成连衣裙。原脸、两侧前胸发束、自拍手机、手臂位置、身形与原白鞋保留；此套没有鞋类单品要求。",
-            "verified": true,
-            "reviewer": "assistant_visual_inspection",
-            "reviewedAt": "2026-09-13T00:14:16.853607+00:00",
-            "reviewedItemIds": [
-              "DATE_约会场景_outfits_04_黑白格系_item_01",
-              "DATE_约会场景_outfits_04_黑白格系_item_02"
-            ]
-          }
-        },
-        "issues": [],
-        "suggestions": []
-      },
-      "selectedAttempt": "outputs/tryon-examples/female-nano-one-shot-20260911/female_slim_1/inspiration_date--outfits-04/attempts/02",
-      "semanticReview": {
-        "modelId": "female_slim_1",
-        "key": "inspiration_date--outfits-04",
-        "resultSha256": "149ba6499e4ebfcb7cc4bd5996a2b0ed4f7467349077b55e625a0d4c621b9140",
-        "status": "pass",
-        "observations": "已查看原模特、两件单品及原搭配参考、结果整图、领口系带与两手细节。黑白灰格纹无袖短上衣的深V白蕾丝、前交叉系带与尖角衣摆保留；低腰迷你裙有侧腰系带及裙摆白蕾丝荷叶层，未合并成连衣裙。原脸、两侧前胸发束、自拍手机、手臂位置、身形与原白鞋保留；此套没有鞋类单品要求。",
-        "verified": true,
-        "reviewer": "assistant_visual_inspection",
-        "reviewedAt": "2026-09-13T00:14:16.853607+00:00",
-        "reviewedItemIds": [
-          "DATE_约会场景_outfits_04_黑白格系_item_01",
-          "DATE_约会场景_outfits_04_黑白格系_item_02"
-        ]
-      },
-      "imageEdit": {
-        "status": "pass",
-        "provider": "vertex_adc_generate_content",
-        "evidence": {
-          "requestId": "bcdbce765e4781ddea38037197a6076f5b35ec64a551a775884c851803dd1f5d",
-          "nativeSha256": "149ba6499e4ebfcb7cc4bd5996a2b0ed4f7467349077b55e625a0d4c621b9140"
-        }
-      },
-      "visualReview": {
-        "modelId": "female_slim_1",
-        "key": "inspiration_date--outfits-04",
-        "resultSha256": "149ba6499e4ebfcb7cc4bd5996a2b0ed4f7467349077b55e625a0d4c621b9140",
-        "status": "pass",
-        "observations": "已查看原模特、两件单品及原搭配参考、结果整图、领口系带与两手细节。黑白灰格纹无袖短上衣的深V白蕾丝、前交叉系带与尖角衣摆保留；低腰迷你裙有侧腰系带及裙摆白蕾丝荷叶层，未合并成连衣裙。原脸、两侧前胸发束、自拍手机、手臂位置、身形与原白鞋保留；此套没有鞋类单品要求。",
-        "verified": true,
-        "reviewer": "assistant_visual_inspection",
-        "reviewedAt": "2026-09-13T00:14:16.853607+00:00",
-        "reviewedItemIds": [
-          "DATE_约会场景_outfits_04_黑白格系_item_01",
-          "DATE_约会场景_outfits_04_黑白格系_item_02"
-        ]
-      },
-      "displayResult": {
-        "id": "female_slim_1--inspiration_date--outfits-04",
-        "localPath": "outputs/tryon-examples/female-nano-one-shot-20260911/webp-display/149ba6499e4ebfcb7cc4bd5996a2b0ed4f7467349077b55e625a0d4c621b9140.webp",
-        "sourceSha256": "149ba6499e4ebfcb7cc4bd5996a2b0ed4f7467349077b55e625a0d4c621b9140",
-        "sha256": "a439d3cd9e30af01109f7c929f0aa5816d04e70cac4ecaef0c19323d85353837",
-        "contentType": "image/webp",
-        "dimensions": [
-          1792,
-          2400
-        ],
-        "bytes": 3442542,
-        "sourceBytes": 4570996,
-        "pixelIdentical": true,
-        "encoding": "lossless-exact-method4",
-        "assetId": "asset_a439d3cd9e30af01109f7c929f0aa5816d04e70cac4ecaef0c19323d85353837",
-        "contentUrl": "/api/v1/material-assets/asset_a439d3cd9e30af01109f7c929f0aa5816d04e70cac4ecaef0c19323d85353837/content",
-        "verified": true,
-        "verifiedAt": "2026-09-13T00:29:18.963950+00:00",
-        "storage": {
-          "provider": "qiniu",
-          "bucket": "selfit",
-          "key": "selfit/tryon-examples/female-nano-one-shot-20260911/webp/asset_a439d3cd9e30af01109f7c929f0aa5816d04e70cac4ecaef0c19323d85353837.webp",
-          "private": true
-        }
-      }
-    },
-    {
       "id": "female_plus_1--inspiration_commute--outfits-02",
       "modelId": "female_plus_1",
       "key": "inspiration_commute--outfits-02",
@@ -105878,16 +105631,15 @@
   ],
   "femaleOneShotBatch": {
     "batchId": "female-nano-one-shot-20260911",
-    "expected": 288,
-    "uploaded": 283,
-    "status": "in_progress",
+    "expected": 282,
+    "uploaded": 282,
+    "status": "complete",
     "provider": "vertex_adc_generate_content",
     "model": "gemini-3.1-flash-image",
-    "unresolved": 5,
+    "unresolved": 0,
     "states": {
-      "blocked_moderation": 5,
-      "uploaded": 283
+      "uploaded": 282
     },
-    "progressUpdatedAt": "2026-09-13T10:33:19.865706+00:00"
+    "progressUpdatedAt": "2026-09-13T10:58:09.067542+00:00"
   }
 }

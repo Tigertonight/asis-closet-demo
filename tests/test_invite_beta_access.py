@@ -353,3 +353,46 @@ def test_auth_me_reports_beta_and_quota(monkeypatch, tmp_path: Path) -> None:
     normal = _phone_login(client, "13800000004")
     normal_me = client.get("/auth/me", headers=_bearer(normal)).json()
     assert normal_me["user"]["beta_qualified"] is False
+
+
+def test_guest_unlock_preserves_identity_and_tryon_selection(monkeypatch, tmp_path: Path) -> None:
+    """The inline unlock upgrades the guest instead of dropping the selected photo/account."""
+    import importlib
+
+    main = importlib.import_module("app.main")
+    _use_tmp_runtime(monkeypatch, tmp_path)
+    monkeypatch.setenv("SELFIT_INVITE_CODES", "PILOT-INLINE")
+    client = TestClient(app)
+    guest = client.post("/auth/guest").json()
+    headers = _bearer(guest)
+    seen = []
+
+    def create_job(photo, filename, outfit_id, photo_mode, scene, user_id, *args, **kwargs):
+        seen.append((photo, outfit_id, user_id))
+        return {"job_id": "test-inline-job", "status": "pending"}
+
+    monkeypatch.setattr(main, "create_outfit_tryon_job", create_job)
+    marker = storage.storage_context(guest["user"]["user_id"]).user_root / "selected-photo.txt"
+    marker.parent.mkdir(parents=True, exist_ok=True)
+    marker.write_text("original photo and preferences", encoding="utf-8")
+
+    def submit():
+        return client.post("/selfit/try-on/jobs", headers=headers,
+                           files={"person_image": ("my-photo.jpg", b"original-photo", "image/jpeg")},
+                           data={"outfit_id": "selected-look", "client_request_id": "same-selection"})
+
+    assert submit().status_code == 403
+    assert not seen
+    assert client.post("/auth/invite/upgrade", headers=headers,
+                       json={"invite_code": "WRONG", "device_id": "inline-device"}).status_code == 400
+    assert not seen
+    unlocked = client.post("/auth/invite/upgrade", headers=headers,
+                           json={"invite_code": "PILOT-INLINE", "device_id": "inline-device"})
+    assert unlocked.status_code == 200
+    assert unlocked.json()["user"]["user_id"] == guest["user"]["user_id"]
+    assert client.get("/auth/me", headers=headers).json()["user"]["beta_qualified"] is True
+    assert submit().status_code == 200
+    assert seen == [(b"original-photo", "selected-look", guest["user"]["user_id"])]
+    assert marker.read_text(encoding="utf-8") == "original photo and preferences"
+    recovered = _invite_login(client, "PILOT-INLINE", "inline-device")
+    assert recovered["user"]["user_id"] == guest["user"]["user_id"]

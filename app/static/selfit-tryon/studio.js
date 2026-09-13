@@ -75,28 +75,32 @@
         || "null",
     );
   } catch {}
-  if (
-    savedSession?.expiresAt &&
-    Date.parse(savedSession.expiresAt) <= Date.now()
-  )
-    savedSession = null;
-  // 内测门槛：已登录的非内测账号（普通手机号用户）不进主站，回 onboarding 解锁屏。
-  if (
-    savedSession?.user &&
-    !String(savedSession.user.user_id || "").startsWith("guest_") &&
-    savedSession.user.beta_qualified === false &&
-    !reference
-  ) {
-    window.location.replace("/selfit?entry=unlock");
-    throw new Error("redirect-to-unlock");
-  }
+  // Keep the identity until the server checks it, including locally expired
+  // sessions. Browsing is allowed; generation checks beta access below.
+  const authClient = window.SelfitAuth.createClient({mode:'live'});
   let visitorReady = null;
+  let sessionRefresh = null;
+  function acceptSession(session) {
+    if (!session?.accessToken) throw Object.assign(Error("请重新登录后继续。"), {status:401});
+    if (savedSession?.user?.user_id && savedSession.user.user_id !== session.user?.user_id)
+      throw Object.assign(Error("登录账号已变化，请重新进入试衣镜。"), {status:401, code:'auth.account_changed'});
+    savedSession = session;
+    return session;
+  }
   function ensureVisitorSession() {
-    if (!visitorReady) visitorReady = window.SelfitAuth.createClient({mode:'live'}).ensureVisitor().then(session => {
-      savedSession = session;
-      return session;
-    }).catch(error => { visitorReady = null; throw error; });
+    if (!visitorReady) visitorReady = authClient.ensureVisitor().then(acceptSession)
+      .catch(error => { visitorReady = null; throw error; });
     return visitorReady;
+  }
+  function refreshSession() {
+    if (!sessionRefresh) sessionRefresh = authClient.restore({strict:true}).then(acceptSession)
+      .then(session => { visitorReady = Promise.resolve(session); return session; })
+      .catch(error => {
+        if (error.status >= 400 && error.status < 500 && error.status !== 429) error.status = 401;
+        throw error;
+      })
+      .finally(() => { sessionRefresh = null; });
+    return sessionRefresh;
   }
   function mediaURL(path, original = false) {
     if (!path) return "";
@@ -180,6 +184,7 @@
     wardrobeError: "",
     wardrobeLoaded: reference, wardrobeLoading: false,
     feedLoaded: reference, libraryLoading: false,
+    inspirationLimit: 12, inspirationScroll: 0,
     exampleAccepted: false,
   };
   let toastTimer,
@@ -198,7 +203,7 @@
       3200,
     );
   }
-  async function api(path, options = {}, timeoutMs = 30000) {
+  async function api(path, options = {}, timeoutMs = 30000, allowAuthRetry = true) {
     const controller = new AbortController(),
       timer = setTimeout(() => controller.abort(), timeoutMs);
     try {
@@ -212,6 +217,13 @@
           ...options.headers,
         },
       });
+      // A rejected authentication dependency has not run the operation. Restore
+      // the same account and replay once; never retry a denied beta/quota check.
+      if (r.status === 401 && allowAuthRetry && path !== '/auth/logout') {
+        clearTimeout(timer);
+        await refreshSession();
+        return api(path, options, timeoutMs, false);
+      }
       let data;
       try {
         data = await r.json();
@@ -219,13 +231,6 @@
         throw Error("暂时无法连接，请稍后重试。");
       }
       if (!r.ok) {
-        if (r.status === 401) {
-          savedSession = null;
-          try {
-            localStorage.removeItem("selfit.auth.session.v2");
-            sessionStorage.removeItem("selfit.auth.session.v1");
-          } catch {}
-        }
         const reportDetail = (path.startsWith('/selfit/try-on/report-outfits?') || /^\/selfit\/try-on\/items\/[^/]+\/outfits$/.test(path)) &&
           [404, 409, 422, 429, 502, 503, 504].includes(r.status) && typeof data?.detail === 'string' ? data.detail : '';
         const gateDetail = typeof data?.detail === 'string' ? data.detail : '';
@@ -242,6 +247,7 @@
               : reportDetail || rateLimitMessage || "这次操作没有完成，请稍后重试。",
         );
         e.status = r.status;
+        e.path = path;
         throw e;
       }
       return data;
@@ -556,6 +562,42 @@
     const content=outfits ? `<div class="closet-grid">${list.map(x => card(x, "outfit")).join("")}</div>` : wardrobeItemSections(list);
     return `<section class="closet-screen wardrobe-source-layout ${outfits ? "wardrobe-outfits" : ""}" aria-label="衣帽间">${tabs}${pendingImport()?.job_id ? `<button class="resume-import" data-action="resume-import">${importStatusCopy()}</button>` : ""}${state.wardrobeError ? `<div class="empty">${esc(state.wardrobeError)}<button class="secondary" data-action="reload">重新加载</button></div>` : `${outfits && state.savedNotesError ? `<div class="empty">${esc(state.savedNotesError)}<button class="secondary" data-action="reload">重新加载</button></div>` : ""}${content}${!list.length && !(outfits && state.savedNotesError) ? wardrobeEmpty() : ""}`}</section>`;
   }
+  function libraryTopics() {
+    const gender = state.libraryGender || state.modelGender || "female";
+    return (state.topics || []).map(collection => {
+      const entries = (collection.entries || []).filter(entry =>
+        (entry.raw?.gender === "male") === (gender === "male"));
+      return {...collection, entries, cover: entries[0]?.src,
+        previews: entries.slice(1, 4).map(entry => entry.src)};
+    }).filter(collection => collection.entries.length);
+  }
+  function inspirationNotes(topics = libraryTopics()) {
+    return uniqueItems(topics.filter(collection => !["scene", "trend"].includes(collection.kind)).flatMap(collection =>
+      (collection.entries || []).map(entry => ({...entry, personaLabel: collection.title}))
+    ));
+  }
+  function observeInspirationPages() {
+    const pager = window.SelfitInspirationPager;
+    if (!pager) return;
+    if (state.page !== "inspiration") { pager.reset(); return; }
+    pager.watch({root: $("#screen"), sentinel: $("[data-inspiration-next]"), context: state.feed,
+      onMore: showMoreInspiration});
+  }
+  function showMoreInspiration() {
+    if (state.page !== "inspiration") return;
+    const notes = inspirationNotes(), start = state.inspirationLimit || 12;
+    const end = Math.min(notes.length, start + 12);
+    if (end <= start) return;
+    window.SelfitInspirationPager?.preload(notes.slice(start, end).map(row => mirrorImageSource(row.src)));
+    state.inspirationLimit = end;
+    const columns = document.querySelectorAll(".inspiration-notes > .feed-column");
+    if (columns.length !== 2) { render(); return; }
+    // Append to the existing columns so decoded images, focus and scroll stay put.
+    [0, 1].forEach(col => columns[col].insertAdjacentHTML("beforeend", notes.slice(start, end)
+      .filter((_, index) => (start + index) % 2 === col).map(feedCard).join("")));
+    if (end === notes.length) $("[data-inspiration-next]")?.remove();
+    observeInspirationPages();
+  }
   function feedCard(x) {
     const personaBadge = x.personaLabel ? `<span class="topic-badge note-persona-badge">#${esc(x.personaLabel)}</span>` : "";
     return `<article class="feed-card ${x.flat ? "flat" : ""} ${x.kind === "note" ? "note-card" : ""}" ${x.kind === "note" ? `style="aspect-ratio:${x.width || 184}/${x.height || 245}"` : ""}><button class="feed-open" data-detail="${esc(x.id)}" aria-label="查看${esc(x.name)}">${image(x.src, x.name, "", true)}</button>${personaBadge}${`<button class="feed-favorite" data-action="favorite" data-favorite-id="${esc(x.id)}" aria-label="${x.saved ? '取消收藏' : '收藏'}${esc(x.name)}" aria-pressed="${Boolean(x.saved)}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.9-6.2-3.3-6.2 3.3L7 14.2l-5-4.9 6.9-1Z"/></svg></button>`}<button class="try-chip" data-try="${esc(x.id)}">试穿</button></article>`;
@@ -564,8 +606,8 @@
     return `<button class="topic-card" data-topic="${esc(collection.id)}" aria-label="查看${esc(collection.title)}合集，共${collection.entries.length}套穿搭">${image(collection.cover, "", "topic-cover")}<span class="topic-badge">#${esc(collection.title)}</span><span class="topic-previews" aria-hidden="true">${(collection.previews || []).slice(0,3).map(src=>image(src, "")).join("")}</span></button>`;
   }
   function topic() {
-    const selected=(state.topics || []).find(x=>x.id===state.topicId);
-    if (state.loading || state.libraryLoading) return '<section class="topic-screen"><p class="empty" role="status">正在打开主题穿搭…</p></section>';
+    const selected=libraryTopics().find(x=>x.id===state.topicId);
+    if ((state.loading || state.libraryLoading) && !selected) return '<section class="topic-screen"><p class="empty" role="status">正在打开主题穿搭…</p></section>';
     if (!selected) return '<section class="topic-screen"><p class="empty">这个主题暂时不可用。<button class="secondary" data-page="inspiration">返回灵感库</button></p></section>';
     const hasCurvy = selected.entries.some(entry=>entry.raw?.body_profile === "curvy");
     const hasMale = selected.entries.some(entry=>entry.raw?.gender === "male");
@@ -577,17 +619,17 @@
     return `<section class="topic-screen" aria-label="主题穿搭"><header><button class="back" data-page="inspiration" aria-label="返回灵感库"><svg viewBox="0 0 24 24"><path d="m15 4-7 8 7 8"/></svg></button><h1>#${esc(selected.title)}</h1></header>${groups.map(group=>`${group.title ? `<h2 class="topic-group-title">${group.title}</h2>` : ""}<div class="feed">${[0,1].map(col=>`<div class="feed-column">${group.entries.filter((_,i)=>i%2===col).map(feedCard).join('')}</div>`).join('')}</div>`).join("")}</section>`;
   }
   function inspiration() {
-    if (state.loading || state.libraryLoading)
+    const topics = libraryTopics();
+    if ((state.loading || state.libraryLoading) && !topics.length && !state.feedLoaded)
       return `<section class="inspiration-screen"><p class="empty" role="status">正在整理穿搭库…</p></section>`;
-    const topics = state.topics || [];
     const isScene = collection => ["scene", "trend"].includes(collection.kind);
     const collections = topics.filter(isScene);
-    const notes = uniqueItems(topics.filter(collection => !isScene(collection)).flatMap(collection =>
-      (collection.entries || []).map(entry => ({...entry, personaLabel: collection.title}))
-    ));
+    const notes = inspirationNotes(topics);
+    const visible = notes.slice(0, state.inspirationLimit || 12);
     const collectionGrid = collections.length ? `<div class="topic-grid" aria-label="场景合集">${collections.map(topicCard).join("")}</div>` : "";
-    const noteGrid = notes.length ? `<div class="feed inspiration-notes" aria-label="穿搭笔记">${[0,1].map(col => `<div class="feed-column">${notes.filter((_,i) => i%2 === col).map(feedCard).join("")}</div>`).join("")}</div>` : "";
-    return `<section class="inspiration-screen" aria-label="灵感库">${collectionGrid}${noteGrid}${!collections.length && !notes.length ? `<div class="empty">${esc(state.topicsError || "暂时没有可用的穿搭灵感。")}<button class="secondary" data-action="reload">重新加载</button></div>` : state.topicsError ? `<button class="secondary load-more" data-action="reload">${esc(state.topicsError)}</button>` : ""}</section>`;
+    const noteGrid = notes.length ? `<div class="feed inspiration-notes" aria-label="穿搭笔记">${[0,1].map(col => `<div class="feed-column">${visible.filter((_,i) => i%2 === col).map(feedCard).join("")}</div>`).join("")}</div>` : "";
+    const next = visible.length < notes.length ? '<div data-inspiration-next><button class="secondary load-more" data-action="inspiration-more">加载更多穿搭</button></div>' : "";
+    return `<section class="inspiration-screen" aria-label="灵感库">${collectionGrid}${noteGrid}${next}${!collections.length && !notes.length ? `<div class="empty">${esc(state.topicsError || "暂时没有可用的穿搭灵感。")}<button class="secondary" data-action="reload">重新加载</button></div>` : state.topicsError ? `<button class="secondary load-more" data-action="reload">${esc(state.topicsError)}</button>` : ""}</section>`;
   }
   function detail() {
     if (state.loading)
@@ -753,6 +795,8 @@
       state.profile={...saved.profile,photos:state.profile.photos};
       state.profileSuit=saved.profile.suit || null;
       if(savedSession?.user) savedSession.user.gender=gender;
+      state.modelGender=gender;
+      invalidateLibrary();
       // Let an older home request finish before dropping its cached recommendations.
       if(homeNotesRequest) await homeNotesRequest;
       state.homeOutfits=[];state.homeNotesLoaded=false;state.homeNotesNotice='';state.homeNotesError='';
@@ -1007,6 +1051,7 @@
   function render() {
     loadPageData();
     wardrobeGestures.reset();
+    const inspirationScroll = state.page === "inspiration" && $("#studio").dataset.screen === "inspiration" ? $("#screen").scrollTop : null;
     const detailScroll = state.page === "detail" && $("#studio").dataset.screen === "detail" ? $(".note-detail")?.scrollTop : null;
     const builderScroll = state.page === "builder" && $("#studio").dataset.screen === "builder" ? $(".outfit-builder")?.scrollTop : null;
     const keepWardrobePosition = state.page === 'closet' && $('#studio').dataset.screen === 'closet';
@@ -1092,6 +1137,8 @@
       const photo=$(".model-photo"); photo.dataset.action="compare"; photo.tabIndex=0;
       photo.setAttribute("role","button"); photo.setAttribute("aria-label","按住查看原图，松开查看试穿效果");
     }
+    if (inspirationScroll != null) $("#screen").scrollTop = inspirationScroll;
+    observeInspirationPages();
     renderedBrowseKey = browseKey;
   }
   let mirrorTurning = false;
@@ -1120,6 +1167,7 @@
   }
 
   function go(page, push = true, acceptCompleted = true) {
+    if (state.page === "inspiration") state.inspirationScroll = $("#screen").scrollTop;
     if (state.page === 'builder' && page !== 'builder') {
       state.builderRequest++; state.builderMatching=false;
     }
@@ -1147,7 +1195,7 @@
     if(page === "tryon-history") loadTryonHistory();
     if(page === "chat") loadChat();
     if(["profile","profile-edit"].includes(page)) loadProfile();
-    $("#screen").scrollTop = 0;
+    $("#screen").scrollTop = page === "inspiration" ? state.inspirationScroll || 0 : 0;
     // 从特征编辑返回档案页时恢复进入编辑前的滚动位置。
     if (page === "profile" && profileReturnScroll != null) { $("#screen").scrollTop = profileReturnScroll; profileReturnScroll = null; }
     if (push) {
@@ -1357,6 +1405,68 @@
       `<h2 id="sheetTitle" tabindex="-1" autofocus>${esc(title)}</h2><button class="close" data-action="close" aria-label="关闭">×</button>${body}`;
     if (!$("#sheet").open) $("#sheet").showModal();
   }
+  async function requireTryonAccess() {
+    const session = await refreshSession();
+    if (!session.user?.beta_qualified)
+      throw Object.assign(Error("输入邀请码，解锁完整试穿体验。"), {status:403, code:'auth.beta_required'});
+  }
+  function isTryonAccessError(error) {
+    return error?.status === 401 || error?.code === 'auth.beta_required' ||
+      (error?.status === 403 && /^\/selfit\/try-on\/(?:jobs|inspiration-jobs)(?:\/|$)/.test(error.path || ''));
+  }
+  function showTryonAccess(error, resume = startTry) {
+    if (error?.code === 'auth.account_changed') {
+      modal('账号已切换', '<p>请重新进入试衣镜，加载当前账号的照片和搭配。</p><a class="primary tryon-access-link" href="/selfit/try-on">重新进入</a>');
+      return;
+    }
+    const needsLogin = error?.status === 401;
+    const selection = {target:state.current, photo:state.photo, file:state.file, modelId:state.modelId, page:state.page};
+    modal(needsLogin ? '登录已过期' : '解锁试穿', `<form id="tryonAccessForm" class="tryon-access-form">
+      <p id="tryonAccessDescription">${needsLogin ? '在新页面登录后，回到这里继续。已选照片和搭配会为你保留。' : '输入邀请码，解锁完整试穿体验。已选照片和搭配会为你保留。'}</p>
+      ${needsLogin ? '<a class="primary tryon-access-link" href="/selfit?entry=login" target="_blank" rel="noopener">重新登录 ↗</a>' : '<label for="tryonInviteCode">邀请码</label><input id="tryonInviteCode" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" minlength="4" maxlength="128" placeholder="请输入邀请码" aria-describedby="tryonAccessDescription tryonAccessMessage" required>'}
+      <p id="tryonAccessMessage" role="status" aria-live="polite"></p>
+      <button class="${needsLogin ? 'secondary' : 'primary'}" type="submit">${needsLogin ? '已登录，继续' : '解锁并继续'}</button>
+      <button class="secondary" type="button" data-action="close">继续浏览</button>
+    </form>`);
+    const form = $('#tryonAccessForm'), message = $('#tryonAccessMessage');
+    const submit = form.querySelector('button[type="submit"]');
+    const stillHere = () => $('#sheet').open && $('#tryonAccessForm') === form;
+    form.addEventListener('submit', async event => {
+      event.preventDefault();
+      if (submit.disabled) return;
+      submit.disabled = true;
+      submit.setAttribute('aria-busy', 'true');
+      message.textContent = needsLogin ? '正在恢复登录…' : '正在验证邀请码…';
+      try {
+        await refreshSession();
+        if (!needsLogin && !savedSession.user?.beta_qualified) {
+          await authClient.upgradeInvite(form.querySelector('input').value.trim());
+          acceptSession(authClient.session);
+        }
+        if (!stillHere()) return;
+        if (!savedSession.user?.beta_qualified) {
+          showTryonAccess({code:'auth.beta_required'}, resume);
+          return;
+        }
+        // Closing/replacing the sheet or changing the selection cancels auto-run.
+        if (state.current !== selection.target || state.photo !== selection.photo || state.file !== selection.file ||
+            state.modelId !== selection.modelId || state.page !== selection.page) {
+          $('#sheet').close();
+          notify('已解锁，请选择要试穿的搭配。');
+          return;
+        }
+        $('#sheet').close();
+        await resume();
+      } catch (failure) {
+        if (!stillHere()) return;
+        if (failure.status === 401 && (!needsLogin || failure.code === 'auth.account_changed')) showTryonAccess(failure, resume);
+        else message.textContent = failure.message || '验证没有完成，请稍后重试。';
+      } finally {
+        submit.disabled = false;
+        submit.removeAttribute('aria-busy');
+      }
+    });
+  }
   async function loadModels() {
     const data = await api("/selfit/try-on/models");
     state.modelCatalog = data.items || [];
@@ -1549,12 +1659,14 @@
   async function generateNote() {
     if (generationBusy || state.current?.kind !== "note") return;
     generationBusy = true;
-    const target = state.current, photo = state.photo;
+    const target = state.current, photo = state.photo, inputFile = state.file, modelId = state.modelId, page = state.page;
     const signature = `${target.id}:${photo}`;
     if (state.noteRequest?.signature !== signature) state.noteRequest={signature,id:crypto.randomUUID()};
-    beginMirrorGeneration(target, photo);
     try {
-      const file = await photoFile();
+      await requireTryonAccess();
+      if (state.current !== target || state.photo !== photo || state.file !== inputFile || state.modelId !== modelId || state.page !== page) return;
+      beginMirrorGeneration(target, photo);
+      const file = await photoFile(photo, inputFile, modelId);
       const body = new FormData();
       body.append("person_image", file);
       body.append("note_id", target.id);
@@ -1562,12 +1674,12 @@
       state.job = await api("/selfit/try-on/inspiration-jobs", {method:"POST",body});
       sessionStorage.setItem("selfit.studio.job",JSON.stringify({job_id:state.job.job_id}));
       poll();
-    } catch (e) { failure(e.message); }
+    } catch (e) { failure(e); }
     finally { generationBusy = false; }
   }
   async function generate() {
     if (generationBusy) return;
-    const target = state.current, photo = state.photo, inputFile = state.file, modelId = state.modelId;
+    const target = state.current, photo = state.photo, inputFile = state.file, modelId = state.modelId, page = state.page;
     const itemIds = [...new Set((target?.items || []).map(item => item.id).filter(Boolean))];
     if (!itemIds.length) return notify("这套搭配还没有可试穿的单品，请换一套。");
     generationBusy = true;
@@ -1576,9 +1688,11 @@
     if (state.outfitRequest?.signature !== signature)
       state.outfitRequest = {signature, id: crypto.randomUUID()};
     const submissionId = state.outfitRequest.id;
-    const loadingStartedAt = Date.now();
-    beginMirrorGeneration(target, photo);
     try {
+      await requireTryonAccess();
+      if (state.current !== target || state.photo !== photo || state.file !== inputFile || state.modelId !== modelId || state.page !== page) return;
+      const loadingStartedAt = Date.now();
+      beginMirrorGeneration(target, photo);
       const file = await photoFile(photo, inputFile, modelId);
       if (!target.id) {
         const saved = await api("/selfit/try-on/outfits", {
@@ -1606,7 +1720,7 @@
         await poll(submitted);
       } else poll();
     } catch (e) {
-      failure(e.message);
+      failure(e);
     } finally {
       generationBusy = false;
     }
@@ -1626,13 +1740,33 @@
       mirrorImageRequests.set(src, preview);
     } catch (_) { throw Error("试穿图片暂时无法加载，请稍后重试。"); }
   }
-  function failure(message) {
+  function failure(error, resume = startTry) {
     state.generating = null;
     if (state.page === "mirror") render();
+    if (isTryonAccessError(error)) return showTryonAccess(error, resume);
+    const message = typeof error === 'string' ? error : error?.message;
+    if (error?.status === 429) {
+      modal('稍后再试', `<p>${esc(message || '试穿次数暂时用完了，请稍后再来。')}</p><button class="primary" data-action="close">继续浏览</button>`);
+      return;
+    }
     modal(
       "试穿暂未完成",
       `<p>${esc(message || "请稍后重试，你选择的照片和搭配都已保留。")}</p><button class="primary" data-action="${state.job?.job_id && state.job.result?.generation_strategy !== 'preset' ? "retry-job" : "try"}">重新尝试</button><button class="secondary" data-action="upload-photo">更换照片</button>`,
     );
+  }
+  async function retryTryonJob() {
+    if (generationBusy || !state.job?.job_id) return;
+    generationBusy = true;
+    const jobId = state.job.job_id;
+    try {
+      // Backend retries remain free; require beta access but do not spend quota.
+      await requireTryonAccess();
+      if (state.job?.job_id !== jobId) return;
+      state.job = await api(`/selfit/try-on/jobs/${encodeURIComponent(jobId)}/retry`, {method:'POST'});
+      sessionStorage.setItem('selfit.studio.job', JSON.stringify({job_id:state.job.job_id}));
+      $('#sheet').close(); go('mirror'); await poll();
+    } catch (error) { failure(error, retryTryonJob); }
+    finally { generationBusy = false; }
   }
   async function poll(completedJob = null) {
     clearTimeout(pollTimer);
@@ -1715,7 +1849,7 @@
       pollTimer = setTimeout(poll, 1800);
     } catch (e) {
       if (state.job?.job_id !== requestedJobId) return;
-      failure(e.message);
+      failure(e, () => poll());
     }
   }
   async function importGarment(retry = false) {
@@ -1943,6 +2077,16 @@
     return inspirationNotesRequest;
   }
   let wardrobeRequest = null, libraryRequest = null;
+  let libraryRevision = 0;
+  function invalidateLibrary() {
+    // Requests started before a gender change must not refill the new library.
+    libraryRevision++;
+    libraryRequest = null;
+    state.topics = []; state.feed = []; state.libraryGender = null;
+    state.inspirationLimit = 12; state.inspirationScroll = 0;
+    state.feedLoaded = false; state.libraryLoading = false; state.feedBusy = false;
+    state.feedError = ""; state.topicsError = ""; state.feedMore = false;
+  }
   let homeNotesRequest = null;
   function ensureHomeNotes() {
     if (homeNotesRequest) return homeNotesRequest;
@@ -1986,7 +2130,7 @@
       state.wardrobeLoaded = true;
       state.wardrobeLoading = false;
       wardrobeRequest = null;
-      if (!state.loading && (["closet", "builder"].includes(state.page) || (state.page === "mirror" && state.source === "closet"))) render();
+      if (!state.loading && (["closet", "builder", "inspiration", "topic", "detail"].includes(state.page) || (state.page === "mirror" && state.source === "closet"))) render();
     });
     return wardrobeRequest;
   }
@@ -1994,14 +2138,15 @@
     if (libraryRequest) return libraryRequest;
     if (state.feedLoaded || reference) return Promise.resolve();
     state.libraryLoading = true;
-    libraryRequest = Promise.all([loadWardrobe(), loadFeed().catch(() => {
-      state.feedError = "推荐暂时无法加载，请稍后重试。";
-      state.topicsError = "主题合集暂未加载，点击重试。";
-    })]).then(syncOutfitFavorites).finally(() => {
+    const revision = libraryRevision;
+    // Only the catalog gates browsing. Personal favorites fill in independently.
+    loadWardrobe().catch(() => {});
+    libraryRequest = loadFeed(false, revision).finally(() => {
+      if (revision !== libraryRevision) return;
       state.feedLoaded = true;
       state.libraryLoading = false;
       libraryRequest = null;
-      if (!state.loading && ["inspiration", "topic", "detail"].includes(state.page)) render();
+      if (["inspiration", "topic", "detail"].includes(state.page)) render();
     });
     return libraryRequest;
   }
@@ -2014,11 +2159,8 @@
   async function loadPreferences() {
     try { return await api("/closet/preferences"); }
     catch (error) {
-      if (error.status !== 401) return {};
-      window.SelfitAuth.createClient({mode:"live"}).clear();
-      visitorReady = null;
-      await ensureVisitorSession();
-      return api("/closet/preferences");
+      if (error.status === 401) throw error;
+      return {};
     }
   }
   async function prepareInitialModel(preferences) {
@@ -2055,88 +2197,31 @@
     }
     preloadMirrorImage(state.photo);
   }
-  async function loadFeed(append = false) {
-    if (state.feedBusy || (append && !state.feedMore)) return;
+  async function loadFeed(append = false, revision = libraryRevision) {
+    // Collections already contain the complete, gender-filtered catalog.
+    if (append || state.feedBusy) return;
     state.feedBusy = true;
     state.feedError = "";
     try {
-      const month = new Date().getMonth() + 1;
-      const season =
-        month <= 2 || month === 12
-          ? "winter"
-          : month <= 5
-            ? "spring"
-            : month <= 8
-              ? "summer"
-              : "autumn";
-      const responses = await Promise.allSettled([api("/closet/recommendations/outfits", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          source: "inspiration",
-          persona: {},
-          context: { season_tags: [season] },
-          limit: 12,
-          offset: append ? state.feedOffset : 0,
-          session_id: append ? state.feedSession : null,
-          cursor: append ? state.feedCursor : null,
-          exclude_outfit_ids: append ? state.feed.filter(x => x.kind !== "note").map((x) => x.id) : [],
-        }),
-      }), append ? Promise.resolve({notes:[]}) : requestInspirationNotes(),
-        append ? Promise.resolve(null) : api("/selfit/try-on/inspiration-topics")]);
-      if (append && responses[0].status === "rejected") throw responses[0].reason;
-      if (!append) state.topicsError = responses[2].status === "rejected" ? "主题合集暂未加载，点击重试。" : "";
-      if (responses.every(r => r.status === "rejected")) throw responses[0].reason;
-      const data = responses[0].value || {};
-      const normalizeNote = x => ({
-        id:x.id, kind:"note", name:x.title, src:x.image_url, byline:x.byline, sourceUrl:x.source_url,
-        width:x.width, height:x.height, flat:false, saved:x.favorite, items:[]
-      });
-      const notes = (responses[1].value?.notes || []).map(normalizeNote);
-      if (!append && responses[1].status === "fulfilled")
-        state.savedNotes = (responses[1].value.saved_notes || []).map(normalizeNote);
-      if (!append && responses[2].status === "fulfilled")
-        state.topics = (responses[2].value?.topics || []).map(topic => ({
-          ...topic, entries: (topic.outfits || []).map(row => normalizeOutfit(row, state.items)),
-        }));
-      state.feedError = responses.some(r => r.status === "rejected") ? "部分灵感暂未加载，点击重试。" : "";
-      const incoming = [
-        ...(append ? [] : (state.topics || []).flatMap(topic => topic.outfits || [])),
-        ...(append ? [] : data.carousel || []),
-        ...(data.outfits || []),
-      ].map((x) => normalizeOutfit(x, state.items));
-      const mixed = [];
-      for (let i=0; i<Math.max(incoming.length, notes.length*2); i++) {
-        if (i % 2 === 0 && notes[i/2]) mixed.push(notes[i/2]);
-        if (incoming[i]) mixed.push(incoming[i]);
-      }
-      state.feed = uniqueItems([...(append ? state.feed : []), ...mixed]);
-      for (const row of [...state.feed, ...(state.topics || []).flatMap(topic=>topic.entries)]) {
-        const ids = row.items
-          .map((x) => x.id)
-          .sort()
-          .join("|");
-        const own = state.outfits.find(
-          (x) =>
-            x.id === row.id ||
-            (ids &&
-              x.items
-                .map((i) => i.id)
-                .sort()
-                .join("|") === ids),
-        );
-        if (own) {
-          row.saved = own.saved;
-          row.personalId = own.id;
-        }
-      }
-      state.feedSession = data.session_id || null;
-      state.feedCursor = data.next_cursor || null;
-      state.feedOffset = data.next_offset || 0;
-      state.feedMore = Boolean(data.has_more);
-      state.profileRequired = Boolean(data.profile_required);
+      const data = await api("/selfit/try-on/inspiration-topics", {cache: "no-store"});
+      if (revision !== libraryRevision) return;
+      state.libraryGender = data.gender || state.modelGender || "female";
+      state.topics = (data.topics || []).map(topic => ({
+        ...topic, entries: (topic.outfits || []).map(row => normalizeOutfit(row, state.items)),
+      }));
+      state.topics = libraryTopics();
+      state.feed = uniqueItems(state.topics.flatMap(topic => topic.entries));
+      // A refreshed catalog must not lose a reader's already expanded batch.
+      state.inspirationLimit ||= 12;
+      syncOutfitFavorites();
+      state.feedMore = false;
+      state.topicsError = "";
+    } catch (error) {
+      if (revision !== libraryRevision) return;
+      state.feedError = "穿搭灵感暂未加载，点击重试。";
+      state.topicsError = state.feedError;
     } finally {
-      state.feedBusy = false;
+      if (revision === libraryRevision) state.feedBusy = false;
     }
   }
   async function load() {
@@ -2151,6 +2236,7 @@
       state.wardrobeLoaded = false;
       state.feedLoaded = false;
       state.homeNotesLoaded = Boolean(state.homeOutfits.length);
+      if (["inspiration", "topic"].includes(state.page)) loadLibrary();
       const preferencesReady = loadPreferences();
       const modelReady = Promise.all([preferencesReady, loadModels().catch(() => {
         state.modelLoadFailed = true;
@@ -2198,6 +2284,7 @@
       }
     } catch (e) {
       state.error = e.message;
+      if (isTryonAccessError(e)) showTryonAccess(e, load);
     } finally {
       state.loading = false;
       render();
@@ -2433,8 +2520,11 @@
         case "favorite": {
           const target = b.dataset?.favoriteId ? lookup(b.dataset.favoriteId) : state.current;
           if (!target) return;
-          const saved = !target.saved;
           b.disabled = true;
+          // Finish the background favorite snapshot before toggling this card.
+          // Otherwise a late wardrobe response could undo the user's new choice.
+          if (!reference && wardrobeRequest) await wardrobeRequest;
+          const saved = !target.saved;
           if (target.kind === "note") {
             if (!reference) await api(`/selfit/try-on/inspiration-notes/${encodeURIComponent(target.id)}/favorite`, {
               method:"PATCH", headers:{"Content-Type":"application/json"}, body:JSON.stringify({favorite:saved})
@@ -2543,6 +2633,9 @@
         case "try":
           await startTry();
           break;
+        case "inspiration-more":
+          showMoreInspiration();
+          break;
         case "more":
           b.disabled = true;
           try {
@@ -2578,11 +2671,7 @@
           notify("原稿示例效果，未调用生成服务。");
           break;
         case "retry-job":
-          if (!state.job?.job_id) return;
-          b.disabled=true;
-          state.job=await api(`/selfit/try-on/jobs/${encodeURIComponent(state.job.job_id)}/retry`,{method:"POST"});
-          sessionStorage.setItem("selfit.studio.job",JSON.stringify({job_id:state.job.job_id}));
-          $("#sheet").close(); go("mirror"); await poll();
+          await retryTryonJob();
           break;
         case "view-completed": go("mirror"); break;
         case "tryon-history": go("tryon-history"); break;

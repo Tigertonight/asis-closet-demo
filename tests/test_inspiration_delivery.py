@@ -11,11 +11,12 @@ from app.auth import get_current_user
 from app.material_assets import MaterialRegistry
 
 
-def test_sixteen_inspiration_looks_keep_all_103_items_and_do_not_change_personas():
+def test_active_inspiration_looks_keep_all_94_items_and_do_not_change_personas():
     data = inspiration_catalog.inspiration_delivery()
     assert len(styling_catalog.delivery_looks()) == 96
     assert [topic['id'] for topic in data['topics']] == ['commute', 'date', 'vacation', 'trend']
-    assert len(data['looks']) == 16
+    assert len(data['looks']) == 14
+    assert [topic['lookCount'] for topic in data['topics']] == [4, 3, 3, 4]
     ids = set()
     source = json.loads(Path('app/data/inspiration-source-assets.v1.json').read_text())['files']
     for look in data['looks']:
@@ -32,7 +33,15 @@ def test_sixteen_inspiration_looks_keep_all_103_items_and_do_not_change_personas
             assert ref['sourceAssetId'] == source[relative]['assetId']
             assert MaterialRegistry().get(ref['assetId'])['storage']['provider'] == 'qiniu'
             assert raw['cutout']['rgbUnchanged'] is True
-    assert len(ids) == 103
+    assert len(ids) == 94
+    assert data['counts']['looks'] == 14 and data['counts']['items'] == 94
+    assert data['counts']['imageFiles'] == len(data['assets']) == len(source) == 108
+    cutouts = json.loads(Path('app/data/inspiration-cutout-assets.v1.json').read_text())['files']
+    assert {ref['sourceItemId'] for ref in cutouts.values()} == {item['item_id'] for look in data['looks'] for item in look['items']}
+    for old_id in ['report_inspiration_date_outfits-04_26320924a6bd', 'report_inspiration_vacation_outfits-04_ad0951a972ee']:
+        with pytest.raises(HTTPException) as error:
+            closet.get_outfit(old_id)
+        assert error.value.status_code == 404
 
 
 def test_topics_require_auth_but_no_personality_test_and_fail_closed(monkeypatch, tmp_path):
@@ -45,18 +54,23 @@ def test_topics_require_auth_but_no_personality_test_and_fail_closed(monkeypatch
     response = client.get(url)
     assert response.status_code == 200
     data = response.json()
-    assert data['total'] == 112
+    assert data['total'] == 94
+    assert data['gender'] == 'female'
+    assert response.headers['cache-control'] == 'private, no-store'
+    assert all(outfit['gender'] == 'female' for topic in data['topics'] for outfit in topic['outfits'])
     assert len(data['topics']) == 20
     scene_topics, persona_topics = data['topics'][:4], data['topics'][4:]
-    assert [len(topic['outfits']) for topic in scene_topics] == [4] * 4
-    assert sum(len(outfit['items']) for topic in scene_topics for outfit in topic['outfits']) == 103
+    assert [len(topic['outfits']) for topic in scene_topics] == [4, 3, 3, 4]
+    assert [len(topic['previews']) for topic in scene_topics] == [3, 2, 2, 3]
+    assert sum(len(outfit['items']) for topic in scene_topics for outfit in topic['outfits']) == 94
     from app.selfit_report import _personality_template_catalog
     templates = _personality_template_catalog()['types']
     assert [topic['persona'] for topic in persona_topics] == list(templates)
-    expected = {styling_catalog.outfit_id(look): look for look in styling_catalog.delivery_looks()}
+    expected = {styling_catalog.outfit_id(look): look for look in styling_catalog.delivery_looks()
+                if look['note_binding'].get('gender') != 'male'}
     actual = [outfit['outfit_id'] for topic in persona_topics for outfit in topic['outfits']]
-    assert len(actual) == len(set(actual)) == 96
-    assert set(actual) == set(expected), 'keep every delivered audience variant, exactly once'
+    assert len(actual) == len(set(actual)) == 80
+    assert set(actual) == set(expected), 'keep female standard and curvy variants, exactly once'
     for topic in persona_topics:
         code = topic['persona']
         assert topic['id'] == f'persona-{code}'
@@ -69,6 +83,22 @@ def test_topics_require_auth_but_no_personality_test_and_fail_closed(monkeypatch
             assert outfit['primary_persona'] == binding['persona'] == code
             assert outfit['body_profile'] == binding['bodyProfile']
             assert outfit['item_ids'] == outfit['layer_sequence_inner_to_outer']
+    app.dependency_overrides[get_current_user] = lambda: {'user_id': 'visitor', 'gender': 'male'}
+    male = client.get(url, params={'gender': 'female'}).json()
+    assert male['gender'] == 'male', 'query parameters cannot override the account gender'
+    assert male['total'] == 16 and len(male['topics']) == 4
+    assert {topic['persona'] for topic in male['topics']} == {'ease', 'edge', 'mute', 'wabi'}
+    male_ids = set()
+    for topic in male['topics']:
+        assert topic['kind'] == 'persona' and len(topic['outfits']) == 4
+        assert all(outfit['gender'] == 'male' for outfit in topic['outfits'])
+        assert topic['cover'] == topic['outfits'][0]['cover_path']
+        assert topic['previews'] == [outfit['cover_path'] for outfit in topic['outfits'][1:4]]
+        male_ids.update(outfit['outfit_id'] for outfit in topic['outfits'])
+    assert not male_ids.intersection(actual)
+    assert male_ids | set(actual) == {styling_catalog.outfit_id(look) for look in styling_catalog.delivery_looks()}
+    app.dependency_overrides[get_current_user] = lambda: {'user_id': 'visitor', 'gender': 'female'}
+    assert client.get(url).json() == data, 'same account can switch back without a stale male response'
     broken = tmp_path / 'delivery.json'
     payload = inspiration_catalog.inspiration_delivery()
     payload['uploadStatus'] = 'pending'

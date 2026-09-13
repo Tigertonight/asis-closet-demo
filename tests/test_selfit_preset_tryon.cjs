@@ -20,6 +20,7 @@ const tick = () => new Promise(resolve => setImmediate(resolve));
   const context = vm.createContext({state, FormData, Set, Image, Promise, reference:false,
     generationBusy:false, Date:{now:()=>now}, crypto:{randomUUID:()=> 'request-a'},
     setTimeout:(fn,ms)=>{timers.push({fn,ms});}, mediaURL:x=>x,
+    requireTryonAccess:async()=>{}, mirrorImages:new Map(), mirrorImageRequests:new Map(),
     photoFile:async()=>new Blob(['model']), sessionStorage:{setItem(){},removeItem(){}},
     beginMirrorGeneration:(target,photo)=>{state.generating={target,photo};state.job=null;},
     notify(){}, modal(){throw Error('Fixed models should directly enter loading');}, models(){},
@@ -29,8 +30,9 @@ const tick = () => new Promise(resolve => setImmediate(resolve));
   });
   vm.runInContext(start + generate, context);
   const pending = vm.runInContext('startTry()', context);
-  assert.ok(state.generating, 'loading appears immediately');
+  assert.equal(state.generating, undefined, 'authentication precedes loading');
   await tick();
+  assert.ok(state.generating, 'loading begins after access is verified');
   assert.equal(requests.length,1);
   assert.equal(requests[0].options.body.get('model_id'),'female_medium_1');
   assert.equal(timers[0].ms,2800, 'network preparation counts toward the 3-second loading');

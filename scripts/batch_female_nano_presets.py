@@ -176,14 +176,15 @@ def prepare_outfit(look):
 
 def initialize():
     all_looks = looks()
-    assert len(all_looks) == 96
+    assert all_looks
     BATCH.mkdir(parents=True, exist_ok=True)
     snapshot = BATCH / "source-snapshot.json"
     if snapshot.exists():
-        if read(snapshot)["looks"] != all_looks:
+        original = {key_for(look): look for look in read(snapshot)["looks"]}
+        if any(original.get(key_for(look)) != look for look in all_looks):
             raise ValueError("Catalog changed since batch initialization")
     else:
-        write_json_atomic(snapshot, {"looks": all_looks, "createdAt": now(), "expected": 288})
+        write_json_atomic(snapshot, {"looks": all_looks, "createdAt": now(), "expected": len(all_looks) * len(MODEL_IDS)})
     backup = BATCH / "baseline-tryon-examples.v1.json"
     if not backup.exists():
         shutil.copyfile(ROOT / "app/data/tryon-examples.v1.json", backup)
@@ -210,7 +211,7 @@ def initialize():
                     raise ValueError("Inputs changed on resume")
             else:
                 write_json_atomic(path, row)
-        emit({"prepared": n, "of": 96, "key": catalog["key"], "images": len(catalog["references"]) + 1})
+        emit({"prepared": n, "of": len(all_looks), "key": catalog["key"], "images": len(catalog["references"]) + 1})
     return status()
 
 
@@ -723,15 +724,21 @@ def wait_for_retry(row):
 
 def job_paths():
     # Group all three body types of an outfit together for visual review.
-    keys = [key_for(x) for x in read(BATCH / "source-snapshot.json")["looks"]]
+    # Retired notes remain in historical evidence but cannot re-enter the queue.
+    original = {key_for(x): x for x in read(BATCH / "source-snapshot.json")["looks"]}
+    current = looks()
+    if not current or any(original.get(key_for(look)) != look for look in current):
+        raise ValueError("Active catalog differs from the batch input snapshot")
+    keys = [key_for(x) for x in current]
     return [BATCH / mid / key / "job.json" for key in keys for mid in MODEL_IDS]
 
 
 def status():
-    rows = [read(p) for p in BATCH.glob("female_*/*/job.json")]
+    paths = job_paths()
+    rows = [read(p) for p in paths]
     states = {s: sum(r["status"] == s for r in rows) for s in sorted({r["status"] for r in rows})}
     attempts = [a for r in rows for a in r["attempts"]]
-    stats = {"updatedAt": now(), "expected": 288, "jobs": len(rows), "states": states,
+    stats = {"updatedAt": now(), "expected": len(paths), "jobs": len(rows), "states": states,
              "dispatchPaused": (BATCH / "STOP").exists(), "inFlight": states.get("running", 0),
              "apiAttempts": sum(not a.get("reused") for a in attempts),
              "successfulImages": sum(a["status"] in {"generated_local", "failed_quality"} for a in attempts),

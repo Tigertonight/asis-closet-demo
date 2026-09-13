@@ -68,7 +68,7 @@ def test_male_report_notes_are_distinct_and_stale_female_assets_are_rejected(cod
     assert client.get(endpoint, params=params).status_code == 404
 
 
-def test_home_gender_sampling_and_inspiration_keep_existing_covers():
+def test_home_gender_sampling_and_inspiration_separate_gender_covers():
     app = FastAPI(); app.include_router(selfit_report_outfits.router)
     user = {'user_id': 'male-delivery-test', 'gender': 'male'}
     app.dependency_overrides[get_current_user] = lambda: user
@@ -84,7 +84,13 @@ def test_home_gender_sampling_and_inspiration_keep_existing_covers():
     for code in CODES:
         topic = topics['persona-' + code]
         assert [outfit['template_id'] for outfit in topic['outfits'][:4]] == [code] * 4
-        assert len([outfit for outfit in topic['outfits'] if outfit['gender'] == 'male']) == 4
+        assert not any(outfit['gender'] == 'male' for outfit in topic['outfits'])
+    male_topics = inspiration_catalog.inspiration_topics('male')['topics']
+    assert len(male_topics) == 4
+    for topic in male_topics:
+        assert len(topic['outfits']) == 4
+        assert all(outfit['gender'] == 'male' for outfit in topic['outfits'])
+        assert topic['cover'] == topic['outfits'][0]['cover_path']
 
 
 def test_import_preserves_registered_asset_id_without_reuploading_api_route(tmp_path):

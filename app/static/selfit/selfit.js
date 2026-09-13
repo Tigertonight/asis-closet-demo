@@ -961,7 +961,8 @@
     timeoutMs: runtimeConfig.timeoutMs || 15000,
   });
   // A visitor session supports try-on but does not replace the initial login step.
-  const storedVisitor = auth.readStoredSession()?.user?.user_id?.startsWith('guest_');
+  const storedUser = auth.readStoredSession()?.user;
+  const storedVisitor = storedUser?.user_id?.startsWith('guest_') && !storedUser.beta_qualified;
   authReady = (storedVisitor ? Promise.resolve(null) : auth.restore()).then((session) => {
     state.authUser = session?.user || null;
     return session;
