@@ -4,7 +4,7 @@ This file is the frontend source of truth for the consumer product in the Figma 
 
 ## Public website — 2026-09-11
 
-- The public website at `/docs` keeps its mobile reading flow and centered desktop layout. Use consistent side gutters, vertically stacked hero actions on phones, and a two-column personality grid; expand columns only when there is room.
+- The public website renders directly at `/`, with `/docs` and `/home` serving the same page as compatibility entries. Keep the App entry at `/selfit` and the try-on entry at `/selfit/try-on`. The website keeps its mobile reading flow and centered desktop layout. Use consistent side gutters, vertically stacked hero actions on phones, and a two-column personality grid; expand columns only when there is room.
 - All website artwork scales proportionally. The hero uses its actual intrinsic dimensions with responsive width and automatic height. Personality cards use complete-image `contain` fitting; never stretch or crop the fused artwork to fill a card.
 - Keep the primary test entry at least 44px tall, allow card captions to wrap, and offset section anchors below the sticky header. Verify narrow phones, 390–430px phones, tablets and desktop without horizontal overflow.
 

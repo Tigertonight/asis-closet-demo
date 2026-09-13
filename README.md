@@ -40,14 +40,18 @@ uvicorn app.main:app --reload --port 8000
 
 启动后可直接访问：
 
-- onboarding：<http://127.0.0.1:8000/selfit>
+- 官网：<http://127.0.0.1:8000/>
+- App 入口：<http://127.0.0.1:8000/selfit>
+- 试衣镜：<http://127.0.0.1:8000/selfit/try-on>
 - 智能镜：<http://127.0.0.1:8000/selfit/mirror>
 - 色彩测试：<http://127.0.0.1:8000/demo>
 - 电子衣橱：<http://127.0.0.1:8000/closet/demo>
 - 虚拟试穿：<http://127.0.0.1:8000/try-on/demo>
 - MVP 状态：<http://127.0.0.1:8000/mvp>
 - QA：<http://127.0.0.1:8000/qa>
-- OpenAPI：<http://127.0.0.1:8000/docs>
+- OpenAPI：<http://127.0.0.1:8000/api-docs>
+
+官网根路径 `/` 直接返回页面，不跳转；`/docs`、`/home` 保留为同一官网的兼容入口。历史浏览器若仍缓存旧的 `/` → `/selfit` 永久跳转，可清除该站点缓存，或使用兼容入口访问官网。
 
 摄像头 API 要求 HTTPS 或浏览器认可的 localhost 安全上下文。
 
@@ -146,7 +150,7 @@ curl -X POST "http://127.0.0.1:8000/try-on" \
 curl http://127.0.0.1:8000/try-on/capabilities
 ```
 
-衣橱和穿搭师的能力接口分别为 `/closet/capabilities` 和 `/stylist/capabilities`，访问时需要登录会话。除健康检查、演示页和部分能力接口外，衣橱、穿搭师与用户资产接口均需要登录。完整路由以运行中的 OpenAPI 页 `/docs` 为准。
+衣橱和穿搭师的能力接口分别为 `/closet/capabilities` 和 `/stylist/capabilities`，访问时需要登录会话。除健康检查、演示页和部分能力接口外，衣橱、穿搭师与用户资产接口均需要登录。完整路由以运行中的 OpenAPI 页 `/api-docs` 为准。
 
 ## 测试与验收
 
