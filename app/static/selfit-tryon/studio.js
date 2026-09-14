@@ -306,7 +306,7 @@
           ["accessory", "配饰"],
         ]
       : [
-          ["set", "我的搭配"],
+          ["set", "我的收藏"],
           ["saved", "收藏"],
           ["all", "全部单品"],
           ["top", "上装"],
@@ -562,7 +562,7 @@
         ? uniqueItems([...state.outfits.filter(x => state.closetCategory !== "saved" || x.saved), ...state.savedNotes])
         : state.items;
     const outfits=["set","saved"].includes(state.closetCategory);
-    const tabs=`<header class="wardrobe-header"><div role="tablist" aria-label="衣帽间内容"><button role="tab" data-category="all" data-location="closet" aria-selected="${!outfits}">我的单品</button><button role="tab" data-category="set" data-location="closet" aria-selected="${outfits}">我的搭配</button></div></header>`;
+    const tabs=`<header class="wardrobe-header"><div role="tablist" aria-label="衣帽间内容"><button role="tab" data-category="all" data-location="closet" aria-selected="${!outfits}">我的单品</button><button role="tab" data-category="set" data-location="closet" aria-selected="${outfits}">我的收藏</button></div></header>`;
     const content=outfits ? `<div class="closet-grid">${list.map(x => card(x, "outfit")).join("")}</div>` : wardrobeItemSections(list);
     return `<section class="closet-screen wardrobe-source-layout ${outfits ? "wardrobe-outfits" : ""}" aria-label="衣帽间">${tabs}${pendingImport()?.job_id ? `<button class="resume-import" data-action="resume-import">${importStatusCopy()}</button>` : ""}${state.wardrobeError ? `<div class="empty">${esc(state.wardrobeError)}<button class="secondary" data-action="reload">重新加载</button></div>` : `${outfits && state.savedNotesError ? `<div class="empty">${esc(state.savedNotesError)}<button class="secondary" data-action="reload">重新加载</button></div>` : ""}${content}${!list.length && !(outfits && state.savedNotesError) ? wardrobeEmpty() : ""}`}</section>`;
   }
@@ -1408,7 +1408,18 @@
     state.returnPage = state.page;
     go("detail");
   }
+  function openPhotoUpload() {
+    const input = $('#photoInput');
+    modal('更换照片', '<p>选择一张只有你本人出镜、脸部清晰的全身照。</p><button class="primary photo-upload-trigger" data-action="upload-photo">选择照片</button><p class="photo-upload-hint">支持 JPG、PNG、WebP，大小不超过 20MB。</p>');
+    // A modal makes inputs outside it inert. Keep the real input inside the
+    // active dialog, and open it synchronously within the user's click.
+    $('#sheet').appendChild(input);
+    input.value = '';
+    input.click();
+  }
   function modal(title, body) {
+    const photoInput = $('#photoInput');
+    if (photoInput && $('#sheet').contains(photoInput)) document.body.appendChild(photoInput);
     delete $("#sheet").dataset.importFlow;
     $("#sheet").classList.remove("garment-sheet", "outfit-sheet", "model-sheet", "mirror-binding-sheet", "note-preview-sheet");
     $("#sheet").innerHTML =
@@ -1503,15 +1514,19 @@
     });
   }
   async function models() {
+    const personalCard = () => `<button class="model-option model-personal-option" ${state.personalPhoto ? 'data-model-id="self"' : 'data-action="upload-photo"'} aria-label="${state.personalPhoto ? '选择我的照片' : '上传我的全身照'}" aria-pressed="${Boolean(state.personalPhoto && state.modelId === 'self')}"><div class="model-portrait">${state.personalPhoto ? image(state.personalPhoto, '我的照片') : '<span class="model-upload-placeholder"><span aria-hidden="true">＋</span><span>上传全身照</span></span>'}${state.personalPhoto && state.modelId === 'self' ? '<span class="model-selected-mark">✓ <span>使用中</span></span>' : ''}</div><div class="model-option-copy"><span>我的照片</span></div></button>`;
     modelSheet('<div class="model-sheet-status" role="status">正在为你准备模特…</div>');
     try {
       const personalReady = loadPhoto();
       await loadModels();
       if (!$('#sheet').open || !$('#sheet').classList.contains('model-sheet')) return;
-      modelSheet(`<div class="model-library" aria-label="试穿模特">${state.modelLibrary.map(m => `<button class="model-option" data-model-id="${esc(m.id)}" aria-label="选择${esc(m.name)}" aria-pressed="${state.modelId === m.id}"><div class="model-portrait">${image(m.image_url, m.name)}${state.modelId === m.id ? '<span class="model-selected-mark">✓ <span>使用中</span></span>' : ''}</div><div class="model-option-copy"><span>${esc(m.name)}</span></div></button>`).join('')}</div>${!state.modelLibrary.length ? '<div class="model-sheet-status">模特正在准备中<br>可以先使用自己的全身照</div>' : ''}`);
-      // An optional historical photo must not hold up the fixed-model cards.
+      modelSheet(`<div class="model-library" aria-label="试穿模特">${state.modelLibrary.map(m => `<button class="model-option" data-model-id="${esc(m.id)}" aria-label="选择${esc(m.name)}" aria-pressed="${state.modelId === m.id}"><div class="model-portrait">${image(m.image_url, m.name)}${state.modelId === m.id ? '<span class="model-selected-mark">✓ <span>使用中</span></span>' : ''}</div><div class="model-option-copy"><span>${esc(m.name)}</span></div></button>`).join('')}${personalCard()}</div>${!state.modelLibrary.length ? '<div class="model-sheet-status">模特正在准备中<br>可以先使用自己的全身照</div>' : ''}`);
+      // Update only the personal slot, preserving the existing cards and scroll.
+      const personalSlot = $('#sheet .model-personal-option');
       void personalReady.then(() => {
         if (!state.personalPhoto || !$('#sheet').open || !$('#sheet').classList.contains('model-sheet')) return;
+        if ($('#sheet .model-personal-option') !== personalSlot) return;
+        if (personalSlot) personalSlot.outerHTML = personalCard();
         const button = $('#sheet .model-sheet-footer [data-action="upload-photo"]');
         if (!button) return;
         delete button.dataset.action;
@@ -1604,6 +1619,19 @@
   }
   async function photoFile(photo = state.photo, file = state.file, modelId = state.modelId) {
     if (file) return file;
+    if (modelId && modelId !== "self") {
+      // Resolve the current master at submission time; an open page may still
+      // hold the previous model URL after a material update or deployment.
+      const catalog = await api('/selfit/try-on/models', {cache: 'no-store'});
+      const current = (catalog.items || []).find(model => model.id === modelId);
+      if (!current?.image_url) throw Error('这个模特已更新，请重新选择模特后再试。');
+      const response = await fetch(mediaURL(current.image_url, true), {cache: 'no-store'});
+      if (!response.ok) throw Error('模特原图暂时无法加载，请稍后重试。');
+      const blob = await response.blob();
+      if (!blob.size) throw Error('模特原图暂时无法加载，请稍后重试。');
+      return new File([blob], new URL(current.image_url, location.origin).pathname.split('/').pop(),
+        {type: blob.type || 'image/png'});
+    }
     if (!photo) throw Error("先选择模特或上传全身照。");
     const original = state.personalPhotoOriginals?.[photo];
     const response = original
@@ -2518,7 +2546,7 @@
           await models();
           break;
         case "upload-photo":
-          $("#photoInput").click();
+          openPhotoUpload();
           break;
         case "close":
           state.pendingTry = false;

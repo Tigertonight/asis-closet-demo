@@ -40,7 +40,7 @@ uvicorn app.main:app --reload --port 8000
 
 启动后可直接访问：
 
-- 官网：<http://127.0.0.1:8000/>
+- 官网：<http://127.0.0.1:8000/docs>（`/home` 同页面；裸域名 `/` 302 跳转到 App）
 - App 入口：<http://127.0.0.1:8000/selfit>
 - 试衣镜：<http://127.0.0.1:8000/selfit/try-on>
 - 智能镜：<http://127.0.0.1:8000/selfit/mirror>
@@ -51,7 +51,7 @@ uvicorn app.main:app --reload --port 8000
 - QA：<http://127.0.0.1:8000/qa>
 - OpenAPI：<http://127.0.0.1:8000/api-docs>
 
-官网根路径 `/` 直接返回页面，不跳转；`/docs`、`/home` 保留为同一官网的兼容入口。历史浏览器若仍缓存旧的 `/` → `/selfit` 永久跳转，可清除该站点缓存，或使用兼容入口访问官网。
+裸域名 `/` 以 302（临时重定向，no-store）引流到 App `/selfit`；官网保留在 `/docs`、`/home`。历史上 `/` 的 308 曾被浏览器永久缓存（老浏览器本就直达 App，与现行为一致），新跳转刻意不用 308，避免再次被永久缓存。
 
 摄像头 API 要求 HTTPS 或浏览器认可的 localhost 安全上下文。
 

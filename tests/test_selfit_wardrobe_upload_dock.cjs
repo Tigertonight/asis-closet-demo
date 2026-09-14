@@ -20,7 +20,7 @@ test('both wardrobe tabs retain their content without the old header plus', () =
   for (const closetCategory of ['all', 'set', 'saved']) {
     const result = render({closetCategory});
     assert.match(result, /我的单品/);
-    assert.match(result, /我的搭配/);
+    assert.match(result, /我的收藏/);
     assert.doesNotMatch(result, /wardrobe-add|data-action="upload-garment"/);
     assert.match(result, closetCategory === 'all' ? /wardrobe-groups/ : /closet-grid/);
   }
