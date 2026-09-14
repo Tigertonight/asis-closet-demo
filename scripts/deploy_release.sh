@@ -102,4 +102,6 @@ done
 DEPLOYED=$(git rev-parse HEAD)
 echo "[deploy] 发布完成: $DEPLOYED"
 curl -fsS "http://127.0.0.1:8002/health" && echo
+# 仅在发布成功后清理旧代码备份；运行数据和配置备份不在清理范围。
+"$VENV/bin/python" scripts/prune_deploy_backups.py || echo "[deploy] WARNING: 旧备份清理未完成。"
 echo "[deploy] 如需回滚: sudo bash scripts/deploy_release.sh $CURRENT_SHA"
