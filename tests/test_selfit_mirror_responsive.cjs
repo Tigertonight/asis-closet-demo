@@ -20,7 +20,7 @@ function render(overrides = {}) {
     livePieces:() => '<div class="outfit-composition"></div>', canvasTools:() => '',
   };
   vm.createContext(context);
-  vm.runInContext(source.slice(source.indexOf('  function mirror()'), source.indexOf('  const trimmedPieces')), context);
+  vm.runInContext(source.slice(source.indexOf('  function mirrorHistoryButton()'), source.indexOf('  const trimmedPieces')), context);
   return context.mirror();
 }
 
@@ -34,28 +34,29 @@ for (const source of ['report', 'inspiration', 'closet']) {
     assert.match(recommendation, /<\/div><\/div><\/section>$/);
     assert.match(recommendation, /<h2>今日推荐<\/h2>/);
     assert.ok(recommendation.indexOf('mirror-recommendations-header') < recommendation.indexOf('class="strip"'));
-    assert.match(recommendation, /class="mirror-history-link" data-action="tryon-history"/);
-    assert.match(recommendation, /<span>试穿记录<\/span>/);
+    if (source !== 'closet') assert.match(recommendation, /class="mirror-refresh" data-action="refresh-home-notes"/);
+    else assert.doesNotMatch(recommendation, /data-action="refresh-home-notes"/);
+    assert.match(output, /<span>试穿记录<\/span>/);
     assert.equal((output.match(/data-action="tryon-history"/g) || []).length, 1);
-    assert.doesNotMatch(output.slice(0, output.indexOf('<div class="mirror-recommendations">')), /data-action="tryon-history"/);
-    assert.doesNotMatch(output, /class="mirror-history"|class="report-outfit-context"/);
+    assert.match(output.slice(0, output.indexOf('<div class="mirror-recommendations">')), /data-action="tryon-history"/);
+    assert.doesNotMatch(recommendation, /data-action="tryon-history"/);
   });
 }
 
 test('loading, failure and empty notes keep the same layout boundary', () => {
-  for (const state of [{loading:true}, {error:'请稍后重试'}, {reportOutfits:[]}]) {
+  for (const state of [{loading:true}, {error:'请稍后重试'}, {homeOutfits:[]}]) {
     const output = render(state);
     assert.match(output, /<div class="mirror-recommendations">[\s\S]*class="empty"/);
-    assert.match(output, /class="mirror-history-link" data-action="tryon-history"/);
+    assert.match(output, /class="mirror-history" data-action="tryon-history"/);
     assert.match(output, /<\/div><\/section>$/);
   }
-  assert.doesNotMatch(render({reportOutfits:[notes[0]]}), /class="mirror-pagination"/);
+  assert.doesNotMatch(render({homeOutfits:[notes[0]]}), /class="mirror-pagination"/);
 });
 
 test('history remains reachable while generating, without replacing loading or fallback notices', () => {
   const output = render({source:'inspiration', generating:{photo:'/pending.jpg'}, homeNotesNotice:'男生穿搭参考'});
   assert.match(output, /class="mirror-generation"/);
-  assert.match(output, /class="mirror-history-link" data-action="tryon-history"/);
+  assert.match(output, /class="mirror-history" data-action="tryon-history"/);
   assert.match(output, /男生穿搭参考/);
   assert.match(render({reportOutfitsMode:'mock'}), /class="mirror-recommendations-hint">示例搭配/);
   assert.doesNotMatch(render({reportOutfitsMode:'live'}), /class="mirror-recommendations-hint"/);
@@ -70,7 +71,9 @@ test('mirror alone reserves navigation plus safe area and can scroll on short sc
   assert.match(css, /\.mirror-recommendations\s*\{[^}]*flex: none/);
   assert.match(css, /\.mirror-recommendations\s*\{[^}]*padding: 0 0 4px/);
   assert.match(css, /\.mirror-pagination\s*\{[^}]*margin-top: 6px/);
-  assert.match(css, /\.mirror-history-link\s*\{[^}]*min-height: 44px/);
+  assert.match(css, /\.mirror-refresh\s*\{[^}]*min-height: 44px/);
+  assert.match(css, /\.mirror-refresh\s*\{[^}]*background: transparent/);
+  assert.match(css, /\.mirror-history\s*\{[^}]*min-height: 64px/);
   assert.match(css, /background-size: 100% 109px/);
   assert.match(css, /background-position: center -8px/);
   assert.match(css, /height: calc\(100% - var\(--mirror-top-gap\)\)/);

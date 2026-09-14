@@ -323,18 +323,19 @@
       )
       .join("")}</div>`;
   }
+  function mirrorHistoryButton() {
+    return `<button class="mirror-history" data-action="tryon-history" aria-label="试穿记录">${image(`${A}main-app/mirror-history.webp`, "")}<span>试穿记录</span></button>`;
+  }
   function mirror() {
     const pending = state.generating || (reference && params.get("mirror_state") === "generating" ? {photo:state.photo,target:state.current} : null);
     const styling = pending ? false : state.styling,
       framedPhoto = !styling && (pending?.photo || state.photo) && (!reference || state.file),
       category = "set",
-      homeNotes = state.source !== "closet" && state.source !== "report",
+      homeNotes = state.source !== "closet",
       collection = reference
         ? state.feed.slice(0, 4).map(row => ({...row, kind:"outfit", saved:false}))
         : state.source === "closet"
           ? state.outfits
-          : state.source === "report"
-            ? state.reportOutfits
           : state.homeOutfits;
     const availableItems =
       reference || state.source === "closet"
@@ -371,7 +372,7 @@
                 `model-photo ${!reference || state.file ? "personal" : ""}`,
               )}${!reference || state.file ? '</div>' : ''}`
             : '<div class="empty-stage"><span>先放入你的全身照</span><button data-action="model">选择模特</button></div>'
-    }${styling && !reference ? canvasTools() : ""}${pending ? `<div class="mirror-generation" role="status" aria-live="polite">${image(`${A}main-app/mirror-loading.webp`, '正在试穿')}</div>` : ""}${!styling && !pending ? `<button class="mirror-result-actions" data-action="result-actions" aria-label="绑定智能穿衣镜">${image(`${A}main-app/mirror-result-actions.webp`, "")}</button>` : ""}${!pending ? `<div class="mirror-edit-tools" role="group" aria-label="试衣镜工具"><button data-action="toggle" aria-label="${styling ? '看上身' : '看单品'}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 8a8 8 0 0 0-14-2L3 9m0-5v5h5M4 16a8 8 0 0 0 14 2l3-3m0 5v-5h-5"/></svg><span>${styling ? '看上身' : '看单品'}</span></button><button data-action="model" aria-label="换模特或上传我的照片"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="7" r="4"/><path d="M4 21v-3a8 8 0 0 1 16 0v3Z"/></svg><span>换模特</span></button></div>` : ''}${!styling && !pending && (state.result || state.photo) ? `<button class="result-expand" data-action="open-viewer" aria-label="${state.result ? '查看试穿大图' : '查看模特大图'}">${image(`${A}main-app/mirror-expand.svg`, "")}</button>${state.current ? `<button class="mirror-favorite" data-action="favorite" aria-label="${state.current.saved ? '取消收藏搭配' : '收藏搭配'}" aria-pressed="${Boolean(state.current.saved)}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.9-6.2-3.3-6.2 3.3L7 14.2l-5-4.9 6.9-1Z"/></svg></button>` : ""}` : ""}</div><div class="mirror-recommendations"><header class="mirror-recommendations-header"><div class="mirror-recommendations-title"><h2>今日推荐</h2>${state.source === "report" && state.reportOutfitsMode === "mock" ? '<span class="mirror-recommendations-hint">示例搭配</span>' : ""}</div><button class="mirror-history-link" data-action="tryon-history"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11a9 9 0 1 1 2.6 7.4M3 5v6h6M12 7v5l3 2"/></svg><span>试穿记录</span></button></header>${
+    }${styling && !reference ? canvasTools() : ""}${pending ? `<div class="mirror-generation" role="status" aria-live="polite">${image(`${A}main-app/mirror-loading.webp`, '正在试穿')}</div>` : ""}${!styling && !pending ? `<button class="mirror-result-actions" data-action="result-actions" aria-label="绑定智能穿衣镜">${image(`${A}main-app/mirror-result-actions.webp`, "")}</button>` : ""}${!pending ? `<div class="mirror-edit-tools" role="group" aria-label="试衣镜工具"><button data-action="toggle" aria-label="${styling ? '看上身' : '看单品'}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 8a8 8 0 0 0-14-2L3 9m0-5v5h5M4 16a8 8 0 0 0 14 2l3-3m0 5v-5h-5"/></svg><span>${styling ? '看上身' : '看单品'}</span></button><button data-action="model" aria-label="换模特或上传我的照片"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="7" r="4"/><path d="M4 21v-3a8 8 0 0 1 16 0v3Z"/></svg><span>换模特</span></button></div>` : ''}${!styling && !pending && (state.result || state.photo) ? `<button class="result-expand" data-action="open-viewer" aria-label="${state.result ? '查看试穿大图' : '查看模特大图'}">${image(`${A}main-app/mirror-expand.svg`, "")}</button>${state.current ? `<button class="mirror-favorite" data-action="favorite" aria-label="${state.current.saved ? '取消收藏搭配' : '收藏搭配'}" aria-pressed="${Boolean(state.current.saved)}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.9-6.2-3.3-6.2 3.3L7 14.2l-5-4.9 6.9-1Z"/></svg></button>` : ""}` : ""}${mirrorHistoryButton()}</div><div class="mirror-recommendations"><header class="mirror-recommendations-header"><div class="mirror-recommendations-title"><h2>今日推荐</h2>${state.source === "report" && state.reportOutfitsMode === "mock" ? '<span class="mirror-recommendations-hint">示例搭配</span>' : ""}</div>${state.source !== "closet" ? `<button class="mirror-refresh" data-action="refresh-home-notes" aria-label="换一批推荐" aria-busy="${Boolean(state.homeNotesRefreshing)}" ${state.homeNotesRefreshing || state.loading || state.homeNotesLoading ? "disabled" : ""}>${state.homeNotesRefreshing ? "更换中…" : "换一批"}</button>` : ""}</header>${
       state.loading || (state.source === "closet" && state.wardrobeLoading) || (homeNotes && state.homeNotesLoading)
         ? '<p class="empty" role="status">正在整理你的搭配…</p>'
         : state.error || (homeNotes && state.homeNotesError)
@@ -801,6 +802,8 @@
       if(savedSession?.user) savedSession.user.gender=gender;
       state.modelGender=gender;
       invalidateLibrary();
+      homeNotesRevision++;
+      state.homeNotesRefreshing=false;
       // Let an older home request finish before dropping its cached recommendations.
       if(homeNotesRequest) await homeNotesRequest;
       state.homeOutfits=[];state.homeNotesLoaded=false;state.homeNotesNotice='';state.homeNotesError='';
@@ -2021,18 +2024,53 @@
   async function loadHomeNotes() {
     if (state.homeOutfits.length) return;
     state.homeNotesError = "";
-    const request = new URLSearchParams();
-    const selected = new URLSearchParams(location.search).get("outfit");
-    if (selected) request.set("selected_outfit_id", selected);
     try {
-      const response = await api(`/selfit/try-on/report-outfits/home?${request}`);
-      state.homeNotesNotice = response.notice || "";
-      state.homeOutfits = response.outfits.map(row => ({
-        ...normalizeOutfit(row, state.items),
-        name: row.report_note.title, src: row.report_note.image_url, homeNote: row.report_note,
-      }));
+      applyHomeNotes(await api('/selfit/try-on/report-outfits/home'));
     } catch (error) {
       state.homeNotesError = error.message || "穿搭笔记暂时无法加载，请稍后重试。";
+    }
+  }
+  function applyHomeNotes(response) {
+    if (!Array.isArray(response.outfits) || response.outfits.length !== 4)
+      throw Error('穿搭笔记暂时无法加载，请稍后重试。');
+    const rows = response.outfits.map(row => ({
+      ...normalizeOutfit(row, state.items),
+      name: row.report_note.title, src: row.report_note.image_url, homeNote: row.report_note,
+    }));
+    state.homeOutfits = rows;
+    state.homeNotesNotice = response.notice || '';
+    state.homeNotesError = '';
+  }
+  async function refreshHomeNotes() {
+    if (state.homeNotesRefreshing || state.loading || state.homeNotesLoading) return;
+    const revision = homeNotesRevision;
+    state.homeNotesRefreshing = true;
+    render();
+    try {
+      if (reference) state.feed = [...state.feed.slice(3), ...state.feed.slice(0, 3)];
+      else {
+        const response = await api('/selfit/try-on/report-outfits/home/refresh', {method:'POST'});
+        if (revision !== homeNotesRevision) return;
+        applyHomeNotes(response);
+        state.homeNotesLoaded = true;
+      }
+      // Changing recommendations never selects a card, changes the model or
+      // result, starts/cancels a job, or navigates away from another screen.
+      if (state.page === 'mirror') {
+        const strip = $('.strip');
+        if (strip) strip.scrollLeft = 0;
+      }
+    } catch (error) {
+      if (revision === homeNotesRevision)
+        notify(error.message || '暂时没能换一批，请稍后再试。');
+    } finally {
+      if (revision === homeNotesRevision) {
+        state.homeNotesRefreshing = false;
+        if (state.page === 'mirror') {
+          render();
+          $('[data-action="refresh-home-notes"]')?.focus({preventScroll:true});
+        }
+      }
     }
   }
   async function loadReportOutfits() {
@@ -2125,7 +2163,7 @@
     state.feedLoaded = false; state.libraryLoading = false; state.feedBusy = false;
     state.feedError = ""; state.topicsError = ""; state.feedMore = false;
   }
-  let homeNotesRequest = null;
+  let homeNotesRequest = null, homeNotesRevision = 0;
   function ensureHomeNotes() {
     if (homeNotesRequest) return homeNotesRequest;
     if (state.homeNotesLoaded || state.homeOutfits.length) return Promise.resolve();
@@ -2287,7 +2325,7 @@
       // its notebook strip is still loading.
       const outfitsReady = preferencesReady.then(async () => {
         if (state.source === "report") await loadReportOutfits();
-        else await ensureHomeNotes();
+        await ensureHomeNotes();
         const query = new URLSearchParams(location.search);
         if (query.get("topic") || query.get("outfit")?.startsWith("note:")) await loadLibrary();
       });
@@ -2713,6 +2751,7 @@
           break;
         case "view-completed": go("mirror"); break;
         case "tryon-history": go("tryon-history"); break;
+        case "refresh-home-notes": await refreshHomeNotes(); break;
         case "reload-tryon-history": await loadTryonHistory(); break;
         case "result-actions":
           modal("绑定你的智能穿衣镜", '<p id="mirrorBindingDescription">每日记录身材和穿搭</p><input id="mirrorDeviceCode" class="mirror-device-code" type="text" inputmode="numeric" minlength="4" maxlength="4" pattern="[0-9]{4}" autocomplete="off" placeholder="请输入设备码" aria-label="设备码" aria-describedby="mirrorBindingDescription" required>');

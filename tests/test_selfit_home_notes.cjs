@@ -24,8 +24,7 @@ const slice = (start, end) => studio.slice(studio.indexOf(start), studio.indexOf
       calls.push({url,options});
       if (failed) throw Error('穿搭笔记暂时无法加载，请稍后重试。');
       if (url==='/selfit/try-on/jobs') return {job_id:'test-only',status:'queued'};
-      assert(url.startsWith('/selfit/try-on/report-outfits/home?'));
-      assert.equal(new URL(url,'http://localhost').searchParams.get('selected_outfit_id'),'real-note-2');
+      assert.equal(url, '/selfit/try-on/report-outfits/home');
       return {outfits:rows};
     },
   });

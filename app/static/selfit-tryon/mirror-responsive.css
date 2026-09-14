@@ -78,35 +78,58 @@
   font-size: 12px;
 }
 
-.mirror-history-link {
+.mirror-refresh {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 5px;
   flex: none;
+  min-width: 64px;
   min-height: 44px;
   padding: 0;
   border: 0;
-  border-radius: 999px;
+  border-radius: 0;
   background: transparent;
-  color: #857167;
-  font-size: 13px;
+  box-shadow: none;
+  color: #757575;
+  font-size: 16px;
   line-height: 20px;
   white-space: nowrap;
 }
 
-.mirror-history-link svg {
-  width: 16px;
-  height: 16px;
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 1.6;
-  stroke-linecap: round;
-  stroke-linejoin: round;
+.mirror-refresh:disabled {
+  opacity: .55;
+  cursor: wait;
 }
 
-.mirror-history-link:active {
-  color: var(--brand);
+.mirror-refresh:active {
+  color: #444;
+}
+
+#studio[data-screen="mirror"] .mirror-history {
+  position: absolute;
+  top: calc(var(--mirror-top-gap) + 52px);
+  left: calc(84.48% - 8px);
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  width: 60px;
+  min-height: 64px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #666;
+  font-size: 12px;
+  line-height: 17px;
+  white-space: nowrap;
+}
+
+.mirror-history img {
+  display: block;
+  width: 44px;
+  height: 44px;
+  object-fit: contain;
 }
 
 .mirror-screen .mirror-recommendations .strip {
