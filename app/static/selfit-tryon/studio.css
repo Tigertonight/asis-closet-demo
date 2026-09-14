@@ -1769,3 +1769,10 @@ button.composition-piece:focus-visible { outline:2px solid #8a011b; outline-offs
 #studio[data-screen="detail"] .screen > .note-detail { min-height:0; overflow-y:auto; overflow-x:hidden; overscroll-behavior-y:contain; scrollbar-width:none; padding-bottom:24px; }
 #studio[data-screen="detail"] .detail-dock.note-dock { position:relative; bottom:auto; padding:16px 24px max(24px,env(safe-area-inset-bottom)); background:var(--canvas); }
 #studio[data-screen="detail"] .detail-dock.note-dock::before { content:""; position:absolute; left:0; right:0; top:-20px; height:20px; background:linear-gradient(to bottom,#fafafa00,var(--canvas)); pointer-events:none; }
+
+/* Personal photo shares the fixed models' full-size carousel frame. */
+.model-sheet .model-option .model-upload-placeholder { height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:12px; color:#8b7b7d; font-size:14px; }
+.model-upload-placeholder > span:first-child { font-size:36px; font-weight:300; line-height:1; }
+
+.photo-upload-trigger { display:flex; align-items:center; justify-content:center; min-height:48px; cursor:pointer; }
+.photo-upload-hint { color:#888; font-size:12px; line-height:1.6; }

@@ -55,6 +55,10 @@
 /* Keep the complete portrait and its actions inside the hero's allocated row. */
 #studio[data-screen="mirror"] .model-mode .stage-background {
   height: calc(100% - 16px);
+  /* The artwork keeps its intrinsic aspect ratio. Cover the changing hero bounds
+     without side bands; anchor the upper-left pin so it stays visible. */
+  object-fit: cover;
+  object-position: left top;
 }
 
 #studio[data-screen="mirror"] .model-mode .arch,
@@ -95,4 +99,11 @@
   .studio[data-screen="mirror"] {
     height: min(852px, calc(var(--visual-viewport-height, 100dvh) - 48px));
   }
+}
+
+/* Loading artwork shares the original 393:478 canvas. Never stretch its text
+   when the responsive mirror allocates a taller or shorter hero. */
+#studio[data-screen="mirror"] .mirror-generation img {
+  object-fit: contain;
+  object-position: center;
 }
