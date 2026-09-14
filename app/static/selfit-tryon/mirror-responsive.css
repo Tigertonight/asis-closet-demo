@@ -1,8 +1,8 @@
 /* The H5 viewport excludes browser chrome. Reserve navigation before laying out
    the hero and notes; very short screens scroll above, never behind, the tabs. */
 .studio[data-screen="mirror"] {
-  --mirror-safe-bottom: max(0px, calc(env(safe-area-inset-bottom, 0px) - 24px));
-  --mirror-navigation-height: calc(109px + var(--mirror-safe-bottom));
+  --mirror-safe-bottom: max(0px, calc(env(safe-area-inset-bottom, 0px) - 20px));
+  --mirror-navigation-height: calc(97px + var(--mirror-safe-bottom));
   height: 100vh;
   height: var(--visual-viewport-height, 100dvh);
 }
@@ -15,7 +15,15 @@
 #studio[data-screen="mirror"] > #navigation {
   height: var(--mirror-navigation-height);
   background-size: 100% 109px;
-  background-position: center top;
+  background-position: center -8px;
+}
+
+#studio[data-screen="mirror"] > #navigation .nav-item {
+  top: 10px;
+}
+
+#studio[data-screen="mirror"] > #navigation .nav-ai {
+  top: 13px;
 }
 
 #studio[data-screen="mirror"] .mirror-screen {
@@ -37,11 +45,68 @@
 .mirror-recommendations {
   flex: none;
   min-width: 0;
-  padding: 12px 0;
+  padding: 0 0 4px;
 }
 
-.mirror-recommendations .report-outfit-context {
-  margin: 0 17px 10px;
+.mirror-recommendations-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 44px;
+  margin: 0 17px;
+}
+
+.mirror-recommendations-title {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 4px 8px;
+  min-width: 0;
+}
+
+.mirror-recommendations-title h2 {
+  margin: 0;
+  color: #54453e;
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 22px;
+}
+
+.mirror-recommendations-hint {
+  color: #857167;
+  font-size: 12px;
+}
+
+.mirror-history-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  flex: none;
+  min-height: 44px;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: #857167;
+  font-size: 13px;
+  line-height: 20px;
+  white-space: nowrap;
+}
+
+.mirror-history-link svg {
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.mirror-history-link:active {
+  color: var(--brand);
 }
 
 .mirror-screen .mirror-recommendations .strip {
@@ -49,7 +114,7 @@
 }
 
 .mirror-recommendations .mirror-pagination {
-  margin-top: 12px;
+  margin-top: 6px;
 }
 
 /* Keep the complete portrait and its actions inside the hero's allocated row. */
@@ -72,10 +137,6 @@
 
 #studio[data-screen="mirror"] .mirror-result-actions {
   top: var(--mirror-top-gap);
-}
-
-#studio[data-screen="mirror"] .mirror-history {
-  top: calc(var(--mirror-top-gap) + 52px);
 }
 
 #studio[data-screen="mirror"] .mirror-edit-tools {

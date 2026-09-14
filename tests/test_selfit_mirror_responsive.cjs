@@ -32,7 +32,13 @@ for (const source of ['report', 'inspiration', 'closet']) {
     assert.equal((recommendation.match(/class="card"/g) || []).length, 4);
     assert.match(recommendation, /class="mirror-pagination"/);
     assert.match(recommendation, /<\/div><\/div><\/section>$/);
-    if (source === 'report') assert.match(recommendation, /来自你的型格推荐/);
+    assert.match(recommendation, /<h2>今日推荐<\/h2>/);
+    assert.ok(recommendation.indexOf('mirror-recommendations-header') < recommendation.indexOf('class="strip"'));
+    assert.match(recommendation, /class="mirror-history-link" data-action="tryon-history"/);
+    assert.match(recommendation, /<span>试穿记录<\/span>/);
+    assert.equal((output.match(/data-action="tryon-history"/g) || []).length, 1);
+    assert.doesNotMatch(output.slice(0, output.indexOf('<div class="mirror-recommendations">')), /data-action="tryon-history"/);
+    assert.doesNotMatch(output, /class="mirror-history"|class="report-outfit-context"/);
   });
 }
 
@@ -40,20 +46,33 @@ test('loading, failure and empty notes keep the same layout boundary', () => {
   for (const state of [{loading:true}, {error:'请稍后重试'}, {reportOutfits:[]}]) {
     const output = render(state);
     assert.match(output, /<div class="mirror-recommendations">[\s\S]*class="empty"/);
+    assert.match(output, /class="mirror-history-link" data-action="tryon-history"/);
     assert.match(output, /<\/div><\/section>$/);
   }
   assert.doesNotMatch(render({reportOutfits:[notes[0]]}), /class="mirror-pagination"/);
 });
 
+test('history remains reachable while generating, without replacing loading or fallback notices', () => {
+  const output = render({source:'inspiration', generating:{photo:'/pending.jpg'}, homeNotesNotice:'男生穿搭参考'});
+  assert.match(output, /class="mirror-generation"/);
+  assert.match(output, /class="mirror-history-link" data-action="tryon-history"/);
+  assert.match(output, /男生穿搭参考/);
+  assert.match(render({reportOutfitsMode:'mock'}), /class="mirror-recommendations-hint">示例搭配/);
+  assert.doesNotMatch(render({reportOutfitsMode:'live'}), /class="mirror-recommendations-hint"/);
+});
+
 test('mirror alone reserves navigation plus safe area and can scroll on short screens', () => {
   assert.match(css, /#studio\[data-screen="mirror"\] > #screen\s*\{[^}]*bottom: var\(--mirror-navigation-height\)/);
-  assert.match(css, /--mirror-navigation-height: calc\(109px \+ var\(--mirror-safe-bottom\)\)/);
+  assert.match(css, /--mirror-navigation-height: calc\(97px \+ var\(--mirror-safe-bottom\)\)/);
   assert.match(css, /env\(safe-area-inset-bottom, 0px\)/);
   assert.match(css, /flex: 1 0 260px/);
   assert.match(css, /max-height: none/);
   assert.match(css, /\.mirror-recommendations\s*\{[^}]*flex: none/);
-  assert.match(css, /\.mirror-recommendations\s*\{[^}]*padding: 12px 0/);
-  assert.match(css, /\.mirror-pagination\s*\{[^}]*margin-top: 12px/);
+  assert.match(css, /\.mirror-recommendations\s*\{[^}]*padding: 0 0 4px/);
+  assert.match(css, /\.mirror-pagination\s*\{[^}]*margin-top: 6px/);
+  assert.match(css, /\.mirror-history-link\s*\{[^}]*min-height: 44px/);
+  assert.match(css, /background-size: 100% 109px/);
+  assert.match(css, /background-position: center -8px/);
   assert.match(css, /height: calc\(100% - var\(--mirror-top-gap\)\)/);
 });
 

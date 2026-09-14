@@ -394,20 +394,6 @@ a {
   height: 32px !important;
   object-fit: contain !important;
 }
-.add-garment {
-  position: absolute;
-  bottom: 122px;
-  right: 26px;
-  width: 56px;
-  height: 56px;
-  background: #8a011b;
-  border-radius: 50%;
-  color: white;
-  font-size: 42px;
-  font-weight: 200;
-  line-height: 1;
-  z-index: 6;
-}
 .inspiration-screen {
   padding: 67px 8px 110px;
   min-height: 100%;
@@ -897,9 +883,6 @@ dialog .secondary {
 .category-tabs {
   margin-left: 20px;
 }
-.add-garment {
-  bottom: 125px;
-}
 .nav-shirt {
   right: -11px;
 }
@@ -1135,27 +1118,68 @@ dialog .secondary {
 @media (min-width: 600px) { .mirror-loading { min-height: 742px; } }
 @media (prefers-reduced-motion: reduce) { .mirror-spinner { animation: none; } }
 
-/* The add control is part of the garment grid and scrolls with its contents. */
+/* Reserve the upload dock and navigation outside the wardrobe scroll area. */
+.studio[data-screen="closet"] {
+  --closet-safe-bottom: max(0px, calc(env(safe-area-inset-bottom, 0px) - 24px));
+  --closet-navigation-height: calc(109px + var(--closet-safe-bottom));
+  --closet-upload-height: 72px;
+  --closet-upload-bottom: calc(var(--closet-navigation-height) + 8px);
+}
+#studio[data-screen="closet"] > #screen {
+  bottom: calc(var(--closet-upload-bottom) + var(--closet-upload-height) + 12px);
+  overscroll-behavior-y: contain;
+}
+#studio[data-screen="closet"] > #navigation {
+  height: var(--closet-navigation-height);
+  background-size: 100% 109px;
+  background-position: center top;
+}
+.studio[data-screen="closet"] .closet-screen.wardrobe-source-layout {
+  padding-bottom: 24px;
+}
+.studio[data-screen="closet"] .closet-screen:has(.wardrobe-empty) {
+  height: auto;
+  min-height: 100%;
+  padding-bottom: 24px;
+}
+#studio[data-screen="closet"] > .completion-notice {
+  bottom: calc(var(--closet-upload-bottom) + var(--closet-upload-height) + 12px);
+}
 .studio > .add-garment {
   position: absolute;
-  bottom: calc(125px + env(safe-area-inset-bottom, 0px));
-  right: 26px;
-  display: grid;
-  place-items: center;
-  padding: 0;
+  bottom: var(--closet-upload-bottom);
+  left: 32px;
+  right: 32px;
+  height: var(--closet-upload-height);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 8px 16px;
   margin: 0;
-  background: #8a011b url("/static/selfit/assets/splash-textile@2x.webp") center / cover;
-  box-shadow: inset 0 0 0 1px #ffffff26, 0 3px 8px #8a011b1a;
+  border: 1px dashed rgb(138 1 27 / 24%);
+  border-radius: 24px;
+  background: rgb(255 255 255 / 56%);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  color: #795963;
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 500;
+  box-shadow: 0 5px 24px rgb(92 52 61 / 3%);
   z-index: 6;
 }
 .studio > .add-garment[hidden] { display: none; }
+.studio > .add-garment:active { background: rgb(255 246 248 / 82%); }
 .add-garment svg {
   display: block;
-  width: 28px;
-  height: 28px;
+  flex: none;
+  width: 30px;
+  height: 30px;
   fill: none;
-  stroke: currentColor;
-  stroke-width: 1.7;
+  stroke: rgb(138 1 27 / 64%);
+  stroke-width: 1.5;
   stroke-linecap: round;
 }
 
@@ -1254,8 +1278,6 @@ button.composition-piece:focus-visible { outline:2px solid #8a011b; outline-offs
 .wardrobe-header [role="tab"] { position:relative; padding:0; border:0; background:transparent; color:#999; font-size:16px; font-weight:400; }
 .wardrobe-header [aria-selected="true"] { color:#333; }
 .wardrobe-header [aria-selected="true"]::after { content:""; position:absolute; left:0; right:0; bottom:5px; height:1px; background:#8a011b; }
-.wardrobe-add { flex-shrink:0; width:44px; height:44px; border:0; padding:5px; border-radius:50%; background:transparent; }
-.wardrobe-add svg { width:34px; height:34px; background:#8a011b; border-radius:50%; padding:7px; fill:none; stroke:white; stroke-width:1.6; }
 .wardrobe-groups { min-width:0; }
 .wardrobe-group + .wardrobe-group { margin-top:24px; }
 .wardrobe-group h2 { display:flex; align-items:center; gap:8px; margin:0 0 12px; font-size:16px; line-height:26px; font-weight:600; color:#555; }
@@ -1521,9 +1543,6 @@ button.composition-piece:focus-visible { outline:2px solid #8a011b; outline-offs
 .mirror-favorite[aria-pressed="true"] { color:#8a011b; }
 .model-mode .result-expand { left:24.17%; top:95.81%; bottom:auto; }
 .mirror-screen .strip { padding:0 17px; margin-top:62px; }
-.report-outfit-context { display:flex; align-items:baseline; flex-wrap:wrap; gap:4px 12px; margin:24px 17px 0; color:#857167; font-size:12px; line-height:1.5; }
-.report-outfit-context strong { min-width:0; color:#54453e; font-size:15px; overflow-wrap:anywhere; }
-.mirror-screen .report-outfit-context + .strip { margin-top:14px; }
 .mirror-screen .strip > .card { flex-basis:calc((100cqw - 58px)/3); aspect-ratio:112.143/150; border-radius:14.286px; }
 .mirror-pagination { display:flex; justify-content:center; gap:4px; height:5px; margin:27px 0 0; }
 .mirror-pagination span { width:5px; height:5px; border-radius:50%; background:#ccc; }
@@ -1586,8 +1605,6 @@ button.composition-piece:focus-visible { outline:2px solid #8a011b; outline-offs
 
 
 .model-mode .stage-control { display:none; }
-.mirror-history { position:absolute; z-index:4; top:24.8954%; left:84.48%; width:44px; height:44px; padding:0; }
-.mirror-history img { display:block; width:100%; height:100%; }
 
 .mirror-screen .strip { gap:12px; }
 .mirror-screen .strip > .card { flex-basis:28.5351cqw; }
