@@ -306,7 +306,7 @@
           ["accessory", "配饰"],
         ]
       : [
-          ["set", "我的搭配"],
+          ["set", "我的收藏"],
           ["saved", "收藏"],
           ["all", "全部单品"],
           ["top", "上装"],
@@ -562,7 +562,7 @@
         ? uniqueItems([...state.outfits.filter(x => state.closetCategory !== "saved" || x.saved), ...state.savedNotes])
         : state.items;
     const outfits=["set","saved"].includes(state.closetCategory);
-    const tabs=`<header class="wardrobe-header"><div role="tablist" aria-label="衣帽间内容"><button role="tab" data-category="all" data-location="closet" aria-selected="${!outfits}">我的单品</button><button role="tab" data-category="set" data-location="closet" aria-selected="${outfits}">我的搭配</button></div><button class="wardrobe-add" data-action="upload-garment" aria-label="添加衣服"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button></header>`;
+    const tabs=`<header class="wardrobe-header"><div role="tablist" aria-label="衣帽间内容"><button role="tab" data-category="all" data-location="closet" aria-selected="${!outfits}">我的单品</button><button role="tab" data-category="set" data-location="closet" aria-selected="${outfits}">我的收藏</button></div><button class="wardrobe-add" data-action="upload-garment" aria-label="添加衣服"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button></header>`;
     const content=outfits ? `<div class="closet-grid">${list.map(x => card(x, "outfit")).join("")}</div>` : wardrobeItemSections(list);
     return `<section class="closet-screen wardrobe-source-layout ${outfits ? "wardrobe-outfits" : ""}" aria-label="衣帽间">${tabs}${pendingImport()?.job_id ? `<button class="resume-import" data-action="resume-import">${importStatusCopy()}</button>` : ""}${state.wardrobeError ? `<div class="empty">${esc(state.wardrobeError)}<button class="secondary" data-action="reload">重新加载</button></div>` : `${outfits && state.savedNotesError ? `<div class="empty">${esc(state.savedNotesError)}<button class="secondary" data-action="reload">重新加载</button></div>` : ""}${content}${!list.length && !(outfits && state.savedNotesError) ? wardrobeEmpty() : ""}`}</section>`;
   }

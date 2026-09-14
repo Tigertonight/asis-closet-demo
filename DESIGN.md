@@ -76,6 +76,8 @@ The latest user corrections in this section supersede all older ordering, valida
 
 ## Wardrobe item actions — 2026-09-09
 
+- The wardrobe outfit tab is labeled “我的收藏”; retain its existing saved-outfit content and behavior (user correction, 2026-09-14).
+
 - The matched-notebook heading reads “找到{数量}个适合你的搭配”, using the actual result count. Each expanded notebook explains “右图已换入你的{单品名称}”; display the starter white T as “白T”. Keep other garment names dynamic (user correction, 2026-09-13).
 - The “单品搭配” result leads with the matched notebook list. Each row places the original notebook photo on the left and that notebook's deconstructed outfit preview on the right at equal column widths. The notebook photo is the height source: render it at its intrinsic aspect ratio with proportional width and automatic height, never stretch, crop, regenerate or force it into a square/fixed-ratio frame; the right preview follows the resulting row height. Selecting a row expands its title, replacement note and styling explanation immediately below that pair. Keep “收藏 / 去试穿” in the stationary bottom action row. This supersedes the older hero-first and three-thumbnail layout below (user correction, 2026-09-13).
 - The “单品搭配” bottom actions read “收藏” on the left and “去试穿” on the right (user correction, 2026-09-11).
