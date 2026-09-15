@@ -521,11 +521,33 @@ def upgrade_with_invite(
         raise HTTPException(status_code=410, detail="该邀请码名额已用尽或已过期，请使用其他邀请码")
     current["beta_qualified"] = True
     current["invite_code_id"] = record["code_id"]
+    current["invite_bound_at"] = now.isoformat()
     if device_id and not current.get("device_id"):
         current["device_id"] = _normalize_device_id(device_id)
     current["last_login_at"] = now.isoformat()
     _write_store(data)
     return {"status": "ok", "user": _public_user(current)}
+
+
+def _invite_seat_holders(data: dict[str, Any], code_id: str) -> list[dict[str, Any]]:
+    """占用该邀请码席位的账号（含已停用，管理后台核对用）。"""
+
+    holders = []
+    for item in data["users"]:
+        if item.get("invite_code_id") != code_id:
+            continue
+        holders.append(
+            {
+                "user_id": item.get("user_id"),
+                "phone_e164": item.get("phone_e164"),
+                "status": item.get("status"),
+                "created_at": item.get("created_at"),
+                "last_login_at": item.get("last_login_at"),
+                "bound_at": item.get("invite_bound_at") or item.get("created_at"),
+            }
+        )
+    holders.sort(key=lambda row: str(row.get("bound_at") or ""), reverse=True)
+    return holders
 
 
 def list_invite_codes() -> list[dict[str, Any]]:

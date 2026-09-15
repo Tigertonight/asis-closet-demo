@@ -31,6 +31,7 @@ from app.auth import (
     set_admin_password,
     update_invite_code,
     verify_admin_password,
+    _invite_seat_holders,
 )
 from app.storage import ROOT_DIR
 
@@ -459,6 +460,27 @@ async def admin_invite_update(code_id: str, payload: AdminInviteUpdatePayload, a
     if record is None:
         return JSONResponse(status_code=404, content={"detail": "邀请码不存在"})
     return JSONResponse(content={"status": "ok", "invite": record})
+
+
+@admin_router.get("/invites/{code_id}/seats")
+async def admin_invite_seats(code_id: str, admin: dict[str, Any] = Depends(get_admin_user)) -> JSONResponse:
+    """邀请码席位占用明细：哪些账号（手机号）绑定了这个码。"""
+
+    from app.auth import _load_store
+
+    data = _load_store()
+    record = next((item for item in data.get("invite_codes", []) if item.get("code_id") == code_id), None)
+    if record is None:
+        return JSONResponse(status_code=404, content={"detail": "邀请码不存在"})
+    return JSONResponse(
+        content={
+            "code": record.get("code"),
+            "code_id": code_id,
+            "max_seats": int(record.get("max_seats") or 0),
+            "holders": _invite_seat_holders(data, code_id),
+        },
+        headers={"Cache-Control": "no-store"},
+    )
 
 
 class StylistContextUserPayload(BaseModel):

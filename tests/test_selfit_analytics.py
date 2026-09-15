@@ -163,6 +163,52 @@ def test_admin_users_endpoint_joins_phone(monkeypatch, tmp_path: Path) -> None:
     assert phone_rows[0]["auth_provider"] == "phone_direct"
 
 
+def test_admin_invite_seats_lists_bound_accounts(monkeypatch, tmp_path: Path) -> None:
+    """邀请码席位详情：能看到绑定该码的手机号账号。"""
+    _use_tmp_stores(monkeypatch, tmp_path)
+    client = TestClient(app)
+    admin_headers = _admin_login(client, monkeypatch)
+
+    invite = client.post(
+        "/admin/api/invites",
+        headers={**admin_headers, "Content-Type": "application/json"},
+        json={"max_seats": 5, "note": "席位详情测试", "expires_in_days": 7},
+    ).json()["invite"]
+
+    # 两个手机号账号用该码解锁
+    for phone in ("13800111111", "13800222222"):
+        login = client.post("/auth/phone/direct", json={"phone": phone}).json()
+        client.post(
+            "/auth/invite/upgrade",
+            headers={"Authorization": f"Bearer {login['access_token']}"},
+            json={"invite_code": invite["code"], "device_id": f"device-{phone}"},
+        )
+    # 第三个账号不用码（对照）
+    client.post("/auth/phone/direct", json={"phone": "13800333333"})
+
+    response = client.get(f"/admin/api/invites/{invite['code_id']}/seats", headers=admin_headers)
+
+    assert response.status_code == 200
+    payload = response.json()
+    assert payload["code"] == invite["code"]
+    assert payload["max_seats"] == 5
+    phones = {row["phone_e164"] for row in payload["holders"]}
+    assert phones == {"+8613800111111", "+8613800222222"}
+    assert all(row["bound_at"] for row in payload["holders"])
+    # 未用码的账号不在列表里
+    assert "+8613800333333" not in phones
+    # 未带凭证的请求拿不到（独立 client，不带 admin cookie）
+    anonymous = TestClient(app)
+    assert anonymous.get(f"/admin/api/invites/{invite['code_id']}/seats").status_code == 401
+    other = anonymous.post("/auth/phone/direct", json={"phone": "13800444444"}).json()
+    assert anonymous.get(
+        f"/admin/api/invites/{invite['code_id']}/seats",
+        headers={"Authorization": f"Bearer {other['access_token']}"},
+    ).status_code == 403
+    # 不存在的邀请码
+    assert client.get("/admin/api/invites/nonexistent/seats", headers=admin_headers).status_code == 404
+
+
 def test_admin_page_is_served(monkeypatch, tmp_path: Path) -> None:
     _use_tmp_stores(monkeypatch, tmp_path)
     client = TestClient(app)

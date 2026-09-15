@@ -1618,6 +1618,7 @@
         <td>${status}</td>
         <td>${row.note ? String(row.note).replace(/[<>&]/g, '') : '—'}</td>
         <td>
+          <button class="mini-btn" type="button" data-invite-seats="${row.code_id}">详情</button>
           <button class="mini-btn" type="button" data-invite-id="${row.code_id}" data-invite-act="seats" ${row.seats_used >= row.max_seats ? '' : 'hidden'}>扩容到 ${row.max_seats + 10} 席</button>
           <button class="mini-btn" type="button" data-invite-id="${row.code_id}" data-invite-act="${row.status === 'active' ? 'disable' : 'enable'}">${row.status === 'active' ? '停用' : '启用'}</button>
         </td>
@@ -1676,6 +1677,40 @@
       $('inviteUpdatedAt').textContent = error.message || '操作失败';
       button.disabled = false;
     }
+  });
+
+  const showInviteSeats = async (codeId) => {
+    const sheet = document.createElement('div');
+    sheet.className = 'modal-overlay';
+    sheet.innerHTML = `<div class="modal-card" style="width:min(560px,100%)">
+      <header><div><b>席位占用</b><small>正在加载…</small></div>
+      <button class="mini-btn" type="button" data-close-seats>关闭</button></header>
+      <div class="modal-body"><span class="loading-bar" style="display:block;margin:20px auto"></span></div>
+    </div>`;
+    const close = () => sheet.remove();
+    sheet.querySelector('[data-close-seats]').addEventListener('click', close);
+    sheet.addEventListener('click', (event) => { if (event.target === sheet) close(); });
+    document.body.append(sheet);
+    try {
+      const payload = await api(`/admin/api/invites/${encodeURIComponent(codeId)}/seats`);
+      const holders = payload.holders || [];
+      const rows = holders.map((row) => `<tr>
+        <td title="${esc(row.phone_e164 || '')}">${row.phone_e164 ? maskPhone(row.phone_e164) : '—'}</td>
+        <td>${row.status === 'active' ? '<span class="tag tag-ok">正常</span>' : '<span class="tag tag-muted">已停用</span>'}</td>
+        <td>${fmtDate(row.bound_at)}</td>
+        <td>${fmtDate(row.last_login_at)}</td>
+      </tr>`).join('');
+      sheet.querySelector('.modal-card header small').textContent = `${payload.code} · ${holders.length} / ${payload.max_seats} 席`;
+      sheet.querySelector('.modal-body').innerHTML = holders.length
+        ? `<div class="table-scroll"><table><thead><tr><th>手机号</th><th>状态</th><th>绑定时间</th><th>最后登录</th></tr></thead><tbody>${rows}</tbody></table></div>`
+        : '<p class="empty" style="padding:32px 0;text-align:center;color:var(--muted)">还没有账号绑定这个邀请码</p>';
+    } catch (error) {
+      sheet.querySelector('.modal-body').innerHTML = `<p class="empty" style="padding:32px 0;text-align:center;color:#a90020">${esc(error.message || '加载失败')}</p>`;
+    }
+  };
+  $('inviteRows').addEventListener('click', (event) => {
+    const detail = event.target.closest('[data-invite-seats]');
+    if (detail) showInviteSeats(detail.dataset.inviteSeats);
   });
   document.querySelectorAll('[data-tab]').forEach((button) => button.addEventListener('click', () => {
     activateTab(button.dataset.tab);
