@@ -3527,6 +3527,38 @@ def _face_gate_relaxed() -> bool:
     return os.getenv("TRYON_FACE_GATE_RELAXED", "1").strip().lower() not in {"0", "false", "no", "off"}
 
 
+def _confirm_face_candidates(bgr: np.ndarray, faces: list[dict[str, Any]]) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
+    """Verify ambiguous Haar hits locally; a failed verifier never removes faces."""
+    from app.cv_pipeline import (
+        _mediapipe_face_detector, _detect_mediapipe_face_candidates,
+        _smaller_box_coverage,
+    )
+
+    if _mediapipe_face_detector() is None:
+        return faces, []
+    height, width = bgr.shape[:2]
+    confirmed, rejected = [], []
+    try:
+        for face in faces:
+            box = face["box"]
+            x, y, w, h = (box[k] for k in ("x", "y", "width", "height"))
+            pad = int(max(w, h) * 0.3)
+            x0, y0 = max(0, x - pad), max(0, y - pad)
+            crop = bgr[y0:min(height, y + h + pad), x0:min(width, x + w + pad)]
+            matches = _detect_mediapipe_face_candidates(crop, raise_on_error=True)
+            verified = any(_smaller_box_coverage(
+                (x, y, w, h), (mx + x0, my + y0, mw, mh)
+            ) >= 0.5 for mx, my, mw, mh, _ in matches)
+            if verified:
+                confirmed.append({**face, "verified_by": "mediapipe_candidate_crop"})
+            else:
+                rejected.append(face)
+    except Exception:
+        return faces, []
+    # No confirmed face is inconclusive, not permission to bypass the gate.
+    return (confirmed, rejected) if confirmed else (faces, [])
+
+
 def _detect_person(image: Image.Image) -> dict[str, Any]:
     bgr = _pil_to_bgr(image)
     gray = cv2.cvtColor(bgr, cv2.COLOR_BGR2GRAY)
@@ -3562,12 +3594,16 @@ def _detect_person(image: Image.Image) -> dict[str, Any]:
         return _stage("fail", 0.82, {"face_count": 0, "detectors_attempted": detectors_attempted}, [
             _issue("person.no_face", "未能确认人脸位置", "请换一张脸部清晰、未被遮挡的单人半身或全身照片。")
         ])
+    rejected = []
+    if len(faces) > 1:
+        faces, rejected = _confirm_face_candidates(bgr, faces)
+    verification = {"rejected_face_like_regions": rejected, "verification": "mediapipe_candidate_crops"} if rejected else {}
     faces.sort(key=lambda item: (item["box"]["y"], -item["area_ratio"]))
     face = faces[0]
     if len(faces) > 1:
         ignored_faces = _lower_face_like_props(faces, h)
-        if len(ignored_faces) != len(faces) - 1:
-            return _stage("fail", 0.86, {"face_count": len(faces), "faces": faces}, [_issue("person.multiple_faces", "检测到多人脸", "请上传只有本人出镜的照片。")])
+        if any(item.get("verified_by") for item in faces) or len(ignored_faces) != len(faces) - 1:
+            return _stage("fail", 0.86, {"face_count": len(faces), "faces": faces, **verification}, [_issue("person.multiple_faces", "检测到多人脸", "请上传只有本人出镜的照片。")])
         return _stage("warn", 0.72, {
             "face_count": 1,
             "detected_face_like_count": len(faces),
@@ -3583,7 +3619,7 @@ def _detect_person(image: Image.Image) -> dict[str, Any]:
     torso_top = box["y"] + box["height"]
     if torso_top > h * 0.58:
         return _stage("fail", 0.76, {"face_count": 1, "primary_face": face}, [_issue("person.upper_body_missing", "上半身区域不足", "请上传包含肩膀和胸口区域的照片。")])
-    return _stage("pass", 0.84, {"face_count": 1, "primary_face": face}, [])
+    return _stage("pass", 0.84, {"face_count": 1, "primary_face": face, **verification}, [])
 
 
 def _lower_face_like_props(faces: list[dict[str, Any]], image_height: int) -> list[dict[str, Any]]:

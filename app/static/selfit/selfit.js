@@ -165,6 +165,10 @@
   }, true);
 
   const showScreen = (name) => {
+    if (name === 'report' && !state.currentReportTypeId && !publicShareToken) {
+      void restoreCurrentReport();
+      return;
+    }
     const next = screens.find((screen) => screen.dataset.screen === name);
     if (!next) return;
     const previous = state.screen;
@@ -1262,8 +1266,9 @@
     return `/selfit/try-on?${query}`;
   };
   const renderReport = (payload = {}) => {
+    if (!String(payload?.typeId || '').trim()) throw new Error('报告数据暂未加载完成，请重试。');
     const data = normalizeReport(payload);
-    const reportTypeId = String(data.typeId || 'mute').toLowerCase();
+    const reportTypeId = String(data.typeId).trim().toLowerCase();
     state.currentReportTypeId = reportTypeId;
     const continueToApp = document.querySelector('#continueToApp');
     const pendingGenderContent = data.recommendationStatus === 'pending_gender_content';
@@ -1387,7 +1392,8 @@
   const loadReport = async (url, init = {}) => {
     const response = await fetch(url, { ...init, headers: { Accept: 'application/json', ...(init.headers || {}) } });
     if (!response.ok) throw new Error(`报告数据加载失败（${response.status}）`);
-    return renderReport(await response.json());
+    const payload = await response.json();
+    return renderReport(payload.report || payload);
   };
   const generateReport = async () => {
     const button = document.querySelector('#vibeNext');
@@ -1459,7 +1465,7 @@
     personalities: window.selfitPersonalityReports,
   });
   window.addEventListener('selfit:report-data', (event) => renderReport(event.detail || {}));
-  renderReport(window.__SELFIT_REPORT__ || { typeId: 'mute' });
+  if (window.__SELFIT_REPORT__?.typeId) renderReport(window.__SELFIT_REPORT__);
 
   const toastNode = document.querySelector('#toast');
   const toastHome = toastNode.parentElement;
@@ -2076,19 +2082,34 @@
     }),
   });
 
+  let currentReportRequest = null;
+  const restoreCurrentReport = () => {
+    if (currentReportRequest) return currentReportRequest;
+    showScreen('loading');
+    currentReportRequest = (async () => {
+      try {
+        const session = await authReady;
+        if (!state.authUser && !session?.user) { showScreen('login'); return; }
+        const result = await api.getLatestReport();
+        if (!result?.report?.reportId) { showScreen('intro'); playIntro(); return; }
+        const fullReport = await api.getReport(result.report.reportId);
+        renderReport(fullReport.report);
+        state.reportId = result.report.reportId;
+        showScreen('report');
+      } catch (error) {
+        track('report_load_failed', { message: error.message || '' });
+        showScreen('report-error');
+      } finally { currentReportRequest = null; }
+    })();
+    return currentReportRequest;
+  };
+  document.querySelector('#reportLoadRetry').addEventListener('click', () => void restoreCurrentReport());
+
   const previewParams = new URLSearchParams(window.location.search);
   if (entryParams.get('from') === 'mirror' && entryParams.get('report') === 'latest') {
     shell.classList.add('is-ready');
     showScreen('loading');
-    void authReady.then(async (session) => {
-      if (!session?.user) { showScreen('login'); return; }
-      const result = await api.getLatestReport();
-      if (!result?.report) { showScreen('intro'); playIntro(); return; }
-      state.reportId = result.report.reportId || null;
-      const fullReport = await api.getReport(state.reportId);
-      renderReport(fullReport.report);
-      showScreen('report');
-    }).catch(() => { window.location.replace('/selfit/try-on'); });
+    void restoreCurrentReport();
     return;
   }
   const previewScreen = previewParams.get('preview');
@@ -2151,10 +2172,11 @@
     const errorState = document.querySelector('#publicReportError');
     const visitorCta = document.querySelector('#publicReportCta');
     visitorCta.hidden = false;
-    showScreen('report');
+    showScreen('loading');
     shell.classList.add('is-ready');
     api.getPublicShare(publicShareToken).then((result) => {
       renderReport(result.report || {});
+      showScreen('report');
       const sharedType = String(result.report?.title || result.report?.typeName || '').trim().slice(0, 24);
       const tryUrl = new URL('/selfit', window.location.origin);
       tryUrl.searchParams.set('from', 'shared-report');
@@ -2180,6 +2202,7 @@
       errorState.querySelector('h1').textContent = isExpired ? '好可惜，本分享已过期' : '没有找到这份分享报告';
       errorState.querySelector('p').textContent = isExpired ? '请直接扫码访问selfit' : '请扫码访问selfit';
       errorState.hidden = false;
+      showScreen('report');
     });
     document.querySelectorAll('[data-public-report-try]').forEach((link) => link.addEventListener('click', () => {
       track('shared_report_try_clicked', { placement: link.dataset.publicReportTry || '', typeId: link.dataset.sharedTypeId || '' });

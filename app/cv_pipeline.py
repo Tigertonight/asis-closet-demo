@@ -776,7 +776,7 @@ def _detect_face_candidates(bgr: np.ndarray, gray: np.ndarray) -> list[tuple[int
     return _dedupe_face_candidates(candidates)
 
 
-def _detect_mediapipe_face_candidates(bgr: np.ndarray) -> list[tuple[int, int, int, int, str]]:
+def _detect_mediapipe_face_candidates(bgr: np.ndarray, *, raise_on_error: bool = False) -> list[tuple[int, int, int, int, str]]:
     detector = _mediapipe_face_detector()
     if mp is None or detector is None:
         return []
@@ -787,6 +787,8 @@ def _detect_mediapipe_face_candidates(bgr: np.ndarray) -> list[tuple[int, int, i
         image = mp.Image(image_format=mp.ImageFormat.SRGB, data=rgb)
         results = detector.detect(image)
     except Exception:
+        if raise_on_error:
+            raise
         return []
     for detection in results.detections:
         score = float(detection.categories[0].score) if detection.categories else 0.0
