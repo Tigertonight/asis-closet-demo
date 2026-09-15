@@ -189,7 +189,16 @@ _ISSUE_CODE_TO_ENUM: dict[str, str | None] = {
     # 大头照门禁（app/cv_pipeline.run_face_cv 与 attribute_pipeline 共用 code）
     "photo.insufficient_light": ISSUE_INSUFFICIENT_LIGHT,
     "photo.overexposed": ISSUE_OVEREXPOSED,
+    # photo-v1.2：严重过曝（高光削顶/色度坍缩）拦截；中度过曝与阴影/暗光/暖光
+    # 为 warn 级提示（不拦截，降肤色置信度，用户可手动纠正）
+    "photo.overexposed_severe": ISSUE_OVEREXPOSED,
     "photo.color_cast": None,
+    "skin.face_shadow": None,
+    "skin.dim_light_suspect": None,
+    "skin.warm_illuminant": None,
+    "skin.mixed_light": None,
+    "skin.overexposed": None,
+    "skin.bright_photo": None,
     "photo.face_crop_empty": ISSUE_UNSUPPORTED_CONTENT,
     "face.no_face": ISSUE_FACE_NOT_FOUND,
     "face.too_small": ISSUE_FACE_NOT_FOUND,

@@ -239,6 +239,7 @@ def _index_user_photo(data: dict[str, Any], record: dict[str, Any], kind: str) -
         "format": photo.get("format"),
         "width": photo.get("width"),
         "height": photo.get("height"),
+        "algorithm_version": photo.get("algorithm_version"),
         "source": photo.get("source") or ("mirror" if record.get("source") == "mirror_handoff" else "app"),
         "sample_id": photo.get("sample_id"),
         "sample_fingerprint": photo.get("sample_fingerprint"),
@@ -1404,6 +1405,41 @@ def _save_photo_asset(session_id: str, kind: str, raw: bytes, image_format: str)
     return asset_id
 
 
+def _registry_record_photo(
+    *,
+    photo_id: str,
+    asset_key: str,
+    kind: str,
+    user_id: Any,
+    session_id: str,
+    original_status: str,
+) -> None:
+    """把新落盘的照片交给算法版本注册表异步补跑（accepted 与 rejected 都算）。
+
+    旁路能力：本地存储拿不到文件、或注册表异常时静默跳过，
+    用户上传主流程（当前版本的检测与存档）不受任何影响。
+    """
+    try:
+        local_path = _asset_store().local_path(asset_key)
+        if local_path is None:
+            return
+        from app.photo_algorithm_registry import record_photo_async
+
+        record_photo_async(
+            {
+                "photo_id": photo_id,
+                "path": str(local_path),
+                "kind": kind,
+                "source": "user",
+                "user_id": str(user_id) if user_id else None,
+                "session_id": session_id,
+                "original_status": original_status,
+            }
+        )
+    except Exception:
+        pass
+
+
 def _save_rejected_photo_record(
     data: dict[str, Any],
     *,
@@ -1562,6 +1598,8 @@ async def _process_session_photo(
     photos = record.setdefault("photos", {})
     request_id = _request_id()
     if accepted:
+        from app.attribute_pipeline import PHOTO_ALGORITHM_VERSION
+
         asset_id = _save_photo_asset(session_id, kind, raw, stored_format)
         # 用户照片归档进 QA 数据集：镜子流程（mirror_handoff）归 mirror，其余归 app。
         if not sample:
@@ -1574,12 +1612,23 @@ async def _process_session_photo(
             "format": stored_format,
             "width": pil_image.width,
             "height": pil_image.height,
+            # 算法版本随照片存档：历史报告可追溯「这张照片当时是哪个版本算的」
+            "algorithm_version": PHOTO_ALGORITHM_VERSION,
             # 算法推断的肤色/脸型/身型标签，供报告任务与「手动纠正优先」合并消费；
             # 详细依据（状态/量测值/次选/warn 提示）由 public_analysis 投影给前端。
             "attributes": dict(inspection.attributes),
             "notes": list(inspection.notes),
             **({"source": "sample", "sample_id": sample.id, "sample_fingerprint": sample_fingerprint} if sample else {}),
         }
+        # 注册表旁路：新照片异步补跑所有已注册算法版本的诊断报告（失败静默）
+        _registry_record_photo(
+            photo_id=asset_id,
+            asset_key=f"{session_id}/{asset_id}{PHOTO_SUPPORTED_FORMATS[stored_format]}",
+            kind=kind,
+            user_id=record.get("user_id"),
+            session_id=session_id,
+            original_status="accepted",
+        )
         # A newly accepted photo replaces earlier choices for its attributes.
         # Later explicit edits still take precedence over this photo's inference.
         manual = record.get("manual") or {}
@@ -1626,6 +1675,16 @@ async def _process_session_photo(
             )
         except Exception:
             pass  # 留存失败不影响用户主流程
+        else:
+            # 注册表旁路：被拒照片同样补跑各版本报告（新版本会不会不再拒它，是算法迭代的重要信号）
+            _registry_record_photo(
+                photo_id=rejected_asset_id,
+                asset_key=f"{session_id}/{rejected_asset_id}{PHOTO_SUPPORTED_FORMATS[stored_format]}",
+                kind=kind,
+                user_id=record.get("user_id"),
+                session_id=session_id,
+                original_status="rejected",
+            )
         photos[kind] = {"asset_id": None, "status": "rejected", "code": f"photo.{primary}"}
         body = _photo_response(
             request_id,
@@ -1807,6 +1866,11 @@ def _run_report_job(job_id: str) -> None:
         "created_at": _iso(_now()),
         "data": report_data,
         "profile": _profile_snapshot(session),
+        # 照片算法版本快照：报告生成时各照片用的算法版本（历史问题复现的关键线索）
+        "photo_algorithm_versions": {
+            kind: str((photo or {}).get("algorithm_version") or "unknown")
+            for kind, photo in (session.get("photos") or {}).items()
+        },
     }
     data["reports"].append(report)
     job["status"] = "completed"

@@ -5,6 +5,7 @@ import html as html_lib
 import json
 import mimetypes
 import os
+import sys
 from pathlib import Path
 from typing import Any
 from urllib.parse import unquote, urlparse
@@ -154,6 +155,8 @@ from app.selfit_inspiration import router as selfit_inspiration_router
 from app.selfit_report_outfits import router as selfit_report_outfits_router
 from app.selfit_analytics import admin_router as selfit_admin_router, router as selfit_analytics_router
 from app.selfit_admin_submissions import router as selfit_admin_submissions_router
+from app.photo_algorithm_admin import router as photo_algorithm_admin_router
+from app.photo_algorithm_registry import ensure_current_version_async
 from app.qa_onboarding import QA_PHOTO_DIR, router as qa_onboarding_router
 from app.site_home import router as site_home_router
 from app.storage import hydrate_user_from_demo_data, storage_context, user_storage
@@ -175,8 +178,16 @@ app.include_router(selfit_report_outfits_router)
 app.include_router(selfit_analytics_router)
 app.include_router(selfit_admin_router)
 app.include_router(selfit_admin_submissions_router)
+app.include_router(photo_algorithm_admin_router)
 app.include_router(qa_onboarding_router)
 app.include_router(site_home_router)
+
+# 照片算法版本注册表：检测到 PHOTO_ALGORITHM_VERSION 变化时自动快照当前算法代码
+# + 后台全量跑批存量照片（幂等；历史版本报告由此可对比、可复现）。
+# pytest 收集阶段也会 import 本模块，豁免以免测试进程被全量跑批拖死。
+if "pytest" not in sys.modules:
+    ensure_current_version_async(note="startup_auto_snapshot")
+
 SELFIT_INDEX_PATH = Path(__file__).resolve().parent / "static" / "selfit" / "index.html"
 ADMIN_INDEX_PATH = Path(__file__).resolve().parent / "static" / "admin" / "index.html"
 FAVICON_PATH = Path(__file__).resolve().parent / "static" / "brand" / "favicon.ico"
