@@ -992,3 +992,32 @@ def test_failed_outfit_pass_preserves_original_quality_error(monkeypatch):
     assert result["pipeline"]["quality_review"] == failed_quality
     assert result["decision"]["user_message"] == "面部与原照片差异较大。请重新尝试。"
     assert result["result"]["image_path"] is None
+
+
+def test_aligned_face_review_allows_small_shift_and_light_change():
+    rng = np.random.default_rng(42)
+    pixels = rng.integers(30, 210, (200, 200, 3), dtype=np.uint8)
+    pixels = tryon.cv2.GaussianBlur(pixels, (7, 7), 0)
+    # Add stable contours so the test has detail at facial-feature scale.
+    tryon.cv2.circle(pixels, (80, 80), 22, (45, 55, 65), -1)
+    tryon.cv2.rectangle(pixels, (110, 110), (140, 150), (190, 175, 160), -1)
+    original = Image.fromarray(pixels)
+    moved = tryon.cv2.warpAffine(pixels, np.float32([[1, 0, 3], [0, 1, 2]]), (200, 200), borderMode=tryon.cv2.BORDER_REFLECT)
+    moved = Image.fromarray(np.clip(moved.astype(float) + 18, 0, 255).astype('uint8'))
+    stage = {"evidence": {"primary_face": {"box": {"x": 0, "y": 0, "width": 200, "height": 200}}}}
+    assert tryon._aligned_face_review(original, moved, stage)["equivalent"]
+    changed = original.copy()
+    changed.paste('black', (55, 55, 105, 105))
+    assert not tryon._aligned_face_review(original, changed, stage)["equivalent"]
+    far = Image.fromarray(tryon.cv2.warpAffine(pixels, np.float32([[1, 0, 25], [0, 1, 0]]), (200, 200)))
+    assert not tryon._aligned_face_review(original, far, stage)["equivalent"]
+
+
+def test_aligned_face_review_fails_closed(monkeypatch):
+    stage = {"evidence": {"primary_face": {"box": {"x": 0, "y": 0, "width": 200, "height": 200}}}}
+    assert not tryon._aligned_face_review(Image.new('RGB', (200, 200)), Image.new('RGB', (200, 200)), stage)["equivalent"]
+    image = Image.fromarray(np.random.default_rng(1).integers(0, 255, (200, 200, 3), dtype=np.uint8))
+    def broken(*args):
+        raise tryon.cv2.error('unavailable')
+    monkeypatch.setattr(tryon.cv2, 'findTransformECC', broken)
+    assert not tryon._aligned_face_review(image, image, stage)["equivalent"]

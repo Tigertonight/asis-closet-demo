@@ -3766,7 +3766,9 @@ def _review_tryon_quality(original: Image.Image, result_path: Path | None, perso
         evidence["protected_region_diff"] = background_diff
         evidence["mask_editable_ratio"] = editable_ratio
         evidence["mask_contract"] = "fail_if_protected_face_or_background_changes"
-        if face_diff > 28:
+        face_review = _aligned_face_review(original, result, person_stage) if face_diff > 28 else {"method": "raw_pixels", "equivalent": True}
+        evidence["face_review"] = face_review
+        if face_diff > 28 and not face_review["equivalent"]:
             issues.append(_issue("quality.face_changed", "生成图中的面部与原照片差异较大", "请重新尝试，保留原来的面部特征。"))
         if background_diff > 18:
             issues.append(_issue("quality.background_changed", "背景或非衣服区域变化较大", "请重新生成。"))
@@ -4335,6 +4337,12 @@ def _run_staged_outfit_edit(
             ]),
             "image_path": None,
         }
+    from app.face_restore import FaceRestorer
+    restorer = FaceRestorer(Image.open(person_image).convert("RGB"), person_detection)
+    # Hats can obscure the forehead: never paste a face over a new head accessory.
+    restore_face = not any(_is_head_accessory(item) for item in plan.get("items", []))
+    if restore_face:
+        restorer.start()  # Prepare during the existing provider request, not before it.
     current_person = person_image
     stage_evidence = []
     issues = []
@@ -4380,6 +4388,9 @@ def _run_staged_outfit_edit(
         if result_stage.get("status") in {"fail", "pending"} or not result_path:
             final_status = str(result_stage.get("status") or "fail")
             break
+        if restore_face:
+            result_path, restoration = restorer.restore(Path(result_path), stage_dir / "result_face_restored.png")
+            stage_evidence[-1]["face_restoration"] = restoration
         quality = _review_tryon_quality(
             Image.open(current_person).convert("RGB"), Path(result_path),
             person_detection, Path(mask["evidence"]["mask_path"]),
@@ -5800,6 +5811,43 @@ def _face_region_difference(original: Image.Image, result: Image.Image, person_s
     a = np.array(original.crop((left, top, right, bottom)).convert("RGB"), dtype=np.float32)
     b = np.array(result.crop((left, top, right, bottom)).convert("RGB"), dtype=np.float32)
     return round(float(np.mean(np.abs(a - b))), 2)
+
+
+def _aligned_face_review(original: Image.Image, result: Image.Image, person_stage: dict[str, Any]) -> dict[str, Any]:
+    """Conservative second check for small registration/lighting differences.
+
+    This measures visual preservation, not identity. Never rescue a failed raw
+    check when alignment is uncertain, large, or the face has too little detail.
+    """
+    evidence: dict[str, Any] = {"method": "bounded_alignment_v1", "equivalent": False}
+    try:
+        box = person_stage["evidence"]["primary_face"]["box"]
+        x, y, w, h = (int(box[k]) for k in ("x", "y", "width", "height"))
+        if min(w, h) < 32 or x < 0 or y < 0 or x + w > original.width or y + h > original.height:
+            return {**evidence, "reason": "invalid_face_region"}
+        region = (x, y, x + w, y + h)
+        a, b = [np.asarray(im.crop(region).resize((160, 160)).convert("RGB"), dtype=np.float32) for im in (original, result)]
+        ag, bg = [cv2.cvtColor(im, cv2.COLOR_RGB2GRAY) for im in (a, b)]
+        if min(float(ag.std()), float(bg.std())) < 12:
+            return {**evidence, "reason": "insufficient_detail"}
+        score, warp = cv2.findTransformECC(ag, bg, np.eye(2, 3, dtype=np.float32), cv2.MOTION_EUCLIDEAN,
+            (cv2.TERM_CRITERIA_EPS | cv2.TERM_CRITERIA_COUNT, 60, 1e-5), None, 5)
+        shift = float(np.linalg.norm(warp[:, 2])) / 160
+        angle = abs(float(np.degrees(np.arctan2(warp[1, 0], warp[0, 0]))))
+        evidence.update(correlation=round(score, 4), shift_ratio=round(shift, 4), rotation_degrees=round(angle, 2))
+        if score < 0.92 or shift > 0.06 or angle > 3:
+            return {**evidence, "reason": "alignment_not_close"}
+        aligned = cv2.warpAffine(b, warp, (160, 160), flags=cv2.INTER_LINEAR | cv2.WARP_INVERSE_MAP)
+        # Exclude resampling borders; only permit a small global light offset.
+        ac, bc = a[12:-12, 12:-12], aligned[12:-12, 12:-12]
+        offset = np.clip(np.median(ac - bc, axis=(0, 1)), -25, 25)
+        error = np.mean(np.abs(ac - np.clip(bc + offset, 0, 255)), axis=2)
+        residual, tail = float(error.mean()), float(np.percentile(error, 90))
+        evidence.update(aligned_diff=round(residual, 2), p90_diff=round(tail, 2), light_offset=offset.round(2).tolist())
+        evidence["equivalent"] = residual <= 12 and tail <= 25
+        return evidence
+    except (cv2.error, ValueError, KeyError, TypeError):
+        return {**evidence, "reason": "alignment_unavailable"}
 
 
 def _protected_region_difference(original: Image.Image, result: Image.Image, mask_path: Path) -> float:
