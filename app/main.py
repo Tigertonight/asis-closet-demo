@@ -179,6 +179,8 @@ app.include_router(selfit_analytics_router)
 app.include_router(selfit_admin_router)
 app.include_router(selfit_admin_submissions_router)
 app.include_router(photo_algorithm_admin_router)
+from app.feedback import router as feedback_router
+app.include_router(feedback_router)
 app.include_router(qa_onboarding_router)
 app.include_router(site_home_router)
 

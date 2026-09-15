@@ -293,6 +293,7 @@
   <nav class="tabs">
     <button class="is-active" data-tab="analytics" type="button">数据分析</button>
     <button type="button" data-tab="submissions">用户报告</button>
+    <button type="button" data-tab="feedback">用户反馈</button>
     <button type="button" data-tab="photoAlgorithms">算法版本</button>
     <button type="button" data-tab="invites">邀请码</button>
     <button type="button" data-tab="stylistContext">AI agent</button>
@@ -348,6 +349,7 @@
       <h2>用户行为（手机号关联）</h2>
       <table><thead><tr><th>手机号</th><th>登录方式</th><th>行为事件数</th><th>首次活跃</th><th>最后活跃</th></tr></thead><tbody id="userRows"></tbody></table>
     </div>
+    <section class="panel" data-tab-panel="feedback" hidden><h2>用户反馈</h2><button id="feedbackRefresh" type="button">刷新</button><p id="feedbackSummary" role="status"></p><div id="feedbackList"></div><button id="feedbackMore" type="button" hidden>加载更多</button></section>
     <div class="panel" id="submissionsPanel" data-tab-panel="submissions" hidden>
       <h2>用户报告</h2>
       <div class="report-tabs" role="tablist" aria-label="用户报告列表">
@@ -559,6 +561,37 @@
     if (!response.ok) throw new Error(`请求失败（${response.status}）`);
     return response.json();
   };
+
+  let feedbackOffset = 0, feedbackVersion = 0;
+  const feedbackImages = [];
+  async function loadFeedback(more = false) {
+    const version = ++feedbackVersion;
+    $('feedbackMore').disabled = true;
+    if (!more) { feedbackOffset = 0; feedbackImages.splice(0).forEach(URL.revokeObjectURL); $('feedbackList').replaceChildren(); }
+    $('feedbackSummary').textContent = '正在加载反馈…';
+    try {
+      const data = await api(`/admin/api/feedback?offset=${feedbackOffset}`);
+      if (version !== feedbackVersion) return;
+      for (const row of data.items) {
+        const card = document.createElement('article'); card.style.cssText='padding:20px 0;border-bottom:1px solid #eee;overflow-wrap:anywhere';
+        const meta = document.createElement('p'); meta.textContent = `${new Date(row.created_at).toLocaleString()} · ${row.user_id || '未登录用户'} · ${row.source || 'App'}`;
+        const description = document.createElement('p'); description.style.whiteSpace='pre-wrap'; description.textContent=row.description;
+        card.append(meta, description);
+        if (row.has_photo) {
+          const button=document.createElement('button');button.type='button';button.textContent='查看照片';
+          button.onclick=async()=>{button.disabled=true;try{const response=await fetch(`/admin/api/feedback/${row.id}/photo`,{headers:{Authorization:`Bearer ${state.token}`}});if(!response.ok)throw Error('加载失败');const url=URL.createObjectURL(await response.blob());if(!card.isConnected){URL.revokeObjectURL(url);return;}feedbackImages.push(url);const image=document.createElement('img');image.src=url;image.alt='用户反馈照片';image.style.cssText='display:block;max-width:100%;max-height:520px;object-fit:contain;border-radius:16px';button.replaceWith(image);}catch{button.disabled=false;button.textContent='照片加载失败，点击重试';}};
+          card.append(button);
+        }
+        $('feedbackList').append(card);
+      }
+      feedbackOffset += data.items.length;
+      $('feedbackSummary').textContent = data.total ? `共 ${data.total} 条反馈` : '暂无用户反馈';
+      $('feedbackMore').hidden = feedbackOffset >= data.total;
+    } catch(error) { if(version===feedbackVersion) $('feedbackSummary').textContent=error.message; }
+    finally { if(version===feedbackVersion) $('feedbackMore').disabled=false; }
+  }
+  $('feedbackRefresh').onclick=()=>loadFeedback();
+  $('feedbackMore').onclick=()=>loadFeedback(true);
 
   const login = async () => {
     const password = $('passwordInput').value;
@@ -1737,6 +1770,7 @@
     $('toolbar').hidden = tab !== 'analytics';
     if (tab === 'analytics') void load();
     if (tab === 'invites') void loadInvites();
+    if (tab === 'feedback') void loadFeedback();
     if (tab === 'photoAlgorithms') void loadPhotoAlgorithms();
     if (tab === 'personas') void loadPersonaGuide();
     if (tab === 'stylistContext') void loadStylistContext();
