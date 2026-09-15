@@ -54,3 +54,23 @@ def test_restore_never_waits_for_preparation(monkeypatch,tmp_path):
     path=tmp_path/'result.png';original.save(path)
     output,e=r.restore(path,tmp_path/'restored.png')
     assert output==path and e['reason']=='preparation_not_ready'
+
+
+def test_contour_review_ignores_clothes_but_rejects_face_edits(monkeypatch):
+    import cv2
+    from app.face_restore import review_face_contour
+    original,face=fixture(monkeypatch)
+    pixels=np.array(original)
+    cv2.circle(pixels,(115,115),15,(30,40,50),-1)
+    cv2.circle(pixels,(148,118),12,(55,60,65),-1)
+    original=Image.fromarray(pixels)
+    clothes=pixels.copy();clothes[205:]=0;clothes[:40]=255
+    review=review_face_contour(original,Image.fromarray(clothes),face)
+    assert review['available'] and review['equivalent']
+    changed=clothes.copy();changed[95:155,100:150]=0
+    assert not review_face_contour(original,Image.fromarray(changed),face)['equivalent']
+    # Different face texture, even with unchanged landmark positions, must fail.
+    changed[60:195,70:185]=255-changed[60:195,70:185]
+    assert not review_face_contour(original,Image.fromarray(changed),face)['equivalent']
+    monkeypatch.setattr(FaceRestorer,'landmarks',staticmethod(lambda _:None))
+    assert not review_face_contour(original,original,face)['available']

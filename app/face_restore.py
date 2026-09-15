@@ -106,3 +106,56 @@ class FaceRestorer:
         except (cv2.error, ValueError, OSError, IndexError, RuntimeError):
             # Restoration is optional; retain the existing quality gate on failure.
             return Path(result_path), {**evidence, 'reason': 'restoration_unavailable'}
+
+
+def review_face_contour(original, result, detection):
+    """Compare aligned face interiors, excluding clothes and crop background.
+
+    A conservative visual-preservation check, not an identity recognizer.
+    Unavailable landmarks leave the caller's existing fallback in charge.
+    """
+    evidence = {'method': 'face_contour_v1', 'available': False, 'equivalent': False}
+    try:
+        restorer = FaceRestorer(original, detection)
+        if restorer.region is None or original.size != result.size:
+            return evidence
+        restorer.prepare()
+        a = restorer.points
+        target = np.array(result.crop(restorer.region))
+        b = restorer.landmarks(target) if a is not None else None
+        if b is None:
+            return evidence
+        matrix, _ = cv2.estimateAffinePartial2D(a[_ANCHORS], b[_ANCHORS], method=cv2.LMEDS)
+        if matrix is None or not np.isfinite(matrix).all():
+            return evidence
+        width = max(1., float(np.ptp(a[_OVAL, 0])))
+        scale = float(np.hypot(matrix[0,0], matrix[1,0]))
+        angle = abs(float(np.degrees(np.arctan2(matrix[1,0], matrix[0,0]))))
+        shift = float(np.linalg.norm(a[_OVAL].mean(0)-b[_OVAL].mean(0))/width)
+        residual = float(np.percentile(np.linalg.norm(cv2.transform(a[_ANCHORS,None,:], matrix)[:,0,:]-b[_ANCHORS], axis=1),90)/width)
+        evidence.update(available=True, scale=round(scale,4), angle=round(angle,2), shift=round(shift,4), landmark_p90=round(residual,4))
+        if not (.94 <= scale <= 1.06 and angle <= 5 and shift <= .1 and residual <= .035):
+            return {**evidence, 'reason': 'face_geometry_changed'}
+        h,w = target.shape[:2]
+        source = cv2.warpAffine(restorer.source, matrix, (w,h))
+        mask = np.zeros((h,w),np.uint8)
+        cv2.fillPoly(mask,[cv2.transform(a[_OVAL,None,:], matrix)[:,0,:].round().astype(np.int32)],255)
+        target_mask=np.zeros_like(mask);cv2.fillPoly(target_mask,[b[_OVAL].round().astype(np.int32)],255)
+        mask=cv2.bitwise_and(mask,target_mask)
+        radius=max(2,int(width*.035));mask=cv2.erode(mask,np.ones((radius*2+1,radius*2+1),np.uint8))>0
+        if mask.sum()<256:
+            return {**evidence, 'available': False, 'reason':'insufficient_region'}
+        sa=source.astype(np.float32);tb=target.astype(np.float32)
+        offset=np.clip(np.median(sa[mask]-tb[mask],axis=0),-25,25)
+        errors=np.abs(sa[mask]-np.clip(tb[mask]+offset,0,255)).mean(axis=1)
+        # Low-pass lightly to tolerate compression; retain eye/nose/mouth structure.
+        ga=cv2.GaussianBlur(cv2.cvtColor(sa,cv2.COLOR_RGB2GRAY),(0,0),1)[mask]
+        gb=cv2.GaussianBlur(cv2.cvtColor(tb,cv2.COLOR_RGB2GRAY),(0,0),1)[mask]
+        if min(float(ga.std()),float(gb.std()))<8:
+            return {**evidence,'reason':'insufficient_detail'}
+        corr=float(np.corrcoef(ga,gb)[0,1]);mean=float(errors.mean());tail=float(np.percentile(errors,90))
+        evidence.update(correlation=round(corr,4),mean_diff=round(mean,2),p90_diff=round(tail,2),pixels=int(mask.sum()))
+        evidence['equivalent']=bool(corr>=.90 and mean<=15 and tail<=30)
+        return evidence
+    except (cv2.error,ValueError,IndexError,RuntimeError):
+        return evidence

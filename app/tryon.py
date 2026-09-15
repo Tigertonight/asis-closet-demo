@@ -502,7 +502,8 @@ def _run_inspiration_tryon_job(user_id: str, job_id: str) -> None:
             person = _read_upload_image(Path(job["person_path"]).read_bytes(),job["person_filename"],"person")
             reference = Path(job["inspiration_path"])
             inspiration = _read_upload_image(reference.read_bytes(),reference.name,"inspiration")
-            result = run_try_on_from_inspiration(person,inspiration,full_outfit=True)
+            result = run_try_on_from_inspiration(person,inspiration,full_outfit=True,
+                **({"retry_feedback": job["retry_feedback"]} if job.get("retry_feedback") else {}))
             result["note"] = job["note"]
             completed = result.get("status") in {"generated","review"} and bool(result.get("result",{}).get("image_path"))
             if completed:
@@ -528,11 +529,50 @@ def get_outfit_tryon_job(job_id: str) -> dict[str, Any]:
     return _public_tryon_job(_read_tryon_job(job_id))
 
 
+def _retry_feedback(result: dict[str, Any] | None) -> list[str]:
+    """Extract only known validation codes, never provider text or user prose."""
+    codes: list[str] = []
+    def visit(value):
+        if isinstance(value, dict):
+            code = value.get("code")
+            if isinstance(code, str) and _retry_feedback_prompt([code]) and code not in codes:
+                codes.append(code)
+            for child in value.values():
+                visit(child)
+        elif isinstance(value, list):
+            for child in value:
+                visit(child)
+    visit((result or {}).get("pipeline", {}))
+    return codes[:12]
+
+
+def _retry_feedback_prompt(codes: list[str] | None) -> str:
+    instructions = []
+    known = {
+        "quality.face_changed": "Preserve the original face, facial features, expression, head angle and skin texture; do not beautify or redraw the face.",
+        "quality.background_changed": "Preserve the original background, lighting, camera framing and all non-clothing regions.",
+        "quality.result_too_small": "Return a full-resolution result on the original photo canvas.",
+    }
+    slots = {"skirt": "skirt", "dress": "dress", "top": "top", "outer": "outerwear", "bottom": "bottoms", "shoes": "shoes", "bag": "bag", "accessory": "accessory", "hat": "hat"}
+    for code in (codes or [])[:12]:
+        text = known.get(code)
+        parts = str(code).split(".")
+        if len(parts) == 3 and parts[0] == "semantic" and parts[1] in slots and parts[2] in {"wrong", "missing"}:
+            text = f"Correct the {slots[parts[1]]}: match the supplied reference's shape, color, pattern and length, and ensure it is visibly worn."
+            if parts[1] in {"skirt", "dress", "bottom"}:
+                text += " Fully replace the original garment in this region; do not retain its old hem or add the new garment over the original."
+        if text and text not in instructions:
+            instructions.append(text)
+    return (" Previous attempt failed validation. Required corrections: " + " ".join(instructions)) if instructions else ""
+
+
 def retry_outfit_tryon_job(job_id: str, user_id: str) -> dict[str, Any]:
     job = _read_tryon_job(job_id)
     if job.get("status") in {"queued", "processing"}:
         return _public_tryon_job(job)
+    feedback = _retry_feedback(job.get("result")) or job.get("retry_feedback", [])
     job.update({
+        "retry_feedback": feedback,
         "status": "queued",
         "progress": 0,
         "phase": "retry_queued",
@@ -662,6 +702,7 @@ def _run_outfit_tryon_job(user_id: str, job_id: str) -> None:
                 force_regenerate=bool(job.get("force_regenerate")),
                 selected_item_ids=job.get("selected_item_ids"),
                 wear_all_items=bool(job.get("wear_all_items")),
+                **({"retry_feedback": job["retry_feedback"]} if job.get("retry_feedback") else {}),
             )
             if job.get("base_job_id") and job.get("retry_item_id"):
                 base_job = _read_tryon_job(str(job["base_job_id"]))
@@ -1016,6 +1057,7 @@ def run_try_on_from_inspiration(
     provider: "TryOnProvider | None" = None,
     style_brief: str | None = None,
     full_outfit: bool = False,
+    retry_feedback: list[str] | None = None,
 ) -> dict[str, Any]:
     tryon_id = hashlib.sha256(f"inspiration:{person['image_id']}:{inspiration['image_id']}:{style_brief or ''}{':full-outfit' if full_outfit else ''}".encode("utf-8")).hexdigest()[:16]
     work_dir = _tryon_output_dir() / tryon_id
@@ -1054,7 +1096,7 @@ def run_try_on_from_inspiration(
         user_message = "照片暂不适合试穿，请按提示重新上传。"
     else:
         provider = provider or _default_provider()
-        prompt = _build_full_inspiration_prompt() if full_outfit else _build_inspiration_tryon_prompt(style_brief)
+        prompt = (_build_full_inspiration_prompt() if full_outfit else _build_inspiration_tryon_prompt(style_brief)) + _retry_feedback_prompt(retry_feedback)
         edit_result = provider.edit(
             person_image=person["saved_path"],
             garment_image=inspiration["saved_path"],
@@ -1121,6 +1163,7 @@ def run_try_on_from_outfit_plan(
     force_regenerate: bool = False,
     selected_item_ids: list[str] | None = None,
     wear_all_items: bool = False,
+    retry_feedback: list[str] | None = None,
 ) -> dict[str, Any]:
     allow_cache = provider is None
     normalized_plan = _normalize_outfit_tryon_plan(outfit_plan)
@@ -1149,6 +1192,7 @@ def run_try_on_from_outfit_plan(
     if not delivered_layering and "dress" in requested_slots and requested_slots.intersection({"top", "outer", "bottom", "skirt"}):
         raise HTTPException(status_code=400, detail="连衣装与上下装会覆盖同一区域，请保留一种穿法")
     plan_signature = json.dumps(_public_outfit_tryon_plan(requested_plan), ensure_ascii=False, sort_keys=True)
+    plan_signature += _retry_feedback_prompt(retry_feedback)
     if wear_all_items:
         plan_signature += ":wear_all_items"
     tryon_id = hashlib.sha256(f"outfit-plan:{person['image_id']}:{plan_signature}".encode("utf-8")).hexdigest()[:16]
@@ -1223,6 +1267,7 @@ def run_try_on_from_outfit_plan(
             plan=effective_plan,
             person_detection=person_detection,
             output_dir=work_dir,
+            **({"retry_feedback": retry_feedback} if retry_feedback else {}),
         )
         pipeline["image_edit"] = edit_result["stage"]
         result_image_path = edit_result.get("image_path")
@@ -3766,7 +3811,12 @@ def _review_tryon_quality(original: Image.Image, result_path: Path | None, perso
         evidence["protected_region_diff"] = background_diff
         evidence["mask_editable_ratio"] = editable_ratio
         evidence["mask_contract"] = "fail_if_protected_face_or_background_changes"
-        face_review = _aligned_face_review(original, result, person_stage) if face_diff > 28 else {"method": "raw_pixels", "equivalent": True}
+        face_review = {"method": "raw_pixels", "equivalent": True}
+        if face_diff > 28:
+            from app.face_restore import review_face_contour
+            face_review = review_face_contour(original, result, person_stage)
+            if not face_review.get("available"):
+                face_review = _aligned_face_review(original, result, person_stage)
         evidence["face_review"] = face_review
         if face_diff > 28 and not face_review["equivalent"]:
             issues.append(_issue("quality.face_changed", "生成图中的面部与原照片差异较大", "请重新尝试，保留原来的面部特征。"))
@@ -4328,6 +4378,7 @@ def _run_staged_outfit_edit(
     plan: dict[str, Any],
     person_detection: dict[str, Any],
     output_dir: Path,
+    retry_feedback: list[str] | None = None,
 ) -> dict[str, Any]:
     groups = _outfit_generation_groups(plan)
     if not groups:
@@ -4363,7 +4414,9 @@ def _run_staged_outfit_edit(
             return {"stage": mask, "image_path": final_path}
         context = _build_outfit_prompt_context(group_plan)
         context["generation_stage"] = group_name
-        prompt = _build_outfit_tryon_prompt(context)
+        group_slots = {str(item.get("slot") or "") for item in group_plan.get("items", [])}
+        group_feedback = [code for code in (retry_feedback or []) if not code.startswith("semantic.") or code.split(".")[1] in group_slots]
+        prompt = _build_outfit_tryon_prompt(context) + _retry_feedback_prompt(group_feedback)
         if group_name == "visible_accessories":
             prompt += " This is the accessory pass: preserve clothing already present in Image A and add every listed visible accessory, including hats and bags, at a physically plausible attachment point."
         result = provider.edit(

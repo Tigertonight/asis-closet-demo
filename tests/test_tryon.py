@@ -504,7 +504,8 @@ def test_outfit_body_coverage_skips_hidden_shoes_without_blocking_visible_top() 
     assert top_only["status"] == "pass"
 
 
-def test_outfit_generation_runs_clothing_before_accessories(tmp_path: Path) -> None:
+@pytest.mark.parametrize("feedback", [None, ["semantic.skirt.wrong", "quality.face_changed"]])
+def test_outfit_generation_runs_clothing_before_accessories(tmp_path: Path, feedback) -> None:
     person = _load_upload(TRYON_MODEL_FIXTURE_DIR / "male_medium_1.png", "person_test")
     detection = _detect_person(person["image"])
     item_path = str(FIXTURE_DIR / "season_spring_bright.jpg")
@@ -533,7 +534,12 @@ def test_outfit_generation_runs_clothing_before_accessories(tmp_path: Path) -> N
             return {"stage": tryon._stage("pass", 0.9, {"provider": self.mode}, []), "image_path": result_path}
 
     provider = RecordingProvider()
-    result = tryon._run_staged_outfit_edit(provider, person["saved_path"], plan, detection, tmp_path)
+    result = tryon._run_staged_outfit_edit(provider, person["saved_path"], plan, detection, tmp_path, retry_feedback=feedback)
+    assert len(provider.calls) == 2
+    if feedback:
+        assert "Fully replace the original garment" in provider.calls[0]["prompt"]
+        assert "Fully replace the original garment" not in provider.calls[1]["prompt"]
+        assert all("Preserve the original face" in call["prompt"] for call in provider.calls)
 
     assert result["stage"]["status"] == "pass"
     assert [stage["name"] for stage in result["stage"]["evidence"]["stages"]] == ["visible_clothing", "visible_accessories"]
@@ -1021,3 +1027,24 @@ def test_aligned_face_review_fails_closed(monkeypatch):
         raise tryon.cv2.error('unavailable')
     monkeypatch.setattr(tryon.cv2, 'findTransformECC', broken)
     assert not tryon._aligned_face_review(image, image, stage)["equivalent"]
+
+
+def test_retry_keeps_validation_feedback_before_clearing_result(monkeypatch):
+    job={'job_id':'a'*18,'status':'failed','attempt':1,'result':{'pipeline':{'quality_review':{'issues':[
+        {'code':'semantic.skirt.wrong','message':'untrusted message'},
+        {'code':'quality.face_changed'}, {'code':'unknown'},
+    ]}}}}
+    queued=[]
+    monkeypatch.setattr(tryon,'_read_tryon_job',lambda _:job)
+    monkeypatch.setattr(tryon,'_write_tryon_job',lambda _:None)
+    monkeypatch.setattr(tryon.TRYON_JOB_EXECUTOR,'submit',lambda *args:queued.append(args))
+    result=tryon.retry_outfit_tryon_job(job['job_id'],'test')
+    assert result['retry_feedback']==['semantic.skirt.wrong','quality.face_changed']
+    assert result['result'] is None and result['force_regenerate']
+    assert result['attempt']==2 and len(queued)==1
+    assert 'untrusted message' not in tryon._retry_feedback_prompt(result['retry_feedback'])
+    # Poll/repeated retry clicks cannot enqueue a second running job.
+    tryon.retry_outfit_tryon_job(job['job_id'],'test')
+    assert len(queued)==1
+    job['status']='failed'  # Provider failure without a new result retains corrections.
+    assert tryon.retry_outfit_tryon_job(job['job_id'],'test')['retry_feedback']==result['retry_feedback']
