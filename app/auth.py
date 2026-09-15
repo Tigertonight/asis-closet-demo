@@ -241,9 +241,10 @@ def _issue_session(
     provider: str,
     client_ip: str | None,
 ) -> str:
-    # 内测账号（beta_qualified）给 30 天滑动过期；其余（普通手机号、游客、admin）保持 24 小时。
-    beta = bool(user.get("beta_qualified")) and provider != "admin"
-    ttl_hours = INVITE_SESSION_TTL_HOURS if beta else TOKEN_TTL_HOURS
+    # 正式登录（手机号/邀请码/验证码）统一 30 天滑动过期：用户要求「一个月不用登录」，
+    # 活跃期间滑动续期不掉线。游客（无交互身份）与 admin 保持 24 小时短会话。
+    persistent = provider in {"invite", "phone_direct", "phone_code"} and provider != "admin"
+    ttl_hours = INVITE_SESSION_TTL_HOURS if persistent else TOKEN_TTL_HOURS
     token = secrets.token_urlsafe(32)
     session = {
         "session_id": secrets.token_urlsafe(12),
@@ -255,7 +256,7 @@ def _issue_session(
         "created_at": now.isoformat(),
         "expires_at": (now + timedelta(hours=ttl_hours)).isoformat(),
         "ttl_hours": ttl_hours,
-        "sliding": beta,
+        "sliding": persistent,
         "revoked_at": None,
     }
     data["auth_sessions"].append(session)
@@ -358,7 +359,7 @@ def _phone_direct_enabled() -> bool:
     return env_flag("SELFIT_AUTH_ALLOW_PHONE_DIRECT", True)
 
 
-def verify_phone_direct_login(phone: str, client_ip: str) -> dict[str, Any]:
+def verify_phone_direct_login(phone: str, client_ip: str, device_id: str | None = None) -> dict[str, Any]:
     """手机号直接登录（无短信验证码、无 PIN）。
 
     适用前提：账号当前是"一次性测试 + 数据收集"定位——登录只为把测试资料
@@ -366,6 +367,7 @@ def verify_phone_direct_login(phone: str, client_ip: str) -> dict[str, Any]:
     正式版接入短信验证码/微信登录后应设 SELFIT_AUTH_ALLOW_PHONE_DIRECT=0。
 
     账号规则：手机号即唯一账号（跨设备、跨 IP 同一手机号同一账号）。
+    device_id 可选：登录时把设备绑定到账号，之后 token 过期可凭设备静默续登。
     """
 
     if not _phone_direct_enabled():
@@ -408,6 +410,10 @@ def verify_phone_direct_login(phone: str, client_ip: str) -> dict[str, Any]:
     user["last_login_at"] = now.isoformat()
     if not user.get("source_ip"):
         user["source_ip"] = client_ip
+    # 设备绑定：同一手机号换设备登录时覆盖绑定（后登的设备为准）。
+    normalized_device = _normalize_device_id(device_id) if device_id else None
+    if normalized_device:
+        user["device_id"] = normalized_device
 
     hydrate_user_from_demo_data(str(user["user_id"]))
     token = _issue_session(data, user, now, "phone_direct", client_ip)
@@ -416,7 +422,42 @@ def verify_phone_direct_login(phone: str, client_ip: str) -> dict[str, Any]:
         "status": "ok",
         "access_token": token,
         "token_type": "bearer",
-        "expires_in_seconds": TOKEN_TTL_HOURS * 3600,
+        "expires_in_seconds": INVITE_SESSION_TTL_HOURS * 3600,
+        "user": _public_user(user),
+    }
+
+
+def resume_phone_session(device_id: str, client_ip: str | None) -> dict[str, Any]:
+    """手机号账号的静默续登：token 过期后凭已绑定设备换新 token。
+
+    与邀请码静默重登同思路：设备即此账号的信任凭证。只对绑定了 device_id
+    的手机号账号生效；同一设备多次续登不受限（换手机号登录会重绑设备）。
+    """
+
+    normalized_device = _normalize_device_id(device_id)
+    now = datetime.now(timezone.utc)
+    data = _load_store()
+    user = next(
+        (
+            item
+            for item in data["users"]
+            if item.get("device_id") == normalized_device
+            and item.get("phone_e164")
+            and item.get("status") == "active"
+        ),
+        None,
+    )
+    if user is None:
+        raise HTTPException(status_code=404, detail="此设备没有可恢复的登录")
+    user["last_login_at"] = now.isoformat()
+    hydrate_user_from_demo_data(str(user["user_id"]))
+    token = _issue_session(data, user, now, "phone_direct", client_ip)
+    _write_store(data)
+    return {
+        "status": "ok",
+        "access_token": token,
+        "token_type": "bearer",
+        "expires_in_seconds": INVITE_SESSION_TTL_HOURS * 3600,
         "user": _public_user(user),
     }
 
@@ -654,23 +695,13 @@ def verify_phone_login(phone: str, code: str) -> dict[str, Any]:
     user = _find_or_create_user(data, phone_e164, now)
     hydrate_user_from_demo_data(str(user["user_id"]))
     login_code["consumed_at"] = now.isoformat()
-    token = secrets.token_urlsafe(32)
-    session = {
-        "session_id": secrets.token_urlsafe(12),
-        "user_id": user["user_id"],
-        "token_hash": _hash_secret(token),
-        "status": "active",
-        "created_at": now.isoformat(),
-        "expires_at": (now + timedelta(hours=TOKEN_TTL_HOURS)).isoformat(),
-        "revoked_at": None,
-    }
-    data["auth_sessions"].append(session)
+    token = _issue_session(data, user, now, "phone_code", None)
     _write_store(data)
     return {
         "status": "ok",
         "access_token": token,
         "token_type": "bearer",
-        "expires_in_seconds": TOKEN_TTL_HOURS * 3600,
+        "expires_in_seconds": INVITE_SESSION_TTL_HOURS * 3600,
         "user": _public_user(user),
     }
 
