@@ -350,6 +350,80 @@ def test_phone_user_upgrades_with_invite_keeps_data(monkeypatch, tmp_path: Path)
     assert rejected.status_code == 410
 
 
+def test_phone_bound_invite_is_lifetime_across_all_relogin_paths(monkeypatch, tmp_path: Path) -> None:
+    """终身绑定回归：手机号输过一次邀请码后，任何重登路径都不再需要邀请码。
+
+    规则：邀请码一旦输入就终身绑定这个手机号——之后码过期、席位用尽，
+    同设备重登 / 换设备 / 短信验证码 / 设备静默续登全部保留内测资格，
+    消耗型端点不再出现 invite-required 门槛；再出现输入邀请码的位置即 bug。
+    """
+    _use_tmp_runtime(monkeypatch, tmp_path)
+    monkeypatch.setenv("SELFIT_INVITE_CODES", "LIFETIME-01")
+    monkeypatch.setenv("SELFIT_INVITE_MAX_SEATS", "1")
+    client = TestClient(app)
+
+    # 唯一一次输入邀请码：普通手机号账号在解锁页升级（占满唯一席位）。
+    normal = _phone_login(client, "13800000111")
+    assert normal["user"]["beta_qualified"] is False
+    upgraded = client.post(
+        "/auth/invite/upgrade",
+        json={"invite_code": "LIFETIME-01", "device_id": "device-life-01"},
+        headers=_bearer(normal),
+    )
+    assert upgraded.status_code == 200
+    assert upgraded.json()["user"]["beta_qualified"] is True
+
+    # 之后运营侧把码过期并停用：新设备再也进不来（席位视角这个手机号是唯一持有者）。
+    data = json.loads(auth.AUTH_STORE_PATH.read_text(encoding="utf-8"))
+    for record in data["invite_codes"]:
+        record["expires_at"] = "2000-01-01T00:00:00+00:00"
+        record["status"] = "disabled"
+    auth.AUTH_STORE_PATH.write_text(json.dumps(data, ensure_ascii=False), encoding="utf-8")
+    rejected = client.post(
+        "/auth/invite/verify",
+        json={"invite_code": "LIFETIME-01", "device_id": "device-stranger-01"},
+        headers={"x-real-ip": "198.51.100.10"},
+    )
+    assert rejected.status_code == 410
+
+    # 但已绑定手机号的所有重登路径都保留内测资格，不依赖邀请码状态。
+    same_device = _phone_login(client, "13800000111")
+    assert same_device["user"]["beta_qualified"] is True
+    assert same_device["user"]["user_id"] == normal["user"]["user_id"]
+
+    new_device = client.post(
+        "/auth/phone/direct", json={"phone": "13800000111", "device_id": "device-life-02"}
+    ).json()
+    assert new_device["user"]["beta_qualified"] is True
+    assert new_device["user"]["user_id"] == normal["user"]["user_id"]
+
+    started = client.post("/auth/phone/start", json={"phone": "13800000111"}).json()
+    verified = client.post(
+        "/auth/phone/verify", json={"phone": "13800000111", "code": started["dev_code"]}
+    ).json()
+    assert verified["user"]["beta_qualified"] is True
+
+    resumed = client.post("/auth/phone/resume", json={"device_id": "device-life-02"}).json()
+    assert resumed["user"]["beta_qualified"] is True
+
+    # 消耗型端点不再出现邀请码门槛。
+    stylist = client.post(
+        "/stylist/chat",
+        json={"message": "今天穿什么"},
+        headers=_bearer(verified),
+    )
+    assert stylist.status_code != 403
+
+    # 兜底幂等：已内测账号即使再次提交解锁请求（前端 bug 才会出现），也不校验码、不占席位。
+    again = client.post(
+        "/auth/invite/upgrade",
+        json={"invite_code": "WRONG-CODE"},
+        headers=_bearer(verified),
+    )
+    assert again.status_code == 200
+    assert client.get("/auth/me", headers=_bearer(verified)).json()["user"]["beta_qualified"] is True
+
+
 def test_sliding_session_renewal_for_beta_users(monkeypatch, tmp_path: Path) -> None:
     """滑动续期：剩余不到一半 TTL 时自动顺延；内测账号不掉登录态。"""
     _use_tmp_runtime(monkeypatch, tmp_path)
