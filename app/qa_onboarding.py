@@ -144,6 +144,8 @@ def _load_cache() -> dict[str, Any]:
 
 
 def _analyze_all(refresh: bool = False) -> list[dict[str, Any]]:
+    from app.attribute_pipeline import PHOTO_ALGORITHM_VERSION
+
     cache = {} if refresh else _load_cache()
     entries = []
     for item in _load_manifest():
@@ -152,13 +154,18 @@ def _analyze_all(refresh: bool = False) -> list[dict[str, Any]]:
             continue
         mtime = path.stat().st_mtime
         cached = cache.get(item["file"])
-        if cached and cached.get("mtime") == mtime:
+        # 缓存键 = mtime + 算法版本：算法迭代后旧缓存整体失效，避免混用两版结果
+        if cached and cached.get("mtime") == mtime and cached.get("algorithm_version") == PHOTO_ALGORITHM_VERSION:
             result = cached["result"]
         else:
             with Image.open(path) as image:
                 image = image.convert("RGB")
                 result = analyze_face_photo(image) if item["kind"] == "face" else analyze_body_photo(image)
-            cache[item["file"]] = {"mtime": mtime, "result": result}
+            cache[item["file"]] = {
+                "mtime": mtime,
+                "algorithm_version": PHOTO_ALGORITHM_VERSION,
+                "result": result,
+            }
         entries.append({"item": item, "result": result})
     QA_PHOTO_DIR.mkdir(parents=True, exist_ok=True)
     QA_RESULTS_CACHE.write_text(json.dumps(cache, ensure_ascii=False), encoding="utf-8")

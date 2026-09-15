@@ -40,7 +40,12 @@ from PIL import Image
 # 并同步 docs/SELFIT_BACKEND_INTEGRATION.md。被拒照片留存记录会带此版本，
 # 管理后台按版本筛选——算法迭代后旧版本产生的拒绝记录可以直接过滤掉。
 # photo-v1.1：髋部量测行全被手臂遮挡（叉腰）时退回骨骼估计（此前整张拒绝）。
-PHOTO_ALGORITHM_VERSION = "photo-v1.1"
+# photo-v1.2：肤色光照鲁棒三防线（2026-09 内测事故复盘：半张脸埋阴影把
+# L* 63 的中性肤读成 49 判成小麦色）——①分区 L* 极差检测局部阴影+亮区采样；
+# ②L* 判深肤但 b* 仍健康的矛盾区校验（暗光压暗不压 b*，真深肤黑色素双压），
+# 触发时把 L* 补偿到自然中等档下界重分类，给出估算色号并明确告知用户；
+# ③高光削顶（clip_ratio）+ 色度坍缩分级过曝判定，替代单一 V 均值粗判。
+PHOTO_ALGORITHM_VERSION = "photo-v1.2"
 
 try:
     import mediapipe as mp
@@ -106,6 +111,48 @@ FACE_TOO_BRIGHT_V = 96.0
 # 已知局限：暖黄滤镜与暖肤的通道特征同构，红主导场景此判定分不出来（warn 不拦截，代价可控）。
 FACE_COOL_CAST = 18.0
 FACE_WARM_CAST = 65.0
+
+# ---------------------------------------------------------------------------
+# 肤色光照鲁棒三防线（photo-v1.2，2026-09 内测事故复盘）
+# 物理依据：阴影 = 光照乘性衰减 → L* 掉但 a*/b* 几乎不动；
+# 真深肤 = 黑色素↑ → L* 掉且 b* 显著低（更棕）。两者在 (L*, b*) 平面可分。
+# TODO(calibration): 阈值基于 2 张事故照片 + qa_photos 素材初标，待标注集回归。
+# L1 局部阴影：四个采样区 L* 极差超过该值 → 丢弃暗区，只用亮区中值估算。
+# 阈值 16 来自 qa_photos 29 张 + 事故 2 张标定：正常脸（额头/脸颊/下颌天然
+# 有差）spread p50=14、p75=22，事故好照片 8.6；16 只拦真有明暗分区的照片。
+SKIN_SHADOW_SPREAD_L = 16.0
+# 阴影判定后，L* 距最亮区在该值以内的区域参与亮区中值（不足 2 区取最亮 2 区）
+SKIN_SHADOW_BRIGHT_BAND_L = 8.0
+# 亮区中值比全区中值亮超过该值才告警「明显阴影」——spread 大但中值本来就稳的
+# 照片（单区胡须/发际暗斑）不该打扰用户。标定：无影响样本 Δ≤2.4，真阴影 4.4~26。
+SKIN_SHADOW_MIN_DELTA_L = 4.0
+# L2 矛盾区校验：L* 判深肤但 b* ≥ 该值 → 疑似暗光/阴影压暗，warn + 降置信度
+# （真深肤黑色素会同步压低 b*；b* 健康的"深肤"读数物理上矛盾。
+# qa_photos 标定：唯一真深肤样本 b*=7.6，两个阴影压暗样本 b*=15.0）
+SKIN_DEEP_SUSPECT_B = 14.0
+# 阴影色号补偿：deep_suspect 时把 L* 上调到该值后重新分类（估算值）。
+# 取自然中等档下界 +0.5：保守只修正一档（深肤→自然中等），不冒进猜更高；
+# 补偿后标签带 skin.shadow_compensated 证据 + 低置信度，用户可手动纠正。
+# TODO(calibration): 亚洲真深肤（小麦色）b* 分布待标注——b*≥14 的真小麦色
+# 存在的话会被误补偿成自然中等，置信度已压低兜底。
+SKIN_SHADOW_COMPENSATED_L = 52.5
+# L2 眼白锚点（IET Image Processing 2018, Males et al.）：眼白近似白色、直接
+# 反射光源色相，是"整脸暖光"的独立证据——皮肤红无法区分暖肤 vs 暖光，眼白能。
+# 眼白 R−B 超过该值 → 光源偏暖 warn。亚洲人巩膜天然偏黄（G/B 轴），R−B 口径
+# 不受影响。仅告警不做硬校正：校正系数待标注集标定（TODO(calibration)）。
+SKIN_SCLERA_WARM_RB = 25.0
+# 双眼眼白色相差超过该值 → 一侧暖灯一侧冷窗的混光场景，冷暖判断不可信
+SKIN_SCLERA_MIXED_EYE_RB = 35.0
+# L3 过曝分级：clip_ratio = 脸部裁剪区皮肤像素 max(R,G,B) ≥ 250 的占比。
+# 高光削顶不可逆（信息物理丢失）；真白肤 b*≥10、色度健康，与坍缩区可分。
+# HDR"苍白脸"削顶少但色度坍缩，用 (L*, chroma) 联合判定兜住。
+SKIN_OVEREXPOSE_NOTE_CLIP = 0.03    # 轻微削顶：warn + 小幅扣置信度
+SKIN_OVEREXPOSE_WARN_CLIP = 0.15    # 中度过曝：warn + 明确提示
+SKIN_OVEREXPOSE_FAIL_CLIP = 0.35    # 严重过曝：fail（肤色信息已丢失）
+SKIN_OVEREXPOSE_FAIR_L = 78.0       # L* 超过且 chroma 坍缩 → 疑似过曝/HDR 苍白
+SKIN_OVEREXPOSE_CHROMA = 10.0
+SKIN_OVEREXPOSE_SEVERE_L = 84.0
+SKIN_OVEREXPOSE_SEVERE_CHROMA = 8.0
 
 # ---------------------------------------------------------------------------
 # 脸型门禁与规则
@@ -344,32 +391,79 @@ def _skin_tone_attribute(rgb: np.ndarray, face: dict[str, Any], points: dict[int
             {"face_mean_value": round(mean_v, 1)},
         )
 
+    clip_ratio = _overexposed_clip_ratio(crop)
     layout = _face_landmark_region_layout(rgb, face) if points else None
     regions = layout["skin_regions"] if layout else {}
-    samples: list[np.ndarray] = []
-    region_evidence = []
+    region_evidence: list[dict[str, Any]] = []
+    stable_regions: list[dict[str, Any]] = []
     for name, (x0, y0, x1, y1) in regions.items():
         patch = rgb[y0:y1, x0:x1]
         if patch.size == 0:
             continue
         sample = _adaptive_skin_region_sample(patch)
+        entry: dict[str, Any] = {"name": name, "skin_ratio": sample["skin_ratio"], "stable": bool(sample["stable"])}
         if sample["stable"]:
-            samples.append(np.median(sample["pixels"], axis=0))
-            region_evidence.append({"name": name, "skin_ratio": sample["skin_ratio"], "stable": True})
-        else:
-            region_evidence.append({"name": name, "skin_ratio": sample["skin_ratio"], "stable": False})
-    if not samples:
+            median_rgb = np.median(sample["pixels"], axis=0)
+            entry["l_star"] = round(float(_srgb_to_lab(median_rgb)[0]), 2)
+            stable_regions.append({"name": name, "rgb": median_rgb, "l_star": entry["l_star"]})
+        region_evidence.append(entry)
+    if not stable_regions:
         return _attribute(
             "fail", 0.42, None,
             [_issue("skin.sample_failed", "无法稳定提取肤色区域", "请上传清晰、无遮挡的正脸照。")],
             {"regions": region_evidence},
         )
 
-    median_rgb = np.median(np.array(samples), axis=0).astype(np.float64)
+    # L1 局部阴影：分区 L* 极差过大 → 丢弃暗区，只用亮区中值估算。
+    # 半张脸埋阴影时中值被暗区拉低 ~14 L*，足以跨过 52 的深肤线。
+    # 告警再看 ΔL*：中值被暗区实际拉动才提示（单区胡须/发际暗斑不扰民）。
+    l_values = [item["l_star"] for item in stable_regions]
+    l_spread = round(max(l_values) - min(l_values), 2)
+    shadow_select = l_spread > SKIN_SHADOW_SPREAD_L
+    if shadow_select:
+        bright_floor = max(l_values) - SKIN_SHADOW_BRIGHT_BAND_L
+        selected_regions = [item for item in stable_regions if item["l_star"] >= bright_floor]
+        if len(selected_regions) < 2:
+            selected_regions = sorted(stable_regions, key=lambda item: item["l_star"], reverse=True)[:2]
+    else:
+        selected_regions = stable_regions
+    median_rgb = np.median(np.array([item["rgb"] for item in selected_regions], dtype=np.float64), axis=0)
+    all_median_l = float(np.median(l_values))
+    selected_median_l = float(np.median([item["l_star"] for item in selected_regions]))
+    shadow_suspect = shadow_select and (selected_median_l - all_median_l) >= SKIN_SHADOW_MIN_DELTA_L
+
+    # L2 眼白锚点：光源色相的独立证据（暖光全脸泛红但皮肤红≠光源红，眼白能分）
+    sclera = _sclera_tint(rgb, layout)
+
     lab = _srgb_to_lab(median_rgb)
-    l_star = float(lab[0])
-    ita = math.degrees(math.atan2(l_star - 50.0, max(float(lab[2]), 1e-6)))
-    label, boundary_gap, skin_lightness, skin_undertone = _classify_skin_tone(l_star, float(lab[1]), float(lab[2]))
+    l_star_raw = float(lab[0])
+    a_star, b_star = float(lab[1]), float(lab[2])
+    # L2 矛盾区校验：L* 判深肤但 b* 健康 → 阴影/暗光压暗（真深肤黑色素双压 b*）。
+    # 此时按补偿 L* 重新分类给出估算色号（用户可手动纠正），raw 读数保留在证据里。
+    deep_suspect = l_star_raw < SKIN_LIGHTNESS_DEEP_L and b_star >= SKIN_DEEP_SUSPECT_B
+    if deep_suspect:
+        l_star = max(l_star_raw, SKIN_SHADOW_COMPENSATED_L)
+    else:
+        l_star = l_star_raw
+    ita = math.degrees(math.atan2(l_star - 50.0, max(b_star, 1e-6)))
+    label, boundary_gap, skin_lightness, skin_undertone = _classify_skin_tone(l_star, a_star, b_star)
+    chroma = math.hypot(a_star, b_star)
+
+    # L3 严重过曝：高光大面积削顶或色度坍缩 → 肤色信息物理丢失，直接拒绝
+    if clip_ratio >= SKIN_OVEREXPOSE_FAIL_CLIP or (
+        l_star > SKIN_OVEREXPOSE_SEVERE_L and chroma < SKIN_OVEREXPOSE_SEVERE_CHROMA
+    ):
+        return _attribute(
+            "fail", 0.45, None,
+            [_issue("photo.overexposed_severe", "照片严重过曝，肤色信息已丢失", "避开强光直射（比如正对窗户或灯光），重新拍一张亮度均匀的照片。")],
+            {
+                "clip_ratio": round(clip_ratio, 3),
+                "l_star": round(l_star, 2),
+                "chroma": round(chroma, 2),
+                "face_mean_value": round(mean_v, 1),
+                "regions": region_evidence,
+            },
+        )
 
     issues: list[dict[str, str]] = []
     status = "pass"
@@ -377,21 +471,152 @@ def _skin_tone_attribute(rgb: np.ndarray, face: dict[str, Any], points: dict[int
     if _cast_suspect(cast):
         status = "warn"
         issues.append(_issue("photo.color_cast", "照片整体有偏色", "关闭滤镜、用自然光原图，肤色判断会更准。"))
-    confidence = 0.6 + min(0.22, boundary_gap / 10.0) - (0.1 if status == "warn" else 0.0)
+    if shadow_suspect:
+        status = "warn"
+        issues.append(_issue(
+            "skin.face_shadow",
+            "脸部有明显阴影，已用较亮区域估算肤色",
+            "正对光源（比如窗户）重拍一张，避免半边脸埋在阴影里，结果会更准。",
+        ))
+    sclera_warm = sclera is not None and sclera["warm_rb"] > SKIN_SCLERA_WARM_RB
+    if sclera_warm:
+        status = "warn"
+        issues.append(_issue(
+            "skin.warm_illuminant",
+            "拍摄光线偏暖，肤色的冷暖判断可能受影响",
+            "暖色灯光下照片会整体泛红；换自然光或白光重拍，冷暖判断会更准。",
+        ))
+    if sclera is not None and sclera.get("mixed_light"):
+        status = "warn"
+        issues.append(_issue(
+            "skin.mixed_light",
+            "脸部两侧光线颜色不一致",
+            "一侧灯光一侧窗户的混光会让肤色冷暖失真；在单一自然光源下重拍会更准。",
+        ))
+    if deep_suspect:
+        # 补偿后已给出更亮的估算色号；raw 读数偏深保留在证据里供 QA 回看
+        status = "warn"
+        issues.append(_issue(
+            "skin.dim_light_suspect",
+            "照片光线偏暗，肤色读数偏深，已按更亮的肤色估算",
+            "换到明亮处（比如窗边自然光）重新拍一张会更准；也可以直接点“修改”确认你的肤色。",
+        ))
+    if clip_ratio >= SKIN_OVEREXPOSE_WARN_CLIP or (l_star > SKIN_OVEREXPOSE_FAIR_L and chroma < SKIN_OVEREXPOSE_CHROMA):
+        status = "warn"
+        issues.append(_issue(
+            "skin.overexposed",
+            "照片曝光过度，肤色可能偏浅",
+            "避开强光直射、调低亮度重拍会更准；也可以直接点“修改”确认你的肤色。",
+        ))
+    elif clip_ratio >= SKIN_OVEREXPOSE_NOTE_CLIP and float(lab[2]) >= 10.0:
+        status = "warn"
+        issues.append(_issue(
+            "skin.bright_photo",
+            "照片偏亮，肤色可能略浅",
+            "亮度偏高会把肤色读得偏浅；光线柔和一些重拍会更准。",
+        ))
+
+    confidence = 0.6 + min(0.22, boundary_gap / 10.0)
+    if status == "warn":
+        confidence -= 0.1
+    if shadow_suspect:
+        confidence -= 0.08
+    if sclera_warm:
+        confidence -= 0.05
+    if deep_suspect:
+        confidence -= 0.12
     evidence = {
         "method": "landmark_region_median_lab",
         "rgb": [int(round(v)) for v in median_rgb.tolist()],
         "lab_d65": [round(float(v), 2) for v in lab.tolist()],
         "l_star": round(l_star, 2),
+        "raw_l_star": round(l_star_raw, 2),
+        "shadow_compensated": deep_suspect,
+        **({"compensated_l_star": round(l_star, 2)} if deep_suspect else {}),
         "ita_deg": round(ita, 1),
         "skin_lightness": skin_lightness,
         "skin_undertone": skin_undertone,
         "boundary_gap": round(boundary_gap, 2),
         "face_mean_value": round(mean_v, 1),
+        "chroma": round(chroma, 2),
+        "clip_ratio": round(clip_ratio, 3),
+        "region_l_spread": l_spread,
+        "shadow_select": shadow_select,
+        "shadow_suspect": shadow_suspect,
+        "shadow_delta_l": round(selected_median_l - all_median_l, 2),
+        "selected_regions": [item["name"] for item in selected_regions],
         "color_cast": cast,
+        **({"sclera_tint": sclera} if sclera is not None else {}),
         "regions": region_evidence,
     }
     return _attribute(status, round(_clamp(confidence, 0.4, 0.86), 2), label, issues, evidence)
+
+
+def _overexposed_clip_ratio(crop: np.ndarray) -> float:
+    """脸部裁剪区皮肤像素的高光削顶占比（max(R,G,B) ≥ 250）。
+
+    只统计皮肤掩码内的像素，避免白色墙面/衣服误判为过曝；
+    皮肤像素过少时退回整框统计（门禁层已保证脸部存在）。
+    """
+    flat = crop.reshape(-1, 3)
+    if flat.size == 0:
+        return 0.0
+    mask = _skin_mask_rgb(flat)
+    pixels = flat[mask] if int(np.sum(mask)) >= 24 else flat
+    if pixels.size == 0:
+        return 0.0
+    channel_max = np.max(pixels, axis=1)
+    return float(np.mean(channel_max >= 250))
+
+
+def _sclera_tint(rgb: np.ndarray, layout: dict[str, Any] | None) -> dict[str, Any] | None:
+    """眼白（巩膜）区域中值 RGB → 光源色相证据。
+
+    眼白近似白色、直接反射光源颜色，与人脸皮肤红（暖肤天然底色）无关，
+    是"整脸暖光"的独立检测通道（IET Image Processing 2018, Males et al.）。
+    眼眶区域 80%+ 是眼睑皮肤（内测标定：不排除时眼白中值就是肤色，
+    好照片被误报暖光），必须先用皮肤掩码排除，再从余下像素取「亮且
+    不过饱和」的巩膜像素（V ≥ 非皮肤像素中位、S ≤ 110 排虹膜/睫毛）。
+    每只眼像素不足 10 个（闭眼/墨镜/低分辨率）时跳过该眼；两眼都不可用
+    返回 None。两眼色相差过大记 mixed_light（暖灯+冷窗的混光场景）。
+    """
+    if not layout:
+        return None
+    feature_regions = layout.get("feature_regions") or {}
+    per_eye: list[np.ndarray] = []
+    for key in ("left_eye", "right_eye"):
+        region = feature_regions.get(key)
+        if not region:
+            continue
+        x0, y0, x1, y1 = region
+        patch = rgb[y0:y1, x0:x1]
+        if patch.size == 0:
+            continue
+        flat = patch.reshape(-1, 3)
+        non_skin = flat[~_skin_mask_rgb(flat)]
+        if non_skin.shape[0] < 40:
+            continue
+        hsv = cv2.cvtColor(non_skin.reshape(-1, 1, 3).astype(np.uint8), cv2.COLOR_RGB2HSV).reshape(-1, 3).astype(np.float64)
+        v, s = hsv[:, 2], hsv[:, 1]
+        v_floor = max(130.0, float(np.percentile(v, 50)))
+        mask = (v >= v_floor) & (s <= 110)
+        if int(np.sum(mask)) >= 10:
+            per_eye.append(non_skin[mask].astype(np.float64))
+    if not per_eye:
+        return None
+    eye_medians = [np.median(eye, axis=0) for eye in per_eye]
+    eye_warm = [float(m[0] - m[2]) for m in eye_medians]
+    sclera_pixels = np.concatenate(per_eye, axis=0)
+    if sclera_pixels.shape[0] < 20:
+        return None
+    median = np.median(sclera_pixels, axis=0)
+    return {
+        "rgb": [int(round(v)) for v in median.tolist()],
+        "warm_rb": round(float(median[0] - median[2]), 1),
+        "eye_warm_rb": [round(v, 1) for v in eye_warm],
+        "mixed_light": bool(len(eye_warm) == 2 and abs(eye_warm[0] - eye_warm[1]) > SKIN_SCLERA_MIXED_EYE_RB),
+        "pixels": int(sclera_pixels.shape[0]),
+    }
 
 
 def _classify_skin_tone(l_star: float, a_star: float, b_star: float) -> tuple[str, float, str, str]:
