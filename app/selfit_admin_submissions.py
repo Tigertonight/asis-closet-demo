@@ -705,6 +705,190 @@ async def download_mirror_capture_photo(
 
 
 # ---------------------------------------------------------------------------
+# 失败试穿：跨用户聚合 tryon jobs 里的失败任务，按原因枚举筛选。
+# 排查「用户反复失败但说不清原因」：人物照、触发搭配、结构化失败码都在。
+# ---------------------------------------------------------------------------
+
+# 失败原因分类：code → 用户可读标签。覆盖 tryon.py 输入质量 + 生图 + 质量复核的
+# 全部 blocking code；未登记的 code 透传原值（前端归入「其他」）。
+FAILED_TRYON_REASON_LABELS = {
+    # 输入照片质量（人物）
+    "person.no_face": "未能确认人脸位置",
+    "person.multiple_faces": "检测到多人脸",
+    "person.too_small": "人物照分辨率过低",
+    "person.blurry": "人物照偏糊",
+    "person.upper_body_missing": "身体区域不完整",
+    "person.coverage_review": "入镜范围待确认",
+    # 输入照片质量（衣服）
+    "garment.too_small": "衣服图分辨率过低",
+    "garment.no_top": "未识别到上衣",
+    "garment.low_confidence": "衣服识别置信度低",
+    "garment.vlm_unavailable": "衣服理解服务不可用",
+    # mask / 参考板
+    "image_edit.empty_mask": "生成遮罩为空",
+    "mask.upper_body_too_small": "上半身遮罩过小",
+    "mask.full_body_too_small": "全身遮罩过小",
+    "mask.ratio_unusual": "遮罩比例异常",
+    "mask.full_body_ratio_unusual": "全身遮罩比例异常",
+    "outfit.missing_reference_slots": "搭配缺参考图",
+    "outfit.no_available_items": "搭配无可用单品",
+    # 生图服务
+    "image_edit.provider_unavailable": "生图服务不可用",
+    "image_edit.provider_error": "生图服务出错",
+    "image_edit.mock_provider": "未接入真实生图模型",
+    "image_edit.local_codex_failed": "本地生图桥接失败",
+    "image_edit.openai_sdk_missing": "生图依赖缺失",
+    "image_edit.empty_result": "生图结果为空",
+    "image_edit.no_visible_items": "生成图未见单品",
+    # 生成质量复核
+    "quality.face_changed": "面部与原照差异大",
+    "quality.framing_changed": "构图异常",
+    "quality.background_changed": "背景变化异常",
+    "quality.missing_result": "未取得生成图",
+    "quality.invalid_result": "生成图不可用",
+    "quality.result_too_small": "生成图分辨率过低",
+    "semantic.no_expected_items": "预期单品未呈现",
+    "semantic.reviewer_unavailable": "质量复核服务不可用",
+    "semantic.reviewer_error": "质量复核出错",
+    "request.failed": "请求被拒绝",
+}
+
+USERS_ROOT = ROOT_DIR / "outputs" / "users"
+
+# 老数据兜底：error.message 无结构化 code 时按关键词归类（关键词 → 失败码）。
+FAILED_TRYON_MESSAGE_KEYWORDS = (
+    ("多人脸", "person.multiple_faces"),
+    ("未能确认人脸位置", "person.no_face"),
+    ("分辨率过低", "person.too_small"),
+    ("偏糊", "person.blurry"),
+    ("面部与原照片差异", "quality.face_changed"),
+    ("构图异常", "quality.framing_changed"),
+    ("鞋子没有正确呈现", "semantic.no_expected_items"),
+    ("未接入真实", "image_edit.mock_provider"),
+    ("生图", "image_edit.provider_error"),
+)
+
+
+def _failed_tryon_rows(reason_filter: str | None) -> tuple[list[dict[str, Any]], dict[str, int]]:
+    """扫全部用户的 tryon jobs，收集失败任务。返回 (行, 原因计数)。"""
+
+    phones = _phone_by_user()
+    rows: list[dict[str, Any]] = []
+    reason_counts: dict[str, int] = {}
+    if not USERS_ROOT.is_dir():
+        return rows, reason_counts
+    for jobs_dir in sorted(USERS_ROOT.glob("*/tryon/jobs")):
+        user_id = jobs_dir.parent.parent.name
+        for job_file in jobs_dir.glob("*.json"):
+            try:
+                job = json.loads(job_file.read_text(encoding="utf-8"))
+            except (OSError, json.JSONDecodeError):
+                continue
+            if job.get("status") != "failed":
+                continue
+            result = job.get("result") or {}
+            error = job.get("error") or {}
+            decision = result.get("decision") or job.get("decision") or {}
+            blocking = [item for item in (decision.get("blocking_errors") or []) if isinstance(item, dict)]
+            # 失败码优先级：blocking code > error.message 归类 > 兜底
+            if blocking:
+                reason_code = str(blocking[0].get("code") or "")
+                reason_message = str(blocking[0].get("message") or error.get("message") or "")
+            else:
+                reason_message = str(error.get("message") or result.get("user_message") or "")
+                reason_code = next(
+                    (code for keyword, code in FAILED_TRYON_MESSAGE_KEYWORDS if keyword in reason_message),
+                    "",
+                )
+                if not reason_code:
+                    reason_code = "request.failed" if reason_message else "unknown"
+            reason_counts[reason_code] = reason_counts.get(reason_code, 0) + 1
+            if reason_filter and reason_code != reason_filter:
+                continue
+            person_path = Path(str(job.get("person_path") or ""))
+            # kind=inspiration 携带笔记；普通 tryon 携带 outfit
+            target = ""
+            if isinstance(job.get("note"), dict):
+                target = str(job["note"].get("id") or "")
+            target = target or str(job.get("outfit_id") or "")
+            rows.append(
+                {
+                    "jobId": job.get("job_id"),
+                    "userId": user_id,
+                    "phone": phones.get(user_id),
+                    "kind": job.get("kind") or "tryon",
+                    "reasonCode": reason_code,
+                    "reasonLabel": FAILED_TRYON_REASON_LABELS.get(reason_code, reason_code or "未知原因"),
+                    "reasonMessage": reason_message or FAILED_TRYON_REASON_LABELS.get(reason_code, ""),
+                    "personExists": person_path.is_file(),
+                    "personPath": str(person_path),
+                    "target": target,
+                    "attempt": job.get("attempt") or 1,
+                    "createdAt": job.get("created_at"),
+                    "updatedAt": job.get("updated_at"),
+                }
+            )
+    rows.sort(key=lambda row: str(row.get("createdAt") or ""), reverse=True)
+    return rows, reason_counts
+
+
+@router.get("/failed-tryons")
+async def list_failed_tryons(
+    reason: str | None = None,
+    admin: dict[str, Any] = Depends(get_admin_user),
+) -> JSONResponse:
+    """失败试穿列表。reason 过滤为结构化失败码；筛选项从全量统计（不受当前过滤影响）。"""
+
+    reason_filter = reason.strip() if reason and reason.strip() else None
+    # 先全量统计原因分布（筛选项），再按条件过滤行
+    _, all_counts = _failed_tryon_rows(None)
+    rows, _ = _failed_tryon_rows(reason_filter)
+    breakdown = [
+        {"reason": code, "label": FAILED_TRYON_REASON_LABELS.get(code, code), "count": count}
+        for code, count in sorted(all_counts.items(), key=lambda kv: kv[1], reverse=True)
+    ]
+    return JSONResponse(
+        content={"failed": rows, "breakdown": breakdown},
+        headers={"Cache-Control": "no-store"},
+    )
+
+
+@router.get("/failed-tryons/{job_id}/person")
+async def download_failed_tryon_person(
+    job_id: str,
+    user_id: str = "",
+    download: bool = False,
+    admin: dict[str, Any] = Depends(get_admin_user),
+) -> Response:
+    """失败任务的人物照预览/下载（定位输入质量问题的第一手材料）。"""
+
+    if not user_id:
+        raise HTTPException(status_code=422, detail="缺少 user_id 参数")
+    jobs_path = USERS_ROOT / user_id / "tryon" / "jobs" / f"{job_id}.json"
+    if not jobs_path.is_file():
+        raise HTTPException(status_code=404, detail="没有找到这个试穿任务")
+    try:
+        job = json.loads(jobs_path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        raise HTTPException(status_code=404, detail="试穿任务状态无法读取")
+    person_path = Path(str(job.get("person_path") or ""))
+    if not person_path.is_file():
+        raise HTTPException(status_code=404, detail="这张人物照已不存在")
+    # 路径必须落在该用户的上传目录内（uploads 根与 users 输出根同级派生），防任意文件读取
+    outputs_root = USERS_ROOT.parent.resolve()
+    user_upload_root = (outputs_root.parent / "uploads" / "users" / user_id).resolve()
+    if not person_path.resolve().is_relative_to(user_upload_root):
+        raise HTTPException(status_code=403, detail="路径不合法")
+    suffix = person_path.suffix.lower()
+    media_type = {".jpg": "image/jpeg", ".jpeg": "image/jpeg", ".png": "image/png", ".webp": "image/webp"}.get(suffix, "application/octet-stream")
+    filename = f"failed-tryon-{job_id}{suffix}"
+    headers = {"Cache-Control": "no-store"}
+    if download:
+        headers["Content-Disposition"] = f'attachment; filename="{filename}"'
+    return FileResponse(person_path, media_type=media_type, headers=headers)
+
+
+# ---------------------------------------------------------------------------
 # 软删除（隐藏）：只从后台列表里移除，磁盘上的记录与照片资产不动。
 # ---------------------------------------------------------------------------
 

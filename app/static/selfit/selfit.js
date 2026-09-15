@@ -2237,9 +2237,10 @@
   }
 
   if (entryParams.get('entry') === 'unlock') {
-    // 从主站被门槛弹回（entry=unlock）：跳过「适我」过场，直达解锁屏。
+    // 从主站被门槛弹回（entry=unlock）：等登录态确认后再分发屏幕。
+    // 不预先渲染解锁屏：邀请码终身绑定手机号，已解锁/未登录用户先看到
+    // 输入邀请码的界面就是 bug；等待期停在 splash（默认屏）。
     shell.classList.add('is-ready');
-    showScreen('beta-unlock');
     void authReady.then(async (session) => {
       const user = session?.user;
       if (!user) { showScreen('login'); return; }

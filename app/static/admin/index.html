@@ -352,6 +352,7 @@
       <div class="report-tabs" role="tablist" aria-label="用户报告列表">
         <button class="report-tab" id="reportTabSubmissions" type="button" role="tab" aria-selected="true" aria-controls="reportPanelSubmissions" data-report-tab="submissions">测试提交</button>
         <button class="report-tab" id="reportTabCaptures" type="button" role="tab" aria-selected="false" aria-controls="reportPanelCaptures" data-report-tab="captures" tabindex="-1">镜子拍摄</button>
+        <button class="report-tab" id="reportTabFailed" type="button" role="tab" aria-selected="false" aria-controls="reportPanelFailed" data-report-tab="failed" tabindex="-1">失败试穿</button>
         <button class="report-tab" id="reportTabRejected" type="button" role="tab" aria-selected="false" aria-controls="reportPanelRejected" data-report-tab="rejected" tabindex="-1">被拒照片</button>
       </div>
       <section class="report-list-panel" id="reportPanelSubmissions" role="tabpanel" aria-labelledby="reportTabSubmissions" data-report-panel="submissions">
@@ -375,6 +376,26 @@
         <div class="stats-strip" id="capturesStats" aria-label="镜子拍摄统计"></div>
         <div class="table-scroll"><table><thead><tr><th>拍摄时间</th><th>状态</th><th>领取手机号</th><th>原始照片（算法留存）</th><th>美颜照片（打印用）</th><th>操作</th></tr></thead><tbody id="captureRows"></tbody></table></div>
         <div class="report-list-footer"><small id="capturesCount"></small><button class="report-load-more" type="button" id="capturesLoadMore" hidden>加载更多</button></div>
+      </section>
+      <section class="report-list-panel" id="reportPanelFailed" role="tabpanel" aria-labelledby="reportTabFailed" data-report-panel="failed" hidden>
+        <h3>失败试穿（按原因归档）</h3>
+        <p class="panel-hint">每次试穿失败都会记录人物照、触发搭配和结构化失败原因。用户反馈「一直失败」时，用她的手机号或失败原因在这里定位；点预览可直接看她当时上传的照片。</p>
+        <div class="toolbar" style="margin-bottom:12px">
+          <button class="mini-btn" type="button" id="failedRefresh">刷新</button>
+          <small id="failedUpdatedAt"></small>
+        </div>
+        <div id="failedBreakdown" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px"></div>
+        <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:12px">
+          <select id="failedReasonFilter" aria-label="筛选失败原因" style="border:1px solid var(--line);border-radius:8px;padding:6px 10px;font:inherit;font-size:13px;background:#fff;max-width:240px">
+            <option value="">全部原因</option>
+          </select>
+          <select id="failedPhoneFilter" aria-label="筛选手机号" style="border:1px solid var(--line);border-radius:8px;padding:6px 10px;font:inherit;font-size:13px;background:#fff;max-width:200px">
+            <option value="">全部手机号</option>
+          </select>
+          <small id="failedFilterCount" style="color:var(--muted)"></small>
+        </div>
+        <div class="table-scroll"><table><thead><tr><th>失败时间</th><th>手机号</th><th>失败原因</th><th>详情</th><th>人物照</th><th>重试次数</th></tr></thead><tbody id="failedRows"></tbody></table></div>
+        <div class="report-list-footer"><small id="failedCount"></small><button class="report-load-more" type="button" id="failedLoadMore" hidden>加载更多</button></div>
       </section>
       <section class="report-list-panel" id="reportPanelRejected" role="tabpanel" aria-labelledby="reportTabRejected" data-report-panel="rejected" hidden>
         <h3>检测被拒的照片（算法优化素材）</h3>
@@ -589,12 +610,14 @@
   const reportListState = {
     submissions: { rows: [], visible: REPORT_PAGE_SIZE, loaded: false, loading: false },
     captures: { rows: [], visible: REPORT_PAGE_SIZE, loaded: false, loading: false },
+    failed: { rows: [], breakdown: [], visible: REPORT_PAGE_SIZE, loaded: false, loading: false, reason: '', phone: '' },
     rejected: { rows: [], breakdown: [], visible: REPORT_PAGE_SIZE, loaded: false, loading: false, filters: null, kind: '', issue: '', algorithm: '' },
   };
   const reportRequests = {};
   const reportConfig = {
     submissions: { path: '/admin/api/submissions', key: 'submissions', body: 'submissionRows', count: 'submissionsCount', more: 'submissionsLoadMore', updated: 'submissionsUpdatedAt', columns: 6 },
     captures: { path: '/admin/api/mirror-captures', key: 'captures', body: 'captureRows', count: 'capturesCount', more: 'capturesLoadMore', updated: 'capturesUpdatedAt', columns: 6 },
+    failed: { path: '/admin/api/failed-tryons', key: 'failed', body: 'failedRows', count: 'failedCount', more: 'failedLoadMore', updated: 'failedUpdatedAt', columns: 6 },
     rejected: { path: '/admin/api/rejected-photos', key: 'rejected', body: 'rejectedRows', count: 'rejectedCount', more: 'rejectedLoadMore', updated: 'rejectedUpdatedAt', columns: 8 },
   };
 
@@ -740,6 +763,84 @@
     }
   };
 
+  const renderFailed = (rows, breakdown) => {
+    const chips = $('failedBreakdown');
+    chips.replaceChildren(...(breakdown || []).map((item) => {
+      const node = document.createElement('span');
+      node.className = 'tag tag-muted';
+      node.style.padding = '4px 12px';
+      node.textContent = `${item.label}：${item.count} 次`;
+      node.title = item.reason;
+      return node;
+    }));
+    const tbody = $('failedRows');
+    if (!rows.length) {
+      tbody.replaceChildren(Object.assign(document.createElement('tr'), {
+        innerHTML: '<td colspan="6" class="empty">还没有失败试穿记录</td>',
+      }));
+      return;
+    }
+    tbody.replaceChildren(...rows.map((row) => {
+      const tr = document.createElement('tr');
+      const reasonCell = `<b>${esc(row.reasonLabel)}</b><br><small style="color:var(--muted)">${esc((row.reasonMessage || '').slice(0, 60))}</small>`;
+      const detailCell = `<small style="color:var(--muted)">${row.kind === 'inspiration' ? '灵感笔记' : '搭配试穿'}</small><br><small style="color:var(--muted);word-break:break-all">${esc((row.target || '').slice(0, 40))}</small>`;
+      const personCell = row.personExists
+        ? photoThumb({
+            previewUrl: `/admin/api/failed-tryons/${encodeURIComponent(row.jobId)}/person?user_id=${encodeURIComponent(row.userId)}`,
+            downloadUrl: `/admin/api/failed-tryons/${encodeURIComponent(row.jobId)}/person?user_id=${encodeURIComponent(row.userId)}&download=1`,
+            label: '失败试穿人物照',
+          }, fmtTime(row.createdAt))
+        : '<span class="tag tag-muted">已清理</span>';
+      tr.innerHTML = `<td>${fmtTime(row.createdAt)}</td>`
+        + `<td title="${esc(row.phone || '')}">${row.phone ? maskPhone(row.phone) : '—'}</td>`
+        + `<td>${reasonCell}</td>`
+        + `<td>${detailCell}</td>`
+        + `<td>${personCell}</td>`
+        + `<td>${row.attempt > 1 ? `<span class="tag tag-app">${row.attempt} 次</span>` : '1 次'}</td>`;
+      return tr;
+    }));
+  };
+
+  const renderFailedFilterOptions = () => {
+    const list = reportListState.failed;
+    const reasonSelect = $('failedReasonFilter');
+    reasonSelect.innerHTML = '<option value="">全部原因</option>'
+      + (list.breakdown || []).map((item) =>
+        `<option value="${esc(item.reason)}" ${list.reason === item.reason ? 'selected' : ''}>${esc(item.label)}（${item.count}）</option>`).join('');
+    // 手机号选项基于全量数据（不受原因筛选影响），选中态保留
+    const phones = {};
+    (list._phoneSource || list.rows || []).forEach((row) => { if (row.phone) phones[row.phone] = (phones[row.phone] || 0) + 1; });
+    $('failedPhoneFilter').innerHTML = '<option value="">全部手机号</option>'
+      + Object.entries(phones).sort((a, b) => b[1] - a[1]).map(([phone, count]) =>
+        `<option value="${esc(phone)}" ${list.phone === phone ? 'selected' : ''}>${maskPhone(phone)}（${count}）</option>`).join('');
+  };
+
+  const applyFailedFilters = async () => {
+    const list = reportListState.failed;
+    const params = new URLSearchParams();
+    if (list.reason) params.set('reason', list.reason);
+    const query = params.toString();
+    const path = `/admin/api/failed-tryons${query ? `?${query}` : ''}`;
+    setReportLoading('failed');
+    try {
+      // 先拉全量构建手机号筛选项（不受原因筛选影响），再按原因+手机号双重过滤
+      const all = list.reason ? await api('/admin/api/failed-tryons') : null;
+      const phoneSource = all ? all.failed || [] : null;
+      const payload = await api(path);
+      let rows = payload.failed || [];
+      if (list.phone) rows = rows.filter((row) => row.phone === list.phone);
+      list.rows = rows;
+      list.breakdown = payload.breakdown || [];
+      list._phoneSource = phoneSource || rows;
+      list.visible = REPORT_PAGE_SIZE;
+      renderFailedFilterOptions();
+      renderReportList('failed');
+      $('failedFilterCount').textContent = `共 ${list.rows.length} 条`;
+    } catch (error) {
+      setReportError('failed', error.message);
+    }
+  };
+
   const REJECTED_SOURCE = { app: 'App 上传', mirror: '智能镜', mirror_head_crop: '智能镜·头部裁剪' };
 
   const renderRejectedFilterOptions = () => {
@@ -825,6 +926,7 @@
     const visibleRows = list.rows.slice(0, list.visible);
     if (tab === 'submissions') { renderSubmissions(visibleRows); renderSubmissionsStats(list.rows); }
     if (tab === 'captures') { renderCaptures(visibleRows); renderCapturesStats(list.rows); }
+    if (tab === 'failed') renderFailed(visibleRows, list.breakdown || []);
     if (tab === 'rejected') renderRejected(visibleRows, list.breakdown || []);
     updateReportFooter(tab);
   };
@@ -851,6 +953,11 @@
         list.breakdown = payload.breakdown || [];
         list.filters = payload.filters || null;
         renderRejectedFilterOptions();
+      }
+      if (tab === 'failed') {
+        list.breakdown = payload.breakdown || [];
+        renderFailedFilterOptions();
+        $('failedFilterCount').textContent = `共 ${list.rows.length} 条`;
       }
       list.loaded = true;
       renderReportList(tab);
@@ -1452,6 +1559,15 @@
   $('submissionsRefresh').addEventListener('click', () => loadReportTab('submissions', { force: true }));
   $('capturesRefresh').addEventListener('click', () => loadReportTab('captures', { force: true }));
   $('rejectedRefresh').addEventListener('click', () => loadReportTab('rejected', { force: true }));
+  $('failedRefresh').addEventListener('click', () => loadReportTab('failed', { force: true }));
+  $('failedReasonFilter').addEventListener('change', () => {
+    reportListState.failed.reason = $('failedReasonFilter').value;
+    void applyFailedFilters();
+  });
+  $('failedPhoneFilter').addEventListener('change', () => {
+    reportListState.failed.phone = $('failedPhoneFilter').value;
+    void applyFailedFilters();
+  });
   $('rejectedKindFilter').addEventListener('change', () => {
     const list = reportListState.rejected;
     list.kind = $('rejectedKindFilter').value;
@@ -1618,6 +1734,7 @@
         <td>${status}</td>
         <td>${row.note ? String(row.note).replace(/[<>&]/g, '') : '—'}</td>
         <td>
+          <button class="mini-btn" type="button" data-invite-seats="${row.code_id}">详情</button>
           <button class="mini-btn" type="button" data-invite-id="${row.code_id}" data-invite-act="seats" ${row.seats_used >= row.max_seats ? '' : 'hidden'}>扩容到 ${row.max_seats + 10} 席</button>
           <button class="mini-btn" type="button" data-invite-id="${row.code_id}" data-invite-act="${row.status === 'active' ? 'disable' : 'enable'}">${row.status === 'active' ? '停用' : '启用'}</button>
         </td>
@@ -1676,6 +1793,40 @@
       $('inviteUpdatedAt').textContent = error.message || '操作失败';
       button.disabled = false;
     }
+  });
+
+  const showInviteSeats = async (codeId) => {
+    const sheet = document.createElement('div');
+    sheet.className = 'modal-overlay';
+    sheet.innerHTML = `<div class="modal-card" style="width:min(560px,100%)">
+      <header><div><b>席位占用</b><small>正在加载…</small></div>
+      <button class="mini-btn" type="button" data-close-seats>关闭</button></header>
+      <div class="modal-body"><span class="loading-bar" style="display:block;margin:20px auto"></span></div>
+    </div>`;
+    const close = () => sheet.remove();
+    sheet.querySelector('[data-close-seats]').addEventListener('click', close);
+    sheet.addEventListener('click', (event) => { if (event.target === sheet) close(); });
+    document.body.append(sheet);
+    try {
+      const payload = await api(`/admin/api/invites/${encodeURIComponent(codeId)}/seats`);
+      const holders = payload.holders || [];
+      const rows = holders.map((row) => `<tr>
+        <td title="${esc(row.phone_e164 || '')}">${row.phone_e164 ? maskPhone(row.phone_e164) : '—'}</td>
+        <td>${row.status === 'active' ? '<span class="tag tag-ok">正常</span>' : '<span class="tag tag-muted">已停用</span>'}</td>
+        <td>${fmtDate(row.bound_at)}</td>
+        <td>${fmtDate(row.last_login_at)}</td>
+      </tr>`).join('');
+      sheet.querySelector('.modal-card header small').textContent = `${payload.code} · ${holders.length} / ${payload.max_seats} 席`;
+      sheet.querySelector('.modal-body').innerHTML = holders.length
+        ? `<div class="table-scroll"><table><thead><tr><th>手机号</th><th>状态</th><th>绑定时间</th><th>最后登录</th></tr></thead><tbody>${rows}</tbody></table></div>`
+        : '<p class="empty" style="padding:32px 0;text-align:center;color:var(--muted)">还没有账号绑定这个邀请码</p>';
+    } catch (error) {
+      sheet.querySelector('.modal-body').innerHTML = `<p class="empty" style="padding:32px 0;text-align:center;color:#a90020">${esc(error.message || '加载失败')}</p>`;
+    }
+  };
+  $('inviteRows').addEventListener('click', (event) => {
+    const detail = event.target.closest('[data-invite-seats]');
+    if (detail) showInviteSeats(detail.dataset.inviteSeats);
   });
   document.querySelectorAll('[data-tab]').forEach((button) => button.addEventListener('click', () => {
     activateTab(button.dataset.tab);

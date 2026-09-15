@@ -5,6 +5,7 @@
   const LEGACY_AUTH_STORAGE_KEY = 'selfit.auth.session.v1';
   const DEVICE_STORAGE_KEY = 'selfit.device.v1';
   const INVITE_CRED_KEY = 'selfit.auth.invite.v1';
+  const PHONE_RESUME_KEY = 'selfit.auth.phone.resume.v1';
   const jsonHeaders = { Accept: 'application/json', 'Content-Type': 'application/json' };
   const wait = (milliseconds) => new Promise((resolve) => setTimeout(resolve, milliseconds));
   const mockId = (value) => `mock_${String(value || 'invite').replace(/\D/g, '').slice(-6) || 'invite'}`;
@@ -50,6 +51,20 @@
       try { return JSON.parse(localStorage.getItem(INVITE_CRED_KEY) || 'null'); } catch { return null; }
     }
 
+    // 手机号静默续登标记：仅记录「此设备登录过手机号账号」，不存手机号明文。
+    markPhoneResume(payload) {
+      if (!payload?.user?.phone_e164) return;
+      try { localStorage.setItem(PHONE_RESUME_KEY, '1'); } catch { /* ignore */ }
+    }
+
+    readPhoneResumeEligible() {
+      try { return localStorage.getItem(PHONE_RESUME_KEY) === '1'; } catch { return false; }
+    }
+
+    clearPhoneResume() {
+      try { localStorage.removeItem(PHONE_RESUME_KEY); } catch { /* ignore */ }
+    }
+
     storeInviteCredentials(inviteCode) {
       try {
         localStorage.setItem(INVITE_CRED_KEY, JSON.stringify({ invite_code: String(inviteCode || '').trim(), device_id: this.deviceId() }));
@@ -85,11 +100,12 @@
 
     clear() {
       this.session = null;
-      try {
-        localStorage.removeItem(AUTH_STORAGE_KEY);
-        localStorage.removeItem(INVITE_CRED_KEY);
-        sessionStorage.removeItem(LEGACY_AUTH_STORAGE_KEY);
-      } catch { /* ignore */ }
+       try {
+         localStorage.removeItem(AUTH_STORAGE_KEY);
+         localStorage.removeItem(INVITE_CRED_KEY);
+         localStorage.removeItem(PHONE_RESUME_KEY);
+         sessionStorage.removeItem(LEGACY_AUTH_STORAGE_KEY);
+       } catch { /* ignore */ }
     }
 
     async request(path, { method = 'GET', body, token, timeoutMs = this.timeoutMs, allowRelogin = true } = {}) {
@@ -105,8 +121,8 @@
           signal: controller.signal,
           body: body === undefined ? undefined : JSON.stringify(body),
         });
-        if (response.status === 401 && token && allowRelogin && this.mode === 'live' && !path.startsWith('/invite/')) {
-          // 静默重登：token 过期/丢失时，用本地保存的邀请码 + 设备标识无感换新 token。
+        if (response.status === 401 && token && allowRelogin && this.mode === 'live' && !path.startsWith('/invite/') && !path.startsWith('/phone/')) {
+          // 静默重登：token 过期/丢失时，先试邀请码凭证，再试手机号设备绑定。
           const creds = this.readInviteCredentials();
           if (creds?.invite_code) {
             const refreshed = await this.request('/invite/verify', {
@@ -120,6 +136,24 @@
             }
             this.persist(refreshed);
             return this.request(path, { method, body, token: refreshed.access_token, timeoutMs, allowRelogin: false });
+          }
+          if (this.readPhoneResumeEligible()) {
+            try {
+              const resumed = await this.request('/phone/resume', {
+                method: 'POST',
+                body: { device_id: this.deviceId() },
+                allowRelogin: false,
+                timeoutMs,
+              });
+              if (this.user?.user_id && resumed.user?.user_id !== this.user.user_id) {
+                throw new SelfitAuthError('登录账号已变化，请重新进入试衣镜。', { code: 'auth.account_changed', status: 401 });
+              }
+              this.persist(resumed);
+              return this.request(path, { method, body, token: resumed.access_token, timeoutMs, allowRelogin: false });
+            } catch (error) {
+              if (error.code === 'auth.account_changed') throw error;
+              // 设备恢复失败（如换设备）：继续走原始 401 报错。
+            }
           }
         }
         const payload = await response.json().catch(() => ({}));
@@ -159,11 +193,19 @@
       try {
         if (!stored) {
           const creds = this.readInviteCredentials();
-          if (!creds?.invite_code) return null;
-          this.persist(await this.request('/invite/verify', {
-            method: 'POST', body: { invite_code: creds.invite_code, device_id: creds.device_id || this.deviceId() },
-            allowRelogin: false,
-          }));
+          if (creds?.invite_code) {
+            this.persist(await this.request('/invite/verify', {
+              method: 'POST', body: { invite_code: creds.invite_code, device_id: creds.device_id || this.deviceId() },
+              allowRelogin: false,
+            }));
+          } else if (this.readPhoneResumeEligible()) {
+            // 手机号账号：凭设备绑定恢复登录态（30 天免重登的兜底路径）。
+            try {
+              this.persist(await this.request('/phone/resume', {
+                method: 'POST', body: { device_id: this.deviceId() }, allowRelogin: false,
+              }));
+            } catch { /* 设备未绑定或已换设备：保持未登录，走正常登录流程。 */ }
+          }
         }
         // 401 时 request 内部会先用邀请码静默重登，再重放 /me。
         const result = await this.request('/me', { token: this.accessToken });
@@ -194,13 +236,18 @@
 
     async directPhone(phone) {
       if (this.mode === 'live') {
-        const payload = await this.request('/phone/direct', { method: 'POST', body: { phone } });
+        const payload = await this.request('/phone/direct', {
+          method: 'POST',
+          body: { phone, device_id: this.deviceId() },
+          allowRelogin: false,
+        });
+        this.markPhoneResume(payload);
         return this.persist(payload);
       }
       await wait(360);
       return this.persist({
         access_token: `mock_phone_${Date.now()}`,
-        expires_in_seconds: 86400,
+        expires_in_seconds: 2592000,
         user: { user_id: mockId(phone), phone_e164: `+86${phone}`, status: 'active', beta_qualified: false },
       });
     }
@@ -214,7 +261,7 @@
       if (!['0000', '0001'].includes(String(code))) throw new SelfitAuthError('验证码不正确', { code: 'auth.code_invalid', status: 400 });
       return this.persist({
         access_token: `mock_phone_${Date.now()}`,
-        expires_in_seconds: 86400,
+        expires_in_seconds: 2592000,
         user: { user_id: mockId(phone), phone_e164: `+86${phone}`, status: 'active', beta_qualified: false },
       });
     }
@@ -233,7 +280,7 @@
       this.storeInviteCredentials(inviteCode);
       return this.persist({
         access_token: `mock_invite_${Date.now()}`,
-        expires_in_seconds: 86400,
+        expires_in_seconds: 2592000,
         user: { user_id: mockId(inviteCode), phone_e164: null, status: 'active', beta_qualified: true },
       });
     }

@@ -32,6 +32,7 @@ from app.auth import (
     start_phone_login,
     verify_phone_login,
     verify_phone_direct_login,
+    resume_phone_session,
     create_guest_session,
     verify_invite_login,
     bind_phone_to_current_user,
@@ -452,7 +453,21 @@ async def auth_phone_verify(request: Request) -> dict[str, Any]:
 @app.post("/auth/phone/direct")
 async def auth_phone_direct(request: Request) -> dict[str, Any]:
     payload = await request.json()
-    return verify_phone_direct_login(str(payload.get("phone") or ""), client_ip_from_request(request))
+    return verify_phone_direct_login(
+        str(payload.get("phone") or ""),
+        client_ip_from_request(request),
+        device_id=str(payload.get("device_id") or "") or None,
+    )
+
+
+@app.post("/auth/phone/resume")
+async def auth_phone_resume(request: Request) -> dict[str, Any]:
+    """手机号账号静默续登：凭设备绑定换新 token（30 天免重登的兜底）。"""
+    payload = await request.json()
+    return resume_phone_session(
+        str(payload.get("device_id") or ""),
+        client_ip_from_request(request),
+    )
 
 
 @app.post("/auth/invite/verify")
