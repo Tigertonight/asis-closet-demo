@@ -3,7 +3,19 @@
   if (!shell) return;
   const entry = document.createElement('button');
   entry.type = 'button'; entry.className = 'feedback-entry'; entry.textContent = '反馈';
-  entry.setAttribute('aria-label', '问题反馈'); shell.append(entry);
+  entry.setAttribute('aria-label', '问题反馈');
+  function placeEntry() {
+    const target = shell.id === 'studio'
+      ? (shell.dataset.screen === 'profile' ? shell.querySelector('.profile-header') : null)
+      : shell;
+    if (!target) { if (entry.parentNode) entry.remove(); return; }
+    if (entry.parentNode !== target) {
+      if (shell.id === 'studio') target.querySelector('span[aria-hidden]')?.remove();
+      target.append(entry);
+    }
+  }
+  new MutationObserver(placeEntry).observe(shell, {childList:true, subtree:true, attributes:true, attributeFilter:['class','data-screen']});
+  placeEntry();
   const page = document.createElement('dialog'); page.className = 'feedback-page';
   page.setAttribute('aria-labelledby', 'feedback-title');
   page.innerHTML = `<form class="feedback-form"><header><button type="button" class="feedback-back" aria-label="返回">‹</button><h1 id="feedback-title">问题反馈</h1><span></span></header><div class="feedback-content"><p class="feedback-intro">告诉我们遇到的问题，帮助我们把 selfit 做得更好。</p><label for="feedback-description">问题说明</label><textarea id="feedback-description" placeholder="请描述遇到的问题，或你希望改进的地方…" maxlength="2000" required></textarea><div class="feedback-count">0 / 2000</div><label for="feedback-photo">添加照片 <span>（选填）</span></label><label class="feedback-upload" for="feedback-photo"><span>＋<br>上传照片</span><img alt="反馈照片预览" hidden></label><input id="feedback-photo" type="file" accept="image/jpeg,image/png,image/webp" hidden><button type="button" class="feedback-remove" hidden>移除照片</button><p class="feedback-help">支持 JPG、PNG、WebP，最多 10MB</p><p class="feedback-error" role="alert"></p></div><footer><button class="feedback-submit" type="submit">提交反馈</button></footer></form>`;

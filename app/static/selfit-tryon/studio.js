@@ -703,17 +703,22 @@
   function mirrorLoading(message = "正在准备你的试衣镜…", failed = false, retryable = failed) {
     return `<section class="mirror-loading" aria-label="试衣镜加载" aria-busy="${!failed}">${failed ? "" : '<span class="mirror-spinner" aria-hidden="true"></span>'}<p role="status">${esc(message)}</p>${retryable ? '<button class="secondary" data-action="retry-mirror">重新加载</button>' : ""}</section>`;
   }
+  function mirrorPlaceholder(message, failed = false, retryable = failed) {
+    // Keep the page and its artwork visible while only the photo is pending.
+    return mirror().replace('class="mirror-stage ', 'class="mirror-stage photo-pending ')
+      .replace('<div class="arch"></div>', `<div class="arch"></div><div class="mirror-photo-status" role="status"><p>${esc(message)}</p>${retryable ? '<button class="secondary" data-action="retry-mirror">重新加载</button>' : ''}</div>`);
+  }
   function readyMirror() {
     if (reference) return mirror();
-    if (state.loading && !state.initialModelReady) return mirrorLoading();
+    if (state.loading && !state.initialModelReady) return mirrorPlaceholder("正在准备你的试衣镜…");
     if (!state.photo && (state.error || state.modelLoadFailed))
-      return mirrorLoading(state.error || "模特暂时未能加载，请重试。", true);
+      return mirrorPlaceholder(state.error || "模特暂时未能加载，请重试。", true);
     const src = state.result || state.photo;
     if (state.styling || !src) return mirror();
     preloadMirrorImage(src);
-    if (mirrorImages.get(src) === "error") return mirrorLoading(state.result ? "试穿图暂时未能加载，结果已保留，请重试。" : "照片暂时未能加载，请重试。", true);
-    if (mirrorImages.get(src) === "slow") return mirrorLoading("图片加载较慢，正在继续加载…", false, true);
-    if (mirrorImages.get(src) !== "ready") return mirrorLoading(state.result ? "正在加载试穿图…" : "正在加载模特…");
+    if (mirrorImages.get(src) === "error") return mirrorPlaceholder(state.result ? "试穿图暂时未能加载，结果已保留，请重试。" : "照片暂时未能加载，请重试。", true);
+    if (mirrorImages.get(src) === "slow") return mirrorPlaceholder("图片加载较慢，正在继续加载…", false, true);
+    if (mirrorImages.get(src) !== "ready") return mirrorPlaceholder(state.result ? "正在加载试穿图…" : "正在加载模特…");
     return mirror();
   }
   let renderedBrowseKey = "";
@@ -2308,15 +2313,15 @@
     state.modelLoadFailed = false;
     render();
     try {
+      // Public catalog loading can overlap session verification.
+      const catalogReady = loadModels().catch(() => { state.modelLoadFailed = true; });
       await ensureVisitorSession();
       state.wardrobeLoaded = false;
       state.feedLoaded = false;
       state.homeNotesLoaded = Boolean(state.homeOutfits.length);
       if (["inspiration", "topic"].includes(state.page)) loadLibrary();
       const preferencesReady = loadPreferences();
-      const modelReady = Promise.all([preferencesReady, loadModels().catch(() => {
-        state.modelLoadFailed = true;
-      })]).then(async ([preferences]) => {
+      const modelReady = Promise.all([preferencesReady, catalogReady]).then(async ([preferences]) => {
         await prepareInitialModel(preferences);
         state.initialModelReady = true;
         if (state.page === "mirror") render();

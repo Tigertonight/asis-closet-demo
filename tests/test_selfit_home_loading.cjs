@@ -21,7 +21,7 @@ function harness(query = '?screen=mirror', overrides = {}) {
     URL, URLSearchParams, Set, Promise, Date, File, Blob, FormData, AbortController, setTimeout, clearTimeout,
     savedSession:{accessToken:'test-only'}, visitorReady:null,
     window:{SelfitAuth:{createClient:()=>({clear(){}})}},
-    isTryonAccessError:()=>false, requireTryonAccess:async()=>{}, ensureVisitorSession:async()=>{}, pendingImport:()=>null, poll(){}, notify(){},
+    isTryonAccessError:()=>false, requireTryonAccess:async()=>{}, ensureVisitorSession:overrides.ensureVisitorSession || (async()=>{}), pendingImport:()=>null, poll(){}, notify(){},
     history:{replaceState(_a,_b,url){location.href=url.href;location.search=url.search;}},
     sessionStorage:{getItem:()=>null,setItem(){}},
     normalizeOutfit, normalizeItem:x=>({id:x.item_id}),
@@ -298,3 +298,13 @@ test('late responses from the previous gender cannot overwrite the new catalog o
   assert.equal(h.state.topics[0].entries[0].id,'male');
   assert.equal(h.state.libraryGender,'male');
 });
+
+ test('public models begin loading before session verification finishes', async()=>{
+  const session=deferred();
+  const h=harness('?screen=mirror',{ensureVisitorSession:()=>session.promise});
+  const ready=h.run('load()');await flush();
+  assert(h.calls.includes('/selfit/try-on/models'));
+  assert(!h.calls.includes('/closet/preferences'));
+  session.resolve();await ready;
+  assert(h.calls.includes('/closet/preferences'));
+ });

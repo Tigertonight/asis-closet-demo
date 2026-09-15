@@ -5,6 +5,5 @@
 
 .feedback-entry::before{content:"";position:absolute;inset:6px 0;border-radius:999px;background:rgba(255,255,255,.84);z-index:-1}
 
-/* Stack mirror actions below the feedback touch target without shifting the background. */
-#studio[data-screen="mirror"] .mirror-result-actions{top:max(64px,var(--mirror-top-gap))}
-#studio[data-screen="mirror"] .mirror-history{top:calc(max(64px,var(--mirror-top-gap)) + 52px)}
+/* The profile entry belongs to the scrolling page header. */
+#studio .profile-header .feedback-entry{position:relative;top:auto;right:auto;grid-column:3;justify-self:end;width:52px;padding:0 6px;font-size:14px}
