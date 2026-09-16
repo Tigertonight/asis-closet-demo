@@ -762,7 +762,376 @@ def _results_content(entries: list[dict[str, Any]], overlays: dict[str, str], so
     <div class="grid">{"".join(_card(e, overlays) for e in body_entries)}</div>"""
 
 
+def _algo_version_options() -> list[dict[str, Any]]:
+    """已注册算法版本（含报告统计），供跑批选择与对比勾选。"""
+    from app.photo_algorithm_registry import list_versions
+
+    return list_versions()
+
+
+def _algo_photo_groups() -> list[dict[str, Any]]:
+    """QA 素材按来源分组（跑批/对比的照片勾选数据源）。
+
+    photo_id 用注册表口径（qa:file），跑批与报告读写的键一致。
+    """
+    from app.photo_algorithm_registry import iter_all_photos
+
+    manifest = {item["file"]: item for item in _load_manifest()}
+    groups: dict[str, list[dict[str, Any]]] = {}
+    for photo in iter_all_photos():
+        photo_id = str(photo.get("photo_id") or "")
+        if not photo_id.startswith("qa:"):
+            continue
+        file = photo_id[3:]
+        item = manifest.get(file) or {}
+        source = entry_source(item)
+        groups.setdefault(source, []).append(
+            {
+                "id": photo_id,
+                "file": file,
+                "kind": photo.get("kind"),
+                "thumb": "/qa-photos/" + file,
+            }
+        )
+    return [
+        {"source": key, "label": SOURCE_LABELS.get(key, key), "photos": groups[key]}
+        for key in (SOURCE_BUILTIN, SOURCE_APP, SOURCE_MIRROR, SOURCE_ADMIN)
+        if groups.get(key)
+    ]
+
+
+def _algorithms_content() -> str:
+    import json as _json
+
+    versions = _algo_version_options()
+    groups = _algo_photo_groups()
+    versions_json = _json.dumps(versions, ensure_ascii=False)
+    groups_json = _json.dumps(groups, ensure_ascii=False)
+    html = _ALGO_PAGE_TEMPLATE.replace("__VERSIONS_JSON__", versions_json).replace("__GROUPS_JSON__", groups_json)
+    return html
+
+
+_ALGO_PAGE_TEMPLATE = """
+    <h1>算法版本</h1>
+    <p class="sub">用任意历史版本算法跑 QA 数据集照片；勾选多个版本并排对比同一张照片的识别结果（标签 / 读数 / 提示），算法迭代效果一眼可见。</p>
+    <div class="algo-layout">
+      <section class="algo-card">
+        <h2>1 · 选照片</h2>
+        <div class="algo-groupbar">
+          <button type="button" class="algo-mini" id="algoSelectAll">全选</button>
+          <button type="button" class="algo-mini" id="algoSelectNone">清空</button>
+          <span class="algo-hint" id="algoSelCount">已选 0 张</span>
+        </div>
+        <div id="algoGroups"></div>
+      </section>
+      <section class="algo-card">
+        <h2>2 · 跑批</h2>
+        <p class="algo-hint">选一个版本，对上面勾选的照片执行分析（已有结果且未勾「覆盖」会跳过）。</p>
+        <div class="algo-runbar">
+          <select id="algoRunVersion"></select>
+          <label class="algo-check"><input type="checkbox" id="algoRunForce" checked />覆盖旧结果</label>
+          <button type="button" class="algo-primary" id="algoRunBtn">开始跑批</button>
+        </div>
+        <div class="algo-progress" id="algoRunProgress" hidden></div>
+      </section>
+      <section class="algo-card">
+        <h2>3 · 版本对比</h2>
+        <p class="algo-hint">勾选两个及以上版本，对比上面勾选的照片（未勾选照片时对比全部）。</p>
+        <div id="algoVersionChecks"></div>
+        <div class="algo-runbar" style="margin-top:10px">
+          <label class="algo-check"><input type="checkbox" id="algoChangedOnly" checked />只看有变化的</label>
+          <button type="button" class="algo-primary" id="algoCompareBtn">对比结果</button>
+        </div>
+        <div id="algoCompareSummary"></div>
+        <div id="algoCompareGrid"></div>
+      </section>
+    </div>
+    <script>
+      const algoVersions = __VERSIONS_JSON__;
+      const algoGroups = __GROUPS_JSON__;
+      (() => {
+        const $ = (id) => document.getElementById(id);
+        const selected = new Set();
+
+        const renderGroups = () => {
+          $('algoGroups').replaceChildren(...algoGroups.map((group, gi) => {
+            const details = document.createElement('details');
+            details.className = 'algo-group';
+            details.open = gi === 0;
+            const head = document.createElement('summary');
+            const groupIds = group.photos.map((p) => p.id);
+            const checkedCount = groupIds.filter((id) => selected.has(id)).length;
+            head.innerHTML = '<label class="algo-grouplabel"><input type="checkbox" data-group="' + gi + '"' + (checkedCount === groupIds.length ? ' checked' : '') + ' /> <b>' + group.label + '</b><span data-groupcount="' + gi + '">（' + checkedCount + '/' + group.photos.length + '）</span></label>';
+            details.append(head);
+            const grid = document.createElement('div');
+            grid.className = 'algo-thumbs';
+            grid.replaceChildren(...group.photos.map((photo) => {
+              const cell = document.createElement('label');
+              cell.className = 'algo-thumb' + (selected.has(photo.id) ? ' is-sel' : '');
+              const input = document.createElement('input');
+              input.type = 'checkbox';
+              input.dataset.photo = photo.id;
+              input.checked = selected.has(photo.id);
+              const img = document.createElement('img');
+              img.loading = 'lazy'; img.src = photo.thumb; img.alt = photo.file;
+              const name = document.createElement('span');
+              name.textContent = photo.file.split('/').pop();
+              cell.append(input, img, name);
+              return cell;
+            }));
+            details.append(grid);
+            return details;
+          }));
+        };
+        renderGroups();
+
+        const updateCount = () => { $('algoSelCount').textContent = '已选 ' + selected.size + ' 张'; };
+        updateCount();
+
+        $('algoGroups').addEventListener('change', (event) => {
+          const target = event.target;
+          if (target.dataset.photo !== undefined) {
+            if (target.checked) selected.add(target.dataset.photo); else selected.delete(target.dataset.photo);
+            const cell = target.closest('.algo-thumb');
+            if (cell) cell.classList.toggle('is-sel', target.checked);
+            const details = target.closest('details');
+            if (details) {
+              const boxes = details.querySelectorAll('[data-photo]');
+              const label = details.querySelector('.algo-grouplabel input');
+              if (label) label.checked = Array.from(boxes).every((b) => b.checked);
+              const counter = details.querySelector('[data-groupcount]');
+              if (counter) counter.textContent = '（' + Array.from(boxes).filter((b) => b.checked).length + '/' + boxes.length + '）';
+            }
+            updateCount();
+          } else if (target.dataset.group !== undefined) {
+            const group = algoGroups[Number(target.dataset.group)];
+            group.photos.forEach((photo) => { if (target.checked) selected.add(photo.id); else selected.delete(photo.id); });
+            renderGroups();
+            updateCount();
+          }
+        });
+        $('algoSelectAll').addEventListener('click', () => { algoGroups.forEach((g) => g.photos.forEach((p) => selected.add(p.id))); renderGroups(); updateCount(); });
+        $('algoSelectNone').addEventListener('click', () => { selected.clear(); renderGroups(); updateCount(); });
+
+        const versionOptions = (rows) => rows.map((v) => {
+          const option = document.createElement('option');
+          option.value = v.version;
+          option.textContent = v.version + (v.is_current ? '（当前）' : '');
+          return option;
+        });
+        $('algoRunVersion').replaceChildren(...versionOptions(algoVersions));
+
+        $('algoRunBtn').addEventListener('click', async () => {
+          const version = $('algoRunVersion').value;
+          if (!version) return;
+          const photoIds = Array.from(selected);
+          if (!photoIds.length) { $('algoRunProgress').hidden = false; $('algoRunProgress').textContent = '请先勾选照片'; return; }
+          $('algoRunBtn').disabled = true;
+          $('algoRunProgress').hidden = false;
+          $('algoRunProgress').textContent = '提交中…';
+          try {
+            const response = await fetch('/qa/algorithms/run', {
+              method: 'POST', headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ version: version, photo_ids: photoIds, force: $('algoRunForce').checked }),
+            });
+            const payload = await response.json();
+            if (!response.ok) throw new Error(payload.detail || '提交失败');
+            await pollJob(payload.job_id);
+          } catch (error) { $('algoRunProgress').textContent = '提交失败：' + error.message; }
+          $('algoRunBtn').disabled = false;
+        });
+        const pollJob = (jobId) => new Promise((resolve) => {
+          const timer = setInterval(async () => {
+            try {
+              const payload = await (await fetch('/qa/algorithms/job/' + jobId)).json();
+              if (payload.status === 'done' || payload.status === 'failed') {
+                clearInterval(timer);
+                $('algoRunProgress').textContent = payload.status === 'done'
+                  ? '完成：' + payload.done + ' 张' + (payload.failed ? '，失败 ' + payload.failed : '')
+                  : '失败：' + (payload.error || '未知错误');
+                refreshVersionStats();
+                resolve();
+              } else {
+                $('algoRunProgress').textContent = '跑批中… ' + payload.done + '/' + payload.total;
+              }
+            } catch (error) { clearInterval(timer); resolve(); }
+          }, 1200);
+        });
+        const refreshVersionStats = async () => {
+          try {
+            const payload = await (await fetch('/qa/algorithms/versions')).json();
+            const rows = payload.versions || [];
+            $('algoRunVersion').replaceChildren(...versionOptions(rows));
+            renderVersionChecks(rows);
+          } catch (error) { /* 静默 */ }
+        };
+
+        const renderVersionChecks = (rows) => {
+          $('algoVersionChecks').replaceChildren(...(rows || []).map((v) => {
+            const label = document.createElement('label');
+            label.className = 'algo-check algo-version-check';
+            const input = document.createElement('input');
+            input.type = 'checkbox'; input.value = v.version;
+            const b = document.createElement('b'); b.textContent = v.version;
+            const small = document.createElement('small');
+            small.textContent = (v.report_photo_count || 0) + ' 张报告';
+            label.append(input, b, small);
+            return label;
+          }));
+        };
+        renderVersionChecks(algoVersions);
+
+        const cellChanged = (a, b) => {
+          if (!a || !b) return !a !== !b;
+          const key = (cell) => [cell.status, (cell.skin || {}).label, (cell.face || {}).label, (cell.body || {}).label, (cell.issues || []).join(',')].join('|');
+          const lA = (a.skin || {}).l_star, lB = (b.skin || {}).l_star;
+          const lStarMoved = typeof lA === 'number' && typeof lB === 'number' && Math.abs(lB - lA) >= 1;
+          return key(a) !== key(b) || lStarMoved;
+        };
+
+        $('algoCompareBtn').addEventListener('click', async () => {
+          const versions = Array.from($('algoVersionChecks').querySelectorAll('input:checked')).map((input) => input.value);
+          if (versions.length < 2) { $('algoCompareSummary').innerHTML = '<p class="algo-hint">请至少勾选两个版本</p>'; return; }
+          $('algoCompareBtn').disabled = true;
+          $('algoCompareSummary').innerHTML = '<p class="algo-hint">加载中…</p>';
+          try {
+            const response = await fetch('/qa/algorithms/matrix', {
+              method: 'POST', headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ versions: versions, photo_ids: Array.from(selected) }),
+            });
+            const payload = await response.json();
+            if (!response.ok) throw new Error(payload.detail || '对比失败');
+            renderCompare(payload, versions);
+          } catch (error) {
+            $('algoCompareSummary').innerHTML = '<p class="algo-hint">对比失败：' + error.message + '</p>';
+          }
+          $('algoCompareBtn').disabled = false;
+        });
+
+        const renderCompare = (payload, versions) => {
+          const changedOnly = $('algoChangedOnly').checked;
+          const base = versions[0];
+          let changed = 0;
+          const cards = [];
+          for (const photo of payload.photos) {
+            const rows = photo.rows || {};
+            const hasAny = versions.some((v) => rows[v]);
+            if (!hasAny) continue;
+            const isChanged = versions.slice(1).some((v) => cellChanged(rows[base], rows[v]));
+            if (isChanged) changed += 1;
+            if (changedOnly && !isChanged) continue;
+            const cols = versions.map((v) => {
+              const cell = rows[v];
+              if (!cell) return '<div class="algo-col algo-col--empty"><b>' + v + '</b><span>无报告</span></div>';
+              const skin = cell.skin || {};
+              const label = skin.label || (cell.face || {}).label || (cell.body || {}).label || '—';
+              const bits = [];
+              if (cell.status) bits.push(cell.status);
+              if (cell.confidence != null) bits.push(cell.confidence);
+              if (typeof skin.l_star === 'number') bits.push('L* ' + skin.l_star);
+              if (typeof skin.raw_l_star === 'number' && skin.raw_l_star !== skin.l_star) bits.push('原始 ' + skin.raw_l_star + '，阴影补偿');
+              const issues = (cell.issues || []).length ? '<em>' + cell.issues.length + ' 条提示</em>' : '';
+              const changedMark = cellChanged(rows[base], cell) ? ' algo-col--changed' : '';
+              return '<div class="algo-col' + changedMark + '"><b>' + v + '</b><span class="algo-label">' + label + '</span><small>' + bits.join(' · ') + '</small>' + issues + '</div>';
+            }).join('');
+            cards.push('<article class="algo-cmp-card"><a class="algo-cmp-thumb" href="' + photo.thumb + '" target="_blank" rel="noopener"><img loading="lazy" src="' + photo.thumb + '" alt="' + photo.photo_id + '" /></a><div class="algo-cmp-cols">' + cols + '</div></article>');
+          }
+          $('algoCompareSummary').innerHTML = '<p class="algo-hint">共 ' + payload.photos.length + ' 张，其中 <b>' + changed + '</b> 张结果有变化（以 ' + base + ' 为基准；标签 / L*（±1）/ 提示 任一不同即算）。</p>';
+          $('algoCompareGrid').innerHTML = cards.join('') || '<p class="algo-hint">没有符合条件的照片</p>';
+        };
+      })();
+    </script>"""
+
+
+# ---------------------------------------------------------------------------
+# 算法版本 tab 的 JSON API（跑批 / 进度 / 对比矩阵 / 版本列表）
+# ---------------------------------------------------------------------------
+
+def _qa_admin_guard(request: Request) -> JSONResponse | None:
+    """算法 API 鉴权：未登录返回 401（前端 fetch 场景，不适合 redirect）。"""
+    token = admin_token_from_request(request)
+    if not token:
+        return JSONResponse({"detail": "未登录"}, status_code=401)
+    try:
+        resolve_admin_user(token)
+    except Exception:
+        return JSONResponse({"detail": "登录已失效"}, status_code=401)
+    return None
+
+
+@router.get("/qa/algorithms/versions")
+def qa_algo_versions(request: Request) -> JSONResponse:
+    denied = _qa_admin_guard(request)
+    if denied is not None:
+        return denied
+    from app.photo_algorithm_registry import current_version, list_versions
+
+    return JSONResponse({"versions": list_versions(), "current": current_version()})
+
+
+@router.post("/qa/algorithms/run")
+async def qa_algo_run(request: Request) -> JSONResponse:
+    denied = _qa_admin_guard(request)
+    if denied is not None:
+        return denied
+    try:
+        payload = await request.json()
+    except Exception:
+        return JSONResponse({"detail": "请求格式错误"}, status_code=400)
+    version = str(payload.get("version") or "")
+    photo_ids = payload.get("photo_ids")
+    if not version:
+        return JSONResponse({"detail": "缺少算法版本"}, status_code=400)
+    if photo_ids is not None and not (isinstance(photo_ids, list) and all(isinstance(p, str) for p in photo_ids)):
+        return JSONResponse({"detail": "photo_ids 格式错误"}, status_code=400)
+    from app.photo_algorithm_registry import submit_run_job
+
+    try:
+        job_id = submit_run_job(version, photo_ids, force=bool(payload.get("force", True)))
+    except ValueError as exc:
+        return JSONResponse({"detail": str(exc)}, status_code=404)
+    return JSONResponse({"job_id": job_id})
+
+
+@router.get("/qa/algorithms/job/{job_id}")
+def qa_algo_job(request: Request, job_id: str) -> JSONResponse:
+    denied = _qa_admin_guard(request)
+    if denied is not None:
+        return denied
+    from app.photo_algorithm_registry import run_job_status
+
+    job = run_job_status(job_id)
+    if job is None:
+        return JSONResponse({"detail": "任务不存在"}, status_code=404)
+    return JSONResponse(job)
+
+
+@router.post("/qa/algorithms/matrix")
+async def qa_algo_matrix(request: Request) -> JSONResponse:
+    denied = _qa_admin_guard(request)
+    if denied is not None:
+        return denied
+    try:
+        payload = await request.json()
+    except Exception:
+        return JSONResponse({"detail": "请求格式错误"}, status_code=400)
+    versions = payload.get("versions")
+    photo_ids = payload.get("photo_ids")
+    if not (isinstance(versions, list) and len(versions) >= 1 and all(isinstance(v, str) for v in versions)):
+        return JSONResponse({"detail": "缺少算法版本"}, status_code=400)
+    if photo_ids is not None and not (isinstance(photo_ids, list) and all(isinstance(p, str) for p in photo_ids)):
+        return JSONResponse({"detail": "photo_ids 格式错误"}, status_code=400)
+    from app.photo_algorithm_registry import photo_results_matrix
+
+    try:
+        matrix = photo_results_matrix(versions, photo_ids)
+    except ValueError as exc:
+        return JSONResponse({"detail": str(exc)}, status_code=404)
+    return JSONResponse(matrix)
+
 def render_qa_page(content: str, active_tab: str, source_counts: dict[str, int] | None = None, active_source: str = "") -> str:
+    # source_counts=None 表示该 tab 不需要来源筛选条（算法版本 tab 自带分组勾选）
+    hide_filters = source_counts is None
     source_counts = source_counts or {}
     source_query = f"&source={active_source}" if active_source else ""
     total = sum(source_counts.values())
@@ -784,7 +1153,12 @@ def render_qa_page(content: str, active_tab: str, source_counts: dict[str, int] 
     main_tabs_html = "".join(main_tab_parts)
 
     # QA 内部子导航（pill 风格，与管理后台「用户报告」的 report-tabs 一致）
-    qa_tabs = [("results", "实验结果"), ("annotate", "数据标注"), ("dataset", "数据分布")]
+    qa_tabs = [
+        ("results", "实验结果"),
+        ("annotate", "数据标注"),
+        ("dataset", "数据分布"),
+        ("algorithms", "算法版本"),
+    ]
     qa_tabs_html = "".join(
         f'<a class="qa-tab{" is-active" if active_tab == key else ""}" href="/qa/onboarding-attributes?tab={key}{source_query}">{label}</a>'
         for key, label in qa_tabs
@@ -795,11 +1169,15 @@ def render_qa_page(content: str, active_tab: str, source_counts: dict[str, int] 
         href = f"/qa/onboarding-attributes?tab={active_tab}" + (f"&source={value}" if value else "")
         return f'<a class="src-filter{" is-active" if is_active else ""}" href="{href}">{label} <b>{count}</b></a>'
 
-    filters = source_filter("", "全部", total) + "".join(
-        source_filter(key, SOURCE_LABELS[key], source_counts.get(key, 0))
-        for key in (SOURCE_BUILTIN, SOURCE_ADMIN, SOURCE_MIRROR, SOURCE_APP)
-    )
-    filter_bar = f'<div class="source-filter-bar"><span class="source-filter-label">图片来源</span>{filters}</div>'
+    if hide_filters:
+        # 算法版本 tab 自带按来源分组的照片勾选，不需要顶部来源筛选条
+        filter_bar = ""
+    else:
+        filters = source_filter("", "全部", total) + "".join(
+            source_filter(key, SOURCE_LABELS[key], source_counts.get(key, 0))
+            for key in (SOURCE_BUILTIN, SOURCE_ADMIN, SOURCE_MIRROR, SOURCE_APP)
+        )
+        filter_bar = f'<div class="source-filter-bar"><span class="source-filter-label">图片来源</span>{filters}</div>'
 
     return f"""<!doctype html>
 <html lang="zh-CN">
@@ -926,6 +1304,44 @@ def render_qa_page(content: str, active_tab: str, source_counts: dict[str, int] 
     .dist-num--anno {{ color: #166534; font-weight: 800; }}
     .scarce {{ margin-left: 6px; background: #fde8e8; color: #b91c1c; border-radius: 8px; padding: 2px 7px; font-size: 11px; }}
     .dist-note {{ color: var(--muted); font-size: 12px; margin: 8px 0 0; }}
+    /* 算法版本 tab */
+    .algo-layout {{ display: grid; gap: 16px; }}
+    .algo-card {{ background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 16px 18px; }}
+    .algo-card h2 {{ margin: 0 0 10px; }}
+    .algo-hint {{ color: var(--muted); font-size: 12px; margin: 6px 0; }}
+    .algo-groupbar {{ display: flex; gap: 8px; align-items: center; margin-bottom: 10px; }}
+    .algo-mini {{ border: 1px solid var(--line); background: #faf6f3; border-radius: 999px; padding: 5px 12px; font-size: 12px; font-weight: 700; cursor: pointer; }}
+    .algo-mini:hover {{ border-color: var(--rose); color: var(--rose); }}
+    .algo-group {{ border: 1px solid var(--line); border-radius: 12px; margin-bottom: 10px; overflow: hidden; }}
+    .algo-group summary {{ list-style: none; cursor: pointer; padding: 10px 14px; background: #faf6f3; }}
+    .algo-group summary::-webkit-details-marker {{ display: none; }}
+    .algo-grouplabel {{ display: inline-flex; gap: 8px; align-items: center; font-size: 13px; }}
+    .algo-thumbs {{ display: grid; grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); gap: 8px; padding: 12px; }}
+    .algo-thumb {{ position: relative; border: 2px solid var(--line); border-radius: 10px; overflow: hidden; cursor: pointer; display: block; }}
+    .algo-thumb img {{ width: 100%; aspect-ratio: 3 / 4; object-fit: cover; object-position: top; display: block; }}
+    .algo-thumb span {{ display: block; font-size: 10px; color: var(--muted); padding: 3px 5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }}
+    .algo-thumb input {{ position: absolute; top: 5px; left: 5px; width: 16px; height: 16px; accent-color: var(--rose); }}
+    .algo-thumb.is-sel {{ border-color: var(--rose); box-shadow: 0 0 0 2px rgba(255, 79, 134, .25); }}
+    .algo-runbar {{ display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }}
+    .algo-runbar select {{ border: 1px solid var(--line); border-radius: 10px; padding: 8px 10px; font-size: 13px; background: var(--card); }}
+    .algo-check {{ display: inline-flex; gap: 6px; align-items: center; font-size: 13px; }}
+    .algo-check input {{ accent-color: var(--rose); }}
+    .algo-primary {{ background: var(--rose); color: #fff; border: 0; border-radius: 999px; padding: 9px 22px; font-size: 13px; font-weight: 800; cursor: pointer; }}
+    .algo-primary:disabled {{ opacity: .5; cursor: default; }}
+    .algo-progress {{ margin-top: 10px; font-size: 13px; color: var(--brand); background: #fff4d8; border-radius: 10px; padding: 8px 14px; }}
+    .algo-version-check {{ border: 1px solid var(--line); border-radius: 12px; padding: 8px 12px; margin: 0 8px 8px 0; background: #faf6f3; display: inline-flex; }}
+    .algo-version-check small {{ color: var(--muted); margin-left: 4px; }}
+    .algo-cmp-card {{ display: flex; gap: 12px; background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 10px; margin-bottom: 10px; }}
+    .algo-cmp-thumb {{ flex: 0 0 88px; border-radius: 10px; overflow: hidden; display: block; }}
+    .algo-cmp-thumb img {{ width: 88px; height: 112px; object-fit: cover; object-position: top; display: block; }}
+    .algo-cmp-cols {{ flex: 1; display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 8px; align-content: start; }}
+    .algo-col {{ border: 1px solid var(--line); border-radius: 10px; padding: 8px 10px; display: flex; flex-direction: column; gap: 3px; background: #fff; }}
+    .algo-col b {{ font-size: 11px; color: var(--muted); }}
+    .algo-label {{ font-size: 15px; font-weight: 800; }}
+    .algo-col small {{ font-size: 11px; color: var(--muted); line-height: 1.5; word-break: break-all; }}
+    .algo-col em {{ font-style: normal; color: #8a5a00; background: #fff4d8; border-radius: 6px; padding: 1px 6px; font-size: 10px; display: inline-block; margin-top: 2px; }}
+    .algo-col--changed {{ border-color: #f3c2c2; box-shadow: 0 0 0 2px rgba(220, 38, 38, .12); }}
+    .algo-col--empty {{ opacity: .55; }}
     @media (max-width: 900px) {{
       header.topbar {{ flex-wrap: wrap; padding: 12px 16px; gap: 8px; }}
       nav.tabs {{ width: 100%; margin-left: 0; overflow-x: auto; }}
@@ -976,6 +1392,9 @@ def qa_onboarding_attributes(
     denied = _require_admin_redirect(request)
     if denied is not None:
         return denied
+    if tab == "algorithms":
+        # 算法版本 tab 独立于当前版本缓存（_analyze_all），提前返回避免全量分析
+        return render_qa_page(_algorithms_content(), "algorithms", None)
     entries = _analyze_all(refresh=bool(refresh))
     source_counts = _source_counts(entries)
     active_source = source if source in SOURCE_LABELS else ""

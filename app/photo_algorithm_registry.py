@@ -438,6 +438,142 @@ def run_report(version: str, photo_ids: Iterable[str] | None = None, force: bool
 
 
 # ---------------------------------------------------------------------------
+# 可跟踪的跑批 job（QA 页交互用：进度轮询）
+# ---------------------------------------------------------------------------
+
+_RUN_JOBS: dict[str, dict[str, Any]] = {}
+_JOB_LOCK = threading.Lock()
+
+
+def submit_run_job(version: str, photo_ids: list[str] | None = None, force: bool = True) -> str:
+    """提交可跟踪的跑批任务（后台串行执行），返回 job_id 供进度轮询。"""
+    if not _SAFE_VERSION.match(version) or not (ALGORITHM_DIR / version).is_dir():
+        raise ValueError(f"算法版本未注册: {version}")
+    job_id = "job_" + secrets.token_urlsafe(8)
+    with _JOB_LOCK:
+        _RUN_JOBS[job_id] = {
+            "job_id": job_id,
+            "version": version,
+            "status": "queued",
+            "total": 0,
+            "done": 0,
+            "failed": 0,
+            "created_at": _now_iso(),
+        }
+    _REGISTRY_EXECUTOR.submit(_run_job_sync, job_id, version, list(photo_ids or []), force)
+    return job_id
+
+
+def _run_job_sync(job_id: str, version: str, photo_ids: list[str], force: bool) -> None:
+    with _JOB_LOCK:
+        job = _RUN_JOBS.get(job_id)
+        if job is None:
+            return
+        job["status"] = "running"
+    try:
+        photos = iter_all_photos()
+        if photo_ids:
+            wanted = set(photo_ids)
+            photos = [photo for photo in photos if photo["photo_id"] in wanted]
+        with _JOB_LOCK:
+            job["total"] = len(photos)
+        with _WRITE_LOCK:
+            rows = {} if force else _load_report_rows(version)
+        for photo in photos:
+            if not force and photo["photo_id"] in rows:
+                with _JOB_LOCK:
+                    job["done"] += 1
+                continue
+            row = analyze_photo_with(version, photo)
+            with _JOB_LOCK:
+                if row.get("error"):
+                    job["failed"] += 1
+                else:
+                    job["done"] += 1
+            with _WRITE_LOCK:
+                rows[photo["photo_id"]] = row
+                _save_report_rows(version, rows)
+        with _JOB_LOCK:
+            job["status"] = "done"
+            job["finished_at"] = _now_iso()
+    except Exception as exc:  # noqa: BLE001 - job 状态必须闭环
+        with _JOB_LOCK:
+            job = _RUN_JOBS.get(job_id) or {}
+            job["status"] = "failed"
+            job["error"] = f"{type(exc).__name__}: {exc}"
+            job["finished_at"] = _now_iso()
+
+
+def run_job_status(job_id: str) -> dict[str, Any] | None:
+    with _JOB_LOCK:
+        job = _RUN_JOBS.get(job_id)
+        return dict(job) if job else None
+
+
+def photo_results_matrix(versions: list[str], photo_ids: list[str] | None = None) -> dict[str, Any]:
+    """多版本 × 照片的结果矩阵（QA 页对比视图）。
+
+    返回 {versions, photos: [{photo_id, kind, source, thumb, rows: {version: cell}}]}。
+    cell 含 status/confidence/issues/各属性 label 与关键读数；无报告的版本该格为 null。
+    photo_id 为空列表或 None 时取全量（与 iter_all_photos 同口径）。
+    """
+    unknown = [version for version in versions if not (ALGORITHM_DIR / version / "manifest.json").exists()]
+    if unknown:
+        raise ValueError(f"算法版本未注册: {', '.join(unknown)}")
+    rows_by_version = {version: _load_report_rows(version) for version in versions}
+    photos = iter_all_photos()
+    if photo_ids is not None and photo_ids:
+        wanted = set(photo_ids)
+        photos = [photo for photo in photos if photo["photo_id"] in wanted]
+    out: list[dict[str, Any]] = []
+    for photo in photos:
+        cells: dict[str, Any] = {}
+        for version in versions:
+            row = rows_by_version.get(version, {}).get(photo["photo_id"])
+            cells[version] = _matrix_cell(row) if row else None
+        out.append(
+            {
+                "photo_id": photo["photo_id"],
+                "kind": photo["kind"],
+                "source": photo["source"],
+                "thumb": _photo_thumb_url(photo),
+                "rows": cells,
+            }
+        )
+    return {"versions": versions, "photos": out}
+
+
+def _matrix_cell(row: dict[str, Any]) -> dict[str, Any]:
+    cell: dict[str, Any] = {
+        "status": row.get("status"),
+        "confidence": row.get("confidence"),
+        "issues": row.get("issues") or [],
+        "error": row.get("error"),
+    }
+    for key in ("skin", "face", "body"):
+        attr = row.get(key) or {}
+        if attr:
+            cell[key] = {
+                "label": attr.get("label"),
+                "confidence": attr.get("confidence"),
+                "status": attr.get("status"),
+                "issues": attr.get("issues") or [],
+                "l_star": attr.get("l_star"),
+                "raw_l_star": attr.get("raw_l_star"),
+                "ita_deg": attr.get("ita_deg"),
+            }
+    return cell
+
+
+def _photo_thumb_url(photo: dict[str, Any]) -> str | None:
+    """QA 页可展示的缩略图 URL：qa 素材走静态挂载，用户 session 资产无公开路由（None）。"""
+    photo_id = str(photo.get("photo_id") or "")
+    if photo_id.startswith("qa:"):
+        return "/qa-photos/" + photo_id[3:]
+    return None
+
+
+# ---------------------------------------------------------------------------
 # 版本对比
 # ---------------------------------------------------------------------------
 
@@ -583,14 +719,10 @@ def submit_rerun(version: str, force: bool = True) -> bool:
     """管理后台手动触发跑批（后台执行，立即返回）。版本未注册返回 False。"""
     if not (ALGORITHM_DIR / version / "manifest.json").exists():
         return False
-
-    def _job() -> None:
-        try:
-            run_report(version, force=force)
-        except Exception:
-            pass
-
-    _REGISTRY_EXECUTOR.submit(_job)
+    try:
+        submit_run_job(version, None, force)
+    except ValueError:
+        return False
     return True
 
 

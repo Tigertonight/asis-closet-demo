@@ -22,9 +22,32 @@
 
 `/admin` → 「算法版本」tab：
 
-- 版本列表（快照时间、报告照片数、标签分布）；
+- 版本列表（快照时间、报告照片数、标签分布 tag 列表）；
 - 任意两版本对比（下拉选择 → 变化矩阵 + 明细表）；
 - 单版本手动重算（后台串行执行，force 默认覆盖）。
+
+## 智能评测页（QA）「算法版本」tab
+
+`/qa/onboarding-attributes?tab=algorithms`——交互式跑批与对比（推荐入口）：
+
+1. **选照片**：按来源分组（内置 / App 拍照 / 镜子拍照 / 管理员上传）可折叠勾选，
+   组级全选 + 单张缩略图勾选，顶部全选/清空；
+2. **跑批**：选一个版本 × 勾选的照片执行（可选覆盖旧结果），实时进度轮询；
+3. **版本对比**：勾选两个以上版本，对勾选照片（未勾选则全部）出对比矩阵——
+   每张照片一张卡片：缩略图 + 各版本结果并排（标签/状态/置信度/L*/提示），
+   与基准版本不同的卡片高亮，「只看有变化的」默认开启。
+
+API（管理员鉴权，JSON，`app/qa_onboarding.py`）：
+
+| 路由 | 功能 |
+|---|---|
+| `GET /qa/algorithms/versions` | 版本列表 + 报告统计 |
+| `POST /qa/algorithms/run` | 提交跑批 `{version, photo_ids, force}` → job_id |
+| `GET /qa/algorithms/job/{job_id}` | 跑批进度 `{status, total, done, failed}` |
+| `POST /qa/algorithms/matrix` | 多版本结果矩阵 `{versions, photo_ids}` |
+
+照片口径：QA 页只列 qa_photos 素材（含用户上传归档副本 user_*.jpg）；
+session 内的 asset 照片由上传链路自动补跑进各版本报告，不在 QA 页重复展示。
 
 API（管理员鉴权，`app/photo_algorithm_admin.py`）：
 
@@ -33,9 +56,7 @@ API（管理员鉴权，`app/photo_algorithm_admin.py`）：
 | `GET /admin/api/photo-algorithms` | 版本列表 + 报告统计 |
 | `GET /admin/api/photo-algorithms/compare?from=&to=` | 两版本 diff |
 | `GET /admin/api/photo-algorithms/{version}/photos?label=&changed_from=` | 报告明细 |
-| `POST /admin/api/photo-algorithms/{version}/rerun` | 触发重算 |
-
-## 版本号写入位置（追溯链）
+| `POST /admin/api/photo-algorithms/{version}/rerun` | 触发重算 |## 版本号写入位置（追溯链）
 
 | 数据 | 字段 | 写入点 |
 |---|---|---|

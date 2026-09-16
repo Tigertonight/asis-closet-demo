@@ -67,6 +67,10 @@
   .mini-btn:hover { background: #fbf1f3; }
   .link-btn { padding: 0; border: 0; background: none; color: var(--brand); font-size: 13px; cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
   .tag { display: inline-block; padding: 1px 9px; border-radius: 999px; font-size: 12px; font-weight: 500; }
+  /* 算法版本表：标签分布 / 说明列允许换行（全局 td 是 nowrap） */
+  .algo-stat-cell { white-space: normal !important; min-width: 300px; max-width: 460px; }
+  .algo-note-cell { white-space: normal !important; max-width: 280px; }
+  .algo-stat-tag { display: inline-block; background: #faf6f3; border: 1px solid var(--line); border-radius: 8px; padding: 2px 8px; font-size: 11px; font-weight: 600; margin: 2px 4px 2px 0; white-space: nowrap; }
   .tag-mirror { background: #f6e7ea; color: var(--brand); }
   .tag-app { background: #e9eef5; color: #2f4a57; }
   .tag-muted { background: #f1eeee; color: var(--muted); }
@@ -1816,12 +1820,15 @@
       $('algoVersionRows').replaceChildren(...(algoState.versions.length ? algoState.versions.map((item) => {
         const tr = document.createElement('tr');
         const stats = Object.entries(item.report_label_stats || {}).flatMap(([kind, labels]) => Object.entries(labels).map(([label, count]) => `${kind}/${label} ×${count}`));
-        tr.innerHTML = `<td><b>${item.version}</b>${item.is_current ? ' <span class="tag">当前</span>' : ''}</td>`
+        const statTags = stats.length
+          ? stats.map((text) => `<span class="algo-stat-tag">${esc(text)}</span>`).join('')
+          : '—';
+        tr.innerHTML = `<td><b>${esc(item.version)}</b>${item.is_current ? ' <span class="tag">当前</span>' : ''}</td>`
           + `<td>${fmtTime(item.created_at)}</td>`
           + `<td>${item.report_photo_count || 0}${item.report_error_count ? `（失败 ${item.report_error_count}）` : ''}</td>`
-          + `<td style="max-width:420px;font-size:12px;line-height:1.6">${stats.length ? stats.join('、') : '—'}</td>`
-          + `<td style="max-width:260px;font-size:12px">${item.note || '—'}</td>`
-          + `<td><button class="mini-btn" type="button" data-algo-rerun="${item.version}">重算</button></td>`;
+          + `<td class="algo-stat-cell">${statTags}</td>`
+          + `<td class="algo-note-cell">${esc(item.note || '—')}</td>`
+          + `<td><button class="mini-btn" type="button" data-algo-rerun="${esc(item.version)}">重算</button></td>`;
         return tr;
       }) : [Object.assign(document.createElement('tr'), { innerHTML: '<td colspan="6" class="empty">还没有算法版本快照</td>' })]));
       const options = algoState.versions.map((item) => `<option value="${item.version}">${item.version}</option>`).join('');
