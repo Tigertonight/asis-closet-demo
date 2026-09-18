@@ -20,7 +20,7 @@ import cv2
 import httpx
 import numpy as np
 from fastapi import HTTPException, UploadFile
-from PIL import Image, ImageDraw, ImageFilter, UnidentifiedImageError
+from PIL import Image, ImageDraw, ImageFilter, ImageOps, UnidentifiedImageError
 
 from app.storage import storage_context, user_asset_public_path, user_storage
 from app import vertex_image
@@ -408,7 +408,7 @@ def create_outfit_tryon_job(
                 raise
     source_photo = _tryon_output_dir() / "job-inputs" / Path(person["saved_path"]).name
     source_photo.parent.mkdir(parents=True, exist_ok=True)
-    source_photo.write_bytes(person_raw)
+    source_photo.write_bytes(Path(person["saved_path"]).read_bytes())
     now = datetime.now(timezone.utc).isoformat()
     job = {
         "job_id": job_id,
@@ -481,7 +481,7 @@ def create_inspiration_tryon_job(person_raw: bytes, person_filename: str | None,
                 raise
     original = _tryon_output_dir() / "job-inputs" / Path(person["saved_path"]).name
     original.parent.mkdir(parents=True, exist_ok=True)
-    original.write_bytes(person_raw)
+    original.write_bytes(Path(person["saved_path"]).read_bytes())
     now = datetime.now(timezone.utc).isoformat()
     job = {"job_id":job_id,"user_id":user_id,"kind":"inspiration","note":note,
            "person_path":str(original),"person_filename":person_filename or "person.png",
@@ -3516,8 +3516,20 @@ def _read_upload_image(raw: bytes, filename: str | None, role: str) -> dict[str,
         raise HTTPException(status_code=400, detail=f"无法识别 {role} 图片格式") from exc
     if pil_image.format not in SUPPORTED_FORMATS:
         raise HTTPException(status_code=400, detail="仅支持 JPG、PNG、WebP")
+    image_format = pil_image.format
+    if pil_image.getexif().get(274, 1) in {2, 3, 4, 5, 6, 7, 8}:
+        # Bake orientation into pixels before detection and provider delivery.
+        # Hash the normalized bytes so queued rereads are stable and old,
+        # incorrectly oriented result caches cannot be reused.
+        upright = ImageOps.exif_transpose(pil_image)
+        buffer = io.BytesIO()
+        options = {"quality": 95, "subsampling": 0} if image_format == "JPEG" else ({"lossless": True} if image_format == "WEBP" else {})
+        upright.save(buffer, format=image_format, **options)
+        raw = buffer.getvalue()
+        pil_image = Image.open(io.BytesIO(raw))
+        pil_image.load()
     image_id = hashlib.sha256(raw).hexdigest()[:16]
-    suffix = _suffix_for_format(pil_image.format)
+    suffix = _suffix_for_format(image_format)
     saved_path = _upload_dir() / f"{role}_{image_id}{suffix}"
     _upload_dir().mkdir(parents=True, exist_ok=True)
     saved_path.write_bytes(raw)
