@@ -16,6 +16,7 @@ from urllib.parse import parse_qs
 
 from PIL import Image, ImageOps
 from starlette.concurrency import run_in_threadpool
+from app.photo_work import run_photo_work
 from starlette.datastructures import Headers
 from starlette.responses import FileResponse, Response
 from starlette.staticfiles import StaticFiles
@@ -94,7 +95,7 @@ class ImageFileResponse(FileResponse):
             self.headers["Vary"] = ", ".join(vary)
             if wants_webp(scope):
                 try:
-                    path = await run_in_threadpool(preview_path, Path(self.path))
+                    path = await run_photo_work(preview_path, Path(self.path))
                     headers = {key: value for key, value in self.headers.items()
                                if key not in {"content-type", "content-length", "etag", "last-modified"}}
                     response = FileResponse(path, media_type="image/webp", headers=headers,

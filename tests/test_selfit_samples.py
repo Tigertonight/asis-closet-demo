@@ -16,6 +16,8 @@ API = "/api/v1/selfit"
 
 @pytest.fixture(autouse=True)
 def isolated(monkeypatch, tmp_path):
+    monkeypatch.setattr(onboarding, "_registry_record_photo", lambda **kw: None)
+    monkeypatch.setattr(onboarding, "_archive_photo_to_qa", lambda *a: None)
     monkeypatch.setenv("SELFIT_ONBOARDING_STORE_BACKEND", "json")
     monkeypatch.setattr(onboarding, "SELFIT_ONBOARDING_DIR", tmp_path / "onboarding")
     monkeypatch.setattr(onboarding, "SELFIT_ONBOARDING_STORE_PATH", tmp_path / "onboarding/sessions.json")
@@ -145,17 +147,16 @@ def test_selection_validation_ownership_and_idempotency(monkeypatch):
 def test_concurrent_photos_merge_and_gender_change_discards_old_request(monkeypatch):
     client = TestClient(app)
     sid = session(client)
+    monkeypatch.setattr(samples, "inspect_sample", lambda *a: (selfit_photo.PhotoInspection(True), "test"))
     async def scenario():
         entered, release = asyncio.Event(), asyncio.Event()
-        original_run = onboarding.run_in_threadpool
+        original_run = onboarding.run_photo_work
         async def delayed(func, *args, **kwargs):
-            if func is samples.inspect_sample and args[0].kind == "face":
+            if func is onboarding._prepare_photo and args[1] and args[1].kind == "face":
                 entered.set()
                 await release.wait()
-            if func is samples.inspect_sample:
-                return selfit_photo.PhotoInspection(True), "test"
             return await original_run(func, *args, **kwargs)
-        monkeypatch.setattr(onboarding, "run_in_threadpool", delayed)
+        monkeypatch.setattr(onboarding, "run_photo_work", delayed)
         async with httpx.AsyncClient(transport=httpx.ASGITransport(app=app), base_url="http://test") as ac:
             url = f"{API}/sessions/{sid}"
             face = asyncio.create_task(ac.post(url + "/photos/face/sample", json={"sampleId": "female-face"}))
@@ -178,16 +179,16 @@ def test_late_sample_cannot_overwrite_a_new_personal_photo(monkeypatch):
     client = TestClient(app)
     sid = session(client)
     monkeypatch.setattr(selfit_photo, "_inspector", lambda *a: selfit_photo.PhotoInspection(True))
+    monkeypatch.setattr(samples, "inspect_sample", lambda *a: (selfit_photo.PhotoInspection(True), "test"))
     async def scenario():
         entered, release = asyncio.Event(), asyncio.Event()
-        original_run = onboarding.run_in_threadpool
+        original_run = onboarding.run_photo_work
         async def delayed(func, *args, **kwargs):
-            if func is samples.inspect_sample:
+            if func is onboarding._prepare_photo and args[1]:
                 entered.set()
                 await release.wait()
-                return selfit_photo.PhotoInspection(True), "test"
             return await original_run(func, *args, **kwargs)
-        monkeypatch.setattr(onboarding, "run_in_threadpool", delayed)
+        monkeypatch.setattr(onboarding, "run_photo_work", delayed)
         async with httpx.AsyncClient(transport=httpx.ASGITransport(app=app), base_url="http://test") as ac:
             url = f"{API}/sessions/{sid}/photos/face"
             old = asyncio.create_task(ac.post(url + "/sample", json={"sampleId": "female-face"}))

@@ -47,6 +47,7 @@ from app.beta_access import (
     require_beta_user,
 )
 from app.ops import deployment_guard_report, env_flag, request_guard_middleware
+from app.request_logging import RequestTimingMiddleware
 from app.analyzer import (
     analyze_contract,
     explain_fixture_case,
@@ -169,6 +170,7 @@ load_dotenv(Path(__file__).resolve().parents[1] / ".env", override=True)
 # 根路径 / 302 引流到 App（/selfit）；官网在 /docs 与 /home（site_home.py）；API 文档使用 /api-docs。
 app = FastAPI(title="selfit", version="0.2.0", docs_url="/api-docs", redoc_url=None)
 app.middleware("http")(request_guard_middleware)
+app.add_middleware(RequestTimingMiddleware)
 app.include_router(material_assets_router)
 app.include_router(selfit_onboarding_router)
 app.include_router(selfit_mirror_handoff_router)

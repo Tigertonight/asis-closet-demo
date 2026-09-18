@@ -17,6 +17,8 @@ API = "/api/v1/selfit"
 
 
 def _use_sqlite_store(monkeypatch, tmp_path: Path) -> Path:
+    monkeypatch.setattr(selfit_onboarding, "_registry_record_photo", lambda **kw: None)
+    monkeypatch.setattr(selfit_onboarding, "_archive_photo_to_qa", lambda *a: None)
     store_dir = tmp_path / "outputs" / "selfit_onboarding"
     monkeypatch.setattr(selfit_onboarding, "SELFIT_ONBOARDING_DIR", store_dir)
     monkeypatch.setattr(selfit_onboarding, "SELFIT_ONBOARDING_STORE_PATH", store_dir / "sessions.json")

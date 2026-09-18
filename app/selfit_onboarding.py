@@ -5,6 +5,8 @@ import io
 import json
 import os
 import secrets
+import threading
+from functools import lru_cache
 from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
@@ -12,11 +14,11 @@ from typing import Any
 
 import cv2
 import numpy as np
-from fastapi import APIRouter, Depends, Request, Response
+from fastapi import APIRouter, Depends, Request, Response, HTTPException
 from fastapi.responses import JSONResponse, RedirectResponse
 from app.image_delivery import ImageFileResponse as FileResponse
 from PIL import Image, ImageOps, UnidentifiedImageError
-from starlette.concurrency import run_in_threadpool
+from app.photo_work import run_photo_work, photo_admission
 
 from app import selfit_assets, selfit_onboarding_store as _store_module
 from app import selfit_photo, selfit_report, selfit_share, selfit_samples
@@ -52,7 +54,7 @@ PHOTO_SUPPORTED_FORMATS = {"JPEG": ".jpg", "PNG": ".png", "WEBP": ".webp"}
 
 # 报告任务：POST 创建后由后台线程真实执行 builder 并写入状态迁移；
 # GET 只读取，处理中的 stage/progress 为响应层估算（不落库，避免与 worker 写竞争）。
-REPORT_POLL_AFTER_MS = 800
+REPORT_POLL_AFTER_MS = 2000
 REPORT_ESTIMATED_STAGES = (
     (0.0, "profile", 25),
     (1.0, "inspiration", 50),
@@ -129,11 +131,16 @@ _STORE_KEYS = tuple(_store_module.COLLECTIONS)
 
 
 def _store_backend() -> str:
-    return os.getenv("SELFIT_ONBOARDING_STORE_BACKEND", "json").strip().lower()
+    return os.getenv("SELFIT_ONBOARDING_STORE_BACKEND", "sqlite").strip().lower()
 
 
 def _sqlite_store() -> _store_module.SqliteOnboardingStore:
-    return _store_module.SqliteOnboardingStore(SELFIT_ONBOARDING_DIR / "sessions.sqlite3")
+    return _cached_sqlite_store(SELFIT_ONBOARDING_DIR / "sessions.sqlite3", SELFIT_ONBOARDING_STORE_PATH)
+
+
+@lru_cache(maxsize=16)
+def _cached_sqlite_store(path: Path, legacy: Path):
+    return _store_module.SqliteOnboardingStore(path, legacy_json=legacy)
 
 
 def _load_store() -> dict[str, Any]:
@@ -155,7 +162,10 @@ def _load_store() -> dict[str, Any]:
 
 def _write_store(data: dict[str, Any]) -> None:
     if _store_backend() == "sqlite":
-        _sqlite_store().save(data)
+        try:
+            _sqlite_store().save(data)
+        except _store_module.StoreConflict as exc:
+            raise HTTPException(status_code=409, detail={"code": "session.revision_conflict", "message": "内容已更新，请刷新后重试。"}) from exc
         return
     SELFIT_ONBOARDING_DIR.mkdir(parents=True, exist_ok=True)
     tmp_path = SELFIT_ONBOARDING_STORE_PATH.with_name(f"{SELFIT_ONBOARDING_STORE_PATH.name}.{secrets.token_urlsafe(8)}.tmp")
@@ -163,7 +173,18 @@ def _write_store(data: dict[str, Any]) -> None:
     tmp_path.replace(SELFIT_ONBOARDING_STORE_PATH)
 
 
+def _load_request_store():
+    data = _load_store()
+    return data if isinstance(data, _store_module.RecordUnit) else _prune_store(data)
+
+
 def _prune_store(data: dict[str, Any]) -> dict[str, Any]:
+    # Explicit maintenance operation. Request handlers use _load_request_store
+    # and check expiry on access, without scanning all users' records.
+    if isinstance(data, _store_module.RecordUnit):
+        plain = {"version": 1, **{key: list(data[key]) for key in _STORE_KEYS}}
+        data.update(_prune_store(plain))
+        return data
     now = _now()
     # Preserve legacy declarations before their source drafts expire.
     indexed = {p.get("user_id") for p in data.setdefault("user_profiles", [])}
@@ -210,10 +231,7 @@ def _prune_store(data: dict[str, Any]) -> dict[str, Any]:
 
 
 def _find_session(data: dict[str, Any], session_id: str) -> dict[str, Any] | None:
-    return next(
-        (record for record in data["sessions"] if record.get("session_id") == session_id),
-        None,
-    )
+    return _store_module.find(data, "sessions", session_id=session_id)
 
 
 def _index_user_photo(data: dict[str, Any], record: dict[str, Any], kind: str) -> None:
@@ -223,10 +241,7 @@ def _index_user_photo(data: dict[str, Any], record: dict[str, Any], kind: str) -
     photo = (record.get("photos") or {}).get(kind) or {}
     if not user_id or photo.get("status") != "accepted" or not photo.get("asset_id"):
         return
-    entry = next(
-        (item for item in data["user_photos"] if item.get("user_id") == user_id),
-        None,
-    )
+    entry = _store_module.find(data, "user_photos", user_id=user_id)
     if entry is None:
         entry = {"user_id": user_id, "photos": {}}
         data["user_photos"].append(entry)
@@ -252,10 +267,7 @@ def _index_user_photo(data: dict[str, Any], record: dict[str, Any], kind: str) -
 
 
 def _latest_user_photo(data: dict[str, Any], user_id: str, kind: str) -> dict[str, Any] | None:
-    entry = next(
-        (item for item in data["user_photos"] if item.get("user_id") == user_id),
-        None,
-    )
+    entry = _store_module.find(data, "user_photos", user_id=user_id)
     indexed = (entry.get("photos") or {}).get(kind) if entry else None
     if isinstance(indexed, dict) and indexed.get("asset_id"):
         # 旧索引数据没有 status 字段；索引只收录 accepted 照片，这里补齐。
@@ -264,7 +276,7 @@ def _latest_user_photo(data: dict[str, Any], user_id: str, kind: str) -> dict[st
     # 兼容上线前已经完成 onboarding、但尚未写入持久索引的账号。
     candidates = [
         record
-        for record in data["sessions"]
+        for record in _store_module.select(data, "sessions", user_id=user_id)
         if record.get("user_id") == user_id
         and ((record.get("photos") or {}).get(kind) or {}).get("status") == "accepted"
     ]
@@ -272,10 +284,7 @@ def _latest_user_photo(data: dict[str, Any], user_id: str, kind: str) -> dict[st
     if latest is None:
         return None
     _index_user_photo(data, latest, kind)
-    entry = next(
-        (item for item in data["user_photos"] if item.get("user_id") == user_id),
-        None,
-    )
+    entry = _store_module.find(data, "user_photos", user_id=user_id)
     return (entry.get("photos") or {}).get(kind) if entry else None
 
 
@@ -319,12 +328,12 @@ def create_session_from_mirror_handoff(
 ) -> dict[str, Any]:
     """Create the authenticated continuation session after a one-time mirror claim."""
 
-    data = _prune_store(_load_store())
+    data = _load_request_store()
     handoff_id = str(handoff.get("handoff_id") or "")
     existing = next(
         (
             record
-            for record in data["sessions"]
+            for record in _store_module.select(data, "sessions", user_id=user.get("user_id"))
             if record.get("mirror_handoff_id") == handoff_id
             and record.get("user_id") == user.get("user_id")
         ),
@@ -599,11 +608,11 @@ def _idempotency_replay(
     if not key:
         return None
     full_key = f"{scope}:{key}"
-    entry = next(
-        (item for item in data["idempotency"] if item.get("key") == full_key),
-        None,
-    )
+    entry = _store_module.find(data, "idempotency", key=full_key)
     if entry is None:
+        return None
+    created = _parse_iso(entry.get("created_at"))
+    if created and created < _now() - timedelta(hours=max(_session_ttl_hours(), 1)):
         return None
     body = entry.get("body")
     if not isinstance(body, dict):
@@ -619,7 +628,9 @@ def _idempotency_store(
     if not key:
         return
     full_key = f"{scope}:{key}"
-    data["idempotency"] = [item for item in data["idempotency"] if item.get("key") != full_key]
+    previous = _store_module.find(data, "idempotency", key=full_key)
+    if previous is not None:
+        data["idempotency"].remove(previous)
     data["idempotency"].append(
         {
             "key": full_key,
@@ -784,7 +795,7 @@ async def create_session(
     mode = payload.get("onboardingMode")
     if mode not in (None, "new", "retest"):
         return _error_response(422, "validation.invalid_enum", "测试入口不正确，请重新开始。")
-    data = _prune_store(_load_store())
+    data = _load_request_store()
     scope = _idempotency_scope(request, user)
     idempotency_key = request.headers.get("x-idempotency-key")
     replay = _idempotency_replay(data, scope, idempotency_key)
@@ -828,14 +839,14 @@ def _session_linkage(data: dict[str, Any], session_id: str) -> dict[str, Any]:
     """
 
     linkage: dict[str, Any] = {}
-    jobs = [job for job in data["report_jobs"] if job.get("session_id") == session_id]
+    jobs = _store_module.select(data, "report_jobs", session_id=session_id)
     latest_job = max(jobs, key=lambda job: str(job.get("created_at") or ""), default=None)
     if latest_job is not None:
         _resubmit_stale_queued_job(latest_job)
         if _expire_processing_job(data, latest_job):
             _write_store(data)
         linkage["latestReportJob"] = _public_job(latest_job)
-    reports = [item for item in data["reports"] if item.get("session_id") == session_id]
+    reports = _store_module.select(data, "reports", session_id=session_id)
     latest_report = max(reports, key=lambda item: str(item.get("created_at") or ""), default=None)
     if latest_report is not None:
         linkage["latestReport"] = {
@@ -927,7 +938,7 @@ async def _patch_session(
     payload = await _read_json_object(request)
     if isinstance(payload, JSONResponse):
         return payload
-    data = _prune_store(_load_store())
+    data = _load_request_store()
     scope = _idempotency_scope(request, user)
     idempotency_key = request.headers.get("x-idempotency-key")
     replay = _idempotency_replay(data, scope, idempotency_key)
@@ -1004,7 +1015,7 @@ async def get_session_photo_preview(session_id: str, kind: str, user: dict[str, 
         return _error_response(404, "photo.not_found", "请先上传可用的照片。")
     sample = selfit_samples.SAMPLES.get(photo.get("sample_id"))
     if sample and photo.get("sample_fingerprint") == selfit_samples.analysis_fingerprint(sample):
-        cached = await run_in_threadpool(selfit_samples.preview_path, sample, overlay=True)
+        cached = await run_photo_work(selfit_samples.preview_path, sample, overlay=True)
         return FileResponse(cached, media_type="image/webp", headers={"Cache-Control": "no-store"})
     suffix = PHOTO_SUPPORTED_FORMATS.get(photo.get("format"))
     if not suffix:
@@ -1036,7 +1047,7 @@ async def get_session_photo_preview(session_id: str, kind: str, user: dict[str, 
             store.save(overlay_key, content, "image/webp")
             return content
 
-    content = await run_in_threadpool(render_preview)
+    content = await run_photo_work(render_preview)
     return Response(content=content, media_type="image/webp", headers={"Cache-Control": "no-store"})
 
 
@@ -1046,7 +1057,7 @@ async def get_sample_photo_preview(sample_id: str, request: Request) -> Response
     if sample is None:
         return _error_response(404, "photo.sample_not_found", "示例照片不存在。")
     try:
-        path = await run_in_threadpool(selfit_samples.preview_path, sample)
+        path = await run_photo_work(selfit_samples.preview_path, sample)
     except (OSError, ValueError):
         return _error_response(503, "photo.sample_unavailable", "示例图暂时无法加载，请稍后再试。", retryable=True)
     etag = f'"{path.stem}"'
@@ -1205,7 +1216,7 @@ def _profile_overrides(session: dict[str, Any] | None, stored: dict[str, Any]) -
 
 
 def _account_profile_report(data: dict[str, Any], user_id: str) -> dict[str, Any] | None:
-    reports = [r for r in data["reports"] if r.get("user_id") == user_id
+    reports = [r for r in _store_module.select(data, "reports", user_id=user_id) if r.get("user_id") == user_id
                and isinstance(r.get("data"), dict) and (r["data"].get("typeId") or "").strip()]
     return max(reports, key=lambda r: (str(r.get("created_at") or ""), r.get("report_id", "")), default=None)
 
@@ -1390,7 +1401,7 @@ async def get_my_onboarding_photo(
                 store.save(overlay_key, content, "image/webp")
                 return content
 
-        content = await run_in_threadpool(render_annotated)
+        content = await run_photo_work(render_annotated)
         return Response(content=content, media_type="image/webp", headers={"Cache-Control": "no-store"})
 
     content_type = {".jpg": "image/jpeg", ".png": "image/png", ".webp": "image/webp"}[suffix]
@@ -1496,6 +1507,59 @@ async def use_session_sample_photo(
     return await _process_session_photo(session_id, kind, request, user, use_sample=True)
 
 
+_photo_archive_lock = threading.Lock()
+
+
+def _prepare_photo(raw, sample, session_id, kind, archive_source):
+    """Decode, inspect and store in a bounded worker; return no live image buffers."""
+    if sample:
+        try:
+            raw = sample.path.read_bytes()
+        except OSError:
+            return _error_response(503, "photo.sample_unavailable", "示例图暂时无法加载，请稍后再试。", retryable=True)
+    if not raw:
+        return _error_response(400, "photo.image_missing", "请选择要上传的照片。")
+    if len(raw) > PHOTO_MAX_BYTES:
+        return _error_response(413, "photo.too_large", "照片超过 20MB，请压缩后再试。")
+    try:
+        with Image.open(io.BytesIO(raw)) as source:
+            source.load()
+            stored_format = str(source.format or "")
+            picture = ImageOps.exif_transpose(source)
+    except (UnidentifiedImageError, OSError):
+        return _error_response(400, "photo.invalid_image", "无法识别照片内容，请更换一张照片。")
+    try:
+        if stored_format not in PHOTO_SUPPORTED_FORMATS:
+            buffer = io.BytesIO()
+            with picture.convert("RGB") as rgb:
+                rgb.save(buffer, format="JPEG", quality=92)
+            raw = buffer.getvalue()
+            picture.close()
+            picture = Image.open(io.BytesIO(raw))
+            picture.load()
+            stored_format = "JPEG"
+        with picture.convert("RGB") as rgb:
+            if sample:
+                inspection, fingerprint = selfit_samples.inspect_sample(sample, rgb)
+            else:
+                inspection = selfit_photo.inspect_photo(rgb, kind)
+                fingerprint = None
+        accepted = bool(inspection.accepted) and not selfit_photo.sanitize_issues(list(inspection.issues))
+        try:
+            asset_id = _save_photo_asset(session_id, kind, raw, stored_format)
+        except Exception:
+            if accepted:
+                raise
+            asset_id = None
+        if accepted and not sample:
+            # QA manifest is a read-modify-write file: serialize concurrent archives.
+            with _photo_archive_lock:
+                _archive_photo_to_qa(picture, kind, archive_source)
+        return inspection, fingerprint, stored_format, picture.width, picture.height, asset_id
+    finally:
+        picture.close()
+
+
 async def _process_session_photo(
     session_id: str, kind: str, request: Request, user: dict[str, Any] | None,
     *, use_sample: bool = False,
@@ -1508,7 +1572,7 @@ async def _process_session_photo(
             details={"field": "kind", "value": kind},
         )
 
-    data = _prune_store(_load_store())
+    data = _load_request_store()
     record = _load_active_session(data, session_id, user)
     if isinstance(record, JSONResponse):
         return record
@@ -1527,6 +1591,7 @@ async def _process_session_photo(
     request_token = secrets.token_urlsafe(16)
     record.setdefault("photo_requests", {})[kind] = request_token
     _write_store(data)
+    del data  # Do not retain the whole JSON store while waiting for image work.
     sample = None
     sample_fingerprint = None
     if use_sample:
@@ -1539,54 +1604,31 @@ async def _process_session_photo(
             return _error_response(422, "photo.invalid_sample", "请选择可用的示例照片。")
         if record.get("gender") != sample.gender:
             return _error_response(422, "photo.sample_gender_mismatch", "请按当前选择的性别使用示例照片。")
-        try:
-            raw = sample.path.read_bytes()
-        except OSError:
-            return _error_response(503, "photo.sample_unavailable", "示例图暂时无法加载，请稍后再试。", retryable=True)
-    else:
-        form = await request.form()
-        upload = form.get("image")
-        if upload is None or not hasattr(upload, "read"):
-            return _error_response(400, "photo.image_missing", "请选择要上传的照片。")
-        raw = await upload.read()
-    if not raw:
-        return _error_response(400, "photo.image_missing", "请选择要上传的照片。")
-    if len(raw) > PHOTO_MAX_BYTES:
-        return _error_response(413, "photo.too_large", "照片超过 20MB，请压缩后再试。")
-
-    try:
-        pil_image = Image.open(io.BytesIO(raw))
-        pil_image.load()
-    except (UnidentifiedImageError, OSError):
-        return _error_response(400, "photo.invalid_image", "无法识别照片内容，请更换一张照片。")
-    source_format = str(pil_image.format or "")
-
-    # EXIF 方向转正：手机直拍竖照的 orientation 在像素里不生效，不转正的话
-    # 人脸/姿态检测会拿到横躺的图。对所有格式统一做，幂等。
-    pil_image = ImageOps.exif_transpose(pil_image)
-    # exif_transpose 转置后副本的 format 会丢失，用 source_format 补记。
-    stored_format = source_format
-    if source_format not in PHOTO_SUPPORTED_FORMATS:
-        # 手机可能交付 HEIC/HEIF/AVIF/MPO 等容器。只要 Pillow 能真实解码，
-        # 就取主图并统一重编码为 JPEG，不再用格式名称二次误拒。
-        buffer = io.BytesIO()
-        pil_image.convert("RGB").save(buffer, format="JPEG", quality=92)
-        raw = buffer.getvalue()
-        pil_image = Image.open(io.BytesIO(raw))
-        pil_image.load()
-        stored_format = "JPEG"
-
-    # 照片检测为 CPU 密集的同步 CV 计算，丢线程池执行，避免阻塞事件循环。
-    if sample:
-        inspection, sample_fingerprint = await run_in_threadpool(selfit_samples.inspect_sample, sample, pil_image.convert("RGB"))
-    else:
-        inspection = await run_in_threadpool(selfit_photo.inspect_photo, pil_image.convert("RGB"), kind)
+    # Admission precedes multipart reading and decoding, so queued requests do
+    # not retain full decoded phone images. The worker never mutates session JSON.
+    async with photo_admission():
+        if sample:
+            raw = None
+        else:
+            async with request.form() as form:
+                upload = form.get("image")
+                if upload is None or not hasattr(upload, "read"):
+                    return _error_response(400, "photo.image_missing", "请选择要上传的照片。")
+                raw = await upload.read(PHOTO_MAX_BYTES + 1)
+        prepared = await run_photo_work(
+            _prepare_photo, raw, sample, session_id, kind,
+            "mirror" if record.get("source") == "mirror_handoff" else "app",
+        )
+    del raw
+    if isinstance(prepared, JSONResponse):
+        return prepared
+    inspection, sample_fingerprint, stored_format, width, height, asset_id = prepared
     issues = selfit_photo.sanitize_issues(list(inspection.issues))
     accepted = bool(inspection.accepted) and not issues
 
     # Never persist the snapshot read before analysis: another photo, gender or
     # account update may have completed in the meantime.
-    data = _prune_store(_load_store())
+    data = _load_request_store()
     record = _load_active_session(data, session_id, user)
     if isinstance(record, JSONResponse):
         return record
@@ -1600,18 +1642,12 @@ async def _process_session_photo(
     if accepted:
         from app.attribute_pipeline import PHOTO_ALGORITHM_VERSION
 
-        asset_id = _save_photo_asset(session_id, kind, raw, stored_format)
-        # 用户照片归档进 QA 数据集：镜子流程（mirror_handoff）归 mirror，其余归 app。
-        if not sample:
-            _archive_photo_to_qa(
-                pil_image, kind, "mirror" if record.get("source") == "mirror_handoff" else "app"
-            )
         photos[kind] = {
             "asset_id": asset_id,
             "status": "accepted",
             "format": stored_format,
-            "width": pil_image.width,
-            "height": pil_image.height,
+            "width": width,
+            "height": height,
             # 算法版本随照片存档：历史报告可追溯「这张照片当时是哪个版本算的」
             "algorithm_version": PHOTO_ALGORITHM_VERSION,
             # 算法推断的肤色/脸型/身型标签，供报告任务与「手动纠正优先」合并消费；
@@ -1660,15 +1696,17 @@ async def _process_session_photo(
         # 被拒照片同样落盘留存（asset 只增不删），并索引到 rejected_photos，
         # 供管理后台回看与检测算法离线优化。
         try:
-            rejected_asset_id = _save_photo_asset(session_id, kind, raw, stored_format)
+            if asset_id is None:
+                raise OSError("Rejected photo could not be stored")
+            rejected_asset_id = asset_id
             _save_rejected_photo_record(
                 data,
                 session_id=session_id,
                 kind=kind,
                 asset_id=rejected_asset_id,
                 image_format=stored_format,
-                width=pil_image.width,
-                height=pil_image.height,
+                width=width,
+                height=height,
                 issues=issues,
                 user_id=record.get("user_id"),
                 source="sample" if sample else ("app" if record.get("source") != "mirror_handoff" else "mirror"),
@@ -1702,18 +1740,22 @@ async def _process_session_photo(
     return JSONResponse(status_code=200, content=body)
 
 
+def _record_session_expired(data, record):
+    session = _find_session(data, str(record.get("session_id") or ""))
+    expires = _parse_iso((session or {}).get("expires_at"))
+    return session is None or (expires is not None and expires <= _now())
+
+
 def _find_report_job(data: dict[str, Any], job_id: str) -> dict[str, Any] | None:
-    return next(
-        (job for job in data["report_jobs"] if job.get("job_id") == job_id),
-        None,
-    )
+    record = _store_module.find(data, "report_jobs", job_id=job_id)
+    return None if record and _record_session_expired(data, record) else record
 
 
 def _find_report(data: dict[str, Any], report_id: str) -> dict[str, Any] | None:
-    return next(
-        (report for report in data["reports"] if report.get("report_id") == report_id),
-        None,
-    )
+    record = _store_module.find(data, "reports", report_id=report_id)
+    if record and not record.get("user_id") and _record_session_expired(data, record):
+        return None
+    return record
 
 
 def _public_share_token_hash(token: str) -> str:
@@ -1724,7 +1766,7 @@ def _find_public_share(data: dict[str, Any], token: str) -> dict[str, Any] | Non
     token_hash = _public_share_token_hash(token)
     return next(
         (
-            item for item in data["public_report_shares"]
+            item for item in _store_module.select(data, "public_report_shares", token_hash=token_hash)
             if secrets.compare_digest(str(item.get("token_hash") or ""), token_hash)
         ),
         None,
@@ -1828,7 +1870,7 @@ def _public_job(job: dict[str, Any], report: dict[str, Any] | None = None) -> di
 def _run_report_job(job_id: str) -> None:
     """后台 worker：真实执行报告生成算法并落库状态迁移。"""
 
-    data = _prune_store(_load_store())
+    data = _load_request_store()
     job = _find_report_job(data, job_id)
     if job is None or job.get("status") != "queued":
         return
@@ -1836,7 +1878,12 @@ def _run_report_job(job_id: str) -> None:
     job["stage"] = "profile"
     job["progress"] = 10
     job["started_at"] = _iso(_now())
-    _write_store(data)
+    try:
+        _write_store(data)
+    except HTTPException as exc:
+        if exc.status_code == 409:
+            return
+        raise
 
     session = _find_session(data, str(job.get("session_id") or ""))
     try:
@@ -1910,7 +1957,7 @@ async def create_report_job(
     request: Request,
     user: dict[str, Any] | None = Depends(get_optional_user),
 ) -> JSONResponse:
-    data = _prune_store(_load_store())
+    data = _load_request_store()
     scope = _idempotency_scope(request, user)
     idempotency_key = request.headers.get("x-idempotency-key")
     replay = _idempotency_replay(data, scope, idempotency_key)
@@ -1979,7 +2026,7 @@ async def get_latest_report(
     data = _load_store()
     reports = [
         report
-        for report in data["reports"]
+        for report in _store_module.select(data, "reports", user_id=user.get("user_id"))
         if report.get("user_id") == user.get("user_id")
         and isinstance(report.get("data"), dict)
         and str((report.get("data") or {}).get("typeId") or "").strip()
@@ -2056,7 +2103,7 @@ async def create_public_report_share(
             details={"field": "slideIndex", "value": slide_index},
         )
 
-    data = _prune_store(_load_store())
+    data = _load_request_store()
     scope = _idempotency_scope(request, user)
     idempotency_key = request.headers.get("x-idempotency-key")
     replay = _idempotency_replay(data, scope, idempotency_key)
@@ -2141,7 +2188,7 @@ async def revoke_public_report_share(
     user: dict[str, Any] | None = Depends(get_optional_user),
 ) -> JSONResponse:
     data = _load_store()
-    record = next((item for item in data["public_report_shares"] if item.get("share_id") == share_id), None)
+    record = _store_module.find(data, "public_report_shares", share_id=share_id)
     if record is None or not _session_visible_to({"user_id": record.get("owner_user_id")}, user):
         return _error_response(404, "share.public_not_found", "没有找到这份分享报告。")
     if record.get("status") != "revoked":
@@ -2169,7 +2216,7 @@ async def create_outfit_request(
     payload = await _read_json_object(request)
     if isinstance(payload, JSONResponse):
         return payload
-    data = _prune_store(_load_store())
+    data = _load_request_store()
     scope = _idempotency_scope(request, user)
     idempotency_key = request.headers.get("x-idempotency-key")
     replay = _idempotency_replay(data, scope, idempotency_key)
@@ -2207,11 +2254,8 @@ async def get_outfit_request(
     user: dict[str, Any] | None = Depends(get_optional_user),
 ) -> JSONResponse:
     data = _load_store()
-    outfit_request = next(
-        (item for item in data["outfit_requests"] if item.get("request_id") == request_id),
-        None,
-    )
-    if outfit_request is None or not _session_visible_to(outfit_request, user):
+    outfit_request = _store_module.find(data, "outfit_requests", request_id=request_id)
+    if outfit_request is None or not _session_visible_to(outfit_request, user) or _record_session_expired(data, outfit_request):
         return _error_response(404, "outfit.request_not_found", "没有找到这个穿搭请求。")
     return JSONResponse(
         status_code=200,
@@ -2270,7 +2314,7 @@ async def create_share_asset(
     payload = await _read_json_object(request)
     if isinstance(payload, JSONResponse):
         return payload
-    data = _prune_store(_load_store())
+    data = _load_request_store()
     scope = _idempotency_scope(request, user)
     idempotency_key = request.headers.get("x-idempotency-key")
     replay = _idempotency_replay(data, scope, idempotency_key)
@@ -2332,11 +2376,8 @@ async def download_share_asset(
     user: dict[str, Any] | None = Depends(get_optional_user),
 ) -> Response:
     data = _load_store()
-    asset = next(
-        (item for item in data["share_assets"] if item.get("asset_id") == asset_id),
-        None,
-    )
-    if asset is None or not _session_visible_to(asset, user):
+    asset = _store_module.find(data, "share_assets", asset_id=asset_id)
+    if asset is None or not _session_visible_to(asset, user) or _record_session_expired(data, asset):
         return _error_response(404, "share.asset_not_found", "没有找到这份分享素材。")
     key = f"shared/{asset.get('filename') or ''}"
     store = _asset_store()

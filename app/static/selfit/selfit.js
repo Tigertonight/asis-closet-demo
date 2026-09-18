@@ -1395,6 +1395,35 @@
     const payload = await response.json();
     return renderReport(payload.report || payload);
   };
+  function reportPollDelay(attempt, suggested) {
+    const backoff = attempt < 3 ? 2000 : attempt < 6 ? 3000 : 5000;
+    return Math.min(5000, Math.max(backoff, Number(suggested) || 0));
+  }
+  function waitForReportPoll(milliseconds) {
+    return new Promise(resolve => {
+      let timer, remaining = milliseconds, started = Date.now();
+      let hiddenAt = document.hidden ? started : null, hiddenMs = 0;
+      const finish = () => {
+        document.removeEventListener('visibilitychange', visibility);
+        resolve(hiddenMs);
+      };
+      const schedule = () => { started = Date.now(); timer = setTimeout(finish, remaining); };
+      const visibility = () => {
+        const now = Date.now();
+        if (document.hidden && hiddenAt === null) {
+          clearTimeout(timer);
+          remaining = Math.max(0, remaining - (now - started));
+          hiddenAt = now;
+        } else if (!document.hidden && hiddenAt !== null) {
+          hiddenMs += now - hiddenAt;
+          hiddenAt = null;
+          schedule();
+        }
+      };
+      document.addEventListener('visibilitychange', visibility);
+      if (!document.hidden) schedule();
+    });
+  }
   const generateReport = async () => {
     const button = document.querySelector('#vibeNext');
     button.disabled = true; button.setAttribute('aria-busy', 'true');
@@ -1406,17 +1435,21 @@
       state.revision = saved.session?.revision || state.revision;
       const created = await api.createReportJob(sessionId);
       state.reportJobId = created.job.jobId;
-      const deadline = Date.now() + 120000;
+      let deadline = Date.now() + 120000;
+      let pollAttempt = 0, nextPollDelay = 0;
       let completedJob = null;
       let loading75StartedAt = 0;
-      while (Date.now() < deadline) {
+      while (true) {
+        // Background tabs do not poll or consume the foreground wait budget.
+        deadline += await waitForReportPoll(nextPollDelay);
+        if (Date.now() >= deadline) break;
         const result = await api.getReportJob(state.reportJobId);
         const cappedProgress = Math.min(result.job.progress || 25, 75);
         setLoadingProgress(cappedProgress);
         if (cappedProgress >= 75 && !loading75StartedAt) loading75StartedAt = Date.now();
         if (result.job.status === 'failed') throw new window.SelfitApi.SelfitApiError(result.job.error?.message || '报告生成失败，请重试。', result.job.error || {});
         if (result.job.status === 'completed') { completedJob = result.job; break; }
-        await new Promise((resolve) => setTimeout(resolve, Math.max(250, Math.min(result.job.pollAfterMs || 800, 3000))));
+        nextPollDelay = reportPollDelay(pollAttempt++, result.job.pollAfterMs);
       }
       if (!completedJob) throw new window.SelfitApi.SelfitApiError('报告生成时间较长，请稍后重试。', { code: 'report.timeout', retryable: true });
       state.reportId = completedJob.reportId;

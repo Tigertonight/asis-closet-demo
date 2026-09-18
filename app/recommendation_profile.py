@@ -4,6 +4,7 @@ from __future__ import annotations
 import hashlib
 import json
 import os
+from app.selfit_onboarding_store import select
 from datetime import datetime
 
 PALETTES = {"mono": "黑白灰", "earth": "大地色", "ocean": "海洋蓝", "jewel": "宝石色", "bright": "明亮色", "pastel": "柔粉浅彩"}
@@ -28,10 +29,10 @@ def resolve_profile(user_id, store=None, preferences=None):
     if preferences is None:
         from app.closet import get_user_preferences
         preferences = get_user_preferences()
-    reports = [r for r in store.get("reports", []) if r.get("user_id") == user_id
+    reports = [r for r in select(store, "reports", user_id=user_id) if r.get("user_id") == user_id
                and (r.get("data") or {}).get("typeId", "").lower() in PERSONAS]
     report = max(reports, key=lambda r: (str(r.get("created_at") or ""), r.get("report_id", "")), default={})
-    session = next((s for s in store.get("sessions", []) if report.get("session_id")
+    session = next((s for s in select(store, "sessions", session_id=report.get("session_id"), user_id=user_id) if report.get("session_id")
                     and s.get("session_id") == report["session_id"] and s.get("user_id") == user_id), {})
     original = session.get("preferences") or {}
     explicit = preferences.get("recommendation") or {}

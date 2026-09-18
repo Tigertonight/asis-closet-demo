@@ -22,6 +22,8 @@ FIXTURE_IMAGES = Path(__file__).resolve().parent / "fixtures" / "images"
 
 
 def _use_tmp_store(monkeypatch, tmp_path: Path) -> None:
+    monkeypatch.setattr(selfit_onboarding, "_registry_record_photo", lambda **kw: None)
+    monkeypatch.setattr(selfit_onboarding, "_archive_photo_to_qa", lambda *a: None)
     store_dir = tmp_path / "outputs" / "selfit_onboarding"
     monkeypatch.setattr(selfit_onboarding, "SELFIT_ONBOARDING_DIR", store_dir)
     monkeypatch.setattr(selfit_onboarding, "SELFIT_ONBOARDING_STORE_PATH", store_dir / "sessions.json")
@@ -470,7 +472,7 @@ def test_report_job_lifecycle_completes_with_report(monkeypatch, tmp_path: Path)
     assert created["requestId"].startswith("req_")
     assert job["status"] == "queued"
     assert job["progress"] == 0
-    assert job["pollAfterMs"] == 800
+    assert job["pollAfterMs"] == 2000
 
     finished = _wait_for_job(client, job["jobId"])
     assert finished["status"] == "completed"
@@ -543,7 +545,7 @@ def test_report_job_processing_state(monkeypatch, tmp_path: Path) -> None:
     assert polled["status"] == "processing"
     assert polled["stage"] in {"profile", "inspiration", "composition", "finalizing"}
     assert 0 < polled["progress"] < 100
-    assert polled["pollAfterMs"] == 800
+    assert polled["pollAfterMs"] == 2000
     assert "reportId" not in polled
 
     release.set()

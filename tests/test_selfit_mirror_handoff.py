@@ -47,6 +47,7 @@ def _photo_bytes() -> bytes:
 
 
 def _use_tmp_stores(monkeypatch, tmp_path: Path) -> None:
+    monkeypatch.setenv("SELFIT_PUBLIC_BASE_URL", "http://testserver")
     monkeypatch.setattr(auth, "AUTH_DIR", tmp_path / "outputs" / "auth")
     monkeypatch.setattr(auth, "AUTH_STORE_PATH", auth.AUTH_DIR / "auth_store.json")
     monkeypatch.setattr(auth, "ADMIN_PASSWORD_PATH", auth.AUTH_DIR / "admin_password.json")
@@ -108,7 +109,7 @@ def test_dynamic_qr_claims_suit_result_once_and_continues_at_like(monkeypatch, t
 
     handoff_store = mirror_handoff.HANDOFF_STORE_PATH.read_text(encoding="utf-8")
     assert token not in handoff_store
-    onboarding_data = json.loads(onboarding.SELFIT_ONBOARDING_STORE_PATH.read_text(encoding="utf-8"))
+    onboarding_data = onboarding._load_store()
     session = onboarding_data["sessions"][0]
     assert session["user_id"].startswith("u_")
     assert session["source"] == "mirror_handoff"
@@ -181,7 +182,7 @@ def test_dynamic_qr_supports_phone_direct_login_for_roadshow(monkeypatch, tmp_pa
         headers={"Authorization": f"Bearer {direct.json()['access_token']}"},
     ).json()["session"]
     assert "photos" in restored["completedSteps"]
-    onboarding_data = json.loads(onboarding.SELFIT_ONBOARDING_STORE_PATH.read_text(encoding="utf-8"))
+    onboarding_data = onboarding._load_store()
     session = onboarding_data["sessions"][0]
     assert session["user_id"] == direct.json()["user"]["user_id"]
     assert session["suit_input_asset_id"] == session["mirror_assets"]["original"]["asset_id"]
@@ -208,7 +209,7 @@ def test_claim_hydrates_suit_photos_from_mirror_capture(monkeypatch, tmp_path: P
     assert created.status_code == 201
     assert claimed.status_code == 200
     session_id = claimed.json()["session"]["sessionId"]
-    onboarding_data = json.loads(onboarding.SELFIT_ONBOARDING_STORE_PATH.read_text(encoding="utf-8"))
+    onboarding_data = onboarding._load_store()
     session = next(record for record in onboarding_data["sessions"] if record["session_id"] == session_id)
     photos = session.get("photos") or {}
     assert photos.get("body", {}).get("status") == "accepted"

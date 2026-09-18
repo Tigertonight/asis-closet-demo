@@ -148,11 +148,12 @@ def latest_report_summary(user_id: str) -> dict[str, Any] | None:
     """用户最近一次风格测试报告的轻量摘要（供 AI 上下文）。"""
 
     from app.selfit_onboarding import _load_store
+    from app.selfit_onboarding_store import select
 
     safe_user_id = sanitize_user_id(user_id)
     reports = [
         report
-        for report in _load_store()["reports"]
+        for report in select(_load_store(), "reports", user_id=safe_user_id)
         if report.get("user_id") == safe_user_id
         and isinstance(report.get("data"), dict)
         and str((report.get("data") or {}).get("typeId") or "").strip()
