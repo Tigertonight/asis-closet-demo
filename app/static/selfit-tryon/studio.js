@@ -1910,6 +1910,12 @@
     );
     $("#sheet").dataset.importFlow = 'true';
     try {
+      // A lost progress response does not mean extraction failed. Only restart
+      // a job whose server-reported status is failed.
+      if (retry && importJob && importJob.status !== "failed") {
+        await pollImport();
+        return;
+      }
       let submitted;
       if (retry && importJob)
         submitted = await api(

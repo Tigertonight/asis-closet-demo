@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import os
+import re
 import secrets
 import time
 from collections import defaultdict, deque
@@ -250,7 +251,7 @@ def _internal_page_redirect(request: Request) -> Response | None:
     if request.method not in {"GET", "HEAD"} or not is_internal_page(path):
         return None
     # 数据/操作 API 不在此拦截（各自路由已有鉴权），只拦页面浏览。
-    if path.startswith(("/api/", "/auth/")):
+    if path.startswith(("/api/", "/auth/")) or re.fullmatch(r"/closet/import/jobs/[^/]+/?", path):
         return None
     from app.auth import admin_token_from_request, resolve_admin_user
 

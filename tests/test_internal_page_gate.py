@@ -45,9 +45,12 @@ def test_internal_pages_redirect_anonymous_to_admin(demo_client: TestClient) -> 
 def test_user_flow_pages_stay_public(demo_client: TestClient) -> None:
     """用户主流程页面不受网关影响。"""
 
-    for path in ("/selfit", "/selfit/mirror", "/wearwow/demo"):
+    for path in ("/selfit", "/selfit/mirror"):
         response = demo_client.get(path, follow_redirects=False)
         assert response.status_code == 200, path
+    legacy = demo_client.get("/wearwow/demo", follow_redirects=False)
+    assert legacy.status_code == 307
+    assert legacy.headers["location"].startswith("/selfit/try-on")
 
 
 def test_admin_login_then_internal_page_accessible(demo_client: TestClient) -> None:
@@ -75,3 +78,22 @@ def test_local_dev_mode_does_not_gate(monkeypatch: pytest.MonkeyPatch, tmp_path:
     response = client.get("/demo", follow_redirects=False)
 
     assert response.status_code == 200
+
+
+def test_import_progress_uses_user_auth_not_admin_redirect(demo_client, monkeypatch):
+    import app.main as main
+    path = '/closet/import/jobs/abc123'
+    anonymous = demo_client.get(path, follow_redirects=False)
+    assert anonymous.status_code == 401
+    assert anonymous.headers['content-type'].startswith('application/json')
+    app.dependency_overrides[main.get_current_user] = lambda: {'user_id': 'gate-test-user'}
+    monkeypatch.setattr(main, 'get_import_job', lambda job_id: {
+        'job_id': job_id, 'status': 'awaiting_confirmation', 'result': {'items': []},
+    })
+    try:
+        response = demo_client.get(path, follow_redirects=False)
+        assert response.status_code == 200
+        assert response.json()['status'] == 'awaiting_confirmation'
+        assert demo_client.get('/closet/demo', follow_redirects=False).status_code == 307
+    finally:
+        app.dependency_overrides.pop(main.get_current_user, None)

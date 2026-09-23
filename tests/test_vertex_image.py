@@ -209,3 +209,88 @@ def test_completed_cache_is_bound_to_backend_and_model(adc, monkeypatch, tmp_pat
     assert tryon._load_completed_tryon_cache(cache)
     monkeypatch.setenv('TRYON_GOOGLE_BACKEND', 'vertex_adc')
     assert tryon._load_completed_tryon_cache(cache) is None
+
+
+def test_429_diagnostics_keep_quota_evidence_without_private_content(adc, monkeypatch, caplog):
+    from google.auth.transport.requests import AuthorizedSession
+    response = requests.Response()
+    response.status_code = 429
+    response.headers.update({'x-request-id': 'upstream-123', 'Retry-After': '3',
+                             'Authorization': 'Bearer do-not-log-token'})
+    response._content = json.dumps({'error': {
+        'status': 'RESOURCE_EXHAUSTED',
+        'message': 'Quota exceeded: private-photo-url private-prompt',
+        'details': [
+            {'@type': 'type.googleapis.com/google.rpc.ErrorInfo', 'reason': 'RATE_LIMIT_EXCEEDED',
+             'metadata': {'quota_metric': 'aiplatform.googleapis.com/generate_content_requests',
+                          'quota_limit': 'GenerateContentRequestsPerMinute',
+                          'consumer': 'projects/private-project', 'token': 'private-token'}},
+            {'@type': 'type.googleapis.com/google.rpc.QuotaFailure',
+             'violations': [{'subject': 'private-user', 'description': 'private-description'}]},
+            {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '2.5s'},
+        ]}}).encode()
+    calls = []
+    def post(*args, **kwargs):
+        calls.append(1)
+        return response
+    monkeypatch.setattr(AuthorizedSession, 'post', post)
+    with pytest.raises(RuntimeError, match='^Vertex generateContent HTTP 429$'):
+        vertex.generate_content({'contents': [{'text': 'private-prompt'}]})
+    event = json.loads(caplog.records[-1].message)
+    assert event['event'] == 'vertex_generate_content'
+    assert event['outcome'] == 'http_error'
+    assert event['http_status'] == 429
+    assert event['quota_failure'] is True
+    assert event['message_category'] == 'quota_exceeded'
+    assert event['error_reason'] == 'RATE_LIMIT_EXCEEDED'
+    assert event['quota_limit'] == 'GenerateContentRequestsPerMinute'
+    assert event['retry_delay'] == '2.5s'
+    assert event['retry_after_seconds'] == 3
+    assert event['x_request_id'] == 'upstream-123'
+    assert event['duration_ms'] >= 0 and event['timestamp']
+    assert len(event['call_id']) == 32
+    assert 'private-' not in caplog.text
+    assert 'do-not-log-token' not in caplog.text
+    assert len(calls) == 1
+
+
+@pytest.mark.parametrize('body', [b'not-json secret', b'[]', b'{"error":null}',
+                                 b'{"error":{"details":null}}',
+                                 b'{"error":{"details":[null,3,{"@type": "unknown"}]}}'])
+def test_malformed_error_diagnostics_do_not_mask_http_error(adc, monkeypatch, caplog, body):
+    from google.auth.transport.requests import AuthorizedSession
+    response = requests.Response()
+    response.status_code = 429
+    response._content = body
+    monkeypatch.setattr(AuthorizedSession, 'post', lambda *a, **kw: response)
+    with pytest.raises(RuntimeError, match='^Vertex generateContent HTTP 429$'):
+        vertex.generate_content({})
+    assert 'secret' not in caplog.text
+    assert json.loads(caplog.records[-1].message)['http_status'] == 429
+
+
+def test_success_log_has_timing_without_generated_content(adc, monkeypatch, caplog):
+    from google.auth.transport.requests import AuthorizedSession
+    response = requests.Response()
+    response.status_code = 200
+    response._content = b'{"candidates":[{"content":{"parts":[{"text":"private-output"}]}}]}'
+    monkeypatch.setattr(AuthorizedSession, 'post', lambda *a, **kw: response)
+    with caplog.at_level('INFO', logger='uvicorn.error'):
+        data = vertex.generate_content({'prompt': 'private-input'})
+    assert data['candidates']
+    event = json.loads(caplog.records[-1].message)
+    assert event['outcome'] == 'success'
+    assert event['duration_ms'] >= 0
+    assert 'private-' not in caplog.text
+
+
+def test_auth_failures_log_only_exception_type(adc, monkeypatch, caplog):
+    from google.auth.transport.requests import AuthorizedSession
+    def post(*a, **kw):
+        raise ValueError('private-credential')
+    monkeypatch.setattr(AuthorizedSession, 'post', post)
+    with pytest.raises(RuntimeError):
+        vertex.generate_content({})
+    event = json.loads(caplog.records[-1].message)
+    assert event['error_type'] == 'ValueError'
+    assert 'private-credential' not in caplog.text
