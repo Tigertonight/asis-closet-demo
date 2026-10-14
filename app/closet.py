@@ -10,6 +10,9 @@ import re
 import shutil
 import base64
 import threading
+import importlib.util
+import logging
+import uuid
 from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timezone
 from pathlib import Path
@@ -20,6 +23,7 @@ import httpx
 from fastapi import HTTPException, UploadFile
 from PIL import Image, ImageDraw, ImageFilter, ImageOps, UnidentifiedImageError
 
+from app.closet_image_worker import fallback_budget, fallback_exhausted, run_image_worker
 from app import vertex_image
 from app.storage import storage_context, user_asset_public_path
 from app.selfit_recommend import content_pool as selfit_content_pool
@@ -82,7 +86,13 @@ OUTFIT_MAIN_GAP = MAIN_GAP
 WARDROBE_EXTRACTION_PROMPT_VERSION = "look-extract-v1.1-partial-garments"
 IMPORT_PIPELINE_VERSION = "closet_import_v2"
 IMPORT_JOB_EXECUTOR = ThreadPoolExecutor(max_workers=2, thread_name_prefix="selfit-closet-import")
-IMPORT_JOB_LOCK = threading.Lock()
+IMPORT_JOB_LOCK = threading.RLock()
+IMPORT_ADMISSION = threading.BoundedSemaphore(4)
+IMPORT_PROCESS_STARTED = datetime.now(timezone.utc)
+IMPORT_PROCESS_ID = uuid.uuid4().hex
+MAX_IMPORT_IMAGES = 4
+MAX_IMPORT_PIXELS = 16_000_000
+MAX_IMPORT_SIDE = 1536
 IMPORT_PIPELINE_LOCK = threading.Lock()
 RECOMMENDATION_FEEDBACK_VERSION = 1
 OUTFIT_ANALYSIS_VERSION = "selfit_outfit_completeness_v1"
@@ -397,6 +407,8 @@ def _save_source_image(raw: bytes, filename: str | None, source_type: str, index
         raise HTTPException(status_code=413, detail="图片超过 12MB")
     try:
         pil_image = Image.open(io.BytesIO(raw))
+        if pil_image.width * pil_image.height > MAX_IMPORT_PIXELS:
+            raise HTTPException(413, "图片分辨率过大，请缩小后上传")
         pil_image.load()
     except UnidentifiedImageError as exc:
         raise HTTPException(status_code=400, detail="无法识别图片格式") from exc
@@ -409,6 +421,7 @@ def _save_source_image(raw: bytes, filename: str | None, source_type: str, index
     _closet_source_dir().mkdir(parents=True, exist_ok=True)
     saved_path.write_bytes(raw)
     image = pil_image.convert("RGB")
+    image.thumbnail((MAX_IMPORT_SIDE, MAX_IMPORT_SIDE), Image.Resampling.LANCZOS)
     return {
         "image": image,
         "image_id": image_id,
@@ -921,12 +934,7 @@ class SegFormerClothesAdapter:
         self._model: Any | None = None
 
     def available(self) -> bool:
-        try:
-            import transformers  # noqa: F401
-            import torch  # noqa: F401
-        except Exception:
-            return False
-        return True
+        return all(importlib.util.find_spec(name) is not None for name in ("transformers", "torch"))
 
     def status(self) -> str:
         if not self.available():
@@ -950,46 +958,23 @@ class SegFormerClothesAdapter:
                 items.append(item)
         return items
 
-    def _load(self) -> None:
-        if self._processor is not None and self._model is not None:
-            return
-        import torch
-        from transformers import AutoImageProcessor, AutoModelForSemanticSegmentation
-
-        self._processor = AutoImageProcessor.from_pretrained(self.model_id)
-        self._model = AutoModelForSemanticSegmentation.from_pretrained(self.model_id)
-        self._model.eval()
-        self._device = "cuda" if torch.cuda.is_available() and os.environ.get("SELFIT_SEGFORMER_DEVICE", "auto") != "cpu" else "cpu"
-        self._model.to(self._device)
-
     def _segment(self, image: Image.Image) -> Any:
-        self._load()
-        import torch
-
-        inputs = self._processor(images=image, return_tensors="pt")
-        inputs = {key: value.to(self._device) for key, value in inputs.items()}
-        with torch.no_grad():
-            outputs = self._model(**inputs)
-        logits = outputs.logits
-        upsampled = torch.nn.functional.interpolate(logits, size=image.size[::-1], mode="bilinear", align_corners=False)
-        return upsampled.argmax(dim=1)[0].detach().cpu().numpy()
+        result = run_image_worker(image, "segment", model_id=self.model_id)
+        if result is None:
+            raise RuntimeError("Local segmentation unavailable within resource budget")
+        self._labels = result.info.get("labels", {})
+        import numpy as np
+        return np.asarray(result.resize(image.size, Image.Resampling.NEAREST))
 
     def _id_to_label(self) -> dict[int, str]:
-        self._load()
-        config = getattr(self._model, "config", None)
-        raw = getattr(config, "id2label", {}) if config is not None else {}
-        return {int(key): str(value).lower() for key, value in raw.items()}
+        return {int(key): str(value).lower() for key, value in self._labels.items()}
 
 
 class RembgMattingProvider:
     def available(self) -> bool:
         if os.environ.get("SELFIT_REMBG_ENABLED", "1").strip().lower() in {"0", "false", "no", "off"}:
             return False
-        try:
-            import rembg  # noqa: F401
-        except Exception:
-            return False
-        return True
+        return importlib.util.find_spec("rembg") is not None
 
     def status(self) -> str:
         if os.environ.get("SELFIT_REMBG_ENABLED", "1").strip().lower() in {"0", "false", "no", "off"}:
@@ -1001,37 +986,18 @@ class RembgMattingProvider:
     def remove_background(self, image: Image.Image) -> Image.Image | None:
         if not self.available():
             return None
-        try:
-            from rembg import remove
-
-            buffer = io.BytesIO()
-            image.convert("RGB").save(buffer, "PNG")
-            result = Image.open(io.BytesIO(remove(buffer.getvalue()))).convert("RGBA")
-            result.load()
-            return result
-        except Exception:
-            return None
+        return run_image_worker(image, "matte")
 
     def refine(self, image: Image.Image, semantic_alpha: Image.Image) -> tuple[Image.Image, str]:
-        if not self.available():
-            rgba = image.convert("RGBA")
-            rgba.putalpha(semantic_alpha)
-            return rgba, "semantic_mask_only"
-        try:
-            from rembg import remove
-
-            buffer = io.BytesIO()
-            image.convert("RGB").save(buffer, "PNG")
-            refined_bytes = remove(buffer.getvalue())
-            refined = Image.open(io.BytesIO(refined_bytes)).convert("RGBA")
-            rembg_alpha = refined.getchannel("A")
-            alpha = Image.composite(rembg_alpha, semantic_alpha, semantic_alpha)
+        refined = self.remove_background(image)
+        if refined is not None:
+            refined = refined.resize(image.size, Image.Resampling.LANCZOS)
+            alpha = Image.composite(refined.getchannel("A"), semantic_alpha, semantic_alpha)
             refined.putalpha(alpha.filter(ImageFilter.GaussianBlur(radius=0.45)))
             return refined, "rembg_refined"
-        except Exception:
-            rgba = image.convert("RGBA")
-            rgba.putalpha(semantic_alpha)
-            return rgba, "semantic_mask_only_after_rembg_error"
+        rgba = image.convert("RGBA")
+        rgba.putalpha(semantic_alpha)
+        return rgba, "semantic_mask_only"
 
 
 class BiRefNetMattingProvider:
@@ -1045,6 +1011,8 @@ class BiRefNetMattingProvider:
 async def import_uploads(images: list[UploadFile]) -> dict[str, Any]:
     if not images:
         raise HTTPException(status_code=422, detail="请至少上传一张图片")
+    if len(images) > MAX_IMPORT_IMAGES:
+        raise HTTPException(413, "每次最多上传 4 张图片")
     sources = []
     for index, upload in enumerate(images):
         raw = await upload.read()
@@ -1053,8 +1021,36 @@ async def import_uploads(images: list[UploadFile]) -> dict[str, Any]:
 
 
 async def create_import_upload_job(images: list[UploadFile], user_id: str, require_confirmation: bool = False) -> dict[str, Any]:
+    if not IMPORT_ADMISSION.acquire(blocking=False):
+        raise HTTPException(429, "衣服处理中，请稍后再添加")
+    try:
+        return await _create_import_upload_job(images, user_id, require_confirmation)
+    except BaseException:
+        IMPORT_ADMISSION.release()
+        raise
+
+
+def _submit_import_job(user_id: str, job_id: str) -> None:
+    try:
+        IMPORT_JOB_EXECUTOR.submit(_run_admitted_import_job, user_id, job_id)
+    except Exception:
+        _update_import_job(job_id, status="failed", phase="failed", error={
+            "code": "import_not_started", "message": "暂时无法开始处理，请稍后重试。", "retryable": True})
+        raise
+
+
+def _run_admitted_import_job(user_id: str, job_id: str) -> None:
+    try:
+        _run_import_job(user_id, job_id)
+    finally:
+        IMPORT_ADMISSION.release()
+
+
+async def _create_import_upload_job(images: list[UploadFile], user_id: str, require_confirmation: bool = False) -> dict[str, Any]:
     if not images:
         raise HTTPException(status_code=422, detail="请至少上传一张图片")
+    if len(images) > MAX_IMPORT_IMAGES:
+        raise HTTPException(413, "每次最多上传 4 张图片")
     sources = []
     for index, upload in enumerate(images):
         raw = await upload.read()
@@ -1074,6 +1070,8 @@ async def create_import_upload_job(images: list[UploadFile], user_id: str, requi
         "job_id": job_id,
         "user_id": user_id,
         "pipeline_version": IMPORT_PIPELINE_VERSION,
+        "owner_pid": os.getpid(),
+        "owner_instance": IMPORT_PROCESS_ID,
         "require_confirmation": require_confirmation,
         "status": "queued",
         "progress": 0,
@@ -1086,12 +1084,13 @@ async def create_import_upload_job(images: list[UploadFile], user_id: str, requi
         "error": None,
     }
     _write_import_job(job)
-    IMPORT_JOB_EXECUTOR.submit(_run_import_job, user_id, job_id)
+    _submit_import_job(user_id, job_id)
     return _public_import_job(job)
 
 
 def get_import_job(job_id: str) -> dict[str, Any]:
-    return _public_import_job(_read_import_job(job_id))
+    with IMPORT_JOB_LOCK:
+        return _public_import_job(_recover_interrupted_import(_read_import_job(job_id)))
 
 
 def confirm_import_job(job_id: str, selected_ids: list[str]) -> dict[str, Any]:
@@ -1139,23 +1138,50 @@ def confirm_import_job(job_id: str, selected_ids: list[str]) -> dict[str, Any]:
                                   selected_item_ids=sorted(selected), result=result))
 
 
-def retry_import_job(job_id: str, user_id: str) -> dict[str, Any]:
-    job = _read_import_job(job_id)
-    if job.get("status") in {"queued", "processing"}:
-        return _public_import_job(job)
-    if job.get("status") in {"completed", "awaiting_confirmation"}:
-        return _public_import_job(job)
-    job.update({
-        "status": "queued",
-        "progress": 0,
-        "phase": "retry_queued",
-        "attempt": int(job.get("attempt") or 1) + 1,
-        "updated_at": _now_iso(),
-        "error": None,
-    })
+def _recover_interrupted_import(job: dict[str, Any]) -> dict[str, Any]:
+    if job.get("status") not in {"queued", "processing"}:
+        return job
+    if job.get("owner_instance") == IMPORT_PROCESS_ID:
+        return job
+    pid = job.get("owner_pid")
+    if pid and pid != os.getpid():
+        try:
+            os.kill(int(pid), 0)
+            return job  # Another live worker owns it; never reset its task.
+        except ProcessLookupError:
+            pass
+        except (PermissionError, ValueError):
+            return job
+    elif not pid:
+        try:
+            if datetime.fromisoformat(job["created_at"]) >= IMPORT_PROCESS_STARTED:
+                return job
+        except (KeyError, ValueError, TypeError):
+            return job
+    job.update(status="failed", phase="failed", updated_at=_now_iso(),
+               error={"code": "import_interrupted", "message": "处理已中断，请重新尝试，原照片已保留。", "retryable": True})
     _write_import_job(job)
-    IMPORT_JOB_EXECUTOR.submit(_run_import_job, user_id, job_id)
-    return _public_import_job(job)
+    logging.getLogger("uvicorn.error").info("closet_import_interrupted job_id=%s", job["job_id"])
+    return job
+
+
+def retry_import_job(job_id: str, user_id: str) -> dict[str, Any]:
+    with IMPORT_JOB_LOCK:
+        job = _recover_interrupted_import(_read_import_job(job_id))
+        if job.get("status") in {"queued", "processing", "completed", "awaiting_confirmation"}:
+            return _public_import_job(job)
+        if not IMPORT_ADMISSION.acquire(blocking=False):
+            raise HTTPException(429, "衣服处理中，请稍后再添加")
+        try:
+            job.update(status="queued", progress=0, phase="retry_queued",
+                       attempt=int(job.get("attempt") or 1) + 1, updated_at=_now_iso(),
+                       error=None, owner_pid=os.getpid(), owner_instance=IMPORT_PROCESS_ID)
+            _write_import_job(job)
+            _submit_import_job(user_id, job_id)
+        except BaseException:
+            IMPORT_ADMISSION.release()
+            raise
+        return _public_import_job(job)
 
 
 def _import_job_path(job_id: str) -> Path:
@@ -1185,7 +1211,7 @@ def _read_import_job(job_id: str) -> dict[str, Any]:
 
 
 def _public_import_job(job: dict[str, Any]) -> dict[str, Any]:
-    public = {key: value for key, value in job.items() if key not in {"sources", "user_id"}}
+    public = {key: value for key, value in job.items() if key not in {"sources", "user_id", "owner_pid", "owner_instance"}}
     public["preview_images"] = [row.get("source", {}).get("source_path") for row in job.get("sources", []) if row.get("source", {}).get("source_path")]
     return public
 
@@ -1202,13 +1228,16 @@ def _run_import_job(user_id: str, job_id: str) -> None:
     from app.storage import user_storage
 
     try:
-        with user_storage(user_id):
+        with user_storage(user_id), IMPORT_PIPELINE_LOCK:
             job = _read_import_job(job_id)
             sources = []
             for descriptor in job.get("sources", []):
                 saved_path = Path(str(descriptor.get("saved_path") or ""))
-                image = Image.open(saved_path).convert("RGB")
-                image.load()
+                with Image.open(saved_path) as raw:
+                    if raw.width * raw.height > MAX_IMPORT_PIXELS:
+                        raise ValueError("图片分辨率过大，请缩小后上传")
+                    image = raw.convert("RGB")
+                image.thumbnail((MAX_IMPORT_SIDE, MAX_IMPORT_SIDE), Image.Resampling.LANCZOS)
                 sources.append({
                     "image": image,
                     "image_id": descriptor["image_id"],
@@ -1221,9 +1250,8 @@ def _run_import_job(user_id: str, job_id: str) -> None:
                 percent = 10 + int(78 * completed / max(1, total))
                 _update_import_job(job_id, status="processing", phase=phase, progress=min(88, percent))
 
-            with IMPORT_PIPELINE_LOCK:
-                kwargs = {"persist": False} if job.get("require_confirmation") else {}
-                result = _import_sources(sources, import_type="upload", progress_callback=progress, **kwargs)
+            kwargs = {"persist": False} if job.get("require_confirmation") else {}
+            result = _import_sources(sources, import_type="upload", progress_callback=progress, **kwargs)
             status = "awaiting_confirmation" if job.get("require_confirmation") else "completed"
             _update_import_job(job_id, status=status, phase=status, progress=100, result=result, error=None)
     except Exception as exc:
@@ -9779,7 +9807,13 @@ def _ensure_source_outfit(source_group_id: str, items: list[dict[str, Any]]) -> 
     return _resolve_outfit(outfit)
 
 
-def _import_sources(
+def _import_sources(sources, import_type, source_url=None, final_url=None, progress_callback=None, persist=True):
+    # All optional local model fallbacks share a single per-import budget.
+    with fallback_budget():
+        return _import_sources_bounded(sources, import_type, source_url, final_url, progress_callback, persist)
+
+
+def _import_sources_bounded(
     sources: list[dict[str, Any]],
     import_type: str,
     source_url: str | None = None,
@@ -9848,7 +9882,7 @@ def _import_sources(
                         used_fallback = True
                         extracted = segmented
                         extraction_modes.append("single_segformer")
-        if not extracted and (not inventory_confirmed_empty or confident_single_failed):
+        if not extracted and not fallback_exhausted() and (not inventory_confirmed_empty or confident_single_failed):
             used_fallback = True
             extracted = _extract_with_top_fallback(source, index, work_dir)
             if extracted:
@@ -10087,6 +10121,7 @@ def _has_meaningful_transparency(image: Image.Image) -> bool:
 def _ensure_transparent_ai_cutout(image: Image.Image) -> tuple[Image.Image, str]:
     """Convert opaque/faux-checkerboard AI output into a real alpha cutout."""
     rgba = image.convert("RGBA")
+    rgba.thumbnail((MAX_IMPORT_SIDE, MAX_IMPORT_SIDE), Image.Resampling.LANCZOS)
     if _has_meaningful_transparency(rgba):
         return rgba, "native_alpha"
     keyed = _remove_uniform_chroma_background(rgba)
