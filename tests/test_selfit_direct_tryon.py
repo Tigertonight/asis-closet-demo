@@ -36,7 +36,9 @@ def pipeline(monkeypatch, tmp_path):
 
     def edit(**kwargs):
         edited.append([item['item_id'] for item in kwargs['plan']['items']])
-        return {'stage': pass_stage(), 'image_path': image_path}
+        output = kwargs['output_dir'] / 'result.png'
+        output.write_bytes(image_path.read_bytes())
+        return {'stage': pass_stage(), 'image_path': output}
 
     monkeypatch.setattr(tryon, '_generate_outfit_group_mask', mask)
     monkeypatch.setattr(tryon, '_run_staged_outfit_edit', edit)
@@ -65,6 +67,24 @@ def test_missing_item_cannot_silently_be_omitted_from_full_outfit(pipeline):
     with pytest.raises(HTTPException, match='套装中有单品暂时无法试穿'):
         tryon.run_try_on_from_outfit_plan(person, plan, provider=object(),
             selected_item_ids=['top', 'bottom', 'shoes', 'bag', 'missing'], wear_all_items=True)
+
+
+def test_force_regenerate_keeps_previous_output_and_cache(pipeline, monkeypatch):
+    person, plan, _ = pipeline
+    colors = iter(['red', 'blue'])
+    def edit(**kwargs):
+        path = kwargs['output_dir'] / 'result.png'
+        Image.new('RGB', (20,20), next(colors)).save(path)
+        return {'stage':tryon._stage('pass',1,{},[]), 'image_path':path}
+    monkeypatch.setattr(tryon, '_run_staged_outfit_edit', edit)
+    first = tryon.run_try_on_from_outfit_plan(person, plan)
+    original = tryon._tryon_result_disk_path(first['result']['image_path'])
+    before = original.read_bytes()
+    second = tryon.run_try_on_from_outfit_plan(person, plan, force_regenerate=True)
+    assert first['result']['image_path'] != second['result']['image_path']
+    assert original.read_bytes() == before
+    cached = tryon.run_try_on_from_outfit_plan(person, plan)
+    assert cached['cached'] and cached['result']['image_path'] == second['result']['image_path']
 
 
 @pytest.mark.parametrize('item_count', [4, 14])

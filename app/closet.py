@@ -15,6 +15,7 @@ import logging
 import uuid
 from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timezone
+from functools import wraps
 from pathlib import Path
 from typing import Any
 from urllib.parse import urljoin, urlparse
@@ -76,6 +77,7 @@ OUTFIT_DIR = CLOSET_OUTPUT_DIR / "outfits"
 OUTFIT_MANIFEST_PATH = CLOSET_OUTPUT_DIR / "outfits_manifest.json"
 TRYON_RECORD_DIR = CLOSET_OUTPUT_DIR / "tryon_records"
 TRYON_RECORDS_MANIFEST_PATH = CLOSET_OUTPUT_DIR / "tryon_records_manifest.json"
+TRYON_RECORD_LOCK = threading.RLock()
 CLOSET_SUPPORTED_CATEGORIES = {"top", "bottom", "skirt", "dress", "shoes", "bag", "accessory"}
 MAX_LINK_IMAGES = 12
 OUTFIT_LAYOUT_VERSION = LAYOUT_VERSION
@@ -2350,6 +2352,15 @@ async def save_user_model_photo(upload: UploadFile) -> dict[str, Any]:
     return {**preferences, "self_model_path": public_path}
 
 
+def _serialized_tryon_record_change(func):
+    @wraps(func)
+    def serialized(*args, **kwargs):
+        with TRYON_RECORD_LOCK:
+            return func(*args, **kwargs)
+    return serialized
+
+
+@_serialized_tryon_record_change
 def delete_tryon_record(record_id: str) -> dict[str, Any]:
     data = _ensure_tryon_records_manifest()
     for record in data.get("records", []):
@@ -2361,6 +2372,7 @@ def delete_tryon_record(record_id: str) -> dict[str, Any]:
     raise HTTPException(status_code=404, detail="没有找到这条试穿记录")
 
 
+@_serialized_tryon_record_change
 def record_inspiration_tryon_result(note: dict[str, Any], job: dict[str, Any], result: dict[str, Any]) -> dict[str, Any] | None:
     image_path = result.get("result", {}).get("image_path")
     if result.get("status") not in {"generated", "review"} or not image_path:
@@ -2383,6 +2395,7 @@ def record_inspiration_tryon_result(note: dict[str, Any], job: dict[str, Any], r
     return record
 
 
+@_serialized_tryon_record_change
 def record_selfit_tryon_result(outfit_id: str, tryon_result: dict[str, Any]) -> dict[str, Any] | None:
     if tryon_result.get("status") not in {"generated", "review"}:
         return None
@@ -2397,6 +2410,7 @@ def record_selfit_tryon_result(outfit_id: str, tryon_result: dict[str, Any]) -> 
                 record
                 for record in data.get("records", [])
                 if not record.get("deleted") and record.get("tryon_id") == tryon_id and record.get("outfit_id") == outfit_id
+                and record.get("image_path") == image_path
             ),
             None,
         )
@@ -2433,6 +2447,7 @@ def record_selfit_tryon_result(outfit_id: str, tryon_result: dict[str, Any]) -> 
     return record
 
 
+@_serialized_tryon_record_change
 def mock_tryon_from_outfit(outfit_id: str) -> dict[str, Any]:
     outfit = get_outfit(outfit_id)
     now = _now_iso()

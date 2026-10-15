@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 from copy import deepcopy
+from threading import BoundedSemaphore
 import json
 import logging
 import os
@@ -72,10 +73,15 @@ def ask_vision(image: Image.Image, prompt: str, schema: dict | None = None) -> d
     if transport != "tryon":
         raise HTTPException(503, "搭配助手暂未连接，请检查本地配置。")
     from app.tryon import _has_runway_google_provider, _has_openai_compatible_provider
+    from app import vertex_image
 
     provider = closet.AIGarmentCutoutProvider()
     try:
-        if _has_runway_google_provider():
+        if vertex_image.enabled():
+            if not vertex_image.configured():
+                raise HTTPException(503, "搭配助手暂未连接，请稍后再试。")
+            text = provider._analyze_inventory_with_runway(image, prompt)
+        elif _has_runway_google_provider():
             text = provider._analyze_inventory_with_runway(image, prompt)
         elif _has_openai_compatible_provider():
             text = provider._analyze_inventory_with_openai(image, prompt)
@@ -233,10 +239,24 @@ def _fixture_matches(anchor: dict, user_id: str | None = None, body_profile: str
             "outfits": outfits, "matches": matches}
 
 
+MATCH_ADMISSION = BoundedSemaphore(2)
+
+
 def match_notebook_outfit(anchor: dict, user_id: str | None = None, body_profile: str = "standard",
                          *, gender: str = "female") -> dict:
+    if gender not in {"female", "male"} or body_profile not in {"standard", "curvy"}:
+        raise HTTPException(422, "请选择有效的搭配类型和版本。")
     if _is_default_white_tee(anchor):
         return _fixture_matches(anchor, user_id, body_profile, gender=gender)
+    if not MATCH_ADMISSION.acquire(blocking=False):
+        raise HTTPException(429, "搭配人数较多，请稍后再试。", headers={"Retry-After": "5"})
+    try:
+        return _match_ai_notebook_outfit(anchor, user_id, body_profile, gender=gender)
+    finally:
+        MATCH_ADMISSION.release()
+
+
+def _match_ai_notebook_outfit(anchor: dict, user_id: str | None, body_profile: str, *, gender: str) -> dict:
     image = _anchor_image(anchor)
     evidence = {key: anchor.get(key) for key in ("title", "category_label", "category", "slot", "attributes", "note")}
     analysis = ask_vision(image, (
@@ -253,6 +273,10 @@ def match_notebook_outfit(anchor: dict, user_id: str | None = None, body_profile
         looks = delivery_looks()
         candidates, choices = [], {}
         for look in looks:
+            binding = look.get("note_binding", {})
+            look_gender = "male" if binding.get("gender") == "male" else "female"
+            if look_gender != gender or binding.get("bodyProfile", "standard") != body_profile:
+                continue
             replaceable = [item for item in look["items"] if notebook_slot(item) == slot]
             if not replaceable or len(look["items"]) < 2 or not look.get("outfit_description"):
                 continue

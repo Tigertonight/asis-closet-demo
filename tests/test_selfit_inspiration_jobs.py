@@ -4,6 +4,7 @@ from PIL import Image
 from fastapi.testclient import TestClient
 from app.main import app
 from app.auth import get_current_user
+from app.beta_access import require_beta_user
 from app import selfit_inspiration, storage, tryon
 
 
@@ -20,9 +21,14 @@ def test_note_job_persists_snapshot_and_retries_in_same_account(monkeypatch,tmp_
     monkeypatch.setattr(tryon,'TRYON_JOB_EXECUTOR',Executor())
     client=TestClient(app);endpoint='/selfit/try-on/inspiration-jobs'
     note=selfit_inspiration.persona_notes('mute')[0]
+    reference = tmp_path / 'reference.png'; reference.write_bytes(photo())
+    # Production notebook URLs are material IDs, not /static/ files.
+    assert note['image_url'].startswith('/api/v1/material-assets/')
+    monkeypatch.setattr('app.material_assets.material_image_path', lambda asset_id: reference)
     def post(note_id=note['id']):return client.post(endpoint,data={'note_id':note_id,'client_request_id':'stable'},files={'person_image':('a.png',photo(),'image/png')})
     assert post().status_code==401
     user={'user_id':'alice'};app.dependency_overrides[get_current_user]=lambda:user
+    app.dependency_overrides[require_beta_user]=lambda:user
     try:
         assert post('note:missing').status_code==404
         response=post();assert response.status_code==200,response.text
@@ -44,7 +50,7 @@ def test_note_job_persists_snapshot_and_retries_in_same_account(monkeypatch,tmp_
         submitted[0][0](*submitted[0][1:])
         done=client.get(url).json();assert done['status']=='completed';assert done['result']['note']==note
         assert client.post(url+'/retry').status_code==200
-        assert submitted[-1][0] is tryon._run_inspiration_tryon_job
+        assert submitted[-1][0] is tryon._run_admitted_tryon_job
         submitted[-1][0](*submitted[-1][1:])
         records=client.get('/closet/tryon-records').json()['records']
         assert len(records)==2 and all(row['note_id']==note['id'] and row['outfit_id'] is None for row in records)
@@ -60,7 +66,9 @@ def test_note_job_persists_snapshot_and_retries_in_same_account(monkeypatch,tmp_
         submitted[-1][0](*submitted[-1][1:])
         assert client.get(url).json()['status']=='failed'
         assert client.post(url+'/retry').json()['attempt']==4
-    finally:app.dependency_overrides.pop(get_current_user,None)
+    finally:
+        app.dependency_overrides.pop(get_current_user,None)
+        app.dependency_overrides.pop(require_beta_user,None)
 
 
 def test_full_note_transfer_uses_full_body_mask_and_outfit_prompt(monkeypatch,tmp_path):

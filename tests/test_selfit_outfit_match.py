@@ -52,7 +52,9 @@ def test_ai_reads_all_eligible_descriptions_and_replaces_exactly_one(notes, monk
     calls=choose(monkeypatch)
     result=matching.match_notebook_outfit(anchor())
     data=json.loads(calls[1].split('\n',1)[1])
-    eligible=[look for look in notes if any(matching.notebook_slot(item)=='top' for item in look['items'])]
+    eligible=[look for look in notes if look['note_binding'].get('gender') != 'male'
+              and look['note_binding'].get('bodyProfile', 'standard') == 'standard'
+              and any(matching.notebook_slot(item)=='top' for item in look['items'])]
     assert len(data['candidates'])==len(eligible)>1
     assert [x['outfit_description'] for x in data['candidates']]==[x['outfit_description'] for x in eligible]
     source=styling_catalog.adapt_outfit(eligible[-1])
@@ -114,6 +116,50 @@ def test_same_tryon_provider_is_reused_and_no_fake_success(monkeypatch):
     monkeypatch.setattr(tryon,'_has_openai_compatible_provider',lambda:False)
     with pytest.raises(HTTPException) as error: matching.ask_vision(Image.new('RGB',(1,1)),'prompt')
     assert error.value.status_code==503
+
+
+def test_vertex_matching_uses_existing_transport_and_fails_closed(monkeypatch):
+    from app import vertex_image, tryon
+    monkeypatch.setattr(vertex_image, 'enabled', lambda: True)
+    monkeypatch.setattr(vertex_image, 'configured', lambda: True)
+    monkeypatch.setattr(tryon, '_has_runway_google_provider', lambda: False)
+    monkeypatch.setattr(closet.AIGarmentCutoutProvider, '_analyze_inventory_with_runway', lambda *a:'{"slot":"top"}')
+    monkeypatch.setattr(closet.AIGarmentCutoutProvider, '_analyze_inventory_with_openai', lambda *a:pytest.fail('must not switch backend'))
+    assert matching.ask_vision(Image.new('RGB',(1,1)), 'prompt') == {'slot':'top'}
+    monkeypatch.setattr(vertex_image, 'configured', lambda: False)
+    with pytest.raises(HTTPException) as error:
+        matching.ask_vision(Image.new('RGB',(1,1)), 'prompt')
+    assert error.value.status_code == 503
+
+
+@pytest.mark.parametrize('gender,body', [('male','standard'), ('female','standard'), ('female','curvy')])
+def test_ai_candidates_only_use_requested_gender_and_body(notes, monkeypatch, gender, body):
+    calls = choose(monkeypatch)
+    matching.match_notebook_outfit(anchor(), gender=gender, body_profile=body)
+    actual = json.loads(calls[1].split('\n',1)[1])['candidates']
+    expected = [look['outfit_description'] for look in notes
+                if ('male' if look['note_binding'].get('gender') == 'male' else 'female') == gender
+                and look['note_binding'].get('bodyProfile', 'standard') == body
+                and any(matching.notebook_slot(i) == 'top' for i in look['items'])]
+    assert expected and [c['outfit_description'] for c in actual] == expected
+
+
+def test_matching_admission_rejects_before_image_work_and_releases_on_failure(notes, monkeypatch):
+    import threading
+    budget = threading.BoundedSemaphore(1)
+    monkeypatch.setattr(matching, 'MATCH_ADMISSION', budget)
+    budget.acquire()
+    monkeypatch.setattr(matching, '_anchor_image', lambda *a:pytest.fail('busy path must not decode'))
+    with pytest.raises(HTTPException) as error: matching.match_notebook_outfit(anchor())
+    assert error.value.status_code == 429
+    # Fixed white-tee matches stay available while AI work is busy.
+    assert matching.match_notebook_outfit(_tee())['mode'] == 'fixture_notebook_match'
+    budget.release()
+    def unavailable(*a): raise HTTPException(422, 'test image missing')
+    monkeypatch.setattr(matching, '_anchor_image', unavailable)
+    with pytest.raises(HTTPException): matching.match_notebook_outfit(anchor())
+    assert budget.acquire(blocking=False)
+    budget.release()
 
 
 def test_authenticated_preview_does_not_save_and_cannot_use_another_users_item(notes,monkeypatch,tmp_path):
@@ -372,8 +418,9 @@ def test_white_tee_data_has_exactly_three_real_distinct_top_replacements_per_gro
     assert all('standard' in groups for groups in data['persona_groups'].values())
     assert set(data['library_groups']) == {'standard', 'curvy'}
     looks = matching.delivery_looks() + matching.inspiration_looks()
-    # These picks were curated before the separate male delivery was supplied.
-    assert data['candidate_pool_size'] == len([look for look in looks if look['note_binding'].get('gender') != 'male']) == 96
+    # Pool size is the historical curation metadata; two blocked notes were retired.
+    assert data['candidate_pool_size'] == 96
+    assert len([look for look in looks if look['note_binding'].get('gender') != 'male']) == 94
     assert data['candidate_pool_sizes'] == {'standard': 80, 'curvy': 16}
     by_id = {look['look_id']: look for look in looks}
     groups = [group for versions in data['persona_groups'].values() for group in versions.values()]

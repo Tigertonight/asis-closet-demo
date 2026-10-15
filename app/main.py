@@ -22,6 +22,7 @@ from app.recommendation_profile import resolve_profile, preview_profile
 from app.recommendation_feed import create_feed, continue_feed, validate_feedback
 from app.recommendation_visual import attach_visual, load_visual
 from app.model_assets import ModelStaticFiles
+from app.photo_work import photo_admission, run_photo_work
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
 from app.auth import (
@@ -990,7 +991,7 @@ async def closet_outfit_create(request: Request, current_user: dict[str, Any] = 
 @app.post("/closet/outfits/analyze-selection")
 async def closet_outfit_analyze_selection(request: Request, current_user: dict[str, Any] = Depends(get_current_user)) -> dict[str, Any]:
     with user_storage(current_user["user_id"]):
-        return analyze_outfit_selection(await request.json())
+        return await run_photo_work(analyze_outfit_selection, await request.json())
 
 
 @app.get("/closet/outfits/{outfit_id}")
@@ -1286,42 +1287,43 @@ async def selfit_try_on_job_create(
     client_request_id: str | None = Form(None),
     wear_all_items: bool = Form(False),
     model_id: str | None = Form(None),
-    current_user: dict[str, Any] = Depends(require_beta_tryon),
+    current_user: dict[str, Any] = Depends(require_beta_user),
 ) -> dict[str, Any]:
-    with user_storage(current_user["user_id"]):
-        result = create_outfit_tryon_job(
-            await person_image.read(),
-            person_image.filename,
-            outfit_id,
-            photo_mode,
-            scene_label,
-            current_user["user_id"],
-            force_regenerate,
-            _parse_selected_item_ids(selected_item_ids, limit=None if wear_all_items else 8),
-            client_request_id,
-            wear_all_items=wear_all_items,
-            model_id=model_id,
-        )
-        consume_tryon_quota(str(current_user["user_id"]))
-        return result
+    async with photo_admission():
+        with user_storage(current_user["user_id"]):
+            result = await run_photo_work(create_outfit_tryon_job,
+                await person_image.read(12 * 1024 * 1024 + 1),
+                person_image.filename,
+                outfit_id,
+                photo_mode,
+                scene_label,
+                current_user["user_id"],
+                force_regenerate,
+                _parse_selected_item_ids(selected_item_ids, limit=None if wear_all_items else 8),
+                client_request_id,
+                wear_all_items=wear_all_items,
+                model_id=model_id,
+                charge_quota=True,
+            )
+            return result
 
 
 @app.post("/selfit/try-on/inspiration-jobs")
 async def selfit_inspiration_job_create(
     person_image: UploadFile = File(...), note_id: str = Form(...),
     client_request_id: str | None = Form(None),
-    current_user: dict[str, Any] = Depends(require_beta_tryon),
+    current_user: dict[str, Any] = Depends(require_beta_user),
 ) -> dict[str, Any]:
-    from app.selfit_inspiration import list_notes
-    catalog = list_notes(current_user)
-    note = next((entry for entry in catalog["notes"] + catalog["saved_notes"] if entry["id"] == note_id), None)
-    if note is None:
-        raise HTTPException(404, "这条穿搭灵感暂时不可用")
-    raw = await person_image.read()
-    with user_storage(current_user["user_id"]):
-        result = await run_in_threadpool(create_inspiration_tryon_job,raw,person_image.filename,note,current_user["user_id"],client_request_id)
-        consume_tryon_quota(str(current_user["user_id"]))
-        return result
+    def prepare(raw):
+        from app.selfit_inspiration import list_notes
+        with user_storage(current_user["user_id"]):
+            catalog = list_notes(current_user)
+            note = next((entry for entry in catalog["notes"] + catalog["saved_notes"] if entry["id"] == note_id), None)
+            if note is None:
+                raise HTTPException(404, "这条穿搭灵感暂时不可用")
+            return create_inspiration_tryon_job(raw, person_image.filename, note, current_user["user_id"], client_request_id, charge_quota=True)
+    async with photo_admission():
+        return await run_photo_work(prepare, await person_image.read(12 * 1024 * 1024 + 1))
 
 
 @app.post("/selfit/try-on/preview-plan")
@@ -1331,13 +1333,14 @@ async def selfit_try_on_preview_plan(
     photo_mode: str | None = Form(None),
     current_user: dict[str, Any] = Depends(get_current_user),
 ) -> dict[str, Any]:
-    with user_storage(current_user["user_id"]):
-        return preview_outfit_tryon_plan(
-            await person_image.read(),
-            person_image.filename,
-            outfit_id,
-            photo_mode,
-        )
+    async with photo_admission():
+        with user_storage(current_user["user_id"]):
+            return await run_photo_work(preview_outfit_tryon_plan,
+                await person_image.read(12 * 1024 * 1024 + 1),
+                person_image.filename,
+                outfit_id,
+                photo_mode,
+            )
 
 
 @app.get("/selfit/try-on/jobs/{job_id}")
@@ -1365,7 +1368,7 @@ async def selfit_try_on_piece_retry(
     except Exception:
         payload = {}
     with user_storage(current_user["user_id"]):
-        return create_piece_retry_job(
+        return await run_photo_work(create_piece_retry_job,
             job_id,
             item_id,
             current_user["user_id"],

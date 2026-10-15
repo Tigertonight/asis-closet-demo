@@ -536,10 +536,11 @@ def test_outfit_generation_runs_clothing_before_accessories(tmp_path: Path, feed
     provider = RecordingProvider()
     result = tryon._run_staged_outfit_edit(provider, person["saved_path"], plan, detection, tmp_path, retry_feedback=feedback)
     assert len(provider.calls) == 2
+    assert all("Preserve the original face" in call["prompt"] for call in provider.calls)
+    assert all("do not beautify or redraw the face" in call["prompt"] for call in provider.calls)
     if feedback:
         assert "Fully replace the original garment" in provider.calls[0]["prompt"]
         assert "Fully replace the original garment" not in provider.calls[1]["prompt"]
-        assert all("Preserve the original face" in call["prompt"] for call in provider.calls)
 
     assert result["stage"]["status"] == "pass"
     assert [stage["name"] for stage in result["stage"]["evidence"]["stages"]] == ["visible_clothing", "visible_accessories"]

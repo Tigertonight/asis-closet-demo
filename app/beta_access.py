@@ -10,6 +10,9 @@
 from __future__ import annotations
 
 import json
+import secrets
+import threading
+from contextlib import contextmanager
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any
@@ -22,6 +25,7 @@ from app.ops import env_int
 
 CN_TZ = timezone(timedelta(hours=8))
 QUOTA_RETENTION_DAYS = 7
+_USAGE_LOCK = threading.RLock()
 
 _bearer = HTTPBearer(auto_error=False)
 
@@ -53,7 +57,7 @@ def _load_usage() -> dict[str, dict[str, int]]:
 def _write_usage(usage: dict[str, dict[str, int]]) -> None:
     path = _quota_path()
     path.parent.mkdir(parents=True, exist_ok=True)
-    tmp_path = path.with_name(f"{path.name}.{datetime.now(CN_TZ).strftime('%H%M%S')}.tmp")
+    tmp_path = path.with_name(f"{path.name}.{secrets.token_hex(8)}.tmp")
     tmp_path.write_text(json.dumps(usage, ensure_ascii=False, indent=2), encoding="utf-8")
     tmp_path.replace(path)
 
@@ -87,15 +91,37 @@ def quota_payload(user_id: str) -> dict[str, int]:
 
 def consume_tryon_quota(user_id: str) -> None:
     """试穿任务成功创建后 +1；超出当日额度抛 429。"""
+    with _USAGE_LOCK:
+        _consume_tryon_quota(user_id, _today_key())
+
+
+def _consume_tryon_quota(user_id: str, today: str) -> None:
     limit = daily_tryon_limit()
     usage = _load_usage()
-    today = _today_key()
     used = int(usage.get(user_id, {}).get(today, 0))
     if used >= limit:
         raise HTTPException(status_code=429, detail=f"今日 {limit} 次试穿额度已用完，明天 0 点刷新")
     usage.setdefault(user_id, {})[today] = used + 1
     _prune(usage)
     _write_usage(usage)
+
+
+@contextmanager
+def reserve_tryon_quota(user_id: str):
+    """Charge once before dispatch; undo admission failures on the original day."""
+    with _USAGE_LOCK:
+        day = _today_key()
+        _consume_tryon_quota(user_id, day)
+    try:
+        yield
+    except BaseException:
+        with _USAGE_LOCK:
+            usage = _load_usage()
+            days = usage.get(user_id, {})
+            if day in days:
+                days[day] = max(0, int(days[day]) - 1)
+                _write_usage(usage)
+        raise
 
 
 async def require_beta_user(

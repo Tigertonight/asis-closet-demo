@@ -1312,7 +1312,6 @@
     state.builderMatches=[]; state.builderMatchIndex=0;
     state.builderItems=[]; state.builderIds=new Set([id]); state.builderError='';
     $("#sheet").close(); go('builder');
-    const started=Date.now();
     try {
       if (reference) throw Error('请在衣帽间上传自己的单品，再让搭配助手为你挑选。');
       const result=await api(`/selfit/try-on/items/${encodeURIComponent(id)}/outfits`,{method:'POST'},260000);
@@ -1325,8 +1324,6 @@
     } catch (error) {
       if (request===state.builderRequest && state.page==='builder') state.builderMatchError=error.message || '这次没有完成搭配，请再试一次。';
     } finally {
-      const remain=(state.builderMatchMinMs ?? 3000)-(Date.now()-started);
-      if (remain>0) await new Promise(resolve=>setTimeout(resolve,remain));
       if (request===state.builderRequest && state.page==='builder') {state.builderMatching=false;render();}
     }
   }
@@ -1737,7 +1734,6 @@
     try {
       await requireTryonAccess();
       if (state.current !== target || state.photo !== photo || state.file !== inputFile || state.modelId !== modelId || state.page !== page) return;
-      const loadingStartedAt = Date.now();
       beginMirrorGeneration(target, photo);
       const file = await photoFile(photo, inputFile, modelId);
       if (!target.id) {
@@ -1761,7 +1757,7 @@
       state.jobPhoto = photo;
       const submitted = state.job;
       if (submitted.result?.generation_strategy === "preset") {
-        await waitForPresetResult(submitted, loadingStartedAt);
+        await waitForPresetResult(submitted);
         if (state.job?.job_id !== submitted.job_id) return;
         await poll(submitted);
       } else poll();
@@ -1771,15 +1767,12 @@
       generationBusy = false;
     }
   }
-  async function waitForPresetResult(job, startedAt) {
+  async function waitForPresetResult(job) {
     const src = job.result.result.image_path;
     const preview = new Image();
     preview.src = mediaURL(src);
     try {
-      await Promise.all([
-        preview.decode(),
-        new Promise(resolve => setTimeout(resolve, Math.max(0, 3000 - (Date.now() - startedAt)))),
-      ]);
+      await preview.decode();
       // The preset image is already decoded: entering the mirror must reuse it,
       // rather than start another load that can fail after the try-on succeeded.
       mirrorImages.set(src, "ready");

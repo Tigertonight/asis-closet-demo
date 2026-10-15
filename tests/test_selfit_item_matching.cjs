@@ -6,7 +6,7 @@ const studio=fs.readFileSync('app/static/selfit-tryon/studio.js','utf8');
 const styles=fs.readFileSync('app/static/selfit-tryon/studio.css','utf8');
 function harness() {
   const requests=[],notices=[];
-  const state={page:'closet',items:[{id:'owned',name:'白 T',src:'/owned.png'}],outfits:[],builderRequest:0,builderMatching:false,builderMatchMinMs:0,selected:new Set()};
+  const state={page:'closet',items:[{id:'owned',name:'白 T',src:'/owned.png'}],outfits:[],builderRequest:0,builderMatching:false,selected:new Set()};
   const context=vm.createContext({state,reference:false,Set,URL,location:{href:'http://localhost/selfit/try-on?screen=closet'},history:{pushState(){}},setTimeout,
     $:()=>({close(){},scrollTop:0}),render(){},notify:x=>notices.push(x),normalizeItem:x=>({id:x.item_id,name:x.title,raw:x}),normalizeOutfit:x=>({id:x.outfit_id,items:x.items}),
     uniqueItems:xs=>[...new Map(xs.map(x=>[x.id,x])).values()],

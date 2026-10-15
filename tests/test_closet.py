@@ -377,7 +377,9 @@ def test_tryon_job_reports_progress_and_force_retries(monkeypatch, tmp_path: Pat
     retried = client.get(f"/selfit/try-on/jobs/{created['job_id']}").json()
     assert retried["status"] == "completed"
     assert retried["attempt"] == 2
-    assert client.get("/closet/tryon-records").json()["total"] == 1
+    records = client.get("/closet/tryon-records").json()
+    assert records["total"] == 2
+    assert len({row["image_path"] for row in records["records"]}) == 2
 
 
 def test_tryon_preview_plan_marks_each_piece_by_visible_region(monkeypatch, tmp_path: Path) -> None:
@@ -1264,7 +1266,7 @@ def test_selfit_tryon_allows_soft_preset_female_model(monkeypatch, tmp_path: Pat
     assert not data["decision"]["blocking_errors"]
 
 
-def test_selfit_tryon_review_result_is_saved_to_records(monkeypatch, tmp_path: Path) -> None:
+def test_selfit_tryon_failed_quality_is_not_saved_to_records(monkeypatch, tmp_path: Path) -> None:
     class BackgroundChangedProvider(tryon.TryOnProvider):
         mode = "background_changed_test"
 
@@ -1297,13 +1299,11 @@ def test_selfit_tryon_review_result_is_saved_to_records(monkeypatch, tmp_path: P
 
     assert response.status_code == 200
     data = response.json()
-    assert data["status"] == "review"
-    assert data["record"]["status"] == "review"
-    assert data["record"]["image_path"] == data["result"]["image_path"]
-    assert data["record"]["quality_review"]["status"] == "fail"
+    # An all-black result has lost the person/background and must fail closed.
+    assert data["status"] == "failed"
+    assert "record" not in data
     listed = client.get("/closet/tryon-records").json()
-    assert listed["total"] == 1
-    assert listed["records"][0]["record_id"] == data["record"]["record_id"]
+    assert listed["total"] == 0
 
 
 def test_mock_tryon_from_outfit_creates_local_record(monkeypatch, tmp_path: Path) -> None:

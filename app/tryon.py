@@ -1,16 +1,23 @@
 from __future__ import annotations
 
+import asyncio
 import base64
 import html
 import hashlib
 import io
 import json
+import logging
 import os
 import re
 import subprocess
 import sys
 import threading
+import time
+import uuid
+from contextlib import nullcontext
+from contextvars import copy_context
 from concurrent.futures import ThreadPoolExecutor
+from functools import wraps
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
@@ -34,6 +41,7 @@ CODEX_BRIDGE_DIR = TRYON_OUTPUT_DIR / "codex_bridge"
 TRYON_MODEL_FIXTURE_DIR = Path(os.environ.get("SELFIT_TRYON_MODEL_DIR") or
                                ROOT_DIR / "tests" / "fixtures" / "tryon_models").resolve()
 MAX_IMAGE_BYTES = 12 * 1024 * 1024
+MAX_IMAGE_PIXELS = 16_000_000
 MAX_OUTFIT_ITEMS = 16
 SUPPORTED_FORMATS = {"JPEG", "PNG", "WEBP"}
 MIN_PERSON_EDGE = 640
@@ -54,8 +62,16 @@ MAX_XHS_IMAGES = 12
 FASHION_ITEM_CATEGORIES = {"top", "outer", "bottom", "skirt", "dress", "shoes", "bag", "accessory"}
 OUTFIT_PHOTO_MODES = {"standard", "mirror_selfie", "face_covered", "scene_photo"}
 OUTFIT_TRYON_PIPELINE_VERSION = "outfit_tryon_v6_detected_face_geometry"
+FACE_PRESERVATION_PROMPT = (
+    "Preserve the original face, facial features, expression, head angle and skin texture; "
+    "do not beautify or redraw the face."
+)
 TRYON_JOB_EXECUTOR = ThreadPoolExecutor(max_workers=2, thread_name_prefix="selfit-tryon")
-TRYON_JOB_LOCK = threading.Lock()
+TRYON_JOB_LOCK = threading.RLock()
+TRYON_ADMISSION = threading.BoundedSemaphore(4)
+TRYON_SUBMISSION_LOCKS = [threading.RLock() for _ in range(64)]
+TRYON_PROCESS_ID = uuid.uuid4().hex
+TRYON_PROCESS_STARTED = datetime.now(timezone.utc)
 OUTFIT_REQUIRED_GROUPS = {
     "upper": {"top", "outer"},
     "lower": {"bottom", "skirt", "dress"},
@@ -233,35 +249,78 @@ def image_edit_model() -> str:
     return os.getenv("TRYON_IMAGE_MODEL") or "nano-banana"
 
 
+async def _run_uploaded_tryon(uploads: list[tuple[UploadFile, str]], work):
+    """Legacy synchronous APIs share the job pool without blocking HTTP handling."""
+    admission = TRYON_ADMISSION
+    if not admission.acquire(blocking=False):
+        raise HTTPException(429, "试穿人数较多，请稍后再试。", headers={"Retry-After": "5"})
+    submitted = False
+    try:
+        raws = []
+        total_bytes = 0
+        for upload, role in uploads:
+            raw = await upload.read(MAX_IMAGE_BYTES + 1)
+            total_bytes += len(raw)
+            if not raw:
+                raise HTTPException(400, "上传图片为空，请重新选择。")
+            if len(raw) > MAX_IMAGE_BYTES or total_bytes > 32 * 1024 * 1024:
+                raise HTTPException(413, "图片过大，请缩小图片后重试。")
+            raws.append((raw, upload.filename, role))
+        context = copy_context()
+        def prepare_and_run():
+            # Validate the aggregate before decoding a multi-item upload.
+            pixels = 0
+            for raw, _, _ in raws:
+                try:
+                    with Image.open(io.BytesIO(raw)) as source:
+                        pixels += source.width * source.height
+                except (UnidentifiedImageError, OSError, Image.DecompressionBombError):
+                    raise HTTPException(400, "图片无法读取，请重新选择。") from None
+                if pixels > 32_000_000:
+                    raise HTTPException(413, "这组图片分辨率过高，请缩小图片后重试。")
+            return work([_read_upload_image(*entry) for entry in raws])
+        def execute():
+            try:
+                return context.run(prepare_and_run)
+            finally:
+                admission.release()
+        future = TRYON_JOB_EXECUTOR.submit(execute)
+        submitted = True
+        # Disconnecting a client must not free capacity while generation continues.
+        return await asyncio.shield(asyncio.wrap_future(future))
+    finally:
+        if not submitted:
+            admission.release()
+
+
 async def analyze_garment_upload(image: UploadFile) -> dict[str, Any]:
-    garment = _read_upload_image(await image.read(), image.filename, "garment")
-    analysis = GarmentAnalyzer().analyze(garment["image"])
-    return {
-        "status": "analyzed" if analysis["status"] in {"pass", "warn"} else "failed",
-        "garment_image_id": garment["image_id"],
-        "input": garment["meta"],
-        "garment": analysis["evidence"]["garment"],
-        "pipeline": {"garment_analysis": analysis},
-    }
+    def analyze(images):
+        garment = images[0]
+        analysis = GarmentAnalyzer().analyze(garment["image"])
+        return {
+            "status": "analyzed" if analysis["status"] in {"pass", "warn"} else "failed",
+            "garment_image_id": garment["image_id"], "input": garment["meta"],
+            "garment": analysis["evidence"]["garment"], "pipeline": {"garment_analysis": analysis},
+        }
+    return await _run_uploaded_tryon([(image, "garment")], analyze)
 
 
 async def run_try_on_upload(person_image: UploadFile, garment_image: UploadFile | None = None, closet_item_id: str | None = None) -> dict[str, Any]:
-    person = _read_upload_image(await person_image.read(), person_image.filename, "person")
-    if closet_item_id:
-        from app.closet import closet_item_as_upload
-
-        garment = closet_item_as_upload(closet_item_id)
-    elif garment_image is not None:
-        garment = _read_upload_image(await garment_image.read(), garment_image.filename, "garment")
-    else:
+    if not closet_item_id and garment_image is None:
         raise HTTPException(status_code=422, detail="请上传衣服图片，或选择一件衣橱里的上衣。")
-    return run_try_on(person, garment)
+    def generate(images):
+        from app.closet import closet_item_as_upload
+        garment = closet_item_as_upload(closet_item_id) if closet_item_id else images[1]
+        return run_try_on(images[0], garment)
+    uploads = [(person_image, "person")]
+    if not closet_item_id:
+        uploads.append((garment_image, "garment"))
+    return await _run_uploaded_tryon(uploads, generate)
 
 
 async def run_try_on_from_inspiration_upload(person_image: UploadFile, inspiration_image: UploadFile, style_brief: str | None = None) -> dict[str, Any]:
-    person = _read_upload_image(await person_image.read(), person_image.filename, "person")
-    inspiration = _read_upload_image(await inspiration_image.read(), inspiration_image.filename, "inspiration")
-    return run_try_on_from_inspiration(person, inspiration, style_brief=style_brief)
+    return await _run_uploaded_tryon([(person_image, "person"), (inspiration_image, "inspiration")],
+        lambda images: run_try_on_from_inspiration(images[0], images[1], style_brief=style_brief))
 
 
 async def run_try_on_from_outfit_upload(
@@ -274,17 +333,14 @@ async def run_try_on_from_outfit_upload(
 ) -> dict[str, Any]:
     from app.closet import outfit_as_tryon_plan
 
-    outfit_plan, outfit = outfit_as_tryon_plan(outfit_id, photo_mode=photo_mode, scene_label=scene_label)
-    person = _read_upload_image(await person_image.read(), person_image.filename, "person")
-    result = run_try_on_from_outfit_plan(
-        person,
-        outfit_plan,
-        force_regenerate=force_regenerate,
-        selected_item_ids=selected_item_ids,
-    )
-    result["source_mode"] = "from_outfit"
-    result["outfit"] = outfit
-    return result
+    def generate(images):
+        outfit_plan, outfit = outfit_as_tryon_plan(outfit_id, photo_mode=photo_mode, scene_label=scene_label)
+        result = run_try_on_from_outfit_plan(images[0], outfit_plan,
+            force_regenerate=force_regenerate, selected_item_ids=selected_item_ids)
+        result["source_mode"] = "from_outfit"
+        result["outfit"] = outfit
+        return result
+    return await _run_uploaded_tryon([(person_image, "person")], generate)
 
 
 def preview_outfit_tryon_plan(
@@ -374,6 +430,62 @@ def _outfit_preview_conflicts(pieces: list[dict[str, Any]]) -> list[dict[str, An
     }]
 
 
+def _serialized_tryon_change(func):
+    @wraps(func)
+    def serialized(*args, **kwargs):
+        # Fixed-size stripes avoid an ever-growing per-user lock registry.
+        index = int(hashlib.sha256(storage_context().user_id.encode()).hexdigest()[:8], 16) % len(TRYON_SUBMISSION_LOCKS)
+        with TRYON_SUBMISSION_LOCKS[index]:
+            return func(*args, **kwargs)
+    return serialized
+
+
+def _submit_tryon_job(job: dict[str, Any], *, charge_quota: bool = False) -> None:
+    from app.beta_access import reserve_tryon_quota
+    if not TRYON_ADMISSION.acquire(blocking=False):
+        raise HTTPException(429, "试穿人数较多，请稍后再试。", headers={"Retry-After": "5"})
+    try:
+        with reserve_tryon_quota(job["user_id"]) if charge_quota else nullcontext():
+            if charge_quota:
+                job["quota_charged"] = True
+            job.update(owner_pid=os.getpid(), owner_instance=TRYON_PROCESS_ID)
+            _write_tryon_job(job)
+            try:
+                TRYON_JOB_EXECUTOR.submit(_run_admitted_tryon_job, job["user_id"], job["job_id"])
+            except Exception as exc:
+                _update_tryon_job(job["job_id"], status="failed", phase="failed",
+                                 **({"quota_charged": False} if charge_quota else {}), error={
+                    "code": "tryon_not_started", "message": "暂时无法开始试穿，请稍后再试。", "retryable": True})
+                raise HTTPException(503, "暂时无法开始试穿，请稍后再试。") from exc
+    except BaseException:
+        TRYON_ADMISSION.release()
+        raise
+
+
+def _run_admitted_tryon_job(user_id: str, job_id: str) -> None:
+    started = time.monotonic()
+    try:
+        with user_storage(user_id):
+            job = _read_tryon_job(job_id)
+            runner = _run_inspiration_tryon_job if job.get("kind") == "inspiration" else _run_outfit_tryon_job
+            try:
+                runner(user_id, job_id)
+            except Exception:
+                # Also recover unexpected worker failures, not only provider errors.
+                logging.getLogger("uvicorn.error").error("tryon_worker_failed job_id=%s", job_id)
+                _update_tryon_job(job_id, status="failed", phase="failed", error={
+                    "code": "tryon_worker_failed", "message": "这次试穿未完成，请重新尝试。", "retryable": True})
+            final = _read_tryon_job(job_id)
+            logging.getLogger("uvicorn.error").info(json.dumps({
+                "event": "tryon_job_finished", "job_id": job_id, "attempt": final.get("attempt"),
+                "status": final.get("status"), "duration_ms": round((time.monotonic() - started) * 1000),
+                "quality_status": (final.get("result") or {}).get("pipeline", {}).get("quality_review", {}).get("status"),
+            }))
+    finally:
+        TRYON_ADMISSION.release()
+
+
+@_serialized_tryon_change
 def create_outfit_tryon_job(
     person_raw: bytes,
     person_filename: str | None,
@@ -389,6 +501,7 @@ def create_outfit_tryon_job(
     retry_reason: str | None = None,
     wear_all_items: bool = False,
     model_id: str | None = None,
+    charge_quota: bool = False,
 ) -> dict[str, Any]:
     person = _read_upload_image(person_raw, person_filename, "person")
     selected_ids = list(dict.fromkeys(str(item_id).strip() for item_id in (selected_item_ids or []) if str(item_id).strip()))
@@ -448,25 +561,40 @@ def create_outfit_tryon_job(
                       "requested_item_ids": preset["outfit"]["item_ids"],
                       "pipeline": {"quality_review": preset["quality_review"]},
                       "result": {"image_path": preset["image_path"]}}
-            record = record_selfit_tryon_result(outfit_id, result)
-            if record:
-                result["record"] = record
-            job.update(status="completed", phase="completed", progress=100, result=result)
-            _write_tryon_job(job)
+            from app.beta_access import reserve_tryon_quota
+            with reserve_tryon_quota(user_id) if charge_quota else nullcontext():
+                record = record_selfit_tryon_result(outfit_id, result)
+                if record:
+                    result["record"] = record
+                job.update(status="completed", phase="completed", progress=100, result=result)
+                if charge_quota:
+                    job["quota_charged"] = True
+                _write_tryon_job(job)
             return _public_tryon_job(job)
-    _write_tryon_job(job)
-    TRYON_JOB_EXECUTOR.submit(_run_outfit_tryon_job, user_id, job_id)
+    _submit_tryon_job(job, charge_quota=charge_quota)
     return _public_tryon_job(job)
 
 
+@_serialized_tryon_change
 def create_inspiration_tryon_job(person_raw: bytes, person_filename: str | None,
                                 note: dict[str, Any], user_id: str,
-                                client_request_id: str | None = None) -> dict[str, Any]:
+                                client_request_id: str | None = None, *, charge_quota: bool = False) -> dict[str, Any]:
     # The note is resolved from the account's catalog by the authenticated route.
-    source = urlparse(str(note.get("image_url") or "")).path
+    parsed = urlparse(str(note.get("image_url") or ""))
+    source = parsed.path
     static_root = Path(__file__).resolve().parent / "static"
-    reference = (static_root / source.removeprefix("/static/")).resolve()
-    if not source.startswith("/static/") or not reference.is_relative_to(static_root.resolve()) or not reference.is_file():
+    material = re.fullmatch(r"/api/v1/material-assets/(asset_[0-9a-f]{64})/content", source)
+    if material and not parsed.netloc and not parsed.scheme:
+        from app.material_assets import material_image_path
+        try:
+            reference = material_image_path(material.group(1))
+        except Exception:
+            raise HTTPException(503, "这张穿搭照片暂时无法读取，请稍后再试。") from None
+    elif source.startswith("/static/") and not parsed.netloc and not parsed.scheme:
+        reference = (static_root / source.removeprefix("/static/")).resolve()
+        if not reference.is_relative_to(static_root.resolve()) or not reference.is_file():
+            raise HTTPException(404, "这张穿搭照片暂时不可用")
+    else:
         raise HTTPException(404, "这张穿搭照片暂时不可用")
     person = _read_upload_image(person_raw, person_filename, "person")
     inspiration = _read_upload_image(reference.read_bytes(), reference.name, "inspiration")
@@ -489,8 +617,7 @@ def create_inspiration_tryon_job(person_raw: bytes, person_filename: str | None,
            "original_image_path":_public_output_path(original),"client_request_id":key or None,
            "status":"queued","phase":"queued","progress":0,"attempt":1,
            "created_at":now,"updated_at":now,"result":None,"error":None}
-    _write_tryon_job(job)
-    TRYON_JOB_EXECUTOR.submit(_run_inspiration_tryon_job,user_id,job_id)
+    _submit_tryon_job(job, charge_quota=charge_quota)
     return _public_tryon_job(job)
 
 
@@ -525,8 +652,33 @@ def _run_inspiration_tryon_job(user_id: str, job_id: str) -> None:
             _update_tryon_job(job_id,status="failed",phase="failed",error={"message":str(exc)[:500],"retryable":True})
 
 
+def _recover_interrupted_tryon(job: dict[str, Any]) -> dict[str, Any]:
+    if job.get("status") not in {"queued", "processing"} or job.get("owner_instance") == TRYON_PROCESS_ID:
+        return job
+    pid = job.get("owner_pid")
+    if pid and pid != os.getpid():
+        try:
+            os.kill(int(pid), 0)
+            return job
+        except ProcessLookupError:
+            pass
+        except (PermissionError, ValueError):
+            return job
+    elif not pid:
+        try:
+            if datetime.fromisoformat(job["created_at"]) >= TRYON_PROCESS_STARTED:
+                return job
+        except (KeyError, TypeError, ValueError):
+            return job
+    job.update(status="failed", phase="failed", updated_at=datetime.now(timezone.utc).isoformat(),
+               error={"code": "tryon_interrupted", "message": "试穿已中断，请重新尝试，原照片和搭配已保留。", "retryable": True})
+    _write_tryon_job(job)
+    return job
+
+
+@_serialized_tryon_change
 def get_outfit_tryon_job(job_id: str) -> dict[str, Any]:
-    return _public_tryon_job(_read_tryon_job(job_id))
+    return _public_tryon_job(_recover_interrupted_tryon(_read_tryon_job(job_id)))
 
 
 def _retry_feedback(result: dict[str, Any] | None) -> list[str]:
@@ -549,7 +701,7 @@ def _retry_feedback(result: dict[str, Any] | None) -> list[str]:
 def _retry_feedback_prompt(codes: list[str] | None) -> str:
     instructions = []
     known = {
-        "quality.face_changed": "Preserve the original face, facial features, expression, head angle and skin texture; do not beautify or redraw the face.",
+        "quality.face_changed": FACE_PRESERVATION_PROMPT,
         "quality.background_changed": "Preserve the original background, lighting, camera framing and all non-clothing regions.",
         "quality.result_too_small": "Return a full-resolution result on the original photo canvas.",
     }
@@ -566,12 +718,14 @@ def _retry_feedback_prompt(codes: list[str] | None) -> str:
     return (" Previous attempt failed validation. Required corrections: " + " ".join(instructions)) if instructions else ""
 
 
+@_serialized_tryon_change
 def retry_outfit_tryon_job(job_id: str, user_id: str) -> dict[str, Any]:
-    job = _read_tryon_job(job_id)
+    job = _recover_interrupted_tryon(_read_tryon_job(job_id))
     if job.get("status") in {"queued", "processing"}:
         return _public_tryon_job(job)
     feedback = _retry_feedback(job.get("result")) or job.get("retry_feedback", [])
     job.update({
+        "user_id": user_id,
         "retry_feedback": feedback,
         "status": "queued",
         "progress": 0,
@@ -582,8 +736,7 @@ def retry_outfit_tryon_job(job_id: str, user_id: str) -> dict[str, Any]:
         "result": None,
         "error": None,
     })
-    _write_tryon_job(job)
-    TRYON_JOB_EXECUTOR.submit(_run_inspiration_tryon_job if job.get("kind") == "inspiration" else _run_outfit_tryon_job, user_id, job_id)
+    _submit_tryon_job(job, charge_quota=job.get("quota_charged") is False)
     return _public_tryon_job(job)
 
 
@@ -670,15 +823,28 @@ def _read_tryon_job(job_id: str) -> dict[str, Any]:
 
 
 def _public_tryon_job(job: dict[str, Any]) -> dict[str, Any]:
-    return {key: value for key, value in job.items() if key not in {"user_id", "person_path", "inspiration_path"}}
+    return {key: value for key, value in job.items() if key not in {"user_id", "person_path", "inspiration_path", "owner_pid", "owner_instance"}}
 
 
 def _update_tryon_job(job_id: str, **updates: Any) -> dict[str, Any]:
-    job = _read_tryon_job(job_id)
-    job.update(updates)
-    job["updated_at"] = datetime.now(timezone.utc).isoformat()
-    _write_tryon_job(job)
-    return job
+    with TRYON_JOB_LOCK:
+        job = _read_tryon_job(job_id)
+        job.update(updates)
+        job["updated_at"] = datetime.now(timezone.utc).isoformat()
+        _write_tryon_job(job)
+        return job
+
+
+def _snapshot_tryon_result(job: dict[str, Any], result: dict[str, Any]) -> None:
+    if result.get("status") not in {"generated", "review"} or not result.get("result", {}).get("image_path"):
+        return
+    source = _tryon_result_disk_path(result["result"]["image_path"])
+    if source is None or not source.is_file():
+        raise ValueError("试穿图片暂时无法读取，请重试。")
+    target = _tryon_output_dir() / "job-results" / f"{job['job_id']}-{job.get('attempt', 1)}{source.suffix}"
+    target.parent.mkdir(parents=True, exist_ok=True)
+    target.write_bytes(source.read_bytes())
+    result["result"]["image_path"] = _public_output_path(target)
 
 
 def _run_outfit_tryon_job(user_id: str, job_id: str) -> None:
@@ -714,6 +880,7 @@ def _run_outfit_tryon_job(user_id: str, job_id: str) -> None:
                 )
             result["source_mode"] = "from_outfit"
             result["outfit"] = outfit
+            _snapshot_tryon_result(job, result)
             record = record_selfit_tryon_result(str(job.get("outfit_id") or ""), result)
             if record:
                 result["record"] = record
@@ -776,20 +943,15 @@ async def run_try_on_from_outfit_plan_upload(
     photo_mode: str | None = None,
     scene_label: str | None = None,
 ) -> dict[str, Any]:
-    person = _read_upload_image(await person_image.read(), person_image.filename, "person")
-    style_reference = _read_upload_image(await style_reference_image.read(), style_reference_image.filename, "style_reference")
-    uploaded_items = [
-        _read_upload_image(await image.read(), image.filename, f"outfit_item_{index:02d}")
-        for index, image in enumerate(item_images or [])
-    ]
-    plan = _build_uploaded_outfit_tryon_plan(
-        style_reference=style_reference,
-        uploaded_items=uploaded_items,
-        outfit_plan_json=outfit_plan,
-        photo_mode=photo_mode,
-        scene_label=scene_label,
-    )
-    return run_try_on_from_outfit_plan(person, plan)
+    if len(item_images or []) > MAX_OUTFIT_ITEMS:
+        raise HTTPException(422, f"一套最多支持 {MAX_OUTFIT_ITEMS} 件单品。")
+    def generate(images):
+        plan = _build_uploaded_outfit_tryon_plan(style_reference=images[1], uploaded_items=images[2:],
+            outfit_plan_json=outfit_plan, photo_mode=photo_mode, scene_label=scene_label)
+        return run_try_on_from_outfit_plan(images[0], plan)
+    uploads = [(person_image, "person"), (style_reference_image, "style_reference")]
+    uploads.extend((image, f"outfit_item_{index:02d}") for index, image in enumerate(item_images or []))
+    return await _run_uploaded_tryon(uploads, generate)
 
 
 async def complete_codex_bridge_job_upload(job_id: str, result_image: UploadFile | None = None, result_path: str | None = None) -> dict[str, Any]:
@@ -953,7 +1115,7 @@ def tryon_capabilities() -> dict[str, Any]:
 
 def run_try_on(person: dict[str, Any], garment: dict[str, Any], provider: "TryOnProvider | None" = None) -> dict[str, Any]:
     tryon_id = hashlib.sha256(f"{person['image_id']}:{garment['image_id']}".encode("utf-8")).hexdigest()[:16]
-    work_dir = _tryon_output_dir() / tryon_id
+    work_dir = _tryon_output_dir() / tryon_id / uuid.uuid4().hex
     work_dir.mkdir(parents=True, exist_ok=True)
 
     input_quality = _input_quality_stage(person["image"], garment["image"])
@@ -1060,7 +1222,7 @@ def run_try_on_from_inspiration(
     retry_feedback: list[str] | None = None,
 ) -> dict[str, Any]:
     tryon_id = hashlib.sha256(f"inspiration:{person['image_id']}:{inspiration['image_id']}:{style_brief or ''}{':full-outfit' if full_outfit else ''}".encode("utf-8")).hexdigest()[:16]
-    work_dir = _tryon_output_dir() / tryon_id
+    work_dir = _tryon_output_dir() / tryon_id / uuid.uuid4().hex
     work_dir.mkdir(parents=True, exist_ok=True)
 
     input_quality = _input_quality_stage(person["image"], inspiration["image"])
@@ -1204,6 +1366,11 @@ def run_try_on_from_outfit_plan(
         if cached:
             cached["cached"] = True
             return cached
+
+    # Keep cache lookup stable, but isolate every generation's masks and images.
+    # Two attempts for the same photo/outfit must never overwrite one another.
+    work_dir = work_dir / uuid.uuid4().hex
+    work_dir.mkdir(parents=True, exist_ok=True)
 
     full_reference_board_path = _build_outfit_reference_board(requested_plan, work_dir / "outfit_reference_board_full.png")
     reference_board = Image.open(full_reference_board_path).convert("RGB")
@@ -1460,7 +1627,7 @@ def _write_completed_tryon_cache(path: Path, payload: dict[str, Any]) -> None:
     cached = {**payload, "pipeline_version": OUTFIT_TRYON_PIPELINE_VERSION, "cached": False}
     if vertex_image.enabled():
         cached["image_backend"] = f"{vertex_image.MODE}:{vertex_image.model()}"
-    tmp_path = path.with_suffix(".tmp")
+    tmp_path = path.with_name(f"{path.name}.{uuid.uuid4().hex}.tmp")
     tmp_path.write_text(json.dumps(cached, ensure_ascii=False, indent=2), encoding="utf-8")
     tmp_path.replace(path)
 
@@ -3511,8 +3678,12 @@ def _read_upload_image(raw: bytes, filename: str | None, role: str) -> dict[str,
         raise HTTPException(status_code=413, detail=f"{role} 图片超过 12MB")
     try:
         pil_image = Image.open(io.BytesIO(raw))
+        if pil_image.width * pil_image.height > MAX_IMAGE_PIXELS:
+            raise HTTPException(413, "图片分辨率过高，请选择不超过 1600 万像素的照片。")
         pil_image.load()
-    except UnidentifiedImageError as exc:
+    except Image.DecompressionBombError as exc:
+        raise HTTPException(413, "图片分辨率过高，请缩小照片后重试。") from exc
+    except (UnidentifiedImageError, OSError) as exc:
         raise HTTPException(status_code=400, detail=f"无法识别 {role} 图片格式") from exc
     if pil_image.format not in SUPPORTED_FORMATS:
         raise HTTPException(status_code=400, detail="仅支持 JPG、PNG、WebP")
@@ -3532,7 +3703,10 @@ def _read_upload_image(raw: bytes, filename: str | None, role: str) -> dict[str,
     suffix = _suffix_for_format(image_format)
     saved_path = _upload_dir() / f"{role}_{image_id}{suffix}"
     _upload_dir().mkdir(parents=True, exist_ok=True)
-    saved_path.write_bytes(raw)
+    if not saved_path.exists():
+        temporary = saved_path.with_name(f"{saved_path.name}.{uuid.uuid4().hex}.tmp")
+        temporary.write_bytes(raw)
+        temporary.replace(saved_path)
     rgb_image = pil_image.convert("RGB")
     return {
         "image": rgb_image,
@@ -4016,6 +4190,7 @@ def _build_tryon_prompt(garment: dict[str, Any]) -> str:
     return (
         "Edit the person image for a virtual try-on. Replace only the clothing inside the transparent mask with the reference top. "
         "Preserve the person's face, hair, skin tone, body shape, pose, hands, background, lighting, camera angle, and image style. "
+        f"{FACE_PRESERVATION_PROMPT} "
         "Use realistic fabric folds and natural occlusion around hair, neck, shoulders, arms, and accessories. "
         f"The target garment is a {garment.get('fit', 'regular')} {garment.get('category', 'top')} with colors {', '.join(garment.get('colors', []))}, "
         f"materials {', '.join(garment.get('material', []))}, pattern {garment.get('pattern', 'unknown')}, "
@@ -4364,6 +4539,7 @@ def _build_outfit_tryon_prompt(prompt_context: dict[str, Any]) -> str:
         "Accessory logic: bags must physically attach to the person. A handbag should be held by a visible hand or hang from the forearm; a shoulder bag should rest on the shoulder; a crossbody bag should have a strap crossing the torso. Do not render floating, detached, pasted-on, or impossible bags. If Image A has no visible hand/arm/shoulder contact point, omit or minimize the bag rather than placing it illogically. "
         "Use the overall outfit reference only for styling relationship, layering, proportions, color harmony, and wearing method. "
         "Priority order: preserve Image A identity, body shape, pose, skin tone, hair, face visibility, camera angle, lighting, and background first; then preserve individual item details; then follow wearing instructions; then harmonize overall style. "
+        f"{FACE_PRESERVATION_PROMPT} "
         f"Photo mode constraints: {_photo_mode_prompt_clause(str(prompt_context.get('photo_mode') or 'standard'), str(prompt_context.get('scene_label') or ''))} "
         "Return only one realistic final try-on photo, with no UI, no labels, no watermark, and no extra people."
     )
@@ -4822,6 +4998,7 @@ def _build_full_inspiration_prompt() -> str:
             "from B onto A: upper garments and layers, skirt/trousers or dress, visible shoes and carried bag. "
             "Preserve the observed colors, patterns, proportions, fabric and construction; do not invent unseen pieces. "
             "Keep A's identity, face, hair, skin, body shape, pose, hands, camera and background unchanged. "
+            f"{FACE_PRESERVATION_PROMPT} "
             "Fit the clothing naturally to A, with realistic occlusion and folds. Do not copy B's person, pose, "
             "background, text or watermark. Respect the protected face region. Return only the final photograph.")
 
@@ -4840,6 +5017,7 @@ def _build_inspiration_tryon_prompt(style_brief: str | None = None) -> str:
         "Do not copy Image B's person, face, hair, pose, trousers, skirt, shoes, bag, accessories, headphones, background, camera angle, or lighting. "
         "Do not copy any text, watermark, collage layout, or extra objects from Image B. "
         "Preserve Image A's face, hair, skin tone, body shape, pose, arms, hands, background, lighting, camera angle, and photo style. "
+        f"{FACE_PRESERVATION_PROMPT} "
         "Change only the upper-body clothing region. Keep the garment realistic with natural fabric folds, correct sleeve length, neckline/collar, hem length, pattern scale, color, and fit. "
         "Return only the final realistic try-on photo."
     )

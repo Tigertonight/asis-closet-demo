@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import sys
+import threading
 from pathlib import Path
 
 import pytest
@@ -9,6 +10,14 @@ import pytest
 ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
+
+
+@pytest.fixture(autouse=True)
+def _isolate_tryon_admission(monkeypatch, tmp_path):
+    # Recording executors deliberately keep tasks queued without running them.
+    from app import auth, tryon
+    monkeypatch.setattr(tryon, "TRYON_ADMISSION", threading.BoundedSemaphore(4))
+    monkeypatch.setattr(auth, "AUTH_DIR", tmp_path / "auth")
 
 
 @pytest.fixture(autouse=True)
