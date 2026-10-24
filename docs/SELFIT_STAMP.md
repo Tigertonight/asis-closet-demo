@@ -16,6 +16,9 @@
 邮票与出片机展示图分别输出 900×1200 PNG，和原始邮票框分辨率一致；服务器生成
 720×960 WebP 供手机/后台预览。相机以取景框裁切，导入照片最长边规范到 1400px，
 后台“拍摄原图”是这份未加滤镜的规范化 JPEG，并非相机传感器原始文件。
+相册导入支持最多 6400 万像素、32MiB 的原始照片，导入时显示处理提示，超限或无法解码时
+提供返回/换张照片入口；解码等待最多 30 秒。缩图后释放大图资源，不将大图以 base64 再复制一份。
+这仅放宽浏览器选图上限；服务器仍按下述 12MiB/1600 万像素限制接收规范化图片。
 
 出片即后台保存。保存失败保留本机照片，支持重试；响应丢失复用同一凭证，不重复创建记录。
 再做一枚会清空上一位照片；非处理状态下 120 秒无操作自动回到入口，关闭相机与领取弹窗。
@@ -47,7 +50,7 @@
 
 ```sh
 .venv/bin/python -m pytest tests/test_selfit_mirror_photos.py tests/test_selfit_admin_submissions.py tests/test_selfit_persona.py tests/test_selfit_photo_wiring.py -q
-node --test tests/test_stamp_delivery.cjs
+node --test tests/test_stamp_delivery.cjs tests/test_stamp_photo_import.cjs
 .venv/bin/python tests/support/run_stamp_studio.py
 ```
 

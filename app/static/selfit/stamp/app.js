@@ -3731,52 +3731,100 @@
     albumInput.click();
   }
   var albumImporting = false;
+  var albumImportDialog = null;
+  var albumImportReturnFocus = null;
+  function closeAlbumImportStatus() {
+    if (!albumImportDialog) return;
+    albumImportDialog.close();
+    albumImportDialog.remove();
+    albumImportDialog = null;
+    if (albumImportReturnFocus && albumImportReturnFocus.isConnected) albumImportReturnFocus.focus();
+    albumImportReturnFocus = null;
+  }
+  function showAlbumImportStatus(message, failed) {
+    if (!albumImportDialog) {
+      albumImportReturnFocus = document.activeElement;
+      albumImportDialog = document.createElement("dialog");
+      albumImportDialog.className = "stamp-receive stamp-import";
+      albumImportDialog.setAttribute("aria-labelledby", "albumImportTitle");
+      albumImportDialog.setAttribute("aria-describedby", "albumImportCopy");
+      albumImportDialog.innerHTML = '<h2 id="albumImportTitle"></h2><p id="albumImportCopy" role="status"></p><div class="receive-downloads"><button type="button" data-import-close>返回</button><button type="button" data-import-retry>换张照片</button></div>';
+      albumImportDialog.addEventListener("cancel", function(event) {
+        event.preventDefault();
+        if (!albumImporting) closeAlbumImportStatus();
+      });
+      albumImportDialog.querySelector("[data-import-close]").addEventListener("click", closeAlbumImportStatus);
+      albumImportDialog.querySelector("[data-import-retry]").addEventListener("click", function() {
+        closeAlbumImportStatus();
+        openAlbumPicker();
+      });
+      document.body.appendChild(albumImportDialog);
+    }
+    albumImportDialog.querySelector("h2").textContent = failed ? "照片暂未导入" : "正在处理照片…";
+    albumImportDialog.querySelector("p").textContent = message;
+    albumImportDialog.querySelector(".receive-downloads").hidden = !failed;
+    albumImportDialog.setAttribute("aria-busy", failed ? "false" : "true");
+    if (!albumImportDialog.open) albumImportDialog.showModal();
+    if (failed) albumImportDialog.querySelector("[data-import-retry]").focus();
+  }
   albumInput.addEventListener("change", async function(event) {
     const file = event.target.files && event.target.files[0];
     event.target.value = "";
     if (!file || albumImporting || state.busy) return;
-    if (file.size > 12 * 1024 * 1024) { showInlineMessage("照片请控制在 12MB 以内。"); return; }
+    if (file.size > 32 * 1024 * 1024) { showAlbumImportStatus("照片请控制在 32MB 以内，可以在相册中另存为较小的照片后重试。", true); return; }
     const importRevision = visitRevision;
     if (!/^image\//.test(file.type || "") && !/\.(jpe?g|png|webp|heic|heif|gif)$/i.test(file.name || "")) {
-      showInlineMessage("请选择 JPG 或 PNG 图片。");
+      showAlbumImportStatus("请选择 JPG、PNG 或 WebP 图片。", true);
       return;
     }
     albumImporting = true;
     state.busy = true;
+    let image;
+    showAlbumImportStatus("正在调整照片大小，请稍候。", false);
     try {
-      const image = await decodeFileSafely(file);
-      if (image.naturalWidth * image.naturalHeight > 16000000) throw new Error("photo-too-large");
+      // Let the loading state paint before decoding a high-resolution original.
+      await wait(30);
+      image = await decodeFileSafely(file);
+      if (!image.naturalWidth || !image.naturalHeight) throw new Error("photo-invalid");
+      if (image.naturalWidth * image.naturalHeight > 64000000) throw new Error("photo-too-large");
       if (importRevision !== visitRevision) return;
       await setSourceImage(image, "album");
       if (importRevision !== visitRevision) return;
       stopCamera();
+      closeAlbumImportStatus();
       setView("printlab");
     } catch (error) {
-      showInlineMessage(error.message === "photo-too-large" ? "请使用不超过 1600 万像素的照片。" : "这张照片暂时无法读取，可以在系统相册中另存为 JPG/PNG 后重试。");
+      if (importRevision === visitRevision) {
+        const message = error.message === "photo-too-large" ? "请使用不超过 6400 万像素的照片，可以在相册中缩小后重试。" : error.message === "photo-timeout" ? "照片处理时间较长，请换一张较小的照片后重试。" : "这张照片暂时无法读取，可以在系统相册中另存为 JPG/PNG 后重试。";
+        showAlbumImportStatus(message, true);
+      }
     } finally {
+      // Only the normalized 1400px image is retained by the editor.
+      if (image) image.src = "";
       albumImporting = false;
       state.busy = false;
     }
   });
   async function decodeFileSafely(file) {
-    let objectUrl = "";
+    // Avoid a second full-size base64 copy of large photos on decode failure.
+    const objectUrl = URL.createObjectURL(file);
+    const image = new Image();
+    let timer;
     try {
-      objectUrl = URL.createObjectURL(file);
-      const image = await loadImage2(objectUrl);
-      URL.revokeObjectURL(objectUrl);
-      objectUrl = "";
-      return image;
-    } catch (_) {
-      if (objectUrl) URL.revokeObjectURL(objectUrl);
-      const dataUrl = await new Promise(function(resolve, reject) {
-        const reader = new FileReader();
-        reader.onload = function() {
-          resolve(reader.result);
-        };
-        reader.onerror = reject;
-        reader.readAsDataURL(file);
+      return await new Promise(function(resolve, reject) {
+        timer = setTimeout(function() { reject(new Error("photo-timeout")); }, 30000);
+        image.onload = function() { resolve(image); };
+        image.onerror = function() { reject(new Error("photo-invalid")); };
+        image.src = objectUrl;
       });
-      return loadImage2(dataUrl);
+    } catch (error) {
+      image.src = "";
+      throw error;
+    } finally {
+      clearTimeout(timer);
+      image.onload = null;
+      image.onerror = null;
+      URL.revokeObjectURL(objectUrl);
     }
   }
   async function setSourceImage(image, origin) {
@@ -3786,9 +3834,9 @@
     const scale = Math.min(1, maxDimension / Math.max(sourceWidth, sourceHeight));
     workCanvas.width = Math.max(1, Math.round(sourceWidth * scale));
     workCanvas.height = Math.max(1, Math.round(sourceHeight * scale));
-    const ctx = workCanvas.getContext("2d");
-    ctx.drawImage(image, 0, 0, workCanvas.width, workCanvas.height);
     try {
+      const ctx = workCanvas.getContext("2d");
+      ctx.drawImage(image, 0, 0, workCanvas.width, workCanvas.height);
       await setSourceFromCanvas(workCanvas, origin);
     } finally {
       workCanvas.width = 1;
@@ -3824,6 +3872,7 @@
   }
   function restartFromSelection() {
     visitRevision++;
+    closeAlbumImportStatus();
     if (closeCameraNotice) closeCameraNotice();
     cameraNoticeShown = false;
     delivery.reset();
