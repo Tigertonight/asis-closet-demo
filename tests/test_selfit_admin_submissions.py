@@ -20,6 +20,7 @@ from PIL import Image
 import app.auth as auth
 import app.selfit_admin_submissions as admin_submissions
 import app.selfit_mirror_handoff as mirror_handoff
+import app.selfit_mirror_photos as mirror_photos
 import app.selfit_onboarding as onboarding
 import app.selfit_photo as selfit_photo
 import app.selfit_report as selfit_report
@@ -42,6 +43,8 @@ def _use_tmp_stores(monkeypatch, tmp_path: Path) -> None:
     monkeypatch.setattr(mirror_handoff, "MIRROR_DIR", tmp_path / "outputs" / "selfit_mirror")
     monkeypatch.setattr(mirror_handoff, "HANDOFF_STORE_PATH", mirror_handoff.MIRROR_DIR / "handoffs.json")
     monkeypatch.setattr(mirror_handoff, "MIRROR_ASSET_DIR", mirror_handoff.MIRROR_DIR / "assets")
+    # Captures now also include stamp photos; never read a deployed visitor database.
+    monkeypatch.setattr(mirror_photos, "PHOTO_DIR", tmp_path / "outputs" / "selfit_mirror_photos")
     monkeypatch.setattr(onboarding, "SELFIT_ONBOARDING_DIR", tmp_path / "outputs" / "selfit_onboarding")
     monkeypatch.setattr(onboarding, "SELFIT_ONBOARDING_STORE_PATH", onboarding.SELFIT_ONBOARDING_DIR / "sessions.json")
     monkeypatch.setattr(onboarding, "SELFIT_ONBOARDING_ASSET_DIR", onboarding.SELFIT_ONBOARDING_DIR / "assets")
