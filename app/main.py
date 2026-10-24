@@ -152,6 +152,7 @@ from app import selfit_onboarding, selfit_share
 from app.material_assets import router as material_assets_router
 from app.selfit_onboarding import router as selfit_onboarding_router
 from app.selfit_mirror_handoff import router as selfit_mirror_handoff_router
+from app.selfit_mirror_photos import router as selfit_mirror_photos_router
 from app.selfit_studio import router as selfit_studio_router
 from app.selfit_inspiration import router as selfit_inspiration_router
 from app.selfit_report_outfits import router as selfit_report_outfits_router
@@ -175,6 +176,7 @@ app.add_middleware(RequestTimingMiddleware)
 app.include_router(material_assets_router)
 app.include_router(selfit_onboarding_router)
 app.include_router(selfit_mirror_handoff_router)
+app.include_router(selfit_mirror_photos_router)
 app.include_router(selfit_studio_router)
 app.include_router(selfit_inspiration_router)
 app.include_router(selfit_report_outfits_router)
@@ -394,6 +396,11 @@ async def http_exception_handler(request: Request, exc: StarletteHTTPException) 
     if request.url.path.startswith("/auth"):
         code = f"auth.http_{int(exc.status_code)}"
         return _friendly_error(code, detail, detail, int(exc.status_code))
+    if request.url.path.startswith("/api/v1/selfit/mirror/photos"):
+        response = _friendly_error(f"mirror.photo_{int(exc.status_code)}", detail, detail, int(exc.status_code))
+        response.headers.update(exc.headers or {})
+        response.headers["Cache-Control"] = "no-store"
+        return response
     if int(exc.status_code) in {403, 410, 429}:
         # 门槛 / 席位 / 额度类文案本身就是用户导向的，直接透传而不是套上传错误模板。
         code = f"request.http_{int(exc.status_code)}"

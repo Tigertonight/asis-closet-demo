@@ -25,7 +25,8 @@ from fastapi import APIRouter, Body, Depends, HTTPException
 from fastapi.responses import JSONResponse, RedirectResponse, Response
 from app.image_delivery import ImageFileResponse as FileResponse
 
-from app import selfit_assets, selfit_mirror_handoff, selfit_onboarding, selfit_photo
+from app import selfit_assets, selfit_mirror_handoff, selfit_mirror_photos, selfit_onboarding, selfit_photo
+from starlette.concurrency import run_in_threadpool
 from app.auth import get_admin_user
 from app.selfit_persona import (
     ALGORITHM_VERSION,
@@ -640,7 +641,7 @@ async def list_mirror_captures(admin: dict[str, Any] = Depends(get_admin_user)) 
     phones = _phone_by_user()
     hidden = _load_hidden()
     hidden_ids = set(hidden["captures"])
-    rows = []
+    rows = [row for row in await run_in_threadpool(selfit_mirror_photos.admin_capture_rows) if row["handoffId"] not in hidden_ids]
     for record in data.get("handoffs", []):
         handoff_id = str(record.get("handoff_id") or "")
         if handoff_id in hidden_ids:
@@ -920,6 +921,8 @@ async def hide_mirror_capture(
 ) -> JSONResponse:
     data = selfit_mirror_handoff._load_store()
     exists = any(item.get("handoff_id") == handoff_id for item in data.get("handoffs", []))
+    if not exists and handoff_id.startswith("mp_"):
+        exists = bool(await run_in_threadpool(selfit_mirror_photos.admin_record, handoff_id))
     if not exists:
         return JSONResponse(status_code=404, content={"detail": "没有找到这次拍摄"})
     return _hide_entry("captures", handoff_id)

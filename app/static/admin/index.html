@@ -381,7 +381,7 @@
           <small id="capturesUpdatedAt"></small>
         </div>
         <div class="stats-strip" id="capturesStats" aria-label="镜子拍摄统计"></div>
-        <div class="table-scroll"><table><thead><tr><th>拍摄时间</th><th>状态</th><th>领取手机号</th><th>原始照片（算法留存）</th><th>美颜照片（打印用）</th><th>操作</th></tr></thead><tbody id="captureRows"></tbody></table></div>
+        <div class="table-scroll"><table><thead><tr><th>拍摄时间</th><th>状态</th><th>领取手机号</th><th>原始照片（算法留存）</th><th>美颜 / 模板成片（打印用）</th><th>操作</th></tr></thead><tbody id="captureRows"></tbody></table></div>
         <div class="report-list-footer"><small id="capturesCount"></small><button class="report-load-more" type="button" id="capturesLoadMore" hidden>加载更多</button></div>
       </section>
       <section class="report-list-panel" id="reportPanelFailed" role="tabpanel" aria-labelledby="reportTabFailed" data-report-panel="failed" hidden>
@@ -670,7 +670,7 @@
   const PALETTE_LABELS = { mono: '单色', earth: '大地', ocean: '海洋', jewel: '宝石', bright: '明亮', pastel: '粉彩' };
   const AXIS_LABELS = { shape: '形态', energy: '能量', trend: '趋势' };
   const VIBE_LABELS = { occasion: '场合', wardrobe: '衣橱', expression: '表达' };
-  const CAPTURE_STATUS = { pending: '待领取', claimed: '已领取', expired: '已过期' };
+  const CAPTURE_STATUS = { pending: '待领取', claimed: '已领取', expired: '已过期', keepsake: '纪念照已保存' };
   const REPORT_PAGE_SIZE = 10;
   const reportListState = {
     submissions: { rows: [], visible: REPORT_PAGE_SIZE, loaded: false, loading: false },
@@ -749,7 +749,7 @@
     const total = rows.length;
     strip.replaceChildren();
     if (!total) return;
-    const byStatus = { claimed: 0, pending: 0, expired: 0 };
+    const byStatus = { claimed: 0, pending: 0, expired: 0, keepsake: 0 };
     rows.forEach((row) => { if (row.status in byStatus) byStatus[row.status] += 1; });
     const withPhotos = rows.filter((row) => row.original || row.retouched).length;
     strip.append(
@@ -757,6 +757,7 @@
       statChip('已领取', byStatus.claimed, total, 'ok'),
       statChip('待领取', byStatus.pending, total),
       statChip('已过期', byStatus.expired, total, 'muted'),
+      statChip('纪念照', byStatus.keepsake, total),
       statChip('有照片', withPhotos, total),
       statChip('无照片', total - withPhotos, total, 'muted'),
     );
@@ -818,7 +819,7 @@
           + `<td><span class="tag ${claimed ? 'tag-ok' : 'tag-muted'}">${esc(CAPTURE_STATUS[row.status] || row.status || '—')}</span></td>`
           + `<td title="${esc(row.phone || '')}">${row.phone ? maskPhone(row.phone) : '—'}</td>`
           + `<td>${photoCell(row.original)}</td>`
-          + `<td>${photoCell(row.retouched)}</td>`
+          + `<td>${photoCell(row.retouched)}${row.scene ? photoCell(row.scene) : ''}</td>`
           + `<td><button class="link-btn danger" type="button" data-hide-capture="${esc(row.handoffId)}">删除</button></td>`;
         return tr;
       }));

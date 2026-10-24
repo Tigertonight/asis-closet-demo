@@ -132,9 +132,10 @@ def _rate_rules() -> list[LimitRule]:
     return [
         LimitRule(
             "mirror_upload",
-            ("/api/v1/selfit/mirror/analyze",),
+            ("/api/v1/selfit/mirror/analyze", "/api/v1/selfit/mirror/photos"),
             env_int("SELFIT_UPLOAD_RATE_LIMIT", 60),
             env_int("SELFIT_UPLOAD_RATE_WINDOW_SECONDS", 3600),
+            methods=("POST",),
         ),
         LimitRule(
             "selfit_upload",
@@ -148,7 +149,7 @@ def _rate_rules() -> list[LimitRule]:
             # 不可猜测且会过期的 token，不应与普通 selfit API 共用较低额度，
             # 否则轮询会误伤同一页面随后加载的二维码 PNG。
             "mirror_handoff",
-            ("/api/v1/selfit/mirror/handoffs",),
+            ("/api/v1/selfit/mirror/handoffs", "/api/v1/selfit/mirror/photos/"),
             env_int("SELFIT_MIRROR_HANDOFF_RATE_LIMIT", 3600),
             env_int("SELFIT_MIRROR_HANDOFF_RATE_WINDOW_SECONDS", 3600),
         ),
