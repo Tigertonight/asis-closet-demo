@@ -1681,15 +1681,7 @@
   var stampFramePromises = /* @__PURE__ */ Object.create(null);
   var stampShadowPromises = /* @__PURE__ */ Object.create(null);
   var paperTexturePromise = loadImage2("/static/selfit/stamp/assets/paper-texture-neutral-v2-fine.png");
-  var deliveryFramePromise = null;
-  var shareMachineBackgroundPromise = null;
-  function prepareDeliveryAssets() {
-    if (!deliveryFramePromise) deliveryFramePromise = loadImage2("/static/selfit/stamp/assets/device/delivery-frame33.webp");
-    if (!shareMachineBackgroundPromise) shareMachineBackgroundPromise = loadImage2("/static/selfit/stamp/assets/device/delivery-fill.webp");
-  }
   var DELIVERY_FRAME_BOUNDS = { x: 354, y: 703, w: 991, h: 2436 };
-  var SHARE_SCENE_WIDTH = 900;
-  var SHARE_SCENE_HEIGHT = 1200;
   function stampForYear(year) {
     return STAMPS[Number(year)] || STAMPS[1];
   }
@@ -1730,9 +1722,6 @@
     finalUrl: "",
     finalDataUrl: "",
     finalRenderKey: "",
-    shareBlob: null,
-    shareUrl: "",
-    shareDataUrl: "",
     busy: false
   };
   var editorPersistTimer = 0;
@@ -2732,14 +2721,8 @@
       state.finalBlob = await canvasToBlob(canvas, "image/png");
       state.finalUrl = URL.createObjectURL(state.finalBlob);
       state.finalDataUrl = canvas.toDataURL("image/png");
-      if (state.shareUrl) URL.revokeObjectURL(state.shareUrl);
-      const shareCanvas = await renderShareSceneCanvas(canvas);
-      state.shareBlob = await canvasToBlob(shareCanvas, "image/png");
-      state.shareUrl = URL.createObjectURL(state.shareBlob);
-      state.shareDataUrl = shareCanvas.toDataURL("image/png");
-      releaseCanvas(shareCanvas);
       state.finalRenderKey = fullRenderCache.key;
-      delivery.setPhoto({ original: state.sourceBlob, final: state.finalBlob, scene: state.shareBlob, settings: { template: "woken-stamp", stampYear: (2015 + state.year) + "-" + (2016 + state.year), effect: state.effect, palette: state.palette, background: state.backgroundColor, customInk: state.customInk, intensity: state.strength, zoom: state.transform.scale, x: state.transform.x, y: state.transform.y } });
+      delivery.setPhoto({ original: state.sourceBlob, final: state.finalBlob, settings: { template: "woken-stamp", stampYear: (2015 + state.year) + "-" + (2016 + state.year), effect: state.effect, palette: state.palette, background: state.backgroundColor, customInk: state.customInk, intensity: state.strength, zoom: state.transform.scale, x: state.transform.x, y: state.transform.y } });
       state.view = "delivery";
       renderDelivery();
     } catch (error) {
@@ -2754,65 +2737,6 @@
         button.textContent = "压印完成";
       }
     }
-  }
-  async function renderShareSceneCanvas(finalCanvas) {
-    prepareDeliveryAssets();
-    const canvas = document.createElement("canvas");
-    canvas.width = SHARE_SCENE_WIDTH;
-    canvas.height = SHARE_SCENE_HEIGHT;
-    const ctx = canvas.getContext("2d", { alpha: false });
-    ctx.imageSmoothingEnabled = true;
-    ctx.imageSmoothingQuality = "high";
-    const shareBackground = await shareMachineBackgroundPromise;
-    const frame33 = await deliveryFramePromise;
-    const machineHeight = 1080;
-    const machineWidth = machineHeight * 720 / 1765;
-    const machineX = (canvas.width - machineWidth) / 2;
-    const machineY = 58;
-    const frameScaleX = machineWidth / DELIVERY_FRAME_BOUNDS.w;
-    const frameScaleY = machineHeight / DELIVERY_FRAME_BOUNDS.h;
-    ctx.save();
-    ctx.scale(frameScaleX, frameScaleY);
-    ctx.fillStyle = ctx.createPattern(shareBackground, "repeat");
-    ctx.fillRect(0, 0, SHARE_SCENE_WIDTH / frameScaleX, SHARE_SCENE_HEIGHT / frameScaleY);
-    ctx.restore();
-    const frameX = machineX - DELIVERY_FRAME_BOUNDS.x * frameScaleX;
-    const frameWidth = DEVICE_WIDTH * frameScaleX;
-    const backdrop = document.createElement("canvas");
-    backdrop.width = canvas.width;
-    backdrop.height = canvas.height;
-    const backdropContext = backdrop.getContext("2d");
-    backdropContext.drawImage(
-      frame33,
-      frameX,
-      machineY - DELIVERY_FRAME_BOUNDS.y * frameScaleY,
-      frameWidth,
-      DEVICE_HEIGHT * frameScaleY
-    );
-    const edgeMask = backdropContext.createLinearGradient(frameX, 0, frameX + frameWidth, 0);
-    edgeMask.addColorStop(0, "rgba(0,0,0,0)");
-    edgeMask.addColorStop(0.08, "#000");
-    edgeMask.addColorStop(0.92, "#000");
-    edgeMask.addColorStop(1, "rgba(0,0,0,0)");
-    backdropContext.globalCompositeOperation = "destination-in";
-    backdropContext.fillStyle = edgeMask;
-    backdropContext.fillRect(0, 0, backdrop.width, backdrop.height);
-    ctx.drawImage(backdrop, 0, 0);
-    releaseCanvas(backdrop);
-    const sheetWidth = 220;
-    const sheetHeight = sheetWidth * OUTPUT_HEIGHT / OUTPUT_WIDTH;
-    const sheetX = (canvas.width - sheetWidth) / 2;
-    const sheetY = 715;
-    ctx.save();
-    ctx.shadowColor = "rgba(0,0,0,.34)";
-    ctx.shadowBlur = 14;
-    ctx.shadowOffsetY = 9;
-    const thumbnail = document.createElement("canvas");
-    await areaDownsampleAsync(finalCanvas, thumbnail, sheetWidth, Math.round(sheetHeight));
-    ctx.drawImage(thumbnail, sheetX, sheetY, sheetWidth, sheetHeight);
-    releaseCanvas(thumbnail);
-    ctx.restore();
-    return canvas;
   }
   function renderDelivery() {
     app.classList.add("has-delivery-background");
@@ -3899,10 +3823,6 @@
     state.finalRenderKey = "";
     if (state.finalUrl) URL.revokeObjectURL(state.finalUrl);
     state.finalUrl = "";
-    state.shareBlob = null;
-    state.shareDataUrl = "";
-    if (state.shareUrl) URL.revokeObjectURL(state.shareUrl);
-    state.shareUrl = "";
     soundtrack.unlock();
     setView("select");
   }

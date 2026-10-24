@@ -5,7 +5,7 @@
   <meta name="referrer" content="no-referrer"><meta name="theme-color" content="#faf8f5">
   <title>领取你的照片 · selfit</title>
   <link rel="icon" href="/static/brand/favicon.svg">
-  <link rel="stylesheet" href="/static/selfit/mirror-photo.css?v=20261024-1">
+  <link rel="stylesheet" href="/static/selfit/mirror-photo.css?v=20261024-3">
 </head>
 <body>
   <main>
@@ -15,12 +15,12 @@
     <div class="photo-frame" id="phonePhotoFrame"><img id="phonePhoto" alt="你的完整纪念照片" hidden></div>
     <p id="phoneStatus" role="status">正在加载照片…</p>
     <button id="phoneDownload" disabled>保存高清照片</button>
-    <section id="phoneSceneSection" hidden><h2>出片机展示图</h2><div class="photo-frame"><img id="phoneScene" alt="你的周年邮票出片机展示图"></div><button id="phoneSceneDownload" class="secondary">保存高清展示图</button></section>
+    <a id="phoneOriginal" class="original-link" hidden>打开高清原图，长按保存 ↗</a>
+    <p id="phoneSaveHint" hidden>微信内若未开始下载，可长按照片保存，或打开高清原图后保存。</p>
     <button id="phoneRetry" class="secondary" hidden>重新加载</button>
-    <p id="phoneSaveHint" hidden>如浏览器打开了图片，请长按照片，选择“存储图像”。</p>
     <p id="phoneExpiry" class="expiry"></p>
     <a href="/selfit">认识你的穿搭风格 ↗</a>
   </main>
-  <script src="/static/selfit/mirror-photo.js?v=20261024-1" defer></script>
+  <script src="/static/selfit/mirror-photo.js?v=20261024-3" defer></script>
 </body>
 </html>

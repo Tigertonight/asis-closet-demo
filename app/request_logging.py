@@ -14,6 +14,17 @@ from app.ops import env_int
 logger = logging.getLogger("uvicorn.error")
 
 
+class PrivatePhotoAccessLogFilter(logging.Filter):
+    """Do not persist short-lived image capabilities in Uvicorn access logs."""
+    def filter(self, record):
+        args = record.args
+        if isinstance(args, tuple) and len(args) == 5 and isinstance(args[2], str):
+            path = args[2]
+            if path.startswith("/api/v1/selfit/mirror/photos/") and "/files/" in path:
+                record.args = (*args[:2], path.split("?", 1)[0], *args[3:])
+        return True
+
+
 def _is_disconnect(exc):
     if isinstance(exc, asyncio.CancelledError) or type(exc).__name__ == "ClientDisconnect":
         return True
@@ -24,6 +35,9 @@ def _is_disconnect(exc):
 class RequestTimingMiddleware:
     def __init__(self, app):
         self.app = app
+        access_logger = logging.getLogger("uvicorn.access")
+        if not any(isinstance(f, PrivatePhotoAccessLogFilter) for f in access_logger.filters):
+            access_logger.addFilter(PrivatePhotoAccessLogFilter())
 
     async def __call__(self, scope, receive, send):
         if scope["type"] != "http":

@@ -6,6 +6,7 @@ authorizes retrieval; it never appears in access-log paths or referrer headers.
 from __future__ import annotations
 
 import hashlib
+import hmac
 import io
 import json
 import math
@@ -31,6 +32,7 @@ from app.storage import ROOT_DIR
 router = APIRouter(tags=["selfit-mirror-photos"])
 PHOTO_DIR = ROOT_DIR / "outputs" / "selfit_mirror_photos"
 MAX_BYTES = 12 * 1024 * 1024
+FILE_LINK_TTL = 600
 PRIVATE_HEADERS = {"Cache-Control": "no-store", "Referrer-Policy": "no-referrer", "X-Content-Type-Options": "nosniff"}
 
 
@@ -147,8 +149,10 @@ def _save(original, final, settings, secret, scene=None):
     ext = _check_image(original)
     is_stamp = json.loads(settings).get("template") == "woken-stamp"
     size = (900, 1200) if is_stamp else (1080, 1440)
-    if is_stamp != bool(scene):
-        raise HTTPException(422, "请完整保存邮票和出片机展示图。")
+    # Current clients save only the stamp. Accept scene files from older clients
+    # so an already open booth can still finish its pending upload.
+    if scene and not is_stamp:
+        raise HTTPException(422, "照片模板不支持展示图。")
     preview = _check_image(final, final=True, size=size)
     scene_preview = _check_image(scene, final=True, size=size) if scene else None
     now = time.time()
@@ -217,12 +221,59 @@ def _authorized(photo_id, authorization):
     return record, secret
 
 
+def _file_signature(record, name, expires, download):
+    payload = f"mirror-file-v1:{record['id']}:{name}:{expires}:{int(download)}"
+    return hmac.new(record["secret_hash"].encode(), payload.encode(), hashlib.sha256).hexdigest()
+
+
+def _has_scene(record):
+    return (json.loads(record["settings"]).get("template") == "woken-stamp"
+            and bool(_store().local_path(f"mirror-photos/{record['id']}/scene.png")))
+
+
+def _file_links(record, has_scene):
+    # Native browser/WeChat downloads cannot supply the page's Bearer header.
+    # Give each finished image a separate, short-lived capability, never the
+    # primary 24-hour receipt secret or access to the uncomposited original.
+    expires = int(min(record["expires"], time.time() + FILE_LINK_TTL))
+    links = {"expiresAt": expires * 1000}
+    for key, name in (("print", "print.png"), ("scene", "scene.png")):
+        if key == "scene" and not has_scene:
+            continue
+        links[key] = {}
+        for action, download in (("view", False), ("download", True)):
+            signature = _file_signature(record, name, expires, download)
+            links[key][action] = f"/api/v1/selfit/mirror/photos/{record['id']}/files/{name}?expires={expires}&download={int(download)}&signature={signature}"
+    return links
+
+
+@router.get("/api/v1/selfit/mirror/photos/{photo_id}/files/{name}")
+def get_photo_file(photo_id: str, name: str, expires: int = 0, download: bool = False, signature: str = ""):
+    if not re.fullmatch(r"mp_[a-f0-9]{32}", photo_id) or name not in {"print.png", "scene.png"} or not re.fullmatch(r"[a-f0-9]{64}", signature):
+        raise HTTPException(404, "照片不存在或下载链接不完整。")
+    record = admin_record(photo_id)
+    if not record or not hmac.compare_digest(signature, _file_signature(record, name, expires, download)):
+        raise HTTPException(404, "照片不存在或下载链接不完整。")
+    if min(expires, record["expires"]) <= time.time():
+        raise HTTPException(410, "下载链接已过期，请返回领取页重新点击保存。")
+    is_stamp = json.loads(record["settings"]).get("template") == "woken-stamp"
+    if name == "scene.png" and not _has_scene(record):
+        raise HTTPException(404, "照片不存在。")
+    path = _store().local_path(f"mirror-photos/{photo_id}/{name}")
+    if not path:
+        raise HTTPException(503, "照片暂时无法读取，请返回领取页重试。")
+    filename = ("WOKEN-DAY-STAMP.png" if name == "print.png" else "WOKEN-DAY-MACHINE.png") if is_stamp else "selfit-photo.png"
+    return FileResponse(path, media_type="image/png", filename=filename,
+                        content_disposition_type="attachment" if download else "inline", headers=PRIVATE_HEADERS)
+
+
 @router.get("/api/v1/selfit/mirror/photos/{photo_id}/{variant}")
 def get_photo(photo_id: str, variant: str, request: Request, authorization: str = Header(default="")):
     record, secret = _authorized(photo_id, authorization)
     is_stamp = json.loads(record["settings"]).get("template") == "woken-stamp"
     if variant == "info":
-        return JSONResponse({"expiresAt": record["expires"] * 1000, "width": 900 if is_stamp else 1080, "height": 1200 if is_stamp else 1440, "hasScene": is_stamp, "edition": "woken" if is_stamp else "selfit"}, headers=PRIVATE_HEADERS)
+        has_scene = _has_scene(record)
+        return JSONResponse({"expiresAt": record["expires"] * 1000, "width": 900 if is_stamp else 1080, "height": 1200 if is_stamp else 1440, "hasScene": has_scene, "edition": "woken" if is_stamp else "selfit", "imageLinks": _file_links(record, has_scene)}, headers=PRIVATE_HEADERS)
     if variant == "qr":
         base = os.getenv("SELFIT_PUBLIC_BASE_URL", "").strip().rstrip("/") or str(request.base_url).rstrip("/")
         url = f"{base}/selfit/photo#{photo_id}.{secret}"
@@ -232,7 +283,7 @@ def get_photo(photo_id: str, variant: str, request: Request, authorization: str 
         output = io.BytesIO()
         qr.make_image().save(output, format="PNG")
         return Response(output.getvalue(), media_type="image/png", headers=PRIVATE_HEADERS)
-    if variant not in {"preview", "download"} and not (is_stamp and variant in {"scene-preview", "scene-download"}):
+    if variant not in {"preview", "download"} and not (variant in {"scene-preview", "scene-download"} and _has_scene(record)):
         raise HTTPException(404, "照片不存在。")
     # Never redirect a private photo to an unprotected public object URL.
     name = {"preview": "preview.webp", "download": "print.png", "scene-preview": "scene.webp", "scene-download": "scene.png"}[variant]
@@ -275,7 +326,7 @@ def admin_capture_rows():
         rows.append({"handoffId": record['id'], "createdAt": datetime.fromtimestamp(record['created'], timezone.utc).isoformat(),
             "status": "keepsake", "phone": None, "sessionId": None,
             "original": asset("original", "拍摄原图"), "retouched": asset("print", "模板成片")})
-        if json.loads(record["settings"]).get("template") == "woken-stamp":
+        if _has_scene(record):
             rows[-1]["scene"] = asset("scene", "出片机展示图")
     return rows
 

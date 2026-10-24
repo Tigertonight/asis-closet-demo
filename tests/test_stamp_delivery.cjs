@@ -8,13 +8,13 @@ function setup(fetch) {
   vm.runInNewContext(source, context);
   return new context.window.StampDelivery();
 }
-function bundle() {return {original:new Blob(['raw']),final:new Blob(['stamp']),scene:new Blob(['scene']),settings:{stampYear:'2025-2026'}};}
+function bundle() {return {original:new Blob(['raw']),final:new Blob(['stamp']),settings:{stampYear:'2025-2026'}};}
 function ok(value) {return {ok:true,json:async()=>value,blob:async()=>new Blob(['qr'])};}
 
 test('lost upload response retries with the same secret and photo; duplicate taps create no extra upload', async()=>{
   const keys=[];let attempts=0;
   const delivery=setup(async(url,options)=>{
-    if(options.method==='POST') {keys.push(options.headers['Idempotency-Key']);if(++attempts===1)throw new TypeError('network lost');return ok({photoId:'mp_test',expiresAt:Date.now()+86400000});}
+    if(options.method==='POST') {assert.equal(options.body.has('scene'),false);assert.ok(options.body.get('final') instanceof Blob);keys.push(options.headers['Idempotency-Key']);if(++attempts===1)throw new TypeError('network lost');return ok({photoId:'mp_test',expiresAt:Date.now()+86400000});}
     return ok({});
   });
   const photo=bundle();delivery.setPhoto(photo);await delivery.pending;

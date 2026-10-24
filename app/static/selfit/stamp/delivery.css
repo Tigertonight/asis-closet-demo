@@ -11,5 +11,7 @@
 .receive-downloads button { flex: 1; }
 .receive-expiry, .receive-hint { color: #666; }
 .stamp-receive button:focus-visible { outline: 3px solid #174fe4; outline-offset: 2px; }
+.stamp-receive .receive-close:focus { outline: none; }
+.keyboard-nav .stamp-receive .receive-close:focus { background: #e7edf9; border-radius: 8px; }
 .stamp-import .receive-downloads[hidden] { display: none; }
 .stamp-import [data-import-retry] { color: #fff; background: #1741b4; border-color: #1741b4; }

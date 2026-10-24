@@ -190,7 +190,7 @@ def save_stamp(client, *, scene=True, final_size=(900, 1200), **settings):
                        data={'settings': json.dumps({**STAMP_SETTINGS, **settings})}, files=files)
 
 
-def test_stamp_two_outputs_and_private_server_storage(client, monkeypatch):
+def test_older_stamp_two_outputs_remain_readable_in_private_storage(client, monkeypatch):
     # A deployment's object-storage setting must not publish these private photos.
     monkeypatch.setenv('SELFIT_ASSET_STORE', 's3')
     saved = save_stamp(client)
@@ -215,7 +215,7 @@ def test_stamp_two_outputs_and_private_server_storage(client, monkeypatch):
 
 
 @pytest.mark.parametrize('change,status', [
-    ({'scene': False}, 422), ({'final_size': (1080, 1440)}, 422),
+    ({'final_size': (1080, 1440)}, 422),
     ({'stampYear': '2026-2027'}, 400), ({'effect': 'unknown'}, 400),
     ({'palette': []}, 400), ({'intensity': True}, 400), ({'x': float('inf')}, 400),
     ({'background': 'red'}, 400), ({'customInk': 'transparent'}, 400),
@@ -243,3 +243,84 @@ def test_stamp_page_is_separate_and_local_assets_resolve(client):
             assert client.get(url).status_code == 200, url
     for year in range(1, 11):
         assert client.get(f'/static/selfit/stamp/assets/stamps/stamp-{year:02}-{2015+year}-{2016+year}.png').status_code == 200
+
+
+def test_native_png_download_and_inline_urls_preserve_privacy(client):
+    photo_id = save_stamp(client).json()['photoId']
+    assert client.get(f'/api/v1/selfit/mirror/photos/{photo_id}/info').status_code == 404
+    metadata = retrieve(client, photo_id, 'info').json()
+    links = metadata['imageLinks']
+    assert 590 < links['expiresAt'] / 1000 - time.time() <= photos.FILE_LINK_TTL
+    assert SECRET not in json.dumps(links)
+    for key, filename in [('print', 'WOKEN-DAY-STAMP.png'), ('scene', 'WOKEN-DAY-MACHINE.png')]:
+        for action, disposition in [('view', 'inline'), ('download', 'attachment')]:
+            url = links[key][action]
+            assert url.startswith(f'/api/v1/selfit/mirror/photos/{photo_id}/files/')
+            result = client.get(url)  # Native save has no Authorization header.
+            assert result.status_code == 200
+            assert result.headers['content-type'] == 'image/png'
+            assert result.headers['content-disposition'] == f'{disposition}; filename="{filename}"'
+            assert result.headers['cache-control'] == 'no-store'
+            assert result.headers['referrer-policy'] == 'no-referrer'
+            image = Image.open(io.BytesIO(result.content))
+            assert image.format == 'PNG' and image.size == (900, 1200)
+        assert client.get(links[key]['view']).content == client.get(links[key]['download']).content
+
+
+def test_native_urls_cannot_change_photo_variant_expiry_or_disposition(client):
+    from urllib.parse import urlsplit, parse_qs, urlencode
+    photo_id = save_stamp(client).json()['photoId']
+    url = retrieve(client, photo_id, 'info').json()['imageLinks']['print']['download']
+    path = urlsplit(url).path
+    params = {k: v[0] for k, v in parse_qs(urlsplit(url).query).items()}
+    assert client.get(path).status_code == 404
+    for field, value in [('signature', '0' * 64), ('signature', ''), ('expires', str(int(params['expires']) + 3600)), ('download', '0')]:
+        assert client.get(path + '?' + urlencode({**params, field: value})).status_code == 404
+    for name in ('original.jpg', 'original.png', 'scene.png', 'preview.webp'):
+        assert client.get(url.replace('/print.png?', f'/{name}?')).status_code == 404
+    other_id = save(client, secret='d' * 64).json()['photoId']
+    assert client.get(url.replace(photo_id, other_id)).status_code == 404
+
+
+def test_native_link_expiry_renewal_and_receipt_expiry(client, monkeypatch):
+    now = time.time()
+    photo_id = save_stamp(client).json()['photoId']
+    links = retrieve(client, photo_id, 'info').json()['imageLinks']
+    monkeypatch.setattr(photos.time, 'time', lambda: now + photos.FILE_LINK_TTL + 2)
+    assert client.get(links['print']['download']).status_code == 410
+    renewed = retrieve(client, photo_id, 'info').json()['imageLinks']
+    assert renewed['print']['download'] != links['print']['download']
+    assert client.get(renewed['print']['download']).status_code == 200
+    with photos._database() as db:
+        db.execute('UPDATE photos SET expires=?', (now + photos.FILE_LINK_TTL + 20,))
+    bounded = retrieve(client, photo_id, 'info').json()['imageLinks']
+    assert bounded['expiresAt'] == int(now + photos.FILE_LINK_TTL + 20) * 1000
+    monkeypatch.setattr(photos.time, 'time', lambda: now + photos.FILE_LINK_TTL + 21)
+    assert client.get(renewed['print']['download']).status_code == 410
+    assert retrieve(client, photo_id, 'info').status_code == 410
+
+
+def test_legacy_keepsake_has_single_native_png(client):
+    photo_id = save(client).json()['photoId']
+    links = retrieve(client, photo_id, 'info').json()['imageLinks']
+    assert set(links) == {'expiresAt', 'print'}
+    response = client.get(links['print']['download'])
+    assert response.status_code == 200
+    assert 'selfit-photo.png' in response.headers['content-disposition']
+    assert Image.open(io.BytesIO(response.content)).size == (1080, 1440)
+
+
+def test_stamp_without_scene_upload_download_and_admin_listing(client):
+    saved = save_stamp(client, scene=False)
+    assert saved.status_code == 201, saved.text
+    photo_id = saved.json()['photoId']
+    metadata = retrieve(client, photo_id, 'info').json()
+    assert metadata['edition'] == 'woken' and metadata['hasScene'] is False
+    assert set(metadata['imageLinks']) == {'expiresAt', 'print'}
+    assert client.get(metadata['imageLinks']['print']['download']).status_code == 200
+    assert retrieve(client, photo_id, 'qr').status_code == 200
+    assert save_stamp(client, scene=False).json() == saved.json()
+    for variant in ['scene-preview', 'scene-download']:
+        assert retrieve(client, photo_id, variant).status_code == 404
+    assert not (photos.PHOTO_DIR / 'assets' / 'mirror-photos' / photo_id / 'scene.png').exists()
+    assert 'scene' not in photos.admin_capture_rows()[0]

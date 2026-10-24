@@ -13,8 +13,9 @@
 缩放和位置 → 压印出片 → 扫码领取。三种质感为纯色、网点和印刷；十款周年框对应
 2016–2017 到 2025–2026。双指或拖动调整、撤销、声音开关沿用原包。
 
-邮票与出片机展示图分别输出 900×1200 PNG，和原始邮票框分辨率一致；服务器生成
-720×960 WebP 供手机/后台预览。相机以取景框裁切，导入照片最长边规范到 1400px，
+只输出邮票成片 900×1200 PNG，和原始邮票框分辨率一致；服务器生成
+720×960 WebP 供后台等缩略预览；手机领取页展示高清 PNG，确保原图链接可供浏览器原生保存。
+相机以取景框裁切，导入照片最长边规范到 1400px，
 后台“拍摄原图”是这份未加滤镜的规范化 JPEG，并非相机传感器原始文件。
 相册导入支持最多 6400 万像素、32MiB 的原始照片，导入时显示处理提示，超限或无法解码时
 提供返回/换张照片入口；解码等待最多 30 秒。缩图后释放大图资源，不将大图以 base64 再复制一份。
@@ -22,20 +23,27 @@
 
 出片即后台保存。保存失败保留本机照片，支持重试；响应丢失复用同一凭证，不重复创建记录。
 再做一枚会清空上一位照片；非处理状态下 120 秒无操作自动回到入口，关闭相机与领取弹窗。
-手机可分别保存两张高清成片，支持文件分享的浏览器提供系统分享按钮。不依赖小红书 JS Key，
+手机只展示和保存邮票，支持文件分享的浏览器提供单张邮票的系统分享按钮。不依赖小红书 JS Key，
 也不冒充已发布笔记；可在系统分享中选小红书，或保存后自行发布。
+“保存高清邮票”在点击时直接请求同域 PNG 附件地址，不再等待 JS 下载为 Blob。
+微信等内置浏览器的下载行为由客户端决定，页面保留打开高清原图、长按保存入口，不宣称已经写入相册。
 
+新流程不再合成、上传或分享出片机展示图；旧领取链接也只展示邮票。历史展示图保留供后台查看。
 此页提供打印用成片和出片动画，未接物理打印机，实际打印仍须设备驱动/本地桥接。
 摄像头需 HTTPS（localhost 调试例外）及设备授权。现场需使用实际智能镜/外接摄像头验收。
 
 ## 存储、权限与运行
 
-- `POST /api/v1/selfit/mirror/photos`：multipart 原图、邮票、展示图、设置；64 位随机十六进制
+- `POST /api/v1/selfit/mirror/photos`：multipart 原图、邮票、设置（兼容旧客户端可选的展示图）；64 位随机十六进制
   `Idempotency-Key` 同时作为领取凭证。原图/各成片最多 12MB、图片最多 1600 万像素。
 - `GET /api/v1/selfit/mirror/photos/{id}/{info|qr|preview|download|scene-preview|scene-download}`：
   Bearer 凭证鉴权并检查有效期。原图不向手机领取接口提供。
 - 凭证只在 URL fragment 和 Authorization 头中使用，数据库存 SHA-256；响应禁止缓存，
   领取页面禁止 referrer。不要将领取链接复制进业务日志。
+- `info` 另返回成片专用签名链接，最长 10 分钟且不超过照片领取期限。`files/{print.png|scene.png}`
+  以签名鉴权，无需原生下载器携带 Bearer 头；签名绑定照片、文件、期限和 inline/attachment 用途。
+  不暴露拍摄原图或主领取凭证。应用访问日志移除该接口查询参数；代理访问日志也不得记录签名参数。
+  页面可见时到期前自动更新；过期点击先刷新链接，提示再次点击以保留浏览器用户手势。
 - SQLite WAL：`outputs/selfit_mirror_photos/photos.sqlite3`；私有图片：同目录 `assets/`。
   强制使用本地文件存储，不受项目七牛/OSS 配置影响，不挂公开静态目录。
 - 图片验证和 WebP 生成使用现有受限 `photo_work` 池；POST 限流沿用上传额度，GET 单独限流。
@@ -44,13 +52,13 @@
   **链接过期不删除文件**；后台仍可读取，沿用项目“素材留存、不自动删除”原则。
   运维需监控磁盘、备份此输出目录；后台删除仅隐藏条目。
 - `SELFIT_PUBLIC_BASE_URL` 可指定领取域名，未配置时使用代理传入的请求域名。
-  当前 Caddy 允许 48MB 请求，覆盖三张图的总上限。
+  当前 Caddy 允许 48MB 请求，兼容旧客户端三张图的总上限。
 
 ## 验证与发布
 
 ```sh
 .venv/bin/python -m pytest tests/test_selfit_mirror_photos.py tests/test_selfit_admin_submissions.py tests/test_selfit_persona.py tests/test_selfit_photo_wiring.py -q
-node --test tests/test_stamp_delivery.cjs tests/test_stamp_photo_import.cjs
+node --test tests/test_stamp_delivery.cjs tests/test_stamp_photo_import.cjs tests/test_mirror_photo_download.cjs
 .venv/bin/python tests/support/run_stamp_studio.py
 ```
 

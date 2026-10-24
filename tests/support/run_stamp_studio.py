@@ -15,6 +15,7 @@ from fastapi import FastAPI
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from app import selfit_mirror_photos
+from app.request_logging import RequestTimingMiddleware
 
 # App imports may load the developer .env. Override afterward as well: this
 # harness must never upload QA captures into configured external storage.
@@ -23,6 +24,7 @@ os.environ['SELFIT_PUBLIC_BASE_URL'] = 'http://127.0.0.1:8788'
 
 selfit_mirror_photos.PHOTO_DIR = Path(tempfile.mkdtemp(prefix='selfit-studio-qa-'))
 app = FastAPI()
+app.add_middleware(RequestTimingMiddleware)
 app.include_router(selfit_mirror_photos.router)
 app.mount('/static', StaticFiles(directory=ROOT / 'app/static'), name='static')
 

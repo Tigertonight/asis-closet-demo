@@ -31,7 +31,6 @@
             const body = new FormData();
             body.append('original', this.bundle.original, 'original.jpg');
             body.append('final', this.bundle.final, 'stamp.png');
-            body.append('scene', this.bundle.scene, 'scene.png');
             body.append('settings', JSON.stringify(this.bundle.settings));
             const record = await (await this.request('/api/v1/selfit/mirror/photos', { method: 'POST', headers: { 'Idempotency-Key': this.secret }, body })).json();
             if (revision !== this.revision) return;
@@ -54,7 +53,7 @@
       if (!this.bundle) return;
       if (this.dialog) { this.paint(); return; }
       const dialog = document.createElement('dialog'); dialog.className = 'stamp-receive';
-      dialog.innerHTML = `<button class="receive-close" aria-label="关闭领图" type="button">×</button><h2>把纪念邮票带走</h2><p>用手机扫码，领取邮票和出片机展示图</p><div class="receive-qr"><img alt="手机扫码领取照片" hidden></div><p class="receive-status" role="status"></p><button class="receive-retry" type="button" hidden>重新尝试</button><p class="receive-expiry"></p><div class="receive-downloads"><button type="button" data-download="final">保存邮票</button><button type="button" data-download="scene">保存展示图</button></div><p class="receive-hint">也可以在本机保存；若浏览器打开图片，请长按保存。</p>`;
+      dialog.innerHTML = `<button class="receive-close" aria-label="关闭领图" type="button">×</button><h2>把纪念邮票带走</h2><p>用手机扫码，领取高清纪念邮票</p><div class="receive-qr"><img alt="手机扫码领取照片" hidden></div><p class="receive-status" role="status"></p><button class="receive-retry" type="button" hidden>重新尝试</button><p class="receive-expiry"></p><div class="receive-downloads"><button type="button" data-download="final">保存邮票</button></div><p class="receive-hint">也可以在本机保存；若浏览器打开图片，请长按保存。</p>`;
       document.body.append(dialog); this.dialog = dialog;
       dialog.querySelector('.receive-close').onclick = () => this.close();
       dialog.addEventListener('cancel', e => { e.preventDefault(); this.close(); });
@@ -62,7 +61,7 @@
         if (this.record && this.record.expiresAt <= Date.now()) { const bundle = this.bundle; this.reset(); this.setPhoto(bundle); this.open(); }
         else void this.save();
       };
-      dialog.querySelectorAll('[data-download]').forEach(button => { button.onclick = () => this.download(button.dataset.download); });
+      dialog.querySelectorAll('[data-download]').forEach(button => { button.onclick = () => this.download(); });
       dialog.showModal(); this.paint(); void this.save();
       this.expiryTimer = setInterval(() => this.paint(), 10000);
     }
@@ -77,10 +76,10 @@
       this.dialog.querySelector('.receive-retry').disabled = !!this.loading;
       this.dialog.querySelector('.receive-expiry').textContent = this.record && !expired ? `领取有效期至 ${new Date(this.record.expiresAt).toLocaleString('zh-CN')}` : '';
     }
-    download(kind) {
-      const blob = this.bundle?.[kind]; if (!blob) return;
+    download() {
+      const blob = this.bundle?.final; if (!blob) return;
       const url = URL.createObjectURL(blob), link = document.createElement('a');
-      link.href = url; link.download = kind === 'scene' ? 'WOKEN-DAY-MACHINE.png' : 'WOKEN-DAY-STAMP.png';
+      link.href = url; link.download = 'WOKEN-DAY-STAMP.png';
       document.body.append(link); link.click(); link.remove();
       setTimeout(() => URL.revokeObjectURL(url), 60000);
     }

@@ -112,3 +112,14 @@ def test_wrapped_disconnect_is_recognized():
     from app.request_logging import _is_disconnect
     assert _is_disconnect(ExceptionGroup('wrapped', [ClientDisconnect()]))
     assert not _is_disconnect(ExceptionGroup('mixed', [ClientDisconnect(), ValueError()]))
+
+
+def test_native_photo_download_access_log_redacts_capability(caplog):
+    RequestTimingMiddleware(None)
+    path = '/api/v1/selfit/mirror/photos/mp_123/files/print.png'
+    with caplog.at_level(logging.INFO, logger='uvicorn.access'):
+        logging.getLogger('uvicorn.access').info('%s - "%s %s HTTP/%s" %d',
+            '127.0.0.1', 'GET', path + '?expires=123&signature=PRIVATE_TICKET', '1.1', 200)
+    assert path in caplog.text
+    assert 'PRIVATE_TICKET' not in caplog.text
+    assert '?expires=' not in caplog.text
