@@ -5,7 +5,7 @@
   <meta name="referrer" content="no-referrer"><meta name="theme-color" content="#faf8f5">
   <title>领取你的照片 · selfit</title>
   <link rel="icon" href="/static/brand/favicon.svg">
-  <link rel="stylesheet" href="/static/selfit/mirror-photo.css?v=20261024-3">
+  <link rel="stylesheet" href="/static/selfit/mirror-photo.css?v=20261024-4">
 </head>
 <body>
   <main>
@@ -16,11 +16,17 @@
     <p id="phoneStatus" role="status">正在加载照片…</p>
     <button id="phoneDownload" disabled>保存高清照片</button>
     <a id="phoneOriginal" class="original-link" hidden>打开高清原图，长按保存 ↗</a>
-    <p id="phoneSaveHint" hidden>微信内若未开始下载，可长按照片保存，或打开高清原图后保存。</p>
+    <p id="phoneSaveHint" hidden></p>
     <button id="phoneRetry" class="secondary" hidden>重新加载</button>
     <p id="phoneExpiry" class="expiry"></p>
     <a href="/selfit">认识你的穿搭风格 ↗</a>
   </main>
-  <script src="/static/selfit/mirror-photo.js?v=20261024-3" defer></script>
+  <dialog id="phoneViewer" aria-label="高清原图" aria-describedby="phoneViewerHint">
+    <div class="viewer-header"><strong>高清原图</strong><button id="phoneViewerClose" autofocus>关闭</button></div>
+    <p id="phoneViewerHint" role="status"></p>
+    <img id="phoneOriginalPhoto" alt="长按保存完整高清纪念照片" hidden>
+    <button id="phoneViewerRetry" class="secondary" hidden>重新加载原图</button>
+  </dialog>
+  <script src="/static/selfit/mirror-photo.js?v=20261024-4" defer></script>
 </body>
 </html>

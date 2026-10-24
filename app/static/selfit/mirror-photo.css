@@ -25,3 +25,10 @@ a { display: block; text-align: center; color: #9f3654; margin-top: 24px; min-he
 .woken .secondary { border-color: #bac8ee; color: #1741b4; }
 #phoneBrandName { color: #1741b4; font-size: 19px; }
 #phoneShare { margin: 10px 0; }
+
+#phoneViewer { width: calc(100% - 24px); max-width: 460px; max-height: calc(100dvh - 24px); padding: 16px; border: 0; border-radius: 20px; background: #faf8f5; color: #302a29; overflow-y: auto; overscroll-behavior: contain; }
+#phoneViewer::backdrop { background: #302a2966; }
+.viewer-header { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+#phoneViewerClose { width: auto; min-width: 60px; min-height: 44px; padding: 8px 12px; color: #796c62; background: transparent; font-size: 16px; }
+#phoneViewerHint { margin: 8px 0 16px; }
+#phoneOriginalPhoto { display: block; width: 100%; height: auto; -webkit-touch-callout: default; user-select: auto; }

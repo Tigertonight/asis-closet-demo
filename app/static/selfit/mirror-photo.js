@@ -2,7 +2,9 @@
   const $ = id => document.getElementById(id);
   const match = location.hash.slice(1).match(/^(mp_[a-f0-9]{32})\.([a-f0-9]{64})$/);
   const path = match ? `/api/v1/selfit/mirror/photos/${match[1]}` : '';
+  const inWeChat = /MicroMessenger/i.test(navigator.userAgent || '');
   let generation = 0, info = null, files = [], preparing = [], refreshing = null, refreshTimer = 0;
+  let viewerGeneration = 0;
   const imageLinks = () => info?.imageLinks?.print;
   const linksFresh = () => info?.imageLinks?.expiresAt > Date.now() + 1000;
   async function get(variant) {
@@ -52,11 +54,13 @@
       info = metadata; applyLinks();
       // Keep long-press saving usable after the page has been left open.
       $('phonePhoto').src = imageLinks().view;
+      if ($('phoneViewer').open) $('phoneOriginalPhoto').src = imageLinks().view;
     })().finally(() => { if (current === generation) refreshing = null; });
     return refreshing;
   }
   async function load() {
     const current = ++generation;
+    if ($('phoneViewer').open) $('phoneViewer').close();
     clearTimeout(refreshTimer); files = []; preparing = []; refreshing = null; info = null;
     $('phoneShare').hidden = true; $('phoneRetry').hidden = true;
     $('phoneOriginal').hidden = true;
@@ -73,8 +77,10 @@
       $('phonePhoto').src = imageLinks().view; await $('phonePhoto').decode();
       if (current !== generation) return;
       $('phonePhoto').hidden = false; $('phoneIntro').textContent = info.edition === 'woken' ? '你的周年邮票，已经准备好了' : '你的照片，已经准备好了';
-      $('phoneDownload').disabled = false; $('phoneDownload').textContent = info.edition === 'woken' ? '保存高清邮票' : '保存高清照片';
+      $('phoneDownload').disabled = false;
+      $('phoneDownload').textContent = inWeChat ? '查看高清原图' : info.edition === 'woken' ? '保存高清邮票' : '保存高清照片';
       $('phoneStatus').textContent = '高清成片包含你选好的模板与效果';
+      $('phoneSaveHint').textContent = inWeChat ? '打开原图后，长按图片并选择「保存图片」。' : '如未开始下载，可打开高清原图后保存。';
       $('phoneSaveHint').hidden = false;
       $('phoneExpiry').textContent = `请在 ${new Date(info.expiresAt).toLocaleString('zh-CN')} 前领取照片`;
       if (navigator.share && navigator.canShare) void prepareFile().catch(() => {});
@@ -95,18 +101,46 @@
       if (current === generation) $('phoneStatus').textContent = '链接已更新，请再次点击保存或打开高清原图。';
     } catch (e) { if (current === generation) $('phoneStatus').textContent = errorText(e); }
   }
+  async function showOriginal() {
+    const current = generation, viewing = ++viewerGeneration;
+    const viewer = $('phoneViewer'), photo = $('phoneOriginalPhoto');
+    if (!viewer.open) viewer.showModal();
+    $('phoneViewerRetry').hidden = true;
+    $('phoneViewerHint').textContent = '正在加载高清原图…'; photo.hidden = true;
+    const active = () => current === generation && viewing === viewerGeneration && viewer.open;
+    try {
+      if (!linksFresh()) await refreshLinks();
+      if (!active()) return;
+      // Keep a real inline PNG on the <img> for WeChat's native long-press menu.
+      // Neither a download attribute, attachment request nor blob URL is used.
+      photo.src = imageLinks().view;
+      await photo.decode();
+      if (!active()) return;
+      photo.hidden = false;
+      $('phoneViewerHint').textContent = '长按图片，选择「保存图片」保存到相册';
+    } catch (e) {
+      if (!active()) return;
+      $('phoneViewerHint').textContent = e.name === 'EncodingError' ? '原图暂时未加载成功，请重试。' : errorText(e);
+      $('phoneViewerRetry').hidden = false;
+    }
+  }
   function download() {
+    if (inWeChat) { void showOriginal(); return; }
     if (!linksFresh()) { void renewForTap(); return; }
     // Run during the tap, without awaiting a fetch, to preserve user activation.
     const a = document.createElement('a'); a.href = imageLinks().download;
     a.download = info.edition === 'woken' ? 'WOKEN-DAY-STAMP.png' : 'selfit-photo.png';
     a.referrerPolicy = 'no-referrer'; document.body.append(a); a.click(); a.remove();
-    $('phoneStatus').textContent = '已发起下载；如未开始，请打开高清原图后长按保存。';
+    $('phoneStatus').textContent = '已请求浏览器下载；请在下载列表中查看。';
   }
   $('phoneDownload').onclick = download;
   $('phoneOriginal').onclick = event => {
+    if (inWeChat) { event.preventDefault(); void showOriginal(); return; }
     if (!linksFresh()) { event.preventDefault(); void renewForTap(); }
   };
+  $('phoneViewerClose').onclick = () => $('phoneViewer').close();
+  $('phoneViewer').onclose = () => { viewerGeneration++; };
+  $('phoneViewerRetry').onclick = showOriginal;
   $('phoneShare').onclick = async () => {
     // Files are prepared before the tap, preserving Safari's transient activation.
     const current = generation;

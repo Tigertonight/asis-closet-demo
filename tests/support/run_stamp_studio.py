@@ -28,6 +28,16 @@ app.add_middleware(RequestTimingMiddleware)
 app.include_router(selfit_mirror_photos.router)
 app.mount('/static', StaticFiles(directory=ROOT / 'app/static'), name='static')
 
+@app.get('/test/photo-wechat')
+def wechat_receipt_fixture():
+    # Exercise the production receipt script's WeChat branch in desktop UI QA.
+    # This does not simulate WeChat's native long-press menu or album permissions.
+    script = """<script>Object.defineProperty(navigator, 'userAgent', {
+      value: navigator.userAgent + ' MicroMessenger/8.0', configurable: true
+    });</script>"""
+    html = (ROOT / 'app/static/selfit/mirror-photo.html').read_text()
+    return HTMLResponse(html.replace('</head>', script + '</head>'))
+
 @app.get('/test/stamp')
 def camera_fixture(mode: str = 'success'):
     # Test-only injection: no device permission, no actual camera capture.

@@ -5,13 +5,14 @@ const vm = require('node:vm');
 const source = fs.readFileSync('app/static/selfit/mirror-photo.js', 'utf8');
 const settle = () => new Promise(resolve => setImmediate(resolve));
 
-function fixture({ share = false, hasScene = true } = {}) {
+function fixture({ share = false, hasScene = true, userAgent = 'Mozilla/5.0 Chrome/130' } = {}) {
   let now = 1800000000000;
   const elements = new Map(), clicks = [], requests = [], events = {}, shared = [];
   const ids = new Set([...fs.readFileSync('app/static/selfit/mirror-photo.html', 'utf8').matchAll(/id="([^"]+)"/g)].map(m => m[1]));
   const el = id => {
     assert.ok(ids.has(id), `element ${id} must exist in the page`);
-    if (!elements.has(id)) elements.set(id, { hidden: false, disabled: false, textContent: '', decode: async () => {} });
+    if (!elements.has(id)) elements.set(id, { hidden: false, disabled: false, textContent: '', decode: async () => {},
+      open: false, showModal() { this.open = true; }, close() { this.open = false; this.onclose?.(); } });
     return elements.get(id);
   };
   const metadata = () => ({ expiresAt: now + 86400000, hasScene, edition: 'woken', imageLinks: {
@@ -23,7 +24,7 @@ function fixture({ share = false, hasScene = true } = {}) {
   const context = {
     document: { hidden: false, getElementById: el, body: { append() {}, classList: { add() {} } },
       createElement: () => ({ click() { clicks.push({ href: this.href, filename: this.download }); }, remove() {} }) },
-    location: { hash: '#mp_' + 'a'.repeat(32) + '.' + 'b'.repeat(64) }, navigator: share ? { canShare: () => true, share: async value => { shared.push(value); } } : {}, File, Blob,
+    location: { hash: '#mp_' + 'a'.repeat(32) + '.' + 'b'.repeat(64) }, navigator: { userAgent, ...(share ? { canShare: () => true, share: async value => { shared.push(value); } } : {}) }, File, Blob,
     Date: class extends Date { static now() { return now; } }, AbortSignal, TypeError,
     fetch: async url => {
       requests.push(url);
@@ -49,8 +50,74 @@ test('PNG download is synchronous with the tap and uses a real file URL', async 
   assert.equal(f.clicks[0].filename, 'WOKEN-DAY-STAMP.png');
   assert.equal(f.requests.length, requests);
   assert.equal(f.el('phoneOriginal').hidden, false);
-  assert.match(f.el('phoneStatus').textContent, /已发起下载/);
+  assert.match(f.el('phoneStatus').textContent, /已请求浏览器下载/);
   assert.doesNotMatch(f.el('phoneStatus').textContent, /已保存/);
+});
+
+for (const device of ['Android', 'iPhone']) test(`WeChat ${device} opens a real full-resolution image without triggering download`, async () => {
+  const f = fixture({ userAgent: `Mozilla/5.0 (${device}) MicroMessenger/8.0` }); await settle();
+  assert.equal(f.el('phoneDownload').textContent, '查看高清原图');
+  f.el('phoneDownload').onclick(); await settle();
+  assert.equal(f.el('phoneViewer').open, true);
+  assert.equal(f.el('phoneOriginalPhoto').hidden, false);
+  assert.equal(f.el('phoneOriginalPhoto').src, f.el('phonePhoto').src);
+  assert.match(f.el('phoneOriginalPhoto').src, /print.png\?inline=/);
+  assert.match(f.el('phoneViewerHint').textContent, /长按图片/);
+  assert.equal(f.clicks.length, 0);
+  assert.equal(f.requests.length, 1);
+  f.el('phoneViewerClose').onclick();
+  assert.equal(f.el('phoneViewer').open, false);
+  let prevented = false;
+  f.el('phoneOriginal').onclick({ preventDefault() { prevented = true; } }); await settle();
+  assert.equal(prevented, true);
+  assert.equal(f.el('phoneViewer').open, true);
+  assert.equal(f.clicks.length, 0);
+});
+
+test('WeChat renews expired links and opens the original in the same tap', async () => {
+  const f = fixture({ userAgent: 'MicroMessenger/8.0' }); await settle();
+  const old = f.el('phonePhoto').src;
+  f.advance(); f.el('phoneDownload').onclick(); await settle();
+  assert.equal(f.el('phoneViewer').open, true);
+  assert.equal(f.el('phoneOriginalPhoto').hidden, false);
+  assert.notEqual(f.el('phoneOriginalPhoto').src, old);
+  assert.equal(f.clicks.length, 0);
+  assert.equal(f.requests.length, 2);
+});
+
+test('WeChat renewal failure retains a closeable viewer and offers retry', async () => {
+  const f = fixture({ userAgent: 'MicroMessenger/8.0' }); await settle();
+  f.advance(); f.fail(); f.el('phoneDownload').onclick(); await settle();
+  assert.equal(f.el('phoneViewer').open, true);
+  assert.equal(f.el('phoneOriginalPhoto').hidden, true);
+  assert.match(f.el('phoneViewerHint').textContent, /网络暂时无法连接/);
+  assert.equal(f.el('phoneViewerRetry').hidden, false);
+  assert.equal(f.clicks.length, 0);
+  f.el('phoneViewerClose').onclick();
+  assert.equal(f.el('phoneViewer').open, false);
+});
+
+test('WeChat image decode failure can be retried without downloading', async () => {
+  const f = fixture({ userAgent: 'MicroMessenger/8.0' }); await settle();
+  f.el('phoneOriginalPhoto').decode = async () => { const e = new Error('decode'); e.name = 'EncodingError'; throw e; };
+  f.el('phoneDownload').onclick(); await settle();
+  assert.equal(f.el('phoneViewerRetry').hidden, false);
+  assert.match(f.el('phoneViewerHint').textContent, /原图暂时未加载成功/);
+  f.el('phoneOriginalPhoto').decode = async () => {};
+  await f.el('phoneViewerRetry').onclick();
+  assert.equal(f.el('phoneOriginalPhoto').hidden, false);
+  assert.equal(f.el('phoneViewerRetry').hidden, true);
+  assert.equal(f.clicks.length, 0);
+});
+
+test('closing WeChat viewer ignores a late image failure', async () => {
+  const f = fixture({ userAgent: 'MicroMessenger/8.0' }); await settle();
+  let reject;
+  f.el('phoneOriginalPhoto').decode = () => new Promise((_, fail) => { reject = fail; });
+  f.el('phoneDownload').onclick();
+  f.el('phoneViewerClose').onclick(); reject(new Error('late failure')); await settle();
+  assert.equal(f.el('phoneViewer').open, false);
+  assert.equal(f.el('phoneViewerRetry').hidden, true);
 });
 
 test('expired links renew before a new user tap starts the download', async () => {
