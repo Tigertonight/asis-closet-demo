@@ -1593,6 +1593,7 @@
 
   // exports/xhs-minitool-v54-20261020/package/app.js
   var delivery = new window.StampDelivery();
+  var printer = new window.StampPrinter();
   var visitRevision = 0;
   var idleAt = Date.now();
   var DEVICE_WIDTH = 1696;
@@ -1789,19 +1790,21 @@
     const cropTop = Math.max(0, usableTop - stageY);
     const cropBottom = Math.max(0, stageBottom - (usableTop + usableHeight));
     const appHeight = Math.max(window.innerHeight, viewportTop + viewportHeight);
-    const deliveryStatusHeight = 30;
-    const deliveryActionHeight = 56;
+    const deliveryStatusHeight = 48;
+    const deliveryActionHeight = 104;
     const deliveryGap = usableHeight < 700 ? 5 : 8;
     const deliveryChromeHeight = deliveryStatusHeight + deliveryActionHeight + deliveryGap * 2;
     const deliveryBottomGap = Math.min(20, Math.max(16, usableHeight * 0.02));
+    // Leave room for the event logo above the status line on short desktop screens.
+    const deliveryTopGap = 40;
     const deliveryMachineRatio = 720 / 1765;
-    const deliveryMachineWidth = Math.min(usableWidth * 0.575, 250, Math.max(1, usableHeight - deliveryChromeHeight - deliveryBottomGap - 8) * deliveryMachineRatio);
+    const deliveryMachineWidth = Math.min(usableWidth * 0.575, 250, Math.max(1, usableHeight - deliveryChromeHeight - deliveryBottomGap - deliveryTopGap) * deliveryMachineRatio);
     const deliveryMachineHeight = deliveryMachineWidth / deliveryMachineRatio;
     const deliveryCoreHeight = deliveryChromeHeight + deliveryMachineHeight;
     const deliveryDesiredTop = usableHeight * 0.53 - deliveryCoreHeight / 2;
     const deliveryCoreTop = Math.min(
-      Math.max(8, deliveryDesiredTop),
-      Math.max(8, usableHeight - deliveryBottomGap - deliveryCoreHeight)
+      Math.max(deliveryTopGap, deliveryDesiredTop),
+      Math.max(deliveryTopGap, usableHeight - deliveryBottomGap - deliveryCoreHeight)
     );
     document.documentElement.style.setProperty("--app-h", appHeight.toFixed(3) + "px");
     document.documentElement.style.setProperty("--usable-x", usableLeft.toFixed(3) + "px");
@@ -2741,10 +2744,11 @@
   function renderDelivery() {
     app.classList.add("has-delivery-background");
     soundtrack.setScene("delivery");
-    app.innerHTML = '<section class="delivery-scene" id="deliveryStage" aria-label="纪念邮票已出片">\n    <img class="delivery-frame33" src="/static/selfit/stamp/assets/device/delivery-frame33.webp" alt="" aria-hidden="true" />\n    <div class="delivery-core">\n      <p class="delivery-status" id="deliveryStatus" aria-hidden="true"></p>\n      <div class="delivery-machine" aria-label="纪念邮票出片机">\n        <img class="delivery-machine__art" src="/static/selfit/stamp/assets/device/printer-hd.webp" alt="WOKEN DAY 十周年邮票出片机" />\n        <div class="delivery-lane" aria-label="纪念邮票出片轨道">\n          <canvas class="delivery-sheet" width="900" height="1200" data-render-key="'.concat(escapeHtml(state.finalRenderKey), '" role="img" aria-label="你的第 ').concat(state.year, ' 年纪念邮票"></canvas>\n        </div>\n        <img class="delivery-machine__mask delivery-machine__mask--slot" src="/static/selfit/stamp/assets/device/printer-hd.webp" alt="" aria-hidden="true" />\n        <img class="delivery-machine__mask delivery-machine__mask--tray" src="/static/selfit/stamp/assets/device/printer-hd.webp" alt="" aria-hidden="true" />\n      </div>\n      <section class="result-dock" aria-label="成片操作" aria-hidden="true">\n      <button class="publish-button" id="shareAction" type="button" disabled><strong>扫码领取照片</strong></button>\n      <div class="result-secondary"><button id="retryAction" type="button" disabled>再做一枚</button><button id="saveAction" type="button" disabled>').concat("返回编辑", "</button></div>\n      </section>\n    </div>\n  </section>");
+    app.innerHTML = '<section class="delivery-scene" id="deliveryStage" aria-label="纪念邮票已出片">\n    <img class="delivery-frame33" src="/static/selfit/stamp/assets/device/delivery-frame33.webp" alt="" aria-hidden="true" />\n    <div class="delivery-core">\n      <p class="delivery-status" id="deliveryStatus" aria-hidden="true"></p>\n      <div class="delivery-machine" aria-label="纪念邮票出片机">\n        <img class="delivery-machine__art" src="/static/selfit/stamp/assets/device/printer-hd.webp" alt="WOKEN DAY 十周年邮票出片机" />\n        <div class="delivery-lane" aria-label="纪念邮票出片轨道">\n          <canvas class="delivery-sheet" width="900" height="1200" data-render-key="'.concat(escapeHtml(state.finalRenderKey), '" role="img" aria-label="你的第 ').concat(state.year, ' 年纪念邮票"></canvas>\n        </div>\n        <img class="delivery-machine__mask delivery-machine__mask--slot" src="/static/selfit/stamp/assets/device/printer-hd.webp" alt="" aria-hidden="true" />\n        <img class="delivery-machine__mask delivery-machine__mask--tray" src="/static/selfit/stamp/assets/device/printer-hd.webp" alt="" aria-hidden="true" />\n      </div>\n      <section class="result-dock" aria-label="成片操作" aria-hidden="true">\n      <button class="publish-button" id="shareAction" type="button" disabled><strong>扫码领取照片</strong></button>\n      <button class="print-button" id="printAction" type="button" disabled>打印照片</button>\n      <div class="result-secondary"><button id="retryAction" type="button" disabled>再做一枚</button><button id="saveAction" type="button" disabled>').concat("返回编辑", "</button></div>\n      </section>\n    </div>\n  </section>");
     document.querySelector("#retryAction").addEventListener("click", restartFromSelection);
     document.querySelector("#saveAction").addEventListener("click", saveResult);
     document.querySelector("#shareAction").addEventListener("click", shareResult);
+    document.querySelector("#printAction").addEventListener("click", printResult);
     drawDeliverySheet();
     requestAnimationFrame(function() {
       requestAnimationFrame(function() {
@@ -3799,6 +3803,7 @@
     closeAlbumImportStatus();
     if (closeCameraNotice) closeCameraNotice();
     cameraNoticeShown = false;
+    printer.reset();
     delivery.reset();
     state.sourceBlob = null;
     state.busy = false;
@@ -3828,6 +3833,31 @@
   }
   function saveResult() { if (!state.busy) { delivery.close(); setView("printlab"); } }
   function shareResult() { delivery.open(); }
+  async function printResult() {
+    if (state.busy || !state.finalBlob) return;
+    const revision = visitRevision;
+    const button = document.querySelector("#printAction");
+    const status = document.querySelector("#deliveryStatus");
+    const buttons = Array.from(document.querySelectorAll(".result-dock button"));
+    state.busy = true;
+    buttons.forEach(b => { b.disabled = true; });
+    status.setAttribute("role", "status");
+    status.textContent = "请在本机打印窗口中确认打印。";
+    button.textContent = "正在打印…";
+    try {
+      await printer.print(state.finalBlob);
+      if (revision === visitRevision) status.textContent = "打印窗口已关闭，可再次打印。";
+    } catch (e) {
+      if (revision === visitRevision) status.textContent = e.message;
+    } finally {
+      if (revision === visitRevision) {
+        state.busy = false; idleAt = Date.now();
+        buttons.forEach(b => { b.disabled = false; });
+        button.textContent = "打印照片";
+        button.focus({ preventScroll: true });
+      }
+    }
+  }
   function getMiniToolBridge() {
     return window.xhs && window.xhs.miniTool ? window.xhs.miniTool : null;
   }
@@ -3988,6 +4018,7 @@
   window.addEventListener("pagehide", function() {
     stopCamera();
     delivery.close();
+    printer.reset();
     soundtrack.setHidden(true);
   });
   window.addEventListener("pageshow", function() {

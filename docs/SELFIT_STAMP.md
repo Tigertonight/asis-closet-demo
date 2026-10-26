@@ -31,7 +31,11 @@
 和签名链接到期刷新。长按仍由微信原生菜单处理，页面不宣称已经写入相册。
 
 新流程不再合成、上传或分享出片机展示图；旧领取链接也只展示邮票。历史展示图保留供后台查看。
-此页提供打印用成片和出片动画，未接物理打印机，实际打印仍须设备驱动/本地桥接。
+成片页“打印照片”使用本机已生成的 900×1200 PNG，调用网页运行电脑的浏览器打印窗口；
+在窗口中选择本机可用打印机、纸张和份数，确认后由系统打印。无需上传完成或新增打印服务。
+独立打印文档只包含完整邮票，按所选纸张等比居中，不裁切、不带网页按钮或出片机背景。
+打印准备及打印窗口打开期间暂停自动重置，关闭或取消后可再次打印；页面不推断实体打印是否成功。
+不支持静默打印；现场仍需为电脑安装并连接打印机，确认纸张尺寸和驱动配置。
 摄像头需 HTTPS（localhost 调试例外）及设备授权。现场需使用实际智能镜/外接摄像头验收。
 
 ## 存储、权限与运行
@@ -60,7 +64,7 @@
 
 ```sh
 .venv/bin/python -m pytest tests/test_selfit_mirror_photos.py tests/test_selfit_admin_submissions.py tests/test_selfit_persona.py tests/test_selfit_photo_wiring.py -q
-node --test tests/test_stamp_delivery.cjs tests/test_stamp_photo_import.cjs tests/test_mirror_photo_download.cjs
+node --test tests/test_stamp_delivery.cjs tests/test_stamp_printing.cjs tests/test_stamp_photo_import.cjs tests/test_mirror_photo_download.cjs
 .venv/bin/python tests/support/run_stamp_studio.py
 ```
 

@@ -15,3 +15,12 @@
 .keyboard-nav .stamp-receive .receive-close:focus { background: #e7edf9; border-radius: 8px; }
 .stamp-import .receive-downloads[hidden] { display: none; }
 .stamp-import [data-import-retry] { color: #fff; background: #1741b4; border-color: #1741b4; }
+
+/* Two equal action rows keep print and pickup legible on phones and kiosks. */
+.delivery-scene .delivery-core { grid-template-rows: 48px var(--delivery-machine-h) 104px; }
+.delivery-scene .result-dock { width: calc(100% - 32px); max-width: 420px; min-height: 104px; grid-template-columns: 1fr 1fr; grid-template-rows: 48px 48px; gap: 8px; }
+.delivery-scene .result-dock button { min-height: 44px; border-radius: 999px; font-size: 14px; }
+.delivery-scene .publish-button strong { font-size: 14px; letter-spacing: 0; }
+.delivery-scene .print-button { width: 100%; height: 48px; border: 1px solid #cad3e8; color: #1741b4; background: #faf8f4; font-weight: 700; cursor: pointer; }
+.delivery-scene .result-dock button:disabled { opacity: .55; }
+.delivery-scene .delivery-status { font-size: 14px; line-height: 18px; white-space: normal; text-overflow: clip; }
