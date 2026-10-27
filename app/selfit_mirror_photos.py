@@ -288,13 +288,12 @@ def get_photo(photo_id: str, variant: str, request: Request, authorization: str 
             raise HTTPException(503, "分享地址暂未准备好，可以先保存照片。", headers=PRIVATE_HEADERS)
         if not _store().local_path(f"mirror-photos/{photo_id}/print.png"):
             raise HTTPException(503, "照片暂时无法读取，请重新加载后再分享。", headers=PRIVATE_HEADERS)
+        links = _file_links(record, False)
         try:
-            config = selfit_xhs_share.verify_config()
+            config = selfit_xhs_share.prepare_share(base + links["print"]["view"], base + "/selfit/photo/share", request.headers.get("user-agent", ""))
         except selfit_xhs_share.ShareUnavailable as exc:
             raise HTTPException(503, str(exc), headers=PRIVATE_HEADERS) from None
-        links = _file_links(record, False)
-        return JSONResponse({**config, "expiresAt": min(config["expiresAt"], links["expiresAt"]),
-                             "shareInfo": {"type": "normal", "images": [base + links["print"]["view"]]}}, headers=PRIVATE_HEADERS)
+        return JSONResponse({**config, "expiresAt": min(config["expiresAt"], links["expiresAt"])}, headers=PRIVATE_HEADERS)
     if variant == "qr":
         base = os.getenv("SELFIT_PUBLIC_BASE_URL", "").strip().rstrip("/") or str(request.base_url).rstrip("/")
         url = f"{base}/selfit/photo#{photo_id}.{secret}"

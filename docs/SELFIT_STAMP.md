@@ -52,26 +52,31 @@
 WOKEN DAY 领图页点击「分享到小红书」→ 预览将分享的完整邮票 → 点击「打开小红书」→
 在 App 编辑页填写内容并由用户决定发布。只传一张合成后的高清邮票，不传拍摄原图。
 当前官方 SDK 已下线标题、正文、话题预填，代码不提交这些字段，也不调用发布接口。
-官方文档：<https://agora.xiaohongshu.com/doc/js>；使用官方 `xhs-1.0.1.js`。
+官方文档：<https://agora.xiaohongshu.com/doc/js>；分享码和唤起链接沿用官方 `xhs-1.0.1.js` 的协议。
 
 - 服务端配置 `SELFIT_XHS_APP_KEY`、`SELFIT_XHS_APP_SECRET` 才显示入口；密钥不进前端、日志和 git。
   配置写入服务器既有私有环境文件；本地 `.env.xhs.local` 仅供联调，启动时须显式加载。
 - `GET /api/v1/selfit/mirror/photos/{id}/xhs-share` 校验领取凭证、照片期限及成片文件，返回短期
-  `verifyConfig` 和图片地址。分享使用 `SELFIT_PUBLIC_BASE_URL` 指定的 HTTPS 域名，默认
+  `verifyConfig`、图片地址和已准备好的唤起链接。服务端调用官方 check/token，避免点击后还要等待网络。分享使用 `SELFIT_PUBLIC_BASE_URL` 指定的 HTTPS 域名，默认
   `https://selfit.com.cn`，不从 Host 头拼接。该域名应与领图页同源；仅 localhost 调试允许 HTTP。
 - access token 存在 `outputs/xhs_share/token.json`（0600）；可通过 `SELFIT_XHS_CACHE_DIR` 指定
   持久目录。锁避免多线程/多进程重复刷新，获取失败冷却 30 秒。该缓存应随 outputs 保留。
   **同一 appKey 仅由一套共享缓存管理刷新**：官方新 token 会立即使旧 token 失效，开发与线上
   不可各自频繁申请。浏览器签名最长 3 分钟，且早于 token 刷新边界失效。
-- SDK 会读取并上报 `location.href`，所以只在无领取凭证的 `/selfit/photo/share` 页面加载。
-  两页之间用一次性 sessionStorage 交接图片短期签名地址和 verifyConfig，加载 SDK 前即消费清除。
-  原领取 secret 始终留在领图页 fragment；分享图 URL 仅可读合成 PNG，最长 10 分钟，
-  且不得超过领取期限。签名接口和两页均禁止缓存、referrer。
-- 组件或鉴权失败可返回保存照片；过期后返回重新准备。桌面提示改用手机，不尝试唤起 App。
-  SDK promise 完成只表示执行了唤起尝试，不代表 App 已打开或笔记已发布。
+- 官方 SDK 的设备判断仅认 Android/iOS，其他 UA 会静默不唤起；其异步请求也发生在点击之后。
+  2026-10-27 手机反馈被误判桌面后，改为服务端按同一 check/token 协议先取得分享码，前端只处理
+  官方 scheme/universal link，不再用 JS UA 禁用按钮，也不再加载第三方 SDK 脚本。
+  请求头中的平台仅决定首选链接：Android 普通浏览器直接 scheme，微信/iOS/未知平台用官方
+  HTTPS universal link；另外提供另一种链接作为备用。未知设备仍然可操作。
+- 分享只在无领取凭证的 `/selfit/photo/share` 页面进行，官方接口中的 pageUrl 固定为此路径。
+  sessionStorage 一次性交接图片短期签名地址和唤起链接；原领取 secret 仅留在上一页 fragment。
+  分享图 URL 仅可读合成 PNG，最长 10 分钟且不得超过领取期限；签名接口和两页禁止缓存、referrer。
+  点击时立即导航，没有 await/fetch；图片、scheme、官方 HTTPS 跳转地址均先验证白名单和有效期。
+- 接口准备失败可重试或保存照片，过期后返回领图页重新准备。点击 2.5 秒仍在页面时提示备用入口；
+  微信内若被拦截，提示在浏览器打开或保存后分享。页面离开不等于笔记发布成功，不自动发布。
 
 2026-10-27 联调：用户提供的凭据成功获取 token，官方 check/token 返回分享码；桌面浏览器
-加载真实 SDK 后也完成验签和分享码请求。真实接口只使用公开邮票框，无用户照片或发布操作。
+加载真实 SDK 后也完成验签和分享码请求。修复版服务端使用同一协议准备链接。真实接口只使用公开邮票框，无用户照片或发布操作。
 手机原生 App 的图片载入/编辑页唤起仍需现场实机确认，尤其微信内浏览器。
 
 ## 存储、权限与运行
@@ -111,8 +116,8 @@ node --test tests/test_mirror_xhs_share.cjs tests/test_mirror_photo_download.cjs
 测试数据独立存于临时目录；正式 `/selfit/stamp` 无测试注入。
 
 分享页面隔离验收：`.venv/bin/python tests/support/run_xhs_share.py`，访问
-`http://127.0.0.1:8789/test/xhs-receipt?mode=ok`（另有 `fail` / `slow`）。使用临时合成测试图、
-服务端假签名和 SDK 桩；用于手机/桌面布局、返回、失败恢复验收，不代表原生 App 已唤起。
+`http://127.0.0.1:8789/test/xhs-receipt`。使用临时合成测试图和服务端准备桩；只检查页面和返回，
+不要打开占位分享链接。导航时机、UA、过期和备用入口由前端测试覆盖，不代表原生 App 已唤起。
 
 按 DESIGN.md 自检：独立活动首屏行动清楚；照片为视觉中心；模板完整不拉伸；手机390/430px
 与桌面/镜子比例无水平溢出；按钮不重叠；加载、失败、恢复、成功、过期状态完整；控制台无缺失资源。

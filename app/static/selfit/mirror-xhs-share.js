@@ -1,65 +1,68 @@
 (() => {
   const $ = id => document.getElementById(id);
-  const button = $('xhsOpen'), status = $('xhsStatus');
-  let payload = null, busy = false, attempt = 0;
+  const button = $('xhsOpen'), status = $('xhsStatus'), alternate = $('xhsAlternate');
+  let payload = null, timer = null, leftPage = false;
   const fresh = () => payload?.expiresAt > Date.now() + 1000;
-  const mobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent || '');
   $('xhsBack').onclick = () => {
     if (history.length > 1) history.back(); else location.replace('/selfit/stamp');
   };
-  // Consume the handoff before loading any third-party JS. The receipt secret
-  // stays in the previous page's fragment, never this URL or this handoff.
+  // Only short-lived composed-image and official launch URLs cross pages.
+  // Never send the receipt fragment to a third-party SDK or URL.
   try {
     payload = JSON.parse(sessionStorage.getItem('selfit.xhsShare'));
     sessionStorage.removeItem('selfit.xhsShare');
     const image = new URL(payload.shareInfo.images[0]);
     const localHttp = image.protocol === 'http:' && ['localhost', '127.0.0.1', '[::1]'].includes(image.hostname);
+    const scheme = new URL(payload.launch.scheme), universal = new URL(payload.launch.universal);
     if (payload.shareInfo.type !== 'normal' || payload.shareInfo.images.length !== 1 || (image.protocol !== 'https:' && !localHttp) ||
         image.origin !== location.origin || !/^\/api\/v1\/selfit\/mirror\/photos\/mp_[a-f0-9]{32}\/files\/print\.png$/.test(image.pathname) ||
-        !payload.verifyConfig?.appKey || !fresh()) throw new Error('Invalid handoff');
+        !payload.verifyConfig?.appKey || !fresh() ||
+        scheme.protocol !== 'xhsdiscover:' || scheme.hostname !== 'js_share_sdk' || scheme.username || scheme.password ||
+        !scheme.searchParams.get('share_code') || scheme.searchParams.get('app_key') !== payload.verifyConfig.appKey ||
+        universal.origin !== 'https://oia.xiaohongshu.com' || universal.pathname !== '/oia' || universal.username || universal.password ||
+        universal.searchParams.get('deeplink') !== payload.launch.scheme) throw new Error('Invalid handoff');
   } catch (_) {
     status.textContent = '分享准备已过期，请返回领图页重新点击分享。'; return;
   }
   $('xhsPhoto').src = payload.shareInfo.images[0];
   $('xhsPhotoFrame').hidden = false;
-  if (!mobile) { status.textContent = '请在手机上打开领图链接，再分享到小红书。'; return; }
-
-  const script = document.createElement('script');
-  script.src = 'https://fe-static.xhscdn.com/biz-static/goten/xhs-1.0.1.js';
-  script.referrerPolicy = 'no-referrer'; script.async = true;
-  const timeout = setTimeout(() => {
-    status.textContent = '分享组件加载较慢，请返回重试或先保存照片。';
-  }, 15000);
-  script.onload = () => {
-    clearTimeout(timeout);
-    if (!window.xhs?.share) { status.textContent = '分享组件暂不可用，请返回重试或先保存照片。'; return; }
-    status.textContent = '点击下方按钮，在小红书中继续编辑。'; button.disabled = false;
+  // A missing/desktop JS user agent must not disable a real phone. Prefer the
+  // request's platform only to choose the link, never to gate the feature.
+  const inWeChat = payload.launch.inWeChat || /MicroMessenger/i.test(navigator.userAgent || '');
+  const useScheme = payload.launch.platform === 'Android' && !inWeChat;
+  const primary = useScheme ? payload.launch.scheme : payload.launch.universal;
+  alternate.href = useScheme ? payload.launch.universal : payload.launch.scheme;
+  button.disabled = false;
+  status.textContent = '点击下方按钮，在小红书中继续编辑。';
+  const expire = () => {
+    button.disabled = true; alternate.hidden = true; alternate.removeAttribute('href');
+    status.textContent = '分享准备已过期，请返回领图页重新点击分享。';
   };
-  script.onerror = () => { clearTimeout(timeout); status.textContent = '分享组件未加载成功，请返回重试或先保存照片。'; };
-  document.head.append(script);
-
-  button.onclick = () => {
-    if (busy) return;
-    if (!fresh()) { button.disabled = true; status.textContent = '分享准备已过期，请返回领图页重新点击分享。'; return; }
-    busy = true; button.disabled = true;
-    const current = ++attempt;
+  const opening = () => {
+    clearTimeout(timer); leftPage = false;
     status.textContent = '正在打开小红书，请在编辑页确认内容。';
-    let failed = false;
-    const fail = () => {
-      if (current !== attempt) return;
-      failed = true; busy = false; button.disabled = false;
-      status.textContent = '暂时无法打开小红书，请确认已安装 App；也可以返回保存照片后分享。';
-    };
-    // Call the SDK directly within the tap. A resolved SDK promise only means
-    // an app-opening attempt, never a successful post or a confirmed app launch.
-    try {
-      const result = window.xhs.share({shareInfo: payload.shareInfo, verifyConfig: payload.verifyConfig, fail});
-      Promise.resolve(result).then(() => {
-        if (!failed && current === attempt) { busy = false; button.disabled = false; }
-      }, fail);
-    } catch (_) { fail(); }
-    setTimeout(() => {
-      if (current === attempt && busy) { attempt++; busy = false; button.disabled = false; status.textContent = '打开小红书有些久，请重试或返回保存照片。'; }
-    }, 15000);
+    alternate.hidden = false;
+    timer = setTimeout(() => {
+      if (!leftPage) status.textContent = inWeChat
+        ? '若微信未允许打开，请点右上角在浏览器打开；也可返回领图页保存照片。'
+        : '若未跳转，请尝试备用入口，并确认已安装小红书；也可返回领图页保存照片。';
+    }, 2500);
   };
+  button.onclick = () => {
+    if (!fresh()) { expire(); return; }
+    opening();
+    // No network call or promise between the user's tap and navigation.
+    try { location.assign(primary); }
+    catch (_) { status.textContent = '浏览器未能打开小红书，请尝试备用入口或返回保存照片。'; }
+  };
+  alternate.onclick = event => {
+    if (!fresh()) { event.preventDefault(); expire(); return; }
+    opening(); // Native link navigation retains the user's activation too.
+  };
+  const leave = () => { leftPage = true; clearTimeout(timer); };
+  addEventListener('pagehide', leave);
+  addEventListener('visibilitychange', () => {
+    if (document.hidden) leave();
+    else if (!fresh()) expire();
+  });
 })();

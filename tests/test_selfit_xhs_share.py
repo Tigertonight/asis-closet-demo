@@ -1,7 +1,9 @@
 from concurrent.futures import ThreadPoolExecutor
+import base64
 import io
 import json
 import time
+from urllib.parse import urlsplit, parse_qs
 
 import httpx
 import pytest
@@ -22,6 +24,7 @@ def configured(monkeypatch, tmp_path):
         calls.append((key, secret))
         return 'private-test-token', int(time.time() * 1000) + 86400000
     monkeypatch.setattr(xhs, '_request_token', request)
+    monkeypatch.setattr(xhs, '_request_share_code', lambda config, data: 'official-share-code')
     return calls
 
 
@@ -90,7 +93,7 @@ def test_share_requires_receipt_and_expires_before_token_refresh(receipt, config
     base = f"/api/v1/selfit/mirror/photos/{record['id']}"
     assert client.get(base + '/xhs-share').status_code == 404
     assert not configured
-    response = client.get(base + '/xhs-share', headers={**headers, 'Host': 'attacker.invalid'})
+    response = client.get(base + '/xhs-share', headers={**headers, 'Host': 'attacker.invalid', 'User-Agent': 'Linux; Android 16; Mobile Safari'})
     assert response.status_code == 200
     assert response.headers['cache-control'] == 'no-store'
     payload = response.json()
@@ -98,6 +101,9 @@ def test_share_requires_receipt_and_expires_before_token_refresh(receipt, config
     image = payload['shareInfo']['images'][0]
     assert image.startswith('https://selfit.com.cn/api/v1/') and '/files/print.png?' in image
     assert 'download=0' in image
+    assert payload['launch']['platform'] == 'Android'
+    assert parse_qs(urlsplit(payload['launch']['scheme']).query)['share_code'] == ['official-share-code']
+    assert parse_qs(urlsplit(payload['launch']['universal']).query)['deeplink'] == [payload['launch']['scheme']]
     assert client.get(image).headers['content-type'] == 'image/png'
     assert all(s not in response.text for s in ('a' * 64, 'private-test-token', 'test-secret', 'original', 'scene.png'))
     assert len(configured) == 1
@@ -137,10 +143,54 @@ def test_invalid_public_origin_and_missing_print_fail_before_signing(receipt, co
     assert not configured
 
 
-def test_sdk_only_loaded_on_separate_secret_free_page(receipt):
+def test_share_page_is_separate_and_private(receipt):
     client, _, _ = receipt
     receipt_page = client.get('/selfit/photo')
     share_page = client.get('/selfit/photo/share')
     assert 'xhscdn' not in receipt_page.text
     assert share_page.status_code == 200
     assert share_page.headers['referrer-policy'] == 'no-referrer'
+
+
+@pytest.mark.parametrize('agent,platform,wechat', [
+    ('Linux; Android 16; Mobile Safari', 'Android', False),
+    ('Android 16 MicroMessenger/8.0', 'Android', True),
+    ('iPhone MicroMessenger/8.0', 'iOS', True),
+    ('OpenHarmony 5.0 ArkWeb Mobile', 'pc', False),
+    ('', 'pc', False),
+])
+def test_prepare_uses_official_protocol_without_receipt_url(configured, monkeypatch, agent, platform, wechat):
+    sent = []
+    monkeypatch.setattr(xhs, '_request_share_code', lambda config, data: sent.append(data) or 'share-code')
+    result = xhs.prepare_share('https://selfit.com.cn/composed.png', 'https://selfit.com.cn/selfit/photo/share', agent)
+    assert sent[0]['pageUrl'] == 'https://selfit.com.cn/selfit/photo/share'
+    assert sent[0]['images'] == ['https://selfit.com.cn/composed.png']
+    assert sent[0]['appPlatform'] == result['launch']['platform'] == platform
+    assert result['launch']['inWeChat'] is wechat
+    assert 'accessToken' not in json.dumps(result)
+    assert all(key not in sent[0] for key in ('title', 'content', 'original', 'secret'))
+
+
+def test_check_token_wire_contract(monkeypatch):
+    seen = []
+    def handler(request):
+        seen.append(request)
+        return httpx.Response(200, json={'success': True, 'data': {'data_code': 'valid-code'}})
+    real_client = httpx.Client
+    monkeypatch.setattr(xhs.httpx, 'Client', lambda **kw: real_client(transport=httpx.MockTransport(handler), **kw))
+    config = {'appKey': 'test', 'nonce': 'nonce', 'timestamp': '123', 'signature': 'signature'}
+    data = {'type': 'normal', 'images': ['https://selfit.com.cn/photo.png'], 'pageUrl': 'https://selfit.com.cn/selfit/photo/share'}
+    assert xhs._request_share_code(config, data) == 'valid-code'
+    assert str(seen[0].url) == xhs.CHECK_URL
+    body = json.loads(seen[0].content)
+    assert set(body) == {'app_key', 'nonce', 'timestamp', 'signature', 'data'}
+    assert json.loads(base64.b64decode(body['data'])) == data
+
+
+def test_share_failure_keeps_credentials_out_of_errors(configured, monkeypatch, caplog):
+    def fail(*args): raise httpx.ReadTimeout('private-test-token test-secret unsafe response')
+    monkeypatch.setattr(xhs, '_request_share_code', fail)
+    with pytest.raises(xhs.ShareUnavailable) as error:
+        xhs.prepare_share('https://selfit.com.cn/photo.png', 'https://selfit.com.cn/selfit/photo/share', 'Android')
+    for secret in ('private-test-token', 'test-secret'):
+        assert secret not in str(error.value) + caplog.text

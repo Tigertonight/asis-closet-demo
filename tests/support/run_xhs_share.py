@@ -1,6 +1,6 @@
-"""Local UI QA using a synthetic stamp and stub SDK; never calls XHS or publishes.
+"""Local UI QA using a synthetic stamp and stub share preparation; never calls XHS or publishes.
 Run: .venv/bin/python tests/support/run_xhs_share.py
-Open /test/xhs-receipt?mode=ok|fail|slow. Production files retain the real SDK.
+Open /test/xhs-receipt. Launch URLs are placeholders: inspect the UI without opening them.
 """
 import io
 import json
@@ -23,10 +23,16 @@ os.environ['SELFIT_PUBLIC_BASE_URL'] = 'http://127.0.0.1:8789'
 os.environ['SELFIT_XHS_APP_KEY'] = 'qa-only-key'
 os.environ['SELFIT_XHS_APP_SECRET'] = 'qa-only-secret'
 photos.PHOTO_DIR = Path(tempfile.mkdtemp(prefix='selfit-xhs-ui-'))
-xhs.verify_config = lambda: {
-    'verifyConfig': {'appKey': 'qa-only-key', 'nonce': 'qa-nonce', 'timestamp': str(int(time.time() * 1000)), 'signature': 'qa-signature'},
-    'expiresAt': int(time.time() * 1000) + 180000,
-}
+def fake_prepare(image_url, page_url, agent):
+    from urllib.parse import urlencode
+    scheme = 'xhsdiscover://js_share_sdk?' + urlencode({'share_code': 'qa-only-code', 'app_key': 'qa-only-key', 'session_id': 'qa-session'})
+    return {
+        'verifyConfig': {'appKey': 'qa-only-key'},
+        'shareInfo': {'type': 'normal', 'images': [image_url]},
+        'expiresAt': int(time.time() * 1000) + 180000,
+        'launch': {'scheme': scheme, 'universal': 'https://oia.xiaohongshu.com/oia?' + urlencode({'deeplink': scheme}), 'platform': 'Android', 'inWeChat': False},
+    }
+xhs.prepare_share = fake_prepare
 image = Image.new('RGB', (900, 1200), '#c8d2e5')
 draw = ImageDraw.Draw(image)
 draw.rectangle((70, 80, 830, 1100), outline='#174fe4', width=5)
@@ -43,34 +49,9 @@ app = FastAPI()
 @app.get('/test/xhs-receipt')
 def receipt_fixture():
     script = f"""<script>
-    Object.defineProperty(navigator, 'userAgent', {{value: 'iPhone MicroMessenger/8.0', configurable: true}});
     history.replaceState(null, '', location.pathname + location.search + '#{record['id']}.{secret}');
-    sessionStorage.setItem('selfit.qa.xhsMode', new URLSearchParams(location.search).get('mode') || 'ok');
     </script>"""
     return HTMLResponse((ROOT / 'app/static/selfit/mirror-photo.html').read_text().replace('</head>', script + '</head>'))
-
-
-@app.get('/selfit/photo/share')
-def share_fixture():
-    script = """<script>
-    Object.defineProperty(navigator, 'userAgent', {value: 'iPhone MicroMessenger/8.0', configurable: true});
-    const append = document.head.append.bind(document.head);
-    document.head.append = node => {
-      if (node.src === 'https://fe-static.xhscdn.com/biz-static/goten/xhs-1.0.1.js') {
-        window.xhs = { share: async input => {
-          document.documentElement.dataset.sdkCalls = String(Number(document.documentElement.dataset.sdkCalls || 0) + 1);
-          document.documentElement.dataset.sdkType = input.shareInfo.type;
-          document.documentElement.dataset.sdkImages = String(input.shareInfo.images.length);
-          const mode = sessionStorage.getItem('selfit.qa.xhsMode');
-          if (mode === 'fail') input.fail({errCode: 20003});
-          if (mode === 'slow') await new Promise(() => {});
-        }};
-        queueMicrotask(() => node.onload()); return;
-      }
-      append(node);
-    };
-    </script>"""
-    return HTMLResponse((ROOT / 'app/static/selfit/mirror-xhs-share.html').read_text().replace('</head>', script + '</head>'))
 
 
 app.include_router(photos.router)
