@@ -5,9 +5,9 @@ const vm = require('node:vm');
 const source = fs.readFileSync('app/static/selfit/mirror-photo.js', 'utf8');
 const settle = () => new Promise(resolve => setImmediate(resolve));
 
-function fixture({ share = false, hasScene = true, userAgent = 'Mozilla/5.0 Chrome/130' } = {}) {
+function fixture({ share = false, hasScene = true, xhs = false, xhsFail = false, userAgent = 'Mozilla/5.0 Chrome/130' } = {}) {
   let now = 1800000000000;
-  const elements = new Map(), clicks = [], requests = [], events = {}, shared = [];
+  const elements = new Map(), clicks = [], requests = [], events = {}, shared = [], storage = new Map(), navigations = [];
   const ids = new Set([...fs.readFileSync('app/static/selfit/mirror-photo.html', 'utf8').matchAll(/id="([^"]+)"/g)].map(m => m[1]));
   const el = id => {
     assert.ok(ids.has(id), `element ${id} must exist in the page`);
@@ -15,7 +15,7 @@ function fixture({ share = false, hasScene = true, userAgent = 'Mozilla/5.0 Chro
       open: false, showModal() { this.open = true; }, close() { this.open = false; this.onclose?.(); } });
     return elements.get(id);
   };
-  const metadata = () => ({ expiresAt: now + 86400000, hasScene, edition: 'woken', imageLinks: {
+  const metadata = () => ({ expiresAt: now + 86400000, hasScene, edition: 'woken', xhsShareEnabled: xhs, imageLinks: {
     expiresAt: now + 600000,
     print: { view: `/files/print.png?inline=${now}`, download: `/files/print.png?download=${now}` },
     scene: { view: `/files/scene.png?inline=${now}`, download: `/files/scene.png?download=${now}` },
@@ -24,11 +24,16 @@ function fixture({ share = false, hasScene = true, userAgent = 'Mozilla/5.0 Chro
   const context = {
     document: { hidden: false, getElementById: el, body: { append() {}, classList: { add() {} } },
       createElement: () => ({ click() { clicks.push({ href: this.href, filename: this.download }); }, remove() {} }) },
-    location: { hash: '#mp_' + 'a'.repeat(32) + '.' + 'b'.repeat(64) }, navigator: { userAgent, ...(share ? { canShare: () => true, share: async value => { shared.push(value); } } : {}) }, File, Blob,
+    location: { hash: '#mp_' + 'a'.repeat(32) + '.' + 'b'.repeat(64), assign: url => navigations.push(url) },
+    sessionStorage: { setItem: (key, value) => storage.set(key, value) },
+    navigator: { userAgent, ...(share ? { canShare: () => true, share: async value => { shared.push(value); } } : {}) }, File, Blob,
     Date: class extends Date { static now() { return now; } }, AbortSignal, TypeError,
     fetch: async url => {
       requests.push(url);
       if (failing) throw new TypeError('offline');
+      if (url.endsWith('/xhs-share')) return xhsFail ? { ok: false, json: async () => ({ detail: '分享暂时不可用' }) } : {
+        ok: true, json: async () => ({ expiresAt: now + 180000, shareInfo: { type: 'normal', images: ['https://selfit.com.cn/files/print.png?signature=test'] }, verifyConfig: { appKey: 'test', signature: 'test' } }),
+      };
       if (share && url.endsWith('/download')) return { ok: true, blob: async () => new Blob(['stamp'], { type: 'image/png' }) };
       assert.ok(url.endsWith('/info'), 'must not request the removed scene');
       return { ok: true, json: async () => metadata() };
@@ -36,8 +41,30 @@ function fixture({ share = false, hasScene = true, userAgent = 'Mozilla/5.0 Chro
     setTimeout: () => 1, clearTimeout() {}, addEventListener: (name, callback) => { events[name] = callback; },
   };
   vm.runInNewContext(source, context);
-  return { el, clicks, requests, events, shared, advance: () => { now += 601000; }, fail: () => { failing = true; } };
+  return { el, clicks, requests, events, shared, storage, navigations, advance: () => { now += 601000; }, fail: () => { failing = true; } };
 }
+
+test('XHS handoff is explicit, single-flight and contains no receipt secret', async () => {
+  const f = fixture({ xhs: true }); await settle();
+  assert.equal(f.el('phoneXhsShare').hidden, false);
+  assert.ok(!f.requests.some(url => url.endsWith('/xhs-share')));
+  const click = f.el('phoneXhsShare').onclick();
+  await f.el('phoneXhsShare').onclick(); await click;
+  assert.equal(f.requests.filter(url => url.endsWith('/xhs-share')).length, 1);
+  assert.deepEqual(f.navigations, ['/selfit/photo/share']);
+  assert.doesNotMatch(f.storage.get('selfit.xhsShare'), new RegExp('b'.repeat(64)));
+});
+
+test('XHS failure keeps saving and retry available; unconfigured action stays hidden', async () => {
+  const absent = fixture(); await settle();
+  assert.equal(absent.el('phoneXhsShare').hidden, true);
+  const f = fixture({ xhs: true, xhsFail: true }); await settle();
+  await f.el('phoneXhsShare').onclick();
+  assert.equal(f.el('phoneXhsShare').disabled, false);
+  assert.equal(f.el('phoneDownload').disabled, false);
+  assert.equal(f.navigations.length, 0);
+  assert.match(f.el('phoneStatus').textContent, /分享暂时不可用/);
+});
 
 test('PNG download is synchronous with the tap and uses a real file URL', async () => {
   const f = fixture(); await settle();

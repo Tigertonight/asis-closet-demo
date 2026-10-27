@@ -17,6 +17,7 @@ import time
 from contextlib import contextmanager
 from datetime import datetime, timezone
 from pathlib import Path
+from urllib.parse import urlsplit
 
 import anyio
 import qrcode
@@ -28,6 +29,7 @@ from app.photo_work import photo_admission, run_photo_work
 from app.auth import get_admin_user
 from app.selfit_assets import LocalAssetStore
 from app.storage import ROOT_DIR
+from app import selfit_xhs_share
 
 router = APIRouter(tags=["selfit-mirror-photos"])
 PHOTO_DIR = ROOT_DIR / "outputs" / "selfit_mirror_photos"
@@ -273,7 +275,26 @@ def get_photo(photo_id: str, variant: str, request: Request, authorization: str 
     is_stamp = json.loads(record["settings"]).get("template") == "woken-stamp"
     if variant == "info":
         has_scene = _has_scene(record)
-        return JSONResponse({"expiresAt": record["expires"] * 1000, "width": 900 if is_stamp else 1080, "height": 1200 if is_stamp else 1440, "hasScene": has_scene, "edition": "woken" if is_stamp else "selfit", "imageLinks": _file_links(record, has_scene)}, headers=PRIVATE_HEADERS)
+        return JSONResponse({"expiresAt": record["expires"] * 1000, "width": 900 if is_stamp else 1080, "height": 1200 if is_stamp else 1440, "hasScene": has_scene, "edition": "woken" if is_stamp else "selfit", "imageLinks": _file_links(record, has_scene), "xhsShareEnabled": is_stamp and selfit_xhs_share.configured()}, headers=PRIVATE_HEADERS)
+    if variant == "xhs-share":
+        if not is_stamp:
+            raise HTTPException(404, "该照片暂不支持此分享方式，可以先保存照片。", headers=PRIVATE_HEADERS)
+        # An explicit configured origin prevents Host-header injection into a
+        # signed share. Only the composed print gets a short-lived public URL.
+        base = os.getenv("SELFIT_PUBLIC_BASE_URL", "").strip().rstrip("/") or "https://selfit.com.cn"
+        parsed = urlsplit(base)
+        local_http = parsed.scheme == "http" and parsed.hostname in {"localhost", "127.0.0.1", "::1"}
+        if (parsed.scheme != "https" and not local_http) or not parsed.netloc or parsed.username or parsed.password or parsed.query or parsed.fragment or parsed.path:
+            raise HTTPException(503, "分享地址暂未准备好，可以先保存照片。", headers=PRIVATE_HEADERS)
+        if not _store().local_path(f"mirror-photos/{photo_id}/print.png"):
+            raise HTTPException(503, "照片暂时无法读取，请重新加载后再分享。", headers=PRIVATE_HEADERS)
+        try:
+            config = selfit_xhs_share.verify_config()
+        except selfit_xhs_share.ShareUnavailable as exc:
+            raise HTTPException(503, str(exc), headers=PRIVATE_HEADERS) from None
+        links = _file_links(record, False)
+        return JSONResponse({**config, "expiresAt": min(config["expiresAt"], links["expiresAt"]),
+                             "shareInfo": {"type": "normal", "images": [base + links["print"]["view"]]}}, headers=PRIVATE_HEADERS)
     if variant == "qr":
         base = os.getenv("SELFIT_PUBLIC_BASE_URL", "").strip().rstrip("/") or str(request.base_url).rstrip("/")
         url = f"{base}/selfit/photo#{photo_id}.{secret}"
@@ -302,6 +323,11 @@ def stamp_page():
 @router.get("/selfit/photo", include_in_schema=False)
 def phone_photo_page():
     return FileResponse(Path(__file__).parent / "static" / "selfit" / "mirror-photo.html", headers=PRIVATE_HEADERS)
+
+
+@router.get("/selfit/photo/share", include_in_schema=False)
+def phone_share_page():
+    return FileResponse(Path(__file__).parent / "static" / "selfit" / "mirror-xhs-share.html", headers=PRIVATE_HEADERS)
 
 
 def admin_record(photo_id):

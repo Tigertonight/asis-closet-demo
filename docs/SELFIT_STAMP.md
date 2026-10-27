@@ -23,8 +23,8 @@
 
 出片即后台保存。保存失败保留本机照片，支持重试；响应丢失复用同一凭证，不重复创建记录。
 再做一枚会清空上一位照片；非处理状态下 120 秒无操作自动回到入口，关闭相机与领取弹窗。
-手机只展示和保存邮票，支持文件分享的浏览器提供单张邮票的系统分享按钮。不依赖小红书 JS Key，
-也不冒充已发布笔记；可在系统分享中选小红书，或保存后自行发布。
+手机只展示和保存邮票，支持文件分享的浏览器提供单张邮票的系统分享按钮。
+另支持配置小红书 JS SDK 后的专用分享入口，流程和配置见下节；未配置时仍可保存或系统分享。
 普通浏览器的“保存高清邮票”在点击时直接请求同域 PNG 附件地址，不再等待 JS 下载为 Blob。
 微信（MicroMessenger）显示“查看高清原图”，点击后在页内查看层展示同一张高清 PNG，
 提示长按保存到相册，不发起附件下载；下方原图入口也走这一流程。查看层支持关闭、加载失败重试
@@ -46,6 +46,33 @@
 已有专用窗口时阻止重复启动。实际目标仍为 Windows 默认打印机，活动期间不能更换默认值；需实物验收。
 直接从普通浏览器打开时，首次仍需在打印窗口选择 DS620，确认 4×6、纵向、每张 1 页和无页眉页脚。
 摄像头需 HTTPS（localhost 调试例外）及设备授权。现场需使用实际智能镜/外接摄像头验收。
+
+## 小红书 JS SDK 分享
+
+WOKEN DAY 领图页点击「分享到小红书」→ 预览将分享的完整邮票 → 点击「打开小红书」→
+在 App 编辑页填写内容并由用户决定发布。只传一张合成后的高清邮票，不传拍摄原图。
+当前官方 SDK 已下线标题、正文、话题预填，代码不提交这些字段，也不调用发布接口。
+官方文档：<https://agora.xiaohongshu.com/doc/js>；使用官方 `xhs-1.0.1.js`。
+
+- 服务端配置 `SELFIT_XHS_APP_KEY`、`SELFIT_XHS_APP_SECRET` 才显示入口；密钥不进前端、日志和 git。
+  配置写入服务器既有私有环境文件；本地 `.env.xhs.local` 仅供联调，启动时须显式加载。
+- `GET /api/v1/selfit/mirror/photos/{id}/xhs-share` 校验领取凭证、照片期限及成片文件，返回短期
+  `verifyConfig` 和图片地址。分享使用 `SELFIT_PUBLIC_BASE_URL` 指定的 HTTPS 域名，默认
+  `https://selfit.com.cn`，不从 Host 头拼接。该域名应与领图页同源；仅 localhost 调试允许 HTTP。
+- access token 存在 `outputs/xhs_share/token.json`（0600）；可通过 `SELFIT_XHS_CACHE_DIR` 指定
+  持久目录。锁避免多线程/多进程重复刷新，获取失败冷却 30 秒。该缓存应随 outputs 保留。
+  **同一 appKey 仅由一套共享缓存管理刷新**：官方新 token 会立即使旧 token 失效，开发与线上
+  不可各自频繁申请。浏览器签名最长 3 分钟，且早于 token 刷新边界失效。
+- SDK 会读取并上报 `location.href`，所以只在无领取凭证的 `/selfit/photo/share` 页面加载。
+  两页之间用一次性 sessionStorage 交接图片短期签名地址和 verifyConfig，加载 SDK 前即消费清除。
+  原领取 secret 始终留在领图页 fragment；分享图 URL 仅可读合成 PNG，最长 10 分钟，
+  且不得超过领取期限。签名接口和两页均禁止缓存、referrer。
+- 组件或鉴权失败可返回保存照片；过期后返回重新准备。桌面提示改用手机，不尝试唤起 App。
+  SDK promise 完成只表示执行了唤起尝试，不代表 App 已打开或笔记已发布。
+
+2026-10-27 联调：用户提供的凭据成功获取 token，官方 check/token 返回分享码；桌面浏览器
+加载真实 SDK 后也完成验签和分享码请求。真实接口只使用公开邮票框，无用户照片或发布操作。
+手机原生 App 的图片载入/编辑页唤起仍需现场实机确认，尤其微信内浏览器。
 
 ## 存储、权限与运行
 
@@ -74,12 +101,18 @@
 ```sh
 .venv/bin/python -m pytest tests/test_selfit_mirror_photos.py tests/test_selfit_admin_submissions.py tests/test_selfit_persona.py tests/test_selfit_photo_wiring.py -q
 node --test tests/test_stamp_delivery.cjs tests/test_stamp_printing.cjs tests/test_stamp_photo_import.cjs tests/test_mirror_photo_download.cjs
+.venv/bin/python -m pytest tests/test_selfit_xhs_share.py tests/test_selfit_mirror_photos.py -q
+node --test tests/test_mirror_xhs_share.cjs tests/test_mirror_photo_download.cjs
 .venv/bin/python tests/support/run_stamp_studio.py
 ```
 
 隔离服务运行于 8788；`/test/stamp?photo=portrait&mode=save-failure` 使用项目示例照片模拟
 视频流并让首次保存失败，不使用真实相机、不向外部存储上传。`mode=denied` 可测试权限拒绝。
 测试数据独立存于临时目录；正式 `/selfit/stamp` 无测试注入。
+
+分享页面隔离验收：`.venv/bin/python tests/support/run_xhs_share.py`，访问
+`http://127.0.0.1:8789/test/xhs-receipt?mode=ok`（另有 `fail` / `slow`）。使用临时合成测试图、
+服务端假签名和 SDK 桩；用于手机/桌面布局、返回、失败恢复验收，不代表原生 App 已唤起。
 
 按 DESIGN.md 自检：独立活动首屏行动清楚；照片为视觉中心；模板完整不拉伸；手机390/430px
 与桌面/镜子比例无水平溢出；按钮不重叠；加载、失败、恢复、成功、过期状态完整；控制台无缺失资源。

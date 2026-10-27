@@ -63,6 +63,8 @@
     if ($('phoneViewer').open) $('phoneViewer').close();
     clearTimeout(refreshTimer); files = []; preparing = []; refreshing = null; info = null;
     $('phoneShare').hidden = true; $('phoneRetry').hidden = true;
+    $('phoneXhsShare').hidden = true; $('phoneXhsShare').disabled = false;
+    $('phoneXhsShare').textContent = '分享到小红书';
     $('phoneOriginal').hidden = true;
     $('phoneSaveHint').hidden = true; $('phoneDownload').disabled = true; $('phonePhoto').hidden = true;
     $('phoneStatus').textContent = '正在加载照片…'; $('phoneIntro').textContent = '';
@@ -78,6 +80,7 @@
       if (current !== generation) return;
       $('phonePhoto').hidden = false; $('phoneIntro').textContent = info.edition === 'woken' ? '你的周年邮票，已经准备好了' : '你的照片，已经准备好了';
       $('phoneDownload').disabled = false;
+      $('phoneXhsShare').hidden = !info.xhsShareEnabled;
       $('phoneDownload').textContent = inWeChat ? '查看高清原图' : info.edition === 'woken' ? '保存高清邮票' : '保存高清照片';
       $('phoneStatus').textContent = '高清成片包含你选好的模板与效果';
       $('phoneSaveHint').textContent = inWeChat ? '打开原图后，长按图片并选择「保存图片」。' : '如未开始下载，可打开高清原图后保存。';
@@ -148,6 +151,25 @@
     catch (e) { if (current === generation && e.name !== 'AbortError') $('phoneStatus').textContent = '暂时无法分享，可以保存照片后在小红书中发布。'; }
   };
   $('phoneRetry').onclick = load;
+  $('phoneXhsShare').onclick = async () => {
+    if ($('phoneXhsShare').disabled || !info?.xhsShareEnabled) return;
+    const current = generation;
+    $('phoneXhsShare').disabled = true;
+    $('phoneXhsShare').textContent = '正在准备分享…';
+    try {
+      const payload = await (await get('xhs-share')).json();
+      if (current !== generation) return;
+      // The official SDK reports location.href. Call it on a separate page
+      // without the receipt fragment, and never store the receipt secret here.
+      sessionStorage.setItem('selfit.xhsShare', JSON.stringify(payload));
+      location.assign('/selfit/photo/share');
+    } catch (e) {
+      if (current !== generation) return;
+      $('phoneStatus').textContent = errorText(e) || '分享暂时不可用，可以先保存照片。';
+      $('phoneXhsShare').disabled = false;
+      $('phoneXhsShare').textContent = '分享到小红书';
+    }
+  };
   addEventListener('visibilitychange', () => {
     if (!document.hidden && info && info.imageLinks.expiresAt < Date.now() + 60000) void refreshLinks().catch(() => {});
   });
