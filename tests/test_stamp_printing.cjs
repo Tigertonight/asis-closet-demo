@@ -40,6 +40,8 @@ test('prints the exact PNG locally only after decode; duplicate clicks share one
   release(); await flush();
   assert.equal(f.prints(), 1); assert.equal(f.blobs[0], blob);
   assert.match(f.frames[0].srcdoc, /object-fit:contain/);
+  assert.match(f.frames[0].srcdoc, /@page\{size:4in 6in;margin:0\}/);
+  assert.match(f.frames[0].srcdoc, /html\{width:4in;height:6in\}/);
   assert.equal((f.frames[0].srcdoc.match(/<img /g) || []).length, 1);
   assert.doesNotMatch(f.frames[0].srcdoc, /<button|<canvas|https?:/);
   assert.equal(f.frames[0].removed, undefined, 'keep photo until dialog closes');

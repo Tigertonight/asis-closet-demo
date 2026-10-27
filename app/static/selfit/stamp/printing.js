@@ -42,7 +42,7 @@
         }
       };
       frame.srcdoc = `<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><title>WOKEN DAY 纪念邮票</title>
-        <style>@page{size:auto;margin:0}html,body{margin:0;padding:0;width:100%;height:100%;background:white}img{display:block;width:100%;height:100%;object-fit:contain;print-color-adjust:exact;-webkit-print-color-adjust:exact}</style>
+        <style>@page{size:4in 6in;margin:0}html{width:4in;height:6in}body{margin:0;padding:0;width:100%;height:100%;background:white}img{display:block;width:100%;height:100%;object-fit:contain;break-inside:avoid;print-color-adjust:exact;-webkit-print-color-adjust:exact}</style>
         </head><body><img src="${url}" alt=""></body></html>`;
       document.body.append(frame);
       return pending;
