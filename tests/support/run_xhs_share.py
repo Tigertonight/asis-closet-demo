@@ -50,6 +50,13 @@ app = FastAPI()
 def receipt_fixture():
     script = f"""<script>
     history.replaceState(null, '', location.pathname + location.search + '#{record['id']}.{secret}');
+    // Deterministic recovery UI without calling XHS or launching a native app.
+    if (new URLSearchParams(location.search).get('mode') === 'share-failure') {{
+      const realFetch = window.fetch.bind(window);
+      window.fetch = (url, options) => url.endsWith('/xhs-share')
+        ? Promise.resolve(new Response(JSON.stringify({{detail: '分享暂时不可用，可以重试或先保存照片。'}}), {{status: 503, headers: {{'Content-Type': 'application/json'}}}}))
+        : realFetch(url, options);
+    }}
     </script>"""
     return HTMLResponse((ROOT / 'app/static/selfit/mirror-photo.html').read_text().replace('</head>', script + '</head>'))
 

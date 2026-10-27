@@ -4,12 +4,12 @@ const fs = require('node:fs');
 const vm = require('node:vm');
 const source = fs.readFileSync('app/static/selfit/mirror-xhs-share.js', 'utf8');
 
-function fixture({ expired = false, agent = 'Android 16', platform = 'Android', wechat = false, invalid = '', throws = false } = {}) {
+function fixture({ expired = false, agent = 'Android 16', platform = 'Android', wechat = false, invalid = '', throws = false, autoOpen = false } = {}) {
   let now = 1800000000000, back = 0;
   const el = {}, calls = [], timers = [], storage = new Map(), events = {};
   const scheme = 'xhsdiscover://js_share_sdk?share_code=official-code&app_key=test&session_id=session';
   const universal = 'https://oia.xiaohongshu.com/oia?deeplink=' + encodeURIComponent(scheme);
-  const payload = { expiresAt: now + (expired ? -1 : 180000), shareInfo: { type: 'normal', images: [
+  const payload = { autoOpen, expiresAt: now + (expired ? -1 : 180000), shareInfo: { type: 'normal', images: [
     `https://${invalid === 'image' ? 'attacker.invalid' : 'selfit.com.cn'}/api/v1/selfit/mirror/photos/mp_${'a'.repeat(32)}/files/print.png?signature=test`
   ] }, verifyConfig: { appKey: 'test' }, launch: { scheme, universal, platform, inWeChat: wechat } };
   if (invalid === 'scheme') payload.launch.scheme = 'javascript:alert(1)';
@@ -80,4 +80,23 @@ test('remaining in WeChat explains browser fallback', () => {
   const f = fixture({ wechat: true }); f.el.xhsOpen.onclick(); f.timers.at(-1)();
   assert.match(f.el.xhsStatus.textContent, /微信.*浏览器打开/);
   assert.equal(f.el.xhsOpen.disabled, false);
+});
+
+for (const wechat of [false, true]) test(`QR opens once on entry and retains tap fallback (WeChat: ${wechat})`, () => {
+  const f = fixture({ autoOpen: true, wechat });
+  assert.deepEqual(f.calls, [wechat ? f.universal : f.scheme]);
+  assert.equal(f.el.xhsOpen.textContent, '继续打开小红书');
+  assert.equal(f.storage.size, 0, 'handoff consumed before navigation');
+  f.events.pagehide(); f.document.hidden = false; f.events.visibilitychange();
+  assert.equal(f.calls.length, 1, 'returning must not automatically relaunch');
+  f.el.xhsOpen.onclick();
+  assert.equal(f.calls.length, 2, 'tap explicitly retries navigation');
+});
+
+test('invalid automatic handoff cannot launch; blocked automatic launch still allows a tap', () => {
+  assert.equal(fixture({ autoOpen: true, expired: true }).calls.length, 0);
+  const f = fixture({ autoOpen: true, throws: true });
+  assert.equal(f.calls.length, 1);
+  assert.equal(f.el.xhsOpen.disabled, false);
+  assert.equal(f.el.xhsAlternate.hidden, false);
 });

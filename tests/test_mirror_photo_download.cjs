@@ -5,7 +5,7 @@ const vm = require('node:vm');
 const source = fs.readFileSync('app/static/selfit/mirror-photo.js', 'utf8');
 const settle = () => new Promise(resolve => setImmediate(resolve));
 
-function fixture({ share = false, hasScene = true, xhs = false, xhsFail = false, userAgent = 'Mozilla/5.0 Chrome/130' } = {}) {
+function fixture({ share = false, hasScene = true, xhs = false, xhsFail = false, scan = false, delayedShare = false, userAgent = 'Mozilla/5.0 Chrome/130' } = {}) {
   let now = 1800000000000;
   const elements = new Map(), clicks = [], requests = [], events = {}, shared = [], storage = new Map(), navigations = [];
   const ids = new Set([...fs.readFileSync('app/static/selfit/mirror-photo.html', 'utf8').matchAll(/id="([^"]+)"/g)].map(m => m[1]));
@@ -20,17 +20,20 @@ function fixture({ share = false, hasScene = true, xhs = false, xhsFail = false,
     print: { view: `/files/print.png?inline=${now}`, download: `/files/print.png?download=${now}` },
     scene: { view: `/files/scene.png?inline=${now}`, download: `/files/scene.png?download=${now}` },
   } });
-  let failing = false;
+  let failing = false, releaseShare;
+  const historyWrites = [];
   const context = {
     document: { hidden: false, getElementById: el, body: { append() {}, classList: { add() {} } },
       createElement: () => ({ click() { clicks.push({ href: this.href, filename: this.download }); }, remove() {} }) },
-    location: { hash: '#mp_' + 'a'.repeat(32) + '.' + 'b'.repeat(64), assign: url => navigations.push(url) },
+    location: { pathname: '/selfit/photo', search: scan ? '?intent=xhs' : '', hash: '#mp_' + 'a'.repeat(32) + '.' + 'b'.repeat(64), assign: url => navigations.push(url) },
+    history: { replaceState: (_, __, url) => historyWrites.push(url) }, URLSearchParams,
     sessionStorage: { setItem: (key, value) => storage.set(key, value) },
     navigator: { userAgent, ...(share ? { canShare: () => true, share: async value => { shared.push(value); } } : {}) }, File, Blob,
     Date: class extends Date { static now() { return now; } }, AbortSignal, TypeError,
     fetch: async url => {
       requests.push(url);
       if (failing) throw new TypeError('offline');
+      if (delayedShare && url.endsWith('/xhs-share')) await new Promise(resolve => { releaseShare = resolve; });
       if (url.endsWith('/xhs-share')) return xhsFail ? { ok: false, json: async () => ({ detail: '分享暂时不可用' }) } : {
         ok: true, json: async () => ({ expiresAt: now + 180000, shareInfo: { type: 'normal', images: ['https://selfit.com.cn/files/print.png?signature=test'] }, verifyConfig: { appKey: 'test', signature: 'test' } }),
       };
@@ -41,8 +44,47 @@ function fixture({ share = false, hasScene = true, xhs = false, xhsFail = false,
     setTimeout: () => 1, clearTimeout() {}, addEventListener: (name, callback) => { events[name] = callback; },
   };
   vm.runInNewContext(source, context);
-  return { el, clicks, requests, events, shared, storage, navigations, advance: () => { now += 601000; }, fail: () => { failing = true; } };
+  return { el, clicks, requests, events, shared, storage, navigations, historyWrites, release: () => releaseShare(), advance: () => { now += 601000; }, fail: () => { failing = true; } };
 }
+
+test('QR share intent prepares immediately without fetching or decoding the photo', async () => {
+  const f = fixture({ scan: true }); await settle();
+  assert.equal(f.requests.length, 1);
+  assert.ok(f.requests[0].endsWith('/xhs-share'));
+  assert.deepEqual(f.navigations, ['/selfit/photo/share']);
+  const payload = f.storage.get('selfit.xhsShare');
+  assert.equal(JSON.parse(payload).autoOpen, true);
+  assert.doesNotMatch(payload, new RegExp('b'.repeat(64)));
+  assert.equal(f.historyWrites.length, 1);
+  assert.match(f.historyWrites[0], /^\/selfit\/photo#mp_/);
+  assert.doesNotMatch(f.historyWrites[0], /intent=/);
+  f.events.pageshow({ persisted: true }); await settle();
+  assert.equal(f.requests.filter(url => url.endsWith('/xhs-share')).length, 1, 'back must not launch again');
+  assert.equal(f.el('phoneDownload').disabled, false);
+});
+
+test('QR preparation failure offers share retry and saving', async () => {
+  const f = fixture({ scan: true, xhsFail: true }); await settle();
+  assert.equal(f.navigations.length, 0);
+  assert.equal(f.el('phoneViewPhoto').hidden, false);
+  assert.equal(f.el('phoneXhsShare').disabled, false);
+  assert.match(f.el('phoneStatus').textContent, /分享暂时不可用/);
+  await f.el('phoneXhsShare').onclick();
+  assert.equal(f.requests.filter(url => url.endsWith('/xhs-share')).length, 2);
+  await f.el('phoneViewPhoto').onclick();
+  assert.equal(f.el('phoneDownload').disabled, false);
+  assert.equal(f.el('phoneViewPhoto').hidden, true);
+});
+
+test('choosing save while sharing is pending prevents a late launch', async () => {
+  const f = fixture({ scan: true, delayedShare: true });
+  await f.el('phoneXhsShare').onclick();
+  assert.equal(f.requests.length, 1, 'disabled preparation cannot be submitted twice');
+  await f.el('phoneViewPhoto').onclick(); f.release(); await settle();
+  assert.equal(f.navigations.length, 0);
+  assert.equal(f.storage.size, 0);
+  assert.equal(f.el('phoneDownload').disabled, false);
+});
 
 test('XHS handoff is explicit, single-flight and contains no receipt secret', async () => {
   const f = fixture({ xhs: true }); await settle();

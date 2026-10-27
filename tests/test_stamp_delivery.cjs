@@ -29,6 +29,8 @@ test('QR failure retries retrieval without creating a second saved photo',async(
   let posts=0, qrs=0;
   const delivery=setup(async(url,options)=>{
     if(options.method==='POST'){posts++;return ok({photoId:'mp_test',expiresAt:Date.now()+86400000});}
+    assert.equal(url, '/api/v1/selfit/mirror/photos/mp_test/qr?intent=xhs');
+    assert.match(options.headers.Authorization, /^Bearer [a-f0-9]{64}$/);
     if(++qrs===1)return {ok:false,json:async()=>({detail:'请重试'})};return ok({});
   });
   delivery.setPhoto(bundle());await delivery.pending;

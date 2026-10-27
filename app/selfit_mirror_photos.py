@@ -296,7 +296,9 @@ def get_photo(photo_id: str, variant: str, request: Request, authorization: str 
         return JSONResponse({**config, "expiresAt": min(config["expiresAt"], links["expiresAt"])}, headers=PRIVATE_HEADERS)
     if variant == "qr":
         base = os.getenv("SELFIT_PUBLIC_BASE_URL", "").strip().rstrip("/") or str(request.base_url).rstrip("/")
-        url = f"{base}/selfit/photo#{photo_id}.{secret}"
+        # Generate the short-lived XHS share code on the phone, not at the kiosk.
+        intent = "?intent=xhs" if is_stamp and request.query_params.get("intent") == "xhs" else ""
+        url = f"{base}/selfit/photo{intent}#{photo_id}.{secret}"
         qr = qrcode.QRCode(error_correction=qrcode.constants.ERROR_CORRECT_M, box_size=6, border=4)
         qr.add_data(url)
         qr.make(fit=True)

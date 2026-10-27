@@ -324,3 +324,22 @@ def test_stamp_without_scene_upload_download_and_admin_listing(client):
         assert retrieve(client, photo_id, variant).status_code == 404
     assert not (photos.PHOTO_DIR / 'assets' / 'mirror-photos' / photo_id / 'scene.png').exists()
     assert 'scene' not in photos.admin_capture_rows()[0]
+
+
+@pytest.mark.parametrize('stamp', [True, False])
+def test_share_qr_requests_fresh_share_on_scan_and_keeps_secret_in_fragment(client, stamp):
+    from urllib.parse import urlsplit
+    photo_id = (save_stamp(client, scene=False) if stamp else save(client)).json()['photoId']
+    qr = retrieve(client, photo_id, 'qr?intent=xhs')
+    assert qr.status_code == 200
+    img = cv2.imdecode(np.frombuffer(qr.content, np.uint8), cv2.IMREAD_COLOR)
+    url = cv2.QRCodeDetector().detectAndDecode(img)[0]
+    parts = urlsplit(url)
+    assert parts.path == '/selfit/photo'
+    assert parts.query == ('intent=xhs' if stamp else '')
+    assert parts.fragment == f'{photo_id}.{SECRET}'
+    assert 'share_code' not in url
+    assert client.get(f'/api/v1/selfit/mirror/photos/{photo_id}/qr?intent=xhs').status_code == 404
+    with photos._database() as db:
+        db.execute('UPDATE photos SET expires=?', (time.time() - 1,))
+    assert retrieve(client, photo_id, 'qr?intent=xhs').status_code == 410

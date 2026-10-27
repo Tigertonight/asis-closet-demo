@@ -33,6 +33,7 @@
   const primary = useScheme ? payload.launch.scheme : payload.launch.universal;
   alternate.href = useScheme ? payload.launch.universal : payload.launch.scheme;
   button.disabled = false;
+  if (payload.autoOpen === true) button.textContent = '继续打开小红书';
   status.textContent = '点击下方按钮，在小红书中继续编辑。';
   const expire = () => {
     button.disabled = true; alternate.hidden = true; alternate.removeAttribute('href');
@@ -44,8 +45,8 @@
     alternate.hidden = false;
     timer = setTimeout(() => {
       if (!leftPage) status.textContent = inWeChat
-        ? '若微信未允许打开，请点右上角在浏览器打开；也可返回领图页保存照片。'
-        : '若未跳转，请尝试备用入口，并确认已安装小红书；也可返回领图页保存照片。';
+        ? '若未跳转，请点击按钮继续。微信仍拦截时，请返回领图页再用浏览器打开，或保存照片后分享。'
+        : '若未跳转，请点击按钮继续或尝试备用入口，并确认已安装小红书；也可返回保存照片。';
     }, 2500);
   };
   button.onclick = () => {
@@ -65,4 +66,7 @@
     if (document.hidden) leave();
     else if (!fresh()) expire();
   });
+  // A scan explicitly requests sharing. Try once on entry; browser activation
+  // restrictions are recoverable with the same synchronous tap handler.
+  if (payload.autoOpen === true) button.onclick();
 })();

@@ -10,12 +10,13 @@
 <body>
   <main>
     <header><strong id="phoneBrandName" hidden>WOKEN DAY</strong><img id="phoneBrand" src="/static/selfit/assets/selfit-wordmark.svg" width="82" height="30" alt="selfit"><span>来自智能镜的纪念</span></header>
-    <h1>把这一刻带走</h1><p class="intro" id="phoneIntro"></p>
+    <h1 id="phoneTitle">把这一刻带走</h1><p class="intro" id="phoneIntro"></p>
     <button id="phoneShare" hidden>分享照片</button>
     <div class="photo-frame" id="phonePhotoFrame"><img id="phonePhoto" alt="你的完整纪念照片" hidden></div>
     <p id="phoneStatus" role="status">正在加载照片…</p>
     <button id="phoneDownload" disabled>保存高清照片</button>
     <button id="phoneXhsShare" class="secondary" hidden>分享到小红书</button>
+    <button id="phoneViewPhoto" class="secondary" hidden>先保存照片</button>
     <a id="phoneOriginal" class="original-link" hidden>打开高清原图，长按保存 ↗</a>
     <p id="phoneSaveHint" hidden></p>
     <button id="phoneRetry" class="secondary" hidden>重新加载</button>
@@ -28,6 +29,6 @@
     <img id="phoneOriginalPhoto" alt="长按保存完整高清纪念照片" hidden>
     <button id="phoneViewerRetry" class="secondary" hidden>重新加载原图</button>
   </dialog>
-  <script src="/static/selfit/mirror-photo.js?v=20261027-1" defer></script>
+  <script src="/static/selfit/mirror-photo.js?v=20261027-3" defer></script>
 </body>
 </html>

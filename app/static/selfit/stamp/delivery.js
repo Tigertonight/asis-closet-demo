@@ -36,7 +36,7 @@
             if (revision !== this.revision) return;
             this.record = record;
           }
-          const blob = await (await this.request(`/api/v1/selfit/mirror/photos/${this.record.photoId}/qr`, { headers: { Authorization: `Bearer ${this.secret}` } })).blob();
+          const blob = await (await this.request(`/api/v1/selfit/mirror/photos/${this.record.photoId}/qr?intent=xhs`, { headers: { Authorization: `Bearer ${this.secret}` } })).blob();
           if (revision !== this.revision) return;
           this.qrUrl = URL.createObjectURL(blob);
         } catch (e) {
@@ -53,7 +53,7 @@
       if (!this.bundle) return;
       if (this.dialog) { this.paint(); return; }
       const dialog = document.createElement('dialog'); dialog.className = 'stamp-receive';
-      dialog.innerHTML = `<button class="receive-close" aria-label="关闭领图" type="button">×</button><h2>把纪念邮票带走</h2><p>用手机扫码，领取高清纪念邮票</p><div class="receive-qr"><img alt="手机扫码领取照片" hidden></div><p class="receive-status" role="status"></p><button class="receive-retry" type="button" hidden>重新尝试</button><p class="receive-expiry"></p><div class="receive-downloads"><button type="button" data-download="final">保存邮票</button></div><p class="receive-hint">也可以在本机保存；若浏览器打开图片，请长按保存。</p>`;
+      dialog.innerHTML = `<button class="receive-close" aria-label="关闭分享二维码" type="button">×</button><h2>扫码分享小红书</h2><p>扫码后打开小红书，带上你的纪念邮票</p><div class="receive-qr"><img alt="手机扫码分享小红书" hidden></div><p class="receive-status" role="status"></p><button class="receive-retry" type="button" hidden>重新尝试</button><p class="receive-expiry"></p><div class="receive-downloads"><button type="button" data-download="final">保存邮票</button></div><p class="receive-hint">也可以在本机保存；若浏览器打开图片，请长按保存。</p>`;
       document.body.append(dialog); this.dialog = dialog;
       dialog.querySelector('.receive-close').onclick = () => this.close();
       dialog.addEventListener('cancel', e => { e.preventDefault(); this.close(); });
@@ -71,10 +71,10 @@
       const image = this.dialog.querySelector('img');
       image.hidden = !this.qrUrl || !!expired;
       if (!image.hidden && image.src !== this.qrUrl) image.src = this.qrUrl;
-      this.dialog.querySelector('.receive-status').textContent = expired ? '领取链接已过期，请重新生成。' : this.error || (this.loading ? '正在保存照片，准备领取二维码…' : '照片已保存，扫码即可领取');
+      this.dialog.querySelector('.receive-status').textContent = expired ? '分享二维码已过期，请重新生成。' : this.error || (this.loading ? '正在保存照片，准备分享二维码…' : '扫码后自动准备分享，在小红书中确认发布');
       this.dialog.querySelector('.receive-retry').hidden = !this.error && !expired;
       this.dialog.querySelector('.receive-retry').disabled = !!this.loading;
-      this.dialog.querySelector('.receive-expiry').textContent = this.record && !expired ? `领取有效期至 ${new Date(this.record.expiresAt).toLocaleString('zh-CN')}` : '';
+      this.dialog.querySelector('.receive-expiry').textContent = this.record && !expired ? `二维码有效期至 ${new Date(this.record.expiresAt).toLocaleString('zh-CN')}` : '';
     }
     download() {
       const blob = this.bundle?.final; if (!blob) return;

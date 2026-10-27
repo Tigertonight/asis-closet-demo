@@ -3,8 +3,17 @@
   const match = location.hash.slice(1).match(/^(mp_[a-f0-9]{32})\.([a-f0-9]{64})$/);
   const path = match ? `/api/v1/selfit/mirror/photos/${match[1]}` : '';
   const inWeChat = /MicroMessenger/i.test(navigator.userAgent || '');
+  const query = new URLSearchParams(location.search);
+  const scanToShare = query.get('intent') === 'xhs';
+  // Consume the scan action in this history entry before opening another page.
+  // Back, reload and BFCache restoration must return to saving, not relaunch XHS.
+  if (scanToShare) {
+    query.delete('intent');
+    const remainingQuery = query.toString();
+    history.replaceState(null, '', location.pathname + (remainingQuery ? `?${remainingQuery}` : '') + location.hash);
+  }
   let generation = 0, info = null, files = [], preparing = [], refreshing = null, refreshTimer = 0;
-  let viewerGeneration = 0;
+  let viewerGeneration = 0, scanMode = false;
   const imageLinks = () => info?.imageLinks?.print;
   const linksFresh = () => info?.imageLinks?.expiresAt > Date.now() + 1000;
   async function get(variant) {
@@ -60,6 +69,10 @@
   }
   async function load() {
     const current = ++generation;
+    scanMode = false;
+    document.title = '领取你的照片 · selfit';
+    $('phoneTitle').textContent = '把这一刻带走';
+    $('phoneViewPhoto').hidden = true;
     if ($('phoneViewer').open) $('phoneViewer').close();
     clearTimeout(refreshTimer); files = []; preparing = []; refreshing = null; info = null;
     $('phoneShare').hidden = true; $('phoneRetry').hidden = true;
@@ -151,18 +164,50 @@
     catch (e) { if (current === generation && e.name !== 'AbortError') $('phoneStatus').textContent = '暂时无法分享，可以保存照片后在小红书中发布。'; }
   };
   $('phoneRetry').onclick = load;
+  async function handoffShare(current, autoOpen) {
+    const payload = await (await get('xhs-share')).json();
+    if (current !== generation) return;
+    // Only short-lived composed-image/launch URLs cross to the clean share page;
+    // the receipt secret stays in this first-party history entry's fragment.
+    sessionStorage.setItem('selfit.xhsShare', JSON.stringify({ ...payload, autoOpen }));
+    location.assign('/selfit/photo/share');
+  }
+  async function shareFromScan() {
+    const current = ++generation;
+    scanMode = true;
+    document.title = '分享到小红书 · selfit';
+    document.body.classList.add('woken');
+    $('phoneBrand').hidden = true; $('phoneBrandName').hidden = false;
+    $('phoneTitle').textContent = '分享到小红书';
+    $('phoneIntro').textContent = '正在为你准备纪念邮票，随后打开小红书编辑页。';
+    $('phonePhotoFrame').hidden = true; $('phoneDownload').hidden = true;
+    $('phoneViewPhoto').hidden = false;
+    $('phoneXhsShare').hidden = false; $('phoneXhsShare').disabled = true;
+    $('phoneXhsShare').textContent = '正在准备分享…';
+    $('phoneStatus').textContent = '正在准备分享…';
+    try {
+      // No info or full-resolution image decode blocks the scan-to-share path.
+      await handoffShare(current, true);
+    } catch (e) {
+      if (current !== generation) return;
+      $('phoneIntro').textContent = '可以重新尝试分享，或先保存你的纪念邮票。';
+      $('phoneStatus').textContent = errorText(e) || '分享暂时不可用，可以先保存照片。';
+      $('phoneXhsShare').disabled = false;
+      $('phoneXhsShare').textContent = '重新尝试分享';
+    }
+  }
+  $('phoneViewPhoto').onclick = load;
   $('phoneXhsShare').onclick = async () => {
+    if (scanMode) {
+      if (!$('phoneXhsShare').disabled) await shareFromScan();
+      return;
+    }
     if ($('phoneXhsShare').disabled || !info?.xhsShareEnabled) return;
     const current = generation;
     $('phoneXhsShare').disabled = true;
     $('phoneXhsShare').textContent = '正在准备分享…';
     try {
-      const payload = await (await get('xhs-share')).json();
-      if (current !== generation) return;
-      // The official SDK reports location.href. Call it on a separate page
-      // without the receipt fragment, and never store the receipt secret here.
-      sessionStorage.setItem('selfit.xhsShare', JSON.stringify(payload));
-      location.assign('/selfit/photo/share');
+      await handoffShare(current, false);
     } catch (e) {
       if (current !== generation) return;
       $('phoneStatus').textContent = errorText(e) || '分享暂时不可用，可以先保存照片。';
@@ -175,5 +220,6 @@
   });
   addEventListener('pagehide', () => { generation++; clearTimeout(refreshTimer); files = []; });
   addEventListener('pageshow', e => { if (e.persisted) void load(); });
-  void load();
+  if (scanToShare && match) void shareFromScan();
+  else void load();
 })();
