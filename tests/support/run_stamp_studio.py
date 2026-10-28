@@ -28,6 +28,11 @@ app.add_middleware(RequestTimingMiddleware)
 app.include_router(selfit_mirror_photos.router)
 app.mount('/static', StaticFiles(directory=ROOT / 'app/static'), name='static')
 
+@app.get('/test/stamp-print')
+def print_fixture():
+    # Capture the prepared print raster without opening a native print dialog.
+    return HTMLResponse((ROOT / 'tests/support/stamp_print_preview.html').read_text())
+
 @app.get('/test/photo-wechat')
 def wechat_receipt_fixture():
     # Exercise the production receipt script's WeChat branch in desktop UI QA.

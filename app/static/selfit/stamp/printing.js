@@ -1,5 +1,22 @@
-/* Print the existing full-resolution photo locally; no upload or printer service. */
+/* Build a six-inch print locally; preserve the original stamp for saving/sharing. */
 (() => {
+  async function sixInchPhoto(photo) {
+    if (photo.naturalWidth !== 900 || photo.naturalHeight !== 1200) throw new Error('Unexpected stamp size');
+    const canvas = document.createElement('canvas');
+    canvas.width = 900; canvas.height = 1350;
+    try {
+      const ctx = canvas.getContext('2d');
+      // Flatten transparent backgrounds onto paper white. For colored stamps,
+      // extend only the outermost background rows, including their paper tint.
+      // The entire original remains centered, pixel-for-pixel, without cropping.
+      ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, 900, 1350);
+      ctx.drawImage(photo, 0, 0, 900, 1, 0, 0, 900, 75);
+      ctx.drawImage(photo, 0, 1199, 900, 1, 0, 1275, 900, 75);
+      ctx.drawImage(photo, 0, 75);
+      return await new Promise((resolve, reject) => canvas.toBlob(
+        blob => blob ? resolve(blob) : reject(new Error('Print image could not be prepared')), 'image/png'));
+    } finally { canvas.width = canvas.height = 1; }
+  }
   class StampPrinter {
     print(blob) {
       if (this.pending) return this.pending;
@@ -8,18 +25,18 @@
       frame.title = '高清邮票打印';
       frame.setAttribute('aria-hidden', 'true'); frame.tabIndex = -1;
       // Keep a real browsing context: display:none can produce blank printouts.
-      frame.style.cssText = 'position:fixed;left:-10000px;top:0;width:900px;height:1200px;border:0;pointer-events:none';
+      frame.style.cssText = 'position:fixed;left:-10000px;top:0;width:900px;height:1350px;border:0;pointer-events:none';
       const url = URL.createObjectURL(blob);
       let settle;
       const pending = new Promise((resolve, reject) => { settle = { resolve, reject }; });
       this.pending = pending;
-      const job = { frame, url, printing: false, finished: false, timer: 0 };
+      const job = { frame, urls: [url], printing: false, finished: false, timer: 0 };
       this.job = job;
       const finish = error => {
         if (job.finished) return;
         job.finished = true; clearTimeout(job.timer);
         frame.onload = null;
-        frame.remove(); URL.revokeObjectURL(url);
+        frame.remove(); job.urls.forEach(value => URL.revokeObjectURL(value));
         if (this.job === job) { this.job = null; this.pending = null; }
         if (error) settle.reject(error); else settle.resolve();
       };
@@ -28,6 +45,12 @@
       frame.onload = async () => {
         try {
           const photo = frame.contentDocument.querySelector('img');
+          await photo.decode();
+          if (job.finished) return;
+          const printBlob = await sixInchPhoto(photo);
+          if (job.finished) return;
+          const printUrl = URL.createObjectURL(printBlob);
+          job.urls.push(printUrl); photo.src = printUrl;
           await photo.decode();
           if (job.finished) return;
           clearTimeout(job.timer);
