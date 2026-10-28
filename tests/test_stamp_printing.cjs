@@ -36,7 +36,7 @@ function fixture({ decode, supported = true, load = true, encode, naturalWidth =
   return { printer: new context.window.StampPrinter(), frames, blobs, revoked, timers, events, canvas, drawing, photo, prints: () => prints };
 }
 
-test('prints a 2:3 image with background extended and the complete stamp unchanged', async () => {
+test('prints DS620 bleed raster with the complete stamp scaled uniformly and no uncovered area', async () => {
   let release;
   const f = fixture({ decode: () => new Promise(resolve => { release = resolve; }) });
   const blob = new Blob(['full resolution'], { type: 'image/png' });
@@ -46,18 +46,23 @@ test('prints a 2:3 image with background extended and the complete stamp unchang
   release(); await flush();
   assert.equal(f.prints(), 1); assert.equal(f.blobs[0], blob);
   assert.equal(f.blobs.length, 2);
-  assert.deepEqual(f.drawing, [
-    ['fill', 0, 0, 900, 1350],
-    ['image', f.photo, 0, 0, 900, 1, 0, 0, 900, 75],
-    ['image', f.photo, 0, 1199, 900, 1, 0, 1275, 900, 75],
-    ['image', f.photo, 0, 75],
-    ['encoded', 900, 1350, 'image/png'],
-  ]);
+  assert.deepEqual(f.drawing.at(-1), ['encoded', 1240, 1844, 'image/png']);
+  const tiles = f.drawing.filter(op => op[0] === 'image');
+  const center = tiles.filter(op => op[4] === 900 && op[5] === 1200);
+  assert.equal(center.length, 1, 'the complete source must appear once without cropping');
+  assert.deepEqual(center[0].slice(2), [0, 0, 900, 1200, 20, 122, 1200, 1600]);
+  const coverage = new Uint8Array(1240 * 1844);
+  for (const [, , sx, sy, sw, sh, dx, dy, dw, dh] of tiles) {
+    assert.ok(sx >= 0 && sy >= 0 && sx + sw <= 900 && sy + sh <= 1200);
+    assert.ok(dx >= 0 && dy >= 0 && dx + dw <= 1240 && dy + dh <= 1844);
+    for (let y = dy; y < dy + dh; y++) for (let x = dx; x < dx + dw; x++) coverage[y * 1240 + x]++;
+  }
+  assert.ok(coverage.every(n => n === 1), 'every pixel, including all four edges, must be covered once');
   assert.equal(f.photo.src, 'blob:local-2');
   assert.equal(f.canvas.width, 1, 'release the temporary raster after encoding');
-  assert.match(f.frames[0].srcdoc, /object-fit:contain/);
-  assert.match(f.frames[0].srcdoc, /@page\{size:4in 6in;margin:0\}/);
-  assert.match(f.frames[0].srcdoc, /html\{width:4in;height:6in\}/);
+  assert.match(f.frames[0].srcdoc, /object-fit:cover/);
+  assert.match(f.frames[0].srcdoc, /@page\{size:105mm 156.1mm;margin:0\}/);
+  assert.match(f.frames[0].srcdoc, /html\{width:105mm;height:156.1mm\}/);
   assert.equal((f.frames[0].srcdoc.match(/<img /g) || []).length, 1);
   assert.doesNotMatch(f.frames[0].srcdoc, /<button|<canvas|https?:/);
   assert.equal(f.frames[0].removed, undefined, 'keep photo until dialog closes');

@@ -2,22 +2,22 @@
 <html lang="zh-CN">
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <link rel="icon" href="data:,">
-<title>6 寸打印比例校验</title>
+<title>DS620 打印出血校验</title>
 <style>
   *{box-sizing:border-box}body{margin:0;background:#f1edeb;color:#302a29;font:16px system-ui}
   main{max-width:800px;margin:auto;padding:24px;background:#faf8f5;min-height:100vh}
   h1{font-size:24px}button{border:0;border-radius:999px;background:#174fe4;color:white;padding:14px 24px;font:inherit;font-weight:700;min-height:48px}
-  .comparison{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:20px}.paper{background:white;aspect-ratio:2/3;box-shadow:0 2px 8px #0002}.paper img{display:block;width:100%;height:100%;object-fit:contain}
+  .comparison{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:20px}.paper{background:white;aspect-ratio:105/156.1;box-shadow:0 2px 8px #0002;display:flex;align-items:center;justify-content:center;overflow:hidden}.paper img{display:block;width:100%;height:100%;object-fit:cover}.paper #original{width:calc(100% * 101.6 / 105);height:calc(100% * 152.4 / 156.1);object-fit:contain}
   h2{font-size:18px}p{line-height:1.6}#status{overflow-wrap:anywhere}@media(max-width:500px){.comparison{gap:12px}main{padding:20px}h2{font-size:16px}}
 </style>
-<main><h1>6 寸打印比例校验</h1><p>同一张测试邮票：只延展底色，完整保留原图。此页不会调用真实打印机。</p>
+<main><h1>DS620 打印出血校验</h1><p>同一张测试邮票：等比保留完整内容，四周延展底色。这是尺寸示意，不会调用真实打印机。</p>
 <button id="prepare">生成打印预览</button><p id="status" role="status">等待生成测试图</p>
-<div class="comparison"><section><h2>之前：上下白边</h2><div class="paper"><img id="original" alt="旧版 6 寸打印预览"></div></section>
-<section><h2>现在：底色铺满</h2><div class="paper"><img id="result" alt="新版 6 寸打印预览"></div></section></div></main>
-<script src="/static/selfit/stamp/printing.js?v=20261028-1"></script>
+<div class="comparison"><section><h2>之前：缺少出血</h2><div class="paper"><img id="original" alt="旧版 6 寸打印预览"></div></section>
+<section><h2>现在：四边底色铺满</h2><div class="paper"><img id="result" alt="新版 6 寸打印预览"></div></section></div></main>
+<script src="/static/selfit/stamp/printing.js?v=20261028-2"></script>
 <script>
   const $ = id => document.getElementById(id);
-  let originalCanvas;
+  let originalCanvas, originalPhoto;
   // Intercept only the native print call in this isolated fixture. Production
   // StampPrinter still prepares and decodes its real six-inch PNG unchanged.
   const append = document.body.append.bind(document.body);
@@ -32,17 +32,21 @@
             try {
               const blob = await (await fetch(frame.contentDocument.querySelector('img').src)).blob();
               $('result').src = URL.createObjectURL(blob); await $('result').decode();
-              const canvas = document.createElement('canvas'); canvas.width = 900; canvas.height = 1350;
+              const canvas = document.createElement('canvas'); canvas.width = 1240; canvas.height = 1844;
               const ctx = canvas.getContext('2d'); ctx.drawImage($('result'), 0, 0);
-              const source = originalCanvas.getContext('2d').getImageData(0,0,900,1200).data;
-              const center = ctx.getImageData(0,75,900,1200).data;
-              const top = ctx.getImageData(0,0,900,75).data;
-              const bottom = ctx.getImageData(0,1275,900,75).data;
+              const reference = document.createElement('canvas'); reference.width = 1200; reference.height = 1600;
+              const referenceCtx = reference.getContext('2d'); referenceCtx.imageSmoothingQuality = 'high';
+              referenceCtx.fillStyle = '#ffffff'; referenceCtx.fillRect(0,0,1200,1600);
+              referenceCtx.drawImage(originalPhoto,0,0,900,1200,0,0,1200,1600);
+              const source = referenceCtx.getImageData(0,0,1200,1600).data;
+              const center = ctx.getImageData(20,122,1200,1600).data;
               const same = source.every((value,index) => value === center[index]);
-              const full = top.every((value,index) => value === source[index % 3600]) && bottom.every((value,index) => value === source[1199*3600 + index%3600]);
-              const size = $('result').naturalWidth === 900 && $('result').naturalHeight === 1350;
+              const edgeColor = originalCanvas.getContext('2d').getImageData(0,0,1,1).data;
+              const full = [[0,0,1240,1],[0,1843,1240,1],[0,0,1,1844],[1239,0,1,1844]].every(rect =>
+                ctx.getImageData(...rect).data.every((value,index) => value === edgeColor[index%4]));
+              const size = $('result').naturalWidth === 1240 && $('result').naturalHeight === 1844;
               document.body.dataset.passed = String(same && full && size);
-              $('status').textContent = same && full && size ? '通过：900×1350；原图逐像素一致，上下底色延展完整。' : '校验失败';
+              $('status').textContent = same && full && size ? '通过：1240×1844；原图等比完整保留，四边底色完整覆盖。' : `校验失败：内容 ${same} / 四边 ${full} / 尺寸 ${size}`;
             } catch(e) { $('status').textContent = e.message; }
             finally { target.dispatchEvent(new Event('afterprint')); }
           })();
@@ -61,7 +65,10 @@
       ctx.fillStyle = '#303b58'; ctx.font = '54px sans-serif'; ctx.fillText('WOKEN DAY',265,470); ctx.font = '36px sans-serif'; ctx.fillText('PRINT TEST',295,540);
       const template = new Image(); template.src = '/static/selfit/stamp/assets/stamps/stamp-01-2016-2017.png'; await template.decode(); ctx.drawImage(template,0,0,900,1200);
       const blob = await new Promise(resolve => originalCanvas.toBlob(resolve,'image/png'));
-      $('original').src = URL.createObjectURL(blob); await $('original').decode();
+      originalPhoto = new Image(); originalPhoto.src = URL.createObjectURL(blob); await originalPhoto.decode();
+      const old = document.createElement('canvas'); old.width = 900; old.height = 1350;
+      const oldCtx = old.getContext('2d'); oldCtx.fillStyle = '#584f91'; oldCtx.fillRect(0,0,900,1350); oldCtx.drawImage(originalCanvas,0,75);
+      $('original').src = URL.createObjectURL(await new Promise(resolve => old.toBlob(resolve,'image/png'))); await $('original').decode();
       await new window.StampPrinter().print(blob);
     } catch(e) { $('status').textContent = e.message; }
     finally { $('prepare').disabled = false; }

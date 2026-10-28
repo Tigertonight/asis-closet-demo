@@ -3,16 +3,21 @@
   async function sixInchPhoto(photo) {
     if (photo.naturalWidth !== 900 || photo.naturalHeight !== 1200) throw new Error('Unexpected stamp size');
     const canvas = document.createElement('canvas');
-    canvas.width = 900; canvas.height = 1350;
+    // DS620 6x4 driver raster, including bleed (DNP: 1240 x 1844 at 300 dpi).
+    // Keep the nominal 4x6 content centered at 1200 x 1800, plus 20/22 px bleed.
+    canvas.width = 1240; canvas.height = 1844;
     try {
       const ctx = canvas.getContext('2d');
       // Flatten transparent backgrounds onto paper white. For colored stamps,
-      // extend only the outermost background rows, including their paper tint.
-      // The entire original remains centered, pixel-for-pixel, without cropping.
-      ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, 900, 1350);
-      ctx.drawImage(photo, 0, 0, 900, 1, 0, 0, 900, 75);
-      ctx.drawImage(photo, 0, 1199, 900, 1, 0, 1275, 900, 75);
-      ctx.drawImage(photo, 0, 75);
+      // extend the outermost background pixels. The complete 3:4 stamp scales
+      // uniformly to 1200 x 1600; only added background falls in the bleed area.
+      ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, 1240, 1844);
+      ctx.imageSmoothingQuality = 'high';
+      const columns = [[0, 1, 0, 20], [0, 900, 20, 1200], [899, 1, 1220, 20]];
+      const rows = [[0, 1, 0, 122], [0, 1200, 122, 1600], [1199, 1, 1722, 122]];
+      for (const [sx, sw, dx, dw] of columns) {
+        for (const [sy, sh, dy, dh] of rows) ctx.drawImage(photo, sx, sy, sw, sh, dx, dy, dw, dh);
+      }
       return await new Promise((resolve, reject) => canvas.toBlob(
         blob => blob ? resolve(blob) : reject(new Error('Print image could not be prepared')), 'image/png'));
     } finally { canvas.width = canvas.height = 1; }
@@ -25,7 +30,7 @@
       frame.title = '高清邮票打印';
       frame.setAttribute('aria-hidden', 'true'); frame.tabIndex = -1;
       // Keep a real browsing context: display:none can produce blank printouts.
-      frame.style.cssText = 'position:fixed;left:-10000px;top:0;width:900px;height:1350px;border:0;pointer-events:none';
+      frame.style.cssText = 'position:fixed;left:-10000px;top:0;width:1240px;height:1844px;border:0;pointer-events:none';
       const url = URL.createObjectURL(blob);
       let settle;
       const pending = new Promise((resolve, reject) => { settle = { resolve, reject }; });
@@ -65,7 +70,7 @@
         }
       };
       frame.srcdoc = `<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><title>WOKEN DAY 纪念邮票</title>
-        <style>@page{size:4in 6in;margin:0}html{width:4in;height:6in}body{margin:0;padding:0;width:100%;height:100%;background:white}img{display:block;width:100%;height:100%;object-fit:contain;break-inside:avoid;print-color-adjust:exact;-webkit-print-color-adjust:exact}</style>
+        <style>@page{size:105mm 156.1mm;margin:0}html{width:105mm;height:156.1mm}body{margin:0;padding:0;width:100%;height:100%;overflow:hidden;background:white}img{display:block;width:100%;height:100%;object-fit:cover;break-inside:avoid;print-color-adjust:exact;-webkit-print-color-adjust:exact}</style>
         </head><body><img src="${url}" alt=""></body></html>`;
       document.body.append(frame);
       return pending;
