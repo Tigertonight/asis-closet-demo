@@ -32,7 +32,7 @@
     flow = payload.flow || 'prepared-link';
     if (flow === 'official-sdk') {
       if (payload.imageUrlEncoding && !['raw', 'component'].includes(payload.imageUrlEncoding)) throw new Error('Invalid image encoding');
-      imageUrlEncoding = payload.imageUrlEncoding || 'raw';
+      imageUrlEncoding = payload.imageUrlEncoding || 'component';
       if (!['nonce', 'timestamp', 'signature'].every(key => typeof payload.verifyConfig[key] === 'string' && payload.verifyConfig[key])) throw new Error('Invalid SDK config');
     } else if (flow === 'prepared-link') {
       const scheme = new URL(payload.launch.scheme), universal = new URL(payload.launch.universal);
@@ -114,8 +114,8 @@
       }, 10000);
       try {
         // Encode exactly once from the validated raw URL on each attempt. Keep
-        // preview/telemetry and Android handoff untouched. This is an opt-in
-        // diagnostic, not a claim that the SDK requires encoded image URLs.
+        // preview/telemetry and Android handoff untouched. iOS uses the
+        // phone-verified encoded URL by default; raw remains a diagnostic override.
         const shareInfo = imageUrlEncoding === 'component'
           ? { ...payload.shareInfo, images: payload.shareInfo.images.map(url => encodeURIComponent(url)) }
           : payload.shareInfo;

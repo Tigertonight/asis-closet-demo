@@ -272,10 +272,11 @@ for (const hasScene of [true, false]) test(`shares only the stamp (historical sc
 });
 
 
-for (const shareFlow of ['official-sdk', 'prepared-link']) test(`image URL encoding opt-in is only forwarded to iOS SDK: ${shareFlow}`, async () => {
-  const f = fixture({ xhs: true, encoding: 'component', shareFlow }); await settle();
-  await f.el('phoneXhsShare').onclick();
+for (const shareFlow of ['official-sdk', 'prepared-link']) for (const encoding of ['', 'component', 'raw']) for (const scan of [false, true]) test(`image URL encoding handoff: ${shareFlow}, ${encoding || 'default'}, scan=${scan}`, async () => {
+  const f = fixture({ xhs: true, encoding, shareFlow, scan }); await settle();
+  if (!scan) await f.el('phoneXhsShare').onclick();
   const handoff = JSON.parse(f.storage.get('selfit.xhsShare'));
-  assert.equal(handoff.imageUrlEncoding, shareFlow === 'official-sdk' ? 'component' : 'raw');
+  assert.equal(handoff.imageUrlEncoding, shareFlow === 'official-sdk' && encoding !== 'raw' ? 'component' : 'raw');
+  assert.equal(handoff.autoOpen, scan);
   assert.ok(handoff.shareInfo.images[0].startsWith('https://'));
 });

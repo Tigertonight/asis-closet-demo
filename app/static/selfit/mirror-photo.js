@@ -179,8 +179,9 @@
     if (current !== generation) return;
     // Only short-lived composed-image/launch URLs cross to the clean share page;
     // the receipt secret stays in this first-party history entry's fragment.
-    // Diagnostic opt-in: encode only the SDK image argument, never the preview URL.
-    const imageUrlEncoding = payload.flow === 'official-sdk' && new URLSearchParams(location.search).get('xhs_url_encoding') === 'component' ? 'component' : 'raw';
+    // Verified iOS default: encode the SDK image argument, never the preview URL.
+    // Keep an explicit raw override for diagnostics without changing normal QR links.
+    const imageUrlEncoding = payload.flow === 'official-sdk' && new URLSearchParams(location.search).get('xhs_url_encoding') !== 'raw' ? 'component' : 'raw';
     sessionStorage.setItem('selfit.xhsShare', JSON.stringify({ ...payload, autoOpen, imageUrlEncoding }));
     location.assign('/selfit/photo/share');
   }

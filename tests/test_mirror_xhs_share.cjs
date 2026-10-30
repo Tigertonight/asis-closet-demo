@@ -132,7 +132,7 @@ const flush = async () => { for (let i = 0; i < 10; i++) await Promise.resolve()
 test('iPhone calls official SDK with signed image only; auto-launch is once and manual retry is possible', async () => {
   const f = officialFixture({ autoOpen: true }); await flush();
   assert.equal(f.calls.length, 1);
-  assert.deepEqual(JSON.parse(JSON.stringify(f.calls[0].shareInfo)), f.payload.shareInfo);
+  assert.deepEqual(JSON.parse(JSON.stringify(f.calls[0].shareInfo)), { ...f.payload.shareInfo, images: f.payload.shareInfo.images.map(encodeURIComponent) });
   assert.deepEqual(JSON.parse(JSON.stringify(f.calls[0].verifyConfig)), f.payload.verifyConfig);
   assert.equal(f.el.xhsAlternate.hidden, true);
   f.document.hidden = true; f.events.visibilitychange();
@@ -190,17 +190,17 @@ test('diagnostic network failure does not prevent SDK sharing; synchronous SDK f
 });
 
 
-test('opt-in encoded iOS image keeps raw preview and signature; repeated taps never double-encode', async () => {
-  const f = officialFixture({ encoding: 'component' }); await flush();
+for (const encoding of [undefined, 'component', 'raw']) test(`iOS image encoding (${encoding || 'default'}) keeps preview and signature; repeated taps never double-encode`, async () => {
+  const f = officialFixture({ encoding }); await flush();
   const raw = f.payload.shareInfo.images[0];
   f.el.xhsOpen.onclick(); await flush();
   f.el.xhsOpen.onclick(); await flush();
   for (const call of f.calls) {
-    assert.equal(call.shareInfo.images[0], encodeURIComponent(raw));
+    assert.equal(call.shareInfo.images[0], encoding === 'raw' ? raw : encodeURIComponent(raw));
     assert.equal(decodeURIComponent(call.shareInfo.images[0]), raw);
   }
   assert.equal(f.el.xhsPhoto.src, raw);
   assert.equal(f.payload.shareInfo.images[0], raw);
-  assert.ok(f.reports.every(r => r.body.image_url_encoding === 'component'));
+  assert.ok(f.reports.every(r => r.body.image_url_encoding === (encoding === 'raw' ? 'raw' : 'component')));
   assert.ok(f.reports.every(r => new URL(r.url).searchParams.get('signature') === 'b'.repeat(64)));
 });
