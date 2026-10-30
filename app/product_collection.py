@@ -17,10 +17,10 @@ from pathlib import Path
 from urllib.parse import urlsplit
 
 import anyio
-from fastapi import APIRouter, Depends, File, Form, HTTPException, Query, UploadFile
+from fastapi import APIRouter, Depends, File, Form, HTTPException, Query, Request, UploadFile
 from fastapi.responses import FileResponse, JSONResponse, Response, StreamingResponse
 from PIL import Image, ImageOps, UnidentifiedImageError
-from app.product_collection_auth import require_collection_admin, router as admin_auth_router
+from app.product_collection_auth import check_origin, require_collection_admin, router as admin_auth_router
 from app.photo_work import photo_admission, run_photo_work
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -86,6 +86,10 @@ def database():
                 product_id INTEGER PRIMARY KEY REFERENCES products(id),
                 original BLOB NOT NULL, preview BLOB NOT NULL,
                 mime TEXT NOT NULL, extension TEXT NOT NULL
+            );
+            CREATE TABLE IF NOT EXISTS product_deletions (
+                product_id INTEGER PRIMARY KEY REFERENCES products(id),
+                deleted_at TEXT NOT NULL
             );
         ''')
         with db:
@@ -165,8 +169,10 @@ def save_submission(request_id, data, raw):
     encoded = json.dumps(data, ensure_ascii=False, sort_keys=True)
     digest = hashlib.sha256(encoded.encode() + b'\0' + raw).hexdigest()
     with database() as db:
-        existing = db.execute('SELECT id,digest FROM products WHERE request_id=?', (request_id,)).fetchone()
+        existing = db.execute('SELECT id,digest,EXISTS(SELECT 1 FROM product_deletions WHERE product_id=products.id) AS deleted FROM products WHERE request_id=?', (request_id,)).fetchone()
         if existing:
+            if existing['deleted']:
+                raise HTTPException(409, '这条登记已被管理员删除，如需重新登记，请刷新页面后提交。')
             if existing['digest'] != digest:
                 raise HTTPException(409, '上一次提交已收到，请刷新页面后登记新的商品。')
             return {'id': existing['id'], 'message': '提交成功，我们已收到商品信息。'}
@@ -176,7 +182,9 @@ def save_submission(request_id, data, raw):
         db.execute('INSERT OR IGNORE INTO products(request_id,digest,created_at,brand,product_name,category,data) VALUES(?,?,?,?,?,?,?)',
                    (request_id, digest, datetime.now(timezone.utc).isoformat(), data['brand'], data['product_name'], data['category'], encoded))
         inserted = db.execute('SELECT changes()').fetchone()[0] == 1
-        row = db.execute('SELECT id,digest FROM products WHERE request_id=?', (request_id,)).fetchone()
+        row = db.execute('SELECT id,digest,EXISTS(SELECT 1 FROM product_deletions WHERE product_id=products.id) AS deleted FROM products WHERE request_id=?', (request_id,)).fetchone()
+        if row['deleted']:
+            raise HTTPException(409, '这条登记已被管理员删除，如需重新登记，请刷新页面后提交。')
         if row['digest'] != digest:
             raise HTTPException(409, '提交内容已变化，请刷新后重试。')
         if inserted and image:
@@ -221,10 +229,11 @@ async def submit_product(payload: str = Form(..., max_length=32000), request_id:
 
 
 def where_query(q):
+    active = 'WHERE NOT EXISTS(SELECT 1 FROM product_deletions WHERE product_id=products.id)'
     if not q:
-        return '', ()
+        return active, ()
     escaped = q.replace('\\', '\\\\').replace('%', '\\%').replace('_', '\\_')
-    return "WHERE (brand LIKE ? ESCAPE '\\' OR product_name LIKE ? ESCAPE '\\' OR category LIKE ? ESCAPE '\\')", (f'%{escaped}%',) * 3
+    return active + " AND (brand LIKE ? ESCAPE '\\' OR product_name LIKE ? ESCAPE '\\' OR category LIKE ? ESCAPE '\\')", (f'%{escaped}%',) * 3
 
 
 @router.get('/product-collection-admin/api/products')
@@ -233,7 +242,7 @@ def list_products(q: str = Query('', max_length=100), before_id: int | None = Qu
     where, params = where_query(q.strip())
     cutoff = (datetime.now(timezone(timedelta(hours=8))).replace(hour=0, minute=0, second=0, microsecond=0).astimezone(timezone.utc).isoformat())
     with database() as db:
-        total, today = db.execute('SELECT count(*),coalesce(sum(created_at>=?),0) FROM products', (cutoff,)).fetchone()
+        total, today = db.execute(f'SELECT count(*),coalesce(sum(created_at>=?),0) FROM products {where_query("")[0]}', (cutoff,)).fetchone()
         filtered = db.execute(f'SELECT count(*) FROM products {where}', params).fetchone()[0]
         cursor_where = where + (' AND ' if where else ' WHERE ') + 'id<?' if before_id else where
         cursor_params = (*params, before_id) if before_id else params
@@ -326,7 +335,7 @@ async def export_products(q: str = Query('', max_length=100), admin=Depends(requ
 @router.get('/product-collection-admin/api/products/{product_id}')
 def product_detail(product_id: int, admin=Depends(require_collection_admin)):
     with database() as db:
-        row = db.execute('SELECT id,created_at,data FROM products WHERE id=?', (product_id,)).fetchone()
+        row = db.execute(f'SELECT id,created_at,data FROM products {where_query("")[0]} AND id=?', (product_id,)).fetchone()
         if row is None:
             raise HTTPException(404, '未找到这条商品信息。')
         image = db.execute('SELECT length(original) AS bytes,mime FROM product_images WHERE product_id=?', (product_id,)).fetchone()
@@ -336,8 +345,20 @@ def product_detail(product_id: int, admin=Depends(require_collection_admin)):
 @router.get('/product-collection-admin/api/products/{product_id}/image')
 def product_image(product_id: int, preview: bool = False, admin=Depends(require_collection_admin)):
     with database() as db:
-        row = db.execute(f'SELECT {"preview" if preview else "original"} AS content,mime,extension FROM product_images WHERE product_id=?', (product_id,)).fetchone()
+        row = db.execute(f'SELECT {"preview" if preview else "original"} AS content,mime,extension FROM product_images WHERE product_id=? AND NOT EXISTS(SELECT 1 FROM product_deletions WHERE product_id=product_images.product_id)', (product_id,)).fetchone()
     if row is None:
         raise HTTPException(404, '没有找到商品图片。')
     return Response(row['content'], media_type='image/jpeg' if preview else row['mime'], headers={**PRIVATE,
         'Content-Disposition': 'inline' if preview else f'attachment; filename="product-{product_id}.{row["extension"]}"'})
+
+
+@router.delete('/product-collection-admin/api/products/{product_id}')
+def delete_product(product_id: int, request: Request, admin=Depends(require_collection_admin)):
+    check_origin(request)
+    # Keep the original and its idempotency key for recovery; every read excludes tombstones.
+    with database() as db:
+        if db.execute('SELECT 1 FROM products WHERE id=?', (product_id,)).fetchone() is None:
+            raise HTTPException(404, '未找到这条商品信息。', headers=PRIVATE)
+        db.execute('INSERT OR IGNORE INTO product_deletions(product_id,deleted_at) VALUES(?,?)',
+                   (product_id, datetime.now(timezone.utc).isoformat()))
+    return JSONResponse({'id': product_id, 'message': '商品信息已删除。'}, headers=PRIVATE)

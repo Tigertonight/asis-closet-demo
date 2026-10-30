@@ -1,8 +1,12 @@
 import json
+import io
+import uuid
 
 import pytest
 from fastapi import Depends, FastAPI
 from fastapi.testclient import TestClient
+from openpyxl import load_workbook
+from PIL import Image
 
 from app import product_collection as pc, product_collection_auth as auth
 from app import auth as main_auth
@@ -114,3 +118,60 @@ def test_login_requests_are_rate_limited(monkeypatch, tmp_path):
         assert login(c).status_code == 503  # Missing configuration still consumes an attempt.
     response=login(c)
     assert response.status_code == 429 and int(response.headers['retry-after']) > 0
+
+
+def test_delete_requires_independent_admin_and_excludes_all_reads(client):
+    image = io.BytesIO(); Image.new('RGB', (40, 40), 'white').save(image, 'PNG')
+    key = str(uuid.uuid4())
+    fields = {'request_id': key, 'payload': json.dumps({'brand': '删除验收', 'product_name': '待删除商品', 'category': '食品', 'contact': '甲', 'contact_method': 'test'})}
+    files = {'photo': ('product.png', image.getvalue(), 'image/png')}
+    identifier = client.post('/api/v1/selfit/product-collection', data=fields, files=files).json()['id']
+    retained_fields = {**fields, 'request_id': str(uuid.uuid4()), 'payload': json.dumps({**json.loads(fields['payload']), 'product_name': '保留商品'})}
+    retained = client.post('/api/v1/selfit/product-collection', data=retained_fields, files=files).json()['id']
+    path = BASE + f'/products/{identifier}'
+    assert client.delete(path).status_code == 401
+    root_token = main_auth.issue_admin_session('127.0.0.1')
+    assert client.delete(path, headers={'Authorization': 'Bearer ' + root_token}).status_code == 401
+    assert login(client).status_code == 200
+    assert client.delete(path, headers={'Origin': 'https://other.example'}).status_code == 403
+    assert client.delete(path, headers={'Sec-Fetch-Site': 'cross-site'}).status_code == 403
+    assert client.get(BASE + '/products').json()['total'] == 2
+    deleted = client.delete(path, headers={'Origin': 'https://testserver'})
+    assert deleted.status_code == 200 and deleted.json()['id'] == identifier
+    assert deleted.headers['cache-control'] == 'private, no-store'
+    # Retries are idempotent and keep the original deletion time.
+    with pc.database() as db:
+        timestamp = db.execute('SELECT deleted_at FROM product_deletions WHERE product_id=?', (identifier,)).fetchone()[0]
+    assert client.delete(path).status_code == 200
+    assert client.delete(BASE + '/products/99999').status_code == 404
+    for suffix in ['', '/image', '/image?preview=true']:
+        assert client.get(path + suffix).status_code == 404
+    listing = client.get(BASE + '/products?limit=1&q=删除验收').json()
+    assert listing['total'] == listing['today'] == listing['filtered'] == 1
+    assert listing['next_cursor'] is None and [r['id'] for r in listing['items']] == [retained]
+    assert client.get(BASE + '/products?q=待删除商品').json()['filtered'] == 0
+    assert client.get(BASE + f'/products/{retained}/image').content == image.getvalue()
+    workbook = load_workbook(io.BytesIO(client.get(BASE + '/products/export.xlsx').content))
+    assert workbook.active.max_row == 2 and workbook.active['B2'].value == '保留商品'
+    assert len(workbook.active._images) == 1
+    workbook.close()
+    # A late public submission retry must not resurrect a deleted record.
+    assert client.post('/api/v1/selfit/product-collection', data=fields, files=files).status_code == 409
+    with pc.database() as db:
+        assert db.execute('SELECT count(*) FROM products').fetchone()[0] == 2
+        assert db.execute('SELECT count(*) FROM product_images').fetchone()[0] == 2
+        assert db.execute('SELECT deleted_at FROM product_deletions WHERE product_id=?', (identifier,)).fetchone()[0] == timestamp
+    client.post(BASE + '/logout')
+    assert client.delete(BASE + f'/products/{retained}').status_code == 401
+
+
+def test_delete_table_upgrade_keeps_existing_records(client):
+    key = str(uuid.uuid4())
+    fields = {'request_id':key, 'payload':json.dumps({'brand':'旧记录','product_name':'旧商品','category':'食品','contact':'甲','contact_method':'test'})}
+    identifier = client.post('/api/v1/selfit/product-collection', data=fields).json()['id']
+    with pc.database() as db:
+        db.execute('DROP TABLE product_deletions')  # Schema before deletion support.
+    assert login(client).status_code == 200
+    assert client.get(BASE + '/products').json()['total'] == 1
+    assert client.delete(BASE + f'/products/{identifier}').status_code == 200
+    assert client.get(BASE + '/products').json()['total'] == 0

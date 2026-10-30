@@ -7,8 +7,8 @@
   <meta name="referrer" content="no-referrer">
   <title>小红书特产之夜 · 商品信息管理</title>
   <link rel="icon" href="data:,">
-  <link rel="stylesheet" href="/static/product-collection-admin/admin.css?v=20261030-1">
-  <script src="/static/product-collection-admin/records.js?v=20261030-1" defer></script>
+  <link rel="stylesheet" href="/static/product-collection-admin/admin.css?v=20261030-2">
+  <script src="/static/product-collection-admin/records.js?v=20261030-2" defer></script>
   <script src="/static/product-collection-admin/app.js?v=20261030-1" defer></script>
 </head>
 <body>
@@ -25,7 +25,7 @@
     <div class="product-stats"><div><span>累计收到</span><strong id="productTotal">—</strong><span>条商品信息</span></div><div><span>今日新增</span><strong id="productToday">—</strong><span>北京时间</span></div><div><span>当前筛选</span><strong id="productFiltered">—</strong><span>条记录</span></div></div>
     <div class="records-card">
       <form id="productSearchForm" class="product-tools"><input id="productSearch" aria-label="搜索商品信息" placeholder="搜索品牌、商品名称或品类" maxlength="100"><button type="submit" class="secondary">搜索</button><button id="productRefresh" type="button" class="secondary">刷新数据</button><button id="productExport" type="button" class="primary">导出 Excel</button></form>
-      <p id="productSummary" role="status"></p><p id="productExportStatus" role="status"></p>
+      <p id="productSummary" role="status"></p><p id="productActionStatus" role="status"></p><p id="productExportStatus" role="status"></p>
       <p class="muted">导出当前筛选结果，最多 5000 条，含商品缩略图。高清原图可在详情中下载。</p>
       <div class="table-wrap" role="region" aria-label="商品提交记录" tabindex="0"><table><thead><tr><th>编号</th><th>品牌名称</th><th>商品名称</th><th>品类</th><th>提交时间（北京时间）</th><th>白底图</th><th>操作</th></tr></thead><tbody id="productRows"></tbody></table></div>
       <button id="productMore" type="button" class="secondary" hidden>加载更多</button>
@@ -33,5 +33,12 @@
   </section>
 </main>
 <dialog id="productDetail" class="product-detail" aria-labelledby="productDetailTitle"><div class="product-detail-header"><h2 id="productDetailTitle">商品信息</h2><button id="productDetailClose" type="button" class="secondary">关闭</button></div><div id="productDetailBody"></div></dialog>
+<dialog id="productDelete" class="delete-dialog" aria-labelledby="productDeleteTitle" aria-describedby="productDeleteDescription">
+  <h2 id="productDeleteTitle">删除这条商品信息？</h2>
+  <p id="productDeleteTarget" class="delete-target"></p>
+  <p id="productDeleteDescription" class="muted">删除后，这条信息及图片将不再显示在后台，统计和 Excel 导出也会同步更新。请确认选择的商品无误。</p>
+  <p id="productDeleteError" class="error" role="alert"></p>
+  <div class="delete-actions"><button id="productDeleteCancel" class="secondary" type="button" autofocus>取消</button><button id="productDeleteConfirm" class="danger" type="button">确认删除</button></div>
+</dialog>
 </body>
 </html>
