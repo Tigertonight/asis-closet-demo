@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="robots" content="noindex,nofollow">
+  <meta name="referrer" content="no-referrer">
+  <title>小红书特产之夜 · 商品信息管理</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="/static/product-collection-admin/admin.css?v=20261030-1">
+  <script src="/static/product-collection-admin/records.js?v=20261030-1" defer></script>
+  <script src="/static/product-collection-admin/app.js?v=20261030-1" defer></script>
+</head>
+<body>
+<main class="workspace">
+  <header class="page-header"><div><p class="eyebrow">小红书特产之夜</p><h1>商品信息管理</h1></div><button id="logout" class="secondary" type="button" hidden>退出登录</button></header>
+  <p class="internal-notice">内部管理入口，仅限活动工作人员使用，请勿外传。</p>
+  <p id="authStatus" role="status">正在检查登录状态…</p>
+  <section id="loginPanel" class="login-card" hidden>
+    <h2>登录管理后台</h2><p class="muted">输入专属管理密码，查看商家提交的商品信息。</p>
+    <form id="loginForm"><label for="password">管理密码</label><input id="password" type="password" autocomplete="current-password" required maxlength="128" placeholder="请输入管理密码"><p id="loginError" class="error" role="alert"></p><button id="loginButton" class="primary" type="submit">登录</button></form>
+  </section>
+  <section id="dashboard" hidden>
+    <div class="dashboard-heading"><h2>商家提交记录</h2><a href="/selfit/product-collection" target="_blank" rel="noopener">打开商品信息收集表 ↗</a></div>
+    <div class="product-stats"><div><span>累计收到</span><strong id="productTotal">—</strong><span>条商品信息</span></div><div><span>今日新增</span><strong id="productToday">—</strong><span>北京时间</span></div><div><span>当前筛选</span><strong id="productFiltered">—</strong><span>条记录</span></div></div>
+    <div class="records-card">
+      <form id="productSearchForm" class="product-tools"><input id="productSearch" aria-label="搜索商品信息" placeholder="搜索品牌、商品名称或品类" maxlength="100"><button type="submit" class="secondary">搜索</button><button id="productRefresh" type="button" class="secondary">刷新数据</button><button id="productExport" type="button" class="primary">导出 Excel</button></form>
+      <p id="productSummary" role="status"></p><p id="productExportStatus" role="status"></p>
+      <p class="muted">导出当前筛选结果，最多 5000 条，含商品缩略图。高清原图可在详情中下载。</p>
+      <div class="table-wrap" role="region" aria-label="商品提交记录" tabindex="0"><table><thead><tr><th>编号</th><th>品牌名称</th><th>商品名称</th><th>品类</th><th>提交时间（北京时间）</th><th>白底图</th><th>操作</th></tr></thead><tbody id="productRows"></tbody></table></div>
+      <button id="productMore" type="button" class="secondary" hidden>加载更多</button>
+    </div>
+  </section>
+</main>
+<dialog id="productDetail" class="product-detail" aria-labelledby="productDetailTitle"><div class="product-detail-header"><h2 id="productDetailTitle">商品信息</h2><button id="productDetailClose" type="button" class="secondary">关闭</button></div><div id="productDetailBody"></div></dialog>
+</body>
+</html>

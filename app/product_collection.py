@@ -20,12 +20,13 @@ import anyio
 from fastapi import APIRouter, Depends, File, Form, HTTPException, Query, UploadFile
 from fastapi.responses import FileResponse, JSONResponse, Response, StreamingResponse
 from PIL import Image, ImageOps, UnidentifiedImageError
-from app.auth import get_admin_user
+from app.product_collection_auth import require_collection_admin, router as admin_auth_router
 from app.photo_work import photo_admission, run_photo_work
 
 ROOT = Path(__file__).resolve().parents[1]
 STORE = ROOT / 'outputs' / 'product_collection'
 router = APIRouter(tags=['product-collection'])
+router.include_router(admin_auth_router)
 PRIVATE = {'Cache-Control': 'private, no-store', 'X-Content-Type-Options': 'nosniff'}
 MAX_IMAGE_BYTES = 20 * 1024 * 1024
 MAX_EXPORT_ROWS = 5000
@@ -189,6 +190,12 @@ def collection_page():
     return FileResponse(ROOT / 'app/static/product-collection/index.html', headers=PRIVATE)
 
 
+@router.get('/product-collection-admin', include_in_schema=False)
+@router.get('/product-collection-admin/', include_in_schema=False)
+def collection_admin_page():
+    return FileResponse(ROOT / 'app/static/product-collection-admin/index.html', headers=PRIVATE)
+
+
 @router.get('/api/v1/selfit/product-collection/schema')
 def collection_schema():
     return {'title': '小红书特产之夜', 'fields': [dict(key=k, label=l, type=t, group=g, required=r) for k, l, t, g, r in FIELDS],
@@ -220,9 +227,9 @@ def where_query(q):
     return "WHERE (brand LIKE ? ESCAPE '\\' OR product_name LIKE ? ESCAPE '\\' OR category LIKE ? ESCAPE '\\')", (f'%{escaped}%',) * 3
 
 
-@router.get('/admin/api/product-collection')
+@router.get('/product-collection-admin/api/products')
 def list_products(q: str = Query('', max_length=100), before_id: int | None = Query(None, ge=1),
-                  limit: int = Query(25, ge=1, le=100), admin=Depends(get_admin_user)):
+                  limit: int = Query(25, ge=1, le=100), admin=Depends(require_collection_admin)):
     where, params = where_query(q.strip())
     cutoff = (datetime.now(timezone(timedelta(hours=8))).replace(hour=0, minute=0, second=0, microsecond=0).astimezone(timezone.utc).isoformat())
     with database() as db:
@@ -300,8 +307,8 @@ def export_workbook(q):
         raise
 
 
-@router.get('/admin/api/product-collection/export.xlsx')
-async def export_products(q: str = Query('', max_length=100), admin=Depends(get_admin_user)):
+@router.get('/product-collection-admin/api/products/export.xlsx')
+async def export_products(q: str = Query('', max_length=100), admin=Depends(require_collection_admin)):
     # Bound simultaneous workbook creation independently from image decoding.
     async with _export_slots:
         result = await anyio.to_thread.run_sync(export_workbook, q)
@@ -316,8 +323,8 @@ async def export_products(q: str = Query('', max_length=100), admin=Depends(get_
                              headers={**PRIVATE, 'Content-Disposition': f'attachment; filename="{filename}"'})
 
 
-@router.get('/admin/api/product-collection/{product_id}')
-def product_detail(product_id: int, admin=Depends(get_admin_user)):
+@router.get('/product-collection-admin/api/products/{product_id}')
+def product_detail(product_id: int, admin=Depends(require_collection_admin)):
     with database() as db:
         row = db.execute('SELECT id,created_at,data FROM products WHERE id=?', (product_id,)).fetchone()
         if row is None:
@@ -326,8 +333,8 @@ def product_detail(product_id: int, admin=Depends(get_admin_user)):
     return JSONResponse({'id': row['id'], 'created_at': row['created_at'], 'data': json.loads(row['data']), 'image': dict(image) if image else None}, headers=PRIVATE)
 
 
-@router.get('/admin/api/product-collection/{product_id}/image')
-def product_image(product_id: int, preview: bool = False, admin=Depends(get_admin_user)):
+@router.get('/product-collection-admin/api/products/{product_id}/image')
+def product_image(product_id: int, preview: bool = False, admin=Depends(require_collection_admin)):
     with database() as db:
         row = db.execute(f'SELECT {"preview" if preview else "original"} AS content,mime,extension FROM product_images WHERE product_id=?', (product_id,)).fetchone()
     if row is None:

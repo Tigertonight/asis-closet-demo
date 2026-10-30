@@ -10,12 +10,14 @@ from openpyxl import load_workbook
 from PIL import Image
 
 from app import product_collection as pc
-from app.auth import get_admin_user
+from app.product_collection_auth import require_collection_admin
+from app import product_collection_auth as auth
 
 
 @pytest.fixture
 def intake(monkeypatch, tmp_path):
     monkeypatch.setattr(pc, 'STORE', tmp_path / 'store')
+    monkeypatch.setattr(auth, 'AUTH_DB', tmp_path / 'auth.sqlite3')
     app = FastAPI(); app.include_router(pc.router)
     return app, TestClient(app)
 
@@ -43,17 +45,17 @@ def test_submit_persists_all_fields_and_private_original(intake):
     values['selling_points'] = {k: label + '内容' for k, label in pc.SELLING_FIELDS}
     raw = image_bytes(); saved = submit(c, values, raw); assert saved.status_code == 200
     identifier = saved.json()['id']
-    for path in ['/admin/api/product-collection', '/admin/api/product-collection/export.xlsx', f'/admin/api/product-collection/{identifier}', f'/admin/api/product-collection/{identifier}/image', f'/admin/api/product-collection/{identifier}/image?preview=true']:
+    for path in ['/product-collection-admin/api/products', '/product-collection-admin/api/products/export.xlsx', f'/product-collection-admin/api/products/{identifier}', f'/product-collection-admin/api/products/{identifier}/image', f'/product-collection-admin/api/products/{identifier}/image?preview=true']:
         assert c.get(path).status_code == 401
         assert c.get(path, headers={'Authorization':'Bearer non-admin-token'}).status_code in (401,403)
-    app.dependency_overrides[get_admin_user] = lambda: {'user_id': 'admin_console'}
-    assert c.get('/admin/api/product-collection').json()['total'] == 1
-    assert c.get('/admin/api/product-collection').json()['today'] == 1
-    record = c.get(f'/admin/api/product-collection/{identifier}'); assert record.json()['data'] == values
+    app.dependency_overrides[require_collection_admin] = lambda: {'user_id': 'admin_console'}
+    assert c.get('/product-collection-admin/api/products').json()['total'] == 1
+    assert c.get('/product-collection-admin/api/products').json()['today'] == 1
+    record = c.get(f'/product-collection-admin/api/products/{identifier}'); assert record.json()['data'] == values
     assert record.headers['cache-control'] == 'private, no-store'
-    original = c.get(f'/admin/api/product-collection/{identifier}/image')
+    original = c.get(f'/product-collection-admin/api/products/{identifier}/image')
     assert original.content == raw and 'attachment;' in original.headers['content-disposition']
-    preview = c.get(f'/admin/api/product-collection/{identifier}/image?preview=true')
+    preview = c.get(f'/product-collection-admin/api/products/{identifier}/image?preview=true')
     with Image.open(io.BytesIO(preview.content)) as img:
         assert img.format == 'JPEG' and max(img.size) == 240
     # Reading via a fresh connection returns the same durable record.
@@ -89,16 +91,16 @@ def test_image_errors_and_no_partial_row(intake, monkeypatch):
 
 
 def test_pagination_filter_and_export_with_safe_text(intake, monkeypatch):
-    app,c=intake; app.dependency_overrides[get_admin_user]=lambda: {'user_id':'admin_console'}
+    app,c=intake; app.dependency_overrides[require_collection_admin]=lambda: {'user_id':'admin_console'}
     submit(c, data(brand='=HYPERLINK("bad")', product_id='00012345678901234567890', daily_price='23.50', live_price='0', stock='12', selling_points={'features':'第一行\n第二行'}), image=image_bytes())
     submit(c, data(brand='其他品牌'));submit(c, data(brand='100%纯'))
-    first=c.get('/admin/api/product-collection?limit=2').json();assert first['total']==3 and len(first['items'])==2
+    first=c.get('/product-collection-admin/api/products?limit=2').json();assert first['total']==3 and len(first['items'])==2
     submit(c, data(brand='新到达'))
-    second=c.get(f'/admin/api/product-collection?limit=2&before_id={first["next_cursor"]}').json()
+    second=c.get(f'/product-collection-admin/api/products?limit=2&before_id={first["next_cursor"]}').json()
     assert {x['id'] for x in first['items']}.isdisjoint({x['id'] for x in second['items']})
     assert len(second['items'])==1
-    assert c.get('/admin/api/product-collection',params={'q':'%'}).json()['filtered']==1
-    exported=c.get('/admin/api/product-collection/export.xlsx',params={'q':'HYPERLINK'})
+    assert c.get('/product-collection-admin/api/products',params={'q':'%'}).json()['filtered']==1
+    exported=c.get('/product-collection-admin/api/products/export.xlsx',params={'q':'HYPERLINK'})
     assert exported.status_code==200
     workbook=load_workbook(io.BytesIO(exported.content));ws=workbook.active
     assert list(next(ws.values))[:22]==[f[1] for f in pc.FIELDS]
@@ -109,9 +111,9 @@ def test_pagination_filter_and_export_with_safe_text(intake, monkeypatch):
     assert '第一行\n第二行' in ws['Q2'].value
     assert len(ws._images)==1
     assert ws.freeze_panes=='C2' and ws.auto_filter.ref=='A1:X2'
-    assert c.get('/admin/api/product-collection/export.xlsx',params={'q':'not found'}).status_code==200
+    assert c.get('/product-collection-admin/api/products/export.xlsx',params={'q':'not found'}).status_code==200
     monkeypatch.setattr(pc,'MAX_EXPORT_ROWS',2)
-    assert c.get('/admin/api/product-collection/export.xlsx').status_code==422
+    assert c.get('/product-collection-admin/api/products/export.xlsx').status_code==422
 
 
 def test_routes_schema_and_missing_record(intake):
@@ -120,6 +122,6 @@ def test_routes_schema_and_missing_record(intake):
     schema=c.get('/api/v1/selfit/product-collection/schema').json()
     assert len(schema['fields'])==22 and len(schema['selling_fields'])==10
     assert '首饰' in schema['dimensions_help']
-    app.dependency_overrides[get_admin_user]=lambda: {'user_id':'admin_console'}
-    assert c.get('/admin/api/product-collection/99999').status_code==404
-    assert c.get('/admin/api/product-collection/99999/image').status_code==404
+    app.dependency_overrides[require_collection_admin]=lambda: {'user_id':'admin_console'}
+    assert c.get('/product-collection-admin/api/products/99999').status_code==404
+    assert c.get('/product-collection-admin/api/products/99999/image').status_code==404

@@ -178,6 +178,13 @@ def _rate_rules() -> list[LimitRule]:
             env_int("SELFIT_PHONE_LOGIN_RATE_WINDOW_SECONDS", 3600),
         ),
         LimitRule(
+            "product_collection_login",
+            ("/product-collection-admin/api/login",),
+            20,
+            3600,
+            methods=("POST",),
+        ),
+        LimitRule(
             "auth",
             ("/auth/invite/verify", "/auth/invite/upgrade", "/auth/bind-phone", "/admin/api/login"),
             env_int("SELFIT_AUTH_RATE_LIMIT", 20),

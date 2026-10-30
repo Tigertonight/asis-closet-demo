@@ -289,8 +289,6 @@
     .photo-thumb-button, .lightbox-image { transition: none; }
   }
 
-  .product-stats {display:flex;flex-wrap:wrap;gap:16px;margin:20px 0;font-size:16px}.product-stats b{font-size:26px;color:var(--brand)}
-  .product-tools {display:flex;flex-wrap:wrap;gap:10px;align-items:center}.product-tools input {flex:1;min-width:180px;padding:12px;border:1px solid var(--line);border-radius:12px}.product-tools button{min-height:44px}.product-detail{border:0;border-radius:24px;width:min(700px,calc(100% - 24px));max-height:90dvh;padding:24px;color:var(--text)}.product-detail::backdrop{background:#0006}.product-detail-header{position:sticky;top:-24px;padding:16px 0;background:white;display:flex;align-items:flex-start;justify-content:space-between;gap:16px}.product-detail-header h2{margin:0;overflow-wrap:anywhere}.product-detail-header button{flex-shrink:0;min-height:44px}.product-detail-list dt{font-weight:700;margin-top:20px}.product-detail-list dd{margin:8px 0 0;white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.7}.product-detail-image{display:block;max-width:240px;max-height:240px;margin-bottom:12px}.product-detail-list dd>button{display:block;margin-top:8px;min-height:44px}[data-tab-panel=products] .table-wrap{overflow-x:auto;max-width:100%}#productRows td{max-width:280px;overflow-wrap:anywhere}#productMore{margin-top:16px}
 </style>
 </head>
 <body>
@@ -300,7 +298,6 @@
     <button class="is-active" data-tab="analytics" type="button">数据分析</button>
     <button type="button" data-tab="submissions">用户报告</button>
     <button type="button" data-tab="feedback">用户反馈</button>
-    <button type="button" data-tab="products">商品信息收集</button>
     <button type="button" data-tab="photoAlgorithms">算法版本</button>
     <button type="button" data-tab="invites">邀请码</button>
     <button type="button" data-tab="stylistContext">AI agent</button>
@@ -356,16 +353,6 @@
       <h2>用户行为（手机号关联）</h2>
       <table><thead><tr><th>手机号</th><th>登录方式</th><th>行为事件数</th><th>首次活跃</th><th>最后活跃</th></tr></thead><tbody id="userRows"></tbody></table>
     </div>
-    <section class="panel" data-tab-panel="products" hidden>
-      <h2>直播商品信息收集</h2>
-      <p><a href="/selfit/product-collection" target="_blank" rel="noopener">打开独立填写页面 ↗</a></p>
-      <div class="product-stats"><span>累计收到 <b id="productTotal">—</b> 条</span><span>今日收到 <b id="productToday">—</b> 条</span><span>当前筛选 <b id="productFiltered">—</b> 条</span></div>
-      <form id="productSearchForm" class="product-tools"><input id="productSearch" aria-label="搜索商品信息" placeholder="搜索品牌、商品名称或品类" maxlength="100"><button type="submit" class="feedback-action">搜索</button><button id="productRefresh" type="button" class="feedback-action">刷新数据</button><button id="productExport" type="button" class="feedback-action">导出 Excel</button></form>
-      <p id="productSummary" role="status"></p><p id="productExportStatus" role="status"></p>
-      <p class="muted">导出当前筛选结果，最多 5000 条；含原表 22 列、提交时间和编号。高清原图可在详情中下载。</p>
-      <div class="table-wrap"><table><thead><tr><th>编号</th><th>品牌名称</th><th>商品名称</th><th>品类</th><th>提交时间（北京时间）</th><th>白底图</th><th>操作</th></tr></thead><tbody id="productRows"></tbody></table></div>
-      <button id="productMore" type="button" class="feedback-action" hidden>加载更多</button>
-    </section>
     <section class="panel" data-tab-panel="feedback" hidden><h2>用户反馈</h2><button id="feedbackRefresh" class="feedback-action" type="button">刷新数据</button><p id="feedbackSummary" role="status"></p><div id="feedbackList"></div><button id="feedbackMore" class="feedback-action" type="button" hidden>加载更多</button></section>
     <div class="panel" id="submissionsPanel" data-tab-panel="submissions" hidden>
       <h2>用户报告</h2>
@@ -558,8 +545,6 @@
     </div>
   </div>
 </main>
-<dialog id="productDetail" class="product-detail" aria-labelledby="productDetailTitle"><div class="product-detail-header"><h2 id="productDetailTitle">商品信息</h2><button id="productDetailClose" type="button" class="feedback-action">关闭</button></div><div id="productDetailBody"></div></dialog>
-<script src="/static/admin/product-collection.js?v=20261030-1"></script>
 <script>
 (() => {
   const TOKEN_KEY = 'selfit.admin.token.v1';
@@ -581,7 +566,6 @@
     return response.json();
   };
 
-  const products = window.ProductCollectionAdmin({api, getToken:()=>state.token, onAuthError:()=>showLogin()});
 
   let feedbackOffset = 0, feedbackVersion = 0;
   const feedbackImages = [];
@@ -1759,7 +1743,6 @@
   };
 
   const showLogin = () => {
-    products.reset();
     $('loginCard').hidden = false; $('settingsCard').hidden = true; $('dashboard').hidden = true;
     $('logoutBtn').hidden = true; $('settingsBtn').hidden = true;
     sessionStorage.removeItem(TOKEN_KEY); state.token = '';
@@ -1774,7 +1757,6 @@
     $('loginCard').hidden = true; $('settingsCard').hidden = true; $('dashboard').hidden = false;
     $('logoutBtn').hidden = false; $('settingsBtn').hidden = false;
     void load();
-    if (document.querySelector('[data-tab=products]').classList.contains('is-active')) void products.load();
   };
   const showSettings = () => {
     $('loginCard').hidden = true; $('dashboard').hidden = true; $('settingsCard').hidden = false;
@@ -1796,7 +1778,6 @@
     if (tab === 'analytics') void load();
     if (tab === 'invites') void loadInvites();
     if (tab === 'feedback') void loadFeedback();
-    if (tab === 'products' && state.token) void products.load();
     if (tab === 'photoAlgorithms') void loadPhotoAlgorithms();
     if (tab === 'personas') void loadPersonaGuide();
     if (tab === 'stylistContext') void loadStylistContext();

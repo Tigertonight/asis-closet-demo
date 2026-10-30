@@ -1,6 +1,6 @@
 # 直播商品信息收集
 
-独立填写页：`/selfit/product-collection`，不要求主站用户登录。后台入口：`/admin#products`，沿用管理员密码权限。
+独立填写页：`/selfit/product-collection`，不要求主站用户登录。独立后台入口：`/product-collection-admin`，使用专属管理密码；无主站品牌标识。原管理后台的商品页和 `/admin/api/product-collection*` 接口已移除。
 
 字段来自「小红书特产之夜-直播商品信息收集」原表及用户提供的表头/填写说明，原表链接：
 https://docs.xiaohongshu.com/sheet/f8c80ec24c4519a94dfca58164380022
@@ -17,7 +17,7 @@ https://docs.xiaohongshu.com/sheet/f8c80ec24c4519a94dfca58164380022
 
 数据库位于 `outputs/product_collection/products.sqlite3`，SQLite WAL；`products` 每条一行（单条表单 JSON），`product_images` 单独存放原图、缩略图及类型。一笔事务保存表单和图片。无需生产数据库手工迁移，首次调用自动建表。
 
-此目录不通过静态路径开放。列表、详情、图片、Excel 导出均验证管理员身份。普通用户没有查询他人提交的接口。
+此目录不通过静态路径开放。列表、详情、图片、Excel 导出位于 `/product-collection-admin/api/products*`，均验证独立后台身份；原后台登录态不授予此权限，新后台密码也无法进入原管理后台。普通用户没有查询他人提交的接口。
 
 ## 后台与导出
 
@@ -29,8 +29,19 @@ https://docs.xiaohongshu.com/sheet/f8c80ec24c4519a94dfca58164380022
 - 工作表采用流式写入，导出任务单并发，结果超过 4MB 落临时文件；单次最多 5000 条，超过时提示先筛选，不静默截断。
 - 新增依赖 `openpyxl==3.1.5`，部署脚本会按 requirements.txt 同步。
 
+## 独立后台密码与登录
+
+- 密码通过 `scripts/configure_product_collection_admin.py` 生成，24 位随机字符，无默认生产密码。
+- 密码独立存储于 `outputs/product_collection/admin.sqlite3`，使用独立盐值和 scrypt 哈希；会话只存随机 token 的 SHA-256，不保存密码明文。
+- Cookie 仅在 `/product-collection-admin` 路径使用，HttpOnly + SameSite=Strict，HTTPS 下启用 Secure。固定 24 小时过期；退出立即吊销；更换密码会吊销此后台的全部会话。
+- 登录单独限流，每 IP 每小时 20 次；密码计算最多并发两次。未配置密码时拒绝登录，不回退主站密码。
+- 主站管理员密码、用户账号和邀请码不变；已收集的商品数据库保持原路径，不迁移、不清空。
+- 首次配置：`.venv/bin/python scripts/configure_product_collection_admin.py`。仅输出凭证交付文件路径；文件在 Git 忽略的 `outputs/credentials/product-collection-admin.txt`，权限 0600。应用登录只读取哈希库。
+- 后续换密：增加 `--rotate --output <新的私密交付文件路径>`。现有凭证文件不会被覆盖。
+- 发布时仅把已生成的盐值/哈希以受限权限写入服务器独立鉴权库（或在服务器运行配置脚本并交付新密码）；不得提交明文密码或用本地商品数据覆盖服务器。
+
 ## 本地验收
 
-`.venv/bin/python -m pytest tests/test_product_collection.py -q`
+`.venv/bin/python -m pytest tests/test_product_collection.py tests/test_product_collection_admin.py -q`
 
-`.venv/bin/python tests/support/run_product_collection.py` 启动 `127.0.0.1:8793` 的隔离验收服务，表单/API真实读写临时数据库，只有该测试服务的后台鉴权使用本地 stub。正式入口通过 `app.main` 注册，仍使用真实管理员鉴权。
+`.venv/bin/python tests/support/run_product_collection.py --port 8794` 启动隔离验收服务，表单、API 和独立后台鉴权均为真实实现，数据存放在临时目录。默认仅供本机测试的密码为 `collection-local-qa-only`；可用 `--password-file` 指定本地私密凭证文件。验收服务不会加载生产账号或生产数据。
