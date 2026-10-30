@@ -4081,9 +4081,9 @@
   }
   for (const type of ["pointerdown", "keydown", "input"]) document.addEventListener(type, () => { idleAt = Date.now(); }, { passive: true });
   setInterval(() => {
-    if (state.view !== "approach" && !state.busy && !albumImporting && Date.now() - idleAt > 120000) {
+    if (state.view !== "approach" && !state.busy && !albumImporting && Date.now() - idleAt >= 30000) {
       restartFromSelection(); state.previewYear = 0; state.year = 1; setView("approach"); soundtrack.setHidden(true);
     }
-  }, 5000);
+  }, 1000);
   bootstrap();
 })();
