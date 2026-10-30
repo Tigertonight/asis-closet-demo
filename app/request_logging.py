@@ -9,6 +9,7 @@ import secrets
 import re
 import time
 from datetime import datetime, timezone
+from urllib.parse import parse_qs
 
 from app.ops import env_int
 
@@ -25,6 +26,28 @@ class PrivatePhotoAccessLogFilter(logging.Filter):
             if path.startswith("/api/v1/selfit/mirror/photos/"):
                 record.args = (*args[:2], path.split("?", 1)[0], *args[3:])
         return True
+
+
+def mirror_client_context(scope):
+    """Untrusted correlation only; never use this browser ID for authentication."""
+    header = dict(scope.get("headers", [])).get(b"x-selfit-client-id")
+    if header is not None:
+        if len(header) != 35:
+            return {}
+        value = header.decode("latin1")
+        return {"client_id": value, "client_id_source": "header"} if re.fullmatch(r"mc_[a-f0-9]{32}", value) else {}
+    # Native image fetches cannot carry custom headers. Carry the originating
+    # browser's ID with the signed image; it does not identify the fetcher itself.
+    query = scope.get("query_string", b"")
+    if len(query) > 4096:
+        return {}
+    try:
+        values = parse_qs(query.decode("ascii"), max_num_fields=16).get("client_id", [])
+    except (ValueError, UnicodeDecodeError):
+        return {}
+    if len(values) == 1 and re.fullmatch(r"mc_[a-f0-9]{32}", values[0]):
+        return {"client_id": values[0], "client_id_source": "photo_link"}
+    return {}
 
 
 def mirror_share_context(scope):
@@ -45,7 +68,8 @@ def mirror_share_context(scope):
     destination = headers.get(b"sec-fetch-dest", b"").decode("latin1")
     return {"photo_ref": hashlib.sha256(match[1].encode()).hexdigest()[:12],
             "client_platform": platform, "client_family": family,
-            "fetch_destination": destination if destination in {"image", "document", "empty"} else "unknown"}
+            "fetch_destination": destination if destination in {"image", "document", "empty"} else "unknown",
+            **mirror_client_context(scope)}
 
 
 def _is_disconnect(exc):

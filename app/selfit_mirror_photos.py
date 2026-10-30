@@ -33,7 +33,7 @@ from app.auth import get_admin_user
 from app.selfit_assets import LocalAssetStore
 from app.storage import ROOT_DIR
 from app import selfit_xhs_share
-from app.request_logging import mirror_share_context
+from app.request_logging import mirror_client_context, mirror_share_context
 
 router = APIRouter(tags=["selfit-mirror-photos"])
 PHOTO_DIR = ROOT_DIR / "outputs" / "selfit_mirror_photos"
@@ -237,11 +237,12 @@ def _has_scene(record):
             and bool(_store().local_path(f"mirror-photos/{record['id']}/scene.png")))
 
 
-def _file_links(record, has_scene):
+def _file_links(record, has_scene, client_id=None):
     # Native browser/WeChat downloads cannot supply the page's Bearer header.
     # Give each finished image a separate, short-lived capability, never the
     # primary 24-hour receipt secret or access to the uncomposited original.
     expires = int(min(record["expires"], time.time() + FILE_LINK_TTL))
+    client_tag = f"&client_id={client_id}" if isinstance(client_id, str) and re.fullmatch(r"mc_[a-f0-9]{32}", client_id) else ""
     links = {"expiresAt": expires * 1000}
     for key, name in (("print", "print.png"), ("scene", "scene.png")):
         if key == "scene" and not has_scene:
@@ -249,7 +250,7 @@ def _file_links(record, has_scene):
         links[key] = {}
         for action, download in (("view", False), ("download", True)):
             signature = _file_signature(record, name, expires, download)
-            links[key][action] = f"/api/v1/selfit/mirror/photos/{record['id']}/files/{name}?expires={expires}&download={int(download)}&signature={signature}"
+            links[key][action] = f"/api/v1/selfit/mirror/photos/{record['id']}/files/{name}?expires={expires}&download={int(download)}&signature={signature}{client_tag}"
     return links
 
 
@@ -304,10 +305,11 @@ def share_event(photo_id: str, event: ShareEvent, request: Request, expires: int
 @router.get("/api/v1/selfit/mirror/photos/{photo_id}/{variant}")
 def get_photo(photo_id: str, variant: str, request: Request, authorization: str = Header(default="")):
     record, secret = _authorized(photo_id, authorization)
+    client_id = mirror_client_context(request.scope).get("client_id")
     is_stamp = json.loads(record["settings"]).get("template") == "woken-stamp"
     if variant == "info":
         has_scene = _has_scene(record)
-        return JSONResponse({"expiresAt": record["expires"] * 1000, "width": 900 if is_stamp else 1080, "height": 1200 if is_stamp else 1440, "hasScene": has_scene, "edition": "woken" if is_stamp else "selfit", "imageLinks": _file_links(record, has_scene), "xhsShareEnabled": is_stamp and selfit_xhs_share.configured()}, headers=PRIVATE_HEADERS)
+        return JSONResponse({"expiresAt": record["expires"] * 1000, "width": 900 if is_stamp else 1080, "height": 1200 if is_stamp else 1440, "hasScene": has_scene, "edition": "woken" if is_stamp else "selfit", "imageLinks": _file_links(record, has_scene, client_id), "xhsShareEnabled": is_stamp and selfit_xhs_share.configured()}, headers=PRIVATE_HEADERS)
     if variant == "xhs-share":
         if not is_stamp:
             raise HTTPException(404, "该照片暂不支持此分享方式，可以先保存照片。", headers=PRIVATE_HEADERS)
@@ -320,7 +322,7 @@ def get_photo(photo_id: str, variant: str, request: Request, authorization: str 
             raise HTTPException(503, "分享地址暂未准备好，可以先保存照片。", headers=PRIVATE_HEADERS)
         if not _store().local_path(f"mirror-photos/{photo_id}/print.png"):
             raise HTTPException(503, "照片暂时无法读取，请重新加载后再分享。", headers=PRIVATE_HEADERS)
-        links = _file_links(record, False)
+        links = _file_links(record, False, client_id)
         try:
             config = selfit_xhs_share.prepare_share(base + links["print"]["view"], base + "/selfit/photo/share", request.headers.get("user-agent", ""))
         except selfit_xhs_share.ShareUnavailable as exc:

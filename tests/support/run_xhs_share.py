@@ -49,8 +49,13 @@ app.add_middleware(RequestTimingMiddleware)
 
 
 @app.get('/test/xhs-receipt')
-def receipt_fixture():
+def receipt_fixture(device: str = ''):
+    # Exercise iOS-only save routing in a desktop browser; this does not emulate
+    # Photos permissions or prove that a native app can import the image.
+    ios_override = """Object.defineProperty(navigator, 'userAgent', {value:
+      'Mozilla/5.0 (iPhone; CPU iPhone OS 18_6 like Mac OS X) AppleWebKit/605.1.15 Version/18.6 Mobile/15E148 Safari/604.1'});""" if device == 'ios' else ''
     script = f"""<script>
+    {ios_override}
     history.replaceState(null, '', location.pathname + location.search + '#{record['id']}.{secret}');
     // Deterministic recovery UI without calling XHS or launching a native app.
     if (new URLSearchParams(location.search).get('mode') === 'share-failure') {{

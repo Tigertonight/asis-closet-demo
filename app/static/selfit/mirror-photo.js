@@ -3,6 +3,14 @@
   const match = location.hash.slice(1).match(/^(mp_[a-f0-9]{32})\.([a-f0-9]{64})$/);
   const path = match ? `/api/v1/selfit/mirror/photos/${match[1]}` : '';
   const inWeChat = /MicroMessenger/i.test(navigator.userAgent || '');
+  const onIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent || '') ||
+    (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  // Safari attachment downloads go to Files, not Photos. Keep the real PNG
+  // available for the native long-press action that saves into the photo library.
+  const saveViaPhotoViewer = inWeChat || onIOS;
+  const savePhotoHint = onIOS
+    ? '长按图片，选择「存储到照片」或「保存图片」，存入系统相册。'
+    : '长按图片，选择「保存图片」保存到相册';
   const query = new URLSearchParams(location.search);
   const scanToShare = query.get('intent') === 'xhs';
   // Consume the scan action in this history entry before opening another page.
@@ -17,7 +25,9 @@
   const imageLinks = () => info?.imageLinks?.print;
   const linksFresh = () => info?.imageLinks?.expiresAt > Date.now() + 1000;
   async function get(variant) {
-    const response = await fetch(`${path}/${variant}`, { cache: 'no-store', headers: { Authorization: `Bearer ${match[2]}` }, signal: AbortSignal.timeout(45000) });
+    const response = await fetch(`${path}/${variant}`, { cache: 'no-store', headers: {
+      Authorization: `Bearer ${match[2]}`, ...globalThis.SelfitMirrorClient?.headers(),
+    }, signal: AbortSignal.timeout(45000) });
     if (!response.ok) { const data = await response.json().catch(() => ({})); throw new Error(typeof data.detail === 'string' ? data.detail : data.error?.message || '照片暂时无法加载，请重试。'); }
     return response;
   }
@@ -94,9 +104,9 @@
       $('phonePhoto').hidden = false; $('phoneIntro').textContent = info.edition === 'woken' ? '你的周年邮票，已经准备好了' : '你的照片，已经准备好了';
       $('phoneDownload').disabled = false;
       $('phoneXhsShare').hidden = !info.xhsShareEnabled;
-      $('phoneDownload').textContent = inWeChat ? '查看高清原图' : info.edition === 'woken' ? '保存高清邮票' : '保存高清照片';
+      $('phoneDownload').textContent = inWeChat ? '查看高清原图' : onIOS ? '保存到相册' : info.edition === 'woken' ? '保存高清邮票' : '保存高清照片';
       $('phoneStatus').textContent = '高清成片包含你选好的模板与效果';
-      $('phoneSaveHint').textContent = inWeChat ? '打开原图后，长按图片并选择「保存图片」。' : '如未开始下载，可打开高清原图后保存。';
+      $('phoneSaveHint').textContent = saveViaPhotoViewer ? '打开原图后，' + savePhotoHint : '如未开始下载，可打开高清原图后保存。';
       $('phoneSaveHint').hidden = false;
       $('phoneExpiry').textContent = `请在 ${new Date(info.expiresAt).toLocaleString('zh-CN')} 前领取照片`;
       if (navigator.share && navigator.canShare) void prepareFile().catch(() => {});
@@ -127,13 +137,13 @@
     try {
       if (!linksFresh()) await refreshLinks();
       if (!active()) return;
-      // Keep a real inline PNG on the <img> for WeChat's native long-press menu.
+      // Keep a real inline PNG on the <img> for the native long-press menu.
       // Neither a download attribute, attachment request nor blob URL is used.
       photo.src = imageLinks().view;
       await photo.decode();
       if (!active()) return;
       photo.hidden = false;
-      $('phoneViewerHint').textContent = '长按图片，选择「保存图片」保存到相册';
+      $('phoneViewerHint').textContent = savePhotoHint;
     } catch (e) {
       if (!active()) return;
       $('phoneViewerHint').textContent = e.name === 'EncodingError' ? '原图暂时未加载成功，请重试。' : errorText(e);
@@ -141,7 +151,7 @@
     }
   }
   function download() {
-    if (inWeChat) { void showOriginal(); return; }
+    if (saveViaPhotoViewer) { void showOriginal(); return; }
     if (!linksFresh()) { void renewForTap(); return; }
     // Run during the tap, without awaiting a fetch, to preserve user activation.
     const a = document.createElement('a'); a.href = imageLinks().download;
@@ -151,7 +161,7 @@
   }
   $('phoneDownload').onclick = download;
   $('phoneOriginal').onclick = event => {
-    if (inWeChat) { event.preventDefault(); void showOriginal(); return; }
+    if (saveViaPhotoViewer) { event.preventDefault(); void showOriginal(); return; }
     if (!linksFresh()) { event.preventDefault(); void renewForTap(); }
   };
   $('phoneViewerClose').onclick = () => $('phoneViewer').close();

@@ -147,3 +147,30 @@ def test_photo_request_source_is_classified_without_raw_headers(agent, family, p
     assert row['client_family'] == family and row['client_platform'] == platform
     assert row['fetch_destination'] == 'image' and len(row['photo_ref']) == 12
     assert all(secret not in json.dumps(row) for secret in [photo, 'PRIVATE_AUTH', 'SECRET_UA'])
+
+
+def test_browser_identity_and_native_image_link_identity_are_distinguished():
+    from app.request_logging import mirror_share_context
+    path = '/api/v1/selfit/mirror/photos/mp_' + 'a' * 32 + '/files/print.png'
+    client_id = 'mc_' + 'b' * 32
+    direct = mirror_share_context({'path': path, 'headers': [(b'x-selfit-client-id', client_id.encode())]})
+    linked = mirror_share_context({'path': path, 'query_string': f'signature=PRIVATE_SIGNATURE&client_id={client_id}'.encode()})
+    assert direct['client_id'] == linked['client_id'] == client_id
+    assert direct['client_id_source'] == 'header' and linked['client_id_source'] == 'photo_link'
+    assert 'PRIVATE_SIGNATURE' not in json.dumps(linked)
+    assert mirror_share_context({'path': '/unrelated', 'headers': [(b'x-selfit-client-id', client_id.encode())]}) == {}
+
+
+@pytest.mark.parametrize('scope', [
+    {'headers': [(b'x-selfit-client-id', b'PRIVATE_AUTH')]},
+    {'headers': [(b'x-selfit-client-id', b'mc_' + b'a' * 32 + b'\n')]},
+    {'query_string': b'client_id=PRIVATE_AUTH'},
+    {'query_string': b'client_id=mc_' + b'a' * 32 + b'&client_id=mc_' + b'b' * 32},
+    {'query_string': b'client_id=mc_' + b'a' * 32 + b'%0a'},
+    {'query_string': b'client_id=' + b'a' * 4097},
+    {'query_string': b'x=1&' * 17},
+    {'query_string': b'client_id=\xff'},
+])
+def test_malformed_browser_identity_is_ignored_without_logging_payload(scope):
+    from app.request_logging import mirror_client_context
+    assert mirror_client_context(scope) == {}

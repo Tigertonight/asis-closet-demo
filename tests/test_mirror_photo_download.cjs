@@ -5,9 +5,9 @@ const vm = require('node:vm');
 const source = fs.readFileSync('app/static/selfit/mirror-photo.js', 'utf8');
 const settle = () => new Promise(resolve => setImmediate(resolve));
 
-function fixture({ share = false, hasScene = true, xhs = false, xhsFail = false, scan = false, delayedShare = false, userAgent = 'Mozilla/5.0 Chrome/130' } = {}) {
+function fixture({ share = false, hasScene = true, xhs = false, xhsFail = false, scan = false, delayedShare = false, userAgent = 'Mozilla/5.0 Chrome/130', platform = '', maxTouchPoints = 0 } = {}) {
   let now = 1800000000000;
-  const elements = new Map(), clicks = [], requests = [], events = {}, shared = [], storage = new Map(), navigations = [];
+  const elements = new Map(), clicks = [], requests = [], requestHeaders = [], events = {}, shared = [], storage = new Map(), navigations = [];
   const ids = new Set([...fs.readFileSync('app/static/selfit/mirror-photo.html', 'utf8').matchAll(/id="([^"]+)"/g)].map(m => m[1]));
   const el = id => {
     assert.ok(ids.has(id), `element ${id} must exist in the page`);
@@ -23,15 +23,17 @@ function fixture({ share = false, hasScene = true, xhs = false, xhsFail = false,
   let failing = false, releaseShare;
   const historyWrites = [];
   const context = {
+    SelfitMirrorClient: { headers: () => ({ 'X-Selfit-Client-Id': 'mc_' + 'e'.repeat(32) }) },
     document: { hidden: false, getElementById: el, body: { append() {}, classList: { add() {} } },
       createElement: () => ({ click() { clicks.push({ href: this.href, filename: this.download }); }, remove() {} }) },
     location: { pathname: '/selfit/photo', search: scan ? '?intent=xhs' : '', hash: '#mp_' + 'a'.repeat(32) + '.' + 'b'.repeat(64), assign: url => navigations.push(url) },
     history: { replaceState: (_, __, url) => historyWrites.push(url) }, URLSearchParams,
     sessionStorage: { setItem: (key, value) => storage.set(key, value) },
-    navigator: { userAgent, ...(share ? { canShare: () => true, share: async value => { shared.push(value); } } : {}) }, File, Blob,
+    navigator: { userAgent, platform, maxTouchPoints, ...(share ? { canShare: () => true, share: async value => { shared.push(value); } } : {}) }, File, Blob,
     Date: class extends Date { static now() { return now; } }, AbortSignal, TypeError,
-    fetch: async url => {
+    fetch: async (url, options) => {
       requests.push(url);
+      requestHeaders.push(options.headers);
       if (failing) throw new TypeError('offline');
       if (delayedShare && url.endsWith('/xhs-share')) await new Promise(resolve => { releaseShare = resolve; });
       if (url.endsWith('/xhs-share')) return xhsFail ? { ok: false, json: async () => ({ detail: '分享暂时不可用' }) } : {
@@ -44,8 +46,20 @@ function fixture({ share = false, hasScene = true, xhs = false, xhsFail = false,
     setTimeout: () => 1, clearTimeout() {}, addEventListener: (name, callback) => { events[name] = callback; },
   };
   vm.runInNewContext(source, context);
-  return { el, clicks, requests, events, shared, storage, navigations, historyWrites, release: () => releaseShare(), advance: () => { now += 601000; }, fail: () => { failing = true; } };
+  return { el, clicks, requests, requestHeaders, events, shared, storage, navigations, historyWrites, release: () => releaseShare(), advance: () => { now += 601000; }, fail: () => { failing = true; } };
 }
+
+test('receipt, file preparation and XHS handoff carry the same browser ID without replacing authorization', async () => {
+  const f = fixture({ share: true, xhs: true }); await settle();
+  await f.el('phoneXhsShare').onclick();
+  assert.ok(f.requests.some(url => url.endsWith('/info')));
+  assert.ok(f.requests.some(url => url.endsWith('/download')));
+  assert.ok(f.requests.some(url => url.endsWith('/xhs-share')));
+  for (const headers of f.requestHeaders) {
+    assert.equal(headers['X-Selfit-Client-Id'], 'mc_' + 'e'.repeat(32));
+    assert.equal(headers.Authorization, 'Bearer ' + 'b'.repeat(64));
+  }
+});
 
 test('QR share intent prepares immediately without fetching or decoding the photo', async () => {
   const f = fixture({ scan: true }); await settle();
@@ -123,15 +137,22 @@ test('PNG download is synchronous with the tap and uses a real file URL', async 
   assert.doesNotMatch(f.el('phoneStatus').textContent, /已保存/);
 });
 
-for (const device of ['Android', 'iPhone']) test(`WeChat ${device} opens a real full-resolution image without triggering download`, async () => {
-  const f = fixture({ userAgent: `Mozilla/5.0 (${device}) MicroMessenger/8.0` }); await settle();
-  assert.equal(f.el('phoneDownload').textContent, '查看高清原图');
+for (const browser of [
+  { name: 'Android WeChat', userAgent: 'Mozilla/5.0 (Android) MicroMessenger/8.0', label: '查看高清原图' },
+  { name: 'iPhone WeChat', userAgent: 'Mozilla/5.0 (iPhone) MicroMessenger/8.0', label: '查看高清原图' },
+  { name: 'iPhone Safari', userAgent: 'Mozilla/5.0 (iPhone; CPU iPhone OS 18_6 like Mac OS X) AppleWebKit/605.1.15 Version/18.6 Mobile/15E148 Safari/604.1', label: '保存到相册' },
+  { name: 'iPhone Chrome', userAgent: 'Mozilla/5.0 (iPhone; CPU iPhone OS 18_6 like Mac OS X) AppleWebKit/605.1.15 CriOS/140.0 Mobile/15E148 Safari/604.1', label: '保存到相册' },
+  { name: 'iPad desktop Safari', userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15) Version/18.6 Safari/605.1.15', platform: 'MacIntel', maxTouchPoints: 5, label: '保存到相册' },
+]) test(`${browser.name} opens a real full-resolution image without downloading into Files`, async () => {
+  const f = fixture(browser); await settle();
+  assert.equal(f.el('phoneDownload').textContent, browser.label);
   f.el('phoneDownload').onclick(); await settle();
   assert.equal(f.el('phoneViewer').open, true);
   assert.equal(f.el('phoneOriginalPhoto').hidden, false);
   assert.equal(f.el('phoneOriginalPhoto').src, f.el('phonePhoto').src);
   assert.match(f.el('phoneOriginalPhoto').src, /print.png\?inline=/);
   assert.match(f.el('phoneViewerHint').textContent, /长按图片/);
+  assert.match(f.el('phoneViewerHint').textContent, /存储到照片|保存图片/);
   assert.equal(f.clicks.length, 0);
   assert.equal(f.requests.length, 1);
   f.el('phoneViewerClose').onclick();
@@ -141,6 +162,25 @@ for (const device of ['Android', 'iPhone']) test(`WeChat ${device} opens a real 
   assert.equal(prevented, true);
   assert.equal(f.el('phoneViewer').open, true);
   assert.equal(f.clicks.length, 0);
+});
+
+test('desktop Safari still downloads the PNG instead of opening the album-saving viewer', async () => {
+  const f = fixture({ userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15) Version/18.6 Safari/605.1.15', platform: 'MacIntel', maxTouchPoints: 0 });
+  await settle(); f.el('phoneDownload').onclick();
+  assert.equal(f.clicks.length, 1);
+  assert.equal(f.el('phoneViewer').open, false);
+  assert.match(f.clicks[0].href, /download=/);
+});
+
+test('iPhone Safari renews an expired photo link before offering album saving', async () => {
+  const f = fixture({ userAgent: 'Mozilla/5.0 (iPhone) Version/18.6 Safari/604.1' });
+  await settle(); const before = f.el('phonePhoto').src;
+  f.advance(); f.el('phoneDownload').onclick(); await settle();
+  assert.equal(f.el('phoneViewer').open, true);
+  assert.notEqual(f.el('phoneOriginalPhoto').src, before);
+  assert.equal(f.el('phoneOriginalPhoto').hidden, false);
+  assert.equal(f.clicks.length, 0);
+  assert.doesNotMatch(f.el('phoneStatus').textContent, /已保存|已请求浏览器下载/);
 });
 
 test('WeChat renews expired links and opens the original in the same tap', async () => {

@@ -321,6 +321,41 @@ def test_share_diagnostics_require_print_capability_and_log_no_secrets(client, c
     assert client.post(event_url, json=body).status_code == 410
 
 
+def test_browser_id_follows_images_and_share_events_without_granting_access(client, caplog, monkeypatch):
+    import logging
+    from urllib.parse import urlsplit, parse_qs
+    photo_id = save_stamp(client).json()['photoId']
+    base = f'/api/v1/selfit/mirror/photos/{photo_id}'
+    client_id = 'mc_' + 'e' * 32
+    headers = {'Authorization': 'Bearer ' + SECRET, 'X-Selfit-Client-Id': client_id}
+    captured = []
+    def prepare(image, page, agent):
+        captured.append(image)
+        return {'flow': 'official-sdk', 'shareInfo': {'type': 'normal', 'images': [image]},
+                'expiresAt': int((time.time() + 180) * 1000)}
+    monkeypatch.setattr(photos.selfit_xhs_share, 'prepare_share', prepare)
+    with caplog.at_level(logging.INFO, logger='uvicorn.error'):
+        info = client.get(base + '/info', headers=headers).json()
+        url = info['imageLinks']['print']['view']
+        assert parse_qs(urlsplit(url).query)['client_id'] == [client_id]
+        assert client.get(url).status_code == 200
+        assert client.head(url).status_code == 200
+        assert client.get(base + '/xhs-share', headers=headers).status_code == 200
+        assert parse_qs(urlsplit(captured[0]).query)['client_id'] == [client_id]
+        assert client.post(url.replace('/files/print.png', '/share-events'), json={
+            'event': 'preview_loaded', 'flow': 'official-sdk', 'elapsed_ms': 123}).status_code == 204
+    rows = [json.loads(r.message) for r in caplog.records if r.message.startswith('{"event":')]
+    linked = [r for r in rows if r.get('client_id') == client_id]
+    assert any(r.get('client_id_source') == 'header' for r in linked)
+    assert any(r.get('client_id_source') == 'photo_link' for r in linked)
+    assert any(r.get('event') == 'xhs_share_client' for r in linked)
+    assert SECRET not in json.dumps(linked) and 'signature=' not in json.dumps(linked)
+    assert client.get(base + '/info', headers={'X-Selfit-Client-Id': client_id}).status_code == 404
+    assert client.get(base + '/files/print.png?client_id=' + client_id).status_code == 404
+    invalid = client.get(base + '/info', headers={**headers, 'X-Selfit-Client-Id': 'PRIVATE_BAD_ID'}).json()
+    assert 'client_id=' not in invalid['imageLinks']['print']['view']
+
+
 def test_share_diagnostics_are_limited_without_consuming_upload_or_image_allowance(client, monkeypatch):
     photo_id = save_stamp(client).json()['photoId']
     url = retrieve(client, photo_id, 'info').json()['imageLinks']['print']['view']
