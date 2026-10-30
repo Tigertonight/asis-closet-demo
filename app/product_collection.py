@@ -43,25 +43,25 @@ FIELDS = [
     ('brand', '品牌名称', 'text', 1, True),
     ('product_name', '商品名称', 'text', 1, True),
     ('category', '品类', 'text', 1, True),
-    ('product_url', '商品链接', 'url', 1, False),
-    ('product_id', '商品ID', 'text', 1, False),
+    ('product_url', '商品链接', 'url', 1, True),
+    ('product_id', '商品ID', 'text', 1, True),
     ('contact', '商家联系人', 'text', 1, True),
     ('contact_method', '联系电话/微信', 'text', 1, True),
-    ('operator', '对应运营', 'text', 1, False),
-    ('live_url', '最终直播链接', 'url', 2, False),
-    ('sku', '商品规格/SKU', 'textarea', 2, False),
-    ('daily_price', '日常售价（元）', 'money', 2, False),
-    ('live_price', '直播到手价（元）', 'money', 2, False),
-    ('promotion', '薯店长直播优惠机制', 'textarea', 2, False),
-    ('gifts', '赠品/赠品数量', 'textarea', 2, False),
-    ('stock', '直播可售数量', 'integer', 2, False),
-    ('product_image', '产品白底图', 'image', 3, False),
-    ('selling_points', '商品卖点', 'selling', 3, False),
-    ('lottery_stock', '直播提供抽奖数量', 'integer', 2, False),
-    ('cautions', '商品禁忌/注意事项', 'textarea', 3, False),
-    ('listed', '是否完成上架', 'status', 4, False),
-    ('price_verified', '是否完成价格校验', 'status', 4, False),
-    ('dimensions', '尺寸', 'textarea', 3, False),
+    ('operator', '对应运营', 'text', 1, True),
+    ('live_url', '最终直播链接', 'url', 2, True),
+    ('sku', '商品规格/SKU', 'textarea', 2, True),
+    ('daily_price', '日常售价（元）', 'money', 2, True),
+    ('live_price', '直播到手价（元）', 'money', 2, True),
+    ('promotion', '薯店长直播优惠机制', 'textarea', 2, True),
+    ('gifts', '赠品/赠品数量', 'textarea', 2, True),
+    ('stock', '直播可售数量', 'integer', 2, True),
+    ('product_image', '产品白底图', 'image', 3, True),
+    ('selling_points', '商品卖点', 'selling', 3, True),
+    ('lottery_stock', '直播提供抽奖数量', 'integer', 2, True),
+    ('cautions', '商品禁忌/注意事项', 'textarea', 3, True),
+    ('listed', '是否完成上架', 'status', 4, True),
+    ('price_verified', '是否完成价格校验', 'status', 4, True),
+    ('dimensions', '尺寸', 'textarea', 3, True),
 ]
 DIMENSIONS_HELP = '服饰：提供具体衣长\n首饰：口径 + 外包装\n家居：长 × 宽 × 高（mm）+ 外包装尺寸（如有）\n食品：外包装长 × 宽 × 高（mm）'
 
@@ -103,10 +103,13 @@ def clean_data(raw: str) -> dict:
         data = json.loads(raw)
     except ValueError:
         raise HTTPException(422, '无法读取填写内容，请刷新后重试。')
-    allowed = {f[0] for f in FIELDS if f[2] != 'image'}
+    allowed = {f[0] for f in FIELDS if f[2] != 'image'} | {'image_not_applicable'}
     if not isinstance(data, dict) or set(data) - allowed:
         raise HTTPException(422, '表单内容不正确，请刷新后重试。')
-    result = {}
+    image_na = data.get('image_not_applicable', False)
+    if not isinstance(image_na, bool):
+        raise HTTPException(422, '请上传产品白底图，或勾选图片不适用。')
+    result = {'image_not_applicable': image_na}
     for key, label, kind, _, required in FIELDS:
         if kind == 'image':
             continue
@@ -115,11 +118,14 @@ def clean_data(raw: str) -> dict:
             if not isinstance(value, dict) or set(value) - {k for k, _ in SELLING_FIELDS}:
                 raise HTTPException(422, '商品卖点内容不正确。')
             result[key] = {k: clean_text(value.get(k, ''), label_text, 1000) for k, label_text in SELLING_FIELDS}
+            for selling_key, selling_label in SELLING_FIELDS:
+                if not result[key][selling_key]:
+                    raise HTTPException(422, f'请填写{selling_label}，如不适用可填写“不适用”。')
             continue
         value = clean_text(value, label, 2000 if kind in {'url', 'textarea'} else 200)
         if required and not value:
             raise HTTPException(422, f'请填写{label}。')
-        if value and kind == 'url':
+        if value and value != '不适用' and kind == 'url':
             try:
                 parsed = urlsplit(value)
                 valid = parsed.scheme in {'http', 'https'} and parsed.hostname and not parsed.username and not parsed.password and not re.search(r'\s', value)
@@ -127,11 +133,11 @@ def clean_data(raw: str) -> dict:
                 valid = False
             if not valid:
                 raise HTTPException(422, f'{label}请填写完整的 http 或 https 地址。')
-        if value and kind == 'money' and not re.fullmatch(r'\d{1,9}(\.\d{1,2})?', value, re.ASCII):
+        if value and value != '不适用' and kind == 'money' and not re.fullmatch(r'\d{1,9}(\.\d{1,2})?', value, re.ASCII):
             raise HTTPException(422, f'{label}请填写非负金额，最多两位小数。')
-        if value and kind == 'integer' and not re.fullmatch(r'\d{1,9}', value, re.ASCII):
+        if value and value != '不适用' and kind == 'integer' and not re.fullmatch(r'\d{1,9}', value, re.ASCII):
             raise HTTPException(422, f'{label}请填写非负整数。')
-        if kind == 'status' and value not in {'', 'yes', 'no'}:
+        if kind == 'status' and value not in {'yes', 'no', '不适用'}:
             raise HTTPException(422, f'请重新选择{label}。')
         result[key] = value
     return result
@@ -166,6 +172,10 @@ def prepare_image(raw):
 
 
 def save_submission(request_id, data, raw):
+    if not raw and not data.get('image_not_applicable'):
+        raise HTTPException(422, '请上传产品白底图，或勾选图片不适用。')
+    if raw and data.get('image_not_applicable'):
+        raise HTTPException(422, '已上传产品白底图，请取消图片不适用选项。')
     encoded = json.dumps(data, ensure_ascii=False, sort_keys=True)
     digest = hashlib.sha256(encoded.encode() + b'\0' + raw).hexdigest()
     with database() as db:
@@ -207,7 +217,7 @@ def collection_admin_page():
 @router.get('/api/v1/selfit/product-collection/schema')
 def collection_schema():
     return {'title': '小红书特产之夜', 'fields': [dict(key=k, label=l, type=t, group=g, required=r) for k, l, t, g, r in FIELDS],
-            'selling_fields': [dict(key=k, label=l) for k, l in SELLING_FIELDS], 'dimensions_help': DIMENSIONS_HELP}
+            'selling_fields': [dict(key=k, label=l, required=True) for k, l in SELLING_FIELDS], 'dimensions_help': DIMENSIONS_HELP}
 
 
 @router.post('/api/v1/selfit/product-collection')
@@ -246,7 +256,7 @@ def list_products(q: str = Query('', max_length=100), before_id: int | None = Qu
         filtered = db.execute(f'SELECT count(*) FROM products {where}', params).fetchone()[0]
         cursor_where = where + (' AND ' if where else ' WHERE ') + 'id<?' if before_id else where
         cursor_params = (*params, before_id) if before_id else params
-        rows = db.execute(f'SELECT id,created_at,brand,product_name,category,EXISTS(SELECT 1 FROM product_images WHERE product_id=products.id) AS has_image FROM products {cursor_where} ORDER BY id DESC LIMIT ?', (*cursor_params, limit + 1)).fetchall()
+        rows = db.execute(f"SELECT id,created_at,brand,product_name,category,EXISTS(SELECT 1 FROM product_images WHERE product_id=products.id) AS has_image,coalesce(json_extract(data,'$.image_not_applicable'),0) AS image_not_applicable FROM products {cursor_where} ORDER BY id DESC LIMIT ?", (*cursor_params, limit + 1)).fetchall()
     return JSONResponse({'total': total, 'today': today, 'filtered': filtered, 'items': [dict(r) for r in rows[:limit]],
                          'next_cursor': rows[limit - 1]['id'] if len(rows) > limit else None}, headers=PRIVATE)
 
@@ -293,10 +303,10 @@ def export_workbook(q):
                     if kind == 'selling':
                         value = '\n'.join(f'{label}：{value.get(k, "")}' for k, label in SELLING_FIELDS)
                     elif kind == 'status':
-                        value = {'yes': '是', 'no': '否', '': '待确认'}[value]
+                        value = {'yes': '是', 'no': '否', '': '待确认', '不适用': '不适用'}[value]
                     elif kind == 'image':
-                        value = '缩略图（高清原图请在后台下载）' if image else ''
-                    elif value and kind in {'money', 'integer'}:
+                        value = '缩略图（高清原图请在后台下载）' if image else '不适用' if data.get('image_not_applicable') else ''
+                    elif value and value != '不适用' and kind in {'money', 'integer'}:
                         value = float(value) if kind == 'money' else int(value)
                     values.append(cell(value))
                 created = datetime.fromisoformat(row['created_at']).astimezone(timezone(timedelta(hours=8))).strftime('%Y-%m-%d %H:%M:%S')

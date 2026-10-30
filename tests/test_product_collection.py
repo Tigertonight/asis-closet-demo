@@ -23,8 +23,12 @@ def intake(monkeypatch, tmp_path):
 
 
 def data(**kwargs):
-    return {'brand': '测试品牌', 'product_name': '测试商品', 'category': '食品',
-            'contact': '测试联系人', 'contact_method': 'test_wechat', **kwargs}
+    result = {k: '不适用' for k, _, kind, _, _ in pc.FIELDS if kind not in {'selling', 'image'}}
+    result.update(brand='测试品牌', product_name='测试商品', category='食品', contact='测试联系人', contact_method='test_wechat',
+                  image_not_applicable=True, selling_points={k:'不适用' for k, _ in pc.SELLING_FIELDS})
+    if isinstance(kwargs.get('selling_points'), dict):
+        kwargs['selling_points'] = {**result['selling_points'], **kwargs['selling_points']}
+    return {**result, **kwargs}
 
 
 def image_bytes():
@@ -34,14 +38,14 @@ def image_bytes():
 
 
 def submit(c, values=None, image=None, request_id=None):
-    body = {'payload': json.dumps(values if values is not None else data()), 'request_id': request_id or str(uuid.uuid4())}
+    body = {'payload': json.dumps(values if values is not None else data(image_not_applicable=image is None)), 'request_id': request_id or str(uuid.uuid4())}
     return c.post('/api/v1/selfit/product-collection', data=body,
                   files={'photo': ('商品.png', image, 'image/png')} if image is not None else None)
 
 
 def test_submit_persists_all_fields_and_private_original(intake):
     app, c = intake
-    values = data(**{k: ('yes' if kind == 'status' else '1.25' if kind == 'money' else '0' if kind == 'integer' else 'https://example.com/item' if kind == 'url' else '填写内容') for k, _, kind, _, _ in pc.FIELDS if k not in data() and kind not in {'image','selling'}})
+    values = data(image_not_applicable=False, **{k: ('yes' if kind == 'status' else '1.25' if kind == 'money' else '0' if kind == 'integer' else 'https://example.com/item' if kind == 'url' else '填写内容') for k, _, kind, _, _ in pc.FIELDS if kind not in {'image','selling'}})
     values['selling_points'] = {k: label + '内容' for k, label in pc.SELLING_FIELDS}
     raw = image_bytes(); saved = submit(c, values, raw); assert saved.status_code == 200
     identifier = saved.json()['id']
@@ -66,10 +70,10 @@ def test_submit_persists_all_fields_and_private_original(intake):
 def test_idempotency_including_concurrent_retry(intake):
     app, c = intake; key = str(uuid.uuid4()); raw=image_bytes()
     with ThreadPoolExecutor(max_workers=4) as pool:
-        responses=list(pool.map(lambda _:pc.save_submission(key, pc.clean_data(json.dumps(data())), raw),range(4)))
+        responses=list(pool.map(lambda _:pc.save_submission(key, pc.clean_data(json.dumps(data(image_not_applicable=False))), raw),range(4)))
     assert len({r['id'] for r in responses}) == 1
     assert submit(c, image=raw, request_id=key).status_code == 200
-    assert submit(c, data(product_name='changed'), image=raw, request_id=key).status_code == 409
+    assert submit(c, data(product_name='changed', image_not_applicable=False), image=raw, request_id=key).status_code == 409
     with pc.database() as db:
         assert db.execute('SELECT count(*) FROM products').fetchone()[0] == 1
         assert db.execute('SELECT count(*) FROM product_images').fetchone()[0] == 1
@@ -92,7 +96,7 @@ def test_image_errors_and_no_partial_row(intake, monkeypatch):
 
 def test_pagination_filter_and_export_with_safe_text(intake, monkeypatch):
     app,c=intake; app.dependency_overrides[require_collection_admin]=lambda: {'user_id':'admin_console'}
-    submit(c, data(brand='=HYPERLINK("bad")', product_id='00012345678901234567890', daily_price='23.50', live_price='0', stock='12', selling_points={'features':'第一行\n第二行'}), image=image_bytes())
+    submit(c, data(brand='=HYPERLINK("bad")', product_id='00012345678901234567890', daily_price='23.50', live_price='0', stock='12', selling_points={'features':'第一行\n第二行'}, image_not_applicable=False), image=image_bytes())
     submit(c, data(brand='其他品牌'));submit(c, data(brand='100%纯'))
     first=c.get('/product-collection-admin/api/products?limit=2').json();assert first['total']==3 and len(first['items'])==2
     submit(c, data(brand='新到达'))
@@ -125,3 +129,61 @@ def test_routes_schema_and_missing_record(intake):
     app.dependency_overrides[require_collection_admin]=lambda: {'user_id':'admin_console'}
     assert c.get('/product-collection-admin/api/products/99999').status_code==404
     assert c.get('/product-collection-admin/api/products/99999/image').status_code==404
+
+
+@pytest.mark.parametrize('field', [
+    'brand','product_name','category','product_url','product_id','contact','contact_method','operator',
+    'live_url','sku','daily_price','live_price','promotion','gifts','stock','lottery_stock','cautions','listed','price_verified','dimensions',
+])
+def test_every_scalar_field_requires_an_answer(intake, field):
+    _, c = intake
+    for missing in (True, False):
+        values = data()
+        if missing:
+            del values[field]
+        else:
+            values[field] = '  '
+        assert submit(c, values).status_code == 422
+
+
+@pytest.mark.parametrize('field', ['introduction','features','differentiation','shelf_life','production_date','celebrity','pregnancy','sensitive_skin','color','flavor'])
+def test_every_selling_point_requires_an_answer(intake, field):
+    _, c = intake
+    for missing in (True, False):
+        values = data()
+        if missing:
+            del values['selling_points'][field]
+        else:
+            values['selling_points'][field] = '  '
+        assert submit(c, values).status_code == 422
+
+
+def test_image_requires_upload_or_explicit_not_applicable(intake):
+    _, c = intake
+    assert submit(c, data(image_not_applicable=False)).status_code == 422
+    assert submit(c, data(image_not_applicable='true')).status_code == 422
+    assert submit(c, data(image_not_applicable=True), image=image_bytes()).status_code == 422
+    assert submit(c, data(image_not_applicable=False), image=image_bytes()).status_code == 200
+    assert submit(c, data(image_not_applicable=True)).status_code == 200
+
+
+def test_not_applicable_export_and_legacy_optional_records(intake):
+    app,c=intake;app.dependency_overrides[require_collection_admin]=lambda:{'role':'product_collection_admin'}
+    # Historical submissions remain readable even though new submissions require all fields.
+    legacy = {k:'' for k,_,kind,_,_ in pc.FIELDS if kind not in {'image','selling'}}
+    legacy.update(brand='旧品牌',product_name='旧商品',category='食品',contact='甲',contact_method='test',selling_points={k:'' for k,_ in pc.SELLING_FIELDS})
+    with pc.database() as db:
+        db.execute('INSERT INTO products(request_id,digest,created_at,brand,product_name,category,data) VALUES(?,?,?,?,?,?,?)',
+                   (str(uuid.uuid4()),'legacy','2026-10-30T00:00:00+00:00','旧品牌','旧商品','食品',json.dumps(legacy)))
+    response=submit(c,data());assert response.status_code==200
+    rows=c.get('/product-collection-admin/api/products').json()['items']
+    assert rows[0]['image_not_applicable']==1 and rows[1]['image_not_applicable']==0
+    assert c.get('/product-collection-admin/api/products/1').json()['data']==legacy
+    book=load_workbook(io.BytesIO(c.get('/product-collection-admin/api/products/export.xlsx').content))
+    for col in ['D','I','K','L','O','P','R','T','U']:
+        assert book.active[f'{col}2'].value=='不适用'
+        assert book.active[f'{col}2'].data_type=='s'
+    assert book.active['K3'].value is None and book.active['T3'].value=='待确认'
+    book.close()
+    schema=c.get('/api/v1/selfit/product-collection/schema').json()
+    assert all(f['required'] for f in schema['fields']+schema['selling_fields'])

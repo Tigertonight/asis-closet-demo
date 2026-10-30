@@ -34,8 +34,13 @@ def login(client, password=PASSWORD):
     return client.post(BASE + '/login', json={'password': password})
 
 
+def valid_data(**kwargs):
+    values = {k: '不适用' for k, _, kind, _, _ in pc.FIELDS if kind not in {'selling', 'image'}}
+    return {**values, 'selling_points':{k:'不适用' for k,_ in pc.SELLING_FIELDS}, 'image_not_applicable':True, **kwargs}
+
+
 def test_independent_login_existing_rows_and_excel(client):
-    saved = client.post('/api/v1/selfit/product-collection', data={'request_id':'11111111-1111-4111-8111-111111111111','payload':json.dumps({'brand':'existing','product_name':'商品','category':'食品','contact':'甲','contact_method':'wx'})})
+    saved = client.post('/api/v1/selfit/product-collection', data={'request_id':'11111111-1111-4111-8111-111111111111','payload':json.dumps(valid_data(brand='existing', product_name='商品'))})
     assert saved.status_code == 200
     assert client.get(BASE + '/products').status_code == 401
     assert login(client, 'wrong').status_code == 401
@@ -123,7 +128,7 @@ def test_login_requests_are_rate_limited(monkeypatch, tmp_path):
 def test_delete_requires_independent_admin_and_excludes_all_reads(client):
     image = io.BytesIO(); Image.new('RGB', (40, 40), 'white').save(image, 'PNG')
     key = str(uuid.uuid4())
-    fields = {'request_id': key, 'payload': json.dumps({'brand': '删除验收', 'product_name': '待删除商品', 'category': '食品', 'contact': '甲', 'contact_method': 'test'})}
+    fields = {'request_id': key, 'payload': json.dumps(valid_data(brand='删除验收', product_name='待删除商品', image_not_applicable=False))}
     files = {'photo': ('product.png', image.getvalue(), 'image/png')}
     identifier = client.post('/api/v1/selfit/product-collection', data=fields, files=files).json()['id']
     retained_fields = {**fields, 'request_id': str(uuid.uuid4()), 'payload': json.dumps({**json.loads(fields['payload']), 'product_name': '保留商品'})}
@@ -167,7 +172,7 @@ def test_delete_requires_independent_admin_and_excludes_all_reads(client):
 
 def test_delete_table_upgrade_keeps_existing_records(client):
     key = str(uuid.uuid4())
-    fields = {'request_id':key, 'payload':json.dumps({'brand':'旧记录','product_name':'旧商品','category':'食品','contact':'甲','contact_method':'test'})}
+    fields = {'request_id':key, 'payload':json.dumps(valid_data(brand='旧记录',product_name='旧商品'))}
     identifier = client.post('/api/v1/selfit/product-collection', data=fields).json()['id']
     with pc.database() as db:
         db.execute('DROP TABLE product_deletions')  # Schema before deletion support.

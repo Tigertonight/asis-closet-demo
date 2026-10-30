@@ -8,16 +8,18 @@
   function el(tag, text, cls) { const n = document.createElement(tag); if(text) n.textContent=text; if(cls)n.className=cls; return n; }
   function inputField(field, key=field.key) {
     const wrap=el('div','','field'), label=el('label',field.label); label.htmlFor=key;
-    label.append(el('span',field.required?' *':'选填',field.required?'required':'optional'));
+    label.append(el('span',' *','required'));
     const input=el(field.type==='textarea'?'textarea':field.type==='status'?'select':'input'); input.id=key; input.name=key;
-    input.required=!!field.required; input.maxLength=field.type==='textarea'||field.type==='url'?2000:200;
-    if(field.type==='status') for(const [value,text] of [['','待确认'],['yes','是'],['no','否']]) { const option=el('option',text); option.value=value; input.append(option); }
-    else { if(input.tagName==='INPUT')input.type=field.type==='url'?'url':'text'; input.placeholder=field.type==='url'?'https://…':`请填写${field.label}`; }
-    if(field.type==='money'||field.type==='integer') { input.inputMode=field.type==='money'?'decimal':'numeric'; input.pattern=field.type==='money'?'[0-9]{1,9}([.][0-9]{1,2})?':'[0-9]{1,9}'; input.placeholder=field.type==='money'?'例如：99.00':'填写非负整数，例如：100'; }
+    input.required=true; input.maxLength=field.type==='textarea'||field.type==='url'?2000:200;input.dataset.kind=field.type;
+    input.oninput=()=>{input.setCustomValidity('');input.removeAttribute('aria-invalid');};
+    if(field.type==='status') for(const [value,text] of [['','请选择'],['yes','是'],['no','否'],['不适用','不适用']]) { const option=el('option',text); option.value=value; input.append(option); }
+    else { if(input.tagName==='INPUT')input.type='text'; input.placeholder=field.type==='url'?'https://… 或 不适用':`请填写${field.label}`; }
+    if(field.type==='money'||field.type==='integer') { input.pattern=field.type==='money'?'不适用|[0-9]{1,9}([.][0-9]{1,2})?':'不适用|[0-9]{1,9}'; input.placeholder=field.type==='money'?'例如：99.00，或填写“不适用”':'填写非负整数，或填写“不适用”'; }
     if(key==='contact')input.autocomplete='name';
     if(key==='contact_method')input.placeholder='手机号或微信号，填写一种即可';
     wrap.append(label,input);
-    if(key==='dimensions') { const hint=el('p',schema.dimensions_help,'hint');hint.id='dimensionsHint';input.setAttribute('aria-describedby',hint.id);wrap.append(hint); }
+    const hint=el('p',field.type==='status'?'如不适用，可选择“不适用”。':'如不适用，可填写“不适用”。','hint');hint.id=key+'Hint';input.setAttribute('aria-describedby',hint.id);wrap.append(hint);
+    if(key==='dimensions') { const detail=el('p',schema.dimensions_help,'hint');detail.id='dimensionsGuide';input.setAttribute('aria-describedby',hint.id+' '+detail.id);wrap.append(detail); }
     return wrap;
   }
   function build() {
@@ -33,13 +35,14 @@
         section.append(group);continue;
       }
       if(field.type==='image') {
-        const box=el('div','','field upload'), label=el('label','产品白底图');label.htmlFor='photo'; label.append(el('span','选填','optional'));
+        const box=el('div','','field upload'), label=el('label','产品白底图');label.htmlFor='photo'; label.append(el('span',' *','required'));
         const input=el('input');input.type='file';input.id='photo';input.accept='image/jpeg,image/png,image/webp'; input.setAttribute('aria-describedby','photoHint');
-        const hint=el('p','上传高清大图，支持 JPG、PNG、WebP，单张不超过 20MB。','hint');hint.id='photoHint';
+        const hint=el('p','请上传高清大图，支持 JPG、PNG、WebP，单张不超过 20MB。如不适用，可勾选“不适用”。','hint');hint.id='photoHint';
+        const naLabel=el('label','','image-na'),na=el('input');na.type='checkbox';na.id='imageNotApplicable';naLabel.append(na,el('span','不适用（无需提供产品白底图）'));na.onchange=()=>{if(na.checked)clearPhoto();};
         const img=el('img','','image-preview');img.id='preview';img.alt='所选商品白底图';img.hidden=true;
         const remove=el('button','移除图片','small-action');remove.id='removePhoto';remove.type='button';remove.hidden=true;remove.onclick=clearPhoto;
         const error=el('p','','error');error.id='photoError';error.setAttribute('role','alert');
-        input.onchange=()=>selectPhoto(input.files[0]);box.append(label,input,hint,img,remove,error);section.append(box);continue;
+        input.onchange=()=>selectPhoto(input.files[0]);box.append(label,input,hint,naLabel,img,remove,error);section.append(box);continue;
       }
       section.append(inputField(field));
     }
@@ -50,15 +53,23 @@
     if(file.size>20*1024*1024 || !['image/jpeg','image/png','image/webp'].includes(file.type)){ $('photoError').textContent='请选择 20MB 以内的 JPG、PNG 或 WebP 图片。';$('photo').value='';return; }
     photoPending=true;const url=URL.createObjectURL(file), img=new Image();img.src=url;
     try{await img.decode();if(version!==photoVersion){URL.revokeObjectURL(url);return;}if(img.naturalWidth*img.naturalHeight>40000000)throw Error('size');
-      if(photoUrl)URL.revokeObjectURL(photoUrl);photoUrl=url;photo=file;$('preview').src=url;$('preview').hidden=false;$('removePhoto').hidden=false;
+      if(photoUrl)URL.revokeObjectURL(photoUrl);photoUrl=url;photo=file;$('imageNotApplicable').checked=false;$('preview').src=url;$('preview').hidden=false;$('removePhoto').hidden=false;
     }catch{URL.revokeObjectURL(url);if(version===photoVersion){$('photoError').textContent='图片无法读取或尺寸过大，请重新选择。';$('photo').value='';}}finally{if(version===photoVersion)photoPending=false;}
   }
   function showStep(value){step=value;document.querySelectorAll('[data-step]').forEach(s=>s.hidden=Number(s.dataset.step)!==step);document.querySelectorAll('.steps button').forEach((b,i)=>{if(i+1===step)b.setAttribute('aria-current','step');else b.removeAttribute('aria-current');});$('previous').hidden=step===1;$('next').hidden=step===4;$('submit').hidden=step!==4;$('formError').textContent='';}
   function validate(section){
-    for(const input of section.querySelectorAll('input:not([type=file]),textarea,select')){input.value=input.value.trim();input.removeAttribute('aria-invalid');if(!input.checkValidity()) {showStep(Number(input.closest('[data-step]').dataset.step));input.setAttribute('aria-invalid','true');input.reportValidity();return false;}}
+    for(const input of section.querySelectorAll('input:not([type=file]):not([type=checkbox]),textarea,select')){
+      input.value=input.value.trim();input.removeAttribute('aria-invalid');input.setCustomValidity('');
+      if(input.dataset.kind==='url'&&input.value&&input.value!=='不适用'){
+        try{const url=new URL(input.value);if(!['http:','https:'].includes(url.protocol)||!url.hostname||url.username||url.password||/\s/.test(input.value))throw Error();}
+        catch{input.setCustomValidity('请填写完整的 http 或 https 地址，如不适用可填写“不适用”。');}
+      }
+      if(!input.checkValidity()){showStep(Number(input.closest('[data-step]').dataset.step));input.setAttribute('aria-invalid','true');input.reportValidity();return false;}
+    }
+    if(section.querySelector('#photo')&&(photoPending||(!photo&&!$('imageNotApplicable').checked))){showStep(3);$('photoError').textContent=photoPending?'图片正在准备中，请稍候。':'请上传产品白底图，或勾选“不适用”。';$('photo').focus();return false;}
     return true;
   }
-  function payload(){const data={};for(const f of schema.fields){if(f.type==='image')continue;data[f.key]=f.type==='selling'?Object.fromEntries(schema.selling_fields.map(s=>[s.key,$(`selling_${s.key}`).value.trim()])):$(f.key).value.trim();}return data;}
+  function payload(){const data={image_not_applicable:$('imageNotApplicable').checked};for(const f of schema.fields){if(f.type==='image')continue;data[f.key]=f.type==='selling'?Object.fromEntries(schema.selling_fields.map(s=>[s.key,$(`selling_${s.key}`).value.trim()])):$(f.key).value.trim();}return data;}
   function setBusy(value){busy=value;$('intake').querySelectorAll('button,input,textarea,select').forEach(n=>n.disabled=value);$('submit').textContent=value?'正在提交…':'提交商品信息';$('uploadStatus').textContent=value?'正在保存商品信息和图片，请稍候。':'';}
   $('previous').onclick=()=>showStep(step-1);
   $('next').onclick=()=>{if(validate(document.querySelector(`[data-step="${step}"]`))){showStep(step+1);$('intake').scrollIntoView({block:'start'});}};

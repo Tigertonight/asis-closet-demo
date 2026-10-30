@@ -45,14 +45,14 @@
         const list=element('dl');list.className='product-detail-list';body.append(list);
         for(const field of schema.fields){list.append(element('dt',field.label));const value=element('dd');list.append(value);
           if(field.type==='image'){
-            if(!record.image){value.textContent='未上传';continue;}
+            if(!record.image){value.textContent=record.data.image_not_applicable?'不适用':'未上传';continue;}
             const img=element('img');img.alt='商品白底图';img.className='product-detail-image';value.append(img);
             const status=element('span','图片加载中…');value.append(status);
             const button=element('button','下载高清原图','feedback-action');button.type='button';value.append(button);button.onclick=async()=>{button.disabled=true;try{const ext={'image/jpeg':'jpg','image/png':'png','image/webp':'webp'}[record.image.mime];await download(`/product-collection-admin/api/products/${id}/image`,`product-${id}.${ext}`);}catch(e){status.textContent=e.message;}finally{button.disabled=false;}};
             response(`/product-collection-admin/api/products/${id}/image?preview=true`).then(r=>r.blob()).then(blob=>{if(version!==detailGeneration)return;previewUrl=URL.createObjectURL(blob);img.src=previewUrl;status.textContent=`原图 ${(record.image.bytes/1024/1024).toFixed(2)}MB`;}).catch(e=>{if(version===detailGeneration)fail(e,status);});
           }else if(field.type==='selling'){value.textContent=schema.selling_fields.map(f=>`${f.label}：${record.data.selling_points[f.key]||'未填写'}`).join('\n');}
-          else if(field.type==='status')value.textContent={yes:'是',no:'否','':'待确认'}[record.data[field.key]];
-          else if(field.type==='url'&&record.data[field.key]){const a=element('a',record.data[field.key]);a.href=record.data[field.key];a.target='_blank';a.rel='noopener noreferrer';value.append(a);}
+          else if(field.type==='status')value.textContent={yes:'是',no:'否','':'待确认','不适用':'不适用'}[record.data[field.key]];
+          else if(field.type==='url'&&record.data[field.key]&&record.data[field.key]!=='不适用'){const a=element('a',record.data[field.key]);a.href=record.data[field.key];a.target='_blank';a.rel='noopener noreferrer';value.append(a);}
           else value.textContent=record.data[field.key]||'未填写';
         }
         const remove=element('button','删除这条信息','danger-outline');remove.type='button';remove.onclick=()=>askDelete({id:record.id,...record.data});
@@ -65,7 +65,7 @@
       const params=new URLSearchParams({q:query});if(more&&cursor)params.set('before_id',cursor);
       try{const data=await api(`/product-collection-admin/api/products?${params}`);if(version!==generation)return;
         $('productTotal').textContent=data.total;$('productToday').textContent=data.today;$('productFiltered').textContent=data.filtered;
-        for(const row of data.items){const tr=element('tr');for(const text of [row.id,row.brand,row.product_name,row.category,date(row.created_at),row.has_image?'已上传':'未上传'])tr.append(element('td',text));const cell=element('td'),actions=element('div',undefined,'row-actions'),button=element('button','查看详情','mini-btn'),remove=element('button','删除','mini-btn danger-outline');button.type='button';button.onclick=()=>detail(row.id);remove.type='button';remove.setAttribute('aria-label',`删除 ${row.product_name}`);remove.onclick=()=>askDelete(row);actions.append(button,remove);cell.append(actions);tr.append(cell);$('productRows').append(tr);}
+        for(const row of data.items){const tr=element('tr');for(const text of [row.id,row.brand,row.product_name,row.category,date(row.created_at),row.has_image?'已上传':row.image_not_applicable?'不适用':'未上传'])tr.append(element('td',text));const cell=element('td'),actions=element('div',undefined,'row-actions'),button=element('button','查看详情','mini-btn'),remove=element('button','删除','mini-btn danger-outline');button.type='button';button.onclick=()=>detail(row.id);remove.type='button';remove.setAttribute('aria-label',`删除 ${row.product_name}`);remove.onclick=()=>askDelete(row);actions.append(button,remove);cell.append(actions);tr.append(cell);$('productRows').append(tr);}
         cursor=data.next_cursor;$('productMore').hidden=!cursor;$('productSummary').textContent=data.filtered?`已展示 ${$('productRows').children.length} / ${data.filtered} 条${query?'筛选结果':''}`:'暂无符合条件的商品信息';
       }catch(error){if(version===generation)fail(error,$('productSummary'));}
       finally{if(version===generation)$('productMore').disabled=false;}
