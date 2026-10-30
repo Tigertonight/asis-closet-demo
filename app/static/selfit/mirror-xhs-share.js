@@ -4,7 +4,7 @@
   let payload = null, timer = null, leftPage = false, flow = 'prepared-link', busy = false, sdkPromise = null;
   const enteredAt = Date.now(), eventCounts = new Map();
   const fresh = () => payload?.expiresAt > Date.now() + 1000;
-  let eventUrl = null;
+  let eventUrl = null, imageUrlEncoding = 'raw';
   const report = (event, errorCode = null) => {
     if (!eventUrl || (eventCounts.get(event) || 0) >= 5) return;
     eventCounts.set(event, (eventCounts.get(event) || 0) + 1);
@@ -13,7 +13,7 @@
     try {
       void fetch(eventUrl, { method: 'POST', credentials: 'omit', keepalive: true,
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ event, flow, error_code, elapsed_ms: Math.min(3600000, Math.max(0, Date.now() - enteredAt)) }),
+        body: JSON.stringify({ event, flow, error_code, image_url_encoding: imageUrlEncoding, elapsed_ms: Math.min(3600000, Math.max(0, Date.now() - enteredAt)) }),
       }).catch(() => {});
     } catch (_) { /* Diagnostics must never block sharing. */ }
   };
@@ -31,6 +31,8 @@
         !payload.verifyConfig?.appKey || !fresh()) throw new Error('Invalid handoff');
     flow = payload.flow || 'prepared-link';
     if (flow === 'official-sdk') {
+      if (payload.imageUrlEncoding && !['raw', 'component'].includes(payload.imageUrlEncoding)) throw new Error('Invalid image encoding');
+      imageUrlEncoding = payload.imageUrlEncoding || 'raw';
       if (!['nonce', 'timestamp', 'signature'].every(key => typeof payload.verifyConfig[key] === 'string' && payload.verifyConfig[key])) throw new Error('Invalid SDK config');
     } else if (flow === 'prepared-link') {
       const scheme = new URL(payload.launch.scheme), universal = new URL(payload.launch.universal);
@@ -111,7 +113,13 @@
         if (busy && !leftPage) status.textContent = '分享准备时间较长，可以稍等，或返回领图页重新尝试。';
       }, 10000);
       try {
-        Promise.resolve(globalThis.xhs.share({ shareInfo: payload.shareInfo, verifyConfig: payload.verifyConfig, fail }))
+        // Encode exactly once from the validated raw URL on each attempt. Keep
+        // preview/telemetry and Android handoff untouched. This is an opt-in
+        // diagnostic, not a claim that the SDK requires encoded image URLs.
+        const shareInfo = imageUrlEncoding === 'component'
+          ? { ...payload.shareInfo, images: payload.shareInfo.images.map(url => encodeURIComponent(url)) }
+          : payload.shareInfo;
+        Promise.resolve(globalThis.xhs.share({ shareInfo, verifyConfig: payload.verifyConfig, fail }))
           .then(() => {
             if (!failed) {
               report('sdk_returned');

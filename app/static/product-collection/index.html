@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="robots" content="noindex,nofollow"><meta name="referrer" content="no-referrer">
+  <title>直播商品信息收集 · selfit</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="/static/product-collection/form.css?v=20261030-1">
+  <script src="/static/product-collection/form.js?v=20261030-1" defer></script>
+</head>
+<body>
+<main class="shell">
+  <header><span class="brand">selfit</span><span>商家信息登记</span></header>
+  <div id="intro"><p class="eyebrow">小红书特产之夜</p><h1>直播商品信息收集</h1><p class="lead">把好商品介绍给我们。每次填写一件商品，提交后可继续登记。</p></div>
+  <p id="loading" role="status">正在准备表单…</p><button id="reload" type="button" class="secondary" hidden>重新加载</button>
+  <form id="intake" hidden novalidate>
+    <nav class="steps" aria-label="填写进度"></nav>
+    <p class="required-note">带 <span>*</span> 为必填，其余信息可按实际情况填写。</p>
+    <div id="sections"></div>
+    <p class="privacy">提交信息及图片仅供活动工作人员查看和导出，用于直播商品对接。</p>
+    <p id="formError" class="error" role="alert" tabindex="-1"></p>
+    <div class="actions"><button id="previous" class="secondary" type="button">上一步</button><button id="next" class="primary" type="button">下一步</button><button id="submit" class="primary" type="submit" hidden>提交商品信息</button></div>
+    <p id="uploadStatus" role="status"></p>
+  </form>
+  <section id="success" class="success" tabindex="-1" hidden><div class="success-mark" aria-hidden="true">✓</div><h2>商品信息已收到</h2><p>谢谢你的认真填写，活动工作人员会查看本次提交。</p><p id="receipt"></p><button id="another" class="primary" type="button">继续填写另一件</button></section>
+  <noscript>请开启浏览器 JavaScript 后填写表单。</noscript>
+</main>
+</body></html>

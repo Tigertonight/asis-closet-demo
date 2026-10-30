@@ -179,7 +179,9 @@
     if (current !== generation) return;
     // Only short-lived composed-image/launch URLs cross to the clean share page;
     // the receipt secret stays in this first-party history entry's fragment.
-    sessionStorage.setItem('selfit.xhsShare', JSON.stringify({ ...payload, autoOpen }));
+    // Diagnostic opt-in: encode only the SDK image argument, never the preview URL.
+    const imageUrlEncoding = payload.flow === 'official-sdk' && new URLSearchParams(location.search).get('xhs_url_encoding') === 'component' ? 'component' : 'raw';
+    sessionStorage.setItem('selfit.xhsShare', JSON.stringify({ ...payload, autoOpen, imageUrlEncoding }));
     location.assign('/selfit/photo/share');
   }
   async function shareFromScan() {

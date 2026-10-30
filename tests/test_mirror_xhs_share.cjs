@@ -101,11 +101,11 @@ test('invalid automatic handoff cannot launch; blocked automatic launch still al
   assert.equal(f.el.xhsAlternate.hidden, false);
 });
 
-function officialFixture({ autoOpen = false, ready = true, sdk, telemetryThrows = false } = {}) {
+function officialFixture({ autoOpen = false, ready = true, sdk, telemetryThrows = false, encoding = undefined } = {}) {
   let now = 1800000000000;
   const el = {}, calls = [], reports = [], scripts = [], timers = [], events = {};
   const image = `https://selfit.com.cn/api/v1/selfit/mirror/photos/mp_${'a'.repeat(32)}/files/print.png?expires=1800000600&signature=${'b'.repeat(64)}`;
-  const payload = { flow: 'official-sdk', autoOpen, expiresAt: now + 180000,
+  const payload = { flow: 'official-sdk', imageUrlEncoding: encoding, autoOpen, expiresAt: now + 180000,
     shareInfo: { type: 'normal', images: [image] },
     verifyConfig: { appKey: 'test', nonce: 'nonce', timestamp: '1800000000', signature: 'signed' } };
   const share = args => { calls.push(args); return sdk ? sdk(args) : Promise.resolve(); };
@@ -187,4 +187,20 @@ test('diagnostic network failure does not prevent SDK sharing; synchronous SDK f
   const broken = officialFixture({ autoOpen: true, sdk: () => { throw new Error('PRIVATE_ERROR'); } }); await flush();
   assert.equal(broken.el.xhsOpen.disabled, false); assert.match(broken.el.xhsStatus.textContent, /重新尝试/);
   assert.doesNotMatch(broken.el.xhsStatus.textContent, /PRIVATE_ERROR/);
+});
+
+
+test('opt-in encoded iOS image keeps raw preview and signature; repeated taps never double-encode', async () => {
+  const f = officialFixture({ encoding: 'component' }); await flush();
+  const raw = f.payload.shareInfo.images[0];
+  f.el.xhsOpen.onclick(); await flush();
+  f.el.xhsOpen.onclick(); await flush();
+  for (const call of f.calls) {
+    assert.equal(call.shareInfo.images[0], encodeURIComponent(raw));
+    assert.equal(decodeURIComponent(call.shareInfo.images[0]), raw);
+  }
+  assert.equal(f.el.xhsPhoto.src, raw);
+  assert.equal(f.payload.shareInfo.images[0], raw);
+  assert.ok(f.reports.every(r => r.body.image_url_encoding === 'component'));
+  assert.ok(f.reports.every(r => new URL(r.url).searchParams.get('signature') === 'b'.repeat(64)));
 });

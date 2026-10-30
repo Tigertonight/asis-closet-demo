@@ -297,17 +297,22 @@ def test_signed_png_head_has_get_headers_and_identical_authorization(client, mon
     assert client.head(url).status_code == 410
 
 
-def test_share_diagnostics_require_print_capability_and_log_no_secrets(client, caplog, monkeypatch):
+@pytest.mark.parametrize('image_encoding', [None, 'raw', 'component'])
+def test_share_diagnostics_require_print_capability_and_log_no_secrets(client, caplog, monkeypatch, image_encoding):
     import logging
     photo_id = save_stamp(client).json()['photoId']
     url = retrieve(client, photo_id, 'info').json()['imageLinks']['print']['view']
     event_url = url.replace('/files/print.png', '/share-events')
     body = {'event': 'sdk_failed', 'flow': 'official-sdk', 'elapsed_ms': 123, 'error_code': 20003}
+    if image_encoding is not None:
+        body['image_url_encoding'] = image_encoding
     with caplog.at_level(logging.INFO, logger='uvicorn.error'):
         response = client.post(event_url, json=body, headers={'User-Agent': 'iPhone MicroMessenger/8.0 PRIVATE_UA'})
     assert response.status_code == 204
     row, = [json.loads(r.message) for r in caplog.records if r.message.startswith('{"event":"xhs_share_client"')]
     assert row['stage'] == 'sdk_failed' and row['error_code'] == 20003
+    assert row['image_url_encoding'] == (image_encoding or 'raw')
+    assert client.post(event_url, json={**body, 'image_url_encoding': 'bad'}).status_code == 422
     assert row['client_family'] == 'wechat' and row['client_platform'] == 'ios'
     assert len(row['photo_ref']) == 12
     for secret in [SECRET, photo_id, 'PRIVATE_UA', 'signature=', 'Bearer']:

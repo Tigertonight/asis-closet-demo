@@ -5,7 +5,7 @@ const vm = require('node:vm');
 const source = fs.readFileSync('app/static/selfit/mirror-photo.js', 'utf8');
 const settle = () => new Promise(resolve => setImmediate(resolve));
 
-function fixture({ share = false, hasScene = true, xhs = false, xhsFail = false, scan = false, delayedShare = false, userAgent = 'Mozilla/5.0 Chrome/130', platform = '', maxTouchPoints = 0 } = {}) {
+function fixture({ share = false, hasScene = true, xhs = false, xhsFail = false, scan = false, delayedShare = false, userAgent = 'Mozilla/5.0 Chrome/130', platform = '', maxTouchPoints = 0, encoding = '', shareFlow = '' } = {}) {
   let now = 1800000000000;
   const elements = new Map(), clicks = [], requests = [], requestHeaders = [], events = {}, shared = [], storage = new Map(), navigations = [];
   const ids = new Set([...fs.readFileSync('app/static/selfit/mirror-photo.html', 'utf8').matchAll(/id="([^"]+)"/g)].map(m => m[1]));
@@ -26,7 +26,7 @@ function fixture({ share = false, hasScene = true, xhs = false, xhsFail = false,
     SelfitMirrorClient: { headers: () => ({ 'X-Selfit-Client-Id': 'mc_' + 'e'.repeat(32) }) },
     document: { hidden: false, getElementById: el, body: { append() {}, classList: { add() {} } },
       createElement: () => ({ click() { clicks.push({ href: this.href, filename: this.download }); }, remove() {} }) },
-    location: { pathname: '/selfit/photo', search: scan ? '?intent=xhs' : '', hash: '#mp_' + 'a'.repeat(32) + '.' + 'b'.repeat(64), assign: url => navigations.push(url) },
+    location: { pathname: '/selfit/photo', search: '?' + new URLSearchParams({ ...(scan ? { intent: 'xhs' } : {}), ...(encoding ? { xhs_url_encoding: encoding } : {}) }), hash: '#mp_' + 'a'.repeat(32) + '.' + 'b'.repeat(64), assign: url => navigations.push(url) },
     history: { replaceState: (_, __, url) => historyWrites.push(url) }, URLSearchParams,
     sessionStorage: { setItem: (key, value) => storage.set(key, value) },
     navigator: { userAgent, platform, maxTouchPoints, ...(share ? { canShare: () => true, share: async value => { shared.push(value); } } : {}) }, File, Blob,
@@ -37,7 +37,7 @@ function fixture({ share = false, hasScene = true, xhs = false, xhsFail = false,
       if (failing) throw new TypeError('offline');
       if (delayedShare && url.endsWith('/xhs-share')) await new Promise(resolve => { releaseShare = resolve; });
       if (url.endsWith('/xhs-share')) return xhsFail ? { ok: false, json: async () => ({ detail: '分享暂时不可用' }) } : {
-        ok: true, json: async () => ({ expiresAt: now + 180000, shareInfo: { type: 'normal', images: ['https://selfit.com.cn/files/print.png?signature=test'] }, verifyConfig: { appKey: 'test', signature: 'test' } }),
+        ok: true, json: async () => ({ flow: shareFlow, expiresAt: now + 180000, shareInfo: { type: 'normal', images: ['https://selfit.com.cn/files/print.png?signature=test'] }, verifyConfig: { appKey: 'test', signature: 'test' } }),
       };
       if (share && url.endsWith('/download')) return { ok: true, blob: async () => new Blob(['stamp'], { type: 'image/png' }) };
       assert.ok(url.endsWith('/info'), 'must not request the removed scene');
@@ -269,4 +269,13 @@ for (const hasScene of [true, false]) test(`shares only the stamp (historical sc
   assert.equal(f.shared[0].files[0].name, 'WOKEN-DAY-STAMP.png');
   assert.ok(f.requests.every(url => !url.includes('scene')));
   assert.doesNotMatch(f.el('phoneIntro').textContent, /展示图/);
+});
+
+
+for (const shareFlow of ['official-sdk', 'prepared-link']) test(`image URL encoding opt-in is only forwarded to iOS SDK: ${shareFlow}`, async () => {
+  const f = fixture({ xhs: true, encoding: 'component', shareFlow }); await settle();
+  await f.el('phoneXhsShare').onclick();
+  const handoff = JSON.parse(f.storage.get('selfit.xhsShare'));
+  assert.equal(handoff.imageUrlEncoding, shareFlow === 'official-sdk' ? 'component' : 'raw');
+  assert.ok(handoff.shareInfo.images[0].startsWith('https://'));
 });

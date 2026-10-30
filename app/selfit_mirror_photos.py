@@ -285,6 +285,7 @@ class ShareEvent(BaseModel):
     event: Literal["sdk_ready", "sdk_load_failed", "sdk_start", "sdk_failed", "sdk_returned",
                    "page_hidden", "page_returned", "preview_loaded", "preview_failed", "prepared_link_open"]
     flow: Literal["official-sdk", "prepared-link"]
+    image_url_encoding: Literal["raw", "component"] = "raw"
     elapsed_ms: int = Field(ge=0, le=3_600_000)
     error_code: int | None = Field(default=None, ge=-2147483648, le=2147483647)
 
@@ -298,6 +299,7 @@ def share_event(photo_id: str, event: ShareEvent, request: Request, expires: int
         "request_id": getattr(request.state, "http_request_id", None),
         **mirror_share_context(request.scope), "stage": event.event, "flow": event.flow,
         "elapsed_ms": event.elapsed_ms, "error_code": event.error_code,
+        "image_url_encoding": event.image_url_encoding,
     }, ensure_ascii=False, separators=(",", ":")))
     return Response(status_code=204, headers=PRIVATE_HEADERS)
 
