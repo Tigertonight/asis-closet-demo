@@ -282,6 +282,63 @@ def test_native_urls_cannot_change_photo_variant_expiry_or_disposition(client):
     assert client.get(url.replace(photo_id, other_id)).status_code == 404
 
 
+def test_signed_png_head_has_get_headers_and_identical_authorization(client, monkeypatch):
+    photo_id = save_stamp(client).json()['photoId']
+    url = retrieve(client, photo_id, 'info').json()['imageLinks']['print']['view']
+    get, head = client.get(url), client.head(url)
+    assert head.status_code == 200 and head.content == b''
+    for key in ['content-length', 'content-type', 'content-disposition', 'etag', 'cache-control']:
+        assert head.headers[key] == get.headers[key]
+    assert int(head.headers['content-length']) == len(get.content)
+    assert client.head(url.split('?')[0]).status_code == 404
+    assert client.head(url.replace('/print.png?', '/original.jpg?')).status_code == 404
+    later = time.time() + photos.FILE_LINK_TTL + 2
+    monkeypatch.setattr(photos.time, 'time', lambda: later)
+    assert client.head(url).status_code == 410
+
+
+def test_share_diagnostics_require_print_capability_and_log_no_secrets(client, caplog, monkeypatch):
+    import logging
+    photo_id = save_stamp(client).json()['photoId']
+    url = retrieve(client, photo_id, 'info').json()['imageLinks']['print']['view']
+    event_url = url.replace('/files/print.png', '/share-events')
+    body = {'event': 'sdk_failed', 'flow': 'official-sdk', 'elapsed_ms': 123, 'error_code': 20003}
+    with caplog.at_level(logging.INFO, logger='uvicorn.error'):
+        response = client.post(event_url, json=body, headers={'User-Agent': 'iPhone MicroMessenger/8.0 PRIVATE_UA'})
+    assert response.status_code == 204
+    row, = [json.loads(r.message) for r in caplog.records if r.message.startswith('{"event":"xhs_share_client"')]
+    assert row['stage'] == 'sdk_failed' and row['error_code'] == 20003
+    assert row['client_family'] == 'wechat' and row['client_platform'] == 'ios'
+    assert len(row['photo_ref']) == 12
+    for secret in [SECRET, photo_id, 'PRIVATE_UA', 'signature=', 'Bearer']:
+        assert secret not in json.dumps(row)
+    assert client.post(event_url.split('?')[0], json=body).status_code == 404
+    assert client.post(event_url, json={**body, 'message': 'PRIVATE_ERROR'}).status_code == 422
+    assert client.post(event_url, json={**body, 'event': 'untrusted-event'}).status_code == 422
+    assert client.post(event_url, json={**body, 'error_code': 2**64}).status_code == 422
+    later = time.time() + photos.FILE_LINK_TTL + 2
+    monkeypatch.setattr(photos.time, 'time', lambda: later)
+    assert client.post(event_url, json=body).status_code == 410
+
+
+def test_share_diagnostics_are_limited_without_consuming_upload_or_image_allowance(client, monkeypatch):
+    photo_id = save_stamp(client).json()['photoId']
+    url = retrieve(client, photo_id, 'info').json()['imageLinks']['print']['view']
+    monkeypatch.setattr(ops, '_limiter', ops.InMemoryRateLimiter())
+    monkeypatch.setenv('SELFIT_DISABLE_RATE_LIMIT', 'false')
+    monkeypatch.setenv('SELFIT_UPLOAD_RATE_LIMIT', '1')
+    monkeypatch.setenv('SELFIT_MIRROR_SHARE_EVENT_RATE_LIMIT', '2')
+    monkeypatch.setenv('SELFIT_MIRROR_HANDOFF_RATE_LIMIT', '1')
+    event_url = url.replace('/files/print.png', '/share-events')
+    body = {'event': 'sdk_ready', 'flow': 'official-sdk', 'elapsed_ms': 123}
+    assert client.post(event_url, json=body).status_code == 204
+    assert client.post(event_url, json=body).status_code == 204
+    assert client.post(event_url, json=body).status_code == 429
+    assert save_stamp(client).status_code == 201
+    assert client.get(url).status_code == 200
+    assert save_stamp(client).status_code == 429
+
+
 def test_native_link_expiry_renewal_and_receipt_expiry(client, monkeypatch):
     now = time.time()
     photo_id = save_stamp(client).json()['photoId']

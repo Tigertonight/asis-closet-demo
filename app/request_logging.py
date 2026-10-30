@@ -2,9 +2,11 @@
 from __future__ import annotations
 
 import asyncio
+import hashlib
 import json
 import logging
 import secrets
+import re
 import time
 from datetime import datetime, timezone
 
@@ -20,9 +22,30 @@ class PrivatePhotoAccessLogFilter(logging.Filter):
         args = record.args
         if isinstance(args, tuple) and len(args) == 5 and isinstance(args[2], str):
             path = args[2]
-            if path.startswith("/api/v1/selfit/mirror/photos/") and "/files/" in path:
+            if path.startswith("/api/v1/selfit/mirror/photos/"):
                 record.args = (*args[:2], path.split("?", 1)[0], *args[3:])
         return True
+
+
+def mirror_share_context(scope):
+    """Bounded classifications only; never log raw UA, IP, URLs or credentials."""
+    match = re.match(r"^/api/v1/selfit/mirror/photos/(mp_[a-f0-9]{32})(?:/|$)", scope.get("path", ""))
+    if not match:
+        return {}
+    headers = dict(scope.get("headers", []))
+    agent = headers.get(b"user-agent", b"")[:1024].decode("latin1").lower()
+    platform = "ios" if re.search(r"iphone|ipad|ipod", agent) else "android" if "android" in agent else "other"
+    family = "other"
+    for name, pattern in [("xiaohongshu", r"xiaohongshu|xhsdiscover|discover/|redapp/"),
+                          ("wechat", r"micromessenger"), ("apple_network", r"cfnetwork|urlsession"),
+                          ("chrome", r"chrome|crios"), ("safari", r"safari")]:
+        if re.search(pattern, agent):
+            family = name
+            break
+    destination = headers.get(b"sec-fetch-dest", b"").decode("latin1")
+    return {"photo_ref": hashlib.sha256(match[1].encode()).hexdigest()[:12],
+            "client_platform": platform, "client_family": family,
+            "fetch_destination": destination if destination in {"image", "document", "empty"} else "unknown"}
 
 
 def _is_disconnect(exc):
@@ -105,5 +128,9 @@ class RequestTimingMiddleware:
                 "outcome": outcome, "error_type": error_type,
                 "slow": duration >= max(1, env_int("SELFIT_SLOW_REQUEST_MS", 1000)),
             }
+            record.update(mirror_share_context(scope))
+            flow = scope.get("state", {}).get("xhs_share_flow")
+            if flow in {"official-sdk", "prepared-link"}:
+                record["share_flow"] = flow
             level = logging.WARNING if record["slow"] or error_type or record["status"] >= 500 else logging.INFO
             logger.log(level, json.dumps(record, ensure_ascii=False, separators=(",", ":")))

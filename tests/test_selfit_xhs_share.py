@@ -155,7 +155,6 @@ def test_share_page_is_separate_and_private(receipt):
 @pytest.mark.parametrize('agent,platform,wechat', [
     ('Linux; Android 16; Mobile Safari', 'Android', False),
     ('Android 16 MicroMessenger/8.0', 'Android', True),
-    ('iPhone MicroMessenger/8.0', 'iOS', True),
     ('OpenHarmony 5.0 ArkWeb Mobile', 'pc', False),
     ('', 'pc', False),
 ])
@@ -169,6 +168,21 @@ def test_prepare_uses_official_protocol_without_receipt_url(configured, monkeypa
     assert result['launch']['inWeChat'] is wechat
     assert 'accessToken' not in json.dumps(result)
     assert all(key not in sent[0] for key in ('title', 'content', 'original', 'secret'))
+
+
+@pytest.mark.parametrize('agent', ['iPhone MicroMessenger/8.0', 'iPhone Safari/604.1', 'iPad'])
+def test_ios_signs_only_and_leaves_share_code_to_official_browser_sdk(receipt, monkeypatch, agent):
+    client, record, headers = receipt
+    def forbidden(*args):
+        pytest.fail('iOS must not request check/token from the server')
+    monkeypatch.setattr(xhs, '_request_share_code', forbidden)
+    response = client.get(f"/api/v1/selfit/mirror/photos/{record['id']}/xhs-share", headers={**headers, 'User-Agent': agent})
+    assert response.status_code == 200
+    data = response.json()
+    assert data['flow'] == 'official-sdk' and 'launch' not in data
+    assert set(data['verifyConfig']) == {'appKey', 'nonce', 'timestamp', 'signature'}
+    assert client.get(data['shareInfo']['images'][0]).status_code == 200
+    assert all(secret not in response.text for secret in ('a' * 64, 'test-secret', 'private-test-token'))
 
 
 def test_check_token_wire_contract(monkeypatch):

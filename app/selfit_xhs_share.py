@@ -155,8 +155,12 @@ def prepare_share(image_url, page_url, user_agent):
     config = result["verifyConfig"]
     agent = (user_agent or "")[:1024]
     platform = "Android" if re.search("android", agent, re.I) else "iOS" if re.search("iphone|ipad|ipod", agent, re.I) else "pc"
-    session_id = secrets.token_hex(5)
     share = {"type": "normal", "images": [image_url]}
+    if platform == "iOS":
+        # Keep the official browser-side check/token + app handoff on iPhone.
+        # A server-prepared share code is not proof of native resource import.
+        return {**result, "flow": "official-sdk", "shareInfo": share}
+    session_id = secrets.token_hex(5)
     try:
         code = _request_share_code(config, {
             **share, "sessionId": session_id, "pageUrl": page_url,
@@ -167,7 +171,7 @@ def prepare_share(image_url, page_url, user_agent):
         logger.warning("xhs_share_unavailable type=%s status=%s", type(exc).__name__, status)
         raise ShareUnavailable("小红书分享准备失败，请重试或先保存照片。") from None
     scheme = "xhsdiscover://js_share_sdk?" + urlencode({"share_code": code, "app_key": config["appKey"], "session_id": session_id})
-    return {**result, "shareInfo": share, "launch": {
+    return {**result, "flow": "prepared-link", "shareInfo": share, "launch": {
         "scheme": scheme, "universal": "https://oia.xiaohongshu.com/oia?" + urlencode({"deeplink": scheme}),
         "platform": platform, "inWeChat": bool(re.search("micromessenger", agent, re.I)),
     }}

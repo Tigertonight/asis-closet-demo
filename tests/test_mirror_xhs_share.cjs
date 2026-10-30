@@ -100,3 +100,91 @@ test('invalid automatic handoff cannot launch; blocked automatic launch still al
   assert.equal(f.el.xhsOpen.disabled, false);
   assert.equal(f.el.xhsAlternate.hidden, false);
 });
+
+function officialFixture({ autoOpen = false, ready = true, sdk, telemetryThrows = false } = {}) {
+  let now = 1800000000000;
+  const el = {}, calls = [], reports = [], scripts = [], timers = [], events = {};
+  const image = `https://selfit.com.cn/api/v1/selfit/mirror/photos/mp_${'a'.repeat(32)}/files/print.png?expires=1800000600&signature=${'b'.repeat(64)}`;
+  const payload = { flow: 'official-sdk', autoOpen, expiresAt: now + 180000,
+    shareInfo: { type: 'normal', images: [image] },
+    verifyConfig: { appKey: 'test', nonce: 'nonce', timestamp: '1800000000', signature: 'signed' } };
+  const share = args => { calls.push(args); return sdk ? sdk(args) : Promise.resolve(); };
+  const document = { hidden: false,
+    getElementById: id => el[id] ||= { disabled: true, hidden: true, removeAttribute(name) { delete this[name]; } },
+    createElement: () => ({ remove() { this.removed = true; } }), head: { append: script => scripts.push(script) } };
+  const context = { document, URL, navigator: { userAgent: 'iPhone MicroMessenger/8.0' },
+    location: { origin: 'https://selfit.com.cn', assign() { assert.fail('official flow must use SDK'); } }, history: { length: 2, back() {} },
+    sessionStorage: { getItem: () => JSON.stringify(payload), removeItem() {} },
+    Date: class extends Date { static now() { return now; } },
+    setTimeout: (fn, delay) => { const timer = { fn, delay }; timers.push(timer); return timer; },
+    clearTimeout: timer => { if (timer) timer.cleared = true; },
+    addEventListener: (name, cb) => events[name] = cb,
+    fetch(url, options) {
+      if (telemetryThrows) throw new Error('offline');
+      reports.push({ url, body: JSON.parse(options.body) }); return Promise.resolve({ ok: true });
+    }, ...(ready ? { xhs: { share } } : {}) };
+  vm.runInNewContext(source, context);
+  return { el, calls, reports, scripts, timers, events, document, payload,
+    load() { context.xhs = { share }; scripts.at(-1).onload(); }, expire() { now += 180000; } };
+}
+const flush = async () => { for (let i = 0; i < 10; i++) await Promise.resolve(); };
+
+test('iPhone calls official SDK with signed image only; auto-launch is once and manual retry is possible', async () => {
+  const f = officialFixture({ autoOpen: true }); await flush();
+  assert.equal(f.calls.length, 1);
+  assert.deepEqual(JSON.parse(JSON.stringify(f.calls[0].shareInfo)), f.payload.shareInfo);
+  assert.deepEqual(JSON.parse(JSON.stringify(f.calls[0].verifyConfig)), f.payload.verifyConfig);
+  assert.equal(f.el.xhsAlternate.hidden, true);
+  f.document.hidden = true; f.events.visibilitychange();
+  f.document.hidden = false; f.events.visibilitychange(); await flush();
+  assert.equal(f.calls.length, 1, 'return must not auto-relaunch');
+  f.el.xhsOpen.onclick();
+  assert.equal(f.calls.length, 2, 'tap invokes SDK synchronously'); await flush();
+  assert.equal(f.el.xhsOpen.disabled, false);
+  assert.doesNotMatch(f.el.xhsStatus.textContent, /发布成功|分享成功/);
+  assert.ok(f.reports.some(r => r.body.event === 'sdk_returned'));
+  assert.ok(f.reports.every(r => new URL(r.url).pathname.endsWith('/share-events')));
+});
+
+test('in-flight SDK call cannot duplicate; numeric failure is logged without private messages', async () => {
+  let finish;
+  const f = officialFixture({ sdk: () => new Promise(resolve => finish = resolve) }); await flush();
+  f.el.xhsOpen.onclick(); f.el.xhsOpen.onclick();
+  assert.equal(f.calls.length, 1); assert.equal(f.el.xhsOpen.disabled, true);
+  f.calls[0].fail({ errCode: 20003, message: 'SECRET_SIGNATURE_URL' }); finish(); await flush();
+  assert.equal(f.el.xhsOpen.disabled, false);
+  assert.match(f.el.xhsStatus.textContent, /失败.*重新尝试/);
+  assert.equal(f.reports.find(r => r.body.event === 'sdk_failed').body.error_code, 20003);
+  assert.equal(f.reports.some(r => r.body.event === 'sdk_returned'), false);
+  assert.doesNotMatch(JSON.stringify(f.reports), /SECRET_SIGNATURE_URL/);
+});
+
+for (const timeout of [false, true]) test(`SDK load failure is recoverable (timeout: ${timeout})`, async () => {
+  const f = officialFixture({ ready: false, autoOpen: true });
+  assert.equal(f.el.xhsOpen.disabled, true); assert.equal(f.scripts.length, 1);
+  if (timeout) f.timers.find(t => t.delay === 8000).fn(); else f.scripts[0].onerror();
+  await flush();
+  assert.equal(f.scripts[0].removed, true); assert.equal(f.el.xhsOpen.disabled, false);
+  assert.equal(f.el.xhsOpen.textContent, '重新加载分享'); assert.equal(f.calls.length, 0);
+  f.el.xhsOpen.onclick(); assert.equal(f.scripts.length, 2); f.load(); await flush();
+  assert.equal(f.calls.length, 1); assert.equal(f.el.xhsOpen.disabled, false);
+});
+
+test('expired or hidden page never automatically launches after delayed SDK loading', async () => {
+  const expired = officialFixture({ ready: false, autoOpen: true }); expired.expire(); expired.load(); await flush();
+  assert.equal(expired.calls.length, 0); assert.equal(expired.el.xhsOpen.disabled, true);
+  assert.match(expired.el.xhsStatus.textContent, /过期/);
+  const hidden = officialFixture({ ready: false, autoOpen: true });
+  hidden.document.hidden = true; hidden.events.visibilitychange(); hidden.load(); await flush();
+  assert.equal(hidden.calls.length, 0);
+  hidden.document.hidden = false; hidden.events.visibilitychange(); await flush();
+  assert.equal(hidden.calls.length, 0); hidden.el.xhsOpen.onclick(); assert.equal(hidden.calls.length, 1); await flush();
+});
+
+test('diagnostic network failure does not prevent SDK sharing; synchronous SDK failure stays recoverable', async () => {
+  const f = officialFixture({ autoOpen: true, telemetryThrows: true }); await flush();
+  assert.equal(f.calls.length, 1); assert.equal(f.el.xhsOpen.disabled, false);
+  const broken = officialFixture({ autoOpen: true, sdk: () => { throw new Error('PRIVATE_ERROR'); } }); await flush();
+  assert.equal(broken.el.xhsOpen.disabled, false); assert.match(broken.el.xhsStatus.textContent, /重新尝试/);
+  assert.doesNotMatch(broken.el.xhsStatus.textContent, /PRIVATE_ERROR/);
+});

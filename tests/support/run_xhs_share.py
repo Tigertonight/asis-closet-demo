@@ -18,6 +18,7 @@ from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from PIL import Image, ImageDraw
 from app import selfit_mirror_photos as photos, selfit_xhs_share as xhs
+from app.request_logging import RequestTimingMiddleware
 
 os.environ['SELFIT_PUBLIC_BASE_URL'] = 'http://127.0.0.1:8789'
 os.environ['SELFIT_XHS_APP_KEY'] = 'qa-only-key'
@@ -44,6 +45,7 @@ image.save(original, 'JPEG'); image.save(final, 'PNG')
 secret = secrets.token_hex(32)
 record = photos._save(original.getvalue(), final.getvalue(), json.dumps({'template': 'woken-stamp'}), secret)
 app = FastAPI()
+app.add_middleware(RequestTimingMiddleware)
 
 
 @app.get('/test/xhs-receipt')
@@ -59,6 +61,24 @@ def receipt_fixture():
     }}
     </script>"""
     return HTMLResponse((ROOT / 'app/static/selfit/mirror-photo.html').read_text().replace('</head>', script + '</head>'))
+
+
+@app.get('/test/xhs-sdk')
+def sdk_fixture(mode: str = ''):
+    """Exercise production UI with an in-page SDK stub, never a native app launch."""
+    payload = {
+        'flow': 'official-sdk', 'autoOpen': mode == 'auto',
+        'expiresAt': int(time.time() * 1000) + 180000,
+        'shareInfo': {'type': 'normal', 'images': [os.environ['SELFIT_PUBLIC_BASE_URL'] + photos._file_links(photos.admin_record(record['id']), False)['print']['view']]},
+        'verifyConfig': {'appKey': 'qa-only-key', 'nonce': 'qa-nonce', 'timestamp': str(int(time.time())), 'signature': 'qa-only-signature'},
+    }
+    script = f"""<script>
+    sessionStorage.setItem('selfit.xhsShare', {json.dumps(json.dumps(payload))});
+    window.xhs = {{share: async options => {{
+      if ({json.dumps(mode)} === 'failure') options.fail({{errCode: 20003}});
+    }}}};
+    </script>"""
+    return HTMLResponse((ROOT / 'app/static/selfit/mirror-xhs-share.html').read_text().replace('</head>', script + '</head>'))
 
 
 app.include_router(photos.router)

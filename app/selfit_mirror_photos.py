@@ -9,6 +9,7 @@ import hashlib
 import hmac
 import io
 import json
+import logging
 import math
 import os
 import re
@@ -18,18 +19,21 @@ from contextlib import contextmanager
 from datetime import datetime, timezone
 from pathlib import Path
 from urllib.parse import urlsplit
+from typing import Literal
 
 import anyio
 import qrcode
 from fastapi import APIRouter, Depends, File, Form, Header, HTTPException, Request, UploadFile
 from fastapi.responses import FileResponse, JSONResponse, Response
 from PIL import Image, UnidentifiedImageError
+from pydantic import BaseModel, ConfigDict, Field
 
 from app.photo_work import photo_admission, run_photo_work
 from app.auth import get_admin_user
 from app.selfit_assets import LocalAssetStore
 from app.storage import ROOT_DIR
 from app import selfit_xhs_share
+from app.request_logging import mirror_share_context
 
 router = APIRouter(tags=["selfit-mirror-photos"])
 PHOTO_DIR = ROOT_DIR / "outputs" / "selfit_mirror_photos"
@@ -249,8 +253,7 @@ def _file_links(record, has_scene):
     return links
 
 
-@router.get("/api/v1/selfit/mirror/photos/{photo_id}/files/{name}")
-def get_photo_file(photo_id: str, name: str, expires: int = 0, download: bool = False, signature: str = ""):
+def _authorized_file(photo_id, name, expires, download, signature):
     if not re.fullmatch(r"mp_[a-f0-9]{32}", photo_id) or name not in {"print.png", "scene.png"} or not re.fullmatch(r"[a-f0-9]{64}", signature):
         raise HTTPException(404, "照片不存在或下载链接不完整。")
     record = admin_record(photo_id)
@@ -258,6 +261,13 @@ def get_photo_file(photo_id: str, name: str, expires: int = 0, download: bool = 
         raise HTTPException(404, "照片不存在或下载链接不完整。")
     if min(expires, record["expires"]) <= time.time():
         raise HTTPException(410, "下载链接已过期，请返回领取页重新点击保存。")
+    return record
+
+
+@router.head("/api/v1/selfit/mirror/photos/{photo_id}/files/{name}", include_in_schema=False)
+@router.get("/api/v1/selfit/mirror/photos/{photo_id}/files/{name}")
+def get_photo_file(photo_id: str, name: str, expires: int = 0, download: bool = False, signature: str = ""):
+    record = _authorized_file(photo_id, name, expires, download, signature)
     is_stamp = json.loads(record["settings"]).get("template") == "woken-stamp"
     if name == "scene.png" and not _has_scene(record):
         raise HTTPException(404, "照片不存在。")
@@ -267,6 +277,28 @@ def get_photo_file(photo_id: str, name: str, expires: int = 0, download: bool = 
     filename = ("WOKEN-DAY-STAMP.png" if name == "print.png" else "WOKEN-DAY-MACHINE.png") if is_stamp else "selfit-photo.png"
     return FileResponse(path, media_type="image/png", filename=filename,
                         content_disposition_type="attachment" if download else "inline", headers=PRIVATE_HEADERS)
+
+
+class ShareEvent(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    event: Literal["sdk_ready", "sdk_load_failed", "sdk_start", "sdk_failed", "sdk_returned",
+                   "page_hidden", "page_returned", "preview_loaded", "preview_failed", "prepared_link_open"]
+    flow: Literal["official-sdk", "prepared-link"]
+    elapsed_ms: int = Field(ge=0, le=3_600_000)
+    error_code: int | None = Field(default=None, ge=-2147483648, le=2147483647)
+
+
+@router.post("/api/v1/selfit/mirror/photos/{photo_id}/share-events", status_code=204)
+def share_event(photo_id: str, event: ShareEvent, request: Request, expires: int = 0, signature: str = ""):
+    # Same short-lived, composed-print capability; no receipt secret on this page.
+    _authorized_file(photo_id, "print.png", expires, False, signature)
+    logging.getLogger("uvicorn.error").info(json.dumps({
+        "event": "xhs_share_client", "timestamp": datetime.now(timezone.utc).isoformat(timespec="milliseconds"),
+        "request_id": getattr(request.state, "http_request_id", None),
+        **mirror_share_context(request.scope), "stage": event.event, "flow": event.flow,
+        "elapsed_ms": event.elapsed_ms, "error_code": event.error_code,
+    }, ensure_ascii=False, separators=(",", ":")))
+    return Response(status_code=204, headers=PRIVATE_HEADERS)
 
 
 @router.get("/api/v1/selfit/mirror/photos/{photo_id}/{variant}")
@@ -293,6 +325,7 @@ def get_photo(photo_id: str, variant: str, request: Request, authorization: str 
             config = selfit_xhs_share.prepare_share(base + links["print"]["view"], base + "/selfit/photo/share", request.headers.get("user-agent", ""))
         except selfit_xhs_share.ShareUnavailable as exc:
             raise HTTPException(503, str(exc), headers=PRIVATE_HEADERS) from None
+        request.state.xhs_share_flow = config.get("flow")
         return JSONResponse({**config, "expiresAt": min(config["expiresAt"], links["expiresAt"])}, headers=PRIVATE_HEADERS)
     if variant == "qr":
         base = os.getenv("SELFIT_PUBLIC_BASE_URL", "").strip().rstrip("/") or str(request.base_url).rstrip("/")

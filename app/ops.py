@@ -131,6 +131,15 @@ def _client_id(request: Request) -> str:
 def _rate_rules() -> list[LimitRule]:
     return [
         LimitRule(
+            # Sharing diagnostics must not consume photo upload or download quotas.
+            "mirror_share_events",
+            ("/api/v1/selfit/mirror/photos/",),
+            env_int("SELFIT_MIRROR_SHARE_EVENT_RATE_LIMIT", 3600),
+            env_int("SELFIT_MIRROR_SHARE_EVENT_RATE_WINDOW_SECONDS", 3600),
+            contains=("/share-events",),
+            methods=("POST",),
+        ),
+        LimitRule(
             "mirror_upload",
             ("/api/v1/selfit/mirror/analyze", "/api/v1/selfit/mirror/photos"),
             env_int("SELFIT_UPLOAD_RATE_LIMIT", 60),

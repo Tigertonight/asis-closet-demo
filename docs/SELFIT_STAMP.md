@@ -72,21 +72,32 @@ WOKEN DAY 成片页点击「扫码分享小红书」→ 手机扫码 → 自动�
 - 服务端配置 `SELFIT_XHS_APP_KEY`、`SELFIT_XHS_APP_SECRET` 才显示入口；密钥不进前端、日志和 git。
   配置写入服务器既有私有环境文件；本地 `.env.xhs.local` 仅供联调，启动时须显式加载。
 - `GET /api/v1/selfit/mirror/photos/{id}/xhs-share` 校验领取凭证、照片期限及成片文件，返回短期
-  `verifyConfig`、图片地址和已准备好的唤起链接。服务端调用官方 check/token，避免点击后还要等待网络。分享使用 `SELFIT_PUBLIC_BASE_URL` 指定的 HTTPS 域名，默认
+  `verifyConfig`、图片地址和调用方式。iOS 返回 `flow: official-sdk`，由手机加载官方 `xhs-1.0.1.js`
+  并调用 `xhs.share()` 完成 check/token 和唤起；Android/未知平台返回 `flow: prepared-link`，
+  服务端预先取得分享码及唤起链接。分享使用 `SELFIT_PUBLIC_BASE_URL` 指定的 HTTPS 域名，默认
   `https://selfit.com.cn`，不从 Host 头拼接。该域名应与领图页同源；仅 localhost 调试允许 HTTP。
 - access token 存在 `outputs/xhs_share/token.json`（0600）；可通过 `SELFIT_XHS_CACHE_DIR` 指定
   持久目录。锁避免多线程/多进程重复刷新，获取失败冷却 30 秒。该缓存应随 outputs 保留。
   **同一 appKey 仅由一套共享缓存管理刷新**：官方新 token 会立即使旧 token 失效，开发与线上
   不可各自频繁申请。浏览器签名最长 3 分钟，且早于 token 刷新边界失效。
-- 官方 SDK 的设备判断仅认 Android/iOS，其他 UA 会静默不唤起；其异步请求也发生在点击之后。
-  2026-10-27 手机反馈被误判桌面后，改为服务端按同一 check/token 协议先取得分享码，前端只处理
-  官方 scheme/universal link，不再用 JS UA 禁用按钮，也不再加载第三方 SDK 脚本。
-  请求头中的平台仅决定首选链接：Android 普通浏览器直接 scheme，微信/iOS/未知平台用官方
-  HTTPS universal link；另外提供另一种链接作为备用。未知设备仍然可操作。
+- 官方 SDK 的设备判断仅认 Android/iOS，其他 UA 会静默不唤起。Android/未知平台保留 2026-10-27
+  的兼容流程，不用 JS UA 禁用按钮：Android 普通浏览器直接 scheme，微信/未知平台用官方
+  HTTPS universal link；另外提供另一种链接作为备用。
+- 2026-10-30 针对 iPhone 已唤起 App 却进入相册、未导入成片的反馈，改回官方浏览器 SDK 调用。
+  SDK 加载限时 8 秒，失败可点击重试；执行中防止重复调用，返回页面不自动再次唤起。
+  不在 SDK 失败后自动回退服务端分享码。SDK 返回仅表示调用结束，不代表照片导入或发布成功。
+  这是待实机复测的修复尝试，现有日志无法确认原生 App 的失败原因，也无证据表明 1.7 MB 是大小限制。
 - 分享只在无领取凭证的 `/selfit/photo/share` 页面进行，官方接口中的 pageUrl 固定为此路径。
-  sessionStorage 一次性交接图片短期签名地址和唤起链接；原领取 secret 仅留在上一页 fragment。
+  sessionStorage 一次性交接图片短期签名地址、验签配置和（非 iOS 的）唤起链接；原领取 secret 仅留在上一页 fragment。
   分享图 URL 仅可读合成 PNG，最长 10 分钟且不得超过领取期限；签名接口和两页禁止缓存、referrer。
-  点击时立即导航，没有 await/fetch；图片、scheme、官方 HTTPS 跳转地址均先验证白名单和有效期。
+  非 iOS 点击时立即导航；iOS 使用官方 SDK 的异步流程。图片、scheme、官方 HTTPS 跳转地址均先验证白名单和有效期。
+- 成片文件接口同时支持 GET/HEAD，使用相同签名及到期校验，HEAD 不返回图片正文。
+  图片请求日志增加匿名 `photo_ref`、浏览器/系统分类和 fetch destination，均不记录原始 UA 或签名。
+  `POST .../{id}/share-events` 用相同短期成片凭证校验，仅接受固定阶段、耗时和数字错误码，
+  以 `xhs_share_client` 写入服务日志；不记录错误原文、领取 secret 或分享 URL。
+  诊断单独限流（默认每 IP/用户每小时 3600 次），不占用照片上传/下载额度；上报失败不阻塞分享。
+  可结合 `http_request.share_flow`、相同 `photo_ref` 的图片 GET/HEAD 与客户端阶段排查。
+  UA 分类仅作为线索，未知 UA 的请求不能据此断言来自小红书。
 - 照相馆获取 `qr?intent=xhs`，二维码指向 `/selfit/photo?intent=xhs#凭证`，不预先申请短期分享码。
   手机扫描后立即请求分享准备接口，不等待照片预览或高清图解码；成功后一次性交接 `autoOpen: true`。
   原页面立即从历史地址移除 intent；返回、刷新、BFCache 恢复均展示普通领图页，避免循环唤起。
@@ -137,6 +148,8 @@ node --test tests/test_mirror_xhs_share.cjs tests/test_mirror_photo_download.cjs
 分享页面隔离验收：`.venv/bin/python tests/support/run_xhs_share.py`，访问
 `http://127.0.0.1:8789/test/xhs-receipt`。使用临时合成测试图和服务端准备桩；只检查页面和返回，
 不要打开占位分享链接。导航时机、UA、过期和备用入口由前端测试覆盖，不代表原生 App 已唤起。
+`/test/xhs-sdk` 使用同样的分享页面及官方 SDK 接口桩，`?mode=auto` 验证自动调用、
+`?mode=failure` 验证失败恢复；无真实小红书请求或 App 跳转。
 
 按 DESIGN.md 自检：独立活动首屏行动清楚；照片为视觉中心；模板完整不拉伸；手机390/430px
 与桌面/镜子比例无水平溢出；按钮不重叠；加载、失败、恢复、成功、过期状态完整；控制台无缺失资源。

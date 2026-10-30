@@ -123,3 +123,27 @@ def test_native_photo_download_access_log_redacts_capability(caplog):
     assert path in caplog.text
     assert 'PRIVATE_TICKET' not in caplog.text
     assert '?expires=' not in caplog.text
+
+
+def test_share_event_access_log_redacts_capability(caplog):
+    RequestTimingMiddleware(None)
+    with caplog.at_level(logging.INFO, logger='uvicorn.access'):
+        logging.getLogger('uvicorn.access').info('%s - "%s %s HTTP/%s" %d',
+            '127.0.0.1', 'POST', '/api/v1/selfit/mirror/photos/mp_123/share-events?signature=PRIVATE_EVENT', '1.1', 204)
+    assert 'PRIVATE_EVENT' not in caplog.text and 'share-events' in caplog.text
+
+
+@pytest.mark.parametrize('agent,family,platform', [
+    ('iPhone MicroMessenger/8.0 SECRET_UA', 'wechat', 'ios'),
+    ('discover/9.0 iPhone SECRET_UA', 'xiaohongshu', 'ios'),
+    ('CFNetwork/123 Darwin/24', 'apple_network', 'other'),
+    ('Android Chrome/130', 'chrome', 'android'),
+])
+def test_photo_request_source_is_classified_without_raw_headers(agent, family, platform):
+    from app.request_logging import mirror_share_context
+    photo = 'mp_' + 'a' * 32
+    row = mirror_share_context({'path': f'/api/v1/selfit/mirror/photos/{photo}/files/print.png',
+        'headers': [(b'user-agent', agent.encode()), (b'authorization', b'PRIVATE_AUTH'), (b'sec-fetch-dest', b'image')]})
+    assert row['client_family'] == family and row['client_platform'] == platform
+    assert row['fetch_destination'] == 'image' and len(row['photo_ref']) == 12
+    assert all(secret not in json.dumps(row) for secret in [photo, 'PRIVATE_AUTH', 'SECRET_UA'])
