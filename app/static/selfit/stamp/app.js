@@ -4082,7 +4082,8 @@
   for (const type of ["pointerdown", "keydown", "input"]) document.addEventListener(type, () => { idleAt = Date.now(); }, { passive: true });
   setInterval(() => {
     if (state.view !== "approach" && !state.busy && !albumImporting && Date.now() - idleAt >= 30000) {
-      restartFromSelection(); state.previewYear = 0; state.year = 1; setView("approach"); soundtrack.setHidden(true);
+      // Keep the soundtrack running between visitors; only actual page visibility or mute pauses it.
+      restartFromSelection(); state.previewYear = 0; state.year = 1; setView("approach");
     }
   }, 1000);
   bootstrap();
