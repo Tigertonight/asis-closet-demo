@@ -101,7 +101,7 @@ def item_identity(item):
 def find_white_tee_preset(outfit_key, model_id, person_raw, selected_ids):
     """Match an account-owned saved composition, never a client's recipe claim."""
     from app.closet import get_outfit
-    from app.material_assets import MaterialRegistry, asset_content_url, material_download_url
+    from app.material_assets import MaterialRegistry, MaterialUrlUnavailable, asset_content_url, material_download_url
     from app.selfit_tryon_presets import _model_matches
     from app.selfit_studio import model_library
     from app.tryon import TRYON_MODEL_FIXTURE_DIR
@@ -141,7 +141,11 @@ def find_white_tee_preset(outfit_key, model_id, person_raw, selected_ids):
         record = MaterialRegistry().get(result["assetId"])
         if record["sha256"] != result["sha256"]:
             return None
-        material_download_url(record)
+        try:
+            material_download_url(record)
+        except MaterialUrlUnavailable:
+            # A published result may still have a verified local copy after URL expiry.
+            material_image_path(result["assetId"])
         return {"example_id": row["id"], "model_id": model_id, "outfit": outfit,
                 "image_path": asset_content_url(result["assetId"]), "quality_review": row.get("qualityReview", {})}
     except (OSError, ValueError, KeyError, TypeError, HTTPException):

@@ -92,6 +92,28 @@ def test_white_tee_job_records_history_without_worker(recipe_case, monkeypatch):
     assert job["result"]["requested_item_ids"] == outfit["item_ids"]
 
 
+@pytest.mark.parametrize("cache_verified", [True, False])
+def test_expired_white_tee_result_requires_verified_cached_asset(recipe_case, monkeypatch, cache_verified):
+    from app import material_assets
+    row, _, outfit, raw, _ = recipe_case
+    requested = []
+
+    def expired(record):
+        raise material_assets.MaterialUrlUnavailable("material.url_expired", "expired")
+
+    def cache_path(asset_id):
+        requested.append(asset_id)
+        if not cache_verified:
+            raise ValueError("Material hash mismatch")
+        return white.ROOT / "outputs" / "material-cache" / (asset_id + ".image")
+
+    monkeypatch.setattr(material_assets, "material_download_url", expired)
+    monkeypatch.setattr(white, "material_image_path", cache_path)
+    hit = white.find_white_tee_preset(outfit["outfit_id"], row["modelId"], raw, outfit["item_ids"])
+    assert requested == [row["result"]["assetId"]]
+    assert (hit is not None) == cache_verified
+
+
 def test_recipe_deduplication_keeps_male_inner_layer():
     recipes = white.recipes()
     male = [r for r in recipes if r["gender"] == "male"]
