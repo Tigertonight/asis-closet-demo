@@ -876,7 +876,10 @@ def test_public_report_share_is_anonymous_private_and_expires_in_seven_days(monk
     assert client.get(f"/s/{token}").status_code == 410
     expired_page = client.get(f"/s/{token}")
     assert "好可惜，本分享已过期" in expired_page.text
-    assert 'src="/static/selfit/assets/share-report-qr.png?v=20260828"' in expired_page.text
+    entry_qr = "/static/selfit/assets/share-report-qr.webp?v=20260828"
+    assert f'class="public-report-error-qr"><img src="{entry_qr}"' in expired_page.text
+    with Image.open(io.BytesIO(client.get(entry_qr).raise_for_status().content)) as image:
+        assert image.format == "WEBP"
     assert client.get(f"/s/{token}/cover.png").status_code == 410
     assert client.get(f"/s/{token}/qr.png").status_code == 410
 
