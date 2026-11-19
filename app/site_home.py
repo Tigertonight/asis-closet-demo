@@ -15,11 +15,12 @@ from __future__ import annotations
 
 import html
 import json
+import re
 from pathlib import Path
 from typing import Any
 
 from fastapi import APIRouter
-from fastapi.responses import HTMLResponse, RedirectResponse
+from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse
 
 from app.storage import ROOT_DIR
 
@@ -287,6 +288,47 @@ def render_site_html(content: dict[str, Any]) -> str:
 @router.get("/", include_in_schema=False)
 def root_page() -> RedirectResponse:
     return RedirectResponse(url="/selfit", status_code=302, headers={"Cache-Control": "no-store"})
+
+
+@router.get("/static/site/content.json", include_in_schema=False)
+def site_content_page() -> JSONResponse:
+    """The native home uses the same published fields and overrides as /home."""
+    data = load_site_content()
+
+    def fields(row: dict, *keys: str) -> dict:
+        return {key: row[key] for key in keys if isinstance(row.get(key), str)}
+
+    def link(row: dict) -> dict:
+        href = str(row.get("href") or "").strip()
+        return {**fields(row, "label"), "href": href if href.startswith(("/", "#")) and not href.startswith("//") else "#"}
+
+    sections = []
+    for section in data.get("sections") or []:
+        kind = section.get("type")
+        if kind not in _SECTION_RENDERERS:
+            continue
+        public = fields(section, "type", "id", "title", "text")
+        if kind == "cta":
+            public["button"] = link(section.get("button") or {})
+        elif kind == "types":
+            cards = []
+            for item in section.get("items") or []:
+                code = str(item.get("en") or "")
+                cards.append({**fields(item, "name", "en"), "image": _hero_image(code if re.fullmatch(r"[a-zA-Z0-9_-]+", code) else "")})
+            public["items"] = cards
+        else:
+            public["items"] = [fields(item, "title", "text") for item in section.get("items") or []]
+        sections.append(public)
+    hero = data.get("hero") or {}
+    footer = data.get("footer") or {}
+    return JSONResponse({
+        "site": fields(data.get("site") or {}, "name", "tagline"),
+        "nav": [link(item) for item in data.get("nav") or []],
+        "hero": {**fields(hero, "eyebrow", "title", "subtitle"),
+                 "primaryCta": link(hero.get("primaryCta") or {}), "secondaryCta": link(hero.get("secondaryCta") or {})},
+        "sections": sections,
+        "footer": {**fields(footer, "text"), "links": [link(item) for item in footer.get("links") or []]},
+    }, headers={"Cache-Control": "no-store"})
 
 
 @router.get("/docs", include_in_schema=False, response_class=HTMLResponse)

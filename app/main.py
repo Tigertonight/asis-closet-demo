@@ -779,6 +779,7 @@ async def closet_import_link(url: str = Form(...), current_user: dict[str, Any] 
         return await import_closet_link(url)
 
 
+@app.get("/selfit/try-on/preferences")
 @app.get("/closet/preferences")
 def closet_preferences(current_user: dict[str, Any] = Depends(get_current_user)) -> dict[str, Any]:
     with user_storage(current_user["user_id"]):
@@ -1009,6 +1010,7 @@ def closet_outfit(outfit_id: str, current_user: dict[str, Any] = Depends(get_cur
         return get_outfit(outfit_id)
 
 
+@app.post("/closet/outfits/{outfit_id}/update")
 @app.patch("/closet/outfits/{outfit_id}")
 async def closet_outfit_update(outfit_id: str, request: Request, current_user: dict[str, Any] = Depends(get_current_user)) -> dict[str, Any]:
     with user_storage(current_user["user_id"]):
@@ -1021,6 +1023,7 @@ def closet_outfit_delete(outfit_id: str, current_user: dict[str, Any] = Depends(
         return delete_outfit(outfit_id)
 
 
+@app.get("/selfit/try-on/records")
 @app.get("/closet/tryon-records")
 def closet_tryon_records(current_user: dict[str, Any] = Depends(get_current_user)) -> dict[str, Any]:
     with user_storage(current_user["user_id"]):

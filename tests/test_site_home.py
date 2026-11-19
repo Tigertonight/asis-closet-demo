@@ -136,3 +136,27 @@ def test_site_escapes_user_content_and_blocks_external_links(path: str, monkeypa
     assert "&lt;script&gt;" in response.text
     # 外链 href 被替换为安全占位
     assert "https://evil.example.com" not in response.text
+
+
+def test_native_home_uses_public_override_and_verified_art(monkeypatch, tmp_path):
+    content = site_home.load_site_content()
+    content["hero"]["title"] = "已更新的首页标题"
+    content["hero"]["internal_note"] = "not for either client"
+    types = next(s for s in content["sections"] if s["type"] == "types")
+    types["items"].append({"name": "测试卡片", "en": "UNDELIVERED", "private": True})
+    content["footer"]["links"] = [{"label": "返回测评", "href": "/selfit"}, {"label": "外站", "href": "//other.example"}]
+    path = tmp_path / "content.json"
+    path.write_text(json.dumps(content, ensure_ascii=False), encoding="utf-8")
+    monkeypatch.setattr(site_home, "OVERRIDE_CONTENT_PATH", path)
+    client = TestClient(app)
+    response = client.get("/static/site/content.json", follow_redirects=False)
+    assert response.status_code == 200
+    assert "no-store" in response.headers["cache-control"]
+    body = response.json()
+    assert body["hero"]["title"] == content["hero"]["title"]
+    assert body["hero"]["title"] in client.get("/home").text
+    assert "internal_note" not in body["hero"]
+    cards = next(s for s in body["sections"] if s["type"] == "types")["items"]
+    assert cards[0]["image"].endswith("/mute/hero.webp")
+    assert cards[-1] == {"name": "测试卡片", "en": "UNDELIVERED", "image": "/static/selfit/assets/personality/placeholder-card.svg"}
+    assert body["footer"]["links"][-1]["href"] == "#"

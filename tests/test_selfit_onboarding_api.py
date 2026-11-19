@@ -203,9 +203,12 @@ def test_idempotent_patch_replay_does_not_bump_revision(monkeypatch, tmp_path: P
     body = {"answers": {"occasion": "A"}}
     first = client.patch(f"{API}/sessions/{session_id}/vibe", json=body, headers=headers)
     second = client.patch(f"{API}/sessions/{session_id}/vibe", json=body, headers=headers)
+    native_replay = client.post(f"{API}/sessions/{session_id}/vibe/update", json=body, headers=headers)
     assert first.status_code == 200
     assert second.status_code == 200
     assert second.json()["session"]["revision"] == first.json()["session"]["revision"] == 2
+    assert native_replay.status_code == 200
+    assert native_replay.json()["session"] == first.json()["session"]
 
 
 def _upload_photo(client: TestClient, session_id: str, kind: str, content: bytes, filename: str = "photo.jpg", **kwargs):

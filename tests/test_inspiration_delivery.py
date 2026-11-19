@@ -161,3 +161,21 @@ def test_saving_scene_outfit_is_idempotent_and_user_isolated(monkeypatch, tmp_pa
     assert not any(i['item_id'] in outfit['item_ids'] for i in saved['items']), 'saving an outfit does not imply owning its pieces'
     user['user_id'] = 'bob'
     assert not client.get('/selfit/try-on/wardrobe').json()['outfits']
+
+
+def test_shared_outfit_uses_only_published_catalog():
+    from app.styling_catalog import outfit_id
+    from app.inspiration_catalog import inspiration_looks
+    app = FastAPI()
+    app.include_router(selfit_studio.router)
+    client = TestClient(app)
+    sample_id = outfit_id(inspiration_looks()[0])
+    url = "/selfit/try-on/library-outfits/"
+    assert client.get(url + sample_id).status_code == 401
+    for gender in ("female", "male"):
+        app.dependency_overrides[get_current_user] = lambda: {"user_id": "visitor", "gender": gender}
+        row = client.get(url + sample_id).json()
+        assert row["outfit_id"] == sample_id and row["source"] == "styling_delivery"
+        assert row["item_ids"] and row["cover_path"]
+    for missing in ("my-private-outfit", "report_missing_look"):
+        assert client.get(url + missing).status_code == 404

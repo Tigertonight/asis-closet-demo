@@ -13,6 +13,16 @@ router = APIRouter(prefix="/selfit/try-on", tags=["selfit-studio"])
 _save_lock = RLock()
 
 
+@router.get("/library-outfits/{outfit_id}")
+def studio_library_outfit(outfit_id: str, user: dict[str, Any] = Depends(get_current_user)) -> dict[str, Any]:
+    from app.styling_catalog import OUTFIT_PREFIX, get_delivered_outfit
+
+    # A shared link can resolve only a published catalog entry.
+    if not outfit_id.startswith(OUTFIT_PREFIX) or len(outfit_id) > 180:
+        raise HTTPException(404, "这套公开搭配不存在。")
+    return get_delivered_outfit(outfit_id)
+
+
 @router.get("/inspiration-topics")
 def studio_inspiration_topics(response: Response, user: dict[str, Any] = Depends(get_current_user)) -> dict[str, Any]:
     from app.inspiration_catalog import inspiration_topics

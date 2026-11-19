@@ -66,6 +66,7 @@ class FavoriteUpdate(BaseModel):
     favorite: StrictBool
 
 
+@router.post("/{note_id}/favorite/update")
 @router.patch("/{note_id}/favorite")
 def save_note(note_id: str, payload: FavoriteUpdate, current_user: dict = Depends(get_current_user)):
     with user_storage(current_user["user_id"]):
