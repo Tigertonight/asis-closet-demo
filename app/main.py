@@ -1004,6 +1004,7 @@ async def closet_outfit_analyze_selection(request: Request, current_user: dict[s
         return await run_photo_work(analyze_outfit_selection, await request.json())
 
 
+@app.get("/selfit/try-on/outfits/{outfit_id}")
 @app.get("/closet/outfits/{outfit_id}")
 def closet_outfit(outfit_id: str, current_user: dict[str, Any] = Depends(get_current_user)) -> dict[str, Any]:
     with user_storage(current_user["user_id"]):

@@ -46,3 +46,11 @@ def test_native_studio_reads_use_the_signed_in_account(monkeypatch, tmp_path):
         assert client.get(preferences, headers=second_headers).json()["current_model_id"] != "self"
         assert [record["record_id"] for record in client.get(history, headers=first_headers).json()["records"]] == ["first-outfit"]
         assert client.get(history, headers=second_headers).json()["records"] == []
+        wardrobe = client.get("/selfit/try-on/wardrobe", headers=first_headers).raise_for_status().json()
+        item_id = wardrobe["items"][0]["item_id"]
+        outfit = client.post("/selfit/try-on/outfits", headers=first_headers,
+                             json={"item_ids": [item_id], "title": "Only mine"}).raise_for_status().json()
+        path = "/selfit/try-on/outfits/" + outfit["outfit_id"]
+        assert client.get(path).status_code == 401
+        assert client.get(path, headers=second_headers).status_code == 404
+        assert client.get(path, headers=first_headers).raise_for_status().json()["item_ids"] == [item_id]
