@@ -7,6 +7,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from urllib.parse import urlparse
 
+from fastapi.routing import APIRoute
 from fastapi.testclient import TestClient
 from PIL import Image
 
@@ -194,6 +195,18 @@ def test_if_match_conflict_returns_409(monkeypatch, tmp_path: Path) -> None:
     assert client.get(f"{API}/sessions/{session_id}").json()["session"]["revision"] == 2
 
 
+def test_native_assessment_routes_use_the_web_handlers() -> None:
+    routes = {(route.path, method): route.endpoint
+              for route in app.routes if isinstance(route, APIRoute) for method in route.methods}
+    paths = (
+        "/sessions/{session_id}/preferences", "/sessions/{session_id}/gender",
+        "/sessions/{session_id}/profile", "/sessions/{session_id}/vibe",
+        "/me/gender", "/me/profile",
+    )
+    for path in paths:
+        assert routes[(API + path + "/update", "POST")] is routes[(API + path, "PATCH")]
+
+
 def test_idempotent_patch_replay_does_not_bump_revision(monkeypatch, tmp_path: Path) -> None:
     _use_tmp_store(monkeypatch, tmp_path)
     client = TestClient(app)
@@ -203,9 +216,12 @@ def test_idempotent_patch_replay_does_not_bump_revision(monkeypatch, tmp_path: P
     body = {"answers": {"occasion": "A"}}
     first = client.patch(f"{API}/sessions/{session_id}/vibe", json=body, headers=headers)
     second = client.patch(f"{API}/sessions/{session_id}/vibe", json=body, headers=headers)
+    native_replay = client.post(f"{API}/sessions/{session_id}/vibe/update", json=body, headers=headers)
     assert first.status_code == 200
     assert second.status_code == 200
     assert second.json()["session"]["revision"] == first.json()["session"]["revision"] == 2
+    assert native_replay.status_code == 200
+    assert native_replay.json()["session"] == first.json()["session"]
 
 
 def _upload_photo(client: TestClient, session_id: str, kind: str, content: bytes, filename: str = "photo.jpg", **kwargs):

@@ -1068,6 +1068,7 @@ async def get_sample_photo_preview(sample_id: str, request: Request) -> Response
 
 
 
+@router.post("/sessions/{session_id}/gender/update")
 @router.patch("/sessions/{session_id}/gender")
 async def patch_session_gender(
     session_id: str,
@@ -1096,6 +1097,7 @@ async def patch_session_gender(
     return await _patch_session(request, session_id, user, apply, save_account)
 
 
+@router.post("/sessions/{session_id}/profile/update")
 @router.patch("/sessions/{session_id}/profile")
 async def patch_session_profile(
     session_id: str,
@@ -1114,6 +1116,7 @@ async def patch_session_profile(
     return await _patch_session(request, session_id, user, apply)
 
 
+@router.post("/sessions/{session_id}/preferences/update")
 @router.patch("/sessions/{session_id}/preferences")
 async def patch_session_preferences(
     session_id: str,
@@ -1137,6 +1140,7 @@ async def patch_session_preferences(
     return await _patch_session(request, session_id, user, apply)
 
 
+@router.post("/sessions/{session_id}/vibe/update")
 @router.patch("/sessions/{session_id}/vibe")
 async def patch_session_vibe(
     session_id: str,
@@ -1305,6 +1309,7 @@ async def get_my_profile(user: dict[str, Any] = Depends(get_current_user)) -> di
     return {"profile": _account_profile(_load_store(), user["user_id"])}
 
 
+@router.post("/me/gender/update")
 @router.patch("/me/gender")
 async def update_my_gender(request: Request, user: dict[str, Any] = Depends(get_current_user)) -> JSONResponse:
     payload = await _read_json_object(request)
@@ -1321,6 +1326,7 @@ async def update_my_gender(request: Request, user: dict[str, Any] = Depends(get_
     return JSONResponse({"profile": _account_profile(data, user["user_id"])})
 
 
+@router.post("/me/profile/update")
 @router.patch("/me/profile")
 async def update_my_profile(request: Request, user: dict[str, Any] = Depends(get_current_user)) -> JSONResponse:
     payload = await _read_json_object(request)
