@@ -1234,6 +1234,7 @@ def _account_profile(data: dict[str, Any], user_id: str) -> dict[str, Any]:
     selected = declared_profile(data, user_id)
     report_data = selfit_report.report_for_gender((report or {}).get("data") or {}, selected.get("gender"))
     suit = _account_suit_summary(data, user_id, session, stored)
+    photos = {kind: _latest_user_photo(data, user_id, kind) for kind in ("face", "body")}
     return {
         "tested": report is not None,
         "gender": selected.get("gender"),
@@ -1241,7 +1242,8 @@ def _account_profile(data: dict[str, Any], user_id: str) -> dict[str, Any]:
         "revision": int(stored.get("revision") or 1),
         "manual": {feature["key"]: feature["value"] for feature in suit["features"] if feature.get("value")},
         "manualOverrides": _profile_overrides(session, stored),
-        "photos": {kind: f"/api/v1/selfit/me/photos/{kind}?overlay=1" if _latest_user_photo(data, user_id, kind) else None for kind in ("face", "body")},
+        "photos": {kind: f"/api/v1/selfit/me/photos/{kind}?overlay=1" if photo else None for kind, photo in photos.items()},
+        "photoVersions": {kind: photo["asset_id"] for kind, photo in photos.items() if photo},
         "report": {"reportId": report["report_id"], "typeId": report_data.get("typeId"),
                    "title": report_data.get("title"), "heroImage": report_data.get("heroImage") or {}} if report else None,
         "suit": suit,

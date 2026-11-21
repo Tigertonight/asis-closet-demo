@@ -36,7 +36,7 @@ def inspiration_looks() -> list[dict]:
     return inspiration_delivery()["looks"]
 
 
-def inspiration_topics(gender: str = "female") -> dict:
+def inspiration_topics(gender: str = "female", *, summary: bool = False) -> dict:
     from app.selfit_report import _personality_template_catalog
     from app.styling_catalog import adapt_outfit, delivery_looks
 
@@ -55,7 +55,7 @@ def inspiration_topics(gender: str = "female") -> dict:
                        key=lambda look: look["note_binding"]["position"])
         if not looks:
             continue
-        outfits = [{**adapt_outfit(look), "gender": gender} for look in looks]
+        outfits = [{**adapt_outfit(look, summary=summary), "gender": gender} for look in looks]
         topics.append({"id": topic["id"], "title": topic["title"], "kind": topic["kind"],
                        "cover": outfits[0]["cover_path"],
                        "previews": [outfit["cover_path"] for outfit in outfits[1:4]],
@@ -72,7 +72,7 @@ def inspiration_topics(gender: str = "female") -> dict:
                                          look["note_binding"]["templateId"], look["note_binding"]["position"]))
         if not looks:
             continue
-        outfits = [{**adapt_outfit(look), "gender": gender, "body_profile": look["note_binding"]["bodyProfile"]}
+        outfits = [{**adapt_outfit(look, summary=summary), "gender": gender, "body_profile": look["note_binding"]["bodyProfile"]}
                    for look in looks]
         topics.append({"id": f"persona-{code}", "title": template["metadata"]["name"],
                        "kind": "persona", "persona": code, "cover": outfits[0]["cover_path"],

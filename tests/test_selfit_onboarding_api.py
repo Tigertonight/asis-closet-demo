@@ -1165,6 +1165,7 @@ def test_profile_photo_replacement_updates_archive_and_serves_annotated_overlay(
     refreshed = client.get(f'{API}/me/profile', headers=owner).json()['profile']
     # 照片指向新 asset 的标注版。
     assert refreshed['photos']['face'] == '/api/v1/selfit/me/photos/face?overlay=1'
+    assert refreshed['photoVersions']['face'] == new['assetId']
     store = selfit_onboarding._load_store()
     assert store['user_photos'][0]['photos']['face']['asset_id'] == new['assetId']
     # suit 卡片展示新照片的算法结果：新标签 + 新量测值，手动选择已随换照失效。

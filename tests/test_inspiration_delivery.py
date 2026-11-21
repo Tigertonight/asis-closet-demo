@@ -59,6 +59,14 @@ def test_topics_require_auth_but_no_personality_test_and_fail_closed(monkeypatch
     assert response.headers['cache-control'] == 'private, no-store'
     assert all(outfit['gender'] == 'female' for topic in data['topics'] for outfit in topic['outfits'])
     assert len(data['topics']) == 20
+    summary = client.get(url, params={'view': 'cards'})
+    assert summary.status_code == 200 and len(summary.content) < len(response.content) / 5
+    for full_topic, card_topic in zip(data['topics'], summary.json()['topics'], strict=True):
+        assert full_topic['id'] == card_topic['id']
+        for full, card in zip(full_topic['outfits'], card_topic['outfits'], strict=True):
+            assert 'items' not in card
+            assert card == {key: full[key] for key in card}
+            assert card['item_ids'] == [item['item_id'] for item in full['items']]
     scene_topics, persona_topics = data['topics'][:4], data['topics'][4:]
     assert [len(topic['outfits']) for topic in scene_topics] == [4, 3, 3, 4]
     assert [len(topic['previews']) for topic in scene_topics] == [3, 2, 2, 3]
@@ -161,3 +169,21 @@ def test_saving_scene_outfit_is_idempotent_and_user_isolated(monkeypatch, tmp_pa
     assert not any(i['item_id'] in outfit['item_ids'] for i in saved['items']), 'saving an outfit does not imply owning its pieces'
     user['user_id'] = 'bob'
     assert not client.get('/selfit/try-on/wardrobe').json()['outfits']
+
+
+def test_shared_outfit_uses_only_published_catalog():
+    from app.styling_catalog import outfit_id
+    from app.inspiration_catalog import inspiration_looks
+    app = FastAPI()
+    app.include_router(selfit_studio.router)
+    client = TestClient(app)
+    sample_id = outfit_id(inspiration_looks()[0])
+    url = "/selfit/try-on/library-outfits/"
+    assert client.get(url + sample_id).status_code == 401
+    for gender in ("female", "male"):
+        app.dependency_overrides[get_current_user] = lambda: {"user_id": "visitor", "gender": gender}
+        row = client.get(url + sample_id).json()
+        assert row["outfit_id"] == sample_id and row["source"] == "styling_delivery"
+        assert row["item_ids"] and row["cover_path"]
+    for missing in ("my-private-outfit", "report_missing_look"):
+        assert client.get(url + missing).status_code == 404

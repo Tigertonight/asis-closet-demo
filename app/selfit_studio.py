@@ -4,6 +4,7 @@ from threading import RLock
 from typing import Any, Literal
 
 from fastapi import APIRouter, Depends, HTTPException, Response
+from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from pydantic import BaseModel, Field
 
 from app.auth import get_current_user
@@ -13,13 +14,25 @@ router = APIRouter(prefix="/selfit/try-on", tags=["selfit-studio"])
 _save_lock = RLock()
 
 
+@router.get("/library-outfits/{outfit_id}")
+def studio_library_outfit(outfit_id: str, user: dict[str, Any] = Depends(get_current_user)) -> dict[str, Any]:
+    from app.styling_catalog import OUTFIT_PREFIX, get_delivered_outfit
+
+    # A shared link can resolve only a published catalog entry.
+    if not outfit_id.startswith(OUTFIT_PREFIX) or len(outfit_id) > 180:
+        raise HTTPException(404, "这套公开搭配不存在。")
+    return get_delivered_outfit(outfit_id)
+
+
 @router.get("/inspiration-topics")
-def studio_inspiration_topics(response: Response, user: dict[str, Any] = Depends(get_current_user)) -> dict[str, Any]:
+def studio_inspiration_topics(
+    response: Response, user: dict[str, Any] = Depends(get_current_user), view: Literal["full", "cards"] = "full"
+) -> dict[str, Any]:
     from app.inspiration_catalog import inspiration_topics
 
     try:
         response.headers["Cache-Control"] = "private, no-store"
-        return inspiration_topics(gender=user.get("gender", "female"))
+        return inspiration_topics(gender=user.get("gender", "female"), summary=view == "cards")
     except (OSError, ValueError, KeyError, TypeError) as exc:
         raise HTTPException(503, "主题穿搭暂时无法加载，请稍后重试。") from exc
 
@@ -156,9 +169,26 @@ def model_library() -> dict[str, Any]:
     return {"items": items, "total": len(items)}
 
 
+async def _model_preferences_user(
+    include_preferences: bool = False,
+    credentials: HTTPAuthorizationCredentials | None = Depends(HTTPBearer(auto_error=False)),
+) -> dict[str, Any] | None:
+    return await get_current_user(credentials) if include_preferences else None
+
+
 @router.get("/models")
-def studio_models() -> dict[str, Any]:
-    return model_library()
+def studio_models(response: Response, user: dict[str, Any] | None = Depends(_model_preferences_user)) -> dict[str, Any]:
+    result = model_library()
+    if user is not None:
+        from app.closet import get_user_preferences
+
+        with user_storage(user["user_id"]):
+            prefs = get_user_preferences()
+        result["preferences"] = {"current_model_id": prefs["current_model_id"],
+                                 "self_model_path": prefs["self_model_path"],
+                                 "gender": "male" if user.get("gender") == "male" else "female"}
+        response.headers["Cache-Control"] = "private, no-store"
+    return result
 
 
 @router.get("/models/{model_id}/preview")

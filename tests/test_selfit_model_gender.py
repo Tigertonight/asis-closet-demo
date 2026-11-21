@@ -3,7 +3,7 @@ import json
 
 import pytest
 from fastapi.testclient import TestClient
-from app import closet, storage, tryon
+from app import auth, closet, storage, tryon
 from app.auth import get_current_user
 from app.main import app
 from app.material_assets import MaterialRegistry
@@ -23,6 +23,26 @@ def test_preferences_return_account_gender_without_overwriting_model_choice(monk
     assert response.json()['current_model_id'] == 'self'
     user['gender'] = 'female' if expected == 'male' else 'male'
     assert TestClient(app).get('/closet/preferences').json()['gender'] == user['gender']
+
+
+def test_model_list_includes_only_requested_account_preferences(monkeypatch, tmp_path):
+    monkeypatch.setattr(storage, 'ROOT_DIR', tmp_path)
+    users = {'first': {'user_id': 'first', 'gender': 'male'}, 'second': {'user_id': 'second'}}
+    monkeypatch.setattr(auth, 'resolve_token', users.__getitem__)
+    with storage.user_storage('first'):
+        closet.update_user_preferences({'current_model_id': 'self'})
+    client = TestClient(app)
+    path = '/selfit/try-on/models'
+    assert 'preferences' not in client.get(path).json()
+    assert client.get(path + '?include_preferences=true').status_code == 401
+    def preferences(token):
+        response = client.get(path, params={'include_preferences': 'true'},
+                              headers={'Authorization': 'Bearer ' + token})
+        assert response.status_code == 200
+        assert response.headers['cache-control'] == 'private, no-store'
+        return response.json()['preferences']
+    assert preferences('first') == {'current_model_id': 'self', 'self_model_path': '', 'gender': 'male'}
+    assert preferences('second')['current_model_id'] != 'self'
 
 
 def test_model_asset_does_not_require_a_local_photo_in_git(monkeypatch, tmp_path):

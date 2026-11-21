@@ -50,8 +50,8 @@ def outfit_id(look: dict) -> str:
     return f"{OUTFIT_PREFIX}{binding['templateId']}_{binding['noteId']}_{digest}"
 
 
-def _item_id(look: dict, source_id: str) -> str:
-    return outfit_id(look) + "_" + hashlib.sha256(source_id.encode()).hexdigest()[:10]
+def _item_id(oid: str, source_id: str) -> str:
+    return oid + "_" + hashlib.sha256(source_id.encode()).hexdigest()[:10]
 
 
 def _asset_url(reference: dict) -> str:
@@ -96,9 +96,15 @@ def resolve_saved_item_assets(items: list[dict]) -> list[dict]:
     return resolved
 
 
-def adapt_outfit(look: dict) -> dict:
+def adapt_outfit(look: dict, *, summary: bool = False) -> dict:
     binding = look["note_binding"]
     oid = outfit_id(look)
+    item_ids = [_item_id(oid, key) for key in look["layer_sequence_inner_to_outer"]]
+    card = {"outfit_id": oid, "title": binding["name"], "item_ids": item_ids,
+            "cover_path": _asset_url(look["source_asset"]), "source": "styling_delivery",
+            "gender": binding.get("gender", "unisex"), "body_profile": binding.get("bodyProfile", "standard")}
+    if summary:
+        return card
     items = []
     by_id = {item["item_id"]: item for item in look["items"]}
     for order, source_id in enumerate(look["layer_sequence_inner_to_outer"]):
@@ -109,10 +115,10 @@ def adapt_outfit(look: dict) -> dict:
         category = "top" if slot == "outer" else "accessory" if slot in {"hat", "socks"} else slot
         url = _asset_url(raw["image_asset"])
         styling = {k: v for k, v in raw.items() if k not in {"image_asset", "asset_filename", "cutout"}}
-        styling.update(source_item_id=source_id, item_id=_item_id(look, source_id),
-                       paired_with_item_ids=[_item_id(look, paired) for paired in raw.get("paired_with_item_ids", [])])
+        styling.update(source_item_id=source_id, item_id=item_ids[order],
+                       paired_with_item_ids=[_item_id(oid, paired) for paired in raw.get("paired_with_item_ids", [])])
         items.append({
-            "item_id": _item_id(look, source_id), "image_id": raw["image_asset"]["assetId"],
+            "item_id": item_ids[order], "image_id": raw["image_asset"]["assetId"],
             "title": raw["garment_name"], "category": category, "category_label": raw["garment_name"],
             "slot": slot, "assets": {"cutout_path": url, "preview_path": url, "asset_id": raw["image_asset"]["assetId"]},
             "wearing_instruction": raw.get("wearing_method", ""), "wear_region": raw.get("body_region", ""),
@@ -122,14 +128,12 @@ def adapt_outfit(look: dict) -> dict:
             "tryon_ready": True, "favorite": False, "deleted": False,
         })
     return {
-        "outfit_id": oid, "title": binding["name"], "items": items,
-        "item_ids": [i["item_id"] for i in items], "display_item_ids": [i["item_id"] for i in items],
-        "cover_path": _asset_url(look["source_asset"]), "source_asset_id": look["source_asset"]["assetId"],
+        **card, "items": items, "display_item_ids": item_ids.copy(),
+        "source_asset_id": look["source_asset"]["assetId"],
         "primary_persona": binding["persona"], "template_id": binding["templateId"],
-        "gender": binding.get("gender", "unisex"), "body_profile": binding.get("bodyProfile", "standard"),
-        "source": "styling_delivery", "can_delete": False, "favorite": False, "deleted": False,
+        "can_delete": False, "favorite": False, "deleted": False,
         "tryon_ready": True, "scene_tags": list(look.get("scene_tags", [])), "warnings": [],
-        "layer_sequence_inner_to_outer": [_item_id(look, source_id) for source_id in look["layer_sequence_inner_to_outer"]],
+        "layer_sequence_inner_to_outer": item_ids.copy(),
     }
 
 
