@@ -1021,6 +1021,7 @@ def closet_outfit_delete(outfit_id: str, current_user: dict[str, Any] = Depends(
         return delete_outfit(outfit_id)
 
 
+@app.get("/selfit/try-on/records")
 @app.get("/closet/tryon-records")
 def closet_tryon_records(current_user: dict[str, Any] = Depends(get_current_user)) -> dict[str, Any]:
     with user_storage(current_user["user_id"]):
